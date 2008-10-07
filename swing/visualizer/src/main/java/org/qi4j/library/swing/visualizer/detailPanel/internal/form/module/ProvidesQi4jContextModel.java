@@ -16,8 +16,8 @@
 */
 package org.qi4j.library.swing.visualizer.detailPanel.internal.form.module;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import static java.util.Collections.singletonList;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.ComboBoxModel;
@@ -38,7 +38,6 @@ import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 import org.qi4j.structure.Visibility;
 import static org.qi4j.structure.Visibility.application;
 import static org.qi4j.structure.Visibility.layer;
-import static org.qi4j.structure.Visibility.module;
 
 /**
  * @author edward.yakop@gmail.com
@@ -53,7 +52,7 @@ final class ProvidesQi4jContextModel
     {
         FILTERS = new Visibility[]
             {
-                module,
+                null,
                 layer,
                 application
             };
@@ -87,8 +86,7 @@ final class ProvidesQi4jContextModel
 
         if( descriptors != null )
         {
-            Visibility selectedFilter = (Visibility) comboboxModel.getSelectedItem();
-            Collection<Visibility> filters = singletonList( selectedFilter );
+            Collection<Visibility> filters = getFilters();
 
             List<ServiceDetailDescriptor> serviceList = new LinkedList<ServiceDetailDescriptor>();
             List<EntityDetailDescriptor> entityList = new LinkedList<EntityDetailDescriptor>();
@@ -115,6 +113,19 @@ final class ProvidesQi4jContextModel
             compositesModel = EMPTY_MODEL;
             objectsModel = EMPTY_MODEL;
         }
+    }
+
+    private Collection<Visibility> getFilters()
+    {
+        Visibility selectedFilter = (Visibility) comboboxModel.getSelectedItem();
+        ArrayList<Visibility> filters = new ArrayList<Visibility>();
+        filters.add( application );
+        if( selectedFilter == null || selectedFilter == layer )
+        {
+            filters.add( layer );
+        }
+
+        return filters;
     }
 
     public final ComboBoxModel filterModel()

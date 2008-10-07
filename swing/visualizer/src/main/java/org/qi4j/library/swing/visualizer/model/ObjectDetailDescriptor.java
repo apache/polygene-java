@@ -122,4 +122,9 @@ public final class ObjectDetailDescriptor
         aDescriptor.setObject( this );
         injectedFields.add( aDescriptor );
     }
+
+    public String toString()
+    {
+        return descriptor.type().getSimpleName();
+    }
 }
