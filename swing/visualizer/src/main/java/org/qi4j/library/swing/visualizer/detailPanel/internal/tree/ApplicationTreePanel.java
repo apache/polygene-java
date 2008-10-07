@@ -168,22 +168,11 @@ public final class ApplicationTreePanel
                 Enumeration children = root.children();
                 while( children.hasMoreElements() )
                 {
-                    DefaultMutableTreeNode child = (DefaultMutableTreeNode) children.nextElement();
-                    String nodeObject = (String) child.getUserObject();
-
-                    // TODO: Localization.
-                    if( "layers".equals( nodeObject ) )
+                    DefaultMutableTreeNode layerNode = (DefaultMutableTreeNode) children.nextElement();
+                    LayerDetailDescriptor layer = (LayerDetailDescriptor) layerNode.getUserObject();
+                    if( layer.equals( aDescriptor ) )
                     {
-                        Enumeration layerNodes = child.children();
-                        while( layerNodes.hasMoreElements() )
-                        {
-                            DefaultMutableTreeNode layerNode = (DefaultMutableTreeNode) layerNodes.nextElement();
-                            LayerDetailDescriptor layer = (LayerDetailDescriptor) layerNode.getUserObject();
-                            if( layer.equals( aDescriptor ) )
-                            {
-                                return layerNode;
-                            }
-                        }
+                        return layerNode;
                     }
                 }
             }
@@ -214,22 +203,11 @@ public final class ApplicationTreePanel
                 Enumeration children = layerNode.children();
                 while( children.hasMoreElements() )
                 {
-                    DefaultMutableTreeNode child = (DefaultMutableTreeNode) children.nextElement();
-                    String nodeObject = (String) child.getUserObject();
-
-                    // TODO: Localization.
-                    if( "modules".equals( nodeObject ) )
+                    DefaultMutableTreeNode moduleNode = (DefaultMutableTreeNode) children.nextElement();
+                    ModuleDetailDescriptor module = (ModuleDetailDescriptor) moduleNode.getUserObject();
+                    if( module.equals( aModuleDescriptor ) )
                     {
-                        Enumeration moduleNodes = child.children();
-                        while( moduleNodes.hasMoreElements() )
-                        {
-                            DefaultMutableTreeNode moduleNode = (DefaultMutableTreeNode) moduleNodes.nextElement();
-                            ModuleDetailDescriptor module = (ModuleDetailDescriptor) moduleNode.getUserObject();
-                            if( module.equals( aModuleDescriptor ) )
-                            {
-                                return moduleNode;
-                            }
-                        }
+                        return moduleNode;
                     }
                 }
             }

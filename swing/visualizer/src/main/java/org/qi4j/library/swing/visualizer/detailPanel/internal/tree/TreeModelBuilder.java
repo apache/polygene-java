@@ -55,18 +55,14 @@ final class TreeModelBuilder
 
     private void addLayersNode( DefaultMutableTreeNode root, ApplicationDetailDescriptor aDetailDescriptor )
     {
-        DefaultMutableTreeNode layersNode = new DefaultMutableTreeNode( "layers" );
-
         Iterable<LayerDetailDescriptor> layers = aDetailDescriptor.layers();
         for( LayerDetailDescriptor layer : layers )
         {
             DefaultMutableTreeNode layerNode = new DefaultMutableTreeNode( layer );
-            layersNode.add( layerNode );
+            root.add( layerNode );
 
             addModulesNode( layerNode, layer );
         }
-
-        addIfNotEmpty( root, layersNode );
     }
 
     private void addIfNotEmpty( DefaultMutableTreeNode parent, MutableTreeNode children )
@@ -78,22 +74,19 @@ final class TreeModelBuilder
         }
     }
 
-    private void addModulesNode( DefaultMutableTreeNode layersNode, LayerDetailDescriptor aLayer )
+    private void addModulesNode( DefaultMutableTreeNode layerNode, LayerDetailDescriptor aLayer )
     {
-        DefaultMutableTreeNode modulesNode = new DefaultMutableTreeNode( "modules" );
-        layersNode.add( modulesNode );
-
         Iterable<ModuleDetailDescriptor> modules = aLayer.modules();
         for( ModuleDetailDescriptor module : modules )
         {
-            addModuleNode( modulesNode, module );
+            addModuleNode( layerNode, module );
         }
     }
 
-    private void addModuleNode( DefaultMutableTreeNode modulesNode, ModuleDetailDescriptor aModule )
+    private void addModuleNode( DefaultMutableTreeNode layerNode, ModuleDetailDescriptor aModule )
     {
         DefaultMutableTreeNode moduleNode = new DefaultMutableTreeNode( aModule );
-        modulesNode.add( moduleNode );
+        layerNode.add( moduleNode );
 
         DefaultMutableTreeNode servicesNode = new DefaultMutableTreeNode( "services" );
         addServiceNodes( servicesNode, aModule, null );
