@@ -28,9 +28,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -42,6 +40,7 @@ import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
@@ -70,7 +69,7 @@ public final class ApplicationTreePanel
         selectionModel.addTreeSelectionListener( new ApplicationTreeSelectionListener( aListener ) );
 
         // Cell renderer settings
-        TreeCellRenderer treeCellRenderer = new DefaultTreeCellRenderer();
+        Qi4jTreeCellRenderer treeCellRenderer = new Qi4jTreeCellRenderer();
         applicationTree.setCellRenderer( treeCellRenderer );
 
         collapseButton.addActionListener( new CollapseTreeActionListener() );
@@ -234,36 +233,21 @@ public final class ApplicationTreePanel
         }
 
         DefaultMutableTreeNode moduleNode = getModuleNode( aModuleDescriptor );
-        DefaultMutableTreeNode moduleChildNode = getModuleChildNode( moduleNode, directModuleChildName, descriptor );
+        DefaultMutableTreeNode moduleChildNode =
+            getGrandChildrenChildNode( moduleNode, directModuleChildName, descriptor );
         selectNode( moduleChildNode );
     }
 
-    private DefaultMutableTreeNode getModuleChildNode(
-        DefaultMutableTreeNode moduleNode, String searchTerm, Object aNodeUserObject
+    private DefaultMutableTreeNode getGrandChildrenChildNode(
+        DefaultMutableTreeNode aNode, Object aDirectChildrenUserObject, Object aGrandChildrenUserObject
     )
     {
-        DefaultMutableTreeNode directChildNode = getModuleDirectChildNode( moduleNode, searchTerm );
-        if( directChildNode != null )
-        {
-
-            Enumeration children = directChildNode.children();
-            while( children.hasMoreElements() )
-            {
-                DefaultMutableTreeNode child = (DefaultMutableTreeNode) children.nextElement();
-                Object userObject = child.getUserObject();
-
-                if( aNodeUserObject.equals( userObject ) )
-                {
-                    return child;
-                }
-            }
-        }
-
-        return null;
+        DefaultMutableTreeNode directChildNode = getDirectChildNodeWithUserObject( aNode, aDirectChildrenUserObject );
+        return getDirectChildNodeWithUserObject( directChildNode, aGrandChildrenUserObject );
     }
 
-
-    private DefaultMutableTreeNode getModuleDirectChildNode( DefaultMutableTreeNode aModuleNode, String aNodeName )
+    private DefaultMutableTreeNode getDirectChildNodeWithUserObject(
+        DefaultMutableTreeNode aModuleNode, Object aUserObject )
     {
         if( aModuleNode != null )
         {
@@ -271,8 +255,8 @@ public final class ApplicationTreePanel
             while( children.hasMoreElements() )
             {
                 DefaultMutableTreeNode child = (DefaultMutableTreeNode) children.nextElement();
-                String nodeObject = (String) child.getUserObject();
-                if( aNodeName.equals( nodeObject ) )
+                Object nodeObject = child.getUserObject();
+                if( aUserObject.equals( nodeObject ) )
                 {
                     return child;
                 }
@@ -303,10 +287,35 @@ public final class ApplicationTreePanel
         selectModuleChildNode( module, "objects", aDescriptor );
     }
 
-    public void resetSelection()
+    public final void onMixinSelected( MixinDetailDescriptor aDescriptor )
+    {
+        if( isNodeSelected( aDescriptor ) )
+        {
+            return;
+        }
+
+        CompositeDetailDescriptor composite = aDescriptor.composite();
+        ModuleDetailDescriptor module = composite.module();
+
+        DefaultMutableTreeNode moduleNode = getModuleNode( module );
+        if( moduleNode != null )
+        {
+            // TODO: Localization
+            String searchTerm = ( composite instanceof EntityDetailDescriptor ) ? "entities" : "composites";
+            DefaultMutableTreeNode compositeNode = getGrandChildrenChildNode( moduleNode, searchTerm, aDescriptor );
+            // TODO: Localization
+            DefaultMutableTreeNode mixinNode = getGrandChildrenChildNode( compositeNode, "mixins", aDescriptor );
+            selectNode( mixinNode );
+        }
+    }
+
+    public final void resetSelection()
     {
         TreeSelectionModel selectionModel = applicationTree.getSelectionModel();
-        selectionModel.clearSelection();
+        if( !selectionModel.isSelectionEmpty() )
+        {
+            selectionModel.clearSelection();
+        }
     }
 
     /**
@@ -340,7 +349,8 @@ public final class ApplicationTreePanel
         return treePanel;
     }
 
-    private class CollapseTreeActionListener implements ActionListener
+    private class CollapseTreeActionListener
+        implements ActionListener
     {
         public void actionPerformed( ActionEvent e )
         {

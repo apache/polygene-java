@@ -22,10 +22,8 @@ import com.jgoodies.forms.layout.FormLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ConstructorDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.MixinDescriptor;
@@ -34,23 +32,15 @@ import org.qi4j.spi.composite.MixinDescriptor;
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public final class MixinPanel
+public final class MixinDescriptorForm
 {
     private JComponent mixinSeparator;
     private JTextField mixinClassName;
     private JTextField compositeClassName;
 
-    private ConstructorsPanel constructorsTabPanel;
-
     private JPanel mixinPanel;
 
     public final void updateModel( MixinDetailDescriptor aDescriptor )
-    {
-        populateGeneralFields( aDescriptor );
-        populateTabbePanels( aDescriptor );
-    }
-
-    private void populateGeneralFields( MixinDetailDescriptor aDescriptor )
     {
         String mixinClassNameStr = null;
         String compositeClassNameStr = null;
@@ -67,16 +57,6 @@ public final class MixinPanel
 
         mixinClassName.setText( mixinClassNameStr );
         compositeClassName.setText( compositeClassNameStr );
-    }
-
-    private void populateTabbePanels( MixinDetailDescriptor aDescriptor )
-    {
-        Iterable<ConstructorDetailDescriptor> constructors = null;
-        if( aDescriptor != null )
-        {
-            constructors = aDescriptor.constructors();
-        }
-        constructorsTabPanel.updateModel( constructors );
     }
 
     private void createUIComponents()
@@ -103,31 +83,25 @@ public final class MixinPanel
     {
         createUIComponents();
         mixinPanel = new JPanel();
-        mixinPanel.setLayout( new FormLayout( "fill:max(d;60dlu):noGrow,left:4dlu:noGrow,fill:d:grow", "center:d:noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,fill:max(d;4px):grow" ) );
-        ( (FormLayout) mixinPanel.getLayout() ).setRowGroups( new int[][]{ new int[]{ 3, 5 } } );
+        mixinPanel.setLayout( new FormLayout( "fill:max(d;4px):noGrow,fill:p:noGrow,left:4dlu:noGrow,fill:max(p;75dlu):noGrow,left:4dlu:noGrow,left:d:grow,fill:max(d;4px):noGrow", "center:4px:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow" ) );
+        ( (FormLayout) mixinPanel.getLayout() ).setRowGroups( new int[][]{ new int[]{ 4, 6 }, new int[]{ 1, 7 } } );
+        ( (FormLayout) mixinPanel.getLayout() ).setColumnGroups( new int[][]{ new int[]{ 3, 5 }, new int[]{ 1, 7 } } );
         CellConstraints cc = new CellConstraints();
-        mixinPanel.add( mixinSeparator, cc.xyw( 1, 1, 3 ) );
+        mixinPanel.add( mixinSeparator, cc.xyw( 2, 2, 5 ) );
         final JLabel label1 = new JLabel();
         label1.setText( "Class Name" );
-        mixinPanel.add( label1, cc.xy( 1, 3 ) );
+        mixinPanel.add( label1, cc.xy( 2, 4 ) );
+        final JLabel label2 = new JLabel();
+        label2.setText( "Composite" );
+        mixinPanel.add( label2, cc.xy( 2, 6 ) );
         mixinClassName = new JTextField();
         mixinClassName.setEditable( false );
         mixinClassName.setText( "" );
-        mixinPanel.add( mixinClassName, cc.xy( 3, 3, CellConstraints.FILL, CellConstraints.DEFAULT ) );
-        final JLabel label2 = new JLabel();
-        label2.setText( "Composite" );
-        mixinPanel.add( label2, cc.xy( 1, 5 ) );
+        mixinPanel.add( mixinClassName, cc.xy( 4, 4 ) );
         compositeClassName = new JTextField();
         compositeClassName.setEditable( false );
         compositeClassName.setText( "" );
-        mixinPanel.add( compositeClassName, cc.xy( 3, 5, CellConstraints.FILL, CellConstraints.DEFAULT ) );
-        final JTabbedPane tabbedPane1 = new JTabbedPane();
-        mixinPanel.add( tabbedPane1, cc.xyw( 1, 7, 3 ) );
-        final JPanel panel1 = new JPanel();
-        panel1.setLayout( new FormLayout( "fill:d:grow", "fill:d:grow" ) );
-        tabbedPane1.addTab( "Constructors", panel1 );
-        constructorsTabPanel = new ConstructorsPanel();
-        panel1.add( constructorsTabPanel.$$$getRootComponent$$$(), cc.xy( 1, 1 ) );
+        mixinPanel.add( compositeClassName, cc.xy( 4, 6 ) );
     }
 
     /**

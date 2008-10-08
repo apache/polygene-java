@@ -31,7 +31,7 @@ import org.qi4j.spi.composite.CompositeDescriptor;
  * @see org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor
  * @since 0.5
  */
-public class CompositeDescriptorForm
+public final class CompositeDescriptorForm
 {
     private JComponent compositeSeparator;
     private JTextField compositeClassName;

@@ -26,6 +26,7 @@ import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
@@ -99,8 +100,14 @@ final class ApplicationTreeSelectionListener
                 ModuleDetailDescriptor detailDescriptor = (ModuleDetailDescriptor) userObject;
                 listener.onModuleSelected( detailDescriptor );
             }
+            else if( MixinDetailDescriptor.class.isAssignableFrom( userObjectClass ) )
+            {
+                MixinDetailDescriptor detailDescriptor = (MixinDetailDescriptor) userObject;
+                listener.onMixinSelected( detailDescriptor );
+            }
             else
             {
+                System.err.println( userObjectClass );
                 listener.resetSelection();
             }
         }

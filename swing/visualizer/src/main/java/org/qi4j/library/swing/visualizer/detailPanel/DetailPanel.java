@@ -23,6 +23,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ServiceDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.CompositeDescriptorForm;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.mixin.MixinDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.layer.LayerDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.module.ModuleDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.tree.ApplicationTreePanel;
@@ -31,6 +32,7 @@ import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
@@ -158,6 +160,22 @@ public final class DetailPanel
         // TODO
         descriptorForm = null;
         treePanel.onObjectSelected( aDescriptor );
+    }
+
+    public void onMixinSelected( MixinDetailDescriptor aDescriptor )
+    {
+        MixinDescriptorForm serviceForm;
+        if( !( descriptorForm instanceof MixinDescriptorForm ) )
+        {
+            serviceForm = new MixinDescriptorForm();
+            detailScrollPanel.setViewportView( serviceForm.$$$getRootComponent$$$() );
+        }
+        else
+        {
+            serviceForm = (MixinDescriptorForm) descriptorForm;
+        }
+        serviceForm.updateModel( aDescriptor );
+        treePanel.onMixinSelected( aDescriptor );
     }
 
     public final void resetSelection()
