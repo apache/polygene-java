@@ -14,7 +14,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.mixin;
+package org.qi4j.library.swing.visualizer.detailPanel.internal.form.object;
 
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -32,7 +32,7 @@ import org.qi4j.spi.composite.DependencyDescriptor;
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public class DepedencyDescriptorPanel
+public class DependencyDescriptorForm
 {
     private JComponent injectedSeparator;
     private JTextField injectedClassName;

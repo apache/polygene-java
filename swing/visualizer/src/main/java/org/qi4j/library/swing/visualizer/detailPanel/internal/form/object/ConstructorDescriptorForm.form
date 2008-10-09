@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.mixin.ConstructorDescriptorForm">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.qi4j.library.swing.visualizer.detailPanel.internal.form.object.ConstructorDescriptorForm">
   <grid id="27dc6" binding="constructorForm" layout-manager="FormLayout">
     <rowspec value="top:4px:noGrow"/>
     <rowspec value="center:p:noGrow"/>
@@ -114,7 +114,7 @@
           <selectionMode value="0"/>
         </properties>
       </component>
-      <nested-form id="fcae6" form-file="org/qi4j/library/swing/visualizer/detailPanel/internal/form/composite/mixin/DepedencyDescriptorPanel.form" binding="dependencyDescriptor">
+      <nested-form id="fcae6" form-file="org/qi4j/library/swing/visualizer/detailPanel/internal/form/object/DependencyDescriptorForm.form" binding="dependencyDescriptor">
         <constraints>
           <grid row="9" column="3" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
           <forms/>

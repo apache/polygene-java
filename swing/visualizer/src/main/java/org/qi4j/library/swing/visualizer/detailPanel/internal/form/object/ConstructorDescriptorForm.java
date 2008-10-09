@@ -14,7 +14,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.mixin;
+package org.qi4j.library.swing.visualizer.detailPanel.internal.form.object;
 
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -54,7 +54,7 @@ public final class ConstructorDescriptorForm
     private JComponent parametersSeparator;
 
     private JList constructorParameters;
-    private DepedencyDescriptorPanel dependencyDescriptor;
+    private DependencyDescriptorForm dependencyDescriptor;
 
     private JPanel constructorForm;
 
@@ -133,7 +133,7 @@ public final class ConstructorDescriptorForm
         constructorParameters.setMinimumSize( new Dimension( 60, 0 ) );
         constructorParameters.setSelectionMode( 0 );
         constructorForm.add( constructorParameters, cc.xy( 2, 10 ) );
-        dependencyDescriptor = new DepedencyDescriptorPanel();
+        dependencyDescriptor = new DependencyDescriptorForm();
         constructorForm.add( dependencyDescriptor.$$$getRootComponent$$$(), cc.xyw( 4, 10, 3 ) );
         parametersSeparator.setRequestFocusEnabled( false );
         constructorForm.add( parametersSeparator, cc.xyw( 2, 8, 5 ) );
