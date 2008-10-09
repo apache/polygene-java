@@ -68,7 +68,7 @@ public final class MixinDescriptorForm
     private void createUIComponents()
     {
         DefaultComponentFactory cmpFactory = DefaultComponentFactory.getInstance();
-        mixinSeparator = cmpFactory.createSeparator( "Object" );
+        mixinSeparator = cmpFactory.createSeparator( "Mixin" );
     }
 
     /**

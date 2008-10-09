@@ -171,6 +171,7 @@ public final class ToStringUtils
         Annotation[] annotations = field.getAnnotations();
         appendAnnotation( builder, annotations );
         builder.append( field.getType().getSimpleName() );
+        builder.append( ' ' );
         builder.append( field.getName() );
         return builder.toString();
     }

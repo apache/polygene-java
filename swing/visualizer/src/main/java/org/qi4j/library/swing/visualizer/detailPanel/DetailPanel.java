@@ -176,6 +176,7 @@ public final class DetailPanel
         {
             mixinForm = (MixinDescriptorForm) descriptorForm;
         }
+        descriptorForm = mixinForm;
         mixinForm.updateModel( aDescriptor );
         treePanel.onMixinSelected( aDescriptor );
     }
