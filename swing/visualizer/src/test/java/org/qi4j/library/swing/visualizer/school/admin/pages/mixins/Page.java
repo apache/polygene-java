@@ -16,9 +16,13 @@
 */
 package org.qi4j.library.swing.visualizer.school.admin.pages.mixins;
 
+import org.qi4j.composite.Mixins;
+
 /**
  * @author edward.yakop@gmail.com
  */
+@Mixins( PageMixin.class )
 public interface Page
 {
+    String generateHtml();
 }

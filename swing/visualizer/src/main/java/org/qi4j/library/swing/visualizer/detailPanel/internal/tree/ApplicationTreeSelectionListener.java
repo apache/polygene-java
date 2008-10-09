@@ -24,6 +24,7 @@ import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ConstructorDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
@@ -104,6 +105,11 @@ final class ApplicationTreeSelectionListener
             {
                 MixinDetailDescriptor detailDescriptor = (MixinDetailDescriptor) userObject;
                 listener.onMixinSelected( detailDescriptor );
+            }
+            else if( ConstructorDetailDescriptor.class.isAssignableFrom( userObjectClass ) )
+            {
+                ConstructorDetailDescriptor detailDescriptor = (ConstructorDetailDescriptor) userObject;
+                listener.onConstructorSelected( detailDescriptor );
             }
             else
             {

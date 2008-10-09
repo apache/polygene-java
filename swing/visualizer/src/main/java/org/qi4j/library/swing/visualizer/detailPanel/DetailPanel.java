@@ -24,12 +24,14 @@ import javax.swing.JSplitPane;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ServiceDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.CompositeDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.mixin.MixinDescriptorForm;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.mixin.ConstructorDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.layer.LayerDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.module.ModuleDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.tree.ApplicationTreePanel;
 import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ConstructorDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
@@ -164,18 +166,34 @@ public final class DetailPanel
 
     public void onMixinSelected( MixinDetailDescriptor aDescriptor )
     {
-        MixinDescriptorForm serviceForm;
+        MixinDescriptorForm mixinForm;
         if( !( descriptorForm instanceof MixinDescriptorForm ) )
         {
-            serviceForm = new MixinDescriptorForm();
-            detailScrollPanel.setViewportView( serviceForm.$$$getRootComponent$$$() );
+            mixinForm = new MixinDescriptorForm();
+            detailScrollPanel.setViewportView( mixinForm.$$$getRootComponent$$$() );
         }
         else
         {
-            serviceForm = (MixinDescriptorForm) descriptorForm;
+            mixinForm = (MixinDescriptorForm) descriptorForm;
         }
-        serviceForm.updateModel( aDescriptor );
+        mixinForm.updateModel( aDescriptor );
         treePanel.onMixinSelected( aDescriptor );
+    }
+
+    public final void onConstructorSelected( ConstructorDetailDescriptor aDescriptor )
+    {
+        ConstructorDescriptorForm constructorForm;
+        if( !( descriptorForm instanceof ConstructorDescriptorForm ) )
+        {
+            constructorForm = new ConstructorDescriptorForm();
+            detailScrollPanel.setViewportView( constructorForm.$$$getRootComponent$$$() );
+        }
+        else
+        {
+            constructorForm = (ConstructorDescriptorForm) descriptorForm;
+        }
+        constructorForm.updateModel( aDescriptor );
+        treePanel.onConstructorSelected( aDescriptor );
     }
 
     public final void resetSelection()

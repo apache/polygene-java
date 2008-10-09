@@ -38,6 +38,7 @@ import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ConstructorDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
@@ -217,25 +218,16 @@ public final class ApplicationTreePanel
 
     public final void onServiceSelected( ServiceDetailDescriptor aDescriptor )
     {
-        ModuleDetailDescriptor module = aDescriptor.module();
-        // TODO: Localization
-        selectModuleChildNode( module, "services", aDescriptor );
-    }
-
-    private void selectModuleChildNode(
-        ModuleDetailDescriptor aModuleDescriptor,
-        String directModuleChildName,
-        Object descriptor )
-    {
-        if( isNodeSelected( descriptor ) )
+        if( isNodeSelected( aDescriptor ) )
         {
             return;
         }
 
-        DefaultMutableTreeNode moduleNode = getModuleNode( aModuleDescriptor );
-        DefaultMutableTreeNode moduleChildNode =
-            getGrandChildrenChildNode( moduleNode, directModuleChildName, descriptor );
-        selectNode( moduleChildNode );
+        ModuleDetailDescriptor module = aDescriptor.module();
+        DefaultMutableTreeNode moduleNode = getModuleNode( module );
+        // TODO: Localization
+        DefaultMutableTreeNode serviceNode = getGrandChildrenChildNode( moduleNode, "services", aDescriptor );
+        selectNode( serviceNode );
     }
 
     private DefaultMutableTreeNode getGrandChildrenChildNode(
@@ -268,23 +260,59 @@ public final class ApplicationTreePanel
 
     public final void onEntitySelected( EntityDetailDescriptor aDescriptor )
     {
-        ModuleDetailDescriptor module = aDescriptor.module();
+        if( isNodeSelected( aDescriptor ) )
+        {
+            return;
+        }
+
+        DefaultMutableTreeNode entityNode = getEntityNode( aDescriptor );
+        selectNode( entityNode );
+    }
+
+    private DefaultMutableTreeNode getEntityNode( EntityDetailDescriptor anEntityDescriptor )
+    {
+        ModuleDetailDescriptor module = anEntityDescriptor.module();
+        DefaultMutableTreeNode moduleNode = getModuleNode( module );
         // TODO: Localization
-        selectModuleChildNode( module, "entities", aDescriptor );
+        return getGrandChildrenChildNode( moduleNode, "entities", anEntityDescriptor );
     }
 
     public final void onCompositeSelected( CompositeDetailDescriptor aDescriptor )
     {
-        ModuleDetailDescriptor module = aDescriptor.module();
+        if( isNodeSelected( aDescriptor ) )
+        {
+            return;
+        }
+
+        DefaultMutableTreeNode compositeNode = getCompositeNode( aDescriptor );
+        selectNode( compositeNode );
+    }
+
+    private DefaultMutableTreeNode getCompositeNode( CompositeDetailDescriptor aCompositeDescriptor )
+    {
+        ModuleDetailDescriptor module = aCompositeDescriptor.module();
+        DefaultMutableTreeNode moduleNode = getModuleNode( module );
         // TODO: Localization
-        selectModuleChildNode( module, "composites", aDescriptor );
+        return getGrandChildrenChildNode( moduleNode, "composites", aCompositeDescriptor );
     }
 
     public final void onObjectSelected( ObjectDetailDescriptor aDescriptor )
     {
-        ModuleDetailDescriptor module = aDescriptor.module();
+        if( isNodeSelected( aDescriptor ) )
+        {
+            return;
+        }
+
+        DefaultMutableTreeNode objectNode = getObjectNode( aDescriptor );
+        selectNode( objectNode );
+    }
+
+    private DefaultMutableTreeNode getObjectNode( ObjectDetailDescriptor anObjectDescriptor )
+    {
+        ModuleDetailDescriptor module = anObjectDescriptor.module();
+        DefaultMutableTreeNode moduleNode = getModuleNode( module );
         // TODO: Localization
-        selectModuleChildNode( module, "objects", aDescriptor );
+        return getGrandChildrenChildNode( moduleNode, "objects", anObjectDescriptor );
     }
 
     public final void onMixinSelected( MixinDetailDescriptor aDescriptor )
@@ -295,18 +323,71 @@ public final class ApplicationTreePanel
         }
 
         CompositeDetailDescriptor composite = aDescriptor.composite();
-        ModuleDetailDescriptor module = composite.module();
+        DefaultMutableTreeNode mixinNode = getMixinNode( aDescriptor, composite );
+        selectNode( mixinNode );
+    }
 
+    private DefaultMutableTreeNode getMixinNode(
+        MixinDetailDescriptor aMixinDescriptor, CompositeDetailDescriptor aCompositeDescriptor )
+    {
+        ModuleDetailDescriptor module = aCompositeDescriptor.module();
         DefaultMutableTreeNode moduleNode = getModuleNode( module );
+
         if( moduleNode != null )
         {
+            DefaultMutableTreeNode compositeNode;
+            if( aCompositeDescriptor instanceof EntityDetailDescriptor )
+            {
+                EntityDetailDescriptor entity = (EntityDetailDescriptor) aCompositeDescriptor;
+                compositeNode = getEntityNode( entity );
+            }
+            else
+            {
+                compositeNode = getCompositeNode( aCompositeDescriptor );
+            }
+
             // TODO: Localization
-            String searchTerm = ( composite instanceof EntityDetailDescriptor ) ? "entities" : "composites";
-            DefaultMutableTreeNode compositeNode = getGrandChildrenChildNode( moduleNode, searchTerm, aDescriptor );
-            // TODO: Localization
-            DefaultMutableTreeNode mixinNode = getGrandChildrenChildNode( compositeNode, "mixins", aDescriptor );
-            selectNode( mixinNode );
+            return getGrandChildrenChildNode( compositeNode, "mixins", aMixinDescriptor );
         }
+
+        return null;
+    }
+
+    public final void onConstructorSelected( ConstructorDetailDescriptor aDescriptor )
+    {
+        if( isNodeSelected( aDescriptor ) )
+        {
+            return;
+        }
+
+        DefaultMutableTreeNode constructorNode = getConstructorNode( aDescriptor );
+        selectNode( constructorNode );
+    }
+
+    private DefaultMutableTreeNode getConstructorNode( ConstructorDetailDescriptor aDescriptor )
+    {
+        DefaultMutableTreeNode mixinOrObjectNode = getMixinOrObjectNode( aDescriptor );
+        // Localization
+        DefaultMutableTreeNode constructorsNode = getDirectChildNodeWithUserObject( mixinOrObjectNode, "constructors" );
+        return getDirectChildNodeWithUserObject( constructorsNode, aDescriptor );
+    }
+
+    private DefaultMutableTreeNode getMixinOrObjectNode( ConstructorDetailDescriptor aDescriptor )
+    {
+        MixinDetailDescriptor mixin = aDescriptor.mixin();
+        DefaultMutableTreeNode mixinOrObjectNode = null;
+        if( mixin != null )
+        {
+            CompositeDetailDescriptor composite = mixin.composite();
+            mixinOrObjectNode = getMixinNode( mixin, composite );
+        }
+        else
+        {
+            ObjectDetailDescriptor object = aDescriptor.object();
+            mixinOrObjectNode = getObjectNode( object );
+        }
+
+        return mixinOrObjectNode;
     }
 
     public final void resetSelection()

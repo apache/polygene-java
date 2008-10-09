@@ -16,12 +16,15 @@
 */
 package org.qi4j.library.swing.visualizer.school.admin.pages;
 
+import org.qi4j.composite.Mixins;
 import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.Page;
+import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.UserDetailPageMixin;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
+@Mixins( UserDetailPageMixin.class )
 public interface UserDetailPage extends Page
 {
 }

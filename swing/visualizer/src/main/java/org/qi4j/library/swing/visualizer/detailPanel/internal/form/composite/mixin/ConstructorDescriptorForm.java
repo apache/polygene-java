@@ -19,13 +19,14 @@ package org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.mi
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.lang.reflect.Constructor;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -44,7 +45,7 @@ import org.qi4j.spi.composite.InjectedParametersDescriptor;
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public final class ConstructorsPanel
+public final class ConstructorDescriptorForm
 {
     private JComponent constructorSeparator;
     private JTextField constructorName;
@@ -55,30 +56,41 @@ public final class ConstructorsPanel
     private JList constructorParameters;
     private DepedencyDescriptorPanel dependencyDescriptor;
 
-    private JList constructors;
+    private JPanel constructorForm;
 
-    private JPanel constructorsPanel;
-
-    public ConstructorsPanel()
+    public ConstructorDescriptorForm()
     {
         $$$setupUI$$$();
-
-        constructors.addListSelectionListener( new ConstructorSelectionListener() );
         constructorParameters.addListSelectionListener( new ConstructorParameterSelectionListener() );
+        constructorParameters.setCellRenderer( new DependencyDescriptorListCellRenderer() );
     }
 
     @SuppressWarnings( "unchecked" )
-    public final void updateModel( Iterable<ConstructorDetailDescriptor> aDescriptor )
+    public final void updateModel( ConstructorDetailDescriptor aDescriptor )
     {
-        ListListModel constructorsModel = ListListModel.EMPTY_MODEL;
+        String constructorNameStr = null;
+        String constructorClassNameStr = null;
+        ListListModel paramsModel = EMPTY_MODEL;
 
         if( aDescriptor != null )
         {
-            constructorsModel = new ListListModel( toList( aDescriptor ) );
+            ConstructorDescriptor descriptor = aDescriptor.descriptor();
+            Constructor constructor = descriptor.constructor();
+            Class declaringClass = constructor.getDeclaringClass();
+            constructorNameStr = declaringClass.getSimpleName();
+            constructorClassNameStr = declaringClass.getName();
+
+            InjectedParametersDetailDescriptor parameters = aDescriptor.parameters();
+            InjectedParametersDescriptor parametersDescriptor = parameters.descriptor();
+
+            Iterable<? extends DependencyDescriptor> dependencies = parametersDescriptor.dependencies();
+            paramsModel = new ListListModel( toList( dependencies ) );
         }
 
-        constructors.setModel( constructorsModel );
-        constructors.setSelectedIndex( 0 );
+        constructorName.setText( constructorNameStr );
+        constructorClassName.setText( constructorClassNameStr );
+        constructorParameters.setModel( paramsModel );
+        constructorParameters.setSelectedIndex( 0 );
     }
 
     private void createUIComponents()
@@ -98,44 +110,33 @@ public final class ConstructorsPanel
     private void $$$setupUI$$$()
     {
         createUIComponents();
-        constructorsPanel = new JPanel();
-        constructorsPanel.setLayout( new FormLayout( "fill:max(p;60dlu):noGrow,left:4dlu:noGrow,fill:d:noGrow,fill:p:grow", "center:d:noGrow,fill:p:grow,fill:p:noGrow" ) );
-        final JSplitPane splitPane1 = new JSplitPane();
-        splitPane1.setOneTouchExpandable( true );
-        CellConstraints cc = new CellConstraints();
-        constructorsPanel.add( splitPane1, cc.xywh( 1, 1, 4, 3 ) );
-        constructors = new JList();
-        constructors.setMinimumSize( new Dimension( 60, 0 ) );
-        splitPane1.setLeftComponent( constructors );
-        final JPanel panel1 = new JPanel();
-        panel1.setLayout( new FormLayout( "fill:max(p;60dlu):noGrow,left:4dlu:noGrow,fill:max(m;150dlu):noGrow,left:m:grow", "center:d:noGrow,top:4dlu:noGrow,center:18px:noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:8dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,fill:p:grow" ) );
-        ( (FormLayout) panel1.getLayout() ).setRowGroups( new int[][]{ new int[]{ 3, 5 }, new int[]{ 1, 7 } } );
-        splitPane1.setRightComponent( panel1 );
-        panel1.add( constructorSeparator, cc.xyw( 1, 1, 4 ) );
+        constructorForm = new JPanel();
+        constructorForm.setLayout( new FormLayout( "fill:4px:noGrow,fill:max(p;65dlu):noGrow,left:4dlu:noGrow,fill:max(p;75dlu):noGrow,left:4dlu:noGrow,fill:max(p;80dlu):grow,left:4px:noGrow,fill:d:noGrow", "top:4px:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,center:max(d;4px):noGrow,fill:max(p;65dlu):noGrow,top:4px:noGrow" ) );
+        ( (FormLayout) constructorForm.getLayout() ).setRowGroups( new int[][]{ new int[]{ 4, 6 }, new int[]{ 3, 9 }, new int[]{ 5, 7 }, new int[]{ 1, 11 }, new int[]{ 2, 8 } } );
+        ( (FormLayout) constructorForm.getLayout() ).setColumnGroups( new int[][]{ new int[]{ 3, 5 }, new int[]{ 1, 7 } } );
         final JLabel label1 = new JLabel();
         label1.setText( "Name" );
-        panel1.add( label1, cc.xy( 1, 3 ) );
+        CellConstraints cc = new CellConstraints();
+        constructorForm.add( label1, cc.xy( 2, 4 ) );
         final JLabel label2 = new JLabel();
         label2.setText( "Class name" );
-        panel1.add( label2, cc.xy( 1, 5 ) );
+        constructorForm.add( label2, cc.xy( 2, 6 ) );
+        constructorForm.add( constructorSeparator, cc.xyw( 2, 2, 5 ) );
         constructorName = new JTextField();
         constructorName.setEditable( false );
-        panel1.add( constructorName, cc.xy( 3, 3, CellConstraints.FILL, CellConstraints.DEFAULT ) );
+        constructorForm.add( constructorName, cc.xy( 4, 4, CellConstraints.FILL, CellConstraints.DEFAULT ) );
         constructorClassName = new JTextField();
         constructorClassName.setEditable( false );
         constructorClassName.setText( "" );
-        panel1.add( constructorClassName, cc.xy( 3, 5, CellConstraints.FILL, CellConstraints.DEFAULT ) );
-        parametersSeparator.setRequestFocusEnabled( false );
-        panel1.add( parametersSeparator, cc.xyw( 1, 7, 4 ) );
-        final JSplitPane splitPane2 = new JSplitPane();
-        splitPane2.setOneTouchExpandable( true );
-        panel1.add( splitPane2, cc.xyw( 1, 9, 4 ) );
+        constructorForm.add( constructorClassName, cc.xy( 4, 6, CellConstraints.FILL, CellConstraints.DEFAULT ) );
         constructorParameters = new JList();
         constructorParameters.setMinimumSize( new Dimension( 60, 0 ) );
         constructorParameters.setSelectionMode( 0 );
-        splitPane2.setLeftComponent( constructorParameters );
+        constructorForm.add( constructorParameters, cc.xy( 2, 10 ) );
         dependencyDescriptor = new DepedencyDescriptorPanel();
-        splitPane2.setRightComponent( dependencyDescriptor.$$$getRootComponent$$$() );
+        constructorForm.add( dependencyDescriptor.$$$getRootComponent$$$(), cc.xyw( 4, 10, 3 ) );
+        parametersSeparator.setRequestFocusEnabled( false );
+        constructorForm.add( parametersSeparator, cc.xyw( 2, 8, 5 ) );
         label1.setLabelFor( constructorName );
         label2.setLabelFor( constructorClassName );
     }
@@ -145,7 +146,7 @@ public final class ConstructorsPanel
      */
     public JComponent $$$getRootComponent$$$()
     {
-        return constructorsPanel;
+        return constructorForm;
     }
 
     private class ConstructorParameterSelectionListener
@@ -158,33 +159,17 @@ public final class ConstructorsPanel
         }
     }
 
-    private class ConstructorSelectionListener
-        implements ListSelectionListener
+    private static class DependencyDescriptorListCellRenderer extends DefaultListCellRenderer
     {
-        @SuppressWarnings( "unchecked" )
-        public final void valueChanged( ListSelectionEvent e )
+        @Override
+        public final Component getListCellRendererComponent(
+            JList list, Object value, int index, boolean isSelected, boolean cellHasFocus )
         {
-            ConstructorDetailDescriptor contructorDDesc = (ConstructorDetailDescriptor) constructors.getSelectedValue();
-
-            String constructorNameStr = null;
-            ListListModel paramsModel = EMPTY_MODEL;
-
-            if( contructorDDesc != null )
-            {
-                ConstructorDescriptor descriptor = contructorDDesc.descriptor();
-                Constructor constructor = descriptor.constructor();
-                constructorNameStr = constructor.getName();
-
-                InjectedParametersDetailDescriptor parameters = contructorDDesc.parameters();
-                InjectedParametersDescriptor parametersDescriptor = parameters.descriptor();
-
-                Iterable<? extends DependencyDescriptor> dependencies = parametersDescriptor.dependencies();
-                paramsModel = new ListListModel( toList( dependencies ) );
-            }
-
-            constructorClassName.setText( constructorNameStr );
-            constructorParameters.setModel( paramsModel );
-            constructorParameters.setSelectedIndex( 0 );
+            DependencyDescriptor depDescriptor = (DependencyDescriptor) value;
+            String label =
+                "@" + depDescriptor.injectionAnnotation().annotationType().getSimpleName() + " " +
+                depDescriptor.injectionClass().getSimpleName();
+            return super.getListCellRendererComponent( list, label, index, isSelected, cellHasFocus );
         }
     }
 }

@@ -18,6 +18,7 @@ package org.qi4j.library.swing.visualizer.listener;
 
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.ConstructorDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
@@ -94,6 +95,14 @@ public interface SelectionListener
      * @since 0.5
      */
     void onMixinSelected( MixinDetailDescriptor aDescriptor );
+
+    /**
+     * Invoked when a constructor node is selected.
+     *
+     * @param aDescriptor The selected constructor descriptor. This argument must not be {@code null}.
+     * @since 0.5
+     */
+    void onConstructorSelected( ConstructorDetailDescriptor aDescriptor );
 
     /**
      * Invoked when the component reset selection.
