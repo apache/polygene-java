@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.Concerns;
-import static org.qi4j.util.ClassUtil.*;
+import static org.qi4j.util.ClassUtil.genericInterfacesOf;
 
 /**
  * TODO

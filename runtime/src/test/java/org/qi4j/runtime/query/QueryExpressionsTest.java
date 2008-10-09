@@ -47,7 +47,7 @@ public class QueryExpressionsTest
     {
         QueryExpressions.setProvider( new QueryExpressionsProviderImpl() );
     }
-    
+
     /**
      * Tests a valid "equals".
      */

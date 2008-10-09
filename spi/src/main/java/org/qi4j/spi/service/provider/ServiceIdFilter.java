@@ -56,7 +56,7 @@ public class ServiceIdFilter
 
     public void releaseInstance( Object instance ) throws ServiceInstanceProviderException
     {
-        if (serviceRef != null)
+        if( serviceRef != null )
         {
             serviceRef.releaseService();
             serviceRef = null;

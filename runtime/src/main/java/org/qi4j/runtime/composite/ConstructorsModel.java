@@ -20,21 +20,21 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.CallbackFilter;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.Factory;
 import net.sf.cglib.proxy.NoOp;
+import org.qi4j.composite.ConstructionException;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.util.AnnotationUtil;
-import org.qi4j.composite.ConstructionException;
 
 /**
  * TODO
@@ -102,13 +102,13 @@ public final class ConstructorsModel
     // Binding
     public void bind( Resolution resolution ) throws BindingException
     {
-        boundConstructors = new ArrayList<ConstructorModel>( );
+        boundConstructors = new ArrayList<ConstructorModel>();
         for( ConstructorModel constructorModel : constructorModels )
         {
             try
             {
                 constructorModel.bind( resolution );
-                boundConstructors.add(constructorModel);
+                boundConstructors.add( constructorModel );
             }
             catch( Exception e )
             {
@@ -117,9 +117,9 @@ public final class ConstructorsModel
             }
         }
 
-        if( boundConstructors.size() == 0)
+        if( boundConstructors.size() == 0 )
         {
-            String toString = resolution.composite() == null ? resolution.object().toString() : fragmentClass.getName()+" in "+resolution.composite().toString();
+            String toString = resolution.composite() == null ? resolution.object().toString() : fragmentClass.getName() + " in " + resolution.composite().toString();
             String message = "Found no constructor that could be bound: " + toString;
             if( toString.indexOf( '$' ) >= 0 )
             {
@@ -133,7 +133,7 @@ public final class ConstructorsModel
         {
             public int compare( ConstructorModel o1, ConstructorModel o2 )
             {
-                return ((Integer)o2.constructor().getParameterTypes().length).compareTo( o1.constructor().getParameterTypes().length );
+                return ( (Integer) o2.constructor().getParameterTypes().length ).compareTo( o1.constructor().getParameterTypes().length );
             }
         } );
     }

@@ -19,7 +19,10 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
     public ManyAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, Collection<QualifiedIdentity> associated )
     {
         super( associationInfo, unitOfWork );
-        if (associated==null) throw new IllegalArgumentException( "ManyAssociation must be a valid collection, shared with state");
+        if( associated == null )
+        {
+            throw new IllegalArgumentException( "ManyAssociation must be a valid collection, shared with state" );
+        }
         this.associated = associated;
     }
 
@@ -72,7 +75,7 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
 
     public boolean remove( Object o )
     {
-        checkType(o);
+        checkType( o );
 
         return associated.remove( getEntityId( o ) );
     }
@@ -156,7 +159,10 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
 
     public void refresh( Collection<QualifiedIdentity> newAssociations )
     {
-        if (newAssociations==null) throw new IllegalArgumentException( "ManyAssociation must be a valid collection, shared with state");
+        if( newAssociations == null )
+        {
+            throw new IllegalArgumentException( "ManyAssociation must be a valid collection, shared with state" );
+        }
         associated = newAssociations;
     }
 
@@ -189,7 +195,7 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
 
     @Override protected void checkType( Object instance )
     {
-        if( instance == null)
+        if( instance == null )
         {
             throw new NullPointerException( "Associated object may not be null" );
         }

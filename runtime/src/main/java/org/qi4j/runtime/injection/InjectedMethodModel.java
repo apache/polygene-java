@@ -43,13 +43,15 @@ public final class InjectedMethodModel
     }
 
     // Binding
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         parameters.bind( resolution );
     }
 
     // Context
-    public void inject( InjectionContext context, Object instance ) throws InjectionException
+    public void inject( InjectionContext context, Object instance )
+        throws InjectionException
     {
         Object[] params = parameters.newParametersInstance( context );
         try

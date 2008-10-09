@@ -16,7 +16,8 @@ package org.qi4j.runtime.injection;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.Collections;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singleton;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -67,10 +68,13 @@ public final class InjectedFieldModel
         }
         catch( IllegalArgumentException e )
         {
-            throw new InjectionException( "Cannot inject field of type " + injectedField.getType().getName() + " with value '" + value + "' of type " + value.getClass().getName(), e );
+            String fieldClassName = injectedField.getType().getName();
+            String valueClassName = value.getClass().getName();
+            String message = "Cannot inject field of type " + fieldClassName + " with value '" + value +
+                             "' of type " + valueClassName;
+            throw new InjectionException( message, e );
         }
     }
-
 
     public void visitModel( ModelVisitor modelVisitor )
     {
@@ -79,6 +83,13 @@ public final class InjectedFieldModel
 
     public Collection<DependencyModel> filter( Specification<DependencyModel> specification )
     {
-        return specification.matches( dependencyModel ) ? Collections.singleton( dependencyModel ) : Collections.<DependencyModel>emptyList();
+        if( specification.matches( dependencyModel ) )
+        {
+            return singleton( dependencyModel );
+        }
+        else
+        {
+            return emptyList();
+        }
     }
 }

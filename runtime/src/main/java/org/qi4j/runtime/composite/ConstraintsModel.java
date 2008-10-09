@@ -24,9 +24,7 @@ import org.qi4j.composite.ConstraintImplementationNotFoundException;
 import org.qi4j.composite.Constraints;
 import static org.qi4j.util.AnnotationUtil.isCompositeConstraintAnnotation;
 import static org.qi4j.util.AnnotationUtil.isConstraintAnnotation;
-import static org.qi4j.util.ClassUtil.interfacesOf;
 import static org.qi4j.util.ClassUtil.genericInterfacesOf;
-import org.qi4j.util.ClassUtil;
 
 /**
  * TODO

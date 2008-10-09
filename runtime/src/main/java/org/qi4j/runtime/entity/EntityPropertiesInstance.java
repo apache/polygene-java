@@ -27,7 +27,7 @@ public final class EntityPropertiesInstance
 {
     private final EntityPropertiesModel entityPropertiesModel;
     private final EntityState entityState;
-    
+
     private Map<Method, Property> properties;
 
     public EntityPropertiesInstance( EntityPropertiesModel entityPropertiesModel, EntityState entityState )

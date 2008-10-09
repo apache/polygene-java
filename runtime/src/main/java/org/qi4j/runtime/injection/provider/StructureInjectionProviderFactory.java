@@ -30,9 +30,9 @@ import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.ServiceFinder;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.structure.Module;
-import org.qi4j.structure.Layer;
 import org.qi4j.structure.Application;
+import org.qi4j.structure.Layer;
+import org.qi4j.structure.Module;
 
 public final class StructureInjectionProviderFactory
     implements InjectionProviderFactory

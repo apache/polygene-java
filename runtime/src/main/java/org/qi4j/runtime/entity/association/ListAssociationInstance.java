@@ -17,7 +17,6 @@ package org.qi4j.runtime.entity.association;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
-import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.association.AssociationInfo;
 import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;

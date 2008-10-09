@@ -22,7 +22,6 @@ import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.Identity;
 import org.qi4j.entity.Lifecycle;
 import org.qi4j.entity.LifecycleException;
-import org.qi4j.usecase.StateUsage;
 import org.qi4j.runtime.composite.CompositeMethodInstance;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -31,6 +30,7 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.usecase.StateUsage;
 import org.qi4j.util.MetaInfo;
 
 /**
@@ -81,7 +81,7 @@ public final class EntityInstance
         this.identity = identity;
         this.status = status;
 
-        this.entityState = wrapEntityState( entityState);
+        this.entityState = wrapEntityState( entityState );
 
         proxy = entity.newProxy( this );
     }
@@ -135,17 +135,23 @@ public final class EntityInstance
 
     public EntityState entityState()
     {
-        if (entityState instanceof RecordingEntityState)
-            return ((RecordingEntityState)entityState).wrappedEntityState();
+        if( entityState instanceof RecordingEntityState )
+        {
+            return ( (RecordingEntityState) entityState ).wrappedEntityState();
+        }
         else
+        {
             return entityState;
+        }
     }
 
     public EntityStateModel.EntityStateInstance state()
     {
-        if (state == null)
+        if( state == null )
+        {
             initState();
-        
+        }
+
         return state;
     }
 
@@ -260,7 +266,7 @@ public final class EntityInstance
     {
         if( entityState == null && status() == EntityStatus.LOADED )
         {
-            entityState = wrapEntityState(entity.getEntityState( store, identity ));
+            entityState = wrapEntityState( entity.getEntityState( store, identity ) );
         }
 
         return entityState;

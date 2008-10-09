@@ -36,7 +36,6 @@ import org.qi4j.property.GenericPropertyInfo;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.entity.AssociationType;
-import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;

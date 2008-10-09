@@ -15,11 +15,11 @@
 package org.qi4j.runtime.entity;
 
 import java.util.Collection;
-import org.qi4j.usecase.StateUsage;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.usecase.StateUsage;
 
 /**
  * TODO

@@ -16,14 +16,14 @@ package org.qi4j.runtime.injection.provider;
 
 import org.qi4j.composite.State;
 import org.qi4j.entity.association.AbstractAssociation;
+import org.qi4j.injection.scope.AssociationField;
+import org.qi4j.injection.scope.AssociationParameter;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.injection.scope.AssociationField;
-import org.qi4j.injection.scope.AssociationParameter;
 
 /**
  * TODO
@@ -41,12 +41,13 @@ public final class AssociationInjectionProviderFactory
         {
             AssociationDescriptor model;
 
-            if (dependencyModel.injectionAnnotation().annotationType().equals( AssociationField.class))
+            if( dependencyModel.injectionAnnotation().annotationType().equals( AssociationField.class ) )
             {
                 // @AssociationField Association<String> name;
                 model = resolution.composite().state().getAssociationByName( resolution.field().getName() );
 
-            } else
+            }
+            else
             {
                 AssociationParameter param = (AssociationParameter) dependencyModel.injectionAnnotation();
                 model = resolution.composite().state().getAssociationByName( param.value() );

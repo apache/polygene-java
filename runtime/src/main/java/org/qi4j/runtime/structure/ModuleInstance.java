@@ -14,15 +14,15 @@
 
 package org.qi4j.runtime.structure;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-import java.lang.reflect.Type;
+import org.qi4j.composite.AmbiguousTypeException;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.ConstructionException;
 import org.qi4j.composite.NoSuchCompositeException;
-import org.qi4j.composite.AmbiguousTypeException;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkFactory;

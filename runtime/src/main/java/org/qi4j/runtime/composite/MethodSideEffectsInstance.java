@@ -69,8 +69,10 @@ public final class MethodSideEffectsInstance
         }
         catch( Throwable throwable )
         {
-            if (throwable != originalThrowable)
+            if( throwable != originalThrowable )
+            {
                 throwable.printStackTrace();
+            }
         }
     }
 }

@@ -190,7 +190,7 @@ public final class Qi4jRuntime
         return EntityInstance.getEntityInstance( composite ).load();
     }
 
-    public State getState(EntityComposite composite)
+    public State getState( EntityComposite composite )
     {
         return EntityInstance.getEntityInstance( composite ).state();
     }

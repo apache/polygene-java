@@ -23,7 +23,8 @@ public interface EntityStore
     extends Iterable<EntityState>
 {
     void registerEntityType( EntityType entityType );
-    EntityType getEntityType(String aEntityType);
+
+    EntityType getEntityType( String aEntityType );
 
     /**
      * Create new EntityState for a given identity.
@@ -44,7 +45,7 @@ public interface EntityStore
      *
      * @param anIdentity The entity identity. This argument must not be {@code null}.
      * @return Entity state given the composite descriptor and identity.
-     * @throws EntityStoreException thrown if retrieval failed.
+     * @throws EntityStoreException    thrown if retrieval failed.
      * @throws EntityNotFoundException thrown if wanted entity does not exist
      */
     EntityState getEntityState( QualifiedIdentity anIdentity )
@@ -62,7 +63,7 @@ public interface EntityStore
      * the client can do a refresh() of those entities and try again.
      *
      * @param newStates     The new states. This argument must not be {@code null}.
-     * @param updatedStates  The loaded states. This argument must not be {@code null}.
+     * @param updatedStates The loaded states. This argument must not be {@code null}.
      * @param removedStates The removed states. This argument must not be {@code null}.
      * @return an implementation of StateCommitter
      * @throws EntityStoreException if the state could not be sent to the datastore

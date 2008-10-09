@@ -47,7 +47,7 @@ public final class ConjunctionImpl
 
     /**
      * @see org.qi4j.query.grammar.BooleanExpression#eval(Object)
-     */    
+     */
     public boolean eval( final Object target )
     {
         return leftSideExpression().eval( target ) && rightSideExpression().eval( target );

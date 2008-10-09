@@ -34,28 +34,30 @@ public class QualifiedIdentity
         return new QualifiedIdentity( identity, type );
     }
 
-    public static QualifiedIdentity parseQualifiedIdentity(String id)
+    public static QualifiedIdentity parseQualifiedIdentity( String id )
     {
         // Check if it's a Qualifier
         int idx = id.indexOf( '/' );
-        if (idx == -1)
+        if( idx == -1 )
         {
             return new QualifiedIdentity( id );
-        } else
+        }
+        else
         {
-            return new QualifierQualifiedIdentity(parseQualifiedIdentity(id.substring( 0, idx )), id.substring( idx+1 ));
+            return new QualifierQualifiedIdentity( parseQualifiedIdentity( id.substring( 0, idx ) ), id.substring( idx + 1 ) );
         }
     }
 
-    public static QualifiedIdentity getQualifiedIdentity(Object o)
+    public static QualifiedIdentity getQualifiedIdentity( Object o )
     {
-        if (o instanceof Qualifier )
+        if( o instanceof Qualifier )
         {
-            QualifierQualifiedIdentity arqi = new QualifierQualifiedIdentity( (Qualifier) o);
+            QualifierQualifiedIdentity arqi = new QualifierQualifiedIdentity( (Qualifier) o );
             return arqi;
-        } else
+        }
+        else
         {
-            return new QualifiedIdentity( ( EntityComposite) o);
+            return new QualifiedIdentity( (EntityComposite) o );
         }
     }
 

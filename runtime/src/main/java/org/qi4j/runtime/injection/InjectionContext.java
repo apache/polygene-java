@@ -19,7 +19,6 @@ import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
-import org.qi4j.structure.Module;
 
 /**
  * TODO

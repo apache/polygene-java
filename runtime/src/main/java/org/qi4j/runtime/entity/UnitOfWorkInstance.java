@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.entity.AggregateEntity;
 import org.qi4j.entity.ConcurrentEntityModificationException;
 import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.EntityComposite;
@@ -36,7 +37,6 @@ import static org.qi4j.entity.UnitOfWorkCallback.UnitOfWorkStatus.COMPLETED;
 import static org.qi4j.entity.UnitOfWorkCallback.UnitOfWorkStatus.DISCARDED;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkException;
-import org.qi4j.entity.AggregateEntity;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
@@ -153,7 +153,7 @@ public final class UnitOfWorkInstance
         EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
 
         // Check if Aggregate
-        if (entity instanceof AggregateEntity )
+        if( entity instanceof AggregateEntity )
         {
             // Find all aggregated entities and remove them
             // TODO
@@ -376,10 +376,10 @@ public final class UnitOfWorkInstance
         checkOpen();
 
         // Copy list so that it cannot be modified during completion
-        List<UnitOfWorkCallback> currentCallbacks = callbacks == null ? null : new ArrayList<UnitOfWorkCallback>(callbacks);
+        List<UnitOfWorkCallback> currentCallbacks = callbacks == null ? null : new ArrayList<UnitOfWorkCallback>( callbacks );
 
         // Check callbacks
-        notifyBeforeCompletion(currentCallbacks);
+        notifyBeforeCompletion( currentCallbacks );
 
         // Create complete lists
         Map<EntityStore, StoreCompletion> storeCompletion = new HashMap<EntityStore, StoreCompletion>();
@@ -473,7 +473,7 @@ public final class UnitOfWorkInstance
         close();
 
         // Copy list so that it cannot be modified during completion
-        List<UnitOfWorkCallback> currentCallbacks = callbacks == null ? null : new ArrayList<UnitOfWorkCallback>(callbacks);
+        List<UnitOfWorkCallback> currentCallbacks = callbacks == null ? null : new ArrayList<UnitOfWorkCallback>( callbacks );
 
         // Call callbacks
         notifyAfterCompletion( currentCallbacks, DISCARDED );
@@ -489,8 +489,10 @@ public final class UnitOfWorkInstance
         cache.clear();
 
         // Turn off recording for the state usage
-        if (usecase.stateUsage().isRecording())
+        if( usecase.stateUsage().isRecording() )
+        {
             usecase.stateUsage().setRecording( false );
+        }
     }
 
     public boolean isOpen()
@@ -505,7 +507,7 @@ public final class UnitOfWorkInstance
         return new UnitOfWorkInstance( moduleInstance, new UnitOfWorkStore(), Usecase.DEFAULT );
     }
 
-    public UnitOfWork newUnitOfWork(Usecase usecase)
+    public UnitOfWork newUnitOfWork( Usecase usecase )
     {
         checkOpen();
 
@@ -549,7 +551,7 @@ public final class UnitOfWorkInstance
         return entityCache;
     }
 
-    private void notifyBeforeCompletion(List<UnitOfWorkCallback> callbacks)
+    private void notifyBeforeCompletion( List<UnitOfWorkCallback> callbacks )
         throws UnitOfWorkCompletionException
     {
         if( callbacks != null )

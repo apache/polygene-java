@@ -56,7 +56,7 @@ public abstract class AbstractAssociationInstance<T>
 
         try
         {
-            if (entityId instanceof QualifierQualifiedIdentity )
+            if( entityId instanceof QualifierQualifiedIdentity )
             {
                 QualifierQualifiedIdentity qualifierId = (QualifierQualifiedIdentity) entityId;
                 Class<? extends EntityComposite> entityCompositeType = (Class<? extends EntityComposite>) unitOfWork.module().classLoader().loadClass( entityId.type() );
@@ -66,7 +66,8 @@ public abstract class AbstractAssociationInstance<T>
                 EntityComposite role = unitOfWork.getReference( qualifierId.role().identity(), roleCompositeType );
 
                 return (T) Qualifier.qualifier( association, role );
-            } else
+            }
+            else
             {
                 Class<? extends EntityComposite> entityCompositeType = (Class<? extends EntityComposite>) unitOfWork.module().classLoader().loadClass( entityId.type() );
                 return (T) unitOfWork.getReference( entityId.identity(), entityCompositeType );
@@ -85,7 +86,7 @@ public abstract class AbstractAssociationInstance<T>
             return QualifiedIdentity.NULL;
         }
 
-        if (composite instanceof Qualifier )
+        if( composite instanceof Qualifier )
         {
             Qualifier qualifier = (Qualifier) composite;
             return new QualifierQualifiedIdentity( qualifier );
@@ -100,7 +101,7 @@ public abstract class AbstractAssociationInstance<T>
 
     protected void checkType( Object instance )
     {
-        if (instance != null)
+        if( instance != null )
         {
             if( !( instance instanceof EntityComposite || instance instanceof Qualifier ) )
             {

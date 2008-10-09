@@ -14,10 +14,10 @@
 
 package org.qi4j.runtime.structure;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.lang.reflect.Type;
 import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.service.ServiceReferenceInstance;
 import org.qi4j.service.Activatable;

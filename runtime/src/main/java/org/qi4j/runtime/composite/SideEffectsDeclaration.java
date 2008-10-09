@@ -18,15 +18,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import static java.util.Collections.singleton;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static java.util.Collections.singleton;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.SideEffects;
 import org.qi4j.util.AnnotationUtil;
-import static org.qi4j.util.ClassUtil.*;
+import static org.qi4j.util.ClassUtil.genericInterfacesOf;
 
 /**
  * TODO
@@ -77,12 +76,14 @@ public final class SideEffectsDeclaration
 
     private Collection<Class> matchingSideEffectClasses( Method method, Class<? extends Composite> compositeType )
     {
-        Collection<Class> result=new ArrayList<Class>(sideEffectDeclarations.size());
+        Collection<Class> result = new ArrayList<Class>( sideEffectDeclarations.size() );
 
         for( SideEffectDeclaration sideEffectDeclaration : sideEffectDeclarations )
         {
-            if (sideEffectDeclaration.appliesTo( method, compositeType))
-                result.add(sideEffectDeclaration.type());
+            if( sideEffectDeclaration.appliesTo( method, compositeType ) )
+            {
+                result.add( sideEffectDeclaration.type() );
+            }
         }
         return result;
     }

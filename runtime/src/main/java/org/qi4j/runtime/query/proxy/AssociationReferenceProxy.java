@@ -20,13 +20,13 @@ package org.qi4j.runtime.query.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.lang.reflect.ParameterizedType;
 import static java.lang.reflect.Proxy.newProxyInstance;
+import java.lang.reflect.Type;
+import org.qi4j.entity.association.Qualifier;
 import org.qi4j.query.grammar.AssociationReference;
 import org.qi4j.runtime.query.grammar.impl.AssociationReferenceImpl;
 import org.qi4j.util.ClassUtil;
-import org.qi4j.entity.association.Qualifier;
 
 /**
  * TODO Add JavaDoc
@@ -82,13 +82,13 @@ public final class AssociationReferenceProxy
                 Object associated = newProxyInstance(
                     this.getClass().getClassLoader(),
                     new Class[]{ associatedType },
-                    new MixinTypeProxy( associatedType, associationReference.withQualifier( AssociationReference.ReferenceType.ASSOCIATION )));
+                    new MixinTypeProxy( associatedType, associationReference.withQualifier( AssociationReference.ReferenceType.ASSOCIATION ) ) );
 
                 Class roleType = (Class) associatedRoleType.getActualTypeArguments()[ 1 ];
                 Object role = newProxyInstance(
                     this.getClass().getClassLoader(),
                     new Class[]{ roleType },
-                    new MixinTypeProxy( roleType, associationReference.withQualifier( AssociationReference.ReferenceType.ROLE )));
+                    new MixinTypeProxy( roleType, associationReference.withQualifier( AssociationReference.ReferenceType.ROLE ) ) );
 
                 Qualifier associationQualifier = Qualifier.qualifier( associated, role );
                 return associationQualifier;

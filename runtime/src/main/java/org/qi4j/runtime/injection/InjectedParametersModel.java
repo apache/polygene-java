@@ -31,10 +31,11 @@ import org.qi4j.spi.composite.InjectedParametersDescriptor;
 public final class InjectedParametersModel
     implements Binder, InjectedParametersDescriptor
 {
-    private final List<DependencyModel> parameterDependencies = new ArrayList<DependencyModel>();
+    private final List<DependencyModel> parameterDependencies;
 
     public InjectedParametersModel()
     {
+        parameterDependencies = new ArrayList<DependencyModel>();
     }
 
     public List<DependencyModel> dependencies()

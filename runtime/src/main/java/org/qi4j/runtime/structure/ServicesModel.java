@@ -14,9 +14,9 @@
 
 package org.qi4j.runtime.structure;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.lang.reflect.Type;
 import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.service.ServiceReferenceInstance;
 import org.qi4j.structure.Module;
@@ -39,7 +39,7 @@ public class ServicesModel
         List<ServiceModel> foundServices = new ArrayList<ServiceModel>();
         for( ServiceModel serviceModel : serviceModels )
         {
-            if( serviceModel.isServiceFor(serviceType, visibility) )
+            if( serviceModel.isServiceFor( serviceType, visibility ) )
             {
                 foundServices.add( serviceModel );
             }

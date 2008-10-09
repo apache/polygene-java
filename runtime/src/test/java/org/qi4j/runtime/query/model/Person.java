@@ -20,7 +20,6 @@ package org.qi4j.runtime.query.model;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.property.Property;
-import org.qi4j.runtime.query.model.Nameable;
 
 /**
  * TODO Add JavaDoc

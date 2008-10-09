@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.runtime.injection;
 
 import java.lang.annotation.Annotation;
@@ -21,6 +20,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.Collections;
+import org.qi4j.composite.ConstructionException;
 import org.qi4j.injection.Optional;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
@@ -28,7 +28,6 @@ import org.qi4j.runtime.injection.provider.InvalidInjectionException;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.Specification;
 import static org.qi4j.runtime.util.CollectionUtils.firstElementOrNull;
-import org.qi4j.composite.ConstructionException;
 import org.qi4j.spi.composite.DependencyDescriptor;
 
 /**

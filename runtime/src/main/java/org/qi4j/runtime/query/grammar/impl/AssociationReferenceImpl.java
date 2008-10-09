@@ -84,7 +84,7 @@ public class AssociationReferenceImpl
             throw new UnsupportedOperationException( "Unsupported association type:" + returnType );
         }
         Type associationTypeAsType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
-        if( !( associationTypeAsType instanceof Class ) && !ClassUtil.getRawClass( associationTypeAsType ).equals( Qualifier.class ))
+        if( !( associationTypeAsType instanceof Class ) && !ClassUtil.getRawClass( associationTypeAsType ).equals( Qualifier.class ) )
         {
             throw new UnsupportedOperationException( "Unsupported association type:" + associationTypeAsType );
         }
@@ -137,9 +137,9 @@ public class AssociationReferenceImpl
         return referenceType;
     }
 
-    public AssociationReference withQualifier( ReferenceType type)
+    public AssociationReference withQualifier( ReferenceType type )
     {
-        return new AssociationReferenceImpl(accessor, traversed, type );
+        return new AssociationReferenceImpl( accessor, traversed, type );
     }
 
     /**
@@ -157,12 +157,18 @@ public class AssociationReferenceImpl
             try
             {
                 Association assoc = (Association) associationAccessor().invoke( actual );
-                if ( referenceType == ReferenceType.NONE)
+                if( referenceType == ReferenceType.NONE )
+                {
                     return assoc.get();
-                else if ( referenceType == ReferenceType.ASSOCIATION)
-                    return ((Qualifier)assoc.get()).entity();
-                else if ( referenceType == ReferenceType.ROLE)
-                    return ((Qualifier)assoc.get()).qualifier();
+                }
+                else if( referenceType == ReferenceType.ASSOCIATION )
+                {
+                    return ( (Qualifier) assoc.get() ).entity();
+                }
+                else if( referenceType == ReferenceType.ROLE )
+                {
+                    return ( (Qualifier) assoc.get() ).qualifier();
+                }
             }
             catch( Exception e )
             {

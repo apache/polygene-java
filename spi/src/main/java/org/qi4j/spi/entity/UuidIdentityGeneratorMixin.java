@@ -17,10 +17,6 @@
 package org.qi4j.spi.entity;
 
 import java.util.UUID;
-import java.rmi.ServerError;
-import java.rmi.dgc.VMID;
-import java.rmi.server.UnicastRemoteObject;
-import java.rmi.server.UID;
 import org.qi4j.entity.Identity;
 import org.qi4j.entity.IdentityGenerator;
 

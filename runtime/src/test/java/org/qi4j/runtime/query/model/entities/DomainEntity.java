@@ -17,11 +17,8 @@
  */
 package org.qi4j.runtime.query.model.entities;
 
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.Mixins;
-import org.qi4j.runtime.query.model.Domain;
-import org.qi4j.entity.association.AssociationMixin;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.runtime.query.model.Domain;
 
 /**
  * TODO Add JavaDoc

@@ -31,7 +31,7 @@ public class QualifierQualifiedIdentity
         this.qualifier = qualifier;
     }
 
-    protected QualifierQualifiedIdentity( QualifiedIdentity qualifier, String qualifiedIdentity)
+    protected QualifierQualifiedIdentity( QualifiedIdentity qualifier, String qualifiedIdentity )
     {
         super( qualifiedIdentity );
         this.qualifier = qualifier;
@@ -39,8 +39,8 @@ public class QualifierQualifiedIdentity
 
     public QualifierQualifiedIdentity( Qualifier associationQualifier )
     {
-        super((EntityComposite) associationQualifier.entity());
-        qualifier = QualifiedIdentity.getQualifiedIdentity( associationQualifier.qualifier());
+        super( (EntityComposite) associationQualifier.entity() );
+        qualifier = QualifiedIdentity.getQualifiedIdentity( associationQualifier.qualifier() );
     }
 
     public QualifiedIdentity role()
@@ -50,7 +50,7 @@ public class QualifierQualifiedIdentity
 
     @Override public int hashCode()
     {
-        return super.hashCode()+role().hashCode();
+        return super.hashCode() + role().hashCode();
     }
 
     public boolean equals( Object o )
@@ -80,6 +80,6 @@ public class QualifierQualifiedIdentity
 
     @Override public String toString()
     {
-        return super.toString()+"/"+ qualifier.toString();
+        return super.toString() + "/" + qualifier.toString();
     }
 }

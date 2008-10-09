@@ -17,7 +17,6 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import org.qi4j.entity.association.Association;
 import org.qi4j.query.grammar.AssociationIsNotNullPredicate;
 import org.qi4j.query.grammar.AssociationReference;
 

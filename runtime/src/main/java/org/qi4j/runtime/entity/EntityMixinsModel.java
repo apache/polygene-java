@@ -50,7 +50,7 @@ public final class EntityMixinsModel extends AbstractMixinsModel
         int i = 0;
         for( MixinModel mixinModel : mixinModels )
         {
-            if (mixins[i] == null) // This method might be called due to dependencies between mixins - don't go into infinite loop!
+            if( mixins[ i ] == null ) // This method might be called due to dependencies between mixins - don't go into infinite loop!
             {
                 mixins[ i ] = IN_PROGRESS;
                 mixins[ i ] = mixinModel.newInstance( entityInstance, UsesInstance.NO_USES, state );

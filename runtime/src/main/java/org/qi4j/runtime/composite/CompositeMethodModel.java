@@ -14,12 +14,12 @@
 
 package org.qi4j.runtime.composite;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
-import java.lang.annotation.Annotation;
-import java.util.Set;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import org.qi4j.composite.ConstructionException;
 import org.qi4j.injection.scope.This;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -165,16 +165,20 @@ public final class CompositeMethodModel
         public boolean isAnnotationPresent( Class<? extends Annotation> annotationClass )
         {
             // Check method
-            if (method.isAnnotationPresent( annotationClass ))
+            if( method.isAnnotationPresent( annotationClass ) )
+            {
                 return true;
+            }
 
             // Check mixin
             try
             {
                 MixinModel model = mixins.mixinFor( method );
-                if (model.isGeneric())
+                if( model.isGeneric() )
+                {
                     return false;
-                return ( model.mixinClass().getMethod( method.getName(), method.getParameterTypes() ).isAnnotationPresent( annotationClass ));
+                }
+                return ( model.mixinClass().getMethod( method.getName(), method.getParameterTypes() ).isAnnotationPresent( annotationClass ) );
             }
             catch( NoSuchMethodException e )
             {
@@ -188,11 +192,13 @@ public final class CompositeMethodModel
             try
             {
                 MixinModel model = mixins.mixinFor( method );
-                if (!model.isGeneric())
+                if( !model.isGeneric() )
                 {
-                    T annotation = annotationClass.cast( model.mixinClass().getMethod( method.getName(), method.getParameterTypes() ).getAnnotation( annotationClass ));
-                    if (annotation != null)
+                    T annotation = annotationClass.cast( model.mixinClass().getMethod( method.getName(), method.getParameterTypes() ).getAnnotation( annotationClass ) );
+                    if( annotation != null )
+                    {
                         return annotation;
+                    }
                 }
             }
             catch( NoSuchMethodException e )
@@ -207,26 +213,29 @@ public final class CompositeMethodModel
         public Annotation[] getAnnotations()
         {
             // Add mixin annotations
-            List<Annotation> annotations = new ArrayList<Annotation>( );
+            List<Annotation> annotations = new ArrayList<Annotation>();
             MixinModel model = mixins.mixinFor( method );
             Annotation[] mixinAnnotations = new Annotation[0];
-            if (!model.isGeneric())
+            if( !model.isGeneric() )
             {
                 mixinAnnotations = model.mixinClass().getAnnotations();
                 for( int i = 0; i < mixinAnnotations.length; i++ )
                 {
-                    annotations.add( mixinAnnotations[i] );
+                    annotations.add( mixinAnnotations[ i ] );
                 }
             }
 
             // Add method annotations, but don't include duplicates
             Annotation[] methodAnnotations = method.getAnnotations();
-            next: for( Annotation methodAnnotation : methodAnnotations )
+            next:
+            for( Annotation methodAnnotation : methodAnnotations )
             {
                 for( int i = 0; i < mixinAnnotations.length; i++ )
                 {
-                    if (annotations.get( i ).annotationType().equals(methodAnnotation.annotationType()))
+                    if( annotations.get( i ).annotationType().equals( methodAnnotation.annotationType() ) )
+                    {
                         continue next;
+                    }
                 }
 
                 annotations.add( methodAnnotation );

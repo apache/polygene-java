@@ -74,7 +74,7 @@ abstract class AbstractQuery<T>
      * @param whereClause where clause
      */
     AbstractQuery( final Class<T> resultType,
-               final BooleanExpression whereClause )
+                   final BooleanExpression whereClause )
     {
         this.resultType = resultType;
         this.whereClause = whereClause;

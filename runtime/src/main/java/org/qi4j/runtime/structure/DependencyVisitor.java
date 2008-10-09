@@ -17,7 +17,6 @@ package org.qi4j.runtime.structure;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;
 import org.qi4j.runtime.injection.InjectedParametersModel;
-import org.qi4j.runtime.structure.Specification;
 
 /**
  * TODO

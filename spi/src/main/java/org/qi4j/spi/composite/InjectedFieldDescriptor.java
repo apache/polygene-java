@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.spi.composite;
 
 import java.lang.reflect.Field;
@@ -22,4 +21,6 @@ import java.lang.reflect.Field;
 public interface InjectedFieldDescriptor
 {
     Field field();
+
+    DependencyDescriptor dependency();
 }
