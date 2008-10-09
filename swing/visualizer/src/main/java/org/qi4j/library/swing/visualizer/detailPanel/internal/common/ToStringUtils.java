@@ -17,6 +17,7 @@
 package org.qi4j.library.swing.visualizer.detailPanel.internal.common;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -27,8 +28,10 @@ import java.util.Arrays;
 import org.qi4j.composite.Composite;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.CompositeMethodDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.InjectedFieldDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.InjectedMethodDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 import org.qi4j.service.ServiceDescriptor;
@@ -143,50 +146,55 @@ public final class ToStringUtils
         {
             InjectedFieldDetailDescriptor detailDescriptor = (InjectedFieldDetailDescriptor) anObject;
             InjectedFieldDescriptor descriptor = detailDescriptor.descriptor();
-
-            StringBuilder builder = new StringBuilder();
-            Annotation[] annotations = descriptor.field().getAnnotations();
-            appendAnnotation( builder, annotations );
-            builder.append( descriptor.field().getName() );
-
-            return builder.toString();
+            Field field = descriptor.field();
+            return fieldToString( descriptor, field );
+        }
+        else if( InjectedMethodDetailDescriptor.class.isAssignableFrom( valueClass ) )
+        {
+            InjectedMethodDetailDescriptor detailDescriptor = (InjectedMethodDetailDescriptor) anObject;
+            Method injectedMethod = detailDescriptor.descriptor().method();
+            return methodToString( injectedMethod );
+        }
+        else if( CompositeMethodDetailDescriptor.class.isAssignableFrom( valueClass ) )
+        {
+            CompositeMethodDetailDescriptor detailDescriptor = (CompositeMethodDetailDescriptor) anObject;
+            Method method = detailDescriptor.descriptor().method();
+            return methodToString( method );
         }
 
         return anObject.toString();
     }
 
+    private static String fieldToString( InjectedFieldDescriptor descriptor, Field field )
+    {
+        StringBuilder builder = new StringBuilder();
+        Annotation[] annotations = field.getAnnotations();
+        appendAnnotation( builder, annotations );
+        builder.append( field.getType().getSimpleName() );
+        builder.append( field.getName() );
+        return builder.toString();
+    }
+
     public static String methodToString( Method method )
     {
-        StringBuilder buf = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
 
-        for( Annotation annotation : method.getAnnotations() )
-        {
-            appendAnnotation( buf, annotation );
-        }
+        // Method annotations
+        Annotation[] methodAnnotations = method.getAnnotations();
+        appendAnnotation( builder, methodAnnotations );
         Class<?> returnType = method.getReturnType();
 
-        // todo add the 'Type' if the returnType is Property<T>
+        // Method return type
+        // TODO: add the 'Type' if the returnType is Property<T>
+        builder.append( returnType.getSimpleName() ).append( " " );
 
-        buf.append( returnType.getSimpleName() ).append( " " ).append( method.getName() );
+        // Method name
+        builder.append( method.getName() );
 
-        buf.append( "( " );
-        Class<?>[] paramTypes = method.getParameterTypes();
-        Annotation[][] paramAnnotations = method.getParameterAnnotations();
-        for( int i = 0; i < paramTypes.length; i++ )
-        {
-            Annotation[] annotations = paramAnnotations[ i ];
-            appendAnnotation( buf, annotations );
-            Class<?> type = paramTypes[ i ];
-            buf.append( type.getSimpleName() ).append( ", " );
-        }
-        if( paramTypes.length > 0 )
-        {
-            buf.delete( buf.length() - 2, buf.length() );
-        }
+        // Method parameters
+        appendMethodParameters( method, builder );
 
-        buf.append( " )" );
-
-        return buf.toString();
+        return builder.toString();
     }
 
     private static void appendAnnotation( StringBuilder buf, Annotation... annotations )
@@ -196,5 +204,33 @@ public final class ToStringUtils
             String annotationName = annotation.annotationType().getSimpleName();
             buf.append( "@" ).append( annotationName ).append( " " );
         }
+    }
+
+    private static void appendMethodParameters( Method method, StringBuilder builder )
+    {
+        builder.append( "(" );
+        Class<?>[] paramTypes = method.getParameterTypes();
+
+        int numberOfParams = paramTypes.length;
+        if( numberOfParams > 0 )
+        {
+            builder.append( ' ' );
+        }
+
+        Annotation[][] paramAnnotations = method.getParameterAnnotations();
+        for( int i = 0; i < numberOfParams; i++ )
+        {
+            Annotation[] annotations = paramAnnotations[ i ];
+            appendAnnotation( builder, annotations );
+
+            Class<?> type = paramTypes[ i ];
+            builder.append( type.getSimpleName() );
+
+            if( i < numberOfParams - 1 )
+            {
+                builder.append( ", " );
+            }
+        }
+        builder.append( " )" );
     }
 }
