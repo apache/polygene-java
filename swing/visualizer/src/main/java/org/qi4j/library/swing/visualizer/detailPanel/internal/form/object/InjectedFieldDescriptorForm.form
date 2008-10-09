@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.qi4j.library.swing.visualizer.detailPanel.internal.form.object.InjectedFieldDescriptorForm">
+  <grid id="27dc6" binding="fieldForm" layout-manager="FormLayout">
+    <rowspec value="center:4px:noGrow"/>
+    <rowspec value="center:p:noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:5dlu:noGrow"/>
+    <rowspec value="center:p:noGrow"/>
+    <rowspec value="center:4dlu:noGrow"/>
+    <rowspec value="center:p:noGrow"/>
+    <rowspec value="top:4px:noGrow"/>
+    <colspec value="fill:max(d;4px):noGrow"/>
+    <colspec value="fill:p:noGrow"/>
+    <colspec value="left:4dlu:noGrow"/>
+    <colspec value="fill:max(p;75dlu):noGrow"/>
+    <colspec value="fill:max(d;4px):noGrow"/>
+    <colspec value="left:285px:grow"/>
+    <colspec value="fill:max(d;4px):noGrow"/>
+    <rowgroup>
+      <member index="1"/>
+      <member index="9"/>
+    </rowgroup>
+    <rowgroup>
+      <member index="3"/>
+      <member index="7"/>
+    </rowgroup>
+    <rowgroup>
+      <member index="2"/>
+      <member index="6"/>
+    </rowgroup>
+    <colgroup>
+      <member index="3"/>
+      <member index="5"/>
+    </colgroup>
+    <colgroup>
+      <member index="1"/>
+      <member index="7"/>
+    </colgroup>
+    <constraints>
+      <xy x="20" y="20" width="541" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <component id="c035" class="javax.swing.JLabel" binding="fieldSeparator" custom-create="true">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="5" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="814a" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text value="Field Name"/>
+        </properties>
+      </component>
+      <nested-form id="19c48" form-file="org/qi4j/library/swing/visualizer/detailPanel/internal/form/object/DependencyDescriptorForm.form" binding="dependencyForm">
+        <constraints>
+          <grid row="7" column="1" row-span="1" col-span="5" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+      </nested-form>
+      <component id="f09c8" class="javax.swing.JTextField" binding="fieldName" default-binding="true">
+        <constraints>
+          <grid row="3" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <editable value="false"/>
+        </properties>
+      </component>
+      <component id="9629" class="javax.swing.JLabel" binding="dependencySeparator" custom-create="true">
+        <constraints>
+          <grid row="5" column="1" row-span="1" col-span="5" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties/>
+      </component>
+    </children>
+  </grid>
+</form>

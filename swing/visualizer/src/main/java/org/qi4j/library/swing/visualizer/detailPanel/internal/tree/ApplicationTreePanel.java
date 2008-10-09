@@ -35,11 +35,19 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import static javax.swing.tree.TreeSelectionModel.SINGLE_TREE_SELECTION;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder.NODE_NAME_COMPOSITES;
+import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder.NODE_NAME_CONSTRUCTORS;
+import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder.NODE_NAME_ENTITIES;
+import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder.NODE_NAME_INJECTED_FIELDS;
+import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder.NODE_NAME_MIXINS;
+import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder.NODE_NAME_OBJECTS;
+import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder.NODE_NAME_SERVICES;
 import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ConstructorDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.InjectedFieldDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
@@ -225,8 +233,7 @@ public final class ApplicationTreePanel
 
         ModuleDetailDescriptor module = aDescriptor.module();
         DefaultMutableTreeNode moduleNode = getModuleNode( module );
-        // TODO: Localization
-        DefaultMutableTreeNode serviceNode = getGrandChildrenChildNode( moduleNode, "services", aDescriptor );
+        DefaultMutableTreeNode serviceNode = getGrandChildrenChildNode( moduleNode, NODE_NAME_SERVICES, aDescriptor );
         selectNode( serviceNode );
     }
 
@@ -273,8 +280,7 @@ public final class ApplicationTreePanel
     {
         ModuleDetailDescriptor module = anEntityDescriptor.module();
         DefaultMutableTreeNode moduleNode = getModuleNode( module );
-        // TODO: Localization
-        return getGrandChildrenChildNode( moduleNode, "entities", anEntityDescriptor );
+        return getGrandChildrenChildNode( moduleNode, NODE_NAME_ENTITIES, anEntityDescriptor );
     }
 
     public final void onCompositeSelected( CompositeDetailDescriptor aDescriptor )
@@ -292,8 +298,7 @@ public final class ApplicationTreePanel
     {
         ModuleDetailDescriptor module = aCompositeDescriptor.module();
         DefaultMutableTreeNode moduleNode = getModuleNode( module );
-        // TODO: Localization
-        return getGrandChildrenChildNode( moduleNode, "composites", aCompositeDescriptor );
+        return getGrandChildrenChildNode( moduleNode, NODE_NAME_COMPOSITES, aCompositeDescriptor );
     }
 
     public final void onObjectSelected( ObjectDetailDescriptor aDescriptor )
@@ -311,8 +316,7 @@ public final class ApplicationTreePanel
     {
         ModuleDetailDescriptor module = anObjectDescriptor.module();
         DefaultMutableTreeNode moduleNode = getModuleNode( module );
-        // TODO: Localization
-        return getGrandChildrenChildNode( moduleNode, "objects", anObjectDescriptor );
+        return getGrandChildrenChildNode( moduleNode, NODE_NAME_OBJECTS, anObjectDescriptor );
     }
 
     public final void onMixinSelected( MixinDetailDescriptor aDescriptor )
@@ -346,8 +350,7 @@ public final class ApplicationTreePanel
                 compositeNode = getCompositeNode( aCompositeDescriptor );
             }
 
-            // TODO: Localization
-            return getGrandChildrenChildNode( compositeNode, "mixins", aMixinDescriptor );
+            return getGrandChildrenChildNode( compositeNode, NODE_NAME_MIXINS, aMixinDescriptor );
         }
 
         return null;
@@ -367,15 +370,52 @@ public final class ApplicationTreePanel
     private DefaultMutableTreeNode getConstructorNode( ConstructorDetailDescriptor aDescriptor )
     {
         DefaultMutableTreeNode mixinOrObjectNode = getMixinOrObjectNode( aDescriptor );
-        // Localization
-        DefaultMutableTreeNode constructorsNode = getDirectChildNodeWithUserObject( mixinOrObjectNode, "constructors" );
+        DefaultMutableTreeNode constructorsNode =
+            getDirectChildNodeWithUserObject( mixinOrObjectNode, NODE_NAME_CONSTRUCTORS );
         return getDirectChildNodeWithUserObject( constructorsNode, aDescriptor );
     }
 
     private DefaultMutableTreeNode getMixinOrObjectNode( ConstructorDetailDescriptor aDescriptor )
     {
         MixinDetailDescriptor mixin = aDescriptor.mixin();
-        DefaultMutableTreeNode mixinOrObjectNode = null;
+        DefaultMutableTreeNode mixinOrObjectNode;
+        if( mixin != null )
+        {
+            CompositeDetailDescriptor composite = mixin.composite();
+            mixinOrObjectNode = getMixinNode( mixin, composite );
+        }
+        else
+        {
+            ObjectDetailDescriptor object = aDescriptor.object();
+            mixinOrObjectNode = getObjectNode( object );
+        }
+
+        return mixinOrObjectNode;
+    }
+
+    public void onInjectedFieldSelected( InjectedFieldDetailDescriptor aDescriptor )
+    {
+        if( isNodeSelected( aDescriptor ) )
+        {
+            return;
+        }
+
+        DefaultMutableTreeNode fieldNode = getInjectedFieldNode( aDescriptor );
+        selectNode( fieldNode );
+    }
+
+    private DefaultMutableTreeNode getInjectedFieldNode( InjectedFieldDetailDescriptor aDescriptor )
+    {
+        DefaultMutableTreeNode mixinOrObjectNode = getMixinOrObjectNode( aDescriptor );
+        DefaultMutableTreeNode injectedFieldsNode = getDirectChildNodeWithUserObject(
+            mixinOrObjectNode, NODE_NAME_INJECTED_FIELDS );
+        return getDirectChildNodeWithUserObject( injectedFieldsNode, aDescriptor );
+    }
+
+    private DefaultMutableTreeNode getMixinOrObjectNode( InjectedFieldDetailDescriptor aDescriptor )
+    {
+        MixinDetailDescriptor mixin = aDescriptor.mixin();
+        DefaultMutableTreeNode mixinOrObjectNode;
         if( mixin != null )
         {
             CompositeDetailDescriptor composite = mixin.composite();

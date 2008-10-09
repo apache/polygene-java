@@ -37,6 +37,16 @@ import org.qi4j.spi.composite.CompositeDescriptor;
  */
 final class TreeModelBuilder
 {
+    static final String NODE_NAME_SERVICES = "services";
+    static final String NODE_NAME_ENTITIES = "entities";
+    static final String NODE_NAME_COMPOSITES = "composites";
+    static final String NODE_NAME_OBJECTS = "objects";
+    static final String NODE_NAME_MIXINS = "mixins";
+    static final String NODE_NAME_METHODS = "methods";
+    static final String NODE_NAME_CONSTRUCTORS = "constructors";
+    static final String NODE_NAME_INJECTED_FIELDS = "injected fields";
+    static final String NODE_NAME_INJECTED_METHODS = "injected methods";
+
     public final DefaultMutableTreeNode build( ApplicationDetailDescriptor aDetailDescriptor )
     {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode( aDetailDescriptor );
@@ -84,19 +94,19 @@ final class TreeModelBuilder
         DefaultMutableTreeNode moduleNode = new DefaultMutableTreeNode( aModule );
         layerNode.add( moduleNode );
 
-        DefaultMutableTreeNode servicesNode = new DefaultMutableTreeNode( "services" );
+        DefaultMutableTreeNode servicesNode = new DefaultMutableTreeNode( NODE_NAME_SERVICES );
         addServiceNodes( servicesNode, aModule );
         addIfNotEmpty( moduleNode, servicesNode );
 
-        DefaultMutableTreeNode entities = new DefaultMutableTreeNode( "entities" );
+        DefaultMutableTreeNode entities = new DefaultMutableTreeNode( NODE_NAME_ENTITIES );
         addEntityNodes( entities, aModule );
         addIfNotEmpty( moduleNode, entities );
 
-        DefaultMutableTreeNode composites = new DefaultMutableTreeNode( "composites" );
+        DefaultMutableTreeNode composites = new DefaultMutableTreeNode( NODE_NAME_COMPOSITES );
         addCompositeNodes( composites, aModule );
         addIfNotEmpty( moduleNode, composites );
 
-        DefaultMutableTreeNode objects = new DefaultMutableTreeNode( "objects" );
+        DefaultMutableTreeNode objects = new DefaultMutableTreeNode( NODE_NAME_OBJECTS );
         addObjectNodes( objects, aModule );
         addIfNotEmpty( moduleNode, objects );
     }
@@ -137,11 +147,11 @@ final class TreeModelBuilder
         DefaultMutableTreeNode compositeNode = new DefaultMutableTreeNode( aDescriptor );
         aCompositesNode.add( compositeNode );
 
-        DefaultMutableTreeNode mixinsNode = new DefaultMutableTreeNode( "mixins" );
+        DefaultMutableTreeNode mixinsNode = new DefaultMutableTreeNode( NODE_NAME_MIXINS );
         addMixinNodes( mixinsNode, aDescriptor );
         addIfNotEmpty( compositeNode, mixinsNode );
 
-        DefaultMutableTreeNode methodsNode = new DefaultMutableTreeNode( "methods" );
+        DefaultMutableTreeNode methodsNode = new DefaultMutableTreeNode( NODE_NAME_METHODS );
         addMethodsNode( methodsNode, aDescriptor );
         addIfNotEmpty( compositeNode, methodsNode );
     }
@@ -163,17 +173,17 @@ final class TreeModelBuilder
         mixinsNode.add( mixinNode );
 
         // Constructors
-        DefaultMutableTreeNode constructorsNode = new DefaultMutableTreeNode( "constructors" );
+        DefaultMutableTreeNode constructorsNode = new DefaultMutableTreeNode( NODE_NAME_CONSTRUCTORS );
         addIterableItemNodes( constructorsNode, aMixin.constructors() );
         addIfNotEmpty( mixinNode, constructorsNode );
 
         // Injected fields
-        DefaultMutableTreeNode fieldsNode = new DefaultMutableTreeNode( "injected fields" );
+        DefaultMutableTreeNode fieldsNode = new DefaultMutableTreeNode( NODE_NAME_INJECTED_FIELDS );
         addIterableItemNodes( fieldsNode, aMixin.injectedFields() );
         addIfNotEmpty( mixinNode, fieldsNode );
 
         // Injected methods
-        DefaultMutableTreeNode methodsNode = new DefaultMutableTreeNode( "injected methods" );
+        DefaultMutableTreeNode methodsNode = new DefaultMutableTreeNode( NODE_NAME_INJECTED_METHODS );
         addIterableItemNodes( methodsNode, aMixin.injectedMethods() );
         addIfNotEmpty( mixinNode, methodsNode );
     }
@@ -215,19 +225,19 @@ final class TreeModelBuilder
 
         // Constructors
         // TODO: Localization
-        DefaultMutableTreeNode constructorsNode = new DefaultMutableTreeNode( "constructors" );
+        DefaultMutableTreeNode constructorsNode = new DefaultMutableTreeNode( NODE_NAME_CONSTRUCTORS );
         addIterableItemNodes( constructorsNode, aDescriptor.constructors() );
         addIfNotEmpty( objectNode, constructorsNode );
 
         // Injected fields
         // TODO: Localization
-        DefaultMutableTreeNode fieldsNode = new DefaultMutableTreeNode( "injected fields" );
+        DefaultMutableTreeNode fieldsNode = new DefaultMutableTreeNode( NODE_NAME_INJECTED_FIELDS );
         addIterableItemNodes( fieldsNode, aDescriptor.injectedFields() );
         addIfNotEmpty( objectNode, fieldsNode );
 
         // Injected methods
         // TODO: Localization
-        DefaultMutableTreeNode methodsNode = new DefaultMutableTreeNode( "injected methods" );
+        DefaultMutableTreeNode methodsNode = new DefaultMutableTreeNode( NODE_NAME_INJECTED_METHODS );
         addIterableItemNodes( methodsNode, aDescriptor.injectedMethods() );
         addIfNotEmpty( objectNode, methodsNode );
     }

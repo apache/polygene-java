@@ -20,6 +20,7 @@ import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ConstructorDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.InjectedFieldDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
@@ -105,9 +106,18 @@ public interface SelectionListener
     void onConstructorSelected( ConstructorDetailDescriptor aDescriptor );
 
     /**
+     * Invoked when an injected field node is selected.
+     *
+     * @param aDescriptor The selected field descriptor. This argument must not be {@code null}.
+     * @since 0.5
+     */
+    void onInjectedFieldSelected( InjectedFieldDetailDescriptor aDescriptor );
+
+    /**
      * Invoked when the component reset selection.
      *
      * @since 0.5
      */
     void resetSelection();
+
 }

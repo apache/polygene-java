@@ -168,8 +168,6 @@ public final class ToStringUtils
     private static String fieldToString( InjectedFieldDescriptor descriptor, Field field )
     {
         StringBuilder builder = new StringBuilder();
-        Annotation[] annotations = field.getAnnotations();
-        appendAnnotation( builder, annotations );
         builder.append( field.getType().getSimpleName() );
         builder.append( ' ' );
         builder.append( field.getName() );

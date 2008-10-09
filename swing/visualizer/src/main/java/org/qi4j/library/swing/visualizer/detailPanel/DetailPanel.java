@@ -26,6 +26,7 @@ import org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.Com
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.layer.LayerDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.module.ModuleDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.object.ConstructorDescriptorForm;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.form.object.InjectedFieldDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.object.MixinDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.tree.ApplicationTreePanel;
 import org.qi4j.library.swing.visualizer.listener.SelectionListener;
@@ -33,6 +34,7 @@ import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ConstructorDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.InjectedFieldDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
@@ -178,6 +180,7 @@ public final class DetailPanel
         }
         descriptorForm = mixinForm;
         mixinForm.updateModel( aDescriptor );
+
         treePanel.onMixinSelected( aDescriptor );
     }
 
@@ -193,8 +196,28 @@ public final class DetailPanel
         {
             constructorForm = (ConstructorDescriptorForm) descriptorForm;
         }
+        descriptorForm = constructorForm;
         constructorForm.updateModel( aDescriptor );
+
         treePanel.onConstructorSelected( aDescriptor );
+    }
+
+    public final void onInjectedFieldSelected( InjectedFieldDetailDescriptor aDescriptor )
+    {
+        InjectedFieldDescriptorForm fieldForm;
+        if( !( descriptorForm instanceof InjectedFieldDescriptorForm ) )
+        {
+            fieldForm = new InjectedFieldDescriptorForm();
+            detailScrollPanel.setViewportView( fieldForm.$$$getRootComponent$$$() );
+        }
+        else
+        {
+            fieldForm = (InjectedFieldDescriptorForm) descriptorForm;
+        }
+        descriptorForm = fieldForm;
+        fieldForm.updateModel( aDescriptor );
+
+        treePanel.onInjectedFieldSelected( aDescriptor );
     }
 
     public final void resetSelection()
