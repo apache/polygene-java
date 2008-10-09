@@ -28,10 +28,12 @@ import org.qi4j.composite.Composite;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.InjectedFieldDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.composite.InjectedFieldDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.structure.ApplicationDescriptor;
@@ -102,11 +104,6 @@ public final class ToStringUtils
         }
 
         Class<?> valueClass = anObject.getClass();
-        if( String.class.isAssignableFrom( valueClass ) )
-        {
-            return (String) anObject;
-        }
-
         if( ApplicationDetailDescriptor.class.isAssignableFrom( valueClass ) )
         {
             ApplicationDetailDescriptor detailDescriptor = (ApplicationDetailDescriptor) anObject;
@@ -133,7 +130,7 @@ public final class ToStringUtils
             CompositeDetailDescriptor detailDescriptor = (CompositeDetailDescriptor) anObject;
             CompositeDescriptor descriptor = detailDescriptor.descriptor();
             Class<? extends Composite> compositeClass = descriptor.type();
-            return compositeClass.getName();
+            return compositeClass.getSimpleName();
         }
         else if( ObjectDetailDescriptor.class.isAssignableFrom( valueClass ) )
         {
@@ -141,6 +138,18 @@ public final class ToStringUtils
             ObjectDescriptor descriptor = detailDescriptor.descriptor();
             Class<? extends Composite> objectClassName = descriptor.type();
             return objectClassName.getName();
+        }
+        else if( InjectedFieldDetailDescriptor.class.isAssignableFrom( valueClass ) )
+        {
+            InjectedFieldDetailDescriptor detailDescriptor = (InjectedFieldDetailDescriptor) anObject;
+            InjectedFieldDescriptor descriptor = detailDescriptor.descriptor();
+
+            StringBuilder builder = new StringBuilder();
+            Annotation[] annotations = descriptor.field().getAnnotations();
+            appendAnnotation( builder, annotations );
+            builder.append( descriptor.field().getName() );
+
+            return builder.toString();
         }
 
         return anObject.toString();
@@ -166,10 +175,7 @@ public final class ToStringUtils
         for( int i = 0; i < paramTypes.length; i++ )
         {
             Annotation[] annotations = paramAnnotations[ i ];
-            for( Annotation annotation : annotations )
-            {
-                appendAnnotation( buf, annotation );
-            }
+            appendAnnotation( buf, annotations );
             Class<?> type = paramTypes[ i ];
             buf.append( type.getSimpleName() ).append( ", " );
         }
@@ -183,8 +189,12 @@ public final class ToStringUtils
         return buf.toString();
     }
 
-    private static void appendAnnotation( StringBuilder buf, Annotation annotation )
+    private static void appendAnnotation( StringBuilder buf, Annotation... annotations )
     {
-        buf.append( "@" ).append( annotation.annotationType().getSimpleName() ).append( " " );
+        for( Annotation annotation : annotations )
+        {
+            String annotationName = annotation.annotationType().getSimpleName();
+            buf.append( "@" ).append( annotationName ).append( " " );
+        }
     }
 }

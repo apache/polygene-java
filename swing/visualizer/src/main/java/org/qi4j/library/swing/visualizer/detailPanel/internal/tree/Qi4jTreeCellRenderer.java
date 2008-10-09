@@ -22,6 +22,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.ToStringUtils.objectToString;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
@@ -47,12 +48,19 @@ final class Qi4jTreeCellRenderer extends DefaultTreeCellRenderer
     public final Component getTreeCellRendererComponent(
         JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus )
     {
+        // Safe the previous icon
         Icon prevLeafIcon = getLeafIcon();
         Icon prevOpenIcon = getOpenIcon();
         Icon prevCloseIcon = getClosedIcon();
-        updateIcon( value );
 
-        Component component = super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus );
+        // Update icon
+        DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) value;
+        Object userObject = treeNode.getUserObject();
+        updateIcon( userObject );
+
+        String treeNodeLabel = objectToString( userObject );
+        Component component =
+            super.getTreeCellRendererComponent( tree, treeNodeLabel, sel, expanded, leaf, row, hasFocus );
 
         // Restore icon
         setLeafIcon( prevLeafIcon );
@@ -62,19 +70,17 @@ final class Qi4jTreeCellRenderer extends DefaultTreeCellRenderer
         return component;
     }
 
-    private void updateIcon( Object value )
+    private void updateIcon( Object aValue )
     {
-        DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) value;
-        Object userObject = treeNode.getUserObject();
-        if( userObject instanceof ApplicationDetailDescriptor )
+        if( aValue instanceof ApplicationDetailDescriptor )
         {
             overrideAllIcons( ICON_APPLICATION );
         }
-        else if( userObject instanceof LayerDetailDescriptor )
+        else if( aValue instanceof LayerDetailDescriptor )
         {
             overrideAllIcons( ICON_LAYER );
         }
-        else if( userObject instanceof ModuleDetailDescriptor )
+        else if( aValue instanceof ModuleDetailDescriptor )
         {
             overrideAllIcons( ICON_MODULE );
         }

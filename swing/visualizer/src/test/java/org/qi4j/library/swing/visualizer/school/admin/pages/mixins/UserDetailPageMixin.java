@@ -18,6 +18,7 @@ package org.qi4j.library.swing.visualizer.school.admin.pages.mixins;
 
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.library.swing.visualizer.school.admin.pages.UserDetailPage;
+import org.qi4j.structure.Layer;
 import org.qi4j.structure.Module;
 
 /**
@@ -27,6 +28,9 @@ import org.qi4j.structure.Module;
 public final class UserDetailPageMixin
     implements UserDetailPage
 {
+    // Note: Don't remove
+    private @Structure Layer layer;
+
     // Note: Don't remove
     public UserDetailPageMixin( @Structure Module module )
     {

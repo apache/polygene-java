@@ -214,16 +214,19 @@ final class TreeModelBuilder
         aObjectsNode.add( objectNode );
 
         // Constructors
+        // TODO: Localization
         DefaultMutableTreeNode constructorsNode = new DefaultMutableTreeNode( "constructors" );
         addIterableItemNodes( constructorsNode, aDescriptor.constructors() );
         addIfNotEmpty( objectNode, constructorsNode );
 
         // Injected fields
+        // TODO: Localization
         DefaultMutableTreeNode fieldsNode = new DefaultMutableTreeNode( "injected fields" );
         addIterableItemNodes( fieldsNode, aDescriptor.injectedFields() );
         addIfNotEmpty( objectNode, fieldsNode );
 
         // Injected methods
+        // TODO: Localization
         DefaultMutableTreeNode methodsNode = new DefaultMutableTreeNode( "injected methods" );
         addIterableItemNodes( methodsNode, aDescriptor.injectedMethods() );
         addIfNotEmpty( objectNode, methodsNode );

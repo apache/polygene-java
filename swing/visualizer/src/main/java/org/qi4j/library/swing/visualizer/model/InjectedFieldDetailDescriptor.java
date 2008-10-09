@@ -40,7 +40,7 @@ public final class InjectedFieldDetailDescriptor
      * @return Descriptor of this {@code InjectedFieldDetailDescriptor}. Never returns {@code null}.
      * @since 0.5
      */
-    public final InjectedFieldDescriptor getDescriptor()
+    public final InjectedFieldDescriptor descriptor()
     {
         return descriptor;
     }
