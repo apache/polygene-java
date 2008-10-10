@@ -91,6 +91,12 @@ public final class ApplicationDetailDescriptorBuilder
         // Temp: current object
         private ObjectDetailDescriptor currObjectDescriptor;
 
+        // Temp: current method
+        private MethodConcernDetailDescriptor currMethodConcernDescriptor;
+
+        // Temp: current side effect
+        private MethodSideEffectDetailDescriptor currMethodSideEffectDescriptor;
+
 
         private ApplicationDescriptorVisitor()
         {
@@ -187,21 +193,34 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public final void visit( MethodConcernDescriptor aDescriptor )
         {
-            MethodConcernDetailDescriptor detailDescriptor = new MethodConcernDetailDescriptor( aDescriptor );
-            currMethodDesciptor.addConcern( detailDescriptor );
+            resetInjectableRelatedVariables();
+
+            currMethodConcernDescriptor = new MethodConcernDetailDescriptor( aDescriptor );
+            currMethodDesciptor.addConcern( currMethodConcernDescriptor );
+        }
+
+        private void resetInjectableRelatedVariables()
+        {
+            currMixinDescriptor = null;
+            currObjectDescriptor = null;
+            currMethodConcernDescriptor = null;
+            currMethodSideEffectDescriptor = null;
         }
 
         @Override
         public final void visit( MethodSideEffectDescriptor aDescriptor )
         {
-            MethodSideEffectDetailDescriptor detailDescriptor = new MethodSideEffectDetailDescriptor( aDescriptor );
-            currMethodDesciptor.addSideEffect( detailDescriptor );
+            resetInjectableRelatedVariables();
+
+            currMethodSideEffectDescriptor = new MethodSideEffectDetailDescriptor( aDescriptor );
+            currMethodDesciptor.addSideEffect( currMethodSideEffectDescriptor );
         }
 
         @Override
         public final void visit( MixinDescriptor aDescriptor )
         {
-            currObjectDescriptor = null;
+            resetInjectableRelatedVariables();
+
             currMixinDescriptor = new MixinDetailDescriptor( aDescriptor );
             currCompositeDescriptor.addMixin( currMixinDescriptor );
         }
@@ -209,9 +228,9 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public final void visit( ObjectDescriptor aDescriptor )
         {
-            currMixinDescriptor = null;
-            currObjectDescriptor = new ObjectDetailDescriptor( aDescriptor );
+            resetInjectableRelatedVariables();
 
+            currObjectDescriptor = new ObjectDetailDescriptor( aDescriptor );
             currModuleDescriptor.addObject( currObjectDescriptor );
         }
 
@@ -236,6 +255,14 @@ public final class ApplicationDetailDescriptorBuilder
             else if( currObjectDescriptor != null )
             {
                 currObjectDescriptor.addConstructor( currConstructorDescriptor );
+            }
+            else if( currMethodConcernDescriptor != null )
+            {
+                currMethodConcernDescriptor.addConstructor( currConstructorDescriptor );
+            }
+            else if( currMethodSideEffectDescriptor != null )
+            {
+                currMethodSideEffectDescriptor.addConstructor( currConstructorDescriptor );
             }
             else
             {
@@ -283,6 +310,14 @@ public final class ApplicationDetailDescriptorBuilder
             {
                 currObjectDescriptor.addInjectedMethod( currInjectedMethodDescriptor );
             }
+            else if( currMethodConcernDescriptor != null )
+            {
+                currMethodConcernDescriptor.addInjectedMethod( currInjectedMethodDescriptor );
+            }
+            else if( currMethodSideEffectDescriptor != null )
+            {
+                currMethodSideEffectDescriptor.addInjectedMethod( currInjectedMethodDescriptor );
+            }
             else
             {
                 throw new IllegalStateException(
@@ -304,6 +339,14 @@ public final class ApplicationDetailDescriptorBuilder
             else if( currObjectDescriptor != null )
             {
                 currObjectDescriptor.addInjectedField( detailDescriptor );
+            }
+            else if( currMethodConcernDescriptor != null )
+            {
+                currMethodConcernDescriptor.addInjectedField( detailDescriptor );
+            }
+            else if( currMethodSideEffectDescriptor != null )
+            {
+                currMethodSideEffectDescriptor.addInjectedField( detailDescriptor );
             }
             else
             {

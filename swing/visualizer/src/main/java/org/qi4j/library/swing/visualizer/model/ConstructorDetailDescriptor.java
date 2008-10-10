@@ -29,6 +29,8 @@ public final class ConstructorDetailDescriptor
     private final ConstructorDescriptor descriptor;
     private ObjectDetailDescriptor object;
     private MixinDetailDescriptor mixin;
+    private MethodConcernDetailDescriptor methodConcern;
+    private MethodSideEffectDetailDescriptor methodSideEffect;
     private InjectedParametersDetailDescriptor parameters;
 
     ConstructorDetailDescriptor( ConstructorDescriptor aDescriptor )
@@ -60,8 +62,9 @@ public final class ConstructorDetailDescriptor
 
     /**
      * @return Object that own this {@code ConstructorDetailDescriptor}.
-     *         If {@code null} this constructor is owned by a mixin.
      * @see #mixin()
+     * @see #methodConcern()
+     * @see #methodSideEffect()
      * @since 0.5
      */
     public final ObjectDetailDescriptor object()
@@ -71,14 +74,40 @@ public final class ConstructorDetailDescriptor
 
     /**
      * @return Mixin that own this {@code ConstructorDetailDescriptor}.
-     *         If {@code null} this constructor is owned by an object.
      * @see #object()
+     * @see #methodConcern()
+     * @see #methodSideEffect()
      * @since 0.5
      */
     public final MixinDetailDescriptor mixin()
     {
         return mixin;
     }
+
+    /**
+     * @return Method concern that own this {@code ConstructorDetailDescriptor}.
+     * @see #object()
+     * @see #mixin()
+     * @see #methodSideEffect()
+     * @since 0.5
+     */
+    public final MethodConcernDetailDescriptor methodConcern()
+    {
+        return methodConcern;
+    }
+
+    /**
+     * @return Method side effect that own this {@code ConstructorDetailDescriptor}.
+     * @see #object()
+     * @see #mixin()
+     * @see #methodConcern()
+     * @since 0.5
+     */
+    public final MethodSideEffectDetailDescriptor methodSideEffect()
+    {
+        return methodSideEffect;
+    }
+
 
     final void setObject( ObjectDetailDescriptor aDescriptor )
         throws IllegalArgumentException
@@ -96,6 +125,14 @@ public final class ConstructorDetailDescriptor
         mixin = aDescriptor;
     }
 
+    final void setMethodConcern( MethodConcernDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+
+        methodConcern = aDescriptor;
+    }
+
     final void setInjectedParameter( InjectedParametersDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
@@ -103,6 +140,14 @@ public final class ConstructorDetailDescriptor
 
         aDescriptor.setConstructor( this );
         parameters = aDescriptor;
+    }
+
+    final void setMethodSideEffect( MethodSideEffectDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+
+        methodSideEffect = aDescriptor;
     }
 
     @Override

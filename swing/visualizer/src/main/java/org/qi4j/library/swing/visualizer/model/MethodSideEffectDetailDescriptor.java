@@ -16,6 +16,8 @@
 */
 package org.qi4j.library.swing.visualizer.model;
 
+import java.util.LinkedList;
+import java.util.List;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.spi.composite.MethodSideEffectDescriptor;
 
@@ -26,6 +28,10 @@ import org.qi4j.spi.composite.MethodSideEffectDescriptor;
 public final class MethodSideEffectDetailDescriptor
 {
     private final MethodSideEffectDescriptor descriptor;
+    private final List<ConstructorDetailDescriptor> constructors;
+    private final List<InjectedMethodDetailDescriptor> injectedMethods;
+    private final List<InjectedFieldDetailDescriptor> injectedFields;
+
     private CompositeMethodDetailDescriptor method;
 
     public MethodSideEffectDetailDescriptor( MethodSideEffectDescriptor aDescriptor )
@@ -34,6 +40,9 @@ public final class MethodSideEffectDetailDescriptor
         validateNotNull( "aDescriptor", aDescriptor );
 
         descriptor = aDescriptor;
+        constructors = new LinkedList<ConstructorDetailDescriptor>();
+        injectedMethods = new LinkedList<InjectedMethodDetailDescriptor>();
+        injectedFields = new LinkedList<InjectedFieldDetailDescriptor>();
     }
 
     /**
@@ -54,11 +63,65 @@ public final class MethodSideEffectDetailDescriptor
         return method;
     }
 
+    /**
+     * @return Constructors of this {@code MethodSideEffectDetailDescriptor}. Never return {@code null}.
+     * @since 0.5
+     */
+    public final Iterable<ConstructorDetailDescriptor> constructors()
+    {
+        return constructors;
+    }
+
+    /**
+     * @return Injected methods of this {@code MethodSideEffectDetailDescriptor}. Never return {@code null}.
+     * @since 0.5
+     */
+    public final Iterable<InjectedMethodDetailDescriptor> injectedMethods()
+    {
+        return injectedMethods;
+    }
+
+    /**
+     * @return Injected fields of this {@code MethodSideEffectDetailDescriptor}. Never return {@code null}.
+     * @since 0.5
+     */
+    public final Iterable<InjectedFieldDetailDescriptor> injectedFields()
+    {
+        return injectedFields;
+    }
+
     final void setMethod( CompositeMethodDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
 
         method = aDescriptor;
+    }
+
+    final void addConstructor( ConstructorDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setMethodSideEffect( this );
+        constructors.add( aDescriptor );
+    }
+
+    final void addInjectedMethod( InjectedMethodDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setMethodSideEffect( this );
+        injectedMethods.add( aDescriptor );
+    }
+
+    final void addInjectedField( InjectedFieldDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setMethodSideEffect( this );
+        injectedFields.add( aDescriptor );
     }
 }

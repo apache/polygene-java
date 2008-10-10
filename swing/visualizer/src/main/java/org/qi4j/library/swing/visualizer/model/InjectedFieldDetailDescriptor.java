@@ -28,6 +28,8 @@ public final class InjectedFieldDetailDescriptor
     private final InjectedFieldDescriptor descriptor;
     private ObjectDetailDescriptor object;
     private MixinDetailDescriptor mixin;
+    private MethodConcernDetailDescriptor methodConcern;
+    private MethodSideEffectDetailDescriptor methodSideEffect;
 
     InjectedFieldDetailDescriptor( InjectedFieldDescriptor aDescriptor )
         throws IllegalArgumentException
@@ -47,8 +49,9 @@ public final class InjectedFieldDetailDescriptor
 
     /**
      * @return Object that own this {@code InjectedFieldDetailDescriptor}.
-     *         If {@code null}, this {@code InjectedFieldDetailDescriptor} is owned by a mixin.
      * @see #mixin()
+     * @see #methodConcern()
+     * @see #methodSideEffect()
      * @since 0.5
      */
     public final ObjectDetailDescriptor object()
@@ -58,8 +61,9 @@ public final class InjectedFieldDetailDescriptor
 
     /**
      * @return Mixin that own this {@code InjectedFieldDetailDescriptor}.
-     *         If {@code null}, this {@code InjectedFieldDetailDescriptor} is owned by an object.
      * @see #object()
+     * @see #methodConcern()
+     * @see #methodSideEffect()
      * @since 0.5
      */
     public final MixinDetailDescriptor mixin()
@@ -67,11 +71,34 @@ public final class InjectedFieldDetailDescriptor
         return mixin;
     }
 
+    /**
+     * @return Method concern that own this {@code InjectedFieldDetailDescriptor}.
+     * @see #object()
+     * @see #mixin()
+     * @see #methodSideEffect()
+     * @since 0.5
+     */
+    public final MethodConcernDetailDescriptor methodConcern()
+    {
+        return methodConcern;
+    }
+
+    /**
+     * @return Method side effect that own this {@code InjectedFieldDetailDescriptor}.
+     * @see #object()
+     * @see #mixin()
+     * @see #methodConcern()
+     * @since 0.5
+     */
+    public final MethodSideEffectDetailDescriptor methodSideEffect()
+    {
+        return methodSideEffect;
+    }
+
     final void setObject( ObjectDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
-
         object = aDescriptor;
     }
 
@@ -79,8 +106,21 @@ public final class InjectedFieldDetailDescriptor
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
-
         mixin = aDescriptor;
+    }
+
+    final void setMethodConcern( MethodConcernDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+        methodConcern = aDescriptor;
+    }
+
+    final void setMethodSideEffect( MethodSideEffectDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+        methodSideEffect = aDescriptor;
     }
 
     @Override

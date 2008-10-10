@@ -29,6 +29,8 @@ public final class InjectedMethodDetailDescriptor
     private final InjectedMethodDescriptor descriptor;
     private ObjectDetailDescriptor object;
     private MixinDetailDescriptor mixin;
+    private MethodSideEffectDetailDescriptor methodSideEffect;
+    private MethodConcernDetailDescriptor methodConcern;
     private InjectedParametersDetailDescriptor parameters;
 
     InjectedMethodDetailDescriptor( InjectedMethodDescriptor aDescriptor )
@@ -59,8 +61,9 @@ public final class InjectedMethodDetailDescriptor
 
     /**
      * @return Object that owns this {@code InjectedMethodDetailDescriptor}.
-     *         If {@code null} this {@code InjectedMethodDetailDescriptor} is owned by a mixin.
      * @see #mixin()
+     * @see #methodSideEffect()
+     * @see #methodConcern()
      * @since 0.5
      */
     public final ObjectDetailDescriptor object()
@@ -70,13 +73,38 @@ public final class InjectedMethodDetailDescriptor
 
     /**
      * @return Mixin that owns this {@code InjectedMethodDetailDescriptor}.
-     *         If {@code null} this {@code InjectedMethodDetailDescriptor} is owned by an object.
      * @see #object()
+     * @see #methodSideEffect()
+     * @see #methodConcern()
      * @since 0.5
      */
     public final MixinDetailDescriptor mixin()
     {
         return mixin;
+    }
+
+    /**
+     * @return Method side effect that owns this {@code InjectedMethodDetailDescriptor}.
+     * @see #object()
+     * @see #mixin()
+     * @see #methodConcern()
+     * @since 0.5
+     */
+    public final MethodSideEffectDetailDescriptor methodSideEffect()
+    {
+        return methodSideEffect;
+    }
+
+    /**
+     * @return Method concern that owns this {@code InjectedMethodDetailDescriptor}.
+     * @see #object()
+     * @see #mixin()
+     * @see #methodSideEffect()
+     * @since 0.5
+     */
+    public final MethodConcernDetailDescriptor methodConcern()
+    {
+        return methodConcern;
     }
 
     final void setObject( ObjectDetailDescriptor aDescriptor )
@@ -100,5 +128,19 @@ public final class InjectedMethodDetailDescriptor
 
         aDescriptor.setMethod( this );
         parameters = aDescriptor;
+    }
+
+    final void setMethodSideEffect( MethodSideEffectDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+        methodSideEffect = aDescriptor;
+    }
+
+    final void setMethodConcern( MethodConcernDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+        methodConcern = aDescriptor;
     }
 }
