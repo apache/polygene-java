@@ -1,12 +1,6 @@
 Bundle-Activator:
 
-Ignore-Package:  net.sf.cglib.asm.util
-
-Private-Package: net.sf.cglib.proxy, \
-                 net.sf.cglib.asm, \
-                 net.sf.cglib.core, \
-                 net.sf.cglib.reflect, \
-                 org.qi4j.runtime, \
+Private-Package: org.qi4j.runtime, \
                  org.qi4j.runtime.composite, \
                  org.qi4j.runtime.bootstrap, \
                  org.qi4j.runtime.entity, \
@@ -22,7 +16,8 @@ Private-Package: net.sf.cglib.proxy, \
                  org.qi4j.runtime.structure, \
                  org.qi4j.runtime.util
 
-Import-Package: org.qi4j, \
+Import-Package: net.sf.cglib.proxy, \
+                org.qi4j, \
                 org.qi4j.bootstrap, \
                 org.qi4j.composite, \
                 org.qi4j.composite.internal, \
@@ -51,7 +46,3 @@ Import-Package: org.qi4j, \
 
 Export-Package:
 
-Embed-Dependency: net.sf.cglib;scope=compile|runtime, \
-                  net.sf.cglib.*;scope=compile|runtime
-
-Embed-Transitive: true
