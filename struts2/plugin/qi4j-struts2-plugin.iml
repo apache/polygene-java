@@ -114,13 +114,13 @@
     <orderEntry type="module-library">
       <library name="com.sun:tools:1.5.0">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../../apps/jdk1.6.0_10/jre/../lib/tools.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../../../../../progra~1/jetbra~1/intell~1.4/jre/jre/../lib/tools.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$MODULE_DIR$/../../../../../../../apps/jdk1.6.0_10/jre/../lib/tools-javadoc.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../../../../../progra~1/jetbra~1/intell~1.4/jre/jre/../lib/tools-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../../apps/jdk1.6.0_10/jre/../lib/tools-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../../../../../progra~1/jetbra~1/intell~1.4/jre/jre/../lib/tools-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
