@@ -1,6 +1,6 @@
-Bundle-Activator: org.qi4j.core.test.osgi.Activator
+Bundle-Activator: org.qi4j.core.test.osgi.internal.Activator
 
-Private-Package:  org.qi4j.core.test.osgi
+Private-Package:  org.qi4j.core.test.osgi.internal
 
 Import-Package: org.osgi.framework, \
                 org.qi4j.bootstrap, \
@@ -10,4 +10,5 @@ Import-Package: org.osgi.framework, \
                 org.qi4j.structure, \
                 net.sf.cglib.proxy
 
-Export-Package:
+Export-Package: \
+    org.qi4j.core.test.osgi;version=${pom.version}

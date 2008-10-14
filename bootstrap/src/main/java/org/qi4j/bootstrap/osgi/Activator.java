@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-
 package org.qi4j.bootstrap.osgi;
 
 import java.net.URL;
@@ -36,7 +35,8 @@ public class Activator
 {
     private BundleWatcher<URL> urlBundleWatcher;
 
-    public void start( BundleContext bundleContext ) throws Exception
+    public void start( BundleContext bundleContext )
+        throws Exception
     {
         BundleURLScanner urlScanner =
             new BundleURLScanner( "META-INF/services", ApplicationFactory.class.getName(), false );
@@ -44,7 +44,8 @@ public class Activator
         urlBundleWatcher.start();
     }
 
-    public void stop( BundleContext bundleContext ) throws Exception
+    public void stop( BundleContext bundleContext )
+        throws Exception
     {
         urlBundleWatcher.stop();
     }
@@ -52,7 +53,12 @@ public class Activator
     private static class Qi4jBundleObserver
         implements BundleObserver<URL>
     {
-        private HashMap<Bundle, ClassLoader> loaders = new HashMap<Bundle, ClassLoader>();
+        private final HashMap<Bundle, ClassLoader> loaders;
+
+        private Qi4jBundleObserver()
+        {
+            loaders = new HashMap<Bundle, ClassLoader>();
+        }
 
         public void addingEntries( Bundle bundle, List<URL> entries )
         {

@@ -11,19 +11,21 @@
   <groupId>org.qi4j.core.osgi</groupId>
   <artifactId>qi4j-osgi-example</artifactId>
   <version>0.5-SNAPSHOT</version>
-  <name>Qi4j Core - OSGi Test</name>
+  <name>Qi4j Core - OSGi Example</name>
   <packaging>bundle</packaging>
 
   <dependencies>
     <dependency>
-      <groupId>org.qi4j.core</groupId>
-      <artifactId>qi4j-core-api</artifactId>
-      <version>0.5-SNAPSHOT</version>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <version>1.2.0</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
-      <artifactId>qi4j-core-bootstrap</artifactId>
+      <artifactId>qi4j-core-runtime</artifactId>
       <version>0.5-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>

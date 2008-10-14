@@ -20,6 +20,7 @@
 
   <modules>
     <module>example</module>
+    <module>integrationTests</module>
   </modules>
 
   <dependencyManagement>

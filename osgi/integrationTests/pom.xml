@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>org.qi4j.core.osgi</groupId>
+    <artifactId>qi4j-core-osgi-test</artifactId>
+    <version>0.5-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.qi4j.core.osgi</groupId>
+  <artifactId>qi4j-osgi-integrationTests</artifactId>
+  <version>0.5-SNAPSHOT</version>
+  <name>Qi4j Core - OSGi integration test</name>
+
+  <properties>
+    <version.pax.logging>1.1.1</version.pax.logging>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.qi4j.core.osgi</groupId>
+      <artifactId>qi4j-osgi-example</artifactId>
+      <version>0.5-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.ops4j.pax.logging</groupId>
+      <artifactId>pax-logging-service</artifactId>
+      <version>${version.pax.logging}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.logging</groupId>
+      <artifactId>pax-logging-api</artifactId>
+      <version>${version.pax.logging}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.ops4j.pax.drone</groupId>
+      <artifactId>pax-drone-spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.drone</groupId>
+      <artifactId>pax-drone-spi-junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.drone</groupId>
+      <artifactId>pax-drone-connector-paxrunner</artifactId>
+    </dependency>
+  </dependencies>
+</project>

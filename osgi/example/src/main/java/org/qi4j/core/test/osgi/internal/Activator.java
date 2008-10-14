@@ -16,42 +16,38 @@
  * limitations under the License. 
  */
 
-package org.qi4j.core.test.osgi;
+package org.qi4j.core.test.osgi.internal;
 
+import java.util.Hashtable;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.qi4j.bootstrap.Energy4Java;
+import org.osgi.framework.ServiceRegistration;
 import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.composite.Composite;
+import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.composite.Mixins;
+import org.qi4j.core.test.osgi.Simple;
+import org.qi4j.injection.scope.This;
 import org.qi4j.structure.Application;
 import org.qi4j.structure.Module;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.Mixins;
-import org.qi4j.property.Property;
-import org.qi4j.injection.scope.This;
 
 public class Activator
     implements BundleActivator
 {
     private static final String MODULE_NAME = "Single Module.";
     private static final String LAYER_NAME = "Single Layer.";
+    private ServiceRegistration simpleReg;
     private Application application;
 
-    public void start( BundleContext bundleContext ) throws Exception
+    public void start( BundleContext bundleContext )
+        throws Exception
     {
         Energy4Java boot = new Energy4Java();
-        Assembler assembler = new Assembler()
-        {
-            public void assemble( ModuleAssembly module ) throws AssemblyException
-            {
-                module.layerAssembly().setName( LAYER_NAME );
-                module.setName( MODULE_NAME );
-                module.addComposites( SimpleComposite.class );
-            }
-        };
+        Assembler assembler = new ApplicationAssembler();
         application = boot.newApplication( assembler );
         application.activate();
 
@@ -60,22 +56,23 @@ public class Activator
         CompositeBuilder<Simple> builder = builderFactory.newCompositeBuilder( Simple.class );
         builder.stateOfComposite().someValue().set( "Habba" );
         Simple composite = builder.newInstance();
-        System.out.println( composite.sayValue() );
+
+        simpleReg = bundleContext.registerService( Simple.class.getName(), composite, new Hashtable() );
     }
 
-    public void stop( BundleContext bundleContext ) throws Exception
+    public void stop( BundleContext bundleContext )
+        throws Exception
     {
+        simpleReg.unregister();
         application.passivate();
+
+        simpleReg = null;
+        application = null;
     }
 
     @Mixins( SimpleMixin.class )
     private static interface SimpleComposite extends Simple, Composite
-    {}
-
-    private static interface Simple
     {
-        Property<String> someValue();
-        String sayValue();
     }
 
     public static abstract class SimpleMixin
@@ -86,6 +83,18 @@ public class Activator
         public String sayValue()
         {
             return "Saying: " + me.someValue().get();
+        }
+    }
+
+    private static class ApplicationAssembler
+        implements Assembler
+    {
+        public void assemble( ModuleAssembly module )
+            throws AssemblyException
+        {
+            module.layerAssembly().setName( LAYER_NAME );
+            module.setName( MODULE_NAME );
+            module.addComposites( SimpleComposite.class );
         }
     }
 }
