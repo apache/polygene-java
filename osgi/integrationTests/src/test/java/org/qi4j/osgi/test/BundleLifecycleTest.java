@@ -61,12 +61,6 @@ public final class BundleLifecycleTest extends DroneTestCase
             .addBundle( "mvn:org.qi4j.core.osgi/qi4j-osgi-example/" + qi4jVersion + "@6" );
     }
 
-    public final void testLifecycleWithCglibInstalled()
-        throws BundleException
-    {
-        testLifecycle();
-    }
-
     public final void testLifecycle()
         throws BundleException
     {
@@ -80,6 +74,12 @@ public final class BundleLifecycleTest extends DroneTestCase
         exampleBundle.start();
 
         assertNotNull( getSimpleServiceRef() );
+    }
+
+    public final void testLifecycleWithCglibInstalled()
+        throws BundleException
+    {
+        testLifecycle();
     }
 
     private ServiceReference getSimpleServiceRef()

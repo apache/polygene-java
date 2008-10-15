@@ -20,22 +20,6 @@
     <version.pax.swissbox>0.2.0</version.pax.swissbox>
   </properties>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <systemProperties>
-            <property>
-              <name>version.qi4j</name>
-              <value>${pom.version}</value>
-            </property>
-          </systemProperties>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
   <dependencies>
     <!-- bootstrap -->
     <dependency>
