@@ -19,6 +19,7 @@
   </properties>
 
   <modules>
+    <module>testBootstrap</module>
     <module>example</module>
     <module>integrationTests</module>
   </modules>

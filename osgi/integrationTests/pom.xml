@@ -13,10 +13,6 @@
   <version>0.5-SNAPSHOT</version>
   <name>Qi4j Core - OSGi integration test</name>
 
-  <properties>
-    <version.pax.logging>1.1.1</version.pax.logging>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core.osgi</groupId>
@@ -25,19 +21,7 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.ops4j.pax.logging</groupId>
-      <artifactId>pax-logging-service</artifactId>
-      <version>${version.pax.logging}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.pax.logging</groupId>
-      <artifactId>pax-logging-api</artifactId>
-      <version>${version.pax.logging}</version>
-      <scope>test</scope>
-    </dependency>
-
+    <!-- Test -->
     <dependency>
       <groupId>org.ops4j.pax.drone</groupId>
       <artifactId>pax-drone-spi</artifactId>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module relativePaths="false" MavenProjectsManager.isMavenModule="true" version="4">
+<module relativePaths="false" MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_5" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
     <exclude-output />
@@ -12,45 +12,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="qi4j-osgi-example" />
-    <orderEntry type="module-library">
-      <library name="org.ops4j.pax.logging:pax-logging-service:1.1.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/logging/pax-logging-service/1.1.1/pax-logging-service-1.1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/logging/pax-logging-service/1.1.1/pax-logging-service-1.1.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/logging/pax-logging-service/1.1.1/pax-logging-service-1.1.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="log4j:log4j:1.2.14">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/log4j/log4j/1.2.14/log4j-1.2.14.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/log4j/log4j/1.2.14/log4j-1.2.14-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/log4j/log4j/1.2.14/log4j-1.2.14-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="org.ops4j.pax.logging:pax-logging-api:1.1.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/logging/pax-logging-api/1.1.1/pax-logging-api-1.1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/logging/pax-logging-api/1.1.1/pax-logging-api-1.1.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/logging/pax-logging-api/1.1.1/pax-logging-api-1.1.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
     <orderEntry type="module-library">
       <library name="org.ops4j.pax.drone:pax-drone-spi:0.1.3">
         <CLASSES>

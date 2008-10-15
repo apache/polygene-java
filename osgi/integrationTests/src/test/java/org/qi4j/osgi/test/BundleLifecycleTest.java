@@ -17,6 +17,7 @@
 package org.qi4j.osgi.test;
 
 import org.ops4j.pax.drone.api.DroneConnector;
+import org.ops4j.pax.drone.connector.paxrunner.PaxRunnerConnector;
 import org.ops4j.pax.drone.connector.paxrunner.PaxRunnerConnectorFactory;
 import org.ops4j.pax.drone.connector.paxrunner.Platforms;
 import org.ops4j.pax.drone.spi.junit.DroneTestCase;
@@ -37,20 +38,33 @@ public final class BundleLifecycleTest extends DroneTestCase
     @Override
     public final DroneConnector configure()
     {
-        return PaxRunnerConnectorFactory.create( this )
+        String qi4jVersion = System.getProperty( "version.qi4j", "0.5-SNAPSHOT" );
+
+        PaxRunnerConnector connector = PaxRunnerConnectorFactory.create( this );
+        if( "testLifecycleWithCglibInstalled" .equals( getName() ) )
+        {
+            connector.addBundle( "mvn:net.sourceforge.cglib/com.springsource.net.sf.cglib/2.1.3" );
+        }
+
+        return connector
             .setPlatform( Platforms.EQUINOX )
-            .addBundle( "mvn:net.sourceforge.cglib/com.springsource.net.sf.cglib/2.1.3" )
             .addBundle( "mvn:org.ops4j.pax.logging/pax-logging-api" )
             .addBundle( "mvn:org.ops4j.pax.logging/pax-logging-service" )
-            .addBundle( "mvn:org.qi4j.core/qi4j-core-api" )
-            .addBundle( "mvn:org.qi4j.core/qi4j-core-spi" )
-            .addBundle( "mvn:org.qi4j.core/qi4j-core-runtime" )
-            .addBundle( "mvn:org.qi4j.core/qi4j-core-bootstrap" )
-            .addBundle( "mvn:org.qi4j.core.osgi/qi4j-osgi-example" )
+            .addBundle( "mvn:org.qi4j.core/qi4j-core-api/" + qi4jVersion )
+            .addBundle( "mvn:org.qi4j.core/qi4j-core-spi/" + qi4jVersion )
+            .addBundle( "mvn:org.qi4j.core/qi4j-core-runtime/" + qi4jVersion )
+            .addBundle( "mvn:org.ops4j.base/ops4j-base-lang" )
             .addBundle( "mvn:org.ops4j.pax.swissbox/pax-swissbox-extender" )
             .addBundle( "mvn:org.ops4j.pax.swissbox/pax-swissbox-core" )
-            .addBundle( "mvn:org.ops4j.base/ops4j-base-lang" )
-            .addBundle( "mvn:org.ops4j.pax.swissbox/pax-swissbox-lifecycle" );
+            .addBundle( "mvn:org.ops4j.pax.swissbox/pax-swissbox-lifecycle" )
+            .addBundle( "mvn:org.qi4j.core/qi4j-core-bootstrap/" + qi4jVersion )
+            .addBundle( "mvn:org.qi4j.core.osgi/qi4j-osgi-example/" + qi4jVersion + "@6" );
+    }
+
+    public final void testLifecycleWithCglibInstalled()
+        throws BundleException
+    {
+        testLifecycle();
     }
 
     public final void testLifecycle()
@@ -89,6 +103,7 @@ public final class BundleLifecycleTest extends DroneTestCase
                 break;
             }
         }
+
         assertNotNull( exampleBundle );
         return exampleBundle;
     }
