@@ -27,6 +27,7 @@ import org.qi4j.structure.Module;
 
 /**
  * @author edward.yakop@gmail.com
+ * @since 0.5
  */
 abstract class AbstractTest extends DroneTestCase
 {

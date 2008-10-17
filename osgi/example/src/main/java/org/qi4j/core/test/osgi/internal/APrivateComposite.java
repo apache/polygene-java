@@ -34,7 +34,7 @@ interface APrivateComposite extends AComposite, Composite
 
         public final String sayValue()
         {
-            return "Saying: " + me.someValue().get();
+            return "Saying: " + me.property().get();
         }
     }
 }

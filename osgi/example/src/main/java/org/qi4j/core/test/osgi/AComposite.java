@@ -7,7 +7,7 @@ import org.qi4j.property.Property;
  */
 public interface AComposite
 {
-    Property<String> someValue();
+    Property<String> property();
 
     String sayValue();
 }
