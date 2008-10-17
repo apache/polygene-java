@@ -23,5 +23,5 @@ import org.qi4j.property.Property;
  */
 public interface AnEntity
 {
-    Property<String> someValue();
+    Property<String> property();
 }

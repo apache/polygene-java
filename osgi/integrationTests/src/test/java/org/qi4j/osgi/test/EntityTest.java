@@ -17,8 +17,9 @@
 package org.qi4j.osgi.test;
 
 import org.osgi.framework.ServiceReference;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.core.test.osgi.AComposite;
+import org.qi4j.core.test.osgi.AnEntity;
+import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.property.Property;
 import org.qi4j.structure.Module;
 
@@ -26,9 +27,10 @@ import org.qi4j.structure.Module;
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public final class CompositeTest extends AbstractTest
+public final class EntityTest extends AbstractTest
 {
     public final void testCreational()
+        throws Throwable
     {
         ServiceReference moduleServiceRef = getModuleServiceRef();
         assertNotNull( moduleServiceRef );
@@ -36,16 +38,19 @@ public final class CompositeTest extends AbstractTest
         Module module = (Module) bundleContext.getService( moduleServiceRef );
         assertNotNull( module );
 
-        CompositeBuilderFactory cmpBuilderFactory = module.compositeBuilderFactory();
-        AComposite composite = cmpBuilderFactory.newComposite( AComposite.class );
-        assertNotNull( composite );
+        UnitOfWorkFactory uowf = module.unitOfWorkFactory();
+        UnitOfWork uow = uowf.newUnitOfWork();
+        AnEntity entity = uow.newEntity( AnEntity.class );
+        assertNotNull( entity );
 
-        Property<String> property = composite.property();
+        Property<String> property = entity.property();
         assertNotNull( property );
 
         assertNull( property.get() );
         property.set( "abc" );
         assertEquals( "abc", property.get() );
+
+        uow.complete();
 
         // Clean up
         bundleContext.ungetService( moduleServiceRef );

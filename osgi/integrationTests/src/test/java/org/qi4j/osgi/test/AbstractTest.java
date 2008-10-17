@@ -16,12 +16,13 @@
 */
 package org.qi4j.osgi.test;
 
+import org.ops4j.pax.drone.api.RunnerContext;
 import org.ops4j.pax.drone.connector.paxrunner.PaxRunnerConnector;
-import org.ops4j.pax.drone.connector.paxrunner.PaxRunnerConnectorFactory;
 import org.ops4j.pax.drone.connector.paxrunner.Platforms;
+import org.ops4j.pax.drone.connector.paxrunner.intern.PaxRunnerConnectorImpl;
+import org.ops4j.pax.drone.spi.intern.RunnerContextImpl;
 import org.ops4j.pax.drone.spi.junit.DroneTestCase;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.qi4j.structure.Module;
 
@@ -34,12 +35,18 @@ abstract class AbstractTest extends DroneTestCase
     private static final String SYMBOLIC_NAME_QI4J_EXAMPLE = "org.qi4j.core.osgi.qi4j-osgi-example";
 
     @Override
-    protected PaxRunnerConnector configure()
+    protected final PaxRunnerConnector configure()
+    {
+        PaxRunnerConnectorImpl connector = new PaxRunnerConnectorImpl( newRunnerContext() );
+        connector.setPlatform( Platforms.FELIX );
+        return connector;
+    }
+
+    protected RunnerContext newRunnerContext()
     {
         String qi4jVersion = System.getProperty( "version.qi4j", "0.5-SNAPSHOT" );
 
-        return PaxRunnerConnectorFactory.create( this )
-            .setPlatform( Platforms.EQUINOX )
+        return new RunnerContextImpl()
             .addBundle( "mvn:org.ops4j.pax.logging/pax-logging-api" )
             .addBundle( "mvn:org.ops4j.pax.logging/pax-logging-service" )
             .addBundle( "mvn:org.qi4j.core/qi4j-core-api/" + qi4jVersion )
@@ -56,8 +63,7 @@ abstract class AbstractTest extends DroneTestCase
     protected final Bundle getQi4jExampleBundle()
     {
         Bundle exampleBundle = null;
-        BundleContext context = droneContext.getBundleContext();
-        Bundle[] bundles = context.getBundles();
+        Bundle[] bundles = bundleContext.getBundles();
         for( Bundle bundle : bundles )
         {
             String symbolicName = bundle.getSymbolicName();
@@ -74,7 +80,6 @@ abstract class AbstractTest extends DroneTestCase
 
     protected final ServiceReference getModuleServiceRef()
     {
-        BundleContext bundleContext = droneContext.getBundleContext();
         return bundleContext.getServiceReference( Module.class.getName() );
     }
 }

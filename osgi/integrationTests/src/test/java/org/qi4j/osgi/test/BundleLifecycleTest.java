@@ -16,7 +16,7 @@
  */
 package org.qi4j.osgi.test;
 
-import org.ops4j.pax.drone.connector.paxrunner.PaxRunnerConnector;
+import org.ops4j.pax.drone.api.RunnerContext;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
@@ -28,15 +28,14 @@ public final class BundleLifecycleTest extends AbstractTest
 {
 
     @Override
-    protected PaxRunnerConnector configure()
+    protected final RunnerContext newRunnerContext()
     {
-        PaxRunnerConnector runnerConnector = super.configure();
+        RunnerContext runnerContext = super.newRunnerContext();
         if( "testLifecycleWithCglibInstalled".equals( getName() ) )
         {
-            runnerConnector.addBundle( "mvn:net.sourceforge.cglib/com.springsource.net.sf.cglib/2.1.3" );
+            runnerContext.addBundle( "mvn:net.sourceforge.cglib/com.springsource.net.sf.cglib/2.1.3" );
         }
-
-        return runnerConnector;
+        return runnerContext;
     }
 
     public final void testLifecycleWithCglibInstalled()

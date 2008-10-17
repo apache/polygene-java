@@ -26,8 +26,8 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
+import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.structure.Application;
 import org.qi4j.structure.Module;
 
@@ -73,8 +73,9 @@ public final class Activator
             module.setName( MODULE_NAME );
 
             module.addComposites( APrivateComposite.class );
-            module.addEntities( EntityComposite.class );
+            module.addEntities( AnEntityComposite.class );
             module.addServices( MemoryEntityStoreService.class );
+            module.addServices( UuidIdentityGeneratorService.class );
         }
     }
 }
