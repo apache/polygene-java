@@ -1,10 +1,4 @@
-Bundle-Activator:
-
-Private-Package: net.sf.cglib.proxy, \
-                 net.sf.cglib.asm, \
-                 net.sf.cglib.core, \
-                 net.sf.cglib.reflect, \
-                 org.qi4j.runtime, \
+Private-Package: org.qi4j.runtime, \
                  org.qi4j.runtime.composite, \
                  org.qi4j.runtime.bootstrap, \
                  org.qi4j.runtime.entity, \
@@ -20,10 +14,16 @@ Private-Package: net.sf.cglib.proxy, \
                  org.qi4j.runtime.structure, \
                  org.qi4j.runtime.util
 
-Import-Package: net.sf.cglib.proxy;version=2.1.3, \
-                net.sf.cglib.asm;version=2.1.3, \
+Import-Package: net.sf.cglib.asm;version=2.1.3, \
+                net.sf.cglib.asm.attrs;version=2.1.3, \
+                net.sf.cglib.beans;version=2.1.3, \
                 net.sf.cglib.core;version=2.1.3, \
+                net.sf.cglib.proxy;version=2.1.3, \
                 net.sf.cglib.reflect;version=2.1.3, \
+                net.sf.cglib.transform;version=2.1.3, \
+                net.sf.cglib.transform.hook;version=2.1.3, \
+                net.sf.cglib.transform.impl;version=2.1.3, \
+                net.sf.cglib.util;version=2.1.3, \
                 org.qi4j, \
                 org.qi4j.bootstrap, \
                 org.qi4j.composite, \
@@ -51,10 +51,21 @@ Import-Package: net.sf.cglib.proxy;version=2.1.3, \
                 org.qi4j.structure, \
                 org.qi4j.util
 
-# Required for osgi environment that doesn't have cglib bundle deployed
-Export-Package: net.sf.cglib.proxy;version=2.1.3, \
-                net.sf.cglib.asm;version=2.1.3, \
+Export-Package: net.sf.cglib.asm;version=2.1.3, \
+                net.sf.cglib.asm.attrs;version=2.1.3, \
+                net.sf.cglib.beans;version=2.1.3, \
                 net.sf.cglib.core;version=2.1.3, \
-                net.sf.cglib.reflect;version=2.1.3
+                net.sf.cglib.proxy;version=2.1.3, \
+                net.sf.cglib.reflect;version=2.1.3, \
+                net.sf.cglib.transform;version=2.1.3, \
+                net.sf.cglib.transform.hook;version=2.1.3, \
+                net.sf.cglib.transform.impl;version=2.1.3, \
+                net.sf.cglib.util;version=2.1.3
 
-Ignore-Package: net.sf.cglib.asm.util
+Ignore-Package: net.sf.cglib.asm.util, \
+                org.apache.tools.ant, \
+                org.apache.tools.ant.types, \
+                org.codehaus.aspectwerkz.hook
+
+Embed-Dependency: cglib-nodep;scope=compile|runtime
+Embed-Transitive: true

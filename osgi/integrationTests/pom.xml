@@ -31,6 +31,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-api</artifactId>
+      <version>0.5-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>org.qi4j.core.osgi</groupId>
       <artifactId>qi4j-osgi-example</artifactId>
       <version>0.5-SNAPSHOT</version>

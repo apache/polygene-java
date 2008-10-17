@@ -26,22 +26,19 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.Mixins;
-import org.qi4j.core.test.osgi.Simple;
-import org.qi4j.injection.scope.This;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.structure.Application;
 import org.qi4j.structure.Module;
 
-public class Activator
+public final class Activator
     implements BundleActivator
 {
     private static final String MODULE_NAME = "Single Module.";
     private static final String LAYER_NAME = "Single Layer.";
-    private ServiceRegistration simpleReg;
+
     private Application application;
+    private ServiceRegistration moduleRegistration;
 
     public void start( BundleContext bundleContext )
         throws Exception
@@ -52,39 +49,19 @@ public class Activator
         application.activate();
 
         Module module = application.findModule( LAYER_NAME, MODULE_NAME );
-        CompositeBuilderFactory builderFactory = module.compositeBuilderFactory();
-        CompositeBuilder<Simple> builder = builderFactory.newCompositeBuilder( Simple.class );
-        builder.stateOfComposite().someValue().set( "Habba" );
-        Simple composite = builder.newInstance();
-
-        simpleReg = bundleContext.registerService( Simple.class.getName(), composite, new Hashtable() );
+        moduleRegistration = bundleContext.registerService( Module.class.getName(), module, new Hashtable() );
     }
 
     public void stop( BundleContext bundleContext )
         throws Exception
     {
-        simpleReg.unregister();
+        moduleRegistration.unregister();
         application.passivate();
 
-        simpleReg = null;
+        moduleRegistration = null;
         application = null;
     }
 
-    @Mixins( SimpleMixin.class )
-    private static interface SimpleComposite extends Simple, Composite
-    {
-    }
-
-    public static abstract class SimpleMixin
-        implements Simple
-    {
-        @This private Simple me;
-
-        public String sayValue()
-        {
-            return "Saying: " + me.someValue().get();
-        }
-    }
 
     private static class ApplicationAssembler
         implements Assembler
@@ -94,7 +71,10 @@ public class Activator
         {
             module.layerAssembly().setName( LAYER_NAME );
             module.setName( MODULE_NAME );
-            module.addComposites( SimpleComposite.class );
+
+            module.addComposites( APrivateComposite.class );
+            module.addEntities( EntityComposite.class );
+            module.addServices( MemoryEntityStoreService.class );
         }
     }
 }

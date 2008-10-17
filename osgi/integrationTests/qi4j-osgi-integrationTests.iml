@@ -11,6 +11,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="qi4j-core-api" exported="" />
     <orderEntry type="module" module-name="qi4j-osgi-example" />
     <orderEntry type="module-library">
       <library name="org.ops4j.pax.drone:pax-drone-spi:0.1.3">

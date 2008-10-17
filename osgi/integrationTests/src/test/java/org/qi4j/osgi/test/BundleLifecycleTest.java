@@ -16,64 +16,27 @@
  */
 package org.qi4j.osgi.test;
 
-import org.ops4j.pax.drone.api.DroneConnector;
 import org.ops4j.pax.drone.connector.paxrunner.PaxRunnerConnector;
-import org.ops4j.pax.drone.connector.paxrunner.PaxRunnerConnectorFactory;
-import org.ops4j.pax.drone.connector.paxrunner.Platforms;
-import org.ops4j.pax.drone.spi.junit.DroneTestCase;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.ServiceReference;
-import org.qi4j.core.test.osgi.Simple;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public final class BundleLifecycleTest extends DroneTestCase
+public final class BundleLifecycleTest extends AbstractTest
 {
-    private static final String SYMBOLIC_NAME_QI4J_EXAMPLE = "org.qi4j.core.osgi.qi4j-osgi-example";
 
     @Override
-    public final DroneConnector configure()
+    protected PaxRunnerConnector configure()
     {
-        String qi4jVersion = System.getProperty( "version.qi4j", "0.5-SNAPSHOT" );
-
-        PaxRunnerConnector connector = PaxRunnerConnectorFactory.create( this );
-        if( "testLifecycleWithCglibInstalled" .equals( getName() ) )
+        PaxRunnerConnector runnerConnector = super.configure();
+        if( "testLifecycleWithCglibInstalled".equals( getName() ) )
         {
-            connector.addBundle( "mvn:net.sourceforge.cglib/com.springsource.net.sf.cglib/2.1.3" );
+            runnerConnector.addBundle( "mvn:net.sourceforge.cglib/com.springsource.net.sf.cglib/2.1.3" );
         }
 
-        return connector
-            .setPlatform( Platforms.EQUINOX )
-            .addBundle( "mvn:org.ops4j.pax.logging/pax-logging-api" )
-            .addBundle( "mvn:org.ops4j.pax.logging/pax-logging-service" )
-            .addBundle( "mvn:org.qi4j.core/qi4j-core-api/" + qi4jVersion )
-            .addBundle( "mvn:org.qi4j.core/qi4j-core-spi/" + qi4jVersion )
-            .addBundle( "mvn:org.qi4j.core/qi4j-core-runtime/" + qi4jVersion )
-            .addBundle( "mvn:org.ops4j.base/ops4j-base-lang" )
-            .addBundle( "mvn:org.ops4j.pax.swissbox/pax-swissbox-extender" )
-            .addBundle( "mvn:org.ops4j.pax.swissbox/pax-swissbox-core" )
-            .addBundle( "mvn:org.ops4j.pax.swissbox/pax-swissbox-lifecycle" )
-            .addBundle( "mvn:org.qi4j.core/qi4j-core-bootstrap/" + qi4jVersion )
-            .addBundle( "mvn:org.qi4j.core.osgi/qi4j-osgi-example/" + qi4jVersion + "@6" );
-    }
-
-    public final void testLifecycle()
-        throws BundleException
-    {
-        assertNotNull( getSimpleServiceRef() );
-
-        Bundle exampleBundle = getQi4jExampleBundle();
-        exampleBundle.stop();
-
-        assertNull( getSimpleServiceRef() );
-
-        exampleBundle.start();
-
-        assertNotNull( getSimpleServiceRef() );
+        return runnerConnector;
     }
 
     public final void testLifecycleWithCglibInstalled()
@@ -82,29 +45,18 @@ public final class BundleLifecycleTest extends DroneTestCase
         testLifecycle();
     }
 
-    private ServiceReference getSimpleServiceRef()
+    public final void testLifecycle()
+        throws BundleException
     {
-        BundleContext bundleContext = droneContext.getBundleContext();
-        return bundleContext.getServiceReference( Simple.class.getName() );
-    }
+        assertNotNull( getModuleServiceRef() );
 
-    private Bundle getQi4jExampleBundle()
-    {
-        Bundle exampleBundle = null;
-        BundleContext context = droneContext.getBundleContext();
-        Bundle[] bundles = context.getBundles();
-        for( Bundle bundle : bundles )
-        {
+        Bundle exampleBundle = getQi4jExampleBundle();
+        exampleBundle.stop();
 
-            String symbolicName = bundle.getSymbolicName();
-            if( SYMBOLIC_NAME_QI4J_EXAMPLE.equals( symbolicName ) )
-            {
-                exampleBundle = bundle;
-                break;
-            }
-        }
+        assertNull( getModuleServiceRef() );
 
-        assertNotNull( exampleBundle );
-        return exampleBundle;
+        exampleBundle.start();
+
+        assertNotNull( getModuleServiceRef() );
     }
 }

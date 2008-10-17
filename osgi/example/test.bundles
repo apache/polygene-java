@@ -5,7 +5,7 @@ mvn:org.qi4j.core/qi4j-core-api@update
 mvn:org.qi4j.core/qi4j-core-spi@update
 mvn:org.qi4j.core/qi4j-core-runtime@update
 mvn:org.qi4j.core/qi4j-core-bootstrap@update
-mvn:org.qi4j.core/qi4j-core-osgitest@update
+mvn:org.qi4j.core.osgi/qi4j-osgi-example@update
 mvn:org.ops4j.pax.swissbox/pax-swissbox-extender
 mvn:org.ops4j.pax.swissbox/pax-swissbox-core
 mvn:org.ops4j.base/ops4j-base-lang

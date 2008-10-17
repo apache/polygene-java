@@ -119,12 +119,24 @@ public final class ConstructorsModel
 
         if( boundConstructors.size() == 0 )
         {
-            String toString = resolution.composite() == null ? resolution.object().toString() : fragmentClass.getName() + " in " + resolution.composite().toString();
-            String message = "Found no constructor that could be bound: " + toString;
-            if( toString.indexOf( '$' ) >= 0 )
+            StringBuilder messageBuilder = new StringBuilder( "Found no constructor that could be bound: " );
+            if( resolution.composite() == null )
             {
-                message = message + "\nNon-static inner classes can not be used as Mixin implementations.";
+                messageBuilder.append( resolution.object().toString() );
             }
+            else
+            {
+                messageBuilder.append( fragmentClass.getName() )
+                    .append( " in " )
+                    .append( resolution.composite().toString() );
+            }
+
+            if( messageBuilder.indexOf( "$" ) >= 0 )
+            {
+                messageBuilder.append( "\nNon-static inner classes can not be used as Mixin implementations." );
+            }
+
+            String message = messageBuilder.toString();
             throw new BindingException( message );
         }
 
@@ -133,7 +145,9 @@ public final class ConstructorsModel
         {
             public int compare( ConstructorModel o1, ConstructorModel o2 )
             {
-                return ( (Integer) o2.constructor().getParameterTypes().length ).compareTo( o1.constructor().getParameterTypes().length );
+                Integer model2ParametersCount = o2.constructor().getParameterTypes().length;
+                int model1ParametersCount = o1.constructor().getParameterTypes().length;
+                return model2ParametersCount.compareTo( model1ParametersCount );
             }
         } );
     }
@@ -164,7 +178,9 @@ public final class ConstructorsModel
         {
             try
             {
-                Constructor realConstructor = fragmentClass.getSuperclass().getDeclaredConstructor( constructor.getParameterTypes() );
+                Class[] constructorParameterTypes = constructor.getParameterTypes();
+                Class fragmentSuperClass = fragmentClass.getSuperclass();
+                Constructor realConstructor = fragmentSuperClass.getDeclaredConstructor( constructorParameterTypes );
                 parameterAnnotations = realConstructor.getParameterAnnotations();
             }
             catch( NoSuchMethodException e )
@@ -177,6 +193,7 @@ public final class ConstructorsModel
         {
             parameterAnnotations = constructor.getParameterAnnotations();
         }
+
         return parameterAnnotations;
     }
 
@@ -185,22 +202,62 @@ public final class ConstructorsModel
         Class instantiationClass = fragmentClass;
         if( Modifier.isAbstract( fragmentClass.getModifiers() ) )
         {
-            Enhancer enhancer = new Enhancer();
-            enhancer.setSuperclass( fragmentClass );
-            enhancer.setCallbackTypes( new Class[]{ NoOp.class } );
-            enhancer.setCallbackFilter( new CallbackFilter()
-            {
-
-                public int accept( Method method )
-                {
-                    return 0;
-                }
-            } );
+            Enhancer enhancer = createEnchancer( fragmentClass );
             instantiationClass = enhancer.createClass();
             Enhancer.registerStaticCallbacks( instantiationClass, new Callback[]{ NoOp.INSTANCE } );
         }
         return instantiationClass;
     }
 
+    private Enhancer createEnchancer( Class fragmentClass )
+    {
+        Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass( fragmentClass );
+        // TODO: make this configurable?
+        enhancer.setClassLoader( new BridgeClassLoader( fragmentClass.getClassLoader() ) );
+        enhancer.setCallbackTypes( new Class[]{ NoOp.class } );
+        enhancer.setCallbackFilter( new CallbackFilter()
+        {
+            public int accept( Method method )
+            {
+                return 0;
+            }
+        } );
+        return enhancer;
+    }
 
+    private static class BridgeClassLoader extends ClassLoader
+    {
+        private static final ClassLoader classLoader = ConstructorsModel.class.getClassLoader();
+
+        public BridgeClassLoader( ClassLoader mixinClassLoader )
+        {
+            super( mixinClassLoader );
+        }
+
+        @Override
+        protected Class<?> loadClass( String aClassName, boolean isResolve )
+            throws ClassNotFoundException
+        {
+            if( aClassName.startsWith( "net.sf.cglib" ) )
+            {
+                try
+                {
+                    Class<?> clazz = classLoader.loadClass( aClassName );
+
+                    if( isResolve )
+                    {
+                        resolveClass( clazz );
+                    }
+                    return clazz;
+                }
+                catch( Exception e )
+                {
+                    // fall back to classic delegation
+                }
+            }
+
+            return super.loadClass( aClassName, isResolve );
+        }
+    }
 }

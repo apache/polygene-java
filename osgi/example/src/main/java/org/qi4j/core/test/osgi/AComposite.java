@@ -5,7 +5,7 @@ import org.qi4j.property.Property;
 /**
  * @author Niclas Hedhman
  */
-public interface Simple
+public interface AComposite
 {
     Property<String> someValue();
 
