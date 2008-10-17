@@ -228,9 +228,10 @@ public final class ConstructorsModel
 
     private static class BridgeClassLoader extends ClassLoader
     {
-        private static final ClassLoader classLoader = ConstructorsModel.class.getClassLoader();
+        private static final String CGLIB_PACKAGE_NAME = "net.sf.cglib";
+        private static final ClassLoader CGLIB_CLASS_LOADER = Enhancer.class.getClassLoader();
 
-        public BridgeClassLoader( ClassLoader mixinClassLoader )
+        private BridgeClassLoader( ClassLoader mixinClassLoader )
         {
             super( mixinClassLoader );
         }
@@ -239,22 +240,16 @@ public final class ConstructorsModel
         protected Class<?> loadClass( String aClassName, boolean isResolve )
             throws ClassNotFoundException
         {
-            if( aClassName.startsWith( "net.sf.cglib" ) )
+            if( aClassName.startsWith( CGLIB_PACKAGE_NAME ) )
             {
-                try
-                {
-                    Class<?> clazz = classLoader.loadClass( aClassName );
+                Class<?> clazz = CGLIB_CLASS_LOADER.loadClass( aClassName );
 
-                    if( isResolve )
-                    {
-                        resolveClass( clazz );
-                    }
-                    return clazz;
-                }
-                catch( Exception e )
+                if( isResolve )
                 {
-                    // fall back to classic delegation
+                    resolveClass( clazz );
                 }
+
+                return clazz;
             }
 
             return super.loadClass( aClassName, isResolve );
