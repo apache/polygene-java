@@ -18,10 +18,10 @@ package org.qi4j.osgi.test;
 
 import org.osgi.framework.ServiceReference;
 import org.qi4j.core.test.osgi.AnEntity;
+import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.property.Property;
 import org.qi4j.structure.Module;
 
@@ -31,17 +31,6 @@ import org.qi4j.structure.Module;
  */
 public final class EntityTest extends AbstractTest
 {
-    public final void testCreational()
-        throws Throwable
-    {
-        ServiceReference moduleServiceRef = getModuleServiceRef();
-        UnitOfWorkFactory uowf = getUnitOfWorkFactory( moduleServiceRef );
-        createNewEntity( uowf );
-
-        // Clean up
-        bundleContext.ungetService( moduleServiceRef );
-    }
-
     private UnitOfWorkFactory getUnitOfWorkFactory( ServiceReference moduleRef )
     {
         assertNotNull( moduleRef );
