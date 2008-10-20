@@ -191,6 +191,7 @@ public class MemoryEntityStoreMixin
 
             public void remove()
             {
+                throw new UnsupportedOperationException();
             }
         };
     }

@@ -39,6 +39,8 @@ abstract class AbstractTest extends DroneTestCase
     {
         PaxRunnerConnectorImpl connector = new PaxRunnerConnectorImpl( newRunnerContext() );
         connector.setPlatform( Platforms.FELIX );
+        // Uncomment to pax-runner to attach to port 5005
+//        connector.addVMOption( "-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=5005,suspend=y" );
         return connector;
     }
 

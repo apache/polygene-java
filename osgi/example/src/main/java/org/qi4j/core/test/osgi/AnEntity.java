@@ -16,12 +16,13 @@
 */
 package org.qi4j.core.test.osgi;
 
+import org.qi4j.entity.Identity;
 import org.qi4j.property.Property;
 
 /**
  * @author edward.yakop@gmail.com
  */
-public interface AnEntity
+public interface AnEntity extends Identity
 {
     Property<String> property();
 }
