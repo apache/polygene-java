@@ -19,48 +19,37 @@ package org.qi4j.library.swing.visualizer.model;
 import java.util.LinkedList;
 import java.util.List;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.spi.composite.MethodConstraintsDescriptor;
+import org.qi4j.spi.composite.MethodConcernsDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
- * @see MethodConstraintsDescriptor
  * @since 0.5
  */
-public final class MethodConstraintsDetailDescriptor
+public final class MethodConcernsDetailDescriptor
 {
-    private final MethodConstraintsDescriptor descriptor;
+    private final MethodConcernsDescriptor descriptor;
     private CompositeMethodDetailDescriptor method;
-    private final List<MethodConstraintDetailDescriptor> constraints;
+    private final List<MethodConcernDetailDescriptor> concerns;
 
-    MethodConstraintsDetailDescriptor( MethodConstraintsDescriptor aDescriptor )
+    MethodConcernsDetailDescriptor( MethodConcernsDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
-
         descriptor = aDescriptor;
-        constraints = new LinkedList<MethodConstraintDetailDescriptor>();
+        concerns = new LinkedList<MethodConcernDetailDescriptor>();
     }
 
     /**
-     * @return Descriptor of this {@code CompositeMethodConstrainsDetailDescriptor}. Never return {@code null}.
+     * @return Descriptor of this {@code MethodConcernsDescriptor}.
      * @since 0.5
      */
-    public final MethodConstraintsDescriptor descriptor()
+    public final MethodConcernsDescriptor descriptor()
     {
         return descriptor;
     }
 
     /**
-     * @return Constraints of this {@code CompositeMethodConstrainsDetailDescriptor}. Never return {@code null}.
-     * @since 0.5
-     */
-    public final Iterable<MethodConstraintDetailDescriptor> constraints()
-    {
-        return constraints;
-    }
-
-    /**
-     * @return Method that owns this {@code CompositeMethodConstrainsDetailDescriptor}. Never return {@code null}.
+     * @return Method that owns this {@code MethodConcernsDescriptor}.
      * @since 0.5
      */
     public final CompositeMethodDetailDescriptor method()
@@ -68,19 +57,27 @@ public final class MethodConstraintsDetailDescriptor
         return method;
     }
 
+    /**
+     * @return concerns of this {@code MethodConcernDetailDescriptor}.
+     * @since 0.5
+     */
+    public final Iterable<MethodConcernDetailDescriptor> concerns()
+    {
+        return concerns;
+    }
+
     final void setMethod( CompositeMethodDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
-
         method = aDescriptor;
     }
 
-    final void addConstraint( MethodConstraintDetailDescriptor aDescriptor )
+    final void addConcern( MethodConcernDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
-
-        aDescriptor.setConstraints( this );
-        constraints.add( aDescriptor );
+        aDescriptor.setConcerns( this );
+        concerns.add( aDescriptor );
     }
 }

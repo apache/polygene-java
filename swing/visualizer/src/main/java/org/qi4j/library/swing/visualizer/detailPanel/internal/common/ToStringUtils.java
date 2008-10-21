@@ -32,6 +32,9 @@ import org.qi4j.library.swing.visualizer.model.CompositeMethodDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.InjectedFieldDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.InjectedMethodDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.MethodConcernDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.MethodConstraintDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.MethodSideEffectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 import org.qi4j.service.ServiceDescriptor;
@@ -160,6 +163,21 @@ public final class ToStringUtils
             CompositeMethodDetailDescriptor detailDescriptor = (CompositeMethodDetailDescriptor) anObject;
             Method method = detailDescriptor.descriptor().method();
             return methodToString( method );
+        }
+        else if( MethodConcernDetailDescriptor.class.isAssignableFrom( valueClass ) )
+        {
+            MethodConcernDetailDescriptor detailDescriptor = (MethodConcernDetailDescriptor) anObject;
+            return detailDescriptor.descriptor().modifierClass().getSimpleName();
+        }
+        else if( MethodSideEffectDetailDescriptor.class.isAssignableFrom( valueClass ) )
+        {
+            MethodSideEffectDetailDescriptor detailDescriptor = (MethodSideEffectDetailDescriptor) anObject;
+            return detailDescriptor.descriptor().modifierClass().getSimpleName();
+        }
+        else if( MethodConstraintDetailDescriptor.class.isAssignableFrom( valueClass ) )
+        {
+            MethodConstraintDetailDescriptor detailDescriptor = (MethodConstraintDetailDescriptor) anObject;
+            return detailDescriptor.descriptor().annotation().annotationType().getSimpleName();
         }
 
         return anObject.toString();

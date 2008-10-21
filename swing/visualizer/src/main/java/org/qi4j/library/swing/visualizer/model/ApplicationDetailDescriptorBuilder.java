@@ -30,8 +30,10 @@ import org.qi4j.spi.composite.InjectedFieldDescriptor;
 import org.qi4j.spi.composite.InjectedMethodDescriptor;
 import org.qi4j.spi.composite.InjectedParametersDescriptor;
 import org.qi4j.spi.composite.MethodConcernDescriptor;
+import org.qi4j.spi.composite.MethodConcernsDescriptor;
 import org.qi4j.spi.composite.MethodConstraintsDescriptor;
 import org.qi4j.spi.composite.MethodSideEffectDescriptor;
+import org.qi4j.spi.composite.MethodSideEffectsDescriptor;
 import org.qi4j.spi.composite.MixinDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
@@ -85,32 +87,27 @@ public final class ApplicationDetailDescriptorBuilder
         // Temp: current composite method
         private CompositeMethodDetailDescriptor currMethodDesciptor;
 
-        // Temp: current composite method constraint
-        private MethodConstraintsDetailDescriptor currMethodConstraintDescriptor;
+        // Temp: current method constraints
+        private MethodConstraintsDetailDescriptor currMethodConstraintsDescriptor;
 
         // Temp: current object
         private ObjectDetailDescriptor currObjectDescriptor;
 
-        // Temp: current method
+        // Temp: current method concerns
+        private MethodConcernsDetailDescriptor currMethodConcernsDescriptor;
+
+        // Temp: current method concern
         private MethodConcernDetailDescriptor currMethodConcernDescriptor;
+
+        // Temp: current method side effects
+        private MethodSideEffectsDetailDescriptor currMethodSideEffectsDescriptor;
 
         // Temp: current side effect
         private MethodSideEffectDetailDescriptor currMethodSideEffectDescriptor;
 
-
         private ApplicationDescriptorVisitor()
         {
-            applicationDescriptor = null;
-            currLayerDescriptor = null;
             layerDescToDetail = new HashMap<LayerDescriptor, LayerDetailDescriptor>();
-            currModuleDescriptor = null;
-            currCompositeDescriptor = null;
-            currMixinDescriptor = null;
-            currConstructorDescriptor = null;
-            currMethodDesciptor = null;
-            currInjectedMethodDescriptor = null;
-            currObjectDescriptor = null;
-            currMethodConstraintDescriptor = null;
         }
 
         @Override
@@ -185,9 +182,23 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public final void visit( MethodConstraintsDescriptor aDescriptor )
         {
-            currMethodConstraintDescriptor =
+            currMethodConstraintsDescriptor =
                 new MethodConstraintsDetailDescriptor( aDescriptor );
-            currMethodDesciptor.addConstraint( currMethodConstraintDescriptor );
+            currMethodDesciptor.setConstraints( currMethodConstraintsDescriptor );
+        }
+
+        @Override
+        public final void visit( ConstraintDescriptor aDescriptor )
+        {
+            MethodConstraintDetailDescriptor detailDescriptor = new MethodConstraintDetailDescriptor( aDescriptor );
+            currMethodConstraintsDescriptor.addConstraint( detailDescriptor );
+        }
+
+        @Override
+        public final void visit( MethodConcernsDescriptor aDescriptor )
+        {
+            currMethodConcernsDescriptor = new MethodConcernsDetailDescriptor( aDescriptor );
+            currMethodDesciptor.setConcerns( currMethodConcernsDescriptor );
         }
 
         @Override
@@ -196,7 +207,7 @@ public final class ApplicationDetailDescriptorBuilder
             resetInjectableRelatedVariables();
 
             currMethodConcernDescriptor = new MethodConcernDetailDescriptor( aDescriptor );
-            currMethodDesciptor.addConcern( currMethodConcernDescriptor );
+            currMethodConcernsDescriptor.addConcern( currMethodConcernDescriptor );
         }
 
         private void resetInjectableRelatedVariables()
@@ -208,12 +219,19 @@ public final class ApplicationDetailDescriptorBuilder
         }
 
         @Override
+        public final void visit( MethodSideEffectsDescriptor aDescriptor )
+        {
+            currMethodSideEffectsDescriptor = new MethodSideEffectsDetailDescriptor( aDescriptor );
+            currMethodDesciptor.setSideEffects( currMethodSideEffectsDescriptor );
+        }
+
+        @Override
         public final void visit( MethodSideEffectDescriptor aDescriptor )
         {
             resetInjectableRelatedVariables();
 
             currMethodSideEffectDescriptor = new MethodSideEffectDetailDescriptor( aDescriptor );
-            currMethodDesciptor.addSideEffect( currMethodSideEffectDescriptor );
+            currMethodSideEffectsDescriptor.addSideEffect( currMethodSideEffectDescriptor );
         }
 
         @Override
@@ -234,12 +252,6 @@ public final class ApplicationDetailDescriptorBuilder
             currModuleDescriptor.addObject( currObjectDescriptor );
         }
 
-        @Override
-        public final void visit( ConstraintDescriptor aDescriptor )
-        {
-            ConstraintDetailDescriptor detailDescriptor = new ConstraintDetailDescriptor( aDescriptor );
-            currMethodConstraintDescriptor.addConstraint( detailDescriptor );
-        }
 
         @Override
         public void visit( ConstructorDescriptor aDescriptor )

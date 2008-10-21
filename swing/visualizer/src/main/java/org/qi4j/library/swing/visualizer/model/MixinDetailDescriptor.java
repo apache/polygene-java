@@ -27,6 +27,7 @@ import org.qi4j.spi.composite.MixinDescriptor;
  * @since 0.5
  */
 public final class MixinDetailDescriptor
+    implements InjectableDetailDescriptor
 {
     private final MixinDescriptor descriptor;
     private CompositeDetailDescriptor composite;

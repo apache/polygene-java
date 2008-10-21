@@ -14,20 +14,29 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.admin.pages;
-
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.Concerns;
-import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.Page;
-import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.UserDetailPageMixin;
-import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.AuthenticationConcern;
+package org.qi4j.library.swing.visualizer.model;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-@Concerns( AuthenticationConcern.class )
-@Mixins( UserDetailPageMixin.class )
-public interface UserDetailPage extends Page
+public interface InjectableDetailDescriptor
 {
+    /**
+     * @return Constructors. Never return {@code null}.
+     * @since 0.5
+     */
+    Iterable<ConstructorDetailDescriptor> constructors();
+
+    /**
+     * @return Injected methods. Never return {@code null}.
+     * @since 0.5
+     */
+    Iterable<InjectedMethodDetailDescriptor> injectedMethods();
+
+    /**
+     * @return Injected fields. Never return {@code null}.
+     * @since 0.5
+     */
+    Iterable<InjectedFieldDetailDescriptor> injectedFields();
 }

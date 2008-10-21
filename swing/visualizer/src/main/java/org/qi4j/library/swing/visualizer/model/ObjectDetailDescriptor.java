@@ -27,6 +27,7 @@ import org.qi4j.spi.object.ObjectDescriptor;
  * @since 0.5
  */
 public final class ObjectDetailDescriptor
+    implements InjectableDetailDescriptor
 {
     private final ObjectDescriptor descriptor;
     private ModuleDetailDescriptor module;

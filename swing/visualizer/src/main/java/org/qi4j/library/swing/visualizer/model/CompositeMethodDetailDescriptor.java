@@ -16,8 +16,6 @@
 */
 package org.qi4j.library.swing.visualizer.model;
 
-import java.util.LinkedList;
-import java.util.List;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
 
@@ -29,11 +27,11 @@ import org.qi4j.spi.composite.CompositeMethodDescriptor;
 public final class CompositeMethodDetailDescriptor
 {
     private final CompositeMethodDescriptor descriptor;
-    private CompositeDetailDescriptor composite;
-    private final List<MethodConstraintsDetailDescriptor> constraints;
-    private final List<MethodConcernDetailDescriptor> concerns;
-    private final List<MethodSideEffectDetailDescriptor> sideEffects;
 
+    private CompositeDetailDescriptor composite;
+    private MethodConstraintsDetailDescriptor constraints;
+    private MethodConcernsDetailDescriptor concerns;
+    private MethodSideEffectsDetailDescriptor sideEffects;
 
     CompositeMethodDetailDescriptor( CompositeMethodDescriptor aDescriptor )
         throws IllegalArgumentException
@@ -41,9 +39,9 @@ public final class CompositeMethodDetailDescriptor
         validateNotNull( "aDescriptor", aDescriptor );
         descriptor = aDescriptor;
 
-        constraints = new LinkedList<MethodConstraintsDetailDescriptor>();
-        concerns = new LinkedList<MethodConcernDetailDescriptor>();
-        sideEffects = new LinkedList<MethodSideEffectDetailDescriptor>();
+        composite = null;
+        constraints = null;
+        sideEffects = null;
     }
 
     /**
@@ -56,34 +54,37 @@ public final class CompositeMethodDetailDescriptor
     }
 
     /**
-     * @return Constraints of this {@code CompositeMethodDetailDescriptor}. Never return {@code null}.
+     * @return Constraints of this {@code CompositeMethodDetailDescriptor}.
+     *         Returns {@code null} if this method does not have any constraints.
      * @since 0.5
      */
-    public final Iterable<MethodConstraintsDetailDescriptor> constraints()
+    public final MethodConstraintsDetailDescriptor constraints()
     {
         return constraints;
     }
 
     /**
-     * @return Concerns of this {@code CompositeMethodDetailDescriptor}. concerns. Never return {@code null}.
+     * @return Concerns of this {@code CompositeMethodDetailDescriptor}. Returns {@code null} if this method does not
+     *         have any concerns.
      * @since 0.5
      */
-    public final Iterable<MethodConcernDetailDescriptor> concerns()
+    public final MethodConcernsDetailDescriptor concerns()
     {
         return concerns;
     }
 
     /**
-     * @return Side-effects of this {@code CompositeMethodDetailDescriptor}. Never return {@code null}.
+     * @return Side-effects of this {@code CompositeMethodDetailDescriptor}. Returns {@code null}
+     *         if this method does not have any side effects.
      * @since 0.5
      */
-    public final Iterable<MethodSideEffectDetailDescriptor> sideEffects()
+    public final MethodSideEffectsDetailDescriptor sideEffects()
     {
         return sideEffects;
     }
 
     /**
-     * @return Composite that owns this {@code CompositeMethodDetailDescriptor}. Never return {@code null}.
+     * @return Composite that owns this {@code CompositeMethodDetailDescriptor}.
      * @since 0.5
      */
     public final CompositeDetailDescriptor composite()
@@ -98,30 +99,29 @@ public final class CompositeMethodDetailDescriptor
         composite = aDescriptor;
     }
 
-    final void addConstraint( MethodConstraintsDetailDescriptor aDescriptor )
+    final void setConstraints( MethodConstraintsDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
 
         aDescriptor.setMethod( this );
-        constraints.add( aDescriptor );
+        constraints = aDescriptor;
     }
 
-    final void addConcern( MethodConcernDetailDescriptor aDescriptor )
-        throws IllegalArgumentException
+    public void setConcerns( MethodConcernsDetailDescriptor aDescriptor )
     {
         validateNotNull( "aDescriptor", aDescriptor );
 
         aDescriptor.setMethod( this );
-        concerns.add( aDescriptor );
+        concerns = aDescriptor;
     }
 
-    final void addSideEffect( MethodSideEffectDetailDescriptor aDescriptor )
+    final void setSideEffects( MethodSideEffectsDetailDescriptor aDescriptor )
     {
         validateNotNull( "aDescriptor", aDescriptor );
 
         aDescriptor.setMethod( this );
-        sideEffects.add( aDescriptor );
+        sideEffects = aDescriptor;
     }
 
     @Override
@@ -129,4 +129,5 @@ public final class CompositeMethodDetailDescriptor
     {
         return descriptor.method().getName();
     }
+
 }

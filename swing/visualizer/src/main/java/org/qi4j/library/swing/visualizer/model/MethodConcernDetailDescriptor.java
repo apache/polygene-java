@@ -26,12 +26,14 @@ import org.qi4j.spi.composite.MethodConcernDescriptor;
  * @since 0.5
  */
 public final class MethodConcernDetailDescriptor
+    implements InjectableDetailDescriptor
 {
     private final MethodConcernDescriptor descriptor;
+    private MethodConcernsDetailDescriptor concerns;
+
     private final List<ConstructorDetailDescriptor> constructors;
     private final List<InjectedMethodDetailDescriptor> injectedMethods;
     private final List<InjectedFieldDetailDescriptor> injectedFields;
-    private CompositeMethodDetailDescriptor method;
 
     MethodConcernDetailDescriptor( MethodConcernDescriptor aDescriptor )
         throws IllegalArgumentException
@@ -55,12 +57,12 @@ public final class MethodConcernDetailDescriptor
     }
 
     /**
-     * @return Method that owns this {@code MethodConcernDetailDescriptor}. Never return {@code null}.
+     * @return Method concerns that owns this {@code MethodConcernDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
-    public final CompositeMethodDetailDescriptor method()
+    public final MethodConcernsDetailDescriptor method()
     {
-        return method;
+        return concerns;
     }
 
     /**
@@ -90,13 +92,11 @@ public final class MethodConcernDetailDescriptor
         return injectedFields;
     }
 
-
-    final void setMethod( CompositeMethodDetailDescriptor aDescriptor )
+    final void setConcerns( MethodConcernsDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
-
-        method = aDescriptor;
+        concerns = aDescriptor;
     }
 
     final void addConstructor( ConstructorDetailDescriptor aDescriptor )
@@ -125,4 +125,5 @@ public final class MethodConcernDetailDescriptor
         aDescriptor.setMethodConcern( this );
         injectedFields.add( aDescriptor );
     }
+
 }

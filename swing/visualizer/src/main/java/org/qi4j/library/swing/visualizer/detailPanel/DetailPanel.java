@@ -32,6 +32,7 @@ import org.qi4j.library.swing.visualizer.detailPanel.internal.tree.ApplicationTr
 import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.CompositeMethodDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ConstructorDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.InjectedFieldDetailDescriptor;
@@ -218,6 +219,11 @@ public final class DetailPanel
         fieldForm.updateModel( aDescriptor );
 
         treePanel.onInjectedFieldSelected( aDescriptor );
+    }
+
+    public final void onCompositeMethodSelected( CompositeMethodDetailDescriptor aDescriptor )
+    {
+        // TODO
     }
 
     public final void resetSelection()

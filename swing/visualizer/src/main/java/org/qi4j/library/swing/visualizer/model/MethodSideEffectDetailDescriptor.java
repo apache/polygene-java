@@ -26,15 +26,16 @@ import org.qi4j.spi.composite.MethodSideEffectDescriptor;
  * @since 0.5
  */
 public final class MethodSideEffectDetailDescriptor
+    implements InjectableDetailDescriptor
 {
     private final MethodSideEffectDescriptor descriptor;
+    private MethodSideEffectDetailDescriptor sideEffects;
+
     private final List<ConstructorDetailDescriptor> constructors;
     private final List<InjectedMethodDetailDescriptor> injectedMethods;
     private final List<InjectedFieldDetailDescriptor> injectedFields;
 
-    private CompositeMethodDetailDescriptor method;
-
-    public MethodSideEffectDetailDescriptor( MethodSideEffectDescriptor aDescriptor )
+    MethodSideEffectDetailDescriptor( MethodSideEffectDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
@@ -55,12 +56,12 @@ public final class MethodSideEffectDetailDescriptor
     }
 
     /**
-     * @return Method that owns this {@code MethodSideEffectDetailDescriptor}. Never returns {@code null}.
+     * @return Method side effects that owns this {@code MethodSideEffectDetailDescriptor}. Never returns {@code null}.
      * @since 0.5
      */
-    public final CompositeMethodDetailDescriptor method()
+    public final MethodSideEffectDetailDescriptor sideEffects()
     {
-        return method;
+        return sideEffects;
     }
 
     /**
@@ -90,12 +91,11 @@ public final class MethodSideEffectDetailDescriptor
         return injectedFields;
     }
 
-    final void setMethod( CompositeMethodDetailDescriptor aDescriptor )
-        throws IllegalArgumentException
+    final void setSideEffects( MethodSideEffectDetailDescriptor aDescriptor )
     {
         validateNotNull( "aDescriptor", aDescriptor );
 
-        method = aDescriptor;
+        sideEffects = aDescriptor;
     }
 
     final void addConstructor( ConstructorDetailDescriptor aDescriptor )
@@ -124,4 +124,5 @@ public final class MethodSideEffectDetailDescriptor
         aDescriptor.setMethodSideEffect( this );
         injectedFields.add( aDescriptor );
     }
+
 }

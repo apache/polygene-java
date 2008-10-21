@@ -39,12 +39,14 @@ import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeMo
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder.NODE_NAME_CONSTRUCTORS;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder.NODE_NAME_ENTITIES;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder.NODE_NAME_INJECTED_FIELDS;
+import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder.NODE_NAME_METHODS;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder.NODE_NAME_MIXINS;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder.NODE_NAME_OBJECTS;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder.NODE_NAME_SERVICES;
 import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.CompositeMethodDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ConstructorDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.InjectedFieldDetailDescriptor;
@@ -428,6 +430,24 @@ public final class ApplicationTreePanel
         }
 
         return mixinOrObjectNode;
+    }
+
+    public final void onCompositeMethodSelected( CompositeMethodDetailDescriptor aDescriptor )
+    {
+        if( isNodeSelected( aDescriptor ) )
+        {
+            return;
+        }
+
+        DefaultMutableTreeNode methodNode = getCompositeMethodNode( aDescriptor );
+        selectNode( methodNode );
+    }
+
+    private DefaultMutableTreeNode getCompositeMethodNode( CompositeMethodDetailDescriptor aDescriptor )
+    {
+        CompositeDetailDescriptor composite = aDescriptor.composite();
+        DefaultMutableTreeNode compositeNode = getCompositeNode( composite );
+        return getGrandChildrenChildNode( compositeNode, NODE_NAME_METHODS, aDescriptor );
     }
 
     public final void resetSelection()

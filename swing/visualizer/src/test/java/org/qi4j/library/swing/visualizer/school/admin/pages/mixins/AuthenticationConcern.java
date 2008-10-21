@@ -14,20 +14,22 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.admin.pages;
+package org.qi4j.library.swing.visualizer.school.admin.pages.mixins;
 
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.Concerns;
-import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.Page;
-import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.UserDetailPageMixin;
-import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.AuthenticationConcern;
+import static java.lang.System.err;
+import org.qi4j.composite.ConcernOf;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-@Concerns( AuthenticationConcern.class )
-@Mixins( UserDetailPageMixin.class )
-public interface UserDetailPage extends Page
+public final class AuthenticationConcern
+    extends ConcernOf<Page>
+    implements Page
 {
+    public final String generateHtml()
+    {
+        err.println( "Bogus Authentication" );
+        return next.generateHtml();
+    }
 }

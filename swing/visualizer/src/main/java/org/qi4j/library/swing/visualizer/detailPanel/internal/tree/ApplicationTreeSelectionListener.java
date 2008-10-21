@@ -24,6 +24,7 @@ import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.CompositeMethodDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ConstructorDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.InjectedFieldDetailDescriptor;
@@ -116,6 +117,11 @@ final class ApplicationTreeSelectionListener
             {
                 InjectedFieldDetailDescriptor detailDescriptor = (InjectedFieldDetailDescriptor) userObject;
                 listener.onInjectedFieldSelected( detailDescriptor );
+            }
+            else if( CompositeMethodDetailDescriptor.class.isAssignableFrom( userObjectClass ) )
+            {
+                CompositeMethodDetailDescriptor detailDescriptor = (CompositeMethodDetailDescriptor) userObject;
+                listener.onCompositeMethodSelected( detailDescriptor );
             }
             else
             {

@@ -19,48 +19,38 @@ package org.qi4j.library.swing.visualizer.model;
 import java.util.LinkedList;
 import java.util.List;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.spi.composite.MethodConstraintsDescriptor;
+import org.qi4j.spi.composite.MethodSideEffectsDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
- * @see MethodConstraintsDescriptor
  * @since 0.5
  */
-public final class MethodConstraintsDetailDescriptor
+public final class MethodSideEffectsDetailDescriptor
 {
-    private final MethodConstraintsDescriptor descriptor;
+    private final MethodSideEffectsDescriptor descriptor;
     private CompositeMethodDetailDescriptor method;
-    private final List<MethodConstraintDetailDescriptor> constraints;
+    private final List<MethodSideEffectDetailDescriptor> sideEffects;
 
-    MethodConstraintsDetailDescriptor( MethodConstraintsDescriptor aDescriptor )
+    MethodSideEffectsDetailDescriptor( MethodSideEffectsDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
 
         descriptor = aDescriptor;
-        constraints = new LinkedList<MethodConstraintDetailDescriptor>();
+        sideEffects = new LinkedList<MethodSideEffectDetailDescriptor>();
     }
 
     /**
-     * @return Descriptor of this {@code CompositeMethodConstrainsDetailDescriptor}. Never return {@code null}.
+     * @return Descriptor of this {@code MethodSideEffectsDescriptor}.
      * @since 0.5
      */
-    public final MethodConstraintsDescriptor descriptor()
+    public final MethodSideEffectsDescriptor descriptor()
     {
         return descriptor;
     }
 
     /**
-     * @return Constraints of this {@code CompositeMethodConstrainsDetailDescriptor}. Never return {@code null}.
-     * @since 0.5
-     */
-    public final Iterable<MethodConstraintDetailDescriptor> constraints()
-    {
-        return constraints;
-    }
-
-    /**
-     * @return Method that owns this {@code CompositeMethodConstrainsDetailDescriptor}. Never return {@code null}.
+     * @return Composite method that owns this {@code MethodSideEffectsDescriptor}.
      * @since 0.5
      */
     public final CompositeMethodDetailDescriptor method()
@@ -68,19 +58,28 @@ public final class MethodConstraintsDetailDescriptor
         return method;
     }
 
+    /**
+     * @return Side effects of this {@code MethodSideEffectDetailDescriptor}.
+     * @since 0.5
+     */
+    public final Iterable<MethodSideEffectDetailDescriptor> sideEffects()
+    {
+        return sideEffects;
+    }
+
     final void setMethod( CompositeMethodDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
-
         method = aDescriptor;
     }
 
-    final void addConstraint( MethodConstraintDetailDescriptor aDescriptor )
+    final void addSideEffect( MethodSideEffectDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
 
-        aDescriptor.setConstraints( this );
-        constraints.add( aDescriptor );
+        aDescriptor.setSideEffects( aDescriptor );
+        sideEffects.add( aDescriptor );
     }
 }

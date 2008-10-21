@@ -22,7 +22,14 @@ import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeMethodDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.InjectableDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.MethodConcernDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.MethodConcernsDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.MethodConstraintDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.MethodConstraintsDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.MethodSideEffectDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.MethodSideEffectsDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
@@ -46,6 +53,9 @@ final class TreeModelBuilder
     static final String NODE_NAME_CONSTRUCTORS = "constructors";
     static final String NODE_NAME_INJECTED_FIELDS = "injected fields";
     static final String NODE_NAME_INJECTED_METHODS = "injected methods";
+    static final String NODE_NAME_CONCERNS = "concerns";
+    static final String NODE_NAME_CONSTRAINTS = "constraints";
+    static final String NODE_NAME_SIDE_EFFECTS = "side effects";
 
     public final DefaultMutableTreeNode build( ApplicationDetailDescriptor aDetailDescriptor )
     {
@@ -163,29 +173,32 @@ final class TreeModelBuilder
         Iterable<MixinDetailDescriptor> mixins = aCompositeDetailDescriptor.mixins();
         for( MixinDetailDescriptor mixin : mixins )
         {
-            addMixinNode( mixinsNode, mixin );
+            addInjectableNode( mixinsNode, mixin );
         }
     }
 
-    private void addMixinNode( DefaultMutableTreeNode mixinsNode, MixinDetailDescriptor aMixin )
+    private void addInjectableNode( DefaultMutableTreeNode aParentNode, InjectableDetailDescriptor aDescriptor )
     {
-        DefaultMutableTreeNode mixinNode = new DefaultMutableTreeNode( aMixin );
-        mixinsNode.add( mixinNode );
+        DefaultMutableTreeNode injectableNode = new DefaultMutableTreeNode( aDescriptor );
+        aParentNode.add( injectableNode );
 
         // Constructors
+        // TODO: Localization
         DefaultMutableTreeNode constructorsNode = new DefaultMutableTreeNode( NODE_NAME_CONSTRUCTORS );
-        addIterableItemNodes( constructorsNode, aMixin.constructors() );
-        addIfNotEmpty( mixinNode, constructorsNode );
+        addIterableItemNodes( constructorsNode, aDescriptor.constructors() );
+        addIfNotEmpty( injectableNode, constructorsNode );
 
         // Injected fields
+        // TODO: Localization
         DefaultMutableTreeNode fieldsNode = new DefaultMutableTreeNode( NODE_NAME_INJECTED_FIELDS );
-        addIterableItemNodes( fieldsNode, aMixin.injectedFields() );
-        addIfNotEmpty( mixinNode, fieldsNode );
+        addIterableItemNodes( fieldsNode, aDescriptor.injectedFields() );
+        addIfNotEmpty( injectableNode, fieldsNode );
 
         // Injected methods
+        // TODO: Localization
         DefaultMutableTreeNode methodsNode = new DefaultMutableTreeNode( NODE_NAME_INJECTED_METHODS );
-        addIterableItemNodes( methodsNode, aMixin.injectedMethods() );
-        addIfNotEmpty( mixinNode, methodsNode );
+        addIterableItemNodes( methodsNode, aDescriptor.injectedMethods() );
+        addIfNotEmpty( injectableNode, methodsNode );
     }
 
     private void addIterableItemNodes( DefaultMutableTreeNode aGroupNode, Iterable iterable )
@@ -204,8 +217,69 @@ final class TreeModelBuilder
         Iterable<CompositeMethodDetailDescriptor> methods = aCompositeDetailDescriptor.methods();
         for( CompositeMethodDetailDescriptor method : methods )
         {
-            DefaultMutableTreeNode methodNode = new DefaultMutableTreeNode( method );
-            methodsNode.add( methodNode );
+            addMethodNode( methodsNode, method );
+        }
+    }
+
+    private void addMethodNode( DefaultMutableTreeNode aMethodsNode, CompositeMethodDetailDescriptor aMethod )
+    {
+        DefaultMutableTreeNode methodNode = new DefaultMutableTreeNode( aMethod );
+        aMethodsNode.add( methodNode );
+
+        // TODO: Localization
+        DefaultMutableTreeNode concernsNode = new DefaultMutableTreeNode( NODE_NAME_CONCERNS );
+        addConcernsNode( concernsNode, aMethod );
+        addIfNotEmpty( methodNode, concernsNode );
+
+        // TODO: Localization
+        DefaultMutableTreeNode constraintsNode = new DefaultMutableTreeNode( NODE_NAME_CONSTRAINTS );
+        addConstraintsNode( constraintsNode, aMethod );
+        addIfNotEmpty( methodNode, constraintsNode );
+
+        // TODO: Localization
+        DefaultMutableTreeNode sideEffectsNode = new DefaultMutableTreeNode( NODE_NAME_SIDE_EFFECTS );
+        addSideEffectsNode( sideEffectsNode, aMethod );
+        addIfNotEmpty( methodNode, sideEffectsNode );
+    }
+
+    private void addConcernsNode( DefaultMutableTreeNode aConcernsNode, CompositeMethodDetailDescriptor aMethod )
+    {
+        MethodConcernsDetailDescriptor concernsDetailDescriptor = aMethod.concerns();
+        if( concernsDetailDescriptor != null )
+        {
+            Iterable<MethodConcernDetailDescriptor> concerns = concernsDetailDescriptor.concerns();
+            for( MethodConcernDetailDescriptor concern : concerns )
+            {
+                addInjectableNode( aConcernsNode, concern );
+            }
+        }
+    }
+
+    private void addConstraintsNode( DefaultMutableTreeNode aConstraintsNode, CompositeMethodDetailDescriptor aMethod )
+    {
+        MethodConstraintsDetailDescriptor constraintsDetailDescriptor = aMethod.constraints();
+        if( constraintsDetailDescriptor != null )
+        {
+            Iterable<MethodConstraintDetailDescriptor> constraints = constraintsDetailDescriptor.constraints();
+            for( MethodConstraintDetailDescriptor constraint : constraints )
+            {
+                DefaultMutableTreeNode constraintNode = new DefaultMutableTreeNode( constraint );
+
+                aConstraintsNode.add( constraintNode );
+            }
+        }
+    }
+
+    private void addSideEffectsNode( DefaultMutableTreeNode aSideEffectsNode, CompositeMethodDetailDescriptor aMethod )
+    {
+        MethodSideEffectsDetailDescriptor sideEffectsDetailDescriptor = aMethod.sideEffects();
+        if( sideEffectsDetailDescriptor != null )
+        {
+            Iterable<MethodSideEffectDetailDescriptor> sideEffects = sideEffectsDetailDescriptor.sideEffects();
+            for( MethodSideEffectDetailDescriptor sideEffect : sideEffects )
+            {
+                addInjectableNode( aSideEffectsNode, sideEffect );
+            }
         }
     }
 
@@ -214,31 +288,7 @@ final class TreeModelBuilder
         Iterable<ObjectDetailDescriptor> objects = aModule.objects();
         for( ObjectDetailDescriptor object : objects )
         {
-            addObjectNode( aObjectsNode, object );
+            addInjectableNode( aObjectsNode, object );
         }
-    }
-
-    private void addObjectNode( DefaultMutableTreeNode aObjectsNode, ObjectDetailDescriptor aDescriptor )
-    {
-        DefaultMutableTreeNode objectNode = new DefaultMutableTreeNode( aDescriptor );
-        aObjectsNode.add( objectNode );
-
-        // Constructors
-        // TODO: Localization
-        DefaultMutableTreeNode constructorsNode = new DefaultMutableTreeNode( NODE_NAME_CONSTRUCTORS );
-        addIterableItemNodes( constructorsNode, aDescriptor.constructors() );
-        addIfNotEmpty( objectNode, constructorsNode );
-
-        // Injected fields
-        // TODO: Localization
-        DefaultMutableTreeNode fieldsNode = new DefaultMutableTreeNode( NODE_NAME_INJECTED_FIELDS );
-        addIterableItemNodes( fieldsNode, aDescriptor.injectedFields() );
-        addIfNotEmpty( objectNode, fieldsNode );
-
-        // Injected methods
-        // TODO: Localization
-        DefaultMutableTreeNode methodsNode = new DefaultMutableTreeNode( NODE_NAME_INJECTED_METHODS );
-        addIterableItemNodes( methodsNode, aDescriptor.injectedMethods() );
-        addIfNotEmpty( objectNode, methodsNode );
     }
 }

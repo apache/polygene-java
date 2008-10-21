@@ -29,7 +29,7 @@ public class InjectedParametersDetailDescriptor
     private ConstructorDetailDescriptor constructor;
     private InjectedMethodDetailDescriptor method;
 
-    public InjectedParametersDetailDescriptor( InjectedParametersDescriptor aDescriptor )
+    InjectedParametersDetailDescriptor( InjectedParametersDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );

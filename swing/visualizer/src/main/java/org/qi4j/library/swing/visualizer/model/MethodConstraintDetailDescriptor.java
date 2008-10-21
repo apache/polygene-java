@@ -24,12 +24,12 @@ import org.qi4j.spi.composite.ConstraintDescriptor;
  * @see ConstraintDescriptor
  * @since 0.5
  */
-public final class ConstraintDetailDescriptor
+public final class MethodConstraintDetailDescriptor
 {
     private final ConstraintDescriptor descriptor;
     private MethodConstraintsDetailDescriptor constraints;
 
-    ConstraintDetailDescriptor( ConstraintDescriptor aDescriptor )
+    MethodConstraintDetailDescriptor( ConstraintDescriptor aDescriptor )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", aDescriptor );
@@ -38,7 +38,7 @@ public final class ConstraintDetailDescriptor
     }
 
     /**
-     * @return Descriptor of this {@code ConstraintDetailDescriptor}. Never returns {@code null}.
+     * @return Descriptor of this {@code MethodConstraintDetailDescriptor}. Never returns {@code null}.
      * @since 0.5
      */
     public final ConstraintDescriptor descriptor()
@@ -47,7 +47,7 @@ public final class ConstraintDetailDescriptor
     }
 
     /**
-     * @return Constraints that own this {@code ConstraintDetailDescriptor}. Never return {@code null}.
+     * @return Constraints that own this {@code MethodConstraintDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
     public final MethodConstraintsDetailDescriptor constraints()

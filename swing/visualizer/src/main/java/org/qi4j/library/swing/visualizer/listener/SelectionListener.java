@@ -18,6 +18,7 @@ package org.qi4j.library.swing.visualizer.listener;
 
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.CompositeMethodDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ConstructorDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.InjectedFieldDetailDescriptor;
@@ -114,10 +115,17 @@ public interface SelectionListener
     void onInjectedFieldSelected( InjectedFieldDetailDescriptor aDescriptor );
 
     /**
+     * Invoked when a composite method node is selected.
+     *
+     * @param aDescriptor The selected composite method descriptor. This argument must not be {@code null}.
+     * @since 0.5
+     */
+    void onCompositeMethodSelected( CompositeMethodDetailDescriptor aDescriptor );
+
+    /**
      * Invoked when the component reset selection.
      *
      * @since 0.5
      */
     void resetSelection();
-
 }
