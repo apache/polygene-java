@@ -412,19 +412,6 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
-      <library name="com.sun:tools:1.5.0">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../../progra~1/jetbra~1/intell~1.4/jre/jre/../lib/tools.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$MODULE_DIR$/../../../../../../../progra~1/jetbra~1/intell~1.4/jre/jre/../lib/tools-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../../progra~1/jetbra~1/intell~1.4/jre/jre/../lib/tools-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="qi4j-struts2-codebehind-plugin" exported="" />
     <orderEntry type="module-library" exported="">
       <library name="org.apache.struts:struts2-codebehind-plugin:2.1.2">
