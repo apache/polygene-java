@@ -25,7 +25,7 @@ public interface AssociationInfo
      * Get metadata that implements the given type
      *
      * @param infoType the type of metadata to be returned
-     * @return the metadata for the given type, or <code>null</code> if 
+     * @return the metadata for the given type, or <code>null</code> if
      *         no such metadata has been registered
      */
     <T> T metaInfo( Class<T> infoType );

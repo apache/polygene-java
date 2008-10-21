@@ -19,7 +19,6 @@ package org.qi4j.test.mock.internal;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.test.mock.internal.MockResolver;
 
 /**
  * Placeholder for a not specified resolver type.

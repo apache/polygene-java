@@ -55,6 +55,6 @@ public final class MetaInfo
 
     public <T extends Serializable> void add( Class<T> infoType, T info )
     {
-        metaInfoMap.put(infoType,info);
+        metaInfoMap.put( infoType, info );
     }
 }

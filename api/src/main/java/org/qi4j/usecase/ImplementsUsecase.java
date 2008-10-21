@@ -14,10 +14,10 @@
 
 package org.qi4j.usecase;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
 
 /**
  * Annotation for declaring that a method implemets a Usecase.
@@ -27,6 +27,8 @@ import java.lang.annotation.ElementType;
 public @interface ImplementsUsecase
 {
     String value(); // Name
+
     CAP guarantees() default CAP.CA; // CAP guarantees
+
     Class<?>[] uses();
 }

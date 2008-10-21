@@ -50,6 +50,7 @@ public interface UnitOfWork
 
     /**
      * Create a nested UnitOfWork
+     *
      * @return a nested UnitOfWork
      */
     UnitOfWork newUnitOfWork();
@@ -77,7 +78,7 @@ public interface UnitOfWork
      * mixins implement the type then an AmbiguousTypeException will be thrown.
      *
      * @param identity the identity of the new Entity
-     * @param type the mixin type that the EntityComposite must implement
+     * @param type     the mixin type that the EntityComposite must implement
      * @return a new Entity
      * @throws NoSuchEntityException if no EntityComposite type of the given mixin type has been registered
      * @throws LifecycleException
@@ -106,7 +107,7 @@ public interface UnitOfWork
      * mixins implement the type then an AmbiguousTypeException will be thrown.
      *
      * @param identity the identity of the new Entity
-     * @param type the mixin type that the EntityComposite must implement
+     * @param type     the mixin type that the EntityComposite must implement
      * @return a new Entity
      * @throws NoSuchEntityException if no EntityComposite type of the given mixin type has been registered
      * @throws LifecycleException
@@ -122,6 +123,7 @@ public interface UnitOfWork
      * @param type
      * @return
      * @throws EntityCompositeNotFoundException
+     *
      */
     <T> T find( String identity, Class<T> type )
         throws EntityCompositeNotFoundException;
@@ -134,6 +136,7 @@ public interface UnitOfWork
      * @param type
      * @return
      * @throws EntityCompositeNotFoundException
+     *
      */
     <T> T getReference( String identity, Class<T> type )
         throws EntityCompositeNotFoundException;
@@ -146,6 +149,7 @@ public interface UnitOfWork
      * @param entity the Entity to be dereferenced
      * @return an Entity from this UnitOfWork
      * @throws EntityCompositeNotFoundException
+     *
      */
     <T> T dereference( T entity )
         throws EntityCompositeNotFoundException;
@@ -190,6 +194,7 @@ public interface UnitOfWork
 
     /**
      * Remove the given Entity.
+     *
      * @param entity the Entity to be removed.
      * @throws LifecycleException
      */
@@ -207,6 +212,7 @@ public interface UnitOfWork
      *
      * @throws UnitOfWorkCompletionException
      * @throws ConcurrentEntityModificationException
+     *
      */
     void complete()
         throws UnitOfWorkCompletionException, ConcurrentEntityModificationException;
@@ -242,6 +248,7 @@ public interface UnitOfWork
 
     /**
      * Get the QueryBuilderFactory for this UnitOfWork
+     *
      * @return a factory
      */
     QueryBuilderFactory queryBuilderFactory();
@@ -255,7 +262,7 @@ public interface UnitOfWork
 
     /**
      * Get the ObjectBuilderFactory for this UnitOfWork
-
+     *
      * @return a factory
      */
     ObjectBuilderFactory objectBuilderFactory();

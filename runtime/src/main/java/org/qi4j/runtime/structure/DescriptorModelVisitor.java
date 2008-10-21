@@ -19,8 +19,10 @@ import org.qi4j.runtime.composite.CompositeMethodModel;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.composite.ConstructorModel;
 import org.qi4j.runtime.composite.MethodConcernModel;
+import org.qi4j.runtime.composite.MethodConcernsModel;
 import org.qi4j.runtime.composite.MethodConstraintsModel;
 import org.qi4j.runtime.composite.MethodSideEffectModel;
+import org.qi4j.runtime.composite.MethodSideEffectsModel;
 import org.qi4j.runtime.composite.MixinModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;
@@ -28,7 +30,6 @@ import org.qi4j.runtime.injection.InjectedMethodModel;
 import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.service.ServiceModel;
-import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.structure.DescriptorVisitor;
 
 /**
@@ -79,9 +80,19 @@ public class DescriptorModelVisitor extends ModelVisitor
         visitor.visit( constraintModel );
     }
 
+    @Override public void visit( MethodConcernsModel methodConcernsModel )
+    {
+        visitor.visit( methodConcernsModel );
+    }
+
     @Override public void visit( MethodConcernModel methodConcernModel )
     {
         visitor.visit( methodConcernModel );
+    }
+
+    public void visit( MethodSideEffectsModel methodSideEffectsModel )
+    {
+        visitor.visit( methodSideEffectsModel );
     }
 
     @Override public void visit( MethodSideEffectModel methodSideEffectModel )
@@ -116,7 +127,7 @@ public class DescriptorModelVisitor extends ModelVisitor
 
     @Override public void visit( EntityModel entityModel )
     {
-        visitor.visit( (EntityDescriptor) entityModel );
+        visitor.visit( entityModel );
     }
 
     @Override public void visit( ServiceModel serviceModel )

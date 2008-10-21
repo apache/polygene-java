@@ -64,14 +64,11 @@ public final class CompositeModel
         MixinsModel mixinsModel = new MixinsModel( compositeType, stateModel );
         ConcernsDeclaration concernsModel = new ConcernsDeclaration( compositeType );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType );
-        CompositeMethodsModel compositeMethodsModel = new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
+        CompositeMethodsModel compositeMethodsModel =
+            new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
 
-        return new CompositeModel( compositeType,
-                                   visibility,
-                                   metaInfo,
-                                   mixinsModel,
-                                   stateModel,
-                                   compositeMethodsModel );
+        return new CompositeModel(
+            compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
     }
 
     private final MixinsModel mixinsModel;
@@ -134,13 +131,13 @@ public final class CompositeModel
         return mixinsModel.mixinTypes();
     }
 
+    @SuppressWarnings( "unchecked" )
     private Class<? extends Composite> createProxyClass( Class<? extends Composite> compositeType )
     {
         ClassLoader proxyClassloader = compositeType.getClassLoader();
         Class[] interfaces = new Class[]{ compositeType };
         return (Class<? extends Composite>) Proxy.getProxyClass( proxyClassloader, interfaces );
     }
-
 
     public void visitModel( ModelVisitor modelVisitor )
     {

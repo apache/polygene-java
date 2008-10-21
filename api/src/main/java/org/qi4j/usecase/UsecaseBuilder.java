@@ -32,19 +32,19 @@ public class UsecaseBuilder
     {
     }
 
-    public UsecaseBuilder named(String aName)
+    public UsecaseBuilder named( String aName )
     {
         name = aName;
         return this;
     }
 
-    public UsecaseBuilder withGuarantees(CAP cap)
+    public UsecaseBuilder withGuarantees( CAP cap )
     {
         guarantees = cap;
         return this;
     }
 
-    public UsecaseBuilder uses( StateUsage stateUsage)
+    public UsecaseBuilder uses( StateUsage stateUsage )
     {
         this.stateUsage = stateUsage;
         return this;
@@ -53,11 +53,11 @@ public class UsecaseBuilder
     public Usecase newUsecase()
     {
         StateUsage usecaseStateUsage = stateUsage;
-        if (usecaseStateUsage == null)
+        if( usecaseStateUsage == null )
         {
-            usecaseStateUsage = new StateUsage(true);
+            usecaseStateUsage = new StateUsage( true );
         }
 
-        return new Usecase(name, guarantees, usecaseStateUsage);
+        return new Usecase( name, guarantees, usecaseStateUsage );
     }
 }

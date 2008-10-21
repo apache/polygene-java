@@ -59,7 +59,7 @@ public final class StateUsage
         return recording;
     }
 
-    public StateUsage usesEntityType(Class entityType)
+    public StateUsage usesEntityType( Class entityType )
     {
         usedEntityTypes.add( entityType.getName() );
         return this;
@@ -73,7 +73,7 @@ public final class StateUsage
             {
                 String qualifiedName = GenericPropertyInfo.getQualifiedName( mixinMethod );
                 usedProperties.add( qualifiedName );
-                usedMixinTypes.add( GenericPropertyInfo.getDeclaringClassName( qualifiedName ));
+                usedMixinTypes.add( GenericPropertyInfo.getDeclaringClassName( qualifiedName ) );
             }
         }
         return this;
@@ -82,12 +82,12 @@ public final class StateUsage
     public StateUsage usesProperty( String qualifiedName )
     {
         usedProperties.add( qualifiedName );
-        usedMixinTypes.add( GenericPropertyInfo.getDeclaringClassName( qualifiedName ));
+        usedMixinTypes.add( GenericPropertyInfo.getDeclaringClassName( qualifiedName ) );
         return this;
     }
 
     @Override public String toString()
     {
-        return usedProperties.toString()+(recording?"(recording)":"");
+        return usedProperties.toString() + ( recording ? "(recording)" : "" );
     }
 }

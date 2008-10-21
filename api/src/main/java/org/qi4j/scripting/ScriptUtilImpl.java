@@ -15,7 +15,6 @@ import java.io.PrintStream;
 
 /**
  * TODO
- *
  */
 public class ScriptUtilImpl
     implements ScriptUtil

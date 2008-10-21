@@ -23,7 +23,7 @@ import java.io.Serializable;
 public class Usecase
     implements Serializable
 {
-    public static final Usecase DEFAULT = new Usecase("Default", CAP.CA, new StateUsage(false));
+    public static final Usecase DEFAULT = new Usecase( "Default", CAP.CA, new StateUsage( false ) );
 
     private String name;
     private CAP guarantees;
@@ -53,6 +53,6 @@ public class Usecase
 
     @Override public String toString()
     {
-        return name + ", guarantees "+guarantees+", uses "+stateUsage;
+        return name + ", guarantees " + guarantees + ", uses " + stateUsage;
     }
 }

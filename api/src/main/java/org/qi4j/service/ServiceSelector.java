@@ -31,18 +31,22 @@ import java.lang.reflect.Proxy;
  */
 public final class ServiceSelector<T>
 {
-    public static <T> ServiceSelector<T> select(Iterable<ServiceReference<T>> services, Selector selector)
+    public static <T> ServiceSelector<T> select( Iterable<ServiceReference<T>> services, Selector selector )
     {
-        return new ServiceSelector<T>(services, selector);
+        return new ServiceSelector<T>( services, selector );
     }
 
-    public static <T> T service(Iterable<ServiceReference<T>> services, Selector selector)
+    public static <T> T service( Iterable<ServiceReference<T>> services, Selector selector )
     {
         ServiceSelector<T> serviceSelector = select( services, selector );
-        if (serviceSelector != null)
+        if( serviceSelector != null )
+        {
             return serviceSelector.get();
+        }
         else
+        {
             return null;
+        }
     }
 
     public static Selector<Object> withId( final String anId )
@@ -81,7 +85,7 @@ public final class ServiceSelector<T>
         };
     }
 
-    public static Selector<Object> withTags(final String... tags)
+    public static Selector<Object> withTags( final String... tags )
     {
         return new Selector<Object>()
         {
@@ -91,7 +95,7 @@ public final class ServiceSelector<T>
                 {
                     ServiceTags serviceTags = service.metaInfo( ServiceTags.class );
 
-                    if( tags != null && serviceTags.hasTags( tags ))
+                    if( tags != null && serviceTags.hasTags( tags ) )
                     {
                         return service;
                     }
@@ -101,7 +105,7 @@ public final class ServiceSelector<T>
         };
     }
 
-    public static Selector<Object> firstOf(final Selector<Object>... selectors)
+    public static Selector<Object> firstOf( final Selector<Object>... selectors )
     {
         return new Selector<Object>()
         {
@@ -110,8 +114,10 @@ public final class ServiceSelector<T>
                 for( Selector<Object> selector : selectors )
                 {
                     ServiceReference<Object> serviceRef = selector.select( services );
-                    if (serviceRef != null)
+                    if( serviceRef != null )
+                    {
                         return serviceRef;
+                    }
                 }
                 return null;
             }

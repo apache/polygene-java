@@ -26,6 +26,7 @@ public interface Entity
      * Check if the Entity is a reference or not. A reference
      * is an Entity that has been requested from a UnitOfWork, but
      * has not yet been loaded.
+     *
      * @return true if the Entity is a reference
      */
     boolean isReference();

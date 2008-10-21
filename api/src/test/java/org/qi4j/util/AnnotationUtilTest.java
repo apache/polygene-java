@@ -2,11 +2,12 @@ package org.qi4j.util;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import org.junit.Test;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.SideEffects;
-import static org.qi4j.util.AnnotationUtil.*;
+import static org.qi4j.util.AnnotationUtil.getAnnotation;
 
 /**
  * @author mh14 @ jexp.de

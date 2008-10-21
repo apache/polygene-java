@@ -37,25 +37,29 @@ public class ServiceTags
         return tags;
     }
 
-    public boolean hasTag(String tag)
+    public boolean hasTag( String tag )
     {
         for( String serviceTag : tags )
         {
-            if (serviceTag.equals( tag ))
+            if( serviceTag.equals( tag ) )
+            {
                 return true;
+            }
         }
 
         return false;
     }
 
-    public boolean hasTags(String... aTags)
+    public boolean hasTags( String... aTags )
     {
         for( String tag : aTags )
         {
-            if (!hasTag(tag))
+            if( !hasTag( tag ) )
+            {
                 return false;
+            }
         }
-        
+
         return true;
     }
 }

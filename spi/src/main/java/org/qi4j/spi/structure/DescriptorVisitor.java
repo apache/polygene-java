@@ -23,8 +23,10 @@ import org.qi4j.spi.composite.InjectedFieldDescriptor;
 import org.qi4j.spi.composite.InjectedMethodDescriptor;
 import org.qi4j.spi.composite.InjectedParametersDescriptor;
 import org.qi4j.spi.composite.MethodConcernDescriptor;
+import org.qi4j.spi.composite.MethodConcernsDescriptor;
 import org.qi4j.spi.composite.MethodConstraintsDescriptor;
 import org.qi4j.spi.composite.MethodSideEffectDescriptor;
+import org.qi4j.spi.composite.MethodSideEffectsDescriptor;
 import org.qi4j.spi.composite.MixinDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
@@ -75,7 +77,15 @@ public class DescriptorVisitor
     {
     }
 
+    public void visit( MethodConcernsDescriptor methodConcernsDescriptor )
+    {
+    }
+
     public void visit( MethodConcernDescriptor methodConcernDescriptor )
+    {
+    }
+
+    public void visit( MethodSideEffectsDescriptor methodSideEffectsDescriptor )
     {
     }
 

@@ -14,8 +14,8 @@
 
 package org.qi4j.structure;
 
-import org.qi4j.service.Activatable;
 import org.qi4j.Qi4j;
+import org.qi4j.service.Activatable;
 
 /**
  * TODO

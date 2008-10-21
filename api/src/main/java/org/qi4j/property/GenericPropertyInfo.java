@@ -94,7 +94,7 @@ public final class GenericPropertyInfo
      */
     public static String toURI( final Method accessor )
     {
-        return toURI(getQualifiedName( accessor ));
+        return toURI( getQualifiedName( accessor ) );
     }
 
     /**
@@ -106,7 +106,7 @@ public final class GenericPropertyInfo
      */
     public static String toURI( final Class declaringClass, String name )
     {
-        return toURI(getQualifiedName( declaringClass, name ));
+        return toURI( getQualifiedName( declaringClass, name ) );
     }
 
     /**
@@ -117,7 +117,7 @@ public final class GenericPropertyInfo
      */
     public static String toURI( final String qualifiedName )
     {
-        return "urn:qi4j:entity:" + qualifiedName.replace( ':','#' );
+        return "urn:qi4j:entity:" + qualifiedName.replace( ':', '#' );
     }
 
     /**
@@ -128,7 +128,7 @@ public final class GenericPropertyInfo
      */
     public static String toQualifiedName( final String uri )
     {
-        return uri.substring( "urn:qi4j:entity:".length() ).replace( '#',':' );
+        return uri.substring( "urn:qi4j:entity:".length() ).replace( '#', ':' );
     }
 
     /**

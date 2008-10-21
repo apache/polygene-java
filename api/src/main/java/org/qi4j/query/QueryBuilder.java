@@ -56,5 +56,5 @@ public interface QueryBuilder<T>
      * @return a new Query instance
      */
     Query<T> newQuery( Iterable<T> iterable );
-    
+
 }

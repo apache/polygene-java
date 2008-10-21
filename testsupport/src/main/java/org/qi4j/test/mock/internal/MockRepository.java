@@ -17,8 +17,6 @@
  */
 package org.qi4j.test.mock.internal;
 
-import org.qi4j.test.mock.internal.MockResolver;
-
 /**
  * TODO Add JavaDoc.
  *

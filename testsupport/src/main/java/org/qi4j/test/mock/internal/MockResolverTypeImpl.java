@@ -18,7 +18,6 @@
 package org.qi4j.test.mock.internal;
 
 import org.qi4j.test.mock.MockResolverType;
-import org.qi4j.test.mock.internal.MethodClassMatcherMockResolver;
 
 /**
  * TODO Add JavaDoc.

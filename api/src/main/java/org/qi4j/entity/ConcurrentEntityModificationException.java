@@ -43,7 +43,7 @@ public class ConcurrentEntityModificationException extends UnitOfWorkCompletionE
      * Convenience method to refresh all antities that had been modified.
      *
      * @param unitOfWork the UoW to refresh the entities in. This has to be the same UoW
-     * as the one they originaly came from.
+     *                   as the one they originaly came from.
      */
     public void refreshEntities( UnitOfWork unitOfWork )
     {

@@ -92,7 +92,7 @@ public class UsageGraph<K>
                 int pos = resolved.size();
                 for( K entry : resolved )
                 {
-                    if( transitiveUse( entry, item ))
+                    if( transitiveUse( entry, item ) )
                     {
                         pos = resolved.indexOf( entry );
                         break;

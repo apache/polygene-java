@@ -53,6 +53,7 @@ public interface ObjectBuilder<T>
 
     /**
      * Inject an existing instance. Only fields and methods will be called.
+     *
      * @param instance
      * @throws ConstructionException
      */

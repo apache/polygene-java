@@ -13,7 +13,8 @@
  */
 package org.qi4j.query;
 
-/** This Exception is thrown in <code>QueryBuilderFactory.newQueryBuilder()</code> method if
+/**
+ * This Exception is thrown in <code>QueryBuilderFactory.newQueryBuilder()</code> method if
  * no indexing subsystem has been declared in the assembly.
  */
 public final class MissingIndexingSystemException extends QueryException

@@ -19,8 +19,10 @@ import org.qi4j.runtime.composite.CompositeMethodModel;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.composite.ConstructorModel;
 import org.qi4j.runtime.composite.MethodConcernModel;
+import org.qi4j.runtime.composite.MethodConcernsModel;
 import org.qi4j.runtime.composite.MethodConstraintsModel;
 import org.qi4j.runtime.composite.MethodSideEffectModel;
+import org.qi4j.runtime.composite.MethodSideEffectsModel;
 import org.qi4j.runtime.composite.MixinModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;
@@ -62,7 +64,15 @@ public class ModelVisitor
     {
     }
 
+    public void visit( MethodConcernsModel methodConcernsModel )
+    {
+    }
+
     public void visit( MethodConcernModel methodConcernModel )
+    {
+    }
+
+    public void visit( MethodSideEffectsModel methodSideEffectsModel )
     {
     }
 

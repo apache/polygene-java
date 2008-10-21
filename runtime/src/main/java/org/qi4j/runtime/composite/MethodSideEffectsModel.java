@@ -22,12 +22,13 @@ import java.util.List;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.composite.MethodSideEffectsDescriptor;
 
 /**
  * TODO
  */
 public final class MethodSideEffectsModel
-    implements Binder
+    implements Binder, MethodSideEffectsDescriptor
 {
     private final Method method;
     private List<MethodSideEffectModel> sideEffectModels = null;
@@ -44,7 +45,8 @@ public final class MethodSideEffectsModel
     }
 
     // Binding
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         for( MethodSideEffectModel methodSideEffectModel : sideEffectModels )
         {
@@ -76,6 +78,7 @@ public final class MethodSideEffectsModel
 
     public void visitModel( ModelVisitor modelVisitor )
     {
+        modelVisitor.visit( this );
         for( MethodSideEffectModel methodSideEffectModel : sideEffectModels )
         {
             methodSideEffectModel.visitModel( modelVisitor );

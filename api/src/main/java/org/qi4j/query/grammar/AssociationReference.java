@@ -28,7 +28,7 @@ public interface AssociationReference
 {
     enum ReferenceType
     {
-        NONE,ASSOCIATION,ROLE
+        NONE, ASSOCIATION, ROLE
     }
 
     /**

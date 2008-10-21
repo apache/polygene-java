@@ -20,8 +20,8 @@ package org.qi4j.bootstrap;
 
 import java.io.IOException;
 import java.util.Iterator;
-import org.qi4j.structure.Application;
 import org.qi4j.bootstrap.internal.ServiceLoader;
+import org.qi4j.structure.Application;
 
 public class Energy4Java
 {

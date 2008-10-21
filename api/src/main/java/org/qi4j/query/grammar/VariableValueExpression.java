@@ -22,5 +22,5 @@ public interface VariableValueExpression<T> extends SingleValueExpression<T>
     String getName();
 
     void setValue( T value );
-    
+
 }

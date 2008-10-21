@@ -18,6 +18,7 @@
  */
 package org.qi4j.query;
 
+import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.query.grammar.AssociationIsNotNullPredicate;
 import org.qi4j.query.grammar.AssociationIsNullPredicate;
 import org.qi4j.query.grammar.AssociationReference;
@@ -38,7 +39,6 @@ import org.qi4j.query.grammar.PropertyIsNullPredicate;
 import org.qi4j.query.grammar.PropertyReference;
 import org.qi4j.query.grammar.SingleValueExpression;
 import org.qi4j.query.grammar.VariableValueExpression;
-import org.qi4j.entity.association.ManyAssociation;
 
 /**
  * SPI interface for QueryExpressionsProviders

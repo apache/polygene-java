@@ -18,7 +18,7 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.Queryable;
 
 /**
- * All Configuration composites should 
+ * All Configuration composites should
  */
 @Queryable( false )
 public interface ConfigurationComposite

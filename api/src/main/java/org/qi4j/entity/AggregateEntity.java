@@ -14,11 +14,6 @@
  */
 package org.qi4j.entity;
 
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.SideEffects;
-import org.qi4j.entity.association.AssociationMixin;
-
 /**
  * Aggregate Entity Composites must extends this interface.
  */

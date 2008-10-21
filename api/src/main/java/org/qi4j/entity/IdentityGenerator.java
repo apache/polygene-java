@@ -23,6 +23,7 @@ public interface IdentityGenerator
 {
     /**
      * Generate a new id for the given Composite type
+     *
      * @param compositeType
      * @return
      */

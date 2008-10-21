@@ -14,7 +14,6 @@
 package org.qi4j.service;
 
 import org.qi4j.composite.InvalidApplicationException;
-import org.qi4j.composite.Composite;
 
 public class ServiceNotRegisteredException extends InvalidApplicationException
 {

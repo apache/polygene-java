@@ -52,7 +52,7 @@ public interface EntityBuilder<T>
      *
      * @return a new Entity instance
      * @throws org.qi4j.composite.ConstructionException
-     *          thrown if it was not possible to instantiate the Composite
+     *                            thrown if it was not possible to instantiate the Composite
      * @throws LifecycleException
      */
     T newInstance()

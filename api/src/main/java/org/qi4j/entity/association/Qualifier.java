@@ -24,15 +24,19 @@ import org.qi4j.entity.EntityComposite;
 public final class Qualifier<E, Q>
     implements Serializable
 {
-    public static <E,Q> Qualifier qualifier(E entity, Q qualifier)
+    public static <E, Q> Qualifier qualifier( E entity, Q qualifier )
     {
-        if (!(entity instanceof EntityComposite ))
-            throw new IllegalArgumentException("Associated object must an EntityComposite");
+        if( !( entity instanceof EntityComposite ) )
+        {
+            throw new IllegalArgumentException( "Associated object must an EntityComposite" );
+        }
 
-        if (!(qualifier instanceof EntityComposite ))
-            throw new IllegalArgumentException("Qualifier object must an EntityComposite");
+        if( !( qualifier instanceof EntityComposite ) )
+        {
+            throw new IllegalArgumentException( "Qualifier object must an EntityComposite" );
+        }
 
-        return new Qualifier<E,Q>(entity, qualifier);
+        return new Qualifier<E, Q>( entity, qualifier );
     }
 
     private E entity;
@@ -46,6 +50,7 @@ public final class Qualifier<E, Q>
 
     /**
      * Get the Entity of the Qualifier
+     *
      * @return
      */
     public E entity()
@@ -55,6 +60,7 @@ public final class Qualifier<E, Q>
 
     /**
      * Get the Qualifier part of this Qualifier
+     *
      * @return
      */
     public Q qualifier()

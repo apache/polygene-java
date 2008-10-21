@@ -29,7 +29,7 @@ public interface Constraint<A extends Annotation, P>
      * will be thrown with all the constraint violations that were found.
      *
      * @param annotation the annotation to match
-     * @param value the value to be checked
+     * @param value      the value to be checked
      * @return true if valid, false if invalid
      * @throws NullPointerException NPE can be thrown if the value was null
      */

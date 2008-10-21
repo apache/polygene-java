@@ -2,14 +2,14 @@ package org.qi4j.test.entity;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
+import org.junit.After;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import org.junit.Test;
-import org.junit.After;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilderFactory;
@@ -23,17 +23,17 @@ import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.entity.association.ManyAssociation;
-import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.entity.association.Qualifier;
+import org.qi4j.entity.association.SetAssociation;
+import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
-import org.qi4j.injection.scope.Service;
 import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
-import org.qi4j.spi.entity.UuidIdentityGeneratorService;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -56,7 +56,7 @@ public abstract class AbstractEntityStoreTest
         // Remove all state that was created
         objectBuilderFactory.newObjectBuilder( AbstractEntityStoreTest.class ).injectTo( this );
 
-        List<QualifiedIdentity> stateToRemove = new ArrayList<QualifiedIdentity>( );
+        List<QualifiedIdentity> stateToRemove = new ArrayList<QualifiedIdentity>();
         for( EntityState entityState : store )
         {
             stateToRemove.add( entityState.qualifiedIdentity() );

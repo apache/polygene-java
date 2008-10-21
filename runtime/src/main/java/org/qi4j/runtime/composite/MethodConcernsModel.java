@@ -21,12 +21,13 @@ import java.util.List;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.composite.MethodConcernsDescriptor;
 
 /**
  * TODO
  */
 public final class MethodConcernsModel
-    implements Binder
+    implements Binder, MethodConcernsDescriptor
 {
     private final List<MethodConcernModel> concernsForMethod;
     private final Method method;
@@ -78,6 +79,7 @@ public final class MethodConcernsModel
 
     public void visitModel( ModelVisitor modelVisitor )
     {
+        modelVisitor.visit( this );
         for( MethodConcernModel methodConcernModel : concernsForMethod )
         {
             methodConcernModel.visitModel( modelVisitor );

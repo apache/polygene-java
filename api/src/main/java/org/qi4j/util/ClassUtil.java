@@ -180,8 +180,8 @@ public class ClassUtil
         }
         else if( genericType instanceof GenericArrayType )
         {
-            Object temp = Array.newInstance( (Class<?>)((GenericArrayType) genericType).getGenericComponentType(), 0 );
-            return  temp.getClass();
+            Object temp = Array.newInstance( (Class<?>) ( (GenericArrayType) genericType ).getGenericComponentType(), 0 );
+            return temp.getClass();
         }
         throw new IllegalArgumentException( "Could not extract the raw class of " + genericType );
     }

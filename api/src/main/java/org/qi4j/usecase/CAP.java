@@ -25,8 +25,7 @@ package org.qi4j.usecase;
  *
  * If Available, then a Usecase has to always produce a result, even if dependent services are unavailable.
  *
- * If Partition tolerant, then a Usecase 
- *
+ * If Partition tolerant, then a Usecase
  */
 public enum CAP
 {
@@ -34,7 +33,7 @@ public enum CAP
      * In Consistent&Available cases, the Usecase has to always produce consistent responses, and a response
      * has to always be created to requests.
      * It is only allowed to use caches for response values if the value is checked to be up-to-date.
-
+     *
      * If a dependent service is not available to produce a result, then it is required to wait for
      * that service to become available in order to produce a consistent response.
      *
