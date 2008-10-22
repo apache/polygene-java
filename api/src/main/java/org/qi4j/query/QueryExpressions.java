@@ -323,31 +323,55 @@ public final class QueryExpressions
     }
 
     /**
-     * {@link org.qi4j.query.grammar.Conjunction} factory method. Apply a logical "AND" between two boolean expressions. Also known as "conjunction".
+     * {@link org.qi4j.query.grammar.Conjunction} factory method. Apply a logical "AND" between two (or more) boolean expressions. Also known as "conjunction".
      *
      * @param left  left side boolean expression; cannot be null
      * @param right right side boolean expression; cannot be null
+     * @param optionalRight optional additional right side boolean expressions
      * @return an {@link org.qi4j.query.grammar.Conjunction} operator
      * @throws IllegalArgumentException - If left or right expressions are null
      */
     public static Conjunction and( final BooleanExpression left,
-                                   final BooleanExpression right )
+                                   final BooleanExpression right,
+                                   final BooleanExpression ... optionalRight)
     {
-        return provider.newConjunction( left, right );
+        BooleanExpression leftExpr = left;
+        BooleanExpression rightExpr = right;
+        Conjunction conjunction = provider.newConjunction( leftExpr, rightExpr );
+        for( int i = 0; i < optionalRight.length; i++ )
+        {
+            leftExpr = conjunction;
+            rightExpr = optionalRight[ i ];
+            conjunction = provider.newConjunction( leftExpr, rightExpr );
+        }
+        
+        return conjunction;
     }
 
     /**
-     * {@link org.qi4j.query.grammar.Disjunction} factory method. Apply a logical "OR" between two boolean expressions. Also known as disjunction.
+     * {@link org.qi4j.query.grammar.Disjunction} factory method. Apply a logical "OR" between two (or more) boolean expressions. Also known as disjunction.
      *
      * @param left  left side boolean expression; cannot be null
      * @param right right side boolean expression; cannot be null
+     * @param optionalRight optional additional right side boolean expressions
      * @return an {@link org.qi4j.query.grammar.Disjunction} operator
      * @throws IllegalArgumentException - If left or right expressions are null
      */
     public static Disjunction or( final BooleanExpression left,
-                                  final BooleanExpression right )
+                                  final BooleanExpression right,
+                                  final BooleanExpression ... optionalRight)
     {
-        return provider.newDisjunction( left, right );
+        BooleanExpression leftExpr = left;
+        BooleanExpression rightExpr = right;
+        Disjunction disjunction = provider.newDisjunction( leftExpr, rightExpr );
+        for( int i = 0; i < optionalRight.length; i++ )
+        {
+            leftExpr = disjunction;
+            rightExpr = optionalRight[ i ];
+            disjunction = provider.newDisjunction( leftExpr, rightExpr );
+        }
+
+        return disjunction;
     }
 
     /**
