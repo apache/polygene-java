@@ -13,7 +13,7 @@
 
   <properties>
     <version.restlet>1.1-M4</version.restlet>
-    <version.openrdf>2.1.3</version.openrdf>
+    <version.openrdf>2.2.1</version.openrdf>
   </properties>
 
   <dependencies>
