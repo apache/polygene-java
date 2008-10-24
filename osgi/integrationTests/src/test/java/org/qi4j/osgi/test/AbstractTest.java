@@ -16,11 +16,11 @@
 */
 package org.qi4j.osgi.test;
 
-import org.ops4j.pax.drone.api.RunnerContext;
+import org.ops4j.pax.drone.api.BundleProvision;
+import static org.ops4j.pax.drone.connector.paxrunner.GenericConnector.create;
+import static org.ops4j.pax.drone.connector.paxrunner.GenericConnector.createBundleProvision;
 import org.ops4j.pax.drone.connector.paxrunner.PaxRunnerConnector;
 import org.ops4j.pax.drone.connector.paxrunner.Platforms;
-import org.ops4j.pax.drone.connector.paxrunner.intern.PaxRunnerConnectorImpl;
-import org.ops4j.pax.drone.spi.intern.RunnerContextImpl;
 import org.ops4j.pax.drone.spi.junit.DroneTestCase;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
@@ -37,18 +37,18 @@ abstract class AbstractTest extends DroneTestCase
     @Override
     protected final PaxRunnerConnector configure()
     {
-        PaxRunnerConnectorImpl connector = new PaxRunnerConnectorImpl( newRunnerContext() );
+        PaxRunnerConnector connector = create( newBundleProvision() );
         connector.setPlatform( Platforms.FELIX );
         // Uncomment to pax-runner to attach to port 5005
 //        connector.addVMOption( "-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=5005,suspend=y" );
         return connector;
     }
 
-    protected RunnerContext newRunnerContext()
+    protected BundleProvision newBundleProvision()
     {
         String qi4jVersion = System.getProperty( "version.qi4j", "0.5-SNAPSHOT" );
 
-        return new RunnerContextImpl()
+        return createBundleProvision()
             .addBundle( "mvn:org.ops4j.pax.logging/pax-logging-api" )
             .addBundle( "mvn:org.ops4j.pax.logging/pax-logging-service" )
             .addBundle( "mvn:org.qi4j.core/qi4j-core-api/" + qi4jVersion )

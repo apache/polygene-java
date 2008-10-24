@@ -16,7 +16,7 @@
  */
 package org.qi4j.osgi.test;
 
-import org.ops4j.pax.drone.api.RunnerContext;
+import org.ops4j.pax.drone.api.BundleProvision;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
@@ -28,14 +28,14 @@ public final class BundleLifecycleTest extends AbstractTest
 {
 
     @Override
-    protected final RunnerContext newRunnerContext()
+    protected final BundleProvision newBundleProvision()
     {
-        RunnerContext runnerContext = super.newRunnerContext();
+        BundleProvision bundleProvision = super.newBundleProvision();
         if( "testLifecycleWithCglibInstalled".equals( getName() ) )
         {
-            runnerContext.addBundle( "mvn:net.sourceforge.cglib/com.springsource.net.sf.cglib/2.1.3" );
+            bundleProvision.addBundle( "mvn:net.sourceforge.cglib/com.springsource.net.sf.cglib/2.1.3" );
         }
-        return runnerContext;
+        return bundleProvision;
     }
 
     public final void testLifecycleWithCglibInstalled()
