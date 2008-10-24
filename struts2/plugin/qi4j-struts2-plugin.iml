@@ -114,13 +114,13 @@
     <orderEntry type="module-library">
       <library name="com.sun:tools:1.5.0">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../../../apps/jdk1.6.0_10/jre/../lib/tools.jar!/" />
+          <root url="jar:///usr/lib/jvm/java-6-sun-1.6.0.10/jre/../lib/tools.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$MODULE_DIR$/../../../../../../../apps/jdk1.6.0_10/jre/../lib/tools-javadoc.jar!/" />
+          <root url="jar:///usr/lib/jvm/java-6-sun-1.6.0.10/jre/../lib/tools-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../../../../../../apps/jdk1.6.0_10/jre/../lib/tools-sources.jar!/" />
+          <root url="jar:///usr/lib/jvm/java-6-sun-1.6.0.10/jre/../lib/tools-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
