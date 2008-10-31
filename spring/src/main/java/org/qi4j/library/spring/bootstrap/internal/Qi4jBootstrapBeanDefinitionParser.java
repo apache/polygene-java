@@ -24,6 +24,8 @@ import org.qi4j.service.ServiceFinder;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.structure.Application;
 import org.qi4j.structure.Module;
+import org.springframework.beans.BeanInstantiationException;
+import static org.springframework.beans.BeanUtils.instantiateClass;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -53,8 +55,12 @@ public final class Qi4jBootstrapBeanDefinitionParser
         Application application = createQi4jApplication( anElement, aParserContext, bootstrap );
         registerFactoryBeanServiceAsSpringBean( anElement, aParserContext, bootstrap, application );
 
-        return null;
+        AbstractBeanDefinition applicationFactoryBeanDefinition = createQi4jApplicationFactoryBean( application );
+        registerBeanWithGeneratedName( aParserContext, applicationFactoryBeanDefinition );
+
+        return applicationFactoryBeanDefinition;
     }
+
 
     private Qi4jApplicationBootstrap createQi4jApplicationBootstrap( Element anElement, ParserContext aParserContext )
     {
@@ -85,15 +91,9 @@ public final class Qi4jBootstrapBeanDefinitionParser
         Qi4jApplicationBootstrap bootstrap = null;
         try
         {
-            bootstrap = (Qi4jApplicationBootstrap) bootstrapClass.newInstance();
+            bootstrap = (Qi4jApplicationBootstrap) instantiateClass( bootstrapClass );
         }
-        catch( InstantiationException e )
-        {
-            readerContext.error(
-                "Fail to instantiate qi4j bootstrap class [" + bootstrapClassString + "]", anElement, e
-            );
-        }
-        catch( IllegalAccessException e )
+        catch( BeanInstantiationException e )
         {
             readerContext.error(
                 "Fail to instantiate qi4j bootstrap class [" + bootstrapClassString + "]", anElement, e
@@ -177,5 +177,20 @@ public final class Qi4jBootstrapBeanDefinitionParser
         // Identity
         String identity = aReference.identity();
         aRegistry.registerBeanDefinition( identity, definition );
+    }
+
+    private AbstractBeanDefinition createQi4jApplicationFactoryBean( Application anApplication )
+    {
+        BeanDefinitionBuilder builder = rootBeanDefinition( Qi4jApplicationFactoryBean.class );
+        builder.addConstructorArgValue( anApplication );
+        return builder.getBeanDefinition();
+    }
+
+    private void registerBeanWithGeneratedName( ParserContext aParserContext, BeanDefinition aBeanDefinition )
+    {
+        XmlReaderContext readerContext = aParserContext.getReaderContext();
+        String beanName = readerContext.generateBeanName( aBeanDefinition );
+        BeanDefinitionRegistry registry = aParserContext.getRegistry();
+        registry.registerBeanDefinition( beanName, aBeanDefinition );
     }
 }
