@@ -64,6 +64,11 @@ public class JavabeanAssociation
         return delegate.type();
     }
 
+    public boolean isImmutable()
+    {
+        return delegate.isImmutable();
+    }
+
     public Object get()
     {
         try

@@ -45,7 +45,7 @@ public abstract class LogOnConsoleSideEffect extends SideEffectOf<LoggingService
     public void log( LogType type, Composite composite, String category, String message )
     {
         String localized = bundle.getString( message );
-        String logType = type.logTypeName().get();
+        String logType = type.get();
         OUT.println( logType + ":" + category + ":" + composite.type().getName() + ": " + localized );
     }
 
@@ -53,7 +53,7 @@ public abstract class LogOnConsoleSideEffect extends SideEffectOf<LoggingService
     {
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, param1 );
-        String logType = type.logTypeName().get();
+        String logType = type.get();
         OUT.println( logType + ":" + category + ":" + composite.type().getName() + ": " + formatted );
     }
 
@@ -61,7 +61,7 @@ public abstract class LogOnConsoleSideEffect extends SideEffectOf<LoggingService
     {
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, param1, param2 );
-        String logtype = type.logTypeName().get();
+        String logtype = type.get();
         OUT.println( logtype + ":" + category + ":" + composite.type().getName() + ": " + formatted );
     }
 
@@ -69,7 +69,7 @@ public abstract class LogOnConsoleSideEffect extends SideEffectOf<LoggingService
     {
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, params );
-        String logType = type.logTypeName().get();
+        String logType = type.get();
         OUT.println( logType + ":" + category + ":" + composite.type().getName() + ": " + formatted );
     }
 }

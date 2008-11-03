@@ -23,7 +23,7 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.ConstraintViolationException;
 import org.qi4j.test.AbstractQi4jTest;
 
-public class ContstraintTest extends AbstractQi4jTest
+public class ConstraintTest extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
@@ -214,6 +214,22 @@ public class ContstraintTest extends AbstractQi4jTest
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
         cb.stateOfComposite().notNullObject().set( new Object() );
+    }
+
+    @Test( expected = ConstraintViolationException.class )
+    public void testOneOfFail()
+    {
+        CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
+
+        cb.stateOfComposite().oneOf().set( "Foo" );
+    }
+
+    @Test
+    public void testOneOfOk()
+    {
+        CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
+
+        cb.stateOfComposite().oneOf().set( "Bar" );
     }
 
     @Test( expected = ConstraintViolationException.class )

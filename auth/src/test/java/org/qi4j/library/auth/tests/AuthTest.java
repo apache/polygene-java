@@ -83,7 +83,7 @@ public class AuthTest
 
             role.permissions().add( permission );
 
-            // Create authorization service
+            // Find authorization service
             Authorization authorization = serviceLocator.findService( Authorization.class ).get();
 
             // Create authorization context

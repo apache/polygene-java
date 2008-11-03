@@ -69,6 +69,11 @@ public class JavabeanListAssociation
         return delegate.type();
     }
 
+    public boolean isImmutable()
+    {
+        return delegate.isImmutable();
+    }
+
     public int size()
     {
         return delegate().size();

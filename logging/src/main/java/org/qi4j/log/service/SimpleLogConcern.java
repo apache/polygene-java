@@ -19,13 +19,12 @@ package org.qi4j.log.service;
 
 import org.qi4j.Qi4j;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
 import org.qi4j.log.SimpleLog;
-import org.qi4j.log.logtypes.ErrorType;
-import org.qi4j.log.logtypes.InfoType;
-import org.qi4j.log.logtypes.WarningType;
+import org.qi4j.log.LogTypes;
 
 public final class SimpleLogConcern
     implements SimpleLog
@@ -34,12 +33,14 @@ public final class SimpleLogConcern
     @Service( optional = true ) private LoggingService loggingService;
     private Composite composite;
     private String category;
+    private LogTypes types;
 
-    public SimpleLogConcern( @This Composite composite )
+    public SimpleLogConcern( @This Composite composite, @Structure CompositeBuilderFactory cbf )
     {
         this.composite = composite;
         Class<?> type = composite.type();
         category = type.getName();
+        types = cbf.newComposite( LogTypes.class );
     }
 
     public void info( String message )
@@ -48,7 +49,7 @@ public final class SimpleLogConcern
         {
             return;
         }
-        loggingService.log( InfoType.INSTANCE, api.dereference( composite ), category, message );
+        loggingService.log( types.info(), api.dereference( composite ), category, message );
     }
 
     public void info( String message, Object param1 )
@@ -57,7 +58,7 @@ public final class SimpleLogConcern
         {
             return;
         }
-        loggingService.log( InfoType.INSTANCE, api.dereference( composite ), category, message, param1 );
+        loggingService.log( types.info(), api.dereference( composite ), category, message, param1 );
     }
 
     public void info( String message, Object param1, Object param2 )
@@ -66,7 +67,7 @@ public final class SimpleLogConcern
         {
             return;
         }
-        loggingService.log( InfoType.INSTANCE, api.dereference( composite ), category, message, param1, param2 );
+        loggingService.log( types.info(), api.dereference( composite ), category, message, param1, param2 );
     }
 
     public void info( String message, Object... params )
@@ -75,7 +76,7 @@ public final class SimpleLogConcern
         {
             return;
         }
-        loggingService.log( InfoType.INSTANCE, api.dereference( composite ), category, message, params );
+        loggingService.log( types.info(), api.dereference( composite ), category, message, params );
     }
 
     public void warning( String message )
@@ -84,7 +85,7 @@ public final class SimpleLogConcern
         {
             return;
         }
-        loggingService.log( WarningType.INSTANCE, api.dereference( composite ), category, message );
+        loggingService.log( types.warning(), api.dereference( composite ), category, message );
     }
 
     public void warning( String message, Object param1 )
@@ -93,7 +94,7 @@ public final class SimpleLogConcern
         {
             return;
         }
-        loggingService.log( WarningType.INSTANCE, api.dereference( composite ), category, message, param1 );
+        loggingService.log( types.warning(), api.dereference( composite ), category, message, param1 );
     }
 
     public void warning( String message, Object param1, Object param2 )
@@ -102,7 +103,7 @@ public final class SimpleLogConcern
         {
             return;
         }
-        loggingService.log( WarningType.INSTANCE, api.dereference( composite ), category, message, param1, param2 );
+        loggingService.log( types.warning(), api.dereference( composite ), category, message, param1, param2 );
     }
 
     public void warning( String message, Object... params )
@@ -111,7 +112,7 @@ public final class SimpleLogConcern
         {
             return;
         }
-        loggingService.log( WarningType.INSTANCE, api.dereference( composite ), category, message, params );
+        loggingService.log( types.warning(), api.dereference( composite ), category, message, params );
     }
 
     public void error( String message )
@@ -120,7 +121,7 @@ public final class SimpleLogConcern
         {
             return;
         }
-        loggingService.log( ErrorType.INSTANCE, api.dereference( composite ), category, message );
+        loggingService.log( types.error(), api.dereference( composite ), category, message );
     }
 
     public void error( String message, Object param1 )
@@ -129,7 +130,7 @@ public final class SimpleLogConcern
         {
             return;
         }
-        loggingService.log( ErrorType.INSTANCE, api.dereference( composite ), category, message, param1 );
+        loggingService.log( types.error(), api.dereference( composite ), category, message, param1 );
     }
 
     public void error( String message, Object param1, Object param2 )
@@ -138,7 +139,7 @@ public final class SimpleLogConcern
         {
             return;
         }
-        loggingService.log( ErrorType.INSTANCE, api.dereference( composite ), category, message, param1, param2 );
+        loggingService.log( types.error(), api.dereference( composite ), category, message, param1, param2 );
     }
 
     public void error( String message, Object... params )
@@ -147,6 +148,6 @@ public final class SimpleLogConcern
         {
             return;
         }
-        loggingService.log( ErrorType.INSTANCE, api.dereference( composite ), category, message, params );
+        loggingService.log( types.error(), api.dereference( composite ), category, message, params );
     }
 }

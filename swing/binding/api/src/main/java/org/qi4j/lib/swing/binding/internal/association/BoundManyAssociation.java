@@ -138,6 +138,11 @@ public abstract class BoundManyAssociation<T> extends AbstractBinding<T, ManyAss
         return type;
     }
 
+    public boolean isImmutable()
+    {
+        return false;
+    }
+
     public SwingBinding<T> to( JComponent component )
     {
         return delegates.get( delegates.size() - 1 );

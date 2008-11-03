@@ -26,6 +26,7 @@ import org.qi4j.library.constraints.annotation.MinLength;
 import org.qi4j.library.constraints.annotation.NotEmpty;
 import org.qi4j.library.constraints.annotation.NotNull;
 import org.qi4j.library.constraints.annotation.Range;
+import org.qi4j.library.constraints.annotation.OneOf;
 import org.qi4j.property.Property;
 
 /**
@@ -58,4 +59,6 @@ public interface TestCaseComposite extends Composite
     @NotNull Property<Object> notNullObject();
 
     @Range( min = 0, max = 100 ) Property<Integer> range();
+
+    @OneOf({"Bar","Xyzzy"}) Property<String> oneOf();
 }

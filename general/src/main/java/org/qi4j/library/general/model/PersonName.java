@@ -13,9 +13,9 @@
 package org.qi4j.library.general.model;
 
 import org.qi4j.composite.Mixins;
+import org.qi4j.composite.Computed;
 import org.qi4j.injection.scope.PropertyField;
 import org.qi4j.injection.scope.This;
-import org.qi4j.property.ComputedProperty;
 import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.property.Property;
 
@@ -29,18 +29,18 @@ public interface PersonName
 
     Property<String> lastName();
 
-    ComputedProperty<String> fullName();
+    @Computed Property<String> fullName();
 
     public abstract class PersonNameMixin implements PersonName
     {
         @This PersonName personName;
 
-        @PropertyField ComputedProperty<String> fullName;
+        @PropertyField Property<String> fullName;
 
         /**
          * Returns a person full name in the format LastName, FirstName
          */
-        public ComputedProperty<String> fullName()
+        public Property<String> fullName()
         {
             return new ComputedPropertyInstance<String>( fullName )
             {

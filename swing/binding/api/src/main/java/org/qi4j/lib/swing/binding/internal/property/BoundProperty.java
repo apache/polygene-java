@@ -35,12 +35,11 @@ import org.qi4j.lib.swing.binding.SwingBinding;
 import org.qi4j.lib.swing.binding.internal.AbstractBinding;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.property.GenericPropertyInfo;
-import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
 import org.qi4j.property.PropertyInfo;
 
 public final class BoundProperty<T> extends AbstractBinding<T, T, Property<T>>
-    implements ImmutableProperty<T>
+    implements Property<T>
 {
 
     private Property<T> actualProperty;
@@ -123,6 +122,16 @@ public final class BoundProperty<T> extends AbstractBinding<T, T, Property<T>>
     public final String qualifiedName()
     {
         return propertyInfo().qualifiedName();
+    }
+
+    public boolean isImmutable()
+    {
+        return propertyInfo().isImmutable();
+    }
+
+    public boolean isComputed()
+    {
+        return propertyInfo().isComputed();
     }
 
     @SuppressWarnings( "unchecked" )

@@ -96,6 +96,11 @@ public final class BoundAssociation<T> extends AbstractBinding<T, T, Association
         return actualAssociation.qualifiedName();
     }
 
+    public boolean isImmutable()
+    {
+        return actualAssociation.isImmutable();
+    }
+
     @Override
     public final String toString()
     {

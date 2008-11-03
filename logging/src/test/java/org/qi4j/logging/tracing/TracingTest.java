@@ -34,6 +34,7 @@ import org.qi4j.trace.records.ServiceTraceRecordEntity;
 import org.qi4j.trace.assemblies.StandardTraceServiceComposite;
 import org.qi4j.trace.service.TraceServiceConfiguration;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
+import org.qi4j.log.LogTypes;
 
 public class TracingTest
     extends AbstractQi4jTest

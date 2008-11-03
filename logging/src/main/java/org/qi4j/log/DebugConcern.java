@@ -24,14 +24,13 @@ import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
 import org.qi4j.log.service.DebuggingService;
-import org.qi4j.property.ComputedProperty;
 import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.property.Property;
 
 public final class DebugConcern
     implements Debug
 {
-    private static final ComputedProperty<Integer> OFF_PROPERTY;
+    private static final Property<Integer> OFF_PROPERTY;
 
     @Structure private Qi4j api;
     @Service( optional = true ) private DebuggingService loggingService;

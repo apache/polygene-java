@@ -12,12 +12,13 @@
  */
 package org.qi4j.library.general.model;
 
-import org.qi4j.property.ComputedProperty;
+import org.qi4j.composite.Computed;
+import org.qi4j.property.Property;
 
 /**
  * Generic service interface to obtain the formatted or decorated value
  */
 public interface Descriptor
 {
-    ComputedProperty<String> displayValue();
+    @Computed Property<String> displayValue();
 }

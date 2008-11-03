@@ -12,6 +12,7 @@
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
       <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
       <excludeFolder url="file://$MODULE_DIR$/target/surefire-reports" />
+      <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -32,7 +33,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="qi4j-core-testsupport" />
+    <orderEntry type="module" module-name="qi4j-core-testsupport" exported="" />
     <orderEntry type="module-library">
       <library name="junit:junit:4.4">
         <CLASSES>

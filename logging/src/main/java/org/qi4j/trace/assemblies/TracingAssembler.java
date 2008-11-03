@@ -22,6 +22,7 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.trace.service.TraceServiceConfiguration;
+import org.qi4j.log.LogTypes;
 
 public class TracingAssembler
     implements Assembler
@@ -31,6 +32,10 @@ public class TracingAssembler
     {
         module.addServices( StandardTraceServiceComposite.class );
         module.addEntities( TraceServiceConfiguration.class );
+        module.addComposites( LogTypes.class );
+        module.on( LogTypes.class ).to().info().set( "INFO" );
+        module.on( LogTypes.class ).to().warning().set( "WARNING" );
+        module.on( LogTypes.class ).to().error().set( "ERROR" );
     }
 
 }

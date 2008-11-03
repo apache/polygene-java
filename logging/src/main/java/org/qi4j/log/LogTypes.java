@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2007-2008, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2007-2008, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +12,17 @@
  *
  */
 
-package org.qi4j.library.auth;
+package org.qi4j.log;
 
-import java.util.Date;
-import org.qi4j.property.Property;
-import org.qi4j.composite.Immutable;
+import org.qi4j.composite.Composite;
 
 /**
- *
+ * Composite for log types
  */
-@Immutable
-public interface AuthorizationContext
+public interface LogTypes
+    extends Composite
 {
-    Property<User> user();
-
-    Property<Date> time();
-
-    Property<AuthenticationMethod> authenticationMethod();
+    LogType info();
+    LogType warning();
+    LogType error();
 }
