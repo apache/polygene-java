@@ -30,8 +30,6 @@ final class LayerRenderer
     private static final Color FILL_COLOR = new Color( 0xFFFFFF );
     private static final Color TEXT_COLOR = new Color( 0x000000 );
 
-    // todo drop shadow
-
     public final void render( Graphics2D g, VisualItem item )
     {
         Rectangle2D rect = item.getBounds();
@@ -42,7 +40,7 @@ final class LayerRenderer
         int height = (int) rect.getHeight();
 
         g.setPaint( FILL_COLOR );
-        g.fillRect( x, y, width, height );
+        g.fillRoundRect( x, y, width, height, 3, 3 );
 
         g.setPaint( TEXT_COLOR );
         drawName( g, item, x, y );

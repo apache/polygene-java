@@ -20,6 +20,7 @@ package org.qi4j.library.swing.visualizer.overview.internal.visualization.render
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_NAME;
@@ -34,27 +35,30 @@ import prefuse.visual.VisualItem;
 abstract class AbstractRenderer
     implements Renderer
 {
-    protected boolean debug = false;
-
     protected final void drawName( Graphics2D graphics, VisualItem item, int x, int y )
     {
-        Font font = item.getFont();
-        FontMetrics fm = DEFAULT_GRAPHICS.getFontMetrics( font );
+        Font font = headerFont( item );
+
+        Point headerLocation = headerLocation( item, x, y );
+
+        String name = (String) item.get( FIELD_NAME );
+        graphics.drawString( name, headerLocation.x, headerLocation.y );
+    }
+
+    protected Point headerLocation( VisualItem item, int x, int y )
+    {
+        Font headerFont = headerFont( item );
+        FontMetrics fm = DEFAULT_GRAPHICS.getFontMetrics( headerFont );
 
         x = x + PADDING_LEFT;
-        y = y + (PADDING_TOP / 2) + fm.getHeight();
-        String name = (String) item.get( FIELD_NAME );
+        y = y + ( PADDING_TOP / 2 ) + fm.getHeight();
 
-        graphics.drawString( name, x, y );
+        return new Point( x, y );
+    }
 
-        if( debug )
-        {
-            Rectangle2D rect = item.getBounds();
-            String s = ( (int) rect.getX() ) + ", " + ( (int) rect.getY() ) + "," +
-                       ( (int) rect.getWidth() ) + "," + ( (int) rect.getHeight() );
-
-            graphics.drawString( s, x, y - PADDING_TOP );
-        }
+    protected Font headerFont( VisualItem item )
+    {
+        return item.getFont();
     }
 
     public final boolean locatePoint( Point2D p, VisualItem item )

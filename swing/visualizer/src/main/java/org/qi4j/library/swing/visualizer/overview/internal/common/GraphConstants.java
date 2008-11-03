@@ -43,7 +43,13 @@ public class GraphConstants
     public static final String FIELD_USED_BY_LAYERS = "used_by_layers";
     public static final String FIELD_DESCRIPTOR = "fieldDescriptors";
 
+    public static final String GROUP_NAME_SERVICES = "Services";
+    public static final String GROUP_NAME_ENTITIES = "Entities";
+    public static final String GROUP_NAME_COMPOSITES = "Composites";
+    public static final String GROUP_NAME_OBJECTS = "Objects";
+
     private GraphConstants()
     {
     }
+
 }

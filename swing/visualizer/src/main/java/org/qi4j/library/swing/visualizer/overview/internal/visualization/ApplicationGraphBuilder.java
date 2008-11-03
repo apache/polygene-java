@@ -36,6 +36,10 @@ import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphCo
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_USED_BY_LAYERS;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_USED_LAYERS;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.GROUP_NAME_COMPOSITES;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.GROUP_NAME_ENTITIES;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.GROUP_NAME_OBJECTS;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.GROUP_NAME_SERVICES;
 import org.qi4j.library.swing.visualizer.overview.internal.common.NodeType;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.APPLICATION;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.COMPOSITE;
@@ -215,7 +219,7 @@ final class ApplicationGraphBuilder
                 servicesNode = aGraph.addNode();
                 addHiddenEdge( aGraph, aModuleNode, servicesNode );
 
-                servicesNode.setString( FIELD_NAME, "Services" );
+                servicesNode.setString( FIELD_NAME, GROUP_NAME_SERVICES );
                 servicesNode.set( FIELD_TYPE, GROUP );
             }
 
@@ -245,7 +249,7 @@ final class ApplicationGraphBuilder
                 entitiesNode = aGraph.addNode();
                 addHiddenEdge( aGraph, aModuleNode, entitiesNode );
 
-                entitiesNode.setString( FIELD_NAME, "Entities" );
+                entitiesNode.setString( FIELD_NAME, GROUP_NAME_ENTITIES );
                 entitiesNode.set( FIELD_TYPE, GROUP );
             }
 
@@ -273,7 +277,7 @@ final class ApplicationGraphBuilder
                 compositesNode = aGraph.addNode();
                 addHiddenEdge( aGraph, moduleNode, compositesNode );
 
-                compositesNode.setString( FIELD_NAME, "Composites" );
+                compositesNode.setString( FIELD_NAME, GROUP_NAME_COMPOSITES );
                 compositesNode.set( FIELD_TYPE, GROUP );
             }
 
@@ -303,7 +307,7 @@ final class ApplicationGraphBuilder
                 objectsNode = aGraph.addNode();
                 addHiddenEdge( aGraph, aModuleNode, objectsNode );
 
-                objectsNode.setString( FIELD_NAME, "Objects" );
+                objectsNode.setString( FIELD_NAME, GROUP_NAME_OBJECTS );
                 objectsNode.set( FIELD_TYPE, GROUP );
             }
 

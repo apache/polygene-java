@@ -19,21 +19,25 @@
 
 package org.qi4j.library.swing.visualizer.overview.internal.visualization.render;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
-import static java.awt.Color.BLACK;
 import static java.awt.Color.WHITE;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.geom.Rectangle2D;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_LEFT;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_TOP;
 import prefuse.visual.VisualItem;
 
 /**
  * This renderer only draws the Application box.
+ *
+ * @since 0.4
  */
 final class ApplicationRenderer
     extends AbstractRenderer
 {
-
     // Header
     private static final Color COLOR_HEADER_FILL = new Color( 0x71B910 );
     private static final Color COLOR_HEADER_TEXT = WHITE;
@@ -43,9 +47,6 @@ final class ApplicationRenderer
 
     // BODY
     private static final Color COLOR_BODY_FILL = new Color( 0xD9D4C5 );
-
-    private Color borderColor = BLACK;
-    private BasicStroke borderStroke = new BasicStroke( 6 );
 
     public final void render( Graphics2D graphic, VisualItem item )
     {
@@ -61,7 +62,6 @@ final class ApplicationRenderer
         graphic.fillRoundRect( x, y, width, height, 5, 5 );
 
         drawHeader( graphic, item );
-
     }
 
     private void drawHeader( Graphics2D graphic, VisualItem item )
@@ -85,5 +85,17 @@ final class ApplicationRenderer
         graphic.setPaint( COLOR_HEADER_LINE2_SEPARATOR );
         lineY = lineY + 1;
         graphic.fillRect( x, lineY, width, 1 );
+    }
+
+    @Override
+    protected final Point headerLocation( VisualItem item, int x, int y )
+    {
+        Font headerFont = headerFont( item );
+        FontMetrics fm = DEFAULT_GRAPHICS.getFontMetrics( headerFont );
+
+        x = x + PADDING_LEFT;
+        y = y + ( PADDING_TOP / 2 ) + fm.getHeight();
+
+        return new Point( x, y );
     }
 }
