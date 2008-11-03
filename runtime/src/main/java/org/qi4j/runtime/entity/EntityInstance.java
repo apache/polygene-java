@@ -81,9 +81,11 @@ public final class EntityInstance
         this.identity = identity;
         this.status = status;
 
-        this.entityState = wrapEntityState( entityState );
+        this.entityState = wrapEntityState( entityState);
 
         proxy = entity.newProxy( this );
+
+        this.entityState = wrapEntityState( entityState);
     }
 
     public Object invoke( Object proxy, Method method, Object[] args )
@@ -135,14 +137,11 @@ public final class EntityInstance
 
     public EntityState entityState()
     {
-        if( entityState instanceof RecordingEntityState )
-        {
-            return ( (RecordingEntityState) entityState ).wrappedEntityState();
-        }
-        else
-        {
-            return entityState;
-        }
+        EntityState unwrappedState = entityState;
+        while (unwrappedState instanceof EntityStateAdapter)
+            unwrappedState = (( EntityStateAdapter) unwrappedState).wrappedEntityState();
+
+        return unwrappedState;
     }
 
     public EntityStateModel.EntityStateInstance state()
@@ -280,6 +279,8 @@ public final class EntityInstance
         {
             entityState = new RecordingEntityState( entityState, stateUsage );
         }
+
+//        entityState = new StateChangeNotifier(proxy, entityState, uow.stateChangeListeners());
 
         return entityState;
     }

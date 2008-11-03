@@ -17,18 +17,21 @@ package org.qi4j.runtime.property;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import org.qi4j.composite.ConstraintViolation;
 import org.qi4j.composite.ConstraintViolationException;
+import org.qi4j.composite.Immutable;
+import org.qi4j.composite.Computed;
 import org.qi4j.entity.RDF;
-import org.qi4j.property.ComputedProperty;
 import org.qi4j.property.ComputedPropertyInstance;
 import org.qi4j.property.GenericPropertyInfo;
-import org.qi4j.property.ImmutableProperty;
 import org.qi4j.property.Property;
 import org.qi4j.property.PropertyInfo;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
-import org.qi4j.spi.property.ImmutablePropertyInstance;
+import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.util.MetaInfo;
 
@@ -36,7 +39,7 @@ import org.qi4j.util.MetaInfo;
  * TODO
  */
 public class PropertyModel
-    implements Serializable, PropertyDescriptor
+    implements Serializable, PropertyDescriptor, ConstraintsCheck
 {
     private static final long serialVersionUID = 1L;
 
@@ -53,6 +56,9 @@ public class PropertyModel
     private final boolean immutable;
     private final boolean computed;
 
+    private PropertyInfo builderInfo;
+    private PropertyInfo propertyInfo;
+
     public PropertyModel(
         Method anAccessor, ValueConstraintsInstance constraints, MetaInfo aMetaInfo, Object aPropertyDefaultValue )
     {
@@ -64,13 +70,16 @@ public class PropertyModel
         defaultValue = aPropertyDefaultValue;
 
         uri = GenericPropertyInfo.toURI( qualifiedName() );
-        RDF uriAnnotation = accessor().getAnnotation( RDF.class );
+        RDF uriAnnotation = metaInfo.get( RDF.class );
         rdf = uriAnnotation == null ? null : uriAnnotation.value();
 
         this.constraints = constraints;
+        
+        immutable = metaInfo.get( Immutable.class ) != null;
+        computed = metaInfo.get( Computed.class ) != null;
 
-        immutable = ImmutableProperty.class.isAssignableFrom( anAccessor.getReturnType() );
-        computed = ComputedProperty.class.isAssignableFrom( anAccessor.getReturnType() );
+        builderInfo = new GenericPropertyInfo(metaInfo, false, computed, name, qualifiedName,  type);
+        propertyInfo = new GenericPropertyInfo(metaInfo, immutable, computed, name, qualifiedName,  type);
     }
 
     public <T> T metaInfo( Class<T> infoType )
@@ -123,26 +132,51 @@ public class PropertyModel
         return rdf;
     }
 
-    public Property<?> newInstance()
+    public Property<?> newBuilderInstance()
     {
-        return newInstance( ImmutablePropertyInstance.UNSET );
+        // Properties cannot be immutable during construction
+        
+        Property<?> property;
+        if( computed )
+        {
+            property = new ComputedPropertyInfo<Object>( builderInfo );
+        }
+        else
+        {
+            property = new PropertyInstance<Object>( builderInfo, defaultValue(), this );
+        }
+
+        if (!accessor.getReturnType().equals(Property.class))
+        {
+            // Create proxy
+            property = (Property<?>) Proxy.newProxyInstance( accessor.getReturnType().getClassLoader(), new Class[] {accessor.getReturnType()}, new PropertyHandler(property) );
+        }
+
+        return property;
+    }
+
+    public Property<?> newDefaultInstance()
+    {
+        // Construct instance without using a builder
+
+        return newInstance( defaultValue() );
     }
 
     @SuppressWarnings( "unchecked" )
     public Property<?> newInstance( Object value )
     {
-        if( immutable )
+        // Property was constructed using a builder
+
+        Property property;
+        if( computed )
         {
-            return new ImmutablePropertyInstance( this, value );
-        }
-        else if( computed )
-        {
-            return new ComputedPropertyInfo( this );
+            property = new ComputedPropertyInfo<Object>( propertyInfo );
         }
         else
         {
-            return new PropertyInstance<Object>( this, value );
+            property = new PropertyInstance<Object>( propertyInfo, value, this );
         }
+        return property;
     }
 
     public void checkConstraints( Object value )
@@ -192,8 +226,8 @@ public class PropertyModel
         return accessor.toGenericString();
     }
 
-    private static class ComputedPropertyInfo
-        extends ComputedPropertyInstance
+    private static class ComputedPropertyInfo<T>
+        extends ComputedPropertyInstance<T>
     {
         private ComputedPropertyInfo( PropertyInfo aPropertyInfo )
             throws IllegalArgumentException
@@ -201,10 +235,32 @@ public class PropertyModel
             super( aPropertyInfo );
         }
 
-        public Object get()
+        public T get()
         {
             throw new IllegalStateException( "Property [" + name() + "] must be computed" );
         }
     }
 
+    static class PropertyHandler
+        implements InvocationHandler
+    {
+        Property p;
+
+        public PropertyHandler( Property<?> property )
+        {
+            p = property;
+        }
+
+        public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+        {
+            try
+            {
+                return method.invoke( p, args );
+            }
+            catch( InvocationTargetException e )
+            {
+                throw e;
+            }
+        }
+    }
 }

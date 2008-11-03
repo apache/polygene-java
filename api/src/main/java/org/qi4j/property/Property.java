@@ -35,7 +35,11 @@ public interface Property<T>
      *
      * @param newValue the new value
      * @return the new value
+     *
+     * @throws IllegalArgumentException if the value has an invalid value
+     *
+     * @throws IllegalStateException if the property is immutable or computed
      */
     void set( T newValue )
-        throws IllegalArgumentException;
+        throws IllegalArgumentException, IllegalStateException;
 }

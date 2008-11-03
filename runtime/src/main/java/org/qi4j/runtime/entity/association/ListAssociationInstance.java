@@ -45,6 +45,7 @@ public final class ListAssociationInstance<T>
 
     public T set( int i, T t )
     {
+        checkImmutable();
         checkType( t );
 
         return getEntity( associated.set( i, getEntityId( t ) ) );
@@ -52,6 +53,7 @@ public final class ListAssociationInstance<T>
 
     public void add( int i, T t )
     {
+        checkImmutable();
         checkType( t );
 
         associated.add( i, getEntityId( t ) );
@@ -59,6 +61,7 @@ public final class ListAssociationInstance<T>
 
     public T remove( int i )
     {
+        checkImmutable();
         return getEntity( associated.remove( i ) );
     }
 
@@ -78,6 +81,7 @@ public final class ListAssociationInstance<T>
 
     public boolean addAll( int i, Collection<? extends T> ts )
     {
+        checkImmutable();
         Collection<QualifiedIdentity> list = getEntityIdCollection( ts );
 
         return associated.addAll( i, list );
@@ -146,16 +150,19 @@ public final class ListAssociationInstance<T>
 
         public void remove()
         {
+            checkImmutable();
             idIterator.remove();
         }
 
         public void set( Object o )
         {
+            checkImmutable();
             idIterator.set( getEntityId( o ) );
         }
 
         public void add( Object o )
         {
+            checkImmutable();
             idIterator.add( getEntityId( o ) );
         }
     }

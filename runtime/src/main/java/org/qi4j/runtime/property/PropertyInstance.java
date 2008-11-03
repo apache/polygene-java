@@ -16,11 +16,10 @@ package org.qi4j.runtime.property;
 
 import org.qi4j.property.AbstractPropertyInstance;
 import org.qi4j.property.PropertyInfo;
-import org.qi4j.spi.property.ImmutablePropertyInstance;
-import org.qi4j.spi.property.PropertyDescriptor;
+import org.qi4j.runtime.composite.ConstraintsCheck;
 
 /**
- * {@code PropertyInstance} represents a mutable property.
+ * {@code PropertyInstance} represents a property.
  *
  * @author Rickard Öberg
  * @since 0.1.0
@@ -28,34 +27,23 @@ import org.qi4j.spi.property.PropertyDescriptor;
 public class PropertyInstance<T> extends AbstractPropertyInstance<T>
 {
     protected T value;
+    protected ConstraintsCheck constraints;
 
     /**
      * Construct an instance of {@code PropertyInstance} with the specified arguments.
      *
      * @param aPropertyInfo The property info. This argument must not be {@code null}.
      * @param aValue        The property value.
+     * @param constraints constraint checker for this property
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
      * @since 0.1.0
      */
-    public PropertyInstance( PropertyInfo aPropertyInfo, T aValue )
+    public PropertyInstance( PropertyInfo aPropertyInfo, T aValue, ConstraintsCheck constraints )
         throws IllegalArgumentException
     {
         super( aPropertyInfo );
         value = aValue;
-    }
-
-    /**
-     * Construct an instance of {@code PropertyInstance} with the specified arguments.
-     *
-     * @param aPropertyInfo The property info. This argument must not be {@code null}.
-     * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
-     * @since 0.1.0
-     */
-    public PropertyInstance( PropertyInfo aPropertyInfo )
-        throws IllegalArgumentException
-    {
-        super( aPropertyInfo );
-        value = (T) ImmutablePropertyInstance.UNSET;
+        this.constraints = constraints;
     }
 
     /**
@@ -67,10 +55,6 @@ public class PropertyInstance<T> extends AbstractPropertyInstance<T>
     @SuppressWarnings( { "unchecked" } )
     public T get()
     {
-        if( value == ImmutablePropertyInstance.UNSET )
-        {
-            return (T) ( (PropertyDescriptor) propertyInfo ).defaultValue();
-        }
         return value;
     }
 
@@ -81,11 +65,14 @@ public class PropertyInstance<T> extends AbstractPropertyInstance<T>
      */
     public void set( T aNewValue )
     {
-        if( propertyInfo instanceof PropertyModel )
+        if( isImmutable())
+            throw new IllegalStateException( "Property [" + propertyInfo.qualifiedName() + "] is immutable." );
+
+        if( constraints != null)
         {
-            PropertyModel propertyModel = (PropertyModel) propertyInfo;
-            propertyModel.checkConstraints( aNewValue );
+            constraints.checkConstraints( aNewValue );
         }
+
         value = aNewValue;
     }
 

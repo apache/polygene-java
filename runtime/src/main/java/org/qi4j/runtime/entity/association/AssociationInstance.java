@@ -27,9 +27,9 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
     implements Association<T>
 {
-    private static final Object UNSET = new Object();
+    private static final Object NOT_LOADED = new Object();
 
-    private T value = (T) UNSET;
+    private T value = (T) NOT_LOADED;
     private EntityState entityState;
 
     public AssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, EntityState entityState )
@@ -45,7 +45,7 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
     // Association implementation
     public T get()
     {
-        if( value == UNSET )
+        if( !isSet() )
         {
             QualifiedIdentity entityId = entityState.getAssociation( qualifiedName() );
             value = getEntity( entityId );
@@ -56,6 +56,7 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
     public void set( T newValue )
         throws IllegalArgumentException
     {
+        checkImmutable();
         checkType( newValue );
 
         AssociationModel associationModel = (AssociationModel) associationInfo;
@@ -66,6 +67,11 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
         {
             entityState.setAssociation( qualifiedName(), getEntityId( newValue ) );
         }
+    }
+
+    protected boolean isSet()
+    {
+        return value != NOT_LOADED;
     }
 
     // AssociationInfo implementation
@@ -146,7 +152,7 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
 
     public void refresh( EntityState newState )
     {
-        value = (T) UNSET;
+        value = (T) NOT_LOADED;
         entityState = newState;
     }
 }

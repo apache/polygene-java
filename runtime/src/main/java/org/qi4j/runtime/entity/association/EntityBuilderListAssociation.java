@@ -43,4 +43,9 @@ public final class EntityBuilderListAssociation<T> extends ArrayList<T>
     {
         return null;
     }
+
+    public boolean isImmutable()
+    {
+        return false;
+    }
 }

@@ -22,6 +22,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import org.qi4j.composite.Immutable;
+import org.qi4j.composite.Computed;
+import org.qi4j.util.MetaInfo;
 
 public final class GenericPropertyInfo
     implements PropertyInfo
@@ -146,7 +149,9 @@ public final class GenericPropertyInfo
         return "urn:qi4j:entity:" + getDeclaringClassName( accessor ) + "#";
     }
 
-    private HashMap<Class<?>, Serializable> infos;
+    private MetaInfo infos;
+    private boolean immutable;
+    private boolean computed;
     private final String qualifiedName;
     private final String name;
     private final Type type;
@@ -156,7 +161,9 @@ public final class GenericPropertyInfo
         this.qualifiedName = getQualifiedName( accessor );
         this.name = getName( qualifiedName );
         this.type = getPropertyType( accessor );
-        infos = new HashMap<Class<?>, Serializable>();
+        infos = new MetaInfo().withAnnotations( accessor );
+        immutable = metaInfo( Immutable.class ) != null;
+        computed = metaInfo( Computed.class ) != null;
     }
 
     public GenericPropertyInfo( Class declaringClass, String accessorName )
@@ -168,7 +175,9 @@ public final class GenericPropertyInfo
             this.qualifiedName = getQualifiedName( accessor );
             this.name = getName( qualifiedName );
             this.type = getPropertyType( accessor );
-            infos = new HashMap<Class<?>, Serializable>();
+            infos = new MetaInfo().withAnnotations( accessor );
+            immutable = metaInfo( Immutable.class ) != null;
+            computed = metaInfo( Computed.class ) != null;
         }
         catch( NoSuchMethodException e )
         {
@@ -176,10 +185,19 @@ public final class GenericPropertyInfo
         }
     }
 
+    public GenericPropertyInfo( MetaInfo infos, boolean immutable, boolean computed, String qualifiedName, String name, Type type )
+    {
+        this.infos = infos;
+        this.immutable = immutable;
+        this.computed = computed;
+        this.qualifiedName = qualifiedName;
+        this.name = name;
+        this.type = type;
+    }
+
     public <T> T metaInfo( Class<T> infoType )
     {
-        Object o = infos.get( infoType );
-        return infoType.cast( o );
+        return infos.get( infoType );
     }
 
     public String name()
@@ -197,14 +215,13 @@ public final class GenericPropertyInfo
         return type;
     }
 
-    @SuppressWarnings( "unchecked" )
-    public <T extends Serializable> void setPropertyInfo( Class<T> infoType, T instance )
+    public boolean isImmutable()
     {
-        synchronized( infos )
-        {
-            HashMap<Class<?>, Serializable> clone = (HashMap<Class<?>, Serializable>) infos.clone();
-            clone.put( infoType, instance );
-            infos = clone;
-        }
+        return immutable;
+    }
+
+    public boolean isComputed()
+    {
+        return computed;
     }
 }

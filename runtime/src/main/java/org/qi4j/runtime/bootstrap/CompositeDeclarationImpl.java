@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.io.Serializable;
 import java.util.List;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.CompositeDeclaration;
@@ -40,7 +39,7 @@ public final class CompositeDeclarationImpl
         this.compositeTypes = compositeTypes;
     }
 
-    public CompositeDeclaration setMetaInfo( Serializable info )
+    public CompositeDeclaration setMetaInfo( Object info )
     {
         metaInfo.set( info );
         return this;
@@ -56,9 +55,10 @@ public final class CompositeDeclarationImpl
     {
         for( Class<? extends Composite> compositeType : compositeTypes )
         {
+            MetaInfo compositeMetaInfo = new MetaInfo( metaInfo ).withAnnotations( compositeType );
             CompositeModel compositeModel = CompositeModel.newModel( compositeType,
                                                                      visibility,
-                                                                     new MetaInfo( metaInfo ),
+                                                                     compositeMetaInfo,
                                                                      propertyDeclarations );
             composites.add( compositeModel );
         }

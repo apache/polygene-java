@@ -14,6 +14,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.Mixins;
+import org.qi4j.composite.Immutable;
 import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
@@ -28,11 +29,11 @@ import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
-import org.qi4j.property.ImmutableProperty;
+import org.qi4j.injection.scope.Service;
 import org.qi4j.property.Property;
-import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -96,6 +97,7 @@ public abstract class AbstractEntityStoreTest
         catch( Exception e )
         {
             unitOfWork.discard();
+            throw e;
         }
     }
 
@@ -189,9 +191,9 @@ public abstract class AbstractEntityStoreTest
     public interface TestValue
         extends ValueComposite<TestValue>, EntityComposite
     {
-        ImmutableProperty<String> someValue();
+        @Immutable Property<String> someValue();
 
-        ImmutableProperty<Integer> otherValue();
+        @Immutable Property<Integer> otherValue();
     }
 
     public interface Mutable<T>

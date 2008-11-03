@@ -23,10 +23,8 @@ import org.qi4j.structure.Visibility;
 
 public interface ObjectDeclaration
 {
-    ObjectDeclaration setMetaInfo( Serializable info );
+    ObjectDeclaration setMetaInfo( Object info );
 
     ObjectDeclaration visibleIn( Visibility visibility )
         throws IllegalStateException;
-
-//    void addObjects( List<ObjectModel> objectModels );
 }

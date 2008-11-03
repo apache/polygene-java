@@ -25,90 +25,19 @@ import org.qi4j.usecase.StateUsage;
  * TODO
  */
 public class RecordingEntityState
-    implements EntityState
+    extends EntityStateAdapter
 {
-    private EntityState entityState;
     private StateUsage stateUsage;
 
     public RecordingEntityState( EntityState entityState, StateUsage stateUsage )
     {
-        this.entityState = entityState;
+        super(entityState);
         this.stateUsage = stateUsage;
-    }
-
-    public EntityState wrappedEntityState()
-    {
-        return entityState;
-    }
-
-    public QualifiedIdentity qualifiedIdentity()
-    {
-        return entityState.qualifiedIdentity();
-    }
-
-    public long version()
-    {
-        return entityState.version();
-    }
-
-    public long lastModified()
-    {
-        return entityState.lastModified();
-    }
-
-    public void remove()
-    {
-        entityState.remove();
-    }
-
-    public EntityStatus status()
-    {
-        return entityState.status();
-    }
-
-    public EntityType entityType()
-    {
-        return entityState.entityType();
     }
 
     public Object getProperty( String qualifiedName )
     {
         stateUsage.usesProperty( qualifiedName );
-        return entityState.getProperty( qualifiedName );
-    }
-
-    public void setProperty( String qualifiedName, Object newValue )
-    {
-        entityState.setProperty( qualifiedName, newValue );
-    }
-
-    public QualifiedIdentity getAssociation( String qualifiedName )
-    {
-        return entityState.getAssociation( qualifiedName );
-    }
-
-    public void setAssociation( String qualifiedName, QualifiedIdentity newEntity )
-    {
-        entityState.setAssociation( qualifiedName, newEntity );
-    }
-
-    public Collection<QualifiedIdentity> getManyAssociation( String qualifiedName )
-    {
-        return entityState.getManyAssociation( qualifiedName );
-    }
-
-    public Iterable<String> propertyNames()
-    {
-        return entityState.propertyNames();
-    }
-
-    public Iterable<String> associationNames()
-    {
-        return entityState.associationNames();
-    }
-
-    public Iterable<String> manyAssociationNames()
-    {
-        return entityState.manyAssociationNames();
+        return super.getProperty( qualifiedName );
     }
 }

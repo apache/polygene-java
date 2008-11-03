@@ -85,4 +85,6 @@ public interface EntityState
     Iterable<String> associationNames();
 
     Iterable<String> manyAssociationNames();
+
+    void markAsLoaded();
 }

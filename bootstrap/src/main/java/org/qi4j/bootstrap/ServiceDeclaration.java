@@ -32,5 +32,5 @@ public interface ServiceDeclaration
 
     ServiceDeclaration instantiateOnStartup();
 
-    ServiceDeclaration setMetaInfo( Serializable serviceAttribute );
+    ServiceDeclaration setMetaInfo( Object serviceAttribute );
 }

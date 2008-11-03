@@ -47,7 +47,7 @@ public final class ObjectDeclarationImpl
         this.objectTypes = classes;
     }
 
-    public ObjectDeclaration setMetaInfo( Serializable info )
+    public ObjectDeclaration setMetaInfo( Object info )
     {
         metaInfo.set( info );
         return this;

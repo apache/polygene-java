@@ -86,6 +86,16 @@ public abstract class AbstractPropertyInstance<T>
         return propertyInfo.type();
     }
 
+    public boolean isImmutable()
+    {
+        return propertyInfo.isImmutable();
+    }
+
+    public boolean isComputed()
+    {
+        return propertyInfo.isComputed();
+    }
+
     /**
      * Perform equals with {@code o} argument.
      *

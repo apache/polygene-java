@@ -28,7 +28,6 @@ import java.lang.reflect.Method;
  */
 public abstract class ComputedPropertyInstance<T>
     extends AbstractPropertyInstance<T>
-    implements ComputedProperty<T>
 {
     /**
      * Construct an instance of {@code ComputedPropertyInstance}.
@@ -64,9 +63,9 @@ public abstract class ComputedPropertyInstance<T>
      * @since 0.1.0
      */
     public void set( T anIgnoredValue )
-        throws IllegalArgumentException
+        throws IllegalArgumentException, IllegalStateException
     {
         String qualifiedName = qualifiedName();
-        throw new IllegalArgumentException( "Property [" + qualifiedName + "] is read-only" );
+        throw new IllegalStateException( "Property [" + qualifiedName + "] is read-only" );
     }
 }

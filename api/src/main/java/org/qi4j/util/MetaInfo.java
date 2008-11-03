@@ -16,6 +16,8 @@ package org.qi4j.util;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.annotation.Annotation;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +27,7 @@ import java.util.Set;
  */
 public final class MetaInfo
 {
-    private final Map<Class<?>, Serializable> metaInfoMap = new LinkedHashMap<Class<?>, Serializable>();
+    private final Map<Class<?>, Object> metaInfoMap = new LinkedHashMap<Class<?>, Object>();
 
     public MetaInfo()
     {
@@ -36,14 +38,21 @@ public final class MetaInfo
         metaInfoMap.putAll( metaInfo.metaInfoMap );
     }
 
-    public void set( Serializable metaInfo )
+    public void set( Object metaInfo )
     {
-        Set<Class> types = ClassUtil.classesOf( metaInfo.getClass() );
-        for( Type type : types )
+        if (metaInfo instanceof Annotation)
         {
-            if( type instanceof Class )
+            metaInfoMap.put( metaInfo.getClass(), metaInfo );
+
+        } else
+        {
+            Set<Class> types = ClassUtil.classesOf( metaInfo.getClass() );
+            for( Type type : types )
             {
-                metaInfoMap.put( (Class) type, metaInfo );
+                if( type instanceof Class )
+                {
+                    metaInfoMap.put( (Class) type, metaInfo );
+                }
             }
         }
     }
@@ -53,8 +62,17 @@ public final class MetaInfo
         return (T) metaInfoMap.get( metaInfoType );
     }
 
-    public <T extends Serializable> void add( Class<T> infoType, T info )
+    public <T> void add( Class<T> infoType, T info )
     {
         metaInfoMap.put( infoType, info );
+    }
+
+    public MetaInfo withAnnotations( AnnotatedElement annotatedElement )
+    {
+        for( Annotation annotation : annotatedElement.getAnnotations() )
+        {
+            set( annotation );
+        }
+        return this;
     }
 }

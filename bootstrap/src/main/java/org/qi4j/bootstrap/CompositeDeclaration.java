@@ -23,7 +23,7 @@ import org.qi4j.structure.Visibility;
 
 public interface CompositeDeclaration
 {
-    CompositeDeclaration setMetaInfo( Serializable info );
+    CompositeDeclaration setMetaInfo( Object info );
 
     CompositeDeclaration visibleIn( Visibility visibility );
 }

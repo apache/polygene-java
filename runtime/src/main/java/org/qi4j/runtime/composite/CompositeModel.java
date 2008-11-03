@@ -225,9 +225,19 @@ public final class CompositeModel
         }
     }
 
+    public State newBuilderState()
+    {
+        return stateModel.newBuilderState();
+    }
+
     public State newDefaultState()
     {
         return stateModel.newDefaultInstance();
+    }
+
+    public State newState( State state )
+    {
+        return stateModel.newState(state);
     }
 
     public String toURI()
@@ -239,4 +249,5 @@ public final class CompositeModel
     {
         return compositeType.getName();
     }
+
 }

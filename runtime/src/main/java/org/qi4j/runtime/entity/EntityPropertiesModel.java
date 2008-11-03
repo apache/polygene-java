@@ -80,12 +80,12 @@ public final class EntityPropertiesModel
         }
     }
 
-    public PropertiesInstance newDefaultInstance()
+    public PropertiesInstance newBuilderInstance()
     {
         Map<Method, Property<?>> properties = new HashMap<Method, Property<?>>();
         for( PropertyModel propertyModel : propertyModels )
         {
-            Property property = propertyModel.newInstance();
+            Property property = propertyModel.newBuilderInstance();
             properties.put( propertyModel.accessor(), property );
         }
 

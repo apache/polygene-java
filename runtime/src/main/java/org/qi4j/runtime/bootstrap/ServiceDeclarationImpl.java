@@ -69,7 +69,7 @@ public final class ServiceDeclarationImpl
         return this;
     }
 
-    public ServiceDeclaration setMetaInfo( Serializable serviceAttribute )
+    public ServiceDeclaration setMetaInfo( Object serviceAttribute )
     {
         metaInfo.set( serviceAttribute );
         return this;
@@ -90,7 +90,7 @@ public final class ServiceDeclarationImpl
                                                           serviceProvider,
                                                           id,
                                                           instantiateOnStartup,
-                                                          new MetaInfo( metaInfo ),
+                                                          new MetaInfo( metaInfo ).withAnnotations( serviceType ),
                                                           moduleAssembly.name() );
             serviceModels.add( serviceModel );
         }

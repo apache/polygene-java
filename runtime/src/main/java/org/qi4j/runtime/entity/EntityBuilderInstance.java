@@ -33,7 +33,6 @@ import org.qi4j.property.Property;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.property.ImmutablePropertyInstance;
 
 /**
  * TODO
@@ -166,7 +165,7 @@ public final class EntityBuilderInstance<T>
 
         if( prototypePattern )
         {
-            identityProperty.set( ImmutablePropertyInstance.UNSET );
+            identityProperty.set( null );
         }
         return (T) proxy;
     }
@@ -198,7 +197,7 @@ public final class EntityBuilderInstance<T>
     {
         if( state == null )
         {
-            state = entityModel.newDefaultState();
+            state = entityModel.newBuilderState();
         }
 
         return state;

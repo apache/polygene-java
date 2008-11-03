@@ -40,10 +40,22 @@ public final class StateModel
         this.propertiesModel = propertiesModel;
     }
 
+    public State newBuilderState()
+    {
+        PropertiesInstance properties = propertiesModel.newBuilderInstance();
+        return new StateInstance(properties);
+    }
+
     public State newDefaultInstance()
     {
         PropertiesInstance properties = propertiesModel.newDefaultInstance();
         return new StateInstance( properties );
+    }
+
+    public State newState( State state )
+    {
+        PropertiesInstance properties = propertiesModel.newInstance( state );
+        return new StateInstance(properties);
     }
 
     public State newInstance( State propertiesState )

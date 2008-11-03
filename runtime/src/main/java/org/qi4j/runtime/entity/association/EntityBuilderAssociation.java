@@ -60,4 +60,9 @@ public final class EntityBuilderAssociation<T>
     {
         return model.type();
     }
+
+    public boolean isImmutable()
+    {
+        return false;
+    }
 }

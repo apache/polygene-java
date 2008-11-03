@@ -99,7 +99,7 @@ public final class AssociationsModel
         return accessors.get( qualifiedName );
     }
 
-    public AssociationsInstance newDefaultInstance()
+    public AssociationsInstance newBuilderInstance()
     {
         return new AssociationsInstance( this, null, null );
     }

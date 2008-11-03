@@ -86,7 +86,7 @@ public abstract class AbstractQi4jTest
                 }
             }
 
-            throw new Exception( "UnitOfWork not properly cleaned up" );
+            new Exception( "UnitOfWork not properly cleaned up" ).printStackTrace();
         }
 
         if( application != null )

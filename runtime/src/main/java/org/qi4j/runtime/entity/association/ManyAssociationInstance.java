@@ -28,6 +28,7 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
 
     public boolean removeAll( Collection<?> objects )
     {
+        checkImmutable();
         return associated.removeAll( getEntityIdCollection( objects ) );
     }
 
@@ -68,6 +69,7 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
 
     public boolean add( T t )
     {
+        checkImmutable();
         checkType( t );
 
         return associated.add( getEntityId( t ) );
@@ -75,7 +77,8 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
 
     public boolean remove( Object o )
     {
-        checkType( o );
+        checkImmutable();
+        checkType(o);
 
         return associated.remove( getEntityId( o ) );
     }
@@ -87,16 +90,19 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
 
     public boolean addAll( Collection<? extends T> ts )
     {
+        checkImmutable();
         return associated.addAll( getEntityIdCollection( ts ) );
     }
 
     public boolean retainAll( Collection<?> objects )
     {
+        checkImmutable();
         return associated.retainAll( getEntityIdCollection( objects ) );
     }
 
     public void clear()
     {
+        checkImmutable();
         associated.clear();
     }
 
@@ -189,6 +195,7 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
 
         public void remove()
         {
+            checkImmutable();
             idIterator.remove();
         }
     }
@@ -201,5 +208,10 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
         }
 
         super.checkType( instance );
+    }
+
+    protected boolean isSet()
+    {
+        return true;
     }
 }

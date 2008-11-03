@@ -168,6 +168,34 @@ public final class QueryExpressions
     }
 
     /**
+     * {@link org.qi4j.query.grammar.EqualsPredicate} factory method.
+     *
+     * @param property filtered property; cannot be null
+     * @param value    expected value that property is equal to; cannot be null
+     * @return an {@link org.qi4j.query.grammar.EqualsPredicate}
+     * @throws IllegalArgumentException - If property or value are null
+     */
+    public static <T> EqualsPredicate<T> eq( final Association<T> property,
+                                             final T value )
+    {
+        return provider.newEqualsPredicate( asAssociationExpression( property ), asTypedValueExpression( value ) );
+    }
+
+    /**
+     * {@link org.qi4j.query.grammar.EqualsPredicate} factory method.
+     *
+     * @param property        filtered property; cannot be null
+     * @param valueExpression expected value that property is equal to; cannot be null
+     * @return an {@link org.qi4j.query.grammar.EqualsPredicate}
+     * @throws IllegalArgumentException - If property or value are null
+     */
+    public static <T> EqualsPredicate<T> eq( final Association<T> property,
+                                             final VariableValueExpression<T> valueExpression )
+    {
+        return provider.newEqualsPredicate( asAssociationExpression( property ), valueExpression );
+    }
+
+    /**
      * {@link org.qi4j.query.grammar.NotEqualsPredicate} factory method.
      *
      * @param property filtered property; cannot be null

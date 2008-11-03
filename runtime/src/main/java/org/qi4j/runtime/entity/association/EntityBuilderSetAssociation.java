@@ -43,4 +43,9 @@ public final class EntityBuilderSetAssociation<T> extends LinkedHashSet<T>
     {
         return null;
     }
+
+    public boolean isImmutable()
+    {
+        return false;
+    }
 }

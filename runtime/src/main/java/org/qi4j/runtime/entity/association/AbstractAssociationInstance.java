@@ -9,6 +9,7 @@ import org.qi4j.entity.association.Qualifier;
 import org.qi4j.runtime.entity.UnitOfWorkInstance;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.QualifierQualifiedIdentity;
+import org.qi4j.composite.Immutable;
 
 /**
  * Implementation of AbstractAssociation. Includes helper methods for subclasses
@@ -45,6 +46,11 @@ public abstract class AbstractAssociationInstance<T>
     public Type type()
     {
         return associationInfo.type();
+    }
+
+    public boolean isImmutable()
+    {
+        return associationInfo.isImmutable();
     }
 
     protected T getEntity( QualifiedIdentity entityId )
@@ -109,4 +115,19 @@ public abstract class AbstractAssociationInstance<T>
             }
         }
     }
+
+    protected void checkImmutable()
+    {
+        if( !isImmutable() )
+        {
+            return;
+        }
+        if( !isSet() )
+        {
+            return;
+        }
+        throw new IllegalStateException( "Association " + this + " is immutable." );
+    }
+
+    protected abstract boolean isSet();
 }

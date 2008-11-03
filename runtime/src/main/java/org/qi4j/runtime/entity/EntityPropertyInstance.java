@@ -16,17 +16,19 @@ package org.qi4j.runtime.entity;
 
 import org.qi4j.property.PropertyInfo;
 import org.qi4j.runtime.property.PropertyInstance;
+import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.property.ImmutablePropertyInstance;
 
 /**
- * {@code EntityPropertyInstance} represents a mutable property whose value should be backed by an EntityState.
+ * {@code EntityPropertyInstance} represents a property whose value should be backed by an EntityState.
  *
  * @author Rickard Öberg
  * @since 0.1.0
  */
 public class EntityPropertyInstance<T> extends PropertyInstance<T>
 {
+    private static final Object NOT_LOADED = new Object();
+
     protected EntityState entityState;
 
     /**
@@ -37,10 +39,10 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
      * @since 0.1.0
      */
-    public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState )
+    public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState, ConstraintsCheck constraints )
         throws IllegalArgumentException
     {
-        super( aPropertyInfo );
+        super( aPropertyInfo, (T) NOT_LOADED, constraints );
         this.entityState = entityState;
     }
 
@@ -52,7 +54,7 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
      */
     public T get()
     {
-        if( value == ImmutablePropertyInstance.UNSET )
+        if( value == NOT_LOADED )
         {
             value = (T) entityState.getProperty( qualifiedName() );
         }
@@ -67,8 +69,11 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
      */
     public void set( T aNewValue )
     {
-        super.set( aNewValue );
+        if (isImmutable())
+            throw new IllegalStateException( "Property [" + qualifiedName() + "] is immutable" );
+
         entityState.setProperty( qualifiedName(), aNewValue );
+        super.set( aNewValue );
     }
 
     /**
@@ -86,7 +91,7 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
 
     public void refresh( EntityState newState )
     {
-        value = (T) ImmutablePropertyInstance.UNSET;
+        value = (T) NOT_LOADED;
         entityState = newState;
     }
 }

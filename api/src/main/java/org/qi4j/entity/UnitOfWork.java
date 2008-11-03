@@ -217,6 +217,9 @@ public interface UnitOfWork
     void complete()
         throws UnitOfWorkCompletionException, ConcurrentEntityModificationException;
 
+    void completeAndContinue()
+        throws UnitOfWorkCompletionException, ConcurrentEntityModificationException;
+
     /**
      * Discard thie UnitOfWork. Use this if a failure occurs that you cannot handle,
      * or if the usecase was of a read-only character.
@@ -274,4 +277,8 @@ public interface UnitOfWork
      * @param callback a callback to be registered with this UnitOfWork
      */
     void registerUnitOfWorkCallback( UnitOfWorkCallback callback );
+
+    void registerStateChangeVoter( StateChangeVoter voter);
+
+    void registerStateChangeListener( StateChangeListener listener);
 }

@@ -23,6 +23,10 @@ import java.lang.reflect.Type;
  */
 public interface PropertyInfo
 {
+    boolean isImmutable();
+
+    boolean isComputed();
+
     /**
      * Access metadata about the property with a given type.
      * The info is registered for the property during

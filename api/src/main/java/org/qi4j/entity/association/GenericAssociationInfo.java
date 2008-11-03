@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import org.qi4j.util.MetaInfo;
+import org.qi4j.composite.Immutable;
 
 public class GenericAssociationInfo
     implements AssociationInfo
@@ -146,11 +147,13 @@ public class GenericAssociationInfo
 
     private Method accessor;
     private MetaInfo metainfo;
+    private boolean immutable;
 
     public GenericAssociationInfo( Method accessor, MetaInfo metainfo )
     {
         this.accessor = accessor;
         this.metainfo = metainfo;
+        immutable = metainfo.get( Immutable.class ) != null;
     }
 
     public <T> T metaInfo( Class<T> infoType )
@@ -174,5 +177,10 @@ public class GenericAssociationInfo
     {
         Type methodReturnType = accessor.getGenericReturnType();
         return getAssociationType( methodReturnType );
+    }
+
+    public boolean isImmutable()
+    {
+        return immutable;
     }
 }

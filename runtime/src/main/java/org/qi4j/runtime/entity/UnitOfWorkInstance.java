@@ -37,6 +37,8 @@ import static org.qi4j.entity.UnitOfWorkCallback.UnitOfWorkStatus.COMPLETED;
 import static org.qi4j.entity.UnitOfWorkCallback.UnitOfWorkStatus.DISCARDED;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkException;
+import org.qi4j.entity.StateChangeListener;
+import org.qi4j.entity.StateChangeVoter;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
@@ -77,6 +79,8 @@ public final class UnitOfWorkInstance
 
     private List<UnitOfWorkCallback> callbacks;
     private UnitOfWorkStore unitOfWorkStore;
+    private List<StateChangeListener> stateChangeListeners = new ArrayList<StateChangeListener>( );
+    private List<StateChangeVoter> stateChangeVoters = new ArrayList<StateChangeVoter>( );
 
     static
     {
@@ -373,6 +377,17 @@ public final class UnitOfWorkInstance
     public void complete()
         throws UnitOfWorkCompletionException
     {
+        complete(false);
+    }
+
+    public void completeAndContinue() throws UnitOfWorkCompletionException, ConcurrentEntityModificationException
+    {
+        complete( true );
+    }
+
+    public void complete(boolean completeAndContinue)
+        throws UnitOfWorkCompletionException
+    {
         checkOpen();
 
         // Copy list so that it cannot be modified during completion
@@ -381,86 +396,23 @@ public final class UnitOfWorkInstance
         // Check callbacks
         notifyBeforeCompletion( currentCallbacks );
 
-        // Create complete lists
-        Map<EntityStore, StoreCompletion> storeCompletion = new HashMap<EntityStore, StoreCompletion>();
-        for( Map.Entry<Class<? extends EntityComposite>, Map<String, EntityComposite>> entry : cache.entrySet() )
-        {
-            Map<String, EntityComposite> entities = entry.getValue();
-            for( EntityComposite entityInstance : entities.values() )
-            {
-                EntityInstance instance = EntityInstance.getEntityInstance( entityInstance );
+        Map<EntityStore, StoreCompletion> storeCompletion = createCompleteLists();
 
-                EntityStore store = instance.store();
-                StoreCompletion storeCompletionList = storeCompletion.get( store );
-                if( storeCompletionList == null )
-                {
-                    storeCompletionList = new StoreCompletion();
-                    storeCompletion.put( store, storeCompletionList );
-                }
-
-                if( instance.status() == EntityStatus.LOADED )
-                {
-                    EntityState entityState = instance.entityState();
-                    if( entityState != null )
-                    {
-                        storeCompletionList.getUpdatedState().add( entityState );
-                    }
-                }
-                else if( instance.status() == EntityStatus.NEW )
-                {
-                    storeCompletionList.getNewState().add( instance.entityState() );
-                }
-                if( instance.status() == EntityStatus.REMOVED )
-                {
-                    storeCompletionList.getRemovedState().add( instance.qualifiedIdentity() );
-                }
-            }
-        }
-
-        // Commit complete lists
-        List<StateCommitter> committers = new ArrayList<StateCommitter>();
-        for( Map.Entry<EntityStore, StoreCompletion> entityStoreListEntry : storeCompletion.entrySet() )
-        {
-            EntityStore entityStore = entityStoreListEntry.getKey();
-            StoreCompletion completion = entityStoreListEntry.getValue();
-
-            try
-            {
-                committers.add( entityStore.prepare( completion.getNewState(), completion.getUpdatedState(), completion.getRemovedState() ) );
-            }
-            catch( Exception e )
-            {
-                // Cancel all previously prepared stores
-                for( StateCommitter committer : committers )
-                {
-                    committer.cancel();
-                }
-
-                if( e instanceof ConcurrentEntityStateModificationException )
-                {
-                    // If we cancelled due to concurrent modification, then create the proper exception for it!
-                    ConcurrentEntityStateModificationException mee = (ConcurrentEntityStateModificationException) e;
-                    Collection<QualifiedIdentity> modifiedEntityIdentities = mee.modifiedEntities();
-                    Collection<EntityComposite> modifiedEntities = new ArrayList<EntityComposite>();
-                    for( QualifiedIdentity modifiedEntityIdentity : modifiedEntityIdentities )
-                    {
-                        modifiedEntities.add( getCachedEntity( modifiedEntityIdentity ) );
-                    }
-                    throw new ConcurrentEntityModificationException( modifiedEntities );
-                }
-                else
-                {
-                    throw new UnitOfWorkCompletionException( e );
-                }
-            }
-        }
+        List<StateCommitter> committers = commitCompleteLists( storeCompletion );
 
         // Commit all changes
         for( StateCommitter committer : committers )
         {
             committer.commit();
         }
-        close();
+
+        if (completeAndContinue)
+        {
+            continueWithState();
+        } else
+        {
+            close();
+        }
 
         // Call callbacks
         notifyAfterCompletion( currentCallbacks, COMPLETED );
@@ -536,6 +488,113 @@ public final class UnitOfWorkInstance
         Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) instance.type();
         Map<String, EntityComposite> entityCache = getEntityCache( compositeType );
         entityCache.put( instance.identity().get(), instance );
+    }
+
+    private List<StateCommitter> commitCompleteLists( Map<EntityStore, StoreCompletion> storeCompletion )
+        throws UnitOfWorkCompletionException
+    {
+        List<StateCommitter> committers = new ArrayList<StateCommitter>();
+        for( Map.Entry<EntityStore, StoreCompletion> entityStoreListEntry : storeCompletion.entrySet() )
+        {
+            EntityStore entityStore = entityStoreListEntry.getKey();
+            StoreCompletion completion = entityStoreListEntry.getValue();
+
+            try
+            {
+                committers.add( entityStore.prepare( completion.getNewState(), completion.getUpdatedState(), completion.getRemovedState() ) );
+            }
+            catch( Exception e )
+            {
+                // Cancel all previously prepared stores
+                for( StateCommitter committer : committers )
+                {
+                    committer.cancel();
+                }
+
+                if( e instanceof ConcurrentEntityStateModificationException )
+                {
+                    // If we cancelled due to concurrent modification, then create the proper exception for it!
+                    ConcurrentEntityStateModificationException mee = (ConcurrentEntityStateModificationException) e;
+                    Collection<QualifiedIdentity> modifiedEntityIdentities = mee.modifiedEntities();
+                    Collection<EntityComposite> modifiedEntities = new ArrayList<EntityComposite>();
+                    for( QualifiedIdentity modifiedEntityIdentity : modifiedEntityIdentities )
+                    {
+                        modifiedEntities.add( getCachedEntity( modifiedEntityIdentity ) );
+                    }
+                    throw new ConcurrentEntityModificationException( modifiedEntities );
+                }
+                else
+                {
+                    throw new UnitOfWorkCompletionException( e );
+                }
+            }
+        }
+        return committers;
+    }
+
+    private Map<EntityStore, StoreCompletion> createCompleteLists()
+    {
+        Map<EntityStore, StoreCompletion> storeCompletion = new HashMap<EntityStore, StoreCompletion>();
+        for( Map.Entry<Class<? extends EntityComposite>, Map<String, EntityComposite>> entry : cache.entrySet() )
+        {
+            Map<String, EntityComposite> entities = entry.getValue();
+            for( EntityComposite entityInstance : entities.values() )
+            {
+                EntityInstance instance = EntityInstance.getEntityInstance( entityInstance );
+
+                EntityStore store = instance.store();
+                StoreCompletion storeCompletionList = storeCompletion.get( store );
+                if( storeCompletionList == null )
+                {
+                    storeCompletionList = new StoreCompletion();
+                    storeCompletion.put( store, storeCompletionList );
+                }
+
+                if( instance.status() == EntityStatus.LOADED )
+                {
+                    EntityState entityState = instance.entityState();
+                    if( entityState != null )
+                    {
+                        storeCompletionList.getUpdatedState().add( entityState );
+                    }
+                }
+                else if( instance.status() == EntityStatus.NEW )
+                {
+                    storeCompletionList.getNewState().add( instance.entityState() );
+                }
+                if( instance.status() == EntityStatus.REMOVED )
+                {
+                    storeCompletionList.getRemovedState().add( instance.qualifiedIdentity() );
+                }
+            }
+        }
+        return storeCompletion;
+    }
+
+    private void continueWithState()
+    {
+        // Update state status for continue
+        for( Map.Entry<Class<? extends EntityComposite>, Map<String, EntityComposite>> entry : cache.entrySet() )
+        {
+            Map<String, EntityComposite> entities = entry.getValue();
+            Iterator<EntityComposite> entityIterator = entities.values().iterator();
+            while (entityIterator.hasNext())
+            {
+                EntityComposite entityInstance = entityIterator.next();
+                EntityInstance instance = EntityInstance.getEntityInstance( entityInstance );
+
+                EntityStore store = instance.store();
+
+                if( instance.status() == EntityStatus.NEW )
+                {
+                    instance.entityState().markAsLoaded();
+                }
+                if( instance.status() == EntityStatus.REMOVED )
+                {
+                    entityIterator.remove();
+                }
+            }
+        }
     }
 
     private Map<String, EntityComposite> getEntityCache( Class<? extends EntityComposite> compositeType )
@@ -619,6 +678,26 @@ public final class UnitOfWorkInstance
         {
             throw new UnitOfWorkException( "Unit of work has been closed" );
         }
+    }
+
+    public void registerStateChangeVoter( StateChangeVoter voter )
+    {
+        stateChangeVoters.add(voter);
+    }
+
+    public Iterable<StateChangeVoter> stateChangeVoters()
+    {
+        return stateChangeVoters;
+    }
+
+    public void registerStateChangeListener( StateChangeListener listener )
+    {
+        stateChangeListeners.add(listener);
+    }
+
+    public Iterable<StateChangeListener> stateChangeListeners()
+    {
+        return stateChangeListeners;
     }
 
     private class UnitOfWorkStore

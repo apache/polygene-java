@@ -49,10 +49,10 @@ public final class EntityStateModel
         this.associationsModel = associationsModel;
     }
 
-    public State newDefaultInstance()
+    public State newBuilderInstance()
     {
-        PropertiesInstance properties = propertiesModel.newDefaultInstance();
-        AssociationsInstance associations = associationsModel.newDefaultInstance();
+        PropertiesInstance properties = propertiesModel.newBuilderInstance();
+        AssociationsInstance associations = associationsModel.newBuilderInstance();
         return new StateInstance( properties, associations );
     }
 

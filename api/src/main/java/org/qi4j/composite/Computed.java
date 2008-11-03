@@ -12,20 +12,24 @@
  *
  */
 
-package org.qi4j.property;
+package org.qi4j.composite;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Documented;
 
 /**
- * Computed properties should use this interface.
- * The {@link Property#set} method is still there,
- * but an exception is thrown on invocation.
- * <p/>
- * The value of computed properties may change over time
- * even though set() is never called.
- * <p/>
- * The Composite must implement these properties manually
- * using the {@link ComputedPropertyInstance} base class.
+ * TODO
  */
-public interface ComputedProperty<T>
-    extends Property<T>
+/**
+ * This annotation adds Immutability to Types, Properties and Associations
+ *
+ */
+@Retention( RetentionPolicy.RUNTIME )
+@Target( { ElementType.TYPE, ElementType.METHOD } )
+@Documented
+public @interface Computed
 {
 }

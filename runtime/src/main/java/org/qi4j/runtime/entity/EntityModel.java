@@ -231,9 +231,9 @@ public final class EntityModel
         }
     }
 
-    public State newDefaultState()
+    public State newBuilderState()
     {
-        return stateModel.newDefaultInstance();
+        return stateModel.newBuilderInstance();
     }
 
     private Class<? extends Composite> createProxyClass( Class<? extends Composite> compositeType )

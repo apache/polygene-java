@@ -22,7 +22,9 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.property.GenericPropertyInfo;
+import org.qi4j.property.Property;
 import org.qi4j.util.MetaInfo;
+import org.qi4j.util.ClassUtil;
 
 /**
  * Declaration of a Property.
@@ -49,15 +51,19 @@ public final class MetaInfoDeclaration
 
     public MetaInfo getMetaInfo( Method accessor )
     {
-        for( InfoHolder<?> propertyDeclarationHolder : mixinPropertyDeclarations.values() )
+        for( Map.Entry<Class<?>,InfoHolder<?>> entry : mixinPropertyDeclarations.entrySet() )
         {
-            final MetaInfo metaInfo = propertyDeclarationHolder.getMetaInfo( accessor );
+            InfoHolder<?> holder = entry.getValue();
+            MetaInfo metaInfo = holder.getMetaInfo( accessor );
             if( metaInfo != null )
             {
-                return metaInfo;
+                Class<?> mixinType = entry.getKey();
+                return metaInfo.withAnnotations( mixinType ).withAnnotations( accessor ).withAnnotations( accessor.getReturnType() );
             }
         }
-        return new MetaInfo();
+        // TODO is this code reached at all??
+        Class<?> declaringType = accessor.getDeclaringClass();
+        return new MetaInfo().withAnnotations( declaringType ).withAnnotations( accessor ).withAnnotations( accessor.getReturnType() );
     }
 
     public Object getDefaultValue( Method accessor )

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import org.qi4j.composite.ConstraintViolation;
 import org.qi4j.composite.ConstraintViolationException;
+import org.qi4j.composite.Immutable;
 import org.qi4j.entity.Queryable;
 import org.qi4j.entity.RDF;
 import org.qi4j.entity.association.AbstractAssociation;
@@ -55,6 +56,7 @@ public final class AssociationModel
     private final String rdf;
     private final ValueConstraintsInstance constraints;
     private final boolean queryable;
+    private final boolean immutable;
 
     public AssociationModel( Method accessor, ValueConstraintsInstance valueConstraintsInstance, MetaInfo metaInfo )
     {
@@ -64,6 +66,7 @@ public final class AssociationModel
         this.accessor = accessor;
         this.qualifiedName = GenericAssociationInfo.getQualifiedName( accessor );
         this.uri = GenericAssociationInfo.toURI( qualifiedName() );
+        this.immutable = metaInfo.get( Immutable.class ) != null;
         RDF uriAnnotation = accessor().getAnnotation( RDF.class );
         this.rdf = uriAnnotation == null ? null : uriAnnotation.value();
         this.constraints = valueConstraintsInstance;
@@ -90,6 +93,11 @@ public final class AssociationModel
     public Type type()
     {
         return type;
+    }
+
+    public boolean isImmutable()
+    {
+        return immutable;
     }
 
     public Method accessor()

@@ -77,12 +77,24 @@ public final class PropertiesModel
     }
 
 
+    public PropertiesInstance newBuilderInstance()
+    {
+        Map<Method, Property<?>> properties = new HashMap<Method, Property<?>>();
+        for( PropertyModel propertyModel : propertyModels )
+        {
+            Property property = propertyModel.newBuilderInstance();
+            properties.put( propertyModel.accessor(), property );
+        }
+
+        return new PropertiesInstance( properties );
+    }
+
     public PropertiesInstance newDefaultInstance()
     {
         Map<Method, Property<?>> properties = new HashMap<Method, Property<?>>();
         for( PropertyModel propertyModel : propertyModels )
         {
-            Property property = propertyModel.newInstance();
+            Property property = propertyModel.newDefaultInstance();
             properties.put( propertyModel.accessor(), property );
         }
 

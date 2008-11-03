@@ -15,8 +15,9 @@
 package org.qi4j.entity;
 
 import org.qi4j.composite.Mixins;
+import org.qi4j.composite.Immutable;
 import org.qi4j.injection.scope.PropertyField;
-import org.qi4j.property.ImmutableProperty;
+import org.qi4j.property.Property;
 
 /**
  * This interface provides the identity of the object which may be used
@@ -34,15 +35,15 @@ public interface Identity
      *
      * @return The Identity of 'this' composite.
      */
-    ImmutableProperty<String> identity();
+    @Immutable Property<String> identity();
 
     // Default implementation
     public final class IdentityMixin
         implements Identity
     {
-        @PropertyField private ImmutableProperty<String> identity;
+        @PropertyField private Property<String> identity;
 
-        public ImmutableProperty<String> identity()
+        public Property<String> identity()
         {
             return identity;
         }

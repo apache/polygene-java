@@ -23,7 +23,7 @@ import org.qi4j.structure.Visibility;
 
 public interface EntityDeclaration
 {
-    EntityDeclaration setMetaInfo( Serializable info );
+    EntityDeclaration setMetaInfo( Object info );
 
     EntityDeclaration visibleIn( Visibility visibility );
 }

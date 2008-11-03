@@ -57,4 +57,6 @@ public interface AssociationInfo
      * @return the type of the associated Entities
      */
     Type type();
+
+    boolean isImmutable();
 }

@@ -119,6 +119,16 @@ public class QueryExpressionsProviderImpl
         return new EqualsPredicateImpl<T>( tPropertyReference, valueExpression );
     }
 
+    public <T> EqualsPredicate<T> newEqualsPredicate( AssociationReference tAssociationReference, SingleValueExpression<T> tStaticValueExpression )
+    {
+        return null; // TODO
+    }
+
+    public <T> EqualsPredicate<T> newEqualsPredicate( AssociationReference tAssociationReference, VariableValueExpression<T> valueExpression )
+    {
+        return null; // TODO
+    }
+
     public <T> NotEqualsPredicate<T> newNotEqualsPredicate( PropertyReference<T> tPropertyReference, SingleValueExpression<T> tStaticValueExpression )
     {
         return new NotEqualsPredicateImpl<T>( tPropertyReference, tStaticValueExpression );

@@ -38,7 +38,7 @@ public final class EntityDeclarationImpl implements EntityDeclaration
         this.compositeTypes = compositeTypes;
     }
 
-    public EntityDeclaration setMetaInfo( Serializable info )
+    public EntityDeclaration setMetaInfo( Object info )
     {
         metaInfo.set( info );
         return this;
@@ -56,7 +56,7 @@ public final class EntityDeclarationImpl implements EntityDeclaration
         {
             EntityModel compositeModel = EntityModel.newModel( compositeType,
                                                                visibility,
-                                                               new MetaInfo( metaInfo ),
+                                                               new MetaInfo( metaInfo ).withAnnotations( compositeType ),
                                                                propertyDecs,
                                                                associationDecs );
             entities.add( compositeModel );

@@ -217,6 +217,11 @@ public class DefaultEntityState
         modified = false;
     }
 
+    public void markAsLoaded()
+    {
+        status = EntityStatus.LOADED;
+    }
+
     protected class ModificationTrackerCollection<T extends Collection<QualifiedIdentity>>
         implements Collection<QualifiedIdentity>
     {

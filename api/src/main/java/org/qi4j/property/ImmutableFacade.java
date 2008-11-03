@@ -18,14 +18,16 @@
 package org.qi4j.property;
 
 import java.lang.reflect.Type;
+import java.lang.annotation.Annotation;
 import org.qi4j.composite.NullArgumentException;
+import org.qi4j.composite.Immutable;
 
 /**
  * Use the ImmutableFacade if you have a Property that you want to
- * expose as an ImmutableProperty.
+ * expose as an immutable Property.
  */
 public class ImmutableFacade<T>
-    implements ImmutableProperty<T>
+    implements Property<T>
 {
     private final Property<T> target;
 
@@ -50,6 +52,15 @@ public class ImmutableFacade<T>
     // I think that using T again here is a mistake...
     public <V> V metaInfo( Class<V> infoType )
     {
+        if (infoType.equals( Immutable.class))
+            return infoType.cast(new Immutable()
+            {
+                public Class<? extends Annotation> annotationType()
+                {
+                    return Immutable.class;
+                }
+            });
+
         return target.metaInfo( infoType );
     }
 
@@ -66,6 +77,16 @@ public class ImmutableFacade<T>
     public Type type()
     {
         return target.type();
+    }
+
+    public boolean isImmutable()
+    {
+        return true;
+    }
+
+    public boolean isComputed()
+    {
+        return false;
     }
 
     @Override public String toString()

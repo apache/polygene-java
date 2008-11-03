@@ -22,7 +22,6 @@ import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.PropertyType;
-import org.qi4j.spi.property.ImmutablePropertyInstance;
 import org.qi4j.util.ClassUtil;
 import org.qi4j.util.MetaInfo;
 
@@ -43,33 +42,20 @@ public final class EntityPropertyModel extends PropertyModel
 
     public Property newEntityInstance( EntityState state )
     {
-        if( isImmutable() )
+        if( isComputed() )
         {
-            return new ImmutablePropertyInstance( this, state.getProperty( qualifiedName() ) );
-        }
-        else if( isComputed() )
-        {
-            return super.newInstance();
+            return super.newDefaultInstance();
         }
         else
         {
-            return new EntityPropertyInstance( this, state );
+            return new EntityPropertyInstance( this, state, this );
         }
     }
 
     public void setState( Property property, EntityState entityState )
         throws ConstraintViolationException
     {
-        Object value;
-
-        if( property == null || property.get() == ImmutablePropertyInstance.UNSET )
-        {
-            value = defaultValue();
-        }
-        else
-        {
-            value = property.get();
-        }
+        Object value = property.get();
 
         // Check constraints
         checkConstraints( value );

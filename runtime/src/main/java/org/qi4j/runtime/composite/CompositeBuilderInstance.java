@@ -125,7 +125,7 @@ public final class CompositeBuilderInstance<T>
         }
         else
         {
-            instanceState = state;
+            instanceState = compositeModel.newState(state);
         }
 
         CompositeInstance compositeInstance = compositeModel.newCompositeInstance( moduleInstance, uses == null ? UsesInstance.NO_USES : uses, instanceState );
@@ -167,7 +167,7 @@ public final class CompositeBuilderInstance<T>
     {
         if( state == null )
         {
-            state = compositeModel.newDefaultState();
+            state = compositeModel.newBuilderState();
         }
 
         return state;
