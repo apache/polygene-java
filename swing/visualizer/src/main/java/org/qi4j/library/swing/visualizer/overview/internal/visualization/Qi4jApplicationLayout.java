@@ -36,10 +36,10 @@ import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphCo
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_NAME;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_USED_BY_LAYERS;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.hSpace;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.paddingBottom;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.paddingLeft;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.paddingRight;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.paddingTop;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_BOTTOM;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_LEFT;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_RIGHT;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_TOP;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.vSpace;
 import prefuse.action.layout.graph.TreeLayout;
 import prefuse.data.Node;
@@ -65,8 +65,8 @@ final class Qi4jApplicationLayout extends TreeLayout
     private Rectangle computeApplicationBounds( NodeItem anApplicationItem, Point aLocation )
     {
         Dimension dimesion = getNodeLabelSize( anApplicationItem );
-        int x = aLocation.x + paddingLeft;
-        int y = aLocation.y + paddingTop + dimesion.height + vSpace;
+        int x = aLocation.x + PADDING_LEFT;
+        int y = aLocation.y + PADDING_TOP + dimesion.height + vSpace;
 
         Collection<Collection<NodeItem>> layeredNodeGroups = resolveLayerDependencies( anApplicationItem.children() );
 
@@ -83,7 +83,7 @@ final class Qi4jApplicationLayout extends TreeLayout
             }
         }
 
-        int width = ( x + maxLayerGroupWidth + paddingRight ) - aLocation.x;
+        int width = ( x + maxLayerGroupWidth + PADDING_RIGHT ) - aLocation.x;
         int height = y - aLocation.y;
 
         return new Rectangle( aLocation.x, aLocation.y, width, height );
@@ -172,7 +172,7 @@ final class Qi4jApplicationLayout extends TreeLayout
 
     private Rectangle computeLayerGroupBounds( Collection<NodeItem> layers, Point aLocation )
     {
-        int x = aLocation.x + paddingLeft;
+        int x = aLocation.x + PADDING_LEFT;
         int y = aLocation.y + vSpace;
 
         int maxLayerHeight = 0;
@@ -194,7 +194,7 @@ final class Qi4jApplicationLayout extends TreeLayout
         }
 
         int width = x - aLocation.x;
-        int height = ( y + maxLayerHeight + paddingBottom ) - aLocation.y;
+        int height = ( y + maxLayerHeight + PADDING_BOTTOM ) - aLocation.y;
 
         return new Rectangle( aLocation.x, aLocation.y, width, height );
     }
@@ -203,8 +203,8 @@ final class Qi4jApplicationLayout extends TreeLayout
         NodeItem nodeItem, Point location, BoundsComputer childBoundsComputer )
     {
         Dimension dimension = getNodeLabelSize( nodeItem );
-        int x = location.x + paddingLeft;
-        int y = location.y + paddingTop + dimension.height + vSpace;
+        int x = location.x + PADDING_LEFT;
+        int y = location.y + PADDING_TOP + dimension.height + vSpace;
 
         Iterator children = nodeItem.children();
         int maxChildHeight = 0;
@@ -229,7 +229,7 @@ final class Qi4jApplicationLayout extends TreeLayout
         }
 
         int width = x - location.x;
-        int height = ( y + maxChildHeight + paddingBottom + vSpace ) - location.y;
+        int height = ( y + maxChildHeight + PADDING_BOTTOM + vSpace ) - location.y;
 
         return new Rectangle( location.x, location.y, width, height );
     }
@@ -260,8 +260,8 @@ final class Qi4jApplicationLayout extends TreeLayout
     {
 
         Dimension dimension = getNodeLabelSize( nodeItem );
-        int x = location.x + paddingLeft;
-        int y = location.y + paddingTop + dimension.height + vSpace;
+        int x = location.x + PADDING_LEFT;
+        int y = location.y + PADDING_TOP + dimension.height + vSpace;
 
         Iterator children = nodeItem.children();
         int maxCompositeWidth = 0;
@@ -272,7 +272,7 @@ final class Qi4jApplicationLayout extends TreeLayout
             Rectangle bounds = computeCompositeBounds( composite, compositeLocation );
             composite.setBounds( bounds.x, bounds.y, bounds.width, bounds.height );
 
-            y += bounds.height + paddingBottom;
+            y += bounds.height + PADDING_BOTTOM;
             if( bounds.width > maxCompositeWidth )
             {
                 maxCompositeWidth = bounds.width;
@@ -290,16 +290,16 @@ final class Qi4jApplicationLayout extends TreeLayout
             y = location.y + dimension.height;
         }
 
-        int width = ( x + maxCompositeWidth + paddingRight ) - location.x;
-        int height = ( y + paddingBottom ) - location.y;
+        int width = ( x + maxCompositeWidth + PADDING_RIGHT ) - location.x;
+        int height = ( y + PADDING_BOTTOM ) - location.y;
         return new Rectangle( location.x, location.y, width, height );
     }
 
     private Rectangle computeCompositeBounds( NodeItem composite, Point location )
     {
         Dimension dimension = getNodeLabelSize( composite );
-        return new Rectangle( location.x, location.y, dimension.width + paddingLeft,
-                              dimension.height + paddingTop + paddingBottom );
+        return new Rectangle( location.x, location.y, dimension.width + PADDING_LEFT,
+                              dimension.height + PADDING_TOP + PADDING_BOTTOM );
     }
 
     private String getName( NodeItem node )

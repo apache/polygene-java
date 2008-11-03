@@ -22,10 +22,11 @@ package org.qi4j.library.swing.visualizer.overview.internal.common;
  */
 public class GraphConstants
 {
-    public static final int paddingTop = 5;
-    public static final int paddingBottom = 5;
-    public static final int paddingLeft = 5;
-    public static final int paddingRight = 5;
+    public static final int PADDING_TOP = 10;
+    public static final int PADDING_LEFT = 10;
+
+    public static final int PADDING_RIGHT = 10;
+    public static final int PADDING_BOTTOM = 10;
 
     public static final int hSpace = 10;
     public static final int vSpace = 10;

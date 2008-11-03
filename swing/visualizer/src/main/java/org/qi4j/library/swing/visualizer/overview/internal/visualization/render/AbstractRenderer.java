@@ -22,7 +22,9 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_NAME;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_LEFT;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_TOP;
 import prefuse.render.Renderer;
 import prefuse.visual.VisualItem;
 
@@ -32,19 +34,18 @@ import prefuse.visual.VisualItem;
 abstract class AbstractRenderer
     implements Renderer
 {
+    protected boolean debug = false;
 
-    private boolean debug = false;
-
-    protected void drawName( Graphics2D g, VisualItem item, int x, int y )
+    protected final void drawName( Graphics2D graphics, VisualItem item, int x, int y )
     {
         Font font = item.getFont();
         FontMetrics fm = DEFAULT_GRAPHICS.getFontMetrics( font );
 
-        x = x + GraphConstants.paddingLeft;
-        y = y + GraphConstants.paddingTop + fm.getHeight();
-        String name = (String) item.get( GraphConstants.FIELD_NAME );
+        x = x + PADDING_LEFT;
+        y = y + (PADDING_TOP / 2) + fm.getHeight();
+        String name = (String) item.get( FIELD_NAME );
 
-        g.drawString( name, x, y );
+        graphics.drawString( name, x, y );
 
         if( debug )
         {
@@ -52,16 +53,17 @@ abstract class AbstractRenderer
             String s = ( (int) rect.getX() ) + ", " + ( (int) rect.getY() ) + "," +
                        ( (int) rect.getWidth() ) + "," + ( (int) rect.getHeight() );
 
-            g.drawString( s, x, y - GraphConstants.paddingTop );
+            graphics.drawString( s, x, y - PADDING_TOP );
         }
     }
 
-    public boolean locatePoint( Point2D p, VisualItem item )
+    public final boolean locatePoint( Point2D p, VisualItem item )
     {
-        return item.getBounds().contains( p );
+        Rectangle2D bounds = item.getBounds();
+        return bounds.contains( p );
     }
 
-    public void setBounds( VisualItem item )
+    public final void setBounds( VisualItem item )
     {
         // no management of the bounds by default
     }

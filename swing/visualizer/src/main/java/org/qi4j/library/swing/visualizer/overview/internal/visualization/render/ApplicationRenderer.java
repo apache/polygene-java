@@ -21,6 +21,8 @@ package org.qi4j.library.swing.visualizer.overview.internal.visualization.render
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.WHITE;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import prefuse.visual.VisualItem;
@@ -32,13 +34,20 @@ final class ApplicationRenderer
     extends AbstractRenderer
 {
 
-    private Color borderColor = Color.black;
+    // Header
+    private static final Color COLOR_HEADER_FILL = new Color( 0x71B910 );
+    private static final Color COLOR_HEADER_TEXT = WHITE;
+    private static final Color COLOR_HEADER_LINE1_SEPARATOR = new Color( 0x22580D );
+    private static final Color COLOR_HEADER_LINE2_SEPARATOR = WHITE;
+    private static final int HEADER_HEIGHT = 30;
+
+    // BODY
+    private static final Color COLOR_BODY_FILL = new Color( 0xD9D4C5 );
+
+    private Color borderColor = BLACK;
     private BasicStroke borderStroke = new BasicStroke( 6 );
 
-    private Color fillColor = new Color( 233, 227, 211 );
-    private Color textColor = new Color( 129, 127, 121 );
-
-    public final void render( Graphics2D g, VisualItem item )
+    public final void render( Graphics2D graphic, VisualItem item )
     {
         Rectangle2D rect = item.getBounds();
 
@@ -47,15 +56,34 @@ final class ApplicationRenderer
         int width = (int) rect.getWidth();
         int height = (int) rect.getHeight();
 
-        // todo draw drop shadow
-//        g.setPaint( borderColor );
-//        g.setStroke( borderStroke );
-//        g.drawRect( x, y, width, height );
+        // Draw body
+        graphic.setPaint( COLOR_BODY_FILL );
+        graphic.fillRoundRect( x, y, width, height, 5, 5 );
 
-        g.setPaint( fillColor );
-        g.fillRoundRect( x + 3, y + 3, width - 6, height - 6, 5, 5 );
+        drawHeader( graphic, item );
 
-        g.setPaint( textColor );
-        drawName( g, item, x, y );
+    }
+
+    private void drawHeader( Graphics2D graphic, VisualItem item )
+    {
+        Rectangle2D rect = item.getBounds();
+
+        int x = (int) rect.getX();
+        int y = (int) rect.getY();
+        int width = (int) rect.getWidth();
+
+        graphic.setPaint( COLOR_HEADER_FILL );
+        graphic.fillRoundRect( x, y, width, HEADER_HEIGHT, 5, 5 );
+
+        graphic.setPaint( COLOR_HEADER_TEXT );
+        drawName( graphic, item, x, y );
+
+        graphic.setPaint( COLOR_HEADER_LINE1_SEPARATOR );
+        int lineY = y + HEADER_HEIGHT - 2;
+        graphic.fillRect( x, lineY, width, 1 );
+
+        graphic.setPaint( COLOR_HEADER_LINE2_SEPARATOR );
+        lineY = lineY + 1;
+        graphic.fillRect( x, lineY, width, 1 );
     }
 }

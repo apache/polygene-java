@@ -27,8 +27,8 @@ import prefuse.visual.VisualItem;
 final class LayerRenderer
     extends AbstractRenderer
 {
-    private Color fillColor = new Color( 242, 238, 229 );
-    private Color textColor = new Color( 129, 127, 121 );
+    private static final Color FILL_COLOR = new Color( 0xFFFFFF );
+    private static final Color TEXT_COLOR = new Color( 0x000000 );
 
     // todo drop shadow
 
@@ -41,11 +41,10 @@ final class LayerRenderer
         int width = (int) rect.getWidth();
         int height = (int) rect.getHeight();
 
-        g.setPaint( fillColor );
+        g.setPaint( FILL_COLOR );
         g.fillRect( x, y, width, height );
 
-        g.setPaint( textColor );
+        g.setPaint( TEXT_COLOR );
         drawName( g, item, x, y );
     }
-
 }
