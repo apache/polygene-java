@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.swing.visualizer.overview.internal.visualization;
+package org.qi4j.library.swing.visualizer.overview.internal.visualization.layout;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -46,9 +46,9 @@ import prefuse.data.Node;
 import prefuse.render.Renderer;
 import prefuse.visual.NodeItem;
 
-final class Qi4jApplicationLayout extends TreeLayout
+public final class ApplicationLayout extends TreeLayout
 {
-    Qi4jApplicationLayout( String aGroup )
+    public ApplicationLayout( String aGroup )
     {
         super( aGroup );
     }
