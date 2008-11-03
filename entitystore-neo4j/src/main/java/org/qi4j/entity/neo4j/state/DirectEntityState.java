@@ -275,6 +275,11 @@ public class DirectEntityState implements CommittableEntityState
         throw new UnsupportedOperationException();
     }
 
+    public void markAsLoaded()
+    {
+        status = EntityStatus.LOADED;
+    }
+
     // Implementation internals
 
     private RelationshipType getAssociationType( String qualifiedName )

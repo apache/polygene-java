@@ -42,6 +42,16 @@ public class TestProperty<T> implements Property<T>
         return null;
     }
 
+    public boolean isImmutable()
+    {
+        return false;
+    }
+
+    public boolean isComputed()
+    {
+        return false;
+    }
+
     public String name()
     {
         return name;

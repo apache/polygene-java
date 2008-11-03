@@ -22,5 +22,7 @@ import org.qi4j.entity.association.ManyAssociation;
 
 public interface Person extends HasFirstName, HasLastName
 {
-     ManyAssociation<Account> accounts();
+
+
+    ManyAssociation<Account> accounts();
 }

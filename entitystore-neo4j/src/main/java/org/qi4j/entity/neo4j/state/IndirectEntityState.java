@@ -203,6 +203,11 @@ public class IndirectEntityState implements CommittableEntityState
         throw new UnsupportedOperationException();
     }
 
+    public void markAsLoaded()
+    {
+        status = EntityStatus.LOADED;
+    }
+
     // Implementation internals
 
     private static class Holder<T>

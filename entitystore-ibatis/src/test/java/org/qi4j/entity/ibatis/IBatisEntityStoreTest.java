@@ -34,6 +34,7 @@ import static org.qi4j.entity.ibatis.TestConfig.JOHN_SMITH_ID;
 import org.qi4j.entity.ibatis.entity.Account;
 import org.qi4j.entity.ibatis.entity.AccountComposite;
 import org.qi4j.entity.ibatis.entity.PersonComposite;
+import org.qi4j.entity.ibatis.entity.Person;
 import org.qi4j.entity.ibatis.test.AbstractTestCase;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.spi.entity.EntityState;
@@ -143,7 +144,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         uow = unitOfWorkFactory.newUnitOfWork();
         final AccountComposite account = uow.find( accountId, AccountComposite.class );
         assertEquals( "account name", JOHNS_ACCOUNT, account.name().get() );
-        final PersonComposite contactPerson = account.primaryContactPerson().get();
+        final Person contactPerson = account.primaryContactPerson().get();
         assertEquals( "john is contact", john, contactPerson );
         uow.discard();
     }

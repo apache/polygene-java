@@ -319,4 +319,9 @@ public final class IBatisEntityState
     {
         return propertyValues;
     }
+
+    public void markAsLoaded()
+    {
+        status = EntityStatus.LOADED;
+    }
 }

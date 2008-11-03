@@ -21,6 +21,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.structure.Visibility;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
+import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 
 /**
  * Test the RMI store
@@ -32,7 +33,7 @@ public class RmiEntityStoreTest
     {
         super.assemble( module );
         module.setName( "Module 1" );
-        module.addServices( ClientRmiEntityStoreService.class );
+        module.addServices( ClientRmiEntityStoreService.class, UuidIdentityGeneratorService.class );
 
         ModuleAssembly remote = module.layerAssembly().newModuleAssembly( "Server" );
         remote.addEntities( TestEntity.class, TestValue.class ).visibleIn( Visibility.module );

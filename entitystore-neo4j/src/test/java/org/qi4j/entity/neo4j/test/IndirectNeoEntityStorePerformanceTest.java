@@ -20,11 +20,13 @@ import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.qi4j.entity.neo4j.Configuration;
 
 /**
  * @author Peter Neubauer (peter@neubauer.se)
  */
+@Ignore
 public class IndirectNeoEntityStorePerformanceTest extends TestBase {
 
 	protected static final String NAME1 = "Name1";

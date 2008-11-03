@@ -21,5 +21,5 @@ import org.qi4j.entity.ibatis.entity.PersonComposite;
 
 public interface HasPrimaryContactPerson
 {
-    Association<PersonComposite> primaryContactPerson();
+    Association<Person> primaryContactPerson();
 }

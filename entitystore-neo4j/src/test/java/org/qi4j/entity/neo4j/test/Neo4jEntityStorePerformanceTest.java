@@ -11,6 +11,7 @@ import org.qi4j.entity.neo4j.state.DirectEntityStateFactory;
 import org.qi4j.entity.neo4j.state.IndirectEntityStateFactory;
 import org.qi4j.test.entity.AbstractEntityStorePerformanceTest;
 
+@Ignore
 public class Neo4jEntityStorePerformanceTest extends AbstractEntityStorePerformanceTest {
 
 	@Override
