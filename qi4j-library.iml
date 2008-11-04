@@ -17,7 +17,7 @@
           <setting name="BUILD_MODULE_ON_FRAME_DEACTIVATION" value="false" />
           <setting name="BUILD_EXTERNAL_DEPENDENCIES" value="false" />
           <setting name="EXCLUDE_EXPLODED_DIRECTORY" value="true" />
-          <setting name="RUN_JASPER_VALIDATION" value="true" />
+          <setting name="RUN_JASPER_VALIDATION" value="false" />
           <setting name="BUILD_ONLY_WEB_RESOURCES" value="false" />
         </building>
         <packaging>
@@ -47,6 +47,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
