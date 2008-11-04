@@ -2,13 +2,10 @@
 <module relativePaths="false" MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_5" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
-    <exclude-output />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
-      <excludeFolder url="file://$MODULE_DIR$/target/surefire-reports" />
-      <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -41,67 +38,67 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.ops4j.pax.drone:pax-drone-spi:0.1.4-SNAPSHOT">
+      <library name="org.ops4j.pax.drone:pax-drone-spi:0.2.0">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-spi/0.1.4-SNAPSHOT/pax-drone-spi-0.1.4-SNAPSHOT.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-spi/0.2.0/pax-drone-spi-0.2.0.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-spi/0.1.4-SNAPSHOT/pax-drone-spi-0.1.4-SNAPSHOT-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-spi/0.2.0/pax-drone-spi-0.2.0-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-spi/0.1.4-SNAPSHOT/pax-drone-spi-0.1.4-SNAPSHOT-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-spi/0.2.0/pax-drone-spi-0.2.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.ops4j.pax.drone:pax-drone-api:0.1.4-SNAPSHOT">
+      <library name="org.ops4j.pax.drone:pax-drone-api:0.2.0">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-api/0.1.4-SNAPSHOT/pax-drone-api-0.1.4-SNAPSHOT.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-api/0.2.0/pax-drone-api-0.2.0.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-api/0.1.4-SNAPSHOT/pax-drone-api-0.1.4-SNAPSHOT-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-api/0.2.0/pax-drone-api-0.2.0-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-api/0.1.4-SNAPSHOT/pax-drone-api-0.1.4-SNAPSHOT-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-api/0.2.0/pax-drone-api-0.2.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.ops4j.base:ops4j-base-net:0.5.2-SNAPSHOT">
+      <library name="org.ops4j.base:ops4j-base-net:0.5.2">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-net/0.5.2-SNAPSHOT/ops4j-base-net-0.5.2-SNAPSHOT.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-net/0.5.2/ops4j-base-net-0.5.2.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-net/0.5.2-SNAPSHOT/ops4j-base-net-0.5.2-SNAPSHOT-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-net/0.5.2/ops4j-base-net-0.5.2-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-net/0.5.2-SNAPSHOT/ops4j-base-net-0.5.2-SNAPSHOT-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-net/0.5.2/ops4j-base-net-0.5.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.ops4j.base:ops4j-base-lang:0.5.2-SNAPSHOT">
+      <library name="org.ops4j.base:ops4j-base-lang:0.5.2">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-lang/0.5.2-SNAPSHOT/ops4j-base-lang-0.5.2-SNAPSHOT.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-lang/0.5.2/ops4j-base-lang-0.5.2.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-lang/0.5.2-SNAPSHOT/ops4j-base-lang-0.5.2-SNAPSHOT-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-lang/0.5.2/ops4j-base-lang-0.5.2-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-lang/0.5.2-SNAPSHOT/ops4j-base-lang-0.5.2-SNAPSHOT-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-lang/0.5.2/ops4j-base-lang-0.5.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.ops4j.base:ops4j-base-monitors:0.5.2-SNAPSHOT">
+      <library name="org.ops4j.base:ops4j-base-monitors:0.5.2">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-monitors/0.5.2-SNAPSHOT/ops4j-base-monitors-0.5.2-SNAPSHOT.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-monitors/0.5.2/ops4j-base-monitors-0.5.2.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-monitors/0.5.2-SNAPSHOT/ops4j-base-monitors-0.5.2-SNAPSHOT-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-monitors/0.5.2/ops4j-base-monitors-0.5.2-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-monitors/0.5.2-SNAPSHOT/ops4j-base-monitors-0.5.2-SNAPSHOT-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-monitors/0.5.2/ops4j-base-monitors-0.5.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -119,15 +116,15 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.ops4j.pax.drone:pax-drone-spi-junit:0.1.4-SNAPSHOT">
+      <library name="org.ops4j.pax.drone:pax-drone-spi-junit:0.2.0">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-spi-junit/0.1.4-SNAPSHOT/pax-drone-spi-junit-0.1.4-SNAPSHOT.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-spi-junit/0.2.0/pax-drone-spi-junit-0.2.0.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-spi-junit/0.1.4-SNAPSHOT/pax-drone-spi-junit-0.1.4-SNAPSHOT-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-spi-junit/0.2.0/pax-drone-spi-junit-0.2.0-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-spi-junit/0.1.4-SNAPSHOT/pax-drone-spi-junit-0.1.4-SNAPSHOT-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-spi-junit/0.2.0/pax-drone-spi-junit-0.2.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -145,41 +142,41 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.ops4j.pax.drone:pax-drone-connector-paxrunner:0.1.4-SNAPSHOT">
+      <library name="org.ops4j.pax.drone:pax-drone-connector-paxrunner:0.2.0">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-connector-paxrunner/0.1.4-SNAPSHOT/pax-drone-connector-paxrunner-0.1.4-SNAPSHOT.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-connector-paxrunner/0.2.0/pax-drone-connector-paxrunner-0.2.0.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-connector-paxrunner/0.1.4-SNAPSHOT/pax-drone-connector-paxrunner-0.1.4-SNAPSHOT-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-connector-paxrunner/0.2.0/pax-drone-connector-paxrunner-0.2.0-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-connector-paxrunner/0.1.4-SNAPSHOT/pax-drone-connector-paxrunner-0.1.4-SNAPSHOT-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-connector-paxrunner/0.2.0/pax-drone-connector-paxrunner-0.2.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.ops4j.pax.drone:pax-drone-zombie:0.1.4-SNAPSHOT">
+      <library name="org.ops4j.pax.drone:pax-drone-zombie:0.2.0">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-zombie/0.1.4-SNAPSHOT/pax-drone-zombie-0.1.4-SNAPSHOT.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-zombie/0.2.0/pax-drone-zombie-0.2.0.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-zombie/0.1.4-SNAPSHOT/pax-drone-zombie-0.1.4-SNAPSHOT-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-zombie/0.2.0/pax-drone-zombie-0.2.0-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-zombie/0.1.4-SNAPSHOT/pax-drone-zombie-0.1.4-SNAPSHOT-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/drone/pax-drone-zombie/0.2.0/pax-drone-zombie-0.2.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.ops4j.pax.runner:pax-runner:0.14.0">
+      <library name="org.ops4j.pax.runner:pax-runner:0.15.0">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/runner/pax-runner/0.14.0/pax-runner-0.14.0.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/runner/pax-runner/0.15.0/pax-runner-0.15.0.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/runner/pax-runner/0.14.0/pax-runner-0.14.0-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/runner/pax-runner/0.15.0/pax-runner-0.15.0-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/ops4j/pax/runner/pax-runner/0.14.0/pax-runner-0.14.0-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/pax/runner/pax-runner/0.15.0/pax-runner-0.15.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -197,15 +194,15 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.ops4j.base:ops4j-base-io:0.5.2-SNAPSHOT">
+      <library name="org.ops4j.base:ops4j-base-io:0.5.2">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-io/0.5.2-SNAPSHOT/ops4j-base-io-0.5.2-SNAPSHOT.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-io/0.5.2/ops4j-base-io-0.5.2.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-io/0.5.2-SNAPSHOT/ops4j-base-io-0.5.2-SNAPSHOT-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-io/0.5.2/ops4j-base-io-0.5.2-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-io/0.5.2-SNAPSHOT/ops4j-base-io-0.5.2-SNAPSHOT-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/ops4j/base/ops4j-base-io/0.5.2/ops4j-base-io-0.5.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
