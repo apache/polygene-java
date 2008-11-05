@@ -19,6 +19,7 @@ package org.qi4j.trace.records;
 
 import java.util.List;
 import org.qi4j.property.Property;
+import org.qi4j.composite.Optional;
 
 public interface TraceRecord
 {
@@ -32,7 +33,7 @@ public interface TraceRecord
 
     Property<Long> duration();
 
-    Property<Throwable> exception();
+    @Optional Property<Throwable> exception();
 
     Property<List<String>> arguments();
 }

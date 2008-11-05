@@ -20,13 +20,14 @@ package org.qi4j.trace.service;
 
 import java.lang.reflect.Method;
 import org.qi4j.composite.Composite;
+import org.qi4j.composite.Optional;
 
 public interface TraceService
 {
     int traceLevel();
 
-    void traceSuccess( Class compositeType, Composite object, Method method, Object[] args, Object result, long entryTime, long durationNano );
+    void traceSuccess( Class compositeType, Composite object, Method method, @Optional Object[] args, Object result, long entryTime, long durationNano );
 
-    void traceException( Class compositeType, Composite object, Method method, Object[] args, Throwable t, long entryTime, long durationNano );
+    void traceException( Class compositeType, Composite object, Method method, @Optional Object[] args, Throwable t, long entryTime, long durationNano );
 
 }

@@ -17,16 +17,17 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.Queryable;
 import org.qi4j.library.constraints.annotation.Matches;
 import org.qi4j.property.Property;
+import org.qi4j.composite.Optional;
+import org.qi4j.service.ConfigurationComposite;
 
 /**
  * TODO Add JavaDoc
  */
-@Queryable( false )
-public interface NativeConfiguration extends EntityComposite
+public interface NativeConfiguration extends ConfigurationComposite
 {
-    @Matches( "([spoc][spoc][spoc][spoc],?)*" ) Property<String> tripleIndexes();
+    @Optional @Matches( "([spoc][spoc][spoc][spoc],?)*" ) Property<String> tripleIndexes();
 
-    Property<String> dataDirectory();
+    @Optional Property<String> dataDirectory();
 
     Property<Boolean> forceSync();
 }

@@ -29,5 +29,5 @@ public interface AuthorizationContext
 
     Property<Date> time();
 
-    Property<AuthenticationMethod> authenticationMethod();
+    AuthenticationMethod authenticationMethod();
 }

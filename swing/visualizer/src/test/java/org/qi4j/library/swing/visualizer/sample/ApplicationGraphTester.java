@@ -99,13 +99,13 @@ public class ApplicationGraphTester
     @Mixins( A.AMixin.class )
     private static interface A
     {
-        @NotNull Property<String> a();
+        Property<String> a();
 
-        void a( @NotNull String s, int i );
+        void a( String s, int i );
 
         public abstract class AMixin implements A
         {
-            public void a( @NotNull String s, int i )
+            public void a( String s, int i )
             {
                 System.out.println( s );
             }
@@ -120,7 +120,7 @@ public class ApplicationGraphTester
     @Mixins( AssociationMixin.class )
     private static interface BDomainComposite extends Composite
     {
-        @NotNull Association<ADomainComposite> aComposites();
+        Association<ADomainComposite> aComposites();
     }
 
     private static interface MyEntity extends EntityComposite

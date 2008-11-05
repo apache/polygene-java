@@ -17,6 +17,7 @@ package org.qi4j.library.auth;
 
 import org.qi4j.entity.association.Association;
 import org.qi4j.property.Property;
+import org.qi4j.composite.Optional;
 
 /**
  * TODO
@@ -27,9 +28,9 @@ public interface RoleAssignment
 
     Association<RoleAssignee> assignee();
 
-    Property<RoleCondition> condition();
-
     Property<RoleType> roleType();
+
+    @Optional Property<RoleCondition> condition();
 
     public enum RoleType
     {

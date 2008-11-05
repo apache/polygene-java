@@ -25,6 +25,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.injection.scope.Service;
 import org.qi4j.library.auth.Authorization;
@@ -42,6 +43,7 @@ import org.qi4j.library.auth.RoleAssignmentEntity;
 import org.qi4j.library.auth.RoleEntity;
 import org.qi4j.library.auth.User;
 import org.qi4j.library.auth.UserComposite;
+import org.qi4j.library.auth.AuthenticationMethod;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -75,8 +77,10 @@ public class AuthTest
             User user = unit.newEntityBuilder( User.class ).newInstance();
 
             // Create permission
-            NamedPermission permission = unit.newEntityBuilder( NamedPermission.class ).newInstance();
+            EntityBuilder<NamedPermission> entityBuilder = unit.newEntityBuilder( NamedPermission.class );
+            NamedPermission permission = entityBuilder.stateOfComposite();
             permission.name().set( "Enter room" );
+            permission = entityBuilder.newInstance();
 
             // Create role
             Role role = unit.newEntityBuilder( Role.class ).newInstance();
@@ -88,18 +92,22 @@ public class AuthTest
 
             // Create authorization context
             CompositeBuilder<AuthorizationContext> accb = compositeBuilderFactory.newCompositeBuilder( AuthorizationContext.class );
-            accb.stateOfComposite().user().set( user );
-            accb.stateOfComposite().time().set( new Date() );
-            AuthorizationContext context = accb.newInstance();
+            AuthorizationContext context = accb.stateOfComposite();
+            context.user().set( user );
+            context.time().set( new Date() );
+            context.authenticationMethod().set( AuthenticationMethod.BASIC );
+            context = accb.newInstance();
 
             // Check permission
             assertFalse( authorization.hasPermission( permission, room, context ) );
 
             // Create role assignment
-            RoleAssignment roleAssignment = unit.newEntityBuilder( RoleAssignment.class ).newInstance();
+            EntityBuilder<RoleAssignment> roleAssignmentEntityBuilder = unit.newEntityBuilder( RoleAssignment.class );
+            RoleAssignment roleAssignment = roleAssignmentEntityBuilder.stateOfComposite();
             roleAssignment.assignee().set( user );
             roleAssignment.role().set( role );
             roleAssignment.roleType().set( RoleAssignment.RoleType.ALLOW );
+            roleAssignment = roleAssignmentEntityBuilder.newInstance();
             room.roleAssignments().add( roleAssignment );
 
             // Check permission
@@ -111,10 +119,13 @@ public class AuthTest
             user.groups().add( group );
 
             // Create role assignment
-            RoleAssignment groupRoleAssignment = unit.newEntityBuilder( RoleAssignment.class ).newInstance();
+            EntityBuilder<RoleAssignment> assignmentEntityBuilder = unit.newEntityBuilder( RoleAssignment.class );
+            RoleAssignment groupRoleAssignment = assignmentEntityBuilder.stateOfComposite();
             groupRoleAssignment.assignee().set( group );
             groupRoleAssignment.role().set( role );
             groupRoleAssignment.roleType().set( RoleAssignment.RoleType.ALLOW );
+            groupRoleAssignment = assignmentEntityBuilder.newInstance();
+
             room.roleAssignments().add( groupRoleAssignment );
 
             room.roleAssignments().add( groupRoleAssignment );

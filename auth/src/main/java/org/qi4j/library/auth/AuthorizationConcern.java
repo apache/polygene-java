@@ -55,7 +55,7 @@ public class AuthorizationConcern extends ConcernOf<InvocationHandler>
         AuthorizationContext authProps = authBuilder.stateFor( AuthorizationContext.class );
         authProps.user().set( user );
         authProps.time().set( new Date() );
-        authProps.authenticationMethod().set( new BasicAuthenticationMethod() );
+        authProps.authenticationMethod().set( AuthenticationMethod.BASIC );
         AuthorizationContext context = authBuilder.newInstance();
         if( !authorizor.hasPermission( permission, roleAssignments, context ) )
         {

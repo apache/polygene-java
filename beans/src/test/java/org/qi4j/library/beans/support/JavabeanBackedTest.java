@@ -29,6 +29,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Composite;
 import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.composite.Optional;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.ListAssociation;
 import org.qi4j.entity.association.SetAssociation;
@@ -103,9 +104,9 @@ public class JavabeanBackedTest extends AbstractQi4jTest
 
     public interface Person
     {
-        Property<String> name();
+        @Optional Property<String> name();
 
-        Property<City> city();
+        @Optional Property<City> city();
 
         ListAssociation<Person> friends();
     }
@@ -120,14 +121,14 @@ public class JavabeanBackedTest extends AbstractQi4jTest
 
     public interface City
     {
-        Property<String> name();
+        @Optional Property<String> name();
 
-        Association<Country> country();
+        @Optional Association<Country> country();
     }
 
     public interface Country
     {
-        Property<String> name();
+        @Optional Property<String> name();
 
         SetAssociation<City> cities();
     }

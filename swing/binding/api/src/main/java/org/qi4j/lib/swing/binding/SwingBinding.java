@@ -30,7 +30,7 @@ public interface SwingBinding<T>
      * @return this.
      * @throws IllegalBindingException Thrown if adapter for the specified {@code aComponent} is not found.
      */
-    SwingBinding<T> to( @NotNull JComponent aComponent )
+    SwingBinding<T> to( JComponent aComponent )
         throws IllegalBindingException;
 
     /**

@@ -15,9 +15,13 @@
 
 package org.qi4j.library.auth;
 
+import org.qi4j.property.Property;
+
 /**
  * TODO
  */
 public interface AuthenticationMethod
+    extends Property<String>
 {
+    String BASIC = "BASIC";
 }
