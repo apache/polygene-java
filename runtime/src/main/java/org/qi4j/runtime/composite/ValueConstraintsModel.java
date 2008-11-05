@@ -24,21 +24,26 @@ public final class ValueConstraintsModel
 {
     private final List<AbstractConstraintModel> constraintModels;
     private String name;
+    private boolean optional;
 
-    public ValueConstraintsModel( List<AbstractConstraintModel> constraintModels, String name )
+    public ValueConstraintsModel( List<AbstractConstraintModel> constraintModels, String name, boolean optional )
     {
         this.constraintModels = constraintModels;
         this.name = name;
+        this.optional = optional;
     }
 
     public ValueConstraintsInstance newInstance()
     {
-        return new ValueConstraintsInstance( constraintModels, name );
+        return new ValueConstraintsInstance( constraintModels, name, optional );
     }
 
     public boolean isConstrained()
     {
-        return !constraintModels.isEmpty();
+        if (!constraintModels.isEmpty())
+            return true;
+
+        return !optional;
     }
 
     public void visitModel( ModelVisitor modelVisitor )

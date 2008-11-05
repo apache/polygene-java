@@ -23,6 +23,7 @@ import org.qi4j.injection.Name;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.MethodConstraintsDescriptor;
 import org.qi4j.util.AnnotationUtil;
+import org.qi4j.composite.Optional;
 
 /**
  * TODO
@@ -47,7 +48,8 @@ public final class MethodConstraintsModel
             Name nameAnnotation = AnnotationUtil.getAnnotationOfType( parameterAnnotation, Name.class );
             String name = nameAnnotation == null ? "param" + ( i + 1 ) : nameAnnotation.value();
 
-            ValueConstraintsModel parameterConstraintsModel = constraintsModel.constraintsFor( parameterAnnotation, parameterTypes[ i ], name );
+            boolean optional = AnnotationUtil.getAnnotationOfType( parameterAnnotation,  Optional.class) != null;
+            ValueConstraintsModel parameterConstraintsModel = constraintsModel.constraintsFor( parameterAnnotation, parameterTypes[ i ], name, optional );
             if( parameterConstraintsModel.isConstrained() )
             {
                 constrained = true;

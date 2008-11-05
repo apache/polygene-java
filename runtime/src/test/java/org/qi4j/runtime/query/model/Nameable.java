@@ -18,6 +18,7 @@
 package org.qi4j.runtime.query.model;
 
 import org.qi4j.property.Property;
+import org.qi4j.composite.Optional;
 
 /**
  * TODO Add JavaDoc
@@ -27,5 +28,5 @@ import org.qi4j.property.Property;
  */
 public interface Nameable
 {
-    Property<String> name();
+    @Optional Property<String> name();
 }

@@ -20,7 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
-import org.qi4j.injection.Optional;
+import org.qi4j.composite.Optional;
 
 /**
  * Annotation to denote the injection of a dependency to be used by a Mixin. The injected
@@ -33,5 +33,5 @@ import org.qi4j.injection.Optional;
 @InjectionScope
 public @interface Uses
 {
-    @Optional boolean optional() default false; // True if usage is optional, only fail if false
+    boolean optional() default false; // True if usage is optional, only fail if false
 }

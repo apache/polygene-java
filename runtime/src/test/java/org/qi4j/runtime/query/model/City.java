@@ -18,6 +18,7 @@
 package org.qi4j.runtime.query.model;
 
 import org.qi4j.property.Property;
+import org.qi4j.composite.Optional;
 
 /**
  * TODO Add JavaDoc
@@ -28,7 +29,7 @@ import org.qi4j.property.Property;
 public interface City
     extends Nameable
 {
-    Property<String> country();
+    @Optional Property<String> country();
 
-    Property<String> county();
+    @Optional Property<String> county();
 }

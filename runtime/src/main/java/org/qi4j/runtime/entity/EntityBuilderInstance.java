@@ -40,6 +40,8 @@ import org.qi4j.spi.entity.EntityStore;
 public final class EntityBuilderInstance<T>
     implements EntityBuilder<T>
 {
+    private static final String NO_IDENTITY = "NO_IDENTITY";
+
     private static final Method IDENTITY_METHOD;
     private static final Method TYPE_METHOD;
     private static final Method METAINFO_METHOD;
@@ -126,7 +128,7 @@ public final class EntityBuilderInstance<T>
         boolean prototypePattern = false;
         Property identityProperty = getState().getProperty( IDENTITY_METHOD );
         Object identity = identityProperty.get();
-        if( identity == null )
+        if( identity == null || identity == NO_IDENTITY)
         {
             Class compositeType = entityModel.type();
             if( identityGenerator == null )
@@ -165,7 +167,7 @@ public final class EntityBuilderInstance<T>
 
         if( prototypePattern )
         {
-            identityProperty.set( null );
+            identityProperty.set( NO_IDENTITY );
         }
         return (T) proxy;
     }

@@ -20,7 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
-import org.qi4j.injection.Optional;
+import org.qi4j.composite.Optional;
 
 /**
  * Annotation to denote the injection of a reference to the same Composite
@@ -38,5 +38,5 @@ import org.qi4j.injection.Optional;
 @InjectionScope
 public @interface This
 {
-    @Optional boolean optional() default false; // True if the dependency is optional, only fail if this is false
+    boolean optional() default false; // True if the dependency is optional, only fail if this is false
 }

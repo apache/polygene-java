@@ -20,7 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
-import org.qi4j.injection.Optional;
+import org.qi4j.composite.Optional;
 
 /**
  * Annotation to denote the injection of an association into a Mixin field.
@@ -32,6 +32,4 @@ import org.qi4j.injection.Optional;
 public @interface AssociationField
 {
     String value() default ""; // Name of the association. If not set then name will be name of field
-
-    @Optional boolean optional() default true; // Whether or not the association is optional. If optional then the default value will be used
 }

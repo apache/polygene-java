@@ -23,6 +23,7 @@ import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.entity.Identity;
 import org.qi4j.property.Property;
 import org.qi4j.structure.Module;
 
@@ -49,7 +50,7 @@ public final class EntityTest extends AbstractTest
         AnEntity entity = uow.newEntity( AnEntity.class );
         assertNotNull( entity );
 
-        String identity = ( (EntityComposite) entity ).identity().get();
+        String identity = ((Identity)entity).identity().get();
 
         Property<String> property = entity.property();
         assertNotNull( property );

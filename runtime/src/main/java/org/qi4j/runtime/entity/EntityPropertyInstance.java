@@ -72,6 +72,11 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
         if (isImmutable())
             throw new IllegalStateException( "Property [" + qualifiedName() + "] is immutable" );
 
+        if( constraints != null)
+        {
+            constraints.checkConstraints( aNewValue );
+        }
+
         entityState.setProperty( qualifiedName(), aNewValue );
         super.set( aNewValue );
     }

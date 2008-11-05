@@ -33,6 +33,7 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.ManyAssociationType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.util.MetaInfo;
+import org.qi4j.composite.Optional;
 
 /**
  * TODO
@@ -58,7 +59,8 @@ public final class AssociationsModel
         {
             if( AbstractAssociation.class.isAssignableFrom( method.getReturnType() ) )
             {
-                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( method.getAnnotations(), GenericAssociationInfo.getAssociationType( method ), method.getName() );
+                boolean optional = method.getAnnotation( Optional.class ) != null;
+                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( method.getAnnotations(), GenericAssociationInfo.getAssociationType( method ), method.getName(), optional );
                 ValueConstraintsInstance valueConstraintsInstance = null;
                 if( valueConstraintsModel.isConstrained() )
                 {

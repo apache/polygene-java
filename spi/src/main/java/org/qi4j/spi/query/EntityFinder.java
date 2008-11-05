@@ -20,6 +20,7 @@ package org.qi4j.spi.query;
 import org.qi4j.query.grammar.BooleanExpression;
 import org.qi4j.query.grammar.OrderBy;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.composite.Optional;
 
 /**
  * TODO Add JavaDoc
@@ -30,15 +31,15 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 public interface EntityFinder
 {
     Iterable<QualifiedIdentity> findEntities( String resultType,
-                                              BooleanExpression whereClause,
-                                              OrderBy[] orderBySegments,
-                                              Integer firstResult,
-                                              Integer maxResults )
+                                              @Optional BooleanExpression whereClause,
+                                              @Optional OrderBy[] orderBySegments,
+                                              @Optional Integer firstResult,
+                                              @Optional Integer maxResults )
         throws EntityFinderException;
 
-    QualifiedIdentity findEntity( String resultType, BooleanExpression whereClause )
+    QualifiedIdentity findEntity( String resultType, @Optional BooleanExpression whereClause )
         throws EntityFinderException;
 
-    long countEntities( String resultType, BooleanExpression whereClause )
+    long countEntities( String resultType, @Optional BooleanExpression whereClause )
         throws EntityFinderException;
 }

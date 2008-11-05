@@ -21,7 +21,7 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.Collections;
 import org.qi4j.composite.ConstructionException;
-import org.qi4j.injection.Optional;
+import org.qi4j.composite.Optional;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.provider.InvalidInjectionException;
@@ -63,7 +63,7 @@ public final class DependencyModel
         Method[] methods = injectionAnnotation.annotationType().getMethods();
         for( Method method : methods )
         {
-            if( method.getAnnotation( Optional.class ) != null )
+            if( method.getName().equals("optional") )
             {
                 try
                 {

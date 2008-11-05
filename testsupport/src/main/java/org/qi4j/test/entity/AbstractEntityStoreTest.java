@@ -15,6 +15,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.Immutable;
+import org.qi4j.composite.Optional;
 import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
@@ -169,15 +170,15 @@ public abstract class AbstractEntityStoreTest
     public interface TestEntity
         extends EntityComposite
     {
-        Property<String> name();
+        @Optional Property<String> name();
 
-        Property<String> unsetName();
+        @Optional Property<String> unsetName();
 
-        Property<TestValue> valueProperty();
+        @Optional Property<TestValue> valueProperty();
 
-        Association<TestEntity> association();
+        @Optional Association<TestEntity> association();
 
-        Association<TestEntity> unsetAssociation();
+        @Optional Association<TestEntity> unsetAssociation();
 
         ManyAssociation<TestEntity> manyAssociation();
 
@@ -185,7 +186,7 @@ public abstract class AbstractEntityStoreTest
 
         SetAssociation<TestEntity> setAssociation();
 
-        Association<Qualifier<TestEntity, TestEntity>> qualifier();
+        @Optional Association<Qualifier<TestEntity, TestEntity>> qualifier();
     }
 
     public interface TestValue

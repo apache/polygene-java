@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.injection;
+package org.qi4j.composite;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -21,10 +21,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to denote that an annotation defines whether the result is optional or not
+ * Annotation to denote that a method parameter is optional, i.e. it can be null. Default
+ * is that method parameters have to be non-null.
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.METHOD } )
+@Target( { ElementType.PARAMETER, ElementType.METHOD } )
 @Documented
 public @interface Optional
 {

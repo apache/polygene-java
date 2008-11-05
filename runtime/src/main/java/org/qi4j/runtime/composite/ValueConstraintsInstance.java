@@ -17,19 +17,41 @@ package org.qi4j.runtime.composite;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.lang.annotation.Annotation;
 import org.qi4j.composite.ConstraintViolation;
+import org.qi4j.composite.Optional;
 
 /**
  * TODO
  */
 public final class ValueConstraintsInstance
 {
+    private static final Optional OPTIONAL;
+
+    static
+    {
+        OPTIONAL = new Optional()
+        {
+            public Class<? extends Annotation> annotationType()
+            {
+                return Optional.class;
+            }
+
+            @Override public String toString()
+            {
+                return "not optional";
+            }
+        };
+    }
+
     private final List<ConstraintInstance> constraints;
     private String name;
+    private boolean optional;
 
-    public ValueConstraintsInstance( List<AbstractConstraintModel> constraintModels, String name )
+    public ValueConstraintsInstance( List<AbstractConstraintModel> constraintModels, String name, boolean optional )
     {
         this.name = name;
+        this.optional = optional;
         constraints = new ArrayList<ConstraintInstance>();
         for( AbstractConstraintModel constraintModel : constraintModels )
         {
@@ -41,27 +63,45 @@ public final class ValueConstraintsInstance
     public List<ConstraintViolation> checkConstraints( Object value )
     {
         List<ConstraintViolation> violations = null;
-        for( ConstraintInstance constraint : constraints )
-        {
-            boolean valid;
-            try
-            {
-                valid = constraint.isValid( value );
-            }
-            catch( NullPointerException e )
-            {
-                // A NPE is the same as a failing constraint
-                valid = false;
-            }
 
-            if( !valid )
+        // Check optional first - this avoids NPE's in constraints
+        if (optional)
+        {
+            if (value == null)
+                violations = Collections.emptyList();
+        } else
+        {
+            if (value == null)
             {
-                if( violations == null )
+                violations = new ArrayList<ConstraintViolation>();
+                violations.add( new ConstraintViolation( name, OPTIONAL, null) );
+            }
+        }
+
+        if (violations == null)
+        {
+            for( ConstraintInstance constraint : constraints )
+            {
+                boolean valid;
+                try
                 {
-                    violations = new ArrayList<ConstraintViolation>();
+                    valid = constraint.isValid( value );
                 }
-                ConstraintViolation violation = new ConstraintViolation( name, constraint.annotation(), value );
-                violations.add( violation );
+                catch( NullPointerException e )
+                {
+                    // A NPE is the same as a failing constraint
+                    valid = false;
+                }
+
+                if( !valid )
+                {
+                    if( violations == null )
+                    {
+                        violations = new ArrayList<ConstraintViolation>();
+                    }
+                    ConstraintViolation violation = new ConstraintViolation( name, constraint.annotation(), value );
+                    violations.add( violation );
+                }
             }
         }
 

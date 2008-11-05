@@ -20,6 +20,7 @@ package org.qi4j.runtime.query.model;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.property.Property;
+import org.qi4j.composite.Optional;
 
 /**
  * TODO Add JavaDoc
@@ -30,15 +31,15 @@ import org.qi4j.property.Property;
 public interface Person
     extends Nameable, Alive
 {
-    Association<City> placeOfBirth();
+    @Optional Association<City> placeOfBirth();
 
-    Property<Integer> yearOfBirth();
+    @Optional Property<Integer> yearOfBirth();
 
-    Association<Female> mother();
+    @Optional Association<Female> mother();
 
-    Association<Male> father();
+    @Optional Association<Male> father();
 
-    ManyAssociation<Domain> interests();
+    @Optional ManyAssociation<Domain> interests();
 
-    Property<String> email();
+    @Optional Property<String> email();
 }

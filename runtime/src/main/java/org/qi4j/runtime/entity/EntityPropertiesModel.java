@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.composite.ConstraintViolationException;
+import org.qi4j.composite.Optional;
 import org.qi4j.property.GenericPropertyInfo;
 import org.qi4j.property.Property;
 import org.qi4j.runtime.composite.ConstraintsModel;
@@ -59,7 +60,8 @@ public final class EntityPropertiesModel
         {
             if( Property.class.isAssignableFrom( method.getReturnType() ) )
             {
-                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( method.getAnnotations(), GenericPropertyInfo.getPropertyType( method ), method.getName() );
+                boolean optional = method.getAnnotation( Optional.class ) != null;
+                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( method.getAnnotations(), GenericPropertyInfo.getPropertyType( method ), method.getName(), optional );
                 ValueConstraintsInstance valueConstraintsInstance = null;
                 if( valueConstraintsModel.isConstrained() )
                 {

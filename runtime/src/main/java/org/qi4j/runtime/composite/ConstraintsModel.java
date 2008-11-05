@@ -47,7 +47,7 @@ public final class ConstraintsModel
 
     }
 
-    public ValueConstraintsModel constraintsFor( Annotation[] constraintAnnotations, Type valueType, String name )
+    public ValueConstraintsModel constraintsFor( Annotation[] constraintAnnotations, Type valueType, String name, boolean optional )
     {
         List<AbstractConstraintModel> constraintModels = new ArrayList<AbstractConstraintModel>();
         nextConstraint:
@@ -90,7 +90,7 @@ public final class ConstraintsModel
             // Check if if it's a composite constraints
             if( isCompositeConstraintAnnotation( constraintAnnotation ) )
             {
-                ValueConstraintsModel valueConstraintsModel = constraintsFor( constraintAnnotation.annotationType().getAnnotations(), valueType, name );
+                ValueConstraintsModel valueConstraintsModel = constraintsFor( constraintAnnotation.annotationType().getAnnotations(), valueType, name, optional );
                 CompositeConstraintModel compositeConstraintModel = new CompositeConstraintModel( constraintAnnotation, valueConstraintsModel );
                 constraintModels.add( compositeConstraintModel );
                 continue nextConstraint;
@@ -99,7 +99,7 @@ public final class ConstraintsModel
             throw new ConstraintImplementationNotFoundException( declaringType, constraintAnnotation.annotationType(), valueType );
         }
 
-        return new ValueConstraintsModel( constraintModels, name );
+        return new ValueConstraintsModel( constraintModels, name, optional );
     }
 
     private void addConstraintDeclarations( Type type )

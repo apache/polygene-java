@@ -15,12 +15,14 @@
 package org.qi4j.composite;
 
 import java.lang.annotation.Annotation;
+import java.io.Serializable;
 
 /**
  * When a constraint violation has occurred (i.e. Constraint.isValid has returned false) it
  * is put in a collection of all violations that have occurred for this value check.
  */
 public class ConstraintViolation
+    implements Serializable
 {
     private String name;
     private final Annotation constraint;
