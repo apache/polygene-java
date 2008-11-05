@@ -18,6 +18,7 @@ package org.qi4j.osgi.test;
 
 import org.osgi.framework.ServiceReference;
 import org.qi4j.core.test.osgi.AnEntity;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
@@ -48,7 +49,7 @@ public final class EntityTest extends AbstractTest
         AnEntity entity = uow.newEntity( AnEntity.class );
         assertNotNull( entity );
 
-        String identity = entity.identity().get();
+        String identity = ( (EntityComposite) entity ).identity().get();
 
         Property<String> property = entity.property();
         assertNotNull( property );
