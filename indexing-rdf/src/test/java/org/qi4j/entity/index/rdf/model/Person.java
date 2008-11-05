@@ -21,6 +21,7 @@ import org.qi4j.entity.Queryable;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.ManyAssociation;
 import org.qi4j.property.Property;
+import org.qi4j.composite.Optional;
 
 /**
  * TODO Add JavaDoc
@@ -41,7 +42,7 @@ public interface Person
 
     ManyAssociation<Domain> interests();
 
-    Property<String> email();
+    @Optional Property<String> email();
 
     @Queryable( false ) Property<String> password();
 

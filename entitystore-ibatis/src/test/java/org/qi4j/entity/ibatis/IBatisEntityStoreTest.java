@@ -80,11 +80,11 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
 
         final EntityBuilder<PersonComposite> builder = uow.newEntityBuilder( PersonComposite.class );
-        final PersonComposite person = builder.newInstance();
-        final String newId = person.identity().get();
-
+        PersonComposite person = builder.stateOfComposite();
         person.firstName().set( data.get( "FIRST_NAME" ) );
         person.lastName().set( data.get( "LAST_NAME" ) );
+        person = builder.newInstance();
+        final String newId = person.identity().get();
 
         uow.complete();
         assertPersonEqualsInDatabase( newId, data );

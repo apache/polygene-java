@@ -32,6 +32,7 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.Immutable;
+import org.qi4j.composite.Optional;
 import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
@@ -88,8 +89,10 @@ public class JGroupsEntityStoreTest
         // Create entity in app 1
         System.out.println( "Create entity" );
         UnitOfWork app1Unit = app1.unitOfWorkFactory().newUnitOfWork();
-        TestEntity instance = app1Unit.newEntityBuilder( TestEntity.class ).newInstance();
+        EntityBuilder<TestEntity> builder = app1Unit.newEntityBuilder( TestEntity.class );
+        TestEntity instance = builder.stateOfComposite();
         instance.name().set( "Foo" );
+        instance = builder.newInstance();
         app1Unit.complete();
 
 //        Thread.sleep( 5000 );
@@ -235,15 +238,15 @@ public class JGroupsEntityStoreTest
     public interface TestEntity
         extends EntityComposite
     {
-        Property<String> name();
+        @Optional Property<String> name();
 
-        Property<String> unsetName();
+        @Optional Property<String> unsetName();
 
-        Property<TestValue> valueProperty();
+        @Optional Property<TestValue> valueProperty();
 
-        Association<TestEntity> association();
+        @Optional Association<TestEntity> association();
 
-        Association<TestEntity> unsetAssociation();
+        @Optional Association<TestEntity> unsetAssociation();
 
         ManyAssociation<TestEntity> manyAssociation();
 

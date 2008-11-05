@@ -18,11 +18,12 @@
 package org.qi4j.entity.ibatis.entity;
 
 import org.qi4j.property.Property;
+import org.qi4j.composite.Optional;
 
 /**
  * Generic interface for Name.
  */
 public interface HasName
 {
-    Property<String> name();
+    @Optional Property<String> name();
 }

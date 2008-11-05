@@ -23,6 +23,7 @@ import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.entity.association.Qualifier;
 import org.qi4j.library.rdf.DcRdf;
 import org.qi4j.property.Property;
+import org.qi4j.composite.Optional;
 
 /**
  * TODO
@@ -34,11 +35,11 @@ public interface TestEntity
 
     Property<Integer> age();
 
-    Property<String> unsetName();
+    @Optional Property<String> unsetName();
 
     Association<TestEntity> association();
 
-    Association<TestEntity> unsetAssociation();
+    @Optional Association<TestEntity> unsetAssociation();
 
     ManyAssociation<TestEntity> manyAssociation();
 

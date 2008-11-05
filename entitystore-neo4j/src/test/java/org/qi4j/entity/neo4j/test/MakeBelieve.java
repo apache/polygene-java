@@ -18,19 +18,20 @@ package org.qi4j.entity.neo4j.test;
 
 import org.qi4j.entity.association.Association;
 import org.qi4j.property.Property;
+import org.qi4j.composite.Optional;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
 public interface MakeBelieve
 {
-    Property<String> imaginaryName();
+    @Optional Property<String> imaginaryName();
 
-    Property<Integer> imaginaryNumber();
+    @Optional Property<Integer> imaginaryNumber();
 
-    Property<Double> realNumber();
+    @Optional Property<Double> realNumber();
 
-    Association<MakeBelieve> bff();
+    @Optional Association<MakeBelieve> bff();
 
-    Association<MakeBelieve> archNemesis();
+    @Optional Association<MakeBelieve> archNemesis();
 }

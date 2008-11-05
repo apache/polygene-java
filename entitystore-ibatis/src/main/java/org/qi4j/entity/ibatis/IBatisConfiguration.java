@@ -20,14 +20,14 @@ import java.util.Properties;
 import org.qi4j.entity.Queryable;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
 import org.qi4j.property.Property;
+import org.qi4j.composite.Optional;
 
 /**
  * {@code IBatisEntityStoreServiceInfo} provides service information for {@link org.qi4j.entity.ibatis.IBatisEntityStore}.
  */
-@Queryable( false )
 public interface IBatisConfiguration extends DBInitializerConfiguration
 {
     Property<String> sqlMapConfigURL();
 
-    Property<Properties> configProperties();
+    @Optional Property<Properties> configProperties();
 }

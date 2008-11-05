@@ -47,12 +47,14 @@ public class DirectNeoEntityStoreTest
             protected void setup() throws Exception
             {
                 // Create entity
-                MakeBelieveEntity believe = newEntity( MakeBelieveEntity.class );
-                identity = believe.identity().get();
+                EntityBuilder<MakeBelieveEntity> builder = newEntityBuilder( MakeBelieveEntity.class );
+                MakeBelieveEntity believe = builder.stateOfComposite();
                 // Set up
                 believe.imaginaryName().set( "George Lucas" );
                 believe.imaginaryNumber().set( 17 );
                 believe.realNumber().set( 42.0 );
+                believe = builder.newInstance();
+                identity = believe.identity().get();
             }
 
             protected void verify() throws Exception

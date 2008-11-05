@@ -43,87 +43,138 @@ class Network
         throws UnitOfWorkCompletionException
     {
         NameableAssert.clear();
-        EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class );
-        Domain gaming = domainBuilder.newInstance();
-        setName( gaming, "Gaming" );
-        gaming.description().set( "Gaming domain" );
+        Domain gaming;
+        {
+            EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class );
+            gaming = domainBuilder.stateOfComposite();
+            gaming.name().set( "Gaming" );
+            gaming.description().set( "Gaming domain" );
+            gaming = domainBuilder.newInstance();
+            NameableAssert.trace( gaming );
+        }
 
-        Domain programming = domainBuilder.newInstance();
-        setName( programming, "Programming" );
-        programming.description().set( "Programing domain" );
+        Domain programming;
+        {
+            EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class );
+            programming = domainBuilder.stateOfComposite();
+            programming.name().set("Programming");
+            programming.description().set( "Programing domain" );
+            programming = domainBuilder.newInstance();
+            NameableAssert.trace( programming );
+        }
 
-        Domain cooking = domainBuilder.newInstance();
-        setName( cooking, "Cooking" );
-        cooking.description().set( "Cooking domain" );
+        Domain cooking;
+        {
+            EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class );
+            cooking = domainBuilder.stateOfComposite();
+            cooking.name().set( "Cooking" );
+            cooking.description().set( "Cooking domain" );
+            cooking = domainBuilder.newInstance();
+            NameableAssert.trace( cooking );
+        }
 
-        Domain cars = domainBuilder.newInstance();
-        setName( cars, "Cars" );
-        cars.description().set( "Cars" );
+        Domain cars;
+        {
+            EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class );
+            cars = domainBuilder.stateOfComposite();
+            cars.name().set( "Cars" );
+            cars.description().set( "Cars" );
+            cars = domainBuilder.newInstance();
+            NameableAssert.trace( cars );
+        }
 
-        EntityBuilder<City> cityBuilder = unitOfWork.newEntityBuilder( City.class );
-        City kualaLumpur = cityBuilder.newInstance();
-        setName( kualaLumpur, "Kuala Lumpur" );
-        kualaLumpur.country().set( "Malaysia" );
-        kualaLumpur.county().set( "Some Jaya" );
+        City kualaLumpur;
+        {
+            EntityBuilder<City> cityBuilder = unitOfWork.newEntityBuilder( City.class );
+            kualaLumpur = cityBuilder.stateOfComposite();
+            kualaLumpur.name().set("Kuala Lumpur" );
+            kualaLumpur.country().set( "Malaysia" );
+            kualaLumpur.county().set( "Some Jaya" );
+            kualaLumpur = cityBuilder.newInstance();
+            NameableAssert.trace( kualaLumpur );
+        }
 
-        City penang = cityBuilder.newInstance();
-        setName( penang, "Penang" );
-        penang.country().set( "Malaysia" );
-        penang.county().set( "Some Other Jaya" );
+        City penang;
+        {
+            EntityBuilder<City> cityBuilder = unitOfWork.newEntityBuilder( City.class );
+            penang = cityBuilder.stateOfComposite();
+            penang.name().set( "Penang" );
+            penang.country().set( "Malaysia" );
+            penang.county().set( "Some Other Jaya" );
+            penang = cityBuilder.newInstance();
+            NameableAssert.trace( penang );
+        }
 
-        EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class );
-        Account annsAccount = accountBuilder.newInstance();
-        annsAccount.number().set( "accountOfAnnDoe" );
+        Account annsAccount;
+        {
+            EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class );
+            annsAccount = accountBuilder.stateOfComposite();
+            annsAccount.number().set( "accountOfAnnDoe" );
+            annsAccount = accountBuilder.newInstance();
+        }
 
-        Account jacksAccount = accountBuilder.newInstance();
-        jacksAccount.number().set( "accountOfJackDoe" );
+        Account jacksAccount;
+        {
+            EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class );
+            jacksAccount = accountBuilder.stateOfComposite();
+            jacksAccount.number().set( "accountOfJackDoe" );
+            jacksAccount = accountBuilder.newInstance();
+        }
 
-        EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder( MaleEntity.class );
-        EntityBuilder<FemaleEntity> femaleBuilder = unitOfWork.newEntityBuilder( FemaleEntity.class );
+        Female annDoe;
+        {
+            EntityBuilder<FemaleEntity> femaleBuilder = unitOfWork.newEntityBuilder( FemaleEntity.class );
+            annDoe = femaleBuilder.stateOfComposite();
+            annDoe.name().set( "Ann Doe" );
+            annDoe.placeOfBirth().set( kualaLumpur );
+            annDoe.yearOfBirth().set( 1975 );
+            annDoe.interests().add( cooking );
+            annDoe.password().set( "passwordOfAnnDoe" );
+            annDoe.mainAccount().set( annsAccount );
+            annDoe.accounts().add( annsAccount );
+            annDoe.accounts().add( jacksAccount );
+            annDoe = femaleBuilder.newInstance();
+            NameableAssert.trace( annDoe );
+        }
 
-        Female annDoe = femaleBuilder.newInstance();
-        setName( annDoe, "Ann Doe" );
-        annDoe.placeOfBirth().set( kualaLumpur );
-        annDoe.yearOfBirth().set( 1975 );
-        annDoe.interests().add( cooking );
-        annDoe.password().set( "passwordOfAnnDoe" );
-        annDoe.mainAccount().set( annsAccount );
-        annDoe.accounts().add( annsAccount );
-        annDoe.accounts().add( jacksAccount );
+        {
+            EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder( MaleEntity.class );
+            Male joeDoe = maleBuilder.stateOfComposite();
+            joeDoe.name().set( "Joe Doe" );
+            joeDoe.placeOfBirth().set( kualaLumpur );
+            joeDoe.yearOfBirth().set( 1990 );
+            joeDoe.mother().set( annDoe );
+            joeDoe.interests().add( programming );
+            joeDoe.interests().add( gaming );
+            joeDoe.email().set( "joe@thedoes.net" );
+            joeDoe.password().set( "passwordOfJoeDoe" );
+            joeDoe = maleBuilder.newInstance();
+            NameableAssert.trace( joeDoe );
+        }
 
-        Male joeDoe = maleBuilder.newInstance();
-        setName( joeDoe, "Joe Doe" );
-        joeDoe.placeOfBirth().set( kualaLumpur );
-        joeDoe.yearOfBirth().set( 1990 );
-        joeDoe.mother().set( annDoe );
-        joeDoe.interests().add( programming );
-        joeDoe.interests().add( gaming );
-        joeDoe.email().set( "joe@thedoes.net" );
-        joeDoe.password().set( "passwordOfJoeDoe" );
+        {
+            EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder( MaleEntity.class );
+            Male jackDoe = maleBuilder.stateOfComposite();
+            jackDoe.name().set( "Jack Doe" );
+            jackDoe.placeOfBirth().set( penang );
+            jackDoe.yearOfBirth().set( 1970 );
+            jackDoe.interests().add( cars );
+            jackDoe.wife().set( annDoe );
+            jackDoe.password().set( "passwordOfJohnDoe" );
+            jackDoe.mainAccount().set( jacksAccount );
+            jackDoe.accounts().add( annsAccount );
+            jackDoe.accounts().add( jacksAccount );
+            jackDoe = maleBuilder.newInstance();
+            NameableAssert.trace( jackDoe );
+        }
 
-        Male jackDoe = maleBuilder.newInstance();
-        setName( jackDoe, "Jack Doe" );
-        jackDoe.placeOfBirth().set( penang );
-        jackDoe.yearOfBirth().set( 1970 );
-        jackDoe.interests().add( cars );
-        jackDoe.wife().set( annDoe );
-        jackDoe.password().set( "passwordOfJohnDoe" );
-        jackDoe.mainAccount().set( jacksAccount );
-        jackDoe.accounts().add( annsAccount );
-        jackDoe.accounts().add( jacksAccount );
-
-        EntityBuilder<CatEntity> catBuilder = unitOfWork.newEntityBuilder( CatEntity.class );
-
-        Cat felix = catBuilder.newInstance();
-        felix.name().set( "Felix" );
+        {
+            EntityBuilder<CatEntity> catBuilder = unitOfWork.newEntityBuilder( CatEntity.class );
+            Cat felix = catBuilder.stateOfComposite();
+            felix.name().set( "Felix" );
+            felix = catBuilder.newInstance();
+        }
 
         unitOfWork.complete();
     }
-
-    private static void setName( Nameable nameable, String name )
-    {
-        nameable.name().set( name );
-        NameableAssert.trace( nameable );
-    }
-
 }
