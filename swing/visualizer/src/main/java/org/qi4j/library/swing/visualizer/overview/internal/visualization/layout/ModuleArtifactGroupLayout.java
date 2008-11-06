@@ -20,6 +20,7 @@ package org.qi4j.library.swing.visualizer.overview.internal.visualization.layout
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
+import static java.lang.Math.max;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -35,10 +36,10 @@ import prefuse.visual.NodeItem;
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-final class ModuleArtifactGroupBoundsComputer
-    extends AbstractBoundsComputer
+final class ModuleArtifactGroupLayout
+    extends AbstractLayout
 {
-    public final Rectangle computeBounds( NodeItem node1, Point location )
+    public final Rectangle applyLayout( NodeItem node1, Point location )
     {
         Dimension dimension = getNodeLabelSize( node1 );
 
@@ -56,16 +57,10 @@ final class ModuleArtifactGroupBoundsComputer
             moduleArtifacts.put( moduleArtifactNode, bounds );
 
             moduleArtifactPosY += bounds.height + PADDING_BOTTOM;
-            if( bounds.width > moduleArtifactGroupWidth )
-            {
-                moduleArtifactGroupWidth = bounds.width;
-            }
+            moduleArtifactGroupWidth = max( bounds.width, moduleArtifactGroupWidth );
         }
 
-        if( moduleArtifactGroupWidth < dimension.width )
-        {
-            moduleArtifactGroupWidth = dimension.width;
-        }
+        moduleArtifactGroupWidth = max( moduleArtifactGroupWidth, dimension.width );
 
         // Update all module artifact bounds to have the same width
         Set<Map.Entry<NodeItem, Rectangle>> entries = moduleArtifacts.entrySet();
@@ -77,10 +72,7 @@ final class ModuleArtifactGroupBoundsComputer
             moduleArtifact.setBounds( moduleBounds.x, moduleBounds.y, moduleArtifactGroupWidth, moduleBounds.height );
         }
 
-        if( moduleArtifactPosY < location.y + dimension.height )
-        {
-            moduleArtifactPosY = location.y + dimension.height;
-        }
+        moduleArtifactPosY = max( moduleArtifactPosY, location.y + dimension.height );
 
         int width = ( moduleArtifactPosX + moduleArtifactGroupWidth + PADDING_RIGHT ) - location.x;
         int height = ( moduleArtifactPosY + PADDING_BOTTOM ) - location.y;
@@ -92,6 +84,7 @@ final class ModuleArtifactGroupBoundsComputer
         Dimension dimension = getNodeLabelSize( composite );
         int artifactWidth = dimension.width + PADDING_LEFT;
         int artifactHeight = dimension.height + PADDING_TOP + PADDING_BOTTOM;
+
         return new Rectangle( moduleArtifactXPos, moduleArtifactYPos, artifactWidth, artifactHeight );
     }
 }

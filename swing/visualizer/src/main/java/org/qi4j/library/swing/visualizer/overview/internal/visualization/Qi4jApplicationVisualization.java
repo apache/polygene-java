@@ -21,7 +21,7 @@ import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_NAME;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.EDGE_HIDDEN;
-import org.qi4j.library.swing.visualizer.overview.internal.visualization.layout.ApplicationLayout;
+import org.qi4j.library.swing.visualizer.overview.internal.visualization.layout.Qi4jApplicationLayout;
 import org.qi4j.library.swing.visualizer.overview.internal.visualization.render.RendererFactory;
 import prefuse.Display;
 import prefuse.Visualization;
@@ -147,7 +147,7 @@ public final class Qi4jApplicationVisualization extends Visualization
         ActionList color = establishColors();
         putAction( ACTION_COLOR, color );
 
-        ApplicationLayout layout = new ApplicationLayout( GROUP_GRAPH );
+        Qi4jApplicationLayout layout = new Qi4jApplicationLayout( GROUP_GRAPH );
         putAction( ACTION_LAYOUT, layout );
 
         putAction( ACTION_REPAINT, new RepaintAction() );

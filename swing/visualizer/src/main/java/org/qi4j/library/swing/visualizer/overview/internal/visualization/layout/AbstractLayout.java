@@ -36,12 +36,20 @@ import prefuse.visual.NodeItem;
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-abstract class AbstractBoundsComputer
+abstract class AbstractLayout
 {
-    abstract Rectangle computeBounds( NodeItem node, Point location );
+    /**
+     * Apply layout to node.
+     *
+     * @param node     The node to apply layout too.
+     * @param position Top left hand corner of the node position.
+     * @return Bounds of the node.
+     * @since 0.5
+     */
+    abstract Rectangle applyLayout( NodeItem node, Point position );
 
-    Rectangle arrangeChildrenHorizontallyAndComputeBounds(
-        NodeItem nodeItem, Point location, AbstractBoundsComputer childBoundsComputer )
+    protected final Rectangle arrangeChildrenHorizontallyAndComputeBounds(
+        NodeItem nodeItem, Point location, AbstractLayout childBounds )
     {
         Dimension dimension = getNodeLabelSize( nodeItem );
         int x = location.x + PADDING_LEFT;
@@ -53,7 +61,7 @@ abstract class AbstractBoundsComputer
         {
             NodeItem child = (NodeItem) children.next();
             Point moduleLocation = new Point( x, y );
-            Rectangle bounds = childBoundsComputer.computeBounds( child, moduleLocation );
+            Rectangle bounds = childBounds.applyLayout( child, moduleLocation );
             child.setBounds( bounds.x, bounds.y, bounds.width, bounds.height );
 
             x += bounds.width + hSpace;
@@ -76,7 +84,7 @@ abstract class AbstractBoundsComputer
     }
 
 
-    Dimension getNodeLabelSize( NodeItem node )
+    protected Dimension getNodeLabelSize( NodeItem node )
     {
         Font font = node.getFont();
         FontMetrics fm = Renderer.DEFAULT_GRAPHICS.getFontMetrics( font );
@@ -88,7 +96,7 @@ abstract class AbstractBoundsComputer
         return new Dimension( width, height );
     }
 
-    String getName( NodeItem node )
+    protected String getName( NodeItem node )
     {
         return (String) node.get( FIELD_NAME );
     }

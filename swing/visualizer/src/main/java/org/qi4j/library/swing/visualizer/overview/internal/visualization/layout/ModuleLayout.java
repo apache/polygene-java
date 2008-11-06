@@ -25,16 +25,16 @@ import prefuse.visual.NodeItem;
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-class ModuleBoundsComputer extends AbstractBoundsComputer
+final class ModuleLayout extends AbstractLayout
 {
-    private final ModuleArtifactGroupBoundsComputer moduleArtifactGroupBoundsComputer;
+    private final ModuleArtifactGroupLayout moduleArtifactGroupBoundsComputer;
 
-    ModuleBoundsComputer()
+    ModuleLayout()
     {
-        moduleArtifactGroupBoundsComputer = new ModuleArtifactGroupBoundsComputer();
+        moduleArtifactGroupBoundsComputer = new ModuleArtifactGroupLayout();
     }
 
-    public Rectangle computeBounds( NodeItem node, Point location )
+    public final Rectangle applyLayout( NodeItem node, Point location )
     {
         return arrangeChildrenHorizontallyAndComputeBounds( node, location, moduleArtifactGroupBoundsComputer );
     }
