@@ -18,6 +18,7 @@ import org.qi4j.composite.CompositeBuilderFactory;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.usecase.Usecase;
+import org.qi4j.structure.Module;
 
 /**
  * All operations on entities goes through an UnitOfWork. A UnitOfWork allows you to access
@@ -47,13 +48,6 @@ public interface UnitOfWork
      * @return the Usecase
      */
     Usecase usecase();
-
-    /**
-     * Create a nested UnitOfWork
-     *
-     * @return a nested UnitOfWork
-     */
-    UnitOfWork newUnitOfWork();
 
     /**
      * Create a new Entity which implements the given mixin type. An EntityComposite
@@ -250,25 +244,18 @@ public interface UnitOfWork
     void resume();
 
     /**
+     * Get the module that this UnitOfWork was created in
+     *
+     * @return module of the owning module
+     */
+    Module module();
+
+    /**
      * Get the QueryBuilderFactory for this UnitOfWork
      *
      * @return a factory
      */
     QueryBuilderFactory queryBuilderFactory();
-
-    /**
-     * Get the CompositeBuilderFactory for this UnitOfWork
-     *
-     * @return a factory
-     */
-    CompositeBuilderFactory compositeBuilderFactory();
-
-    /**
-     * Get the ObjectBuilderFactory for this UnitOfWork
-     *
-     * @return a factory
-     */
-    ObjectBuilderFactory objectBuilderFactory();
 
     /**
      * Register a callback. Callbacks are invoked when the UnitOfWork

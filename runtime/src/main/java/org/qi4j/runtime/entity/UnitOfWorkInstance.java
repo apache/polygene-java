@@ -60,7 +60,7 @@ import org.qi4j.usecase.Usecase;
 public final class UnitOfWorkInstance
     implements UnitOfWork
 {
-    public static final ThreadLocal<Stack<UnitOfWork>> current;
+    public static final ThreadLocal<Stack<UnitOfWorkInstance>> current;
 
     private final HashMap<Class<? extends EntityComposite>, Map<String, EntityComposite>> cache;
 
@@ -84,11 +84,11 @@ public final class UnitOfWorkInstance
 
     static
     {
-        current = new ThreadLocal<Stack<UnitOfWork>>()
+        current = new ThreadLocal<Stack<UnitOfWorkInstance>>()
         {
-            protected Stack<UnitOfWork> initialValue()
+            protected Stack<UnitOfWorkInstance> initialValue()
             {
-                return new Stack<UnitOfWork>();
+                return new Stack<UnitOfWorkInstance>();
             }
         };
         QueryBuilderFactoryImpl.initialize();
@@ -105,7 +105,7 @@ public final class UnitOfWorkInstance
     }
 
     // Nested unit of work
-    public UnitOfWorkInstance( ModuleInstance moduleInstance, UnitOfWorkStore unitOfWorkStore, Usecase nestedUsecase )
+    public UnitOfWorkInstance( ModuleInstance moduleInstance, Usecase nestedUsecase, UnitOfWorkStore unitOfWorkStore )
     {
         this( moduleInstance, nestedUsecase );
         this.unitOfWorkStore = unitOfWorkStore;
@@ -452,20 +452,6 @@ public final class UnitOfWorkInstance
         return open;
     }
 
-    public UnitOfWork newUnitOfWork()
-    {
-        checkOpen();
-
-        return new UnitOfWorkInstance( moduleInstance, new UnitOfWorkStore(), Usecase.DEFAULT );
-    }
-
-    public UnitOfWork newUnitOfWork( Usecase usecase )
-    {
-        checkOpen();
-
-        return new UnitOfWorkInstance( moduleInstance, new UnitOfWorkStore(), usecase );
-    }
-
     public ModuleInstance module()
     {
         checkOpen();
@@ -698,6 +684,11 @@ public final class UnitOfWorkInstance
     public Iterable<StateChangeListener> stateChangeListeners()
     {
         return stateChangeListeners;
+    }
+
+    public UnitOfWorkStore newEntityStore()
+    {
+        return new UnitOfWorkStore();
     }
 
     private class UnitOfWorkStore

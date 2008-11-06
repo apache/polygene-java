@@ -382,9 +382,23 @@ public class ModuleInstance
             return new UnitOfWorkInstance( ModuleInstance.this, usecase );
         }
 
-        public UnitOfWork currentUnitOfWork()
+        public UnitOfWork nestedUnitOfWork()
         {
-            Stack<UnitOfWork> stack = UnitOfWorkInstance.current.get();
+            return nestedUnitOfWork( Usecase.DEFAULT );
+        }
+
+        public UnitOfWork nestedUnitOfWork( Usecase usecase )
+        {
+            UnitOfWorkInstance current = currentUnitOfWork();
+            if (current == null)
+                return newUnitOfWork( usecase );
+            else
+                return new UnitOfWorkInstance(ModuleInstance.this, usecase, current.newEntityStore());
+        }
+
+        public UnitOfWorkInstance currentUnitOfWork()
+        {
+            Stack<UnitOfWorkInstance> stack = UnitOfWorkInstance.current.get();
             if( stack.size() == 0 )
             {
                 return null;

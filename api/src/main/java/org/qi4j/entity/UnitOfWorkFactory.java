@@ -41,6 +41,27 @@ public interface UnitOfWorkFactory
     UnitOfWork newUnitOfWork( Usecase usecase );
 
     /**
+     * Create a nested UnitOfWork and associate it
+     * with the current thread. If no UnitOfWork
+     * is active previous to calling this method
+     * the UnitOfWork will not have a parent UoW.
+     *
+     * @return a potentially nested UnitOfWork
+     */
+    UnitOfWork nestedUnitOfWork();
+
+    /**
+     * Create a nested UnitOfWork for the given usecase
+     * and associate it with the current thread.
+     * If no UnitOfWork is active previous to calling this method
+     * the UnitOfWork will not have a parent UoW.
+     *
+     * @param usecase the Usecase for this UnitOfWork
+     * @return a potentially nested UnitOfWork
+     */
+    UnitOfWork nestedUnitOfWork( Usecase usecase );
+
+    /**
      * Returns the UnitOfWork that is currently associated with the executing thread.
      *
      * @return The current UnitOfWork associated with the executing thread, or null if there is no current UnitOfWork.
