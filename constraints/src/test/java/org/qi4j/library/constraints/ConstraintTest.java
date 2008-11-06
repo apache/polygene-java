@@ -43,8 +43,8 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().notNullObject().set( "foo" );
-        cb.stateOfComposite().notNullObject().set( "xxxfooyyy" );
+        cb.stateOfComposite().containsString().set( "foo" );
+        cb.stateOfComposite().containsString().set( "xxxfooyyy" );
     }
 
     @Test( expected = ConstraintViolationException.class )
@@ -198,22 +198,6 @@ public class ConstraintTest extends AbstractQi4jTest
         cb.stateOfComposite().notEmptyString().set( "X" );
         cb.stateOfComposite().notEmptyCollection().set( Arrays.asList( "X" ) );
         cb.stateOfComposite().notEmptyList().set( Arrays.asList( "X" ) );
-    }
-
-    @Test( expected = ConstraintViolationException.class )
-    public void testNotNullFail()
-    {
-        CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
-
-        cb.stateOfComposite().notNullObject().set( null );
-    }
-
-    @Test
-    public void testNotNullOk()
-    {
-        CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
-
-        cb.stateOfComposite().notNullObject().set( new Object() );
     }
 
     @Test( expected = ConstraintViolationException.class )

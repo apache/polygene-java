@@ -18,7 +18,6 @@
 package org.qi4j.lib.swing.binding;
 
 import javax.swing.JComponent;
-import org.qi4j.library.constraints.annotation.NotNull;
 
 public interface SwingBinding<T>
 {

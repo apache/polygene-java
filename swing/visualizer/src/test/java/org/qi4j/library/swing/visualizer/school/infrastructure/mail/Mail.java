@@ -16,8 +16,8 @@
 */
 package org.qi4j.library.swing.visualizer.school.infrastructure.mail;
 
-import org.qi4j.library.constraints.annotation.NotNull;
 import org.qi4j.property.Property;
+import org.qi4j.composite.Optional;
 
 /**
  * @author edward.yakop@gmail.com
@@ -25,11 +25,11 @@ import org.qi4j.property.Property;
  */
 public interface Mail
 {
-    @NotNull Property<String[]> to();
+    Property<String[]> to();
 
-    Property<String[]> ccs();
+    @Optional Property<String[]> ccs();
 
-    Property<String[]> bccs();
+    @Optional Property<String[]> bccs();
 
     Property<String> subject();
 
