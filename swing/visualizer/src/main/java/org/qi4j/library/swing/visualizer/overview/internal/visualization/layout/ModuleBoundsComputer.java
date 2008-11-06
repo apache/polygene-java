@@ -1,6 +1,5 @@
 /*
- * Copyright 2008 Niclas Hedhman. All rights Reserved.
- * Copyright 2008 Sonny Gill. All Rights Reserved.
+ * Copyright 2008 Edward Yakop. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -19,23 +18,24 @@
 package org.qi4j.library.swing.visualizer.overview.internal.visualization.layout;
 
 import java.awt.Point;
-import prefuse.action.layout.graph.TreeLayout;
+import java.awt.Rectangle;
 import prefuse.visual.NodeItem;
 
-public final class ApplicationLayout extends TreeLayout
+/**
+ * @author edward.yakop@gmail.com
+ * @since 0.5
+ */
+class ModuleBoundsComputer extends AbstractBoundsComputer
 {
-    public ApplicationLayout( String aGroup )
+    private final ModuleArtifactGroupBoundsComputer moduleArtifactGroupBoundsComputer;
+
+    ModuleBoundsComputer()
     {
-        super( aGroup );
+        moduleArtifactGroupBoundsComputer = new ModuleArtifactGroupBoundsComputer();
     }
 
-    @Override
-    public final void run( double frac )
+    public Rectangle computeBounds( NodeItem node, Point location )
     {
-        ApplicationBoundsComputer boundsComputer = new ApplicationBoundsComputer();
-
-        NodeItem applicationNode = getLayoutRoot();
-        Point topLeft = new Point( 0, 0 );
-        boundsComputer.computeBounds( applicationNode, topLeft );
+        return arrangeChildrenHorizontallyAndComputeBounds( node, location, moduleArtifactGroupBoundsComputer );
     }
 }
