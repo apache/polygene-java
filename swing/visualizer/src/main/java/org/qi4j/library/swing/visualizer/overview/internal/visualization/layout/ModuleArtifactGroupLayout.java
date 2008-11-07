@@ -18,7 +18,6 @@
 package org.qi4j.library.swing.visualizer.overview.internal.visualization.layout;
 
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
 import java.util.Set;
@@ -66,6 +65,7 @@ final class ModuleArtifactGroupLayout
         return arrangeChildrenVertically( constraint );
     }
 
+    @Override
     public final Dimension preferredDimension()
     {
         return preferredDimensionIfChildrenArrangedVertically();

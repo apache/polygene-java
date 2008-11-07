@@ -18,8 +18,8 @@
  */
 package org.qi4j.library.swing.visualizer.overview.internal.visualization.layout;
 
-import java.awt.Point;
 import java.awt.Dimension;
+import java.awt.Point;
 import prefuse.action.layout.graph.TreeLayout;
 import prefuse.visual.NodeItem;
 
@@ -36,8 +36,7 @@ public final class Qi4jApplicationLayout extends TreeLayout
         NodeItem applicationNode = getLayoutRoot();
 
         ApplicationLayout applicationBounds = new ApplicationLayout( applicationNode );
-        Point point = new Point( 0, 0 );
-        LayoutConstraint constraint = new LayoutConstraint( point, new Dimension( 0, 0 ) );
+        LayoutConstraint constraint = new LayoutConstraint( new Point( 0, 0 ), new Dimension( 0, 0 ) );
         applicationBounds.applyLayout( constraint );
     }
 }

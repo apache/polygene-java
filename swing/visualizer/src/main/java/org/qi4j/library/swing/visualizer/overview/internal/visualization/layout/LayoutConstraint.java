@@ -18,7 +18,6 @@ package org.qi4j.library.swing.visualizer.overview.internal.visualization.layout
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.Insets;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 
 /**
@@ -40,6 +39,7 @@ public final class LayoutConstraint
 
     /**
      * @return Top land hand corner position.
+     * @since 0.5
      */
     public final Point topLeftHandCorner()
     {
@@ -48,9 +48,18 @@ public final class LayoutConstraint
 
     /**
      * @return size constraint. Return {@code null} if there is no constraint.
+     * @since 0.5
      */
     public final Dimension size()
     {
         return size;
+    }
+
+    @Override public String toString()
+    {
+        return "LayoutConstraint{" +
+               "topLeftHandCorner=" + topLeftHandCorner +
+               ", size=" + size +
+               '}';
     }
 }

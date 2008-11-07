@@ -80,19 +80,20 @@ abstract class AbstractLayout
     protected Dimension labelDimension()
     {
         String labelString = labelString( nodeItem );
-        if( labelString != null )
+        if( labelString == null )
         {
-            Font font = labelFont();
-            nodeItem.setFont( font );
-
-            FontMetrics fm = Renderer.DEFAULT_GRAPHICS.getFontMetrics( font );
-            int width = fm.stringWidth( labelString );
-            int height = fm.getHeight();
-
-            return new Dimension( width, height );
+            return null;
         }
 
-        return null;
+        Font font = labelFont();
+        nodeItem.setFont( font );
+
+        FontMetrics fm = Renderer.DEFAULT_GRAPHICS.getFontMetrics( font );
+        int width = fm.stringWidth( labelString );
+        int height = fm.getHeight();
+
+        return new Dimension( width, height );
+
     }
 
     protected Font labelFont()

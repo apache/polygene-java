@@ -22,6 +22,7 @@ import java.awt.geom.Rectangle2D;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_BOTTOM;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_LEFT;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_RIGHT;
+import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_TOP;
 import prefuse.visual.NodeItem;
 
 /**
@@ -42,9 +43,10 @@ final class ModuleArtifactLayout
         Point topLeftHandCorner = constraint.topLeftHandCorner();
 
         Dimension dimension = constraint.size();
+        Dimension preferredDimension = preferredDimension();
         if( dimension == null )
         {
-            dimension = preferredDimension();
+            dimension = preferredDimension;
         }
 
         int x = topLeftHandCorner.x;
@@ -60,7 +62,7 @@ final class ModuleArtifactLayout
     {
         Dimension dimension = labelDimension();
         double width = dimension.getWidth() + PADDING_LEFT + PADDING_RIGHT;
-        double height = dimension.getHeight() + PADDING_RIGHT + PADDING_BOTTOM;
+        double height = dimension.getHeight() + PADDING_TOP + PADDING_BOTTOM;
         dimension.setSize( width, height );
 
         return dimension;

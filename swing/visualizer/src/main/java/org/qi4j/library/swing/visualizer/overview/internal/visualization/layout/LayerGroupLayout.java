@@ -23,6 +23,7 @@ import java.util.List;
 
 /**
  * @author edward.yakop@gmail.com
+ * @since 0.5
  */
 final class LayerGroupLayout
     extends AbstractContainerLayout<LayerLayout>
