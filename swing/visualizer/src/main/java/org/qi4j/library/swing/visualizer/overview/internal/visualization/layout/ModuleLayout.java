@@ -17,25 +17,51 @@
  */
 package org.qi4j.library.swing.visualizer.overview.internal.visualization.layout;
 
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.Dimension;
+import java.awt.geom.Rectangle2D;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import prefuse.visual.NodeItem;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-final class ModuleLayout extends AbstractLayout
+final class ModuleLayout extends AbstractContainerLayout<ModuleArtifactGroupLayout>
 {
-    private final ModuleArtifactGroupLayout moduleArtifactGroupBoundsComputer;
+    private final List<ModuleArtifactGroupLayout> moduleArtifactGroups;
 
-    ModuleLayout()
+    ModuleLayout( NodeItem module )
     {
-        moduleArtifactGroupBoundsComputer = new ModuleArtifactGroupLayout();
+        super( module );
+
+        moduleArtifactGroups = new LinkedList<ModuleArtifactGroupLayout>();
+        Iterator childrenIt = module.children();
+        while( childrenIt.hasNext() )
+        {
+            NodeItem child = (NodeItem) childrenIt.next();
+            moduleArtifactGroups.add( new ModuleArtifactGroupLayout( child ) );
+        }
     }
 
-    public final Rectangle applyLayout( NodeItem node, Point location )
+    protected final Iterable<ModuleArtifactGroupLayout> children()
     {
-        return arrangeChildrenHorizontallyAndComputeBounds( node, location, moduleArtifactGroupBoundsComputer );
+        return moduleArtifactGroups;
+    }
+
+    protected final int childrenCount()
+    {
+        return moduleArtifactGroups.size();
+    }
+
+    public final Rectangle2D applyLayout( LayoutConstraint constraint )
+    {
+        return arrangeChildrenHorizontally( constraint );
+    }
+
+    public final Dimension preferredDimension()
+    {
+        return preferredDimensionIfChildrenArrangedHorizontally();
     }
 }

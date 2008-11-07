@@ -36,10 +36,6 @@ import org.qi4j.structure.Application;
  */
 public final class SchoolApplicationLauncher
 {
-    public SchoolApplicationLauncher()
-    {
-    }
-
     public final Application launch()
         throws Throwable
     {

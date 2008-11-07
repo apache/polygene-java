@@ -19,16 +19,12 @@ package org.qi4j.library.swing.visualizer.overview.internal.visualization.layout
 
 import java.awt.Dimension;
 import java.awt.Font;
+import static java.awt.Font.PLAIN;
 import java.awt.FontMetrics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.util.Iterator;
+import java.awt.geom.Rectangle2D;
+import java.util.Comparator;
+import org.qi4j.composite.NullArgumentException;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_NAME;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_BOTTOM;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_LEFT;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_TOP;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.hSpace;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.vSpace;
 import prefuse.render.Renderer;
 import prefuse.visual.NodeItem;
 
@@ -38,66 +34,79 @@ import prefuse.visual.NodeItem;
  */
 abstract class AbstractLayout
 {
+    protected static final Comparator<AbstractLayout> LABEL_COMPARATOR = new Comparator<AbstractLayout>()
+    {
+        public final int compare( AbstractLayout o1, AbstractLayout o2 )
+        {
+            String label1 = labelString( o1.nodeItem );
+            String label2 = labelString( o2.nodeItem );
+            return label1.compareTo( label2 );
+        }
+    };
+
+    protected static final Font DEFAULT_LABEL_FONT = new Font( "Arial", PLAIN, 12 );
+
+    /**
+     * Node item of this layout. This might be null.
+     */
+    protected final NodeItem nodeItem;
+
+    protected AbstractLayout( NodeItem aNodeItem )
+        throws IllegalArgumentException
+    {
+        NullArgumentException.validateNotNull( "aNodeItem", aNodeItem );
+        nodeItem = aNodeItem;
+    }
+
+    protected AbstractLayout()
+    {
+        nodeItem = null;
+    }
+
     /**
      * Apply layout to node.
      *
-     * @param node     The node to apply layout too.
-     * @param position Top left hand corner of the node position.
+     * @param constraint Layout constraint.
      * @return Bounds of the node.
      * @since 0.5
      */
-    abstract Rectangle applyLayout( NodeItem node, Point position );
+    public abstract Rectangle2D applyLayout( LayoutConstraint constraint );
 
-    protected final Rectangle arrangeChildrenHorizontallyAndComputeBounds(
-        NodeItem nodeItem, Point location, AbstractLayout childBounds )
+    /**
+     * @return preferred dimension.
+     */
+    public abstract Dimension preferredDimension();
+
+    protected Dimension labelDimension()
     {
-        Dimension dimension = getNodeLabelSize( nodeItem );
-        int x = location.x + PADDING_LEFT;
-        int y = location.y + PADDING_TOP + dimension.height + vSpace;
-
-        Iterator children = nodeItem.children();
-        int maxChildHeight = 0;
-        while( children.hasNext() )
+        String labelString = labelString( nodeItem );
+        if( labelString != null )
         {
-            NodeItem child = (NodeItem) children.next();
-            Point moduleLocation = new Point( x, y );
-            Rectangle bounds = childBounds.applyLayout( child, moduleLocation );
-            child.setBounds( bounds.x, bounds.y, bounds.width, bounds.height );
+            Font font = labelFont();
+            nodeItem.setFont( font );
 
-            x += bounds.width + hSpace;
-            if( bounds.height > maxChildHeight )
-            {
-                maxChildHeight = bounds.height;
-            }
+            FontMetrics fm = Renderer.DEFAULT_GRAPHICS.getFontMetrics( font );
+            int width = fm.stringWidth( labelString );
+            int height = fm.getHeight();
 
+            return new Dimension( width, height );
         }
 
-        if( x < location.x + dimension.width )
+        return null;
+    }
+
+    protected Font labelFont()
+    {
+        return DEFAULT_LABEL_FONT;
+    }
+
+    protected static String labelString( NodeItem node )
+    {
+        if( node != null )
         {
-            x = location.x + dimension.width;
+            return node.getString( FIELD_NAME );
         }
 
-        int width = x - location.x;
-        int height = ( y + maxChildHeight + PADDING_BOTTOM + vSpace ) - location.y;
-
-        return new Rectangle( location.x, location.y, width, height );
-    }
-
-
-    protected Dimension getNodeLabelSize( NodeItem node )
-    {
-        Font font = node.getFont();
-        FontMetrics fm = Renderer.DEFAULT_GRAPHICS.getFontMetrics( font );
-        // 40 is arbitrarily selected, drawString takes more space than calculated here
-        // this may be because the Graphics object is different from the one that is used to draw it
-        int width = fm.stringWidth( getName( node ) ) + 40;
-        int height = fm.getHeight() + 2;
-
-        return new Dimension( width, height );
-    }
-
-    protected String getName( NodeItem node )
-    {
-        return (String) node.get( FIELD_NAME );
+        return null;
     }
 }

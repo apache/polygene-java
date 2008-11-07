@@ -18,189 +18,79 @@
 package org.qi4j.library.swing.visualizer.overview.internal.visualization.layout;
 
 import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
-import static java.lang.Integer.MAX_VALUE;
-import static java.lang.Integer.MIN_VALUE;
-import static java.lang.Math.max;
-import static java.lang.Math.min;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_LAYER_LEVEL;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_USED_BY_LAYERS;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_BOTTOM;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_LEFT;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_RIGHT;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_TOP;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.hSpace;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.vSpace;
-import prefuse.data.Node;
 import prefuse.visual.NodeItem;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-final class ApplicationLayout extends AbstractLayout
+final class ApplicationLayout extends AbstractContainerLayout<LayerGroupLayout>
 {
-    private final Map<Node, NodeItem> nodeToVisualNodeItemMap;
-    private final ModuleLayout moduleBoundsComputer;
+    private final List<LayerGroupLayout> layerGroups;
 
-    ApplicationLayout()
+    ApplicationLayout( NodeItem anApplicationNode )
+        throws IllegalArgumentException
     {
-        nodeToVisualNodeItemMap = new HashMap<Node, NodeItem>();
-        moduleBoundsComputer = new ModuleLayout();
-    }
+        super( anApplicationNode );
 
-    public final Rectangle applyLayout( NodeItem node, Point location )
-    {
-        Rectangle applicationBounds = computeApplicationBounds( node, location );
-        node.setBounds( applicationBounds.x, applicationBounds.y, applicationBounds.width, applicationBounds.height );
-
-        return applicationBounds;
-    }
-
-    private Rectangle computeApplicationBounds( NodeItem anApplicationItem, Point aLocation )
-    {
-        Dimension dimesion = getNodeLabelSize( anApplicationItem );
-        int x = aLocation.x + PADDING_LEFT;
-        int y = aLocation.y + PADDING_TOP + dimesion.height + vSpace;
-
-        Collection<List<NodeItem>> layeredNodeGroups = resolveLayerDependencies( anApplicationItem.children() );
-
-        int maxLayerGroupWidth = 0;
-        for( List<NodeItem> nodeGroup : layeredNodeGroups )
+        layerGroups = new ArrayList<LayerGroupLayout>();
+        Collection<List<LayerLayout>> groups = groupLayers();
+        for( List<LayerLayout> group : groups )
         {
-            Point layerGroupLocation = new Point( x, y );
-            Rectangle bounds = computeLayerGroupBounds( nodeGroup, layerGroupLocation );
-
-            y += bounds.height + vSpace;
-            if( bounds.width > maxLayerGroupWidth )
-            {
-                maxLayerGroupWidth = bounds.width;
-            }
+            layerGroups.add( new LayerGroupLayout( group ) );
         }
-
-        int width = ( x + maxLayerGroupWidth + PADDING_RIGHT ) - aLocation.x;
-        int height = y - aLocation.y;
-
-        return new Rectangle( aLocation.x, aLocation.y, width, height );
     }
 
-    Collection<List<NodeItem>> resolveLayerDependencies( Iterator nodes )
+    private Collection<List<LayerLayout>> groupLayers()
     {
-        TreeMap<Integer, List<NodeItem>> map = new TreeMap<Integer, List<NodeItem>>();
+        TreeMap<Integer, List<LayerLayout>> layerGroupMaps = new TreeMap<Integer, List<LayerLayout>>();
+
+        Iterator nodes = nodeItem.children();
         while( nodes.hasNext() )
         {
             NodeItem layer = (NodeItem) nodes.next();
+
+            LayerLayout layerLayout = new LayerLayout( layer );
+
             int level = layer.getInt( FIELD_LAYER_LEVEL );
-            List<NodeItem> layers = map.get( level );
-            if( layers == null )
+            List<LayerLayout> group = layerGroupMaps.get( level );
+
+            if( group == null )
             {
-                layers = new ArrayList<NodeItem>();
-                map.put( level, layers );
+                group = new LinkedList<LayerLayout>();
+                layerGroupMaps.put( level, group );
             }
-            layers.add( layer );
+            group.add( layerLayout );
         }
 
-        return map.values();
+        return layerGroupMaps.values();
     }
 
-    // Layer group are layers that are in the same level.
-    private Rectangle computeLayerGroupBounds( Collection<NodeItem> layers, Point aLocation )
+    protected Iterable<LayerGroupLayout> children()
     {
-        int x = aLocation.x + PADDING_LEFT;
-        int y = aLocation.y + vSpace;
-
-        int maxLayerHeight = 0;
-        for( NodeItem layer : layers )
-        {
-            Rectangle suggestedBounds = computeSuggestedBounds( layers, layer, x, y );
-            Point layerLocation = new Point( suggestedBounds.x, y );
-
-            Rectangle bounds = computeLayerBounds( layer, layerLocation );
-            int width = max( bounds.width, suggestedBounds.width );
-            layer.setBounds( bounds.x, bounds.y, width, bounds.height );
-
-            x += width + hSpace;
-            if( bounds.height > maxLayerHeight )
-            {
-                maxLayerHeight = bounds.height;
-            }
-        }
-
-        int width = x - aLocation.x;
-        int height = ( y + maxLayerHeight + PADDING_BOTTOM ) - aLocation.y;
-
-        return new Rectangle( aLocation.x, aLocation.y, width, height );
+        return layerGroups;
     }
 
-    /**
-     * Tries to suggest a suitable x position and width, if there is only 1 layer in this group.
-     * The position and width is based on the layers in higher group that use this layer
-     *
-     * @param layers layers. This argument must not be {@code null}.
-     * @param aLayer layer. This argument must not be {@code null}.
-     * @param xLoc   x position.
-     * @param yLoc   y position.
-     * @return Suggested bounds.
-     */
-    @SuppressWarnings( "unchecked" )
-    private Rectangle computeSuggestedBounds( Collection<NodeItem> layers, NodeItem aLayer, int xLoc, int yLoc )
+    protected int childrenCount()
     {
-        nodeToVisualNodeItemMap.put( (Node) aLayer.getSourceTuple(), aLayer );
-
-        Collection<Node> usedByLayers = (Collection<Node>) aLayer.get( FIELD_USED_BY_LAYERS );
-        if( usedByLayers.isEmpty() )
-        {
-            return new Rectangle( xLoc, yLoc, 0, 0 );
-        }
-
-        int left = MAX_VALUE;
-        int right = MIN_VALUE;
-        int width;
-        for( Node usedByLayer : usedByLayers )
-        {
-            NodeItem item = nodeToVisualNodeItemMap.get( usedByLayer );
-            Rectangle2D bounds = item.getBounds();
-            left = (int) min( bounds.getX(), left );
-
-            double boundRightPosition = bounds.getX() + bounds.getWidth();
-            right = (int) max( boundRightPosition, right );
-        }
-
-        width = right - left;
-        // Use a height of 1 instead of 0 for correct operation of Rectangle2D.intersects call later
-        Rectangle suggestedBounds = new Rectangle( left, yLoc, width, 1 );
-
-        // If there are other layers on this level, and the calculated suggested bounds intersect with
-        // any layer's bounds, return the default bounds
-        if( layers.size() > 1 )
-        {
-            Set<NodeItem> otherLayers = new HashSet<NodeItem>( layers );
-            otherLayers.remove( aLayer );
-            for( NodeItem otherLayer : otherLayers )
-            {
-                if( otherLayer.getBounds().intersects( suggestedBounds ) )
-                {
-                    return new Rectangle( xLoc, yLoc, 0, 0 );
-                }
-            }
-        }
-
-        return suggestedBounds;
+        return layerGroups.size();
     }
 
-    private Rectangle computeLayerBounds( NodeItem layer, Point location )
+    public Rectangle2D applyLayout( LayoutConstraint constraint )
     {
-        return arrangeChildrenHorizontallyAndComputeBounds( layer, location, moduleBoundsComputer );
+        return arrangeChildrenVertically( constraint );
+    }
+
+    public Dimension preferredDimension()
+    {
+        return preferredDimensionIfChildrenArrangedVertically();
     }
 }

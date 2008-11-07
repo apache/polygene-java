@@ -19,17 +19,10 @@ package org.qi4j.library.swing.visualizer.overview.internal.visualization.layout
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.Rectangle;
-import static java.lang.Math.max;
-import java.util.HashMap;
+import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_BOTTOM;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_LEFT;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_RIGHT;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_TOP;
-import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.vSpace;
+import java.util.TreeSet;
 import prefuse.visual.NodeItem;
 
 /**
@@ -37,54 +30,44 @@ import prefuse.visual.NodeItem;
  * @since 0.5
  */
 final class ModuleArtifactGroupLayout
-    extends AbstractLayout
+    extends AbstractContainerLayout<ModuleArtifactLayout>
 {
-    public final Rectangle applyLayout( NodeItem node1, Point location )
+    private final Set<ModuleArtifactLayout> moduleArtifacts;
+
+    ModuleArtifactGroupLayout( NodeItem aModuleArtifactGroup )
+        throws IllegalArgumentException
     {
-        Dimension dimension = getNodeLabelSize( node1 );
+        super( aModuleArtifactGroup );
 
-        int moduleArtifactPosX = location.x + PADDING_LEFT;
-        int moduleArtifactPosY = location.y + PADDING_TOP + dimension.height + vSpace;
-
-        Map<NodeItem, Rectangle> moduleArtifacts = new HashMap<NodeItem, Rectangle>();
-        int moduleArtifactGroupWidth = 0;
-        Iterator children = node1.children();
-        while( children.hasNext() )
+        Iterator childrenIt = nodeItem.children();
+        moduleArtifacts = new TreeSet<ModuleArtifactLayout>( LABEL_COMPARATOR );
+        while( childrenIt.hasNext() )
         {
-            NodeItem moduleArtifactNode = (NodeItem) children.next();
-            Rectangle bounds =
-                computeModuleArtifactBounds( moduleArtifactNode, moduleArtifactPosX, moduleArtifactPosY );
-            moduleArtifacts.put( moduleArtifactNode, bounds );
-
-            moduleArtifactPosY += bounds.height + PADDING_BOTTOM;
-            moduleArtifactGroupWidth = max( bounds.width, moduleArtifactGroupWidth );
+            NodeItem child = (NodeItem) childrenIt.next();
+            moduleArtifacts.add( new ModuleArtifactLayout( child ) );
         }
-
-        moduleArtifactGroupWidth = max( moduleArtifactGroupWidth, dimension.width );
-
-        // Update all module artifact bounds to have the same width
-        Set<Map.Entry<NodeItem, Rectangle>> entries = moduleArtifacts.entrySet();
-        for( Map.Entry<NodeItem, Rectangle> entry : entries )
-        {
-            NodeItem moduleArtifact = entry.getKey();
-            Rectangle moduleBounds = entry.getValue();
-
-            moduleArtifact.setBounds( moduleBounds.x, moduleBounds.y, moduleArtifactGroupWidth, moduleBounds.height );
-        }
-
-        moduleArtifactPosY = max( moduleArtifactPosY, location.y + dimension.height );
-
-        int width = ( moduleArtifactPosX + moduleArtifactGroupWidth + PADDING_RIGHT ) - location.x;
-        int height = ( moduleArtifactPosY + PADDING_BOTTOM ) - location.y;
-        return new Rectangle( location.x, location.y, width, height );
     }
 
-    private Rectangle computeModuleArtifactBounds( NodeItem composite, int moduleArtifactXPos, int moduleArtifactYPos )
+    @Override
+    protected final Iterable<ModuleArtifactLayout> children()
     {
-        Dimension dimension = getNodeLabelSize( composite );
-        int artifactWidth = dimension.width + PADDING_LEFT;
-        int artifactHeight = dimension.height + PADDING_TOP + PADDING_BOTTOM;
+        return moduleArtifacts;
+    }
 
-        return new Rectangle( moduleArtifactXPos, moduleArtifactYPos, artifactWidth, artifactHeight );
+    @Override
+    protected int childrenCount()
+    {
+        return moduleArtifacts.size();
+    }
+
+    @Override
+    public final Rectangle2D applyLayout( LayoutConstraint constraint )
+    {
+        return arrangeChildrenVertically( constraint );
+    }
+
+    public final Dimension preferredDimension()
+    {
+        return preferredDimensionIfChildrenArrangedVertically();
     }
 }
