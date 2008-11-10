@@ -41,6 +41,7 @@ import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.entity.PropertyType;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.structure.ApplicationDescriptor;
 
@@ -129,7 +130,7 @@ public final class ToStringUtils
             EntityDetailDescriptor detailDescriptor = (EntityDetailDescriptor) anObject;
             EntityDescriptor descriptor = detailDescriptor.descriptor();
             Class<? extends Composite> entityClass = descriptor.type();
-            return entityClass.getName();
+            return entityClass.getSimpleName();
         }
         else if( CompositeDetailDescriptor.class.isAssignableFrom( valueClass ) )
         {
@@ -178,6 +179,14 @@ public final class ToStringUtils
         {
             MethodConstraintDetailDescriptor detailDescriptor = (MethodConstraintDetailDescriptor) anObject;
             return detailDescriptor.descriptor().annotation().annotationType().getSimpleName();
+        }
+        else if( PropertyType.class.isAssignableFrom( valueClass ) )
+        {
+            PropertyType propertyType = (PropertyType) anObject;
+            String name = propertyType.qualifiedName();
+
+            int lastIndexOfDot = name.lastIndexOf( "." );
+            return name.substring( lastIndexOfDot + 1 );
         }
 
         return anObject.toString();
