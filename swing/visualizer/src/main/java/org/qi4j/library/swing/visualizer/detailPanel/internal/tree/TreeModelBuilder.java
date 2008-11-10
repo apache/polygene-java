@@ -34,7 +34,6 @@ import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
-import org.qi4j.spi.composite.CompositeDescriptor;
 
 /**
  * TODO: localization
@@ -135,8 +134,7 @@ final class TreeModelBuilder
         Iterable<EntityDetailDescriptor> entities = aModule.entities();
         for( EntityDetailDescriptor entity : entities )
         {
-            DefaultMutableTreeNode entityNode = new DefaultMutableTreeNode( entity );
-            aEntitiesNode.add( entityNode );
+            addCompositeNode( aEntitiesNode, entity );
         }
     }
 
@@ -152,7 +150,7 @@ final class TreeModelBuilder
 
     private void addCompositeNode(
         DefaultMutableTreeNode aCompositesNode,
-        CompositeDetailDescriptor<CompositeDescriptor> aDescriptor )
+        CompositeDetailDescriptor aDescriptor )
     {
         DefaultMutableTreeNode compositeNode = new DefaultMutableTreeNode( aDescriptor );
         aCompositesNode.add( compositeNode );
@@ -166,9 +164,9 @@ final class TreeModelBuilder
         addIfNotEmpty( compositeNode, methodsNode );
     }
 
+    @SuppressWarnings( "unchecked" )
     private void addMixinNodes(
-        DefaultMutableTreeNode mixinsNode,
-        CompositeDetailDescriptor<CompositeDescriptor> aCompositeDetailDescriptor )
+        DefaultMutableTreeNode mixinsNode, CompositeDetailDescriptor aCompositeDetailDescriptor )
     {
         Iterable<MixinDetailDescriptor> mixins = aCompositeDetailDescriptor.mixins();
         for( MixinDetailDescriptor mixin : mixins )
@@ -210,9 +208,10 @@ final class TreeModelBuilder
         }
     }
 
+    @SuppressWarnings( "unchecked" )
     private void addMethodsNode(
         DefaultMutableTreeNode methodsNode,
-        CompositeDetailDescriptor<CompositeDescriptor> aCompositeDetailDescriptor )
+        CompositeDetailDescriptor aCompositeDetailDescriptor )
     {
         Iterable<CompositeMethodDetailDescriptor> methods = aCompositeDetailDescriptor.methods();
         for( CompositeMethodDetailDescriptor method : methods )
