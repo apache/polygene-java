@@ -131,18 +131,15 @@ public final class ApplicationTreePanel
 
     private boolean isNodeSelected( Object aUserObject )
     {
-        boolean isSelected = false;
         TreePath selectedPath = applicationTree.getSelectionPath();
-        if( selectedPath != null )
+        if( selectedPath == null )
         {
-            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
-            Object userObject = selectedNode.getUserObject();
-            if( userObject != null && userObject.equals( aUserObject ) )
-            {
-                isSelected = true;
-            }
+            return false;
         }
-        return isSelected;
+
+        DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
+        Object userObject = selectedNode.getUserObject();
+        return userObject != null && userObject.equals( aUserObject );
     }
 
     public final void onLayerSelected( LayerDetailDescriptor aLayerDescriptor )

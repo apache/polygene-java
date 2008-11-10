@@ -23,6 +23,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ServiceDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.CompositeDescriptorForm;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.CompositeMethodDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.layer.LayerDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.module.ModuleDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.object.ConstructorDescriptorForm;
@@ -223,7 +224,20 @@ public final class DetailPanel
 
     public final void onCompositeMethodSelected( CompositeMethodDetailDescriptor aDescriptor )
     {
-        // TODO
+        CompositeMethodDescriptorForm methodForm;
+        if( !( descriptorForm instanceof CompositeMethodDescriptorForm ) )
+        {
+            methodForm = new CompositeMethodDescriptorForm();
+            detailScrollPanel.setViewportView( methodForm.$$$getRootComponent$$$() );
+        }
+        else
+        {
+            methodForm = (CompositeMethodDescriptorForm) descriptorForm;
+        }
+        descriptorForm = methodForm;
+        methodForm.updateModel( aDescriptor );
+
+        treePanel.onCompositeMethodSelected( aDescriptor );
     }
 
     public final void resetSelection()
