@@ -30,10 +30,10 @@ import org.qi4j.spi.composite.CompositeMethodDescriptor;
  */
 public class CompositeDetailDescriptor<T extends CompositeDescriptor>
 {
-    private final T descriptor;
-    private ModuleDetailDescriptor module;
-    private final List<CompositeMethodDetailDescriptor> methods;
-    private final List<MixinDetailDescriptor> mixins;
+    protected final T descriptor;
+    protected ModuleDetailDescriptor module;
+    protected final List<CompositeMethodDetailDescriptor> methods;
+    protected final List<MixinDetailDescriptor> mixins;
 
     CompositeDetailDescriptor( T aDescriptor )
     {

@@ -34,6 +34,10 @@ import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
+import org.qi4j.spi.entity.AssociationType;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.ManyAssociationType;
+import org.qi4j.spi.entity.PropertyType;
 
 /**
  * TODO: localization
@@ -55,6 +59,9 @@ final class TreeModelBuilder
     static final String NODE_NAME_CONCERNS = "concerns";
     static final String NODE_NAME_CONSTRAINTS = "constraints";
     static final String NODE_NAME_SIDE_EFFECTS = "side effects";
+    static final String NODE_NAME_ASSOCIATIONS = "associations";
+    static final String NODE_NAME_MANY_ASSOCIATIONS = "many associatiaons";
+    static final String NODE_NAME_PROPERTIES = "properties";
 
     public final DefaultMutableTreeNode build( ApplicationDetailDescriptor aDetailDescriptor )
     {
@@ -134,7 +141,59 @@ final class TreeModelBuilder
         Iterable<EntityDetailDescriptor> entities = aModule.entities();
         for( EntityDetailDescriptor entity : entities )
         {
-            addCompositeNode( aEntitiesNode, entity );
+            addEntityNode( aEntitiesNode, entity );
+        }
+    }
+
+    private void addEntityNode( DefaultMutableTreeNode anEntitiesNode, EntityDetailDescriptor aDescriptor )
+    {
+        DefaultMutableTreeNode entityNode = addCompositeNode( anEntitiesNode, aDescriptor );
+
+        EntityType entityType = aDescriptor.descriptor().entityType();
+
+        // TODO: Localization
+        DefaultMutableTreeNode associations = new DefaultMutableTreeNode( NODE_NAME_ASSOCIATIONS );
+        addAssociationsNode( associations, entityType );
+        addIfNotEmpty( entityNode, associations );
+
+        // TODO: Localization
+        DefaultMutableTreeNode manyAssociations = new DefaultMutableTreeNode( NODE_NAME_MANY_ASSOCIATIONS );
+        addManyAssociationsNode( manyAssociations, entityType );
+        addIfNotEmpty( entityNode, manyAssociations );
+
+        // TODO: Localization
+        DefaultMutableTreeNode properties = new DefaultMutableTreeNode( NODE_NAME_PROPERTIES );
+        addPropertiesNode( properties, entityType );
+        addIfNotEmpty( entityNode, properties );
+    }
+
+    private void addAssociationsNode( DefaultMutableTreeNode anAssociationsNode, EntityType anEntityType )
+    {
+        Iterable<AssociationType> associations = anEntityType.associations();
+        for( AssociationType association : associations )
+        {
+            DefaultMutableTreeNode associationNode = new DefaultMutableTreeNode( association );
+            anAssociationsNode.add( associationNode );
+        }
+    }
+
+    private void addManyAssociationsNode( DefaultMutableTreeNode aManyAssociationsNode, EntityType anEntityType )
+    {
+        Iterable<ManyAssociationType> associations = anEntityType.manyAssociations();
+        for( ManyAssociationType association : associations )
+        {
+            DefaultMutableTreeNode associationNode = new DefaultMutableTreeNode( association );
+            aManyAssociationsNode.add( associationNode );
+        }
+    }
+
+    private void addPropertiesNode( DefaultMutableTreeNode aPropertiesNode, EntityType anEntityType )
+    {
+        Iterable<PropertyType> properties = anEntityType.properties();
+        for( PropertyType property : properties )
+        {
+            DefaultMutableTreeNode associationNode = new DefaultMutableTreeNode( property );
+            aPropertiesNode.add( associationNode );
         }
     }
 
@@ -148,20 +207,24 @@ final class TreeModelBuilder
         }
     }
 
-    private void addCompositeNode(
+    private DefaultMutableTreeNode addCompositeNode(
         DefaultMutableTreeNode aCompositesNode,
         CompositeDetailDescriptor aDescriptor )
     {
         DefaultMutableTreeNode compositeNode = new DefaultMutableTreeNode( aDescriptor );
         aCompositesNode.add( compositeNode );
 
+        // TODO: Localization
         DefaultMutableTreeNode mixinsNode = new DefaultMutableTreeNode( NODE_NAME_MIXINS );
         addMixinNodes( mixinsNode, aDescriptor );
         addIfNotEmpty( compositeNode, mixinsNode );
 
+        // TODO: Localization
         DefaultMutableTreeNode methodsNode = new DefaultMutableTreeNode( NODE_NAME_METHODS );
         addMethodsNode( methodsNode, aDescriptor );
         addIfNotEmpty( compositeNode, methodsNode );
+
+        return compositeNode;
     }
 
     @SuppressWarnings( "unchecked" )

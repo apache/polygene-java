@@ -29,4 +29,9 @@ public final class EntityDetailDescriptor extends CompositeDetailDescriptor<Enti
     {
         super( aDescriptor );
     }
+
+    public final String toString()
+    {
+        return descriptor.type().getSimpleName();
+    }
 }
