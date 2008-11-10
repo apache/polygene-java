@@ -14,15 +14,27 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.model;
+package org.qi4j.library.swing.visualizer.school.domain.model.user;
 
-import org.qi4j.library.swing.visualizer.school.model.mixins.Login;
-import org.qi4j.library.swing.visualizer.school.model.mixins.PersonName;
+import static org.qi4j.composite.NullArgumentException.validateNotNull;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public interface Student extends PersonName, Login
+public final class StudentId
 {
+    private final String studentId;
+
+    public StudentId( String aStudentId )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aStudentId", aStudentId );
+        studentId = aStudentId;
+    }
+
+    public final String idString()
+    {
+        return studentId;
+    }
 }

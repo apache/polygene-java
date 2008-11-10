@@ -14,29 +14,15 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.admin.pages.mixins;
+package org.qi4j.library.swing.visualizer.school.domain.model.user;
 
-import static java.lang.System.err;
-import org.qi4j.composite.ConcernOf;
+import org.qi4j.library.swing.visualizer.school.domain.model.user.mixins.PersonName;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public final class AuthenticationConcern
-    extends ConcernOf<DetailPage>
-    implements Page, DetailPage
+public interface Student extends PersonName, User
 {
-    public final String generateHtml()
-    {
-        err.println( "Bogus Authentication" );
-        return next.generateHtml();
-    }
-
-    @SuppressWarnings( "unchecked" )
-    public final void edit( Object context )
-    {
-        err.println( "Bogus Authentication" );
-        next.edit( context );
-    }
+    StudentId studentId();
 }

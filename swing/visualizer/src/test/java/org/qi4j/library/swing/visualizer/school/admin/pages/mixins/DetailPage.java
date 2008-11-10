@@ -16,27 +16,11 @@
 */
 package org.qi4j.library.swing.visualizer.school.admin.pages.mixins;
 
-import static java.lang.System.err;
-import org.qi4j.composite.ConcernOf;
-
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public final class AuthenticationConcern
-    extends ConcernOf<DetailPage>
-    implements Page, DetailPage
+public interface DetailPage<T> extends Page
 {
-    public final String generateHtml()
-    {
-        err.println( "Bogus Authentication" );
-        return next.generateHtml();
-    }
-
-    @SuppressWarnings( "unchecked" )
-    public final void edit( Object context )
-    {
-        err.println( "Bogus Authentication" );
-        next.edit( context );
-    }
+    void edit( T context );
 }

@@ -14,15 +14,14 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.model;
-
-import org.qi4j.library.swing.visualizer.school.model.mixins.Login;
-import org.qi4j.library.swing.visualizer.school.model.mixins.PersonName;
+package org.qi4j.library.swing.visualizer.school.domain.model.user.mixins;
 
 /**
  * @author edward.yakop@gmail.com
- * @since 0.5
  */
-public interface Staff extends PersonName, Login
+public interface PersonName
 {
+    String firstName();
+
+    String lastName();
 }

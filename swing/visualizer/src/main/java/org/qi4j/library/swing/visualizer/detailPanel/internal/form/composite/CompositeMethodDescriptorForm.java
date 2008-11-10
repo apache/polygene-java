@@ -16,31 +16,56 @@
 */
 package org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite;
 
+import com.jgoodies.forms.factories.DefaultComponentFactory;
+import static com.jgoodies.forms.factories.DefaultComponentFactory.getInstance;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import java.awt.Component;
+import java.lang.reflect.Method;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.common.ToStringUtils;
+import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.CompositeMethodDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.MethodConcernsDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.MethodConstraintsDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.MethodSideEffectsDetailDescriptor;
 
 /**
+ * TODO: Use prefuse to draw invocation stack per method
+ *
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
 public final class CompositeMethodDescriptorForm
 {
+    private Component methodSeparator;
+    private JTextField compositeMethod;
+    private JTextField composite;
+
     private JPanel methodPanel;
-    private JLabel methodSeparator;
-    private JLabel concernsSeparator;
 
     public final void updateModel( CompositeMethodDetailDescriptor aDescriptor )
     {
-        MethodConcernsDetailDescriptor concerns = aDescriptor.concerns();
-        MethodConstraintsDetailDescriptor constraints = aDescriptor.constraints();
-        MethodSideEffectsDetailDescriptor sideEffects = aDescriptor.sideEffects();
+        String compositeName = null;
+        String methodSignature = null;
+
+        if( aDescriptor != null )
+        {
+            Method compositeMethod = aDescriptor.descriptor().method();
+            methodSignature = ToStringUtils.methodToString( compositeMethod );
+            CompositeDetailDescriptor composite = aDescriptor.composite();
+            compositeName = composite.descriptor().type().getName();
+        }
+
+        compositeMethod.setText( methodSignature );
+        composite.setText( compositeName );
+    }
+
+    private void createUIComponents()
+    {
+        DefaultComponentFactory cmpFactory = getInstance();
+        // TODO: Localization
+        methodSeparator = cmpFactory.createSeparator( "Composite Method" );
     }
 
     {
@@ -59,18 +84,25 @@ public final class CompositeMethodDescriptorForm
      */
     private void $$$setupUI$$$()
     {
+        createUIComponents();
         methodPanel = new JPanel();
-        methodPanel.setLayout( new FormLayout( "fill:max(d;4px):noGrow,fill:max(p;4px):noGrow", "center:max(d;4px):noGrow,top:p:noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow" ) );
-        methodSeparator = new JLabel();
-        methodSeparator.setText( "abc" );
+        methodPanel.setLayout( new FormLayout( "fill:4px:noGrow,fill:max(p;4px):noGrow,left:4dlu:noGrow,fill:max(p;75dlu):noGrow,left:4dlu:noGrow,fill:d:grow,left:4px:noGrow", "center:max(d;4px):noGrow,top:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,center:max(d;4px):noGrow" ) );
+        ( (FormLayout) methodPanel.getLayout() ).setRowGroups( new int[][]{ new int[]{ 4, 6 }, new int[]{ 1, 7 } } );
+        ( (FormLayout) methodPanel.getLayout() ).setColumnGroups( new int[][]{ new int[]{ 3, 5 }, new int[]{ 1, 7 } } );
         CellConstraints cc = new CellConstraints();
-        methodPanel.add( methodSeparator, cc.xy( 2, 2 ) );
-        final JPanel panel1 = new JPanel();
-        panel1.setLayout( new FormLayout( "fill:d:noGrow", "center:d:noGrow" ) );
-        methodPanel.add( panel1, cc.xy( 2, 4 ) );
-        concernsSeparator = new JLabel();
-        concernsSeparator.setText( "Label" );
-        panel1.add( concernsSeparator, cc.xy( 1, 1 ) );
+        methodPanel.add( methodSeparator, cc.xyw( 2, 2, 5 ) );
+        final JLabel label1 = new JLabel();
+        label1.setText( "Method" );
+        methodPanel.add( label1, cc.xy( 2, 4 ) );
+        final JLabel label2 = new JLabel();
+        label2.setText( "Composite" );
+        methodPanel.add( label2, cc.xy( 2, 6 ) );
+        compositeMethod = new JTextField();
+        compositeMethod.setEditable( false );
+        methodPanel.add( compositeMethod, cc.xy( 4, 4, CellConstraints.FILL, CellConstraints.DEFAULT ) );
+        composite = new JTextField();
+        composite.setEditable( false );
+        methodPanel.add( composite, cc.xy( 4, 6, CellConstraints.FILL, CellConstraints.DEFAULT ) );
     }
 
     /**

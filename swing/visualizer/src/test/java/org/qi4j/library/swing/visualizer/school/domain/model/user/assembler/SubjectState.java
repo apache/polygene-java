@@ -14,16 +14,16 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.model.mixins;
+package org.qi4j.library.swing.visualizer.school.domain.model.user.assembler;
 
 import org.qi4j.property.Property;
 
 /**
  * @author edward.yakop@gmail.com
  */
-public interface PersonName
+interface SubjectState
 {
-    Property<String> firstName();
+    Property<String> name();
 
-    Property<String> lastName();
+    Property<String> description();
 }

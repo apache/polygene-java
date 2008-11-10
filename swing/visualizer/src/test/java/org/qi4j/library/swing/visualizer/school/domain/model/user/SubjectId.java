@@ -14,29 +14,26 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.admin.pages.mixins;
+package org.qi4j.library.swing.visualizer.school.domain.model.user;
 
-import static java.lang.System.err;
-import org.qi4j.composite.ConcernOf;
+import org.qi4j.composite.NullArgumentException;
 
 /**
  * @author edward.yakop@gmail.com
- * @since 0.5
  */
-public final class AuthenticationConcern
-    extends ConcernOf<DetailPage>
-    implements Page, DetailPage
+public final class SubjectId
 {
-    public final String generateHtml()
+    private final String subjectId;
+
+    public SubjectId( String aSubjectId )
+        throws IllegalArgumentException
     {
-        err.println( "Bogus Authentication" );
-        return next.generateHtml();
+        NullArgumentException.validateNotEmpty( "aSubjectId", aSubjectId );
+        subjectId = aSubjectId;
     }
 
-    @SuppressWarnings( "unchecked" )
-    public final void edit( Object context )
+    public final String idString()
     {
-        err.println( "Bogus Authentication" );
-        next.edit( context );
+        return subjectId;
     }
 }

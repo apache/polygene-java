@@ -14,21 +14,37 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.admin.pages;
+package org.qi4j.library.swing.visualizer.school.domain.model.user.assembler;
 
-import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
-import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.AuthenticationConcern;
-import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.DetailPage;
-import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.UserDetailPageMixin;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.injection.scope.This;
 import org.qi4j.library.swing.visualizer.school.domain.model.user.User;
 
 /**
  * @author edward.yakop@gmail.com
- * @since 0.5
  */
-@Concerns( AuthenticationConcern.class )
-@Mixins( UserDetailPageMixin.class )
-public interface UserDetailPage extends DetailPage<User>
+@Mixins( UserEntity.UserMixin.class )
+interface UserEntity extends User, EntityComposite
 {
+    class UserMixin
+        implements User
+    {
+        @This private UserDetailState state;
+
+        public final String firstName()
+        {
+            return state.firstName().get();
+        }
+
+        public final String lastName()
+        {
+            return state.lastName().get();
+        }
+
+        public final String userName()
+        {
+            return state.userName().get();
+        }
+    }
 }

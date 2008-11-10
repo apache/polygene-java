@@ -14,15 +14,16 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.model.entities;
+package org.qi4j.library.swing.visualizer.school.domain.model.user;
 
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.library.swing.visualizer.school.model.Student;
+import org.qi4j.library.swing.visualizer.school.domain.model.user.mixins.PersonName;
+import org.qi4j.query.Query;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public interface StudentEntity extends Student, EntityComposite
+public interface Staff extends PersonName, User
 {
+    Query<Subject> currentlyTeaches();
 }

@@ -14,29 +14,26 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.admin.pages.mixins;
+package org.qi4j.library.swing.visualizer.school.domain.model.user.assembler;
 
-import static java.lang.System.err;
-import org.qi4j.composite.ConcernOf;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import static org.qi4j.structure.Visibility.layer;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public final class AuthenticationConcern
-    extends ConcernOf<DetailPage>
-    implements Page, DetailPage
+public final class ModelAssembler
+    implements Assembler
 {
-    public final String generateHtml()
+    public void assemble( ModuleAssembly aModule )
+        throws AssemblyException
     {
-        err.println( "Bogus Authentication" );
-        return next.generateHtml();
-    }
-
-    @SuppressWarnings( "unchecked" )
-    public final void edit( Object context )
-    {
-        err.println( "Bogus Authentication" );
-        next.edit( context );
+        aModule.addEntities(
+            StaffEntity.class,
+            StudentEntity.class
+        ).visibleIn( layer );
     }
 }

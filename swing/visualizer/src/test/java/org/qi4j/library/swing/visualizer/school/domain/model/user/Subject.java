@@ -14,26 +14,17 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.model;
-
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.library.swing.visualizer.school.model.entities.StaffEntity;
-import static org.qi4j.structure.Visibility.application;
+package org.qi4j.library.swing.visualizer.school.domain.model.user;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public class ModelAssembler
-    implements Assembler
+public interface Subject
 {
-    public void assemble( ModuleAssembly aModule )
-        throws AssemblyException
-    {
-        aModule.addEntities(
-            StaffEntity.class
-        ).visibleIn( application );
-    }
+    SubjectId subjectId();
+
+    String name();
+
+    String description();
 }

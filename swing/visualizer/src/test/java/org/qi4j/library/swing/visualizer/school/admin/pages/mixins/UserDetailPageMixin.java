@@ -17,11 +17,10 @@
 package org.qi4j.library.swing.visualizer.school.admin.pages.mixins;
 
 import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.Uses;
 import org.qi4j.library.swing.visualizer.school.admin.pages.UserDetailPage;
+import org.qi4j.library.swing.visualizer.school.domain.model.user.User;
 import org.qi4j.structure.Layer;
 import org.qi4j.structure.Module;
-import org.qi4j.structure.Application;
 
 /**
  * @author edward.yakop@gmail.com
@@ -36,6 +35,11 @@ public final class UserDetailPageMixin
     // Note: Don't remove
     public UserDetailPageMixin( @Structure Module module )
     {
+    }
+
+    public final void edit( User context )
+    {
+        System.err.println( "Edit user [" + context + "]" );
     }
 
     public final String generateHtml()

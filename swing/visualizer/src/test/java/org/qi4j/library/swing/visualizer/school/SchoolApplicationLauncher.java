@@ -25,9 +25,9 @@ import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.swing.visualizer.ApplicationGraph;
 import org.qi4j.library.swing.visualizer.school.admin.AdminAssembler;
+import org.qi4j.library.swing.visualizer.school.domain.model.user.assembler.ModelAssembler;
 import org.qi4j.library.swing.visualizer.school.infrastructure.mail.MailServiceAssembler;
 import org.qi4j.library.swing.visualizer.school.infrastructure.persistence.PersistenceAssembler;
-import org.qi4j.library.swing.visualizer.school.model.ModelAssembler;
 import org.qi4j.structure.Application;
 
 /**

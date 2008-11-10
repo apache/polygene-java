@@ -14,7 +14,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.model.mixins;
+package org.qi4j.library.swing.visualizer.school.domain.model.user.assembler;
 
 import org.qi4j.property.Property;
 
@@ -22,9 +22,11 @@ import org.qi4j.property.Property;
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public interface Login
+interface UserDetailState
 {
-    Property<String> loginName();
+    Property<String> userName();
 
-    Property<String> loginPassword();
+    Property<String> firstName();
+
+    Property<String> lastName();
 }

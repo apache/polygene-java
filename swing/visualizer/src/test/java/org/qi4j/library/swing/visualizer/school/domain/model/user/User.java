@@ -14,15 +14,15 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.model.entities;
+package org.qi4j.library.swing.visualizer.school.domain.model.user;
 
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.library.swing.visualizer.school.model.Staff;
+import org.qi4j.library.swing.visualizer.school.domain.model.user.mixins.Login;
+import org.qi4j.library.swing.visualizer.school.domain.model.user.mixins.PersonName;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public interface StaffEntity extends Staff, EntityComposite
+public interface User extends PersonName, Login
 {
 }
