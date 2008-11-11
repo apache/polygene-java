@@ -20,7 +20,7 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.entity.EntityDescriptorForm;
-import org.qi4j.library.swing.visualizer.detailPanel.internal.form.entity.EntityListForm;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.form.entity.EntityDetailForm;
 import static org.qi4j.structure.Visibility.layer;
 
 /**
@@ -35,7 +35,7 @@ public final class EntityFormAssembler
     {
         aModule.addObjects(
             EntityDescriptorForm.class,
-            EntityListForm.class
+            EntityDetailForm.class
         ).visibleIn( layer );
     }
 }

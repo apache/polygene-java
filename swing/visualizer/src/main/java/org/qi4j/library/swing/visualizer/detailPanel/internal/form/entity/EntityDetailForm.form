@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.qi4j.library.swing.visualizer.detailPanel.internal.form.entity.EntityListForm">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.qi4j.library.swing.visualizer.detailPanel.internal.form.entity.EntityDetailForm">
   <grid id="27dc6" binding="entityListPanel" layout-manager="FormLayout">
     <rowspec value="center:4px:noGrow"/>
     <rowspec value="center:max(d;4px):noGrow"/>
@@ -41,7 +41,7 @@
         </constraints>
         <properties>
           <labelFor value="8b4cc"/>
-          <text value="Entity"/>
+          <text value="Entity Id"/>
         </properties>
       </component>
       <component id="a562d" class="javax.swing.JLabel" binding="listSeparator" custom-create="true">

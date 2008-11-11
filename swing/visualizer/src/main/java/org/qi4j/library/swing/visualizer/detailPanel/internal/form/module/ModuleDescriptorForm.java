@@ -28,8 +28,11 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.qi4j.injection.scope.Structure;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.context.Qi4jContextForm;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
+import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.object.ObjectBuilder;
 
 /**
  * @author edward.yakop@gmail.com
@@ -38,6 +41,8 @@ import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
  */
 public final class ModuleDescriptorForm
 {
+    private final ObjectBuilderFactory obf;
+
     private ModuleDetailDescriptor descriptor;
 
     private JComponent moduleSeparator;
@@ -51,9 +56,9 @@ public final class ModuleDescriptorForm
 
     private JPanel moduleForm;
 
-
-    public ModuleDescriptorForm()
+    public ModuleDescriptorForm( @Structure ObjectBuilderFactory anOBF )
     {
+        obf = anOBF;
         $$$setupUI$$$();
 
         tabbedpane.addChangeListener( new ChangeListener()
@@ -106,10 +111,14 @@ public final class ModuleDescriptorForm
         moduleSeparator = cmpFactory.createSeparator( "Module" );
 
         providesModel = new ProvidesQi4jContextModel();
-        providesForm = new Qi4jContextForm( providesModel );
+        ObjectBuilder<Qi4jContextForm> providesFormBuilder = obf.newObjectBuilder( Qi4jContextForm.class );
+        providesFormBuilder.use( providesModel );
+        providesForm = providesFormBuilder.newInstance();
 
         accessibleModel = new AccessiblesQi4jContextModel();
-        accessiblesForm = new Qi4jContextForm( accessibleModel );
+        ObjectBuilder<Qi4jContextForm> accessibleFormBuilder = obf.newObjectBuilder( Qi4jContextForm.class );
+        accessibleFormBuilder.use( accessibleModel );
+        accessiblesForm = accessibleFormBuilder.newInstance();
     }
 
     /**
