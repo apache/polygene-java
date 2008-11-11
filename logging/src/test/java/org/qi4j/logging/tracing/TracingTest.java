@@ -26,15 +26,13 @@ import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.trace.Trace;
-import org.qi4j.trace.TraceAllConcern;
-import org.qi4j.trace.records.CompositeTraceRecordEntity;
-import org.qi4j.trace.records.EntityTraceRecordEntity;
-import org.qi4j.trace.records.ServiceTraceRecordEntity;
-import org.qi4j.trace.assemblies.StandardTraceServiceComposite;
-import org.qi4j.trace.service.TraceServiceConfiguration;
+import org.qi4j.logging.trace.Trace;
+import org.qi4j.logging.trace.TraceAllConcern;
+import org.qi4j.logging.trace.records.CompositeTraceRecordEntity;
+import org.qi4j.logging.trace.records.EntityTraceRecordEntity;
+import org.qi4j.logging.trace.records.ServiceTraceRecordEntity;
+import org.qi4j.logging.trace.assemblies.StandardTraceServiceComposite;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
-import org.qi4j.log.LogTypes;
 
 public class TracingTest
     extends AbstractQi4jTest
