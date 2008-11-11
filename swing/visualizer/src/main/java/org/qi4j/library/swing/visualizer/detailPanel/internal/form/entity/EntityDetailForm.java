@@ -42,6 +42,7 @@ import org.qi4j.structure.Module;
  */
 public final class EntityDetailForm
 {
+    // TODO: Application supposed to be passed via @Uses. This is the application being visualized
     @Structure private Application application;
 
     private JComponent listSeparator;
@@ -68,17 +69,22 @@ public final class EntityDetailForm
             UnitOfWorkFactory uowf = module.unitOfWorkFactory();
             UnitOfWork uow = uowf.nestedUnitOfWork();
 
-            QueryBuilderFactory qbf = uow.queryBuilderFactory();
-            QueryBuilder<? extends Composite> queryBuilder = qbf.newQueryBuilder( aDescriptor.descriptor().type() );
-            Query<EntityComposite> query = (Query<EntityComposite>) queryBuilder.newQuery();
-
-            for( EntityComposite entity : query )
+            try
             {
-                String entityIdentity = entity.identity().get();
-                entityIds.addItem( entityIdentity );
-            }
+                QueryBuilderFactory qbf = uow.queryBuilderFactory();
+                QueryBuilder<? extends Composite> queryBuilder = qbf.newQueryBuilder( aDescriptor.descriptor().type() );
+                Query<EntityComposite> query = (Query<EntityComposite>) queryBuilder.newQuery();
 
-            uow.discard();
+                for( EntityComposite entity : query )
+                {
+                    String entityIdentity = entity.identity().get();
+                    entityIds.addItem( entityIdentity );
+                }
+            }
+            finally
+            {
+                uow.discard();
+            }
         }
     }
 

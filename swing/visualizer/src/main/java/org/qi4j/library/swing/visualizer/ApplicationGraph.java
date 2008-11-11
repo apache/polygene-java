@@ -40,7 +40,9 @@ import org.qi4j.structure.Application;
  */
 public class ApplicationGraph
 {
+    // TODO: Revert back to pre show( Application )
     @Structure private Application application;
+
     private final ObjectBuilderFactory obf;
 
     private OverviewPanel overviewPanel;
@@ -55,11 +57,11 @@ public class ApplicationGraph
         $$$setupUI$$$();
     }
 
-
     public final void show()
     {
         ApplicationSPI applicationSPI = (ApplicationSPI) application;
-        ApplicationDetailDescriptor appDescriptor = createApplicationDetailDescriptor( applicationSPI );
+        ApplicationDetailDescriptor appDescriptor =
+            createApplicationDetailDescriptor( applicationSPI );
 
         if( frame == null )
         {
