@@ -26,6 +26,7 @@ import org.qi4j.structure.Visibility;
 
 /**
  * @author edward.yakop@gmail.com
+ * @since 0.5
  */
 public final class CollectionUtils
 {

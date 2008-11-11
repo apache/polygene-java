@@ -14,38 +14,35 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.infrastructure.persistence;
+package org.qi4j.library.swing.visualizer.assembler;
 
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entity.index.rdf.RdfQueryService;
-import org.qi4j.entity.memory.MemoryEntityStoreService;
-import org.qi4j.library.rdf.entity.EntitySerializer;
-import org.qi4j.library.rdf.repository.MemoryRepositoryService;
-import org.qi4j.spi.entity.UuidIdentityGeneratorService;
-import static org.qi4j.structure.Visibility.application;
+import org.qi4j.library.swing.visualizer.ApplicationGraph;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.assembler.DetailPanelAssembler;
+import org.qi4j.library.swing.visualizer.overview.assembler.OverviewAssembler;
+import static org.qi4j.structure.Visibility.layer;
+import static org.qi4j.structure.Visibility.module;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public class PersistenceAssembler
+public final class VisualizerAssembler
     implements Assembler
 {
     public final void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
-        aModule.addObjects( EntitySerializer.class );
+        aModule.addObjects( ApplicationGraph.class )
+            .visibleIn( layer );
 
-        aModule.addServices(
-            UuidIdentityGeneratorService.class,
-            MemoryEntityStoreService.class,
+        aModule.addAssembler( new DetailPanelAssembler() );
+        aModule.addAssembler( new OverviewAssembler() );
 
-            // Query
-            RdfQueryService.class,
-            MemoryRepositoryService.class )
-            .visibleIn( application )
+        aModule.addServices( VisualizerService.class )
+            .visibleIn( module )
             .instantiateOnStartup();
     }
 }

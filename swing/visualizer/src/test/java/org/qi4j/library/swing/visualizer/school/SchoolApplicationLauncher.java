@@ -23,7 +23,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.library.swing.visualizer.ApplicationGraph;
+import org.qi4j.library.swing.visualizer.assembler.VisualizerAssembler;
 import org.qi4j.library.swing.visualizer.school.admin.AdminAssembler;
 import org.qi4j.library.swing.visualizer.school.domain.model.person.assembler.PersonModelAssembler;
 import org.qi4j.library.swing.visualizer.school.domain.model.school.assembler.SchoolModelAssembler;
@@ -58,6 +58,7 @@ public final class SchoolApplicationLauncher
         return energy4Java.newApplication( appAssembly );
     }
 
+
     private LayerAssembly createInfrastructureLayer( ApplicationAssembly appAssembly )
         throws AssemblyException
     {
@@ -68,6 +69,9 @@ public final class SchoolApplicationLauncher
 
         ModuleAssembly modulePersistence = layerInfrastructure.newModuleAssembly( "Persistence" );
         modulePersistence.addAssembler( new PersistenceAssembler() );
+
+        ModuleAssembly visualizerModule = layerInfrastructure.newModuleAssembly( "visualizer" );
+        visualizerModule.addAssembler( new VisualizerAssembler() );
 
         return layerInfrastructure;
     }
@@ -105,7 +109,6 @@ public final class SchoolApplicationLauncher
         SchoolApplicationLauncher launcher = new SchoolApplicationLauncher();
         Application application = launcher.launch();
 
-        ApplicationGraph graph = new ApplicationGraph();
-        graph.show( application );
+        application.activate();
     }
 }

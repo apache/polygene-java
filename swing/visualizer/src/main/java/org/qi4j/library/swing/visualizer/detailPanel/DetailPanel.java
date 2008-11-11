@@ -21,6 +21,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import org.qi4j.injection.scope.Structure;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ServiceDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.CompositeDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.CompositeMethodDescriptorForm;
@@ -43,6 +44,8 @@ import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
+import org.qi4j.object.ObjectBuilder;
+import org.qi4j.object.ObjectBuilderFactory;
 
 /**
  * @author edward.yakop@gmail.com
@@ -52,6 +55,8 @@ import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 public final class DetailPanel
     implements SelectionListener
 {
+    private ObjectBuilderFactory obf;
+
     private Object descriptorForm;
 
     private ApplicationTreePanel treePanel;
@@ -59,14 +64,17 @@ public final class DetailPanel
 
     private JPanel detailPanel;
 
-    public DetailPanel()
+    public DetailPanel( @Structure ObjectBuilderFactory anOBF )
     {
+        obf = anOBF;
         $$$setupUI$$$();
     }
 
     private void createUIComponents()
     {
-        treePanel = new ApplicationTreePanel( this );
+        ObjectBuilder<ApplicationTreePanel> builder = obf.newObjectBuilder( ApplicationTreePanel.class );
+        builder.use( this );
+        treePanel = builder.newInstance();
     }
 
     public final void onApplicationSelected( ApplicationDetailDescriptor aDescriptor )
@@ -82,7 +90,7 @@ public final class DetailPanel
         LayerDescriptorForm layerForm;
         if( !( descriptorForm instanceof LayerDescriptorForm ) )
         {
-            layerForm = new LayerDescriptorForm();
+            layerForm = obf.newObject( LayerDescriptorForm.class );
             detailScrollPanel.setViewportView( layerForm.$$$getRootComponent$$$() );
         }
         else
@@ -101,7 +109,7 @@ public final class DetailPanel
 
         if( !( descriptorForm instanceof ModuleDescriptorForm ) )
         {
-            moduleForm = new ModuleDescriptorForm();
+            moduleForm = obf.newObject( ModuleDescriptorForm.class );
             detailScrollPanel.setViewportView( moduleForm.$$$getRootComponent$$$() );
         }
         else
@@ -120,7 +128,7 @@ public final class DetailPanel
 
         if( !( descriptorForm instanceof ServiceDescriptorForm ) )
         {
-            serviceForm = new ServiceDescriptorForm();
+            serviceForm = obf.newObject( ServiceDescriptorForm.class );
             detailScrollPanel.setViewportView( serviceForm.$$$getRootComponent$$$() );
         }
         else
@@ -138,7 +146,7 @@ public final class DetailPanel
         EntityDescriptorForm entityDescriptorForm;
         if( !( descriptorForm instanceof EntityDescriptorForm ) )
         {
-            entityDescriptorForm = new EntityDescriptorForm();
+            entityDescriptorForm = obf.newObject( EntityDescriptorForm.class );
             detailScrollPanel.setViewportView( entityDescriptorForm.$$$getRootComponent$$$() );
         }
         else
@@ -156,7 +164,7 @@ public final class DetailPanel
         CompositeDescriptorForm compositeForm;
         if( !( descriptorForm instanceof CompositeDescriptorForm ) )
         {
-            compositeForm = new CompositeDescriptorForm();
+            compositeForm = obf.newObject( CompositeDescriptorForm.class );
             detailScrollPanel.setViewportView( compositeForm.$$$getRootComponent$$$() );
         }
         else
@@ -180,7 +188,7 @@ public final class DetailPanel
         MixinDescriptorForm mixinForm;
         if( !( descriptorForm instanceof MixinDescriptorForm ) )
         {
-            mixinForm = new MixinDescriptorForm();
+            mixinForm = obf.newObject( MixinDescriptorForm.class );
             detailScrollPanel.setViewportView( mixinForm.$$$getRootComponent$$$() );
         }
         else
@@ -198,7 +206,7 @@ public final class DetailPanel
         ConstructorDescriptorForm constructorForm;
         if( !( descriptorForm instanceof ConstructorDescriptorForm ) )
         {
-            constructorForm = new ConstructorDescriptorForm();
+            constructorForm = obf.newObject( ConstructorDescriptorForm.class );
             detailScrollPanel.setViewportView( constructorForm.$$$getRootComponent$$$() );
         }
         else
@@ -216,7 +224,7 @@ public final class DetailPanel
         InjectedFieldDescriptorForm fieldForm;
         if( !( descriptorForm instanceof InjectedFieldDescriptorForm ) )
         {
-            fieldForm = new InjectedFieldDescriptorForm();
+            fieldForm = obf.newObject( InjectedFieldDescriptorForm.class );
             detailScrollPanel.setViewportView( fieldForm.$$$getRootComponent$$$() );
         }
         else
@@ -234,7 +242,7 @@ public final class DetailPanel
         CompositeMethodDescriptorForm methodForm;
         if( !( descriptorForm instanceof CompositeMethodDescriptorForm ) )
         {
-            methodForm = new CompositeMethodDescriptorForm();
+            methodForm = obf.newObject( CompositeMethodDescriptorForm.class );
             detailScrollPanel.setViewportView( methodForm.$$$getRootComponent$$$() );
         }
         else

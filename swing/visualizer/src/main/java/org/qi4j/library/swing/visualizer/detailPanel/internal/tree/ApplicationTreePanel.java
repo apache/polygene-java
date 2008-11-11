@@ -35,6 +35,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import static javax.swing.tree.TreeSelectionModel.SINGLE_TREE_SELECTION;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import org.qi4j.injection.scope.Uses;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder.NODE_NAME_COMPOSITES;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder.NODE_NAME_CONSTRUCTORS;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder.NODE_NAME_ENTITIES;
@@ -67,7 +68,7 @@ public final class ApplicationTreePanel
     private JTree applicationTree;
     private JPanel treePanel;
 
-    public ApplicationTreePanel( SelectionListener aListener )
+    public ApplicationTreePanel( @Uses SelectionListener aListener )
         throws IllegalArgumentException
     {
         validateNotNull( "aListener", aListener );

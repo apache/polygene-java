@@ -14,38 +14,28 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.infrastructure.persistence;
+package org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.assembler;
 
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entity.index.rdf.RdfQueryService;
-import org.qi4j.entity.memory.MemoryEntityStoreService;
-import org.qi4j.library.rdf.entity.EntitySerializer;
-import org.qi4j.library.rdf.repository.MemoryRepositoryService;
-import org.qi4j.spi.entity.UuidIdentityGeneratorService;
-import static org.qi4j.structure.Visibility.application;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ServiceDescriptorForm;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.context.Qi4jContextForm;
+import static org.qi4j.structure.Visibility.layer;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public class PersistenceAssembler
+public final class FormCommonAssembler
     implements Assembler
 {
     public final void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
-        aModule.addObjects( EntitySerializer.class );
-
-        aModule.addServices(
-            UuidIdentityGeneratorService.class,
-            MemoryEntityStoreService.class,
-
-            // Query
-            RdfQueryService.class,
-            MemoryRepositoryService.class )
-            .visibleIn( application )
-            .instantiateOnStartup();
+        aModule.addObjects(
+            Qi4jContextForm.class,
+            ServiceDescriptorForm.class
+        ).visibleIn( layer );
     }
 }

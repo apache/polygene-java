@@ -27,6 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import org.qi4j.injection.scope.Uses;
 
 /**
  * @author edward.yakop@gmail.com
@@ -45,7 +46,7 @@ public final class Qi4jContextForm
     private JPanel contextForm;
     private final Qi4jContextModel model;
 
-    public Qi4jContextForm( Qi4jContextModel aModel )
+    public Qi4jContextForm( @Uses Qi4jContextModel aModel )
         throws IllegalArgumentException
     {
         validateNotNull( "aModel", aModel );

@@ -21,6 +21,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import org.qi4j.injection.scope.Uses;
 import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.overview.internal.toolbar.OverviewToolbar;
@@ -44,7 +45,7 @@ public class OverviewPanel
 
     private JPanel form;
 
-    public OverviewPanel( SelectionListener aListener )
+    public OverviewPanel( @Uses SelectionListener aListener )
     {
         display = new Qi4jApplicationDisplay( aListener );
         $$$setupUI$$$();

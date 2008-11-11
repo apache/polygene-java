@@ -27,11 +27,14 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.qi4j.injection.scope.Structure;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.common.CollectionUtils;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ListListModel;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ListListModel.EMPTY_MODEL;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.context.Qi4jContextForm;
 import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
+import org.qi4j.object.ObjectBuilder;
+import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.spi.structure.LayerDescriptor;
 
 /**
@@ -40,6 +43,8 @@ import org.qi4j.spi.structure.LayerDescriptor;
  */
 public class LayerDescriptorForm
 {
+    private final ObjectBuilderFactory obf;
+
     private LayerDetailDescriptor layerDescriptor;
 
     private JComponent layerSeparator;
@@ -56,10 +61,11 @@ public class LayerDescriptorForm
 
     private JPanel layerForm;
 
-    public LayerDescriptorForm()
+    public LayerDescriptorForm( @Structure ObjectBuilderFactory anOBF )
     {
-        $$$setupUI$$$();
+        obf = anOBF;
 
+        $$$setupUI$$$();
         tabbedPane.addChangeListener( new ChangeListener()
         {
             public void stateChanged( ChangeEvent e )
@@ -122,10 +128,14 @@ public class LayerDescriptorForm
         layerSeparator = cmpFactory.createSeparator( "Layer" );
 
         providersModel = new ProvidesQi4jContextModel();
-        provides = new Qi4jContextForm( providersModel );
+        ObjectBuilder<Qi4jContextForm> providesBuilder = obf.newObjectBuilder( Qi4jContextForm.class );
+        providesBuilder.use( providersModel );
+        provides = providesBuilder.newInstance();
 
         accessiblesModel = new AccessiblesQi4jContextModel();
-        accessibles = new Qi4jContextForm( accessiblesModel );
+        ObjectBuilder<Qi4jContextForm> accessiblesBuilder = obf.newObjectBuilder( Qi4jContextForm.class );
+        accessiblesBuilder.use( accessiblesModel );
+        accessibles = accessiblesBuilder.newInstance();
     }
 
     /**

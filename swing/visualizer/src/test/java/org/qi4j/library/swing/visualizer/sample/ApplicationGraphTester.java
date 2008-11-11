@@ -26,7 +26,7 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.AssociationMixin;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
-import org.qi4j.library.swing.visualizer.ApplicationGraph;
+import org.qi4j.library.swing.visualizer.assembler.VisualizerAssembler;
 import org.qi4j.property.Property;
 import org.qi4j.structure.Application;
 import static org.qi4j.structure.Visibility.application;
@@ -59,6 +59,7 @@ public class ApplicationGraphTester
         LayerAssembly guiLayer = assembly.newLayerAssembly( "UI" );
 
         ModuleAssembly swingModule = guiLayer.newModuleAssembly( "Swing" );
+        swingModule.addAssembler( new VisualizerAssembler() );
 
         ModuleAssembly plugin1 = guiLayer.newModuleAssembly( "Plugin 1" );
 
@@ -72,7 +73,6 @@ public class ApplicationGraphTester
 //        addMoreLayers( assembly );
 
         Application app = qi4j.newApplication( assembly );
-        new ApplicationGraph().show( app );
     }
 
     private static void addMoreLayers( ApplicationAssembly assembly )

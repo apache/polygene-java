@@ -146,7 +146,7 @@ public final class ToStringUtils
             ObjectDetailDescriptor detailDescriptor = (ObjectDetailDescriptor) anObject;
             ObjectDescriptor descriptor = detailDescriptor.descriptor();
             Class<? extends Composite> objectClassName = descriptor.type();
-            return objectClassName.getName();
+            return objectClassName.getSimpleName();
         }
         else if( InjectedFieldDetailDescriptor.class.isAssignableFrom( valueClass ) )
         {
@@ -276,6 +276,11 @@ public final class ToStringUtils
                 builder.append( ", " );
             }
         }
-        builder.append( " )" );
+
+        if( numberOfParams > 0 )
+        {
+            builder.append( ' ' );
+        }
+        builder.append( ")" );
     }
 }

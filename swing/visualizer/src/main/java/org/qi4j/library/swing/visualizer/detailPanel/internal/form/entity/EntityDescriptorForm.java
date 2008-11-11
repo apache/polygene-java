@@ -97,8 +97,8 @@ public final class EntityDescriptorForm
     {
         createUIComponents();
         entityPanel = new JPanel();
-        entityPanel.setLayout( new FormLayout( "left:4px:noGrow,left:p:noGrow,left:4dlu:noGrow,fill:max(p;75dlu):noGrow,left:4dlu:noGrow,left:d:grow,left:4px:noGrow", "top:4px:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:15px:noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4px:noGrow" ) );
-        ( (FormLayout) entityPanel.getLayout() ).setRowGroups( new int[][]{ new int[]{ 1, 13 }, new int[]{ 4, 6, 8 }, new int[]{ 5, 7 } } );
+        entityPanel.setLayout( new FormLayout( "left:4px:noGrow,left:p:noGrow,left:4dlu:noGrow,fill:max(p;75dlu):noGrow,left:4dlu:noGrow,left:d:grow,left:4px:noGrow", "top:4px:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4dlu:noGrow,center:p:noGrow,top:4px:noGrow" ) );
+        ( (FormLayout) entityPanel.getLayout() ).setRowGroups( new int[][]{ new int[]{ 1, 13 }, new int[]{ 4, 6, 8, 10, 12 }, new int[]{ 5, 7, 9, 11 } } );
         ( (FormLayout) entityPanel.getLayout() ).setColumnGroups( new int[][]{ new int[]{ 1, 7 }, new int[]{ 3, 5 } } );
         CellConstraints cc = new CellConstraints();
         entityPanel.add( entitySeparator, cc.xyw( 2, 2, 5 ) );
