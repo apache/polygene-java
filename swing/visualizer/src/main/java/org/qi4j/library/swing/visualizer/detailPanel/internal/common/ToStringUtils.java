@@ -40,7 +40,9 @@ import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
 import org.qi4j.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
+import org.qi4j.spi.entity.AssociationType;
 import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.entity.ManyAssociationType;
 import org.qi4j.spi.entity.PropertyType;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.structure.ApplicationDescriptor;
@@ -188,6 +190,23 @@ public final class ToStringUtils
             int lastIndexOfDot = name.lastIndexOf( "." );
             return name.substring( lastIndexOfDot + 1 );
         }
+        else if( AssociationType.class.isAssignableFrom( valueClass ) )
+        {
+            AssociationType associationType = (AssociationType) anObject;
+            String name = associationType.qualifiedName();
+
+            int lastIndexOfDot = name.lastIndexOf( "." );
+            return name.substring( lastIndexOfDot + 1 );
+        }
+        else if( ManyAssociationType.class.isAssignableFrom( valueClass ) )
+        {
+            ManyAssociationType manyAssociationType = (ManyAssociationType) anObject;
+            String name = manyAssociationType.qualifiedName();
+
+            int lastIndexOfDot = name.lastIndexOf( "." );
+            return name.substring( lastIndexOfDot + 1 );
+        }
+
 
         return anObject.toString();
     }
