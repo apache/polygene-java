@@ -14,27 +14,21 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.domain.model.user;
+package org.qi4j.library.swing.visualizer.school.domain.model.person.assembler;
 
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import org.qi4j.entity.association.SetAssociation;
+import org.qi4j.library.swing.visualizer.school.domain.model.person.Role;
+import org.qi4j.property.Property;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public final class StudentId
+interface PersonState
 {
-    private final String studentId;
+    Property<String> firstName();
 
-    public StudentId( String aStudentId )
-        throws IllegalArgumentException
-    {
-        validateNotNull( "aStudentId", aStudentId );
-        studentId = aStudentId;
-    }
+    Property<String> lastName();
 
-    public final String idString()
-    {
-        return studentId;
-    }
+    SetAssociation<Role> roles();
 }

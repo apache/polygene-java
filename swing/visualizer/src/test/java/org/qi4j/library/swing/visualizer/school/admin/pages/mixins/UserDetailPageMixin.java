@@ -18,7 +18,7 @@ package org.qi4j.library.swing.visualizer.school.admin.pages.mixins;
 
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.library.swing.visualizer.school.admin.pages.UserDetailPage;
-import org.qi4j.library.swing.visualizer.school.domain.model.user.User;
+import org.qi4j.library.swing.visualizer.school.domain.model.person.Person;
 import org.qi4j.structure.Layer;
 import org.qi4j.structure.Module;
 
@@ -37,7 +37,7 @@ public final class UserDetailPageMixin
     {
     }
 
-    public final void edit( User context )
+    public final void edit( Person context )
     {
         System.err.println( "Edit user [" + context + "]" );
     }

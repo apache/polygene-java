@@ -14,23 +14,24 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.domain.model.user.assembler;
+package org.qi4j.library.swing.visualizer.school.domain.model.person.assembler;
 
 import org.qi4j.composite.Mixins;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.injection.scope.This;
-import org.qi4j.library.swing.visualizer.school.domain.model.user.User;
+import org.qi4j.library.swing.visualizer.school.domain.model.person.Person;
+import org.qi4j.library.swing.visualizer.school.domain.model.person.Role;
 
 /**
  * @author edward.yakop@gmail.com
  */
-@Mixins( UserEntity.UserMixin.class )
-interface UserEntity extends User, EntityComposite
+@Mixins( PersonEntity.PersonMixin.class )
+interface PersonEntity extends Person, EntityComposite
 {
-    class UserMixin
-        implements User
+    class PersonMixin
+        implements Person
     {
-        @This private UserDetailState state;
+        @This private PersonState state;
 
         public final String firstName()
         {
@@ -42,9 +43,14 @@ interface UserEntity extends User, EntityComposite
             return state.lastName().get();
         }
 
-        public final String userName()
+        public final Iterable<Role> roles()
         {
-            return state.userName().get();
+            return state.roles();
+        }
+
+        public final void addRole( Role role )
+        {
+            state.roles().add( role );
         }
     }
 }

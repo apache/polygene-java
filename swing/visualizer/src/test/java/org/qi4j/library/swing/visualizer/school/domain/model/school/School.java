@@ -14,19 +14,24 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.domain.model.user;
+package org.qi4j.library.swing.visualizer.school.domain.model.school;
+
+import org.qi4j.library.swing.visualizer.school.domain.model.person.Person;
+import org.qi4j.query.Query;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public interface StudentRepository
+public interface School
 {
-    /**
-     * Find student given the student id.
-     *
-     * @param studentId student id.
-     * @return Student given the student id, {@code null} if not found.
-     */
-    Student find( StudentId studentId );
+    SchoolId schoolId();
+
+    String name();
+
+    Query<Subject> availableSubjects();
+
+    Query<Student> students();
+
+    void enroll( Person person, Subject subject );
 }

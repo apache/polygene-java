@@ -14,15 +14,12 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.domain.model.user;
-
-import org.qi4j.library.swing.visualizer.school.domain.model.user.mixins.PersonName;
+package org.qi4j.library.swing.visualizer.school.domain.model.person;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public interface Student extends PersonName, User
+public interface Role
 {
-    StudentId studentId();
 }

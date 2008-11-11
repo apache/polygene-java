@@ -14,16 +14,17 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.domain.model.user.assembler;
+package org.qi4j.library.swing.visualizer.school.domain.model.school;
 
-import org.qi4j.property.Property;
+import org.qi4j.query.Query;
 
 /**
  * @author edward.yakop@gmail.com
+ * @since 0.5
  */
-interface SubjectState
+public interface SchoolRepository
 {
-    Property<String> name();
+    Query<School> findAll();
 
-    Property<String> description();
+    School find( SchoolId schoolId );
 }

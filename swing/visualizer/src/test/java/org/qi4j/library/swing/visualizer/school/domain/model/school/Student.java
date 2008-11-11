@@ -14,21 +14,19 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.admin.pages;
+package org.qi4j.library.swing.visualizer.school.domain.model.school;
 
-import org.qi4j.composite.Concerns;
-import org.qi4j.composite.Mixins;
-import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.AuthenticationConcern;
-import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.DetailPage;
-import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.UserDetailPageMixin;
-import org.qi4j.library.swing.visualizer.school.domain.model.person.Person;
+import org.qi4j.library.swing.visualizer.school.domain.model.person.Role;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-@Concerns( AuthenticationConcern.class )
-@Mixins( UserDetailPageMixin.class )
-public interface UserDetailPage extends DetailPage<Person>
+public interface Student extends Role
 {
+    StudentId studentId();
+
+    School school();
+
+    Iterable<Subject> subjects();
 }

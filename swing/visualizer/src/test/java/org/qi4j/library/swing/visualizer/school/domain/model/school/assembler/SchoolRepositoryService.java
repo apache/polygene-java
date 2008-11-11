@@ -14,7 +14,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.domain.model.user.assembler;
+package org.qi4j.library.swing.visualizer.school.domain.model.school.assembler;
 
 import org.qi4j.composite.Mixins;
 import org.qi4j.entity.EntityCompositeNotFoundException;
@@ -22,51 +22,57 @@ import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.injection.scope.Structure;
-import org.qi4j.library.swing.visualizer.school.domain.model.user.Student;
-import org.qi4j.library.swing.visualizer.school.domain.model.user.StudentId;
-import org.qi4j.library.swing.visualizer.school.domain.model.user.StudentRepository;
+import org.qi4j.library.swing.visualizer.school.domain.model.school.School;
+import org.qi4j.library.swing.visualizer.school.domain.model.school.SchoolId;
+import org.qi4j.library.swing.visualizer.school.domain.model.school.SchoolRepository;
+import org.qi4j.query.Query;
+import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.service.ServiceComposite;
 
 /**
  * @author edward.yakop@gmail.com
- * @since 0.5
  */
-@Mixins( StudentRepositoryService.StudentRepositoryMixin.class )
-interface StudentRepositoryService extends StudentRepository, ServiceComposite
+@Mixins( SchoolRepositoryService.SchoolRepositoryMixin.class )
+interface SchoolRepositoryService extends SchoolRepository, ServiceComposite
 {
-    class StudentRepositoryMixin
-        implements StudentRepository
+    class SchoolRepositoryMixin
+        implements SchoolRepository
     {
         @Structure private UnitOfWorkFactory uowf;
 
-        public final Student find( StudentId studentId )
+        public final Query<School> findAll()
         {
-            String identity = studentId.idString();
+            UnitOfWork uow = uowf.nestedUnitOfWork();
 
+            try
+            {
+                QueryBuilderFactory qbf = uow.queryBuilderFactory();
+                return qbf.newQueryBuilder( School.class ).newQuery();
+            }
+            finally
+            {
+                uow.pause();
+            }
+        }
+
+        public final School find( SchoolId schoolId )
+        {
             UnitOfWork uow = uowf.nestedUnitOfWork();
             try
             {
-                Student student = uow.find( identity, Student.class );
-                // Note: This is required to allow Other layer to edit student.
-                completeAndContinue( uow );
-                return student;
+                School school = uow.find( schoolId.idString(), School.class );
+                uow.completeAndContinue();
+                return school;
             }
             catch( EntityCompositeNotFoundException e )
             {
                 uow.discard();
                 return null;
             }
-        }
-
-        private void completeAndContinue( UnitOfWork uow )
-        {
-            try
-            {
-                uow.completeAndContinue();
-            }
             catch( UnitOfWorkCompletionException e )
             {
-                e.printStackTrace();
+                // Shouldn't happened
+                return null;
             }
         }
     }

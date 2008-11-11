@@ -14,12 +14,22 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.domain.model.user.mixins;
+package org.qi4j.library.swing.visualizer.school.domain.model.school.assembler;
+
+import org.qi4j.entity.association.Association;
+import org.qi4j.library.swing.visualizer.school.domain.model.school.School;
+import org.qi4j.property.Property;
 
 /**
  * @author edward.yakop@gmail.com
+ * @since 0.5
  */
-public interface Login
+interface SubjectState
 {
-    String userName();
+    Property<String> name();
+
+    Property<String> description();
+
+    Property<String> schoolId();
+    Association<School> school();
 }

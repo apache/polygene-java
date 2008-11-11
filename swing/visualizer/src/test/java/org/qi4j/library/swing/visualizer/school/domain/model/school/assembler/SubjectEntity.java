@@ -14,14 +14,15 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.domain.model.user.assembler;
+package org.qi4j.library.swing.visualizer.school.domain.model.school.assembler;
 
 import org.qi4j.composite.Mixins;
 import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.Identity;
 import org.qi4j.injection.scope.This;
-import org.qi4j.library.swing.visualizer.school.domain.model.user.Subject;
-import org.qi4j.library.swing.visualizer.school.domain.model.user.SubjectId;
+import org.qi4j.library.swing.visualizer.school.domain.model.school.School;
+import org.qi4j.library.swing.visualizer.school.domain.model.school.Subject;
+import org.qi4j.library.swing.visualizer.school.domain.model.school.SubjectId;
 
 /**
  * @author edward.yakop@gmail.com
@@ -30,7 +31,7 @@ import org.qi4j.library.swing.visualizer.school.domain.model.user.SubjectId;
 @Mixins( SubjectEntity.SubjectMixin.class )
 interface SubjectEntity extends Subject, EntityComposite
 {
-    class SubjectMixin
+    final class SubjectMixin
         implements Subject
     {
         private final SubjectId subjectId;
@@ -55,6 +56,11 @@ interface SubjectEntity extends Subject, EntityComposite
         public final String description()
         {
             return state.description().get();
+        }
+
+        public final School school()
+        {
+            return state.school().get();
         }
     }
 }

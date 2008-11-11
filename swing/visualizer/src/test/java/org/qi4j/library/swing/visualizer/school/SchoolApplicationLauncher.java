@@ -25,7 +25,8 @@ import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.swing.visualizer.ApplicationGraph;
 import org.qi4j.library.swing.visualizer.school.admin.AdminAssembler;
-import org.qi4j.library.swing.visualizer.school.domain.model.user.assembler.ModelAssembler;
+import org.qi4j.library.swing.visualizer.school.domain.model.person.assembler.PersonModelAssembler;
+import org.qi4j.library.swing.visualizer.school.domain.model.school.assembler.SchoolModelAssembler;
 import org.qi4j.library.swing.visualizer.school.infrastructure.mail.MailServiceAssembler;
 import org.qi4j.library.swing.visualizer.school.infrastructure.persistence.PersistenceAssembler;
 import org.qi4j.structure.Application;
@@ -47,13 +48,12 @@ public final class SchoolApplicationLauncher
 
         // Create layers
         LayerAssembly layerInfra = createInfrastructureLayer( appAssembly );
+
         LayerAssembly layerDomain = createDomainLayer( appAssembly );
-        LayerAssembly layerUI = createUILayer( appAssembly );
-
-        layerUI.uses( layerDomain );
-        layerUI.uses( layerInfra );
-
         layerDomain.uses( layerInfra );
+
+        LayerAssembly layerUI = createUILayer( appAssembly );
+        layerUI.uses( layerDomain );
 
         return energy4Java.newApplication( appAssembly );
     }
@@ -77,8 +77,12 @@ public final class SchoolApplicationLauncher
     {
         LayerAssembly layerDomain = appAssembly.newLayerAssembly( "domain" );
 
-        ModuleAssembly moduleDomain = layerDomain.newModuleAssembly( "domain" );
-        moduleDomain.addAssembler( new ModelAssembler() );
+        ModuleAssembly modulePerson = layerDomain.newModuleAssembly( "person" );
+        modulePerson.addAssembler( new PersonModelAssembler() );
+
+        ModuleAssembly moduleSchool = layerDomain.newModuleAssembly( "school" );
+        moduleSchool.addAssembler( new SchoolModelAssembler() );
+
 
         return layerDomain;
     }

@@ -14,21 +14,31 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.admin.pages;
+package org.qi4j.library.swing.visualizer.school.domain.model.person;
 
-import org.qi4j.composite.Concerns;
-import org.qi4j.composite.Mixins;
-import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.AuthenticationConcern;
-import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.DetailPage;
-import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.UserDetailPageMixin;
-import org.qi4j.library.swing.visualizer.school.domain.model.person.Person;
+import java.io.Serializable;
+import static org.qi4j.composite.NullArgumentException.validateNotNull;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-@Concerns( AuthenticationConcern.class )
-@Mixins( UserDetailPageMixin.class )
-public interface UserDetailPage extends DetailPage<Person>
+public final class PersonId
+    implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
+    private final String personId;
+
+    public PersonId( String aPersonId )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aPersonId", aPersonId );
+        personId = aPersonId;
+    }
+
+    public final String idString()
+    {
+        return personId;
+    }
 }

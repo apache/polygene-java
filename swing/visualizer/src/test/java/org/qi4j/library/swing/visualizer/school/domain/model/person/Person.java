@@ -14,14 +14,21 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.domain.model.user.mixins;
+package org.qi4j.library.swing.visualizer.school.domain.model.person;
+
+import org.qi4j.library.swing.visualizer.school.domain.model.person.Role;
 
 /**
  * @author edward.yakop@gmail.com
+ * @since 0.5
  */
-public interface PersonName
+public interface Person
 {
     String firstName();
 
     String lastName();
+
+    Iterable<Role> roles();
+
+    void addRole( Role role );
 }

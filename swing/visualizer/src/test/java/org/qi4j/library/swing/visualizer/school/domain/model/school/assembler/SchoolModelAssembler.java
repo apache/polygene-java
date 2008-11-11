@@ -14,26 +14,30 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.visualizer.school.domain.model.user.assembler;
+package org.qi4j.library.swing.visualizer.school.domain.model.school.assembler;
 
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import static org.qi4j.structure.Visibility.application;
 import static org.qi4j.structure.Visibility.layer;
 
 /**
  * @author edward.yakop@gmail.com
- * @since 0.5
  */
-public final class ModelAssembler
+public final class SchoolModelAssembler
     implements Assembler
 {
-    public void assemble( ModuleAssembly aModule )
+    public final void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
         aModule.addEntities(
-            StaffEntity.class,
-            StudentEntity.class
+            StudentEntity.class,
+            SchoolEntity.class,
+            SubjectEntity.class
         ).visibleIn( layer );
+
+        aModule.addServices( SchoolRepositoryService.class )
+            .visibleIn( application );
     }
 }
