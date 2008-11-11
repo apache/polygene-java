@@ -38,6 +38,12 @@
       <artifactId>junit</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.qi4j.extension</groupId>
+      <artifactId>qi4j-ext-indexing-rdf</artifactId>
+      <version>0.5-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-testsupport</artifactId>
       <version>0.5-SNAPSHOT</version>

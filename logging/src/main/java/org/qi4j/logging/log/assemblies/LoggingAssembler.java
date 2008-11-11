@@ -16,7 +16,7 @@
  * limitations under the License. 
  */
 
-package org.qi4j.logging.trace.assemblies;
+package org.qi4j.logging.log.assemblies;
 
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
@@ -24,19 +24,19 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.logging.trace.service.TraceServiceConfiguration;
 import org.qi4j.logging.trace.service.StandardTraceServiceComposite;
 import org.qi4j.logging.log.LogTypes;
-import org.qi4j.structure.Visibility;
+import org.qi4j.logging.log.service.LoggingServiceComposite;
 
-public class TracingAssembler
+public class LoggingAssembler
     implements Assembler
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( StandardTraceServiceComposite.class ).visibleIn( Visibility.application );
-        module.addEntities( TraceServiceConfiguration.class );
+        module.addServices( LoggingServiceComposite.class );
         module.addComposites( LogTypes.class );
         module.on( LogTypes.class ).to().info().set( "INFO" );
         module.on( LogTypes.class ).to().warning().set( "WARNING" );
         module.on( LogTypes.class ).to().error().set( "ERROR" );
     }
+
 }

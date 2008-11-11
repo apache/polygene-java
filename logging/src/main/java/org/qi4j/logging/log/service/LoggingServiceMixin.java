@@ -17,10 +17,24 @@
  */
 package org.qi4j.logging.log.service;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.qi4j.composite.Composite;
+import org.qi4j.entity.ConcurrentEntityModificationException;
+import org.qi4j.entity.EntityBuilder;
+import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.UnitOfWork;
+import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.logging.log.LogType;
+import org.qi4j.logging.log.records.CompositeLogRecord;
+import org.qi4j.logging.log.records.EntityLogRecord;
+import org.qi4j.logging.log.records.LogRecord;
+import org.qi4j.logging.log.records.ServiceLogRecord;
+import org.qi4j.service.ServiceComposite;
 
 public abstract class LoggingServiceMixin
     implements LoggingService
@@ -29,22 +43,121 @@ public abstract class LoggingServiceMixin
 
     public void log( LogType type, Composite composite, String category, String message )
     {
-
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        try
+        {
+            List<Serializable> paramsList = new ArrayList<Serializable>();
+            createLogRecord( uow, type, composite, category, message, paramsList );
+            uow.complete();
+        }
+        catch( ConcurrentEntityModificationException e )
+        {
+            // ignore for now. Perhaps discard() and try again.
+        }
+        catch( UnitOfWorkCompletionException e )
+        {
+            // ignore for now. Perhaps discard() and try again.
+        }
     }
 
-    public void log( LogType type, Composite composite, String category, String message, Object param1 )
+    public void log( LogType type, Composite composite, String category, String message, Serializable param1 )
     {
-
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        try
+        {
+            List<Serializable> paramsList = new ArrayList<Serializable>();
+            paramsList.add( param1 );
+            createLogRecord( uow, type, composite, category, message, paramsList );
+            uow.complete();
+        }
+        catch( ConcurrentEntityModificationException e )
+        {
+            // ignore for now. Perhaps discard() and try again.
+        }
+        catch( UnitOfWorkCompletionException e )
+        {
+            // ignore for now. Perhaps discard() and try again.
+        }
     }
 
-    public void log( LogType type, Composite composite, String category, String message, Object param1, Object param2 )
+    public void log( LogType type, Composite composite, String category, String message, Serializable param1, Serializable param2 )
     {
-
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        try
+        {
+            List<Serializable> paramsList = new ArrayList<Serializable>();
+            paramsList.add( param1 );
+            paramsList.add( param2 );
+            createLogRecord( uow, type, composite, category, message, paramsList );
+            uow.complete();
+        }
+        catch( ConcurrentEntityModificationException e )
+        {
+            // ignore for now. Perhaps discard() and try again.
+        }
+        catch( UnitOfWorkCompletionException e )
+        {
+            // ignore for now. Perhaps discard() and try again.
+        }
     }
 
-    public void log( LogType type, Composite composite, String category, String message, Object... params )
+    public void log( LogType type, Composite composite, String category, String message, Serializable... params )
     {
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        try
+        {
+            List<Serializable> paramsList = new ArrayList<Serializable>( Arrays.asList( params ) );
+            createLogRecord( uow, type, composite, category, message, paramsList );
+            uow.complete();
+        }
+        catch( ConcurrentEntityModificationException e )
+        {
+            // ignore for now. Perhaps discard() and try again.
+        }
+        catch( UnitOfWorkCompletionException e )
+        {
+            // ignore for now. Perhaps discard() and try again.
+        }
+    }
 
+    private void createLogRecord( UnitOfWork uow, LogType type, Composite composite, String category, String message, List<Serializable> params )
+    {
+        if( composite instanceof ServiceComposite )
+        {
+            EntityBuilder<ServiceLogRecord> builder = uow.newEntityBuilder( ServiceLogRecord.class );
+            ServiceLogRecord state = builder.stateOfComposite();
+            setStandardStuff( type, composite, category, message, state, params );
+            state.source().set( ( (ServiceComposite) composite ).serviceDescriptor().identity() );
+            ServiceLogRecord slr = builder.newInstance();
+        }
+        else if( composite instanceof EntityComposite )
+        {
+            EntityBuilder<EntityLogRecord> builder = uow.newEntityBuilder( EntityLogRecord.class );
+            EntityLogRecord state = builder.stateOfComposite();
+            setStandardStuff( type, composite, category, message, state, params );
+            state.source().set( (EntityComposite) composite );
+            EntityLogRecord elr = builder.newInstance();
+        }
+        else
+        {
+            EntityBuilder<CompositeLogRecord> builder = uow.newEntityBuilder( CompositeLogRecord.class );
+            CompositeLogRecord state = builder.stateOfComposite();
+            setStandardStuff( type, composite, category, message, state, params );
+            state.source().set( composite );
+            CompositeLogRecord clr = builder.newInstance();
+        }
+    }
+
+    private void setStandardStuff( LogType type, Composite composite, String category, String message,
+                                   LogRecord state, List<Serializable> params )
+    {
+        state.logtype().set( type );
+        state.time().set( System.currentTimeMillis() );
+        state.category().set( category );
+        state.message().set( message );
+        state.compositeTypeName().set( composite.type().getName() );
+        state.threadName().set( Thread.currentThread().getName() );
+        state.parameters().set( params );
     }
 
 }

@@ -26,6 +26,7 @@ import org.qi4j.injection.scope.This;
 import org.qi4j.logging.log.SimpleLog;
 import org.qi4j.logging.log.LogTypes;
 import org.qi4j.logging.log.service.LoggingService;
+import java.io.Serializable;
 
 public final class SimpleLogConcern
     implements SimpleLog
@@ -53,7 +54,7 @@ public final class SimpleLogConcern
         loggingService.log( types.info(), api.dereference( composite ), category, message );
     }
 
-    public void info( String message, Object param1 )
+    public void info( String message, Serializable param1 )
     {
         if( loggingService == null )
         {
@@ -62,7 +63,7 @@ public final class SimpleLogConcern
         loggingService.log( types.info(), api.dereference( composite ), category, message, param1 );
     }
 
-    public void info( String message, Object param1, Object param2 )
+    public void info( String message, Serializable param1, Serializable param2 )
     {
         if( loggingService == null )
         {
@@ -71,7 +72,7 @@ public final class SimpleLogConcern
         loggingService.log( types.info(), api.dereference( composite ), category, message, param1, param2 );
     }
 
-    public void info( String message, Object... params )
+    public void info( String message, Serializable... params )
     {
         if( loggingService == null )
         {
@@ -89,7 +90,7 @@ public final class SimpleLogConcern
         loggingService.log( types.warning(), api.dereference( composite ), category, message );
     }
 
-    public void warning( String message, Object param1 )
+    public void warning( String message, Serializable param1 )
     {
         if( loggingService == null )
         {
@@ -98,7 +99,7 @@ public final class SimpleLogConcern
         loggingService.log( types.warning(), api.dereference( composite ), category, message, param1 );
     }
 
-    public void warning( String message, Object param1, Object param2 )
+    public void warning( String message, Serializable param1, Serializable param2 )
     {
         if( loggingService == null )
         {
@@ -107,7 +108,7 @@ public final class SimpleLogConcern
         loggingService.log( types.warning(), api.dereference( composite ), category, message, param1, param2 );
     }
 
-    public void warning( String message, Object... params )
+    public void warning( String message, Serializable... params )
     {
         if( loggingService == null )
         {
@@ -125,7 +126,7 @@ public final class SimpleLogConcern
         loggingService.log( types.error(), api.dereference( composite ), category, message );
     }
 
-    public void error( String message, Object param1 )
+    public void error( String message, Serializable param1 )
     {
         if( loggingService == null )
         {
@@ -134,7 +135,7 @@ public final class SimpleLogConcern
         loggingService.log( types.error(), api.dereference( composite ), category, message, param1 );
     }
 
-    public void error( String message, Object param1, Object param2 )
+    public void error( String message, Serializable param1, Serializable param2 )
     {
         if( loggingService == null )
         {
@@ -143,7 +144,7 @@ public final class SimpleLogConcern
         loggingService.log( types.error(), api.dereference( composite ), category, message, param1, param2 );
     }
 
-    public void error( String message, Object... params )
+    public void error( String message, Serializable... params )
     {
         if( loggingService == null )
         {

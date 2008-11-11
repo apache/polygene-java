@@ -15,12 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.logging.trace.records;
+package org.qi4j.logging.debug.service;
 
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.association.Association;
+import org.qi4j.property.Property;
 
-public interface EntityTraceRecord extends TraceRecord
+public interface DebugServiceConfiguration
 {
-    Association<EntityComposite> source();
+    Property<Integer> debugLevel();
+
 }

@@ -24,78 +24,126 @@ import org.qi4j.injection.scope.Service;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
 import org.qi4j.logging.log.service.LoggingService;
-import org.qi4j.logging.log.LogTypes;
+import java.io.Serializable;
 
 public final class CategoryLogConcern
     implements CategoryLog
 {
-    @Structure Qi4j api;
-    @Service private LoggingService loggingService;
-    @This Composite composite;
-    LogTypes types;
+    @Structure private Qi4j api;
+    @Service( optional = true ) private LoggingService loggingService;
+    @This private Composite composite;
+    private LogTypes types;
 
-    public CategoryLogConcern(@Structure CompositeBuilderFactory cbf)
+    public CategoryLogConcern( @Structure CompositeBuilderFactory cbf )
     {
         types = cbf.newComposite( LogTypes.class );
     }
 
     public void info( String category, String message )
     {
+        if( loggingService == null )
+        {
+            return;
+        }
         loggingService.log( types.info(), api.dereference( composite ), category, message );
     }
 
-    public void info( String category, String message, Object param1 )
+    public void info( String category, String message, Serializable param1 )
     {
+        if( loggingService == null )
+        {
+            return;
+        }
         loggingService.log( types.info(), api.dereference( composite ), category, message, param1 );
     }
 
-    public void info( String category, String message, Object param1, Object param2 )
+    public void info( String category, String message, Serializable param1, Serializable param2 )
     {
+        if( loggingService == null )
+        {
+            return;
+        }
         loggingService.log( types.info(), api.dereference( composite ), category, message, param1, param2 );
     }
 
-    public void info( String category, String message, Object... params )
+    public void info( String category, String message, Serializable... params )
     {
+        if( loggingService == null )
+        {
+            return;
+        }
         loggingService.log( types.info(), api.dereference( composite ), category, message, params );
     }
 
     public void warning( String category, String message )
     {
+        if( loggingService == null )
+        {
+            return;
+        }
         loggingService.log( types.warning(), api.dereference( composite ), category, message );
     }
 
-    public void warning( String category, String message, Object param1 )
+    public void warning( String category, String message, Serializable param1 )
     {
+        if( loggingService == null )
+        {
+            return;
+        }
         loggingService.log( types.warning(), api.dereference( composite ), category, message, param1 );
     }
 
-    public void warning( String category, String message, Object param1, Object param2 )
+    public void warning( String category, String message, Serializable param1, Serializable param2 )
     {
+        if( loggingService == null )
+        {
+            return;
+        }
         loggingService.log( types.warning(), api.dereference( composite ), category, message, param1, param2 );
     }
 
-    public void warning( String category, String message, Object... params )
+    public void warning( String category, String message, Serializable... params )
     {
+        if( loggingService == null )
+        {
+            return;
+        }
         loggingService.log( types.warning(), api.dereference( composite ), category, message, params );
     }
 
     public void error( String category, String message )
     {
+        if( loggingService == null )
+        {
+            return;
+        }
         loggingService.log( types.error(), api.dereference( composite ), category, message );
     }
 
-    public void error( String category, String message, Object param1 )
+    public void error( String category, String message, Serializable param1 )
     {
+        if( loggingService == null )
+        {
+            return;
+        }
         loggingService.log( types.error(), api.dereference( composite ), category, message, param1 );
     }
 
-    public void error( String category, String message, Object param1, Object param2 )
+    public void error( String category, String message, Serializable param1, Serializable param2 )
     {
+        if( loggingService == null )
+        {
+            return;
+        }
         loggingService.log( types.error(), api.dereference( composite ), category, message, param1, param2 );
     }
 
-    public void error( String category, String message, Object... params )
+    public void error( String category, String message, Serializable... params )
     {
+        if( loggingService == null )
+        {
+            return;
+        }
         loggingService.log( types.error(), api.dereference( composite ), category, message, params );
     }
 }

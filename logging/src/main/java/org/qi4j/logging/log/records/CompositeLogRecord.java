@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 Niclas Hedhman.
+ * Copyright 2008 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -13,14 +13,15 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
-package org.qi4j.logging.trace.records;
+package org.qi4j.logging.log.records;
 
 import org.qi4j.composite.Composite;
+import org.qi4j.entity.EntityComposite;
 import org.qi4j.property.Property;
 
-public interface CompositeTraceRecord extends TraceRecord
+public interface CompositeLogRecord extends LogRecord, EntityComposite
 {
     Property<Composite> source();
 }

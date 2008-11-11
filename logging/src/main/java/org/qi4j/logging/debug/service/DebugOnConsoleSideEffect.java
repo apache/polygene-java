@@ -18,6 +18,7 @@
 package org.qi4j.logging.debug.service;
 
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
@@ -25,12 +26,13 @@ import org.qi4j.composite.Composite;
 import org.qi4j.composite.SideEffectOf;
 import org.qi4j.injection.scope.Invocation;
 import org.qi4j.logging.log.service.LoggingService;
+import org.qi4j.logging.debug.Debug;
 
 /**
- * The ConsoleViewSideEffect is just a temporary solution for logging output, until a more
+ * The DebugOnConsoleSideEffect is just a temporary solution for logging output, until a more
  * robust framework has been designed.
  */
-public abstract class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
+public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
     implements DebuggingService
 {
     private static PrintStream OUT = System.err;
@@ -42,30 +44,55 @@ public abstract class DebugOnConsoleSideEffect extends SideEffectOf<LoggingServi
         bundle = ResourceBundle.getBundle( thisMethod.getDeclaringClass().getName() );
     }
 
+    public int debugLevel()
+    {
+        return Debug.OFF;
+    }
+
     public void debug( Composite composite, String message )
     {
         String localized = bundle.getString( message );
         OUT.println( "DEBUG:" + composite.type().getName() + ": " + localized );
     }
 
-    public void debug( Composite composite, String message, Object param1 )
+    public void debug( Composite composite, String message, Serializable param1 )
     {
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, param1 );
         OUT.println( "DEBUG:" + composite.type().getName() + ": " + formatted );
+        if( param1 instanceof Throwable )
+        {
+            handleException( (Throwable) param1 );
+        }
     }
 
-    public void debug( Composite composite, String message, Object param1, Object param2 )
+    public void debug( Composite composite, String message, Serializable param1, Serializable param2 )
     {
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, param1, param2 );
         OUT.println( "DEBUG:" + composite.type().getName() + ": " + formatted );
+        if( param1 instanceof Throwable )
+        {
+            handleException( (Throwable) param1 );
+        }
     }
 
-    public void debug( Composite composite, String message, Object... params )
+    public void debug( Composite composite, String message, Serializable... params )
     {
         String localized = bundle.getString( message );
-        String formatted = MessageFormat.format( localized, params );
+        String formatted = MessageFormat.format( localized, (Serializable) params );
         OUT.println( "DEBUG:" + composite.type().getName() + ": " + formatted );
+        if( params[0] instanceof Throwable )
+        {
+            handleException( (Throwable) params[0] );
+        }
+    }
+
+    private void handleException( Throwable exception )
+    {
+        if( exception != null )
+        {
+            exception.printStackTrace( OUT );
+        }
     }
 }

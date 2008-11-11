@@ -21,6 +21,7 @@ import org.qi4j.composite.Concerns;
 import org.qi4j.composite.Mixins;
 import org.qi4j.composite.NoopMixin;
 import org.qi4j.property.Property;
+import java.io.Serializable;
 
 @Concerns( DebugConcern.class )
 @Mixins( NoopMixin.class )
@@ -33,14 +34,14 @@ public interface Debug
     int HIGH = 50;
     int HIGHHIGH = 100;
 
-    Property<Integer> debugLevel();
+    Integer debugLevel();
 
     void debug( int level, String message );
 
-    void debug( int level, String message, Object param1 );
+    void debug( int level, String message, Serializable param1 );
 
-    void debug( int level, String message, Object param1, Object param2 );
+    void debug( int level, String message, Serializable param1, Serializable param2 );
 
-    void debug( int level, String message, Object... params );
+    void debug( int level, String message, Serializable... params );
 
 }

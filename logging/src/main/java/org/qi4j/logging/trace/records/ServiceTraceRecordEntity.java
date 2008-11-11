@@ -18,7 +18,9 @@
 package org.qi4j.logging.trace.records;
 
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.property.Property;
 
-public interface ServiceTraceRecordEntity extends ServiceTraceRecord, EntityComposite
+public interface ServiceTraceRecordEntity extends TraceRecord, EntityComposite
 {
+    Property<String> source();
 }

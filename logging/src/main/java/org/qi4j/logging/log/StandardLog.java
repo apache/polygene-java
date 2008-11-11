@@ -19,16 +19,17 @@ package org.qi4j.logging.log;
 
 import org.qi4j.composite.Concerns;
 import org.qi4j.logging.log.LogType;
+import java.io.Serializable;
 
 @Concerns( StandardLogConcern.class )
 public interface StandardLog
 {
     void log( LogType type, String category, String message );
 
-    void log( LogType type, String category, String message, Object param1 );
+    void log( LogType type, String category, String message, Serializable param1 );
 
-    void log( LogType type, String category, String message, Object param1, Object param2 );
+    void log( LogType type, String category, String message, Serializable param1, Serializable param2 );
 
-    void log( LogType type, String category, String message, Object... params );
+    void log( LogType type, String category, String message, Serializable... params );
 
 }

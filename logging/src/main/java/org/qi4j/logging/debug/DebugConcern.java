@@ -18,6 +18,7 @@
 package org.qi4j.logging.debug;
 
 import java.lang.reflect.Method;
+import java.io.Serializable;
 import org.qi4j.Qi4j;
 import org.qi4j.logging.debug.service.DebuggingService;
 import org.qi4j.composite.Composite;
@@ -30,40 +31,17 @@ import org.qi4j.property.Property;
 public final class DebugConcern
     implements Debug
 {
-    private static final Property<Integer> OFF_PROPERTY;
-
     @Structure private Qi4j api;
     @Service( optional = true ) private DebuggingService loggingService;
     @This private Composite composite;
 
-    static
-    {
-        Method method;
-        try
-        {
-            method = DebugConcern.class.getMethod( "debugLevel" );
-        }
-        catch( NoSuchMethodException e )
-        {
-            // Can not happen.
-            throw new InternalError();
-        }
-        OFF_PROPERTY = new ComputedPropertyInstance<Integer>( method )
-        {
-            public Integer get()
-            {
-                return OFF;
-            }
-        };
-    }
-
-    public Property<Integer> debugLevel()
+    public Integer debugLevel()
     {
         if( loggingService != null )
         {
             return loggingService.debugLevel();
         }
-        return OFF_PROPERTY;
+        return OFF;
     }
 
     public void debug( int priority, String message )
@@ -72,43 +50,43 @@ public final class DebugConcern
         {
             return;
         }
-        if( priority >= loggingService.debugLevel().get() )
+        if( priority >= loggingService.debugLevel() )
         {
             loggingService.debug( api.dereference( composite ), message );
         }
     }
 
-    public void debug( int priority, String message, Object param1 )
+    public void debug( int priority, String message, Serializable param1 )
     {
         if( loggingService == null )
         {
             return;
         }
-        if( priority >= loggingService.debugLevel().get() )
+        if( priority >= loggingService.debugLevel() )
         {
             loggingService.debug( api.dereference( composite ), message, param1 );
         }
     }
 
-    public void debug( int priority, String message, Object param1, Object param2 )
+    public void debug( int priority, String message, Serializable param1, Serializable param2 )
     {
         if( loggingService == null )
         {
             return;
         }
-        if( priority >= loggingService.debugLevel().get() )
+        if( priority >= loggingService.debugLevel() )
         {
             loggingService.debug( api.dereference( composite ), message, param1, param2 );
         }
     }
 
-    public void debug( int priority, String message, Object... params )
+    public void debug( int priority, String message, Serializable... params )
     {
         if( loggingService == null )
         {
             return;
         }
-        if( priority >= loggingService.debugLevel().get() )
+        if( priority >= loggingService.debugLevel() )
         {
             loggingService.debug( api.dereference( composite ), message, params );
         }

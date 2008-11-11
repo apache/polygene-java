@@ -19,20 +19,18 @@
 package org.qi4j.logging.debug.service;
 
 import org.qi4j.composite.Composite;
-import org.qi4j.logging.Formatter;
 import org.qi4j.property.Property;
+import java.io.Serializable;
 
 public interface DebuggingService
 {
-    Property<Integer> debugLevel();
-
-    Property<Formatter> debugFormatter();
+    int debugLevel();
 
     void debug( Composite composite, String message );
 
-    void debug( Composite composite, String message, Object param1 );
+    void debug( Composite composite, String message, Serializable param1 );
 
-    void debug( Composite composite, String message, Object param1, Object param2 );
+    void debug( Composite composite, String message, Serializable param1, Serializable param2 );
 
-    void debug( Composite composite, String message, Object... params );
+    void debug( Composite composite, String message, Serializable... params );
 }

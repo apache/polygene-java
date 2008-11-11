@@ -29,25 +29,28 @@ import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkFactory;
 import org.qi4j.injection.scope.Structure;
+import org.qi4j.injection.scope.This;
 import org.qi4j.service.ServiceComposite;
-import org.qi4j.logging.trace.records.CompositeTraceRecord;
-import org.qi4j.logging.trace.records.EntityTraceRecord;
-import org.qi4j.logging.trace.records.ServiceTraceRecord;
+import org.qi4j.service.Configuration;
 import org.qi4j.logging.trace.records.TraceRecord;
+import org.qi4j.logging.trace.records.EntityTraceRecordEntity;
+import org.qi4j.logging.trace.records.ServiceTraceRecordEntity;
+import org.qi4j.logging.trace.records.CompositeTraceRecordEntity;
 
 public class TraceServiceMixin
     implements TraceService
 {
     @Structure private UnitOfWorkFactory unitOfWorkFactory;
-    private int traceLevel;
-    private int counter = 0;
+    @This private Configuration<TraceServiceConfiguration> configuration;
+    private int counter;
+    private Integer traceLevel;
 
     public int traceLevel()
     {
-        if( counter % 100 == 0 )
+        if( counter++ % 100 == 0 )
         {
             counter = 0;
-            traceLevel = 0;
+            traceLevel = configuration.configuration().traceLevel().get();
         }
         return traceLevel;
     }
@@ -57,7 +60,6 @@ public class TraceServiceMixin
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            System.out.println( "traceSuccess()" );
             createTraceRecord( uow, compositeType, object, method, args, entryTime, durationNano, null );
             uow.complete();
         }
@@ -96,28 +98,28 @@ public class TraceServiceMixin
             EntityComposite entity = (EntityComposite) object;
             String identity = entity.identity().get();
             EntityComposite source = (EntityComposite) uow.getReference( identity, entity.type() );
-            EntityBuilder<EntityTraceRecord> builder = uow.newEntityBuilder( EntityTraceRecord.class );
-            EntityTraceRecord state = builder.stateOfComposite();
+            EntityBuilder<EntityTraceRecordEntity> builder = uow.newEntityBuilder( EntityTraceRecordEntity.class );
+            EntityTraceRecordEntity state = builder.stateOfComposite();
             setStandardStuff( compositeType, method, args, entryTime, durationNano, state, exception );
             state.source().set( source );
-            EntityTraceRecord etr = builder.newInstance();  // Record is created.
+            EntityTraceRecordEntity etr = builder.newInstance();  // Record is created.
         }
         else if( object instanceof ServiceComposite )
         {
             ServiceComposite service = (ServiceComposite) object;
-            EntityBuilder<ServiceTraceRecord> builder = uow.newEntityBuilder( ServiceTraceRecord.class );
-            ServiceTraceRecord state = builder.stateOfComposite();
+            EntityBuilder<ServiceTraceRecordEntity> builder = uow.newEntityBuilder( ServiceTraceRecordEntity.class );
+            ServiceTraceRecordEntity state = builder.stateOfComposite();
             setStandardStuff( compositeType, method, args, entryTime, durationNano, state, exception );
-            state.source().set( service );
-            ServiceTraceRecord str = builder.newInstance();  // Record is created.
+            state.source().set( service.toString() );
+            ServiceTraceRecordEntity str = builder.newInstance();  // Record is created.
         }
         else
         {
-            EntityBuilder<CompositeTraceRecord> builder = uow.newEntityBuilder( CompositeTraceRecord.class );
-            CompositeTraceRecord state = builder.stateOfComposite();
+            EntityBuilder<CompositeTraceRecordEntity> builder = uow.newEntityBuilder( CompositeTraceRecordEntity.class );
+            CompositeTraceRecordEntity state = builder.stateOfComposite();
             state.source().set( object );
             setStandardStuff( compositeType, method, args, entryTime, durationNano, state, exception );
-            CompositeTraceRecord str = builder.newInstance();  // Record is created.
+            CompositeTraceRecordEntity ctr = builder.newInstance();  // Record is created.
         }
     }
 
@@ -139,9 +141,8 @@ public class TraceServiceMixin
             return new ArrayList<String>( 0 );
         }
         List<String> result = new ArrayList<String>( args.length );
-        for( int i = 0; i < args.length; i++ )
+        for( Object arg : args )
         {
-            Object arg = args[ i ];
             if( arg == null )
             {
                 result.add( null );

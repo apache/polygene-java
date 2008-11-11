@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 Niclas Hedhman.
+ * Copyright 2008 Niclas Hedhman. All rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -15,14 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.logging.log.service;
 
-import org.qi4j.composite.Composite;
-import org.qi4j.logging.log.LogType;
-import org.qi4j.property.Property;
-import java.io.Serializable;
+package org.qi4j.logging.trace.service;
 
-public interface LoggingService
+import org.qi4j.composite.Mixins;
+import org.qi4j.composite.SideEffects;
+import org.qi4j.service.ServiceComposite;
+import org.qi4j.logging.trace.TraceOnConsoleSideEffect;
+import org.qi4j.logging.trace.service.TraceService;
+import org.qi4j.logging.trace.service.TraceServiceMixin;
+
+@SideEffects( TraceOnConsoleSideEffect.class )
+@Mixins( TraceServiceMixin.class )
+public interface StandardTraceServiceComposite extends TraceService, ServiceComposite
 {
-    void log( LogType type, Composite composite, String category, String message, Serializable... params );
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008 Niclas Hedhman. All rights Reserved.
+ * Copyright 2006 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -15,18 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
+package org.qi4j.logging.debug.records;
 
-package org.qi4j.logging.trace.assemblies;
+import org.qi4j.property.Property;
+import org.qi4j.composite.Optional;
+import java.io.Serializable;
+import java.util.List;
 
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.SideEffects;
-import org.qi4j.service.ServiceComposite;
-import org.qi4j.logging.trace.TraceOnConsoleSideEffect;
-import org.qi4j.logging.trace.service.TraceService;
-import org.qi4j.logging.trace.service.TraceServiceMixin;
-
-@SideEffects( TraceOnConsoleSideEffect.class )
-@Mixins( TraceServiceMixin.class )
-public interface StandardTraceServiceComposite extends TraceService, ServiceComposite
+public interface DebugRecord
 {
+    Property<String> message();
+
+    Property<String> compositeTypeName();
+
+    Property<String> threadName();
+
+    Property<Long> time();
+
+    Property<List<Serializable>> parameters();
 }

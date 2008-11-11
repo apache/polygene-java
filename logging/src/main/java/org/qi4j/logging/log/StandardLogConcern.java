@@ -25,6 +25,7 @@ import org.qi4j.injection.scope.Structure;
 import org.qi4j.injection.scope.This;
 import org.qi4j.logging.log.service.LoggingService;
 import org.qi4j.logging.log.LogType;
+import java.io.Serializable;
 
 public class StandardLogConcern
     implements StandardLog
@@ -42,7 +43,7 @@ public class StandardLogConcern
         loggingService.log( type, api.dereference( composite ), category, message );
     }
 
-    public void log( LogType type, String category, String message, Object param1 )
+    public void log( LogType type, String category, String message, Serializable param1 )
     {
         if( loggingService == null )
         {
@@ -51,7 +52,7 @@ public class StandardLogConcern
         loggingService.log( type, api.dereference( composite ), category, message, param1 );
     }
 
-    public void log( LogType type, String category, String message, Object param1, Object param2 )
+    public void log( LogType type, String category, String message, Serializable param1, Serializable param2 )
     {
         if( loggingService == null )
         {
@@ -60,7 +61,7 @@ public class StandardLogConcern
         loggingService.log( type, api.dereference( composite ), category, message, param1, param2 );
     }
 
-    public void log( LogType type, String category, String message, Object... params )
+    public void log( LogType type, String category, String message, Serializable... params )
     {
         if( loggingService == null )
         {
