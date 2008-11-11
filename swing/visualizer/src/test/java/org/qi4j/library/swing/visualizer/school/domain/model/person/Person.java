@@ -24,6 +24,8 @@ import org.qi4j.library.swing.visualizer.school.domain.model.person.Role;
  */
 public interface Person
 {
+    PersonId personId();
+
     String firstName();
 
     String lastName();

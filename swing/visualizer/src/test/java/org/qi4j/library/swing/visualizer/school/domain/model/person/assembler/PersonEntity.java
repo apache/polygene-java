@@ -18,12 +18,15 @@ package org.qi4j.library.swing.visualizer.school.domain.model.person.assembler;
 
 import org.qi4j.composite.Mixins;
 import org.qi4j.entity.EntityComposite;
+import org.qi4j.entity.Identity;
 import org.qi4j.injection.scope.This;
 import org.qi4j.library.swing.visualizer.school.domain.model.person.Person;
+import org.qi4j.library.swing.visualizer.school.domain.model.person.PersonId;
 import org.qi4j.library.swing.visualizer.school.domain.model.person.Role;
 
 /**
  * @author edward.yakop@gmail.com
+ * @since 0.5
  */
 @Mixins( PersonEntity.PersonMixin.class )
 interface PersonEntity extends Person, EntityComposite
@@ -32,6 +35,18 @@ interface PersonEntity extends Person, EntityComposite
         implements Person
     {
         @This private PersonState state;
+        private PersonId personId;
+
+        public PersonMixin( @This Identity identity )
+        {
+            String personIdString = identity.identity().get();
+            personId = new PersonId( personIdString );
+        }
+
+        public final PersonId personId()
+        {
+            return personId;
+        }
 
         public final String firstName()
         {

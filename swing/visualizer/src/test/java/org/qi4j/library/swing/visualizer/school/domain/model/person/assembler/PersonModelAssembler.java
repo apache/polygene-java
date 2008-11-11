@@ -28,11 +28,15 @@ import static org.qi4j.structure.Visibility.layer;
 public final class PersonModelAssembler
     implements Assembler
 {
-    public void assemble( ModuleAssembly aModule )
+    public final void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
         aModule.addEntities(
             PersonEntity.class
         ).visibleIn( layer );
+
+        aModule.addServices( SamplePersonBootstrapService.class )
+            .visibleIn( layer )
+            .instantiateOnStartup();
     }
 }
