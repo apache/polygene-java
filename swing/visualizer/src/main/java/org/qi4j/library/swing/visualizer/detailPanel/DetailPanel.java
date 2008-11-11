@@ -24,6 +24,7 @@ import javax.swing.JSplitPane;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ServiceDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.CompositeDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.CompositeMethodDescriptorForm;
+import org.qi4j.library.swing.visualizer.detailPanel.internal.form.entity.EntityDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.layer.LayerDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.module.ModuleDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.object.ConstructorDescriptorForm;
@@ -134,12 +135,23 @@ public final class DetailPanel
 
     public final void onEntitySelected( EntityDetailDescriptor aDescriptor )
     {
-        updateDetailScrollPanelWithCompositeForm( aDescriptor );
+        EntityDescriptorForm entityDescriptorForm;
+        if( !( descriptorForm instanceof EntityDescriptorForm ) )
+        {
+            entityDescriptorForm = new EntityDescriptorForm();
+            detailScrollPanel.setViewportView( entityDescriptorForm.$$$getRootComponent$$$() );
+        }
+        else
+        {
+            entityDescriptorForm = (EntityDescriptorForm) descriptorForm;
+        }
+        descriptorForm = entityDescriptorForm;
+        entityDescriptorForm.updateModel( aDescriptor );
         treePanel.onEntitySelected( aDescriptor );
     }
 
     @SuppressWarnings( "unchecked" )
-    private void updateDetailScrollPanelWithCompositeForm( CompositeDetailDescriptor aDescriptor )
+    public final void onCompositeSelected( CompositeDetailDescriptor aDescriptor )
     {
         CompositeDescriptorForm compositeForm;
         if( !( descriptorForm instanceof CompositeDescriptorForm ) )
@@ -153,11 +165,6 @@ public final class DetailPanel
         }
         descriptorForm = compositeForm;
         compositeForm.updateModel( aDescriptor );
-    }
-
-    public final void onCompositeSelected( CompositeDetailDescriptor aDescriptor )
-    {
-        updateDetailScrollPanelWithCompositeForm( aDescriptor );
         treePanel.onCompositeSelected( aDescriptor );
     }
 
