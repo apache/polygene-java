@@ -22,6 +22,7 @@ package org.qi4j.library.swing.visualizer.model;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.service.ServiceComposite;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
 import org.qi4j.spi.composite.ConstraintDescriptor;
@@ -172,6 +173,10 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public final void visit( CompositeDescriptor aDescriptor )
         {
+
+            if ( ServiceComposite.class.isAssignableFrom( aDescriptor.type()))
+                return; // Skip services
+
             currCompositeDescriptor = new CompositeDetailDescriptor<CompositeDescriptor>( aDescriptor );
             currModuleDescriptor.addComposite( currCompositeDescriptor );
         }
