@@ -31,12 +31,12 @@ import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.Coll
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ListListModel;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ListListModel.EMPTY_MODEL;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.context.Qi4jContextModel;
-import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.LayerDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.ModuleDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.ObjectDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.structure.Visibility;
 import static org.qi4j.structure.Visibility.application;
 import static org.qi4j.structure.Visibility.layer;

@@ -23,7 +23,7 @@ import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.library.swing.visualizer.assembler.VisualizerAssembler;
+import org.qi4j.library.swing.visualizer.assembly.VisualizerAssembler;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.structure.Application;
 import org.qi4j.structure.Module;
@@ -48,7 +48,7 @@ public final class VisualizerLauncher
 
         Application application = bootstrapVisualizer();
         Qi4jApplicationVisualizer visualizer = createVisualizer( application );
-        
+
         if( anApplicationToShow == null )
         {
             anApplicationToShow = application;

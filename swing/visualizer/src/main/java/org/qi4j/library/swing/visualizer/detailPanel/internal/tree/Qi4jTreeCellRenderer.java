@@ -23,9 +23,9 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.common.ToStringUtils.objectToString;
-import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.ApplicationDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.LayerDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.ModuleDetailDescriptor;
 
 /**
  * @author edward.yakop@gmail.com

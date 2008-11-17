@@ -45,17 +45,17 @@ import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeMo
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder.NODE_NAME_OBJECTS;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.tree.TreeModelBuilder.NODE_NAME_SERVICES;
 import org.qi4j.library.swing.visualizer.listener.SelectionListener;
-import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.CompositeMethodDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ConstructorDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.InjectedFieldDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.ApplicationDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.CompositeMethodDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.ConstructorDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.InjectedFieldDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.LayerDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.MixinDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.ModuleDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.ObjectDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.ServiceDetailDescriptor;
 
 /**
  * @author edward.yakop@gmail.com

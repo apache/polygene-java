@@ -32,7 +32,7 @@ import javax.swing.InputMap;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.listener.SelectionListener;
-import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.ApplicationDetailDescriptor;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;
 import org.qi4j.library.swing.visualizer.overview.internal.common.NodeType;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.APPLICATION;

@@ -19,9 +19,9 @@ package org.qi4j.library.swing.visualizer.detailPanel.internal.common;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ObjectDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.ObjectDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.structure.Visibility;
 
 /**

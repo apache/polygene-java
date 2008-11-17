@@ -25,14 +25,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.qi4j.injection.scope.Structure;
-import org.qi4j.library.swing.visualizer.model.EntityDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityType;
 
 /**
  * @author edward.yakop@gmail.com
- * @see org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor
+ * @see org.qi4j.library.swing.visualizer.model.descriptor.CompositeDetailDescriptor
  * @since 0.5
  */
 public final class EntityDescriptorForm

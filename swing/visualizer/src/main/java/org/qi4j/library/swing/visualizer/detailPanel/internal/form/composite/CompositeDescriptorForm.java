@@ -23,12 +23,12 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
- * @see org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor
+ * @see org.qi4j.library.swing.visualizer.model.descriptor.CompositeDetailDescriptor
  * @since 0.5
  */
 public final class CompositeDescriptorForm

@@ -146,7 +146,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="com.jgoodies:looks:2.2.0">
         <CLASSES>
           <root url="jar://$M2_REPO$/com/jgoodies/looks/2.2.0/looks-2.2.0.jar!/" />

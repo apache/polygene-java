@@ -17,7 +17,7 @@
 package org.qi4j.library.swing.visualizer.overview.internal.visualization;
 
 import java.util.Iterator;
-import org.qi4j.library.swing.visualizer.model.ApplicationDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.ApplicationDetailDescriptor;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_NAME;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.EDGE_HIDDEN;

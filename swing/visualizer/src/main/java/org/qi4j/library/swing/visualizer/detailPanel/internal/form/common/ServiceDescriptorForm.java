@@ -27,13 +27,13 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
-import org.qi4j.library.swing.visualizer.model.LayerDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.LayerDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.service.ServiceDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
- * @see org.qi4j.library.swing.visualizer.model.ServiceDetailDescriptor
+ * @see org.qi4j.library.swing.visualizer.model.descriptor.ServiceDetailDescriptor
  * @since 0.5
  */
 public final class ServiceDescriptorForm

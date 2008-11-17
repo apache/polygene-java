@@ -23,8 +23,8 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.MixinDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.MixinDetailDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.MixinDescriptor;
 

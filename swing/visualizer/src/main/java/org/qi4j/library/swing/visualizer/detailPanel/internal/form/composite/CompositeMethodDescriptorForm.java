@@ -27,8 +27,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.common.ToStringUtils;
-import org.qi4j.library.swing.visualizer.model.CompositeDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.CompositeMethodDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.CompositeDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.CompositeMethodDetailDescriptor;
 
 /**
  * TODO: Use prefuse to draw invocation stack per method

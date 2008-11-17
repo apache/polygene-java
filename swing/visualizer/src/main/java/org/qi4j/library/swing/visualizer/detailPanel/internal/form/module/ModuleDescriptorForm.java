@@ -30,13 +30,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.context.Qi4jContextForm;
-import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
+import org.qi4j.library.swing.visualizer.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.object.ObjectBuilder;
 import org.qi4j.object.ObjectBuilderFactory;
 
 /**
  * @author edward.yakop@gmail.com
- * @see org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor
+ * @see org.qi4j.library.swing.visualizer.model.descriptor.ModuleDetailDescriptor
  * @since 0.5
  */
 public final class ModuleDescriptorForm
