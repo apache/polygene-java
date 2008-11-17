@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.qi4j.library.swing.visualizer.ApplicationGraph">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.qi4j.library.swing.visualizer.Qi4jApplicationVisualizer">
   <grid id="27dc6" binding="form" default-binding="true" layout-manager="FormLayout">
     <rowspec value="fill:p:grow"/>
     <colspec value="fill:p:grow"/>

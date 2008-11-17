@@ -19,11 +19,10 @@ package org.qi4j.library.swing.visualizer.assembler;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.library.swing.visualizer.ApplicationGraph;
+import org.qi4j.library.swing.visualizer.Qi4jApplicationVisualizer;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.assembler.DetailPanelAssembler;
 import org.qi4j.library.swing.visualizer.overview.assembler.OverviewAssembler;
 import static org.qi4j.structure.Visibility.layer;
-import static org.qi4j.structure.Visibility.module;
 
 /**
  * @author edward.yakop@gmail.com
@@ -35,14 +34,10 @@ public final class VisualizerAssembler
     public final void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
-        aModule.addObjects( ApplicationGraph.class )
+        aModule.addObjects( Qi4jApplicationVisualizer.class )
             .visibleIn( layer );
 
         aModule.addAssembler( new DetailPanelAssembler() );
         aModule.addAssembler( new OverviewAssembler() );
-
-        aModule.addServices( VisualizerService.class )
-            .visibleIn( module )
-            .instantiateOnStartup();
     }
 }

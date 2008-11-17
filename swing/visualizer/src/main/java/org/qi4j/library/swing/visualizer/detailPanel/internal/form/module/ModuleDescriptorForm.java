@@ -31,8 +31,8 @@ import javax.swing.event.ChangeListener;
 import org.qi4j.injection.scope.Structure;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.context.Qi4jContextForm;
 import org.qi4j.library.swing.visualizer.model.ModuleDetailDescriptor;
-import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.object.ObjectBuilder;
+import org.qi4j.object.ObjectBuilderFactory;
 
 /**
  * @author edward.yakop@gmail.com

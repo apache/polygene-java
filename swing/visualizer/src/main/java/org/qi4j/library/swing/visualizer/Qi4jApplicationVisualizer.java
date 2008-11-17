@@ -38,7 +38,7 @@ import org.qi4j.structure.Application;
  * @author edward.yakop@gmail.com
  * @since 0.4
  */
-public class ApplicationGraph
+public class Qi4jApplicationVisualizer
 {
     // TODO: Revert back to pre show( Application )
     @Structure private Application application;
@@ -51,22 +51,22 @@ public class ApplicationGraph
     private JPanel form;
     private JFrame frame;
 
-    public ApplicationGraph( @Structure ObjectBuilderFactory anOBF )
+    public Qi4jApplicationVisualizer( @Structure ObjectBuilderFactory anOBF )
     {
         obf = anOBF;
         $$$setupUI$$$();
     }
 
-    public final void show()
+    public final void show( Application anApplicationToShow )
     {
-        ApplicationSPI applicationSPI = (ApplicationSPI) application;
+        ApplicationSPI applicationSPI = (ApplicationSPI) anApplicationToShow;
         ApplicationDetailDescriptor appDescriptor =
             createApplicationDetailDescriptor( applicationSPI );
 
         if( frame == null )
         {
-            String applicationName = application.name();
-            frame = new JFrame( "Application [" + applicationName + "] Graph" );
+            String applicationName = anApplicationToShow.name();
+            frame = new JFrame( "Application [" + applicationName + "]" );
             frame.add( form );
 
             frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );

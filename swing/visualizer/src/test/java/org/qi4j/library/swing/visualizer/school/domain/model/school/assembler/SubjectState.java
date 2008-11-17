@@ -31,5 +31,6 @@ interface SubjectState
     Property<String> description();
 
     Property<String> schoolId();
+
     Association<School> school();
 }

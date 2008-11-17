@@ -16,8 +16,6 @@
 */
 package org.qi4j.library.swing.visualizer.school.domain.model.person;
 
-import org.qi4j.library.swing.visualizer.school.domain.model.person.Role;
-
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5

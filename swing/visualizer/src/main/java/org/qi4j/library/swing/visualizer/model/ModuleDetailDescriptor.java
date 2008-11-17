@@ -20,7 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.spi.structure.ModuleDescriptor;
-import org.qi4j.service.ServiceComposite;
 
 /**
  * @author edward.yakop@gmail.com

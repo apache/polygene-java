@@ -26,7 +26,7 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.association.Association;
 import org.qi4j.entity.association.AssociationMixin;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
-import org.qi4j.library.swing.visualizer.assembler.VisualizerAssembler;
+import org.qi4j.library.swing.visualizer.VisualizerLauncher;
 import org.qi4j.property.Property;
 import org.qi4j.structure.Application;
 import static org.qi4j.structure.Visibility.application;
@@ -47,7 +47,7 @@ public class ApplicationGraphTester
         assembly.setName( "My Qi4j App" );
 
         LayerAssembly infrastructureLayer = assembly.newLayerAssembly( "Infrastructure" );
-        ModuleAssembly database = infrastructureLayer.newModuleAssembly( "Database" );
+        infrastructureLayer.newModuleAssembly( "Database" );
 
         LayerAssembly domainLayer = assembly.newLayerAssembly( "Domain" );
 
@@ -57,11 +57,7 @@ public class ApplicationGraphTester
         someDomain.addComposites( ADomainComposite.class, BDomainComposite.class );
 
         LayerAssembly guiLayer = assembly.newLayerAssembly( "UI" );
-
-        ModuleAssembly swingModule = guiLayer.newModuleAssembly( "Swing" );
-        swingModule.addAssembler( new VisualizerAssembler() );
-
-        ModuleAssembly plugin1 = guiLayer.newModuleAssembly( "Plugin 1" );
+        guiLayer.newModuleAssembly( "Plugin 1" );
 
         ModuleAssembly plugin2 = guiLayer.newModuleAssembly( "Plugin 2" );
         plugin2.addComposites( UIComposite.class );
@@ -72,7 +68,11 @@ public class ApplicationGraphTester
 
 //        addMoreLayers( assembly );
 
-        Application app = qi4j.newApplication( assembly );
+        Application application = qi4j.newApplication( assembly );
+        application.activate();
+
+        VisualizerLauncher visualizerLauncher = new VisualizerLauncher();
+        visualizerLauncher.visualize( application );
     }
 
     private static void addMoreLayers( ApplicationAssembly assembly )
