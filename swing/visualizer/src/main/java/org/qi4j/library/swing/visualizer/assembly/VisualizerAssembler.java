@@ -31,6 +31,18 @@ import static org.qi4j.structure.Visibility.layer;
 public final class VisualizerAssembler
     implements Assembler
 {
+    private final boolean addVisualizerService;
+
+    public VisualizerAssembler()
+    {
+        this( true );
+    }
+
+    public VisualizerAssembler( boolean addVisualizerService )
+    {
+        this.addVisualizerService = addVisualizerService;
+    }
+
     public final void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
@@ -39,5 +51,11 @@ public final class VisualizerAssembler
 
         aModule.addAssembler( new DetailPanelAssembler() );
         aModule.addAssembler( new OverviewAssembler() );
+
+        if( addVisualizerService )
+        {
+            aModule.addServices( VisualizerService.class )
+                .instantiateOnStartup();
+        }
     }
 }

@@ -173,11 +173,11 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public final void visit( CompositeDescriptor aDescriptor )
         {
-
-            if( ServiceComposite.class.isAssignableFrom( aDescriptor.type() ) )
-            {
-                return; // Skip services
-            }
+            // Commented out by efy: To prevent NPE
+//            if( ServiceComposite.class.isAssignableFrom( aDescriptor.type() ) )
+//            {
+//                return; // Skip services
+//            }
 
             currCompositeDescriptor = new CompositeDetailDescriptor<CompositeDescriptor>( aDescriptor );
             currModuleDescriptor.addComposite( currCompositeDescriptor );

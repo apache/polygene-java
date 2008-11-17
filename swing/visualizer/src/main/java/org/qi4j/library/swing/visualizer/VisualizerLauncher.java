@@ -65,7 +65,7 @@ public final class VisualizerLauncher
 
         LayerAssembly visualizerLayer = applicationAssembly.newLayerAssembly( LAYER_VISUALIZER );
         ModuleAssembly visualizerModule = visualizerLayer.newModuleAssembly( MODULE_VISUALIZER );
-        visualizerModule.addAssembler( new VisualizerAssembler() );
+        visualizerModule.addAssembler( new VisualizerAssembler( false ) );
 
         Application application = energy4Java.newApplication( applicationAssembly );
         application.activate();
