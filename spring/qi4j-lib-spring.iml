@@ -24,15 +24,15 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library" exported="">
-      <library name="org.springframework:spring-beans:2.5.5">
+      <library name="org.springframework:spring-beans:2.5.6">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/springframework/spring-beans/2.5.5/spring-beans-2.5.5.jar!/" />
+          <root url="jar://$M2_REPO$/org/springframework/spring-beans/2.5.6/spring-beans-2.5.6.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/springframework/spring-beans/2.5.5/spring-beans-2.5.5-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/springframework/spring-beans/2.5.6/spring-beans-2.5.6-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/springframework/spring-beans/2.5.5/spring-beans-2.5.5-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/springframework/spring-beans/2.5.6/spring-beans-2.5.6-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -102,15 +102,15 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.springframework:spring-core:2.5.5">
+      <library name="org.springframework:spring-core:2.5.6">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/springframework/spring-core/2.5.5/spring-core-2.5.5.jar!/" />
+          <root url="jar://$M2_REPO$/org/springframework/spring-core/2.5.6/spring-core-2.5.6.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/springframework/spring-core/2.5.5/spring-core-2.5.5-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/springframework/spring-core/2.5.6/spring-core-2.5.6-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/springframework/spring-core/2.5.5/spring-core-2.5.5-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/springframework/spring-core/2.5.6/spring-core-2.5.6-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -132,15 +132,15 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.springframework:spring-test:2.5.5">
+      <library name="org.springframework:spring-test:2.5.6">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/springframework/spring-test/2.5.5/spring-test-2.5.5.jar!/" />
+          <root url="jar://$M2_REPO$/org/springframework/spring-test/2.5.6/spring-test-2.5.6.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/springframework/spring-test/2.5.5/spring-test-2.5.5-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/springframework/spring-test/2.5.6/spring-test-2.5.6-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/springframework/spring-test/2.5.5/spring-test-2.5.5-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/springframework/spring-test/2.5.6/spring-test-2.5.6-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -158,15 +158,15 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.springframework:spring-context:2.5.5">
+      <library name="org.springframework:spring-context:2.5.6">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/springframework/spring-context/2.5.5/spring-context-2.5.5.jar!/" />
+          <root url="jar://$M2_REPO$/org/springframework/spring-context/2.5.6/spring-context-2.5.6.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/springframework/spring-context/2.5.5/spring-context-2.5.5-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/springframework/spring-context/2.5.6/spring-context-2.5.6-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/springframework/spring-context/2.5.5/spring-context-2.5.5-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/springframework/spring-context/2.5.6/spring-context-2.5.6-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

@@ -16,7 +16,7 @@
   <name>Qi4j Library - Spring integration</name>
 
   <properties>
-    <version.spring>2.5.5</version.spring>
+    <version.spring>2.5.6</version.spring>
   </properties>
 
   <dependencies>
