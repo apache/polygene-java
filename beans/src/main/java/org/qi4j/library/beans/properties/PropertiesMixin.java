@@ -32,10 +32,17 @@ import org.qi4j.composite.AppliesTo;
  * removeFoo = remove object from list named foo
  * fooIterator - return an iterator over the list of Foos
  */
-@AppliesTo( { Getters.class, Setters.class } )
-public class PropertiesMixin
-    implements InvocationHandler
+@AppliesTo( { Getters.class, Setters.class, Iterables.class } )
+public class PropertiesMixin implements InvocationHandler
 {
+    private static final PropertyHandler[] HANDLERS = new PropertyHandler[]{
+        new SetValue(),
+        new GetValue(),
+        new AddToList(),
+        new RemoveFromList(),
+        new GetIteratorFromList()
+    };
+
     // Attributes ----------------------------------------------------
     Map<String, Object> properties;
 
@@ -54,54 +61,152 @@ public class PropertiesMixin
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         String methodName = method.getName();
-        if( methodName.startsWith( "set" ) )
+        Object arg = GetFirstArg( args );
+        for( PropertyHandler handler : HANDLERS )
         {
-            // Setter
-            String name = "v:" + Introspector.decapitalize( methodName.substring( 3 ) );
-            Object value = args[ 0 ];
-            if( value == null )
+            if( handler.matches( methodName ) )
+            {
+                return handler.handle( properties, methodName, arg );
+            }
+        }
+        return null;
+    }
+
+    private Object GetFirstArg( Object[] args )
+    {
+        Object arg = null;
+        if( args != null )
+        {
+            arg = args[ 0 ];
+        }
+        return arg;
+    }
+
+    private interface PropertyHandler extends MethodNameFilter
+    {
+        Object handle( Map<String, Object> properties, String methodName, Object arg );
+    }
+
+    private static abstract class AbstractPropertyHandler implements PropertyHandler
+    {
+        private MethodNameFilter filter;
+
+        public AbstractPropertyHandler( MethodNameFilter filter )
+        {
+            this.filter = filter;
+        }
+
+        public boolean matches( String methodName )
+        {
+            return filter.matches( methodName );
+        }
+    }
+
+    private static abstract class PrefixBasedPropertyHandler extends AbstractPropertyHandler
+    {
+        private int prefixLength;
+
+        public PrefixBasedPropertyHandler( MethodNamePrefixAppliesToFilter filter )
+        {
+            super( filter );
+            String prefix = filter.getPrefix();
+            prefixLength = prefix.length();
+        }
+
+        protected String getPropertyName( String methodName )
+        {
+            return Introspector.decapitalize( methodName.substring( prefixLength ) );
+        }
+    }
+
+    private static final class GetValue extends PrefixBasedPropertyHandler
+    {
+        public GetValue()
+        {
+            super( Getters.GET );
+        }
+
+        public Object handle( Map<String, Object> properties, String methodName, Object arg )
+        {
+            String name = "v:" + getPropertyName( methodName );
+            return properties.get( name );
+        }
+    }
+
+    private static final class SetValue extends PrefixBasedPropertyHandler
+    {
+        public SetValue()
+        {
+            super( Setters.SET );
+        }
+
+        public Object handle( Map<String, Object> properties, String methodName, Object arg )
+        {
+            String name = "v:" + getPropertyName( methodName );
+            if( arg == null )
             {
                 properties.remove( name );
             }
             else
             {
-                properties.put( name, value );
+                properties.put( name, arg );
             }
             return null;
         }
-        else if( methodName.startsWith( "get" ) )
+    }
+
+    private static final class AddToList extends PrefixBasedPropertyHandler
+    {
+        public AddToList()
         {
-            // Getter
-            String name = "v:" + Introspector.decapitalize( methodName.substring( 3 ) );
-            return properties.get( name );
+            super( Setters.ADD );
         }
-        else if( methodName.startsWith( "add" ) )
+
+        public Object handle( Map<String, Object> properties, String methodName, Object arg )
         {
-            // Add to list
-            String name = "l:" + Introspector.decapitalize( methodName.substring( 3 ) );
+            String name = "l:" + getPropertyName( methodName );
             ArrayList<Object> list = (ArrayList<Object>) properties.get( name );
             if( list == null )
             {
                 list = new ArrayList<Object>();
                 properties.put( name, list );
             }
-            list.add( args[ 0 ] );
+            list.add( arg );
+            return null;
         }
-        else if( methodName.startsWith( "remove" ) )
+    }
+
+    private static final class RemoveFromList extends PrefixBasedPropertyHandler
+    {
+        public RemoveFromList()
         {
-            // Remove from list
-            String name = "l:" + Introspector.decapitalize( methodName.substring( 6 ) );
+            super( Setters.REMOVE );
+        }
+
+        public Object handle( Map<String, Object> properties, String methodName, Object arg )
+        {
+            String name = "l:" + getPropertyName( methodName );
             ArrayList<Object> list = (ArrayList<Object>) properties.get( name );
             if( list != null )
             {
-                list.remove( args[ 0 ] );
+                list.remove( arg );
                 if( list.size() == 0 )
                 {
                     properties.remove( name );
                 }
             }
+            return null;
         }
-        else if( methodName.endsWith( "Iterator" ) || "iterator".equals( methodName ) )
+    }
+
+    private static final class GetIteratorFromList extends AbstractPropertyHandler
+    {
+        public GetIteratorFromList()
+        {
+            super( new Iterables() );
+        }
+
+        public Object handle( Map<String, Object> properties, String methodName, Object arg )
         {
             String name = "l:" + Introspector.decapitalize( methodName.substring( 0, methodName.length() - 8 ) );
             ArrayList<Object> list = (ArrayList<Object>) properties.get( name );
@@ -109,23 +214,25 @@ public class PropertiesMixin
             {
                 return list.iterator();
             }
-            return new Iterator()
-            {
-                public boolean hasNext()
-                {
-                    return false;
-                }
-
-                public Object next()
-                {
-                    return null;
-                }
-
-                public void remove()
-                {
-                }
-            };
+            return new DummyIterator();
         }
-        return null;
+
+        private static final class DummyIterator implements Iterator
+        {
+
+            public boolean hasNext()
+            {
+                return false;
+            }
+
+            public Object next()
+            {
+                return null;
+            }
+
+            public void remove()
+            {
+            }
+        }
     }
 }
