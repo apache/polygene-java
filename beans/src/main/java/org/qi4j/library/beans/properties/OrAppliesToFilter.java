@@ -12,10 +12,11 @@
 */
 package org.qi4j.library.beans.properties;
 
-import org.qi4j.composite.AppliesToFilter;
 import java.lang.reflect.Method;
+import org.qi4j.composite.AppliesToFilter;
 
-public final class OrAppliesToFilter implements AppliesToFilter
+public final class OrAppliesToFilter
+    implements AppliesToFilter
 {
     private final AppliesToFilter[] filters;
 
@@ -24,15 +25,15 @@ public final class OrAppliesToFilter implements AppliesToFilter
         this.filters = filters;
     }
 
-    public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
+    public final boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
     {
         for( AppliesToFilter filter : filters )
         {
-            if( !filter.appliesTo( method, mixin, compositeType, fragmentClass ) )
+            if( filter.appliesTo( method, mixin, compositeType, fragmentClass ) )
             {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 }
