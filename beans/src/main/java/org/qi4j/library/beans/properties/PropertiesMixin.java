@@ -37,7 +37,9 @@ public class PropertiesMixin implements InvocationHandler
 {
     private static final PropertyHandler[] HANDLERS = new PropertyHandler[]{
         new SetValue(),
-        new GetValue(),
+        new GetValue( Getters.GET ),
+        new GetValue( Getters.IS ),
+        new GetValue( Getters.HAS ),
         new AddToList(),
         new RemoveFromList(),
         new GetIteratorFromList()
@@ -121,9 +123,9 @@ public class PropertiesMixin implements InvocationHandler
 
     private static final class GetValue extends PrefixBasedPropertyHandler
     {
-        public GetValue()
+        public GetValue( MethodNamePrefixAppliesToFilter filter )
         {
-            super( Getters.GET );
+            super( filter );
         }
 
         public Object handle( Map<String, Object> properties, String methodName, Object arg )

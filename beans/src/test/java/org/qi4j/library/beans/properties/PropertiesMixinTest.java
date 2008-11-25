@@ -12,7 +12,6 @@
 */
 package org.qi4j.library.beans.properties;
 
-import java.lang.reflect.Proxy;
 import java.util.Iterator;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -26,7 +25,6 @@ import org.qi4j.composite.CompositeBuilder;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.entity.memory.MemoryEntityStoreService;
 import static junit.framework.Assert.assertFalse;
 
 public class PropertiesMixinTest extends AbstractQi4jTest
@@ -173,6 +171,20 @@ public class PropertiesMixinTest extends AbstractQi4jTest
         assertFalse( iterator.hasNext() );
     }
 
+    @Test
+    public void setValidAndIsValid()
+    {
+        m_proxy.setValid( true );
+        assertTrue( m_proxy.isValid() );
+    }
+
+    @Test
+    public void setTestedAndHasTested()
+    {
+        m_proxy.setTested( true );
+        assertTrue( m_proxy.hasTested() );
+    }
+
     @Mixins( PropertiesMixin.class )
     public static interface SampleJavaBeanComposite extends SampleJavaBean, Composite
     {
@@ -205,6 +217,14 @@ public class PropertiesMixinTest extends AbstractQi4jTest
         public void remove( String value );
 
         public Iterator<String> iterator();
+
+        public boolean isValid();
+
+        public void setValid( boolean value );
+
+        public boolean hasTested();
+
+        public void setTested( boolean value );
     }
 
 }
