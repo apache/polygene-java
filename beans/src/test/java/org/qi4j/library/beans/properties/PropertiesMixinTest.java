@@ -20,18 +20,31 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.composite.Composite;
+import org.qi4j.composite.Mixins;
+import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.entity.memory.MemoryEntityStoreService;
 import static junit.framework.Assert.assertFalse;
 
-public class PropertiesMixinTest
+public class PropertiesMixinTest extends AbstractQi4jTest
 {
-    private PropertiesMixin m_underTest;
-    private Value m_proxy;
+    private SampleJavaBean m_proxy;
 
-    @Before
-    public void setUp() throws NoSuchMethodException
+    public void assemble( ModuleAssembly aModule ) throws AssemblyException
     {
-        m_underTest = new PropertiesMixin();
-        m_proxy = (Value) Proxy.newProxyInstance( Value.class.getClassLoader(), new Class[]{ Value.class }, m_underTest );
+        aModule.addComposites( SampleJavaBeanComposite.class );
+    }
+
+    @Override
+    @Before
+    public void setUp() throws Exception
+    {
+        super.setUp();
+        CompositeBuilder<SampleJavaBeanComposite> builder = compositeBuilderFactory.newCompositeBuilder( SampleJavaBeanComposite.class );
+        m_proxy = builder.newInstance();
     }
 
     @Test
@@ -157,10 +170,15 @@ public class PropertiesMixinTest
         m_proxy.setFoo( "aValue" );
         Iterator<String> iterator = m_proxy.fooIterator();
         assertNotNull( "iterator not supposed to be null", iterator );
-        assertFalse(  iterator.hasNext() );
+        assertFalse( iterator.hasNext() );
     }
 
-    public static interface Value
+    @Mixins( PropertiesMixin.class )
+    public static interface SampleJavaBeanComposite extends SampleJavaBean, Composite
+    {
+    }
+
+    public static interface SampleJavaBean
     {
         public String getFoo();
 
