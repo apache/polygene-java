@@ -14,8 +14,9 @@ package org.qi4j.library.beans.properties;
 
 import org.qi4j.composite.AppliesToFilter;
 import java.lang.reflect.Method;
+import java.beans.Introspector;
 
-public class Iterables implements MethodNameFilter, AppliesToFilter
+public class Iterables implements PropertyNameExtractor, AppliesToFilter
 {
     public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
     {
@@ -25,5 +26,14 @@ public class Iterables implements MethodNameFilter, AppliesToFilter
     public boolean matches( String methodName )
     {
         return methodName.endsWith( "Iterator" ) || "iterator".equals( methodName );
+    }
+
+    public String extractPropertyName( String methodName )
+    {
+        if( !matches( methodName ) )
+        {
+            return null;
+        }
+        return Introspector.decapitalize( methodName.substring( 0, methodName.length() - 8 ) );
     }
 }

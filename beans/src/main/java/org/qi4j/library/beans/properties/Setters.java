@@ -8,9 +8,9 @@ import org.qi4j.composite.AppliesToFilter;
  */
 public class Setters implements AppliesToFilter
 {
-    public static final MethodNamePrefixAppliesToFilter SET = new MethodNamePrefixAppliesToFilter( "set" );
-    public static final MethodNamePrefixAppliesToFilter ADD = new MethodNamePrefixAppliesToFilter( "add" );
-    public static final MethodNamePrefixAppliesToFilter REMOVE = new MethodNamePrefixAppliesToFilter( "remove" );
+    public static final MethodPrefixFilter SET = new MethodPrefixFilter( "set" );
+    public static final MethodPrefixFilter ADD = new MethodPrefixFilter( "add" );
+    public static final MethodPrefixFilter REMOVE = new MethodPrefixFilter( "remove" );
     public static final AppliesToFilter SETTERS = new OrAppliesToFilter( SET, ADD, REMOVE );
 
     public boolean appliesTo( Method method, Class mixin, Class compositeType, Class modelClass )

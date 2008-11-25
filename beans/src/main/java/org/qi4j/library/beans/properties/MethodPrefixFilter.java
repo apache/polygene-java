@@ -14,19 +14,15 @@ package org.qi4j.library.beans.properties;
 
 import org.qi4j.composite.AppliesToFilter;
 import java.lang.reflect.Method;
+import java.beans.Introspector;
 
-public class MethodNamePrefixAppliesToFilter implements MethodNameFilter, AppliesToFilter
+public class MethodPrefixFilter implements PropertyNameExtractor, AppliesToFilter
 {
     private String prefix;
 
-    public MethodNamePrefixAppliesToFilter( String prefix )
+    public MethodPrefixFilter( String prefix )
     {
         this.prefix = prefix;
-    }
-
-    public String getPrefix()
-    {
-        return prefix;
     }
 
     public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
@@ -37,5 +33,14 @@ public class MethodNamePrefixAppliesToFilter implements MethodNameFilter, Applie
     public boolean matches( String methodName )
     {
         return methodName.startsWith( prefix );
+    }
+
+    public String extractPropertyName( String methodName )
+    {
+        if( !matches( methodName ) )
+        {
+            return null;
+        }
+        return Introspector.decapitalize( methodName.substring( prefix.length() ) );
     }
 }

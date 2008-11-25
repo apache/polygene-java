@@ -12,7 +12,7 @@
 */
 package org.qi4j.library.beans.properties;
 
-public interface MethodNameFilter
+public interface PropertyNameExtractor
 {
-    boolean matches( String methodName );
+    String extractPropertyName( String methodName );
 }
