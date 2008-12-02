@@ -18,8 +18,6 @@ package org.qi4j.library.spring.bootstrap;
 
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyException;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.springframework.beans.factory.FactoryBean;
 
 /**
  * Steps to export qi4j service:
@@ -45,14 +43,14 @@ import org.springframework.beans.factory.FactoryBean;
  * &lt;qi4j:bootstrap class="org.qi4j.library.spring.bootstrap.Qi4jTestBootstrap"/&gt
  * <br/>
  * &lt;bean id="commentServiceHolder" class="org.qi4j.library.spring.bootstrap.CommentServiceHolder"&gt
- *
+ * <p/>
  * &lt;constructor-arg ref="commentService"/&gt &lt;!-- Reference qi4j comment service --&gt
  * <br/>
  * &lt;/bean&gt;
  * </pre>
  * </li>
  * </ul>
- *
+ * <p/>
  * Look at org.qi4j.library.spring.bootstrap.Qi4jExportServiceTest for sample implementation.
  *
  * @author edward.yakop@gmail.com
@@ -60,19 +58,6 @@ import org.springframework.beans.factory.FactoryBean;
  */
 public abstract class Qi4jApplicationBootstrap
 {
-    private String layerName;
-    private String moduleName;
-
-    public Qi4jApplicationBootstrap( String aLayerName, String aModuleName )
-        throws IllegalArgumentException
-    {
-        validateNotNull( "aLayerName", aLayerName );
-        validateNotNull( "aModuleName", aModuleName );
-
-        layerName = aLayerName;
-        moduleName = aModuleName;
-    }
-
     /**
      * Assembles qi4j application.
      *
@@ -81,22 +66,4 @@ public abstract class Qi4jApplicationBootstrap
      */
     public abstract void assemble( ApplicationAssembly applicationAssembly )
         throws AssemblyException;
-
-    /**
-     * @return Qi4j layer that has {@link FactoryBean} qi4j services.
-     * @since 0.5
-     */
-    public final String layerName()
-    {
-        return layerName;
-    }
-
-    /**
-     * @return Qi4j module that has {@link FactoryBean} qi4j services.
-     * @since 0.5
-     */
-    public final String moduleName()
-    {
-        return moduleName;
-    }
 }

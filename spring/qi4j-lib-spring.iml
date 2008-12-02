@@ -7,7 +7,9 @@
           <option name="enableValidation" value="false" />
           <option name="reportErrorsAsWarnings" value="true" />
         </options>
-        <customNs />
+        <customNs>
+          <enable>http://www.qi4j.org/schema/qi4j/spring</enable>
+        </customNs>
       </configuration>
     </facet>
   </component>

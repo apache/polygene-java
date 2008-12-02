@@ -14,21 +14,17 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.spring.bootstrap.internal;
-
-import org.qi4j.library.spring.bootstrap.internal.application.Qi4jBootstrapBeanDefinitionParser;
-import org.qi4j.library.spring.bootstrap.internal.service.Qi4jServiceBeanDefinitionParser;
-import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
+package org.qi4j.library.spring.bootstrap;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public final class Qi4jNamespaceHandler extends NamespaceHandlerSupport
+public final class Constants
 {
-    public final void init()
+    public static final String BEAN_ID_QI4J_APPLICATION = "qi4jApplication";
+
+    private Constants()
     {
-        registerBeanDefinitionParser( "bootstrap", new Qi4jBootstrapBeanDefinitionParser() );
-        registerBeanDefinitionParser( "service", new Qi4jServiceBeanDefinitionParser() );
     }
 }

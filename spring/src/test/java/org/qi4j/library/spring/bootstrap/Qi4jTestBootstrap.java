@@ -20,7 +20,6 @@ import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.structure.Visibility;
 
 /**
  * @author edward.yakop@gmail.com
@@ -33,19 +32,12 @@ public final class Qi4jTestBootstrap extends Qi4jApplicationBootstrap
 
     static final String COMMENT_SERVICE_ID = "commentService";
 
-    public Qi4jTestBootstrap()
-    {
-        super( LAYER, MODULE );
-    }
-
     public final void assemble( ApplicationAssembly applicationAssembly )
         throws AssemblyException
     {
         LayerAssembly layerAssembly = applicationAssembly.newLayerAssembly( LAYER );
         ModuleAssembly moduleAssembly = layerAssembly.newModuleAssembly( MODULE );
-        moduleAssembly.addServices( CommentServiceComposite.class );
-        moduleAssembly.addServices( CommentFactoryBeanServiceComposite.class )
-            .identifiedBy( COMMENT_SERVICE_ID )
-            .visibleIn( Visibility.application );
+        moduleAssembly.addServices( CommentServiceComposite.class )
+            .identifiedBy( COMMENT_SERVICE_ID );
     }
 }

@@ -7,6 +7,7 @@
        http://www.qi4j.org/schema/qi4j/spring http://www.qi4j.org/schema/qi4j/spring/spring-0.5.xsd">
 
   <qi4j:bootstrap class="org.qi4j.library.spring.bootstrap.Qi4jTestBootstrap"/>
+  <qi4j:service id="commentService"/>
 
   <bean id="commentServiceHolder" class="org.qi4j.library.spring.bootstrap.CommentServiceHolder">
     <constructor-arg ref="commentService"/>

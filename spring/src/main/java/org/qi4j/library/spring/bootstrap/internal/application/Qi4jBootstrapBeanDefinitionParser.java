@@ -14,29 +14,26 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.spring.bootstrap.internal;
+package org.qi4j.library.spring.bootstrap.internal.application;
 
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
+import static org.qi4j.library.spring.bootstrap.Constants.*;
 import org.qi4j.library.spring.bootstrap.Qi4jApplicationBootstrap;
-import org.qi4j.service.ServiceFinder;
-import org.qi4j.service.ServiceReference;
 import org.qi4j.structure.Application;
-import org.qi4j.structure.Module;
 import org.springframework.beans.BeanInstantiationException;
-import static org.springframework.beans.BeanUtils.instantiateClass;
-import org.springframework.beans.factory.FactoryBean;
+import static org.springframework.beans.BeanUtils.*;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import static org.springframework.beans.factory.support.BeanDefinitionBuilder.rootBeanDefinition;
+import static org.springframework.beans.factory.support.BeanDefinitionBuilder.*;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.beans.factory.xml.XmlReaderContext;
-import static org.springframework.util.Assert.hasText;
-import org.springframework.util.ClassUtils;
+import static org.springframework.util.Assert.*;
+import static org.springframework.util.ClassUtils.*;
 import org.w3c.dom.Element;
 
 /**
@@ -53,14 +50,10 @@ public final class Qi4jBootstrapBeanDefinitionParser
     {
         Qi4jApplicationBootstrap bootstrap = createQi4jApplicationBootstrap( anElement, aParserContext );
         Application application = createQi4jApplication( anElement, aParserContext, bootstrap );
-        registerFactoryBeanServiceAsSpringBean( anElement, aParserContext, bootstrap, application );
-
-        AbstractBeanDefinition applicationFactoryBeanDefinition = createQi4jApplicationFactoryBean( application );
-        registerBeanWithGeneratedName( aParserContext, applicationFactoryBeanDefinition );
-
-        return applicationFactoryBeanDefinition;
+        AbstractBeanDefinition factoryBeanDefinition = createQi4jApplicationFactoryBeanDefinition( application );
+        registerBean( aParserContext, factoryBeanDefinition );
+        return factoryBeanDefinition;
     }
-
 
     private Qi4jApplicationBootstrap createQi4jApplicationBootstrap( Element anElement, ParserContext aParserContext )
     {
@@ -71,7 +64,7 @@ public final class Qi4jBootstrapBeanDefinitionParser
         Class bootstrapClass;
         try
         {
-            bootstrapClass = ClassUtils.forName( bootstrapClassString );
+            bootstrapClass = forName( bootstrapClassString );
         }
         catch( ClassNotFoundException e )
         {
@@ -118,13 +111,7 @@ public final class Qi4jBootstrapBeanDefinitionParser
         try
         {
             aBootstrap.assemble( applicationAssembly );
-            Application application = energy4Java.newApplication( applicationAssembly );
-
-            String qi4jLayer = aBootstrap.layerName();
-            String qi4jModule = aBootstrap.moduleName();
-            application.findModule( qi4jLayer, qi4jModule );
-
-            return application;
+            return energy4Java.newApplication( applicationAssembly );
         }
         catch( AssemblyException e )
         {
@@ -134,63 +121,16 @@ public final class Qi4jBootstrapBeanDefinitionParser
         }
     }
 
-    private void registerFactoryBeanServiceAsSpringBean(
-        Element anElement,
-        ParserContext aParserContext,
-        Qi4jApplicationBootstrap aQi4jApplicationBootstrap,
-        Application aQi4jApplication )
-    {
-        if( aQi4jApplication == null )
-        {
-            return;
-        }
-
-        String layerString = aQi4jApplicationBootstrap.layerName();
-        String moduleString = aQi4jApplicationBootstrap.moduleName();
-        Module module = aQi4jApplication.findModule( layerString, moduleString );
-        if( module == null )
-        {
-            aParserContext.getReaderContext().error(
-                "Layer [" + layerString + "] module [" + module + "] is not found.", anElement
-            );
-            return;
-        }
-
-        ServiceFinder serviceFinder = module.serviceFinder();
-        Iterable<ServiceReference<FactoryBean>> serviceRefs = serviceFinder.findServices( FactoryBean.class );
-
-        BeanDefinitionRegistry registry = aParserContext.getRegistry();
-        for( ServiceReference<FactoryBean> serviceRef : serviceRefs )
-        {
-            registerFactoryBean( registry, serviceRef );
-        }
-    }
-
-    private void registerFactoryBean( BeanDefinitionRegistry aRegistry, ServiceReference<FactoryBean> aReference )
-    {
-        // Factory bean delegator
-        BeanDefinitionBuilder builder = rootBeanDefinition( FactoryBeanDelegator.class );
-        FactoryBean factory = aReference.get();
-        builder.addConstructorArgValue( factory );
-        AbstractBeanDefinition definition = builder.getBeanDefinition();
-
-        // Identity
-        String identity = aReference.identity();
-        aRegistry.registerBeanDefinition( identity, definition );
-    }
-
-    private AbstractBeanDefinition createQi4jApplicationFactoryBean( Application anApplication )
+    private AbstractBeanDefinition createQi4jApplicationFactoryBeanDefinition( Application anApplication )
     {
         BeanDefinitionBuilder builder = rootBeanDefinition( Qi4jApplicationFactoryBean.class );
         builder.addConstructorArgValue( anApplication );
         return builder.getBeanDefinition();
     }
 
-    private void registerBeanWithGeneratedName( ParserContext aParserContext, BeanDefinition aBeanDefinition )
+    private void registerBean( ParserContext aParserContext, BeanDefinition aBeanDefinition )
     {
-        XmlReaderContext readerContext = aParserContext.getReaderContext();
-        String beanName = readerContext.generateBeanName( aBeanDefinition );
         BeanDefinitionRegistry registry = aParserContext.getRegistry();
-        registry.registerBeanDefinition( beanName, aBeanDefinition );
+        registry.registerBeanDefinition( BEAN_ID_QI4J_APPLICATION, aBeanDefinition );
     }
 }

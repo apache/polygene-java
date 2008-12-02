@@ -29,4 +29,17 @@ Full class name of bootstrap class.
       </xsd:annotation>
     </xsd:attribute>
   </xsd:attributeGroup>
+
+  <xsd:element name="service">
+    <xsd:annotation>
+      <xsd:documentation><![CDATA[
+Defines qi4j service to be exposed as spring bean.
+			]]></xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="beans:identifiedType"/>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
 </xsd:schema>

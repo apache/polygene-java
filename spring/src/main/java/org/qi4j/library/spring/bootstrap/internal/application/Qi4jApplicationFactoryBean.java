@@ -14,7 +14,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.spring.bootstrap.internal;
+package org.qi4j.library.spring.bootstrap.internal.application;
 
 import org.qi4j.structure.Application;
 import org.springframework.beans.factory.DisposableBean;
