@@ -348,7 +348,7 @@ public class UsageGraphTest
     }
 
     @Test
-    @Ignore
+    @Ignore("Depends on QI-147 to be resolved.")
     public void when100LevelsOfNodesWith100NodesOnEachLevelThenTakeLessThanOneMilliSecond()
         throws Exception
     {

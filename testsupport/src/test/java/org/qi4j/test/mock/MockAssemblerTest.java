@@ -16,6 +16,7 @@ package org.qi4j.test.mock;
 
 import static org.junit.Assert.*;
 import org.junit.Ignore;
+import org.junit.Test;
 import static org.hamcrest.CoreMatchers.*;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.bootstrap.AssemblyException;
@@ -27,13 +28,11 @@ import org.qi4j.composite.Mixins;
 /**
  * TODO
  */
-@Ignore
 public class MockAssemblerTest
     extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        
         new MockAssembler(new Assembler()
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
