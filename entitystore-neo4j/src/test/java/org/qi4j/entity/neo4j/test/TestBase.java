@@ -43,12 +43,12 @@ public abstract class TestBase extends AbstractQi4jTest
     private final Assembler serviceAssembler;
     private final Class<? extends EntityComposite>[] composites;
     private final boolean useIdGenerator;
-	protected UnitOfWork uow;
-	protected QueryBuilderFactory qbf;
+    protected UnitOfWork uow;
+    protected QueryBuilderFactory qbf;
 
     protected TestBase( Configuration config, boolean useTxService, boolean useIdGenerator, Class<? extends EntityComposite>... composites )
     {
-        assert ( config == Configuration.DIRECT || config == Configuration.INDIRECT  || config == Configuration.INDIRECT_AND_IDENTITY_GENERATOR ) : "Unsuported Configuration";
+        assert ( config == Configuration.DIRECT || config == Configuration.INDIRECT || config == Configuration.INDIRECT_AND_IDENTITY_GENERATOR ) : "Unsuported Configuration";
         if( config == Configuration.INDIRECT && !useTxService )
         {
             throw new IllegalArgumentException( "The Indirect Neo Entity Store needs a transaction manager." );
@@ -59,7 +59,8 @@ public abstract class TestBase extends AbstractQi4jTest
         this.composites = composites;
     }
 
-    protected final void perform( TestExecutor executor ) throws Exception
+    protected final void perform( TestExecutor executor )
+        throws Exception
     {
         if( !useTxService )
         {
@@ -91,7 +92,8 @@ public abstract class TestBase extends AbstractQi4jTest
         }
     }
 
-    private void setup( TestExecutor executor ) throws Exception
+    private void setup( TestExecutor executor )
+        throws Exception
     {
         uow = unitOfWorkFactory.newUnitOfWork();
         qbf = uow.queryBuilderFactory();
@@ -113,7 +115,8 @@ public abstract class TestBase extends AbstractQi4jTest
         }
     }
 
-    private void verify( TestExecutor executor ) throws Exception
+    private void verify( TestExecutor executor )
+        throws Exception
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
@@ -134,7 +137,8 @@ public abstract class TestBase extends AbstractQi4jTest
         }
     }
 
-    protected final <T extends Collection> Case<T> perform( CollectionBuilder<T>... builders ) throws UnitOfWorkCompletionException
+    protected final <T extends Collection> Case<T> perform( CollectionBuilder<T>... builders )
+        throws UnitOfWorkCompletionException
     {
         Case test;
         if( !useTxService )
@@ -167,7 +171,8 @@ public abstract class TestBase extends AbstractQi4jTest
         return test;
     }
 
-    protected final <T extends Collection> void verify( Case<T> test, String name, int... expected ) throws UnitOfWorkCompletionException
+    protected final <T extends Collection> void verify( Case<T> test, String name, int... expected )
+        throws UnitOfWorkCompletionException
     {
         if( !useTxService )
         {
@@ -188,7 +193,8 @@ public abstract class TestBase extends AbstractQi4jTest
         }
     }
 
-    private <T extends Collection> void executeVerification( Case<T> test, String name, int[] expected ) throws UnitOfWorkCompletionException
+    private <T extends Collection> void executeVerification( Case<T> test, String name, int[] expected )
+        throws UnitOfWorkCompletionException
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
@@ -209,7 +215,8 @@ public abstract class TestBase extends AbstractQi4jTest
         }
     }
 
-    private <T extends Collection> void executeVerification( Case<T> test ) throws UnitOfWorkCompletionException
+    private <T extends Collection> void executeVerification( Case<T> test )
+        throws UnitOfWorkCompletionException
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
@@ -230,7 +237,8 @@ public abstract class TestBase extends AbstractQi4jTest
         }
     }
 
-    private <T extends Collection> Case makeCase( CollectionBuilder<T>[] builders ) throws UnitOfWorkCompletionException
+    private <T extends Collection> Case makeCase( CollectionBuilder<T>[] builders )
+        throws UnitOfWorkCompletionException
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
@@ -251,7 +259,8 @@ public abstract class TestBase extends AbstractQi4jTest
         }
     }
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         serviceAssembler.assemble( module );
         if( useIdGenerator )
@@ -266,7 +275,8 @@ public abstract class TestBase extends AbstractQi4jTest
     }
 
     @Before
-    public void setUp() throws Exception
+    public void setUp()
+        throws Exception
     {
         super.setUp();
         if( !useTxService )
