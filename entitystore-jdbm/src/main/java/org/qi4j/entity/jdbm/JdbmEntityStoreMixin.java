@@ -82,7 +82,8 @@ public class JdbmEntityStoreMixin
 
         File dataFile = new File( config.configuration().file().get() );
         System.out.println( "JDBM store:" + dataFile.getAbsolutePath() );
-        File directory = dataFile.getParentFile();
+        File directory = dataFile.getAbsoluteFile().getParentFile();
+        directory.mkdirs();
         String name = dataFile.getAbsolutePath();
         Properties properties;
         try
