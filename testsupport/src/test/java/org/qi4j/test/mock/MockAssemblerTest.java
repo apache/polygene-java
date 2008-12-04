@@ -20,10 +20,13 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.composite.Mixins;
 import org.qi4j.service.ServiceComposite;
 import org.qi4j.test.AbstractQi4jTest;
+import org.junit.Test;
+import org.junit.Ignore;
 
 /**
  * TODO
  */
+@Ignore( "The Tests has not been written yet.")
 public class MockAssemblerTest
     extends AbstractQi4jTest
 {
