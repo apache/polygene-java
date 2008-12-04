@@ -77,8 +77,8 @@ import java.lang.annotation.Target;
  *     void setSomeState( State state );
  * }
  *
- * &#64;ModifiedBy( SessionModifier.class )
- * &#64;ImplementedBy( MyStateMixin.class )
+ * &#64;Concerns( SessionModifier.class )
+ * &#64;Mixins( MyStateMixin.class )
  * public interface MyComposite extends Composite, SessionState
  * {}
  * </code></pre>

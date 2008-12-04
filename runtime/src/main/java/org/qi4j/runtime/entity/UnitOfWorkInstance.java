@@ -31,20 +31,21 @@ import org.qi4j.entity.EntityComposite;
 import org.qi4j.entity.EntityCompositeNotFoundException;
 import org.qi4j.entity.Identity;
 import org.qi4j.entity.NoSuchEntityException;
+import org.qi4j.entity.StateChangeListener;
+import org.qi4j.entity.StateChangeVoter;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCallback;
 import static org.qi4j.entity.UnitOfWorkCallback.UnitOfWorkStatus.COMPLETED;
 import static org.qi4j.entity.UnitOfWorkCallback.UnitOfWorkStatus.DISCARDED;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.UnitOfWorkException;
-import org.qi4j.entity.StateChangeListener;
-import org.qi4j.entity.StateChangeVoter;
 import org.qi4j.object.ObjectBuilderFactory;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
 import org.qi4j.runtime.structure.EntitiesInstance;
 import org.qi4j.runtime.structure.EntitiesModel;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.service.ServiceFinder;
 import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityState;
@@ -79,8 +80,8 @@ public final class UnitOfWorkInstance
 
     private List<UnitOfWorkCallback> callbacks;
     private UnitOfWorkStore unitOfWorkStore;
-    private List<StateChangeListener> stateChangeListeners = new ArrayList<StateChangeListener>( );
-    private List<StateChangeVoter> stateChangeVoters = new ArrayList<StateChangeVoter>( );
+    private List<StateChangeListener> stateChangeListeners = new ArrayList<StateChangeListener>();
+    private List<StateChangeVoter> stateChangeVoters = new ArrayList<StateChangeVoter>();
 
     static
     {
@@ -369,7 +370,8 @@ public final class UnitOfWorkInstance
         checkOpen();
         if( queryBuilderFactory == null )
         {
-            queryBuilderFactory = new QueryBuilderFactoryImpl( this );
+            ServiceFinder finder = moduleInstance.serviceFinder();
+            queryBuilderFactory = new QueryBuilderFactoryImpl( this, finder );
         }
         return queryBuilderFactory;
     }
@@ -377,7 +379,7 @@ public final class UnitOfWorkInstance
     public void complete()
         throws UnitOfWorkCompletionException
     {
-        complete(false);
+        complete( false );
     }
 
     public void completeAndContinue() throws UnitOfWorkCompletionException, ConcurrentEntityModificationException
@@ -385,7 +387,7 @@ public final class UnitOfWorkInstance
         complete( true );
     }
 
-    public void complete(boolean completeAndContinue)
+    public void complete( boolean completeAndContinue )
         throws UnitOfWorkCompletionException
     {
         checkOpen();
@@ -406,10 +408,11 @@ public final class UnitOfWorkInstance
             committer.commit();
         }
 
-        if (completeAndContinue)
+        if( completeAndContinue )
         {
             continueWithState();
-        } else
+        }
+        else
         {
             close();
         }
@@ -564,7 +567,7 @@ public final class UnitOfWorkInstance
         {
             Map<String, EntityComposite> entities = entry.getValue();
             Iterator<EntityComposite> entityIterator = entities.values().iterator();
-            while (entityIterator.hasNext())
+            while( entityIterator.hasNext() )
             {
                 EntityComposite entityInstance = entityIterator.next();
                 EntityInstance instance = EntityInstance.getEntityInstance( entityInstance );
@@ -668,7 +671,7 @@ public final class UnitOfWorkInstance
 
     public void registerStateChangeVoter( StateChangeVoter voter )
     {
-        stateChangeVoters.add(voter);
+        stateChangeVoters.add( voter );
     }
 
     public Iterable<StateChangeVoter> stateChangeVoters()
@@ -678,7 +681,7 @@ public final class UnitOfWorkInstance
 
     public void registerStateChangeListener( StateChangeListener listener )
     {
-        stateChangeListeners.add(listener);
+        stateChangeListeners.add( listener );
     }
 
     public Iterable<StateChangeListener> stateChangeListeners()

@@ -22,7 +22,7 @@ import org.qi4j.composite.Mixins;
  * Tests public api exposed by Mixins annotation.
  * This will ensure that the public api does not get changed by mistake.
  */
-public class ImplementedByTest
+public class MixinsTest
 {
 
     @Test

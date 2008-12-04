@@ -26,9 +26,9 @@ import java.lang.annotation.Target;
  * This annotation is used in composites to declare mixin implementation classes.
  * <p/>
  * Mixins tells the runtime which implementation class of a Mixin should be
- * used. The ImplementedBy annotation can occur at any level in the composite hierarchy
- * and the runtime will match each found Mixin against a Mixins annotation.
- * All mixin interfaces must have a Mixins in the composite hierarchy or
+ * used. The &#64;Mixins annotation can occur at any level in the composite hierarchy
+ * and the runtime will match each found Mixin implementation against a Mixins annotation.
+ * All mixin interfaces must have a Mixin implementation in the composite hierarchy or
  * a runtime exception will occur.
  * <p/>
  * Example;

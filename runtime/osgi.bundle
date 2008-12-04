@@ -45,6 +45,7 @@ Import-Package: net.sf.cglib.asm;version=2.1.3, \
                 org.qi4j.spi.object, \
                 org.qi4j.spi.property, \
                 org.qi4j.spi.query, \
+                org.qi4j.spi.query.named, \
                 org.qi4j.spi.service, \
                 org.qi4j.spi.service.provider, \
                 org.qi4j.spi.structure, \

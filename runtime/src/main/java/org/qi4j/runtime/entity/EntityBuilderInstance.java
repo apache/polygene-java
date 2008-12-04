@@ -128,7 +128,7 @@ public final class EntityBuilderInstance<T>
         boolean prototypePattern = false;
         Property identityProperty = getState().getProperty( IDENTITY_METHOD );
         Object identity = identityProperty.get();
-        if( identity == null || identity == NO_IDENTITY)
+        if( identity == null || identity == NO_IDENTITY )
         {
             Class compositeType = entityModel.type();
             if( identityGenerator == null )

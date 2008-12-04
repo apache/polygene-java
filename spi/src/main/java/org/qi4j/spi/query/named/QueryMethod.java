@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.injection.scope;
+package org.qi4j.spi.query.named;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -22,21 +22,21 @@ import java.lang.annotation.Target;
 import org.qi4j.injection.InjectionScope;
 
 /**
- * Annotation to denote the injection of a invocation specific resource. These include:
- * The Method being invoked
- * An AnnotationElement with annotations from both mixin type, mixin implementation, and any Apply statement
- * InvocationContext with information about the current invocation
- * <p/>
- * Examples:
- * <code><pre>
- * &#64;Invocation Method theInvokedMethod
- * &#64;Invocation AnnotationElement annotations
- * </pre></code>
+ * Annotation for the method in the bean service, to indicate that the method is a QueryMethod and should
+ * be made to a Named Query.
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD, ElementType.PARAMETER } )
+@Target( ElementType.METHOD )
 @Documented
 @InjectionScope
-public @interface Invocation
+public @interface QueryMethod
 {
+
+    /**
+     * The name of the Named Query.
+     * This value defaults to the method name.
+     *
+     * @return the name of the NamedQuery.
+     */
+    public abstract String value() default "";
 }

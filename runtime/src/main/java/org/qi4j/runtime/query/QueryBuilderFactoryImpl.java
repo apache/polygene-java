@@ -19,6 +19,8 @@
 package org.qi4j.runtime.query;
 
 import org.qi4j.composite.NullArgumentException;
+import org.qi4j.query.MissingIndexingSystemException;
+import org.qi4j.query.Query;
 import org.qi4j.query.QueryBuilder;
 import org.qi4j.query.QueryBuilderFactory;
 import org.qi4j.query.QueryExpressions;
@@ -27,6 +29,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.service.ServiceFinder;
 import org.qi4j.service.ServiceReference;
 import org.qi4j.spi.query.EntityFinder;
+import org.qi4j.spi.query.named.NamedEntityFinder;
 
 /**
  * Default implementation of {@link QueryBuilderFactory}
@@ -42,6 +45,7 @@ public final class QueryBuilderFactoryImpl
      * Parent unit of work.
      */
     private final UnitOfWorkInstance unitOfWorkInstance;
+    private ServiceFinder finder;
 
     public static void initialize()
     {
@@ -52,10 +56,13 @@ public final class QueryBuilderFactoryImpl
      * Constructor.
      *
      * @param unitOfWorkInstance parent unit of work; cannot be null
+     * @param finder             The ServiceFinder of the Module this QueryBuilderFactory belongs to.
      */
-    public QueryBuilderFactoryImpl( final UnitOfWorkInstance unitOfWorkInstance )
+    public QueryBuilderFactoryImpl( final UnitOfWorkInstance unitOfWorkInstance, ServiceFinder finder )
     {
         NullArgumentException.validateNotNull( "Unit of work instance", unitOfWorkInstance );
+        NullArgumentException.validateNotNull( "ServiceFinder", finder );
+        this.finder = finder;
         this.unitOfWorkInstance = unitOfWorkInstance;
     }
 
@@ -81,4 +88,22 @@ public final class QueryBuilderFactoryImpl
         }
     }
 
+    public <T> Query<T> newNamedQuery( String name, Class<T> resultType )
+    {
+        ModuleInstance module = unitOfWorkInstance.module();
+        ServiceFinder serviceLocator = module.serviceFinder();
+        final ServiceReference<NamedEntityFinder> serviceReference = serviceLocator.findService( NamedEntityFinder.class );
+        if( serviceReference == null )
+        {
+            throw new MissingIndexingSystemException();
+        }
+        try
+        {
+            return new NamedQueryImpl<T>( serviceReference.get(), unitOfWorkInstance, name, resultType );
+        }
+        finally
+        {
+            serviceReference.releaseService();
+        }
+    }
 }

@@ -30,13 +30,13 @@ public abstract class EntityTypeRegistryMixin
         entityTypes.put( entityType.type(), entityType );
     }
 
-    public EntityType getEntityType( String aEntityType )
+    public EntityType getEntityType( String type )
         throws UnknownEntityTypeException
     {
-        EntityType entityType = entityTypes.get( aEntityType );
+        EntityType entityType = entityTypes.get( type );
         if( entityType == null )
         {
-            throw new UnknownEntityTypeException( aEntityType );
+            throw new UnknownEntityTypeException( type );
         }
         return entityType;
     }

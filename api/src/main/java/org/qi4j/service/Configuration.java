@@ -74,8 +74,6 @@ public interface Configuration<T>
             throws Exception
         {
             Class configurationType = api.getConfigurationType( me );
-
-
             if( configurationType == null )
             {
                 throw new InstantiationException( "Could not figure out type of Configuration" );
@@ -99,7 +97,6 @@ public interface Configuration<T>
                     PropertyMapper.map( asStream, (Composite) configBuilder.stateOfComposite() );
                 }
                 configuration = (T) configBuilder.newInstance();
-
                 uow.complete();
                 uow = uowf.newUnitOfWork();
                 configuration = uow.dereference( configuration );
