@@ -122,7 +122,19 @@
     <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
     <orderEntry type="module" module-name="qi4j-core-testsupport" exported="" />
     <orderEntry type="module" module-name="qi4j-lib-constraints" exported="" />
-    <orderEntry type="module" module-name="qi4j-lib-requirements" exported="" />
+    <orderEntry type="module-library" exported="">
+      <library name="org.qi4j.library:qi4j-lib-requirements:0.5-SNAPSHOT">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/qi4j/library/qi4j-lib-requirements/0.5-SNAPSHOT/qi4j-lib-requirements-0.5-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/qi4j/library/qi4j-lib-requirements/0.5-SNAPSHOT/qi4j-lib-requirements-0.5-SNAPSHOT-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/qi4j/library/qi4j-lib-requirements/0.5-SNAPSHOT/qi4j-lib-requirements-0.5-SNAPSHOT-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
     <orderEntry type="module" module-name="qi4j-ext-indexing-rdf" exported="" />
     <orderEntry type="module" module-name="qi4j-lib-rdf" exported="" />
     <orderEntry type="module-library" exported="">
