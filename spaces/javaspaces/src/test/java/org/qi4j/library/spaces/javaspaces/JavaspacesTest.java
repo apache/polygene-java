@@ -43,7 +43,7 @@ import java.util.logging.SimpleFormatter;
 import java.io.IOException;
 import net.jini.security.policy.DynamicPolicyProvider;
 
-@Ignore
+@Ignore( "Implementation is not working yet." )
 public class JavaspacesTest extends SpacesTestRig
 {
     private Space qi4jspace;
