@@ -24,14 +24,15 @@
     <module>framework</module>
     <module>general</module>
     <module>http</module>
+    <module>jini</module>
     <module>locking</module>
     <module>logging</module>
     <module>quikit</module>
     <module>rdf</module>
     <module>registry</module>
-    <module>requirements</module>
     <module>rmi</module>
     <module>scripting</module>
+    <module>spaces</module>
     <module>swing</module>
     <module>transaction</module>
     <module>thread</module>
