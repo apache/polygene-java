@@ -13,9 +13,9 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="qi4j-core-api" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
     <orderEntry type="module" module-name="qi4j-core-testsupport" />
+    <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
     <orderEntry type="module-library">
       <library name="junit:junit:4.4">
         <CLASSES>
@@ -43,8 +43,8 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="qi4j-lib-constraints" exported="" />
     <orderEntry type="module" module-name="qi4j-lib-http" exported="" />
+    <orderEntry type="module" module-name="qi4j-lib-constraints" exported="" />
     <orderEntry type="module-library" exported="">
       <library name="org.mortbay.jetty:jetty:6.1.11">
         <CLASSES>
@@ -97,42 +97,70 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="qi4j-lib-logging" exported="" />
+    <orderEntry type="module" module-name="qi4j-lib-framework" exported="" />
     <orderEntry type="module-library" exported="">
-      <library name="org.apache.wicket:wicket:1.4-m3">
+      <library name="org.apache.river:jini-core:2.1.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/wicket/wicket/1.4-m3/wicket-1.4-m3.jar!/" />
+          <root url="jar://$M2_REPO$/org/apache/river/jini-core/2.1.1/jini-core-2.1.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/wicket/wicket/1.4-m3/wicket-1.4-m3-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/apache/river/jini-core/2.1.1/jini-core-2.1.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/wicket/wicket/1.4-m3/wicket-1.4-m3-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/apache/river/jini-core/2.1.1/jini-core-2.1.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="org.slf4j:slf4j-api:1.4.2">
+      <library name="org.apache.river:jini-ext:2.1.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2.jar!/" />
+          <root url="jar://$M2_REPO$/org/apache/river/jini-ext/2.1.1/jini-ext-2.1.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/apache/river/jini-ext/2.1.1/jini-ext-2.1.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-api/1.4.2/slf4j-api-1.4.2-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/apache/river/jini-ext/2.1.1/jini-ext-2.1.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
-      <library name="org.slf4j:slf4j-simple:1.4.2">
+    <orderEntry type="module-library" exported="">
+      <library name="org.apache.river:reggie:2.1.1">
         <CLASSES>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2.jar!/" />
+          <root url="jar://$M2_REPO$/org/apache/river/reggie/2.1.1/reggie-2.1.1.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2-javadoc.jar!/" />
+          <root url="jar://$M2_REPO$/org/apache/river/reggie/2.1.1/reggie-2.1.1-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$M2_REPO$/org/slf4j/slf4j-simple/1.4.2/slf4j-simple-1.4.2-sources.jar!/" />
+          <root url="jar://$M2_REPO$/org/apache/river/reggie/2.1.1/reggie-2.1.1-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.apache.river:start:2.1.1">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/apache/river/start/2.1.1/start-2.1.1.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/apache/river/start/2.1.1/start-2.1.1-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/apache/river/start/2.1.1/start-2.1.1-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="org.apache.river:jsk-lib:2.1.1">
+        <CLASSES>
+          <root url="jar://$M2_REPO$/org/apache/river/jsk-lib/2.1.1/jsk-lib-2.1.1.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$M2_REPO$/org/apache/river/jsk-lib/2.1.1/jsk-lib-2.1.1-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$M2_REPO$/org/apache/river/jsk-lib/2.1.1/jsk-lib-2.1.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
