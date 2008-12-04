@@ -28,7 +28,7 @@ import org.qi4j.test.entity.AbstractEntityStoreTest;
 /**
  * TODO
  */
-@Ignore
+@Ignore( "Unclear if it is possible to make a subclass of the EntityStore test suite (AbstractEntityStoreTest).")
 public class DefaultIbatisEntityStoreTest
     extends AbstractEntityStoreTest
 {
