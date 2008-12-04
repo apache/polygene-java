@@ -36,8 +36,7 @@ import org.qi4j.test.entity.AbstractEntityStoreTest;
 /**
  * TODO
  */
-public class JdbmEntityStoreTest
-    extends AbstractEntityStoreTest
+public class JdbmEntityStoreTest extends AbstractEntityStoreTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
@@ -49,179 +48,25 @@ public class JdbmEntityStoreTest
         config.addServices( MemoryEntityStoreService.class );
     }
 
-    @Test
-    public void givenEntityIsNotModifiedWhenUnitOfWorkCompletesThenDontStoreState() throws UnitOfWorkCompletionException
-    {
-        TestEntity testEntity = null;
-        long version = 0;
-
-        {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
-
-            testEntity = builder.newInstance();
-            unitOfWork.complete();
-        }
-
-
-        {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            testEntity = unitOfWork.dereference( testEntity );
-            version = spi.getEntityState( testEntity ).version();
-
-            unitOfWork.complete();
-
-        }
-
-        {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            testEntity = unitOfWork.dereference( testEntity );
-            long newVersion = spi.getEntityState( testEntity ).version();
-            assertThat( "version has not changed", newVersion, equalTo( version ) );
-
-            unitOfWork.complete();
-        }
-    }
-
-    @Test
-    public void givenPropertyIsModifiedWhenUnitOfWorkCompletesThenStoreState() throws UnitOfWorkCompletionException
-    {
-        TestEntity testEntity = null;
-        long version = 0;
-
-        {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
-
-            testEntity = builder.newInstance();
-            unitOfWork.complete();
-        }
-
-
-        {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            testEntity = unitOfWork.dereference( testEntity );
-            testEntity.name().set( "Rickard" );
-            version = spi.getEntityState( testEntity ).version();
-
-            unitOfWork.complete();
-
-        }
-
-        {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            testEntity = unitOfWork.dereference( testEntity );
-            long newVersion = spi.getEntityState( testEntity ).version();
-            assertThat( "version has not changed", newVersion, equalTo( version + 1 ) );
-
-            unitOfWork.complete();
-        }
-    }
-
-    @Test
-    public void givenManyAssociationIsModifiedWhenUnitOfWorkCompletesThenStoreState() throws UnitOfWorkCompletionException
-    {
-        TestEntity testEntity = null;
-        long version = 0;
-
-        {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
-
-            testEntity = builder.newInstance();
-            unitOfWork.complete();
-        }
-
-
-        {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            testEntity = unitOfWork.dereference( testEntity );
-            testEntity.manyAssociation().add( testEntity );
-            version = spi.getEntityState( testEntity ).version();
-
-            unitOfWork.complete();
-
-        }
-
-        {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            testEntity = unitOfWork.dereference( testEntity );
-            long newVersion = spi.getEntityState( testEntity ).version();
-            assertThat( "version has not changed", newVersion, equalTo( version + 1 ) );
-
-            unitOfWork.complete();
-        }
-    }
-
-    @Test
-    public void givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification()
-        throws UnitOfWorkCompletionException
-    {
-        TestEntity testEntity;
-        {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
-
-            testEntity = builder.newInstance();
-            unitOfWork.complete();
-        }
-
-        UnitOfWork unitOfWork1;
-        TestEntity testEntity1;
-        {
-            // Start working with Entity in one UoW
-            unitOfWork1 = unitOfWorkFactory.newUnitOfWork();
-            testEntity1 = unitOfWork1.dereference( testEntity );
-            testEntity1.name().set( "A" );
-            testEntity1.unsetName().set( "A" );
-        }
-
-        {
-            // Start working with same Entity in another UoW, and complete it
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            TestEntity testEntity2 = unitOfWork.dereference( testEntity );
-            testEntity2.name().set( "B" );
-            unitOfWork.complete();
-        }
-
-        {
-            // Try to complete first UnitOfWork
-            try
-            {
-                unitOfWork1.complete();
-                Assert.fail( "Should have thrown concurrent modification exception" );
-            }
-            catch( ConcurrentEntityModificationException e )
-            {
-                e.refreshEntities( unitOfWork1 );
-
-                assertThat( "property name has been refreshed", testEntity1.name().get(), equalTo( "B" ) );
-
-                // Set it again
-                testEntity1.name().set( "A" );
-
-                unitOfWork1.complete();
-            }
-        }
-
-        {
-            // Check values
-            unitOfWork1 = unitOfWorkFactory.newUnitOfWork();
-            testEntity1 = unitOfWork1.dereference( testEntity );
-            assertThat( "property name has been set", testEntity1.name().get(), equalTo( "A" ) );
-            assertThat( "version is correct", spi.getEntityState( testEntity1 ).version(), equalTo( 2L ) );
-            unitOfWork1.discard();
-        }
-    }
-
     @Override @After public void tearDown() throws Exception
     {
         super.tearDown();
-        boolean deleted = new File( "qi4j.data.db" ).delete();
-        deleted = deleted | new File( "qi4j.data.lg" ).delete();
-        if( !deleted )
+        File dbFile = new File( "qi4j.data.db" );
+        boolean success = true;
+        if( dbFile.exists() )
         {
-            System.err.println( "Could not delete test data" );
+            success = dbFile.delete();
+        }
+
+        File logFile = new File( "qi4j.data.lg" );
+        if( logFile.exists() )
+
+        {
+            success = success & logFile.delete();
+        }
+        if( !success )
+        {
+            throw new Exception( "Could not delete test data" );
         }
     }
 }

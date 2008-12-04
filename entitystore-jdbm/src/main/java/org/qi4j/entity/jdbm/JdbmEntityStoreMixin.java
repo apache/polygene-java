@@ -108,13 +108,14 @@ public class JdbmEntityStoreMixin
 
     // EntityStore implementation
     @WriteLock
-    public EntityState newEntityState( QualifiedIdentity identity ) throws EntityStoreException
+    public EntityState newEntityState( QualifiedIdentity identity )
+        throws EntityStoreException
     {
         EntityType entityType = getEntityType( identity.type() );
 
         try
         {
-            Long stateIndex = getStateIndex( identity .identity());
+            Long stateIndex = getStateIndex( identity.identity());
 
             if( stateIndex != null )
             {

@@ -4,6 +4,7 @@ Private-Package:
 
 Import-Package: org.qi4j.composite, \
                 org.qi4j.entity, \
+                org.qi4j.bootstrap, \
                 org.qi4j.injection.scope, \
                 org.qi4j.library.locking, \
                 org.qi4j.property, \
