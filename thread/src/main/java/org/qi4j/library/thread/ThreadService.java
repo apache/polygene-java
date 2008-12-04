@@ -17,8 +17,6 @@
  */
 package org.qi4j.library.thread;
 
-import org.qi4j.service.Configuration;
-
 public interface ThreadService
 {
     Thread newThread( Runnable runnable );
