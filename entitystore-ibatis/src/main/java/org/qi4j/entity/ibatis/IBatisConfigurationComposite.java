@@ -16,17 +16,10 @@
  */
 package org.qi4j.entity.ibatis;
 
-import java.util.Properties;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
-import org.qi4j.property.Property;
-import org.qi4j.composite.Composite;
-import org.qi4j.service.Configuration;
 import org.qi4j.service.ConfigurationComposite;
 
 /**
  * {@code IBatisEntityStoreServiceInfo} provides service information for {@link IBatisEntityStore}.
- *
  */
 public interface IBatisConfigurationComposite extends IBatisConfiguration, ConfigurationComposite
 {

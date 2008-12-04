@@ -20,6 +20,7 @@ import static junit.framework.Assert.fail;
 import org.junit.Test;
 import org.junit.After;
 import org.qi4j.entity.ibatis.DerbyDatabaseHandler;
+import java.util.Properties;
 
 /**
  * {@code DBInitializerTest} test db initializer.
@@ -46,8 +47,12 @@ public final class DBInitializerTest
         throws Exception
     {
         final DBInitializerConfiguration info = derbyDatabaseHandler.createDbInitializerConfigMock();
-        final DBInitializer initializer = new DBInitializer( info );
-        initializer.initialize();
+        final DBInitializer initializer = new DBInitializer();
+        Properties connectionProperties = info.connectionProperties().get();
+        String schemaUrl = info.schemaUrl().get();
+        String dataUrl = info.dataUrl().get();
+        String dbUrl = info.dbUrl().get();
+        initializer.initialize( schemaUrl, dataUrl, dbUrl, connectionProperties );
         derbyDatabaseHandler.checkDataInitialization();
     }
 

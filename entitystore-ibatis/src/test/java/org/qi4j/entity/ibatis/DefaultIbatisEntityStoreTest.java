@@ -38,7 +38,9 @@ public class DefaultIbatisEntityStoreTest
     private static final String SCHEMA_FILE = "test/testDbSchema.sql";
     private static final String DATA_FILE = null;
 
-    @Before public void setUp() throws Exception
+    @Before
+    public void setUp()
+        throws Exception
     {
         derbyDatabaseHandler = new DerbyDatabaseHandler();
         super.setUp();
@@ -57,7 +59,10 @@ public class DefaultIbatisEntityStoreTest
         derbyDatabaseHandler.initDbInitializerInfo( config, SCHEMA_FILE, DATA_FILE );
     }
 
-    @Override @After public void tearDown() throws Exception
+    @Override
+    @After
+    public void tearDown()
+        throws Exception
     {
         if( derbyDatabaseHandler != null )
         {

@@ -38,48 +38,35 @@ public final class DBInitializer
 {
     private static final long serialVersionUID = 1L;
 
-    private final DBInitializerConfiguration dBInitializerInfo;
-
-    /**
-     * Construct an instance of {@code DBInitializerInfo}.
-     *
-     * @param aDBInitializerInfo The db initializer info. This argument must not be {@code null}.
-     * @throws IllegalArgumentException Thrown if the specified {@code aDBInitializerInfo} argument is {@code null}.
-     * @since 0.1.0
-     */
-    public DBInitializer( final DBInitializerConfiguration aDBInitializerInfo )
-        throws IllegalArgumentException
-    {
-        dBInitializerInfo = aDBInitializerInfo;
-        validateNotNull( "aDBInitializerInfo", aDBInitializerInfo );
-    }
-
     /**
      * Initialize the database.
      * Reads scripts from schemaURL and data scripts from dataUrl
      *
+     * @param schemaUrl The URL to where the DB Schema to be initialized into the DB resides. 
+     * @param dataUrl The URL to where the Data to be initialized into the DB resides.
+     * @param dbUrl The URL to connect to the DB.
+     * @param connectionProperties Properties to be used in the SQL Connection.
      * @throws java.sql.SQLException Thrown if db initialization failed.
      * @throws java.io.IOException   Thrown if reading schema or data sql resources failed.
      * @since 0.1.0
-     *        todo close reader, connections, handle exceptions
+     *        todo handle exceptions
      */
-    public final void initialize()
+    public final void initialize( String schemaUrl, String dataUrl, String dbUrl, Properties connectionProperties )
         throws SQLException, IOException
     {
-        final Property<String> schemaUrlProperty = dBInitializerInfo.schemaUrl();
-        final String schemaUrl = schemaUrlProperty.get();
-        runScript( schemaUrl );
-        runScript( dBInitializerInfo.dataUrl().get() );
+        Connection connection1 = getSqlConnection( dbUrl, connectionProperties );
+        runScript( schemaUrl, connection1 );
+        Connection connection2 = getSqlConnection( dbUrl, connectionProperties );
+        runScript( dataUrl, connection2 );
     }
 
-    private void runScript( final String urlString )
+    private void runScript( final String urlString, Connection connection )
         throws SQLException, IOException
     {
         if( urlString == null )
         {
             return;
         }
-        final Connection connection = getSqlConnection();
         try
         {
             final ScriptRunner runner = new ScriptRunner( connection, true, true );
@@ -88,6 +75,8 @@ public final class DBInitializer
             final InputStreamReader inputStreamReader = new InputStreamReader( url.openStream() );
             final BufferedReader bufferedReader = new BufferedReader( inputStreamReader );
             runner.runScript( bufferedReader );
+            bufferedReader.close();
+            inputStreamReader.close();
         }
         finally
         {
@@ -118,12 +107,9 @@ public final class DBInitializer
      * @throws SQLException Thrown if sql connection failed.
      * @since 0.1.0
      */
-    private Connection getSqlConnection()
+    private Connection getSqlConnection( String dbURL, Properties connectionProperties )
         throws SQLException
     {
-        final String dbURL = dBInitializerInfo.dbUrl().get();
-        final Property<Properties> connectionPropertiesProperty = dBInitializerInfo.connectionProperties();
-        final Properties dbProperties = connectionPropertiesProperty.get();
-        return DriverManager.getConnection( dbURL, dbProperties );
+        return DriverManager.getConnection( dbURL, connectionProperties );
     }
 }

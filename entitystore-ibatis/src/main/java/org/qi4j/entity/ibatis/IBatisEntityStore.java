@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import static org.qi4j.composite.NullArgumentException.validateNotNull;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
@@ -255,25 +256,23 @@ public class IBatisEntityStore
     public final void activate()
         throws Exception
     {
-        final IBatisConfiguration configuration = getUpdatedConfiguration();
-
-        initializeDatabase( configuration );
-
+        iBatisConfiguration.refresh();
+        initializeDatabase();
+        IBatisConfiguration configuration = iBatisConfiguration.configuration();
         config = new IbatisClient( configuration.sqlMapConfigURL().get(), configuration.configProperties().get() );
         config.activate();
     }
 
-    private IBatisConfiguration getUpdatedConfiguration()
-    {
-        iBatisConfiguration.refresh();
-        return iBatisConfiguration.configuration();
-    }
-
-    private void initializeDatabase( final IBatisConfiguration configuration )
+    private void initializeDatabase()
         throws SQLException, IOException
     {
-        final DBInitializer dbInitializer = new DBInitializer( configuration );
-        dbInitializer.initialize();
+        final DBInitializer dbInitializer = new DBInitializer();
+        IBatisConfiguration configuration = iBatisConfiguration.configuration();
+        Properties connectionProperties = configuration.connectionProperties().get();
+        String schemaUrl = configuration.schemaUrl().get();
+        String dataUrl = configuration.dataUrl().get();
+        String dbUrl = configuration.dbUrl().get();
+        dbInitializer.initialize(schemaUrl, dataUrl, dbUrl, connectionProperties);
     }
 
     /**
