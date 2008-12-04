@@ -23,7 +23,7 @@ limitations under the License.
     <version>0.5-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.qi4j.extensions</groupId>
+  <groupId>org.qi4j.extension</groupId>
   <artifactId>qi4j-ext-entitystore-neo4j</artifactId>
   <name>Qi4j Extension - Neo4j Store</name>
   <version>0.5-SNAPSHOT</version>

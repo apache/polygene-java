@@ -44,8 +44,8 @@ public enum Configuration implements Assembler
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                INDIRECT.assemble(module);
-                IDENTITY_GENERATOR.assemble(module);
+                INDIRECT.assemble( module );
+                IDENTITY_GENERATOR.assemble( module );
             }
         };
 
