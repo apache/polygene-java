@@ -454,7 +454,7 @@ public class RdfQueryTest
         );
     }
 
-    @Ignore // Skip this one for now. It sporadically fails sometimes
+    @Ignore("Skip this one for now. It sporadically fails sometimes." )
     @Test
     public void script23()
         throws EntityFinderException
