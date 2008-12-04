@@ -14,16 +14,12 @@
 
 package org.qi4j.test.mock;
 
-import static org.junit.Assert.*;
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.hamcrest.CoreMatchers.*;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.service.ServiceComposite;
 import org.qi4j.composite.Mixins;
+import org.qi4j.service.ServiceComposite;
+import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * TODO
@@ -33,16 +29,16 @@ public class MockAssemblerTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        new MockAssembler(new Assembler()
+        new MockAssembler( new Assembler()
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.addServices( MyService.class );
             }
-        }).mock(    ); // TODO
+        } ).mock(); // TODO
     }
 
-    @Mixins( MyService.MyServiceMixin.class)
+    @Mixins( MyService.MyServiceMixin.class )
     public interface MyService
         extends ServiceComposite
     {
