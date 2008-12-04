@@ -18,6 +18,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.index.rdf.RdfQueryService;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
+import org.qi4j.library.rdf.entity.EntitySerializer;
 
 public class RdfMemoryStoreAssembler
     implements Assembler
@@ -27,5 +28,6 @@ public class RdfMemoryStoreAssembler
     {
         module.addServices( MemoryRepositoryService.class ).instantiateOnStartup().identifiedBy( "rdf-repository" );
         module.addServices( RdfQueryService.class ).instantiateOnStartup();
+        module.addObjects( EntitySerializer.class );
     }
 }
