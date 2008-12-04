@@ -19,65 +19,96 @@ package org.qi4j.entity.javaspaces;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.entity.EntityBuilder;
 import org.qi4j.entity.UnitOfWork;
 import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
-import org.qi4j.spi.entity.UuidIdentityGeneratorService;
-import org.qi4j.structure.Visibility;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
+import org.qi4j.library.spaces.javaspaces.JavaSpacesClientService;
+import org.qi4j.library.spaces.javaspaces.JavaSpacesClientAssembler;
+import org.qi4j.library.jini.javaspaces.JiniJavaSpacesServiceAssembler;
+import org.qi4j.library.jini.lookup.JiniLookupServiceAssembler;
+import org.qi4j.library.jini.transaction.JiniTransactionServiceAssembler;
+import org.qi4j.library.http.JettyServiceAssembler;
+import org.qi4j.spi.entity.UuidIdentityGeneratorService;
+import java.security.Policy;
+import java.security.PermissionCollection;
+import java.security.CodeSource;
+import java.security.Permissions;
+import java.security.AllPermission;
+import net.jini.security.policy.DynamicPolicyProvider;
 
 /**
  * JavaSpaces EntityStore test
  */
 public class JavaSpacesEntityStoreTest extends AbstractEntityStoreTest
 {
-    @SuppressWarnings("unchecked")
-    public void assemble(ModuleAssembly module) throws AssemblyException
+    static
+    {
+        Policy basePolicy = new AllPolicy();
+        DynamicPolicyProvider policyProvider = new DynamicPolicyProvider( basePolicy );
+        Policy.setPolicy( policyProvider );
+
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         super.assemble( module );
-
-        module.addServices(UuidIdentityGeneratorService.class, JavaSpacesEntityStoreService.class);
-        ModuleAssembly config = module.layerAssembly().newModuleAssembly("Config");
-        config.setName("config");
-        config.addEntities(JavaSpacesConfiguration.class).visibleIn(Visibility.layer);
-        config.addServices(MemoryEntityStoreService.class);
+        module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
+        module.addAssembler( new JettyServiceAssembler() );
+        module.addAssembler( new JavaSpacesClientAssembler() );
+        module.addAssembler( new JiniJavaSpacesServiceAssembler() );
+        module.addAssembler( new JiniLookupServiceAssembler() );
+        module.addAssembler( new JiniTransactionServiceAssembler() );
     }
 
-    protected TestEntity createEntity(UnitOfWork unitOfWork) throws UnitOfWorkCompletionException
+    protected TestEntity createEntity( UnitOfWork unitOfWork )
+        throws UnitOfWorkCompletionException
     {
         // Create entity
-        TestEntity instance = unitOfWork.newEntity(TestEntity.class);
+        EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
+        TestEntity instance = builder.newInstance();
         instance.identity().get();
 
-        instance.name().set("Test");
-        instance.association().set(instance);
+        instance.name().set( "Test" );
+        instance.association().set( instance );
 
-        instance.manyAssociation().add(instance);
+        instance.manyAssociation().add( instance );
 
-        instance.listAssociation().add(instance);
-        instance.listAssociation().add(instance);
-        instance.listAssociation().add(instance);
+        instance.listAssociation().add( instance );
+        instance.listAssociation().add( instance );
+        instance.listAssociation().add( instance );
 
-        instance.setAssociation().add(instance);
-        instance.setAssociation().add(instance);
+        instance.setAssociation().add( instance );
+        instance.setAssociation().add( instance );
         return instance;
     }
-    
+
     @Test
     public void enableTests()
     {
     }
 
-    @Override @Test
-    public void whenNewEntityThenCanFindEntity() throws Exception
+    public static class AllPolicy extends Policy
     {
-        super.whenNewEntityThenCanFindEntity();
+
+        public AllPolicy()
+        {
+        }
+
+        public PermissionCollection getPermissions( CodeSource codeSource )
+        {
+            Permissions allPermission;
+            allPermission = new Permissions();
+            allPermission.add( new AllPermission() );
+            return allPermission;
+        }
+
+        public void refresh()
+        {
+        }
     }
 
-    @Override @Test
-    public void whenRemovedEntityThenCannotFindEntity() throws Exception
-    {
-        super.whenRemovedEntityThenCannotFindEntity();
-    }
 }
