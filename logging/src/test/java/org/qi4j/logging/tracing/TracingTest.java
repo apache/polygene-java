@@ -107,7 +107,8 @@ public class TracingTest
         uow.complete();
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore( "Waiting for resolution of QI-146" )
     public void whenTraceOnMixinImplExpectTwoEntryInEntityStore()
         throws Exception
     {
