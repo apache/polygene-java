@@ -29,14 +29,14 @@ public class ServletInfo
     private final String path;
     private final Map<String, String> initParams;
 
-    public ServletInfo( String aPath )
+    public ServletInfo( String mountPath )
     {
-        this( aPath, Collections.<String, String>emptyMap() );
+        this( mountPath, Collections.<String, String>emptyMap() );
     }
     
-    public ServletInfo( String aPath, Map<String, String> initParams )
+    public ServletInfo( String mountPath, Map<String, String> initParams )
     {
-        path = aPath;
+        path = mountPath;
         this.initParams = initParams;
     }
 

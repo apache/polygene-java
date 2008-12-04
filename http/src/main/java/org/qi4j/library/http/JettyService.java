@@ -17,11 +17,12 @@ package org.qi4j.library.http;
 import org.qi4j.composite.Mixins;
 import org.qi4j.service.Activatable;
 import org.qi4j.service.ServiceComposite;
+import java.util.List;
 
 /**
  * TODO
  */
 @Mixins( JettyMixin.class )
-interface JettyService extends Activatable, ServiceComposite
+interface JettyService extends HttpService, Activatable, ServiceComposite
 {
 }

@@ -19,6 +19,7 @@ import org.qi4j.entity.Queryable;
 import org.qi4j.library.constraints.annotation.NotEmpty;
 import org.qi4j.library.constraints.annotation.Range;
 import org.qi4j.property.Property;
+import org.qi4j.composite.Optional;
 
 /**
  * TODO
@@ -28,6 +29,9 @@ public interface JettyConfiguration
     extends EntityComposite
 {
     @Range( min = 0, max = 65535 ) Property<Integer> port();
+
+    @Optional
+    Property<String> hostName();
 
     @NotEmpty Property<String> rootContextPath();
 

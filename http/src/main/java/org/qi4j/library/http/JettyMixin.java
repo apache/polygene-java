@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard �berg. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@ package org.qi4j.library.http;
 
 import java.io.File;
 import java.net.URL;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import javax.servlet.Filter;
@@ -40,20 +42,26 @@ import org.qi4j.service.ServiceReference;
  * TODO
  */
 class JettyMixin
-    implements Activatable
+    implements Activatable, HttpService
 {
-    private @This Configuration<JettyConfiguration> configuration;
+    private static final Integer DEFAULT_PORT = new Integer( 8080 );
+    private Configuration<JettyConfiguration> configuration;
     private @Service Iterable<ServiceReference<Servlet>> servlets;
     private @Service Iterable<ServiceReference<Filter>> filters;
 
     private Server server;
     private Context root;
 
-    public JettyMixin(
-        @Uses ServiceDescriptor descriptor )
+    public JettyMixin( @Uses ServiceDescriptor descriptor, @This Configuration<JettyConfiguration> configuration )
     {
+        this.configuration = configuration;
         // Create a server given the host port
-        server = new Server( 8080 );
+        Integer port = configuration.configuration().port().get();
+        if( port == null )
+        {
+            port = DEFAULT_PORT;
+        }
+        server = new Server( port );
 
         // Sets the context root
         root = new Context( server, "/", SESSIONS );
@@ -139,5 +147,71 @@ class JettyMixin
     public final void passivate() throws Exception
     {
         server.stop();
+        for( Connector connector : server.getConnectors() )
+        {
+            connector.close();
+        }
+    }
+
+    public Interface[] interfacesServed()
+    {
+        Connector[] connectors = server.getConnectors();
+        Interface[] result = new Interface[connectors.length];
+        int index = 0;
+        for( Connector connector : connectors )
+        {
+            String host = this.configuration.configuration().hostName().get();
+            if( host == null )
+            {
+                host = connector.getHost();
+                if( host == null )  // If serving all interfaces.
+                {
+                    try
+                    {
+                        host = InetAddress.getLocalHost().getHostAddress();
+                    }
+                    catch( UnknownHostException e )
+                    {
+                        InternalError error = new InternalError( "UnknownHost for local interface." );
+                        error.initCause( e );
+                        throw error;
+                    }
+                }
+            }
+            result[ index++ ] = new InterfaceImpl( host, connector.getPort(), Interface.Protocol.http );
+
+        }
+        return result;
+    }
+
+    private static class InterfaceImpl
+        implements Interface
+    {
+        private String host;
+        private int port;
+        private Protocol protocol;
+
+        public InterfaceImpl( String host, int port, Protocol protocol )
+        {
+            this.host = host;
+            this.port = port;
+            //To change body of created methods use File | Settings | File Templates.
+            this.protocol = protocol;
+        }
+
+        public String hostName()
+        {
+            return host;
+        }
+
+        public int port()
+        {
+            return port;
+        }
+
+        public Protocol protocol()
+        {
+            return protocol;
+        }
     }
 }

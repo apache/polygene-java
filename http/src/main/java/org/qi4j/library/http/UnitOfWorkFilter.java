@@ -31,7 +31,7 @@ import org.qi4j.injection.scope.Structure;
 public class UnitOfWorkFilter
     implements Filter
 {
-    @Structure UnitOfWorkFactory uowf;
+    @Structure private UnitOfWorkFactory uowf;
 
     public void init( FilterConfig filterConfig ) throws ServletException
     {

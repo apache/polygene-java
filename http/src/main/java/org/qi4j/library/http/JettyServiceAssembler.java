@@ -27,11 +27,10 @@ import org.qi4j.bootstrap.ModuleAssembly;
 public final class JettyServiceAssembler
     implements Assembler
 {
-    public final void assemble( ModuleAssembly aModule )
+    public final void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        aModule.addEntities( JettyConfiguration.class );
-        aModule.addServices( JettyService.class )
-            .instantiateOnStartup();
+        module.addEntities( JettyConfiguration.class );
+        module.addServices( JettyService.class ).instantiateOnStartup();
     }
 }
