@@ -22,7 +22,6 @@ import java.util.Iterator;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.Ignore;
 import org.qi4j.library.spaces.Space;
 import org.qi4j.library.spaces.SpaceTransaction;
 import org.qi4j.test.AbstractQi4jTest;

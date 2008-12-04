@@ -27,7 +27,8 @@ import org.qi4j.lib.swing.binding.domain.Person;
  */
 public class StateModelPropertyTest extends AbstractStateModelTest
 {
-    @Test @Ignore
+    @Test
+    @Ignore( "Visibility problem in TestCase. Possibly also waiting for X Virtual Framebuffer for server side testing." )
     public final void testPropertyBinding()
     {
         JTextComponentFixture nameTextBox = window.textBox( "personName" );
