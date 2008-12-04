@@ -52,7 +52,7 @@ import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 import org.qi4j.structure.Application;
 import org.qi4j.test.AbstractQi4jTest;
 
-@Ignore
+@Ignore( "Need to rebuild tests after larger changes to implementation." )
 public class RestTest extends AbstractQi4jTest
 {
 
@@ -107,7 +107,7 @@ public class RestTest extends AbstractQi4jTest
         }
     }
 
-    @Test @Ignore
+    @Test
     public void givenAnIdentityWhenExecutingGetCommandThenExpectTheCorrectXml()
         throws Exception
     {
@@ -116,7 +116,7 @@ public class RestTest extends AbstractQi4jTest
         assertEquals( "Incorrect XML produced", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entity><type>org.qi4j.rest.RestTest$PersonEntity</type><identity>P1</identity><properties><identity>P1</identity><firstname>Joe</firstname><lastname>Doe</lastname></properties><associations><mother href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P2\">P2</mother></associations></entity>", xml );
     }
 
-    @Test @Ignore
+    @Test
     public void givenExistingIdentityWhenExecutingPutCommandThenNewValuesInEntity()
         throws Throwable
     {
@@ -137,7 +137,7 @@ public class RestTest extends AbstractQi4jTest
         }
     }
 
-    @Test @Ignore
+    @Test 
     public void givenExistingIdentityWhenExecutingDeleteCommandThenEntityIsRemoved()
         throws Throwable
     {
@@ -165,7 +165,7 @@ public class RestTest extends AbstractQi4jTest
         }
     }
 
-    @Test @Ignore
+    @Test
     public void givenAnTypeWhenExecutingGetCommandThenExpectTheCorrectXml()
         throws Exception
     {
