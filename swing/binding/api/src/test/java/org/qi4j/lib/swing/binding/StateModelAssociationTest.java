@@ -28,7 +28,8 @@ import org.qi4j.lib.swing.binding.domain.Person;
  */
 public final class StateModelAssociationTest extends AbstractStateModelTest
 {
-    @Test @Ignore( "Visibility problems in the TestCase itself. Probably also waiting for X Virtual Framebuffer on Server.")
+    @Test
+    @Ignore( "Visibility problems in the TestCase itself. Probably also waiting for X Virtual Framebuffer on Server.")
     public final void testAssociationBinding()
     {
         JTextComponentFixture catNameTextBox = window.textBox( "catName" );
