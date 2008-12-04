@@ -8,4 +8,7 @@
     <unittests>some</unittests>
     <!-- none, some, good, complete -->
   </status>
+  <licenses>
+    <license>ALv2</license>
+  </licenses>
 </module>
