@@ -14,8 +14,8 @@
 
 package org.qi4j.runtime.service;
 
-import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.service.ServiceInstanceFactory;
+import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceInstanceFactory;
 
 /**
  * TODO
@@ -25,6 +25,7 @@ public final class ServiceInstance<T>
     private final T instance;
     private final ServiceInstanceFactory factory;
     private final ServiceDescriptor serviceDescriptor;
+
 
     public ServiceInstance( T instance,
                             ServiceInstanceFactory factory,

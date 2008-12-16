@@ -18,7 +18,8 @@
 
 package org.qi4j.bootstrap;
 
-import org.qi4j.structure.Application;
+import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.api.structure.Application;
 
 public interface ApplicationFactory
 {
@@ -32,4 +33,6 @@ public interface ApplicationFactory
         throws AssemblyException;
 
     ApplicationAssembly newApplicationAssembly();
+
+    Qi4jSPI runtime();
 }

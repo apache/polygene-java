@@ -18,14 +18,16 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.qi4j.composite.ConstraintViolationException;
-import org.qi4j.composite.State;
-import org.qi4j.entity.association.AbstractAssociation;
-import org.qi4j.property.Property;
+import org.qi4j.api.constraint.ConstraintViolationException;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.entity.association.AbstractAssociation;
+import org.qi4j.api.entity.association.EntityStateHolder;
+import org.qi4j.api.property.Property;
 import org.qi4j.runtime.entity.association.AssociationInstance;
 import org.qi4j.runtime.entity.association.AssociationsInstance;
 import org.qi4j.runtime.entity.association.AssociationsModel;
 import org.qi4j.runtime.property.PropertiesInstance;
+import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.AssociationType;
 import org.qi4j.spi.entity.EntityState;
@@ -49,11 +51,11 @@ public final class EntityStateModel
         this.associationsModel = associationsModel;
     }
 
-    public State newBuilderInstance()
+    public EntityStateHolder newBuilderInstance()
     {
         PropertiesInstance properties = propertiesModel.newBuilderInstance();
         AssociationsInstance associations = associationsModel.newBuilderInstance();
-        return new StateInstance( properties, associations );
+        return new BuilderStateInstance( properties, associations );
     }
 
     public EntityStateModel.EntityStateInstance newInstance( UnitOfWorkInstance uow, EntityState entityState )
@@ -97,13 +99,13 @@ public final class EntityStateModel
         return associationsModel.associations();
     }
 
-    public void setState( State state, EntityState entityState )
+    public void setState( StateHolder state, EntityState entityState )
         throws ConstraintViolationException
     {
-        StateInstance stateInstance = (StateInstance) state;
+        BuilderStateInstance builderStateInstance = (BuilderStateInstance) state;
 
-        propertiesModel.setState( stateInstance.properties, entityState );
-        associationsModel.setState( stateInstance.associations, entityState );
+        propertiesModel.setState( builderStateInstance.properties, entityState );
+        associationsModel.setState( builderStateInstance.associations, entityState );
     }
 
     public Iterable<PropertyType> propertyTypes()
@@ -121,13 +123,13 @@ public final class EntityStateModel
         return associationsModel.manyAssociationTypes();
     }
 
-    private static final class StateInstance
-        implements State
+    private static final class BuilderStateInstance
+        implements EntityStateHolder
     {
         private final PropertiesInstance properties;
         private final AssociationsInstance associations;
 
-        private StateInstance( PropertiesInstance properties, AssociationsInstance associations )
+        private BuilderStateInstance( PropertiesInstance properties, AssociationsInstance associations )
         {
             this.properties = properties;
             this.associations = associations;
@@ -145,7 +147,7 @@ public final class EntityStateModel
     }
 
     public static final class EntityStateInstance
-        implements State
+        implements EntityStateHolder
     {
         private Map<Method, Property<?>> properties;
         private Map<Method, AbstractAssociation> associations;

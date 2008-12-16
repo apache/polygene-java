@@ -1,16 +1,22 @@
-Import-Package: org.qi4j, \
-                org.qi4j.composite, \
-                org.qi4j.entity, \
-                org.qi4j.entity.association, \
-                org.qi4j.injection, \
-                org.qi4j.injection.scope, \
-                org.qi4j.object, \
-                org.qi4j.property, \
-                org.qi4j.query, \
-                org.qi4j.query.grammar, \
-                org.qi4j.service, \
-                org.qi4j.structure, \
-                org.qi4j.util
+Import-Package: org.qi4j.api, \
+                org.qi4j.api.common, \
+                org.qi4j.api.composite, \
+                org.qi4j.api.concern, \
+                org.qi4j.api.entity, \
+                org.qi4j.api.entity.association, \
+                org.qi4j.api.injection, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.metainfo, \
+                org.qi4j.api.mixin, \
+                org.qi4j.api.object, \
+                org.qi4j.api.property, \
+                org.qi4j.api.query, \
+                org.qi4j.api.query.grammar, \
+                org.qi4j.api.service, \
+                org.qi4j.api.sideeffect, \
+                org.qi4j.api.structure, \
+                org.qi4j.api.unitofwork, \
+                org.qi4j.api.util
 
 Export-Package: org.qi4j.spi;version=${pom.version}, \
                 org.qi4j.spi.composite;version=${pom.version}, \
@@ -24,5 +30,4 @@ Export-Package: org.qi4j.spi;version=${pom.version}, \
                 org.qi4j.spi.service;version=${pom.version}, \
                 org.qi4j.spi.service.provider;version=${pom.version}, \
                 org.qi4j.spi.structure;version=${pom.version}, \
-                org.qi4j.entity.memory;version=${pom.version}, \
-                org.qi4j.entity.prefs;version=${pom.version}
+                org.qi4j.entity.memory;version=${pom.version}

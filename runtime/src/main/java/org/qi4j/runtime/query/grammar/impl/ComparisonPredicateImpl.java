@@ -17,14 +17,14 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import org.qi4j.property.Property;
-import org.qi4j.query.grammar.ComparisonPredicate;
-import org.qi4j.query.grammar.PropertyReference;
-import org.qi4j.query.grammar.SingleValueExpression;
-import org.qi4j.query.grammar.ValueExpression;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.query.grammar.ComparisonPredicate;
+import org.qi4j.api.query.grammar.PropertyReference;
+import org.qi4j.api.query.grammar.SingleValueExpression;
+import org.qi4j.api.query.grammar.ValueExpression;
 
 /**
- * Generic {@link org.qi4j.query.grammar.ComparisonPredicate} implementation.
+ * Generic {@link org.qi4j.api.query.grammar.ComparisonPredicate} implementation.
  *
  * @author Alin Dreghiciu
  * @since March 28, 2008
@@ -66,7 +66,7 @@ abstract class ComparisonPredicateImpl<T>
     }
 
     /**
-     * @see org.qi4j.query.grammar.ComparisonPredicate#propertyReference()
+     * @see org.qi4j.api.query.grammar.ComparisonPredicate#propertyReference()
      */
     public PropertyReference<T> propertyReference()
     {
@@ -74,7 +74,7 @@ abstract class ComparisonPredicateImpl<T>
     }
 
     /**
-     * @see org.qi4j.query.grammar.ComparisonPredicate#valueExpression()
+     * @see org.qi4j.api.query.grammar.ComparisonPredicate#valueExpression()
      */
     public ValueExpression<T> valueExpression()
     {
@@ -82,7 +82,7 @@ abstract class ComparisonPredicateImpl<T>
     }
 
     /**
-     * @see org.qi4j.query.grammar.BooleanExpression#eval(Object)
+     * @see org.qi4j.api.query.grammar.BooleanExpression#eval(Object)
      */
     public boolean eval( final Object target )
     {

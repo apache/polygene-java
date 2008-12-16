@@ -24,7 +24,7 @@ import org.ops4j.pax.drone.connector.paxrunner.Platforms;
 import org.ops4j.pax.drone.spi.junit.DroneTestCase;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
-import org.qi4j.structure.Module;
+import org.qi4j.api.structure.Module;
 
 /**
  * @author edward.yakop@gmail.com

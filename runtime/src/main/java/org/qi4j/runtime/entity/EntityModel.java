@@ -21,14 +21,15 @@ import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.ConstraintViolationException;
-import org.qi4j.composite.ConstructionException;
-import org.qi4j.composite.State;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.EntityCompositeAlreadyExistsException;
-import org.qi4j.entity.Queryable;
-import org.qi4j.entity.RDF;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.constraint.ConstraintViolationException;
+import org.qi4j.api.composite.ConstructionException;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.unitofwork.EntityCompositeAlreadyExistsException;
+import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.entity.RDF;
+import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.CompositeMethodInstance;
 import org.qi4j.runtime.composite.CompositeMethodsModel;
@@ -41,6 +42,7 @@ import org.qi4j.runtime.entity.association.AssociationsModel;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
@@ -52,9 +54,9 @@ import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.UnknownEntityTypeException;
-import org.qi4j.structure.Visibility;
-import org.qi4j.util.ClassUtil;
-import org.qi4j.util.MetaInfo;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.util.ClassUtil;
 
 /**
  * TODO
@@ -231,7 +233,7 @@ public final class EntityModel
         }
     }
 
-    public State newBuilderState()
+    public EntityStateHolder newBuilderState()
     {
         return stateModel.newBuilderInstance();
     }
@@ -243,7 +245,7 @@ public final class EntityModel
         return (Class<? extends Composite>) Proxy.getProxyClass( proxyClassloader, interfaces );
     }
 
-    public EntityState newEntityState( EntityStore store, String identity, State state )
+    public EntityState newEntityState( EntityStore store, String identity, StateHolder state )
         throws ConstraintViolationException, EntityStoreException
     {
         QualifiedIdentity qid = newQualifiedIdentity( identity );

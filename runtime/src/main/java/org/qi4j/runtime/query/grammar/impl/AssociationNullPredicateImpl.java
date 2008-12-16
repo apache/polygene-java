@@ -17,11 +17,11 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import org.qi4j.query.grammar.AssociationNullPredicate;
-import org.qi4j.query.grammar.AssociationReference;
+import org.qi4j.api.query.grammar.AssociationNullPredicate;
+import org.qi4j.api.query.grammar.AssociationReference;
 
 /**
- * Generic {@link org.qi4j.query.grammar.AssociationNullPredicate} implementation.
+ * Generic {@link org.qi4j.api.query.grammar.AssociationNullPredicate} implementation.
  *
  * @author Alin Dreghiciu
  * @since 0.2.0, April 09, 2008
@@ -51,7 +51,7 @@ abstract class AssociationNullPredicateImpl
     }
 
     /**
-     * @see org.qi4j.query.grammar.AssociationNullPredicate#associationReference()
+     * @see org.qi4j.api.query.grammar.AssociationNullPredicate#associationReference()
      */
     public AssociationReference associationReference()
     {

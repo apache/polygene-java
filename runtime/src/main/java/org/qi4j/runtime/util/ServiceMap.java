@@ -16,10 +16,10 @@ package org.qi4j.runtime.util;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.composite.Composite;
-import org.qi4j.entity.EntityComposite;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.service.ServiceReference;
+import org.qi4j.api.service.ServiceReference;
 
 /**
  * This class helps you manage references to services which are acquired

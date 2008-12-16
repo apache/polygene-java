@@ -14,7 +14,7 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.composite.ConstraintViolationException;
+import org.qi4j.api.constraint.ConstraintViolationException;
 
 /**
  * Call this to perform a value constraint check

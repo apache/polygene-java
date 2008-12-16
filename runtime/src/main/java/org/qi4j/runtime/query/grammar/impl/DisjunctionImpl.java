@@ -17,11 +17,11 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import org.qi4j.query.grammar.BooleanExpression;
-import org.qi4j.query.grammar.Disjunction;
+import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.api.query.grammar.Disjunction;
 
 /**
- * Default {@link org.qi4j.query.grammar.Disjunction} implementation.
+ * Default {@link org.qi4j.api.query.grammar.Disjunction} implementation.
  *
  * @author Alin Dreghiciu
  * @since March 28, 2008
@@ -46,7 +46,7 @@ public final class DisjunctionImpl
     }
 
     /**
-     * @see org.qi4j.query.grammar.BooleanExpression#eval(Object)
+     * @see org.qi4j.api.query.grammar.BooleanExpression#eval(Object)
      */
     public boolean eval( final Object target )
     {

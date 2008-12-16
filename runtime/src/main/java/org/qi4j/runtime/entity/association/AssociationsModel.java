@@ -22,18 +22,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.bootstrap.AssociationDeclarations;
-import org.qi4j.entity.association.AbstractAssociation;
-import org.qi4j.entity.association.GenericAssociationInfo;
+import org.qi4j.api.entity.association.AbstractAssociation;
+import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
-import org.qi4j.runtime.entity.UnitOfWorkInstance;
+import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.AssociationType;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.ManyAssociationType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.util.MetaInfo;
-import org.qi4j.composite.Optional;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.Optional;
 
 /**
  * TODO

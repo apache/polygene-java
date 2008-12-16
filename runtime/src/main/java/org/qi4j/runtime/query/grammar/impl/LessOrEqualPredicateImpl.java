@@ -17,12 +17,12 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import org.qi4j.query.grammar.LessOrEqualPredicate;
-import org.qi4j.query.grammar.PropertyReference;
-import org.qi4j.query.grammar.ValueExpression;
+import org.qi4j.api.query.grammar.LessOrEqualPredicate;
+import org.qi4j.api.query.grammar.PropertyReference;
+import org.qi4j.api.query.grammar.ValueExpression;
 
 /**
- * Default {@link org.qi4j.query.grammar.LessOrEqualPredicate} implementation.
+ * Default {@link org.qi4j.api.query.grammar.LessOrEqualPredicate} implementation.
  *
  * @author Alin Dreghiciu
  * @since March 28, 2008

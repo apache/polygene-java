@@ -17,11 +17,11 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import org.qi4j.query.grammar.PropertyNullPredicate;
-import org.qi4j.query.grammar.PropertyReference;
+import org.qi4j.api.query.grammar.PropertyNullPredicate;
+import org.qi4j.api.query.grammar.PropertyReference;
 
 /**
- * Generic {@link org.qi4j.query.grammar.PropertyNullPredicate} implementation.
+ * Generic {@link org.qi4j.api.query.grammar.PropertyNullPredicate} implementation.
  *
  * @author Alin Dreghiciu
  * @since March 28, 2008
@@ -51,7 +51,7 @@ abstract class PropertyNullPredicateImpl<T>
     }
 
     /**
-     * @see org.qi4j.query.grammar.PropertyNullPredicate#propertyReference()
+     * @see org.qi4j.api.query.grammar.PropertyNullPredicate#propertyReference()
      */
     public PropertyReference<T> propertyReference()
     {

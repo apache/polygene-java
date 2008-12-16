@@ -16,9 +16,9 @@ package org.qi4j.runtime.structure;
 
 import java.lang.reflect.Type;
 import java.util.List;
-import org.qi4j.composite.AmbiguousTypeException;
-import org.qi4j.service.ServiceReference;
-import org.qi4j.structure.Visibility;
+import org.qi4j.api.composite.AmbiguousTypeException;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.common.Visibility;
 
 /**
  * TODO

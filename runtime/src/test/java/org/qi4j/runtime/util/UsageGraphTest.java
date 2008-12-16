@@ -25,8 +25,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.qi4j.util.CyclicUsageException;
-import org.qi4j.util.UsageGraph;
+import org.qi4j.api.util.CyclicUsageException;
+import org.qi4j.api.util.UsageGraph;
 
 
 public class UsageGraphTest

@@ -3,9 +3,9 @@ package org.qi4j.runtime.entity.association;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import org.qi4j.entity.association.AssociationInfo;
-import org.qi4j.entity.association.ManyAssociation;
-import org.qi4j.runtime.entity.UnitOfWorkInstance;
+import org.qi4j.api.entity.association.AssociationInfo;
+import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**

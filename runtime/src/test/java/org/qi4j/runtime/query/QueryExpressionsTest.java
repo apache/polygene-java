@@ -24,20 +24,20 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
-import org.qi4j.property.Property;
-import org.qi4j.query.QueryExpressions;
-import org.qi4j.query.grammar.BooleanExpression;
-import org.qi4j.query.grammar.Conjunction;
-import org.qi4j.query.grammar.Disjunction;
-import org.qi4j.query.grammar.EqualsPredicate;
-import org.qi4j.query.grammar.Negation;
-import org.qi4j.query.grammar.PropertyReference;
-import org.qi4j.query.grammar.SingleValueExpression;
-import org.qi4j.query.grammar.VariableValueExpression;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.query.QueryExpressions;
+import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.api.query.grammar.Conjunction;
+import org.qi4j.api.query.grammar.Disjunction;
+import org.qi4j.api.query.grammar.EqualsPredicate;
+import org.qi4j.api.query.grammar.Negation;
+import org.qi4j.api.query.grammar.PropertyReference;
+import org.qi4j.api.query.grammar.SingleValueExpression;
+import org.qi4j.api.query.grammar.VariableValueExpression;
 import org.qi4j.runtime.query.grammar.impl.VariableValueExpressionImpl;
 
 /**
- * Unit tests for {@link org.qi4j.query.QueryExpressions}.
+ * Unit tests for {@link org.qi4j.api.query.QueryExpressions}.
  */
 public class QueryExpressionsTest
 {

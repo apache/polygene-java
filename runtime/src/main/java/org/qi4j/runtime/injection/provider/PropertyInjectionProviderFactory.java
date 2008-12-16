@@ -1,9 +1,9 @@
 package org.qi4j.runtime.injection.provider;
 
-import org.qi4j.composite.State;
-import org.qi4j.injection.scope.PropertyField;
-import org.qi4j.injection.scope.PropertyParameter;
-import org.qi4j.property.Property;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.injection.scope.PropertyField;
+import org.qi4j.api.injection.scope.PropertyParameter;
+import org.qi4j.api.property.Property;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
@@ -20,9 +20,9 @@ public final class PropertyInjectionProviderFactory
 {
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel ) throws InvalidInjectionException
     {
-        if( dependencyModel.rawInjectionType().equals( State.class ) )
+        if( dependencyModel.rawInjectionType().equals( StateHolder.class ) )
         {
-            // @PropertyField State properties;
+            // @PropertyField StateHolder properties;
             return new StateInjectionProvider();
         }
         else if( Property.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )

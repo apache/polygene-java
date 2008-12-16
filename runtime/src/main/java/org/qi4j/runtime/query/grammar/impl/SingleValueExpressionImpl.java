@@ -18,7 +18,7 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import org.qi4j.query.grammar.SingleValueExpression;
+import org.qi4j.api.query.grammar.SingleValueExpression;
 
 /**
  * A simple value holder.

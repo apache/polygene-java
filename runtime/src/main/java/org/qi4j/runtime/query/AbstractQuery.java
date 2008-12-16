@@ -20,19 +20,19 @@ package org.qi4j.runtime.query;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.query.Query;
-import org.qi4j.query.grammar.BooleanExpression;
-import org.qi4j.query.grammar.ComparisonPredicate;
-import org.qi4j.query.grammar.Conjunction;
-import org.qi4j.query.grammar.Disjunction;
-import org.qi4j.query.grammar.Negation;
-import org.qi4j.query.grammar.OrderBy;
-import org.qi4j.query.grammar.SingleValueExpression;
-import org.qi4j.query.grammar.ValueExpression;
+import org.qi4j.api.query.Query;
+import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.api.query.grammar.ComparisonPredicate;
+import org.qi4j.api.query.grammar.Conjunction;
+import org.qi4j.api.query.grammar.Disjunction;
+import org.qi4j.api.query.grammar.Negation;
+import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.query.grammar.SingleValueExpression;
+import org.qi4j.api.query.grammar.ValueExpression;
 import org.qi4j.runtime.query.grammar.impl.VariableValueExpressionImpl;
 
 /**
- * Default implementation of {@link org.qi4j.query.Query}
+ * Default implementation of {@link org.qi4j.api.query.Query}
  *
  * @author Alin Dreghiciu
  * @since 0.2.0, April 14, 2008
@@ -115,7 +115,7 @@ abstract class AbstractQuery<T>
     }
 
     /**
-     * @see org.qi4j.query.Query#orderBy(org.qi4j.query.grammar.OrderBy[])
+     * @see org.qi4j.api.query.Query#orderBy(org.qi4j.api.query.grammar.OrderBy[])
      */
     public Query<T> orderBy( final OrderBy... segments )
     {
@@ -124,7 +124,7 @@ abstract class AbstractQuery<T>
     }
 
     /**
-     * @see org.qi4j.query.Query#firstResult(int)
+     * @see org.qi4j.api.query.Query#firstResult(int)
      */
     public Query<T> firstResult( int firstResult )
     {
@@ -133,7 +133,7 @@ abstract class AbstractQuery<T>
     }
 
     /**
-     * @see org.qi4j.query.Query#maxResults(int)
+     * @see org.qi4j.api.query.Query#maxResults(int)
      */
     public Query<T> maxResults( int maxResults )
     {
@@ -143,7 +143,7 @@ abstract class AbstractQuery<T>
 
 
     /**
-     * @see org.qi4j.query.Query#setVariable(String, Object)
+     * @see org.qi4j.api.query.Query#setVariable(String, Object)
      */
     @SuppressWarnings( "unchecked" )
     public void setVariable( final String name, final Object value )
@@ -158,7 +158,7 @@ abstract class AbstractQuery<T>
     }
 
     /**
-     * @see org.qi4j.query.Query#getVariable(String)
+     * @see org.qi4j.api.query.Query#getVariable(String)
      */
     @SuppressWarnings( "unchecked" )
     public <V> V getVariable( final String name )

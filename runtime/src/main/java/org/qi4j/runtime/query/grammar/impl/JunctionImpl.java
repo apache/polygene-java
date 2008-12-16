@@ -17,7 +17,7 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import org.qi4j.query.grammar.BooleanExpression;
+import org.qi4j.api.query.grammar.BooleanExpression;
 
 /**
  * Generic implementation of a junction (con/dis).

@@ -22,8 +22,8 @@ import java.util.List;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.util.AnnotationUtil;
-import org.qi4j.util.ClassUtil;
+import org.qi4j.runtime.util.AnnotationUtil;
+import org.qi4j.api.util.ClassUtil;
 
 /**
  * TODO

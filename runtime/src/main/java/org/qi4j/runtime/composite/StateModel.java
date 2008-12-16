@@ -17,10 +17,9 @@ package org.qi4j.runtime.composite;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
-import org.qi4j.composite.ConstraintViolationException;
-import org.qi4j.composite.State;
-import org.qi4j.entity.association.AbstractAssociation;
-import org.qi4j.property.Property;
+import org.qi4j.api.constraint.ConstraintViolationException;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.property.Property;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.spi.composite.StateDescriptor;
@@ -40,25 +39,25 @@ public final class StateModel
         this.propertiesModel = propertiesModel;
     }
 
-    public State newBuilderState()
+    public StateHolder newBuilderState()
     {
         PropertiesInstance properties = propertiesModel.newBuilderInstance();
         return new StateInstance(properties);
     }
 
-    public State newDefaultInstance()
+    public StateHolder newDefaultInstance()
     {
         PropertiesInstance properties = propertiesModel.newDefaultInstance();
         return new StateInstance( properties );
     }
 
-    public State newState( State state )
+    public StateHolder newState( StateHolder state )
     {
         PropertiesInstance properties = propertiesModel.newInstance( state );
         return new StateInstance(properties);
     }
 
-    public State newInstance( State propertiesState )
+    public StateHolder newInstance( StateHolder propertiesState )
     {
         PropertiesInstance properties = propertiesModel.newInstance( propertiesState );
         return new StateInstance( properties );
@@ -100,7 +99,7 @@ public final class StateModel
         return Collections.EMPTY_LIST;
     }
 
-    public void checkConstraints( State state )
+    public void checkConstraints( StateHolder state )
         throws ConstraintViolationException
     {
         StateInstance stateInstance = (StateModel.StateInstance) state;
@@ -108,7 +107,7 @@ public final class StateModel
     }
 
     public final class StateInstance
-        implements State
+        implements StateHolder
     {
         private final PropertiesInstance properties;
 
@@ -120,11 +119,6 @@ public final class StateModel
         public Property<?> getProperty( Method propertyMethod )
         {
             return properties.propertyFor( propertyMethod );
-        }
-
-        public AbstractAssociation getAssociation( Method associationMethod )
-        {
-            return null;
         }
 
         public void checkConstraints()

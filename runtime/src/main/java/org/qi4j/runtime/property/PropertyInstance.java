@@ -14,8 +14,8 @@
  */
 package org.qi4j.runtime.property;
 
-import org.qi4j.property.AbstractPropertyInstance;
-import org.qi4j.property.PropertyInfo;
+import org.qi4j.api.property.AbstractPropertyInstance;
+import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 
 /**

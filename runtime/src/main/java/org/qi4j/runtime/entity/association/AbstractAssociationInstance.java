@@ -1,15 +1,14 @@
 package org.qi4j.runtime.entity.association;
 
 import java.lang.reflect.Type;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.NoSuchEntityException;
-import org.qi4j.entity.association.AbstractAssociation;
-import org.qi4j.entity.association.AssociationInfo;
-import org.qi4j.entity.association.Qualifier;
-import org.qi4j.runtime.entity.UnitOfWorkInstance;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
+import org.qi4j.api.entity.association.AbstractAssociation;
+import org.qi4j.api.entity.association.AssociationInfo;
+import org.qi4j.api.entity.association.Qualifier;
+import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.QualifierQualifiedIdentity;
-import org.qi4j.composite.Immutable;
 
 /**
  * Implementation of AbstractAssociation. Includes helper methods for subclasses

@@ -18,11 +18,11 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Iterator;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.ConstructionException;
-import org.qi4j.composite.State;
-import org.qi4j.property.Property;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeBuilder;
+import org.qi4j.api.composite.ConstructionException;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.property.Property;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
 
@@ -57,7 +57,7 @@ public final class CompositeBuilderInstance<T>
     // lazy initialized in accessor
     private T stateProxy;
     // lazy initialized in accessor
-    private State state;
+    private StateHolder state;
 
     public CompositeBuilderInstance( ModuleInstance moduleInstance, CompositeModel compositeModel )
     {
@@ -118,7 +118,7 @@ public final class CompositeBuilderInstance<T>
 
     public T newInstance() throws ConstructionException
     {
-        State instanceState;
+        StateHolder instanceState;
         if( state == null )
         {
             instanceState = compositeModel.newDefaultState();
@@ -163,7 +163,7 @@ public final class CompositeBuilderInstance<T>
         return uses;
     }
 
-    private State getState()
+    private StateHolder getState()
     {
         if( state == null )
         {

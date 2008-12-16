@@ -14,16 +14,15 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.io.Serializable;
 import java.util.List;
 import org.qi4j.bootstrap.ServiceDeclaration;
-import org.qi4j.composite.Composite;
+import org.qi4j.api.composite.Composite;
 import org.qi4j.runtime.service.ServiceModel;
-import org.qi4j.service.ServiceComposite;
-import org.qi4j.service.ServiceInstanceFactory;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceInstanceFactory;
 import org.qi4j.spi.service.provider.DefaultServiceInstanceFactory;
-import org.qi4j.structure.Visibility;
-import org.qi4j.util.MetaInfo;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.common.MetaInfo;
 
 /**
  * Declaration of a Service. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#addServices(Class[])}.

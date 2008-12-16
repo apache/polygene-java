@@ -14,7 +14,7 @@
 
 package org.qi4j.spi.structure;
 
-import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
 import org.qi4j.spi.composite.ConstraintDescriptor;

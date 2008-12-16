@@ -15,9 +15,9 @@
 package org.qi4j.runtime.entity;
 
 import java.lang.reflect.Method;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.State;
-import org.qi4j.entity.Entity;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.entity.Entity;
 import org.qi4j.runtime.composite.AbstractMixinsModel;
 import org.qi4j.runtime.composite.MixinDeclaration;
 import org.qi4j.runtime.composite.MixinModel;
@@ -45,7 +45,7 @@ public final class EntityMixinsModel extends AbstractMixinsModel
         return super.implementMethod( method );
     }
 
-    public void newMixins( EntityInstance entityInstance, State state, Object[] mixins )
+    public void newMixins( EntityInstance entityInstance, StateHolder state, Object[] mixins )
     {
         int i = 0;
         for( MixinModel mixinModel : mixinModels )

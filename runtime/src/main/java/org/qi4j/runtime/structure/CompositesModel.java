@@ -15,11 +15,11 @@
 package org.qi4j.runtime.structure;
 
 import java.util.List;
-import org.qi4j.composite.AmbiguousTypeException;
+import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.composite.Resolution;
-import org.qi4j.structure.Visibility;
+import org.qi4j.api.common.Visibility;
 
 /**
  * TODO

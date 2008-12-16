@@ -14,15 +14,14 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.io.Serializable;
 import java.util.List;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.EntityDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.entity.EntityComposite;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.runtime.entity.EntityModel;
-import org.qi4j.structure.Visibility;
-import org.qi4j.util.MetaInfo;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.common.MetaInfo;
 
 /**
  * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addComposites(Class[])}.

@@ -19,7 +19,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
-import org.qi4j.structure.Visibility;
+import org.qi4j.api.common.Visibility;
 
 /**
  * Helper assembler that adds an in-memory EntityStore and a UUID generator to the module

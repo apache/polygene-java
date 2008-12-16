@@ -18,11 +18,11 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.State;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
-import org.qi4j.util.MetaInfo;
+import org.qi4j.api.common.MetaInfo;
 
 /**
  * InvocationHandler for proxy objects.
@@ -37,11 +37,11 @@ public final class DefaultCompositeInstance
 
     private final Composite proxy;
     private final Object[] mixins;
-    private State state;
+    private StateHolder state;
     private final CompositeModel compositeModel;
     private final ModuleInstance moduleInstance;
 
-    public DefaultCompositeInstance( CompositeModel compositeModel, ModuleInstance moduleInstance, Object[] mixins, State state )
+    public DefaultCompositeInstance( CompositeModel compositeModel, ModuleInstance moduleInstance, Object[] mixins, StateHolder state )
     {
         this.compositeModel = compositeModel;
         this.moduleInstance = moduleInstance;
@@ -109,7 +109,7 @@ public final class DefaultCompositeInstance
         return mixins;
     }
 
-    public State state()
+    public StateHolder state()
     {
         return state;
     }

@@ -18,14 +18,13 @@ package org.qi4j.osgi.test;
 
 import org.osgi.framework.ServiceReference;
 import org.qi4j.core.test.osgi.AnEntity;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.EntityCompositeNotFoundException;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkCompletionException;
-import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.entity.Identity;
-import org.qi4j.property.Property;
-import org.qi4j.structure.Module;
+import org.qi4j.api.unitofwork.EntityCompositeNotFoundException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.structure.Module;
 
 /**
  * @author edward.yakop@gmail.com

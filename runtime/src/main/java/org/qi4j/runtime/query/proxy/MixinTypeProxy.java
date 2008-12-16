@@ -21,11 +21,11 @@ package org.qi4j.runtime.query.proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import static java.lang.reflect.Proxy.newProxyInstance;
-import org.qi4j.entity.association.Association;
-import org.qi4j.entity.association.ManyAssociation;
-import org.qi4j.property.Property;
-import org.qi4j.query.grammar.AssociationReference;
-import org.qi4j.query.grammar.PropertyReference;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.query.grammar.AssociationReference;
+import org.qi4j.api.query.grammar.PropertyReference;
 
 /**
  * TODO Add JavaDoc

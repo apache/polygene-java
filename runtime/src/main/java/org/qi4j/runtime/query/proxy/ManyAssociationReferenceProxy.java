@@ -21,10 +21,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import static java.lang.reflect.Proxy.newProxyInstance;
 import java.lang.reflect.Type;
-import org.qi4j.entity.association.Qualifier;
-import org.qi4j.query.grammar.AssociationReference;
+import org.qi4j.api.entity.association.Qualifier;
+import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.runtime.query.grammar.impl.ManyAssociationReferenceImpl;
-import org.qi4j.util.ClassUtil;
+import org.qi4j.api.util.ClassUtil;
 
 /**
  * TODO: Add javadoc

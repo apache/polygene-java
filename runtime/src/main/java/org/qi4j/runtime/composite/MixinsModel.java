@@ -15,8 +15,8 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.State;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.property.StateHolder;
 import org.qi4j.spi.composite.CompositeInstance;
 
 /**
@@ -41,7 +41,7 @@ public final class MixinsModel extends AbstractMixinsModel
     }
 
     // Context
-    public void newMixins( CompositeInstance compositeInstance, UsesInstance uses, State state, Object[] mixins )
+    public void newMixins( CompositeInstance compositeInstance, UsesInstance uses, StateHolder state, Object[] mixins )
     {
         int i = 0;
         for( MixinModel mixinModel : mixinModels )

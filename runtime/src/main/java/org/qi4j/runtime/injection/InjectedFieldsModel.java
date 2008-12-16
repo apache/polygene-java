@@ -22,8 +22,8 @@ import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
-import static org.qi4j.util.AnnotationUtil.getInjectionAnnotation;
-import static org.qi4j.util.ClassUtil.fieldsOf;
+import static org.qi4j.runtime.util.AnnotationUtil.getInjectionAnnotation;
+import static org.qi4j.api.util.ClassUtil.fieldsOf;
 
 /**
  * TODO

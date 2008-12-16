@@ -16,10 +16,10 @@
 */
 package org.qi4j.core.test.osgi.internal;
 
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.core.test.osgi.AComposite;
-import org.qi4j.injection.scope.This;
+import org.qi4j.api.injection.scope.This;
 
 /**
  * @author edward.yakop@gmail.com

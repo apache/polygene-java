@@ -17,11 +17,11 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import org.qi4j.query.grammar.VariableValueExpression;
+import org.qi4j.api.query.grammar.VariableValueExpression;
 
 /**
  * A variable value epression, whois value can be set at runtime before query invocation, via
- * {@link org.qi4j.query.Query#setVariable(String, Object)}.
+ * {@link org.qi4j.api.query.Query#setVariable(String, Object)}.
  *
  * @author Alin Dreghiciu
  * @since March 25, 2008

@@ -17,8 +17,8 @@
  */
 package org.qi4j.runtime.query.model;
 
-import org.qi4j.property.Property;
-import org.qi4j.composite.Optional;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.common.Optional;
 
 /**
  * TODO Add JavaDoc

@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.lang.annotation.Annotation;
-import org.qi4j.composite.ConstraintViolation;
-import org.qi4j.composite.Optional;
+import org.qi4j.api.constraint.ConstraintViolation;
+import org.qi4j.api.common.Optional;
 
 /**
  * TODO

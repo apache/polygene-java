@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import org.qi4j.composite.Composite;
+import org.qi4j.api.composite.Composite;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -91,7 +91,7 @@ public final class CompositeMethodsModel
                 methodConcernsModel = methodConcernsModel.combineWith( mixinMethodConcernsModel );
                 MethodSideEffectsModel mixinMethodSideEffectsModel = mixinModel.sideEffectsFor( method, type );
                 methodSideEffectsModel1 = methodSideEffectsModel1.combineWith( mixinMethodSideEffectsModel );
-
+                method.setAccessible( true );
                 CompositeMethodModel methodComposite = new CompositeMethodModel( method,
                                                                                  new MethodConstraintsModel( method, constraintsModel ),
                                                                                  methodConcernsModel,

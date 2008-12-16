@@ -24,12 +24,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.InvalidCompositeException;
-import org.qi4j.util.ClassUtil;
-import org.qi4j.util.UsageGraph;
+import org.qi4j.api.util.ClassUtil;
+import org.qi4j.api.util.UsageGraph;
 
 /**
  * TODO

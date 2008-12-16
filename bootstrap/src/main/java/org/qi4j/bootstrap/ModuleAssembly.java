@@ -18,9 +18,9 @@
 
 package org.qi4j.bootstrap;
 
-import org.qi4j.composite.Composite;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.service.ServiceComposite;
 
 public interface ModuleAssembly
 {

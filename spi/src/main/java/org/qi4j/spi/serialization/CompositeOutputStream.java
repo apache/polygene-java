@@ -21,9 +21,9 @@ import java.io.Serializable;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.composite.Composite;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.entity.QualifiedIdentity;
 

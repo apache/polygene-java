@@ -18,7 +18,7 @@
 package org.qi4j.spi.query.named;
 
 import java.util.Map;
-import org.qi4j.query.grammar.OrderBy;
+import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinderException;
 

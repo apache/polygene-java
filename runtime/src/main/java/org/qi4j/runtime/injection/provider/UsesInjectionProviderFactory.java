@@ -1,10 +1,10 @@
 package org.qi4j.runtime.injection.provider;
 
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.ConstructionException;
-import org.qi4j.composite.NoSuchCompositeException;
-import org.qi4j.object.NoSuchObjectException;
-import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.composite.ConstructionException;
+import org.qi4j.api.composite.NoSuchCompositeException;
+import org.qi4j.api.object.NoSuchObjectException;
+import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.DependencyModel;

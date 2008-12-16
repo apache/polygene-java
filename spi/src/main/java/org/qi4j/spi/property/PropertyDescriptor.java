@@ -15,7 +15,7 @@
 package org.qi4j.spi.property;
 
 import java.lang.reflect.Method;
-import org.qi4j.property.PropertyInfo;
+import org.qi4j.api.property.PropertyInfo;
 
 /**
  * TODO

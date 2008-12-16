@@ -20,9 +20,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import org.qi4j.Qi4j;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.entity.UnitOfWork;
+import org.qi4j.api.Qi4j;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.composite.CompositeBuilderFactory;
 
 
 public final class SerializedObject<T>

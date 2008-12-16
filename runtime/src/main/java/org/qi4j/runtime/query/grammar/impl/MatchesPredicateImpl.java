@@ -17,12 +17,12 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import org.qi4j.query.grammar.MatchesPredicate;
-import org.qi4j.query.grammar.PropertyReference;
-import org.qi4j.query.grammar.ValueExpression;
+import org.qi4j.api.query.grammar.MatchesPredicate;
+import org.qi4j.api.query.grammar.PropertyReference;
+import org.qi4j.api.query.grammar.ValueExpression;
 
 /**
- * Default {@link org.qi4j.query.grammar.MatchesPredicate} implementation.
+ * Default {@link org.qi4j.api.query.grammar.MatchesPredicate} implementation.
  *
  * @author Alin Dreghiciu
  * @since 0.2.0, April 11, 2008

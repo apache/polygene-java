@@ -13,7 +13,7 @@
  */
 package org.qi4j.runtime.entity;
 
-import org.qi4j.composite.InvalidApplicationException;
+import org.qi4j.api.composite.InvalidApplicationException;
 
 public class ObjectAccessException extends InvalidApplicationException
 {

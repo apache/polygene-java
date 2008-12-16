@@ -6,13 +6,17 @@ Private-Package: org.qi4j.bootstrap.osgi, \
 Import-Package: org.ops4j.pax.swissbox.core, \
                 org.ops4j.pax.swissbox.extender, \
                 org.osgi.framework, \
-                org.qi4j, \
-                org.qi4j.composite, \
-                org.qi4j.entity, \
-                org.qi4j.object, \
-                org.qi4j.property, \
-                org.qi4j.service, \
-                org.qi4j.structure, \
-                org.qi4j.util
+                org.qi4j.api, \
+                org.qi4j.api.common, \
+                org.qi4j.api.composite, \
+                org.qi4j.api.entity, \
+                org.qi4j.api.metainfo, \
+                org.qi4j.api.object, \
+                org.qi4j.api.property, \
+                org.qi4j.api.service, \
+                org.qi4j.spi, \
+                org.qi4j.api.structure, \
+                org.qi4j.api.unitofwork, \
+                org.qi4j.api.util
 
 Export-Package: org.qi4j.bootstrap;version=${pom.version}

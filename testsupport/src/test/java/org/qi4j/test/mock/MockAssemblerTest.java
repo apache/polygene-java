@@ -17,10 +17,9 @@ package org.qi4j.test.mock;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.composite.Mixins;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.test.AbstractQi4jTest;
-import org.junit.Test;
 import org.junit.Ignore;
 
 /**

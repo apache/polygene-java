@@ -14,7 +14,7 @@
 
 package org.qi4j.runtime.structure;
 
-import org.qi4j.object.ObjectBuilder;
+import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.runtime.object.ObjectBuilderInstance;
 
 /**

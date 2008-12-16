@@ -17,13 +17,13 @@ package org.qi4j.spi.serialization;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import org.qi4j.Qi4j;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.InvalidApplicationException;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.UnitOfWork;
+import org.qi4j.api.Qi4j;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeBuilder;
+import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.composite.InvalidApplicationException;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
@@ -41,7 +41,7 @@ public final class CompositeInputStream extends ObjectInputStream
     {
         super( in );
         this.unitOfWork = unitOfWork;
-        this.cbf = unitOfWork.module().compositeBuilderFactory();
+        this.cbf = is.getModule( unitOfWork ).compositeBuilderFactory();
         this.is = is;
         enableResolveObject( true );
     }

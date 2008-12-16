@@ -14,8 +14,8 @@
 
 package org.qi4j.spi.entity;
 
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.association.Qualifier;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.association.Qualifier;
 
 /**
  * TODO

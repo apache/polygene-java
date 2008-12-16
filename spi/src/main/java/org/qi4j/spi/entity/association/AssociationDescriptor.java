@@ -15,7 +15,7 @@
 package org.qi4j.spi.entity.association;
 
 import java.lang.reflect.Method;
-import org.qi4j.entity.association.AssociationInfo;
+import org.qi4j.api.entity.association.AssociationInfo;
 
 /**
  * TODO

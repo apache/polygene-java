@@ -14,7 +14,7 @@
  */
 package org.qi4j.runtime.entity;
 
-import org.qi4j.property.PropertyInfo;
+import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.spi.entity.EntityState;

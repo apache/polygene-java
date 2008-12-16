@@ -20,8 +20,8 @@ package org.qi4j.runtime.query.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.query.grammar.AssociationReference;
-import org.qi4j.query.grammar.PropertyReference;
+import org.qi4j.api.query.grammar.AssociationReference;
+import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.runtime.query.grammar.impl.PropertyReferenceImpl;
 
 /**

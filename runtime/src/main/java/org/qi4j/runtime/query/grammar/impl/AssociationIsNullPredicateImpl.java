@@ -17,11 +17,11 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import org.qi4j.query.grammar.AssociationIsNullPredicate;
-import org.qi4j.query.grammar.AssociationReference;
+import org.qi4j.api.query.grammar.AssociationIsNullPredicate;
+import org.qi4j.api.query.grammar.AssociationReference;
 
 /**
- * Default {@link org.qi4j.query.grammar.AssociationIsNullPredicate} implementation.
+ * Default {@link org.qi4j.api.query.grammar.AssociationIsNullPredicate} implementation.
  *
  * @author Alin Dreghiciu
  * @since 0.2.0, April 09, 2008
@@ -43,7 +43,7 @@ public final class AssociationIsNullPredicateImpl
     }
 
     /**
-     * @see org.qi4j.query.grammar.BooleanExpression#eval(Object)
+     * @see org.qi4j.api.query.grammar.BooleanExpression#eval(Object)
      */
     public boolean eval( final Object target )
     {

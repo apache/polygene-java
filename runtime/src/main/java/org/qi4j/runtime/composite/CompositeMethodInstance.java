@@ -15,6 +15,7 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
+import org.qi4j.spi.composite.InvalidCompositeException;
 
 /**
  * TODO
@@ -49,6 +50,10 @@ public final class CompositeMethodInstance
             Object result = concerns.invoke( composite, params, mixin );
             sideEffects.invoke( composite, params, result, null );
             return result;
+        }
+        catch( InvalidCompositeException e )
+        {
+            throw e; // The Composite is not valid.
         }
         catch( Throwable throwable )
         {

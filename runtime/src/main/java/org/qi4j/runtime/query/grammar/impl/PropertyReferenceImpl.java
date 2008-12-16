@@ -21,12 +21,12 @@ package org.qi4j.runtime.query.grammar.impl;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import org.qi4j.property.Property;
-import org.qi4j.query.grammar.AssociationReference;
-import org.qi4j.query.grammar.PropertyReference;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.query.grammar.AssociationReference;
+import org.qi4j.api.query.grammar.PropertyReference;
 
 /**
- * Default {@link org.qi4j.query.grammar.PropertyReference} implementation.
+ * Default {@link org.qi4j.api.query.grammar.PropertyReference} implementation.
  *
  * @author Alin Dreghiciu
  * @since March 28, 2008
@@ -94,7 +94,7 @@ public final class PropertyReferenceImpl<T>
     }
 
     /**
-     * @see org.qi4j.query.grammar.PropertyReference#propertyName()
+     * @see org.qi4j.api.query.grammar.PropertyReference#propertyName()
      */
     public String propertyName()
     {
@@ -118,7 +118,7 @@ public final class PropertyReferenceImpl<T>
     }
 
     /**
-     * @see org.qi4j.query.grammar.PropertyReference#propertyType()
+     * @see org.qi4j.api.query.grammar.PropertyReference#propertyType()
      */
     public Class<T> propertyType()
     {
@@ -126,7 +126,7 @@ public final class PropertyReferenceImpl<T>
     }
 
     /**
-     * @see org.qi4j.query.grammar.PropertyReference#traversedAssociation()
+     * @see org.qi4j.api.query.grammar.PropertyReference#traversedAssociation()
      */
     public AssociationReference traversedAssociation()
     {
@@ -134,7 +134,7 @@ public final class PropertyReferenceImpl<T>
     }
 
     /**
-     * @see org.qi4j.query.grammar.PropertyReference#eval(Object)
+     * @see org.qi4j.api.query.grammar.PropertyReference#eval(Object)
      */
     public Property<T> eval( final Object target )
     {

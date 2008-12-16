@@ -14,15 +14,15 @@
 
 package org.qi4j.spi.service.provider;
 
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.object.ObjectBuilder;
-import org.qi4j.object.ObjectBuilderFactory;
-import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.service.ServiceInstanceFactory;
-import org.qi4j.service.ServiceInstanceProviderException;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeBuilder;
+import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.object.ObjectBuilder;
+import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceInstanceFactory;
+import org.qi4j.api.service.ServiceInstanceFactoryException;
 
 /**
  * Default service instance provider that simply uses
@@ -35,7 +35,8 @@ public final class DefaultServiceInstanceFactory
     private @Structure CompositeBuilderFactory cbf;
     private @Structure ObjectBuilderFactory obf;
 
-    public Object newInstance( ServiceDescriptor descriptor ) throws ServiceInstanceProviderException
+    public Object newInstance( ServiceDescriptor descriptor ) 
+        throws ServiceInstanceFactoryException
     {
         if( Composite.class.isAssignableFrom( descriptor.type() ) )
         {

@@ -19,10 +19,10 @@
 package org.qi4j.runtime.query;
 
 import java.util.Iterator;
-import org.qi4j.query.Query;
-import org.qi4j.query.QueryExecutionException;
-import org.qi4j.query.grammar.BooleanExpression;
-import org.qi4j.runtime.entity.UnitOfWorkInstance;
+import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryExecutionException;
+import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinder;

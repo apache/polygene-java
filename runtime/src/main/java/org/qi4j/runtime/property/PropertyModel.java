@@ -21,19 +21,19 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import org.qi4j.composite.ConstraintViolation;
-import org.qi4j.composite.ConstraintViolationException;
-import org.qi4j.composite.Immutable;
-import org.qi4j.composite.Computed;
-import org.qi4j.entity.RDF;
-import org.qi4j.property.ComputedPropertyInstance;
-import org.qi4j.property.GenericPropertyInfo;
-import org.qi4j.property.Property;
-import org.qi4j.property.PropertyInfo;
+import org.qi4j.api.constraint.ConstraintViolation;
+import org.qi4j.api.constraint.ConstraintViolationException;
+import org.qi4j.api.property.Immutable;
+import org.qi4j.api.property.Computed;
+import org.qi4j.api.entity.RDF;
+import org.qi4j.api.property.ComputedPropertyInstance;
+import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.util.MetaInfo;
+import org.qi4j.api.common.MetaInfo;
 
 /**
  * TODO

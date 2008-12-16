@@ -29,8 +29,8 @@ import org.qi4j.bootstrap.MetaInfoDeclaration;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ObjectDeclaration;
 import org.qi4j.bootstrap.ServiceDeclaration;
-import org.qi4j.composite.Composite;
-import org.qi4j.entity.EntityComposite;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
@@ -40,11 +40,11 @@ import org.qi4j.runtime.structure.EntitiesModel;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.ObjectsModel;
 import org.qi4j.runtime.structure.ServicesModel;
-import org.qi4j.service.DuplicateServiceIdentityException;
-import org.qi4j.service.ServiceComposite;
-import org.qi4j.service.ServiceInstanceFactory;
-import org.qi4j.structure.Visibility;
-import org.qi4j.util.MetaInfo;
+import org.qi4j.api.service.DuplicateServiceIdentityException;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceInstanceFactory;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.common.MetaInfo;
 
 /**
  * Assembly of a Module. This is where you register all objects, Composites,

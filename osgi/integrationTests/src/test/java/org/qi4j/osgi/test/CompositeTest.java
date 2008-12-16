@@ -17,10 +17,10 @@
 package org.qi4j.osgi.test;
 
 import org.osgi.framework.ServiceReference;
-import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.core.test.osgi.AComposite;
-import org.qi4j.property.Property;
-import org.qi4j.structure.Module;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.structure.Module;
 
 /**
  * @author edward.yakop@gmail.com

@@ -16,7 +16,7 @@ package org.qi4j.runtime.entity.association;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import org.qi4j.entity.association.ListAssociation;
+import org.qi4j.api.entity.association.ListAssociation;
 
 /**
  * TODO

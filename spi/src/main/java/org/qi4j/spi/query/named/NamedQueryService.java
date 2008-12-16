@@ -17,8 +17,8 @@
  */
 package org.qi4j.spi.query.named;
 
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.query.Query;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.query.Query;
 
 /**
  * NamedQueryService is a provider for named, native and other special query types.

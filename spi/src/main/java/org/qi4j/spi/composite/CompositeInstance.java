@@ -15,9 +15,9 @@
 package org.qi4j.spi.composite;
 
 import java.lang.reflect.InvocationHandler;
-import org.qi4j.composite.Composite;
-import org.qi4j.structure.Module;
-import org.qi4j.util.MetaInfo;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.common.MetaInfo;
 
 /**
  * TODO

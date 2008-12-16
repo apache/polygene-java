@@ -20,8 +20,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.qi4j.composite.ConstructionException;
-import org.qi4j.injection.scope.This;
+import org.qi4j.api.composite.ConstructionException;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.DependencyVisitor;
@@ -121,7 +121,6 @@ public final class CompositeMethodModel
         throws ConstructionException
     {
         FragmentInvocationHandler mixinInvocationHandler = mixins.newInvocationHandler( method );
-
         MethodConcernsInstance concernsInstance = methodConcerns.newInstance( moduleInstance, method, mixinInvocationHandler );
         MethodSideEffectsInstance sideEffectsInstance = methodSideEffects.newInstance( moduleInstance, method );
         return new CompositeMethodInstance( concernsInstance, sideEffectsInstance, method );

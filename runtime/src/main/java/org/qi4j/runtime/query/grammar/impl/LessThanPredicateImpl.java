@@ -17,12 +17,12 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import org.qi4j.query.grammar.LessThanPredicate;
-import org.qi4j.query.grammar.PropertyReference;
-import org.qi4j.query.grammar.ValueExpression;
+import org.qi4j.api.query.grammar.LessThanPredicate;
+import org.qi4j.api.query.grammar.PropertyReference;
+import org.qi4j.api.query.grammar.ValueExpression;
 
 /**
- * Default {@link org.qi4j.query.grammar.LessThanPredicate} implementation.
+ * Default {@link org.qi4j.api.query.grammar.LessThanPredicate} implementation.
  *
  * @author Alin Dreghiciu
  * @since March 28, 2008

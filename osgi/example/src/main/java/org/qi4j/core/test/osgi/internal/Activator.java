@@ -28,8 +28,8 @@ import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
-import org.qi4j.structure.Application;
-import org.qi4j.structure.Module;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
 
 public final class Activator
     implements BundleActivator

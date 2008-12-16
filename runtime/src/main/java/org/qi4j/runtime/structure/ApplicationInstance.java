@@ -21,8 +21,8 @@ import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.service.Activator;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.DescriptorVisitor;
-import org.qi4j.structure.Application;
-import org.qi4j.structure.Module;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
 
 /**
  * TODO

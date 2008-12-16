@@ -18,13 +18,13 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import org.qi4j.composite.Composite;
-import org.qi4j.service.Activatable;
-import org.qi4j.service.ServiceInstanceProviderException;
-import org.qi4j.service.ServiceReference;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceInstanceFactoryException;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.service.Activator;
-import org.qi4j.structure.Module;
+import org.qi4j.api.structure.Module;
 
 /**
  * Implementation of ServiceReference. This manages the actual instance of the service
@@ -127,7 +127,7 @@ public final class ServiceReferenceInstance<T>
     }
 
     private Object getInstance()
-        throws ServiceInstanceProviderException
+        throws ServiceInstanceFactoryException
     {
         // DCL that works with Java 1.5 volatile semantics
         if( serviceInstance == null )
@@ -148,7 +148,7 @@ public final class ServiceReferenceInstance<T>
                         catch( Exception e )
                         {
                             serviceInstance = null;
-                            throw new ServiceInstanceProviderException( e );
+                            throw new ServiceInstanceFactoryException( e );
                         }
                     }
 

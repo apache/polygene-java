@@ -17,8 +17,8 @@ package org.qi4j.runtime.composite;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import org.qi4j.composite.Constraint;
-import static org.qi4j.util.ClassUtil.getRawClass;
+import org.qi4j.api.constraint.Constraint;
+import static org.qi4j.api.util.ClassUtil.getRawClass;
 
 /**
  * TODO

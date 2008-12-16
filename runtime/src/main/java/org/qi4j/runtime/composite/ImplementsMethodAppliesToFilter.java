@@ -16,7 +16,7 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import org.qi4j.composite.AppliesToFilter;
+import org.qi4j.api.common.AppliesToFilter;
 
 /**
  * TODO

@@ -19,9 +19,9 @@ package org.qi4j.runtime.query;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.entity.EntityBuilder;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.runtime.query.model.City;
 import org.qi4j.runtime.query.model.Domain;
 import org.qi4j.runtime.query.model.Female;

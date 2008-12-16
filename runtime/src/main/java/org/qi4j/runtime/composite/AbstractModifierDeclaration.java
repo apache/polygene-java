@@ -19,9 +19,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import org.qi4j.composite.AppliesTo;
-import org.qi4j.composite.AppliesToFilter;
-import org.qi4j.composite.ConstructionException;
+import org.qi4j.api.common.AppliesTo;
+import org.qi4j.api.common.AppliesToFilter;
+import org.qi4j.api.composite.ConstructionException;
 
 /**
  * TODO

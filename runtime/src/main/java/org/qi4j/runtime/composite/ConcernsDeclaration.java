@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.Concerns;
-import static org.qi4j.util.ClassUtil.genericInterfacesOf;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.concern.Concerns;
+import static org.qi4j.api.util.ClassUtil.genericInterfacesOf;
 
 /**
  * TODO

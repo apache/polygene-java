@@ -18,10 +18,15 @@ import java.lang.reflect.InvocationHandler;
 import static java.lang.reflect.Proxy.getInvocationHandler;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.State;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.injection.scope.This;
+import java.io.InputStream;
+import java.io.IOException;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.PropertyMapper;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.entity.association.EntityStateHolder;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.composite.DefaultCompositeInstance;
 import static org.qi4j.runtime.composite.DefaultCompositeInstance.getCompositeInstance;
@@ -35,15 +40,21 @@ import org.qi4j.runtime.structure.DependencyVisitor;
 import org.qi4j.runtime.structure.EntitiesInstance;
 import org.qi4j.runtime.structure.EntitiesModel;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.service.Configuration;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.api.service.Configuration;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.object.ObjectDescriptor;
-import org.qi4j.structure.Module;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.EntityCompositeNotFoundException;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
 /**
  * Incarnation of Qi4j.
@@ -88,6 +99,55 @@ public final class Qi4jRuntime
         return null; // No super Composite type found
     }
 
+    public <T> T getConfigurationInstance( Class<? extends T> configType, Composite serviceComposite, UnitOfWork uow )
+        throws InstantiationException
+    {
+        ServiceDescriptor descriptor = ((ServiceComposite) serviceComposite).serviceDescriptor();
+        T configuration;
+        try
+        {
+            String identity = descriptor.identity();
+            configuration = uow.find( identity, configType );
+        }
+        catch( EntityCompositeNotFoundException e )
+        {
+
+            EntityBuilder<? extends T> configBuilder = uow.newEntityBuilder( descriptor.identity(), configType );
+            // Check for defaults
+            String s = descriptor.identity() + ".properties";
+            InputStream asStream = descriptor.type().getResourceAsStream( s );
+            if( asStream != null )
+            {
+                try
+                {
+                    PropertyMapper.map( asStream, (Composite) configBuilder.stateOfComposite() );
+                }
+                catch( IOException e1 )
+                {
+                    InstantiationException exception = new InstantiationException( "Could not read underlying Properties file." );
+                    exception.initCause( e1 );
+                    throw exception;
+                }
+            }
+            configuration = configBuilder.newInstance();
+            try
+            {
+                uow.apply();
+            }
+            catch( UnitOfWorkCompletionException e1 )
+            {
+                InstantiationException exception = new InstantiationException( "Underlying EntityStore is unable to complete." );
+                exception.initCause( e1 );
+                throw exception;
+            }
+        }
+        finally
+        {
+            uow.pause();
+        }
+        return configuration;
+    }
+
     public Class<?> getConfigurationType( Composite serviceComposite )
     {
         CompositeModel descriptor = (CompositeModel) getCompositeDescriptor( serviceComposite );
@@ -121,6 +181,16 @@ public final class Qi4jRuntime
         }
 
         return injectionClass;
+    }
+
+    public Module getModule( UnitOfWork uow )
+    {
+        return ((UnitOfWorkInstance) uow).module();
+    }
+
+    public Module getModule( Composite composite )
+    {
+        return ((CompositeInstance) composite).module();
     }
 
     // SPI
@@ -167,7 +237,7 @@ public final class Qi4jRuntime
         return moduleInstance.findCompositeFor( mixinType );
     }
 
-    public State getState( Composite composite )
+    public StateHolder getState( Composite composite )
     {
         return DefaultCompositeInstance.getCompositeInstance( composite ).state();
     }
@@ -190,7 +260,7 @@ public final class Qi4jRuntime
         return EntityInstance.getEntityInstance( composite ).load();
     }
 
-    public State getState( EntityComposite composite )
+    public EntityStateHolder getState( EntityComposite composite )
     {
         return EntityInstance.getEntityInstance( composite ).state();
     }

@@ -14,9 +14,9 @@
 
 package org.qi4j.spi.service.provider;
 
-import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.service.ServiceInstanceFactory;
-import org.qi4j.service.ServiceInstanceProviderException;
+import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceInstanceFactory;
+import org.qi4j.api.service.ServiceInstanceFactoryException;
 
 /**
  * Return a predefined singleton instance that was provided as service-info
@@ -26,7 +26,7 @@ public class SingletonInstanceFactory
     implements ServiceInstanceFactory
 {
 
-    public Object newInstance( ServiceDescriptor serviceDescriptor ) throws ServiceInstanceProviderException
+    public Object newInstance( ServiceDescriptor serviceDescriptor ) throws ServiceInstanceFactoryException
     {
         return serviceDescriptor.metaInfo().get( Singleton.class ).instance();
     }

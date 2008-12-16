@@ -16,7 +16,7 @@ package org.qi4j.spi.serialization;
 
 import java.io.IOException;
 import java.io.Serializable;
-import org.qi4j.composite.Composite;
+import org.qi4j.api.composite.Composite;
 
 /**
  * TODO

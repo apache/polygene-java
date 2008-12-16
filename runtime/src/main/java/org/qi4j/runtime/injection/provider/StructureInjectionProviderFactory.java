@@ -18,21 +18,20 @@
 package org.qi4j.runtime.injection.provider;
 
 import java.lang.reflect.Type;
-import org.qi4j.Qi4j;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.api.Qi4j;
+import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
-import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.service.ServiceFinder;
+import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.structure.Application;
-import org.qi4j.structure.Layer;
-import org.qi4j.structure.Module;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Layer;
+import org.qi4j.api.structure.Module;
 
 public final class StructureInjectionProviderFactory
     implements InjectionProviderFactory
@@ -88,7 +87,7 @@ public final class StructureInjectionProviderFactory
             }
             else if( type.equals( Qi4j.class ) || type.equals( Qi4jSPI.class ) )
             {
-                return ( (ModuleInstance) context.moduleInstance() ).layerInstance().applicationInstance().runtime();
+                return context.moduleInstance().layerInstance().applicationInstance().runtime();
             }
 
             return null;

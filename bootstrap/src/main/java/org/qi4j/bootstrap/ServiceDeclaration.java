@@ -18,9 +18,8 @@
 
 package org.qi4j.bootstrap;
 
-import java.io.Serializable;
-import org.qi4j.service.ServiceInstanceFactory;
-import org.qi4j.structure.Visibility;
+import org.qi4j.api.service.ServiceInstanceFactory;
+import org.qi4j.api.common.Visibility;
 
 public interface ServiceDeclaration
 {

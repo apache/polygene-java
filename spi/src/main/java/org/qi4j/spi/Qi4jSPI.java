@@ -14,15 +14,16 @@
 
 package org.qi4j.spi;
 
-import org.qi4j.Qi4j;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.State;
-import org.qi4j.entity.EntityComposite;
+import org.qi4j.api.Qi4j;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.object.ObjectDescriptor;
-import org.qi4j.structure.Module;
+import org.qi4j.api.structure.Module;
 
 /**
  * Encapsulation of the Qi4j SPI. This is implemented by the runtime.
@@ -34,7 +35,7 @@ public interface Qi4jSPI
 
     CompositeDescriptor getCompositeDescriptor( Class mixinType, Module module );
 
-    State getState( Composite composite );
+    StateHolder getState( Composite composite );
 
     EntityDescriptor getEntityDescriptor( EntityComposite composite );
 
@@ -42,7 +43,7 @@ public interface Qi4jSPI
 
     EntityState getEntityState( EntityComposite composite );
 
-    State getState( EntityComposite composite );
+    EntityStateHolder getState( EntityComposite composite );
 
     ObjectDescriptor getObjectDescriptor( Class mixinType, Module module );
 

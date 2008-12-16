@@ -17,11 +17,11 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import org.qi4j.query.grammar.BooleanExpression;
-import org.qi4j.query.grammar.Negation;
+import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.api.query.grammar.Negation;
 
 /**
- * Default {@link org.qi4j.query.grammar.Negation} implementation.
+ * Default {@link org.qi4j.api.query.grammar.Negation} implementation.
  *
  * @author Alin Dreghiciu
  * @since March 25, 2008
@@ -47,7 +47,7 @@ public final class NegationImpl
     }
 
     /**
-     * @see org.qi4j.query.grammar.Negation#expression()
+     * @see org.qi4j.api.query.grammar.Negation#expression()
      */
     public BooleanExpression expression()
     {
@@ -55,7 +55,7 @@ public final class NegationImpl
     }
 
     /**
-     * @see org.qi4j.query.grammar.BooleanExpression#eval(Object)
+     * @see org.qi4j.api.query.grammar.BooleanExpression#eval(Object)
      */
     public boolean eval( final Object target )
     {

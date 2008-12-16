@@ -13,6 +13,7 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import org.qi4j.spi.composite.InvalidCompositeException;
 
 /**
  * TODO
@@ -33,7 +34,10 @@ public final class TypedFragmentInvocationHandler
     {
         try
         {
-            method.setAccessible( true );
+            if( !method.isAccessible() )
+            {
+                method.setAccessible( true );       // TODO: This is a massive Performance Killer. Needs to be taken care of.
+            }
             return method.invoke( fragment, args );
         }
         catch( InvocationTargetException e )
@@ -42,6 +46,10 @@ public final class TypedFragmentInvocationHandler
         }
         catch( Throwable e )
         {
+            if( fragment == null )
+            {
+                throw new InvalidCompositeException();
+            }
             throw cleanStackTrace( e, proxy, method );
         }
     }

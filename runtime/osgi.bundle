@@ -12,6 +12,7 @@ Private-Package: org.qi4j.runtime, \
                  org.qi4j.runtime.query.proxy, \
                  org.qi4j.runtime.service, \
                  org.qi4j.runtime.structure, \
+                 org.qi4j.runtime.unitofwork, \
                  org.qi4j.runtime.util
 
 Import-Package: net.sf.cglib.asm;version=2.1.3, \
@@ -24,20 +25,30 @@ Import-Package: net.sf.cglib.asm;version=2.1.3, \
                 net.sf.cglib.transform.hook;version=2.1.3, \
                 net.sf.cglib.transform.impl;version=2.1.3, \
                 net.sf.cglib.util;version=2.1.3, \
-                org.qi4j, \
+                org.qi4j.api, \
+                org.qi4j.api.appliesto, \
                 org.qi4j.bootstrap, \
-                org.qi4j.composite, \
-                org.qi4j.composite.internal, \
-                org.qi4j.entity, \
-                org.qi4j.entity.association, \
-                org.qi4j.injection, \
-                org.qi4j.injection.scope, \
-                org.qi4j.object, \
-                org.qi4j.property, \
-                org.qi4j.query, \
-                org.qi4j.query.grammar, \
-                org.qi4j.service, \
-                org.qi4j.usecase, \
+                org.qi4j.api.common, \
+                org.qi4j.api.composite, \
+                org.qi4j.api.composite.internal, \
+                org.qi4j.api.concern, \
+                org.qi4j.api.concern.internal, \
+                org.qi4j.api.constraint, \
+                org.qi4j.api.entity, \
+                org.qi4j.api.entity.association, \
+                org.qi4j.api.injection, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.metainfo, \
+                org.qi4j.api.mixin, \
+                org.qi4j.api.object, \
+                org.qi4j.api.property, \
+                org.qi4j.api.query, \
+                org.qi4j.api.query.grammar, \
+                org.qi4j.api.service, \
+                org.qi4j.api.sideeffect, \
+                org.qi4j.api.sideeffect.internal, \
+                org.qi4j.api.unitofwork, \
+                org.qi4j.api.usecase, \
                 org.qi4j.spi, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.entity, \
@@ -49,8 +60,8 @@ Import-Package: net.sf.cglib.asm;version=2.1.3, \
                 org.qi4j.spi.service, \
                 org.qi4j.spi.service.provider, \
                 org.qi4j.spi.structure, \
-                org.qi4j.structure, \
-                org.qi4j.util
+                org.qi4j.api.structure, \
+                org.qi4j.api.util
 
 Export-Package: net.sf.cglib.asm;version=2.1.3, \
                 net.sf.cglib.asm.attrs;version=2.1.3, \

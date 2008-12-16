@@ -14,10 +14,10 @@
 
 package org.qi4j.runtime.injection.provider;
 
-import org.qi4j.composite.State;
-import org.qi4j.entity.association.AbstractAssociation;
-import org.qi4j.injection.scope.AssociationField;
-import org.qi4j.injection.scope.AssociationParameter;
+import org.qi4j.api.entity.association.AbstractAssociation;
+import org.qi4j.api.entity.association.EntityStateHolder;
+import org.qi4j.api.injection.scope.AssociationField;
+import org.qi4j.api.injection.scope.AssociationParameter;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
@@ -31,9 +31,10 @@ import org.qi4j.spi.entity.association.AssociationDescriptor;
 public final class AssociationInjectionProviderFactory
     implements InjectionProviderFactory
 {
-    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
+        throws InvalidInjectionException
     {
-        if( dependencyModel.rawInjectionType().equals( State.class ) )
+        if( dependencyModel.rawInjectionType().equals( EntityStateHolder.class ) )
         {
             return new AssociationInjectionProviderFactory.StateInjectionProvider();
         }
@@ -74,7 +75,7 @@ public final class AssociationInjectionProviderFactory
 
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
-            AbstractAssociation abstractAssociation = context.state().getAssociation( associationDescriptor.accessor() );
+            AbstractAssociation abstractAssociation = ((EntityStateHolder) context.state()).getAssociation( associationDescriptor.accessor() );
             if( abstractAssociation != null )
             {
                 return abstractAssociation;

@@ -14,13 +14,13 @@
 
 package org.qi4j.bootstrap;
 
-import org.qi4j.Qi4j;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.object.ObjectBuilderFactory;
-import org.qi4j.service.ServiceFinder;
-import org.qi4j.structure.Application;
-import org.qi4j.structure.Module;
+import org.qi4j.api.Qi4j;
+import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.service.ServiceFinder;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
 
 /**
  * Base class for Assembler that creates an Application
@@ -64,7 +64,7 @@ public abstract class SingletonAssembler
 
     public final Qi4j runtime()
     {
-        return applicationInstance.runtime();
+        return is.runtime();
     }
 
     public final Application application()

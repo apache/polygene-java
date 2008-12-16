@@ -16,9 +16,9 @@
  */
 package org.qi4j.runtime.entity;
 
-import org.qi4j.entity.Entity;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.injection.scope.This;
+import org.qi4j.api.entity.Entity;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.injection.scope.This;
 
 public final class EntityMixin
     implements Entity

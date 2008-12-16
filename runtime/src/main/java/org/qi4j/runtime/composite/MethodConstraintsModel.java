@@ -19,11 +19,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.injection.Name;
+import org.qi4j.api.injection.Name;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.MethodConstraintsDescriptor;
-import org.qi4j.util.AnnotationUtil;
-import org.qi4j.composite.Optional;
+import org.qi4j.runtime.util.AnnotationUtil;
+import org.qi4j.api.common.Optional;
 
 /**
  * TODO

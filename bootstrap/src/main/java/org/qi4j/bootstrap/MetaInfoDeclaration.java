@@ -21,10 +21,8 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.property.GenericPropertyInfo;
-import org.qi4j.property.Property;
-import org.qi4j.util.MetaInfo;
-import org.qi4j.util.ClassUtil;
+import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.common.MetaInfo;
 
 /**
  * Declaration of a Property.

@@ -19,20 +19,21 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.ConstructionException;
-import org.qi4j.composite.State;
-import org.qi4j.entity.Lifecycle;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.ConstructionException;
+import org.qi4j.api.entity.Lifecycle;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
+import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.composite.StateDescriptor;
-import org.qi4j.structure.Visibility;
-import org.qi4j.util.ClassUtil;
-import org.qi4j.util.MetaInfo;
+import org.qi4j.api.util.ClassUtil;
 
 /**
  * TODO
@@ -185,19 +186,28 @@ public final class CompositeModel
 
     public CompositeInstance newCompositeInstance( ModuleInstance moduleInstance,
                                                    UsesInstance uses,
-                                                   State state )
+                                                   StateHolder state )
     {
         stateModel.checkConstraints( state );
 
         Object[] mixins = mixinsModel.newMixinHolder();
         DefaultCompositeInstance compositeInstance = new DefaultCompositeInstance( this, moduleInstance, mixins, state );
 
-        // Instantiate all mixins
-        mixinsModel.newMixins( compositeInstance,
-                               uses,
-                               state,
-                               mixins );
+        try
+        {
+            // Instantiate all mixins
+            mixinsModel.newMixins( compositeInstance,
+                                   uses,
+                                   state,
+                                   mixins );
 
+        }
+        catch( InvalidCompositeException e )
+        {
+            e.setFailingCompositeType( compositeType );
+            e.setMessage( "Invalid Cyclic Mixin usage dependency"  );
+            throw e;
+        }
         // Invoke lifecycle create() method
         Composite proxy = compositeInstance.proxy();
         if( proxy instanceof Lifecycle )
@@ -225,19 +235,19 @@ public final class CompositeModel
         }
     }
 
-    public State newBuilderState()
+    public StateHolder newBuilderState()
     {
         return stateModel.newBuilderState();
     }
 
-    public State newDefaultState()
+    public StateHolder newDefaultState()
     {
         return stateModel.newDefaultInstance();
     }
 
-    public State newState( State state )
+    public StateHolder newState( StateHolder state )
     {
-        return stateModel.newState(state);
+        return stateModel.newState( state );
     }
 
     public String toURI()

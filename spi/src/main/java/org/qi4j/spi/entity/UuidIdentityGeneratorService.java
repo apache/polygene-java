@@ -14,9 +14,9 @@
 
 package org.qi4j.spi.entity;
 
-import org.qi4j.composite.Mixins;
-import org.qi4j.entity.IdentityGenerator;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.entity.IdentityGenerator;
+import org.qi4j.api.service.ServiceComposite;
 
 /**
  * TODO

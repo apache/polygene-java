@@ -19,14 +19,14 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Set;
-import org.qi4j.composite.Composite;
+import org.qi4j.api.composite.Composite;
 import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.service.ServiceInstanceFactory;
-import org.qi4j.structure.Module;
-import org.qi4j.structure.Visibility;
-import org.qi4j.util.ClassUtil;
-import org.qi4j.util.MetaInfo;
+import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceInstanceFactory;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.util.ClassUtil;
 
 /**
  * TODO

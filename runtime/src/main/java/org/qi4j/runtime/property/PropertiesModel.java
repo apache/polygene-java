@@ -22,16 +22,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.composite.ConstraintViolationException;
-import org.qi4j.composite.State;
-import org.qi4j.composite.Optional;
-import org.qi4j.property.GenericPropertyInfo;
-import org.qi4j.property.Property;
+import org.qi4j.api.constraint.ConstraintViolationException;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.property.Property;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.util.MetaInfo;
 
 /**
  * TODO
@@ -103,7 +103,7 @@ public final class PropertiesModel
         return new PropertiesInstance( properties );
     }
 
-    public PropertiesInstance newInstance( State state )
+    public PropertiesInstance newInstance( StateHolder state )
     {
         Map<Method, Property<?>> properties = new HashMap<Method, Property<?>>();
         for( PropertyModel propertyModel : propertyModels )

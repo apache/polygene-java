@@ -16,7 +16,7 @@ package org.qi4j.runtime.entity.association;
 
 import java.lang.reflect.Type;
 import java.util.LinkedHashSet;
-import org.qi4j.entity.association.SetAssociation;
+import org.qi4j.api.entity.association.SetAssociation;
 
 /**
  * TODO

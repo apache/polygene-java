@@ -14,7 +14,7 @@
 
 package org.qi4j.runtime.structure;
 
-import org.qi4j.composite.CompositeBuilder;
+import org.qi4j.api.composite.CompositeBuilder;
 import org.qi4j.runtime.composite.CompositeBuilderInstance;
 
 /**

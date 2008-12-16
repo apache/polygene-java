@@ -21,7 +21,8 @@ package org.qi4j.bootstrap;
 import java.io.IOException;
 import java.util.Iterator;
 import org.qi4j.bootstrap.internal.ServiceLoader;
-import org.qi4j.structure.Application;
+import org.qi4j.api.structure.Application;
+import org.qi4j.spi.Qi4jSPI;
 
 public class Energy4Java
 {
@@ -46,7 +47,7 @@ public class Energy4Java
 
     public Energy4Java()
     {
-        this( findQi4jRuntime() );
+        this( findQi4jApplicationFactory() );
     }
 
     public Energy4Java( ApplicationFactory factory )
@@ -77,7 +78,12 @@ public class Energy4Java
         return factory.newApplicationAssembly();
     }
 
-    private static ApplicationFactory findQi4jRuntime()
+    public Qi4jSPI runtime()
+    {
+        return factory.runtime();
+    }
+    
+    private static ApplicationFactory findQi4jApplicationFactory()
         throws BootstrapException
     {
         try

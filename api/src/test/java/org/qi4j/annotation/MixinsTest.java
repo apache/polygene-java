@@ -16,7 +16,7 @@ import java.lang.annotation.Annotation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.mixin.Mixins;
 
 /**
  * Tests public api exposed by Mixins annotation.

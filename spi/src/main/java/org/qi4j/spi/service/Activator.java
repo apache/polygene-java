@@ -16,7 +16,7 @@ package org.qi4j.spi.service;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.qi4j.service.Activatable;
+import org.qi4j.api.service.Activatable;
 
 /**
  * TODO

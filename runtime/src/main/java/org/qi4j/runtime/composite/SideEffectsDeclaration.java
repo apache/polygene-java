@@ -22,10 +22,10 @@ import static java.util.Collections.singleton;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.SideEffects;
-import org.qi4j.util.AnnotationUtil;
-import static org.qi4j.util.ClassUtil.genericInterfacesOf;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.sideeffect.SideEffects;
+import org.qi4j.runtime.util.AnnotationUtil;
+import static org.qi4j.api.util.ClassUtil.genericInterfacesOf;
 
 /**
  * TODO

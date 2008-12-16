@@ -17,8 +17,8 @@
 package org.qi4j.spi.entity;
 
 import java.util.UUID;
-import org.qi4j.entity.Identity;
-import org.qi4j.entity.IdentityGenerator;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.entity.IdentityGenerator;
 
 public final class UuidIdentityGeneratorMixin
     implements IdentityGenerator

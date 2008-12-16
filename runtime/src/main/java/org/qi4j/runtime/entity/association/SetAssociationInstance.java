@@ -15,9 +15,9 @@
 package org.qi4j.runtime.entity.association;
 
 import java.util.Set;
-import org.qi4j.entity.association.AssociationInfo;
-import org.qi4j.entity.association.SetAssociation;
-import org.qi4j.runtime.entity.UnitOfWorkInstance;
+import org.qi4j.api.entity.association.AssociationInfo;
+import org.qi4j.api.entity.association.SetAssociation;
+import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**

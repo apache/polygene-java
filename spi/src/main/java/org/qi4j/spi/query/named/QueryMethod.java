@@ -19,7 +19,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.qi4j.injection.InjectionScope;
+import org.qi4j.api.injection.InjectionScope;
 
 /**
  * Annotation for the method in the bean service, to indicate that the method is a QueryMethod and should

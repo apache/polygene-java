@@ -17,7 +17,7 @@
  */
 package org.qi4j.runtime.query.model;
 
-import org.qi4j.entity.association.Association;
+import org.qi4j.api.entity.association.Association;
 
 /**
  * TODO Add JavaDoc

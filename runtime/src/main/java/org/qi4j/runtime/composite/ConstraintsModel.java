@@ -19,12 +19,12 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.qi4j.composite.Constraint;
-import org.qi4j.composite.ConstraintImplementationNotFoundException;
-import org.qi4j.composite.Constraints;
-import static org.qi4j.util.AnnotationUtil.isCompositeConstraintAnnotation;
-import static org.qi4j.util.AnnotationUtil.isConstraintAnnotation;
-import static org.qi4j.util.ClassUtil.genericInterfacesOf;
+import org.qi4j.api.constraint.Constraint;
+import org.qi4j.api.constraint.ConstraintImplementationNotFoundException;
+import org.qi4j.api.constraint.Constraints;
+import static org.qi4j.runtime.util.AnnotationUtil.isCompositeConstraintAnnotation;
+import static org.qi4j.runtime.util.AnnotationUtil.isConstraintAnnotation;
+import static org.qi4j.api.util.ClassUtil.genericInterfacesOf;
 
 /**
  * TODO

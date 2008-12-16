@@ -18,8 +18,8 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import org.qi4j.query.grammar.OrderBy;
-import org.qi4j.query.grammar.PropertyReference;
+import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.query.grammar.PropertyReference;
 
 /**
  * Query sorting segment.

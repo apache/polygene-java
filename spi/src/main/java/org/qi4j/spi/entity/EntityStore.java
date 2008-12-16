@@ -52,7 +52,7 @@ public interface EntityStore
         throws EntityStoreException, EntityNotFoundException;
 
     /**
-     * This method is called by {@link org.qi4j.entity.UnitOfWork#complete()}.
+     * This method is called by {@link org.qi4j.api.unitofwork.UnitOfWork#complete()}.
      * The implementation of this method should take the state and send any changes
      * to the underlying datastore. The method returns a StateCommitter that the unit of work
      * will invoke once all EntityStore's have been prepared.

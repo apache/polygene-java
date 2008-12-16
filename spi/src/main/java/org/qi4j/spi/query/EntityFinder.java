@@ -17,10 +17,10 @@
  */
 package org.qi4j.spi.query;
 
-import org.qi4j.query.grammar.BooleanExpression;
-import org.qi4j.query.grammar.OrderBy;
+import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.composite.Optional;
+import org.qi4j.api.common.Optional;
 
 /**
  * TODO Add JavaDoc

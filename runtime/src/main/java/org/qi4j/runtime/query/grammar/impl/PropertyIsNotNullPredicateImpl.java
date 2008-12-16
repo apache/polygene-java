@@ -17,12 +17,12 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import org.qi4j.property.Property;
-import org.qi4j.query.grammar.PropertyIsNotNullPredicate;
-import org.qi4j.query.grammar.PropertyReference;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.query.grammar.PropertyIsNotNullPredicate;
+import org.qi4j.api.query.grammar.PropertyReference;
 
 /**
- * Default {@link org.qi4j.query.grammar.PropertyIsNotNullPredicate} implementation.
+ * Default {@link org.qi4j.api.query.grammar.PropertyIsNotNullPredicate} implementation.
  *
  * @author Alin Dreghiciu
  * @since March 25, 2008
@@ -44,7 +44,7 @@ public final class PropertyIsNotNullPredicateImpl<T>
     }
 
     /**
-     * @see org.qi4j.query.grammar.BooleanExpression#eval(Object)
+     * @see org.qi4j.api.query.grammar.BooleanExpression#eval(Object)
      */
     public boolean eval( final Object target )
     {

@@ -32,7 +32,7 @@ import org.qi4j.runtime.structure.LayerModel;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.UsedLayersModel;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.structure.Application;
+import org.qi4j.api.structure.Application;
 
 /**
  * Factory for ApplicationContext.
@@ -141,5 +141,10 @@ public final class ApplicationFactoryImpl
     public ApplicationAssembly newApplicationAssembly()
     {
         return new ApplicationAssemblyImpl();
+    }
+
+    public Qi4jSPI runtime()
+    {
+        return runtime;
     }
 }
