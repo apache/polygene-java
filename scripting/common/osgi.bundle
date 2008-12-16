@@ -1,0 +1,12 @@
+
+Bundle-Activator:
+
+Private-Package:
+
+Import-Package: org.qi4j.api.mixin
+                
+
+Export-Package: org.qi4j.scripting.common
+
+
+  

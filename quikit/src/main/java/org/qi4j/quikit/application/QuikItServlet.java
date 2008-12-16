@@ -15,8 +15,8 @@ package org.qi4j.quikit.application;
 
 import org.apache.wicket.protocol.http.WicketFilter;
 import org.apache.wicket.protocol.http.WicketServlet;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.object.ObjectBuilderFactory;
 
 public class QuikItServlet extends WicketServlet
 {

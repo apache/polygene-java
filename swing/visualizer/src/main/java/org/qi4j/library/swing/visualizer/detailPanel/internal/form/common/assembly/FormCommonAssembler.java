@@ -21,7 +21,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ServiceDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.context.Qi4jContextForm;
-import static org.qi4j.structure.Visibility.layer;
+import static org.qi4j.api.common.Visibility.layer;
 
 /**
  * @author edward.yakop@gmail.com

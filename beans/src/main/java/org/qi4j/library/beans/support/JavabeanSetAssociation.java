@@ -24,9 +24,9 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
-import org.qi4j.entity.association.GenericAssociationInfo;
-import org.qi4j.entity.association.SetAssociation;
-import org.qi4j.util.MetaInfo;
+import org.qi4j.api.entity.association.GenericAssociationInfo;
+import org.qi4j.api.entity.association.SetAssociation;
+import org.qi4j.api.common.MetaInfo;
 
 public class JavabeanSetAssociation
     implements SetAssociation

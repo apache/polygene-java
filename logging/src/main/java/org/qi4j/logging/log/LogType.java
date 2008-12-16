@@ -17,8 +17,8 @@
  */
 package org.qi4j.logging.log;
 
-import org.qi4j.property.Property;
-import org.qi4j.composite.Immutable;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.property.Immutable;
 import org.qi4j.library.constraints.annotation.OneOf;
 
 @Immutable

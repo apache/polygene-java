@@ -21,7 +21,7 @@ import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
 import org.openrdf.model.impl.GraphImpl;
 import org.qi4j.spi.structure.ApplicationSPI;
-import org.qi4j.structure.Application;
+import org.qi4j.api.structure.Application;
 
 public class ApplicationSerializer
 {

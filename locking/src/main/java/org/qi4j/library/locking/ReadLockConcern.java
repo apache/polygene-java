@@ -3,9 +3,9 @@ package org.qi4j.library.locking;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.concurrent.locks.ReadWriteLock;
-import org.qi4j.composite.AppliesTo;
-import org.qi4j.composite.ConcernOf;
-import org.qi4j.injection.scope.This;
+import org.qi4j.api.common.AppliesTo;
+import org.qi4j.api.concern.ConcernOf;
+import org.qi4j.api.injection.scope.This;
 
 /**
  * Applies read-lock to Composite

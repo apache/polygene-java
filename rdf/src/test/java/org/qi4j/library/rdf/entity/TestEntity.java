@@ -14,14 +14,14 @@
 
 package org.qi4j.library.rdf.entity;
 
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.RDF;
-import org.qi4j.entity.association.Association;
-import org.qi4j.entity.association.ListAssociation;
-import org.qi4j.entity.association.ManyAssociation;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.RDF;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.ListAssociation;
+import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.library.constraints.annotation.NotEmpty;
 import org.qi4j.library.rdf.DcRdf;
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Property;
 
 /**
  * TODO

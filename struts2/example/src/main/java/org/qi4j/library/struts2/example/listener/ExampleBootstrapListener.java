@@ -34,8 +34,8 @@ import org.qi4j.library.struts2.example.actions.HelloWorldAction;
 import org.qi4j.library.struts2.example.actions.IndexAction;
 import org.qi4j.library.struts2.example.actions.ListItems;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
-import org.qi4j.structure.Application;
-import org.qi4j.structure.Module;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
 
 /**
  * @author edward.yakop@gmail.com

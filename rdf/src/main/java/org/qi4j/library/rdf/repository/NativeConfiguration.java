@@ -13,12 +13,10 @@
  */
 package org.qi4j.library.rdf.repository;
 
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.Queryable;
 import org.qi4j.library.constraints.annotation.Matches;
-import org.qi4j.property.Property;
-import org.qi4j.composite.Optional;
-import org.qi4j.service.ConfigurationComposite;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.service.ConfigurationComposite;
 
 /**
  * TODO Add JavaDoc

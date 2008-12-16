@@ -46,12 +46,12 @@ import net.jini.space.JavaSpace05;
 import net.jini.space.MatchSet;
 import net.jini.config.ConfigurationFile;
 import net.jini.config.ConfigurationException;
-import org.qi4j.injection.scope.This;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.library.spaces.Space;
 import org.qi4j.library.spaces.SpaceException;
 import org.qi4j.library.spaces.SpaceTransaction;
-import org.qi4j.service.Activatable;
-import org.qi4j.service.Configuration;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.Configuration;
 
 public class JavaSpacesClientMixin
     implements Space, Activatable

@@ -16,10 +16,10 @@
 */
 package org.qi4j.library.swing.visualizer.school.domain.model.person.assembler;
 
-import org.qi4j.composite.Mixins;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.Identity;
-import org.qi4j.injection.scope.This;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.library.swing.visualizer.school.domain.model.person.Person;
 import org.qi4j.library.swing.visualizer.school.domain.model.person.PersonId;
 import org.qi4j.library.swing.visualizer.school.domain.model.person.Role;

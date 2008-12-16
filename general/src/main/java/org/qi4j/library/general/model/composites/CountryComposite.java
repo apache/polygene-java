@@ -13,7 +13,7 @@
 package org.qi4j.library.general.model.composites;
 
 import org.qi4j.library.general.model.Country;
-import org.qi4j.entity.EntityComposite;
+import org.qi4j.api.entity.EntityComposite;
 
 /**
  * Persistable Country entity

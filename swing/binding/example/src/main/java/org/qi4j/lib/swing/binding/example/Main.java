@@ -27,11 +27,11 @@ import javax.swing.JFrame;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.entity.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.lib.swing.binding.StateModel;
 import org.qi4j.lib.swing.binding.SwingBindingAssembler;
-import org.qi4j.object.ObjectBuilder;
-import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectBuilder;
+import org.qi4j.api.object.ObjectBuilderFactory;
 
 public class Main
 {

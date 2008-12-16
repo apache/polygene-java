@@ -16,7 +16,7 @@
  */
 package org.qi4j.lib.swing.binding.domain.entities;
 
-import org.qi4j.entity.EntityComposite;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.lib.swing.binding.domain.Cat;
 
 /**

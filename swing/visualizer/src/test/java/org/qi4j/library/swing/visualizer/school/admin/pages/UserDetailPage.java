@@ -16,8 +16,8 @@
 */
 package org.qi4j.library.swing.visualizer.school.admin.pages;
 
-import org.qi4j.composite.Concerns;
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.AuthenticationConcern;
 import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.DetailPage;
 import org.qi4j.library.swing.visualizer.school.admin.pages.mixins.UserDetailPageMixin;

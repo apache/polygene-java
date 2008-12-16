@@ -27,13 +27,13 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.Optional;
-import org.qi4j.entity.association.Association;
-import org.qi4j.entity.association.ListAssociation;
-import org.qi4j.entity.association.SetAssociation;
-import org.qi4j.property.Property;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeBuilder;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.ListAssociation;
+import org.qi4j.api.entity.association.SetAssociation;
+import org.qi4j.api.property.Property;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class JavabeanBackedTest extends AbstractQi4jTest

@@ -21,19 +21,19 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.entity.association.Association;
-import org.qi4j.entity.association.ListAssociation;
-import org.qi4j.entity.association.ManyAssociation;
-import org.qi4j.entity.association.SetAssociation;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.Uses;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.ListAssociation;
+import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.entity.association.SetAssociation;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.lib.swing.binding.internal.association.BoundAssociation;
 import org.qi4j.lib.swing.binding.internal.association.BoundListAssociation;
 import org.qi4j.lib.swing.binding.internal.association.BoundSetAssociation;
 import org.qi4j.lib.swing.binding.internal.property.BoundProperty;
-import org.qi4j.object.ObjectBuilder;
-import org.qi4j.object.ObjectBuilderFactory;
-import org.qi4j.property.Property;
+import org.qi4j.api.object.ObjectBuilder;
+import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.property.Property;
 
 /**
  * @author edward.yakop@gmail.com

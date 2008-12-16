@@ -22,7 +22,7 @@ import java.util.List;
 import org.qi4j.library.swing.visualizer.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.structure.Visibility;
+import org.qi4j.api.common.Visibility;
 
 /**
  * @author edward.yakop@gmail.com

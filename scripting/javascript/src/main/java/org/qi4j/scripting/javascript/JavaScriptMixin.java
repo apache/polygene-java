@@ -26,14 +26,14 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.Wrapper;
-import org.qi4j.composite.AppliesTo;
-import org.qi4j.composite.AppliesToFilter;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.This;
-import org.qi4j.scripting.ScriptException;
-import org.qi4j.scripting.ScriptReloadable;
+import org.qi4j.api.common.AppliesTo;
+import org.qi4j.api.common.AppliesToFilter;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.scripting.common.ScriptException;
+import org.qi4j.scripting.common.ScriptReloadable;
 
 /**
  * Generic mixin that implements interfaces by delegating to JavaScript functions

@@ -17,7 +17,7 @@
  */
 package org.qi4j.library.uid.sequence;
 
-import org.qi4j.entity.EntityComposite;
+import org.qi4j.api.entity.EntityComposite;
 
 public interface SequenceEntity extends Sequence, EntityComposite
 {

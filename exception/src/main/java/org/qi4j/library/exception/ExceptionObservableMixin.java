@@ -17,8 +17,8 @@
  */
 package org.qi4j.library.exception;
 
-import org.qi4j.injection.scope.This;
-import org.qi4j.property.Property;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.property.Property;
 
 public class ExceptionObservableMixin
     implements ExceptionObservable

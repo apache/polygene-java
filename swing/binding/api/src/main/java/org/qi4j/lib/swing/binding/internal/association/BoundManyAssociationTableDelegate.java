@@ -9,11 +9,11 @@ import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import org.qi4j.entity.association.ManyAssociation;
+import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.lib.swing.binding.StateModel;
 import org.qi4j.lib.swing.binding.TableBinding;
 import org.qi4j.lib.swing.binding.internal.property.BoundProperty;
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Property;
 
 /**
  * @author Lan Boon Ping

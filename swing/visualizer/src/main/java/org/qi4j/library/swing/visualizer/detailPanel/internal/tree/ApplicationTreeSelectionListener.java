@@ -20,7 +20,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 import org.qi4j.library.swing.visualizer.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.CompositeDetailDescriptor;

@@ -2,7 +2,7 @@ package org.qi4j.library.struts2.support.view;
 
 import static org.qi4j.library.struts2.util.ParameterizedTypes.findTypeVariables;
 
-import org.qi4j.injection.scope.This;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.library.struts2.support.ProvidesEntityOfMixin;
 
 public abstract class ProvidesViewOfMixin<T> extends ProvidesEntityOfMixin<T> implements ProvidesViewOf<T> {

@@ -25,7 +25,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.Arrays;
-import org.qi4j.composite.Composite;
+import org.qi4j.api.composite.Composite;
 import org.qi4j.library.swing.visualizer.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.CompositeMethodDetailDescriptor;
@@ -37,7 +37,7 @@ import org.qi4j.library.swing.visualizer.model.descriptor.MethodConstraintDetail
 import org.qi4j.library.swing.visualizer.model.descriptor.MethodSideEffectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
 import org.qi4j.spi.entity.AssociationType;

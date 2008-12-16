@@ -17,7 +17,7 @@
  */
 package org.qi4j.logging.debug.service;
 
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Property;
 
 public interface DebugServiceConfiguration
 {

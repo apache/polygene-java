@@ -16,7 +16,7 @@
 */
 package org.qi4j.library.spring.bootstrap.internal.application;
 
-import org.qi4j.structure.Application;
+import org.qi4j.api.structure.Application;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;

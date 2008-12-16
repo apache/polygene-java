@@ -16,7 +16,6 @@
     <orderEntry type="module" module-name="qi4j-lib-exception" exported="" />
     <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
     <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
-    <orderEntryProperties />
   </component>
 </module>
 

@@ -19,7 +19,7 @@ package org.qi4j.lib.swing.binding;
 
 import java.util.Set;
 import javax.swing.JComponent;
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.lib.swing.binding.internal.SwingAdapterMixin;
 
 @Mixins( SwingAdapterMixin.class )

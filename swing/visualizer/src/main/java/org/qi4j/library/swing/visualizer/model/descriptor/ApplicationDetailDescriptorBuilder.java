@@ -21,8 +21,7 @@ package org.qi4j.library.swing.visualizer.model.descriptor;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.service.ServiceComposite;
-import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
 import org.qi4j.spi.composite.ConstraintDescriptor;

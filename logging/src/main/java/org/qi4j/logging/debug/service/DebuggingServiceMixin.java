@@ -22,21 +22,21 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.qi4j.composite.Composite;
-import org.qi4j.entity.ConcurrentEntityModificationException;
-import org.qi4j.entity.EntityBuilder;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkCompletionException;
-import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.This;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.logging.debug.records.CompositeDebugRecordEntity;
 import org.qi4j.logging.debug.records.DebugRecord;
 import org.qi4j.logging.debug.records.EntityDebugRecordEntity;
 import org.qi4j.logging.debug.records.ServiceDebugRecordEntity;
-import org.qi4j.service.ServiceComposite;
-import org.qi4j.service.Configuration;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.Configuration;
 
 public class DebuggingServiceMixin
     implements DebuggingService

@@ -18,7 +18,7 @@
  */
 package org.qi4j.library.auth;
 
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Property;
 
 public interface NamedPermission extends Permission
 {

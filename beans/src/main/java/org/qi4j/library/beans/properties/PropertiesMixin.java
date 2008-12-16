@@ -16,7 +16,7 @@ package org.qi4j.library.beans.properties;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.composite.AppliesTo;
+import org.qi4j.api.common.AppliesTo;
 
 /**
  * Generic property mixin. Methods in interface

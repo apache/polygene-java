@@ -33,7 +33,7 @@ import org.qi4j.quikit.panels.EntityFormEditPanel;
 import org.qi4j.quikit.panels.EntityFormViewPanel;
 import org.qi4j.quikit.panels.EntityTypeListViewPanel;
 import org.qi4j.quikit.panels.entityList.EntityListViewPanelAssembler;
-import static org.qi4j.structure.Visibility.layer;
+import static org.qi4j.api.common.Visibility.layer;
 import org.qi4j.library.http.ServletInfo;
 
 /**

@@ -7,10 +7,10 @@ import javax.servlet.FilterConfig;
 import org.apache.struts2.config.BeanSelectionProvider;
 import org.apache.struts2.dispatcher.Dispatcher;
 import org.apache.struts2.dispatcher.FilterDispatcher;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.object.ObjectBuilderFactory;
-import org.qi4j.structure.Module;
+import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.structure.Module;
 
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;

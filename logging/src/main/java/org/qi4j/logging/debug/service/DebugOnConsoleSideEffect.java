@@ -22,9 +22,9 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.SideEffectOf;
-import org.qi4j.injection.scope.Invocation;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.sideeffect.SideEffectOf;
+import org.qi4j.api.injection.scope.Invocation;
 import org.qi4j.logging.log.service.LoggingService;
 import org.qi4j.logging.debug.Debug;
 

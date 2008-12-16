@@ -17,8 +17,8 @@
  */
 package org.qi4j.library.uid.sequence;
 
-import org.qi4j.service.ServiceComposite;
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.mixin.Mixins;
 
 @Mixins( TransientSequencingMixin.class )
 public interface TransientSequencingService extends Sequencing, ServiceComposite

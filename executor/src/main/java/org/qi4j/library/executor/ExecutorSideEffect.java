@@ -18,12 +18,12 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.Executor;
-import org.qi4j.composite.AppliesTo;
-import org.qi4j.composite.GenericSideEffect;
-import org.qi4j.injection.scope.Invocation;
-import org.qi4j.injection.scope.Service;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.api.common.AppliesTo;
+import org.qi4j.api.sideeffect.GenericSideEffect;
+import org.qi4j.api.injection.scope.Invocation;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.object.ObjectBuilderFactory;
 
 /**
  * TODO

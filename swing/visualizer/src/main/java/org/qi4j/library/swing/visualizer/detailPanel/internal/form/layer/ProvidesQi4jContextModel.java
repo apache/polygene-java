@@ -34,8 +34,8 @@ import org.qi4j.library.swing.visualizer.model.descriptor.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.structure.Visibility;
-import static org.qi4j.structure.Visibility.application;
+import org.qi4j.api.common.Visibility;
+import static org.qi4j.api.common.Visibility.application;
 
 /**
  * @author edward.yakop@gmail.com

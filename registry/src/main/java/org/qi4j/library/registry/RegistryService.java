@@ -17,8 +17,8 @@
  */
 package org.qi4j.library.registry;
 
-import org.qi4j.service.ServiceComposite;
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.mixin.Mixins;
 
 @Mixins( RegistryMixin.class )
 public interface RegistryService extends Registry, ServiceComposite

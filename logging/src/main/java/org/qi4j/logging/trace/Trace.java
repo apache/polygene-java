@@ -22,7 +22,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.qi4j.injection.InjectionScope;
+import org.qi4j.api.injection.InjectionScope;
 
 /**
  * The Trace annotation is to indicate which methods should be traced when tracing is enabled.

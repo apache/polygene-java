@@ -21,7 +21,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import org.qi4j.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ServiceDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.CompositeDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.composite.CompositeMethodDescriptorForm;
@@ -44,8 +44,8 @@ import org.qi4j.library.swing.visualizer.model.descriptor.MixinDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.object.ObjectBuilder;
-import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectBuilder;
+import org.qi4j.api.object.ObjectBuilderFactory;
 
 /**
  * @author edward.yakop@gmail.com

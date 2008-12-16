@@ -21,8 +21,8 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ObjectDeclaration;
 import org.qi4j.quikit.panels.entityList.actions.add.AddCompositeLink;
-import static org.qi4j.structure.Visibility.application;
-import static org.qi4j.structure.Visibility.module;
+import static org.qi4j.api.common.Visibility.application;
+import static org.qi4j.api.common.Visibility.module;
 
 /**
  * @author edward.yakop@gmail.com

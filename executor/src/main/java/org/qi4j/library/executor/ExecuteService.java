@@ -15,9 +15,9 @@
 package org.qi4j.library.executor;
 
 import java.util.concurrent.Executor;
-import org.qi4j.composite.Mixins;
-import org.qi4j.service.Activatable;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceComposite;
 
 /**
  * TODO

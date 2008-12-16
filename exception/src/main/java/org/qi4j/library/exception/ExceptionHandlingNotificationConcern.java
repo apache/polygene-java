@@ -17,10 +17,10 @@
  */
 package org.qi4j.library.exception;
 
-import org.qi4j.injection.scope.This;
-import org.qi4j.property.Property;
-import org.qi4j.composite.ConcernOf;
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.concern.ConcernOf;
+import org.qi4j.api.mixin.Mixins;
 
 @Mixins( ExceptionObservableMixin.class )
 public class ExceptionHandlingNotificationConcern extends ConcernOf<ExceptionHandling>

@@ -12,7 +12,7 @@
  */
 package org.qi4j.library.general.model.associations;
 
-import org.qi4j.entity.association.Association;
+import org.qi4j.api.entity.association.Association;
 import org.qi4j.library.general.model.Country;
 
 /**

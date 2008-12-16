@@ -18,7 +18,7 @@
 
 package org.qi4j.library.beans.support;
 
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.mixin.Mixins;
 
 /** This mixin type is used to have a POJO (Spring's definition) as the backing implementation
  * of the mixin state.

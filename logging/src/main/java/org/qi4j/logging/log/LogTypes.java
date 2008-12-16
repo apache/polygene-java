@@ -14,7 +14,7 @@
 
 package org.qi4j.logging.log;
 
-import org.qi4j.composite.Composite;
+import org.qi4j.api.composite.Composite;
 
 /**
  * Composite for log types

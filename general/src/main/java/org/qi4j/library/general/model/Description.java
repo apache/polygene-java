@@ -13,7 +13,7 @@
  */
 package org.qi4j.library.general.model;
 
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Property;
 
 public interface Description
 {

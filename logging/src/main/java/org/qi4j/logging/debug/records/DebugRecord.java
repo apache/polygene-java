@@ -17,8 +17,7 @@
  */
 package org.qi4j.logging.debug.records;
 
-import org.qi4j.property.Property;
-import org.qi4j.composite.Optional;
+import org.qi4j.api.property.Property;
 import java.io.Serializable;
 import java.util.List;
 

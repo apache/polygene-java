@@ -18,8 +18,6 @@
  */
 package org.qi4j.library.auth;
 
-import org.qi4j.entity.Entity;
-
 public interface User extends Groups, RoleAssignee
 {
 }

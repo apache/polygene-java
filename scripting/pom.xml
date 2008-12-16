@@ -12,6 +12,7 @@
   <packaging>pom</packaging>
   <!-- This POM is ONLY to initiate the modules to be built. -->
   <modules>
+    <module>common</module>
     <module>jruby</module>
     <module>javascript</module>
     <module>groovy</module>

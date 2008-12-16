@@ -17,14 +17,14 @@
  */
 package org.qi4j.library.uid.sequence;
 
-import org.qi4j.entity.ConcurrentEntityModificationException;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkCompletionException;
-import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.This;
-import org.qi4j.property.Property;
-import org.qi4j.service.Configuration;
+import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.service.Configuration;
 
 public class PersistedSequencingMixin
     implements Sequencing

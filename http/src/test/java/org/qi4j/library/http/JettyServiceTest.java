@@ -35,7 +35,7 @@ import static org.qi4j.library.http.Servlets.addFilters;
 import static org.qi4j.library.http.Servlets.addServlets;
 import static org.qi4j.library.http.Servlets.filter;
 import static org.qi4j.library.http.Servlets.serve;
-import org.qi4j.service.ServiceReference;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**

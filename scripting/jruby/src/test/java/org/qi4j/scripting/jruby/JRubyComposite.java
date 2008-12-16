@@ -11,8 +11,8 @@
 */
 package org.qi4j.scripting.jruby;
 
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.mixin.Mixins;
 
 /**
  * TODO

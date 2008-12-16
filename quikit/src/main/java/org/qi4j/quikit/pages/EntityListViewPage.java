@@ -17,12 +17,12 @@ import org.apache.wicket.Component;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.Uses;
-import org.qi4j.object.ObjectBuilder;
-import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.object.ObjectBuilder;
+import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.quikit.panels.entityList.EntityListViewPanel;
-import org.qi4j.structure.Module;
+import org.qi4j.api.structure.Module;
 
 public class EntityListViewPage extends WebPage
 {

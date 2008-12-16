@@ -23,8 +23,8 @@ import javax.servlet.Servlet;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.http.Dispatchers.Dispatcher;
-import org.qi4j.service.ServiceComposite;
-import static org.qi4j.structure.Visibility.layer;
+import org.qi4j.api.service.ServiceComposite;
+import static org.qi4j.api.common.Visibility.layer;
 
 public final class Servlets
 {

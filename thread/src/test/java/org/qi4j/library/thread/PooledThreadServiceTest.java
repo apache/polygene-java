@@ -23,14 +23,13 @@ import org.junit.Test;
 import org.junit.Assert;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
-import org.qi4j.injection.scope.Service;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.library.thread.assembly.PooledThreadServiceAssembler;
 import org.qi4j.test.AbstractQi4jTest;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class PooledThreadServiceTest extends AbstractQi4jTest
 {

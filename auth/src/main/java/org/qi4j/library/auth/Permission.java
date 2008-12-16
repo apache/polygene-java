@@ -15,8 +15,6 @@
 
 package org.qi4j.library.auth;
 
-import org.qi4j.entity.Entity;
-
 /**
  * TODO
  */

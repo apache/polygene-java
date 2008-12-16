@@ -21,15 +21,15 @@ import java.util.TreeSet;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.Uses;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.quikit.DisplayInfo;
 import org.qi4j.quikit.application.QuikitSession;
 import static org.qi4j.quikit.panels.entityList.EntityPropertyLabelProvider.PropertyLabel;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.structure.Module;
+import org.qi4j.api.structure.Module;
 
 final class EntityPropertyLabelProvider
     implements IDataProvider<PropertyLabel>

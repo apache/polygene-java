@@ -34,14 +34,14 @@ import org.jruby.runtime.Block;
 import org.jruby.runtime.ThreadContext;
 import org.jruby.runtime.Visibility;
 import org.jruby.runtime.builtin.IRubyObject;
-import org.qi4j.composite.AppliesTo;
-import org.qi4j.composite.AppliesToFilter;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.This;
-import org.qi4j.property.Property;
-import org.qi4j.scripting.ScriptReloadable;
+import org.qi4j.api.common.AppliesTo;
+import org.qi4j.api.common.AppliesToFilter;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.property.Property;
+import org.qi4j.scripting.common.ScriptReloadable;
 
 /**
  * Generic mixin that implements interfaces by delegating to Ruby functions

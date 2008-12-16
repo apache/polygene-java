@@ -7,14 +7,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.JComponent;
-import org.qi4j.injection.scope.Service;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.Uses;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.lib.swing.binding.StateModel;
 import org.qi4j.lib.swing.binding.SwingAdapter;
 import org.qi4j.lib.swing.binding.SwingBinding;
-import org.qi4j.object.ObjectBuilder;
-import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectBuilder;
+import org.qi4j.api.object.ObjectBuilderFactory;
 
 /**
  * @author Lan Boon Ping

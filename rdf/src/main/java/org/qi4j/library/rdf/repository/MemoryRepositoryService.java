@@ -14,9 +14,9 @@
 package org.qi4j.library.rdf.repository;
 
 import org.openrdf.repository.Repository;
-import org.qi4j.composite.Mixins;
-import org.qi4j.service.Activatable;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceComposite;
 
 @Mixins( MemoryRepositoryMixin.class )
 public interface MemoryRepositoryService extends Repository, ServiceComposite, Activatable

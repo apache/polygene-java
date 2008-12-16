@@ -16,11 +16,11 @@
  */
 package org.qi4j.library.swing.visualizer.school.admin.pages.mixins;
 
-import org.qi4j.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.library.swing.visualizer.school.admin.pages.UserDetailPage;
 import org.qi4j.library.swing.visualizer.school.domain.model.person.Person;
-import org.qi4j.structure.Layer;
-import org.qi4j.structure.Module;
+import org.qi4j.api.structure.Layer;
+import org.qi4j.api.structure.Module;
 
 /**
  * @author edward.yakop@gmail.com

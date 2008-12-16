@@ -16,7 +16,7 @@
 */
 package org.qi4j.library.swing.visualizer.school.infrastructure.mail.composites;
 
-import org.qi4j.composite.Composite;
+import org.qi4j.api.composite.Composite;
 import org.qi4j.library.swing.visualizer.school.infrastructure.mail.Mail;
 
 /**

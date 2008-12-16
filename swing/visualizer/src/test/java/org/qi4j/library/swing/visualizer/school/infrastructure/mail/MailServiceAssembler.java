@@ -21,7 +21,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.swing.visualizer.school.infrastructure.mail.composites.MailComposite;
 import org.qi4j.library.swing.visualizer.school.infrastructure.mail.composites.MailServiceComposite;
-import static org.qi4j.structure.Visibility.application;
+import static org.qi4j.api.common.Visibility.application;
 
 /**
  * @author edward.yakop@gmail.com

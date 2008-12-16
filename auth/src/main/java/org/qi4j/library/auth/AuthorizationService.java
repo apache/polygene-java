@@ -15,8 +15,8 @@
 
 package org.qi4j.library.auth;
 
-import org.qi4j.composite.Mixins;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceComposite;
 
 /**
  * TODO

@@ -21,7 +21,7 @@ import java.awt.event.ActionListener;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.overview.internal.visualization.PrefuseJScrollPane;
 import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApplicationDisplay;
 

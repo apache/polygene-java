@@ -16,7 +16,7 @@
 */
 package org.qi4j.library.swing.visualizer.school.admin.pages.composites;
 
-import org.qi4j.composite.Composite;
+import org.qi4j.api.composite.Composite;
 import org.qi4j.library.swing.visualizer.school.admin.pages.UserDetailPage;
 
 /**

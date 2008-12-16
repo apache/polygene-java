@@ -27,9 +27,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import org.qi4j.entity.association.GenericAssociationInfo;
-import org.qi4j.entity.association.ListAssociation;
-import org.qi4j.util.MetaInfo;
+import org.qi4j.api.entity.association.GenericAssociationInfo;
+import org.qi4j.api.entity.association.ListAssociation;
+import org.qi4j.api.common.MetaInfo;
 
 public class JavabeanListAssociation
     implements ListAssociation

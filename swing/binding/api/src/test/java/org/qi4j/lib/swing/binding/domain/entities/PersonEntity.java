@@ -16,9 +16,8 @@
  */
 package org.qi4j.lib.swing.binding.domain.entities;
 
-import org.qi4j.composite.Composite;
 import org.qi4j.lib.swing.binding.domain.Person;
-import org.qi4j.entity.EntityComposite;
+import org.qi4j.api.entity.EntityComposite;
 
 /**
  * @author edward.yakop@gmail.com

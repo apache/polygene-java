@@ -1,6 +1,6 @@
 package org.qi4j.lib.swing.binding.internal.association;
 
-import org.qi4j.entity.association.ManyAssociation;
+import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.lib.swing.binding.internal.BoundDelegate;
 
 /**

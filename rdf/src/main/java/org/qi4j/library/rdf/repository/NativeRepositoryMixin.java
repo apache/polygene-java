@@ -18,9 +18,9 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.inferencer.fc.ForwardChainingRDFSInferencer;
 import org.openrdf.sail.nativerdf.NativeStore;
-import org.qi4j.injection.scope.This;
-import org.qi4j.service.Activatable;
-import org.qi4j.service.Configuration;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.Configuration;
 
 public class NativeRepositoryMixin extends SailRepository
     implements Repository, Activatable

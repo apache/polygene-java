@@ -16,8 +16,8 @@
  */
 package org.qi4j.lib.swing.binding.domain;
 
-import org.qi4j.entity.association.Association;
-import org.qi4j.entity.association.ListAssociation;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.ListAssociation;
 
 /**
  * @author edward.yakop@gmail.com

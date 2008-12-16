@@ -16,7 +16,7 @@
 */
 package org.qi4j.library.swing.visualizer.model.descriptor;
 
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
 
 /**

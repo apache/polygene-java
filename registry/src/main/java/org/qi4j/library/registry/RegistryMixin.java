@@ -19,7 +19,7 @@ package org.qi4j.library.registry;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import org.qi4j.injection.scope.Service;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.library.exception.ExceptionHandling;
 
 public class RegistryMixin<K, V>

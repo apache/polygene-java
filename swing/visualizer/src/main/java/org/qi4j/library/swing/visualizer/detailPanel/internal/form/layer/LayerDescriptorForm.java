@@ -27,14 +27,14 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.qi4j.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.common.CollectionUtils;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ListListModel;
 import static org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.ListListModel.EMPTY_MODEL;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.common.context.Qi4jContextForm;
 import org.qi4j.library.swing.visualizer.model.descriptor.LayerDetailDescriptor;
-import org.qi4j.object.ObjectBuilder;
-import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectBuilder;
+import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.spi.structure.LayerDescriptor;
 
 /**

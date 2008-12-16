@@ -1,10 +1,10 @@
 package org.qi4j.library.general.model;
 
 import java.io.Serializable;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.Mixins;
-import org.qi4j.injection.scope.PropertyField;
-import org.qi4j.property.Property;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.injection.scope.PropertyField;
+import org.qi4j.api.property.Property;
 
 /**
  * TODO

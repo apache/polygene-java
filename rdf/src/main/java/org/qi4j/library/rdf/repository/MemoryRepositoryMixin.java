@@ -15,9 +15,8 @@ package org.qi4j.library.rdf.repository;
 
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.sail.inferencer.fc.ForwardChainingRDFSInferencer;
 import org.openrdf.sail.memory.MemoryStore;
-import org.qi4j.service.Activatable;
+import org.qi4j.api.service.Activatable;
 
 public class MemoryRepositoryMixin extends SailRepository
     implements Repository, Activatable

@@ -13,8 +13,8 @@
  */
 package org.qi4j.quikit.assembly.composites;
 
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.quikit.application.mixins.QuikItFactoryMixin;
 import org.apache.wicket.IPageFactory;
 

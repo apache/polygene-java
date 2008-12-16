@@ -3,7 +3,8 @@ Bundle-Activator:
 
 Private-Package:
 
-Import-Package:
+Import-Package: org.qi4j.scripting.common
+
 
 Ignore-Package:
 

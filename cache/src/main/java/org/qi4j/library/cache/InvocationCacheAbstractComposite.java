@@ -1,8 +1,8 @@
 package org.qi4j.library.cache;
 
-import org.qi4j.composite.Concerns;
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.SideEffects;
+import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.sideeffect.SideEffects;
 
 /**
  * TODO

@@ -14,10 +14,10 @@ package org.qi4j.library.cache;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import org.qi4j.composite.AppliesTo;
-import org.qi4j.composite.ConcernOf;
-import org.qi4j.injection.scope.Invocation;
-import org.qi4j.injection.scope.This;
+import org.qi4j.api.common.AppliesTo;
+import org.qi4j.api.concern.ConcernOf;
+import org.qi4j.api.injection.scope.Invocation;
+import org.qi4j.api.injection.scope.This;
 
 /**
  * Return value of @Cached calls if possible.

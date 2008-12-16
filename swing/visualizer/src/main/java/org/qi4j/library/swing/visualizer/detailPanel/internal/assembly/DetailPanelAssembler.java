@@ -22,7 +22,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.swing.visualizer.detailPanel.DetailPanel;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.assembly.FormAssembler;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.tree.assembly.TreeAssembler;
-import static org.qi4j.structure.Visibility.layer;
+import static org.qi4j.api.common.Visibility.layer;
 
 /**
  * @author edward.yakop@gmail.com

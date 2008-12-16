@@ -21,16 +21,16 @@ import org.apache.wicket.Session;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.settings.ISessionSettings;
 import static org.apache.wicket.util.lang.Objects.setObjectStreamFactory;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.Uses;
-import org.qi4j.object.ObjectBuilder;
-import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.object.ObjectBuilder;
+import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.quikit.assembly.composites.QuikItPageFactoryComposite;
 import org.qi4j.quikit.pages.MainPage;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.structure.Module;
+import org.qi4j.api.structure.Module;
 
 /**
  * @author Niclas Hedman

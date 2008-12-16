@@ -19,8 +19,8 @@ package org.qi4j.logging.trace;
 
 import java.io.PrintStream;
 import java.lang.reflect.Method;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.SideEffectOf;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.sideeffect.SideEffectOf;
 import org.qi4j.logging.trace.service.TraceService;
 
 /**

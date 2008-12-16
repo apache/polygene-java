@@ -13,33 +13,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="qi4j-core-api" exported="" />
-    <orderEntry type="module-library" exported="">
-      <library name="javax.transaction:jta:1.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/javax/transaction/jta/1.1/jta-1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/javax/transaction/jta/1.1/jta-1.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/javax/transaction/jta/1.1/jta-1.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="junit:junit:4.4">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntryProperties />
+    <orderEntry type="library" exported="" name="Maven: javax.transaction:jta:1.1" level="project" />
+    <orderEntry type="library" name="Maven: junit:junit:4.4" level="project" />
   </component>
 </module>
 

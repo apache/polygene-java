@@ -23,7 +23,7 @@ import org.openrdf.repository.RepositoryException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
-import org.qi4j.injection.scope.Service;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**

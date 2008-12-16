@@ -18,8 +18,8 @@
 
 package org.qi4j.logging.trace.service;
 
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.property.Property;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.property.Property;
 
 public interface TraceServiceConfiguration extends EntityComposite
 {

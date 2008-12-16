@@ -16,18 +16,18 @@
 */
 package org.qi4j.library.swing.visualizer.school.domain.model.school.assembler;
 
-import org.qi4j.composite.Mixins;
-import org.qi4j.entity.EntityCompositeNotFoundException;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkCompletionException;
-import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.injection.scope.Structure;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.unitofwork.EntityCompositeNotFoundException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.library.swing.visualizer.school.domain.model.school.School;
 import org.qi4j.library.swing.visualizer.school.domain.model.school.SchoolId;
 import org.qi4j.library.swing.visualizer.school.domain.model.school.SchoolRepository;
-import org.qi4j.query.Query;
-import org.qi4j.query.QueryBuilderFactory;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryBuilderFactory;
+import org.qi4j.api.service.ServiceComposite;
 
 /**
  * @author edward.yakop@gmail.com
@@ -61,7 +61,7 @@ interface SchoolRepositoryService extends SchoolRepository, ServiceComposite
             try
             {
                 School school = uow.find( schoolId.idString(), School.class );
-                uow.completeAndContinue();
+                uow.apply();
                 return school;
             }
             catch( EntityCompositeNotFoundException e )

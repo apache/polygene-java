@@ -18,7 +18,7 @@ package org.qi4j.library.swing.visualizer.overview.internal.visualization.layout
 
 import java.awt.Dimension;
 import java.awt.Point;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
 /**
  * @author edward.yakop@gmail.com

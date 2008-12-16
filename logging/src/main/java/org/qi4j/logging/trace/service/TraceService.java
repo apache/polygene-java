@@ -19,8 +19,8 @@
 package org.qi4j.logging.trace.service;
 
 import java.lang.reflect.Method;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.Optional;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.common.Optional;
 
 public interface TraceService
 {

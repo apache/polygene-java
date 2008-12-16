@@ -17,8 +17,8 @@
  */
 package org.qi4j.library.uid.sequence;
 
-import org.qi4j.entity.Queryable;
-import org.qi4j.property.Property;
+import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.property.Property;
 
 /**
  * TODO Add JavaDoc

@@ -21,7 +21,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.swing.visualizer.school.admin.pages.composites.ListUserPageComposite;
 import org.qi4j.library.swing.visualizer.school.admin.pages.composites.UserDetailPageComposite;
-import static org.qi4j.structure.Visibility.layer;
+import static org.qi4j.api.common.Visibility.layer;
 
 /**
  * @author edward.yakop@gmail.com

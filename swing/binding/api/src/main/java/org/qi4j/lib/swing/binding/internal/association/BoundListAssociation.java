@@ -4,12 +4,12 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
-import org.qi4j.entity.association.ListAssociation;
-import org.qi4j.injection.scope.Service;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.Uses;
+import org.qi4j.api.entity.association.ListAssociation;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.lib.swing.binding.SwingAdapter;
-import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectBuilderFactory;
 
 /**
  * @author Lan Boon Ping

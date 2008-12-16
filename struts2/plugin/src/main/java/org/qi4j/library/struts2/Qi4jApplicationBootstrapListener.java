@@ -27,8 +27,8 @@ import org.qi4j.bootstrap.Energy4Java;
 
 import static org.qi4j.library.struts2.Constants.SERVLET_ATTRIBUTE;
 
-import org.qi4j.structure.Application;
-import org.qi4j.structure.Module;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
 
 /**
  * @author edward.yakop@gmail.com

@@ -7,7 +7,13 @@ Ignore-Package: org.apache.bsf, \
                 org.apache.bsf.util, \
                 sun.misc
 
-Import-Package: javax.swing, \
+Import-Package: org.qi4j.scripting.common, \
+                org.qi4j.api.common, \
+                org.qi4j.api.common, \
+                org.qi4j.api.composite, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.property, \
+                javax.swing, \
                 javax.swing.border, \
                 javax.swing.plaf.basic, \
                 javax.swing.text

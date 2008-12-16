@@ -20,7 +20,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Documented;
-import org.qi4j.injection.InjectionScope;
+import org.qi4j.api.injection.InjectionScope;
 
 /**
  * TODO

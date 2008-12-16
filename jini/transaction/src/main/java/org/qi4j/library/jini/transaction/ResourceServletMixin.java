@@ -24,7 +24,7 @@ import javax.servlet.ServletException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import org.qi4j.util.StreamUtils;
+import org.qi4j.api.util.StreamUtils;
 
 public class ResourceServletMixin extends HttpServlet
 {

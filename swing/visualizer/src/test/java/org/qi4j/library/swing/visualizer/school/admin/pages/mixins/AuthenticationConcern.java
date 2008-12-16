@@ -17,7 +17,7 @@
 package org.qi4j.library.swing.visualizer.school.admin.pages.mixins;
 
 import static java.lang.System.err;
-import org.qi4j.composite.ConcernOf;
+import org.qi4j.api.concern.ConcernOf;
 
 /**
  * @author edward.yakop@gmail.com

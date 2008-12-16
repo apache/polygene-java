@@ -14,7 +14,7 @@ package org.qi4j.library.constraints;
 
 import java.util.Collection;
 import java.util.List;
-import org.qi4j.composite.Composite;
+import org.qi4j.api.composite.Composite;
 import org.qi4j.library.constraints.annotation.Contains;
 import org.qi4j.library.constraints.annotation.Email;
 import org.qi4j.library.constraints.annotation.GreaterThan;
@@ -26,7 +26,7 @@ import org.qi4j.library.constraints.annotation.MinLength;
 import org.qi4j.library.constraints.annotation.NotEmpty;
 import org.qi4j.library.constraints.annotation.Range;
 import org.qi4j.library.constraints.annotation.OneOf;
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Property;
 
 /**
  * Test composite with all the constraints

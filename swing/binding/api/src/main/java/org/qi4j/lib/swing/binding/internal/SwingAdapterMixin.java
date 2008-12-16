@@ -19,11 +19,7 @@ package org.qi4j.lib.swing.binding.internal;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JComponent;
-import org.qi4j.entity.association.Association;
-import org.qi4j.entity.association.ListAssociation;
-import org.qi4j.entity.association.SetAssociation;
 import org.qi4j.lib.swing.binding.SwingAdapter;
-import org.qi4j.property.Property;
 
 /**
  * @author edward.yakop@gmail.com

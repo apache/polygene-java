@@ -17,12 +17,12 @@
  */
 package org.qi4j.library.jini.javaspaces;
 
-import org.qi4j.service.Activatable;
-import org.qi4j.injection.scope.Service;
-import org.qi4j.injection.scope.This;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.library.http.HttpService;
 import org.qi4j.library.http.Interface;
-import org.qi4j.util.StreamUtils;
+import org.qi4j.api.util.StreamUtils;
 import com.sun.jini.start.NonActivatableServiceDescriptor;
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +40,7 @@ public class OutriggerMixin
     implements Activatable
 {
     @Service( optional = true ) HttpService httpService;
-    @This org.qi4j.service.Configuration<OutriggerConfiguration> my;
+    @This org.qi4j.api.service.Configuration<OutriggerConfiguration> my;
 
     private NonActivatableServiceDescriptor.Created lookupCreated;
     private File fileToCleanup;

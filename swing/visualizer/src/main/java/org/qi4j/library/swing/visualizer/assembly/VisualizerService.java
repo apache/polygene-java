@@ -16,14 +16,13 @@
 */
 package org.qi4j.library.swing.visualizer.assembly;
 
-import org.qi4j.composite.Mixins;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.object.ObjectBuilderFactory;
-import org.qi4j.service.Activatable;
-import org.qi4j.service.ServiceComposite;
-import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApplicationVisualization;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.library.swing.visualizer.Qi4jApplicationVisualizer;
-import org.qi4j.structure.Application;
+import org.qi4j.api.structure.Application;
 
 /**
  * @author edward.yakop@gmail.com

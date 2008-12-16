@@ -20,13 +20,13 @@ package org.qi4j.lib.swing.binding;
 import static java.lang.reflect.Proxy.newProxyInstance;
 import java.util.Map;
 import javax.swing.JComponent;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.entity.association.Association;
-import org.qi4j.entity.association.ListAssociation;
-import org.qi4j.entity.association.ManyAssociation;
-import org.qi4j.entity.association.SetAssociation;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.Uses;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.ListAssociation;
+import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.entity.association.SetAssociation;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.lib.swing.binding.internal.BoundField;
 import org.qi4j.lib.swing.binding.internal.StateInvocationHandler;
 import org.qi4j.lib.swing.binding.internal.association.BoundAssociation;
@@ -38,9 +38,9 @@ import org.qi4j.lib.swing.binding.internal.association.DefaultBoundListAssociati
 import org.qi4j.lib.swing.binding.internal.association.DefaultBoundManyAssociationDelegate;
 import org.qi4j.lib.swing.binding.internal.association.DefaultBoundSetAssociationDelegate;
 import org.qi4j.lib.swing.binding.internal.property.BoundProperty;
-import org.qi4j.object.ObjectBuilder;
-import org.qi4j.object.ObjectBuilderFactory;
-import org.qi4j.property.Property;
+import org.qi4j.api.object.ObjectBuilder;
+import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.property.Property;
 
 public final class StateModel<T>
 {

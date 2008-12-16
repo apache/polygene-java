@@ -16,8 +16,8 @@
 */
 package org.qi4j.library.spring.bootstrap;
 
-import org.qi4j.composite.Mixins;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceComposite;
 
 /**
  * @author edward.yakop@gmail.com

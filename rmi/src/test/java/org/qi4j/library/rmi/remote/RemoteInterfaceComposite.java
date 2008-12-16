@@ -11,8 +11,8 @@
 */
 package org.qi4j.library.rmi.remote;
 
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.library.rmi.RMIMixin;
 import org.qi4j.library.cache.InvocationCacheAbstractComposite;
 

@@ -17,12 +17,12 @@
  */
 package org.qi4j.library.jini.transaction;
 
-import org.qi4j.service.Activatable;
-import org.qi4j.injection.scope.Service;
-import org.qi4j.injection.scope.This;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.library.http.HttpService;
 import org.qi4j.library.http.Interface;
-import org.qi4j.util.StreamUtils;
+import org.qi4j.api.util.StreamUtils;
 import com.sun.jini.start.NonActivatableServiceDescriptor;
 import com.sun.jini.admin.DestroyAdmin;
 import java.io.File;
@@ -42,7 +42,7 @@ public class MahaloMixin
     implements Activatable
 {
     @Service( optional = true ) HttpService httpService;
-    @This org.qi4j.service.Configuration<MahaloConfiguration> my;
+    @This org.qi4j.api.service.Configuration<MahaloConfiguration> my;
 
     private NonActivatableServiceDescriptor.Created lookupCreated;
     private File fileToCleanup;

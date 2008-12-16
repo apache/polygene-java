@@ -18,9 +18,9 @@
 
 package org.qi4j.logging.trace.service;
 
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.SideEffects;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.sideeffect.SideEffects;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.logging.trace.TraceOnConsoleSideEffect;
 import org.qi4j.logging.trace.service.TraceService;
 import org.qi4j.logging.trace.service.TraceServiceMixin;

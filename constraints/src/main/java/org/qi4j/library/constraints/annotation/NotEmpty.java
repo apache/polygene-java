@@ -22,8 +22,8 @@ package org.qi4j.library.constraints.annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Collection;
-import org.qi4j.composite.ConstraintDeclaration;
-import org.qi4j.composite.Constraints;
+import org.qi4j.api.constraint.ConstraintDeclaration;
+import org.qi4j.api.constraint.Constraints;
 import org.qi4j.library.constraints.NotEmptyCollectionConstraint;
 import org.qi4j.library.constraints.NotEmptyStringConstraint;
 

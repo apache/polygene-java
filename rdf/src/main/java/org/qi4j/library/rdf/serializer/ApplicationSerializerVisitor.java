@@ -23,7 +23,7 @@ import org.qi4j.spi.structure.ApplicationDescriptor;
 import org.qi4j.spi.structure.DescriptorVisitor;
 import org.qi4j.spi.structure.LayerDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
-import org.qi4j.util.ClassUtil;
+import org.qi4j.api.util.ClassUtil;
 
 /**
  * TODO

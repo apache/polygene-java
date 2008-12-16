@@ -13,7 +13,7 @@
 package org.qi4j.library.general.model.associations;
 
 import org.qi4j.library.general.model.City;
-import org.qi4j.entity.association.Association;
+import org.qi4j.api.entity.association.Association;
 
 /**
  * Represents one-to-one relationship with {@link org.qi4j.library.general.model.composites.CityComposite}

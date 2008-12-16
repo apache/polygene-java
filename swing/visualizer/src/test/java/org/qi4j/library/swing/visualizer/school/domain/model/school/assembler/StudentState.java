@@ -16,11 +16,11 @@
 */
 package org.qi4j.library.swing.visualizer.school.domain.model.school.assembler;
 
-import org.qi4j.entity.association.Association;
-import org.qi4j.entity.association.SetAssociation;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.SetAssociation;
 import org.qi4j.library.swing.visualizer.school.domain.model.school.School;
 import org.qi4j.library.swing.visualizer.school.domain.model.school.Subject;
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Property;
 
 /**
  * @author edward.yakop@gmail.com

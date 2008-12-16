@@ -12,8 +12,8 @@
  */
 package org.qi4j.library.general.model;
 
-import org.qi4j.composite.Computed;
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Computed;
+import org.qi4j.api.property.Property;
 
 /**
  * Generic service interface to obtain the formatted or decorated value

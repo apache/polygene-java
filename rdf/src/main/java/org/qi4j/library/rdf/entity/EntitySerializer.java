@@ -29,11 +29,11 @@ import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.OWL;
-import org.qi4j.entity.Identity;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.Qi4jEntity;
-import org.qi4j.property.GenericPropertyInfo;
+import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.spi.entity.AssociationType;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityType;
@@ -41,7 +41,7 @@ import org.qi4j.spi.entity.ManyAssociationType;
 import org.qi4j.spi.entity.PropertyType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.QualifierQualifiedIdentity;
-import org.qi4j.util.ClassUtil;
+import org.qi4j.api.util.ClassUtil;
 
 /**
  * TODO

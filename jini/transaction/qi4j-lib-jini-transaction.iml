@@ -16,169 +16,24 @@
     <orderEntry type="module" module-name="qi4j-core-runtime" />
     <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
     <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
-    <orderEntry type="module-library">
-      <library name="cglib:cglib-nodep:2.1_3">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
+    <orderEntry type="library" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
     <orderEntry type="module" module-name="qi4j-lib-http" exported="" />
     <orderEntry type="module" module-name="qi4j-lib-constraints" exported="" />
     <orderEntry type="module" module-name="qi4j-core-testsupport" exported="" />
-    <orderEntry type="module-library">
-      <library name="junit:junit:4.4">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.mortbay.jetty:jetty:6.1.11">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/mortbay/jetty/jetty/6.1.11/jetty-6.1.11.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/mortbay/jetty/jetty/6.1.11/jetty-6.1.11-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/mortbay/jetty/jetty/6.1.11/jetty-6.1.11-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.mortbay.jetty:jetty-util:6.1.11">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/mortbay/jetty/jetty-util/6.1.11/jetty-util-6.1.11.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/mortbay/jetty/jetty-util/6.1.11/jetty-util-6.1.11-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/mortbay/jetty/jetty-util/6.1.11/jetty-util-6.1.11-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.mortbay.jetty:servlet-api-2.5:6.1.11">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/mortbay/jetty/servlet-api-2.5/6.1.11/servlet-api-2.5-6.1.11.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/mortbay/jetty/servlet-api-2.5/6.1.11/servlet-api-2.5-6.1.11-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/mortbay/jetty/servlet-api-2.5/6.1.11/servlet-api-2.5-6.1.11-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="javax.servlet:servlet-api:2.4">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/javax/servlet/servlet-api/2.4/servlet-api-2.4-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
+    <orderEntry type="library" name="Maven: junit:junit:4.4" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.mortbay.jetty:jetty:6.1.11" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.mortbay.jetty:jetty-util:6.1.11" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.mortbay.jetty:servlet-api-2.5:6.1.11" level="project" />
+    <orderEntry type="library" exported="" name="Maven: javax.servlet:servlet-api:2.4" level="project" />
     <orderEntry type="module" module-name="qi4j-lib-logging" exported="" />
     <orderEntry type="module" module-name="qi4j-lib-framework" exported="" />
     <orderEntry type="module" module-name="qi4j-lib-jini-lookup" />
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.river:jini-core:2.1.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/river/jini-core/2.1.1/jini-core-2.1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/river/jini-core/2.1.1/jini-core-2.1.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/river/jini-core/2.1.1/jini-core-2.1.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.river:jini-ext:2.1.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/river/jini-ext/2.1.1/jini-ext-2.1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/river/jini-ext/2.1.1/jini-ext-2.1.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/river/jini-ext/2.1.1/jini-ext-2.1.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="org.apache.river:reggie:2.1.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/river/reggie/2.1.1/reggie-2.1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/river/reggie/2.1.1/reggie-2.1.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/river/reggie/2.1.1/reggie-2.1.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.river:start:2.1.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/river/start/2.1.1/start-2.1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/river/start/2.1.1/start-2.1.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/river/start/2.1.1/start-2.1.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.river:jsk-lib:2.1.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/river/jsk-lib/2.1.1/jsk-lib-2.1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/river/jsk-lib/2.1.1/jsk-lib-2.1.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/river/jsk-lib/2.1.1/jsk-lib-2.1.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="org.apache.river:mahalo:2.1.1">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/org/apache/river/mahalo/2.1.1/mahalo-2.1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/org/apache/river/mahalo/2.1.1/mahalo-2.1.1-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/org/apache/river/mahalo/2.1.1/mahalo-2.1.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntryProperties />
+    <orderEntry type="library" exported="" name="Maven: org.apache.river:jini-core:2.1.1" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.apache.river:jini-ext:2.1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.river:reggie:2.1.1" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.apache.river:start:2.1.1" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.apache.river:jsk-lib:2.1.1" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.apache.river:mahalo:2.1.1" level="project" />
   </component>
 </module>
 

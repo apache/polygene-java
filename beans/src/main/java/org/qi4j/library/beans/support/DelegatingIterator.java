@@ -18,8 +18,8 @@
 package org.qi4j.library.beans.support;
 
 import java.util.Iterator;
-import org.qi4j.entity.association.AssociationInfo;
-import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.api.entity.association.AssociationInfo;
+import org.qi4j.api.composite.CompositeBuilderFactory;
 
 public class DelegatingIterator
     implements Iterator

@@ -17,7 +17,7 @@
 package org.qi4j.library.validation;
 
 import java.util.List;
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.mixin.Mixins;
 
 @Mixins( ValidatableMixin.class )
 public interface Validatable

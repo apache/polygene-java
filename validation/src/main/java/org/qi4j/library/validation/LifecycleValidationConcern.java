@@ -12,9 +12,9 @@
  */
 package org.qi4j.library.validation;
 
-import org.qi4j.composite.ConcernOf;
-import org.qi4j.entity.Lifecycle;
-import org.qi4j.injection.scope.This;
+import org.qi4j.api.concern.ConcernOf;
+import org.qi4j.api.entity.Lifecycle;
+import org.qi4j.api.injection.scope.This;
 
 /**
  * This modifier is invoked on Lifecycle mixin invocation.

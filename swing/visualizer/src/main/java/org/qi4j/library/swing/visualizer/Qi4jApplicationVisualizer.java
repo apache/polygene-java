@@ -21,15 +21,15 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import org.qi4j.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.library.swing.visualizer.detailPanel.DetailPanel;
 import org.qi4j.library.swing.visualizer.model.descriptor.ApplicationDetailDescriptor;
 import static org.qi4j.library.swing.visualizer.model.descriptor.ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.overview.OverviewPanel;
-import org.qi4j.object.ObjectBuilder;
-import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectBuilder;
+import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.spi.structure.ApplicationSPI;
-import org.qi4j.structure.Application;
+import org.qi4j.api.structure.Application;
 
 /**
  * TODO

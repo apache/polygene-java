@@ -1,6 +1,6 @@
 package org.qi4j.lib.swing.binding.example;
 
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Property;
 
 /**
  * @author Lan Boon Ping

@@ -15,7 +15,7 @@
 
 package org.qi4j.library.auth;
 
-import org.qi4j.composite.Composite;
+import org.qi4j.api.composite.Composite;
 
 /**
  * TODO

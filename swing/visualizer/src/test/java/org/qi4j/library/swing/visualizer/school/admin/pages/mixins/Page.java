@@ -16,7 +16,7 @@
 */
 package org.qi4j.library.swing.visualizer.school.admin.pages.mixins;
 
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.mixin.Mixins;
 
 /**
  * @author edward.yakop@gmail.com

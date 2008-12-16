@@ -24,19 +24,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import javax.swing.JComponent;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.injection.scope.Service;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.Uses;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.lib.swing.binding.IllegalBindingException;
 import org.qi4j.lib.swing.binding.StateModel;
 import org.qi4j.lib.swing.binding.SwingAdapter;
 import org.qi4j.lib.swing.binding.SwingBinding;
 import org.qi4j.lib.swing.binding.internal.AbstractBinding;
-import org.qi4j.object.ObjectBuilderFactory;
-import org.qi4j.property.GenericPropertyInfo;
-import org.qi4j.property.Property;
-import org.qi4j.property.PropertyInfo;
+import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyInfo;
 
 public final class BoundProperty<T> extends AbstractBinding<T, T, Property<T>>
     implements Property<T>

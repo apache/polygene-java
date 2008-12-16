@@ -17,9 +17,9 @@
  */
 package org.qi4j.logging.trace.records;
 
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.composite.Composite;
-import org.qi4j.property.Property;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.property.Property;
 
 public interface CompositeTraceRecordEntity extends TraceRecord, EntityComposite
 {

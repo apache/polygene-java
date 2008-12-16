@@ -26,8 +26,8 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.injection.scope.Uses;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
+import org.qi4j.api.injection.scope.Uses;
 
 /**
  * @author edward.yakop@gmail.com

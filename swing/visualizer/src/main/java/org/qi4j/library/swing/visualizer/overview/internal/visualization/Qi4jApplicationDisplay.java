@@ -30,7 +30,7 @@ import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import static javax.swing.KeyStroke.getKeyStroke;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 import org.qi4j.library.swing.visualizer.model.descriptor.ApplicationDetailDescriptor;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_TYPE;

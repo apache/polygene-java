@@ -16,7 +16,7 @@
 */
 package org.qi4j.library.swing.visualizer.school.domain.model.school.assembler;
 
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Property;
 
 /**
  * @author edward.yakop@gmail.com

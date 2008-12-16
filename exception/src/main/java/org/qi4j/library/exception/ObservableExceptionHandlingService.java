@@ -17,9 +17,9 @@
  */
 package org.qi4j.library.exception;
 
-import org.qi4j.composite.Concerns;
-import org.qi4j.composite.Mixins;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceComposite;
 
 
 @Concerns( { ExceptionHandlingNotificationConcern.class } )

@@ -19,8 +19,8 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.ConstraintViolationException;
+import org.qi4j.api.composite.CompositeBuilder;
+import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class ConstraintTest extends AbstractQi4jTest

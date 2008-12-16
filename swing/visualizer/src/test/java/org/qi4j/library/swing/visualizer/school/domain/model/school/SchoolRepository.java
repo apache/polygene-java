@@ -16,7 +16,7 @@
 */
 package org.qi4j.library.swing.visualizer.school.domain.model.school;
 
-import org.qi4j.query.Query;
+import org.qi4j.api.query.Query;
 
 /**
  * @author edward.yakop@gmail.com

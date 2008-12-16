@@ -12,7 +12,7 @@
 */
 package org.qi4j.library.beans.properties;
 
-import org.qi4j.composite.AppliesToFilter;
+import org.qi4j.api.common.AppliesToFilter;
 import java.lang.reflect.Method;
 import java.beans.Introspector;
 

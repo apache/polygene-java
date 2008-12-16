@@ -21,7 +21,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
 import static org.qi4j.library.spring.bootstrap.Constants.*;
 import org.qi4j.library.spring.bootstrap.Qi4jApplicationBootstrap;
-import org.qi4j.structure.Application;
+import org.qi4j.api.structure.Application;
 import org.springframework.beans.BeanInstantiationException;
 import static org.springframework.beans.BeanUtils.*;
 import org.springframework.beans.factory.config.BeanDefinition;

@@ -16,9 +16,9 @@
 */
 package org.qi4j.library.swing.visualizer.school.domain.model.person.assembler;
 
-import org.qi4j.entity.association.SetAssociation;
+import org.qi4j.api.entity.association.SetAssociation;
 import org.qi4j.library.swing.visualizer.school.domain.model.person.Role;
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Property;
 
 /**
  * @author edward.yakop@gmail.com

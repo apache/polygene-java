@@ -18,8 +18,8 @@
 package org.qi4j.library.jini.javaspaces;
 
 import javax.servlet.Servlet;
-import org.qi4j.composite.Mixins;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceComposite;
 
 @Mixins( ResourceServletMixin.class )
 public interface OutriggerDownloadServletService extends Servlet, ServiceComposite

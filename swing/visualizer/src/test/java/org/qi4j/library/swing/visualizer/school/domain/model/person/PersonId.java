@@ -17,7 +17,7 @@
 package org.qi4j.library.swing.visualizer.school.domain.model.person;
 
 import java.io.Serializable;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
 /**
  * @author edward.yakop@gmail.com

@@ -23,7 +23,7 @@ import static java.awt.Font.PLAIN;
 import java.awt.FontMetrics;
 import java.awt.geom.Rectangle2D;
 import java.util.Comparator;
-import org.qi4j.composite.NullArgumentException;
+import org.qi4j.api.util.NullArgumentException;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_NAME;
 import prefuse.render.Renderer;
 import prefuse.visual.NodeItem;

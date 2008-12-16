@@ -17,7 +17,7 @@
 package org.qi4j.library.swing.visualizer.overview.internal.visualization;
 
 import java.awt.event.MouseEvent;
-import org.qi4j.composite.NullArgumentException;
+import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 import org.qi4j.library.swing.visualizer.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.CompositeDetailDescriptor;

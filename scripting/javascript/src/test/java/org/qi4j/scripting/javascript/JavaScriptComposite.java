@@ -1,7 +1,7 @@
 package org.qi4j.scripting.javascript;
 
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.mixin.Mixins;
 /*
  * Copyright 2007 Rickard Öberg
  * Licensed under the Apache License, Version 2.0 (the "License"); 

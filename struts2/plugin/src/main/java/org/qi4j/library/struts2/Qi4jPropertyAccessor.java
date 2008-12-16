@@ -16,12 +16,12 @@ import ognl.OgnlContext;
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
 
-import org.qi4j.composite.ConstraintViolation;
-import org.qi4j.composite.ConstraintViolationException;
-import org.qi4j.entity.association.Association;
-import org.qi4j.entity.association.ManyAssociation;
+import org.qi4j.api.constraint.ConstraintViolation;
+import org.qi4j.api.constraint.ConstraintViolationException;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.library.struts2.ConstraintViolationInterceptor.FieldConstraintViolations;
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Property;
 
 /**
  * <p>An implementation of the ObjectPropertyAccessor that provides conversion for Qi4j properties.  The typical way that

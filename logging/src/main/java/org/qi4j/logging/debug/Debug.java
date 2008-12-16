@@ -17,10 +17,9 @@
  */
 package org.qi4j.logging.debug;
 
-import org.qi4j.composite.Concerns;
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.NoopMixin;
-import org.qi4j.property.Property;
+import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.mixin.NoopMixin;
 import java.io.Serializable;
 
 @Concerns( DebugConcern.class )

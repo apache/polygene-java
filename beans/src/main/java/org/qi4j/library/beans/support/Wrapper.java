@@ -17,9 +17,9 @@
  */
 package org.qi4j.library.beans.support;
 
-import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.entity.association.AssociationInfo;
+import org.qi4j.api.composite.CompositeBuilder;
+import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.entity.association.AssociationInfo;
 
 public class Wrapper
 {

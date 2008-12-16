@@ -17,7 +17,7 @@
  */
 package org.qi4j.logging.log;
 
-import org.qi4j.composite.Concerns;
+import org.qi4j.api.concern.Concerns;
 import org.qi4j.logging.log.LogType;
 import java.io.Serializable;
 

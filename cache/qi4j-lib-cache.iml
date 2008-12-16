@@ -17,20 +17,7 @@
     <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
     <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
     <orderEntry type="module" module-name="qi4j-core-runtime" exported="" />
-    <orderEntry type="module-library" exported="">
-      <library name="cglib:cglib-nodep:2.1_3">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntryProperties />
+    <orderEntry type="library" exported="" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
   </component>
 </module>
 

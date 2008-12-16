@@ -2,10 +2,9 @@ package org.qi4j.lib.swing.binding.internal.association;
 
 import java.util.Map;
 import javax.swing.JComponent;
-import org.qi4j.entity.association.ListAssociation;
-import org.qi4j.entity.association.SetAssociation;
-import org.qi4j.entity.association.ManyAssociation;
-import org.qi4j.injection.scope.Uses;
+import org.qi4j.api.entity.association.ListAssociation;
+import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.lib.swing.binding.SwingAdapter;
 
 /**

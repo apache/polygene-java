@@ -17,12 +17,12 @@
  */
 package org.qi4j.logging.log;
 
-import org.qi4j.Qi4j;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.injection.scope.Service;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.This;
+import org.qi4j.api.Qi4j;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.logging.log.SimpleLog;
 import org.qi4j.logging.log.LogTypes;
 import org.qi4j.logging.log.service.LoggingService;

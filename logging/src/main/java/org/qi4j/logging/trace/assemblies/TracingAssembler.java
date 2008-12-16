@@ -24,7 +24,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.logging.trace.service.TraceServiceConfiguration;
 import org.qi4j.logging.trace.service.StandardTraceServiceComposite;
 import org.qi4j.logging.log.LogTypes;
-import org.qi4j.structure.Visibility;
+import org.qi4j.api.common.Visibility;
 
 public class TracingAssembler
     implements Assembler

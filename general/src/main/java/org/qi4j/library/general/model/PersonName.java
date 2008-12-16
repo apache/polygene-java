@@ -12,12 +12,12 @@
  */
 package org.qi4j.library.general.model;
 
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.Computed;
-import org.qi4j.injection.scope.PropertyField;
-import org.qi4j.injection.scope.This;
-import org.qi4j.property.ComputedPropertyInstance;
-import org.qi4j.property.Property;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.property.Computed;
+import org.qi4j.api.injection.scope.PropertyField;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.property.ComputedPropertyInstance;
+import org.qi4j.api.property.Property;
 
 /**
  * Generic interface of PersonName that stores first and last name.

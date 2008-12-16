@@ -24,9 +24,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import org.qi4j.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.library.swing.visualizer.model.descriptor.EntityDetailDescriptor;
-import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityType;
 

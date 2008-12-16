@@ -22,9 +22,8 @@ import com.opensymphony.xwork2.conversion.annotations.Conversion;
 import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
 import java.util.Date;
 import org.apache.struts2.config.Result;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.structure.Layer;
-import org.qi4j.structure.Module;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.structure.Module;
 
 @Conversion
 @Result( value = "/jsp/index.jsp" )

@@ -3,7 +3,8 @@ Bundle-Activator:
 
 Private-Package:
 
-Import-Package: javax.management, \
+Import-Package: org.qi4j.scripting.common, \
+                javax.management, \
                 javax.print.attribute.standard, \
                 javax.servlet, \
                 javax.servlet.http, \
@@ -22,8 +23,9 @@ Import-Package: javax.management, \
                 javax.xml.transform, \
                 javax.xml.transform.dom, \
                 javax.xml.transform.stream, \
-                org.qi4j.composite, \
-                org.qi4j.injection.scope, \
+                org.qi4j.api.composite, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.common, \
                 org.w3c.dom, \
                 org.xml.sax, \
                 org.xml.sax.ext, \

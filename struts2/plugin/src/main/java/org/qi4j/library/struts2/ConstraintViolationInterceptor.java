@@ -8,8 +8,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.ConstraintViolation;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.library.struts2.util.ClassNameFilter;
 
 import com.opensymphony.xwork2.ActionContext;

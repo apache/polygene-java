@@ -17,7 +17,7 @@
  */
 package org.qi4j.lib.swing.binding.example;
 
-import org.qi4j.entity.EntityComposite;
+import org.qi4j.api.entity.EntityComposite;
 
 public interface PersonEntityComposite extends Person, EntityComposite
 {

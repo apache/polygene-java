@@ -29,7 +29,7 @@ import javax.swing.JTextField;
 import javax.swing.ListModel;
 import org.qi4j.library.swing.visualizer.model.descriptor.LayerDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceDescriptor;
 
 /**
  * @author edward.yakop@gmail.com

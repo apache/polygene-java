@@ -19,8 +19,8 @@ package org.qi4j.quikit.panels.entityList.actions.add;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.injection.scope.Uses;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.quikit.panels.entityList.actions.AbstractActionLink;
 
 /**

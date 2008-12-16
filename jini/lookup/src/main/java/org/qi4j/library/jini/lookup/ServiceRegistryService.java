@@ -17,9 +17,9 @@
  */
 package org.qi4j.library.jini.lookup;
 
-import org.qi4j.composite.Mixins;
-import org.qi4j.service.Activatable;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceComposite;
 
 @Mixins( { ReggieMixin.class } )
 public interface ServiceRegistryService extends Activatable, ServiceComposite

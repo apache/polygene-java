@@ -21,20 +21,20 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.qi4j.composite.Composite;
-import org.qi4j.entity.ConcurrentEntityModificationException;
-import org.qi4j.entity.EntityBuilder;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkCompletionException;
-import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.injection.scope.Structure;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.logging.log.LogType;
 import org.qi4j.logging.log.records.CompositeLogRecord;
 import org.qi4j.logging.log.records.EntityLogRecord;
 import org.qi4j.logging.log.records.LogRecord;
 import org.qi4j.logging.log.records.ServiceLogRecord;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.service.ServiceComposite;
 
 public abstract class LoggingServiceMixin
     implements LoggingService

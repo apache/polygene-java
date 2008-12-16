@@ -18,15 +18,15 @@ package org.qi4j.quikit.application;
 
 import org.apache.wicket.Request;
 import org.apache.wicket.protocol.http.WebSession;
-import org.qi4j.composite.CompositeBuilderFactory;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.Uses;
-import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.api.composite.CompositeBuilderFactory;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.structure.Module;
+import org.qi4j.api.structure.Module;
 
 /**
  * @author edward.yakop@gmail.com

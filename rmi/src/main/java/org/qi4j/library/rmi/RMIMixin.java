@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
 import java.rmi.Remote;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import org.qi4j.composite.AppliesTo;
+import org.qi4j.api.common.AppliesTo;
 
 /**
  * Generic mixin that looks up and invokes an object through RMI

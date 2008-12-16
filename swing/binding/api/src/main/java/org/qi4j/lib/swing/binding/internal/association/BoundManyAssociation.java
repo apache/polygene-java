@@ -8,15 +8,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JComponent;
-import org.qi4j.entity.association.ManyAssociation;
-import org.qi4j.injection.scope.Service;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.Uses;
+import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.lib.swing.binding.StateModel;
 import org.qi4j.lib.swing.binding.SwingAdapter;
 import org.qi4j.lib.swing.binding.SwingBinding;
 import org.qi4j.lib.swing.binding.internal.AbstractBinding;
-import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectBuilderFactory;
 
 /**
  * @author Lan Boon Ping

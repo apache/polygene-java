@@ -23,7 +23,7 @@ import org.qi4j.library.swing.visualizer.detailPanel.internal.form.object.Constr
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.object.DependencyDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.object.InjectedFieldDescriptorForm;
 import org.qi4j.library.swing.visualizer.detailPanel.internal.form.object.MixinDescriptorForm;
-import static org.qi4j.structure.Visibility.layer;
+import static org.qi4j.api.common.Visibility.layer;
 
 /**
  * @author edward.yakop@gmail.com

@@ -31,18 +31,18 @@ import java.util.StringTokenizer;
 import net.jini.admin.Administrable;
 import net.jini.config.Configuration;
 import net.jini.config.EmptyConfiguration;
-import org.qi4j.injection.scope.Service;
-import org.qi4j.injection.scope.This;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.library.http.HttpService;
 import org.qi4j.library.http.Interface;
-import org.qi4j.service.Activatable;
-import org.qi4j.util.StreamUtils;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.util.StreamUtils;
 
 public class ReggieMixin
     implements Activatable
 {
     @Service( optional = true ) HttpService httpService;
-    @This org.qi4j.service.Configuration<ReggieConfiguration> my;
+    @This org.qi4j.api.service.Configuration<ReggieConfiguration> my;
 
     private NonActivatableServiceDescriptor.Created lookupCreated;
     private File fileToCleanup;

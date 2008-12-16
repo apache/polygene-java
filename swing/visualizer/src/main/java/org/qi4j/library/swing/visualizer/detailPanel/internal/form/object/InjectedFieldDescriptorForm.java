@@ -24,7 +24,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import org.qi4j.composite.Composite;
+import org.qi4j.api.composite.Composite;
 import org.qi4j.library.swing.visualizer.model.descriptor.InjectedFieldDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.MixinDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.ObjectDetailDescriptor;

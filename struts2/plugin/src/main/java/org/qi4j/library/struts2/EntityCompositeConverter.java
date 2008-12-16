@@ -3,9 +3,9 @@ package org.qi4j.library.struts2;
 import java.util.Map;
 
 import org.apache.struts2.util.StrutsTypeConverter;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
 import com.opensymphony.xwork2.inject.Inject;
 

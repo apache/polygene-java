@@ -29,14 +29,14 @@ import static org.mortbay.jetty.servlet.Context.SESSIONS;
 import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.servlet.FilterHolder;
 import org.mortbay.jetty.servlet.ServletHolder;
-import org.qi4j.injection.scope.Service;
-import org.qi4j.injection.scope.This;
-import org.qi4j.injection.scope.Uses;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.library.http.Dispatchers.Dispatcher;
-import org.qi4j.service.Activatable;
-import org.qi4j.service.Configuration;
-import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.service.ServiceReference;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.Configuration;
+import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceReference;
 
 /**
  * TODO

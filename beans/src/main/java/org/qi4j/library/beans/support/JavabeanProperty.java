@@ -24,9 +24,9 @@ import java.lang.reflect.Type;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Arrays;
 import java.util.List;
-import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.property.ComputedPropertyInstance;
+import org.qi4j.api.composite.CompositeBuilder;
+import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.property.ComputedPropertyInstance;
 
 public class JavabeanProperty extends ComputedPropertyInstance
 {

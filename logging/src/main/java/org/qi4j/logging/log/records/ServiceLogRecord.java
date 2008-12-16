@@ -17,7 +17,7 @@
  */
 package org.qi4j.logging.log.records;
 
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Property;
 
 public interface ServiceLogRecord extends LogRecord
 {

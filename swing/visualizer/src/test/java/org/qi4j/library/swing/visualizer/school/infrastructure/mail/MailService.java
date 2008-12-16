@@ -16,7 +16,7 @@
 */
 package org.qi4j.library.swing.visualizer.school.infrastructure.mail;
 
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.library.swing.visualizer.school.infrastructure.mail.mixins.MailServiceMixin;
 
 /**

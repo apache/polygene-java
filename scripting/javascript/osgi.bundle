@@ -3,7 +3,11 @@ Bundle-Activator:
 
 Private-Package:
 
-Import-Package: javax.swing, \
+Import-Package: org.qi4j.scripting.common, \
+                org.qi4j.api.common, \
+                org.qi4j.api.composite, \
+                org.qi4j.api.injection.scope, \
+                javax.swing, \
                 javax.swing.border, \
                 javax.swing.event, \
                 javax.swing.filechooser, \

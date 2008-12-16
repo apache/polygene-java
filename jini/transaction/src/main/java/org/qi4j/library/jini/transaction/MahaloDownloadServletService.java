@@ -17,8 +17,8 @@
  */
 package org.qi4j.library.jini.transaction;
 
-import org.qi4j.composite.Mixins;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceComposite;
 import javax.servlet.Servlet;
 
 @Mixins( ResourceServletMixin.class )

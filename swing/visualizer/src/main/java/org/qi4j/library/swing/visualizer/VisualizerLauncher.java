@@ -24,9 +24,9 @@ import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.swing.visualizer.assembly.VisualizerAssembler;
-import org.qi4j.object.ObjectBuilderFactory;
-import org.qi4j.structure.Application;
-import org.qi4j.structure.Module;
+import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
 
 /**
  * @author edward.yakop@gmail.com

@@ -22,7 +22,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.struts2.ActionConfiguration;
 import org.qi4j.library.struts2.ActionService;
 import org.qi4j.library.struts2.UnitOfWorkInterceptor;
-import org.qi4j.structure.Visibility;
+import org.qi4j.api.common.Visibility;
 
 /**
  * @author edward.yakop@gmail.com

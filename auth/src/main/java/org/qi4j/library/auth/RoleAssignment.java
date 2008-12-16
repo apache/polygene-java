@@ -15,9 +15,9 @@
 
 package org.qi4j.library.auth;
 
-import org.qi4j.entity.association.Association;
-import org.qi4j.property.Property;
-import org.qi4j.composite.Optional;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.common.Optional;
 
 /**
  * TODO

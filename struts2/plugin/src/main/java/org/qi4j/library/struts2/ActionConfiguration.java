@@ -8,8 +8,8 @@ import java.util.Set;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.composite.Composite;
-import org.qi4j.structure.Visibility;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.common.Visibility;
 
 public class ActionConfiguration implements Assembler, Serializable
 {

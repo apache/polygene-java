@@ -18,10 +18,10 @@ import java.lang.reflect.Method;
 import javax.transaction.Status;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
-import org.qi4j.composite.AppliesTo;
-import org.qi4j.composite.ConcernOf;
-import org.qi4j.injection.scope.Invocation;
-import org.qi4j.injection.scope.Service;
+import org.qi4j.api.common.AppliesTo;
+import org.qi4j.api.concern.ConcernOf;
+import org.qi4j.api.injection.scope.Invocation;
+import org.qi4j.api.injection.scope.Service;
 
 /**
  * Transactional modifier. Implementation methods

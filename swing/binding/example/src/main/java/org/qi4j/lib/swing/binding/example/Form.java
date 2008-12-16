@@ -30,7 +30,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import org.qi4j.lib.swing.binding.StateModel;
 import org.qi4j.lib.swing.binding.TableBinding;
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Property;
 
 public class Form<T extends BoundPersonEntityComposite> extends JPanel
 {

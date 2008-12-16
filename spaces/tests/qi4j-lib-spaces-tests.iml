@@ -14,23 +14,10 @@
     <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
     <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
     <orderEntry type="module" module-name="qi4j-core-testsupport" exported="" />
-    <orderEntry type="module-library" exported="">
-      <library name="junit:junit:4.4">
-        <CLASSES>
-          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$M2_REPO$/junit/junit/4.4/junit-4.4-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
+    <orderEntry type="library" exported="" name="Maven: junit:junit:4.4" level="project" />
     <orderEntry type="module" module-name="qi4j-lib-spaces-api" exported="" />
     <orderEntry type="module" module-name="qi4j-lib-general" exported="" />
     <orderEntry type="module" module-name="qi4j-lib-validation" exported="" />
-    <orderEntryProperties />
   </component>
 </module>
 

@@ -28,10 +28,10 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.composite.AppliesTo;
-import org.qi4j.composite.AppliesToFilter;
-import org.qi4j.composite.Composite;
-import org.qi4j.injection.scope.This;
+import org.qi4j.api.common.AppliesTo;
+import org.qi4j.api.common.AppliesToFilter;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.injection.scope.This;
 
 /**
  * Generic mixin that implements interfaces by delegating to Groovy functions

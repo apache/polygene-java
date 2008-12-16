@@ -1,7 +1,7 @@
 package org.qi4j.library.validation;
 
-import org.qi4j.composite.Concerns;
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.mixin.Mixins;
 
 /**
  * TODO

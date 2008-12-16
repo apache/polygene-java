@@ -20,12 +20,12 @@ package org.qi4j.lib.swing.binding.example.adapter;
 import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.JRadioButton;
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.lib.swing.binding.SwingAdapter;
 import org.qi4j.lib.swing.binding.adapters.AbstractSwingAdapter;
 import org.qi4j.lib.swing.binding.example.Gender;
-import org.qi4j.property.Property;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.service.ServiceComposite;
 
 @Mixins( GenderSwingAdapterService.GenderSwingAdapterServiceMixin.class )
 public interface GenderSwingAdapterService extends SwingAdapter, ServiceComposite

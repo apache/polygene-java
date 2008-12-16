@@ -20,16 +20,16 @@ import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.Mixins;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.association.Association;
-import org.qi4j.entity.association.AssociationMixin;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.AssociationMixin;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.library.swing.visualizer.VisualizerLauncher;
-import org.qi4j.property.Property;
-import org.qi4j.structure.Application;
-import static org.qi4j.structure.Visibility.application;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.structure.Application;
+import static org.qi4j.api.common.Visibility.application;
 
 /**
  * TODO

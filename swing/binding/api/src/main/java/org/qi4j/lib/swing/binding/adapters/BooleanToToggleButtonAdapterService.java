@@ -22,13 +22,11 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.Concerns;
-import org.qi4j.composite.ConcernOf;
+import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.lib.swing.binding.SwingAdapter;
-import org.qi4j.lib.swing.binding.adapters.AbstractSwingAdapter;
-import org.qi4j.property.Property;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.service.ServiceComposite;
 
 @Concerns( BooleanToToggleButtonAdapterService.BooleanToToggleButtonAdapterServiceMixin.class )
 public interface BooleanToToggleButtonAdapterService extends SwingAdapter, ServiceComposite

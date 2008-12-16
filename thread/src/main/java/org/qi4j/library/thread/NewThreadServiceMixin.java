@@ -17,9 +17,9 @@
  */
 package org.qi4j.library.thread;
 
-import org.qi4j.injection.scope.This;
-import org.qi4j.injection.scope.Service;
-import org.qi4j.service.Configuration;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.service.Configuration;
 import org.qi4j.library.uid.sequence.Sequencing;
 
 public class NewThreadServiceMixin

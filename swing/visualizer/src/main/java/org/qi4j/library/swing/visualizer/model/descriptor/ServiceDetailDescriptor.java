@@ -18,9 +18,9 @@ package org.qi4j.library.swing.visualizer.model.descriptor;
 
 import java.util.LinkedList;
 import java.util.List;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.structure.Visibility;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
+import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.common.Visibility;
 
 /**
  * @author edward.yakop@gmail.com

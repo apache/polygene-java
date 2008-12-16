@@ -25,7 +25,7 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.qi4j.library.rdf.Rdfs;
-import org.qi4j.util.ClassUtil;
+import org.qi4j.api.util.ClassUtil;
 
 public final class SerializerContext
 {

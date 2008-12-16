@@ -2,11 +2,11 @@ package org.qi4j.library.struts2.support;
 
 import static org.qi4j.library.struts2.util.ParameterizedTypes.findTypeVariables;
 
-import org.qi4j.entity.EntityCompositeNotFoundException;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.This;
+import org.qi4j.api.unitofwork.EntityCompositeNotFoundException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.This;
 
 public abstract class ProvidesEntityOfMixin<T> implements ProvidesEntityOf<T>, StrutsAction {
     
@@ -34,7 +34,7 @@ public abstract class ProvidesEntityOfMixin<T> implements ProvidesEntityOf<T>, S
         uow = uowf.currentUnitOfWork();
         try {
             entity = uow.find(entityProvider.getId(), typeToLoad());
-        } catch (EntityCompositeNotFoundException e) {
+        } catch ( EntityCompositeNotFoundException e) {
             addActionError(getText("entity.not.found"));
         }
     }

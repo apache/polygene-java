@@ -1,7 +1,6 @@
 package org.qi4j.library.constraints;
 
-import org.qi4j.composite.Constraint;
-import org.qi4j.library.constraints.annotation.Range;
+import org.qi4j.api.constraint.Constraint;
 import org.qi4j.library.constraints.annotation.OneOf;
 
 /**

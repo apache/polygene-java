@@ -23,18 +23,18 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import org.qi4j.composite.Composite;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.injection.scope.Structure;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.library.swing.visualizer.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.ModuleDetailDescriptor;
-import org.qi4j.query.Query;
-import org.qi4j.query.QueryBuilder;
-import org.qi4j.query.QueryBuilderFactory;
-import org.qi4j.structure.Application;
-import org.qi4j.structure.Module;
+import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryBuilder;
+import org.qi4j.api.query.QueryBuilderFactory;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
 
 /**
  * @author edward.yakop@gmail.com

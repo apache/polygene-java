@@ -13,11 +13,11 @@
  */
 package org.qi4j.quikit.application;
 
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.object.ObjectBuilderFactory;
-import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.service.ServiceInstanceFactory;
-import org.qi4j.service.ServiceInstanceProviderException;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceInstanceFactory;
+import org.qi4j.api.service.ServiceInstanceFactoryException;
 
 public final class QuikItServletServiceFactory
     implements ServiceInstanceFactory
@@ -25,13 +25,13 @@ public final class QuikItServletServiceFactory
     @Structure ObjectBuilderFactory objectBuilderFactory;
 
     public final Object newInstance( ServiceDescriptor serviceDescriptor )
-        throws ServiceInstanceProviderException
+        throws ServiceInstanceFactoryException
     {
         return objectBuilderFactory.newObject( QuikItServlet.class );
     }
 
     public final void releaseInstance( Object instance )
-        throws ServiceInstanceProviderException
+        throws ServiceInstanceFactoryException
     {
         QuikItServlet quikItServlet = (QuikItServlet) instance;
         quikItServlet.destroy();

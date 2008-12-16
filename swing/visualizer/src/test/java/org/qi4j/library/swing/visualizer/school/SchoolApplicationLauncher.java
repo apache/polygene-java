@@ -29,7 +29,7 @@ import org.qi4j.library.swing.visualizer.school.domain.model.person.assembler.Pe
 import org.qi4j.library.swing.visualizer.school.domain.model.school.assembler.SchoolModelAssembler;
 import org.qi4j.library.swing.visualizer.school.infrastructure.mail.MailServiceAssembler;
 import org.qi4j.library.swing.visualizer.school.infrastructure.persistence.PersistenceAssembler;
-import org.qi4j.structure.Application;
+import org.qi4j.api.structure.Application;
 
 /**
  * @author edward.yakop@gmail.com

@@ -16,7 +16,7 @@
 */
 package org.qi4j.library.swing.visualizer.school.domain.model.school;
 
-import org.qi4j.composite.NullArgumentException;
+import org.qi4j.api.util.NullArgumentException;
 
 /**
  * @author edward.yakop@gmail.com
