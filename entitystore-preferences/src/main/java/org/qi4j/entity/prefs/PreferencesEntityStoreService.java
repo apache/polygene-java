@@ -14,13 +14,13 @@
 
 package org.qi4j.entity.prefs;
 
-import org.qi4j.composite.Concerns;
-import org.qi4j.composite.Mixins;
-import org.qi4j.composite.SideEffects;
+import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.entity.memory.ConcurrentModificationCheckConcern;
-import org.qi4j.service.Activatable;
-import org.qi4j.service.Configuration;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.Configuration;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreListenerNotificationSideEffect;
 

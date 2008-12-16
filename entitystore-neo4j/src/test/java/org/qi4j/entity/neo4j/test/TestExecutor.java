@@ -16,9 +16,9 @@
  */
 package org.qi4j.entity.neo4j.test;
 
-import org.qi4j.entity.EntityBuilder;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.UnitOfWork;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.unitofwork.UnitOfWork;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

@@ -17,16 +17,15 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import org.qi4j.entity.EntityBuilder;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.entity.index.rdf.model.Account;
 import org.qi4j.entity.index.rdf.model.Cat;
 import org.qi4j.entity.index.rdf.model.City;
 import org.qi4j.entity.index.rdf.model.Domain;
 import org.qi4j.entity.index.rdf.model.Female;
 import org.qi4j.entity.index.rdf.model.Male;
-import org.qi4j.entity.index.rdf.model.Nameable;
 import org.qi4j.entity.index.rdf.model.entities.CatEntity;
 import org.qi4j.entity.index.rdf.model.entities.FemaleEntity;
 import org.qi4j.entity.index.rdf.model.entities.MaleEntity;

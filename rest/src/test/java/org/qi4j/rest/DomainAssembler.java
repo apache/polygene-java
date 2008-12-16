@@ -21,8 +21,8 @@ import org.qi4j.entity.index.rdf.RdfQueryService;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
-import static org.qi4j.structure.Visibility.application;
-import static org.qi4j.structure.Visibility.layer;
+import static org.qi4j.api.common.Visibility.application;
+import static org.qi4j.api.common.Visibility.layer;
 
 /**
  * TODO

@@ -14,8 +14,8 @@
 
 package org.qi4j.rest.client;
 
-import org.qi4j.service.Activatable;
-import org.qi4j.service.Wrapper;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.Wrapper;
 import org.restlet.Client;
 import org.restlet.data.Protocol;
 

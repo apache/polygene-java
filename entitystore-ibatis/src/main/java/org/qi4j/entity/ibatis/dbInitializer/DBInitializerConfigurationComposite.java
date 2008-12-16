@@ -16,9 +16,7 @@
  */
 package org.qi4j.entity.ibatis.dbInitializer;
 
-import java.util.Properties;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.property.Property;
+import org.qi4j.api.entity.EntityComposite;
 
 /**
  * {@code DBInitializerInfo} represents information on the sql resources to initialize the database.

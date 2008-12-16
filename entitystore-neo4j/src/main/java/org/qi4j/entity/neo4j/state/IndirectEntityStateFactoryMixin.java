@@ -25,7 +25,7 @@ import org.neo4j.api.core.Transaction;
 import org.qi4j.entity.neo4j.NeoCoreService;
 import org.qi4j.entity.neo4j.NeoIdentityIndex;
 import org.qi4j.entity.neo4j.NeoTransactionService;
-import org.qi4j.injection.scope.Service;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;

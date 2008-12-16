@@ -17,15 +17,15 @@
  */
 package org.qi4j.rest;
 
-import org.qi4j.entity.ConcurrentEntityModificationException;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkCompletionException;
-import org.qi4j.entity.UnitOfWorkException;
-import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.Uses;
-import org.qi4j.object.ObjectBuilder;
-import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkException;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.object.ObjectBuilder;
+import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.rest.entity.AllEntitiesResource;
 import org.qi4j.rest.entity.EntitiesResource;
 import org.qi4j.rest.entity.EntityResource;

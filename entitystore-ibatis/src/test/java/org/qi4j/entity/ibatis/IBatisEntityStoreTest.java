@@ -26,9 +26,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entity.EntityBuilder;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import static org.qi4j.entity.ibatis.TestConfig.JANE_SMITH_ID;
 import static org.qi4j.entity.ibatis.TestConfig.JOHN_SMITH_ID;
 import org.qi4j.entity.ibatis.entity.Account;
@@ -41,7 +41,7 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
-import org.qi4j.structure.Visibility;
+import org.qi4j.api.common.Visibility;
 
 /**
  * {@code IBatisEntityStoreTest} tests {@code IBatisEntityStore}.

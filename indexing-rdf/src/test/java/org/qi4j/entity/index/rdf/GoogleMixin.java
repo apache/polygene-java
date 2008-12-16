@@ -17,9 +17,9 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import org.qi4j.entity.UnitOfWorkFactory;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.entity.index.rdf.model.Person;
-import org.qi4j.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Structure;
 
 /**
  * TODO Add JavaDoc

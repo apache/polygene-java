@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.entity.ibatis.IbatisCompositeBuilder;
 import org.qi4j.entity.ibatis.IdentifierConverter;
 import org.qi4j.spi.entity.AssociationType;

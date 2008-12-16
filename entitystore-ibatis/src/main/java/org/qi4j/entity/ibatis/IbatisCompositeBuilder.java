@@ -3,16 +3,16 @@ package org.qi4j.entity.ibatis;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.CompositeBuilderFactory;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.entity.ibatis.internal.CapitalizingIdentifierConverter;
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Property;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.structure.Module;
+import org.qi4j.api.structure.Module;
 
 /**
  * @autor Michael Hunger

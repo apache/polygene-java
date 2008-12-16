@@ -2,7 +2,6 @@ Export-Package: org.qi4j.rest;version="${pom.version}", \
                 org.qi4j.rest.assembly;version="${pom.version}", \
                 org.qi4j.rest.client;version="${pom.version}", \
                 org.qi4j.rest.entity;version="${pom.version}", \
-                org.qi4j.rest.index;version="${pom.version}", \
                 org.qi4j.rest.type;version="${pom.version}"
 
 Import-Package: com.noelios.restlet.ext.servlet, \
@@ -10,7 +9,6 @@ Import-Package: com.noelios.restlet.ext.servlet, \
                 org.openrdf.rio, \
                 org.openrdf.rio.helpers, \
                 org.openrdf.rio.rdfxml, \
-                org.qi4j.*;version="${pom.version}", \
                 org.restlet, \
                 org.restlet.data, \
                 org.restlet.resource, \
@@ -24,6 +22,26 @@ Import-Package: com.noelios.restlet.ext.servlet, \
                 org.openrdf.query.resultio.sparqljson, \
                 org.openrdf.query.resultio.sparqlxml, \
                 org.openrdf.repository, \
+                org.qi4j.api.common, \
+                org.qi4j.api.composite, \
+                org.qi4j.api.entity, \
+                org.qi4j.api.entity.association, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.mixin, \
+                org.qi4j.api.object, \
+                org.qi4j.api.property, \
+                org.qi4j.api.query.grammar, \
+                org.qi4j.api.service, \
+                org.qi4j.api.structure, \
+                org.qi4j.api.unitofwork, \
+                org.qi4j.bootstrap, \
+                org.qi4j.entity.index.rdf, \
+                org.qi4j.entity.index.rdf.callback, \
+                org.qi4j.library.rdf.entity, \
+                org.qi4j.library.rdf.serializer, \
+                org.qi4j.spi, \
+                org.qi4j.spi.entity, \
+                org.qi4j.spi.query, \
                 org.xml.sax, \
                 org.xml.sax.helpers, \
                 info.aduna.xml, \

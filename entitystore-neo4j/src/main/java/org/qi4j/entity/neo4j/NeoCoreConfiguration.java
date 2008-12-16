@@ -16,8 +16,8 @@
  */
 package org.qi4j.entity.neo4j;
 
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.property.Property;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.property.Property;
 
 /**
  * TODO: Find out the apropriate way to set up configurations for an EntityStore, then use this in EmbeddedNeoMixin.

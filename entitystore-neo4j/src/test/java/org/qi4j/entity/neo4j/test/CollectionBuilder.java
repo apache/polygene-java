@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.junit.Assert;
-import org.qi4j.entity.EntityBuilder;
-import org.qi4j.entity.UnitOfWork;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.unitofwork.UnitOfWork;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

@@ -1,17 +1,15 @@
-Export-Package: \
- org.qi4j.entity.index.rdf.*;version="1"
 
-Import-Package: \
- javax.*, \
- org.apache.commons.logging.*, \
- org.apache.log4j.*, \
- org.osgi.*;version="1.0.0", \
- org.slf4j.*, \
- org.qi4j.*, \
- org.xml.*, \
- org.w3c.dom
+Export-Package: org.qi4j.entity.index.rdf.*;version="1"
+
+Import-Package: javax.*, \
+                org.apache.commons.logging.*, \
+                org.apache.log4j.*, \
+                org.osgi.*;version="1.0.0", \
+                org.slf4j.*, \
+                org.qi4j.*, \
+                org.xml.*, \
+                org.w3c.dom
  
-Embed-Dependency: \
- *;scope=compile|runtime;groupId=!org.slf4j*
+Embed-Dependency: *;scope=compile|runtime;groupId=!org.slf4j*
 
 Embed-Transitive:  true

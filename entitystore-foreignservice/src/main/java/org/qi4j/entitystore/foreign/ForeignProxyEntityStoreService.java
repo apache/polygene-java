@@ -19,8 +19,8 @@ package org.qi4j.entitystore.foreign;
 
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.query.EntityFinder;
-import org.qi4j.service.ServiceComposite;
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.mixin.Mixins;
 
 @Mixins( { ForeignServiceEntityFinderMixin.class, ForeignServiceEntityFinderMixin.class })
 public interface ForeignProxyEntityStoreService extends EntityStore, EntityFinder, ServiceComposite

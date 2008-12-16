@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import static org.qi4j.entity.index.rdf.Network.populate;
 import org.qi4j.entity.index.rdf.model.entities.CatEntity;
 import org.qi4j.entity.index.rdf.model.entities.CityEntity;

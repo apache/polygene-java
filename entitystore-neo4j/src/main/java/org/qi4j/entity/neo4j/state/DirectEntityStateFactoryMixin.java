@@ -21,7 +21,7 @@ import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.Node;
 import org.qi4j.entity.neo4j.NeoCoreService;
 import org.qi4j.entity.neo4j.NeoIdentityIndex;
-import org.qi4j.injection.scope.Service;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;

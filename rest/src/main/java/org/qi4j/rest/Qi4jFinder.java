@@ -13,10 +13,10 @@
  */
 package org.qi4j.rest;
 
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.Uses;
-import org.qi4j.object.ObjectBuilder;
-import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.object.ObjectBuilder;
+import org.qi4j.api.object.ObjectBuilderFactory;
 import org.restlet.Context;
 import org.restlet.Finder;
 import org.restlet.Handler;

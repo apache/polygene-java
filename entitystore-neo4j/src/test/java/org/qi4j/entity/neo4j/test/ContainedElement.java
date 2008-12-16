@@ -16,7 +16,7 @@
  */
 package org.qi4j.entity.neo4j.test;
 
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Property;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

@@ -17,16 +17,16 @@ package org.qi4j.rest.client;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.entity.EntityParser;
 import org.qi4j.rest.Main;
 import org.qi4j.rest.TestEntity;
-import org.qi4j.structure.Application;
-import org.qi4j.structure.Visibility;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -68,22 +68,34 @@ public class RESTEntityStoreTest
         // Load state
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            TestEntity entity = unitOfWork.find( "test2", TestEntity.class );
-            System.out.println( entity.name().get() );
-            TestEntity testEntity = entity.association().get();
-            System.out.println( testEntity.name().get() );
-
-            unitOfWork.discard();
+            try
+            {
+                TestEntity entity = unitOfWork.find( "test2", TestEntity.class );
+                System.out.println( entity.name().get() );
+                TestEntity testEntity = entity.association().get();
+                System.out.println( testEntity.name().get() );
+            }
+            finally
+            {
+                unitOfWork.discard();
+            }
         }
 
         // Change state
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            TestEntity entity = unitOfWork.find( "test2", TestEntity.class );
-            entity.name().set( "Foo bar" );
-            System.out.println( entity.listAssociation().contains( entity ) );
-            entity.listAssociation().add( entity );
-            unitOfWork.complete();
+            try
+            {
+                TestEntity entity = unitOfWork.find( "test2", TestEntity.class );
+                entity.name().set( "Foo bar" );
+                System.out.println( entity.listAssociation().contains( entity ) );
+                entity.listAssociation().add( entity );
+                unitOfWork.complete();
+            }
+            finally
+            {
+                unitOfWork.discard();
+            }
         }
 
         // Load it again

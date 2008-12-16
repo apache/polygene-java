@@ -14,7 +14,7 @@
 
 package org.qi4j.entity.ibatis.entity;
 
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Property;
 
 public interface HasFirstName
 {

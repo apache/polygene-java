@@ -17,9 +17,9 @@
  */
 package org.qi4j.entity.quick;
 
-import org.qi4j.property.Property;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.composite.Optional;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.common.Optional;
 
 public interface QuickConfiguration extends EntityComposite
 {

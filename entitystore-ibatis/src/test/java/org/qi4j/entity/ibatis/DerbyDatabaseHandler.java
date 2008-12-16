@@ -37,7 +37,7 @@ import static org.junit.Assert.fail;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializerConfiguration;
 import org.qi4j.entity.ibatis.test.TestProperty;
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Property;
 
 /**
  * @author edward.yakop@gmail.com

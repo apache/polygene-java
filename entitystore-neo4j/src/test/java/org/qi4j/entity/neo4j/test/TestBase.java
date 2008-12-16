@@ -22,12 +22,12 @@ import org.neo4j.api.core.Transaction;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkCompletionException;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.entity.neo4j.Configuration;
 import org.qi4j.entity.neo4j.NeoTransactionService;
-import org.qi4j.query.QueryBuilderFactory;
+import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**

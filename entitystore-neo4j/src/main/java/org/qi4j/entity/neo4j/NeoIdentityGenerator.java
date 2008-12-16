@@ -17,7 +17,7 @@
 package org.qi4j.entity.neo4j;
 
 import org.neo4j.api.core.Node;
-import org.qi4j.entity.IdentityGenerator;
+import org.qi4j.api.entity.IdentityGenerator;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

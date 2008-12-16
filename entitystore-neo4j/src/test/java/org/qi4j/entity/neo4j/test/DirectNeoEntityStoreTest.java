@@ -18,7 +18,7 @@ package org.qi4j.entity.neo4j.test;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.qi4j.entity.EntityBuilder;
+import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.entity.neo4j.Configuration;
 
 /**

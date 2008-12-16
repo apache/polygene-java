@@ -16,7 +16,7 @@
  */
 package org.qi4j.entity.ibatis.entity;
 
-import org.qi4j.entity.EntityComposite;
+import org.qi4j.api.entity.EntityComposite;
 
 public interface PersonComposite extends EntityComposite, Person
 {

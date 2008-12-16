@@ -17,8 +17,8 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.mixin.Mixins;
 
 /**
  * TODO Add JavaDoc

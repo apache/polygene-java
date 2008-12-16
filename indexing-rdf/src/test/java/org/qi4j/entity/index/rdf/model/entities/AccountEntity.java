@@ -17,7 +17,7 @@
  */
 package org.qi4j.entity.index.rdf.model.entities;
 
-import org.qi4j.entity.EntityComposite;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.entity.index.rdf.model.Account;
 
 /**

@@ -21,15 +21,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entity.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.entity.EntitySerializer;
 import org.qi4j.library.rdf.entity.EntityParser;
-import org.qi4j.query.Query;
+import org.qi4j.api.query.Query;
 import org.qi4j.rest.Main;
 import org.qi4j.rest.TestEntity;
-import org.qi4j.structure.Application;
-import org.qi4j.structure.Visibility;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**

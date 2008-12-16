@@ -25,7 +25,7 @@ import org.qi4j.entity.neo4j.state.DirectEntityStateFactory;
 import org.qi4j.entity.neo4j.state.IndirectEntityStateFactory;
 import org.qi4j.entity.neo4j.state.LoadedDescriptor;
 import org.qi4j.entity.neo4j.state.NeoEntityStateFactory;
-import org.qi4j.injection.scope.Service;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.spi.entity.EntityTypeRegistryMixin;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;

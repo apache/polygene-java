@@ -2,15 +2,17 @@ Bundle-Activator:
 
 Private-Package:
 
-Import-Package: org.qi4j.composite, \
-                org.qi4j.entity, \
-                org.qi4j.injection.scope, \
+Import-Package: org.qi4j.api.composite, \
+                org.qi4j.api.common, \
+                org.qi4j.api.entity, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.mixin, \
+                org.qi4j.api.property, \
+                org.qi4j.api.service, \
                 org.qi4j.library.locking, \
-                org.qi4j.property, \
-                org.qi4j.service, \
                 org.qi4j.spi, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.entity, \
-                org.qi4j.structure
+                org.qi4j.api.structure
 
 Export-Package: org.qi4j.entity.rmi

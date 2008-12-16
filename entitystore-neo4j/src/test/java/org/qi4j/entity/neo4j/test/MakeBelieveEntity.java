@@ -16,7 +16,7 @@
  */
 package org.qi4j.entity.neo4j.test;
 
-import org.qi4j.entity.EntityComposite;
+import org.qi4j.api.entity.EntityComposite;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

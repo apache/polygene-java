@@ -17,7 +17,7 @@
  */
 package org.qi4j.entity.index.rdf.model;
 
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Property;
 
 /**
  * TODO Add JavaDoc

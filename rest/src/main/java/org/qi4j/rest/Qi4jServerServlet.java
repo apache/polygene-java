@@ -15,9 +15,9 @@
 package org.qi4j.rest;
 
 import com.noelios.restlet.ext.servlet.ServerServlet;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.object.ObjectBuilder;
-import org.qi4j.object.ObjectBuilderFactory;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.object.ObjectBuilder;
+import org.qi4j.api.object.ObjectBuilderFactory;
 import org.restlet.Application;
 import org.restlet.Context;
 

@@ -27,7 +27,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.ibatis.entity.HasFirstName;
 import org.qi4j.entity.ibatis.entity.HasLastName;
 import org.qi4j.entity.ibatis.entity.PersonComposite;
-import org.qi4j.property.GenericPropertyInfo;
+import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.QualifiedIdentity;

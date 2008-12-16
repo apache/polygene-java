@@ -13,7 +13,7 @@
  */
 package org.qi4j.rest.type;
 
-import org.qi4j.injection.scope.Uses;
+import org.qi4j.api.injection.scope.Uses;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;

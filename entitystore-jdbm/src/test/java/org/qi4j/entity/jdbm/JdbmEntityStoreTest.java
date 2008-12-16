@@ -17,20 +17,13 @@
 package org.qi4j.entity.jdbm;
 
 import java.io.File;
-import static org.hamcrest.CoreMatchers.equalTo;
 import org.junit.After;
-import org.junit.Assert;
 import static org.junit.Assert.assertThat;
-import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entity.ConcurrentEntityModificationException;
-import org.qi4j.entity.EntityBuilder;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.UnitOfWorkCompletionException;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
-import org.qi4j.structure.Visibility;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**

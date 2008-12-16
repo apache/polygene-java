@@ -22,8 +22,8 @@ import org.qi4j.bootstrap.ModuleName;
 import org.qi4j.library.http.JettyServiceAssembler;
 import org.qi4j.library.rdf.entity.EntitySerializer;
 import org.qi4j.rest.assembly.RestAssembler;
-import org.qi4j.structure.Application;
-import org.qi4j.structure.Visibility;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.common.Visibility;
 
 /**
  * TODO

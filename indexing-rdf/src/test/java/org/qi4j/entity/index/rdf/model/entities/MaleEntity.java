@@ -18,7 +18,7 @@
 package org.qi4j.entity.index.rdf.model.entities;
 
 import org.qi4j.entity.index.rdf.model.Male;
-import org.qi4j.entity.EntityComposite;
+import org.qi4j.api.entity.EntityComposite;
 
 /**
  * TODO Add JavaDoc

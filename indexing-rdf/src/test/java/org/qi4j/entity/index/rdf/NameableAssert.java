@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.qi4j.entity.Identity;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.entity.index.rdf.model.Nameable;
 import org.qi4j.spi.entity.QualifiedIdentity;
 

@@ -24,13 +24,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.entity.ibatis.dbInitializer.DBInitializer;
 import org.qi4j.entity.ibatis.internal.IBatisEntityState;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.This;
-import org.qi4j.service.Activatable;
-import org.qi4j.service.Configuration;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.Configuration;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
@@ -42,7 +42,7 @@ import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.UnknownEntityTypeException;
-import org.qi4j.structure.Module;
+import org.qi4j.api.structure.Module;
 
 /**
  * TODO: Figure out how does transaction supposed for all EntityStore methods.

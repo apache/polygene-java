@@ -17,8 +17,8 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import org.qi4j.composite.Mixins;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.entity.EntityStoreListener;
 

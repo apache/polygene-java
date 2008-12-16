@@ -18,8 +18,8 @@
 package org.qi4j.entity.index.rdf;
 
 import org.openrdf.query.QueryLanguage;
-import org.qi4j.query.grammar.BooleanExpression;
-import org.qi4j.query.grammar.OrderBy;
+import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.api.query.grammar.OrderBy;
 
 /**
  * TODO Add JavaDoc

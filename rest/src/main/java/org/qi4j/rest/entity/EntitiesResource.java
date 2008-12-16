@@ -21,14 +21,14 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import org.qi4j.entity.Identity;
-import org.qi4j.entity.IdentityGenerator;
-import org.qi4j.entity.UnitOfWorkFactory;
-import org.qi4j.entity.association.GenericAssociationInfo;
-import org.qi4j.injection.scope.Service;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.Uses;
-import org.qi4j.property.GenericPropertyInfo;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.entity.IdentityGenerator;
+import org.qi4j.api.entity.association.GenericAssociationInfo;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.AssociationType;
 import org.qi4j.spi.entity.EntityState;
@@ -39,7 +39,7 @@ import org.qi4j.spi.entity.PropertyType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
-import org.qi4j.structure.Module;
+import org.qi4j.api.structure.Module;
 import org.restlet.Context;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
@@ -186,7 +186,7 @@ public class EntitiesResource extends Resource
         {
             Form form = new Form( entity );
 
-            String identity = form.getFirstValue( "org.qi4j.entity.Identity:identity" );
+            String identity = form.getFirstValue( "org.qi4j.api.entity.Identity:identity" );
             if( identity == null || identity.equals( "" ) )
             {
                 identity = identityGenerator.generate( (Class<? extends Identity>) module.classLoader().loadClass( type ) );

@@ -16,8 +16,8 @@
  */
 package org.qi4j.entity.neo4j;
 
-import org.qi4j.composite.Mixins;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceComposite;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

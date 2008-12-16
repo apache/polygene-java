@@ -17,10 +17,9 @@
  */
 package org.qi4j.rest;
 
-import org.qi4j.composite.Composite;
-import org.qi4j.composite.Mixins;
-import org.qi4j.service.ServiceComposite;
-import org.qi4j.service.Activatable;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.Activatable;
 
 @Mixins( { RestServerMixin.class } )
 public interface RestServerComposite extends ServiceComposite, RestServer, Activatable

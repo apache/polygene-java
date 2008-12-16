@@ -29,12 +29,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import org.qi4j.entity.association.GenericAssociationInfo;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.scope.Uses;
-import org.qi4j.property.GenericPropertyInfo;
-import org.qi4j.service.Activatable;
-import org.qi4j.service.ServiceDescriptor;
+import org.qi4j.api.entity.association.GenericAssociationInfo;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.spi.entity.AssociationType;
 import org.qi4j.spi.entity.DefaultEntityState;
 import org.qi4j.spi.entity.EntityNotFoundException;
@@ -47,8 +47,8 @@ import org.qi4j.spi.entity.ManyAssociationType;
 import org.qi4j.spi.entity.PropertyType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.structure.Application;
-import org.qi4j.util.MetaInfo;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.common.MetaInfo;
 
 /**
  * Implementation of EntityStore that is backed by the Preferences API.

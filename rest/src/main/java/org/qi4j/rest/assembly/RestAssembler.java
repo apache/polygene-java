@@ -25,7 +25,7 @@ import org.qi4j.rest.query.IndexResource;
 import org.qi4j.rest.query.SPARQLResource;
 import org.qi4j.rest.type.EntityTypeResource;
 import org.qi4j.rest.type.EntityTypesResource;
-import org.qi4j.structure.Visibility;
+import org.qi4j.api.common.Visibility;
 
 public class RestAssembler
     implements Assembler

@@ -19,19 +19,19 @@ package org.qi4j.entity.index.rdf;
 
 import static java.lang.String.format;
 import org.openrdf.query.QueryLanguage;
-import org.qi4j.query.grammar.AssociationIsNullPredicate;
-import org.qi4j.query.grammar.AssociationNullPredicate;
-import org.qi4j.query.grammar.BooleanExpression;
-import org.qi4j.query.grammar.ComparisonPredicate;
-import org.qi4j.query.grammar.Conjunction;
-import org.qi4j.query.grammar.Disjunction;
-import org.qi4j.query.grammar.MatchesPredicate;
-import org.qi4j.query.grammar.Negation;
-import org.qi4j.query.grammar.OrderBy;
-import org.qi4j.query.grammar.PropertyIsNullPredicate;
-import org.qi4j.query.grammar.PropertyNullPredicate;
-import org.qi4j.query.grammar.SingleValueExpression;
-import org.qi4j.query.grammar.ValueExpression;
+import org.qi4j.api.query.grammar.AssociationIsNullPredicate;
+import org.qi4j.api.query.grammar.AssociationNullPredicate;
+import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.api.query.grammar.ComparisonPredicate;
+import org.qi4j.api.query.grammar.Conjunction;
+import org.qi4j.api.query.grammar.Disjunction;
+import org.qi4j.api.query.grammar.MatchesPredicate;
+import org.qi4j.api.query.grammar.Negation;
+import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.query.grammar.PropertyIsNullPredicate;
+import org.qi4j.api.query.grammar.PropertyNullPredicate;
+import org.qi4j.api.query.grammar.SingleValueExpression;
+import org.qi4j.api.query.grammar.ValueExpression;
 
 /**
  * TODO Add JavaDoc

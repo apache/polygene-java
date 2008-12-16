@@ -39,17 +39,17 @@ import org.junit.Test;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.EntityCompositeNotFoundException;
-import org.qi4j.entity.UnitOfWork;
-import org.qi4j.entity.association.Association;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.unitofwork.EntityCompositeNotFoundException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.entity.association.Association;
 import org.qi4j.entity.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
-import org.qi4j.injection.scope.Service;
-import org.qi4j.property.Property;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.property.Property;
 import org.qi4j.rest.assembly.RestAssembler;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
-import org.qi4j.structure.Application;
+import org.qi4j.api.structure.Application;
 import org.qi4j.test.AbstractQi4jTest;
 
 @Ignore( "Need to rebuild tests after larger changes to implementation." )

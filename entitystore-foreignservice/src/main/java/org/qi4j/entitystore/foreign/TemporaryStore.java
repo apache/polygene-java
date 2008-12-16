@@ -17,7 +17,7 @@
  */
 package org.qi4j.entitystore.foreign;
 
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.EntityState;
 

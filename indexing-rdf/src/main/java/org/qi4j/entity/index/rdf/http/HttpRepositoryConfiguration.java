@@ -13,9 +13,9 @@
  */
 package org.qi4j.entity.index.rdf.http;
 
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.Queryable;
-import org.qi4j.property.Property;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.property.Property;
 
 /**
  * TODO Add JavaDoc

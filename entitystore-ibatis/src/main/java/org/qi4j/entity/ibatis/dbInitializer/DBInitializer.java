@@ -26,8 +26,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-import static org.qi4j.composite.NullArgumentException.validateNotNull;
-import org.qi4j.property.Property;
 
 /**
  * {@code DBIntializer} initialize the db.

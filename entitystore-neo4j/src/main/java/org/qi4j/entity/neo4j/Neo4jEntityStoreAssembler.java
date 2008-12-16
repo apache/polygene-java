@@ -23,7 +23,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.entity.neo4j.state.DirectEntityStateFactory;
 import org.qi4j.entity.neo4j.state.IndirectEntityStateFactory;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
-import org.qi4j.structure.Visibility;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.spi.entity.UuidIdentityGeneratorService;
 
 public class Neo4jEntityStoreAssembler

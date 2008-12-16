@@ -16,10 +16,10 @@
  */
 package org.qi4j.entity.s3;
 
-import org.qi4j.composite.Mixins;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.library.locking.LockingAbstractComposite;
-import org.qi4j.service.Activatable;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.spi.entity.EntityStore;
 
 /**

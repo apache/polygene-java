@@ -16,7 +16,7 @@
  */
 package org.qi4j.entity.ibatis;
 
-import org.qi4j.service.ConfigurationComposite;
+import org.qi4j.api.service.ConfigurationComposite;
 
 /**
  * {@code IBatisEntityStoreServiceInfo} provides service information for {@link IBatisEntityStore}.

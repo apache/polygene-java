@@ -32,7 +32,7 @@ import org.neo4j.util.index.IndexService;
 import org.neo4j.util.index.Isolation;
 import org.neo4j.util.index.LuceneIndexService;
 import org.neo4j.util.index.NeoIndexService;
-import org.qi4j.service.Activatable;
+import org.qi4j.api.service.Activatable;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

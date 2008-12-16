@@ -16,8 +16,8 @@
  */
 package org.qi4j.entity.neo4j.test;
 
-import org.qi4j.entity.association.ListAssociation;
-import org.qi4j.entity.association.SetAssociation;
+import org.qi4j.api.entity.association.ListAssociation;
+import org.qi4j.api.entity.association.SetAssociation;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

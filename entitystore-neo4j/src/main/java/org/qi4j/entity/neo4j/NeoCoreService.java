@@ -18,9 +18,9 @@ package org.qi4j.entity.neo4j;
 
 import org.neo4j.api.core.NeoService;
 import org.neo4j.util.index.IndexService;
-import org.qi4j.composite.Mixins;
-import org.qi4j.service.Activatable;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceComposite;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

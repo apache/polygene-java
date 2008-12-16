@@ -23,7 +23,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.rdfxml.util.RDFXMLPrettyWriter;
-import org.qi4j.injection.scope.Service;
+import org.qi4j.api.injection.scope.Service;
 
 /**
  * TODO Add JavaDoc

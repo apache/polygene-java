@@ -30,13 +30,13 @@ import org.openrdf.repository.RepositoryException;
 import org.qi4j.entity.index.rdf.callback.CollectingQualifiedIdentityResultCallback;
 import org.qi4j.entity.index.rdf.callback.QualifiedIdentityResultCallback;
 import org.qi4j.entity.index.rdf.callback.SingleQualifiedIdentityResultCallback;
-import org.qi4j.injection.scope.Service;
-import org.qi4j.query.grammar.BooleanExpression;
-import org.qi4j.query.grammar.OrderBy;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
-import org.qi4j.util.ClassUtil;
+import org.qi4j.api.util.ClassUtil;
 
 /**
  * TODO Add JavaDoc

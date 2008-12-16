@@ -22,15 +22,14 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.qi4j.composite.Composite;
-import org.qi4j.entity.Identity;
-import org.qi4j.entity.association.GenericAssociationInfo;
-import static org.qi4j.property.GenericPropertyInfo.getDeclaringClassName;
-import org.qi4j.property.GenericPropertyInfo;
-import org.qi4j.query.grammar.AssociationReference;
-import org.qi4j.query.grammar.ManyAssociationReference;
-import org.qi4j.query.grammar.PropertyReference;
-import org.qi4j.util.ClassUtil;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.entity.association.GenericAssociationInfo;
+import static org.qi4j.api.property.GenericPropertyInfo.getDeclaringClassName;
+import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.query.grammar.AssociationReference;
+import org.qi4j.api.query.grammar.ManyAssociationReference;
+import org.qi4j.api.query.grammar.PropertyReference;
+import org.qi4j.api.util.ClassUtil;
 
 public class Triples implements Iterable<Triples.Triple>
 {

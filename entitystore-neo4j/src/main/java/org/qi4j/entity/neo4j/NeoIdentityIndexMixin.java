@@ -19,7 +19,7 @@ package org.qi4j.entity.neo4j;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Transaction;
 import org.qi4j.entity.neo4j.state.DirectEntityState;
-import org.qi4j.injection.scope.Service;
+import org.qi4j.api.injection.scope.Service;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

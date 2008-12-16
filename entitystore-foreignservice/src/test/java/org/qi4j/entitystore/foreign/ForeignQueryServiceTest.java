@@ -24,19 +24,19 @@ import java.util.List;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.composite.CompositeBuilder;
-import org.qi4j.composite.CompositeBuilderFactory;
-import org.qi4j.composite.Composite;
-import org.qi4j.injection.scope.Structure;
-import org.qi4j.injection.Name;
-import org.qi4j.service.ServiceDescriptor;
-import org.qi4j.service.ServiceInstanceFactory;
-import org.qi4j.service.ServiceInstanceProviderException;
+import org.qi4j.api.composite.CompositeBuilder;
+import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.Name;
+import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceInstanceFactory;
+import org.qi4j.api.service.ServiceInstanceFactoryException;
 import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.query.Query;
-import org.qi4j.entity.UnitOfWork;
+import org.qi4j.api.query.Query;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.library.beans.support.JavabeanSupport;
-import org.qi4j.property.Property;
+import org.qi4j.api.property.Property;
 import org.qi4j.spi.query.named.QueryMethod;
 import org.qi4j.spi.query.named.QueryResult;
 
@@ -73,7 +73,7 @@ public class ForeignQueryServiceTest extends AbstractQi4jTest
 
         @Structure CompositeBuilderFactory cbf;
 
-        public Object newInstance( ServiceDescriptor serviceDescriptor ) throws ServiceInstanceProviderException
+        public Object newInstance( ServiceDescriptor serviceDescriptor ) throws ServiceInstanceFactoryException
         {
             CompositeBuilder<ForeignProxyEntityStoreService> builder = cbf.newCompositeBuilder( ForeignProxyEntityStoreService.class );
             builder.use( new HabbaServiceImpl() );
@@ -81,7 +81,7 @@ public class ForeignQueryServiceTest extends AbstractQi4jTest
             return builder.newInstance();
         }
 
-        public void releaseInstance( Object instance ) throws ServiceInstanceProviderException
+        public void releaseInstance( Object instance ) throws ServiceInstanceFactoryException
         {
         }
     }

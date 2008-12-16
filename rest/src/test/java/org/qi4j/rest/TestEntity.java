@@ -14,16 +14,16 @@
 
 package org.qi4j.rest;
 
-import org.qi4j.entity.EntityComposite;
-import org.qi4j.entity.RDF;
-import org.qi4j.entity.association.Association;
-import org.qi4j.entity.association.ListAssociation;
-import org.qi4j.entity.association.ManyAssociation;
-import org.qi4j.entity.association.SetAssociation;
-import org.qi4j.entity.association.Qualifier;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.RDF;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.ListAssociation;
+import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.entity.association.SetAssociation;
+import org.qi4j.api.entity.association.Qualifier;
 import org.qi4j.library.rdf.DcRdf;
-import org.qi4j.property.Property;
-import org.qi4j.composite.Optional;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.common.Optional;
 
 /**
  * TODO
