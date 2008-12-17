@@ -16,7 +16,7 @@ package org.qi4j.library.rdf.repository;
 import org.qi4j.library.constraints.annotation.Matches;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.common.Optional;
-import org.qi4j.api.service.ConfigurationComposite;
+import org.qi4j.api.configuration.ConfigurationComposite;
 
 /**
  * TODO Add JavaDoc

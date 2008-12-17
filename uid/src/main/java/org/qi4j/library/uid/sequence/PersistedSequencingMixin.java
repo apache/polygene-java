@@ -24,7 +24,7 @@ import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.service.Configuration;
+import org.qi4j.api.configuration.Configuration;
 
 public class PersistedSequencingMixin
     implements Sequencing

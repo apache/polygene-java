@@ -18,6 +18,7 @@
     <module>beans</module>
     <module>business</module>
     <module>cache</module>
+    <module>configuration</module>
     <module>constraints</module>
     <module>exception</module>
     <module>executor</module>

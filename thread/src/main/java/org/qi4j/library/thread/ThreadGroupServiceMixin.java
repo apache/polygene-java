@@ -19,7 +19,7 @@ package org.qi4j.library.thread;
 
 import java.util.HashMap;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.service.Configuration;
+import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.property.Property;
 
 public class ThreadGroupServiceMixin

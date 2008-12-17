@@ -42,7 +42,7 @@ public class MahaloMixin
     implements Activatable
 {
     @Service( optional = true ) HttpService httpService;
-    @This org.qi4j.api.service.Configuration<MahaloConfiguration> my;
+    @This org.qi4j.api.configuration.Configuration<MahaloConfiguration> my;
 
     private NonActivatableServiceDescriptor.Created lookupCreated;
     private File fileToCleanup;

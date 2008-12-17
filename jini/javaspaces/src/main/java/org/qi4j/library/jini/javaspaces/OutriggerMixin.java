@@ -40,7 +40,7 @@ public class OutriggerMixin
     implements Activatable
 {
     @Service( optional = true ) HttpService httpService;
-    @This org.qi4j.api.service.Configuration<OutriggerConfiguration> my;
+    @This org.qi4j.api.configuration.Configuration<OutriggerConfiguration> my;
 
     private NonActivatableServiceDescriptor.Created lookupCreated;
     private File fileToCleanup;

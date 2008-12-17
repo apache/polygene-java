@@ -31,7 +31,7 @@ import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.service.Configuration;
+import org.qi4j.api.configuration.Configuration;
 import org.qi4j.logging.trace.records.TraceRecord;
 import org.qi4j.logging.trace.records.EntityTraceRecordEntity;
 import org.qi4j.logging.trace.records.ServiceTraceRecordEntity;

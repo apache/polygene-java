@@ -51,7 +51,7 @@ import org.qi4j.library.spaces.Space;
 import org.qi4j.library.spaces.SpaceException;
 import org.qi4j.library.spaces.SpaceTransaction;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.Configuration;
+import org.qi4j.api.configuration.Configuration;
 
 public class JavaSpacesClientMixin
     implements Space, Activatable

@@ -36,7 +36,7 @@ import org.qi4j.logging.debug.records.DebugRecord;
 import org.qi4j.logging.debug.records.EntityDebugRecordEntity;
 import org.qi4j.logging.debug.records.ServiceDebugRecordEntity;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.service.Configuration;
+import org.qi4j.api.configuration.Configuration;
 
 public class DebuggingServiceMixin
     implements DebuggingService

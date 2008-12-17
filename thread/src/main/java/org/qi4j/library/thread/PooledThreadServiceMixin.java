@@ -22,7 +22,7 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.library.uid.sequence.Sequencing;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.Configuration;
+import org.qi4j.api.configuration.Configuration;
 
 public class PooledThreadServiceMixin
     implements ThreadService, Activatable
