@@ -30,7 +30,7 @@ import org.qi4j.entity.ibatis.internal.IBatisEntityState;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.Configuration;
+import org.qi4j.api.configuration.Configuration;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;

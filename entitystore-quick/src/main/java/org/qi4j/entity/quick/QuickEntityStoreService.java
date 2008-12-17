@@ -20,7 +20,7 @@ package org.qi4j.entity.quick;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreListenerNotificationSideEffect;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.service.Configuration;
+import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.concern.Concerns;
@@ -31,6 +31,6 @@ import org.qi4j.library.locking.LockingAbstractComposite;
 @Concerns( ConcurrentModificationCheckConcern.class )
 @SideEffects( EntityStoreListenerNotificationSideEffect.class )
 @Mixins( QuickEntityStoreMixin.class )
-public interface QuickEntityStoreService extends Activatable,EntityStore, ServiceComposite, LockingAbstractComposite, Configuration 
+public interface QuickEntityStoreService extends Activatable,EntityStore, ServiceComposite, LockingAbstractComposite, Configuration
 {
 }

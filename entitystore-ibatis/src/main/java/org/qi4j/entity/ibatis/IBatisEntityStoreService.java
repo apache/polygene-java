@@ -19,7 +19,7 @@ package org.qi4j.entity.ibatis;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.Configuration;
+import org.qi4j.api.configuration.Configuration;
 import org.qi4j.spi.entity.EntityStore;
 
 /**

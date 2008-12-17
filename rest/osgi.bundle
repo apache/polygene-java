@@ -24,6 +24,7 @@ Import-Package: com.noelios.restlet.ext.servlet, \
                 org.openrdf.repository, \
                 org.qi4j.api.common, \
                 org.qi4j.api.composite, \
+                org.qi4j.api.configuration, \
                 org.qi4j.api.entity, \
                 org.qi4j.api.entity.association, \
                 org.qi4j.api.injection.scope, \

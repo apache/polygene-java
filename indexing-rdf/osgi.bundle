@@ -1,14 +1,43 @@
 
 Export-Package: org.qi4j.entity.index.rdf.*;version="1"
 
-Import-Package: javax.*, \
-                org.apache.commons.logging.*, \
-                org.apache.log4j.*, \
-                org.osgi.*;version="1.0.0", \
-                org.slf4j.*, \
-                org.qi4j.*, \
-                org.xml.*, \
-                org.w3c.dom
+Import-Package: org.apache.commons.logging, \
+                javax.crypto, \
+                javax.crypto.spec, \
+                javax.imageio, \
+                javax.imageio.spi, \
+                javax.naming, \
+                javax.naming.spi, \
+                javax.net, \
+                javax.net.ssl, \
+                javax.sql, \
+                javax.swing, \
+                javax.xml.datatype, \
+                javax.xml.namespace, \
+                javax.xml.parsers, \
+                javax.xml.validation, \
+                org.qi4j.api.common, \
+                org.qi4j.api.configuration, \
+                org.qi4j.api.constraint, \
+                org.qi4j.api.entity, \
+                org.qi4j.api.entity.association, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.mixin, \
+                org.qi4j.api.property, \
+                org.qi4j.api.query.grammar, \
+                org.qi4j.api.service, \
+                org.qi4j.api.structure, \
+                org.qi4j.api.util, \
+                org.qi4j.bootstrap, \
+                org.qi4j.spi.composite, \
+                org.qi4j.spi.entity, \
+                org.qi4j.spi.object, \
+                org.qi4j.spi.query, \
+                org.qi4j.spi.structure, \
+                org.slf4j, \
+                org.w3c.dom, \
+                org.xml.sax, \
+                org.xml.sax.helpers
  
 Embed-Dependency: *;scope=compile|runtime;groupId=!org.slf4j*
 

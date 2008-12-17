@@ -8,6 +8,7 @@ Import-Package: org.jets3t.service, \
                 org.qi4j.api.mixin, \
                 org.jets3t.service.security, \
                 org.qi4j.api.composite, \
+                org.qi4j.api.configuration, \
                 org.qi4j.api.entity, \
                 org.qi4j.api.injection.scope, \
                 org.qi4j.library.locking, \

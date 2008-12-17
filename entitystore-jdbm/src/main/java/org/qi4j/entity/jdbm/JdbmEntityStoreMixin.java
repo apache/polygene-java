@@ -43,7 +43,7 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.library.locking.WriteLock;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.Configuration;
+import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.spi.entity.EntityTypeRegistryMixin;
 import org.qi4j.spi.entity.DefaultEntityState;

@@ -9,7 +9,7 @@ import java.rmi.server.UnicastRemoteObject;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.Configuration;
+import org.qi4j.api.configuration.Configuration;
 
 /**
  * Create and delegate to a RMI registry.

@@ -31,7 +31,7 @@ import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.qi4j.api.composite.ConstructionException;
+import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
