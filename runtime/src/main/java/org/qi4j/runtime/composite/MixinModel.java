@@ -23,7 +23,7 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.composite.ConstructionException;
+import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedFieldsModel;

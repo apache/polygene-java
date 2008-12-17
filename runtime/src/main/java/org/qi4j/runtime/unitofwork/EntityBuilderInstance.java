@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Iterator;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.ConstructionException;
+import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Identity;

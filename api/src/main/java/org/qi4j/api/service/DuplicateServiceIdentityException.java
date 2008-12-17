@@ -14,7 +14,7 @@
 
 package org.qi4j.api.service;
 
-import org.qi4j.api.composite.InvalidApplicationException;
+import org.qi4j.api.common.InvalidApplicationException;
 
 /**
  * TODO

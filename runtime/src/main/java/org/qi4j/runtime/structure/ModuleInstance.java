@@ -21,7 +21,7 @@ import java.util.Stack;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.composite.CompositeBuilder;
 import org.qi4j.api.composite.CompositeBuilderFactory;
-import org.qi4j.api.composite.ConstructionException;
+import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;

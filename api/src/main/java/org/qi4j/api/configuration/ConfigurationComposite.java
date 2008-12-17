@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,14 +11,16 @@
  * limitations under the License.
  *
  */
-package org.qi4j.runtime.entity;
 
-import org.qi4j.api.common.InvalidApplicationException;
+package org.qi4j.api.configuration;
 
-public class ObjectAccessException extends InvalidApplicationException
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.Queryable;
+
+/**
+ * All Configuration composites should
+ */
+@Queryable( false )
+public interface ConfigurationComposite extends EntityComposite
 {
-    public ObjectAccessException( String message )
-    {
-        super( message );
-    }
 }

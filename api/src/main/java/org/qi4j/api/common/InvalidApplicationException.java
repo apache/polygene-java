@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,16 +12,20 @@
  *
  */
 
-package org.qi4j.api.service;
-
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.Queryable;
+package org.qi4j.api.common;
 
 /**
- * All Configuration composites should
+ * Thrown when an application is considered to not be constructed properly.
+ * This happens primarily when client code tries to instantiate Composites
+ * and objects which have not been registered in the ModuleAssembly.
  */
-@Queryable( false )
-public interface ConfigurationComposite
-    extends EntityComposite
+public abstract class InvalidApplicationException
+    extends RuntimeException
 {
+    private static final long serialVersionUID = 1L;
+
+    public InvalidApplicationException( String string )
+    {
+        super( string );
+    }
 }

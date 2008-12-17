@@ -13,7 +13,7 @@
  */
 package org.qi4j.api.unitofwork;
 
-import org.qi4j.api.composite.InvalidApplicationException;
+import org.qi4j.api.common.InvalidApplicationException;
 
 public class NoSuchEntityException extends InvalidApplicationException
 {

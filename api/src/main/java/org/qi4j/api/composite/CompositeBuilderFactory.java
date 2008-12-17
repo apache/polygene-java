@@ -14,6 +14,8 @@
  */
 package org.qi4j.api.composite;
 
+import org.qi4j.api.common.ConstructionException;
+
 /**
  * This factory creates proxies that implement the given
  * thisAs interfaces.

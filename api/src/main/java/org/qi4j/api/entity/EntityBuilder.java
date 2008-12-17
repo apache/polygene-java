@@ -16,7 +16,7 @@
  */
 package org.qi4j.api.entity;
 
-import org.qi4j.api.composite.ConstructionException;
+import org.qi4j.api.common.ConstructionException;
 
 /**
  * EntityBuilders are used to instantiate EntityComposites. They can be acquired from
@@ -51,7 +51,7 @@ public interface EntityBuilder<T>
      * Create a new Entity instance.
      *
      * @return a new Entity instance
-     * @throws org.qi4j.api.composite.ConstructionException
+     * @throws org.qi4j.api.common.ConstructionException
      *                            thrown if it was not possible to instantiate the Composite
      * @throws LifecycleException
      */

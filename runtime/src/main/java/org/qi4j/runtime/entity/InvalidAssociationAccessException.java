@@ -14,7 +14,7 @@
 package org.qi4j.runtime.entity;
 
 import java.lang.reflect.Method;
-import org.qi4j.api.composite.InvalidApplicationException;
+import org.qi4j.api.common.InvalidApplicationException;
 
 public class InvalidAssociationAccessException extends InvalidApplicationException
 {

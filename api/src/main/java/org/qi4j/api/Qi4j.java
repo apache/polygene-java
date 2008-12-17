@@ -48,7 +48,7 @@ public interface Qi4j
 
     /**
      * This is used by ConfigurationMixin to figure out the configuration instance used by
-     * a Service using {@link org.qi4j.api.service.Configuration}.
+     * a Service using {@link org.qi4j.api.configuration.Configuration}.
      *
      * @return
      */

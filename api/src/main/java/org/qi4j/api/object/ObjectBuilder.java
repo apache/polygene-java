@@ -16,7 +16,7 @@
  */
 package org.qi4j.api.object;
 
-import org.qi4j.api.composite.ConstructionException;
+import org.qi4j.api.common.ConstructionException;
 
 /**
  * TODO for Rickard; Explanation needed on how to use for Templating, Strategy and Builder patterns.
@@ -45,7 +45,7 @@ public interface ObjectBuilder<T>
      * Creates a new instance from this ObjectBuilder.
      *
      * @return An object of type <code><i>T</i></code>.
-     * @throws org.qi4j.api.composite.ConstructionException
+     * @throws org.qi4j.api.common.ConstructionException
      *          If the object class is not compatible with the
      */
     T newInstance()

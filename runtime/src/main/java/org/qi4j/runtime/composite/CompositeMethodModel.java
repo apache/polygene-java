@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.qi4j.api.composite.ConstructionException;
+import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.structure.Binder;

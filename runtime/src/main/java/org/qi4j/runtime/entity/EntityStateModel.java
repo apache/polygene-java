@@ -19,18 +19,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.entity.association.AssociationInstance;
 import org.qi4j.runtime.entity.association.AssociationsInstance;
 import org.qi4j.runtime.entity.association.AssociationsModel;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.AssociationType;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.ManyAssociationType;
 import org.qi4j.spi.entity.PropertyType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
@@ -40,7 +40,7 @@ import org.qi4j.spi.property.PropertyDescriptor;
  * TODO
  */
 public final class EntityStateModel
-    implements StateDescriptor
+    implements EntityStateDescriptor
 {
     private final EntityPropertiesModel propertiesModel;
     private final AssociationsModel associationsModel;

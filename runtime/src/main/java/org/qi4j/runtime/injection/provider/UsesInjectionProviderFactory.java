@@ -1,7 +1,7 @@
 package org.qi4j.runtime.injection.provider;
 
 import org.qi4j.api.composite.CompositeBuilderFactory;
-import org.qi4j.api.composite.ConstructionException;
+import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectBuilderFactory;

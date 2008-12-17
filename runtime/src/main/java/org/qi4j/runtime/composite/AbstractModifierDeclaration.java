@@ -21,7 +21,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
-import org.qi4j.api.composite.ConstructionException;
+import org.qi4j.api.common.ConstructionException;
 
 /**
  * TODO

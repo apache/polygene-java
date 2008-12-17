@@ -33,6 +33,7 @@ Import-Package: net.sf.cglib.asm;version=2.1.3, \
                 org.qi4j.api.composite.internal, \
                 org.qi4j.api.concern, \
                 org.qi4j.api.concern.internal, \
+                org.qi4j.api.configuration, \
                 org.qi4j.api.constraint, \
                 org.qi4j.api.entity, \
                 org.qi4j.api.entity.association, \

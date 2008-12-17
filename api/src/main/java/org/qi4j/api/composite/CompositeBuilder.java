@@ -16,6 +16,8 @@
  */
 package org.qi4j.api.composite;
 
+import org.qi4j.api.common.ConstructionException;
+
 /**
  * CompositeBuilders are used to instantiate Composites. They can be acquired from
  * {@link CompositeBuilderFactory#newCompositeBuilder(Class)} and allows the client

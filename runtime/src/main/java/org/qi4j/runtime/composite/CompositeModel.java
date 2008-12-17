@@ -21,7 +21,7 @@ import java.lang.reflect.Proxy;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.ConstructionException;
+import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.property.StateHolder;

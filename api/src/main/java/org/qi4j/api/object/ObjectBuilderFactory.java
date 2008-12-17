@@ -14,7 +14,7 @@
  */
 package org.qi4j.api.object;
 
-import org.qi4j.api.composite.ConstructionException;
+import org.qi4j.api.common.ConstructionException;
 
 /**
  * This factory creates builders for POJO's.
@@ -26,7 +26,7 @@ public interface ObjectBuilderFactory
      *
      * @param type an object class which will be instantiated.
      * @return an {@code ObjectBuilder} for creation of objects of the given type.
-     * @throws ConstructionException Thrown if instantiation fails.
+     * @throws org.qi4j.api.common.ConstructionException Thrown if instantiation fails.
      * @throws NoSuchObjectException Thrown if {@code type} class is not an object.
      */
     <T> ObjectBuilder<T> newObjectBuilder( Class<T> type )

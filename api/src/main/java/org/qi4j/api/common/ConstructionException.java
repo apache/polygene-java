@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,21 +12,32 @@
  * limitations under the License.
  *
  */
-
-package org.qi4j.api.composite;
+package org.qi4j.api.common;
 
 /**
- * Thrown when an application is considered to not be constructed properly.
- * This happens primarily when client code tries to instantiate Composites
- * and objects which have not been registered in the ModuleAssembly.
+ * Thrown when a Fragment or object could not be instantiated.
  */
-public abstract class InvalidApplicationException
+public class ConstructionException
     extends RuntimeException
 {
     private static final long serialVersionUID = 1L;
 
-    public InvalidApplicationException( String string )
+    public ConstructionException()
     {
-        super( string );
+    }
+
+    public ConstructionException( String message )
+    {
+        super( message );
+    }
+
+    public ConstructionException( String message, Throwable cause )
+    {
+        super( message, cause );
+    }
+
+    public ConstructionException( Throwable cause )
+    {
+        super( cause );
     }
 }

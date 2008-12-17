@@ -12,9 +12,12 @@
  *
  */
 
-package org.qi4j.api.service;
+package org.qi4j.api.configuration;
 
 import org.qi4j.api.Qi4j;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.service.Activatable;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.mixin.Mixins;

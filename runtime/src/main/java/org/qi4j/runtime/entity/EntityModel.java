@@ -23,7 +23,7 @@ import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.composite.ConstructionException;
+import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.unitofwork.EntityCompositeAlreadyExistsException;
@@ -44,7 +44,6 @@ import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.composite.CompositeDescriptor;
-import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
@@ -54,6 +53,7 @@ import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.UnknownEntityTypeException;
+import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.util.ClassUtil;
@@ -137,7 +137,7 @@ public final class EntityModel
         return info;
     }
 
-    public StateDescriptor state()
+    public EntityStateDescriptor state()
     {
         return stateModel;
     }

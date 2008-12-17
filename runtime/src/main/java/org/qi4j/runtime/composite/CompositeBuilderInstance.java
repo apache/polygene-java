@@ -20,7 +20,7 @@ import java.lang.reflect.Proxy;
 import java.util.Iterator;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeBuilder;
-import org.qi4j.api.composite.ConstructionException;
+import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.property.Property;
 import org.qi4j.runtime.structure.ModuleInstance;

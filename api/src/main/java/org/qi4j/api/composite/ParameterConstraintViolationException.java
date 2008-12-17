@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.api.constraint;
+package org.qi4j.api.composite;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -25,9 +25,9 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.constraint.ConstraintViolationException;
+import org.qi4j.api.constraint.ConstraintViolation;
 
 /**
  * This Exception is thrown when there is one or more Constraint Violations in a method
@@ -48,8 +48,6 @@ public class ParameterConstraintViolationException extends ConstraintViolationEx
 
     private final String instanceName;
     private final String compositeType;
-    private final boolean isEntity;
-    private final boolean isService;
 
     public ParameterConstraintViolationException( Composite instance, Method method,
                                                   Collection<ConstraintViolation> constraintViolations )
@@ -57,8 +55,6 @@ public class ParameterConstraintViolationException extends ConstraintViolationEx
         super( method, constraintViolations );
         instanceName = instance.toString();
         compositeType = instance.type().getName();
-        isEntity = instance instanceof EntityComposite;
-        isService = instance instanceof ServiceComposite;
     }
 
     /**
@@ -115,22 +111,7 @@ public class ParameterConstraintViolationException extends ConstraintViolationEx
      */
     public String[] getLocalizedMessages( ResourceBundle bundle )
     {
-        String pattern;
-        if( isEntity )
-        {
-            pattern = "Constraint violation in {2}.{3}.{6} with constraint {4}, in entity {1}[id={0}] for value ''{5}''";
-        }
-        else
-        {
-            if( isService )
-            {
-                pattern = "Constraint violation in {2}.{3}.{6} with constraint {4}, in service {0} for value ''{5}''";
-            }
-            else
-            {
-                pattern = "Constraint violation in {2}.{3}.{6} with constraint {4}, in composite \n{0} of type {1} for value ''{5}''";
-            }
-        }
+        String pattern = "Constraint violation in {2}.{3}.{6} with constraint {4}, in \n{0} of type {1} for value ''{5}''";
         ArrayList<String> list = new ArrayList<String>();
         for( ConstraintViolation violation : constraintViolations() )
         {
@@ -206,15 +187,5 @@ public class ParameterConstraintViolationException extends ConstraintViolationEx
     public String compositeType()
     {
         return compositeType;
-    }
-
-    public boolean isEntity()
-    {
-        return isEntity;
-    }
-
-    public boolean isService()
-    {
-        return isService;
     }
 }

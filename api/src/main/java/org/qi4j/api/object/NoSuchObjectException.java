@@ -13,7 +13,7 @@
  */
 package org.qi4j.api.object;
 
-import org.qi4j.api.composite.InvalidApplicationException;
+import org.qi4j.api.common.InvalidApplicationException;
 
 public class NoSuchObjectException extends InvalidApplicationException
 {
