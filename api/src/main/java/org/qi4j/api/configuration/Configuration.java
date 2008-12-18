@@ -15,17 +15,17 @@
 package org.qi4j.api.configuration;
 
 import org.qi4j.api.Qi4j;
-import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.service.ServiceDescriptor;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.concern.Concerns;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
 /**
  * Provide Configurations for Services. A Service that wants to be configurable

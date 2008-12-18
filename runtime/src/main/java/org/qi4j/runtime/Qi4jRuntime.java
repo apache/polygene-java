@@ -14,19 +14,26 @@
 
 package org.qi4j.runtime;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationHandler;
 import static java.lang.reflect.Proxy.getInvocationHandler;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.InputStream;
-import java.io.IOException;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.PropertyMapper;
-import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.EntityCompositeNotFoundException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.composite.DefaultCompositeInstance;
 import static org.qi4j.runtime.composite.DefaultCompositeInstance.getCompositeInstance;
@@ -41,19 +48,12 @@ import org.qi4j.runtime.structure.EntitiesInstance;
 import org.qi4j.runtime.structure.EntitiesModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.api.configuration.Configuration;
-import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.object.ObjectDescriptor;
-import org.qi4j.api.structure.Module;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.EntityCompositeNotFoundException;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 
 /**
  * Incarnation of Qi4j.
@@ -102,7 +102,7 @@ public final class Qi4jRuntime
         throws InstantiationException
     {
         ServiceDescriptor descriptor = ((ServiceComposite) serviceComposite).serviceDescriptor();
-        T configuration;
+        Object configuration;
         try
         {
             String identity = descriptor.identity();
@@ -144,7 +144,7 @@ public final class Qi4jRuntime
         {
             uow.pause();
         }
-        return configuration;
+        return configType.cast( configuration);
     }
 
     public Class<?> getConfigurationType( Composite serviceComposite )

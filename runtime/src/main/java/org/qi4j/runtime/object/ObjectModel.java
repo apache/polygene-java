@@ -14,6 +14,11 @@
 
 package org.qi4j.runtime.object;
 
+import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.mixin.Initializable;
+import org.qi4j.api.mixin.InitializationException;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.ConstructorsModel;
 import org.qi4j.runtime.composite.Resolution;
@@ -25,8 +30,6 @@ import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.object.ObjectDescriptor;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.common.MetaInfo;
 
 /**
  * TODO
@@ -100,6 +103,19 @@ public final class ObjectModel
         Object instance = constructorsModel.newInstance( injectionContext );
         injectedFieldsModel.inject( injectionContext, instance );
         injectedMethodsModel.inject( injectionContext, instance );
+
+        if( instance instanceof Initializable )
+        {
+            try
+            {
+                ( (Initializable) instance ).initialize();
+            }
+            catch( InitializationException e )
+            {
+                throw new ConstructionException( "Unable to initialize " + objectType, e );
+            }
+        }
+
         return instance;
     }
 
