@@ -17,7 +17,7 @@
 package org.qi4j.library.swing.visualizer.model.descriptor;
 
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
-import org.qi4j.spi.composite.ConstraintDescriptor;
+import org.qi4j.spi.constraint.ConstraintDescriptor;
 
 /**
  * @author edward.yakop@gmail.com

@@ -44,7 +44,7 @@ import org.qi4j.library.auth.RoleEntity;
 import org.qi4j.library.auth.User;
 import org.qi4j.library.auth.UserComposite;
 import org.qi4j.library.auth.AuthenticationMethod;
-import org.qi4j.spi.entity.UuidIdentityGeneratorService;
+import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class AuthTest

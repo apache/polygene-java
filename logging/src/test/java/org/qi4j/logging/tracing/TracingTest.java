@@ -42,7 +42,7 @@ import org.qi4j.logging.trace.records.TraceRecord;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.spi.entity.UuidIdentityGeneratorService;
+import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class TracingTest

@@ -26,10 +26,10 @@ import org.openrdf.model.Value;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.api.property.GenericPropertyInfo;
-import org.qi4j.spi.entity.AssociationType;
+import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.ManyAssociationType;
-import org.qi4j.spi.entity.PropertyType;
+import org.qi4j.spi.entity.association.ManyAssociationType;
+import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.api.util.ClassUtil;
 

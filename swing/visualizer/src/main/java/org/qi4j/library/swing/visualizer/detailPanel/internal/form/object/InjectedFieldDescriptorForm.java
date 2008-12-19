@@ -29,7 +29,7 @@ import org.qi4j.library.swing.visualizer.model.descriptor.InjectedFieldDetailDes
 import org.qi4j.library.swing.visualizer.model.descriptor.MixinDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.spi.composite.DependencyDescriptor;
-import org.qi4j.spi.composite.MixinDescriptor;
+import org.qi4j.spi.mixin.MixinDescriptor;
 
 /**
  * @author edward.yakop@gmail.com

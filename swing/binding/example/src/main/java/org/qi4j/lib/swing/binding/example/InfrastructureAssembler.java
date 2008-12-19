@@ -5,7 +5,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
-import org.qi4j.spi.entity.UuidIdentityGeneratorService;
+import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import static org.qi4j.api.common.Visibility.application;
 
 /**

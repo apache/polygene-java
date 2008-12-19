@@ -33,7 +33,7 @@ import org.qi4j.library.struts2.example.actions.EditItem;
 import org.qi4j.library.struts2.example.actions.HelloWorldAction;
 import org.qi4j.library.struts2.example.actions.IndexAction;
 import org.qi4j.library.struts2.example.actions.ListItems;
-import org.qi4j.spi.entity.UuidIdentityGeneratorService;
+import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 

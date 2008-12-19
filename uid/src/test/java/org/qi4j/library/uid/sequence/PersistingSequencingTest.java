@@ -26,7 +26,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.library.uid.sequence.assembly.PersistingSequencingAssembler;
-import org.qi4j.spi.entity.UuidIdentityGeneratorService;
+import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class PersistingSequencingTest extends AbstractQi4jTest

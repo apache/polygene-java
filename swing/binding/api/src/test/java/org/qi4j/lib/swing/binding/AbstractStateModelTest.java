@@ -39,7 +39,7 @@ import org.qi4j.lib.swing.binding.domain.entities.CatEntity;
 import org.qi4j.lib.swing.binding.domain.entities.PersonEntity;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.spi.entity.UuidIdentityGeneratorService;
+import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**

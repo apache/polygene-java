@@ -26,7 +26,7 @@ import javax.swing.JTextField;
 import org.qi4j.library.swing.visualizer.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.MixinDetailDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
-import org.qi4j.spi.composite.MixinDescriptor;
+import org.qi4j.spi.mixin.MixinDescriptor;
 
 /**
  * @author edward.yakop@gmail.com

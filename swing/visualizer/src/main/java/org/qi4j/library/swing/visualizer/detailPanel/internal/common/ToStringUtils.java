@@ -40,10 +40,10 @@ import org.qi4j.library.swing.visualizer.model.descriptor.ServiceDetailDescripto
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
-import org.qi4j.spi.entity.AssociationType;
+import org.qi4j.spi.entity.association.AssociationType;
+import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.entity.ManyAssociationType;
-import org.qi4j.spi.entity.PropertyType;
+import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.structure.ApplicationDescriptor;
 
