@@ -16,6 +16,7 @@ Import-Package: org.jets3t.service, \
                 org.qi4j.api.service, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.entity, \
+                org.qi4j.spi.entity.helpers, \
                 org.qi4j.spi.serialization, \
                 org.qi4j.api.structure
 

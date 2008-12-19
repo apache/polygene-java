@@ -29,7 +29,7 @@ import org.qi4j.library.jini.javaspaces.JiniJavaSpacesServiceAssembler;
 import org.qi4j.library.jini.lookup.JiniLookupServiceAssembler;
 import org.qi4j.library.jini.transaction.JiniTransactionServiceAssembler;
 import org.qi4j.library.http.JettyServiceAssembler;
-import org.qi4j.spi.entity.UuidIdentityGeneratorService;
+import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import java.security.Policy;
 import java.security.PermissionCollection;
 import java.security.CodeSource;

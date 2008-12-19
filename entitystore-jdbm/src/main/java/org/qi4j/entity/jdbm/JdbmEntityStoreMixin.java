@@ -46,7 +46,7 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.spi.entity.EntityTypeRegistryMixin;
-import org.qi4j.spi.entity.DefaultEntityState;
+import org.qi4j.spi.entity.helpers.DefaultEntityState;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;

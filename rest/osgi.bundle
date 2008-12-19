@@ -42,6 +42,9 @@ Import-Package: com.noelios.restlet.ext.servlet, \
                 org.qi4j.library.rdf.serializer, \
                 org.qi4j.spi, \
                 org.qi4j.spi.entity, \
+                org.qi4j.spi.entity.association, \
+                org.qi4j.spi.entity.helpers, \
+                org.qi4j.spi.property, \
                 org.qi4j.spi.query, \
                 org.xml.sax, \
                 org.xml.sax.helpers, \

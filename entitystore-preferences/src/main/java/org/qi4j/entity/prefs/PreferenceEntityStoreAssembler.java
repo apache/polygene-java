@@ -21,7 +21,7 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import static org.qi4j.entity.prefs.PreferenceEntityStoreInfo.PreferenceNode.USER_ROOT;
-import org.qi4j.spi.entity.UuidIdentityGeneratorService;
+import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 
 public class PreferenceEntityStoreAssembler
     implements Assembler

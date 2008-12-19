@@ -36,13 +36,13 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.entity.DefaultEntityState;
+import org.qi4j.spi.entity.helpers.DefaultEntityState;
+import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.UnknownEntityTypeException;
 import org.qi4j.api.structure.Module;
 

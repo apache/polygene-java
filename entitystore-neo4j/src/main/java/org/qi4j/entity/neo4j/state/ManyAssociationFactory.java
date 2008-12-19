@@ -23,7 +23,7 @@ import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.RelationshipType;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.entity.neo4j.NeoIdentityIndex;
-import org.qi4j.spi.entity.ManyAssociationType;
+import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 

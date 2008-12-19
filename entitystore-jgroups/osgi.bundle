@@ -29,6 +29,7 @@ Import-Package: javax.crypto, \
                 org.qi4j.library.locking, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.entity, \
+                org.qi4j.spi.entity.helpers, \
                 org.qi4j.spi.serialization, \
                 org.w3c.dom
 

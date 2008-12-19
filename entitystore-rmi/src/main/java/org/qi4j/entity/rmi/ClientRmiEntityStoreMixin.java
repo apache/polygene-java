@@ -24,12 +24,12 @@ import java.util.Collections;
 import org.qi4j.library.locking.WriteLock;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.spi.entity.EntityTypeRegistryMixin;
-import org.qi4j.spi.entity.DefaultEntityState;
+import org.qi4j.spi.entity.helpers.DefaultEntityState;
+import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.NoopStateCommitter;
+import org.qi4j.spi.entity.helpers.NoopStateCommitter;
 
 /**
  * RMI client implementation of Entity

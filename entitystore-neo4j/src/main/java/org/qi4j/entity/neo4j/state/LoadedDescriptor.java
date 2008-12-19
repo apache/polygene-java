@@ -23,10 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.neo4j.api.core.Node;
-import org.qi4j.spi.entity.AssociationType;
+import org.qi4j.spi.entity.association.AssociationType;
+import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.ManyAssociationType;
-import org.qi4j.spi.entity.PropertyType;
+import org.qi4j.spi.property.PropertyType;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

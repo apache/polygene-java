@@ -8,22 +8,24 @@ Import-Package: javax.transaction,\
                 org.apache.lucene.index, \
                 org.apache.lucene.search, \
                 org.apache.lucene.store, \
-                org.qi4j.bootstrap, \
                 org.qi4j.api.composite, \
                 org.qi4j.api.common, \
                 org.qi4j.api.entity, \
                 org.qi4j.api.entity.association, \
                 org.qi4j.api.mixin, \
-                org.qi4j.entity, \
-                org.qi4j.entity.association, \
-                org.qi4j.entity.memory, \
                 org.qi4j.api.injection.scope, \
                 org.qi4j.api.property, \
                 org.qi4j.api.service, \
+                org.qi4j.api.structure, \
+                org.qi4j.bootstrap, \
+                org.qi4j.entity, \
+                org.qi4j.entity.association, \
+                org.qi4j.entity.memory, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.entity, \
                 org.qi4j.spi.entity.association, \
-                org.qi4j.api.structure, \
+                org.qi4j.spi.entity.helpers, \
+                org.qi4j.spi.property, \
                 org.w3c.dom, \
                 org.xml.sax
 

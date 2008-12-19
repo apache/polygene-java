@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.neo4j.api.core.NeoService;
 import org.qi4j.entity.neo4j.NeoIdentityIndex;
-import org.qi4j.spi.entity.ManyAssociationType;
+import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
