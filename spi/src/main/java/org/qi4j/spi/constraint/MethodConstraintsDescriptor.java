@@ -12,19 +12,11 @@
  *
  */
 
-package org.qi4j.spi.entity;
+package org.qi4j.spi.constraint;
 
 /**
- * Implement StateCommitter, but do nothing.
+ * TODO
  */
-public class NoopStateCommitter
-    implements StateCommitter
+public interface MethodConstraintsDescriptor
 {
-    public void commit()
-    {
-    }
-
-    public void cancel()
-    {
-    }
 }

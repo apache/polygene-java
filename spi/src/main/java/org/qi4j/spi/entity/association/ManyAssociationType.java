@@ -12,14 +12,14 @@
  *
  */
 
-package org.qi4j.spi.entity;
+package org.qi4j.spi.entity.association;
 
 import java.io.Serializable;
 
 /**
  * TODO
  */
-public class ManyAssociationType
+public final class ManyAssociationType
     implements Serializable
 {
     private static final long serialVersionUID = 1L;

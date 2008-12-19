@@ -28,7 +28,6 @@ import org.qi4j.spi.entity.EntityStoreListenerNotificationSideEffect;
 @Concerns( ConcurrentModificationCheckConcern.class )
 @SideEffects( EntityStoreListenerNotificationSideEffect.class )
 @Mixins( { MemoryEntityStoreMixin.class } )
-public interface MemoryEntityStoreService
-    extends EntityStore, ServiceComposite
+public interface MemoryEntityStoreService extends EntityStore, ServiceComposite
 {
 }

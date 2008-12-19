@@ -21,7 +21,7 @@ import org.qi4j.api.property.Property;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.PropertyType;
+import org.qi4j.spi.property.PropertyType;
 import org.qi4j.api.util.ClassUtil;
 import org.qi4j.api.common.MetaInfo;
 

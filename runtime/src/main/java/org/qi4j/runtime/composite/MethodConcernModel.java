@@ -15,7 +15,7 @@
 package org.qi4j.runtime.composite;
 
 import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.spi.composite.MethodConcernDescriptor;
+import org.qi4j.spi.concern.MethodConcernDescriptor;
 
 /**
  * TODO

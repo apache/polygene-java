@@ -12,14 +12,14 @@
  *
  */
 
-package org.qi4j.spi.entity;
+package org.qi4j.spi.entity.association;
 
 import java.io.Serializable;
 
 /**
  * TODO
  */
-public class AssociationType
+public final class AssociationType
     implements Serializable
 {
     private final String qualifiedName;

@@ -17,6 +17,9 @@
 package org.qi4j.spi.entity;
 
 import java.util.Collection;
+import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityType;
 
 /**
  * The EntityState is a shared "second-level cache" mixin state container for a particular

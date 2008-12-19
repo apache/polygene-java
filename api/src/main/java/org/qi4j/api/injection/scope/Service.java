@@ -38,5 +38,8 @@ import org.qi4j.api.injection.InjectionScope;
 @InjectionScope
 public @interface Service
 {
-    boolean optional() default false; // True if the dependency is optional, only fail if this is false
+    /** True if the dependency is optional,
+     *  only fail the injection if this is false.
+     */
+    boolean optional() default false;
 }

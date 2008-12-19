@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.spi.composite;
+package org.qi4j.spi.concern;
 
 /**
  * TODO

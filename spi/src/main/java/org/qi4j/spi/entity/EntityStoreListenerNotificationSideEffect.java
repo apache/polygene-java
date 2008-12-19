@@ -19,6 +19,8 @@ package org.qi4j.spi.entity;
 
 import org.qi4j.api.sideeffect.SideEffectOf;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.entity.EntityState;
 
 /**
  * Notify all EntityStoreListeners that a change occurred in EntityState

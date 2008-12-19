@@ -15,15 +15,18 @@
 package org.qi4j.spi.entity;
 
 import java.io.Serializable;
+import org.qi4j.spi.entity.association.AssociationType;
+import org.qi4j.spi.entity.association.ManyAssociationType;
+import org.qi4j.spi.property.PropertyType;
 
 /**
  * TODO
  */
-public class EntityType
+public final class EntityType
     implements Serializable
 {
     private final String type;
-    private final long version = 0L; // TODO How to compute this?
+    private final long schemaVersion; // TODO How to compute this?
     private final String uri;
     private final boolean queryable;
     private final Iterable<PropertyType> properties;
@@ -46,6 +49,7 @@ public class EntityType
         this.properties = properties;
         this.associations = associations;
         this.manyAssociations = manyAssociations;
+        schemaVersion = 1;
     }
 
     public String type()
@@ -60,7 +64,7 @@ public class EntityType
 
     public long version()
     {
-        return version;
+        return schemaVersion;
     }
 
     public String toURI()
@@ -90,14 +94,14 @@ public class EntityType
 
     @Override public String toString()
     {
-        return type + "(" + version + ")";
+        return type + "(" + schemaVersion + ")";
     }
 
     public int hashCode()
     {
         int result;
         result = type.hashCode();
-        result = 31 * result + (int) ( version ^ ( version >>> 32 ) );
+        result = 31 * result + (int) ( schemaVersion ^ ( schemaVersion >>> 32 ) );
         return result;
     }
 
@@ -113,16 +117,6 @@ public class EntityType
         }
 
         EntityType that = (EntityType) o;
-
-        if( version != that.version )
-        {
-            return false;
-        }
-        if( !type.equals( that.type ) )
-        {
-            return false;
-        }
-
-        return true;
+        return schemaVersion == that.schemaVersion && type.equals( that.type );
     }
 }

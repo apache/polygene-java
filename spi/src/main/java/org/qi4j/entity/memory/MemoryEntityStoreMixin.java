@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.qi4j.api.composite.CompositeBuilderFactory;
-import org.qi4j.spi.entity.DefaultEntityState;
+import org.qi4j.spi.entity.helpers.DefaultEntityState;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;

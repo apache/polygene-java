@@ -48,21 +48,26 @@ Import-Package: net.sf.cglib.asm;version=2.1.3, \
                 org.qi4j.api.service, \
                 org.qi4j.api.sideeffect, \
                 org.qi4j.api.sideeffect.internal, \
+                org.qi4j.api.structure, \
                 org.qi4j.api.unitofwork, \
                 org.qi4j.api.usecase, \
+                org.qi4j.api.util, \
                 org.qi4j.spi, \
                 org.qi4j.spi.composite, \
+                org.qi4j.spi.concern, \
+                org.qi4j.spi.constraint, \
                 org.qi4j.spi.entity, \
                 org.qi4j.spi.entity.association, \
+                org.qi4j.spi.entity.helpers, \
+                org.qi4j.spi.mixin, \
                 org.qi4j.spi.object, \
                 org.qi4j.spi.property, \
                 org.qi4j.spi.query, \
                 org.qi4j.spi.query.named, \
                 org.qi4j.spi.service, \
                 org.qi4j.spi.service.provider, \
-                org.qi4j.spi.structure, \
-                org.qi4j.api.structure, \
-                org.qi4j.api.util
+                org.qi4j.spi.sideeffect, \
+                org.qi4j.spi.structure
 
 Export-Package: net.sf.cglib.asm;version=2.1.3, \
                 net.sf.cglib.asm.attrs;version=2.1.3, \

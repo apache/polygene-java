@@ -22,20 +22,21 @@ import java.lang.annotation.Target;
 import org.qi4j.api.injection.InjectionScope;
 
 /**
- * Annotation to denote the injection of a resource specific for the module which the injected object/fragment is instantiated in.
+ * Annotation to denote the injection of a
+ * resource specific for the module which the
+ * injected object/fragment is instantiated in.
  * <p/>
- * Examples:
+ * Valid types are:
  * <code><pre>
- * &#64;Structure CompositeBuilderFactory cbf
- * &#64;Structure ObjectBuilderFactory obf
- * &#64;Structure UnitOfWorkFactory uowf
- * &#64;Structure ServiceLocator serviceLocator
- * &#64;Structure Module module
- * &#64;Structure Layer layer
- * &#64;Structure Application application
- * &#64;Structure Qi4j qi4j
- * &#64;Structure Qi4jSPI qi4jSpi
- * &#64;Structure Qi4jRuntime qi4jRuntime
+ * - CompositeBuilderFactory
+ * - ObjectBuilderFactory
+ * - UnitOfWorkFactory
+ * - ServiceLocator
+ * - Module
+ * - Layer
+ * - Application
+ * - Qi4j
+ * - Qi4jSPI
  * </pre></code>
  */
 @Retention( RetentionPolicy.RUNTIME )

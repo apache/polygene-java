@@ -33,7 +33,7 @@ import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.DependencyVisitor;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.CompositeInstance;
-import org.qi4j.spi.composite.MixinDescriptor;
+import org.qi4j.spi.mixin.MixinDescriptor;
 import org.qi4j.spi.composite.InvalidCompositeException;
 
 /**

@@ -51,14 +51,14 @@ import org.qi4j.runtime.structure.EntitiesInstance;
 import org.qi4j.runtime.structure.EntitiesModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
-import org.qi4j.spi.entity.DefaultEntityState;
+import org.qi4j.spi.entity.helpers.DefaultEntityState;
+import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.UnknownEntityTypeException;
 
 public final class UnitOfWorkInstance
@@ -890,7 +890,6 @@ public final class UnitOfWorkInstance
         extends DefaultEntityState
     {
         private final EntityState parentState;
-        private final long entityVersion;
 
         private UnitOfWorkEntityState( long entityVersion, long lastModified,
                                        QualifiedIdentity identity,
@@ -903,12 +902,6 @@ public final class UnitOfWorkInstance
         {
             super( entityVersion, lastModified, identity, status, entityType, properties, associations, manyAssociations );
             this.parentState = parentState;
-            this.entityVersion = entityVersion;
-        }
-
-        public long version()
-        {
-            return entityVersion;
         }
 
         public Object getProperty( String qualifiedName )

@@ -25,7 +25,6 @@ import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.EntityStateDescriptor;
-import org.qi4j.spi.composite.StateDescriptor;
 
 /**
  * TODO

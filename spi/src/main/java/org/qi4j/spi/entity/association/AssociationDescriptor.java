@@ -20,8 +20,7 @@ import org.qi4j.api.entity.association.AssociationInfo;
 /**
  * TODO
  */
-public interface AssociationDescriptor
-    extends AssociationInfo
+public interface AssociationDescriptor extends AssociationInfo
 {
     Method accessor();
 

@@ -52,8 +52,7 @@ public class QualifiedIdentity
     {
         if( o instanceof Qualifier )
         {
-            QualifierQualifiedIdentity arqi = new QualifierQualifiedIdentity( (Qualifier) o );
-            return arqi;
+            return new QualifierQualifiedIdentity( (Qualifier) o );
         }
         else
         {
@@ -97,21 +96,22 @@ public class QualifiedIdentity
         this.identity = qualifiedIdentity.substring( separatorIndex + 1 );
     }
 
-    public String identity()
+    public final String identity()
     {
         return identity;
     }
 
-    public String type()
+    public final String type()
     {
         return compositeType;
     }
 
-    public String toURI()
+    public final String toURI()
     {
         return "urn:qi4j:entity:" + ClassUtil.normalizeClassToURI( compositeType ) + "/" + identity;
     }
 
+    @Override
     public boolean equals( Object o )
     {
         if( this == o )
@@ -122,21 +122,12 @@ public class QualifiedIdentity
         {
             return false;
         }
-
         QualifiedIdentity that = (QualifiedIdentity) o;
+        return compositeType.equals( that.compositeType ) && identity.equals( that.identity );
 
-        if( !compositeType.equals( that.compositeType ) )
-        {
-            return false;
-        }
-        if( !identity.equals( that.identity ) )
-        {
-            return false;
-        }
-
-        return true;
     }
 
+    @Override
     public int hashCode()
     {
         int result;

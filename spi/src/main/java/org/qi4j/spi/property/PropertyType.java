@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.spi.entity;
+package org.qi4j.spi.property;
 
 import java.io.Serializable;
 

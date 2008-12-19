@@ -24,12 +24,12 @@ import java.lang.reflect.Proxy;
  * to a Composite instance for each thread. This can be used to implement various context
  * patterns without having to pass the context explicitly as a parameter to methods.
  */
-public class ContextComposite<T extends Composite>
+public class CompositeContext<T extends Composite>
     extends ThreadLocal<T>
 {
     private final CompositeBuilder<T> builder;
 
-    public ContextComposite( CompositeBuilder<T> builder )
+    public CompositeContext( CompositeBuilder<T> builder )
     {
         this.builder = builder;
     }

@@ -21,9 +21,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Documented;
 
 /**
- * TODO
- */
-/**
  * This annotation adds Immutability to Types, Properties and Associations
  *
  */

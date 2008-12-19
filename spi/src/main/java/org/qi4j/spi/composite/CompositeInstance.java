@@ -22,8 +22,7 @@ import org.qi4j.api.common.MetaInfo;
 /**
  * TODO
  */
-public interface CompositeInstance
-    extends InvocationHandler
+public interface CompositeInstance extends InvocationHandler
 {
     Composite proxy();
 

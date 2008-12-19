@@ -55,7 +55,9 @@ public abstract class ConcurrentModificationCheckConcern
         return entityState;
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException, ConcurrentEntityStateModificationException
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates,
+                                   Iterable<QualifiedIdentity> removedStates ) 
+        throws EntityStoreException, ConcurrentEntityStateModificationException
     {
         // Check for concurrent modification
         checkForConcurrentModification( loadedStates );

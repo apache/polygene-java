@@ -12,11 +12,12 @@
  *
  */
 
-package org.qi4j.spi.composite;
+package org.qi4j.spi.mixin;
 
 /**
  * TODO
  */
-public interface MethodConstraintsDescriptor
+public interface MixinDescriptor
 {
+    Class mixinClass();
 }

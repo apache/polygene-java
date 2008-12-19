@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.injection.Name;
 import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.spi.composite.MethodConstraintsDescriptor;
+import org.qi4j.spi.constraint.MethodConstraintsDescriptor;
 import org.qi4j.runtime.util.AnnotationUtil;
 import org.qi4j.api.common.Optional;
 

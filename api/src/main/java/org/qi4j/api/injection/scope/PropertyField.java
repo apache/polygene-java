@@ -21,7 +21,8 @@ import java.lang.annotation.Target;
 import org.qi4j.api.injection.InjectionScope;
 
 /**
- * Annotation to denote the injection of a property into a Fragment field (a Invocation or Mixin).
+ * Annotation to denote the injection of a property into a
+ * Fragment field (a Concern, SideEffect, Constraint or Mixin).
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD } )
@@ -29,5 +30,8 @@ import org.qi4j.api.injection.InjectionScope;
 @InjectionScope
 public @interface PropertyField
 {
-    String value() default ""; // Name of the property. If not set then name will be name of field
+    /** Name of the property.
+     * If not set then name will be name of field.
+     */
+    String value() default "";
 }

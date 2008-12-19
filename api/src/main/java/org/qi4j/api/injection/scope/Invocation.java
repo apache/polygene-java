@@ -22,11 +22,19 @@ import java.lang.annotation.Target;
 import org.qi4j.api.injection.InjectionScope;
 
 /**
- * Annotation to denote the injection of a invocation specific resource. These include:
- * The Method being invoked
- * An AnnotationElement with annotations from both mixin type, mixin implementation, and any Apply statement
- * InvocationContext with information about the current invocation
- * <p/>
+ * Annotation to denote the injection of a
+ * invocation specific resource.
+ * These include:
+ * <pre><code>
+ *  - The Method being invoked.
+ *
+ *  - An AnnotationElement with annotations
+ *    from both mixin type, mixin
+ *    implementation.
+ *
+ *  - InvocationContext with information about
+ *    the current invocation
+ * </code></pre>
  * Examples:
  * <code><pre>
  * &#64;Invocation Method theInvokedMethod

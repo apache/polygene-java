@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,17 +12,21 @@
  *
  */
 
-package org.qi4j.spi.entity;
+package org.qi4j.spi.entity.helpers;
 
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.entity.IdentityGenerator;
-import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.spi.entity.StateCommitter;
 
 /**
- * TODO
+ * Implement StateCommitter, but do nothing.
  */
-@Mixins( UuidIdentityGeneratorMixin.class )
-public interface UuidIdentityGeneratorService
-    extends IdentityGenerator, ServiceComposite
+public final class NoopStateCommitter
+    implements StateCommitter
 {
+    public void commit()
+    {
+    }
+
+    public void cancel()
+    {
+    }
 }

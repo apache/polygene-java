@@ -12,12 +12,14 @@
  *
  */
 
-package org.qi4j.spi.composite;
+package org.qi4j.spi.constraint;
+
+import java.lang.annotation.Annotation;
 
 /**
  * TODO
  */
-public interface MethodSideEffectDescriptor
+public interface ConstraintDescriptor
 {
-    Class modifierClass();
+    Annotation annotation();
 }

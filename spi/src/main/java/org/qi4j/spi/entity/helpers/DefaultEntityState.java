@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.spi.entity;
+package org.qi4j.spi.entity.helpers;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,6 +27,11 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.association.ManyAssociationType;
 
 /**
  * Standard implementation of EntityState.
@@ -61,13 +66,14 @@ public class DefaultEntityState
         return manyAssociations;
     }
 
-    private final long version;
-    private final long lastModified;
-    private final QualifiedIdentity identity;
     private EntityStatus status;
     private boolean modified;
 
-    private EntityType entityType;
+    private final long version;
+    private final long lastModified;
+    private final QualifiedIdentity identity;
+    private final EntityType entityType;
+
     protected final Map<String, Object> properties;
     protected final Map<String, QualifiedIdentity> associations;
     protected final Map<String, Collection<QualifiedIdentity>> manyAssociations;
@@ -97,7 +103,7 @@ public class DefaultEntityState
     }
 
     // EntityState implementation
-    public long version()
+    public final long version()
     {
         return version;
     }

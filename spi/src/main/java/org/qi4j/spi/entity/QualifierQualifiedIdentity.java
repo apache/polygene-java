@@ -20,10 +20,9 @@ import org.qi4j.api.entity.association.Qualifier;
 /**
  * TODO
  */
-public class QualifierQualifiedIdentity
-    extends QualifiedIdentity
+public final class QualifierQualifiedIdentity extends QualifiedIdentity
 {
-    QualifiedIdentity qualifier;
+    private QualifiedIdentity qualifier;
 
     public QualifierQualifiedIdentity( EntityComposite entityComposite, QualifiedIdentity qualifier )
     {
@@ -53,6 +52,7 @@ public class QualifierQualifiedIdentity
         return super.hashCode() + role().hashCode();
     }
 
+    @Override
     public boolean equals( Object o )
     {
         if( this == o )

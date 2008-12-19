@@ -21,7 +21,7 @@ import java.util.List;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.MethodConcernsDescriptor;
+import org.qi4j.spi.concern.MethodConcernsDescriptor;
 
 /**
  * TODO

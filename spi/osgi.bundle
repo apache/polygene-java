@@ -20,8 +20,12 @@ Import-Package: org.qi4j.api, \
 
 Export-Package: org.qi4j.spi;version=${pom.version}, \
                 org.qi4j.spi.composite;version=${pom.version}, \
+                org.qi4j.spi.concern, \
+                org.qi4j.spi.constraint, \
                 org.qi4j.spi.entity;version=${pom.version}, \
                 org.qi4j.spi.entity.association;version=${pom.version}, \
+                org.qi4j.spi.entity.helpers, \
+                org.qi4j.spi.mixin, \
                 org.qi4j.spi.object;version=${pom.version}, \
                 org.qi4j.spi.property;version=${pom.version}, \
                 org.qi4j.spi.query;version=${pom.version}, \
@@ -29,5 +33,6 @@ Export-Package: org.qi4j.spi;version=${pom.version}, \
                 org.qi4j.spi.serialization;version=${pom.version}, \
                 org.qi4j.spi.service;version=${pom.version}, \
                 org.qi4j.spi.service.provider;version=${pom.version}, \
+                org.qi4j.spi.sideeffect, \
                 org.qi4j.spi.structure;version=${pom.version}, \
                 org.qi4j.entity.memory;version=${pom.version}
