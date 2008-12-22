@@ -2,6 +2,7 @@ Export-Package: org.qi4j.rest;version="${pom.version}", \
                 org.qi4j.rest.assembly;version="${pom.version}", \
                 org.qi4j.rest.client;version="${pom.version}", \
                 org.qi4j.rest.entity;version="${pom.version}", \
+                org.qi4j.rest.query;version="${pom.version}", \
                 org.qi4j.rest.type;version="${pom.version}"
 
 Import-Package: com.noelios.restlet.ext.servlet, \
