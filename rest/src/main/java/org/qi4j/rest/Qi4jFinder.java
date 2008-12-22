@@ -17,6 +17,7 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.library.rdf.entity.EntitySerializer;
 import org.restlet.Context;
 import org.restlet.Finder;
 import org.restlet.Handler;
@@ -27,7 +28,9 @@ public class Qi4jFinder extends Finder
 {
     @Structure private ObjectBuilderFactory factory;
 
-    public Qi4jFinder( @Uses Context context, @Uses Class<? extends Handler> targetClass )
+    public Qi4jFinder( @Uses Context context,
+                       @Uses Class<? extends Handler> targetClass,
+                       @Structure ObjectBuilderFactory factory )
     {
         super( context, targetClass );
     }
@@ -38,7 +41,9 @@ public class Qi4jFinder extends Finder
         builder.use( request );
         builder.use( response );
         builder.use( getContext() );
-        Handler handler = builder.newInstance();
-        return handler;
+
+        EntitySerializer serializer = factory.newObject( EntitySerializer.class );
+        builder.use( serializer );
+        return builder.newInstance();
     }
 }
