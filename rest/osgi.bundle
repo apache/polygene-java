@@ -47,6 +47,7 @@ Import-Package: com.noelios.restlet.ext.servlet, \
                 org.qi4j.spi.entity.helpers, \
                 org.qi4j.spi.property, \
                 org.qi4j.spi.query, \
+                org.qi4j.spi.structure, \
                 org.xml.sax, \
                 org.xml.sax.helpers, \
                 info.aduna.xml, \
