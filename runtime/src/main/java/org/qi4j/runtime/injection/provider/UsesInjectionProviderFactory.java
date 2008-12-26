@@ -46,7 +46,7 @@ public final class UsesInjectionProviderFactory
             Class injectionType = dependency.rawInjectionType();
             Object usesObject = uses.useForType( injectionType );
 
-            if( usesObject == null )
+            if( usesObject == null && !dependency.optional() )
             {
                 // No @Uses object provided
                 // Try instantiating a Composite or Object for the given type
