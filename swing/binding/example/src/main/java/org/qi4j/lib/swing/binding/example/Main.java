@@ -24,19 +24,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.object.ObjectBuilder;
+import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.lib.swing.binding.StateModel;
 import org.qi4j.lib.swing.binding.SwingBindingAssembler;
-import org.qi4j.api.object.ObjectBuilder;
-import org.qi4j.api.object.ObjectBuilderFactory;
 
 public class Main
 {
+    private static City kualaLumpur;
 
-    public static void main( String[] args )
+    public static void main( String[] args ) throws UnitOfWorkCompletionException
     {
 
         SingletonAssembler assembler = new SingletonAssembler()
@@ -47,7 +50,9 @@ public class Main
                 module.addEntities(
                     BoundPersonEntityComposite.class,
                     AddressEntityComposite.class,
-                    CarEntityComposite.class
+                    CarEntityComposite.class,
+                    CityEntity.class,
+                    CountryEntity.class
                 );
                 module.addAssembler( new SwingBindingAssembler() );
 
@@ -56,16 +61,19 @@ public class Main
         };
 
         UnitOfWork unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
+        Country malaysia = createMalaysia( unitOfWork );
+        kualaLumpur = createKualaLumpur( unitOfWork, malaysia );
+        unitOfWork.apply();
 
         //new person 1
-        final BoundPersonEntityComposite p1 = newPerson( unitOfWork, "Niclas", true );
-        p1.address().set( newAddress( unitOfWork, "Vista Damai", "Jalan Tun Razak" ) );
+        Address address1 = newAddress( unitOfWork, "Vista Damai", "Jalan Tun Razak" );
+        final BoundPersonEntityComposite p1 = newPerson( unitOfWork, "Niclas", "Hedhman", true, Gender.male, address1 );
         p1.cars().add( newCar( unitOfWork, "Proton Wira", "1500cc", "RM45000" ) );
         p1.cars().add( newCar( unitOfWork, "Proton Gen2", "1600cc", "RM53000" ) );
 
         //new person 2
-        final BoundPersonEntityComposite p2 = newPerson( unitOfWork, "Edward", false );
-        p2.address().set( newAddress( unitOfWork, "Mutiara", "Jalan Ceylon" ) );
+        Address address2 = newAddress( unitOfWork, "Mutiara", "Jalan Ceylon" );
+        final BoundPersonEntityComposite p2 = newPerson( unitOfWork, "Edward", "Yakop", false, Gender.male, address2 );
         p2.cars().add( newCar( unitOfWork, "Toyota Vios", "1800cc", "RM76,000" ) );
         p2.cars().add( newCar( unitOfWork, "Honda City", "1600cc", "RM88,000" ) );
         p2.cars().add( newCar( unitOfWork, "BMW 320i", "2200cc", "RM250,000" ) );
@@ -109,37 +117,55 @@ public class Main
         model.use( p2 );
     }
 
-    private static BoundPersonEntityComposite newPerson( UnitOfWork unitOfWork, String firstName,
-                                                         boolean expertGroupMember )
+    private static Country createMalaysia( UnitOfWork unitOfWork )
     {
-        BoundPersonEntityComposite person = unitOfWork.newEntity( BoundPersonEntityComposite.class );
+        EntityBuilder<Country> builder = unitOfWork.newEntityBuilder( Country.class );
+        Country prototype = builder.stateFor( Country.class );
+        prototype.name().set( "Malaysia" );
+        return builder.newInstance();
+    }
 
-        person.firstName().set( firstName );
-        person.expertGroupMember().set( expertGroupMember );
+    private static City createKualaLumpur( UnitOfWork unitOfWork, Country malaysia )
+    {
+        EntityBuilder<City> builder = unitOfWork.newEntityBuilder( City.class );
+        City prototype = builder.stateFor( City.class );
+        prototype.name().set( "Kuala Lumpur" );
+        prototype.country().set( malaysia );
+        return builder.newInstance();
+    }
 
+    private static BoundPersonEntityComposite newPerson( UnitOfWork unitOfWork, String firstName, String lastName,
+                                                         boolean expertGroupMember, Gender gender, Address address )
+    {
+        EntityBuilder<BoundPersonEntityComposite> builder = unitOfWork.newEntityBuilder( BoundPersonEntityComposite.class );
+        Person prototype = builder.stateFor( Person.class );
+        prototype.firstName().set( firstName );
+        prototype.lastName().set( lastName );
+        prototype.address().set( address );
+        prototype.expertGroupMember().set( expertGroupMember );
+        prototype.gender().set( gender );
+        BoundPersonEntityComposite person = builder.newInstance();
         return person;
     }
 
     private static Address newAddress( UnitOfWork unitOfWork, String addressLine1, String addressLine2 )
     {
-        Address address = unitOfWork.newEntity( Address.class );
-
-        address.line1().set( addressLine1 );
-
-        address.line2().set( addressLine2 );
-
-        return address;
+        EntityBuilder<Address> builder = unitOfWork.newEntityBuilder( Address.class );
+        Address prototype = builder.stateFor( Address.class );
+        prototype.line1().set( addressLine1 );
+        prototype.line2().set( addressLine2 );
+        prototype.city().set( kualaLumpur );
+        return builder.newInstance();
     }
 
     private static Car newCar( UnitOfWork unitOfWork, String model, String capacity, String price )
     {
-        Car car = unitOfWork.newEntity( Car.class );
-
-        car.model().set( model );
-        car.capacity().set( capacity );
-        car.price().set( price );
-
-        return car;
+        EntityBuilder<Car> builder = unitOfWork.newEntityBuilder( Car.class );
+        Car prototype = builder.stateFor( Car.class );
+        prototype.model().set( model );
+        prototype.capacity().set( capacity );
+        prototype.price().set( price );
+        return builder.newInstance();
     }
 
 }

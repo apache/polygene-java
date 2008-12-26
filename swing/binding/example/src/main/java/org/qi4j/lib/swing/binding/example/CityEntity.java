@@ -1,5 +1,5 @@
 /*
- * Copyright 2008 Niclas Hedhman. All rights Reserved.
+ * Copyright 2008 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -13,15 +13,12 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.lib.swing.binding.example;
 
-import org.qi4j.api.property.Property;
-import org.qi4j.api.common.Optional;
+import org.qi4j.api.entity.EntityComposite;
 
-public interface HasAddress
+public interface CityEntity extends City, EntityComposite
 {
-    @Optional
-    Property<Address> address();
 }
