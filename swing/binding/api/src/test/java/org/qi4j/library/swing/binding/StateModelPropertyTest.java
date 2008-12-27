@@ -44,12 +44,17 @@ public class StateModelPropertyTest extends AbstractStateModelTest
         // Update name by using binding
         SwingBinding<String> nameBinding = personModel.bind( personModel.state().name() );
         String expectedName = "Bar";
+        System.out.println( "1:" + expectedName );
         nameBinding.stateModel().use( expectedName );
+        System.out.println( "2:" + expectedName );
         Person person = builder.newInstance();
         personModel.use( person );
 
+        System.out.println( "3:" + expectedName );
         assertEquals( expectedName, person.name().get() );
+        System.out.println( "4:" + expectedName );
         assertEquals( expectedName, nameTextBox.text() );
+        System.out.println( "5:" + expectedName );
 
         // Update name by using UI
         String expectedName2 = "Foo " + expectedName;
