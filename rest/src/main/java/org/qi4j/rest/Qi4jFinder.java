@@ -29,8 +29,7 @@ public class Qi4jFinder extends Finder
     @Structure private ObjectBuilderFactory factory;
 
     public Qi4jFinder( @Uses Context context,
-                       @Uses Class<? extends Handler> targetClass,
-                       @Structure ObjectBuilderFactory factory )
+                       @Uses Class<? extends Handler> targetClass )
     {
         super( context, targetClass );
     }
