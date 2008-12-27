@@ -14,6 +14,9 @@
 
   <modules>
     <module>api</module>
-    <module>example</module>
+    <module>niclas</module>
+    <module>example-form</module>
+    <module>example-tree</module>
+    <module>example-table</module>
   </modules>
 </project>
