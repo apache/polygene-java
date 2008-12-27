@@ -56,6 +56,10 @@ public final class InjectedMethodModel
         Object[] params = parameters.newParametersInstance( context );
         try
         {
+            if( ! method.isAccessible() )
+            {
+                method.setAccessible( true );
+            }
             method.invoke( instance, params );
         }
         catch( IllegalAccessException e )
