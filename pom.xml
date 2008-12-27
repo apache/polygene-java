@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -27,7 +28,117 @@
     <module>entitystore-rmi</module>
     <module>entitystore-s3</module>
   </modules>
-
+  <developers>
+    <developer>
+      <id>niclas@hedhman.org</id>
+      <name>Niclas Hedhman</name>
+      <email>niclas@hedhman.org</email>
+      <organization>CodeDragons</organization>
+      <organizationUrl>http://www.codedragons.com</organizationUrl>
+      <roles>
+        <role>Developer</role>
+        <role>Release Manager</role>
+      </roles>
+      <timezone>UTC+8</timezone>
+    </developer>
+    <developer>
+      <id>rickardoberg</id>
+      <name>Rickard Öberg</name>
+      <email>rickardoberg@gmail.com</email>
+      <organization>Jayway</organization>
+      <organizationUrl>http://www.jayway.se</organizationUrl>
+      <roles>
+        <role>Developer</role>
+        <role>Innovator</role>
+      </roles>
+      <timezone>UTC+8</timezone>
+    </developer>
+    <developer>
+      <id>edward.yakop@gmail.com</id>
+      <name>Edward Yakop</name>
+      <email>efy@codedragons.com</email>
+      <url>http://www.codedragons.com</url>
+      <organization>CodeDragons Malaysia Sdn Bhd</organization>
+      <organizationUrl>http://www.codedragons.com</organizationUrl>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <timezone>UTC+8</timezone>
+    </developer>
+    <developer>
+      <id>adreghiciu@gmail.com</id>
+      <name>Alin Dreghiciu</name>
+      <email>adreghiciu@codedragons.com</email>
+      <url>http://www.codedragons.com</url>
+      <organization>CodeDragons Malaysia Sdn Bhd</organization>
+      <organizationUrl>http://www.codedragons.com</organizationUrl>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <timezone>UTC+2</timezone>
+    </developer>
+    <developer>
+      <id>thobe</id>
+      <name>Tobias Ivarsson</name>
+      <email>tobias@neotechnology.com</email>
+      <url>http://www.neotechnology.com</url>
+      <organization>NeoTechnology</organization>
+      <organizationUrl>http://www.neotechnology.com</organizationUrl>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <timezone>CET</timezone>
+    </developer>
+    <developer>
+      <id>boon</id>
+      <name>Lan Boon Ping</name>
+      <organization>CodeDragons</organization>
+      <email>boonping81@gmail.com</email>
+      <timezone>UTC+8</timezone>
+    </developer>
+    <developer>
+      <id>jan.kronquist@gmail.com</id>
+      <name>Jan Kronquist</name>
+      <email>jan.kronquist@gmail.com</email>
+      <organization>Jayway</organization>
+      <timezone>CET</timezone>
+    </developer>
+    <developer>
+      <id>mesirii</id>
+      <name>Michael Hunger</name>
+      <organization></organization>
+      <email>qi4j@jexp.de</email>
+      <timezone>CET</timezone>
+    </developer>
+    <developer>
+      <id>nmwael</id>
+      <name>Nino Saturnino Martinez Vazquez Wael</name>
+      <organization>Jayway</organization>
+      <email></email>
+      <timezone>CET</timezone>
+    </developer>
+    <developer>
+      <id>peter@neubauer.se</id>
+      <name>Peter Neubauer</name>
+      <organization>CodeDragons</organization>
+      <email>peter@neubauer.se</email>
+      <timezone>CET</timezone>
+    </developer>
+    <developer>
+      <id>rwallace</id>
+      <name>Richard Wallace</name>
+      <organization></organization>
+      <email>rwallace@thewallacepack.net</email>
+      <timezone>UTC-7</timezone>
+    </developer>
+    <developer>
+      <id>siannyhalim@gmail.com</id>
+      <name>Sianny Halim</name>
+      <organization>CodeDragons</organization>
+      <email>siannyhalim@gmail.com</email>
+      <timezone>UTC+8</timezone>
+    </developer>
+  </developers>
   <profiles>
     <profile>
       <id>gigaspaces</id>
