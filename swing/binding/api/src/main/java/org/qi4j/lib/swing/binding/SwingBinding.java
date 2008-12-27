@@ -21,15 +21,14 @@ import javax.swing.JComponent;
 
 public interface SwingBinding<T>
 {
-
     /**
      * Bind the specific component to this binding.
      *
      * @param aComponent The component. This argument must not be {@code null}.
-     * @return this.
+     * @return the component that was bound to
      * @throws IllegalBindingException Thrown if adapter for the specified {@code aComponent} is not found.
      */
-    SwingBinding<T> to( JComponent aComponent )
+    <C extends JComponent> C to( C aComponent )
         throws IllegalBindingException;
 
     /**

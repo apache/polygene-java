@@ -22,15 +22,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ListAssociation;
 import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.entity.association.SetAssociation;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.lib.swing.binding.internal.association.BoundAssociation;
-import org.qi4j.lib.swing.binding.internal.association.BoundListAssociation;
-import org.qi4j.lib.swing.binding.internal.association.BoundSetAssociation;
-import org.qi4j.lib.swing.binding.internal.property.BoundProperty;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.property.Property;
@@ -41,7 +35,6 @@ import org.qi4j.api.property.Property;
 public final class StateInvocationHandler<T>
     implements InvocationHandler
 {
-
     @Structure private ObjectBuilderFactory obf;
 
     private final HashMap<Method, BoundField> fields;
@@ -76,14 +69,6 @@ public final class StateInvocationHandler<T>
                 if( Property.class.isAssignableFrom( methodReturnType ) )
                 {
                     objectBuilder = obf.newObjectBuilder( BoundProperty.class );
-                }
-                else if( SetAssociation.class.isAssignableFrom( methodReturnType ) )
-                {
-                    objectBuilder = obf.newObjectBuilder( BoundSetAssociation.class );
-                }
-                else if( ListAssociation.class.isAssignableFrom( methodReturnType ) )
-                {
-                    objectBuilder = obf.newObjectBuilder( BoundListAssociation.class );
                 }
                 else if( Association.class.isAssignableFrom( methodReturnType ) )
                 {

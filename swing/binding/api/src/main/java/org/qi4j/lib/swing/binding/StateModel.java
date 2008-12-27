@@ -18,29 +18,17 @@
 package org.qi4j.lib.swing.binding;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
-import java.util.Map;
-import javax.swing.JComponent;
-import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ListAssociation;
-import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.entity.association.SetAssociation;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.lib.swing.binding.internal.BoundField;
-import org.qi4j.lib.swing.binding.internal.StateInvocationHandler;
-import org.qi4j.lib.swing.binding.internal.association.BoundAssociation;
-import org.qi4j.lib.swing.binding.internal.association.BoundListAssociation;
-import org.qi4j.lib.swing.binding.internal.association.BoundManyAssociation;
-import org.qi4j.lib.swing.binding.internal.association.BoundManyAssociationTableDelegate;
-import org.qi4j.lib.swing.binding.internal.association.BoundSetAssociation;
-import org.qi4j.lib.swing.binding.internal.association.DefaultBoundListAssociationDelegate;
-import org.qi4j.lib.swing.binding.internal.association.DefaultBoundManyAssociationDelegate;
-import org.qi4j.lib.swing.binding.internal.association.DefaultBoundSetAssociationDelegate;
-import org.qi4j.lib.swing.binding.internal.property.BoundProperty;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.property.Property;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
+import org.qi4j.lib.swing.binding.internal.BoundAssociation;
+import org.qi4j.lib.swing.binding.internal.BoundField;
+import org.qi4j.lib.swing.binding.internal.BoundProperty;
+import org.qi4j.lib.swing.binding.internal.StateInvocationHandler;
 
 public final class StateModel<T>
 {
@@ -115,76 +103,5 @@ public final class StateModel<T>
         }
 
         throw new IllegalArgumentException( "Unknown association template: " + anAssociation );
-    }
-
-    public <T> ToggleButtonBinding<T> bindToggleButton( Property<T> aProperty )
-    {
-        //TODO
-        return null;
-    }
-
-    public <T> SwingBinding<T> bind( SetAssociation<T> anAssociation )
-    {
-        validateNotNull( "anAssociation", anAssociation );
-
-        if( anAssociation instanceof BoundSetAssociation )
-        {
-            return bind( anAssociation, DefaultBoundSetAssociationDelegate.class );
-        }
-
-        throw new IllegalArgumentException( "Unknown many association template: " + anAssociation );
-    }
-
-    public <T> SwingBinding<T> bind( ListAssociation<T> anAssociation )
-    {
-        validateNotNull( "anAssociation", anAssociation );
-
-        if( anAssociation instanceof BoundListAssociation )
-        {
-            return bind( anAssociation, DefaultBoundListAssociationDelegate.class );
-        }
-
-        throw new IllegalArgumentException( "Unknown many association template: " + anAssociation );
-    }
-
-    @SuppressWarnings( "unchecked" )
-    private <T> SwingBinding<T> bind( ManyAssociation<T> anAssociation,
-                                      Class<? extends DefaultBoundManyAssociationDelegate> classType )
-    {
-        BoundManyAssociation association = (BoundManyAssociation) anAssociation;
-
-        // Create new delegate
-        ObjectBuilder<DefaultBoundManyAssociationDelegate> delegateBuilder =
-            (ObjectBuilder<DefaultBoundManyAssociationDelegate>) obf.newObjectBuilder( classType );
-
-        Map<Class<? extends JComponent>, SwingAdapter> adapters = association.adapters();
-        delegateBuilder.use( adapters );
-
-        DefaultBoundManyAssociationDelegate delegate = delegateBuilder.newInstance();
-
-        association.delegate( delegate );
-
-        return delegate;
-    }
-
-    //TODO boonping. should not use ManyAssociation.
-    @SuppressWarnings( "unchecked" )
-    public TableBinding bindTable( ManyAssociation anAssociation )
-    {
-        validateNotNull( "anAssociation", anAssociation );
-
-        if( anAssociation instanceof BoundManyAssociation )
-        {
-            BoundManyAssociation bound = (BoundManyAssociation) anAssociation;
-
-            BoundManyAssociationTableDelegate delegate =
-                new BoundManyAssociationTableDelegate( bound.stateModel() );
-
-            bound.delegate( delegate );
-
-            return delegate;
-        }
-
-        throw new IllegalArgumentException( "Unknown ManyAssociation template: " + anAssociation );
     }
 }

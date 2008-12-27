@@ -17,7 +17,6 @@
 package org.qi4j.lib.swing.binding.domain;
 
 import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ListAssociation;
 
 /**
  * @author edward.yakop@gmail.com
@@ -25,6 +24,4 @@ import org.qi4j.api.entity.association.ListAssociation;
 public interface HasCat
 {
     Association<Cat> favoriteCat();
-
-    ListAssociation<Cat> cats();
 }

@@ -18,19 +18,15 @@
 package org.qi4j.lib.swing.binding.example;
 
 import java.awt.Dimension;
-import java.util.Vector;
 import javax.swing.BoxLayout;
 import static javax.swing.BoxLayout.Y_AXIS;
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
-import org.qi4j.lib.swing.binding.StateModel;
-import org.qi4j.lib.swing.binding.TableBinding;
 import org.qi4j.api.property.Property;
+import org.qi4j.lib.swing.binding.StateModel;
 
 public class Form<T extends BoundPersonEntityComposite> extends JPanel
 {
@@ -57,9 +53,6 @@ public class Form<T extends BoundPersonEntityComposite> extends JPanel
         add( userCityField );
         JPanel userCountryField = newUserCountryField( aModel, state );
         add( userCountryField );
-
-        JTable carTable = newCarTable( aModel, state );
-        add( new JScrollPane( carTable ) );
 
         setLayout( new BoxLayout( this, Y_AXIS ) );
     }
@@ -89,31 +82,6 @@ public class Form<T extends BoundPersonEntityComposite> extends JPanel
         //TODO do binding
 
         return panel;
-    }
-
-    @SuppressWarnings( "unchecked" )
-    private JTable newCarTable( StateModel<T> stateModel, T state )
-    {
-        Vector<String> columnNames = new Vector<String>();
-
-        columnNames.add( "Model" );
-        columnNames.add( "Capacity" );
-        columnNames.add( "Price" );
-
-        JTable table = new JTable( null, columnNames );
-
-        TableBinding binding = stateModel.bindTable( state.cars() );
-        TableBinding<Car> tableBinding = binding.to( table );
-
-        Car carTemplate = tableBinding.stateModel().state();
-
-        tableBinding.bindColumn( carTemplate.model(), 0 );
-        tableBinding.bindColumn( carTemplate.capacity(), 1 );
-        tableBinding.bindColumn( carTemplate.price(), 2 );
-
-        table.setPreferredScrollableViewportSize( new Dimension( 200, 70 ) );
-
-        return table;
     }
 
     public StateModel<T> getAModel()

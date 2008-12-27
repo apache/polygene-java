@@ -1,4 +1,4 @@
-package org.qi4j.lib.swing.binding.internal.association;
+package org.qi4j.lib.swing.binding.internal;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -6,17 +6,15 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.WeakHashMap;
 import javax.swing.JComponent;
-import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.object.ObjectBuilderFactory;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.lib.swing.binding.IllegalBindingException;
 import org.qi4j.lib.swing.binding.StateModel;
 import org.qi4j.lib.swing.binding.SwingAdapter;
-import org.qi4j.lib.swing.binding.SwingBinding;
-import org.qi4j.lib.swing.binding.internal.AbstractBinding;
-import org.qi4j.api.object.ObjectBuilderFactory;
 
 /**
  * @author Lan Boon Ping
@@ -149,7 +147,7 @@ public final class BoundAssociation<T> extends AbstractBinding<T, T, Association
         stateModel.use( associationValue );
     }
 
-    public final SwingBinding<T> to( JComponent aComponent )
+    public final <C extends JComponent> C to( C aComponent )
     {
         validateNotNull( "aComponent", aComponent );
 
@@ -174,7 +172,7 @@ public final class BoundAssociation<T> extends AbstractBinding<T, T, Association
             components.put( aComponent, focusListener );
         }
 
-        return this;
+        return aComponent;
     }
 
     @Override

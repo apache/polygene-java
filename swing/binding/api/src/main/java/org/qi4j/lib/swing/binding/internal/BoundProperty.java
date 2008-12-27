@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.lib.swing.binding.internal.property;
+package org.qi4j.lib.swing.binding.internal;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -24,19 +24,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import javax.swing.JComponent;
-import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.lib.swing.binding.IllegalBindingException;
-import org.qi4j.lib.swing.binding.StateModel;
-import org.qi4j.lib.swing.binding.SwingAdapter;
-import org.qi4j.lib.swing.binding.SwingBinding;
-import org.qi4j.lib.swing.binding.internal.AbstractBinding;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
+import org.qi4j.lib.swing.binding.IllegalBindingException;
+import org.qi4j.lib.swing.binding.StateModel;
+import org.qi4j.lib.swing.binding.SwingAdapter;
 
 public final class BoundProperty<T> extends AbstractBinding<T, T, Property<T>>
     implements Property<T>
@@ -177,7 +175,7 @@ public final class BoundProperty<T> extends AbstractBinding<T, T, Property<T>>
         stateModel.use( propertyValue );
     }
 
-    public final SwingBinding<T> to( JComponent aComponent )
+    public <C extends JComponent> C to( C aComponent )
         throws IllegalBindingException
     {
         validateNotNull( "aComponent", aComponent );
@@ -202,7 +200,7 @@ public final class BoundProperty<T> extends AbstractBinding<T, T, Property<T>>
             components.put( aComponent, focusListener );
         }
 
-        return this;
+        return aComponent;
     }
 
     private class FocusLostListener

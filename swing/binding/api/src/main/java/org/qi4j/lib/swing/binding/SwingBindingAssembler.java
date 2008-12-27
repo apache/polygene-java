@@ -17,19 +17,15 @@
  */
 package org.qi4j.lib.swing.binding;
 
+import static org.qi4j.api.common.Visibility.application;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.lib.swing.binding.adapters.BooleanToToggleButtonAdapterService;
 import org.qi4j.lib.swing.binding.adapters.StringToTextFieldAdapterService;
+import org.qi4j.lib.swing.binding.internal.BoundAssociation;
+import org.qi4j.lib.swing.binding.internal.BoundProperty;
 import org.qi4j.lib.swing.binding.internal.StateInvocationHandler;
-import org.qi4j.lib.swing.binding.internal.association.BoundAssociation;
-import org.qi4j.lib.swing.binding.internal.association.BoundListAssociation;
-import org.qi4j.lib.swing.binding.internal.association.BoundSetAssociation;
-import org.qi4j.lib.swing.binding.internal.association.DefaultBoundListAssociationDelegate;
-import org.qi4j.lib.swing.binding.internal.association.DefaultBoundSetAssociationDelegate;
-import org.qi4j.lib.swing.binding.internal.property.BoundProperty;
-import static org.qi4j.api.common.Visibility.application;
 
 public class SwingBindingAssembler
     implements Assembler
@@ -45,10 +41,6 @@ public class SwingBindingAssembler
         module.addObjects(
             BoundAssociation.class,
             BoundProperty.class,
-            BoundSetAssociation.class,
-            BoundListAssociation.class,
-            DefaultBoundListAssociationDelegate.class,
-            DefaultBoundSetAssociationDelegate.class,
             StateInvocationHandler.class
         );
 
