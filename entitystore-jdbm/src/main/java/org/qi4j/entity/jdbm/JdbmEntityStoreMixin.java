@@ -74,9 +74,9 @@ public class JdbmEntityStoreMixin
     private long registryId;
 
     // Activatable implementation
-    public void activate() throws Exception
+    public void activate()
+        throws Exception
     {
-
         File dataFile = new File( config.configuration().file().get() );
         System.out.println( "JDBM store:" + dataFile.getAbsolutePath() );
         File directory = dataFile.getAbsoluteFile().getParentFile();
@@ -98,7 +98,8 @@ public class JdbmEntityStoreMixin
         initializeRegistry();
     }
 
-    public void passivate() throws Exception
+    public void passivate()
+        throws Exception
     {
         saveRegistry();
         recordManager.close();
