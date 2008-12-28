@@ -31,7 +31,6 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 public final class StateModelAssociationTest extends AbstractStateModelTest
 {
     @Test
-//    @Ignore( "Visibility problems in the TestCase itself. Probably also waiting for X Virtual Framebuffer on Server.")
     public final void testAssociationBinding()
         throws UnitOfWorkCompletionException
     {

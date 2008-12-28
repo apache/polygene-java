@@ -29,7 +29,6 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 public class StateModelPropertyTest extends AbstractStateModelTest
 {
     @Test
-//    @Ignore( "Visibility problem in TestCase. Possibly also waiting for X Virtual Framebuffer for server side testing." )
     public final void testPropertyBinding() throws UnitOfWorkCompletionException
     {
         JTextComponentFixture nameTextBox = window.textBox( "personName" );
