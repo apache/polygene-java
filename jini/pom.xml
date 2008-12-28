@@ -14,7 +14,7 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>common</module>
+    <!--<module>common</module>-->
     <module>lookup</module>
     <module>transaction</module>
     <module>javaspaces</module>
