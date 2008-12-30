@@ -17,8 +17,9 @@
 package org.qi4j.entity.ibatis.entity;
 
 import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.common.Optional;
 
 public interface HasPrimaryContactPerson
 {
-    Association<Person> primaryContactPerson();
+    @Optional Association<Person> primaryContactPerson();
 }

@@ -30,8 +30,9 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.Name;
 import org.qi4j.api.service.ServiceDescriptor;
-import org.qi4j.api.service.ServiceInstanceFactory;
-import org.qi4j.api.service.ServiceInstanceFactoryException;
+import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.service.ServiceImporterException;
+import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -68,21 +69,17 @@ public class ForeignQueryServiceTest extends AbstractQi4jTest
     }
 
     public class HabbaServiceProvider
-        implements ServiceInstanceFactory
+        implements ServiceImporter
     {
 
         @Structure CompositeBuilderFactory cbf;
 
-        public Object newInstance( ServiceDescriptor serviceDescriptor ) throws ServiceInstanceFactoryException
+        public Object importInstance( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
         {
             CompositeBuilder<ForeignProxyEntityStoreService> builder = cbf.newCompositeBuilder( ForeignProxyEntityStoreService.class );
             builder.use( new HabbaServiceImpl() );
             builder.use( HabbaServiceQueryMap.class );
             return builder.newInstance();
-        }
-
-        public void releaseInstance( Object instance ) throws ServiceInstanceFactoryException
-        {
         }
     }
 

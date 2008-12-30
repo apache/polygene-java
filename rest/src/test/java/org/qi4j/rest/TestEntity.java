@@ -37,7 +37,7 @@ public interface TestEntity
 
     @Optional Property<String> unsetName();
 
-    Association<TestEntity> association();
+    @Optional Association<TestEntity> association();
 
     @Optional Association<TestEntity> unsetAssociation();
 

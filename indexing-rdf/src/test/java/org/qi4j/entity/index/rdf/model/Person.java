@@ -32,13 +32,13 @@ import org.qi4j.api.common.Optional;
 public interface Person
     extends Nameable, Alive
 {
-    Association<City> placeOfBirth();
+    @Optional Association<City> placeOfBirth();
 
     Property<Integer> yearOfBirth();
 
-    Association<Female> mother();
+    @Optional Association<Female> mother();
 
-    Association<Male> father();
+    @Optional Association<Male> father();
 
     ManyAssociation<Domain> interests();
 
@@ -46,7 +46,7 @@ public interface Person
 
     @Queryable( false ) Property<String> password();
 
-    @Queryable( false ) Association<Account> mainAccount();
+    @Queryable( false ) @Optional Association<Account> mainAccount();
 
     @Queryable( false ) ManyAssociation<Account> accounts();
 }
