@@ -20,37 +20,37 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Set;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.CompositeBuilder;
 import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.util.ClassUtil;
-import org.qi4j.api.object.ObjectBuilder;
 
 /**
  * TODO
  */
-public final class ServiceModel
-    implements ServiceDescriptor
+public final class ImportedServiceModel
+    implements ImportedServiceDescriptor
 {
-    private final Class<? extends Composite> type;
+    private final Class type;
     private final Visibility visibility;
+    private final Class<? extends ServiceImporter> serviceImporter;
     private final String identity;
-    private final boolean instantiateOnStartup;
     private final MetaInfo metaInfo;
     private String moduleName;
 
-    public ServiceModel( Class<? extends Composite> compositeType,
+    public ImportedServiceModel( Class serviceType,
                          Visibility visibility,
+                         Class<? extends ServiceImporter> serviceImporter,
                          String identity,
-                         boolean instantiateOnStartup, MetaInfo metaInfo, String moduleName )
+                         MetaInfo metaInfo, String moduleName )
     {
-        type = compositeType;
+        type = serviceType;
         this.visibility = visibility;
+        this.serviceImporter = serviceImporter;
         this.identity = identity;
-        this.instantiateOnStartup = instantiateOnStartup;
         this.metaInfo = metaInfo;
         this.moduleName = moduleName;
     }
@@ -70,9 +70,9 @@ public final class ServiceModel
         return metaInfo;
     }
 
-    public boolean isInstantiateOnStartup()
+    public Class<? extends ServiceImporter> serviceImporter()
     {
-        return instantiateOnStartup;
+        return serviceImporter;
     }
 
     public String identity()
@@ -141,23 +141,11 @@ public final class ServiceModel
         return false;
     }
 
-    public ServiceInstance<?> newInstance( Module module )
+    public ImportedServiceInstance<?> importInstance( Module module )
     {
-        Object instance;
-        if( Composite.class.isAssignableFrom( type() ) )
-        {
-            CompositeBuilder<?> builder = module.compositeBuilderFactory().newCompositeBuilder( type() );
-            builder.use( this );
-            instance = builder.newInstance();
-        }
-        else
-        {
-            ObjectBuilder<?> builder = module.objectBuilderFactory().newObjectBuilder( type() );
-            builder.use( this );
-            instance = builder.newInstance();
-        }
-
-        return new ServiceInstance<Object>( instance, this );
+        ServiceImporter importer = module.objectBuilderFactory().newObject( serviceImporter );
+        Object instance = importer.importInstance( this );
+        return new ImportedServiceInstance<Object>( instance, importer, this );
     }
 
     public Object newProxy( InvocationHandler serviceInvocationHandler )

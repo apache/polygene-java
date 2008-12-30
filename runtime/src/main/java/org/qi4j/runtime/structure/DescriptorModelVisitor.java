@@ -30,6 +30,7 @@ import org.qi4j.runtime.injection.InjectedMethodModel;
 import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.service.ServiceModel;
+import org.qi4j.runtime.service.ImportedServiceModel;
 import org.qi4j.spi.structure.DescriptorVisitor;
 
 /**
@@ -131,6 +132,11 @@ public class DescriptorModelVisitor extends ModelVisitor
     }
 
     @Override public void visit( ServiceModel serviceModel )
+    {
+        visitor.visit( serviceModel );
+    }
+
+    @Override public void visit( ImportedServiceModel serviceModel )
     {
         visitor.visit( serviceModel );
     }

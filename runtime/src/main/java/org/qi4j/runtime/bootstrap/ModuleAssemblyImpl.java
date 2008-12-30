@@ -29,12 +29,14 @@ import org.qi4j.bootstrap.MetaInfoDeclaration;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ObjectDeclaration;
 import org.qi4j.bootstrap.ServiceDeclaration;
+import org.qi4j.bootstrap.ImportedServiceDeclaration;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.service.ServiceModel;
+import org.qi4j.runtime.service.ImportedServiceModel;
 import org.qi4j.runtime.structure.CompositesModel;
 import org.qi4j.runtime.structure.EntitiesModel;
 import org.qi4j.runtime.structure.ModuleModel;
@@ -42,7 +44,7 @@ import org.qi4j.runtime.structure.ObjectsModel;
 import org.qi4j.runtime.structure.ServicesModel;
 import org.qi4j.api.service.DuplicateServiceIdentityException;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.service.ServiceInstanceFactory;
+import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.common.MetaInfo;
 
@@ -62,6 +64,7 @@ public final class ModuleAssemblyImpl
     private final List<EntityDeclarationImpl> entityDeclarations = new ArrayList<EntityDeclarationImpl>();
     private final List<ObjectDeclarationImpl> objectDeclarations = new ArrayList<ObjectDeclarationImpl>();
     private final List<ServiceDeclarationImpl> serviceDeclarations = new ArrayList<ServiceDeclarationImpl>();
+    private final List<ImportedServiceDeclarationImpl> importedServiceDeclarations = new ArrayList<ImportedServiceDeclarationImpl>();
     private final MetaInfoDeclaration metaInfoDeclaration = new MetaInfoDeclaration();
 
     public ModuleAssemblyImpl( LayerAssembly layerAssembly, String name )
@@ -163,6 +166,14 @@ public final class ModuleAssemblyImpl
         return serviceDeclaration;
     }
 
+    public ImportedServiceDeclaration importServices( Class... serviceTypes ) throws AssemblyException
+    {
+        List<Class> classes = Arrays.asList( serviceTypes );
+        ImportedServiceDeclarationImpl serviceDeclaration = new ImportedServiceDeclarationImpl( classes, this );
+        importedServiceDeclarations.add( serviceDeclaration );
+        return serviceDeclaration;
+    }
+
     public <T> InfoDeclaration<T> on( Class<T> mixinType )
     {
         return metaInfoDeclaration.on( mixinType );
@@ -175,6 +186,7 @@ public final class ModuleAssemblyImpl
         List<EntityModel> entityModels = new ArrayList<EntityModel>();
         List<ObjectModel> objectModels = new ArrayList<ObjectModel>();
         List<ServiceModel> serviceModels = new ArrayList<ServiceModel>();
+        List<ImportedServiceModel> importedServiceModels = new ArrayList<ImportedServiceModel>();
 
         if( name == null )
         {
@@ -185,7 +197,7 @@ public final class ModuleAssemblyImpl
                                                    new CompositesModel( compositeModels ),
                                                    new EntitiesModel( entityModels ),
                                                    new ObjectsModel( objectModels ),
-                                                   new ServicesModel( serviceModels ) );
+                                                   new ServicesModel( serviceModels, importedServiceModels ) );
 
         for( CompositeDeclarationImpl compositeDeclaration : compositeDeclarations )
         {
@@ -207,8 +219,25 @@ public final class ModuleAssemblyImpl
             serviceDeclaration.addServices( serviceModels );
         }
 
+        for( ImportedServiceDeclarationImpl importedServiceDeclaration : importedServiceDeclarations )
+        {
+            importedServiceDeclaration.addServices( importedServiceModels );
+        }
+
+        // Check for duplicate service identities
         Set<String> identities = new HashSet<String>();
         for( ServiceModel serviceModel : serviceModels )
+        {
+            String identity = serviceModel.identity();
+            if( identities.contains( identity ) )
+            {
+                throw new DuplicateServiceIdentityException(
+                    "Duplicated service identity: " + identity + " in module " + moduleModel.name()
+                );
+            }
+            identities.add( identity );
+        }
+        for( ImportedServiceModel serviceModel : importedServiceModels )
         {
             String identity = serviceModel.identity();
             if( identities.contains( identity ) )
@@ -242,11 +271,14 @@ public final class ModuleAssemblyImpl
                     compositeModels.add( compositeModel );
                 }
             }
+        }
 
+        for( ImportedServiceModel importedServiceModel : importedServiceModels )
+        {
             boolean found = false;
             for( ObjectModel objectModel : objectModels )
             {
-                if( objectModel.type().equals( serviceModel.serviceFactory() ) )
+                if( objectModel.type().equals( importedServiceModel.serviceImporter() ) )
                 {
                     found = true;
                     break;
@@ -254,7 +286,7 @@ public final class ModuleAssemblyImpl
             }
             if( !found )
             {
-                Class<? extends ServiceInstanceFactory> serviceFactoryType = serviceModel.serviceFactory();
+                Class<? extends ServiceImporter> serviceFactoryType = importedServiceModel.serviceImporter();
                 ObjectModel objectModel = new ObjectModel( serviceFactoryType, Visibility.module, new MetaInfo() );
                 objectModels.add( objectModel );
             }

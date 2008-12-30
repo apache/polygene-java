@@ -24,8 +24,6 @@ public interface ServiceDescriptor
 {
     Class<?> type();
 
-    Class<? extends ServiceInstanceFactory> serviceFactory();
-
     String identity();
 
     Visibility visibility();

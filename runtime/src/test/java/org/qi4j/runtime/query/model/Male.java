@@ -18,6 +18,7 @@
 package org.qi4j.runtime.query.model;
 
 import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.common.Optional;
 
 /**
  * TODO Add JavaDoc
@@ -28,5 +29,5 @@ import org.qi4j.api.entity.association.Association;
 public interface Male
     extends Person
 {
-    Association<Female> wife();
+    @Optional Association<Female> wife();
 }

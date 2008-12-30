@@ -24,6 +24,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -226,7 +227,7 @@ public abstract class AbstractMixinsModel
         return new Object[mixinIndex.size()];
     }
 
-    public Object invoke( Object composite, Object[] params, Object[] mixins, CompositeMethodInstance methodInstance )
+    public final Object invoke( Object composite, Object[] params, Object[] mixins, CompositeMethodInstance methodInstance )
         throws Throwable
     {
         final Object mixin = mixins[ methodIndex.get( methodInstance.method() ) ];

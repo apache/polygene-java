@@ -129,7 +129,7 @@ final class QueryImpl<T>
             if( valueExpression instanceof VariableValueExpressionImpl )
             {
                 VariableValueExpressionImpl variableValueExpression = (VariableValueExpressionImpl) valueExpression;
-                variables.put( variableValueExpression.getName(), variableValueExpression );
+                variables.put( variableValueExpression.name(), variableValueExpression );
             }
         }
     }

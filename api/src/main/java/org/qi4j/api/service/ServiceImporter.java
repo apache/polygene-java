@@ -17,26 +17,16 @@ package org.qi4j.api.service;
 /**
  * TODO
  */
-public interface ServiceInstanceFactory
+public interface ServiceImporter
 {
     /**
-     * Creates a new instance of service given the service descriptor.
+     * Imports an instance of the service type described in the service descriptor.
      *
      * @param serviceDescriptor The service descriptor.
-     * @return The new service instance.
-     * @throws ServiceInstanceFactoryException
+     * @return The imported service instance.
+     * @throws ServiceImporterException
      *          Thrown if creational failed.
      */
-    Object newInstance( ServiceDescriptor serviceDescriptor )
-        throws ServiceInstanceFactoryException;
-
-    /**
-     * Called for each client releasing the instance from use.
-     *
-     * @param instance The instance to release.
-     * @throws ServiceInstanceFactoryException
-     *          Thrown if release service failed.
-     */
-    void releaseInstance( Object instance )
-        throws ServiceInstanceFactoryException;
+    Object importInstance( ImportedServiceDescriptor serviceDescriptor )
+        throws ServiceImporterException;
 }

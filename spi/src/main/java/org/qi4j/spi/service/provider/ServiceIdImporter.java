@@ -15,24 +15,24 @@
 package org.qi4j.spi.service.provider;
 
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceFinder;
-import org.qi4j.api.service.ServiceInstanceFactory;
-import org.qi4j.api.service.ServiceInstanceFactoryException;
+import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.service.ImportedServiceDescriptor;
 
 /**
  * TODO
  */
-public class ServiceIdFilter
-    implements ServiceInstanceFactory
+public class ServiceIdImporter
+    implements ServiceImporter
 {
     private @Structure ServiceFinder locator;
 
     private ServiceReference serviceRef;
     private Object instance;
 
-    public Object newInstance( ServiceDescriptor serviceDescriptor ) throws ServiceInstanceFactoryException
+    public Object importInstance( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
     {
         if( serviceRef == null )
         {
@@ -52,15 +52,5 @@ public class ServiceIdFilter
         }
 
         return instance;
-    }
-
-    public void releaseInstance( Object instance ) throws ServiceInstanceFactoryException
-    {
-        if( serviceRef != null )
-        {
-            serviceRef.releaseService();
-            serviceRef = null;
-            instance = null;
-        }
     }
 }

@@ -18,54 +18,54 @@ import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.bootstrap.ServiceDeclaration;
-import org.qi4j.runtime.service.ServiceModel;
+import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.bootstrap.ImportedServiceDeclaration;
+import org.qi4j.runtime.service.ImportedServiceModel;
+import org.qi4j.spi.service.provider.SingletonImporter;
 
 /**
- * Declaration of a Service. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#addServices(Class[])}.
+ * Declaration of an imported Service. Created by {@link ModuleAssemblyImpl#importServices(Class[])}.
  */
-public final class ServiceDeclarationImpl
-    implements ServiceDeclaration
+public final class ImportedServiceDeclarationImpl
+    implements ImportedServiceDeclaration
 {
-    private Iterable<Class<? extends ServiceComposite>> serviceTypes;
+    private Class<? extends ServiceImporter> serviceProvider = SingletonImporter.class;
+    private Iterable<Class> serviceTypes;
     private ModuleAssemblyImpl moduleAssembly;
     private String identity;
-    private boolean instantiateOnStartup = false;
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
-    public ServiceDeclarationImpl( Iterable<Class<? extends ServiceComposite>> serviceTypes, ModuleAssemblyImpl moduleAssembly )
+    public ImportedServiceDeclarationImpl( Iterable<Class> serviceTypes, ModuleAssemblyImpl moduleAssembly )
     {
         this.serviceTypes = serviceTypes;
         this.moduleAssembly = moduleAssembly;
     }
 
-    public ServiceDeclaration visibleIn( Visibility visibility )
+    public ImportedServiceDeclaration visibleIn( Visibility visibility )
     {
         this.visibility = visibility;
         return this;
     }
 
-    public ServiceDeclaration identifiedBy( String identity )
+    public ImportedServiceDeclaration importedBy( Class<? extends ServiceImporter> sip )
+    {
+        serviceProvider = sip;
+        return this;
+    }
+
+    public ImportedServiceDeclaration identifiedBy( String identity )
     {
         this.identity = identity;
         return this;
     }
-
-    public ServiceDeclaration instantiateOnStartup()
-    {
-        instantiateOnStartup = true;
-        return this;
-    }
-
-    public ServiceDeclaration setMetaInfo( Object serviceAttribute )
+    public ImportedServiceDeclaration setMetaInfo( Object serviceAttribute )
     {
         metaInfo.set( serviceAttribute );
         return this;
     }
 
-    void addServices( List<ServiceModel> serviceModels )
+    void addServices( List<ImportedServiceModel> serviceModels )
     {
         for( Class<? extends Composite> serviceType : serviceTypes )
         {
@@ -75,17 +75,17 @@ public final class ServiceDeclarationImpl
                 id = generateId( serviceModels, serviceType );
             }
 
-            ServiceModel serviceModel = new ServiceModel( serviceType,
+            ImportedServiceModel serviceModel = new ImportedServiceModel( serviceType,
                                                           visibility,
+                                                          serviceProvider,
                                                           id,
-                                                          instantiateOnStartup,
                                                           new MetaInfo( metaInfo ).withAnnotations( serviceType ),
                                                           moduleAssembly.name() );
             serviceModels.add( serviceModel );
         }
     }
 
-    private String generateId( List<ServiceModel> serviceModels, Class serviceType )
+    private String generateId( List<ImportedServiceModel> serviceModels, Class serviceType )
     {
         // Find identity that is not yet used
         int idx = 0;
@@ -94,7 +94,7 @@ public final class ServiceDeclarationImpl
         do
         {
             invalid = false;
-            for( ServiceModel serviceModel : serviceModels )
+            for( ImportedServiceModel serviceModel : serviceModels )
             {
                 if( serviceModel.identity().equals( id ) )
                 {

@@ -40,6 +40,7 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import static org.qi4j.api.util.ClassUtil.getRawClass;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.composite.Composite;
 
 /**
  * TODO
@@ -159,22 +160,33 @@ public final class AssociationModel
 
     public AbstractAssociation newInstance( UnitOfWorkInstance uow, EntityState state )
     {
+        AbstractAssociation associationInstance;
         if( !isManyAssociation() )
         {
-            return new AssociationInstance<Object>( this, uow, state );
+            associationInstance = new AssociationInstance<Object>( this, uow, state );
+        } else
+        {
+            Collection<QualifiedIdentity> manyAssociation = state.getManyAssociation( qualifiedName );
+
+            if( isListAssociation() )
+            {
+                associationInstance = new ListAssociationInstance<Object>( this, uow, (List<QualifiedIdentity>) manyAssociation );
+            }
+            else if( isSetAssociation() )
+            {
+                associationInstance = new SetAssociationInstance<Object>( this, uow, (Set<QualifiedIdentity>) manyAssociation );
+            } else
+            {
+                associationInstance = new ManyAssociationInstance<Object>( this, uow, manyAssociation );
+            }
         }
 
-        Collection<QualifiedIdentity> manyAssociation = state.getManyAssociation( qualifiedName );
+        if ( Composite.class.isAssignableFrom( accessor.getReturnType()))
+        {
+            associationInstance = (AbstractAssociation) uow.module().compositeBuilderFactory().newCompositeBuilder( accessor.getReturnType() ).use( associationInstance ).newInstance();
+        }
 
-        if( isListAssociation() )
-        {
-            return new ListAssociationInstance<Object>( this, uow, (List<QualifiedIdentity>) manyAssociation );
-        }
-        else if( isSetAssociation() )
-        {
-            return new SetAssociationInstance<Object>( this, uow, (Set<QualifiedIdentity>) manyAssociation );
-        }
-        return new ManyAssociationInstance<Object>( this, uow, manyAssociation );
+        return associationInstance;
     }
 
     public void checkConstraints( Object value )
@@ -238,6 +250,9 @@ public final class AssociationModel
             {
                 Association<?> assoc = (Association<?>) association;
                 Object associated = assoc.get();
+                
+                checkConstraints( associated );
+
                 if( associated != null )
                 {
                     entityState.setAssociation( qualifiedName, QualifiedIdentity.getQualifiedIdentity( associated ) );

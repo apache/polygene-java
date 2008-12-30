@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.runtime.service.ServiceModel;
-import org.qi4j.runtime.service.ServiceReferenceInstance;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.spi.service.Activator;
@@ -32,16 +31,16 @@ public class ServicesInstance
     implements Activatable
 {
     private final ServicesModel servicesModel;
-    private final List<ServiceReferenceInstance> serviceReferences;
+    private final List<ServiceReference> serviceReferences;
     private final Activator activator;
-    private final Map<String, ServiceReferenceInstance> mapIdentityServiceReference = new HashMap<String, ServiceReferenceInstance>();
+    private final Map<String, ServiceReference> mapIdentityServiceReference = new HashMap<String, ServiceReference>();
 
-    public ServicesInstance( ServicesModel servicesModel, List<ServiceReferenceInstance> serviceReferences )
+    public ServicesInstance( ServicesModel servicesModel, List<ServiceReference> serviceReferences )
     {
         this.servicesModel = servicesModel;
         this.serviceReferences = serviceReferences;
 
-        for( ServiceReferenceInstance serviceReference : serviceReferences )
+        for( ServiceReference serviceReference : serviceReferences )
         {
             mapIdentityServiceReference.put( serviceReference.identity(), serviceReference );
         }
@@ -51,7 +50,13 @@ public class ServicesInstance
 
     public void activate() throws Exception
     {
-        activator.activate( serviceReferences );
+        for( ServiceReference serviceReference : serviceReferences )
+        {
+            if (serviceReference instanceof Activatable)
+            {
+                activator.activate( (Activatable) serviceReference );
+            }
+        }
     }
 
     public void passivate() throws Exception
@@ -61,11 +66,11 @@ public class ServicesInstance
 
     public <T> void getServiceReferencesFor( Type serviceType, Visibility visibility, List<ServiceReference<T>> serviceReferences )
     {
-        Iterable<ServiceModel> serviceModels = servicesModel.getServiceModelsFor( serviceType, visibility );
+        Iterable<String> serviceModels = servicesModel.getServiceIdentitiesFor( serviceType, visibility );
 
-        for( ServiceModel serviceModel : serviceModels )
+        for( String serviceModel : serviceModels )
         {
-            serviceReferences.add( mapIdentityServiceReference.get( serviceModel.identity() ) );
+            serviceReferences.add( mapIdentityServiceReference.get( serviceModel ) );
         }
     }
 
@@ -73,7 +78,7 @@ public class ServicesInstance
     {
         String str = "{";
         String sep = "";
-        for( ServiceReferenceInstance serviceReference : serviceReferences )
+        for( ServiceReference serviceReference : serviceReferences )
         {
             str += sep + serviceReference.identity() + ",active=" + serviceReference.isActive();
             sep = ", ";

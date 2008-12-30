@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,25 +12,23 @@
  *
  */
 
-package org.qi4j.spi.service.provider;
+package org.qi4j.api.service;
 
-import java.io.Serializable;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.common.MetaInfo;
 
 /**
- * TODO
+ * {@code ServiceDescriptor} provides meta informations of a service.
  */
-public final class Singleton
-    implements Serializable
+public interface ImportedServiceDescriptor
 {
-    private Object instance;
+    Class<?> type();
 
-    public Singleton( Object instance )
-    {
-        this.instance = instance;
-    }
+    Class<? extends ServiceImporter> serviceImporter();
 
-    public Object instance()
-    {
-        return instance;
-    }
+    String identity();
+
+    Visibility visibility();
+
+    MetaInfo metaInfo();
 }

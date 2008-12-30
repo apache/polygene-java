@@ -24,7 +24,7 @@ import org.qi4j.api.entity.association.AssociationMixin;
  * * No Identity
  * * No Lifecycle
  * * Immutable
- * * Can have both properties and associations
+ * * Can only have properties
  * * Instance management for reuse
  * 
  */

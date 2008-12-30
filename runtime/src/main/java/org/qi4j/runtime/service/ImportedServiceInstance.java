@@ -14,20 +14,24 @@
 
 package org.qi4j.runtime.service;
 
-import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.service.ImportedServiceDescriptor;
 
 /**
  * TODO
  */
-public final class ServiceInstance<T>
+public final class ImportedServiceInstance<T>
 {
     private final T instance;
-    private final ServiceDescriptor serviceDescriptor;
+    private final ServiceImporter factory;
+    private final ImportedServiceDescriptor serviceDescriptor;
 
 
-    public ServiceInstance( T instance,
-                            ServiceDescriptor serviceDescriptor )
+    public ImportedServiceInstance( T instance,
+                            ServiceImporter factory,
+                            ImportedServiceDescriptor serviceDescriptor )
     {
+        this.factory = factory;
         this.serviceDescriptor = serviceDescriptor;
         this.instance = instance;
     }
@@ -37,7 +41,7 @@ public final class ServiceInstance<T>
         return instance;
     }
 
-    public ServiceDescriptor serviceDescriptor()
+    public ImportedServiceDescriptor importedServiceDescriptor()
     {
         return serviceDescriptor;
     }

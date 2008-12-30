@@ -45,6 +45,9 @@ public interface ModuleAssembly
     ServiceDeclaration addServices( Class<? extends ServiceComposite>... serviceTypes )
         throws AssemblyException;
 
+    ImportedServiceDeclaration importServices( Class... serviceTypes )
+        throws AssemblyException;
+
     <T> InfoDeclaration<T> on( Class<T> mixinType );
 
 }

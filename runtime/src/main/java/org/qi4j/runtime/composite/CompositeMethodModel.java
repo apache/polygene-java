@@ -44,7 +44,9 @@ public final class CompositeMethodModel
     private final AnnotatedElement annotations;
 
     // Context
-    private final CompositeMethodInstancePool instancePool = new SynchronizedCompositeMethodInstancePool();
+    private final SynchronizedCompositeMethodInstancePool instancePool = new SynchronizedCompositeMethodInstancePool();
+//    private final CompositeMethodInstancePool instancePool = new AtomicCompositeMethodInstancePool();
+//    private final CompositeMethodInstancePool instancePool = new ThreadLocalCompositeMethodInstancePool();
     private MethodConstraintsInstance methodConstraintsInstance;
 
     public CompositeMethodModel( Method method,
@@ -54,6 +56,7 @@ public final class CompositeMethodModel
                                  AbstractMixinsModel mixinsModel )
     {
         this.method = method;
+        method.setAccessible( true );
         mixins = mixinsModel;
         methodConcerns = methodConcernsModel;
         methodSideEffects = methodSideEffectsModel;

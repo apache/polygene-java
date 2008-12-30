@@ -14,22 +14,21 @@
 
 package org.qi4j.test.mock;
 
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.LayerAssembly;
-import org.qi4j.bootstrap.CompositeDeclaration;
-import org.qi4j.bootstrap.EntityDeclaration;
-import org.qi4j.bootstrap.ObjectDeclaration;
-import org.qi4j.bootstrap.ServiceDeclaration;
-import org.qi4j.bootstrap.InfoDeclaration;
-import org.qi4j.api.service.ServiceComposite;
+import java.util.HashMap;
+import java.util.Map;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.spi.service.provider.SingletonInstanceFactory;
-import org.qi4j.spi.service.provider.Singleton;
-import java.util.Map;
-import java.util.HashMap;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.CompositeDeclaration;
+import org.qi4j.bootstrap.EntityDeclaration;
+import org.qi4j.bootstrap.ImportedServiceDeclaration;
+import org.qi4j.bootstrap.InfoDeclaration;
+import org.qi4j.bootstrap.LayerAssembly;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ObjectDeclaration;
+import org.qi4j.bootstrap.ServiceDeclaration;
 
 /**
  * TODO
@@ -111,7 +110,7 @@ public class MockAssembler
                 ServiceComposite mockedService = mockedServices.get( serviceType );
                 if (mockedService != null)
                 {
-                    delegate.addServices( serviceType ).providedBy( SingletonInstanceFactory.class ).setMetaInfo( new Singleton(mockedService) );
+                    delegate.importServices( serviceType ).setMetaInfo( mockedService );
                 } else
                 {
                     delegate.addServices( serviceType );
@@ -119,6 +118,11 @@ public class MockAssembler
             }
 
             return null;
+        }
+
+        public ImportedServiceDeclaration importServices( Class... serviceTypes ) throws AssemblyException
+        {
+            return delegate.importServices( serviceTypes );
         }
 
         public <T> InfoDeclaration<T> on( Class<T> mixinType )

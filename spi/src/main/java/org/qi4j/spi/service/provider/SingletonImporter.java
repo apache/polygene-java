@@ -14,24 +14,18 @@
 
 package org.qi4j.spi.service.provider;
 
-import org.qi4j.api.service.ServiceDescriptor;
-import org.qi4j.api.service.ServiceInstanceFactory;
-import org.qi4j.api.service.ServiceInstanceFactoryException;
+import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.service.ServiceImporterException;
+import org.qi4j.api.service.ImportedServiceDescriptor;
 
 /**
- * Return a predefined singleton instance that was provided as service-info
- * through the Singleton class.
+ * Return a predefined singleton instance that was provided as meta-info
  */
-public class SingletonInstanceFactory
-    implements ServiceInstanceFactory
+public class SingletonImporter
+    implements ServiceImporter
 {
-
-    public Object newInstance( ServiceDescriptor serviceDescriptor ) throws ServiceInstanceFactoryException
+    public Object importInstance( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
     {
-        return serviceDescriptor.metaInfo().get( Singleton.class ).instance();
-    }
-
-    public void releaseInstance( Object instance )
-    {
+        return serviceDescriptor.metaInfo().get( serviceDescriptor.type() );
     }
 }

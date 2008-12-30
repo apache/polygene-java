@@ -59,7 +59,7 @@ public final class VariableValueExpressionImpl<T>
      *
      * @return variable name
      */
-    public String getName()
+    public String name()
     {
         return name;
     }

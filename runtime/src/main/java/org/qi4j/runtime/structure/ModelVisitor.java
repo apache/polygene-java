@@ -30,6 +30,7 @@ import org.qi4j.runtime.injection.InjectedMethodModel;
 import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.service.ServiceModel;
+import org.qi4j.runtime.service.ImportedServiceModel;
 
 /**
  * TODO
@@ -105,6 +106,10 @@ public class ModelVisitor
     }
 
     public void visit( ServiceModel serviceModel )
+    {
+    }
+
+    public void visit( ImportedServiceModel serviceModel )
     {
     }
 

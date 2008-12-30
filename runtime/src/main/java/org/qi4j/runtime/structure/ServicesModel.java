@@ -19,8 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.service.ServiceReferenceInstance;
+import org.qi4j.runtime.service.ImportedServiceModel;
+import org.qi4j.runtime.service.ImportedServiceReferenceInstance;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.service.ServiceReference;
 
 /**
  * TODO
@@ -28,20 +31,29 @@ import org.qi4j.api.common.Visibility;
 public class ServicesModel
 {
     private final Iterable<ServiceModel> serviceModels;
+    private List<ImportedServiceModel> importedServiceModels;
 
-    public ServicesModel( Iterable<ServiceModel> serviceModels )
+    public ServicesModel( Iterable<ServiceModel> serviceModels, List<ImportedServiceModel> importedServiceModels )
     {
         this.serviceModels = serviceModels;
+        this.importedServiceModels = importedServiceModels;
     }
 
-    public Iterable<ServiceModel> getServiceModelsFor( Type serviceType, Visibility visibility )
+    public Iterable<String> getServiceIdentitiesFor( Type serviceType, Visibility visibility )
     {
-        List<ServiceModel> foundServices = new ArrayList<ServiceModel>();
+        List<String> foundServices = new ArrayList<String>();
         for( ServiceModel serviceModel : serviceModels )
         {
             if( serviceModel.isServiceFor( serviceType, visibility ) )
             {
-                foundServices.add( serviceModel );
+                foundServices.add( serviceModel.identity() );
+            }
+        }
+        for( ImportedServiceModel serviceModel : importedServiceModels )
+        {
+            if( serviceModel.isServiceFor( serviceType, visibility ) )
+            {
+                foundServices.add( serviceModel.identity() );
             }
         }
         return foundServices;
@@ -49,10 +61,15 @@ public class ServicesModel
 
     public ServicesInstance newInstance( Module module )
     {
-        List<ServiceReferenceInstance> serviceReferences = new ArrayList<ServiceReferenceInstance>();
+        List<ServiceReference> serviceReferences = new ArrayList<ServiceReference>();
         for( ServiceModel serviceModel : serviceModels )
         {
             ServiceReferenceInstance serviceReferenceInstance = new ServiceReferenceInstance( serviceModel, module );
+            serviceReferences.add( serviceReferenceInstance );
+        }
+        for( ImportedServiceModel serviceModel : importedServiceModels )
+        {
+            ImportedServiceReferenceInstance serviceReferenceInstance = new ImportedServiceReferenceInstance( serviceModel, module );
             serviceReferences.add( serviceReferenceInstance );
         }
 

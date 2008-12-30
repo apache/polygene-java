@@ -31,14 +31,14 @@ import org.qi4j.api.injection.InjectionScope;
  *  - An AnnotationElement with annotations
  *    from both mixin type, mixin
  *    implementation.
- *
- *  - InvocationContext with information about
- *    the current invocation
+
+ *  - An Annotation of a specific type
  * </code></pre>
  * Examples:
  * <code><pre>
  * &#64;Invocation Method theInvokedMethod
  * &#64;Invocation AnnotationElement annotations
+ * &#64;Invocation Matches matchesAnnotation
  * </pre></code>
  */
 @Retention( RetentionPolicy.RUNTIME )

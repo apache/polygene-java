@@ -18,14 +18,11 @@
 
 package org.qi4j.bootstrap;
 
-import org.qi4j.api.service.ServiceInstanceFactory;
 import org.qi4j.api.common.Visibility;
 
 public interface ServiceDeclaration
 {
     ServiceDeclaration visibleIn( Visibility visibility );
-
-    ServiceDeclaration providedBy( Class<? extends ServiceInstanceFactory> sip );
 
     ServiceDeclaration identifiedBy( String identity );
 

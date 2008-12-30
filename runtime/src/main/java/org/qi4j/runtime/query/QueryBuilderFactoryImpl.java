@@ -78,14 +78,7 @@ public final class QueryBuilderFactoryImpl
         {
             return new QueryBuilderImpl<T>( unitOfWorkInstance, null, resultType );
         }
-        try
-        {
-            return new QueryBuilderImpl<T>( unitOfWorkInstance, serviceReference.get(), resultType );
-        }
-        finally
-        {
-            serviceReference.releaseService();
-        }
+        return new QueryBuilderImpl<T>( unitOfWorkInstance, serviceReference.get(), resultType );
     }
 
     public <T> Query<T> newNamedQuery( String name, Class<T> resultType )
@@ -97,13 +90,6 @@ public final class QueryBuilderFactoryImpl
         {
             throw new MissingIndexingSystemException();
         }
-        try
-        {
-            return new NamedQueryImpl<T>( serviceReference.get(), unitOfWorkInstance, name, resultType );
-        }
-        finally
-        {
-            serviceReference.releaseService();
-        }
+        return new NamedQueryImpl<T>( serviceReference.get(), unitOfWorkInstance, name, resultType );
     }
 }

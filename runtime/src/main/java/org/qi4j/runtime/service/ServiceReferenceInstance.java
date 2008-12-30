@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.ServiceInstanceFactoryException;
+import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.service.Activator;
@@ -39,7 +39,6 @@ public final class ServiceReferenceInstance<T>
     private volatile ServiceInstance<T> serviceInstance;
     private Object instance;
     private final T serviceProxy;
-    private int referenceCounter = 0;
     private final Module module;
     private final ServiceModel serviceModel;
     private final Activator activator = new Activator();
@@ -64,36 +63,12 @@ public final class ServiceReferenceInstance<T>
 
     public synchronized T get()
     {
-        referenceCounter++;
         return serviceProxy;
     }
 
     public boolean isActive()
     {
         return serviceInstance != null;
-    }
-
-    public synchronized void releaseService()
-        throws IllegalStateException
-    {
-        if( referenceCounter == 0 )
-        {
-            throw new IllegalStateException( "All references already released" );
-        }
-
-        referenceCounter--;
-
-        if( referenceCounter == 0 )
-        {
-            try
-            {
-                passivate();
-            }
-            catch( Exception e )
-            {
-                e.printStackTrace(); // TODO What should we do here?
-            }
-        }
     }
 
     public void activate() throws Exception
@@ -109,25 +84,12 @@ public final class ServiceReferenceInstance<T>
         if( serviceInstance != null )
         {
             activator.passivate();
-            // Release the instance
-            try
-            {
-                serviceInstance.release();
-            }
-            finally
-            {
-                serviceInstance = null;
-            }
+            serviceInstance = null;
         }
     }
 
-    public int getReferenceCounter()
-    {
-        return referenceCounter;
-    }
-
     private Object getInstance()
-        throws ServiceInstanceFactoryException
+        throws ServiceImporterException
     {
         // DCL that works with Java 1.5 volatile semantics
         if( serviceInstance == null )
@@ -137,7 +99,7 @@ public final class ServiceReferenceInstance<T>
                 if( serviceInstance == null )
                 {
                     serviceInstance = (ServiceInstance<T>) serviceModel.newInstance( module );
-                    T providedInstance = serviceInstance.getInstance();
+                    T providedInstance = serviceInstance.instance();
 
                     if( providedInstance instanceof Activatable )
                     {
@@ -148,7 +110,7 @@ public final class ServiceReferenceInstance<T>
                         catch( Exception e )
                         {
                             serviceInstance = null;
-                            throw new ServiceInstanceFactoryException( e );
+                            throw new ServiceImporterException( e );
                         }
                     }
 
@@ -201,7 +163,7 @@ public final class ServiceReferenceInstance<T>
             if( instance instanceof InvocationHandler )
             {
                 InvocationHandler handler = (InvocationHandler) instance;
-                return handler.invoke( serviceInstance.getInstance(), method, objects );
+                return handler.invoke( serviceInstance.instance(), method, objects );
             }
             else
             {

@@ -34,6 +34,7 @@ public final class InjectedMethodModel
     public InjectedMethodModel( Method method, InjectedParametersModel parameters )
     {
         this.method = method;
+        this.method.setAccessible( true );
         this.parameters = parameters;
     }
 

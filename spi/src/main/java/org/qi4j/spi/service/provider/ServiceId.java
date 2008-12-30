@@ -22,6 +22,11 @@ import java.io.Serializable;
 public class ServiceId
     implements Serializable
 {
+    public static ServiceId identifiedBy(String id)
+    {
+        return new ServiceId(id);
+    }
+
     String id;
 
     public ServiceId( String id )

@@ -15,27 +15,27 @@
 package org.qi4j.api.service;
 
 /**
- * If a ServiceInstanceProvider could not create a service
+ * If a ServiceImporter could not import a service
  * instance it must throw this exception.
  */
-public class ServiceInstanceFactoryException
+public class ServiceImporterException
     extends RuntimeException
 {
-    public ServiceInstanceFactoryException()
+    public ServiceImporterException()
     {
     }
 
-    public ServiceInstanceFactoryException( String string )
+    public ServiceImporterException( String string )
     {
         super( string );
     }
 
-    public ServiceInstanceFactoryException( String string, Throwable throwable )
+    public ServiceImporterException( String string, Throwable throwable )
     {
         super( string, throwable );
     }
 
-    public ServiceInstanceFactoryException( Throwable throwable )
+    public ServiceImporterException( Throwable throwable )
     {
         super( throwable );
     }
