@@ -22,6 +22,7 @@ import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.library.constraints.annotation.NotEmpty;
 import org.qi4j.library.rdf.DcRdf;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.common.Optional;
 
 /**
  * TODO
@@ -35,7 +36,7 @@ interface TestEntity
 
     @NotEmpty Property<String> name();
 
-    Association<TestEntity> association();
+    @Optional Association<TestEntity> association();
 
     ManyAssociation<TestEntity> manyAssoc();
 

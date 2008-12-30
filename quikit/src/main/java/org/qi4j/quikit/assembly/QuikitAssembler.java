@@ -48,8 +48,8 @@ public class QuikitAssembler implements Assembler
         aModule.addComposites( QuikItApplicationFactoryComposite.class );
 
         // Add the quikit servlet
-        aModule.addServices( QuikitServletService.class )
-            .providedBy( QuikItServletServiceFactory.class )
+        aModule.importServices( QuikitServletService.class )
+            .importedBy( QuikItServletServiceFactory.class )
             .setMetaInfo( new ServletInfo( "/quikit/" ) )
             .visibleIn( layer );
 

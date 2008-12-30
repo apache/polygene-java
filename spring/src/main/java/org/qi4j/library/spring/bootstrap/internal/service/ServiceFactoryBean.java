@@ -29,7 +29,7 @@ import static org.springframework.util.Assert.*;
  * @since 0.5
  */
 public final class ServiceFactoryBean
-    implements FactoryBean, DisposableBean
+    implements FactoryBean
 {
     private ServiceDescriptor serviceDescriptor;
     private ServiceReference serviceReference;
@@ -66,14 +66,5 @@ public final class ServiceFactoryBean
     public final boolean isSingleton()
     {
         return false;
-    }
-
-    public final void destroy()
-        throws Exception
-    {
-        if( serviceReference != null )
-        {
-            serviceReference.releaseService();
-        }
     }
 }
