@@ -146,13 +146,7 @@ public class PropertyModel
             property = new PropertyInstance<Object>( builderInfo, defaultValue(), this );
         }
 
-        if (!accessor.getReturnType().equals(Property.class))
-        {
-            // Create proxy
-            property = (Property<?>) Proxy.newProxyInstance( accessor.getReturnType().getClassLoader(), new Class[] {accessor.getReturnType()}, new PropertyHandler(property) );
-        }
-
-        return property;
+        return wrapProperty(property);
     }
 
     public Property<?> newDefaultInstance()
@@ -176,7 +170,7 @@ public class PropertyModel
         {
             property = new PropertyInstance<Object>( propertyInfo, value, this );
         }
-        return property;
+        return wrapProperty(property);
     }
 
     public void checkConstraints( Object value )
@@ -226,6 +220,16 @@ public class PropertyModel
         return accessor.toGenericString();
     }
 
+    protected Property<?> wrapProperty( Property<?> property )
+    {
+        if (!accessor.getReturnType().equals(Property.class) && !accessor.getReturnType().isInstance( property ))
+        {
+            // Create proxy
+            property = (Property<?>) Proxy.newProxyInstance( accessor.getReturnType().getClassLoader(), new Class[] {accessor.getReturnType()}, new PropertyHandler(property) );
+        }
+        return property;
+    }
+
     private static class ComputedPropertyInfo<T>
         extends ComputedPropertyInstance<T>
     {
@@ -259,7 +263,7 @@ public class PropertyModel
             }
             catch( InvocationTargetException e )
             {
-                throw e;
+                throw e.getCause();
             }
         }
     }

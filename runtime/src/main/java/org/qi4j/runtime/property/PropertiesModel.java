@@ -15,12 +15,14 @@
 package org.qi4j.runtime.property;
 
 import java.lang.reflect.Method;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Arrays;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.StateHolder;
@@ -28,9 +30,11 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.util.ClassUtil;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
+import org.qi4j.runtime.util.AnnotationUtil;
 import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
@@ -56,28 +60,17 @@ public final class PropertiesModel
         {
             if( Property.class.isAssignableFrom( method.getReturnType() ) )
             {
-                boolean optional = method.getAnnotation( Optional.class ) != null;
-                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( method.getAnnotations(), GenericPropertyInfo.getPropertyType( method ), method.getName(), optional );
-                ValueConstraintsInstance valueConstraintsInstance = null;
-                if( valueConstraintsModel.isConstrained() )
-                {
-                    valueConstraintsInstance = valueConstraintsModel.newInstance();
-                }
-                MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
-                Object defaultValue = propertyDeclarations.getDefaultValue( method );
-                PropertyModel propertyModel = new PropertyModel( method, valueConstraintsInstance, metaInfo, defaultValue ); //TODO Take default value from assembly
+                PropertyModel propertyModel = newPropertyModel( method );
                 propertyModels.add( propertyModel );
                 accessors.put( propertyModel.qualifiedName(), propertyModel.accessor() );
             }
         }
     }
 
-
     public List<PropertyDescriptor> properties()
     {
         return new ArrayList<PropertyDescriptor>( propertyModels );
     }
-
 
     public PropertiesInstance newBuilderInstance()
     {
@@ -155,5 +148,21 @@ public final class PropertiesModel
                 propertyModel.checkConstraints( property.get() );
             }
         }
+    }
+
+    private PropertyModel newPropertyModel( Method method )
+    {
+        Annotation[] annotations = AnnotationUtil.getMethodAndTypeAnnotations( method );
+        boolean optional = AnnotationUtil.getAnnotationOfType( annotations, Optional.class ) != null;
+        ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericPropertyInfo.getPropertyType( method ), method.getName(), optional );
+        ValueConstraintsInstance valueConstraintsInstance = null;
+        if( valueConstraintsModel.isConstrained() )
+        {
+            valueConstraintsInstance = valueConstraintsModel.newInstance();
+        }
+        MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
+        Object defaultValue = propertyDeclarations.getDefaultValue( method );
+        PropertyModel propertyModel = new PropertyModel( method, valueConstraintsInstance, metaInfo, defaultValue );
+        return propertyModel;
     }
 }

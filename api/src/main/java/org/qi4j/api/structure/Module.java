@@ -15,10 +15,10 @@
 package org.qi4j.api.structure;
 
 import org.qi4j.api.composite.CompositeBuilderFactory;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
 /**
  * API for interacting with a Module. Instances

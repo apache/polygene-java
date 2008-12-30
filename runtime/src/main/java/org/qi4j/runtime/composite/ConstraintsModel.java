@@ -16,6 +16,7 @@ package org.qi4j.runtime.composite;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -46,7 +47,6 @@ public final class ConstraintsModel
         }
 
     }
-
     public ValueConstraintsModel constraintsFor( Annotation[] constraintAnnotations, Type valueType, String name, boolean optional )
     {
         List<AbstractConstraintModel> constraintModels = new ArrayList<AbstractConstraintModel>();

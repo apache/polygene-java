@@ -14,10 +14,10 @@
  */
 package org.qi4j.api.unitofwork;
 
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.usecase.Usecase;
-import org.qi4j.api.entity.LifecycleException;
-import org.qi4j.api.entity.EntityBuilder;
 
 /**
  * All operations on entities goes through an UnitOfWork. A UnitOfWork allows you to access
@@ -66,7 +66,7 @@ public interface UnitOfWork
      * @param type the mixin type that the EntityComposite must implement
      * @return a new Entity
      * @throws NoSuchEntityException if no EntityComposite type of the given mixin type has been registered
-     * @throws org.qi4j.api.entity.LifecycleException
+     * @throws org.qi4j.api.entity.LifecycleException if the entity cannot be created
      */
     <T> T newEntity( Class<T> type )
         throws NoSuchEntityException, LifecycleException;
@@ -81,7 +81,7 @@ public interface UnitOfWork
      * @param type     the mixin type that the EntityComposite must implement
      * @return a new Entity
      * @throws NoSuchEntityException if no EntityComposite type of the given mixin type has been registered
-     * @throws LifecycleException
+     * @throws LifecycleException if the entity cannot be created
      */
     <T> T newEntity( String identity, Class<T> type )
         throws NoSuchEntityException, LifecycleException;
@@ -119,10 +119,10 @@ public interface UnitOfWork
      * Find an Entity of the given mixin type with the give identity. This
      * method verifies that it exists by asking the underlying EntityStore.
      *
-     * @param identity
-     * @param type
-     * @return
-     * @throws EntityCompositeNotFoundException
+     * @param identity of the entity
+     * @param type of the entity
+     * @return the entity
+     * @throws EntityCompositeNotFoundException if no entity type could be found
      *
      */
     <T> T find( String identity, Class<T> type )
@@ -132,10 +132,10 @@ public interface UnitOfWork
      * Get a reference to an Entity of the given mixin type with the given identity.
      * This method does not guarantee that the returned Entity actually exists.
      *
-     * @param identity
-     * @param type
-     * @return
-     * @throws EntityCompositeNotFoundException
+     * @param identity of the entity
+     * @param type of the entity
+     * @return the entity
+     * @throws EntityCompositeNotFoundException if no entity type could be found
      *
      */
     <T> T getReference( String identity, Class<T> type )
@@ -148,7 +148,7 @@ public interface UnitOfWork
      *
      * @param entity the Entity to be dereferenced
      * @return an Entity from this UnitOfWork
-     * @throws EntityCompositeNotFoundException
+     * @throws EntityCompositeNotFoundException if no entity type could be found
      *
      */
     <T> T dereference( T entity )
@@ -162,8 +162,8 @@ public interface UnitOfWork
      * Existing references to Properties and Associations of Entities
      * in the UnitOfWork will continue to be valid.
      *
-     * @param entity
-     * @throws UnitOfWorkException
+     * @param entity to be refreshed
+     * @throws UnitOfWorkException if the refresh fails
      */
     void refresh( Object entity )
         throws UnitOfWorkException;
@@ -196,7 +196,7 @@ public interface UnitOfWork
      * Remove the given Entity.
      *
      * @param entity the Entity to be removed.
-     * @throws LifecycleException
+     * @throws LifecycleException if the entity could not be removed
      */
     void remove( Object entity )
         throws LifecycleException;
@@ -210,8 +210,8 @@ public interface UnitOfWork
      * the validation errors, and try again. This method can be called as many times
      * as necessary. After completion this UnitOfWork becomes invalid.
      *
-     * @throws UnitOfWorkCompletionException
-     * @throws ConcurrentEntityModificationException
+     * @throws UnitOfWorkCompletionException if the UnitOfWork could not be completed
+     * @throws ConcurrentEntityModificationException if entities have been modified by others
      *
      */
     void complete()
@@ -221,8 +221,8 @@ public interface UnitOfWork
      * Apply the changes in this UnitOfWork. This will send all the changes down to the underlying
      * EntityStores, without making this UnitOfWork invalid.
      *
-     * @throws UnitOfWorkCompletionException
-     * @throws ConcurrentEntityModificationException
+     * @throws UnitOfWorkCompletionException if the changes could not be applied
+     * @throws ConcurrentEntityModificationException if entities have been modified by others
      *
      */
     void apply()

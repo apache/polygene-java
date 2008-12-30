@@ -17,10 +17,9 @@
  */
 package org.qi4j.api.property;
 
-import java.lang.reflect.Type;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import org.qi4j.api.util.NullArgumentException;
-import org.qi4j.api.property.Immutable;
 
 /**
  * Use the ImmutableFacade if you have a Property that you want to

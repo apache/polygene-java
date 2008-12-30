@@ -15,8 +15,8 @@
 package org.qi4j.api.entity;
 
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.entity.association.AssociationMixin;
+import org.qi4j.api.mixin.Mixins;
 
 /**
  * Entity Composites must extend this interface.

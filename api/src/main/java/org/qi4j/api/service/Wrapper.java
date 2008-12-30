@@ -15,8 +15,8 @@
 package org.qi4j.api.service;
 
 import java.io.Serializable;
-import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.mixin.Mixins;
 
 /**
  * Services which simply wraps some resource should extend this interface

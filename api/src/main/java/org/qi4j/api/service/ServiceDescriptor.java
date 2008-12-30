@@ -14,8 +14,8 @@
 
 package org.qi4j.api.service;
 
-import org.qi4j.api.common.Visibility;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.Visibility;
 
 /**
  * {@code ServiceDescriptor} provides meta informations of a service.

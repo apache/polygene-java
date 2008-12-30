@@ -15,7 +15,6 @@
 package org.qi4j.api.property;
 
 import java.lang.reflect.Method;
-import org.qi4j.api.property.Property;
 
 /**
  * This represents the state of a composite (properties).

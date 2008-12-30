@@ -14,8 +14,8 @@
 
 package org.qi4j.api.constraint;
 
-import java.lang.annotation.Annotation;
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 
 /**
  * When a constraint violation has occurred (i.e. Constraint.isValid has returned false) it

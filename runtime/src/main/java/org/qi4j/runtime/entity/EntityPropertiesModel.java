@@ -15,23 +15,27 @@
 package org.qi4j.runtime.entity;
 
 import java.lang.reflect.Method;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Arrays;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.util.ClassUtil;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.runtime.property.PropertyModel;
+import org.qi4j.runtime.util.AnnotationUtil;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyDescriptor;
@@ -60,16 +64,7 @@ public final class EntityPropertiesModel
         {
             if( Property.class.isAssignableFrom( method.getReturnType() ) )
             {
-                boolean optional = method.getAnnotation( Optional.class ) != null;
-                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( method.getAnnotations(), GenericPropertyInfo.getPropertyType( method ), method.getName(), optional );
-                ValueConstraintsInstance valueConstraintsInstance = null;
-                if( valueConstraintsModel.isConstrained() )
-                {
-                    valueConstraintsInstance = valueConstraintsModel.newInstance();
-                }
-                MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
-                Object defaultValue = propertyDeclarations.getDefaultValue( method );
-                EntityPropertyModel propertyModel = new EntityPropertyModel( method, valueConstraintsInstance, metaInfo, defaultValue );
+                EntityPropertyModel propertyModel = newPropertyModel( method );
                 final String qualifiedName = propertyModel.qualifiedName();
                 if( !accessors.containsKey( qualifiedName ) )
                 {
@@ -149,5 +144,21 @@ public final class EntityPropertiesModel
             propertyTypes.add( propertyModel.propertyType() );
         }
         return propertyTypes;
+    }
+
+    private EntityPropertyModel newPropertyModel( Method method )
+    {
+        Annotation[] annotations = AnnotationUtil.getMethodAndTypeAnnotations( method );
+        boolean optional = AnnotationUtil.getAnnotationOfType( annotations, Optional.class ) != null;
+        ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericPropertyInfo.getPropertyType( method ), method.getName(), optional );
+        ValueConstraintsInstance valueConstraintsInstance = null;
+        if( valueConstraintsModel.isConstrained() )
+        {
+            valueConstraintsInstance = valueConstraintsModel.newInstance();
+        }
+        MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
+        Object defaultValue = propertyDeclarations.getDefaultValue( method );
+        EntityPropertyModel propertyModel = new EntityPropertyModel( method, valueConstraintsInstance, metaInfo, defaultValue );
+        return propertyModel;
     }
 }

@@ -25,9 +25,8 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.constraint.ConstraintViolation;
+import org.qi4j.api.constraint.ConstraintViolationException;
 
 /**
  * This Exception is thrown when there is one or more Constraint Violations in a method

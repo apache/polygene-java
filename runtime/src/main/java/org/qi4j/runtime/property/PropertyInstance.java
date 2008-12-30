@@ -66,7 +66,7 @@ public class PropertyInstance<T> extends AbstractPropertyInstance<T>
     public void set( T aNewValue )
     {
         if( isImmutable())
-            throw new IllegalStateException( "Property [" + propertyInfo.qualifiedName() + "] is immutable." );
+            throw new IllegalStateException( "Property [" + qualifiedName() + "] is immutable." );
 
         if( constraints != null)
         {

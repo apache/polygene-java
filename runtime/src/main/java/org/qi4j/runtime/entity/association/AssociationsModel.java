@@ -15,6 +15,7 @@
 package org.qi4j.runtime.entity.association;
 
 import java.lang.reflect.Method;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,6 +29,7 @@ import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.runtime.util.AnnotationUtil;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.ManyAssociationType;
@@ -59,8 +61,9 @@ public final class AssociationsModel
         {
             if( AbstractAssociation.class.isAssignableFrom( method.getReturnType() ) )
             {
-                boolean optional = method.getAnnotation( Optional.class ) != null;
-                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( method.getAnnotations(), GenericAssociationInfo.getAssociationType( method ), method.getName(), optional );
+                Annotation[] annotations = AnnotationUtil.getMethodAndTypeAnnotations( method );
+                boolean optional = AnnotationUtil.getAnnotationOfType( annotations, Optional.class ) != null;
+                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericAssociationInfo.getAssociationType( method ), method.getName(), optional );
                 ValueConstraintsInstance valueConstraintsInstance = null;
                 if( valueConstraintsModel.isConstrained() )
                 {

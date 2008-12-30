@@ -42,14 +42,17 @@ public final class EntityPropertyModel extends PropertyModel
 
     public Property newEntityInstance( EntityState state )
     {
+        Property property;
         if( isComputed() )
         {
-            return super.newDefaultInstance();
+            property = super.newDefaultInstance();
         }
         else
         {
-            return new EntityPropertyInstance( this, state, this );
+            property = new EntityPropertyInstance( this, state, this );
         }
+
+        return wrapProperty( property );
     }
 
     public void setState( Property property, EntityState entityState )
