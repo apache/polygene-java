@@ -117,15 +117,8 @@ public abstract class AbstractAssociationInstance<T>
 
     protected void checkImmutable()
     {
-        if( !isImmutable() )
-        {
-            return;
-        }
-        if( !isSet() )
-        {
-            return;
-        }
-        throw new IllegalStateException( "Association " + this + " is immutable." );
+        if( isImmutable() )
+            throw new IllegalStateException( "Association [" + qualifiedName() + "] is immutable." );
     }
 
     protected abstract boolean isSet();
