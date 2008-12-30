@@ -28,7 +28,7 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 /**
  * @author edward.yakop@gmail.com
  */
-public final class StateModelAssociationTest extends AbstractStateModelTest
+public class StateModelAssociationTest extends AbstractStateModelTest
 {
     @Test
     public final void testAssociationBinding()

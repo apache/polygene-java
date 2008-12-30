@@ -17,11 +17,12 @@
 package org.qi4j.library.swing.binding.domain;
 
 import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.common.Optional;
 
 /**
  * @author edward.yakop@gmail.com
  */
 public interface HasCat
 {
-    Association<Cat> favoriteCat();
+    @Optional Association<Cat> favoriteCat();
 }
