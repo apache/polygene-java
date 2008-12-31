@@ -12,45 +12,32 @@
  *
  */
 
-package org.qi4j.spi.service.provider;
+package org.qi4j.spi.service.importer;
 
 import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.service.ServiceSelector;
 
 /**
- * TODO
+ * If several services are available with a given type, and you want to constrain
+ * the current module to use a specific one, then use this importer. Specify a
+ * ServiceSelector.Selector criteria as meta-info for the service, which will be applied
+ * to the list of available services, and the first match will be chosen.
  */
-public class ServiceIdImporter
+public class ServiceSelectorImporter
     implements ServiceImporter
 {
     private @Structure ServiceFinder locator;
 
-    private ServiceReference serviceRef;
-    private Object instance;
-
     public Object importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
     {
-        if( serviceRef == null )
-        {
-            ServiceId id = serviceDescriptor.metaInfo().get( ServiceId.class );
-            String identityFilter = id == null ? null : id.id();
-            Class serviceType = serviceDescriptor.type();
-            Iterable<ServiceReference<?>> services = locator.findServices( serviceType );
-            for( ServiceReference<?> service : services )
-            {
-                if( identityFilter == null || service.identity().equals( identityFilter ) )
-                {
-                    serviceRef = service;
-                    instance = service.get();
-                    break;
-                }
-            }
-        }
-
-        return instance;
+        ServiceSelector.Selector selector = serviceDescriptor.metaInfo().get( ServiceSelector.Selector.class );
+        Class serviceType = serviceDescriptor.type();
+        Iterable<ServiceReference<Object>> services = locator.findServices( serviceType );
+        return ServiceSelector.service( services, selector );
     }
 }

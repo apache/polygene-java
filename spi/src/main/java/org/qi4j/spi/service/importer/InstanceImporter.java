@@ -12,30 +12,20 @@
  *
  */
 
-package org.qi4j.spi.service.provider;
+package org.qi4j.spi.service.importer;
 
-import java.io.Serializable;
+import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.service.ServiceImporterException;
 
 /**
- * TODO
+ * Return a predefined service instance that was provided as meta-info.
  */
-public class ServiceId
-    implements Serializable
+public class InstanceImporter
+    implements ServiceImporter
 {
-    public static ServiceId identifiedBy(String id)
+    public Object importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
     {
-        return new ServiceId(id);
-    }
-
-    String id;
-
-    public ServiceId( String id )
-    {
-        this.id = id;
-    }
-
-    public String id()
-    {
-        return id;
+        return serviceDescriptor.metaInfo().get( serviceDescriptor.type() );
     }
 }
