@@ -15,7 +15,7 @@
 package org.qi4j.api.service;
 
 /**
- * TODO
+ * Import a service from some external source.
  */
 public interface ServiceImporter
 {
@@ -24,9 +24,8 @@ public interface ServiceImporter
      *
      * @param serviceDescriptor The service descriptor.
      * @return The imported service instance.
-     * @throws ServiceImporterException
-     *          Thrown if creational failed.
+     * @throws ServiceImporterException if import failed.
      */
-    Object importInstance( ImportedServiceDescriptor serviceDescriptor )
+    Object importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException;
 }

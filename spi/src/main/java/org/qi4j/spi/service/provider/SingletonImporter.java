@@ -24,7 +24,7 @@ import org.qi4j.api.service.ImportedServiceDescriptor;
 public class SingletonImporter
     implements ServiceImporter
 {
-    public Object importInstance( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
+    public Object importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
     {
         return serviceDescriptor.metaInfo().get( serviceDescriptor.type() );
     }

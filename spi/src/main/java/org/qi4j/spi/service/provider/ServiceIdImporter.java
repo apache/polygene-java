@@ -32,7 +32,7 @@ public class ServiceIdImporter
     private ServiceReference serviceRef;
     private Object instance;
 
-    public Object importInstance( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
+    public Object importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
     {
         if( serviceRef == null )
         {

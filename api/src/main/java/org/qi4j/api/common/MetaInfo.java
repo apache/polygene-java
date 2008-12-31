@@ -50,7 +50,7 @@ public final class MetaInfo
         else
         {
             Class<? extends Object> metaInfoclass = metaInfo.getClass();
-            Set<Class> types = ClassUtil.classesOf( metaInfoclass );
+            Set<Class> types = ClassUtil.typesOf( metaInfoclass );
             for( Type type : types )
             {
                 if( type instanceof Class )

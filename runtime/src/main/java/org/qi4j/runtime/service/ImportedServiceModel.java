@@ -144,7 +144,7 @@ public final class ImportedServiceModel
     public ImportedServiceInstance<?> importInstance( Module module )
     {
         ServiceImporter importer = module.objectBuilderFactory().newObject( serviceImporter );
-        Object instance = importer.importInstance( this );
+        Object instance = importer.importService( this );
         return new ImportedServiceInstance<Object>( instance, importer, this );
     }
 
