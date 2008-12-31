@@ -25,7 +25,7 @@ public final class QuikItServletServiceFactory
 {
     @Structure ObjectBuilderFactory objectBuilderFactory;
 
-    public Object importInstance( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
+    public Object importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
     {
         return objectBuilderFactory.newObject( QuikItServlet.class );
     }
