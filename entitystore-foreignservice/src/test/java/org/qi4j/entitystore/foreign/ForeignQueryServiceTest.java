@@ -74,7 +74,7 @@ public class ForeignQueryServiceTest extends AbstractQi4jTest
 
         @Structure CompositeBuilderFactory cbf;
 
-        public Object importInstance( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
+        public Object importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
         {
             CompositeBuilder<ForeignProxyEntityStoreService> builder = cbf.newCompositeBuilder( ForeignProxyEntityStoreService.class );
             builder.use( new HabbaServiceImpl() );
