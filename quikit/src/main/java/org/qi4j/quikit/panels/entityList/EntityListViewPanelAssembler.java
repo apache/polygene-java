@@ -16,13 +16,13 @@
  */
 package org.qi4j.quikit.panels.entityList;
 
+import static org.qi4j.api.common.Visibility.application;
+import static org.qi4j.api.common.Visibility.module;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ObjectDeclaration;
 import org.qi4j.quikit.panels.entityList.actions.add.AddCompositeLink;
-import static org.qi4j.api.common.Visibility.application;
-import static org.qi4j.api.common.Visibility.module;
 
 /**
  * @author edward.yakop@gmail.com
@@ -38,7 +38,7 @@ public final class EntityListViewPanelAssembler
             EntityListViewPanel.class );
         entityListViewPanelReg.visibleIn( application );
 
-        // Data provider
+        // Data importer
         ObjectDeclaration entityListViewPanelDataProviderReg = aModule.addObjects(
             EntityDataProvider.class,
             EntityPropertyLabelProvider.class,
