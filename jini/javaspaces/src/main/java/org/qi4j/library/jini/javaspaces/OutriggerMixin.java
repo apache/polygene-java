@@ -17,24 +17,24 @@
  */
 package org.qi4j.library.jini.javaspaces;
 
-import org.qi4j.api.service.Activatable;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.library.http.HttpService;
-import org.qi4j.library.http.Interface;
-import org.qi4j.api.util.StreamUtils;
 import com.sun.jini.start.NonActivatableServiceDescriptor;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ByteArrayInputStream;
-import java.io.FileOutputStream;
-import java.security.Policy;
 import java.net.UnknownHostException;
-import java.util.StringTokenizer;
+import java.security.Policy;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 import net.jini.config.Configuration;
 import net.jini.config.EmptyConfiguration;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.util.Streams;
+import org.qi4j.library.http.HttpService;
+import org.qi4j.library.http.Interface;
 
 public class OutriggerMixin
     implements Activatable
@@ -244,6 +244,6 @@ public class OutriggerMixin
             parentFile.mkdirs();
         }
         FileOutputStream fos = new FileOutputStream( destinationFile );
-        StreamUtils.copyStream( inputStream, fos, true );
+        Streams.copyStream( inputStream, fos, true );
     }
 }

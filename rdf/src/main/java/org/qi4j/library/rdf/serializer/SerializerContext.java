@@ -24,8 +24,8 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
+import org.qi4j.api.util.Classes;
 import org.qi4j.library.rdf.Rdfs;
-import org.qi4j.api.util.ClassUtil;
 
 public final class SerializerContext
 {
@@ -50,14 +50,14 @@ public final class SerializerContext
 
     public String createServiceUri( String layer, String module, Class type, String identity )
     {
-        String serviceType = ClassUtil.normalizeClassToURI( type.getName() );
+        String serviceType = Classes.normalizeClassToURI( type.getName() );
         String moduleUri = createModuleUri( layer, module );
         return moduleUri + "/" + serviceType + "/" + identity;
     }
 
     public String createCompositeUri( String module, Class composite )
     {
-        String compositeName = ClassUtil.normalizeClassToURI( composite.getName() );
+        String compositeName = Classes.normalizeClassToURI( composite.getName() );
         return module + "/" + compositeName;
     }
 

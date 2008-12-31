@@ -17,14 +17,14 @@
  */
 package org.qi4j.library.jini.javaspaces;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import org.qi4j.api.util.StreamUtils;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.qi4j.api.util.Streams;
 
 public class ResourceServletMixin extends HttpServlet
 {
@@ -34,6 +34,6 @@ public class ResourceServletMixin extends HttpServlet
         InputStream in = getClass().getResourceAsStream( "outrigger-dl-2.1.1.jar" );
         response.setContentType( "application/java" );
         OutputStream out = response.getOutputStream();
-        StreamUtils.copyStream( in, out, true );
+        Streams.copyStream( in, out, true );
     }
 }

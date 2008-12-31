@@ -21,27 +21,27 @@ import java.util.Map;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Literal;
+import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.model.Resource;
 import org.openrdf.model.impl.GraphImpl;
-import org.openrdf.model.vocabulary.XMLSchema;
-import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.OWL;
+import org.openrdf.model.vocabulary.RDF;
+import org.openrdf.model.vocabulary.XMLSchema;
 import org.qi4j.api.entity.Identity;
-import org.qi4j.library.rdf.Rdfs;
-import org.qi4j.library.rdf.Qi4jRdf;
-import org.qi4j.library.rdf.Qi4jEntity;
 import org.qi4j.api.property.GenericPropertyInfo;
-import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
+import org.qi4j.api.util.Classes;
+import org.qi4j.library.rdf.Qi4jEntity;
+import org.qi4j.library.rdf.Qi4jRdf;
+import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.QualifierQualifiedIdentity;
-import org.qi4j.api.util.ClassUtil;
+import org.qi4j.spi.entity.association.AssociationType;
+import org.qi4j.spi.entity.association.ManyAssociationType;
+import org.qi4j.spi.property.PropertyType;
 
 /**
  * TODO
@@ -208,7 +208,7 @@ public class EntitySerializer
         {
             if( !mixinType.equals( entityType.type() ) )
             {
-                graph.add( entityTypeUri, Rdfs.SUB_CLASS_OF, values.createURI( ClassUtil.toURI( mixinType ) ) );
+                graph.add( entityTypeUri, Rdfs.SUB_CLASS_OF, values.createURI( Classes.toURI( mixinType ) ) );
             }
         }
     }
@@ -255,7 +255,7 @@ public class EntitySerializer
             if (associationType.rdf() != null)
                 graph.add( associationURI, Rdfs.SUB_PROPERTY_OF, values.createURI( associationType.rdf() ));
 
-            URI associatedURI = values.createURI( ClassUtil.toURI( associationType.type() ) );
+            URI associatedURI = values.createURI( Classes.toURI( associationType.type() ) );
             graph.add( associationURI, Rdfs.RANGE, associatedURI );
             graph.add( associationURI, Rdfs.RANGE, XMLSchema.ANYURI );
         }

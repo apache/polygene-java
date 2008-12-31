@@ -14,6 +14,7 @@
 
 package org.qi4j.library.rdf.serializer;
 
+import org.qi4j.api.util.Classes;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
@@ -23,7 +24,6 @@ import org.qi4j.spi.structure.ApplicationDescriptor;
 import org.qi4j.spi.structure.DescriptorVisitor;
 import org.qi4j.spi.structure.LayerDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
-import org.qi4j.api.util.ClassUtil;
 
 /**
  * TODO
@@ -99,7 +99,7 @@ class ApplicationSerializerVisitor
         compositeMethodUri = context.createCompositeMethodUri( compositeUri, compositeMethodDescriptor.method() );
         context.addType( compositeMethodUri, Qi4jRdf.TYPE_METHOD );
         context.addRelationship( compositeUri, Qi4jRdf.RELATIONSHIP_METHOD, compositeMethodUri );
-        context.addStatement( compositeMethodUri, Qi4jRdf.RELATIONSHIP_MIXIN, ClassUtil.toURI( compositeMethodDescriptor.mixin().mixinClass() ) );
+        context.addStatement( compositeMethodUri, Qi4jRdf.RELATIONSHIP_MIXIN, Classes.toURI( compositeMethodDescriptor.mixin().mixinClass() ) );
     }
 
     //    @Override public void visit( CompositeMethodModel compositeMethodModel )

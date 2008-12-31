@@ -33,10 +33,10 @@ import net.jini.config.Configuration;
 import net.jini.config.EmptyConfiguration;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.util.Streams;
 import org.qi4j.library.http.HttpService;
 import org.qi4j.library.http.Interface;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.api.util.StreamUtils;
 
 public class ReggieMixin
     implements Activatable
@@ -243,6 +243,6 @@ public class ReggieMixin
             parentFile.mkdirs();
         }
         FileOutputStream fos = new FileOutputStream( destinationFile );
-        StreamUtils.copyStream( inputStream, fos, true );
+        Streams.copyStream( inputStream, fos, true );
     }
 }
