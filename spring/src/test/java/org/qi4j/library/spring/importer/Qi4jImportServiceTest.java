@@ -16,9 +16,9 @@
 */
 package org.qi4j.library.spring.importer;
 
-import org.junit.Test;
-import org.junit.Assert;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.bootstrap.AssemblyException;
@@ -28,13 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.hamcrest.CoreMatchers;
-import static org.hamcrest.CoreMatchers.equalTo;
 
-/**
- * @author edward.yakop@gmail.com
- * @since 0.5
- */
 @RunWith( SpringJUnit4ClassRunner.class )
 @ContextConfiguration
 public final class Qi4jImportServiceTest

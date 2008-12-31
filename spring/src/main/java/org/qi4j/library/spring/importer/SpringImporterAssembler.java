@@ -14,9 +14,10 @@
 
 package org.qi4j.library.spring.importer;
 
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -25,15 +26,35 @@ import org.springframework.context.ApplicationContext;
 public class SpringImporterAssembler
     implements Assembler
 {
-    ApplicationContext context;
+    private ApplicationContext context;
+    private Visibility defaultVisibility;
 
+    /**
+     * Import all beans from the given ApplicationContext as services in Qi4j,
+     * using Module as Visibility.
+     * @param context the Spring ApplicationContext
+     */
     public SpringImporterAssembler( ApplicationContext context )
     {
+        this(context, Visibility.module);
+    }
+
+
+    /**
+     * Import all beans from the given ApplicationContext as services in Qi4j,
+     * using the specified Visibility level.
+     * @param context the Spring ApplicationContext
+     * @param defaultVisibility the visibility level for the imported services
+     */
+    public SpringImporterAssembler( ApplicationContext context, Visibility defaultVisibility )
+    {
         this.context = context;
+        this.defaultVisibility = defaultVisibility;
     }
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
+        // Register all Spring beans as services
         String[] names = context.getBeanDefinitionNames();
         for( String name : names )
         {
@@ -42,7 +63,8 @@ public class SpringImporterAssembler
                 importServices( serviceType ).
                 importedBy( SpringImporter.class ).
                 identifiedBy( name ).
-                setMetaInfo( context );
+                setMetaInfo( context ).
+                visibleIn( defaultVisibility );
         }
     }
 }
