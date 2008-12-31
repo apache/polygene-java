@@ -17,8 +17,7 @@ package org.qi4j.api.entity.association;
 import java.util.Collection;
 
 /**
- * Association to a collection of entities. The collection always
- * contains other immutable associations.
+ * Association to a collection of entities.
  */
 public interface ManyAssociation<T>
     extends Collection<T>, AbstractAssociation

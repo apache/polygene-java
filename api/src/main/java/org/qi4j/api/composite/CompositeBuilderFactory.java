@@ -27,6 +27,7 @@ public interface CompositeBuilderFactory
      *
      * @param mixinType an interface that describes the Composite to be instantiated
      * @return a CompositeBuilder for creation of Composites implementing the interface
+     * @throws NoSuchCompositeException if no composite extending the mixinType has been registered
      */
     <T> CompositeBuilder<T> newCompositeBuilder( Class<T> mixinType )
         throws NoSuchCompositeException;
@@ -36,6 +37,8 @@ public interface CompositeBuilderFactory
      *
      * @param mixinType the Composite type to instantiate
      * @return a new Composite instance
+     * @throws NoSuchCompositeException if no composite extending the mixinType has been registered
+     * @throws org.qi4j.api.common.ConstructionException if the composite could not be instantiated
      */
     <T> T newComposite( Class<T> mixinType )
         throws NoSuchCompositeException, ConstructionException;

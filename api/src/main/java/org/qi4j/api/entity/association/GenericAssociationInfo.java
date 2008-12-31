@@ -97,10 +97,10 @@ public class GenericAssociationInfo
     }
 
     /**
-     * Get URI for a property.
+     * Get URI for an association.
      *
-     * @param declaringClass
-     * @param name
+     * @param declaringClass interface of the property
+     * @param name of the property
      * @return property URI
      */
     public static String toURI( final Class declaringClass, String name )
@@ -109,9 +109,9 @@ public class GenericAssociationInfo
     }
 
     /**
-     * Get URI for a qualified property name.
+     * Get URI for a qualified name.
      *
-     * @param qualifiedName
+     * @param qualifiedName of the association
      * @return association URI
      */
     public static String toURI( final String qualifiedName )
@@ -122,7 +122,7 @@ public class GenericAssociationInfo
     /**
      * Get qualified association name from a URI
      *
-     * @param uri
+     * @param uri of the association
      * @return qualified association name
      */
     public static String toQualifiedName( final String uri )

@@ -27,12 +27,12 @@ package org.qi4j.api.service;
  */
 public final class ServiceSelector<T>
 {
-    public static <T> ServiceSelector<T> select( Iterable<ServiceReference<T>> services, Selector selector )
+    public static <T> ServiceSelector<T> select( Iterable<ServiceReference<T>> services, Selector<T> selector )
     {
         return new ServiceSelector<T>( services, selector );
     }
 
-    public static <T> T service( Iterable<ServiceReference<T>> services, Selector selector )
+    public static <T> T service( Iterable<ServiceReference<T>> services, Selector<T> selector )
     {
         ServiceSelector<T> serviceSelector = select( services, selector );
         if( serviceSelector != null )
@@ -121,9 +121,9 @@ public final class ServiceSelector<T>
     }
 
     private final Iterable<ServiceReference<T>> services;
-    private final Selector selector;
+    private final Selector<T> selector;
 
-    public ServiceSelector( Iterable<ServiceReference<T>> services, Selector selector )
+    public ServiceSelector( Iterable<ServiceReference<T>> services, Selector<T> selector )
     {
         this.services = services;
         this.selector = selector;

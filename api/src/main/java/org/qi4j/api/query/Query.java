@@ -49,7 +49,7 @@ public interface Query<T>
      * Set the index of the first result. Default is 0 (zero).
      *
      * @param firstResult which index to use as the first one
-     * @return
+     * @return the Query
      */
     Query<T> firstResult( int firstResult );
 
@@ -57,8 +57,8 @@ public interface Query<T>
      * Set how many results should be returned. Default is that
      * there is no limit set.
      *
-     * @param maxResults
-     * @return
+     * @param maxResults that shouldbe returned
+     * @return the query
      */
     Query<T> maxResults( int maxResults );
 
@@ -66,8 +66,8 @@ public interface Query<T>
      * Get the first Entity that matches the criteria. This
      * executes the Query.
      *
-     * @return
-     * @throws QueryExecutionException
+     * @return the first found Entity
+     * @throws QueryExecutionException if the query fails
      */
     T find()
         throws QueryExecutionException;
@@ -75,23 +75,23 @@ public interface Query<T>
     /**
      * Set the value of a named variable.
      *
-     * @param name
-     * @param value
+     * @param name of the variable
+     * @param value of the variable
      */
     void setVariable( String name, Object value );
 
     /**
      * Get the value of a named variable.
      *
-     * @param name
-     * @return
+     * @param name of the variable
+     * @return value of the variable
      */
     <V> V getVariable( String name );
 
     /**
      * Get the result type of this Query
      *
-     * @return
+     * @return the result type
      */
     Class<T> resultType();
 
@@ -99,8 +99,8 @@ public interface Query<T>
      * Count how many results would be returned by this Query.
      * This executes the Query.
      *
-     * @return
-     * @throws QueryExecutionException
+     * @return result count
+     * @throws QueryExecutionException if the query fails
      */
     long count()
         throws QueryExecutionException;

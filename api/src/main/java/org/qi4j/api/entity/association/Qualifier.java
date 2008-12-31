@@ -51,7 +51,7 @@ public final class Qualifier<E, Q>
     /**
      * Get the Entity of the Qualifier
      *
-     * @return
+     * @return the entity of the Qualifier
      */
     public E entity()
     {
@@ -61,7 +61,7 @@ public final class Qualifier<E, Q>
     /**
      * Get the Qualifier part of this Qualifier
      *
-     * @return
+     * @return the Qualifier part
      */
     public Q qualifier()
     {

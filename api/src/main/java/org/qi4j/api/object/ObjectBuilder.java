@@ -19,7 +19,12 @@ package org.qi4j.api.object;
 import org.qi4j.api.common.ConstructionException;
 
 /**
- * TODO for Rickard; Explanation needed on how to use for Templating, Strategy and Builder patterns.
+ * From the ObjectBuilderFactory you can create ObjectBuilder instances. These are used to
+ * instantiate objects, i.e. instances of plain Java classes. You can either create a new
+ * instance using {@link org.qi4j.api.object.ObjectBuilder#newInstance}, or perform dependency
+ * injection on an already available instance using {@link #injectTo(Object)} (note that constructor injection
+ * will not be performed in this case), or you can use the builder for the prototype pattern
+ * by using it as an iterable, where each call to next() will create a new instance.
  */
 public interface ObjectBuilder<T>
     extends Iterable<T>

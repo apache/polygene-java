@@ -40,6 +40,7 @@ public @interface Service
 {
     /** True if the dependency is optional,
      *  only fail the injection if this is false.
+     * @return true if this injection is optional
      */
     boolean optional() default false;
 }

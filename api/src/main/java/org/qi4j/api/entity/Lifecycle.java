@@ -87,6 +87,7 @@ public interface Lifecycle
      * <p/>
      * Called by the Qi4j runtime before the newInstance of the entity completes, allowing
      * for additional initialization.
+     * @throws LifecycleException if the entity could not be created
      */
     void create()
         throws LifecycleException;
@@ -96,6 +97,7 @@ public interface Lifecycle
      * <p/>
      * Called by the Qi4j runtime before the entity is removed from the system, allowing
      * for clean-up operations.
+     * @throws LifecycleException if the entity could not be removed
      */
     void remove()
         throws LifecycleException;

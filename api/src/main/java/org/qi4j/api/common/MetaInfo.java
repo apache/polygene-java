@@ -49,7 +49,7 @@ public final class MetaInfo
         }
         else
         {
-            Class<? extends Object> metaInfoclass = metaInfo.getClass();
+            Class<?> metaInfoclass = metaInfo.getClass();
             Set<Class> types = Classes.typesOf( metaInfoclass );
             for( Type type : types )
             {
@@ -63,7 +63,7 @@ public final class MetaInfo
 
     public <T> T get( Class<T> metaInfoType )
     {
-        return (T) metaInfoMap.get( metaInfoType );
+        return metaInfoType.cast( metaInfoMap.get( metaInfoType ));
     }
 
     public <T> void add( Class<T> infoType, T info )

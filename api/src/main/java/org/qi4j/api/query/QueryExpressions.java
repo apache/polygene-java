@@ -366,10 +366,10 @@ public final class QueryExpressions
         BooleanExpression leftExpr = left;
         BooleanExpression rightExpr = right;
         Conjunction conjunction = provider.newConjunction( leftExpr, rightExpr );
-        for( int i = 0; i < optionalRight.length; i++ )
+        for( BooleanExpression anOptionalRight : optionalRight )
         {
             leftExpr = conjunction;
-            rightExpr = optionalRight[ i ];
+            rightExpr = anOptionalRight;
             conjunction = provider.newConjunction( leftExpr, rightExpr );
         }
         
@@ -392,10 +392,10 @@ public final class QueryExpressions
         BooleanExpression leftExpr = left;
         BooleanExpression rightExpr = right;
         Disjunction disjunction = provider.newDisjunction( leftExpr, rightExpr );
-        for( int i = 0; i < optionalRight.length; i++ )
+        for( BooleanExpression anOptionalRight : optionalRight )
         {
             leftExpr = disjunction;
-            rightExpr = optionalRight[ i ];
+            rightExpr = anOptionalRight;
             disjunction = provider.newDisjunction( leftExpr, rightExpr );
         }
 

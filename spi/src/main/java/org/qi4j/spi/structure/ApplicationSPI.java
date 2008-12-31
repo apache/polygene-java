@@ -17,7 +17,7 @@ package org.qi4j.spi.structure;
 import org.qi4j.api.service.Activatable;
 
 /**
- * TODO
+ * SPI for Applications.
  */
 public interface ApplicationSPI
     extends Activatable

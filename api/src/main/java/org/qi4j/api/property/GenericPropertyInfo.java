@@ -99,8 +99,8 @@ public final class GenericPropertyInfo
     /**
      * Get URI for a property.
      *
-     * @param declaringClass
-     * @param name
+     * @param declaringClass of the property
+     * @param name of the property
      * @return property URI
      */
     public static String toURI( final Class declaringClass, String name )
@@ -111,7 +111,7 @@ public final class GenericPropertyInfo
     /**
      * Get URI for a qualified property name.
      *
-     * @param qualifiedName
+     * @param qualifiedName of the property
      * @return property URI
      */
     public static String toURI( final String qualifiedName )
@@ -122,7 +122,7 @@ public final class GenericPropertyInfo
     /**
      * Get qualified property name from a URI
      *
-     * @param uri
+     * @param uri of the property
      * @return property qualified property name
      */
     public static String toQualifiedName( final String uri )
@@ -177,6 +177,7 @@ public final class GenericPropertyInfo
         }
         catch( NoSuchMethodException e )
         {
+            //noinspection ThrowableInstanceNeverThrown
             throw (InternalError) new InternalError().initCause( e );
         }
     }

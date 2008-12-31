@@ -33,6 +33,7 @@ import org.qi4j.api.injection.InjectionScope;
 public @interface Uses
 {
     /** True if usage is optional, only fail if false.
+     * @return true if optional
      */
     boolean optional() default false;
 }

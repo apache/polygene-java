@@ -18,10 +18,11 @@ public class PropertyMapper
     /**
      * Populate the Composite with properties from the given properties object.
      *
-     * @param props
-     * @param composite
+     * @param props properties object
+     * @param composite the composite instance
+     * @throws IllegalArgumentException if properties could not be transferred to composite
      */
-    public static void map( Properties props, Composite composite )
+    public static void map( Properties props, Composite composite ) throws IllegalArgumentException
     {
         for( Map.Entry<Object, Object> objectObjectEntry : props.entrySet() )
         {
@@ -43,10 +44,12 @@ public class PropertyMapper
             }
             catch( IllegalAccessException e )
             {
+                //noinspection ThrowableInstanceNeverThrown
                 throw (IllegalArgumentException) new IllegalArgumentException( "Could not populate property named " + objectObjectEntry.getKey() ).initCause( e );
             }
             catch( InvocationTargetException e )
             {
+                //noinspection ThrowableInstanceNeverThrown
                 throw (IllegalArgumentException) new IllegalArgumentException( "Could not populate property named " + objectObjectEntry.getKey() ).initCause( e );
             }
         }
@@ -83,9 +86,9 @@ public class PropertyMapper
      * Load a Properties object from the given stream, close it, and then populate
      * the Composite with the properties.
      *
-     * @param propertyInputStream
-     * @param composite
-     * @throws IOException
+     * @param propertyInputStream properties input stream
+     * @param composite the instance
+     * @throws IOException if the stream could not be read
      */
     public static void map( InputStream propertyInputStream, Composite composite )
         throws IOException
@@ -102,8 +105,8 @@ public class PropertyMapper
     /**
      * Create Properties object which is backed by the given Composite.
      *
-     * @param composite
-     * @return
+     * @param composite the instance
+     * @return properties instance
      */
     public static Properties getProperties( final Composite composite )
     {

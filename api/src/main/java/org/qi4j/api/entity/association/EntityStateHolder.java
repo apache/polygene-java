@@ -28,7 +28,7 @@ public interface EntityStateHolder extends StateHolder
     /**
      * Get an association for a specific accessor method
      *
-     * @param associationMethod
+     * @param associationMethod for the association
      * @return the association
      */
     AbstractAssociation getAssociation( Method associationMethod );

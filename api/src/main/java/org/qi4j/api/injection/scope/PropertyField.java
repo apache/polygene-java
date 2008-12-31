@@ -32,6 +32,7 @@ public @interface PropertyField
 {
     /** Name of the property.
      * If not set then name will be name of field.
+     * @return the name
      */
     String value() default "";
 }

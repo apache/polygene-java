@@ -19,9 +19,19 @@ package org.qi4j.api.service;
  */
 public interface Activatable
 {
+    /**
+     * This is invoked on the service when the instance is being activated
+     *
+     * @throws Exception if service could not be activated
+     */
     void activate()
         throws Exception;
 
+    /**
+     * This is invoked on the service when the instance is being passivated
+     *
+     * @throws Exception if the service could not be passivated
+     */
     void passivate()
         throws Exception;
 }

@@ -24,7 +24,7 @@ public interface StateHolder
     /**
      * Get a property for a specific accessor method
      *
-     * @param propertyMethod
+     * @param propertyMethod of the property
      * @return the property
      */
     Property<?> getProperty( Method propertyMethod );

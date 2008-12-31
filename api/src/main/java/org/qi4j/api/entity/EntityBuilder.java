@@ -53,7 +53,7 @@ public interface EntityBuilder<T>
      * @return a new Entity instance
      * @throws org.qi4j.api.common.ConstructionException
      *                            thrown if it was not possible to instantiate the Composite
-     * @throws LifecycleException
+     * @throws LifecycleException if the entity could not be created
      */
     T newInstance()
         throws ConstructionException, LifecycleException;

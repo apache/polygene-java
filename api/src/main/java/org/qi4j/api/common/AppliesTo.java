@@ -102,6 +102,7 @@ public @interface AppliesTo
      *implementation classes.
      * If one of them matches the current element it will be
      * accepted, so this list can be considered an "or".
+     * @return array of classes or interfaces to be used by the filter
      */
     Class<?>[] value();
 }
