@@ -26,6 +26,11 @@
       <version>${version.spring}</version>
     </dependency>
     <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>${version.spring}</version>
+    </dependency>
+    <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-bootstrap</artifactId>
       <version>0.5-SNAPSHOT</version>
@@ -43,11 +48,6 @@
       <artifactId>spring-test</artifactId>
       <version>${version.spring}</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>${version.spring}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
