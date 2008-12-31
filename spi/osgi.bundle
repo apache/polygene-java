@@ -32,7 +32,7 @@ Export-Package: org.qi4j.spi;version=${pom.version}, \
                 org.qi4j.spi.query.named;version=${pom.version}, \
                 org.qi4j.spi.serialization;version=${pom.version}, \
                 org.qi4j.spi.service;version=${pom.version}, \
-                org.qi4j.spi.service.provider;version=${pom.version}, \
+                org.qi4j.spi.service.importer;version=${pom.version}, \
                 org.qi4j.spi.sideeffect, \
                 org.qi4j.spi.structure;version=${pom.version}, \
                 org.qi4j.entity.memory;version=${pom.version}

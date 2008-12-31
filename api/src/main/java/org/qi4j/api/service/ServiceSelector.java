@@ -14,10 +14,6 @@
 
 package org.qi4j.api.service;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-
 /**
  * This class helps you select a particular service
  * from a list. Provide a Selector which does the actual
@@ -145,20 +141,6 @@ public final class ServiceSelector<T>
         {
             return null;
         }
-    }
-
-    public T proxy()
-    {
-        final T instance = get();
-        InvocationHandler handler = new InvocationHandler()
-        {
-            public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
-            {
-                return method.invoke( instance, objects );
-            }
-        };
-
-        return (T) Proxy.newProxyInstance( instance.getClass().getClassLoader(), instance.getClass().getInterfaces(), handler );
     }
 
     public interface Selector<T>

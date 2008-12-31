@@ -21,7 +21,7 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.bootstrap.ImportedServiceDeclaration;
 import org.qi4j.runtime.service.ImportedServiceModel;
-import org.qi4j.spi.service.provider.SingletonImporter;
+import org.qi4j.spi.service.importer.InstanceImporter;
 
 /**
  * Declaration of an imported Service. Created by {@link ModuleAssemblyImpl#importServices(Class[])}.
@@ -29,7 +29,7 @@ import org.qi4j.spi.service.provider.SingletonImporter;
 public final class ImportedServiceDeclarationImpl
     implements ImportedServiceDeclaration
 {
-    private Class<? extends ServiceImporter> serviceProvider = SingletonImporter.class;
+    private Class<? extends ServiceImporter> serviceProvider = InstanceImporter.class;
     private Iterable<Class> serviceTypes;
     private ModuleAssemblyImpl moduleAssembly;
     private String identity;
