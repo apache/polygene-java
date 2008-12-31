@@ -27,12 +27,12 @@ package org.qi4j.api.service;
  */
 public final class ServiceSelector<T>
 {
-    public static <T> ServiceSelector<T> select( Iterable<ServiceReference<T>> services, Selector<T> selector )
+    public static <T> ServiceSelector<T> select( Iterable<ServiceReference<T>> services, Selector selector )
     {
         return new ServiceSelector<T>( services, selector );
     }
 
-    public static <T> T service( Iterable<ServiceReference<T>> services, Selector<T> selector )
+    public static <T> T service( Iterable<ServiceReference<T>> services, Selector selector )
     {
         ServiceSelector<T> serviceSelector = select( services, selector );
         if( serviceSelector != null )
@@ -45,13 +45,13 @@ public final class ServiceSelector<T>
         }
     }
 
-    public static Selector<Object> withId( final String anId )
+    public static Selector withId( final String anId )
     {
-        return new Selector<Object>()
+        return new Selector()
         {
-            public ServiceReference<Object> select( Iterable<ServiceReference<Object>> services )
+            public <T> ServiceReference<T> select( Iterable<ServiceReference<T>> services )
             {
-                for( ServiceReference<Object> service : services )
+                for( ServiceReference<T> service : services )
                 {
                     if( service.identity().equals( anId ) )
                     {
@@ -63,13 +63,13 @@ public final class ServiceSelector<T>
         };
     }
 
-    public static Selector<Object> firstActive()
+    public static Selector firstActive()
     {
-        return new Selector<Object>()
+        return new Selector()
         {
-            public ServiceReference<Object> select( Iterable<ServiceReference<Object>> services )
+            public <T> ServiceReference<T> select( Iterable<ServiceReference<T>> services )
             {
-                for( ServiceReference<Object> service : services )
+                for( ServiceReference<T> service : services )
                 {
                     if( service.isActive() )
                     {
@@ -81,13 +81,13 @@ public final class ServiceSelector<T>
         };
     }
 
-    public static Selector<Object> withTags( final String... tags )
+    public static Selector withTags( final String... tags )
     {
-        return new Selector<Object>()
+        return new Selector()
         {
-            public ServiceReference<Object> select( Iterable<ServiceReference<Object>> services )
+            public <T> ServiceReference<T> select( Iterable<ServiceReference<T>> services )
             {
-                for( ServiceReference<Object> service : services )
+                for( ServiceReference<T> service : services )
                 {
                     ServiceTags serviceTags = service.metaInfo( ServiceTags.class );
 
@@ -101,15 +101,15 @@ public final class ServiceSelector<T>
         };
     }
 
-    public static Selector<Object> firstOf( final Selector<Object>... selectors )
+    public static Selector firstOf( final Selector... selectors )
     {
-        return new Selector<Object>()
+        return new Selector()
         {
-            public ServiceReference<Object> select( Iterable<ServiceReference<Object>> services )
+            public <T> ServiceReference<T> select( Iterable<ServiceReference<T>> services )
             {
-                for( Selector<Object> selector : selectors )
+                for( Selector selector : selectors )
                 {
-                    ServiceReference<Object> serviceRef = selector.select( services );
+                    ServiceReference<T> serviceRef = selector.select( services );
                     if( serviceRef != null )
                     {
                         return serviceRef;
@@ -121,9 +121,9 @@ public final class ServiceSelector<T>
     }
 
     private final Iterable<ServiceReference<T>> services;
-    private final Selector<T> selector;
+    private final Selector selector;
 
-    public ServiceSelector( Iterable<ServiceReference<T>> services, Selector<T> selector )
+    public ServiceSelector( Iterable<ServiceReference<T>> services, Selector selector )
     {
         this.services = services;
         this.selector = selector;
@@ -143,8 +143,8 @@ public final class ServiceSelector<T>
         }
     }
 
-    public interface Selector<T>
+    public interface Selector
     {
-        ServiceReference<T> select( Iterable<ServiceReference<T>> services );
+        <T> ServiceReference<T> select( Iterable<ServiceReference<T>> services );
     }
 }
