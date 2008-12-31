@@ -27,16 +27,16 @@ import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.qi4j.entity.index.rdf.callback.CollectingQualifiedIdentityResultCallback;
-import org.qi4j.entity.index.rdf.callback.QualifiedIdentityResultCallback;
-import org.qi4j.entity.index.rdf.callback.SingleQualifiedIdentityResultCallback;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.util.Classes;
+import org.qi4j.entity.index.rdf.callback.CollectingQualifiedIdentityResultCallback;
+import org.qi4j.entity.index.rdf.callback.QualifiedIdentityResultCallback;
+import org.qi4j.entity.index.rdf.callback.SingleQualifiedIdentityResultCallback;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
-import org.qi4j.api.util.ClassUtil;
 
 /**
  * TODO Add JavaDoc
@@ -148,7 +148,7 @@ public class RdfEntityFinderMixin
 
         final Value entityClass = bindingSet.getValue( "entityType" );
         final String identity = identifier.stringValue();
-        final String entityType = ClassUtil.toClassName( entityClass.stringValue());
+        final String entityType = Classes.toClassName( entityClass.stringValue());
 
         final QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( identity, entityType );
         return qualifiedIdentityResultCallback.processRow( row, qualifiedIdentity );

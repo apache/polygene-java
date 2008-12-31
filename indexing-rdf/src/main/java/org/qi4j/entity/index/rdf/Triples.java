@@ -24,12 +24,11 @@ import java.util.Iterator;
 import java.util.List;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
-import static org.qi4j.api.property.GenericPropertyInfo.getDeclaringClassName;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.ManyAssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
-import org.qi4j.api.util.ClassUtil;
+import org.qi4j.api.util.Classes;
 
 public class Triples implements Iterable<Triples.Triple>
 {
@@ -48,7 +47,7 @@ public class Triples implements Iterable<Triples.Triple>
             new Triple(
                 "?entityType",
                 "rdfs:subClassOf",
-                "<" + ClassUtil.toURI( resultType ) + ">",
+                "<" + Classes.toURI( resultType ) + ">",
                 false )
         );
         triples.add(
