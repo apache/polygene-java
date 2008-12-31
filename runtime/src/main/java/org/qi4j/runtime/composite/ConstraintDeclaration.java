@@ -18,7 +18,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import org.qi4j.api.constraint.Constraint;
-import static org.qi4j.api.util.ClassUtil.getRawClass;
+import static org.qi4j.api.util.Classes.getRawClass;
 
 /**
  * TODO

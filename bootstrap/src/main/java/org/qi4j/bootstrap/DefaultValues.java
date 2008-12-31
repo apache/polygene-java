@@ -18,6 +18,9 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Default values for various property types
+ */
 public final class DefaultValues
 {
     private static final Map<Type, Object> defaultValues = createDefaultValues();

@@ -17,7 +17,7 @@ package org.qi4j.spi.entity;
 import java.io.Serializable;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.Qualifier;
-import org.qi4j.api.util.ClassUtil;
+import org.qi4j.api.util.Classes;
 
 /**
  * TODO
@@ -108,7 +108,7 @@ public class QualifiedIdentity
 
     public final String toURI()
     {
-        return "urn:qi4j:entity:" + ClassUtil.normalizeClassToURI( compositeType ) + "/" + identity;
+        return "urn:qi4j:entity:" + Classes.normalizeClassToURI( compositeType ) + "/" + identity;
     }
 
     @Override

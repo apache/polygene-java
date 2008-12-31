@@ -18,6 +18,9 @@
 
 package org.qi4j.bootstrap;
 
+/**
+ * This exception is thrown if no ApplicationFactory provider can be found
+ */
 public class BootstrapException extends RuntimeException
 {
     public BootstrapException( String message )

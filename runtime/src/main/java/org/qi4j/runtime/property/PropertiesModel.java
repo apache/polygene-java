@@ -14,27 +14,25 @@
 
 package org.qi4j.runtime.property;
 
-import java.lang.reflect.Method;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Arrays;
-import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.util.ClassUtil;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
-import org.qi4j.runtime.util.AnnotationUtil;
+import org.qi4j.runtime.util.Annotations;
 import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
@@ -152,8 +150,8 @@ public final class PropertiesModel
 
     private PropertyModel newPropertyModel( Method method )
     {
-        Annotation[] annotations = AnnotationUtil.getMethodAndTypeAnnotations( method );
-        boolean optional = AnnotationUtil.getAnnotationOfType( annotations, Optional.class ) != null;
+        Annotation[] annotations = Annotations.getMethodAndTypeAnnotations( method );
+        boolean optional = Annotations.getAnnotationOfType( annotations, Optional.class ) != null;
         ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericPropertyInfo.getPropertyType( method ), method.getName(), optional );
         ValueConstraintsInstance valueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )

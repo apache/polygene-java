@@ -21,11 +21,11 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.property.GenericPropertyInfo;
 
 /**
- * Declaration of a Property.
+ * Declaration of a Property or Association.
  */
 public final class MetaInfoDeclaration
     implements PropertyDeclarations, AssociationDeclarations
@@ -74,7 +74,6 @@ public final class MetaInfoDeclaration
                 return defaultValue;
             }
         }
-        // todo move to a util class
         final Type type = GenericPropertyInfo.getPropertyType( accessor );
         return DefaultValues.getDefaultValue( type );
     }
@@ -112,7 +111,7 @@ public final class MetaInfoDeclaration
             {
                 public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
                 {
-                    if( method.getName().equals( "set" ) ) // todo methodmatcher
+                    if( method.getName().equals( "set" ) )
                     {
                         methodInfo.defaultValue = objects[ 0 ];
                     }

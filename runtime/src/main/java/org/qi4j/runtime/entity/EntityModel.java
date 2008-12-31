@@ -19,17 +19,20 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.bootstrap.AssociationDeclarations;
-import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.unitofwork.EntityCompositeAlreadyExistsException;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.RDF;
 import org.qi4j.api.entity.association.EntityStateHolder;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.unitofwork.EntityCompositeAlreadyExistsException;
+import org.qi4j.api.util.Classes;
+import org.qi4j.bootstrap.AssociationDeclarations;
+import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.CompositeMethodInstance;
 import org.qi4j.runtime.composite.CompositeMethodsModel;
@@ -47,16 +50,13 @@ import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.UnknownEntityTypeException;
-import org.qi4j.spi.entity.EntityStateDescriptor;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.util.ClassUtil;
 
 /**
  * TODO
@@ -116,7 +116,7 @@ public final class EntityModel
 
         this.proxyClass = createProxyClass( type );
         RDF uri = type.getAnnotation( RDF.class );
-        this.uri = uri == null ? ClassUtil.toURI( type ) : uri.value();
+        this.uri = uri == null ? Classes.toURI( type ) : uri.value();
 
         final Queryable queryable = type.getAnnotation( Queryable.class );
         this.queryable = queryable == null || queryable.value();

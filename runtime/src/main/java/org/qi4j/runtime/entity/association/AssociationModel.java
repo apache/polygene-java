@@ -19,9 +19,10 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.composite.Composite;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.property.Immutable;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.RDF;
 import org.qi4j.api.entity.association.AbstractAssociation;
@@ -31,16 +32,15 @@ import org.qi4j.api.entity.association.ListAssociation;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.entity.association.SetAssociation;
 import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.property.Immutable;
+import static org.qi4j.api.util.Classes.getRawClass;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
-import static org.qi4j.api.util.ClassUtil.getRawClass;
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.composite.Composite;
+import org.qi4j.spi.entity.association.AssociationType;
+import org.qi4j.spi.entity.association.ManyAssociationType;
 
 /**
  * TODO

@@ -31,7 +31,7 @@ import java.util.Set;
 /**
  * Class-related utility methods
  */
-public class ClassUtil
+public class Classes
 {
     /**
      * Get all interfaces for the given type,

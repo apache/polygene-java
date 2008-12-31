@@ -18,14 +18,17 @@
 
 package org.qi4j.bootstrap;
 
-import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.service.ServiceImporter;
 
+/**
+ * Fluent API for declaring imported services.
+ */
 public interface ImportedServiceDeclaration
 {
     ImportedServiceDeclaration visibleIn( Visibility visibility );
 
-    ImportedServiceDeclaration importedBy( Class<? extends ServiceImporter> sip );
+    ImportedServiceDeclaration importedBy( Class<? extends ServiceImporter> serviceImporterClass );
 
     ImportedServiceDeclaration identifiedBy( String identity );
 

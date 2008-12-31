@@ -15,15 +15,15 @@
 package org.qi4j.runtime.entity;
 
 import java.lang.reflect.Method;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.api.util.ClassUtil;
-import org.qi4j.api.common.MetaInfo;
 
 /**
  * TODO
@@ -82,6 +82,6 @@ public final class EntityPropertyModel extends PropertyModel
             type = PropertyType.PropertyTypeEnum.MUTABLE;
         }
 
-        return new PropertyType( qualifiedName(), ClassUtil.getRawClass( type() ).getName(), toURI(), toRDF(), queryable, type );
+        return new PropertyType( qualifiedName(), Classes.getRawClass( type() ).getName(), toURI(), toRDF(), queryable, type );
     }
 }

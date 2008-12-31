@@ -22,6 +22,12 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.service.ServiceComposite;
 
+/**
+ * The ModuleAssembly is used to register any information about
+ * what the module should contain, such as composites, entities and services.
+ *
+ * Use the methods and the fluent API's to declare how the module should be constructed.
+ */
 public interface ModuleAssembly
 {
     void addAssembler( Assembler assembler )

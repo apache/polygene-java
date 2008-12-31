@@ -16,6 +16,11 @@ package org.qi4j.bootstrap;
 
 import java.io.Serializable;
 
+/**
+ * Fluent API for declaring information about properties
+ *
+ * @param <T>
+ */
 public interface InfoDeclaration<T>
 {
     T to();

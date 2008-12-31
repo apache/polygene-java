@@ -20,6 +20,9 @@ package org.qi4j.bootstrap;
 
 import org.qi4j.api.common.Visibility;
 
+/**
+ * Fluent API for declaring objects
+ */
 public interface ObjectDeclaration
 {
     ObjectDeclaration setMetaInfo( Object info );

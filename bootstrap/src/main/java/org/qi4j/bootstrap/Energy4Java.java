@@ -20,10 +20,17 @@ package org.qi4j.bootstrap;
 
 import java.io.IOException;
 import java.util.Iterator;
-import org.qi4j.bootstrap.internal.ServiceLoader;
 import org.qi4j.api.structure.Application;
+import org.qi4j.bootstrap.internal.ServiceLoader;
 import org.qi4j.spi.Qi4jSPI;
 
+/**
+ * Main bootstrap class for starting Qi4j and creating new applications. Instantiate this
+ * and call one of the factory methods to get started.
+ *
+ * This class will use the Service Loader mechanism in Java to try to locate a runtime that implements
+ * the ApplicationFactory interface. This avoids a direct dependency from the bootstrap to the runtime.
+ */
 public class Energy4Java
 {
     private static ServiceLoader serviceLoader;

@@ -14,28 +14,28 @@
 
 package org.qi4j.runtime.entity.association;
 
-import java.lang.reflect.Method;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.qi4j.bootstrap.AssociationDeclarations;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
+import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.runtime.util.AnnotationUtil;
-import org.qi4j.spi.entity.association.AssociationType;
+import org.qi4j.runtime.util.Annotations;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.Optional;
+import org.qi4j.spi.entity.association.AssociationType;
+import org.qi4j.spi.entity.association.ManyAssociationType;
 
 /**
  * TODO
@@ -61,8 +61,8 @@ public final class AssociationsModel
         {
             if( AbstractAssociation.class.isAssignableFrom( method.getReturnType() ) )
             {
-                Annotation[] annotations = AnnotationUtil.getMethodAndTypeAnnotations( method );
-                boolean optional = AnnotationUtil.getAnnotationOfType( annotations, Optional.class ) != null;
+                Annotation[] annotations = Annotations.getMethodAndTypeAnnotations( method );
+                boolean optional = Annotations.getAnnotationOfType( annotations, Optional.class ) != null;
                 ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericAssociationInfo.getAssociationType( method ), method.getName(), optional );
                 ValueConstraintsInstance valueConstraintsInstance = null;
                 if( valueConstraintsModel.isConstrained() )

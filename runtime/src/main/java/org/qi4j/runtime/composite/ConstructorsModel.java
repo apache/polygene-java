@@ -34,7 +34,7 @@ import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.runtime.util.AnnotationUtil;
+import org.qi4j.runtime.util.Annotations;
 
 /**
  * TODO
@@ -69,7 +69,7 @@ public final class ConstructorsModel
         Annotation[][] parameterAnnotations = getConstructorAnnotations( fragmentClass, constructor );
         for( Type type : constructor.getGenericParameterTypes() )
         {
-            final Annotation injectionAnnotation = AnnotationUtil.getInjectionAnnotation( parameterAnnotations[ idx ] );
+            final Annotation injectionAnnotation = Annotations.getInjectionAnnotation( parameterAnnotations[ idx ] );
             if( injectionAnnotation == null )
             {
                 return null; // invalid constructor parameter

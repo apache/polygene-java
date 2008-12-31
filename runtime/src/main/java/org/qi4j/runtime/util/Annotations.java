@@ -16,21 +16,21 @@ package org.qi4j.runtime.util;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.List;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.qi4j.api.constraint.ConstraintDeclaration;
 import org.qi4j.api.injection.InjectionScope;
-import org.qi4j.api.util.ClassUtil;
+import org.qi4j.api.util.Classes;
 
 /**
  * Useful methods for handling Annotations.
  */
-public class AnnotationUtil
+public class Annotations
 {
     public static Annotation getInjectionAnnotation( Annotation[] parameterAnnotation )
     {
@@ -128,7 +128,7 @@ public class AnnotationUtil
     public static Annotation[] getMethodAndTypeAnnotations( Method method )
     {
         List<Annotation> annotationList = new ArrayList<Annotation>( Arrays.asList(method.getAnnotations( )));
-        Set<Class> interfaces = ClassUtil.interfacesOf( method.getReturnType() );
+        Set<Class> interfaces = Classes.interfacesOf( method.getReturnType() );
         for( Class anInterface : interfaces )
         {
             annotationList.addAll( Arrays.asList( anInterface.getAnnotations()) );

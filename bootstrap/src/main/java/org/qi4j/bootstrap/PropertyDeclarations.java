@@ -18,7 +18,8 @@ import java.lang.reflect.Method;
 import org.qi4j.api.common.MetaInfo;
 
 /**
- * TODO
+ * This provides declared property information that
+ * the runtime can use. 
  */
 public interface PropertyDeclarations
 {

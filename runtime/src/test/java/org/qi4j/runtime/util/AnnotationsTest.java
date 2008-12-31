@@ -12,7 +12,7 @@ import org.qi4j.api.sideeffect.SideEffects;
  * @author mh14 @ jexp.de
  * @since 15.06.2008 00:58:32 (c) 2008 jexp.de
  */
-public class AnnotationUtilTest
+public class AnnotationsTest
 {
     @Mixins( value = AnnotatedClass.class )
     interface AnnotatedClass<T>
@@ -23,11 +23,11 @@ public class AnnotationUtilTest
     @Test
     public void getAnnotationOrNull() throws NoSuchMethodException
     {
-        assertNotNull( "Mixins annotation found", AnnotationUtil.getAnnotation( AnnotatedClass.class, Mixins.class ) );
+        assertNotNull( "Mixins annotation found", Annotations.getAnnotation( AnnotatedClass.class, Mixins.class ) );
 
-        assertNull( "No SideEffects annotation found", AnnotationUtil.getAnnotation( AnnotatedClass.class, SideEffects.class ) );
+        assertNull( "No SideEffects annotation found", Annotations.getAnnotation( AnnotatedClass.class, SideEffects.class ) );
 
         final Type returnType = AnnotatedClass.class.getDeclaredMethod( "list" ).getGenericReturnType();
-        assertNull( "Null on no class type", AnnotationUtil.getAnnotation( returnType, Mixins.class ) );
+        assertNull( "Null on no class type", Annotations.getAnnotation( returnType, Mixins.class ) );
     }
 }

@@ -20,13 +20,13 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
-import static org.qi4j.api.util.ClassUtil.interfacesOf;
-import static org.qi4j.api.util.ClassUtil.interfacesWithMethods;
+import static org.qi4j.api.util.Classes.interfacesOf;
+import static org.qi4j.api.util.Classes.interfacesWithMethods;
 
 /**
- * Tests for ClassUtil
+ * Tests for Classes
  */
-public class ClassUtilTest
+public class ClassesTest
 {
     @Test
     public void givenClassWithInterfacesWhenInterfacesOfThenGetCorrectSet()
@@ -57,13 +57,13 @@ public class ClassUtilTest
     @Test
     public void givenClassNameWhenToUriThenUriIsReturned()
     {
-        assertThat( "URI is correct", ClassUtil.toURI( A.class ), equalTo( "urn:qi4j:entity:org.qi4j.api.util.ClassUtilTest-A" ) );
+        assertThat( "URI is correct", Classes.toURI( A.class ), equalTo( "urn:qi4j:entity:org.qi4j.api.util.ClassUtilTest-A" ) );
     }
 
     @Test
     public void givenUriWhenToClassNameThenClassNameIsReturned()
     {
-        assertThat( "Class name is correct", ClassUtil.toClassName( "urn:qi4j:entity:org.qi4j.api.util.ClassUtilTest-A" ), equalTo( "org.qi4j.api.util.ClassUtilTest$A" ) );
+        assertThat( "Class name is correct", Classes.toClassName( "urn:qi4j:entity:org.qi4j.api.util.ClassUtilTest-A" ), equalTo( "org.qi4j.api.util.ClassUtilTest$A" ) );
     }
 
     interface A

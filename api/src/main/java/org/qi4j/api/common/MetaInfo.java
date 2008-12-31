@@ -20,7 +20,7 @@ import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import org.qi4j.api.util.ClassUtil;
+import org.qi4j.api.util.Classes;
 
 /**
  * Used to declare and access metainfo about types.
@@ -50,7 +50,7 @@ public final class MetaInfo
         else
         {
             Class<? extends Object> metaInfoclass = metaInfo.getClass();
-            Set<Class> types = ClassUtil.typesOf( metaInfoclass );
+            Set<Class> types = Classes.typesOf( metaInfoclass );
             for( Type type : types )
             {
                 if( type instanceof Class )

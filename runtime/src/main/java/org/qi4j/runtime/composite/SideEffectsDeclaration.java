@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.sideeffect.SideEffects;
-import org.qi4j.runtime.util.AnnotationUtil;
-import static org.qi4j.api.util.ClassUtil.genericInterfacesOf;
+import static org.qi4j.api.util.Classes.genericInterfacesOf;
+import org.qi4j.runtime.util.Annotations;
 
 /**
  * TODO
@@ -90,7 +90,7 @@ public final class SideEffectsDeclaration
 
     private void addSideEffectDeclaration( Type type )
     {
-        SideEffects annotation = AnnotationUtil.getAnnotation( type, SideEffects.class );
+        SideEffects annotation = Annotations.getAnnotation( type, SideEffects.class );
         if( annotation != null )
         {
             Class[] sideEffectClasses = annotation.value();

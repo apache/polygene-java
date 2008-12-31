@@ -16,16 +16,15 @@ package org.qi4j.runtime.composite;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.constraint.ConstraintImplementationNotFoundException;
 import org.qi4j.api.constraint.Constraints;
-import static org.qi4j.runtime.util.AnnotationUtil.isCompositeConstraintAnnotation;
-import static org.qi4j.runtime.util.AnnotationUtil.isConstraintAnnotation;
-import static org.qi4j.api.util.ClassUtil.genericInterfacesOf;
+import static org.qi4j.api.util.Classes.genericInterfacesOf;
+import static org.qi4j.runtime.util.Annotations.isCompositeConstraintAnnotation;
+import static org.qi4j.runtime.util.Annotations.isConstraintAnnotation;
 
 /**
  * TODO

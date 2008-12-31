@@ -19,15 +19,15 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Set;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeBuilder;
-import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.util.ClassUtil;
-import org.qi4j.api.object.ObjectBuilder;
+import org.qi4j.api.util.Classes;
+import org.qi4j.runtime.structure.ModelVisitor;
 
 /**
  * TODO
@@ -111,10 +111,10 @@ public final class ServiceModel
             // Parameterized type check. This is useful for example Wrapper<Foo> usages
             ParameterizedType paramType = (ParameterizedType) serviceType;
             Class rawClass = (Class) paramType.getRawType();
-            Set<Type> types = ClassUtil.genericInterfacesOf( type );
+            Set<Type> types = Classes.genericInterfacesOf( type );
             for( Type type1 : types )
             {
-                if( type1 instanceof ParameterizedType && rawClass.isAssignableFrom( ClassUtil.getRawClass( type1 ) ) )
+                if( type1 instanceof ParameterizedType && rawClass.isAssignableFrom( Classes.getRawClass( type1 ) ) )
                 {
                     // Check params
                     Type[] actualTypes = paramType.getActualTypeArguments();

@@ -24,13 +24,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.util.Classes;
+import org.qi4j.api.util.UsageGraph;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.InvalidCompositeException;
-import org.qi4j.api.util.ClassUtil;
-import org.qi4j.api.util.UsageGraph;
 
 /**
  * TODO
@@ -52,7 +51,7 @@ public abstract class AbstractMixinsModel
 
         // Find mixin declarations
         mixins.add( new MixinDeclaration( CompositeMixin.class, Composite.class ) );
-        Set<Class> interfaces = ClassUtil.interfacesOf( compositeType );
+        Set<Class> interfaces = Classes.interfacesOf( compositeType );
 
         for( Class anInterface : interfaces )
         {

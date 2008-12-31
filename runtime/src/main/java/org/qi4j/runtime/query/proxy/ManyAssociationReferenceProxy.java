@@ -23,8 +23,8 @@ import static java.lang.reflect.Proxy.newProxyInstance;
 import java.lang.reflect.Type;
 import org.qi4j.api.entity.association.Qualifier;
 import org.qi4j.api.query.grammar.AssociationReference;
+import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.query.grammar.impl.ManyAssociationReferenceImpl;
-import org.qi4j.api.util.ClassUtil;
 
 /**
  * TODO: Add javadoc
@@ -62,7 +62,7 @@ public class ManyAssociationReferenceProxy
         ClassLoader loader = ManyAssociationReferenceProxy.class.getClassLoader();
         Type associationType = associationReference.associationType();
 
-        if( ClassUtil.getRawClass( associationType ).equals( Qualifier.class ) )
+        if( Classes.getRawClass( associationType ).equals( Qualifier.class ) )
         {
             ParameterizedType associatedRoleType = (ParameterizedType) associationType;
             Class associatedType = (Class) associatedRoleType.getActualTypeArguments()[ 0 ];

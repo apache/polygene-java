@@ -20,6 +20,9 @@ package org.qi4j.bootstrap;
 
 import org.qi4j.api.common.Visibility;
 
+/**
+ * Fluent API for declaring Composites.
+ */
 public interface CompositeDeclaration
 {
     CompositeDeclaration setMetaInfo( Object info );

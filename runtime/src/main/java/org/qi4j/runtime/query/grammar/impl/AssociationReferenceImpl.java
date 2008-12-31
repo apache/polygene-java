@@ -24,7 +24,7 @@ import java.lang.reflect.Type;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.Qualifier;
 import org.qi4j.api.query.grammar.AssociationReference;
-import org.qi4j.api.util.ClassUtil;
+import org.qi4j.api.util.Classes;
 
 /**
  * Default {@link AssociationReference}.
@@ -84,7 +84,7 @@ public class AssociationReferenceImpl
             throw new UnsupportedOperationException( "Unsupported association type:" + returnType );
         }
         Type associationTypeAsType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
-        if( !( associationTypeAsType instanceof Class ) && !ClassUtil.getRawClass( associationTypeAsType ).equals( Qualifier.class ) )
+        if( !( associationTypeAsType instanceof Class ) && !Classes.getRawClass( associationTypeAsType ).equals( Qualifier.class ) )
         {
             throw new UnsupportedOperationException( "Unsupported association type:" + associationTypeAsType );
         }

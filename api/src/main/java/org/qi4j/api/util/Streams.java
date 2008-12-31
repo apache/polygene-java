@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class StreamUtils
+public class Streams
 {
     public static long copyStream( InputStream source, OutputStream destination, boolean closeStreams )
         throws IOException

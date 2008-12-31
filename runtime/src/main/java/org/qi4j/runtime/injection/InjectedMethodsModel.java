@@ -19,11 +19,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.runtime.util.AnnotationUtil;
-import org.qi4j.api.util.ClassUtil;
+import org.qi4j.runtime.util.Annotations;
 
 /**
  * TODO
@@ -35,7 +35,7 @@ public final class InjectedMethodsModel
 
     public InjectedMethodsModel( Class fragmentClass )
     {
-        List<Method> methods = ClassUtil.methodsOf( fragmentClass );
+        List<Method> methods = Classes.methodsOf( fragmentClass );
         nextMethod:
         for( Method method : methods )
         {
@@ -46,7 +46,7 @@ public final class InjectedMethodsModel
                 final Type[] genericParameterTypes = method.getGenericParameterTypes();
                 for( int i = 0; i < parameterAnnotations.length; i++ )
                 {
-                    Annotation injectionAnnotation = AnnotationUtil.getInjectionAnnotation( parameterAnnotations[ i ] );
+                    Annotation injectionAnnotation = Annotations.getInjectionAnnotation( parameterAnnotations[ i ] );
                     if( injectionAnnotation == null )
                     {
                         continue nextMethod;

@@ -18,11 +18,29 @@
 
 package org.qi4j.bootstrap;
 
+/**
+ * An application assembly. This can be used by Assemblers to programmatically
+ * set the name of the application and create new layers.
+ */
 public interface ApplicationAssembly
 {
+    /**
+     * Create a new layer assembly
+     *
+     * @param name of the new layer
+     * @return a LayerAssembly instance
+     */
     LayerAssembly newLayerAssembly( String name );
 
+    /**
+     * Get the currently set name of the application
+     * @return the name of the application
+     */
     String name();
 
+    /**
+     * Set the name of the application
+     * @param name
+     */
     void setName( String name );
 }
