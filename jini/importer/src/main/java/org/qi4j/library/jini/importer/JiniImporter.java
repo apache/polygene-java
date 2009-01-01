@@ -20,11 +20,15 @@ package org.qi4j.library.jini.importer;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporterException;
+import org.qi4j.api.injection.scope.Service;
 import java.lang.reflect.Proxy;
+import java.io.IOException;
 
 public class JiniImporter
     implements ServiceImporter
 {
+    @Service(optional=true) private JiniStatusService statusService;
+
     /**
      * Import a service from Jini by looking creating a Proxy which holds the Lookup cache to the wanted Jini service.
      *
@@ -36,7 +40,15 @@ public class JiniImporter
     public Object importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {
-        JiniProxyHandler handler = new JiniProxyHandler( serviceDescriptor );
+        JiniProxyHandler handler;
+        try
+        {
+            handler = new JiniProxyHandler( serviceDescriptor, statusService );
+        }
+        catch( IOException e )
+        {
+            throw new ServiceImporterException( "Unable to establish network.", e );
+        }
         Class[] type = new Class[] { serviceDescriptor.type() };
         return Proxy.newProxyInstance( JiniImporter.class.getClassLoader(), type, handler );
     }

@@ -17,9 +17,11 @@
  */
 package org.qi4j.library.jini.importer;
 
+import net.jini.core.lookup.ServiceID;
+
 public interface JiniStatus
 {
-    void addJiniStatusListener( JiniStatusListener listener );
+    boolean isAvailable( ServiceID service );
 
-    void removeJiniStatusListener( JiniStatusListener listener );
+    boolean isAvailable( Class type );
 }

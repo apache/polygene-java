@@ -17,10 +17,13 @@
  */
 package org.qi4j.library.jini.importer;
 
-import org.qi4j.api.service.ServiceComposite;
+import net.jini.lookup.ServiceDiscoveryListener;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.library.observations.Observable;
 
 @Mixins( { JiniStatusMixin.class } )
-public interface JiniStatusService extends JiniStatus, ServiceComposite
+public interface JiniStatusService
+    extends JiniStatus, ServiceDiscoveryListener, Observable<JiniServiceObservation>, ServiceComposite
 {
 }

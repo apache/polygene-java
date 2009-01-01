@@ -17,7 +17,10 @@
  */
 package org.qi4j.library.observations;
 
+import org.qi4j.api.mixin.Mixins;
 
+
+@Mixins( ObservableMixin.class )
 public interface Observable<T extends Observation>
 {
     void addObserver( Observer<T> observer );

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008 Niclas Hedhman.
+ * Copyright 2009 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -17,8 +17,10 @@
  */
 package org.qi4j.library.jini.importer;
 
-import java.util.EventObject;
+import org.qi4j.api.property.Property;
+import org.qi4j.library.observations.Observation;
 
-public class JiniStatusEvent extends EventObject
+public interface JiniServiceObservation extends Observation
 {
+    Property<String> serviceId();
 }
