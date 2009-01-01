@@ -27,6 +27,7 @@
     <module>jini</module>
     <module>locking</module>
     <module>logging</module>
+    <module>observations</module>
     <module>quikit</module>
     <module>rdf</module>
     <module>registry</module>
