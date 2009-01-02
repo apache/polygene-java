@@ -16,15 +16,16 @@
 */
 package org.qi4j.library.swing.visualizer.school.infrastructure.persistence;
 
+import static org.qi4j.api.common.Visibility.application;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entity.index.rdf.RdfFactoryService;
 import org.qi4j.entity.index.rdf.RdfQueryService;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.entity.EntitySerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
-import static org.qi4j.api.common.Visibility.application;
 
 /**
  * @author edward.yakop@gmail.com
@@ -43,7 +44,7 @@ public class PersistenceAssembler
             MemoryEntityStoreService.class,
 
             // Query
-            RdfQueryService.class,
+            RdfQueryService.class, RdfFactoryService.class,
             MemoryRepositoryService.class )
             .visibleIn( application )
             .instantiateOnStartup();

@@ -78,7 +78,7 @@ public class EntitySerializer
 
     public void serialize( EntityState entityState, boolean includeNonQueryable, Graph graph )
     {
-        if (!includeNonQueryable && !entityState.entityType().queryable())
+        if ( !( includeNonQueryable || entityState.entityType().queryable() ) )
             return; // Not queryable, and should not be included
 
         QualifiedIdentity qid = entityState.qualifiedIdentity();
@@ -100,7 +100,7 @@ public class EntitySerializer
         // Properties
         for( PropertyType propertyType : properties )
         {
-            if (!includeNonQueryable && !propertyType.queryable())
+            if ( !( includeNonQueryable || propertyType.queryable() ) )
                 continue; // Skip non-queryable
 
             Object value = entityState.getProperty( propertyType.qualifiedName() );
@@ -120,7 +120,7 @@ public class EntitySerializer
         // Associations
         for( AssociationType associationType : associations )
         {
-            if (!includeNonQueryable && !associationType.queryable())
+            if ( !( includeNonQueryable || associationType.queryable() ) )
                 continue; // Skip non-queryable
 
             QualifiedIdentity associatedId = entityState.getAssociation( associationType.qualifiedName() );
@@ -148,7 +148,7 @@ public class EntitySerializer
         // Many-Associations
         for( ManyAssociationType associationType : associations )
         {
-            if (!includeNonQueryable && !associationType.queryable())
+            if ( !( includeNonQueryable || associationType.queryable() ) )
                 continue; // Skip non-queryable
 
             BNode collection = values.createBNode();
