@@ -26,6 +26,7 @@ import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
+import org.qi4j.runtime.query.QueryException;
 
 /**
  * TODO Add JavaDoc
@@ -99,7 +100,7 @@ public final class MixinTypeProxy
             }
         }
 
-        throw new UnsupportedOperationException(
+        throw new QueryException(
             "Only property, association and many associations methods can be used" );
     }
 

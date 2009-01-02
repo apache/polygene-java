@@ -1,5 +1,6 @@
 /*
  * Copyright 2008 Alin Dreghiciu.
+ * Copyright 2009 Niclas Hedhman.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +22,15 @@ package org.qi4j.runtime.query.grammar.impl;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
+import org.qi4j.runtime.query.QueryException;
 
 /**
  * Default {@link org.qi4j.api.query.grammar.PropertyReference} implementation.
  *
- * @author Alin Dreghiciu
  * @since March 28, 2008
  */
 public final class PropertyReferenceImpl<T>
@@ -82,12 +84,17 @@ public final class PropertyReferenceImpl<T>
         Type returnType = accessor.getGenericReturnType();
         if( !( returnType instanceof ParameterizedType ) )
         {
-            throw new UnsupportedOperationException( "Unsupported property type:" + returnType );
+            throw new QueryException( "Unsupported property type:" + returnType );
         }
         Type propertyTypeAsType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
         if( !( propertyTypeAsType instanceof Class ) )
         {
-            throw new UnsupportedOperationException( "Unsupported property type:" + propertyTypeAsType );
+            throw new QueryException( "Unsupported property type:" + propertyTypeAsType );
+        }
+        Queryable queryable = accessor.getAnnotation( Queryable.class );
+        if( queryable != null && !queryable.value() )
+        {
+            throw new QueryException( "Non-queryable property:" + accessor );
         }
         type = (Class<T>) propertyTypeAsType;
         this.traversed = traversed;

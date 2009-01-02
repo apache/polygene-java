@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.runtime.query.grammar.impl.PropertyReferenceImpl;
+import org.qi4j.runtime.query.QueryException;
 
 /**
  * TODO Add JavaDoc
@@ -70,7 +71,7 @@ final class PropertyReferenceProxy
             return propertyReference.toString();
         }
         // TODO handle equals/hashcode?
-        throw new UnsupportedOperationException( "Only property methods can be used. Not " + method.getName() + "()." );
+        throw new QueryException( "Only property methods can be used. Not " + method.getName() + "()." );
     }
 
     @Override public String toString()

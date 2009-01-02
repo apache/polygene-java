@@ -18,16 +18,17 @@
  */
 package org.qi4j.runtime.query;
 
-import org.qi4j.api.util.NullArgumentException;
+import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.query.MissingIndexingSystemException;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.query.QueryExpressions;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.util.NullArgumentException;
+import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.named.NamedEntityFinder;
 
@@ -71,6 +72,11 @@ public final class QueryBuilderFactoryImpl
      */
     public <T> QueryBuilder<T> newQueryBuilder( final Class<T> resultType )
     {
+        Queryable queryable = resultType.getAnnotation( Queryable.class );
+        if( queryable != null && !queryable.value() )
+        {
+            throw new QueryException( "Not a Queryable type: " + resultType );
+        }
         ModuleInstance module = unitOfWorkInstance.module();
         ServiceFinder serviceLocator = module.serviceFinder();
         final ServiceReference<EntityFinder> serviceReference = serviceLocator.findService( EntityFinder.class );

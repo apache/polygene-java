@@ -27,6 +27,7 @@ import org.qi4j.api.entity.association.Qualifier;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.query.grammar.impl.AssociationReferenceImpl;
+import org.qi4j.runtime.query.QueryException;
 
 /**
  * TODO Add JavaDoc
@@ -109,7 +110,7 @@ public final class AssociationReferenceProxy
             return associationReference.toString();
         }
         // TODO handle equals/hashcode?
-        throw new UnsupportedOperationException( "Only association methods can be used" );
+        throw new QueryException( "Only association methods can be used" );
     }
 
     @Override

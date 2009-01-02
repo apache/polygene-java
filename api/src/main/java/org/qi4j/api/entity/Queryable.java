@@ -24,8 +24,6 @@ import java.lang.annotation.Target;
 /**
  * This annotation is used to mark entity types or properties/associations that are indexable.
  *
- * @author Alin Dreghiciu
- * @since 0.4.0, 28 August, 2008
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.TYPE, ElementType.METHOD } )
