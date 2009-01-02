@@ -1,5 +1,5 @@
 /*
- * Copyright 2008 Michael Hunger.
+ * Copyright 2009 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -15,23 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.index.rdf.callback;
+package org.qi4j.entity.index.rdf.internal;
 
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.entity.index.rdf.RdfFactoryService;
+import org.qi4j.entity.index.rdf.RdfQueryParser;
+import org.qi4j.entity.index.rdf.UnsupportedLanguageException;
+import org.openrdf.query.QueryLanguage;
 
-public class SingleQualifiedIdentityResultCallback
-    implements QualifiedIdentityResultCallback
+public abstract class RdfFactoryMixin
+    implements RdfFactoryService
 {
-    private QualifiedIdentity qualifiedIdentity;
 
-    public boolean processRow( int row, QualifiedIdentity qualifiedIdentity )
+    public RdfQueryParser newQueryParser( QueryLanguage language )
     {
-        this.qualifiedIdentity = qualifiedIdentity;
-        return false;
-    }
-
-    public QualifiedIdentity getQualifiedIdentity()
-    {
-        return qualifiedIdentity;
+        if( language.equals( QueryLanguage.SPARQL ) )
+        {
+        return new SparqlRdfQueryParser();
+        }
+        throw new UnsupportedLanguageException( language );
     }
 }

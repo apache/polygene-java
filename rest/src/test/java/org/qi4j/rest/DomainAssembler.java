@@ -14,15 +14,16 @@
 
 package org.qi4j.rest;
 
+import static org.qi4j.api.common.Visibility.application;
+import static org.qi4j.api.common.Visibility.layer;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entity.index.rdf.RdfFactoryService;
 import org.qi4j.entity.index.rdf.RdfQueryService;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
-import static org.qi4j.api.common.Visibility.application;
-import static org.qi4j.api.common.Visibility.layer;
 
 /**
  * TODO
@@ -35,7 +36,7 @@ public class DomainAssembler
         module.addServices(
             MemoryEntityStoreService.class,
             UuidIdentityGeneratorService.class,
-            RdfQueryService.class
+            RdfQueryService.class, RdfFactoryService.class
         ).visibleIn( application );
         module.addServices( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" ).visibleIn( layer );
 

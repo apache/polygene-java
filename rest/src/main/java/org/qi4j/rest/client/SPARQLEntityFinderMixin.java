@@ -18,16 +18,17 @@
 package org.qi4j.rest.client;
 
 import java.net.URLEncoder;
-import org.qi4j.entity.index.rdf.RdfQueryParser;
-import org.qi4j.entity.index.rdf.SparqlRdfQueryParser;
-import org.qi4j.entity.index.rdf.callback.CollectingQualifiedIdentityResultCallback;
-import org.qi4j.entity.index.rdf.callback.QualifiedIdentityResultCallback;
-import org.qi4j.entity.index.rdf.callback.SingleQualifiedIdentityResultCallback;
+import org.openrdf.query.QueryLanguage;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.Wrapper;
+import org.qi4j.entity.index.rdf.RdfQueryParser;
+import org.qi4j.entity.index.rdf.RdfFactory;
+import org.qi4j.entity.index.rdf.callback.CollectingQualifiedIdentityResultCallback;
+import org.qi4j.entity.index.rdf.callback.QualifiedIdentityResultCallback;
+import org.qi4j.entity.index.rdf.callback.SingleQualifiedIdentityResultCallback;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
@@ -45,6 +46,7 @@ public class SPARQLEntityFinderMixin
     implements EntityFinder
 {
     @Service Wrapper<Client> client;
+    @Service RdfFactory rdfFactory;
 
     public Iterable<QualifiedIdentity> findEntities( String resultType, BooleanExpression whereClause,
                                                      OrderBy[] orderBySegments, Integer firstResult, Integer maxResults )
@@ -94,11 +96,11 @@ public class SPARQLEntityFinderMixin
             if( "uri".equals( element ) )
             {
                 String value = String.valueOf( ch, start, length );
-                type = GenericAssociationInfo.toQualifiedName( value);
-            } else if( "literal".equals( element ) )
+                type = GenericAssociationInfo.toQualifiedName( value );
+            }
+            else if( "literal".equals( element ) )
             {
-                String value = String.valueOf( ch, start, length );
-                id = value;
+                id = String.valueOf( ch, start, length );
             }
         }
 
@@ -131,7 +133,7 @@ public class SPARQLEntityFinderMixin
         try
         {
             // TODO shall we support different implementation as SERQL?
-            final RdfQueryParser parser = new SparqlRdfQueryParser();
+            final RdfQueryParser parser = rdfFactory.newQueryParser( QueryLanguage.SPARQL );
             String query = parser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults );
 
             String url = "http://localhost:8040/qi4j/query.rdf?query=" + URLEncoder.encode( query, "UTF-8" );

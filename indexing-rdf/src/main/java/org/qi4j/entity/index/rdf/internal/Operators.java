@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.index.rdf;
+package org.qi4j.entity.index.rdf.internal;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,8 +30,6 @@ import org.qi4j.api.query.grammar.Predicate;
 /**
  * Utility class for mathcing an operator based on a predicate.
  *
- * @author Alin Dreghiciu
- * @since April 08, 2008
  */
 class Operators
 {

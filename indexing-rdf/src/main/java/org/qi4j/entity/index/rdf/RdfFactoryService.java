@@ -1,5 +1,5 @@
 /*
- * Copyright 2008 Alin Dreghiciu.
+ * Copyright 2009 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -17,20 +17,13 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.spi.query.EntityFinder;
-import org.qi4j.spi.entity.EntityStoreListener;
-import org.qi4j.entity.index.rdf.internal.RdfEntityIndexerMixin;
-import org.qi4j.entity.index.rdf.internal.RdfEntityFinderMixin;
-import org.qi4j.library.rdf.RdfExportMixin;
-import org.qi4j.library.rdf.RdfExport;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.entity.index.rdf.internal.RdfFactoryMixin;
+import org.qi4j.entity.index.rdf.RdfFactory;
 
-/**
- * TODO Add JavaDoc
- */
-@Mixins( { RdfEntityIndexerMixin.class, RdfEntityFinderMixin.class, RdfExportMixin.class } )
-public interface RdfQueryService
-    extends EntityStoreListener, EntityFinder, RdfExport, ServiceComposite
+@Mixins( RdfFactoryMixin.class)
+public interface RdfFactoryService extends ServiceComposite, RdfFactory
 {
+
 }

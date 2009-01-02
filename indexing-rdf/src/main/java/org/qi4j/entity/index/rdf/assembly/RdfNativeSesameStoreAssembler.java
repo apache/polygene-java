@@ -16,10 +16,11 @@ package org.qi4j.entity.index.rdf.assembly;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entity.index.rdf.RdfFactoryService;
 import org.qi4j.entity.index.rdf.RdfQueryService;
+import org.qi4j.library.rdf.entity.EntitySerializer;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.library.rdf.repository.NativeRepositoryService;
-import org.qi4j.library.rdf.entity.EntitySerializer;
 
 public class RdfNativeSesameStoreAssembler
     implements Assembler
@@ -30,6 +31,7 @@ public class RdfNativeSesameStoreAssembler
         module.addComposites( NativeConfiguration.class );
         module.addServices( NativeRepositoryService.class ).instantiateOnStartup().identifiedBy( "rdf-indexing" );
         module.addServices( RdfQueryService.class ).instantiateOnStartup();
+        module.addServices( RdfFactoryService.class );
         module.addObjects( EntitySerializer.class );
     }
 }

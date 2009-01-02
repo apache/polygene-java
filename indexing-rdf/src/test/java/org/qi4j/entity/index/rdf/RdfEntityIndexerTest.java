@@ -56,6 +56,7 @@ public class RdfEntityIndexerTest
                     MemoryEntityStoreService.class,
                     UuidIdentityGeneratorService.class,
                     RdfIndexerExporterComposite.class,
+                    RdfFactoryService.class,
                     MemoryRepositoryService.class
                 );
             }

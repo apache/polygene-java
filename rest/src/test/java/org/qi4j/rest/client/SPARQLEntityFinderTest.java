@@ -23,6 +23,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
+import org.qi4j.entity.index.rdf.RdfFactoryService;
 import org.qi4j.library.rdf.entity.EntitySerializer;
 import org.qi4j.library.rdf.entity.EntityParser;
 import org.qi4j.api.query.Query;
@@ -40,15 +41,15 @@ public class SPARQLEntityFinderTest
 {
     Application server;
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addEntities( TestEntity.class );
-
         ModuleAssembly store = module.layerAssembly().newModuleAssembly( "REST Store/Finder" );
         store.addObjects( EntitySerializer.class, EntityParser.class);
         store.addEntities( RESTEntityStoreConfiguration.class, SPARQLEntityFinderConfiguration.class );
         store.addServices( MemoryEntityStoreService.class, RestletClientService.class );
-        store.addServices( RESTEntityStoreService.class, SPARQLEntityFinderService.class ).visibleIn( Visibility.layer );
+        store.addServices( RESTEntityStoreService.class, SPARQLEntityFinderService.class, RdfFactoryService.class ).visibleIn( Visibility.layer );
     }
 
     @Override @Before public void setUp() throws Exception

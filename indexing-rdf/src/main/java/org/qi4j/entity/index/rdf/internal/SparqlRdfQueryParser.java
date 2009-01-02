@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.index.rdf;
+package org.qi4j.entity.index.rdf.internal;
 
 import static java.lang.String.format;
 import org.openrdf.query.QueryLanguage;
@@ -32,6 +32,9 @@ import org.qi4j.api.query.grammar.PropertyIsNullPredicate;
 import org.qi4j.api.query.grammar.PropertyNullPredicate;
 import org.qi4j.api.query.grammar.SingleValueExpression;
 import org.qi4j.api.query.grammar.ValueExpression;
+import org.qi4j.entity.index.rdf.RdfQueryParser;
+import org.qi4j.entity.index.rdf.Namespaces;
+import org.qi4j.entity.index.rdf.internal.Triples;
 
 /**
  * TODO Add JavaDoc
@@ -46,8 +49,7 @@ public class SparqlRdfQueryParser
     {
     }
 
-
-    public QueryLanguage getQueryLanguage()
+    QueryLanguage getQueryLanguage()
     {
         return QueryLanguage.SPARQL;
     }
@@ -179,7 +181,7 @@ public class SparqlRdfQueryParser
         {
             String valueVariable = triples.addTriple( predicate.propertyReference(), false ).getValue();
             final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
-            return format( "(%s %s \"%s\")", valueVariable, Operators.getOperator( predicate.getClass() ),
+            return String.format( "(%s %s \"%s\")", valueVariable, Operators.getOperator( predicate.getClass() ),
                            singleValueExpression.value() );
         }
         else

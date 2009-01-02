@@ -95,6 +95,7 @@ public class RdfQueryTest
                     MemoryRepositoryService.class,
                     MemoryEntityStoreService.class,
                     UuidIdentityGeneratorService.class,
+                    RdfFactoryService.class,
                     RdfIndexerExporterComposite.class
                 );
                 module.addObjects( EntitySerializer.class );

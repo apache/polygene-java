@@ -1,5 +1,5 @@
 /*
- * Copyright 2008 Michael Hunger.
+ * Copyright 2009 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -15,23 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.index.rdf.callback;
+package org.qi4j.entity.index.rdf;
 
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.entity.index.rdf.RdfQueryParser;
+import org.openrdf.query.QueryLanguage;
 
-public class SingleQualifiedIdentityResultCallback
-    implements QualifiedIdentityResultCallback
+public interface RdfFactory
 {
-    private QualifiedIdentity qualifiedIdentity;
-
-    public boolean processRow( int row, QualifiedIdentity qualifiedIdentity )
-    {
-        this.qualifiedIdentity = qualifiedIdentity;
-        return false;
-    }
-
-    public QualifiedIdentity getQualifiedIdentity()
-    {
-        return qualifiedIdentity;
-    }
+    RdfQueryParser newQueryParser( QueryLanguage language );
 }

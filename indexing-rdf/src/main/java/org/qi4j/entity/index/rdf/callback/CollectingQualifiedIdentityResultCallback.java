@@ -21,7 +21,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
-public class CollectingQualifiedIdentityResultCallback implements QualifiedIdentityResultCallback
+public class CollectingQualifiedIdentityResultCallback
+    implements QualifiedIdentityResultCallback
 {
     private final Collection<QualifiedIdentity> entities = new ArrayList<QualifiedIdentity>();
 

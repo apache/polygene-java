@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entity.index.rdf;
+package org.qi4j.entity.index.rdf.internal;
 
 import static java.lang.String.format;
 import java.lang.reflect.Method;
@@ -29,8 +29,10 @@ import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.ManyAssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.util.Classes;
+import org.qi4j.entity.index.rdf.Namespaces;
 
-public class Triples implements Iterable<Triples.Triple>
+public class Triples
+    implements Iterable<Triples.Triple>
 {
     private int valueCounter = 0;
     private final List<Triple> triples = new ArrayList<Triple>();

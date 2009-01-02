@@ -95,6 +95,7 @@ public class RdfEntityFinderTest
                 module.addServices(
                     MemoryEntityStoreService.class,
                     UuidIdentityGeneratorService.class,
+                    RdfFactoryService.class,
                     RdfIndexerExporterComposite.class
                 );
                 module.addServices( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" );

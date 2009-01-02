@@ -17,6 +17,7 @@ Import-Package: org.apache.commons.logging, \
                 javax.xml.parsers, \
                 javax.xml.validation, \
                 org.qi4j.api.common, \
+                org.qi4j.api.composite, \
                 org.qi4j.api.configuration, \
                 org.qi4j.api.constraint, \
                 org.qi4j.api.entity, \

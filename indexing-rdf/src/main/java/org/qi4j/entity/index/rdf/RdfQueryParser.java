@@ -17,7 +17,6 @@
  */
 package org.qi4j.entity.index.rdf;
 
-import org.openrdf.query.QueryLanguage;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
 
@@ -26,8 +25,6 @@ import org.qi4j.api.query.grammar.OrderBy;
  */
 public interface RdfQueryParser
 {
-    QueryLanguage getQueryLanguage();
-
     String getQuery( String resultType,
                      BooleanExpression whereClause,
                      OrderBy[] orderBySegments,
