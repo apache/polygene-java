@@ -34,7 +34,7 @@ import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.library.rdf.entity.EntitySerializer;
+import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.spi.Qi4jSPI;
@@ -106,7 +106,7 @@ public class EntityResource extends Resource
 
     @Service private EntityStore entityStore;
     @Structure private Qi4jSPI spi;
-    @Uses EntitySerializer entitySerializer;
+    @Uses EntityStateSerializer entitySerializer;
 
     private QualifiedIdentity qualifiedIdentity;
 

@@ -31,7 +31,7 @@ import org.qi4j.entity.index.rdf.model.entities.MaleEntity;
 import org.qi4j.entity.index.rdf.model.entities.AccountEntity;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
-import org.qi4j.library.rdf.entity.EntitySerializer;
+import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 
 public class RdfEntityIndexerTest
@@ -43,7 +43,7 @@ public class RdfEntityIndexerTest
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                module.addObjects( EntitySerializer.class );
+                module.addObjects( EntityStateSerializer.class );
                 module.addEntities(
                     MaleEntity.class,
                     FemaleEntity.class,

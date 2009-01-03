@@ -19,7 +19,7 @@ import org.openrdf.model.Statement;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.library.rdf.entity.EntitySerializer;
+import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.spi.Qi4jSPI;
@@ -43,10 +43,9 @@ import org.restlet.resource.Variant;
 
 public class EntityTypeResource extends Resource
 {
-    @Uses EntitySerializer entitySerializer;
-
-    @Structure Module module;
-    @Structure Qi4jSPI spi;
+    @Uses private EntityStateSerializer entitySerializer;
+    @Structure private Module module;
+    @Structure private Qi4jSPI spi;
 
     private String type;
 

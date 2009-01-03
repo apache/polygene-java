@@ -32,7 +32,7 @@ import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Initializable;
-import org.qi4j.library.rdf.entity.EntitySerializer;
+import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStoreListener;
@@ -46,7 +46,7 @@ public class RdfEntityIndexerMixin
     implements EntityStoreListener, Initializable
 {
     @Service private Repository repository;
-    @Uses private EntitySerializer serializer;
+    @Uses private EntityStateSerializer serializer;
 
     private Set<EntityType> indexedEntityTypes;
     private ValueFactory valueFactory;

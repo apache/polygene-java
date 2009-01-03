@@ -30,7 +30,7 @@ import org.openrdf.rio.rdfxml.RDFXMLParserFactory;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.library.rdf.entity.EntityParser;
+import org.qi4j.library.rdf.entity.EntityStateParser;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.service.ServiceDescriptor;
@@ -63,7 +63,7 @@ public class RESTEntityStoreServiceMixin
     extends EntityTypeRegistryMixin
     implements Activatable
 {
-    @Uses EntityParser parser;
+    @Uses EntityStateParser parser;
     @This Configuration<RESTEntityStoreConfiguration> config;
     @Uses ServiceDescriptor descriptor;
 

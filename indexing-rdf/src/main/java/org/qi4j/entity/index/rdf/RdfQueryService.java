@@ -23,8 +23,8 @@ import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.entity.EntityStoreListener;
 import org.qi4j.entity.index.rdf.internal.RdfEntityIndexerMixin;
 import org.qi4j.entity.index.rdf.internal.RdfEntityFinderMixin;
-import org.qi4j.library.rdf.RdfExportMixin;
-import org.qi4j.library.rdf.RdfExport;
+import org.qi4j.entity.index.rdf.RdfExportMixin;
+import org.qi4j.entity.index.rdf.RdfExport;
 
 /**
  * TODO Add JavaDoc

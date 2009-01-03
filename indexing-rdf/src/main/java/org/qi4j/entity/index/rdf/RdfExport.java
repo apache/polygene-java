@@ -12,18 +12,16 @@
  *
  */
 
-package org.qi4j.rest.client;
+package org.qi4j.entity.index.rdf;
 
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.service.Wrapper;
-import org.restlet.Client;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * TODO
  */
-@Mixins( RestletClientMixin.class )
-public interface RestletClientService extends Wrapper<Client>, ServiceComposite, Activatable
+public interface RdfExport
 {
+    public void toRDF( final OutputStream outputStream )
+        throws IOException;
 }

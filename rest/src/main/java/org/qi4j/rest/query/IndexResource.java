@@ -16,7 +16,7 @@ package org.qi4j.rest.query;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import org.qi4j.library.rdf.RdfExport;
+import org.qi4j.entity.index.rdf.RdfExport;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.restlet.Context;

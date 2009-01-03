@@ -17,7 +17,7 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
-import org.qi4j.library.rdf.entity.EntitySerializer;
+import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.restlet.Context;
 import org.restlet.Finder;
 import org.restlet.Handler;
@@ -41,7 +41,7 @@ public class Qi4jFinder extends Finder
         builder.use( response );
         builder.use( getContext() );
 
-        EntitySerializer serializer = factory.newObject( EntitySerializer.class );
+        EntityStateSerializer serializer = factory.newObject( EntityStateSerializer.class );
         builder.use( serializer );
         return builder.newInstance();
     }

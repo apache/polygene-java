@@ -48,7 +48,7 @@ import org.qi4j.entity.index.rdf.model.entities.MaleEntity;
 import org.qi4j.entity.index.rdf.model.entities.AccountEntity;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
-import org.qi4j.library.rdf.entity.EntitySerializer;
+import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
@@ -98,7 +98,7 @@ public class RdfQueryTest
                     RdfFactoryService.class,
                     RdfIndexerExporterComposite.class
                 );
-                module.addObjects( EntitySerializer.class );
+                module.addObjects( EntityStateSerializer.class );
             }
         };
         Network.populate( assembler.unitOfWorkFactory().newUnitOfWork() );
