@@ -21,25 +21,16 @@ import java.io.Writer;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFWriter;
+import org.openrdf.rio.RDFWriterFactory;
+import org.openrdf.rio.rdfxml.util.RDFXMLPrettyWriterFactory;
 import org.openrdf.rio.n3.N3WriterFactory;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.Rdfs;
 
-public final class N3Serializer
-    implements Serializer
+public final class N3Serializer extends AbstractSerializer
 {
-    public void serialize( Iterable<Statement> graph, Writer out )
-        throws RDFHandlerException
+    public N3Serializer()
     {
-        RDFWriter writer = new N3WriterFactory().getWriter( out );
-        writer.startRDF();
-        writer.handleNamespace( "qi4j", Qi4jRdf.QI4JMODEL );
-        writer.handleNamespace( "rdf", Rdfs.RDF );
-        writer.handleNamespace( "rdfs", Rdfs.RDFS );
-        for( Statement st : graph )
-        {
-            writer.handleStatement( st );
-        }
-        writer.endRDF();
+        super( N3WriterFactory.class );
     }
 }

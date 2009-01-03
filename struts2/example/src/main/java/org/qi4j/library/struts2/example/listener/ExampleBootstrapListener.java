@@ -22,7 +22,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entity.index.rdf.RdfQueryService;
 import org.qi4j.entity.index.rdf.RdfFactoryService;
 import org.qi4j.entity.memory.MemoryEntityStoreService;
-import org.qi4j.library.rdf.entity.EntitySerializer;
+import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.library.struts2.ActionConfiguration;
 import org.qi4j.library.struts2.Qi4jApplicationBootstrapListener;
@@ -65,7 +65,7 @@ public class ExampleBootstrapListener extends Qi4jApplicationBootstrapListener
                     MemoryRepositoryService.class,
                     RdfQueryService.class, RdfFactoryService.class
                 );
-                aModule.addObjects( EntitySerializer.class );
+                aModule.addObjects( EntityStateSerializer.class );
             }
         };
     }

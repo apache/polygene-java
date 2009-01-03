@@ -15,22 +15,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.library.rdf.serializer;
+package org.qi4j.library.rdf.model;
 
 import org.openrdf.model.Graph;
-import org.openrdf.model.Statement;
 import org.openrdf.model.impl.GraphImpl;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.api.structure.Application;
+import org.qi4j.library.rdf.serializer.SerializerContext;
+import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
+import java.io.PrintWriter;
 
 public class ApplicationSerializer
 {
-    public Iterable<Statement> serialize( Application app )
+    public Graph serialize( Application app )
     {
         Graph graph = new GraphImpl();
         SerializerContext context = new SerializerContext( graph );
-        ApplicationSerializerVisitor applicationVisitor = new ApplicationSerializerVisitor( context );
+        ApplicationVisitor applicationVisitor = new ApplicationVisitor( context );
         ( (ApplicationSPI) app ).visitDescriptor( applicationVisitor );
         return graph;
+    }
+
+    public void outputMetadata( Graph rdf, PrintWriter writer )
+        throws Exception
+    {
+        new RdfXmlSerializer().serialize( rdf, writer );
     }
 }

@@ -36,7 +36,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.sideeffect.SideEffectOf;
 import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.library.rdf.serializer.ApplicationSerializer;
+import org.qi4j.library.rdf.model.ApplicationSerializer;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**

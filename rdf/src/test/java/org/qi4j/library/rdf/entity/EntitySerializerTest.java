@@ -43,13 +43,13 @@ public class EntitySerializerTest
     extends AbstractQi4jTest
 {
     @Service EntityStore entityStore;
-    @Uses EntitySerializer serializer;
+    @Uses EntityStateSerializer serializer;
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addServices( MemoryEntityStoreService.class );
         module.addEntities( TestEntity.class );
-        module.addObjects( EntitySerializer.class, EntitySerializerTest.class );
+        module.addObjects( EntityStateSerializer.class, EntitySerializerTest.class );
     }
 
     @Override @Before

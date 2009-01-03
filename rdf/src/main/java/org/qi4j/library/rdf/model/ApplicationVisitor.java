@@ -12,10 +12,11 @@
  *
  */
 
-package org.qi4j.library.rdf.serializer;
+package org.qi4j.library.rdf.model;
 
 import org.qi4j.api.util.Classes;
 import org.qi4j.library.rdf.Qi4jRdf;
+import org.qi4j.library.rdf.serializer.SerializerContext;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -28,23 +29,19 @@ import org.qi4j.spi.structure.ModuleDescriptor;
 /**
  * TODO
  */
-class ApplicationSerializerVisitor
-    extends DescriptorVisitor
+class ApplicationVisitor extends DescriptorVisitor
 {
     private SerializerContext context;
 
     private String appUri;
 
-    private LayerDescriptor layerDescriptor;
     private String layerUri;
 
-    private ModuleDescriptor moduleDescriptor;
     private String moduleUri;
 
     private String compositeUri;
-    private String compositeMethodUri;
 
-    ApplicationSerializerVisitor( SerializerContext context )
+    ApplicationVisitor( SerializerContext context )
     {
         this.context = context;
     }
@@ -57,16 +54,13 @@ class ApplicationSerializerVisitor
 
     @Override public void visit( LayerDescriptor layerDescriptor )
     {
-        this.layerDescriptor = layerDescriptor;
         layerUri = context.createLayerUri( appUri, layerDescriptor.name() );
         context.setNameAndType( layerUri, layerDescriptor.name(), Qi4jRdf.TYPE_LAYER );
-
         context.addRelationship( appUri, Qi4jRdf.RELATIONSHIP_LAYER, layerUri );
     }
 
     @Override public void visit( ModuleDescriptor moduleDescriptor )
     {
-        this.moduleDescriptor = moduleDescriptor;
         moduleUri = context.createModuleUri( layerUri, moduleDescriptor.name() );
         context.setNameAndType( layerUri, moduleDescriptor.name(), Qi4jRdf.TYPE_MODULE );
 
@@ -96,18 +90,9 @@ class ApplicationSerializerVisitor
 
     @Override public void visit( CompositeMethodDescriptor compositeMethodDescriptor )
     {
-        compositeMethodUri = context.createCompositeMethodUri( compositeUri, compositeMethodDescriptor.method() );
+        String compositeMethodUri = context.createCompositeMethodUri( compositeUri, compositeMethodDescriptor.method() );
         context.addType( compositeMethodUri, Qi4jRdf.TYPE_METHOD );
         context.addRelationship( compositeUri, Qi4jRdf.RELATIONSHIP_METHOD, compositeMethodUri );
         context.addStatement( compositeMethodUri, Qi4jRdf.RELATIONSHIP_MIXIN, Classes.toURI( compositeMethodDescriptor.mixin().mixinClass() ) );
     }
-
-    //    @Override public void visit( CompositeMethodModel compositeMethodModel )
-//    {
-//        compositeMethodUri = context.getValueFactory().createBNode( compositeMethodModel.method().getName() );
-//
-//        context.addName( compositeMethodUri, compositeMethodModel.method().getName() );
-//
-//        context.addRelationship( compositeUri, Qi4jRdf.RELATION_METHOD, compositeMethodUri );
-//    }
 }

@@ -17,28 +17,12 @@
  */
 package org.qi4j.library.rdf.serializer;
 
-import java.io.Writer;
-import org.openrdf.model.Statement;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.turtle.TurtleWriterFactory;
-import org.qi4j.library.rdf.Qi4jRdf;
-import org.qi4j.library.rdf.Rdfs;
 
-public final class TurtleSerializer
-    implements Serializer
+public final class TurtleSerializer extends AbstractSerializer
 {
-    public void serialize( Iterable<Statement> graph, Writer out ) throws RDFHandlerException
+    public TurtleSerializer()
     {
-        RDFWriter writer = new TurtleWriterFactory().getWriter( out );
-        writer.startRDF();
-        writer.handleNamespace( "qi4j", Qi4jRdf.QI4JMODEL );
-        writer.handleNamespace( "rdf", Rdfs.RDF );
-        writer.handleNamespace( "rdfs", Rdfs.RDFS );
-        for( Statement st : graph )
-        {
-            writer.handleStatement( st );
-        }
-        writer.endRDF();
+        super( TurtleWriterFactory.class );
     }
 }

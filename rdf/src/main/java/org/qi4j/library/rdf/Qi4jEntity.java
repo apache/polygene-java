@@ -23,7 +23,7 @@ import org.openrdf.model.impl.URIImpl;
  */
 public interface Qi4jEntity
 {
-    // MODEL
+    // Model
     String QI4JENTITY = "http://www.qi4j.org/rdf/entity/1.0/";
 
     // Types

@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.math.BigDecimal;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Literal;
@@ -46,12 +47,12 @@ import org.qi4j.spi.property.PropertyType;
 /**
  * TODO
  */
-public class EntitySerializer
+public class EntityStateSerializer
 {
     private URI identityUri;
     private Map<String, URI> dataTypes = new HashMap<String, URI>();
 
-    public EntitySerializer()
+    public EntityStateSerializer()
     {
         Graph graph = new GraphImpl();
         ValueFactory values = graph.getValueFactory();
@@ -60,7 +61,12 @@ public class EntitySerializer
         // TODO A ton more types need to be added here
         dataTypes.put( String.class.getName(), XMLSchema.STRING );
         dataTypes.put( Integer.class.getName(), XMLSchema.INT );
+        dataTypes.put( Boolean.class.getName(), XMLSchema.BOOLEAN );
+        dataTypes.put( Byte.class.getName(), XMLSchema.BYTE );
+        dataTypes.put( BigDecimal.class.getName(), XMLSchema.DECIMAL );
+        dataTypes.put( Double.class.getName(), XMLSchema.DOUBLE );
         dataTypes.put( Long.class.getName(), XMLSchema.LONG );
+        dataTypes.put( Short.class.getName(), XMLSchema.SHORT );
         dataTypes.put( Date.class.getName(), XMLSchema.DATETIME );
     }
 

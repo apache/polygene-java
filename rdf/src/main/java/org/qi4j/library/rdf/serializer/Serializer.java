@@ -21,4 +21,8 @@ public interface Serializer
 {
     void serialize( Iterable<Statement> graph, Writer out )
         throws RDFHandlerException;
+
+    void serialize( Iterable<Statement> graph, Writer out, String[] namespacePrefixes, String[] namespaces )
+        throws RDFHandlerException;
+
 }

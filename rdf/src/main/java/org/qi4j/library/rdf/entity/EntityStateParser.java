@@ -36,11 +36,11 @@ import org.qi4j.spi.property.PropertyType;
 /**
  * TODO
  */
-public class EntityParser
+public class EntityStateParser
 {
     private String identityUri;
 
-    public EntityParser()
+    public EntityStateParser()
     {
         identityUri = GenericPropertyInfo.toURI( Identity.class, "identity" );
     }
@@ -69,7 +69,8 @@ public class EntityParser
                     // ManyAssociation item
                     String uri = predicate.toString();
 
-                    Collection<QualifiedIdentity> manyAssociation = manyAssociationValues.get( subject );
+                    BNode key = (BNode) subject;
+                    Collection<QualifiedIdentity> manyAssociation = manyAssociationValues.get( key );
                     manyAssociation.add( QualifiedIdentity.parseURI( object.stringValue() ) );
                 }
                 else if( object instanceof URI )

@@ -25,28 +25,10 @@ import org.openrdf.rio.rdfxml.util.RDFXMLPrettyWriterFactory;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.Rdfs;
 
-public final class RdfXmlSerializer
-    implements Serializer
+public final class RdfXmlSerializer extends AbstractSerializer
 {
-    public void serialize( Iterable<Statement> graph, Writer out ) throws RDFHandlerException
+    public RdfXmlSerializer()
     {
-        serialize( graph, out, new String[]{ "qi4j", "rdf", "rdfs" }, new String[]{ Qi4jRdf.QI4JMODEL, Rdfs.RDF, Rdfs.RDFS } );
-    }
-
-    public void serialize( Iterable<Statement> graph, Writer out, String[] namespacePrefixes, String[] namespaces ) throws RDFHandlerException
-    {
-        RDFWriter writer = new RDFXMLPrettyWriterFactory().getWriter( out );
-        writer.startRDF();
-        for( int i = 0; i < namespacePrefixes.length; i++ )
-        {
-            String namespacePrefix = namespacePrefixes[ i ];
-            String namespace = namespaces[ i ];
-            writer.handleNamespace( namespacePrefix, namespace );
-        }
-        for( Statement st : graph )
-        {
-            writer.handleStatement( st );
-        }
-        writer.endRDF();
+        super( RDFXMLPrettyWriterFactory.class );
     }
 }

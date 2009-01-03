@@ -40,15 +40,15 @@ import org.qi4j.test.AbstractQi4jTest;
 public class EntityParserTest
     extends AbstractQi4jTest
 {
-    @Service EntityStore entityStore;
-    @Uses EntitySerializer serializer;
-    @Uses EntityParser parser;
+    @Service private EntityStore entityStore;
+    @Uses private EntityStateSerializer serializer;
+    @Uses private EntityStateParser parser;
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addServices( MemoryEntityStoreService.class );
         module.addEntities( TestEntity.class );
-        module.addObjects( EntitySerializer.class, EntityParser.class, EntityParserTest.class );
+        module.addObjects( EntityStateSerializer.class, EntityStateParser.class, EntityParserTest.class );
     }
 
     @Override @Before public void setUp() throws Exception
@@ -88,7 +88,8 @@ public class EntityParserTest
         }
     }
 
-    void createDummyData() throws UnitOfWorkCompletionException
+    void createDummyData()
+        throws UnitOfWorkCompletionException
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( "test1", TestEntity.class );
@@ -104,7 +105,7 @@ public class EntityParserTest
         builder2.stateOfComposite().group().add( testEntity );
         builder2.stateOfComposite().group().add( testEntity );
         builder2.stateOfComposite().group().add( testEntity );
-        TestEntity testEntity2 = builder2.newInstance();
+        builder2.newInstance();
         unitOfWork.complete();
     }
 }
