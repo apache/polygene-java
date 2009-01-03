@@ -25,7 +25,6 @@ import org.qi4j.api.common.Optional;
 /**
  * TODO Add JavaDoc
  *
- * @author Alin Dreghiciu
  * @since March 24, 2008
  */
 public interface EntityFinder

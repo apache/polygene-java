@@ -25,6 +25,7 @@ import org.qi4j.api.entity.association.Qualifier;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.query.grammar.impl.ManyAssociationReferenceImpl;
+import org.qi4j.runtime.query.QueryException;
 
 /**
  * TODO: Add javadoc
@@ -91,7 +92,7 @@ public class ManyAssociationReferenceProxy
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
-        throw new UnsupportedOperationException( "No methods can be used" );
+        throw new QueryException( "No methods can be used" );
     }
 
     @SuppressWarnings( "unchecked" )

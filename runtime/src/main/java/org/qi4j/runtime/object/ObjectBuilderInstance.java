@@ -58,9 +58,17 @@ public final class ObjectBuilderInstance<T>
         return objectType.cast( instance );
     }
 
-    public void injectTo( T instance ) throws ConstructionException
+    public void injectTo( T instance )
+        throws ConstructionException
     {
-        objectModel.inject( moduleInstance, uses == null ? UsesInstance.NO_USES : uses, instance );
+        if( uses == null )
+        {
+            objectModel.inject( moduleInstance, UsesInstance.NO_USES, instance );
+        }
+        else
+        {
+            objectModel.inject( moduleInstance, uses, instance );
+        }
     }
 
     public Iterator<T> iterator()
