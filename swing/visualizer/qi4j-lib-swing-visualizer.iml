@@ -29,7 +29,7 @@
     <orderEntry type="library" exported="" name="Maven: com.jgoodies:looks:2.2.0" level="project" />
     <orderEntry type="module" module-name="qi4j-core-runtime" exported="" />
     <orderEntry type="library" exported="" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
-    <orderEntry type="module" module-name="qi4j-ext-indexing-rdf" />
+    <orderEntry type="library" name="Maven: org.qi4j.extension:qi4j-ext-indexing-rdf:0.5-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="qi4j-lib-rdf" />
     <orderEntry type="module" module-name="qi4j-lib-constraints" />
     <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-model:2.2.1" level="project" />

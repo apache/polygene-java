@@ -25,7 +25,7 @@
     <orderEntry type="module" module-name="qi4j-core-testsupport" exported="" />
     <orderEntry type="module" module-name="qi4j-lib-constraints" exported="" />
     <orderEntry type="module" module-name="qi4j-lib-framework" exported="" />
-    <orderEntry type="module" module-name="qi4j-ext-indexing-rdf" exported="" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.extension:qi4j-ext-indexing-rdf:0.5-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="qi4j-lib-rdf" exported="" />
     <orderEntry type="library" exported="" name="Maven: org.openrdf.sesame:sesame-model:2.2.1" level="project" />
     <orderEntry type="library" exported="" name="Maven: info.aduna.commons:aduna-commons-collections:2.2" level="project" />
