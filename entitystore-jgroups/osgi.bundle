@@ -33,7 +33,7 @@ Import-Package: javax.crypto, \
                 org.qi4j.spi.serialization, \
                 org.w3c.dom
 
-Export-Package: org.qi4j.entity.jgroups, \
+Export-Package: org.qi4j.entitystore.jgroups, \
                 org.jgroups, \
                 org.jgroups.blocks, \
                 org.jgroups.conf, \

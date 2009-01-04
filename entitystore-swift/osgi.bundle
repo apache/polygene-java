@@ -1,0 +1,26 @@
+Bundle-Activator:
+
+Private-Package:
+
+Import-Package: org.qi4j.api.composite, \
+                org.qi4j.api.common, \
+                org.qi4j.api.concern, \
+                org.qi4j.api.configuration, \
+                org.qi4j.api.entity, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.mixin, \
+                org.qi4j.api.property, \
+                org.qi4j.api.sideeffect, \
+                org.qi4j.api.service, \
+                org.qi4j.api.structure, \
+                org.qi4j.bootstrap, \
+                org.qi4j.entity.memory, \
+                org.qi4j.spi.entity.helpers, \
+                org.qi4j.library.locking, \
+                org.qi4j.spi, \
+                org.qi4j.spi.composite, \
+                org.qi4j.spi.entity, \
+                org.qi4j.spi.query, \
+                org.qi4j.spi.serialization
+
+Export-Package: org.qi4j.entitystore.swift

@@ -6,7 +6,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extension</groupId>
-  <artifactId>qi4j-ext-entitystore-rmi</artifactId>
+  <artifactId>qi4j-entitystore-rmi</artifactId>
   <name>Qi4j Extension - RMI Entity Store</name>
   <version>0.5-SNAPSHOT</version>
   <packaging>bundle</packaging>

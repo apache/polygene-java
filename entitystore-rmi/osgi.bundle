@@ -17,4 +17,4 @@ Import-Package: org.qi4j.api.composite, \
                 org.qi4j.spi.entity.helpers, \
                 org.qi4j.api.structure
 
-Export-Package: org.qi4j.entity.rmi
+Export-Package: org.qi4j.entitystore.rmi

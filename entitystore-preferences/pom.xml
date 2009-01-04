@@ -8,7 +8,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extension</groupId>
-  <artifactId>qi4j-ext-entitystore-preferences</artifactId>
+  <artifactId>qi4j-entitystore-preferences</artifactId>
   <version>0.5-SNAPSHOT</version>
   <name>Qi4j Extension - Preferences Entity Store</name>
 

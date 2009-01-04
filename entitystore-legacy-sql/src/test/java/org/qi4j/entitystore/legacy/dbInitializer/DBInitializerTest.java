@@ -1,0 +1,68 @@
+/*  Copyright 2008 Edward Yakop.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.qi4j.entitystore.legacy.dbInitializer;
+
+import static junit.framework.Assert.fail;
+import org.junit.Test;
+import org.junit.After;
+import org.qi4j.entitystore.legacy.DerbyDatabaseHandler;
+import org.qi4j.entitystore.legacy.dbInitializer.DBInitializer;
+import org.qi4j.entitystore.legacy.dbInitializer.DBInitializerConfiguration;
+import java.util.Properties;
+
+/**
+ * {@code DBInitializerTest} test db initializer.
+ *
+ */
+public final class DBInitializerTest
+{
+    private final DerbyDatabaseHandler derbyDatabaseHandler;
+
+    public DBInitializerTest()
+    {
+        derbyDatabaseHandler = new DerbyDatabaseHandler();
+    }
+
+
+    /**
+     * Tests the initializer.
+     *
+     * @throws Exception Thrown if initialization failed.
+     * @since 0.1.0
+     */
+    @Test
+    public void testInitializer()
+        throws Exception
+    {
+        final DBInitializerConfiguration info = derbyDatabaseHandler.createDbInitializerConfigMock();
+        final DBInitializer initializer = new DBInitializer();
+        Properties connectionProperties = info.connectionProperties().get();
+        String schemaUrl = info.schemaUrl().get();
+        String dataUrl = info.dataUrl().get();
+        String dbUrl = info.dbUrl().get();
+        initializer.initialize( schemaUrl, dataUrl, dbUrl, connectionProperties );
+        derbyDatabaseHandler.checkDataInitialization();
+    }
+
+    @After public void tearDown()
+    {
+        if( derbyDatabaseHandler != null )
+        {
+            derbyDatabaseHandler.shutdown();
+        }
+    }
+}

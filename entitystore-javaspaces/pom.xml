@@ -8,7 +8,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extension</groupId>
-  <artifactId>qi4j-ext-entitystore-javaspaces</artifactId>
+  <artifactId>qi4j-entitystore-javaspaces</artifactId>
   <packaging>jar</packaging>
   <name>Qi4j Extension - Entity Store - Java Spaces</name>
   <dependencies>

@@ -23,7 +23,7 @@ Import-Package: org.qi4j.api.common, \
                 org.qi4j.spi.serialization, \
                 org.qi4j.api.structure
 
-Export-Package: org.qi4j.entity.jdbm
+Export-Package: org.qi4j.entitystore.jdbm
 
 Embed-Dependency: jdbm;scope=compile|runtime, \
                   jdbm.*;scope=compile|runtime
