@@ -67,7 +67,7 @@
     <orderEntry type="library" exported="" name="Maven: commons-dbcp:commons-dbcp:1.2.2" level="project" />
     <orderEntry type="library" exported="" name="Maven: commons-pool:commons-pool:1.3" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-simple:1.4.2" level="project" />
-    <orderEntry type="module" module-name="qi4j-ext-indexing-rdf" exported="" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.extension:qi4j-ext-indexing-rdf:0.5-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.restlet:org.restlet:1.1-M4" level="project" />
     <orderEntry type="library" exported="" name="Maven: com.noelios.restlet:com.noelios.restlet:1.1-M4" level="project" />
     <orderEntry type="library" exported="" name="Maven: com.noelios.restlet:com.noelios.restlet.ext.servlet:1.1-M4" level="project" />
