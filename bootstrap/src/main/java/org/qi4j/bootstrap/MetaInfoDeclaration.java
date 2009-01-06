@@ -78,7 +78,8 @@ public final class MetaInfoDeclaration
         return DefaultValues.getDefaultValue( type );
     }
 
-    private static class InfoHolder<T> implements InvocationHandler, PropertyDeclarations, InfoDeclaration<T>
+    private static class InfoHolder<T>
+        implements InvocationHandler, PropertyDeclarations, InfoDeclaration<T>
     {
         private final static class MethodInfo
         {
@@ -109,7 +110,8 @@ public final class MetaInfoDeclaration
             final Class<?> returnType = method.getReturnType();
             return Proxy.newProxyInstance( returnType.getClassLoader(), new Class[]{ returnType }, new InvocationHandler()
             {
-                public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
+                public Object invoke( Object o, Method method, Object[] objects )
+                    throws Throwable
                 {
                     if( method.getName().equals( "set" ) )
                     {

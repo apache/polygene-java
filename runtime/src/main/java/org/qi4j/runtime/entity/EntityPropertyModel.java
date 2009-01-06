@@ -33,9 +33,13 @@ public final class EntityPropertyModel extends PropertyModel
 
     private final boolean queryable;
 
-    public EntityPropertyModel( Method anAccessor, ValueConstraintsInstance constraints, MetaInfo metaInfo, Object defaultValue )
+    public EntityPropertyModel( Method anAccessor,
+                                boolean immutable,
+                                ValueConstraintsInstance constraints,
+                                MetaInfo metaInfo,
+                                Object defaultValue )
     {
-        super( anAccessor, constraints, metaInfo, defaultValue );
+        super( anAccessor, immutable, constraints, metaInfo, defaultValue );
         final Queryable queryable = anAccessor.getAnnotation( Queryable.class );
         this.queryable = queryable == null || queryable.value();
     }

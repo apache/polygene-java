@@ -17,8 +17,10 @@ package org.qi4j.runtime.injection.provider;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.InvalidValueCompositeException;
+import org.qi4j.api.composite.ValueComposite;
 import org.qi4j.api.concern.internal.ConcernFor;
-import org.qi4j.api.sideeffect.internal.SideEffectFor;
 import org.qi4j.api.injection.scope.AssociationField;
 import org.qi4j.api.injection.scope.AssociationParameter;
 import org.qi4j.api.injection.scope.Invocation;
@@ -28,10 +30,12 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.sideeffect.internal.SideEffectFor;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
+import org.qi4j.spi.composite.CompositeDescriptor;
 
 /**
  * TODO
@@ -39,35 +43,56 @@ import org.qi4j.runtime.injection.InjectionProviderFactory;
 public final class InjectionProviderFactoryStrategy
     implements InjectionProviderFactory
 {
-    private final Map<Class<? extends Annotation>, InjectionProviderFactory> providerFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();
+    private final Map<Class<? extends Annotation>, InjectionProviderFactory> generalProviderFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();
+    private final Map<Class<? extends Annotation>, InjectionProviderFactory> valuesProviderFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();
 
     public InjectionProviderFactoryStrategy()
     {
-        providerFactories.put( This.class, new ThisInjectionProviderFactory() );
+        valuesProviderFactories.put( This.class, new ThisInjectionProviderFactory() );
         ModifiesInjectionProviderFactory modifiesInjectionProviderFactory = new ModifiesInjectionProviderFactory();
-        providerFactories.put( ConcernFor.class, modifiesInjectionProviderFactory );
-        providerFactories.put( SideEffectFor.class, modifiesInjectionProviderFactory );
-        providerFactories.put( Invocation.class, new InvocationInjectionProviderFactory() );
-        providerFactories.put( Uses.class, new UsesInjectionProviderFactory() );
+        valuesProviderFactories.put( ConcernFor.class, modifiesInjectionProviderFactory );
+        valuesProviderFactories.put( SideEffectFor.class, modifiesInjectionProviderFactory );
         PropertyInjectionProviderFactory propertyInjectionProviderFactory = new PropertyInjectionProviderFactory();
-        providerFactories.put( PropertyField.class, propertyInjectionProviderFactory );
-        providerFactories.put( PropertyParameter.class, propertyInjectionProviderFactory );
+        valuesProviderFactories.put( PropertyField.class, propertyInjectionProviderFactory );
+        valuesProviderFactories.put( PropertyParameter.class, propertyInjectionProviderFactory );
+        
         AssociationInjectionProviderFactory associationInjectionProviderFactory = new AssociationInjectionProviderFactory();
-        providerFactories.put( AssociationField.class, associationInjectionProviderFactory );
-        providerFactories.put( AssociationParameter.class, associationInjectionProviderFactory );
-        providerFactories.put( Structure.class, new CachingInjectionProviderFactoryDecorator( new StructureInjectionProviderFactory() ) );
-        providerFactories.put( Service.class, new CachingInjectionProviderFactoryDecorator( new ServiceInjectionProviderFactory() ) );
+        generalProviderFactories.put( AssociationField.class, associationInjectionProviderFactory );
+        generalProviderFactories.put( AssociationParameter.class, associationInjectionProviderFactory );
+        generalProviderFactories.put( Structure.class, new CachingInjectionProviderFactoryDecorator( new StructureInjectionProviderFactory() ) );
+        generalProviderFactories.put( Service.class, new CachingInjectionProviderFactoryDecorator( new ServiceInjectionProviderFactory() ) );
+        generalProviderFactories.put( Invocation.class, new InvocationInjectionProviderFactory() );
+        generalProviderFactories.put( Uses.class, new UsesInjectionProviderFactory() );
     }
 
-    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
+        throws InvalidInjectionException
     {
         Class<? extends Annotation> injectionAnnotationType = dependencyModel.injectionAnnotation().annotationType();
-        InjectionProviderFactory factory = providerFactories.get( injectionAnnotationType );
-        if( factory == null )
+        InjectionProviderFactory factory1 = generalProviderFactories.get( injectionAnnotationType );
+        InjectionProviderFactory factory2 = valuesProviderFactories.get( injectionAnnotationType );
+        if( factory1 == null && factory2 == null )
         {
             throw new InvalidInjectionException( "Unknown injection annotation @" + injectionAnnotationType.getSimpleName() );
         }
-
+        CompositeDescriptor composite = resolution.composite();
+        if( composite != null )
+        {
+            Class<? extends Composite> compositeType = composite.type();
+            if( factory1 != null && ValueComposite.class.isAssignableFrom( compositeType ) )
+            {
+                throw new InvalidValueCompositeException( "@" + injectionAnnotationType.getSimpleName() + " is not allowed in ValueComposites: " + compositeType );
+            }
+        }
+        InjectionProviderFactory factory;
+        if( factory1 == null )
+        {
+            factory = factory2;
+        }
+        else
+        {
+            factory = factory1;
+        }
         return factory.newInjectionProvider( resolution, dependencyModel );
     }
 }

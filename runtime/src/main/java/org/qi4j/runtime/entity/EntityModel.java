@@ -29,6 +29,7 @@ import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.RDF;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.property.Immutable;
 import org.qi4j.api.unitofwork.EntityCompositeAlreadyExistsException;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.AssociationDeclarations;
@@ -66,10 +67,13 @@ public final class EntityModel
 {
     public static EntityModel newModel( Class<? extends EntityComposite> type,
                                         Visibility visibility,
-                                        MetaInfo info, PropertyDeclarations propertyDecs, AssociationDeclarations associationDecs )
+                                        MetaInfo metaInfo,
+                                        PropertyDeclarations propertyDecs,
+                                        AssociationDeclarations associationDecs )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( type );
-        EntityPropertiesModel entityPropertiesModel = new EntityPropertiesModel( constraintsModel, propertyDecs );
+        boolean immutable = metaInfo.get( Immutable.class ) != null;;
+        EntityPropertiesModel entityPropertiesModel = new EntityPropertiesModel( constraintsModel, propertyDecs, immutable );
         AssociationsModel associationsModel = new AssociationsModel( constraintsModel, associationDecs );
         EntityStateModel stateModel = new EntityStateModel( entityPropertiesModel, associationsModel );
         EntityMixinsModel mixinsModel = new EntityMixinsModel( type, stateModel );
@@ -83,7 +87,7 @@ public final class EntityModel
 
         return new EntityModel( type,
                                 visibility,
-                                info,
+                                metaInfo,
                                 mixinsModel,
                                 stateModel,
                                 compositeMethodsModel );

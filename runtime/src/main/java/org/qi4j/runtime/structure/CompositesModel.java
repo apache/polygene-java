@@ -27,9 +27,9 @@ import org.qi4j.api.common.Visibility;
 public class CompositesModel
     implements Binder
 {
-    private final List<CompositeModel> compositeModels;
+    private final List<? extends CompositeModel> compositeModels;
 
-    public CompositesModel( List<CompositeModel> compositeModels )
+    public CompositesModel( List<? extends CompositeModel> compositeModels )
     {
         this.compositeModels = compositeModels;
     }
@@ -43,7 +43,8 @@ public class CompositesModel
         }
     }
 
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         for( CompositeModel compositeModel : compositeModels )
         {

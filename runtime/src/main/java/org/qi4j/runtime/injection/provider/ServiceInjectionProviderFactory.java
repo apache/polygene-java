@@ -28,7 +28,8 @@ import org.qi4j.api.service.ServiceReference;
 public final class ServiceInjectionProviderFactory
     implements InjectionProviderFactory
 {
-    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
+        throws InvalidInjectionException
     {
         if( dependencyModel.rawInjectionType().equals( Iterable.class ) )
         {
@@ -110,7 +111,8 @@ public final class ServiceInjectionProviderFactory
             this.serviceType = serviceType;
         }
 
-        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        public Object provideInjection( InjectionContext context )
+            throws InjectionProviderException
         {
             return context.moduleInstance().findService( serviceType );
         }

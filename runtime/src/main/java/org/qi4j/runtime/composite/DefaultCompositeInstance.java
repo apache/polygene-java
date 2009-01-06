@@ -27,7 +27,7 @@ import org.qi4j.api.common.MetaInfo;
 /**
  * InvocationHandler for proxy objects.
  */
-public final class DefaultCompositeInstance
+public class DefaultCompositeInstance
     implements CompositeInstance, MixinsInstance
 {
     public static DefaultCompositeInstance getCompositeInstance( Composite composite )
@@ -37,7 +37,7 @@ public final class DefaultCompositeInstance
 
     private final Composite proxy;
     private final Object[] mixins;
-    private StateHolder state;
+    protected StateHolder state;
     private final CompositeModel compositeModel;
     private final ModuleInstance moduleInstance;
 

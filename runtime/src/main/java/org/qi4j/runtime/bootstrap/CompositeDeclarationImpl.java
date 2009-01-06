@@ -56,11 +56,22 @@ public final class CompositeDeclarationImpl
         for( Class<? extends Composite> compositeType : compositeTypes )
         {
             MetaInfo compositeMetaInfo = new MetaInfo( metaInfo ).withAnnotations( compositeType );
+            addAnnotationsMetaInfo( compositeType, compositeMetaInfo );
             CompositeModel compositeModel = CompositeModel.newModel( compositeType,
                                                                      visibility,
                                                                      compositeMetaInfo,
                                                                      propertyDeclarations );
             composites.add( compositeModel );
         }
+    }
+
+    private void addAnnotationsMetaInfo( Class<? extends Composite> type, MetaInfo compositeMetaInfo )
+    {
+        Class[] declaredInterfaces = type.getInterfaces();
+        for( int i=declaredInterfaces.length-1 ; i >= 0 ; i-- )
+        {
+            addAnnotationsMetaInfo( declaredInterfaces[i], compositeMetaInfo );
+        }
+        compositeMetaInfo.withAnnotations( type );
     }
 }

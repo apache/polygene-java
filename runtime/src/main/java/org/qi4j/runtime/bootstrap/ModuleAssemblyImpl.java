@@ -30,9 +30,12 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ObjectDeclaration;
 import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.bootstrap.ImportedServiceDeclaration;
+import org.qi4j.bootstrap.ValueDeclaration;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.ValueComposite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.runtime.composite.CompositeModel;
+import org.qi4j.runtime.composite.ValueModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.service.ServiceModel;
@@ -62,6 +65,7 @@ public final class ModuleAssemblyImpl
     private String name;
     private final List<CompositeDeclarationImpl> compositeDeclarations = new ArrayList<CompositeDeclarationImpl>();
     private final List<EntityDeclarationImpl> entityDeclarations = new ArrayList<EntityDeclarationImpl>();
+    private final List<ValueDeclarationImpl> valueDeclarations = new ArrayList<ValueDeclarationImpl>();
     private final List<ObjectDeclarationImpl> objectDeclarations = new ArrayList<ObjectDeclarationImpl>();
     private final List<ServiceDeclarationImpl> serviceDeclarations = new ArrayList<ServiceDeclarationImpl>();
     private final List<ImportedServiceDeclarationImpl> importedServiceDeclarations = new ArrayList<ImportedServiceDeclarationImpl>();
@@ -95,6 +99,14 @@ public final class ModuleAssemblyImpl
         return name;
     }
 
+    public ValueDeclaration addValues( Class<? extends ValueComposite>... compositeTypes )
+    {
+        ValueDeclarationImpl valueDeclaration = new ValueDeclarationImpl( compositeTypes );
+        valueDeclarations.add( valueDeclaration );
+        return valueDeclaration;
+
+    }
+
     public CompositeDeclaration addComposites( Class<? extends Composite>... compositeTypes )
         throws AssemblyException
     {
@@ -108,6 +120,10 @@ public final class ModuleAssemblyImpl
             else if( EntityComposite.class.isAssignableFrom( compositeType ) )
             {
                 throw new AssemblyException( "May not register EntityComposites as a Composite:" + compositeType.getName() );
+            }
+            else if( ValueComposite.class.isAssignableFrom( compositeType ) )
+            {
+                throw new AssemblyException( "May not register ValueComposites as a Composite:" + compositeType.getName() );
             }
         }
 
@@ -202,6 +218,11 @@ public final class ModuleAssemblyImpl
         for( CompositeDeclarationImpl compositeDeclaration : compositeDeclarations )
         {
             compositeDeclaration.addComposites( compositeModels, metaInfoDeclaration );
+        }
+
+        for( ValueDeclarationImpl compositeDeclaration : valueDeclarations )
+        {
+            compositeDeclaration.addValues( compositeModels, metaInfoDeclaration );
         }
 
         for( EntityDeclarationImpl entityDeclaration : entityDeclarations )

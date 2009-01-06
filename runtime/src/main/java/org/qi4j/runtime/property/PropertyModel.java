@@ -15,25 +15,24 @@
 package org.qi4j.runtime.property;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import java.util.List;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.property.Immutable;
-import org.qi4j.api.property.Computed;
 import org.qi4j.api.entity.RDF;
+import org.qi4j.api.property.Computed;
 import org.qi4j.api.property.ComputedPropertyInstance;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
-import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ConstraintsCheck;
+import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.api.common.MetaInfo;
 
 /**
  * TODO
@@ -59,9 +58,13 @@ public class PropertyModel
     private PropertyInfo builderInfo;
     private PropertyInfo propertyInfo;
 
-    public PropertyModel(
-        Method anAccessor, ValueConstraintsInstance constraints, MetaInfo aMetaInfo, Object aPropertyDefaultValue )
+    public PropertyModel( Method anAccessor,
+                          boolean immutable,
+                          ValueConstraintsInstance constraints,
+                          MetaInfo aMetaInfo,
+                          Object aPropertyDefaultValue )
     {
+        this.immutable = immutable;
         metaInfo = aMetaInfo;
         name = anAccessor.getName();
         type = GenericPropertyInfo.getPropertyType( anAccessor );
@@ -74,12 +77,11 @@ public class PropertyModel
         rdf = uriAnnotation == null ? null : uriAnnotation.value();
 
         this.constraints = constraints;
-        
-        immutable = metaInfo.get( Immutable.class ) != null;
+
         computed = metaInfo.get( Computed.class ) != null;
 
-        builderInfo = new GenericPropertyInfo(metaInfo, false, computed, name, qualifiedName,  type);
-        propertyInfo = new GenericPropertyInfo(metaInfo, immutable, computed, name, qualifiedName,  type);
+        builderInfo = new GenericPropertyInfo( metaInfo, false, computed, name, qualifiedName, type );
+        propertyInfo = new GenericPropertyInfo( metaInfo, this.immutable, computed, name, qualifiedName, type );
     }
 
     public <T> T metaInfo( Class<T> infoType )
@@ -135,7 +137,7 @@ public class PropertyModel
     public Property<?> newBuilderInstance()
     {
         // Properties cannot be immutable during construction
-        
+
         Property<?> property;
         if( computed )
         {
@@ -146,7 +148,7 @@ public class PropertyModel
             property = new PropertyInstance<Object>( builderInfo, defaultValue(), this );
         }
 
-        return wrapProperty(property);
+        return wrapProperty( property );
     }
 
     public Property<?> newDefaultInstance()
@@ -170,7 +172,7 @@ public class PropertyModel
         {
             property = new PropertyInstance<Object>( propertyInfo, value, this );
         }
-        return wrapProperty(property);
+        return wrapProperty( property );
     }
 
     public void checkConstraints( Object value )
@@ -222,10 +224,10 @@ public class PropertyModel
 
     protected Property<?> wrapProperty( Property<?> property )
     {
-        if (!accessor.getReturnType().equals(Property.class) && !accessor.getReturnType().isInstance( property ))
+        if( !accessor.getReturnType().equals( Property.class ) && !accessor.getReturnType().isInstance( property ) )
         {
             // Create proxy
-            property = (Property<?>) Proxy.newProxyInstance( accessor.getReturnType().getClassLoader(), new Class[] {accessor.getReturnType()}, new PropertyHandler(property) );
+            property = (Property<?>) Proxy.newProxyInstance( accessor.getReturnType().getClassLoader(), new Class[]{ accessor.getReturnType() }, new PropertyHandler( property ) );
         }
         return property;
     }

@@ -113,6 +113,11 @@ public final class CompositeMethodsModel
         }
     }
 
+    Iterable<Method> methods()
+    {
+        return methods.keySet();
+    }
+    
     public void visitModel( ModelVisitor modelVisitor )
     {
         for( CompositeMethodModel compositeMethodModel : methods.values() )

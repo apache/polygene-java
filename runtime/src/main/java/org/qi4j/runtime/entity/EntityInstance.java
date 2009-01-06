@@ -225,7 +225,7 @@ public final class EntityInstance
         try
         {
             Identity other = ( (Identity) o );
-            return other != null && identity.identity().equals( other.identity().get() );
+            return other != null && other.identity().get().equals( identity.identity() );
         }
         catch( ClassCastException e )
         {

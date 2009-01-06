@@ -17,17 +17,32 @@ package org.qi4j.api.common;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.api.util.Classes;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.sideeffect.SideEffects;
+import org.qi4j.api.concern.Concerns;
 
 /**
  * Used to declare and access metainfo about types.
  */
 public final class MetaInfo
 {
+    private static HashSet ignored;
+
+    static
+    {
+        ignored = new HashSet<Class>();
+        ignored.add( Mixins.class );
+        ignored.add( Concerns.class );
+        ignored.add( SideEffects.class );
+    }
+
     private final Map<Class<?>, Object> metaInfoMap;
+
 
     public MetaInfo()
     {
@@ -63,7 +78,7 @@ public final class MetaInfo
 
     public <T> T get( Class<T> metaInfoType )
     {
-        return metaInfoType.cast( metaInfoMap.get( metaInfoType ));
+        return metaInfoType.cast( metaInfoMap.get( metaInfoType ) );
     }
 
     public <T> void add( Class<T> infoType, T info )
@@ -75,7 +90,10 @@ public final class MetaInfo
     {
         for( Annotation annotation : annotatedElement.getAnnotations() )
         {
-            set( annotation );
+            if( !ignored.contains( annotation.annotationType() ) )
+            {
+                set( annotation );
+            }
         }
         return this;
     }

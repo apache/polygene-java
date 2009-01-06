@@ -12,25 +12,25 @@
  *
  */
 
-package org.qi4j.api.entity;
+package org.qi4j.api.composite;
 
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.entity.association.AssociationMixin;
-import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Immutable;
 
 /**
- * ValueComposites:
- * * No Identity
- * * No Lifecycle
- * * Immutable
- * * Can only have properties
- * * Instance management for reuse
- * 
+ * ValueComposites are Composites that only has value, and equality is defined from its values and not any identity
+ * nor instance references.
+ *
+ * <ul>
+ * <li>No Identity</li>
+ * <li>No Lifecycle</li>
+ * <li>Immutable</li>
+ * <li>equals()/hashCode() operates on the Properties</li>
+ * <li>Can only have property methods.</li>
+ * <li>Can not reference Services</li>
+ * <li>Can not have @Uses</li>
+ * <li>Instance management for reuse</li>
  */
-@Mixins( AssociationMixin.class )
 @Immutable
-public interface ValueComposite
-    extends Composite
+public interface ValueComposite extends Composite
 {
 }

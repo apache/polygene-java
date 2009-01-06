@@ -27,6 +27,7 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.property.Immutable;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
@@ -49,11 +50,13 @@ public final class EntityPropertiesModel
     private final Map<String, Method> accessors = new HashMap<String, Method>();
     private final ConstraintsModel constraints;
     private PropertyDeclarations propertyDeclarations;
+    private boolean immutable;
 
-    public EntityPropertiesModel( ConstraintsModel constraints, PropertyDeclarations propertyDeclarations )
+    public EntityPropertiesModel( ConstraintsModel constraints, PropertyDeclarations propertyDeclarations, boolean immutable )
     {
         this.constraints = constraints;
         this.propertyDeclarations = propertyDeclarations;
+        this.immutable = immutable;
     }
 
     public void addPropertyFor( Method method )
@@ -156,7 +159,8 @@ public final class EntityPropertiesModel
         }
         MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
         Object defaultValue = propertyDeclarations.getDefaultValue( method );
-        EntityPropertyModel propertyModel = new EntityPropertyModel( method, valueConstraintsInstance, metaInfo, defaultValue );
+        boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
+        EntityPropertyModel propertyModel = new EntityPropertyModel( method, immutable, valueConstraintsInstance, metaInfo, defaultValue );
         return propertyModel;
     }
 }

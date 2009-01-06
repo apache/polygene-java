@@ -15,14 +15,14 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.entity.Lifecycle;
+import org.qi4j.api.composite.ValueComposite;
+import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.PropertyDeclarations;
@@ -38,30 +38,19 @@ import org.qi4j.spi.composite.StateDescriptor;
 /**
  * TODO
  */
-public final class CompositeModel
+public class CompositeModel
     implements Binder, CompositeDescriptor
 {
-    private static final Method LIFECYCLE_CREATE;
-
-    static
-    {
-        try
-        {
-            LIFECYCLE_CREATE = Lifecycle.class.getMethod( "create" );
-        }
-        catch( NoSuchMethodException e )
-        {
-            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: Lifeycle" );
-        }
-    }
-
     public static CompositeModel newModel( final Class<? extends Composite> compositeType,
                                            final Visibility visibility,
                                            final MetaInfo metaInfo,
                                            final PropertyDeclarations propertyDeclarations )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
-        StateModel stateModel = new StateModel( new PropertiesModel( constraintsModel, propertyDeclarations ) );
+        boolean immutable = metaInfo.get( Immutable.class ) != null;
+        ;
+        PropertiesModel propertiesModel = new PropertiesModel( constraintsModel, propertyDeclarations, immutable );
+        StateModel stateModel = new StateModel( propertiesModel );
         MixinsModel mixinsModel = new MixinsModel( compositeType, stateModel );
         ConcernsDeclaration concernsModel = new ConcernsDeclaration( compositeType );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType );
@@ -72,20 +61,20 @@ public final class CompositeModel
             compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
     }
 
-    private final MixinsModel mixinsModel;
-    private final CompositeMethodsModel compositeMethodsModel;
+    protected final MixinsModel mixinsModel;
+    protected final CompositeMethodsModel compositeMethodsModel;
     private final Class<? extends Composite> compositeType;
     private final Visibility visibility;
     private final MetaInfo metaInfo;
     private final StateModel stateModel;
     private final Class<? extends Composite> proxyClass;
 
-    private CompositeModel( final Class<? extends Composite> compositeType,
-                            final Visibility visibility,
-                            final MetaInfo metaInfo,
-                            final MixinsModel mixinsModel,
-                            final StateModel stateModel,
-                            final CompositeMethodsModel compositeMethodsModel
+    protected CompositeModel( final Class<? extends Composite> compositeType,
+                              final Visibility visibility,
+                              final MetaInfo metaInfo,
+                              final MixinsModel mixinsModel,
+                              final StateModel stateModel,
+                              final CompositeMethodsModel compositeMethodsModel
     )
     {
         this.compositeType = compositeType;
@@ -191,7 +180,15 @@ public final class CompositeModel
         stateModel.checkConstraints( state );
 
         Object[] mixins = mixinsModel.newMixinHolder();
-        DefaultCompositeInstance compositeInstance = new DefaultCompositeInstance( this, moduleInstance, mixins, state );
+        CompositeInstance compositeInstance;
+        if( ValueComposite.class.isAssignableFrom( compositeType ) )
+        {
+            compositeInstance = new ValueCompositeInstance( this, moduleInstance, mixins, state );
+        }
+        else
+        {
+            compositeInstance = new DefaultCompositeInstance( this, moduleInstance, mixins, state );
+        }
 
         try
         {
@@ -205,34 +202,11 @@ public final class CompositeModel
         catch( InvalidCompositeException e )
         {
             e.setFailingCompositeType( compositeType );
-            e.setMessage( "Invalid Cyclic Mixin usage dependency"  );
+            e.setMessage( "Invalid Cyclic Mixin usage dependency" );
             throw e;
         }
-        // Invoke lifecycle create() method
-        Composite proxy = compositeInstance.proxy();
-        if( proxy instanceof Lifecycle )
-        {
-            invokeCreate( proxy );
-        }
-
         // Return
         return compositeInstance;
-    }
-
-    private void invokeCreate( Composite proxy )
-    {
-        try
-        {
-            LIFECYCLE_CREATE.invoke( proxy );
-        }
-        catch( IllegalAccessException e )
-        {
-            e.printStackTrace();
-        }
-        catch( InvocationTargetException e )
-        {
-            e.printStackTrace();
-        }
     }
 
     public StateHolder newBuilderState()

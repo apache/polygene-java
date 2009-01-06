@@ -24,6 +24,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Collections;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.util.Classes;
@@ -64,6 +65,11 @@ public abstract class AbstractMixinsModel
     public Iterable<Class> mixinTypes()
     {
         return mixinTypes;
+    }
+
+    public Iterable<Method> mixinMethods()
+    {
+        return Collections.unmodifiableSet( methodImplementation.keySet() );   
     }
 
     public boolean hasMixinType( Class<?> mixinType )

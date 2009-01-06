@@ -24,6 +24,7 @@ import org.qi4j.runtime.composite.MethodConstraintsModel;
 import org.qi4j.runtime.composite.MethodSideEffectModel;
 import org.qi4j.runtime.composite.MethodSideEffectsModel;
 import org.qi4j.runtime.composite.MixinModel;
+import org.qi4j.runtime.composite.ValueModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;
 import org.qi4j.runtime.injection.InjectedMethodModel;
@@ -50,6 +51,10 @@ public class ModelVisitor
     }
 
     public void visit( CompositeModel compositeModel )
+    {
+    }
+
+    public void visit( ValueModel valueModel )
     {
     }
 

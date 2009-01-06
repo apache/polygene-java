@@ -17,6 +17,7 @@ package org.qi4j.test.mock;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.ValueComposite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.bootstrap.Assembler;
@@ -29,6 +30,7 @@ import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ObjectDeclaration;
 import org.qi4j.bootstrap.ServiceDeclaration;
+import org.qi4j.bootstrap.ValueDeclaration;
 
 /**
  * TODO
@@ -91,6 +93,11 @@ public class MockAssembler
         public CompositeDeclaration addComposites( Class<? extends Composite>... compositeTypes ) throws AssemblyException
         {
             return delegate.addComposites( compositeTypes );
+        }
+
+        public ValueDeclaration addValues( Class<? extends ValueComposite>... compositeTypes ) throws AssemblyException
+        {
+            return delegate.addValues( compositeTypes );
         }
 
         public EntityDeclaration addEntities( Class<? extends EntityComposite>... compositeTypes ) throws AssemblyException
