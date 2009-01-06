@@ -6,7 +6,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extension</groupId>
-  <artifactId>qi4j-ext-rest</artifactId>
+  <artifactId>qi4j-rest</artifactId>
   <name>Qi4j Extension - REST Interface</name>
   <version>0.5-SNAPSHOT</version>
   <packaging>bundle</packaging>
@@ -34,7 +34,7 @@
     </dependency>
     <dependency>
       <groupId>org.qi4j.extension</groupId>
-      <artifactId>qi4j-ext-indexing-rdf</artifactId>
+      <artifactId>qi4j-indexing-rdf</artifactId>
       <version>0.5-SNAPSHOT</version>
     </dependency>
     <dependency>
