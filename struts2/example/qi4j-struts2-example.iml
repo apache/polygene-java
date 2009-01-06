@@ -73,9 +73,9 @@
             <attribute name="method" value="1" />
             <attribute name="URI" value="/WEB-INF/lib/" />
           </containerElement>
-          <containerElement type="module" name="qi4j-ext-indexing-rdf">
+          <containerElement type="module" name="qi4j-indexing-rdf">
             <attribute name="method" value="5" />
-            <attribute name="URI" value="/WEB-INF/lib/qi4j-ext-indexing-rdf-0.5-SNAPSHOT.jar" />
+            <attribute name="URI" value="/WEB-INF/lib/qi4j-indexing-rdf-0.5-SNAPSHOT.jar" />
           </containerElement>
           <containerElement type="module" name="qi4j-lib-rdf">
             <attribute name="method" value="5" />
@@ -330,7 +330,7 @@
     <orderEntry type="library" exported="" name="Maven: commons-io:commons-io:1.3.2" level="project" />
     <orderEntry type="module" module-name="qi4j-struts2-codebehind-plugin" exported="" />
     <orderEntry type="library" exported="" name="Maven: org.apache.struts:struts2-codebehind-plugin:2.1.2" level="project" />
-    <orderEntry type="module" module-name="qi4j-ext-indexing-rdf" exported="" />
+    <orderEntry type="module" module-name="qi4j-indexing-rdf" exported="" />
     <orderEntry type="module" module-name="qi4j-lib-rdf" exported="" />
     <orderEntry type="module" module-name="qi4j-lib-constraints" exported="" />
     <orderEntry type="module" module-name="qi4j-core-testsupport" exported="" />

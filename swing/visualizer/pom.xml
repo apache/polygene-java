@@ -68,7 +68,7 @@
     </dependency>
     <dependency>
       <groupId>org.qi4j.extension</groupId>
-      <artifactId>qi4j-ext-indexing-rdf</artifactId>
+      <artifactId>qi4j-indexing-rdf</artifactId>
       <version>0.5-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
