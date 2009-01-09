@@ -14,7 +14,7 @@ Import-Package: org.qi4j.api.composite, \
                 org.qi4j.api.service, \
                 org.qi4j.api.structure, \
                 org.qi4j.bootstrap, \
-                org.qi4j.entity.memory, \
+                org.qi4j.entitystore.memory, \
                 org.qi4j.spi.entity.helpers, \
                 org.qi4j.library.locking, \
                 org.qi4j.spi, \

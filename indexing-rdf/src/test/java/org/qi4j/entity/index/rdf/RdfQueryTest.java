@@ -46,7 +46,7 @@ import org.qi4j.entity.index.rdf.model.entities.DomainEntity;
 import org.qi4j.entity.index.rdf.model.entities.FemaleEntity;
 import org.qi4j.entity.index.rdf.model.entities.MaleEntity;
 import org.qi4j.entity.index.rdf.model.entities.AccountEntity;
-import org.qi4j.entity.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.api.query.Query;
