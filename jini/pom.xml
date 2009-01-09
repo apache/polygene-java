@@ -4,12 +4,12 @@
   <parent>
     <groupId>org.qi4j</groupId>
     <artifactId>qi4j</artifactId>
-    <version>0.5</version>
+    <version>0.6-SNAPSHOT</version>
   </parent>
   <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-lib-jini</artifactId>
   <name>Qi4j Library - Jini</name>
-  <version>0.5</version>
+  <version>0.6-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>

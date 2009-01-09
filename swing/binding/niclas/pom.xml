@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.qi4j.library.swing</groupId>
     <artifactId>qi4j-lib-swing-binding</artifactId>
-    <version>0.5</version>
+    <version>0.6-SNAPSHOT</version>
   </parent>
 
   <groupId>org.qi4j.library.swing.binding</groupId>
@@ -15,29 +15,29 @@
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-api</artifactId>
-      <version>0.5</version>
+      <version>0.6-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-bootstrap</artifactId>
-      <version>0.5</version>
+      <version>0.6-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-runtime</artifactId>
-      <version>0.5</version>
+      <version>0.6-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-testsupport</artifactId>
-      <version>0.5</version>
+      <version>0.6-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.qi4j.library</groupId>
       <artifactId>qi4j-lib-constraints</artifactId>
-      <version>0.5</version>
+      <version>0.6-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
