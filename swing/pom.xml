@@ -24,7 +24,8 @@
     <dependency>
       <groupId>fest</groupId>
       <artifactId>fest-swing-junit</artifactId>
-      <version>1.0a3</version>
+      <version>1.0rc2</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
