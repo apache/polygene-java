@@ -24,7 +24,7 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.library.thread.assembly.NewThreadServiceAssembler;
-import org.qi4j.entity.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 

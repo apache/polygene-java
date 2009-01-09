@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.qi4j.bootstrap.ApplicationName;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entity.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import static org.qi4j.library.http.Dispatchers.Dispatcher.REQUEST;
 import static org.qi4j.library.http.Servlets.addFilters;
 import static org.qi4j.library.http.Servlets.addServlets;

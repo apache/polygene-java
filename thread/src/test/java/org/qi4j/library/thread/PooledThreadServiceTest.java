@@ -25,7 +25,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.entity.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.library.thread.assembly.PooledThreadServiceAssembler;
 import org.qi4j.test.AbstractQi4jTest;

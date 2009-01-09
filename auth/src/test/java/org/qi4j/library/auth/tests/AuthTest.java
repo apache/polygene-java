@@ -26,7 +26,7 @@ import org.qi4j.api.composite.CompositeBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.entity.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.library.auth.Authorization;
 import org.qi4j.library.auth.AuthorizationContext;

@@ -25,7 +25,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.AssociationMixin;
-import org.qi4j.entity.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.swing.visualizer.VisualizerLauncher;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Application;

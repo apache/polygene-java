@@ -32,7 +32,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.entity.association.Association;
-import org.qi4j.entity.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.swing.binding.domain.Cat;
 import org.qi4j.library.swing.binding.domain.Person;
 import org.qi4j.library.swing.binding.domain.entities.CatEntity;
