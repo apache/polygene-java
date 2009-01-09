@@ -1,17 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.qi4j</groupId>
     <artifactId>qi4j</artifactId>
-    <version>0.5-SNAPSHOT</version>
+    <version>0.5</version>
   </parent>
   <groupId>org.qi4j</groupId>
   <artifactId>qi4j-extensions</artifactId>
   <name>Qi4j Extension (Build POM)</name>
-  <version>0.5-SNAPSHOT</version>
+  <version>0.5</version>
   <packaging>pom</packaging>
   <!-- This POM is ONLY to initiate the modules to be built. -->
   <modules>
@@ -105,7 +102,7 @@
     <developer>
       <id>mesirii</id>
       <name>Michael Hunger</name>
-      <organization></organization>
+      <organization />
       <email>qi4j@jexp.de</email>
       <timezone>CET</timezone>
     </developer>
@@ -113,7 +110,7 @@
       <id>nmwael</id>
       <name>Nino Saturnino Martinez Vazquez Wael</name>
       <organization>Jayway</organization>
-      <email></email>
+      <email />
       <timezone>CET</timezone>
     </developer>
     <developer>
@@ -126,7 +123,7 @@
     <developer>
       <id>rwallace</id>
       <name>Richard Wallace</name>
-      <organization></organization>
+      <organization />
       <email>rwallace@thewallacepack.net</email>
       <timezone>UTC-7</timezone>
     </developer>
