@@ -35,4 +35,4 @@ Export-Package: org.qi4j.spi;version=${pom.version}, \
                 org.qi4j.spi.service.importer;version=${pom.version}, \
                 org.qi4j.spi.sideeffect, \
                 org.qi4j.spi.structure;version=${pom.version}, \
-                org.qi4j.entity.memory;version=${pom.version}
+                org.qi4j.entitystore.memory;version=${pom.version}

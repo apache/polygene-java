@@ -20,24 +20,28 @@ import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.usecase.Usecase;
 
 /**
- * All operations on entities goes through an UnitOfWork. A UnitOfWork allows you to access
+ * All operations on entities goes through an UnitOfWork.
+ * <p>A UnitOfWork allows you to access
  * Entities and work with them. All modifications to Entities are recorded by the UnitOfWork,
  * and at the end they may be sent to the underlying EntityStore by calling complete(). If the
  * UoW was read-only you may instead simply discard() it.
- *
+ * </p>
+ * <p>
  * A UoW differs from a traditional Transaction in the sense that it is not tied at all to the underlying
  * storage resource. Because of this there is no timeout on a UoW. It can be very short or very long.
  * Another difference is that if a call to complete() fails, and the cause is validation errors in the
  * Entities of the UoW, then these can be corrected and the UoW retried. By contrast, when a Transaction
  * commit fails, then the whole transaction has to be done from the beginning again.
- *
+ * <p>
  * UoW's can be nested easily. The changes done in the nested UoW do not show up in the parent UoW until
  * complete() is called, at which point the changes are merged with the parent UoW. If a nested UoW is
  * discarded then all of the changes made in the nested UoW will be thrown away.
- *
+ * </p>
+ * <p>
  * A UoW can be associated with a Usecase. A Usecase describes the metainformation about the process
  * to be performed by the UoW. It contains settings such as CAP-guarantees and what state is going to be used
  * by the Usecase, which helps eager loading.
+ * </p>
  */
 public interface UnitOfWork
 {

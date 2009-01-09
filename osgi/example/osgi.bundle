@@ -6,7 +6,7 @@ Import-Package: org.osgi.framework, \
                 org.qi4j.bootstrap, \
                 org.qi4j.api.composite, \
                 org.qi4j.entity, \
-                org.qi4j.entity.memory, \
+                org.qi4j.entitystore.memory, \
                 org.qi4j.api.injection.scope, \
                 org.qi4j.api.property, \
                 org.qi4j.spi.entity, \

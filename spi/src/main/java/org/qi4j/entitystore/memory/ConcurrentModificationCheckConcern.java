@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.entity.memory;
+package org.qi4j.entitystore.memory;
 
 import java.util.ArrayList;
 import java.util.Collection;
