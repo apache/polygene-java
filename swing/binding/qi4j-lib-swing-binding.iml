@@ -13,14 +13,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="Maven: fest:fest-swing-junit:1.0a3" level="project" />
-    <orderEntry type="library" exported="" name="Maven: commons-codec:commons-codec:1.3" level="project" />
-    <orderEntry type="library" name="Maven: junit:junit:4.4" level="project" />
-    <orderEntry type="library" exported="" name="Maven: fest:fest-swing:1.0a3" level="project" />
-    <orderEntry type="library" exported="" name="Maven: mrj:MRJToolkitStubs:1.0" level="project" />
-    <orderEntry type="library" exported="" name="Maven: fest:fest-util:0.4" level="project" />
-    <orderEntry type="library" exported="" name="Maven: fest:fest-assert:1.0a1" level="project" />
-    <orderEntry type="library" exported="" name="Maven: fest:fest-reflect:0.4" level="project" />
+    <orderEntry type="library" name="Maven: fest:fest-swing-junit:1.0rc2" level="project" />
   </component>
 </module>
 

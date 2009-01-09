@@ -19,6 +19,7 @@ package org.qi4j.library.swing.binding;
 import static junit.framework.Assert.assertEquals;
 import org.fest.swing.fixture.JTextComponentFixture;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.qi4j.library.swing.binding.domain.Cat;
 import org.qi4j.library.swing.binding.domain.Person;
 import org.qi4j.api.entity.EntityBuilder;
@@ -30,7 +31,7 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
  */
 public class StateModelAssociationTest extends AbstractStateModelTest
 {
-    @Test
+    @Test @Ignore( "Too sensitive of the GUI environment. Need better testing solution.")
     public final void testAssociationBinding()
         throws UnitOfWorkCompletionException
     {
