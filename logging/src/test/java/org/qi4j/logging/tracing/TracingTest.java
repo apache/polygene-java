@@ -29,7 +29,7 @@ import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.entity.index.rdf.assembly.RdfMemoryStoreAssembler;
+import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.logging.trace.Trace;
 import org.qi4j.logging.trace.TraceAllConcern;
