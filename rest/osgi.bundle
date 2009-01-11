@@ -37,9 +37,9 @@ Import-Package: com.noelios.restlet.ext.servlet, \
                 org.qi4j.api.structure, \
                 org.qi4j.api.unitofwork, \
                 org.qi4j.bootstrap, \
-                org.qi4j.entity.index.rdf, \
-                org.qi4j.entity.index.rdf.assembly, \
-                org.qi4j.entity.index.rdf.callback, \
+                org.qi4j.index.rdf, \
+                org.qi4j.index.rdf.assembly, \
+                org.qi4j.index.rdf.callback, \
                 org.qi4j.library.rdf, \
                 org.qi4j.library.rdf.entity, \
                 org.qi4j.library.rdf.serializer, \

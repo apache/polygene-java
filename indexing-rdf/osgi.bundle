@@ -1,5 +1,5 @@
 
-Export-Package: org.qi4j.entity.index.rdf.*;version="1"
+Export-Package: org.qi4j.index.rdf.*;version="1"
 
 Import-Package: org.apache.commons.logging, \
                 javax.crypto, \

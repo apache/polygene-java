@@ -43,7 +43,7 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.unitofwork.EntityCompositeNotFoundException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.entity.association.Association;
-import org.qi4j.entity.index.rdf.assembly.RdfMemoryStoreAssembler;
+import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.property.Property;
