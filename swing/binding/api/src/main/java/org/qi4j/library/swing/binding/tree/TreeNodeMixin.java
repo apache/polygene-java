@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import javax.swing.tree.TreeNode;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.CompositeBuilder;
 import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.api.injection.scope.Structure;
@@ -36,7 +37,7 @@ public final class TreeNodeMixin
 
     private List<TreeNode> childNodes;
 
-    public TreeNodeMixin( @Uses( optional = true ) Container meAsContainer, @Uses( optional = true ) Child meAsChild )
+    public TreeNodeMixin( @Optional @Uses Container meAsContainer, @Optional @Uses Child meAsChild )
     {
         this.meAsContainer = meAsContainer;
         this.meAsChild = meAsChild;

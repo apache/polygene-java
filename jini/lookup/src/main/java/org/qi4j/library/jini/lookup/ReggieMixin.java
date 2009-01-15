@@ -31,6 +31,7 @@ import java.util.StringTokenizer;
 import net.jini.admin.Administrable;
 import net.jini.config.Configuration;
 import net.jini.config.EmptyConfiguration;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
@@ -41,7 +42,7 @@ import org.qi4j.library.http.Interface;
 public class ReggieMixin
     implements Activatable
 {
-    @Service( optional = true ) HttpService httpService;
+    @Optional @Service HttpService httpService;
     @This org.qi4j.api.configuration.Configuration<ReggieConfiguration> my;
 
     private NonActivatableServiceDescriptor.Created lookupCreated;

@@ -18,15 +18,16 @@
 package org.qi4j.library.observations;
 
 import java.util.ArrayList;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.library.exception.ExceptionHandling;
 
 class MulticastObserver<T extends Observation>
     implements Observer<T>, Observable<T>
 {
-    @Service( optional = true ) private ExceptionHandling exceptionHandling;
+    @Optional @Service private ExceptionHandling exceptionHandling;
     @This private Composite meAsComposite;
 
     private ArrayList<Observer<T>> observers;

@@ -19,13 +19,14 @@ package org.qi4j.library.registry;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.library.exception.ExceptionHandling;
 
 public class RegistryMixin<K, V>
     implements Registry<K, V>
 {
-    @Service( optional = true ) private ExceptionHandling exceptionHandling;
+    @Optional @Service private ExceptionHandling exceptionHandling;
 
     private final HashMap<K, V> registrations;
     private LinkedList<RegistryObserver<K, V>> observers;

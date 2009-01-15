@@ -18,6 +18,7 @@
 package org.qi4j.library.swing.binding;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
@@ -32,8 +33,7 @@ import org.qi4j.library.swing.binding.internal.StateInvocationHandler;
 
 public final class StateModel<T>
 {
-
-    private @Uses( optional = true ) BoundField fieldOwnedThis;
+    private @Uses @Optional BoundField fieldOwnedThis;
 
     private final Class<T> type;
     private final ObjectBuilderFactory obf;

@@ -17,20 +17,21 @@
  */
 package org.qi4j.logging.log;
 
+import java.io.Serializable;
 import org.qi4j.api.Qi4j;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.logging.log.service.LoggingService;
-import java.io.Serializable;
 
 public final class CategoryLogConcern
     implements CategoryLog
 {
     @Structure private Qi4j api;
-    @Service( optional = true ) private LoggingService loggingService;
+    @Optional @Service private LoggingService loggingService;
     @This private Composite composite;
     private LogTypes types;
 

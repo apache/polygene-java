@@ -17,15 +17,16 @@
  */
 package org.qi4j.library.observations;
 
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.library.exception.ExceptionHandling;
 
 public class ObservableMixin<T extends Observation>
     implements Observable<T>, Observer<T>
 {
-    @Service( optional = true ) private ExceptionHandling exceptionHandling;
+    @Optional @Service private ExceptionHandling exceptionHandling;
     @This private Composite meAsComposite;
 
     private Observer<T> observer;

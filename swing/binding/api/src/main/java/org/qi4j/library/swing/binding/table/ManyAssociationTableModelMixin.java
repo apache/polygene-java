@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 import javax.swing.event.TableModelListener;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.entity.association.ListAssociation;
@@ -45,7 +46,7 @@ public class ManyAssociationTableModelMixin
     private boolean isList;
 
     public ManyAssociationTableModelMixin( @Uses ManyAssociation association,
-                                           @Uses( optional = true ) Comparator<PropertyDescriptor> comparator,
+                                           @Optional @Uses Comparator<PropertyDescriptor> comparator,
                                            @Structure Module module,
                                            @Structure Qi4jSPI spi )
     {

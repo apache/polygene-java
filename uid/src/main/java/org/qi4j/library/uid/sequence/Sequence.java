@@ -17,6 +17,7 @@
  */
 package org.qi4j.library.uid.sequence;
 
+import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Property;
 
@@ -26,5 +27,6 @@ import org.qi4j.api.property.Property;
 @Queryable( false )
 public interface Sequence
 {
+    @UseDefaults
     Property<Long> currentValue();
 }
