@@ -24,11 +24,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.Properties;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Properties;
 import java.util.concurrent.locks.ReadWriteLock;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
@@ -39,22 +39,23 @@ import jdbm.helper.LongSerializer;
 import jdbm.helper.Serializer;
 import jdbm.helper.Tuple;
 import jdbm.helper.TupleBrowser;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.library.locking.WriteLock;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.service.ServiceDescriptor;
-import org.qi4j.spi.entity.EntityTypeRegistryMixin;
-import org.qi4j.spi.entity.helpers.DefaultEntityState;
+import org.qi4j.library.locking.WriteLock;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.EntityTypeRegistryMixin;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.entity.helpers.DefaultEntityState;
 import org.qi4j.spi.serialization.SerializableState;
 
 /**
@@ -70,7 +71,7 @@ public class JdbmEntityStoreMixin
 
     private RecordManager recordManager;
     private BTree index;
-    private @Uses(optional=true) Serializer serializer;
+    private @Optional @Uses Serializer serializer;
     private long registryId;
 
     // Activatable implementation

@@ -18,8 +18,9 @@ package org.qi4j.entitystore.neo4j;
 
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Transaction;
-import org.qi4j.entitystore.neo4j.state.DirectEntityState;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.entitystore.neo4j.state.DirectEntityState;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -32,7 +33,7 @@ public class NeoIdentityIndexMixin implements NeoIdentityIndex
     // Dependencies
     private @Service NeoCoreService neo;
     private @Service NeoTransactionService txService;
-    private @Service( optional = true ) NeoIdentityGeneratorService idGenerator;
+    private @Optional @Service NeoIdentityGeneratorService idGenerator;
 
     // NeoIdentityIndex implementation
 
