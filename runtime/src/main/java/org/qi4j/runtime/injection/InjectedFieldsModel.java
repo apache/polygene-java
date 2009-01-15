@@ -47,7 +47,8 @@ public final class InjectedFieldsModel
 
     private void addModel( Class fragmentClass, Field field, Annotation injectionAnnotation )
     {
-        DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, field.getGenericType(), fragmentClass );
+        boolean optional = DependencyModel.isOptional( injectionAnnotation, field.getAnnotations() );
+        DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, field.getGenericType(), fragmentClass, optional );
         InjectedFieldModel injectedFieldModel = new InjectedFieldModel( field, dependencyModel );
         this.fields.add( injectedFieldModel );
     }

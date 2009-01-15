@@ -26,9 +26,9 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.property.Immutable;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
@@ -162,9 +162,8 @@ public final class PropertiesModel
             valueConstraintsInstance = valueConstraintsModel.newInstance();
         }
         MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
-        Object defaultValue = propertyDeclarations.getDefaultValue( method );
-        boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
-        PropertyModel propertyModel = new PropertyModel( method, immutable, valueConstraintsInstance, metaInfo, defaultValue );
+        Object initialValue = propertyDeclarations.getInitialValue( method );        boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
+        PropertyModel propertyModel = new PropertyModel( method, immutable, valueConstraintsInstance, metaInfo, initialValue );
         return propertyModel;
     }
 }

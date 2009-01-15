@@ -22,6 +22,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.List;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.RDF;
@@ -30,6 +31,7 @@ import org.qi4j.api.property.ComputedPropertyInstance;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
+import org.qi4j.bootstrap.DefaultValues;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.spi.property.PropertyDescriptor;
@@ -51,18 +53,15 @@ public class PropertyModel
 
     private final ValueConstraintsInstance constraints; // May be null
     private final MetaInfo metaInfo;
-    private final Object defaultValue;
+    private final Object initialValue;
     private final boolean immutable;
     private final boolean computed;
 
     private PropertyInfo builderInfo;
     private PropertyInfo propertyInfo;
 
-    public PropertyModel( Method anAccessor,
-                          boolean immutable,
-                          ValueConstraintsInstance constraints,
-                          MetaInfo aMetaInfo,
-                          Object aPropertyDefaultValue )
+    public PropertyModel(
+        Method anAccessor, boolean immutable, ValueConstraintsInstance constraints, MetaInfo aMetaInfo, Object anInitialValue )
     {
         this.immutable = immutable;
         metaInfo = aMetaInfo;
@@ -70,7 +69,15 @@ public class PropertyModel
         type = GenericPropertyInfo.getPropertyType( anAccessor );
         accessor = anAccessor;
         qualifiedName = GenericPropertyInfo.getQualifiedName( anAccessor );
-        defaultValue = aPropertyDefaultValue;
+
+        // Check for @UseDefaults annotation
+        if (anInitialValue == null)
+        {
+            if (metaInfo.get( UseDefaults.class ) != null)
+                anInitialValue = DefaultValues.getDefaultValue( type );
+        }
+
+        initialValue = anInitialValue;
 
         uri = GenericPropertyInfo.toURI( qualifiedName() );
         RDF uriAnnotation = metaInfo.get( RDF.class );
@@ -119,9 +126,9 @@ public class PropertyModel
         return computed;
     }
 
-    public Object defaultValue()
+    public Object initialValue()
     {
-        return defaultValue;
+        return initialValue;
     }
 
     public String toURI()
@@ -145,17 +152,17 @@ public class PropertyModel
         }
         else
         {
-            property = new PropertyInstance<Object>( builderInfo, defaultValue(), this );
+            property = new PropertyInstance<Object>( builderInfo, initialValue(), this );
         }
 
-        return wrapProperty( property );
+        return wrapProperty(property);
     }
 
     public Property<?> newDefaultInstance()
     {
         // Construct instance without using a builder
 
-        return newInstance( defaultValue() );
+        return newInstance( initialValue() );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -224,10 +231,10 @@ public class PropertyModel
 
     protected Property<?> wrapProperty( Property<?> property )
     {
-        if( !accessor.getReturnType().equals( Property.class ) && !accessor.getReturnType().isInstance( property ) )
+        if (!accessor.getReturnType().equals(Property.class) && !accessor.getReturnType().isInstance( property ))
         {
             // Create proxy
-            property = (Property<?>) Proxy.newProxyInstance( accessor.getReturnType().getClassLoader(), new Class[]{ accessor.getReturnType() }, new PropertyHandler( property ) );
+            property = (Property<?>) Proxy.newProxyInstance( accessor.getReturnType().getClassLoader(), new Class[] {accessor.getReturnType()}, new PropertyHandler(property) );
         }
         return property;
     }

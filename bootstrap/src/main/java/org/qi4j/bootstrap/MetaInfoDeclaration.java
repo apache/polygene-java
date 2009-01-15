@@ -18,11 +18,9 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.property.GenericPropertyInfo;
 
 /**
  * Declaration of a Property or Association.
@@ -64,18 +62,17 @@ public final class MetaInfoDeclaration
         return new MetaInfo().withAnnotations( declaringType ).withAnnotations( accessor ).withAnnotations( accessor.getReturnType() );
     }
 
-    public Object getDefaultValue( Method accessor )
+    public Object getInitialValue( Method accessor )
     {
         for( InfoHolder<?> propertyDeclarationHolder : mixinPropertyDeclarations.values() )
         {
-            final Object defaultValue = propertyDeclarationHolder.getDefaultValue( accessor );
-            if( defaultValue != null )
+            final Object initialValue = propertyDeclarationHolder.getInitialValue( accessor );
+            if( initialValue != null )
             {
-                return defaultValue;
+                return initialValue;
             }
         }
-        final Type type = GenericPropertyInfo.getPropertyType( accessor );
-        return DefaultValues.getDefaultValue( type );
+        return null;
     }
 
     private static class InfoHolder<T>
@@ -83,7 +80,7 @@ public final class MetaInfoDeclaration
     {
         private final static class MethodInfo
         {
-            Object defaultValue;
+            Object initialValue;
             MetaInfo metaInfo;
 
             private MethodInfo( MetaInfo metaInfo )
@@ -115,7 +112,7 @@ public final class MetaInfoDeclaration
                 {
                     if( method.getName().equals( "set" ) )
                     {
-                        methodInfo.defaultValue = objects[ 0 ];
+                        methodInfo.initialValue = objects[ 0 ];
                     }
                     return null;
                 }
@@ -137,14 +134,14 @@ public final class MetaInfoDeclaration
             return methodInfo.metaInfo;
         }
 
-        public Object getDefaultValue( Method accessor )
+        public Object getInitialValue( Method accessor )
         {
             final MethodInfo methodInfo = matches( accessor );
             if( methodInfo == null )
             {
                 return null;
             }
-            return methodInfo.defaultValue;
+            return methodInfo.initialValue;
         }
 
         // DSL Interface

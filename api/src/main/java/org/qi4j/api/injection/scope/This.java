@@ -37,10 +37,4 @@ import org.qi4j.api.injection.InjectionScope;
 @InjectionScope
 public @interface This
 {
-    /**
-     * True if the dependency is optional, only fail
-     * if this is false.
-     * @return true if dependency is optional
-     */
-    boolean optional() default false;
 }

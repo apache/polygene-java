@@ -27,5 +27,5 @@ public interface PropertyDescriptor
 
     String toURI();
 
-    Object defaultValue();
+    Object initialValue();
 }

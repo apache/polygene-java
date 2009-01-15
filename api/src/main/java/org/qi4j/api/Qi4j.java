@@ -24,7 +24,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 public interface Qi4j
 {
     /**
-     * If a Modified gets a reference to the Composite using @This,
+     * If a Modifier gets a reference to the Composite using @This,
      * then that reference must be dereferenced using this method
      * before handing it out for others to use.
      *

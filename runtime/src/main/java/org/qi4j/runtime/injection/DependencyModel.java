@@ -21,11 +21,13 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.Collections;
 import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.common.Optional;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.provider.InvalidInjectionException;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.Specification;
+import org.qi4j.runtime.util.Annotations;
 import static org.qi4j.runtime.util.CollectionUtils.firstElementOrNull;
 import org.qi4j.spi.composite.DependencyDescriptor;
 
@@ -36,29 +38,11 @@ import org.qi4j.spi.composite.DependencyDescriptor;
 public final class DependencyModel
     implements Binder, DependencyDescriptor
 {
-    // Model
-    private final Annotation injectionAnnotation;
-    private final Type injectionType;
-    private final Class<?> injectedClass;
-    private final Class<?> rawInjectionClass;
-    private final Class<?> injectionClass;
-    private final boolean optional;
-
-    // Binding
-    private InjectionProvider injectionProvider;
-
-    public DependencyModel( Annotation injectionAnnotation, Type genericType, Class<?> injectedClass )
+    public static boolean isOptional( Annotation injectionAnnotation, Annotation[] annotations )
     {
-        this.injectionAnnotation = injectionAnnotation;
-        this.injectedClass = injectedClass;
-        this.injectionType = genericType;
-        this.optional = isOptional( injectionAnnotation );
-        this.rawInjectionClass = mapPrimitiveTypes( extractRawInjectionClass( injectedClass, injectionType ) );
-        this.injectionClass = extractInjectionClass( injectionType );
-    }
+        if (Annotations.getAnnotationOfType( annotations, Optional.class ) != null)
+            return true;
 
-    private boolean isOptional( Annotation injectionAnnotation )
-    {
         Method[] methods = injectionAnnotation.annotationType().getMethods();
         for( Method method : methods )
         {
@@ -74,7 +58,29 @@ public final class DependencyModel
                 }
             }
         }
+
         return false;
+    }
+    
+    // Model
+    private final Annotation injectionAnnotation;
+    private final Type injectionType;
+    private final Class<?> injectedClass;
+    private final Class<?> rawInjectionClass;
+    private final Class<?> injectionClass;
+    private final boolean optional;
+
+    // Binding
+    private InjectionProvider injectionProvider;
+
+    public DependencyModel( Annotation injectionAnnotation, Type genericType, Class<?> injectedClass, boolean optional )
+    {
+        this.injectionAnnotation = injectionAnnotation;
+        this.injectedClass = injectedClass;
+        this.injectionType = genericType;
+        this.optional = optional;
+        this.rawInjectionClass = mapPrimitiveTypes( extractRawInjectionClass( injectedClass, injectionType ) );
+        this.injectionClass = extractInjectionClass( injectionType );
     }
 
     private Class<?> extractRawInjectionClass( Class<?> injectedClass, final Type injectionType )

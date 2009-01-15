@@ -74,7 +74,10 @@ public final class ConstructorsModel
             {
                 return null; // invalid constructor parameter
             }
-            DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, type, fragmentClass );
+
+            boolean optional = DependencyModel.isOptional( injectionAnnotation, parameterAnnotations[idx]);
+
+            DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, type, fragmentClass, optional );
             parameters.addDependency( dependencyModel );
             idx++;
         }

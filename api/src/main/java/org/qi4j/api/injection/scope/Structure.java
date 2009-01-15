@@ -31,7 +31,7 @@ import org.qi4j.api.injection.InjectionScope;
  * - CompositeBuilderFactory
  * - ObjectBuilderFactory
  * - UnitOfWorkFactory
- * - ServiceLocator
+ * - ServiceFinder
  * - Module
  * - Layer
  * - Application

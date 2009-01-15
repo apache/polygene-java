@@ -25,5 +25,5 @@ public interface PropertyDeclarations
 {
     MetaInfo getMetaInfo( Method accessor );
 
-    Object getDefaultValue( Method accessor );
+    Object getInitialValue( Method accessor );
 }

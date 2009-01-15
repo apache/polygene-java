@@ -36,6 +36,7 @@ public final class DefaultValues
         defaultValues.put( Double.class, 0D );
         defaultValues.put( Float.class, 0F );
         defaultValues.put( Boolean.class, false );
+        defaultValues.put( String.class, "" );
         return defaultValues;
     }
 

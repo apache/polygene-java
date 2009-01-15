@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,24 +11,35 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api.injection.scope;
+package org.qi4j.api.common;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.qi4j.api.injection.InjectionScope;
 
 /**
- * Annotation to denote the injection of a dependency to be used by a Mixin. The injected
- * object is provided by the CompositeBuilder. Call {@link org.qi4j.api.composite.CompositeBuilder#use} to provide the instance
- * to be injected.
+ * Annotation to denote that the initial value of a Property will be the default value for the type if none is
+ * specified during construction.
+ * <br/>
+ * These are the default values used for various types:
+ * <pre>
+ * Byte: 0
+ * Short: 0
+ * Character: 0
+ * Integer: 0
+ * Long: 0L
+ * Double: 0D
+ * Float: 0F
+ * Boolean: false
+ * String: ""
+ * </pre>
+ * If this annotation is not used, the property will be set to null.
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.PARAMETER, ElementType.FIELD } )
+@Target( { ElementType.METHOD } )
 @Documented
-@InjectionScope
-public @interface Uses
+public @interface UseDefaults
 {
 }

@@ -16,8 +16,7 @@ package org.qi4j.api.service;
 
 /**
  * From a ServiceReference you can access and modify metadata about a service.
- * You can also access the actual service through get(), that can then be invoked. When the usage is
- * done this must be signalled by calling releaseService().
+ * You can also access the actual service through get(), that can then be invoked. 
  */
 public interface ServiceReference<T>
 {

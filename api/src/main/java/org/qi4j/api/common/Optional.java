@@ -21,11 +21,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to denote that a method parameter is optional, i.e. it can be null. Default
+ * Annotation to denote that something is optional.
+ *
+ * If applied to a method parameter, then the value is allowed to be null. Default
  * is that method parameters have to be non-null.
+ *
+ * If applied to a Property declaration, then the value may be null after construction of
+ * the instance, or may be set to null at a later time.
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.PARAMETER, ElementType.METHOD } )
+@Target( { ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD } )
 @Documented
 public @interface Optional
 {

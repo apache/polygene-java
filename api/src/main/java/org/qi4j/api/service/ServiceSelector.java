@@ -14,6 +14,8 @@
 
 package org.qi4j.api.service;
 
+import java.util.Iterator;
+
 /**
  * This class helps you select a particular service
  * from a list. Provide a Selector which does the actual
@@ -22,8 +24,9 @@ package org.qi4j.api.service;
  * new ServiceSelector<MyService>(services, ServiceSelector.withId("someId"))
  *
  * Many selectors can be combined by using firstOf. Example:
- * new ServiceSelector<MyService>(services, firstOf(withTags("sometag"), firstActive()))
- * This will pick a service that has the tag "sometag", or if none is found take the first active one.
+ * new ServiceSelector<MyService>(services, firstOf(withTags("sometag"), firstActive(), first()))
+ * This will pick a service that has the tag "sometag", or if none is found take the first active one. If no
+ * service is active, then the first service will be picked.
  */
 public final class ServiceSelector<T>
 {
@@ -54,6 +57,25 @@ public final class ServiceSelector<T>
                 for( ServiceReference<T> service : services )
                 {
                     if( service.identity().equals( anId ) )
+                    {
+                        return service;
+                    }
+                }
+                return null;
+            }
+        };
+    }
+
+    public static Selector whereMetaInfoIs(final Object metaInfo)
+    {
+        return new Selector()
+        {
+            public <T> ServiceReference<T> select( Iterable<ServiceReference<T>> services )
+            {
+                for( ServiceReference<T> service : services )
+                {
+                    Object metaObject = service.metaInfo( metaInfo.getClass() );
+                    if( metaObject != null && metaInfo.equals(metaObject))
                     {
                         return service;
                     }
@@ -97,6 +119,21 @@ public final class ServiceSelector<T>
                     }
                 }
                 return null;
+            }
+        };
+    }
+
+    public static Selector first()
+    {
+        return new Selector()
+        {
+            public <T> ServiceReference<T> select( Iterable<ServiceReference<T>> services )
+            {
+                Iterator<ServiceReference<T>> iterator = services.iterator();
+                if (iterator.hasNext())
+                    return iterator.next();
+                else
+                    return null;
             }
         };
     }
