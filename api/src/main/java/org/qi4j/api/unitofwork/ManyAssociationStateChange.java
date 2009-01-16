@@ -28,23 +28,23 @@ public class ManyAssociationStateChange
         ADDED, REMOVED, REPLACE, CLEAR
     }
 
-    private Entity newAssociation;
-    private Entity oldAssociation;
+    private ChangeType changeType;
+    private Collection<Entity> changes;
 
-    public ManyAssociationStateChange( Entity source, ChangeType changeType, Collection<Entity> changes)
+    public ManyAssociationStateChange( String source, String qualifiedName, ChangeType changeType, Collection<Entity> changes)
     {
-        super( source );
-        this.newAssociation = newAssociation;
-        this.oldAssociation = oldAssociation;
+        super( source, qualifiedName );
+        this.changeType = changeType;
+        this.changes = changes;
     }
 
-    public Entity oldAssociation()
+    public ChangeType changeType()
     {
-        return oldAssociation;
+        return changeType;
     }
 
-    public Entity newAssociation()
+    public Collection<Entity> changes()
     {
-        return newAssociation;
+        return changes;
     }
 }

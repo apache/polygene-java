@@ -22,6 +22,7 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PropertyModel;
+import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.PropertyType;
 
@@ -44,7 +45,7 @@ public final class EntityPropertyModel extends PropertyModel
         this.queryable = queryable == null || queryable.value();
     }
 
-    public Property newEntityInstance( EntityState state )
+    public Property newEntityInstance( EntityState state, UnitOfWorkInstance uow )
     {
         Property property;
         if( isComputed() )
@@ -53,7 +54,7 @@ public final class EntityPropertyModel extends PropertyModel
         }
         else
         {
-            property = new EntityPropertyInstance( this, state, this );
+            property = new EntityPropertyInstance( this, state, this, uow );
         }
 
         return wrapProperty( property );

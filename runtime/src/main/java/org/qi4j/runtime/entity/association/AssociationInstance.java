@@ -15,8 +15,12 @@
 package org.qi4j.runtime.entity.association;
 
 import java.lang.reflect.Type;
+import org.qi4j.api.entity.Entity;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.AssociationInfo;
+import org.qi4j.api.unitofwork.AssociationStateChange;
+import org.qi4j.api.unitofwork.StateChangeListener;
+import org.qi4j.api.unitofwork.StateChangeVoter;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -62,10 +66,40 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
         AssociationModel associationModel = (AssociationModel) associationInfo;
         associationModel.checkConstraints( newValue );
 
-        this.value = newValue;
+        // Allow voters to vote on change
+        Iterable<StateChangeVoter> stateChangeVoters = unitOfWork.stateChangeVoters();
+        AssociationStateChange change = null;
+        if( stateChangeVoters != null )
+        {
+            change = new AssociationStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), (Entity) newValue, (Entity) get() );
+
+            for( StateChangeVoter stateChangeVoter : stateChangeVoters )
+            {
+                stateChangeVoter.acceptChange( change );
+            }
+        }
+
+        Iterable<StateChangeListener> stateChangeListeners = unitOfWork.stateChangeListeners();
+        if( stateChangeListeners != null )
+        {
+            // Have to create this here in order to get old value
+            change = new AssociationStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), (Entity) newValue, (Entity) get() );
+        }
+
+        // Change association
         if( entityState != null )
         {
             entityState.setAssociation( qualifiedName(), getEntityId( newValue ) );
+        }
+        this.value = newValue;
+
+        // Notify listeners
+        if( stateChangeListeners != null )
+        {
+            for( StateChangeListener stateChangeListener : stateChangeListeners )
+            {
+                stateChangeListener.notify( change );
+            }
         }
     }
 

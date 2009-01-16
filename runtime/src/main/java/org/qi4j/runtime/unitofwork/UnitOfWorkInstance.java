@@ -51,15 +51,15 @@ import org.qi4j.runtime.structure.EntitiesInstance;
 import org.qi4j.runtime.structure.EntitiesModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
-import org.qi4j.spi.entity.helpers.DefaultEntityState;
-import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.UnknownEntityTypeException;
+import org.qi4j.spi.entity.helpers.DefaultEntityState;
 
 public final class UnitOfWorkInstance
     implements UnitOfWork
@@ -83,8 +83,8 @@ public final class UnitOfWorkInstance
 
     private List<UnitOfWorkCallback> callbacks;
     private UnitOfWorkStore unitOfWorkStore;
-    private List<StateChangeListener> stateChangeListeners = new ArrayList<StateChangeListener>();
-    private List<StateChangeVoter> stateChangeVoters = new ArrayList<StateChangeVoter>();
+    private List<StateChangeListener> stateChangeListeners;
+    private List<StateChangeVoter> stateChangeVoters;
 
     static
     {
@@ -475,7 +475,7 @@ public final class UnitOfWorkInstance
         return moduleInstance;
     }
 
-    public void registerUnitOfWorkCallback( UnitOfWorkCallback callback )
+    public void addUnitOfWorkCallback( UnitOfWorkCallback callback )
     {
         if( callbacks == null )
         {
@@ -483,6 +483,43 @@ public final class UnitOfWorkInstance
         }
 
         callbacks.add( callback );
+    }
+
+    public void removeUnitOfWorkCallback( UnitOfWorkCallback callback )
+    {
+        if (callbacks != null )
+            callbacks.remove( callback );
+    }
+
+    public void addStateChangeVoter( StateChangeVoter voter )
+    {
+        if (stateChangeVoters == null)
+            stateChangeVoters = new ArrayList();
+        stateChangeVoters.add( voter );
+    }
+
+    public void removeStateChangeVoter( StateChangeVoter voter )
+    {
+        if (stateChangeVoters != null)
+            stateChangeVoters.remove( voter );
+    }
+
+    public Iterable<StateChangeVoter> stateChangeVoters()
+    {
+        return stateChangeVoters;
+    }
+
+    public void addStateChangeListener( StateChangeListener listener )
+    {
+        if (stateChangeListeners == null)
+            stateChangeListeners = new ArrayList();
+        stateChangeListeners.add( listener );
+    }
+
+    public void removeStateChangeListener( StateChangeListener listener )
+    {
+        if (stateChangeListeners != null)
+            stateChangeListeners.remove( listener );
     }
 
     void createEntity( EntityComposite instance )
@@ -680,21 +717,6 @@ public final class UnitOfWorkInstance
         {
             throw new UnitOfWorkException( "Unit of work has been closed" );
         }
-    }
-
-    public void registerStateChangeVoter( StateChangeVoter voter )
-    {
-        stateChangeVoters.add( voter );
-    }
-
-    public Iterable<StateChangeVoter> stateChangeVoters()
-    {
-        return stateChangeVoters;
-    }
-
-    public void registerStateChangeListener( StateChangeListener listener )
-    {
-        stateChangeListeners.add( listener );
     }
 
     public Iterable<StateChangeListener> stateChangeListeners()

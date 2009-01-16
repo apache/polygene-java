@@ -25,9 +25,9 @@ public class AssociationStateChange
     private Entity newAssociation;
     private Entity oldAssociation;
 
-    public AssociationStateChange( Entity source, Entity newAssociation, Entity oldAssociation )
+    public AssociationStateChange( String source, String qualifiedName, Entity newAssociation, Entity oldAssociation )
     {
-        super( source );
+        super( source, qualifiedName );
         this.newAssociation = newAssociation;
         this.oldAssociation = oldAssociation;
     }

@@ -274,9 +274,12 @@ public interface UnitOfWork
      *
      * @param callback a callback to be registered with this UnitOfWork
      */
-    void registerUnitOfWorkCallback( UnitOfWorkCallback callback );
+    void addUnitOfWorkCallback( UnitOfWorkCallback callback );
+    void removeUnitOfWorkCallback( UnitOfWorkCallback callback );
 
-    void registerStateChangeVoter( StateChangeVoter voter);
+    void addStateChangeVoter( StateChangeVoter voter);
+    void removeStateChangeVoter( StateChangeVoter voter);
 
-    void registerStateChangeListener( StateChangeListener listener);
+    void addStateChangeListener( StateChangeListener listener);
+    void removeStateChangeListener( StateChangeListener listener);
 }

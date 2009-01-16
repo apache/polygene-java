@@ -19,4 +19,22 @@ package org.qi4j.api.unitofwork;
  */
 public class ChangeVetoException extends IllegalArgumentException
 {
+    public ChangeVetoException()
+    {
+    }
+
+    public ChangeVetoException( String s )
+    {
+        super( s );
+    }
+
+    public ChangeVetoException( String message, Throwable cause )
+    {
+        super( message, cause );
+    }
+
+    public ChangeVetoException( Throwable cause )
+    {
+        super( cause );
+    }
 }

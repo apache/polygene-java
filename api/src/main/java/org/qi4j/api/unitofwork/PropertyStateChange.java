@@ -14,8 +14,6 @@
 
 package org.qi4j.api.unitofwork;
 
-import org.qi4j.api.entity.Entity;
-
 /**
  * TODO
  */
@@ -25,9 +23,9 @@ public class PropertyStateChange
     private Object newValue;
     private Object oldValue;
 
-    public PropertyStateChange( Entity source, Object newValue, Object oldValue )
+    public PropertyStateChange( String source, String qualifiedName, Object newValue, Object oldValue )
     {
-        super( source );
+        super( source, qualifiedName );
         this.newValue = newValue;
         this.oldValue = oldValue;
     }
@@ -40,5 +38,10 @@ public class PropertyStateChange
     public Object newValue()
     {
         return newValue;
+    }
+
+    @Override public String toString()
+    {
+        return "Property "+qualifiedName()+" changed from '"+oldValue+"' to '"+newValue+"' in "+source();
     }
 }

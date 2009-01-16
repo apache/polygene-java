@@ -28,13 +28,13 @@ import org.qi4j.runtime.entity.association.AssociationsInstance;
 import org.qi4j.runtime.entity.association.AssociationsModel;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateDescriptor;
-import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
+import org.qi4j.spi.entity.association.AssociationType;
+import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyDescriptor;
+import org.qi4j.spi.property.PropertyType;
 
 /**
  * TODO
@@ -178,7 +178,7 @@ public final class EntityStateModel
 
             if( property == null )
             {
-                property = entityPropertiesModel.newInstance( accessor, entityState );
+                property = entityPropertiesModel.newInstance( accessor, entityState, uow );
                 properties.put( accessor, property );
             }
 

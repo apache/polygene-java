@@ -15,8 +15,12 @@
 package org.qi4j.runtime.entity;
 
 import org.qi4j.api.property.PropertyInfo;
-import org.qi4j.runtime.property.PropertyInstance;
+import org.qi4j.api.unitofwork.PropertyStateChange;
+import org.qi4j.api.unitofwork.StateChangeListener;
+import org.qi4j.api.unitofwork.StateChangeVoter;
 import org.qi4j.runtime.composite.ConstraintsCheck;
+import org.qi4j.runtime.property.PropertyInstance;
+import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 
 /**
@@ -29,21 +33,24 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
 {
     private static final Object NOT_LOADED = new Object();
 
-    protected EntityState entityState;
+    private EntityState entityState;
+    private UnitOfWorkInstance uow;
 
     /**
      * Construct an instance of {@code PropertyInstance} with the specified arguments.
      *
      * @param aPropertyInfo The property info. This argument must not be {@code null}.
      * @param entityState
+     * @param uow
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
      * @since 0.1.0
      */
-    public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState, ConstraintsCheck constraints )
+    public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState, ConstraintsCheck constraints, UnitOfWorkInstance uow )
         throws IllegalArgumentException
     {
         super( aPropertyInfo, (T) NOT_LOADED, constraints );
         this.entityState = entityState;
+        this.uow = uow;
     }
 
     /**
@@ -69,16 +76,48 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
      */
     public void set( T aNewValue )
     {
-        if (isImmutable())
+        if( isImmutable() )
+        {
             throw new IllegalStateException( "Property [" + qualifiedName() + "] is immutable" );
+        }
 
-        if( constraints != null)
+        if( constraints != null )
         {
             constraints.checkConstraints( aNewValue );
         }
 
+        // Allow voters to vote on change
+        Iterable<StateChangeVoter> stateChangeVoters = uow.stateChangeVoters();
+        PropertyStateChange change = null;
+        if( stateChangeVoters != null )
+        {
+            change = new PropertyStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), aNewValue, get() );
+
+            for( StateChangeVoter stateChangeVoter : stateChangeVoters )
+            {
+                stateChangeVoter.acceptChange( change );
+            }
+        }
+
+        Iterable<StateChangeListener> stateChangeListeners = uow.stateChangeListeners();
+        if( stateChangeListeners != null )
+        {
+            // Have to create this here in order to get old value
+            change = new PropertyStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), aNewValue, get() );
+        }
+
+        // Change property
         entityState.setProperty( qualifiedName(), aNewValue );
         super.set( aNewValue );
+
+        // Notify listeners
+        if( stateChangeListeners != null )
+        {
+            for( StateChangeListener stateChangeListener : stateChangeListeners )
+            {
+                stateChangeListener.notify( change );
+            }
+        }
     }
 
     /**

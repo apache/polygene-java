@@ -14,14 +14,11 @@
 
 package org.qi4j.api.usecase;
 
-import java.io.Serializable;
-
 /**
  * A Usecase. A Usecase is used as a model for UnitOfWork, and helps
  * implementations decide what to do in certain circumstances.
  */
 public class Usecase
-    implements Serializable
 {
     public static final Usecase DEFAULT = new Usecase( "Default", CAP.CA, new StateUsage( false ) );
 

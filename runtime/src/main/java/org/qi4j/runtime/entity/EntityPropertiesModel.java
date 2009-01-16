@@ -34,6 +34,7 @@ import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.runtime.property.PropertyModel;
+import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.util.Annotations;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.PropertyDescriptor;
@@ -90,9 +91,9 @@ public final class EntityPropertiesModel
         return new PropertiesInstance( properties );
     }
 
-    public Property<?> newInstance( Method accessor, EntityState state )
+    public Property<?> newInstance( Method accessor, EntityState state, UnitOfWorkInstance uow )
     {
-        return mapMethodPropertyModel.get( accessor ).newEntityInstance( state );
+        return mapMethodPropertyModel.get( accessor ).newEntityInstance( state, uow );
     }
 
     public PropertyDescriptor getPropertyByName( String name )

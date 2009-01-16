@@ -16,24 +16,24 @@ package org.qi4j.runtime.entity;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.unitofwork.EntityCompositeNotFoundException;
 import org.qi4j.api.entity.Identity;
-import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.entity.Lifecycle;
+import org.qi4j.api.entity.LifecycleException;
+import org.qi4j.api.unitofwork.EntityCompositeNotFoundException;
+import org.qi4j.api.usecase.StateUsage;
 import org.qi4j.runtime.composite.CompositeMethodInstance;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.unitofwork.RecordingEntityState;
+import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.api.usecase.StateUsage;
-import org.qi4j.api.common.MetaInfo;
 
 /**
  * TODO
@@ -281,8 +281,6 @@ public final class EntityInstance
         {
             entityState = new RecordingEntityState( entityState, stateUsage );
         }
-
-//        entityState = new StateChangeNotifier(proxy, entityState, uow.stateChangeListeners());
 
         return entityState;
     }

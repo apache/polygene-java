@@ -14,22 +14,27 @@
 
 package org.qi4j.api.unitofwork;
 
-import org.qi4j.api.entity.Entity;
-
 /**
  * TODO
  */
 public class StateChange
 {
-    private Entity source;
+    private String source;
+    private String qualifiedName;
 
-    public StateChange( Entity source )
+    public StateChange( String source, String qualifiedName )
     {
         this.source = source;
+        this.qualifiedName = qualifiedName;
     }
 
-    Entity source()
+    public String source()
     {
         return source;
+    }
+
+    public String qualifiedName()
+    {
+        return qualifiedName;
     }
 }
