@@ -14,9 +14,6 @@ package org.qi4j.library.general.model;
 
 import org.qi4j.api.property.Property;
 
-/**
- * Generic interface for enabling/disabling service.
- */
 public interface Enabled
 {
     Property<Boolean> isEnabled();

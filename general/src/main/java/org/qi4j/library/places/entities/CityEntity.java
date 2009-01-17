@@ -10,14 +10,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.places.entities;
 
-import org.qi4j.api.property.Immutable;
+import org.qi4j.library.places.City;
+import org.qi4j.library.places.associations.RefersToState;
+import org.qi4j.library.places.associations.RefersToCountry;
+import org.qi4j.api.entity.EntityComposite;
 
 /**
- * Generic interface for Money which stores an amount and currency.
+ * Persistable City entity
  */
-@Immutable
-public interface Money extends HasAmount, HasCurrency
+public interface CityEntity extends City, RefersToState, RefersToCountry, EntityComposite
 {
 }

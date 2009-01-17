@@ -10,14 +10,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.places.properties;
 
-import org.qi4j.api.property.Immutable;
+import org.qi4j.api.property.Property;
+import org.qi4j.library.constraints.annotation.Matches;
 
 /**
- * Generic interface for Money which stores an amount and currency.
+ * Generic interface for Country ISO-CODE.
  */
-@Immutable
-public interface Money extends HasAmount, HasCurrency
-{
-}
+@Matches( "[A-Z][A-Z]" )
+public interface CountryIsoCode extends Property<String>
+{}

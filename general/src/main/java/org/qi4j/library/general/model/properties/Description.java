@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2007, Sianny Halim. All Rights Reserved.
+ * Copyright (c) 2007, Lan Boon Ping. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -10,14 +11,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.general.model.properties;
 
-import org.qi4j.api.property.Immutable;
+import org.qi4j.api.property.Property;
 
-/**
- * Generic interface for Money which stores an amount and currency.
- */
-@Immutable
-public interface Money extends HasAmount, HasCurrency
-{
-}
+public interface Description extends Property<String>
+{}

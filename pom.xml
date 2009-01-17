@@ -17,6 +17,7 @@
     <module>business</module>
     <module>cache</module>
     <module>constraints</module>
+    <module>enumeration</module>
     <module>exception</module>
     <module>executor</module>
     <module>framework</module>

@@ -13,7 +13,7 @@ import org.qi4j.library.general.model.Aggregated;
 public abstract class AggregateValidationConcern extends ConcernOf<Validatable>
     implements Validatable
 {
-    @This Aggregated aggregated;
+    @This private Aggregated aggregated;
 
     public List<ValidationMessage> validate()
     {

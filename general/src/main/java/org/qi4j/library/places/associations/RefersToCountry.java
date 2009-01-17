@@ -10,14 +10,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.places.associations;
 
-import org.qi4j.api.property.Immutable;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.library.places.Country;
 
 /**
- * Generic interface for Money which stores an amount and currency.
+ * Represents one-to-one relationship with {@link org.qi4j.library.places.Country}
  */
-@Immutable
-public interface Money extends HasAmount, HasCurrency
+public interface RefersToCountry
 {
+    Association<Country> country();
 }

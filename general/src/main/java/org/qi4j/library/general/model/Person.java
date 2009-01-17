@@ -13,10 +13,11 @@
 package org.qi4j.library.general.model;
 
 import org.qi4j.api.entity.Identity;
+import org.qi4j.library.general.model.properties.Gender;
 
 /**
  * Generic interface of a person that consists of a name and a gender
  */
-public interface Person extends PersonName, Gender, Identity
+public interface Person extends PersonName, HasGender
 {
 }

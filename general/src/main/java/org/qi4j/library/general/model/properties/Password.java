@@ -10,14 +10,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.general.model;
+package org.qi4j.library.general.model.properties;
 
-import org.qi4j.api.property.Immutable;
+import org.qi4j.api.property.Property;
 
-/**
- * Generic interface for Money which stores an amount and currency.
- */
-@Immutable
-public interface Money extends HasAmount, HasCurrency
-{
-}
+public interface Password extends Property<String>
+{}

@@ -18,6 +18,7 @@ import org.qi4j.api.injection.scope.PropertyField;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.property.ComputedPropertyInstance;
 import org.qi4j.api.property.Property;
+import org.qi4j.library.general.model.properties.Name;
 
 /**
  * Generic interface of PersonName that stores first and last name.
@@ -25,30 +26,40 @@ import org.qi4j.api.property.Property;
 @Mixins( PersonName.PersonNameMixin.class )
 public interface PersonName
 {
-    Property<String> firstName();
+    Name firstName();
 
-    Property<String> lastName();
+    Name lastName();
 
-    @Computed Property<String> fullName();
+    @Computed Name fullName();
 
-    public abstract class PersonNameMixin implements PersonName
+    public abstract class PersonNameMixin
+        implements PersonName
     {
         @This PersonName personName;
 
-        @PropertyField Property<String> fullName;
+        @PropertyField Name fullName;
 
         /**
          * Returns a person full name in the format LastName, FirstName
          */
-        public Property<String> fullName()
+        public Name fullName()
         {
-            return new ComputedPropertyInstance<String>( fullName )
+            return new ComputedFullName();
+        }
+
+        private class ComputedFullName extends ComputedPropertyInstance<String>
+            implements Name
+        {
+            public ComputedFullName()
+                throws IllegalArgumentException
             {
-                public String get()
-                {
-                    return personName.firstName().get() + " " + personName.lastName().get();
-                }
-            };
+                super( PersonNameMixin.this.fullName );
+            }
+
+            public String get()
+            {
+                return personName.firstName().get() + " " + personName.lastName().get();
+            }
         }
     }
 }
