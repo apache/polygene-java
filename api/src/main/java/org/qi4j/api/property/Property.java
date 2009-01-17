@@ -19,6 +19,8 @@ package org.qi4j.api.property;
  * by using this interface. It creates a first-class
  * object for the property from which you can get and
  * set the value, and access any metadata about it.
+ * The generic type of the Property must be fully
+ * Serializable and must not have any injected members.
  */
 public interface Property<T>
     extends PropertyInfo
@@ -35,7 +37,7 @@ public interface Property<T>
      *
      * @param newValue the new value
      * @throws IllegalArgumentException if the value has an invalid value
-     * @throws IllegalStateException if the property is immutable or computed
+     * @throws IllegalStateException    if the property is immutable or computed
      */
     void set( T newValue )
         throws IllegalArgumentException, IllegalStateException;
