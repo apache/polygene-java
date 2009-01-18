@@ -1,5 +1,7 @@
 Bundle-Activator: org.qi4j.bootstrap.osgi.Activator
 
+Ignore-Package: com_cenqua_clover
+
 Private-Package: org.qi4j.bootstrap.osgi, \
                  org.qi4j.bootstrap.internal
 

@@ -1,3 +1,4 @@
+
 Private-Package: org.qi4j.runtime, \
                  org.qi4j.runtime.composite, \
                  org.qi4j.runtime.bootstrap, \
@@ -83,7 +84,8 @@ Export-Package: net.sf.cglib.asm;version=2.1.3, \
 Ignore-Package: net.sf.cglib.asm.util, \
                 org.apache.tools.ant, \
                 org.apache.tools.ant.types, \
-                org.codehaus.aspectwerkz.hook
+                org.codehaus.aspectwerkz.hook, \
+                com_cenqua_clover
 
 Embed-Dependency: cglib-nodep;scope=compile|runtime
 Embed-Transitive: true

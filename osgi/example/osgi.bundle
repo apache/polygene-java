@@ -2,6 +2,8 @@ Bundle-Activator: org.qi4j.core.test.osgi.internal.Activator
 
 Private-Package:  org.qi4j.core.test.osgi.internal
 
+Ignore-Package: com_cenqua_clover
+
 Import-Package: org.osgi.framework, \
                 org.qi4j.bootstrap, \
                 org.qi4j.api.composite, \

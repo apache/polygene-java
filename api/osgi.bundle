@@ -1,5 +1,7 @@
 Import-Package:
 
+Ignore-Package: com_cenqua_clover
+
 Private-Package:
                  
 Export-Package: org.qi4j.api.*;version=${pom.version}
