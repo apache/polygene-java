@@ -1,4 +1,4 @@
-Ignore-Package: sun.misc
+Ignore-Package: com_cenqua_clover, sun.misc
 
 Import-Package: javax.transaction,\
                 javax.transaction.xa, \

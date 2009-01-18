@@ -46,3 +46,54 @@ Import-Package: org.apache.commons.logging, \
 Embed-Dependency: *;scope=compile|runtime;groupId=!org.slf4j*
 
 Embed-Transitive:  true
+
+Ignore-Package: clover.com.lowagie.text.xml, \
+                clover.it.unimi.dsi.fastutil.booleans, \
+                clover.it.unimi.dsi.fastutil.chars, \
+                clover.it.unimi.dsi.fastutil.doubles, \
+                clover.it.unimi.dsi.fastutil.floats, \
+                clover.it.unimi.dsi.fastutil.ints, \
+                clover.it.unimi.dsi.fastutil.shorts, \
+                clover.org.apache.log, \
+                clover.org.apache.log.format, \
+                clover.org.apache.log.output.io, \
+                clover.org.apache.tools.ant, \
+                clover.org.apache.tools.ant.taskdefs, \
+                clover.org.jdom, \
+                clover.org.jdom.input, \
+                clover.org.jdom.output, \
+                clover.org.xml.sax, \
+                clover.org.xml.sax.helpers, \
+                cloverantlr.debug, \
+                cloverantlr.preprocessor, \
+                com.sun.jdmk.comm, \
+                com.werken.xpath, \
+                javax.accessibility, \
+                javax.imageio.metadata, \
+                javax.imageio.stream, \
+                javax.jms, \
+                javax.mail, \
+                javax.mail.internet, \
+                javax.management, \
+                javax.servlet, \
+                javax.servlet.http, \
+                javax.swing.border, \
+                javax.swing.event, \
+                javax.swing.filechooser, \
+                javax.swing.plaf, \
+                javax.swing.table, \
+                javax.swing.text, \
+                javax.swing.tree, \
+                org.apache.tools.ant, \
+                org.apache.tools.ant.taskdefs.compilers, \
+                org.apache.tools.ant.taskdefs.condition, \
+                org.apache.tools.ant.types, \
+                org.apache.tools.ant.types.selectors, \
+                org.apache.tools.ant.util, \
+                org.hamcrest, \
+                org.junit, \
+                org.ops4j.pax.swissbox.core, \
+                org.ops4j.pax.swissbox.extender, \
+                org.osgi.framework, \
+                org.testng.internal.annotations, \
+                sun.misc

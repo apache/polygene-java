@@ -2,6 +2,8 @@ Bundle-Activator:
 
 Private-Package:
 
+Ignore-Package: com_cenqua_clover
+
 Import-Package: org.qi4j.api.composite, \
                 org.qi4j.api.common, \
                 org.qi4j.api.concern, \

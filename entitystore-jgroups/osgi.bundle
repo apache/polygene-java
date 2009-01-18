@@ -3,6 +3,7 @@ Bundle-Activator:
 Private-Package:
 
 Ignore-Package: bsh, \
+                com_cenqua_clover, \
                 junit.framework, \
                 junit.textui, \
                 org.jgroups.tests, \
