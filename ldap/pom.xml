@@ -1,0 +1,19 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.qi4j</groupId>
+    <artifactId>qi4j</artifactId>
+    <version>0.6-SNAPSHOT</version>
+  </parent>
+  <groupId>org.qi4j.library.ldap</groupId>
+  <artifactId>qi4j-lib-ldap</artifactId>
+  <name>Qi4j Library LDAP</name>
+  <version>0.6-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <!-- This POM is ONLY to initiate the modules to be built. -->
+  <modules>
+    <module>client</module>
+    <module>server</module>
+  </modules>
+
+</project>

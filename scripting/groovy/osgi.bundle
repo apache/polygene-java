@@ -51,7 +51,8 @@ Ignore-Package: com.thoughtworks.xstream, \
                 org.apache.tools.ant.listener, \
                 org.apache.tools.ant.taskdefs, \
                 org.apache.tools.ant.types, \
-                org.apache.tools.ant.util
+                org.apache.tools.ant.util, \
+                com_cenqua_clover
 
                 
 Export-Package: org.qi4j.scripting.groovy

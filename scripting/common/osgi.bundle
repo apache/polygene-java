@@ -3,6 +3,8 @@ Bundle-Activator:
 
 Private-Package:
 
+Ignore-Package: com_cenqua_clover
+
 Import-Package: org.qi4j.api.mixin
                 
 

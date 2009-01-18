@@ -19,23 +19,23 @@
         <packaging>
           <containerElement type="module" name="qi4j-struts2-plugin">
             <attribute name="method" value="5" />
-            <attribute name="URI" value="/WEB-INF/lib/qi4j-struts2-plugin-0.5-SNAPSHOT.jar" />
+            <attribute name="URI" value="/WEB-INF/lib/qi4j-struts2-plugin-0.6-SNAPSHOT.jar" />
           </containerElement>
           <containerElement type="module" name="qi4j-core-runtime">
             <attribute name="method" value="5" />
-            <attribute name="URI" value="/WEB-INF/lib/qi4j-core-runtime-0.5-SNAPSHOT.jar" />
+            <attribute name="URI" value="/WEB-INF/lib/qi4j-core-runtime-0.6-SNAPSHOT.jar" />
           </containerElement>
           <containerElement type="module" name="qi4j-core-api">
             <attribute name="method" value="5" />
-            <attribute name="URI" value="/WEB-INF/lib/qi4j-core-api-0.5-SNAPSHOT.jar" />
+            <attribute name="URI" value="/WEB-INF/lib/qi4j-core-api-0.6-SNAPSHOT.jar" />
           </containerElement>
           <containerElement type="module" name="qi4j-core-spi">
             <attribute name="method" value="5" />
-            <attribute name="URI" value="/WEB-INF/lib/qi4j-core-spi-0.5-SNAPSHOT.jar" />
+            <attribute name="URI" value="/WEB-INF/lib/qi4j-core-spi-0.6-SNAPSHOT.jar" />
           </containerElement>
           <containerElement type="module" name="qi4j-core-bootstrap">
             <attribute name="method" value="5" />
-            <attribute name="URI" value="/WEB-INF/lib/qi4j-core-bootstrap-0.5-SNAPSHOT.jar" />
+            <attribute name="URI" value="/WEB-INF/lib/qi4j-core-bootstrap-0.6-SNAPSHOT.jar" />
           </containerElement>
           <containerElement type="library" name="Maven: cglib:cglib-nodep:2.1_3" level="project">
             <attribute name="method" value="1" />
@@ -67,7 +67,7 @@
           </containerElement>
           <containerElement type="module" name="qi4j-struts2-codebehind-plugin">
             <attribute name="method" value="5" />
-            <attribute name="URI" value="/WEB-INF/lib/qi4j-struts2-codebehind-plugin-0.5-SNAPSHOT.jar" />
+            <attribute name="URI" value="/WEB-INF/lib/qi4j-struts2-codebehind-plugin-0.6-SNAPSHOT.jar" />
           </containerElement>
           <containerElement type="library" name="Maven: org.apache.struts:struts2-codebehind-plugin:2.1.2" level="project">
             <attribute name="method" value="1" />
@@ -75,19 +75,19 @@
           </containerElement>
           <containerElement type="module" name="qi4j-indexing-rdf">
             <attribute name="method" value="5" />
-            <attribute name="URI" value="/WEB-INF/lib/qi4j-indexing-rdf-0.5-SNAPSHOT.jar" />
+            <attribute name="URI" value="/WEB-INF/lib/qi4j-indexing-rdf-0.6-SNAPSHOT.jar" />
           </containerElement>
           <containerElement type="module" name="qi4j-lib-rdf">
             <attribute name="method" value="5" />
-            <attribute name="URI" value="/WEB-INF/lib/qi4j-lib-rdf-0.5-SNAPSHOT.jar" />
+            <attribute name="URI" value="/WEB-INF/lib/qi4j-lib-rdf-0.6-SNAPSHOT.jar" />
           </containerElement>
           <containerElement type="module" name="qi4j-lib-constraints">
             <attribute name="method" value="5" />
-            <attribute name="URI" value="/WEB-INF/lib/qi4j-lib-constraints-0.5-SNAPSHOT.jar" />
+            <attribute name="URI" value="/WEB-INF/lib/qi4j-lib-constraints-0.6-SNAPSHOT.jar" />
           </containerElement>
           <containerElement type="module" name="qi4j-core-testsupport">
             <attribute name="method" value="5" />
-            <attribute name="URI" value="/WEB-INF/lib/qi4j-core-testsupport-0.5-SNAPSHOT.jar" />
+            <attribute name="URI" value="/WEB-INF/lib/qi4j-core-testsupport-0.6-SNAPSHOT.jar" />
           </containerElement>
           <containerElement type="library" name="Maven: org.openrdf.sesame:sesame-model:2.2.1" level="project">
             <attribute name="method" value="1" />
