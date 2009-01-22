@@ -28,14 +28,13 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.RDF;
 import org.qi4j.api.entity.association.EntityStateHolder;
-import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.property.Immutable;
+import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.unitofwork.EntityCompositeAlreadyExistsException;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.composite.CompositeMethodInstance;
 import org.qi4j.runtime.composite.CompositeMethodsModel;
 import org.qi4j.runtime.composite.ConcernsDeclaration;
 import org.qi4j.runtime.composite.ConstraintsModel;
@@ -208,20 +207,25 @@ public final class EntityModel
         return compositeMethodsModel.invoke( mixins, proxy, method, args, moduleInstance );
     }
 
-    public Object invoke( Object composite, Object[] params, Object[] mixins, CompositeMethodInstance methodInstance )
-        throws Throwable
+    public Object getMixin( Object[] mixins, Method method )
     {
-        return mixinsModel.invoke( composite, params, mixins, methodInstance );
+        return mixinsModel.getMixin( mixins, method );
     }
 
-    public Object[] newMixins( UnitOfWorkInstance uow, EntityState entityState, EntityInstance entityInstance )
+    public Object[] initialize( UnitOfWorkInstance uow, EntityState entityState, EntityInstance entityInstance )
     {
         Object[] mixins = mixinsModel.newMixinHolder();
         entityInstance.setMixins( mixins );
         EntityStateModel.EntityStateInstance state = stateModel.newInstance( uow, entityState );
         entityInstance.setEntityState( state );
-        mixinsModel.newMixins( entityInstance, state, mixins );
+//        mixinsModel.newMixins( entityInstance, state, mixins );
         return mixins;
+    }
+
+
+    public Object newMixin( Object[] mixins, EntityStateModel.EntityStateInstance entityState, EntityInstance entityInstance, Method method )
+    {
+        return mixinsModel.newMixin( entityInstance, entityState, mixins, method );
     }
 
     public EntityComposite newProxy( EntityInstance entityInstance )
@@ -331,5 +335,4 @@ public final class EntityModel
     {
         return type.getName();
     }
-
 }

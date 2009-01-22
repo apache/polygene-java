@@ -14,7 +14,7 @@
  */
 package org.qi4j.api.entity;
 
-import org.qi4j.api.injection.scope.PropertyField;
+import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
@@ -41,7 +41,7 @@ public interface Identity
     public final class IdentityMixin
         implements Identity
     {
-        @PropertyField private Property<String> identity;
+        @State private Property<String> identity;
 
         public Property<String> identity()
         {

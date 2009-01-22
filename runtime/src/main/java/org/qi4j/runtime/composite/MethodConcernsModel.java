@@ -43,6 +43,11 @@ public final class MethodConcernsModel
         return method;
     }
 
+    public boolean hasConcerns()
+    {
+        return !concernsForMethod.isEmpty();
+    }
+
     // Binding
     public void bind( Resolution resolution ) throws BindingException
     {
@@ -53,7 +58,7 @@ public final class MethodConcernsModel
     }
 
     // Context
-    public MethodConcernsInstance newInstance( ModuleInstance moduleInstance, Method method, FragmentInvocationHandler mixinInvocationHandler )
+    public MethodConcernsInstance newInstance( ModuleInstance moduleInstance, FragmentInvocationHandler mixinInvocationHandler )
     {
         ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
         Object nextConcern = mixinInvocationHandler;
@@ -74,7 +79,7 @@ public final class MethodConcernsModel
             firstConcern = new TypedFragmentInvocationHandler( nextConcern );
         }
 
-        return new MethodConcernsInstance( method, firstConcern, mixinInvocationHandler, proxyHandler );
+        return new MethodConcernsInstance( firstConcern, mixinInvocationHandler, proxyHandler );
     }
 
     public void visitModel( ModelVisitor modelVisitor )

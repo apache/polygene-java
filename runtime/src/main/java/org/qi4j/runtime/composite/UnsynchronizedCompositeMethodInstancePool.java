@@ -14,44 +14,30 @@
 
 package org.qi4j.runtime.composite;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 /**
- * Method instance pool that keeps a linked list. Uses atomic reference
+ * Method instance pool that keeps a linked list. Uses synchronization
  * to ensure that instances are acquired and returned in a thread-safe
  * manner.
  */
-public final class AtomicCompositeMethodInstancePool
+public final class UnsynchronizedCompositeMethodInstancePool
     implements CompositeMethodInstancePool
 {
-    private final AtomicReference<CompositeMethodInstance> first = new AtomicReference<CompositeMethodInstance>();
+    private CompositeMethodInstance first = null;
 
     public CompositeMethodInstance getInstance()
     {
-        CompositeMethodInstance instance = first.getAndSet( null );
+        CompositeMethodInstance instance = first;
         if( instance != null )
         {
-            CompositeMethodInstance next = instance.getNext();
-/*
-            if( next != null )
-            {
-                System.out.println( "Set first" );
-            }
-*/
-            first.set( next );
+            first = instance.getNext();
+
         }
         return instance;
     }
 
-    public void returnInstance( CompositeMethodInstance compositeMethodInstance )
+    public void returnInstance( CompositeMethodInstance instance )
     {
-        CompositeMethodInstance previous = first.getAndSet( compositeMethodInstance );
-        if( previous != null )
-        {
-/*
-            System.out.println( "Link" );
-*/
-            compositeMethodInstance.setNext( previous );
-        }
+        instance.setNext( first );
+        first = instance;
     }
 }

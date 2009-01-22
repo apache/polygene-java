@@ -48,7 +48,6 @@ public class CompositeModel
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
         boolean immutable = metaInfo.get( Immutable.class ) != null;
-        ;
         PropertiesModel propertiesModel = new PropertiesModel( constraintsModel, propertyDeclarations, immutable );
         StateModel stateModel = new StateModel( propertiesModel );
         MixinsModel mixinsModel = new MixinsModel( compositeType, stateModel );
@@ -146,17 +145,15 @@ public class CompositeModel
     }
 
     // Context
-
-    public Object invoke( Object composite, Object[] params, Object[] mixins, CompositeMethodInstance methodInstance )
-        throws Throwable
-    {
-        return mixinsModel.invoke( composite, params, mixins, methodInstance );
-    }
-
     public Object invoke( MixinsInstance mixins, Object proxy, Method method, Object[] args, ModuleInstance moduleInstance )
         throws Throwable
     {
         return compositeMethodsModel.invoke( mixins, proxy, method, args, moduleInstance );
+    }
+
+    public Object getMixin( Object[] mixins, Method method )
+    {
+        return mixinsModel.getMixin( mixins, method );
     }
 
     public Composite newProxy( InvocationHandler invocationHandler )

@@ -14,27 +14,29 @@
 
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.spi.composite.InvalidCompositeException;
 
 /**
  * TODO
  */
 public final class CompositeMethodInstance
 {
-    private final MethodConcernsInstance concerns;
-    private final MethodSideEffectsInstance sideEffects;
+    private final InvocationHandler invoker;
+    private final FragmentInvocationHandler mixinInvoker;
     private final Method method;
+    private final int methodIdx;
 
     private CompositeMethodInstance next;
 
-    public CompositeMethodInstance( MethodConcernsInstance concerns,
-                                    MethodSideEffectsInstance sideEffects,
-                                    Method method )
+    public CompositeMethodInstance( InvocationHandler invoker,
+                                    FragmentInvocationHandler mixinInvoker,
+                                    Method method, int methodIdx )
     {
-        this.concerns = concerns;
-        this.sideEffects = sideEffects;
+        this.invoker = invoker;
         this.method = method;
+        this.mixinInvoker = mixinInvoker;
+        this.methodIdx = methodIdx;
     }
 
     public Method method()
@@ -42,23 +44,23 @@ public final class CompositeMethodInstance
         return method;
     }
 
+    public Object getMixin( Object[] mixins )
+    {
+        return mixins[methodIdx];
+    }
+
     public Object invoke( Object composite, Object[] params, Object mixin )
         throws Throwable
     {
+        mixinInvoker.setFragment( mixin );
+
         try
         {
-            Object result = concerns.invoke( composite, params, mixin );
-            sideEffects.invoke( composite, params, result, null );
-            return result;
+            return invoker.invoke( composite, method, params);
         }
-        catch( InvalidCompositeException e )
+        finally
         {
-            throw e; // The Composite is not valid.
-        }
-        catch( Throwable throwable )
-        {
-            sideEffects.invoke( composite, params, null, throwable );
-            throw throwable;
+            mixinInvoker.setFragment( null );
         }
     }
 
@@ -71,4 +73,5 @@ public final class CompositeMethodInstance
     {
         this.next = next;
     }
+
 }

@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.api.injection.scope;
 
 import java.lang.annotation.Documented;
@@ -22,13 +21,23 @@ import java.lang.annotation.Target;
 import org.qi4j.api.injection.InjectionScope;
 
 /**
- * Annotation to denote the injection of an association into a Mixin field.
+ * Annotation to denote the injection of a property, association or
+ * StateHolder.
+ *
+ * &#64;State Property<String> propertyName;
+ * &#64;State Association<MyEntity> associationName;
+ * &#64;State StateHolder state;
+ *
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD } )
+@Target( { ElementType.FIELD, ElementType.PARAMETER } )
 @Documented
 @InjectionScope
-public @interface AssociationField
+public @interface State
 {
-    String value() default ""; // Name of the association. If not set then name will be name of field
+    /** Name of the property or association.
+     * If not set then name will be name of field.
+     * @return the name
+     */
+    public abstract String value() default "";
 }

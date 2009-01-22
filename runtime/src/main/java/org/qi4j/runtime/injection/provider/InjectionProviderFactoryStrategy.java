@@ -21,12 +21,9 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.InvalidValueCompositeException;
 import org.qi4j.api.composite.ValueComposite;
 import org.qi4j.api.concern.internal.ConcernFor;
-import org.qi4j.api.injection.scope.AssociationField;
-import org.qi4j.api.injection.scope.AssociationParameter;
 import org.qi4j.api.injection.scope.Invocation;
-import org.qi4j.api.injection.scope.PropertyField;
-import org.qi4j.api.injection.scope.PropertyParameter;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
@@ -52,13 +49,8 @@ public final class InjectionProviderFactoryStrategy
         ModifiesInjectionProviderFactory modifiesInjectionProviderFactory = new ModifiesInjectionProviderFactory();
         valuesProviderFactories.put( ConcernFor.class, modifiesInjectionProviderFactory );
         valuesProviderFactories.put( SideEffectFor.class, modifiesInjectionProviderFactory );
-        PropertyInjectionProviderFactory propertyInjectionProviderFactory = new PropertyInjectionProviderFactory();
-        valuesProviderFactories.put( PropertyField.class, propertyInjectionProviderFactory );
-        valuesProviderFactories.put( PropertyParameter.class, propertyInjectionProviderFactory );
-        
-        AssociationInjectionProviderFactory associationInjectionProviderFactory = new AssociationInjectionProviderFactory();
-        generalProviderFactories.put( AssociationField.class, associationInjectionProviderFactory );
-        generalProviderFactories.put( AssociationParameter.class, associationInjectionProviderFactory );
+        valuesProviderFactories.put( State.class, new StateInjectionProviderFactory() );
+
         generalProviderFactories.put( Structure.class, new CachingInjectionProviderFactoryDecorator( new StructureInjectionProviderFactory() ) );
         generalProviderFactories.put( Service.class, new CachingInjectionProviderFactoryDecorator( new ServiceInjectionProviderFactory() ) );
         generalProviderFactories.put( Invocation.class, new InvocationInjectionProviderFactory() );

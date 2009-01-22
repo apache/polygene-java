@@ -16,6 +16,7 @@ package org.qi4j.runtime.composite;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -125,9 +126,19 @@ public final class CompositeMethodModel
         throws ConstructionException
     {
         FragmentInvocationHandler mixinInvocationHandler = mixins.newInvocationHandler( method );
-        MethodConcernsInstance concernsInstance = methodConcerns.newInstance( moduleInstance, method, mixinInvocationHandler );
-        MethodSideEffectsInstance sideEffectsInstance = methodSideEffects.newInstance( moduleInstance, method );
-        return new CompositeMethodInstance( concernsInstance, sideEffectsInstance, method );
+        InvocationHandler invoker = mixinInvocationHandler;
+        if (methodConcerns.hasConcerns())
+        {
+            MethodConcernsInstance concernsInstance = methodConcerns.newInstance( moduleInstance, mixinInvocationHandler );
+            invoker = concernsInstance;
+        }
+        if (methodSideEffects.hasSideEffects())
+        {
+            MethodSideEffectsInstance sideEffectsInstance = methodSideEffects.newInstance( moduleInstance, invoker );
+            invoker = sideEffectsInstance;
+        }
+
+        return new CompositeMethodInstance( invoker, mixinInvocationHandler, method, mixins.methodIndex.get(method ));
     }
 
     public AnnotatedElement annotatedElement()

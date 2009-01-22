@@ -22,25 +22,27 @@ import java.lang.reflect.Method;
  * TODO
  */
 public final class MethodConcernsInstance
+    implements InvocationHandler
 {
-    private final Method method;
     private final InvocationHandler firstConcern;
     private final FragmentInvocationHandler mixinInvocationHandler;
     private final ProxyReferenceInvocationHandler proxyHandler;
 
-    public MethodConcernsInstance( Method method, InvocationHandler firstConcern, FragmentInvocationHandler mixinInvocationHandler, ProxyReferenceInvocationHandler proxyHandler )
+    public MethodConcernsInstance( InvocationHandler firstConcern, FragmentInvocationHandler mixinInvocationHandler, ProxyReferenceInvocationHandler proxyHandler )
     {
-        this.method = method;
         this.firstConcern = firstConcern;
         this.mixinInvocationHandler = mixinInvocationHandler;
         this.proxyHandler = proxyHandler;
     }
 
-    public Object invoke( Object proxy, Object[] params, Object mixin )
-        throws Throwable
+    public boolean isEmpty()
+    {
+        return firstConcern == mixinInvocationHandler;
+    }
+
+    public Object invoke( Object proxy, Method method, Object[] params ) throws Throwable
     {
         proxyHandler.setProxy( proxy );
-        mixinInvocationHandler.setFragment( mixin );
         try
         {
             return firstConcern.invoke( proxy, method, params );
@@ -52,7 +54,6 @@ public final class MethodConcernsInstance
         finally
         {
             proxyHandler.clearProxy();
-            mixinInvocationHandler.setFragment( null );
         }
     }
 }

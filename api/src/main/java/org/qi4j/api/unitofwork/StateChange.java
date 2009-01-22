@@ -15,7 +15,7 @@
 package org.qi4j.api.unitofwork;
 
 /**
- * TODO
+ * Base class for state changes. 
  */
 public class StateChange
 {

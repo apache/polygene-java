@@ -18,13 +18,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collections;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.util.Classes;
@@ -39,10 +39,10 @@ public abstract class AbstractMixinsModel
 {
     protected final Set<MixinDeclaration> mixins = new LinkedHashSet<MixinDeclaration>();
 
-    private final Map<Method, MixinModel> methodImplementation = new HashMap<Method, MixinModel>();
+    protected final Map<Method, MixinModel> methodImplementation = new HashMap<Method, MixinModel>();
     protected List<MixinModel> mixinModels = new ArrayList<MixinModel>();
     private final Map<Class, Integer> mixinIndex = new HashMap<Class, Integer>();
-    private final Map<Method, Integer> methodIndex = new HashMap<Method, Integer>();
+    protected final Map<Method, Integer> methodIndex = new HashMap<Method, Integer>();
     private final Class<? extends Composite> compositeType;
     private final Set<Class> mixinTypes = new HashSet<Class>();
 
@@ -69,7 +69,7 @@ public abstract class AbstractMixinsModel
 
     public Iterable<Method> mixinMethods()
     {
-        return Collections.unmodifiableSet( methodImplementation.keySet() );   
+        return Collections.unmodifiableSet( methodImplementation.keySet() );
     }
 
     public boolean hasMixinType( Class<?> mixinType )
@@ -232,11 +232,9 @@ public abstract class AbstractMixinsModel
         return new Object[mixinIndex.size()];
     }
 
-    public final Object invoke( Object composite, Object[] params, Object[] mixins, CompositeMethodInstance methodInstance )
-        throws Throwable
+    public Object getMixin( Object[] mixins, Method method)
     {
-        final Object mixin = mixins[ methodIndex.get( methodInstance.method() ) ];
-        return methodInstance.invoke( composite, params, mixin );
+        return mixins[ methodIndex.get( method ) ];
     }
 
     public FragmentInvocationHandler newInvocationHandler( final Method method )

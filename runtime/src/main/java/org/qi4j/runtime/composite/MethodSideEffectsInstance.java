@@ -22,46 +22,57 @@ import java.util.List;
  * TODO
  */
 public final class MethodSideEffectsInstance
+    implements InvocationHandler
 {
-    private final Method method;
     private final List<InvocationHandler> sideEffects;
     private final SideEffectInvocationHandlerResult resultInvocationHandler;
     private final ProxyReferenceInvocationHandler proxyHandler;
-    private final boolean hasSideEffects;
+    private InvocationHandler invoker;
 
-    public MethodSideEffectsInstance( Method method, List<InvocationHandler> sideEffects, SideEffectInvocationHandlerResult resultInvocationHandler, ProxyReferenceInvocationHandler proxyHandler )
+    public MethodSideEffectsInstance( List<InvocationHandler> sideEffects, SideEffectInvocationHandlerResult resultInvocationHandler, ProxyReferenceInvocationHandler proxyHandler, InvocationHandler invoker )
     {
-        this.method = method;
         this.sideEffects = sideEffects;
         this.resultInvocationHandler = resultInvocationHandler;
         this.proxyHandler = proxyHandler;
-        this.hasSideEffects = !sideEffects.isEmpty();
+        this.invoker = invoker;
     }
 
-    public void invoke( Object proxy, Object[] params, Object result, Throwable throwable )
-        throws Throwable
+    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        if( hasSideEffects )
+        try
         {
-            proxyHandler.setProxy( proxy );
-            resultInvocationHandler.setResult( result, throwable );
-
-            try
-            {
-                for( InvocationHandler sideEffect : sideEffects )
-                {
-                    invokeSideEffect( proxy, params, throwable, sideEffect );
-                }
-            }
-            finally
-            {
-                proxyHandler.clearProxy();
-                resultInvocationHandler.setResult( null, null );
-            }
+            Object result = invoker.invoke( proxy, method, args );
+            invokeSideEffects(proxy, method, args, result, null);
+            return result;
+        }
+        catch( Throwable throwable )
+        {
+            invokeSideEffects(proxy, method, args, null, throwable);
+            throw throwable;
         }
     }
 
-    private void invokeSideEffect( Object proxy, Object[] params, Throwable originalThrowable, InvocationHandler sideEffect )
+    private void invokeSideEffects( Object proxy, Method method, Object[] params, Object result, Throwable throwable )
+        throws Throwable
+    {
+        proxyHandler.setProxy( proxy );
+        resultInvocationHandler.setResult( result, throwable );
+
+        try
+        {
+            for( InvocationHandler sideEffect : sideEffects )
+            {
+                invokeSideEffect( proxy, method, params, throwable, sideEffect );
+            }
+        }
+        finally
+        {
+            proxyHandler.clearProxy();
+            resultInvocationHandler.setResult( null, null );
+        }
+    }
+
+    private void invokeSideEffect( Object proxy, Method method, Object[] params, Throwable originalThrowable, InvocationHandler sideEffect )
     {
         try
         {

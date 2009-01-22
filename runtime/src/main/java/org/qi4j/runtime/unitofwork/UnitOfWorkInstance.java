@@ -652,6 +652,7 @@ public final class UnitOfWorkInstance
     private void notifyBeforeCompletion( List<UnitOfWorkCallback> callbacks )
         throws UnitOfWorkCompletionException
     {
+        // Notify explicitly registered callbacks
         if( callbacks != null )
         {
             for( UnitOfWorkCallback callback : callbacks )
@@ -659,17 +660,70 @@ public final class UnitOfWorkInstance
                 callback.beforeCompletion();
             }
         }
+
+        // Notify entities
+        try
+        {
+            new ForEachEntity()
+            {
+                protected void execute( EntityInstance instance )
+                    throws Exception
+                {
+                    if (instance.proxy() instanceof UnitOfWorkCallback)
+                    {
+                        UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast(instance.proxy());
+                        callback.beforeCompletion();
+                    }
+                }
+            }.execute();
+        }
+        catch( UnitOfWorkCompletionException e )
+        {
+            throw e;
+        } catch (Exception e)
+        {
+            throw new UnitOfWorkCompletionException( e );
+        }
     }
 
-    private void notifyAfterCompletion( List<UnitOfWorkCallback> callbacks, UnitOfWorkCallback.UnitOfWorkStatus status )
+    private void notifyAfterCompletion( List<UnitOfWorkCallback> callbacks, final UnitOfWorkCallback.UnitOfWorkStatus status )
     {
         if( callbacks != null )
         {
             for( UnitOfWorkCallback callback : callbacks )
             {
-                callback.afterCompletion( status );
+                try
+                {
+                    callback.afterCompletion( status );
+                }
+                catch( Exception e )
+                {
+                    // Ignore
+                }
             }
         }
+
+        // Notify entities
+        try
+        {
+            new ForEachEntity()
+            {
+                protected void execute( EntityInstance instance )
+                    throws Exception
+                {
+                    if (instance.proxy() instanceof UnitOfWorkCallback)
+                    {
+                        UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast(instance.proxy());
+                        callback.afterCompletion(status);
+                    }
+                }
+            }.execute();
+        }
+        catch (Exception e)
+        {
+            // Ignore
+        }
+
     }
 
     private EntityComposite getCachedEntity( String identity, Class compositeType )
@@ -727,6 +781,25 @@ public final class UnitOfWorkInstance
     public UnitOfWorkStore newEntityStore()
     {
         return new UnitOfWorkStore();
+    }
+
+    abstract class ForEachEntity
+    {
+        public void execute() throws Exception
+        {
+            for( Map.Entry<Class<? extends EntityComposite>, Map<String, EntityComposite>> entry : cache.entrySet() )
+            {
+                Map<String, EntityComposite> entities = entry.getValue();
+                for( EntityComposite entityComposite : entities.values() )
+                {
+                    EntityComposite entityInstance = entityComposite;
+                    EntityInstance instance = EntityInstance.getEntityInstance( entityInstance );
+                    execute( instance );
+                }
+            }
+        }
+
+        protected abstract void execute(EntityInstance instance) throws Exception;
     }
 
     private class UnitOfWorkStore

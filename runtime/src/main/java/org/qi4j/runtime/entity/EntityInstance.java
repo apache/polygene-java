@@ -74,7 +74,7 @@ public final class EntityInstance
     private EntityStatus status;
     private EntityStateModel.EntityStateInstance state;
 
-    public EntityInstance( UnitOfWorkInstance uow, EntityStore store, EntityModel entity, ModuleInstance moduleInstance, QualifiedIdentity identity, EntityStatus status, EntityState entityState )
+    public EntityInstance( UnitOfWorkInstance uow, EntityStore store, EntityModel entity, ModuleInstance moduleInstance, QualifiedIdentity identity, EntityStatus status, EntityState entityState)
     {
         this.uow = uow;
         this.store = store;
@@ -86,8 +86,6 @@ public final class EntityInstance
         this.entityState = wrapEntityState( entityState);
 
         proxy = entity.newProxy( this );
-
-        this.entityState = wrapEntityState( entityState);
     }
 
     public Object invoke( Object proxy, Method method, Object[] args )
@@ -173,7 +171,14 @@ public final class EntityInstance
             initState();
         }
 
-        return entity.invoke( composite, params, mixins, methodInstance );
+        Object mixin = methodInstance.getMixin( mixins );
+
+        if (mixin == null)
+        {
+            mixin = entity.newMixin( mixins, state, this, methodInstance.method() );
+        }
+
+        return methodInstance.invoke( composite, params, mixin );
     }
 
     public Object invokeObject( Object proxy, Object[] args, Method method ) throws Throwable
@@ -204,7 +209,7 @@ public final class EntityInstance
         {
             entityState = entity.getEntityState( store, identity );
         }
-        mixins = entity.newMixins( uow, entityState, this );
+        mixins = entity.initialize( uow, entityState, this );
     }
 
     private void refresh( EntityState newState )

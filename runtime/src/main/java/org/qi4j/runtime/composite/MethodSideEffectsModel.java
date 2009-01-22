@@ -44,6 +44,11 @@ public final class MethodSideEffectsModel
         return method;
     }
 
+    public boolean hasSideEffects()
+    {
+        return !sideEffectModels.isEmpty();
+    }
+
     // Binding
     public void bind( Resolution resolution )
         throws BindingException
@@ -55,7 +60,7 @@ public final class MethodSideEffectsModel
     }
 
     // Context
-    public MethodSideEffectsInstance newInstance( ModuleInstance moduleInstance, Method method )
+    public MethodSideEffectsInstance newInstance( ModuleInstance moduleInstance, InvocationHandler invoker )
     {
         ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
         SideEffectInvocationHandlerResult result = new SideEffectInvocationHandlerResult();
@@ -72,7 +77,7 @@ public final class MethodSideEffectsModel
                 sideEffects.add( new TypedFragmentInvocationHandler( sideEffect ) );
             }
         }
-        return new MethodSideEffectsInstance( method, sideEffects, result, proxyHandler );
+        return new MethodSideEffectsInstance( sideEffects, result, proxyHandler, invoker );
     }
 
 

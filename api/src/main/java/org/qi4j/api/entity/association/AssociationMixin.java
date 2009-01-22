@@ -18,7 +18,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
-import org.qi4j.api.injection.scope.AssociationField;
+import org.qi4j.api.injection.scope.State;
 
 /**
  * Generic mixin for associations.
@@ -27,7 +27,7 @@ import org.qi4j.api.injection.scope.AssociationField;
 public class AssociationMixin
     implements InvocationHandler
 {
-    @AssociationField EntityStateHolder associations;
+    @State EntityStateHolder associations;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {

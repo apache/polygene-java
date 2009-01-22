@@ -17,6 +17,8 @@ package org.qi4j.api.unitofwork;
 /**
  * Callback interface for UnitOfWork completion or discard. Implementations
  * of this interface can be registered through {@link UnitOfWork#addUnitOfWorkCallback(UnitOfWorkCallback)}.
+ *
+ * If Entities implement this interface they will also receive invocations of this callback interface.
  */
 public interface UnitOfWorkCallback
 {
