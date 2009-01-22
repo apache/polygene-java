@@ -14,7 +14,7 @@
  */
 package org.qi4j.library.swing.binding.example.dom;
 
-import org.qi4j.api.injection.scope.PropertyField;
+import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.ImmutableFacade;
 import org.qi4j.api.property.Property;
@@ -27,7 +27,7 @@ import org.w3c.dom.Node;
 public final class NodeDescriptorMixin
     implements Descriptor
 {
-    @PropertyField private Property<String> displayName;
+    @State private Property<String> displayName;
 
     private void init( @Uses Node node )
     {

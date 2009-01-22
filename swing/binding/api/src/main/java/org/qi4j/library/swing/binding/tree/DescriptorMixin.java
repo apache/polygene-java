@@ -14,7 +14,7 @@
  */
 package org.qi4j.library.swing.binding.tree;
 
-import org.qi4j.api.injection.scope.PropertyField;
+import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.property.Property;
 
 /**
@@ -23,7 +23,7 @@ import org.qi4j.api.property.Property;
 public final class DescriptorMixin
     implements Descriptor, Descriptor.MutableDescriptor
 {
-    private @PropertyField Property<String> displayName;
+    private @State Property<String> displayName;
 
     public Property<String> displayName()
     {

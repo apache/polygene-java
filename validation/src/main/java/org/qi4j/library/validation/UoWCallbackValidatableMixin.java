@@ -1,4 +1,4 @@
-/*  Copyright 2007 Niclas Hedhman.
+/*  Copyright 2009 Rickard Öberg.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,28 @@
  */
 package org.qi4j.library.validation;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.unitofwork.UnitOfWorkCallback;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 
-public class ValidatableMixin
-    implements Validatable
+public class UoWCallbackValidatableMixin
+    implements UnitOfWorkCallback
 {
     @This Validatable validatable;
 
-    public List<ValidationMessage> validate()
+    public void beforeCompletion() throws UnitOfWorkCompletionException
     {
-        return new ArrayList<ValidationMessage>();
+        try
+        {
+            validatable.checkValid();
+        }
+        catch( ValidationException e )
+        {
+            throw (UnitOfWorkCompletionException) new UnitOfWorkCompletionException( "Validation failed" ).initCause( e );
+        }
     }
 
-    public void checkValid() throws ValidationException
+    public void afterCompletion( UnitOfWorkStatus status )
     {
-        List<ValidationMessage> messages = validatable.validate();
-        if( messages.size() > 0 )
-        {
-            throw new ValidationException( messages );
-        }
     }
 }

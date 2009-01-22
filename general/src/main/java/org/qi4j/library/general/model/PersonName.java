@@ -12,12 +12,11 @@
  */
 package org.qi4j.library.general.model;
 
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.property.Computed;
 import org.qi4j.api.injection.scope.PropertyField;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.property.Computed;
 import org.qi4j.api.property.ComputedPropertyInstance;
-import org.qi4j.api.property.Property;
 import org.qi4j.library.general.model.properties.Name;
 
 /**

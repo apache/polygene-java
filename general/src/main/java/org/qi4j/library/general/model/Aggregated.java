@@ -3,7 +3,6 @@ package org.qi4j.library.general.model;
 import java.io.Serializable;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.injection.scope.PropertyField;
 import org.qi4j.api.property.Property;
 
 /**
@@ -21,7 +20,7 @@ public interface Aggregated
     {
         private static final long serialVersionUID = 1L;
 
-        @PropertyField
+        @org.qi4j.api.injection.scope.State
         private Property<Composite> aggregate;
 
         public final Property<Composite> aggregate()
