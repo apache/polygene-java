@@ -1,0 +1,9 @@
+Bundle-Activator:
+
+Private-Package:
+
+Ignore-Package: com_cenqua_clover
+
+Import-Package: 
+
+Export-Package: org.qi4j.library.serialization

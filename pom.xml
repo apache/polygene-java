@@ -33,6 +33,7 @@
     <module>registry</module>
     <module>rmi</module>
     <module>scripting</module>
+    <module>serialization</module>
     <module>spaces</module>
     <module>swing</module>
     <module>transaction</module>

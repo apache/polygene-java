@@ -22,7 +22,7 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.common.Optional;
 
-public interface LdapConfiguration extends Configuration, EntityComposite
+public interface LdapConfiguration extends EntityComposite
 {
     Property<String> partitionId();
 

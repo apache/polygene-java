@@ -23,7 +23,7 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 public class UoWCallbackValidatableMixin
     implements UnitOfWorkCallback
 {
-    @This Validatable validatable;
+    @This private Validatable validatable;
 
     public void beforeCompletion() throws UnitOfWorkCompletionException
     {

@@ -28,13 +28,14 @@ import org.apache.directory.shared.ldap.exception.LdapNameNotFoundException;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.configuration.Configuration;
 import java.util.HashSet;
 import java.util.Set;
 
 public class ApacheDirectoryServiceMixin
     implements Activatable
 {
-    @This LdapConfiguration configuration;
+    @This Configuration<LdapConfiguration> configuration;
 
     /** The directory service */
     private DirectoryService service;
@@ -53,12 +54,13 @@ public class ApacheDirectoryServiceMixin
 
 
             // Create a new partition named 'apache'.
-            String partitionId = configuration.partitionId().get();
+            LdapConfiguration conf = configuration.configuration();
+            String partitionId = conf.partitionId().get();
             if( partitionId == null )
             {
                 partitionId = "qi4j";
             }
-            Partition apachePartition = addPartition( partitionId, configuration.partitionDn().get() );
+            Partition apachePartition = addPartition( partitionId, conf.partitionDn().get() );
 
             // Index some attributes on the apache partition
             addIndex( apachePartition, attrs );
