@@ -18,6 +18,7 @@
     <module>entitystore-javaspaces</module>
     <module>entitystore-jdbm</module>
     <module>entitystore-jgroups</module>
+    <module>entitystore-jndi</module>
     <module>entitystore-legacy-sql</module>
     <module>entitystore-preferences</module>
     <module>entitystore-rmi</module>

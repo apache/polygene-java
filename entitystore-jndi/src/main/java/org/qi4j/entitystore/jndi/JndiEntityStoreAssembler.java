@@ -15,27 +15,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entitystore.swift;
+package org.qi4j.entitystore.jndi;
 
-import org.qi4j.test.entity.AbstractEntityStoreTest;
+import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.entitystore.swift.QuickConfiguration;
-import org.qi4j.entitystore.swift.QuickEntityStoreService;
 
-public class QuickEntityStoreTest extends AbstractEntityStoreTest
+public class JndiEntityStoreAssembler
+    implements Assembler
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
-    {
-        super.assemble( module );
-        module.addServices( QuickEntityStoreService.class, UuidIdentityGeneratorService.class );
+    private String configurationModuleName;
 
-        ModuleAssembly config = module.layerAssembly().newModuleAssembly( "config" );
-        config.addEntities( QuickConfiguration.class ).visibleIn( Visibility.layer );
-        config.addServices( MemoryEntityStoreService.class );
+    public JndiEntityStoreAssembler( String configurationModule )
+    {
+        this.configurationModuleName = configurationModule;
     }
 
+    public void assemble( ModuleAssembly module ) throws AssemblyException
+    {
+        module.addServices( JndiEntityStoreService.class, UuidIdentityGeneratorService.class );
+        ModuleAssembly config = module.layerAssembly().newModuleAssembly( configurationModuleName );
+        config.addEntities( JndiConfiguration.class ).visibleIn( Visibility.layer );
+        config.addServices( MemoryEntityStoreService.class );
+    }
 }
