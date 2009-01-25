@@ -1,0 +1,24 @@
+Import-Package:\
+    javax.naming,\
+    javax.naming.directory,\
+    javax.naming.ldap,\
+    org.qi4j.api.common,\
+    org.qi4j.api.concern,\
+    org.qi4j.api.configuration,\
+    org.qi4j.api.entity,\
+    org.qi4j.api.injection.scope,\
+    org.qi4j.api.mixin,\
+    org.qi4j.api.property,\
+    org.qi4j.api.service,\
+    org.qi4j.api.sideeffect,\
+    org.qi4j.bootstrap,\
+    org.qi4j.entitystore.memory,\
+    org.qi4j.library.locking,\
+    org.qi4j.spi.entity,\
+    org.qi4j.spi.entity.association,\
+    org.qi4j.spi.entity.helpers,\
+    org.qi4j.spi.property
+
+Export-Package:\
+    org.qi4j.entitystore.jndi
+
