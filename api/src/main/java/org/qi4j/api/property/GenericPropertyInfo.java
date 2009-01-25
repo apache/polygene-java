@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.util.Classes;
 
 public final class GenericPropertyInfo
     implements PropertyInfo
@@ -100,7 +101,7 @@ public final class GenericPropertyInfo
      * Get URI for a property.
      *
      * @param declaringClass of the property
-     * @param name of the property
+     * @param name           of the property
      * @return property URI
      */
     public static String toURI( final Class declaringClass, String name )
@@ -142,7 +143,9 @@ public final class GenericPropertyInfo
         {
             return null;
         }
-        return "urn:qi4j:entity:" + getDeclaringClassName( accessor ) + "#";
+        return "urn:qi4j:entity:"
+               + Classes.normalizeClassToURI( getDeclaringClassName( accessor ) )
+               + "#";
     }
 
     private MetaInfo infos;

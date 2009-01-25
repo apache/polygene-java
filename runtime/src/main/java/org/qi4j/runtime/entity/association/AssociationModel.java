@@ -33,6 +33,7 @@ import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.entity.association.SetAssociation;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Immutable;
+import org.qi4j.api.util.Classes;
 import static org.qi4j.api.util.Classes.getRawClass;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
@@ -113,7 +114,9 @@ public final class AssociationModel
 
     public String toNameSpace()
     {
-        return "urn:qi4j:association:" + GenericPropertyInfo.getDeclaringClassName( accessor ) + ":";
+        return "urn:qi4j:association:"
+               + Classes.normalizeClassToURI( GenericPropertyInfo.getDeclaringClassName( accessor ) )
+               + ":";
     }
 
     public boolean isManyAssociation()
@@ -164,7 +167,8 @@ public final class AssociationModel
         if( !isManyAssociation() )
         {
             associationInstance = new AssociationInstance<Object>( this, uow, state );
-        } else
+        }
+        else
         {
             Collection<QualifiedIdentity> manyAssociation = state.getManyAssociation( qualifiedName );
 
@@ -175,13 +179,14 @@ public final class AssociationModel
             else if( isSetAssociation() )
             {
                 associationInstance = new SetAssociationInstance<Object>( this, uow, (Set<QualifiedIdentity>) manyAssociation );
-            } else
+            }
+            else
             {
                 associationInstance = new ManyAssociationInstance<Object>( this, uow, manyAssociation );
             }
         }
 
-        if ( Composite.class.isAssignableFrom( accessor.getReturnType()))
+        if( Composite.class.isAssignableFrom( accessor.getReturnType() ) )
         {
             associationInstance = (AbstractAssociation) uow.module().compositeBuilderFactory().newCompositeBuilder( accessor.getReturnType() ).use( associationInstance ).newInstance();
         }
@@ -250,7 +255,7 @@ public final class AssociationModel
             {
                 Association<?> assoc = (Association<?>) association;
                 Object associated = assoc.get();
-                
+
                 checkConstraints( associated );
 
                 if( associated != null )
