@@ -37,11 +37,8 @@ import org.qi4j.spi.entity.StateCommitter;
  * Whenever there is a concurrent modification the store will most likely
  * have to check with the underlying store what the current version is.
  *
- * This concern requires that the store has a Configuration entity, so that
- * it can access the service descriptor.
  */
-public abstract class ConcurrentModificationCheckConcern
-    extends ConcernOf<EntityStore>
+public abstract class ConcurrentModificationCheckConcern extends ConcernOf<EntityStore>
     implements EntityStore
 {
     private @This ServiceComposite service;

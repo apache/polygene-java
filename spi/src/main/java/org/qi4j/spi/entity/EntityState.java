@@ -22,18 +22,6 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityType;
 
 /**
- * The EntityState is a shared "second-level cache" mixin state container for a particular
- * entity. All mixins are shared across transactions, and therefor there is a "copy-on-write" pattern
- * expected from the higher-level systems. This means that when a UnitOfWork in a transaction wants
- * to modify the mixin state, it must first retrieve a non-shared copy from the EntityState by
- * calling <code><K> K getMixinResolution( Class<K> mixinType );</code>. For instance;
- * <code><pre>
- *     CompositeState cs = ...;
- *     Map<Class, Object> mixins = cs.getMixins();
- *     Name name = entityHolder.getMixinResolution( Name.class );
- *     name.setName( someName ); // initiated by client code.
- *     mixins.put( Name.class, name );
- * </pre></code>
  */
 public interface EntityState
 {

@@ -27,7 +27,7 @@ import org.qi4j.api.injection.scope.State;
 public class AssociationMixin
     implements InvocationHandler
 {
-    @State EntityStateHolder associations;
+    @State private EntityStateHolder associations;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
