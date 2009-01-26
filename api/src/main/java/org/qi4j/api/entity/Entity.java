@@ -16,6 +16,8 @@
  */
 package org.qi4j.api.entity;
 
+import org.qi4j.api.unitofwork.UnitOfWork;
+
 /**
  * Interface that all Entities implement. It contains methods
  * that are specific for Entities.
@@ -30,4 +32,11 @@ public interface Entity
      * @return true if the Entity is a reference
      */
     boolean isReference();
+
+    /**
+     * Get the UnitOfWork which this Entity is associated with.
+     *
+     * @return the UnitOfWork which the Entity was retrieved from
+     */
+    UnitOfWork unitOfWork();
 }
