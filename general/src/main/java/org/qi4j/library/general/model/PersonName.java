@@ -12,7 +12,7 @@
  */
 package org.qi4j.library.general.model;
 
-import org.qi4j.api.injection.scope.PropertyField;
+import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Computed;
@@ -36,7 +36,7 @@ public interface PersonName
     {
         @This PersonName personName;
 
-        @PropertyField Name fullName;
+        @State Name fullName;
 
         /**
          * Returns a person full name in the format LastName, FirstName
