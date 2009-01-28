@@ -22,6 +22,7 @@ package org.qi4j.library.swing.visualizer.model.descriptor;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
 import org.qi4j.spi.constraint.ConstraintDescriptor;
@@ -173,10 +174,10 @@ public final class ApplicationDetailDescriptorBuilder
         public final void visit( CompositeDescriptor aDescriptor )
         {
             // Commented out by efy: To prevent NPE
-//            if( ServiceComposite.class.isAssignableFrom( aDescriptor.type() ) )
-//            {
-//                return; // Skip services
-//            }
+            if( ServiceComposite.class.isAssignableFrom( aDescriptor.type() ) )
+            {
+                return; // Skip services
+            }
 
             currCompositeDescriptor = new CompositeDetailDescriptor<CompositeDescriptor>( aDescriptor );
             currModuleDescriptor.addComposite( currCompositeDescriptor );
@@ -185,6 +186,11 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public final void visit( CompositeMethodDescriptor aDescriptor )
         {
+            if( currCompositeDescriptor == null )
+            {
+                // Service via CompositeDescriptor in progress )
+                return;
+            }
             currMethodDesciptor = new CompositeMethodDetailDescriptor( aDescriptor );
             currCompositeDescriptor.addMethod( currMethodDesciptor );
         }
@@ -192,6 +198,11 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public final void visit( MethodConstraintsDescriptor aDescriptor )
         {
+            if( currCompositeDescriptor == null )
+            {
+                // Service via CompositeDescriptor in progress )
+                return;
+            }
             currMethodConstraintsDescriptor =
                 new MethodConstraintsDetailDescriptor( aDescriptor );
             currMethodDesciptor.setConstraints( currMethodConstraintsDescriptor );
@@ -200,6 +211,11 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public final void visit( ConstraintDescriptor aDescriptor )
         {
+            if( currCompositeDescriptor == null )
+            {
+                // Service via CompositeDescriptor in progress )
+                return;
+            }
             MethodConstraintDetailDescriptor detailDescriptor = new MethodConstraintDetailDescriptor( aDescriptor );
             currMethodConstraintsDescriptor.addConstraint( detailDescriptor );
         }
@@ -207,6 +223,11 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public final void visit( MethodConcernsDescriptor aDescriptor )
         {
+            if( currCompositeDescriptor == null )
+            {
+                // Service via CompositeDescriptor in progress )
+                return;
+            }
             currMethodConcernsDescriptor = new MethodConcernsDetailDescriptor( aDescriptor );
             currMethodDesciptor.setConcerns( currMethodConcernsDescriptor );
         }
@@ -214,6 +235,11 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public final void visit( MethodConcernDescriptor aDescriptor )
         {
+            if( currCompositeDescriptor == null )
+            {
+                // Service via CompositeDescriptor in progress )
+                return;
+            }
             resetInjectableRelatedVariables();
 
             currMethodConcernDescriptor = new MethodConcernDetailDescriptor( aDescriptor );
@@ -231,6 +257,11 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public final void visit( MethodSideEffectsDescriptor aDescriptor )
         {
+            if( currCompositeDescriptor == null )
+            {
+                // Service via CompositeDescriptor in progress )
+                return;
+            }
             currMethodSideEffectsDescriptor = new MethodSideEffectsDetailDescriptor( aDescriptor );
             currMethodDesciptor.setSideEffects( currMethodSideEffectsDescriptor );
         }
@@ -238,6 +269,11 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public final void visit( MethodSideEffectDescriptor aDescriptor )
         {
+            if( currCompositeDescriptor == null )
+            {
+                // Service via CompositeDescriptor in progress )
+                return;
+            }
             resetInjectableRelatedVariables();
 
             currMethodSideEffectDescriptor = new MethodSideEffectDetailDescriptor( aDescriptor );
@@ -247,6 +283,11 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public final void visit( MixinDescriptor aDescriptor )
         {
+            if( currCompositeDescriptor == null )
+            {
+                // Service via CompositeDescriptor in progress )
+                return;
+            }
             resetInjectableRelatedVariables();
 
             currMixinDescriptor = new MixinDetailDescriptor( aDescriptor );
@@ -266,6 +307,11 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public void visit( ConstructorDescriptor aDescriptor )
         {
+            if( currCompositeDescriptor == null )
+            {
+                // Service via CompositeDescriptor in progress )
+                return;
+            }
             currConstructorDescriptor = new ConstructorDetailDescriptor( aDescriptor );
             currInjectedMethodDescriptor = null;
 
@@ -297,6 +343,11 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public void visit( InjectedParametersDescriptor aDescriptor )
         {
+            if( currCompositeDescriptor == null )
+            {
+                // Service via CompositeDescriptor in progress )
+                return;
+            }
             InjectedParametersDetailDescriptor detailDescriptor = new InjectedParametersDetailDescriptor( aDescriptor );
 
             // Invoked for constructor and injected method
@@ -319,6 +370,11 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public void visit( InjectedMethodDescriptor aDescriptor )
         {
+            if( currCompositeDescriptor == null )
+            {
+                // Service via CompositeDescriptor in progress )
+                return;
+            }
             // Invoked for mixin and object
             currInjectedMethodDescriptor = new InjectedMethodDetailDescriptor( aDescriptor );
             currConstructorDescriptor = null;
@@ -351,6 +407,11 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public void visit( InjectedFieldDescriptor aDescriptor )
         {
+            if( currCompositeDescriptor == null )
+            {
+                // Service via CompositeDescriptor in progress )
+                return;
+            }
             InjectedFieldDetailDescriptor detailDescriptor = new InjectedFieldDetailDescriptor( aDescriptor );
 
             // Invoked for mixin and object
