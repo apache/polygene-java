@@ -18,7 +18,7 @@ import org.apache.wicket.protocol.http.WicketServlet;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.object.ObjectBuilderFactory;
 
-public class QuikItServlet extends WicketServlet
+public final class QuikItServlet extends WicketServlet
 {
     private static final long serialVersionUID = 1L;
 

@@ -40,13 +40,13 @@ public class QuikitSession extends WebSession
 
     public QuikitSession(
         @Uses Request request,
-        @Structure UnitOfWorkFactory aUOWF )
+        @Structure UnitOfWorkFactory unitOfWorkFactory )
     {
         super( request );
 
         // TODO: Investigate use cases whether this is supposed to be done this way
         // Sets the initial unit of work
-        currentUnitOfWork = aUOWF.newUnitOfWork();
+        currentUnitOfWork = unitOfWorkFactory.newUnitOfWork();
     }
 
     /**

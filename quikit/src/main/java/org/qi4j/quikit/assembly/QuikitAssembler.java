@@ -39,7 +39,8 @@ import org.qi4j.library.http.ServletInfo;
 /**
  * TODO
  */
-public class QuikitAssembler implements Assembler
+public class QuikitAssembler
+    implements Assembler
 {
     public void assemble( ModuleAssembly aModule )
         throws AssemblyException
