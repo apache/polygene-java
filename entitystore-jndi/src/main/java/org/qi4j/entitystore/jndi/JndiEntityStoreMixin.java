@@ -38,7 +38,6 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceDescriptor;
-import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStoreException;
@@ -276,7 +275,7 @@ public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
                 Attribute attribute = attrs.get( propertyName );
                 if( attribute != null )
                 {
-                    result.put( attribute.getID(), attribute.get() );
+                    result.put( qualifiedName, attribute.get() );
                 }
             }
         }
