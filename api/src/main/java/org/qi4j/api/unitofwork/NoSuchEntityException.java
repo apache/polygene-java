@@ -13,30 +13,33 @@
  */
 package org.qi4j.api.unitofwork;
 
-import org.qi4j.api.common.InvalidApplicationException;
-
-public class NoSuchEntityException extends InvalidApplicationException
+/**
+ * This exception indicates that the requested Entity with the given
+ * identity does not exist.
+ */
+public class NoSuchEntityException extends UnitOfWorkException
 {
-    private static final long serialVersionUID = 7185723686654157891L;
+    private final String identity;
+    private final String compositeType;
 
-    private final String entityType;
-    private final String moduleName;
-
-    public NoSuchEntityException( String entityType, String moduleName )
+    public NoSuchEntityException( String identity, String compositeType )
     {
-        super( "Could not find any visible EntityComposite of type [" + entityType + "] in module [" +
-               moduleName + "]." );
-        this.entityType = entityType;
-        this.moduleName = moduleName;
+        this.identity = identity;
+        this.compositeType = compositeType;
     }
 
-    public String type()
+    public String identity()
     {
-        return entityType;
+        return identity;
     }
 
-    public String moduleName()
+    public String compositeType()
     {
-        return this.moduleName;
+        return compositeType;
+    }
+
+    @Override public String getMessage()
+    {
+        return "Could not find entity (" + identity() + " of type " + compositeType + ")";
     }
 }

@@ -50,6 +50,7 @@ import org.qi4j.runtime.structure.EntitiesInstance;
 import org.qi4j.runtime.structure.EntitiesModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
+import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
@@ -140,7 +141,7 @@ public final class UnitOfWorkInstance
         ModuleInstance realModuleInstance = moduleInstance.findModuleForEntity( mixinType );
         if( realModuleInstance == null )
         {
-            throw new NoSuchEntityException( mixinType.getName(), moduleInstance.name() );
+            throw new EntityCompositeNotFoundException( mixinType.getName() );
         }
 
         EntityBuilder<T> builder = realModuleInstance.entities().newEntityBuilder( mixinType, this, unitOfWorkStore );
@@ -163,14 +164,14 @@ public final class UnitOfWorkInstance
     }
 
     public <T> T find( String identity, Class<T> mixinType )
-        throws EntityCompositeNotFoundException
+        throws EntityCompositeNotFoundException, NoSuchEntityException
     {
         checkOpen();
 
         final ModuleInstance realModule = moduleInstance.findModuleForEntity( mixinType );
         if( realModule == null )
         {
-            throw new EntityCompositeNotFoundException( identity, mixinType );
+            throw new EntityCompositeNotFoundException( mixinType.getName() );
         }
         EntitiesInstance entitiesInstance = realModule.entities();
         EntitiesModel entitiesModel = entitiesInstance.model();
@@ -201,28 +202,28 @@ public final class UnitOfWorkInstance
                     // Check if it has been removed
                     if( entityInstance.status() == EntityStatus.REMOVED )
                     {
-                        throw new EntityCompositeNotFoundException( identity, entityModel.type() );
+                        throw new NoSuchEntityException( identity, entityModel.type().getName() );
                     }
                 }
             }
 
             return mixinType.cast( entity );
         }
-        catch( EntityStoreException e )
+        catch( EntityNotFoundException e )
         {
-            throw new EntityCompositeNotFoundException( identity, entityModel.type() );
+            throw new NoSuchEntityException( entityModel.type().getName(), entityModel.type().getName() );
         }
     }
 
     public <T> T getReference( String identity, Class<T> mixinType )
-        throws EntityCompositeNotFoundException
+        throws EntityCompositeNotFoundException, NoSuchEntityException
     {
         checkOpen();
 
         ModuleInstance entityModuleInstance = this.moduleInstance.findModuleForEntity( mixinType );
         if( entityModuleInstance == null )
         {
-            throw new EntityCompositeNotFoundException( "Entity type " + mixinType.getName() + " not visible in module " + moduleInstance.name(), mixinType );
+            throw new EntityCompositeNotFoundException( mixinType.getName());
         }
 
         EntityModel entityModel = entityModuleInstance.entities().model().getEntityModelFor( mixinType );
@@ -242,7 +243,7 @@ public final class UnitOfWorkInstance
             EntityInstance entityInstance = EntityInstance.getEntityInstance( entity );
             if( entityInstance.status() == EntityStatus.REMOVED )
             {
-                throw new EntityCompositeNotFoundException( identity, entityModel.type() );
+                throw new NoSuchEntityException( identity, entityModel.type().getName() );
             }
         }
 
@@ -260,7 +261,7 @@ public final class UnitOfWorkInstance
     }
 
     public void refresh( Object entity )
-        throws UnitOfWorkException
+        throws UnitOfWorkException, NoSuchEntityException
     {
         checkOpen();
 
@@ -271,7 +272,7 @@ public final class UnitOfWorkInstance
             EntityStatus entityStatus = entityInstance.status();
             if( entityStatus == EntityStatus.REMOVED )
             {
-                throw new EntityCompositeNotFoundException( entityInstance.qualifiedIdentity().identity(), entityInstance.type() );
+                throw new NoSuchEntityException( entityInstance.qualifiedIdentity().identity(), entityInstance.type().getName() );
             }
             else if( entityStatus == EntityStatus.NEW )
             {
@@ -283,6 +284,10 @@ public final class UnitOfWorkInstance
             {
 
                 entityInstance.refresh();
+            }
+            catch( EntityNotFoundException e )
+            {
+                throw new NoSuchEntityException( entityInstance.qualifiedIdentity().identity(), entityInstance.type().getName() );
             }
             catch( EntityStoreException e )
             {
@@ -303,7 +308,7 @@ public final class UnitOfWorkInstance
                 {
                     refresh( entity );
                 }
-                catch( EntityCompositeNotFoundException e )
+                catch( NoSuchEntityException e )
                 {
                     // Ignore
                 }

@@ -21,29 +21,20 @@ package org.qi4j.api.unitofwork;
  */
 public class EntityCompositeNotFoundException extends UnitOfWorkException
 {
-    private static final long serialVersionUID = 1L;
+    private final String compositeType;
 
-    private final String identity;
-    private final Class compositeType;
-
-    public EntityCompositeNotFoundException( String identity, Class compositeType )
+    public EntityCompositeNotFoundException( String compositeType )
     {
-        this.identity = identity;
         this.compositeType = compositeType;
     }
 
-    public String identity()
-    {
-        return identity;
-    }
-
-    public Class compositeType()
+    public String compositeType()
     {
         return compositeType;
     }
 
     @Override public String getMessage()
     {
-        return "Could not find entity (" + identity() + " of type " + compositeType + ")";
+        return "Could not find a Composite of type " + compositeType + ")";
     }
 }
