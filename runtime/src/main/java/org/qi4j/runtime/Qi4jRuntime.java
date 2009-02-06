@@ -31,7 +31,7 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.unitofwork.EntityCompositeNotFoundException;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.runtime.composite.CompositeModel;
@@ -108,7 +108,7 @@ public final class Qi4jRuntime
             String identity = descriptor.identity();
             configuration = uow.find( identity, configType );
         }
-        catch( EntityCompositeNotFoundException e )
+        catch( NoSuchEntityException e )
         {
 
             EntityBuilder<? extends T> configBuilder = uow.newEntityBuilder( descriptor.identity(), configType );
