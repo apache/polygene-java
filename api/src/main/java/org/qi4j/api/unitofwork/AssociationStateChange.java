@@ -17,28 +17,21 @@ package org.qi4j.api.unitofwork;
 import org.qi4j.api.entity.Entity;
 
 /**
- * TODO
+ * Association change event
  */
 public class AssociationStateChange
     extends StateChange
 {
-    private Entity newAssociation;
-    private Entity oldAssociation;
+    Entity newValue;
 
-    public AssociationStateChange( String source, String qualifiedName, Entity newAssociation, Entity oldAssociation )
+    public AssociationStateChange( String source, String qualifiedName, Entity newValue )
     {
         super( source, qualifiedName );
-        this.newAssociation = newAssociation;
-        this.oldAssociation = oldAssociation;
-    }
-
-    public Entity oldAssociation()
-    {
-        return oldAssociation;
+        this.newValue = newValue;
     }
 
     public Entity newAssociation()
     {
-        return newAssociation;
+        return newValue;
     }
 }

@@ -15,33 +15,18 @@
 package org.qi4j.api.unitofwork;
 
 /**
- * TODO
+ * Property change event
  */
 public class PropertyStateChange
     extends StateChange
 {
-    private Object newValue;
-    private Object oldValue;
-
-    public PropertyStateChange( String source, String qualifiedName, Object newValue, Object oldValue )
+    public PropertyStateChange( String source, String qualifiedName)
     {
         super( source, qualifiedName );
-        this.newValue = newValue;
-        this.oldValue = oldValue;
-    }
-
-    public Object oldValue()
-    {
-        return oldValue;
-    }
-
-    public Object newValue()
-    {
-        return newValue;
     }
 
     @Override public String toString()
     {
-        return "Property "+qualifiedName()+" changed from '"+oldValue+"' to '"+newValue+"' in "+source();
+        return "Property "+qualifiedName()+" changed in "+source();
     }
 }

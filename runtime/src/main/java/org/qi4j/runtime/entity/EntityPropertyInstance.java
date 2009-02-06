@@ -91,7 +91,7 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
         PropertyStateChange change = null;
         if( stateChangeVoters != null )
         {
-            change = new PropertyStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), aNewValue, get() );
+            change = new PropertyStateChange( entityState.qualifiedIdentity().identity(), qualifiedName());
 
             for( StateChangeVoter stateChangeVoter : stateChangeVoters )
             {
@@ -103,7 +103,7 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
         if( stateChangeListeners != null )
         {
             // Have to create this here in order to get old value
-            change = new PropertyStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), aNewValue, get() );
+            change = new PropertyStateChange( entityState.qualifiedIdentity().identity(), qualifiedName() );
         }
 
         // Change property

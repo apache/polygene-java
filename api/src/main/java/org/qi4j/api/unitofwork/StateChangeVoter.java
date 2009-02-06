@@ -15,10 +15,20 @@
 package org.qi4j.api.unitofwork;
 
 /**
- * TODO
+ * Implement this interface to vote on state changes
+ * in Entities in a UnitOfWork. Register your voter
+ * by calling {@link UnitOfWork#addStateChangeVoter(StateChangeVoter)}.
  */
 public interface StateChangeVoter
 {
+    /**
+     * Vote on a state change. Do nothing to accept it,
+     * and throw ChangeVetoException, with a possible explanation,
+     * to reject it.
+     *
+     * @param change the state change event
+     * @throws ChangeVetoException thrown if this voter rejects the change
+     */
     void acceptChange(StateChange change)
         throws ChangeVetoException;
 }

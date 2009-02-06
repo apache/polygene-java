@@ -20,6 +20,7 @@ import java.util.ListIterator;
 import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.ListAssociation;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
@@ -30,17 +31,22 @@ public final class ListAssociationInstance<T>
     extends ManyAssociationInstance<T>
     implements ListAssociation<T>
 {
-    private List<QualifiedIdentity> associated;
+    private List<QualifiedIdentity> subList;
 
-    public ListAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, List<QualifiedIdentity> associated )
+    public ListAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, EntityState entityState )
     {
-        super( associationInfo, unitOfWork, associated );
-        this.associated = associated;
+        super( associationInfo, unitOfWork, entityState );
+    }
+
+    public ListAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, EntityState entityState, List<QualifiedIdentity> subList )
+    {
+        super( associationInfo, unitOfWork, entityState );
+        this.subList = subList;
     }
 
     public T get( int i )
     {
-        return getEntity( associated.get( i ) );
+        return getEntity( associated().get( i ) );
     }
 
     public T set( int i, T t )
@@ -48,7 +54,7 @@ public final class ListAssociationInstance<T>
         checkImmutable();
         checkType( t );
 
-        return getEntity( associated.set( i, getEntityId( t ) ) );
+        return getEntity( associated().set( i, getEntityId( t ) ) );
     }
 
     public void add( int i, T t )
@@ -56,27 +62,27 @@ public final class ListAssociationInstance<T>
         checkImmutable();
         checkType( t );
 
-        associated.add( i, getEntityId( t ) );
+        associated().add( i, getEntityId( t ) );
     }
 
     public T remove( int i )
     {
         checkImmutable();
-        return getEntity( associated.remove( i ) );
+        return getEntity( associated().remove( i ) );
     }
 
     public int indexOf( Object o )
     {
         checkType( o );
 
-        return associated.indexOf( getEntityId( o ) );
+        return associated().indexOf( getEntityId( o ) );
     }
 
     public int lastIndexOf( Object o )
     {
         checkType( o );
 
-        return associated.lastIndexOf( o );
+        return associated().lastIndexOf( o );
     }
 
     public boolean addAll( int i, Collection<? extends T> ts )
@@ -84,28 +90,31 @@ public final class ListAssociationInstance<T>
         checkImmutable();
         Collection<QualifiedIdentity> list = getEntityIdCollection( ts );
 
-        return associated.addAll( i, list );
+        return associated().addAll( i, list );
     }
 
     public ListIterator<T> listIterator()
     {
-        return new ListAssociationListIterator( associated.listIterator() );
+        return new ListAssociationListIterator( associated().listIterator() );
     }
 
     public ListIterator<T> listIterator( int i )
     {
-        return new ListAssociationListIterator( associated.listIterator( i ) );
+        return new ListAssociationListIterator( associated().listIterator( i ) );
     }
 
     public List<T> subList( int i, int i1 )
     {
-        List<QualifiedIdentity> subList = associated.subList( i, i1 );
-        return new ListAssociationInstance<T>( associationInfo, unitOfWork, subList );
+        List<QualifiedIdentity> subList = associated().subList( i, i1 );
+        return new ListAssociationInstance<T>( associationInfo, unitOfWork, entityState, subList );
     }
 
-    public void refresh( List<QualifiedIdentity> newList )
+    private List<QualifiedIdentity> associated()
     {
-        associated = newList;
+        if (subList == null)
+            return (List<QualifiedIdentity>) entityState.getManyAssociation( associationInfo.qualifiedName() );
+        else
+            return subList;
     }
 
     private class ListAssociationListIterator

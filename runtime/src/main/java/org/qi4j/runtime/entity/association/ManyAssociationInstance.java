@@ -2,10 +2,16 @@ package org.qi4j.runtime.entity.association;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import org.qi4j.api.entity.Entity;
 import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.unitofwork.ManyAssociationStateChange;
+import org.qi4j.api.unitofwork.StateChangeListener;
+import org.qi4j.api.unitofwork.StateChangeVoter;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
@@ -14,39 +20,43 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
     implements ManyAssociation<T>
 {
-    private Collection<QualifiedIdentity> associated;
-
-    public ManyAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, Collection<QualifiedIdentity> associated )
+    public ManyAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, EntityState entityState )
     {
-        super( associationInfo, unitOfWork );
-        if( associated == null )
-        {
-            throw new IllegalArgumentException( "ManyAssociation must be a valid collection, shared with state" );
-        }
-        this.associated = associated;
+        super( associationInfo, unitOfWork, entityState );
     }
 
     public boolean removeAll( Collection<?> objects )
     {
         checkImmutable();
-        return associated.removeAll( getEntityIdCollection( objects ) );
+
+        // Allow voters to vote on change
+        ManyAssociationStateChange change = vote( ManyAssociationStateChange.ChangeType.REMOVE, (Collection<Entity>) objects );
+
+        try
+        {
+            return associated().removeAll( getEntityIdCollection( objects ) );
+        }
+        finally
+        {
+            notify( change, ManyAssociationStateChange.ChangeType.REMOVE, (Collection<Entity>) objects );
+        }
     }
 
     public boolean isEmpty()
     {
-        return associated.isEmpty();
+        return associated().isEmpty();
     }
 
     public boolean contains( Object o )
     {
         checkType( o );
 
-        return associated.contains( getEntityId( o ) );
+        return associated().contains( getEntityId( o ) );
     }
 
     public Object[] toArray()
     {
-        Object[] ids = associated.toArray();
+        Object[] ids = associated().toArray();
         for( int i = 0; i < ids.length; i++ )
         {
             ids[ i ] = getEntity( (QualifiedIdentity) ids[ i ] );
@@ -58,7 +68,7 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
     public <T> T[] toArray( T[] ts )
     {
         QualifiedIdentity[] ids = new QualifiedIdentity[ts.length];
-        associated.toArray( ids );
+        associated().toArray( ids );
         for( int i = 0; i < ids.length; i++ )
         {
             QualifiedIdentity id = ids[ i ];
@@ -72,7 +82,17 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
         checkImmutable();
         checkType( t );
 
-        return associated.add( getEntityId( t ) );
+        // Allow voters to vote on change
+        ManyAssociationStateChange change = vote( ManyAssociationStateChange.ChangeType.ADD, (Entity) t );
+
+        try
+        {
+            return associated().add( getEntityId( t ) );
+        }
+        finally
+        {
+            notify( change, ManyAssociationStateChange.ChangeType.ADD, (Entity) t);
+        }
     }
 
     public boolean remove( Object o )
@@ -80,45 +100,77 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
         checkImmutable();
         checkType(o);
 
-        return associated.remove( getEntityId( o ) );
+        // Allow voters to vote on change
+        ManyAssociationStateChange change = vote( ManyAssociationStateChange.ChangeType.REMOVE, (Entity) o );
+
+        try
+        {
+            return associated().remove( getEntityId( o ) );
+        }
+        finally
+        {
+            notify( change, ManyAssociationStateChange.ChangeType.REMOVE, (Entity) o);
+        }
     }
 
     public boolean containsAll( Collection<?> objects )
     {
-        return associated.containsAll( getEntityIdCollection( objects ) );
+        return associated().containsAll( getEntityIdCollection( objects ) );
     }
 
     public boolean addAll( Collection<? extends T> ts )
     {
         checkImmutable();
-        return associated.addAll( getEntityIdCollection( ts ) );
+
+        // Allow voters to vote on change
+        ManyAssociationStateChange change = vote( ManyAssociationStateChange.ChangeType.ADD, (Collection<Entity>) ts );
+
+        try
+        {
+            return associated().addAll( getEntityIdCollection( ts ) );
+        }
+        finally
+        {
+            notify( change, ManyAssociationStateChange.ChangeType.ADD, (Collection<Entity>) ts);
+        }
     }
 
     public boolean retainAll( Collection<?> objects )
     {
         checkImmutable();
-        return associated.retainAll( getEntityIdCollection( objects ) );
+        return associated().retainAll( getEntityIdCollection( objects ) );
     }
 
     public void clear()
     {
         checkImmutable();
-        associated.clear();
+
+        // Allow voters to vote on change
+        ManyAssociationStateChange change = vote( ManyAssociationStateChange.ChangeType.CLEAR, Collections.<Entity>emptyList() );
+
+        try
+        {
+            associated().clear();
+        }
+        finally
+        {
+            notify( change, ManyAssociationStateChange.ChangeType.CLEAR, Collections.<Entity>emptyList());
+        }
     }
 
     public String toString()
     {
-        return associated.toString();
+        return associated().toString();
     }
 
     public Iterator<T> iterator()
     {
-        return new ManyAssociationIterator( associated.iterator() );
+        return new ManyAssociationIterator( associated().iterator() );
     }
 
     public int size()
     {
-        return associated.size();
+        return associated().size();
     }
 
     public boolean equals( Object o )
@@ -138,7 +190,7 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
 
         ManyAssociationInstance that = (ManyAssociationInstance) o;
 
-        if( !associated.equals( that.associated ) )
+        if( !associated().equals( that.associated() ) )
         {
             return false;
         }
@@ -149,7 +201,7 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
     public int hashCode()
     {
         int result = super.hashCode();
-        result = 31 * result + associated.hashCode();
+        result = 31 * result + associated().hashCode();
         return result;
     }
 
@@ -162,16 +214,6 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
         }
         return list;
     }
-
-    public void refresh( Collection<QualifiedIdentity> newAssociations )
-    {
-        if( newAssociations == null )
-        {
-            throw new IllegalArgumentException( "ManyAssociation must be a valid collection, shared with state" );
-        }
-        associated = newAssociations;
-    }
-
 
     protected class ManyAssociationIterator
         implements Iterator<T>
@@ -213,5 +255,78 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
     protected boolean isSet()
     {
         return true;
+    }
+
+    protected ManyAssociationStateChange vote( ManyAssociationStateChange.ChangeType changeType, Collection<Entity> changes)
+    {
+        ManyAssociationStateChange change = null;
+        Iterable<StateChangeVoter> stateChangeVoters = unitOfWork.stateChangeVoters();
+        if( stateChangeVoters != null )
+        {
+            change = new ManyAssociationStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), changeType, changes);
+
+            for( StateChangeVoter stateChangeVoter : stateChangeVoters )
+            {
+                stateChangeVoter.acceptChange( change );
+            }
+        }
+        return change;
+    }
+
+    protected ManyAssociationStateChange vote( ManyAssociationStateChange.ChangeType changeType, Entity changeEntity)
+    {
+        ManyAssociationStateChange change = null;
+        Iterable<StateChangeVoter> stateChangeVoters = unitOfWork.stateChangeVoters();
+        if( stateChangeVoters != null )
+        {
+            Collection<Entity> changes = Collections.singletonList( changeEntity );
+            change = new ManyAssociationStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), changeType, changes);
+
+            for( StateChangeVoter stateChangeVoter : stateChangeVoters )
+            {
+                stateChangeVoter.acceptChange( change );
+            }
+        }
+        return change;
+    }
+
+    protected void notify( ManyAssociationStateChange change, ManyAssociationStateChange.ChangeType changeType, Collection<Entity> changes )
+    {
+        // Notify listeners
+        Iterable<StateChangeListener> stateChangeListeners = unitOfWork.stateChangeListeners();
+        if( stateChangeListeners != null )
+        {
+            if (change == null)
+                change = new ManyAssociationStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), changeType, changes);
+
+            for( StateChangeListener stateChangeListener : stateChangeListeners )
+            {
+                stateChangeListener.notify( change );
+            }
+        }
+    }
+
+    protected void notify( ManyAssociationStateChange change, ManyAssociationStateChange.ChangeType changeType, Entity changeEntity )
+    {
+        // Notify listeners
+        Iterable<StateChangeListener> stateChangeListeners = unitOfWork.stateChangeListeners();
+        if( stateChangeListeners != null )
+        {
+            if (change == null)
+            {
+                Collection<Entity> changes = Collections.singletonList( changeEntity );
+                change = new ManyAssociationStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), changeType, changes);
+            }
+
+            for( StateChangeListener stateChangeListener : stateChangeListeners )
+            {
+                stateChangeListener.notify( change );
+            }
+        }
+    }
+
+    private Collection<QualifiedIdentity> associated()
+    {
+        return entityState.getManyAssociation( associationInfo.qualifiedName() );
     }
 }

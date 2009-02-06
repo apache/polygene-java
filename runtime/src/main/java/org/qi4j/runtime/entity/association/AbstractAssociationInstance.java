@@ -7,6 +7,7 @@ import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.Qualifier;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.QualifierQualifiedIdentity;
 
@@ -16,14 +17,15 @@ import org.qi4j.spi.entity.QualifierQualifiedIdentity;
 public abstract class AbstractAssociationInstance<T>
     implements AbstractAssociation
 {
-
     protected final AssociationInfo associationInfo;
     protected final UnitOfWorkInstance unitOfWork;
+    protected EntityState entityState;
 
-    public AbstractAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork )
+    public AbstractAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, EntityState entityState )
     {
         this.associationInfo = associationInfo;
         this.unitOfWork = unitOfWork;
+        this.entityState = entityState;
     }
 
     // AssociationInfo implementation
@@ -55,6 +57,11 @@ public abstract class AbstractAssociationInstance<T>
     public boolean isAggregated()
     {
         return associationInfo.isAggregated();
+    }
+
+    public void refresh( EntityState newState )
+    {
+        entityState = newState;
     }
 
     protected T getEntity( QualifiedIdentity entityId )

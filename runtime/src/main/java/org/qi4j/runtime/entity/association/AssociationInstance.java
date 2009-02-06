@@ -34,12 +34,11 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
     private static final Object NOT_LOADED = new Object();
 
     private T value = (T) NOT_LOADED;
-    private EntityState entityState;
 
     public AssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, EntityState entityState )
     {
-        super( associationInfo, unitOfWork );
-        this.entityState = entityState;
+        super( associationInfo, unitOfWork, entityState );
+
         if( entityState == null )
         {
             value = null;
@@ -71,19 +70,12 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
         AssociationStateChange change = null;
         if( stateChangeVoters != null )
         {
-            change = new AssociationStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), (Entity) newValue, (Entity) get() );
+            change = new AssociationStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), (Entity) newValue);
 
             for( StateChangeVoter stateChangeVoter : stateChangeVoters )
             {
                 stateChangeVoter.acceptChange( change );
             }
-        }
-
-        Iterable<StateChangeListener> stateChangeListeners = unitOfWork.stateChangeListeners();
-        if( stateChangeListeners != null )
-        {
-            // Have to create this here in order to get old value
-            change = new AssociationStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), (Entity) newValue, (Entity) get() );
         }
 
         // Change association
@@ -94,8 +86,12 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
         this.value = newValue;
 
         // Notify listeners
+        Iterable<StateChangeListener> stateChangeListeners = unitOfWork.stateChangeListeners();
         if( stateChangeListeners != null )
         {
+            if (change == null)
+                change = new AssociationStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), (Entity) newValue);
+
             for( StateChangeListener stateChangeListener : stateChangeListeners )
             {
                 stateChangeListener.notify( change );
@@ -186,7 +182,7 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
 
     public void refresh( EntityState newState )
     {
+        super.refresh(newState);
         value = (T) NOT_LOADED;
-        entityState = newState;
     }
 }

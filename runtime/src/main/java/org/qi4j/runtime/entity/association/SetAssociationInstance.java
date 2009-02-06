@@ -14,11 +14,10 @@
 
 package org.qi4j.runtime.entity.association;
 
-import java.util.Set;
 import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.SetAssociation;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.EntityState;
 
 /**
  * Implementation of SetAssociation, which delegates to a
@@ -28,13 +27,8 @@ public final class SetAssociationInstance<T>
     extends ManyAssociationInstance<T>
     implements SetAssociation<T>
 {
-    public SetAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, Set<QualifiedIdentity> associated )
+    public SetAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, EntityState entityState )
     {
-        super( associationInfo, unitOfWork, associated );
-    }
-
-    public void refresh( Set<QualifiedIdentity> newSet )
-    {
-        super.refresh( newSet );
+        super( associationInfo, unitOfWork, entityState );
     }
 }

@@ -18,14 +18,14 @@ import java.util.Collection;
 import org.qi4j.api.entity.Entity;
 
 /**
- * TODO
+ * ManyAssociation change event
  */
 public class ManyAssociationStateChange
     extends StateChange
 {
-    enum ChangeType
+    public enum ChangeType
     {
-        ADDED, REMOVED, REPLACE, CLEAR
+        ADD, REMOVE, REPLACE, CLEAR
     }
 
     private ChangeType changeType;

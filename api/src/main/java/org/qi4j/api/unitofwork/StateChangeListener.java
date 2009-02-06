@@ -15,7 +15,9 @@
 package org.qi4j.api.unitofwork;
 
 /**
- * TODO
+ * Implement this interface to listen to state changes
+ * in Entities in a UnitOfWork. Register your listener
+ * by calling {@link UnitOfWork#addStateChangeListener(StateChangeListener)}.
  */
 public interface StateChangeListener
 {

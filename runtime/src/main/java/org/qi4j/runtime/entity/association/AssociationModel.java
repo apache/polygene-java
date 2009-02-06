@@ -18,7 +18,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.constraint.ConstraintViolation;
@@ -182,15 +181,15 @@ public final class AssociationModel
 
             if( isListAssociation() )
             {
-                associationInstance = new ListAssociationInstance<Object>( this, uow, (List<QualifiedIdentity>) manyAssociation );
+                associationInstance = new ListAssociationInstance<Object>( this, uow, state );
             }
             else if( isSetAssociation() )
             {
-                associationInstance = new SetAssociationInstance<Object>( this, uow, (Set<QualifiedIdentity>) manyAssociation );
+                associationInstance = new SetAssociationInstance<Object>( this, uow, state );
             }
             else
             {
-                associationInstance = new ManyAssociationInstance<Object>( this, uow, manyAssociation );
+                associationInstance = new ManyAssociationInstance<Object>( this, uow, state );
             }
         }
 

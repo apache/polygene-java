@@ -307,6 +307,18 @@ public final class EntityInstance
     public void remove()
         throws LifecycleException
     {
+        invokeRemove();
+
+        removeAggregatedEntities();
+
+
+        status = EntityStatus.REMOVED;
+        entityState = null;
+        mixins = null;
+    }
+
+    private void invokeRemove()
+    {
         if( entity.hasMixinType( Lifecycle.class ) )
         {
             try
@@ -322,7 +334,10 @@ public final class EntityInstance
                 throw new LifecycleException( throwable );
             }
         }
+    }
 
+    private void removeAggregatedEntities()
+    {
         // Calculate aggregated Entities
         EntityStateDescriptor stateDescriptor = entity.state();
         List<AssociationDescriptor> associations = stateDescriptor.associations();
@@ -352,10 +367,6 @@ public final class EntityInstance
         {
             unitOfWork().remove( aggregatedEntity );
         }
-
-        status = EntityStatus.REMOVED;
-        entityState = null;
-        mixins = null;
     }
 
     public EntityModel entityModel()
