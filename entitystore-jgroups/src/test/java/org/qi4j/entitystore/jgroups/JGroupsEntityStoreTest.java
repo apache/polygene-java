@@ -24,30 +24,29 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import org.junit.Test;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.SingletonAssembler;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeBuilder;
 import org.qi4j.api.composite.CompositeBuilderFactory;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.property.Immutable;
-import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.unitofwork.EntityCompositeNotFoundException;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.entity.association.ListAssociation;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.entity.association.SetAssociation;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.entitystore.jgroups.JGroupsEntityStoreService;
 
 /**
  * Test of JGroups EntityStore backend.
@@ -140,7 +139,7 @@ public class JGroupsEntityStoreTest
                 unitOfWork.discard();
                 throw e;
             }
-            catch( EntityCompositeNotFoundException e )
+            catch( NoSuchEntityException e )
             {
                 unitOfWork.discard();
                 throw e;
@@ -178,11 +177,11 @@ public class JGroupsEntityStoreTest
             // Find entity
             unitOfWork = unitOfWorkFactory.newUnitOfWork();
             try
-        {
-            instance = unitOfWork.find( identity, TestEntity.class );
+            {
+                instance = unitOfWork.find( identity, TestEntity.class );
                 fail( "Should not be able to find entity" );
             }
-            catch( EntityCompositeNotFoundException e )
+            catch( NoSuchEntityException e )
             {
                 // Ok!
             }
@@ -193,7 +192,7 @@ public class JGroupsEntityStoreTest
             unitOfWork.discard();
             throw e;
         }
-        catch( EntityCompositeNotFoundException e )
+        catch( NoSuchEntityException e )
         {
             unitOfWork.discard();
             throw e;
