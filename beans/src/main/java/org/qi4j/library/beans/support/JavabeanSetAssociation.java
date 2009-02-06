@@ -24,9 +24,9 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.entity.association.SetAssociation;
-import org.qi4j.api.common.MetaInfo;
 
 public class JavabeanSetAssociation
     implements SetAssociation
@@ -69,6 +69,11 @@ public class JavabeanSetAssociation
     public boolean isImmutable()
     {
         return delegate.isImmutable();
+    }
+
+    public boolean isAggregated()
+    {
+        return delegate.isAggregated();
     }
 
     public int size()

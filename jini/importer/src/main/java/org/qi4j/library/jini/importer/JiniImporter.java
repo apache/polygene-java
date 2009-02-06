@@ -17,17 +17,18 @@
  */
 package org.qi4j.library.jini.importer;
 
-import org.qi4j.api.service.ServiceImporter;
-import org.qi4j.api.service.ImportedServiceDescriptor;
-import org.qi4j.api.service.ServiceImporterException;
-import org.qi4j.api.injection.scope.Service;
-import java.lang.reflect.Proxy;
 import java.io.IOException;
+import java.lang.reflect.Proxy;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.service.ServiceImporterException;
 
 public class JiniImporter
     implements ServiceImporter
 {
-    @Service(optional=true) private JiniStatusService statusService;
+    @Optional @Service private JiniStatusService statusService;
 
     /**
      * Import a service from Jini by looking creating a Proxy which holds the Lookup cache to the wanted Jini service.

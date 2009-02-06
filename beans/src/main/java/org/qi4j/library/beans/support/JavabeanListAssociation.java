@@ -27,9 +27,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.entity.association.ListAssociation;
-import org.qi4j.api.common.MetaInfo;
 
 public class JavabeanListAssociation
     implements ListAssociation
@@ -70,6 +70,11 @@ public class JavabeanListAssociation
     }
 
     public boolean isImmutable()
+    {
+        return delegate.isImmutable();
+    }
+
+    public boolean isAggregated()
     {
         return delegate.isImmutable();
     }

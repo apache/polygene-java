@@ -21,10 +21,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.UndeclaredThrowableException;
-import org.qi4j.api.composite.CompositeBuilder;
-import org.qi4j.api.entity.association.GenericAssociationInfo;
-import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.composite.CompositeBuilder;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.GenericAssociationInfo;
 
 public class JavabeanAssociation
     implements Association
@@ -67,6 +67,11 @@ public class JavabeanAssociation
     public boolean isImmutable()
     {
         return delegate.isImmutable();
+    }
+
+    public boolean isAggregated()
+    {
+        return delegate.isAggregated();
     }
 
     public Object get()
