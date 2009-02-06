@@ -134,7 +134,7 @@ public class JRubyMixin
                             rubyClass.addMethod( compositeMethod.getName(), getter );
                         }
                     }
-                    rubyClass.freeze();
+                    rubyClass.freeze(ThreadContext.newContext( runtime ));
                 }
 
                 RubyObjectAdapter rubyObjectAdapter = JavaEmbedUtils.newObjectAdapter();
