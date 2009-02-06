@@ -48,4 +48,9 @@ public final class EntityBuilderListAssociation<T> extends ArrayList<T>
     {
         return false;
     }
+
+    public boolean isAggregated()
+    {
+        return false;
+    }
 }

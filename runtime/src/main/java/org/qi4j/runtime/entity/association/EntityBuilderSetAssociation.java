@@ -48,4 +48,9 @@ public final class EntityBuilderSetAssociation<T> extends LinkedHashSet<T>
     {
         return false;
     }
+
+    public boolean isAggregated()
+    {
+        return false;
+    }
 }

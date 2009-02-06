@@ -65,4 +65,9 @@ public final class EntityBuilderAssociation<T>
     {
         return false;
     }
+
+    public boolean isAggregated()
+    {
+        return false;
+    }
 }

@@ -2,10 +2,10 @@ package org.qi4j.runtime.entity.association;
 
 import java.lang.reflect.Type;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.Qualifier;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.QualifierQualifiedIdentity;
@@ -50,6 +50,11 @@ public abstract class AbstractAssociationInstance<T>
     public boolean isImmutable()
     {
         return associationInfo.isImmutable();
+    }
+
+    public boolean isAggregated()
+    {
+        return associationInfo.isAggregated();
     }
 
     protected T getEntity( QualifiedIdentity entityId )

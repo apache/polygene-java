@@ -59,4 +59,6 @@ public interface AssociationInfo
     Type type();
 
     boolean isImmutable();
+
+    boolean isAggregated();
 }

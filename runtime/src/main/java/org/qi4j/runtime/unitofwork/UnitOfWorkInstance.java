@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import org.qi4j.api.composite.CompositeBuilderFactory;
-import org.qi4j.api.entity.AggregateEntity;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Identity;
@@ -159,14 +158,6 @@ public final class UnitOfWorkInstance
         EntityComposite entityComposite = (EntityComposite) entity;
 
         EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
-
-        // Check if Aggregate
-        if( entity instanceof AggregateEntity )
-        {
-            // Find all aggregated entities and remove them
-            // TODO
-        }
-
 
         compositeInstance.remove();
     }

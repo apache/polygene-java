@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,11 +11,21 @@
  * limitations under the License.
  *
  */
+
 package org.qi4j.api.entity;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
- * Aggregate Entity Composites must extends this interface.
+ * Marks an association as aggregating the referenced Entities
  */
-public interface AggregateEntity extends EntityComposite
+@Retention( RetentionPolicy.RUNTIME )
+@Target( { ElementType.METHOD } )
+@Documented
+public @interface Aggregated
 {
 }

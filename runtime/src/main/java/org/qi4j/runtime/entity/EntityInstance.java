@@ -16,12 +16,18 @@ package org.qi4j.runtime.entity;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.entity.LifecycleException;
+import org.qi4j.api.entity.association.AbstractAssociation;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.unitofwork.EntityCompositeNotFoundException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.usecase.StateUsage;
@@ -32,9 +38,11 @@ import org.qi4j.runtime.unitofwork.RecordingEntityState;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.association.AssociationDescriptor;
 
 /**
  * TODO
@@ -313,6 +321,36 @@ public final class EntityInstance
             {
                 throw new LifecycleException( throwable );
             }
+        }
+
+        // Calculate aggregated Entities
+        EntityStateDescriptor stateDescriptor = entity.state();
+        List<AssociationDescriptor> associations = stateDescriptor.associations();
+        Set<Object> aggregatedEntities = new HashSet<Object>();
+        for( AssociationDescriptor association : associations )
+        {
+            if (association.isAggregated())
+            {
+                AbstractAssociation assoc = state.getAssociation( association.accessor() );
+                if (assoc instanceof Association )
+                {
+                    Object aggregatedEntity = ((Association)assoc).get();
+                    if (aggregatedEntity != null)
+                    {
+                        aggregatedEntities.add(aggregatedEntity);
+                    }
+                } else
+                {
+                    ManyAssociation manyAssoc = (ManyAssociation) assoc;
+                    aggregatedEntities.addAll( manyAssoc );
+                }
+            }
+        }
+
+        // Remove aggregated Entities
+        for( Object aggregatedEntity : aggregatedEntities )
+        {
+            unitOfWork().remove( aggregatedEntity );
         }
 
         status = EntityStatus.REMOVED;

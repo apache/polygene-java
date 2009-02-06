@@ -23,6 +23,7 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
+import org.qi4j.api.entity.Aggregated;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.RDF;
 import org.qi4j.api.entity.association.AbstractAssociation;
@@ -59,6 +60,7 @@ public final class AssociationModel
     private final ValueConstraintsInstance constraints;
     private final boolean queryable;
     private final boolean immutable;
+    private final boolean aggregated;
 
     public AssociationModel( Method accessor, ValueConstraintsInstance valueConstraintsInstance, MetaInfo metaInfo )
     {
@@ -69,6 +71,7 @@ public final class AssociationModel
         this.qualifiedName = GenericAssociationInfo.getQualifiedName( accessor );
         this.uri = GenericAssociationInfo.toURI( qualifiedName() );
         this.immutable = metaInfo.get( Immutable.class ) != null;
+        this.aggregated = metaInfo.get( Aggregated.class ) != null;
         RDF uriAnnotation = accessor().getAnnotation( RDF.class );
         this.rdf = uriAnnotation == null ? null : uriAnnotation.value();
         this.constraints = valueConstraintsInstance;
@@ -100,6 +103,11 @@ public final class AssociationModel
     public boolean isImmutable()
     {
         return immutable;
+    }
+
+    public boolean isAggregated()
+    {
+        return aggregated;
     }
 
     public Method accessor()
