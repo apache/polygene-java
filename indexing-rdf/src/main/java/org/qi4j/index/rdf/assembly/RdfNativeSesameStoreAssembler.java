@@ -28,7 +28,7 @@ public class RdfNativeSesameStoreAssembler
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addComposites( NativeConfiguration.class );
+        module.addEntities( NativeConfiguration.class );
         module.addServices( NativeRepositoryService.class ).instantiateOnStartup().identifiedBy( "rdf-indexing" );
         module.addServices( RdfQueryService.class ).instantiateOnStartup();
         module.addServices( RdfFactoryService.class );
