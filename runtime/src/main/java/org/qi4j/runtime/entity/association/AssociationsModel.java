@@ -22,10 +22,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.io.Serializable;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
+import org.qi4j.api.util.MethodKeyMap;
+import org.qi4j.api.util.MethodSet;
+import org.qi4j.api.util.MethodValueMap;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
@@ -41,11 +45,12 @@ import org.qi4j.spi.entity.association.ManyAssociationType;
  * TODO
  */
 public final class AssociationsModel
+    implements Serializable
 {
-    private final Set<Method> methods = new HashSet<Method>();
+    private final Set<Method> methods = new MethodSet();
     private final List<AssociationModel> associationModels = new ArrayList<AssociationModel>();
-    private final Map<Method, AssociationModel> mapMethodAssociationModel = new HashMap<Method, AssociationModel>();
-    private final Map<String, Method> accessors = new HashMap<String, Method>();
+    private final Map<Method, AssociationModel> mapMethodAssociationModel = new MethodKeyMap<AssociationModel>();
+    private final Map<String, Method> accessors = new MethodValueMap<String>();
     private final ConstraintsModel constraints;
     private AssociationDeclarations associationDeclarations;
 
@@ -89,7 +94,7 @@ public final class AssociationsModel
 
     public AssociationsInstance newInstance( UnitOfWorkInstance uow, EntityState state )
     {
-        Map<Method, AbstractAssociation> associations = new HashMap<Method, AbstractAssociation>();
+        Map<Method, AbstractAssociation> associations = new MethodKeyMap<AbstractAssociation>();
         for( AssociationModel associationModel : associationModels )
         {
             AbstractAssociation association = associationModel.newInstance( uow, state );

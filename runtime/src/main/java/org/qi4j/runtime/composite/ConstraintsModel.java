@@ -19,6 +19,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.io.Serializable;
 import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.constraint.ConstraintImplementationNotFoundException;
 import org.qi4j.api.constraint.Constraints;
@@ -30,6 +31,7 @@ import static org.qi4j.runtime.util.Annotations.isConstraintAnnotation;
  * TODO
  */
 public final class ConstraintsModel
+    implements Serializable
 {
     private final List<ConstraintDeclaration> constraints = new ArrayList<ConstraintDeclaration>();
     private final Class declaringType;

@@ -30,12 +30,13 @@ import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.object.ObjectDescriptor;
+import java.io.Serializable;
 
 /**
  * TODO
  */
 public final class ObjectModel
-    implements Binder, ObjectDescriptor
+    implements Binder, ObjectDescriptor, Serializable
 {
     private final Class objectType;
     private final Visibility visibility;

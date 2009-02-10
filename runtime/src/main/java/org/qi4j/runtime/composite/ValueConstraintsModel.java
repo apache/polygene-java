@@ -15,12 +15,14 @@
 package org.qi4j.runtime.composite;
 
 import java.util.List;
+import java.io.Serializable;
 import org.qi4j.runtime.structure.ModelVisitor;
 
 /**
  * TODO
  */
 public final class ValueConstraintsModel
+    implements Serializable
 {
     private final List<AbstractConstraintModel> constraintModels;
     private String name;

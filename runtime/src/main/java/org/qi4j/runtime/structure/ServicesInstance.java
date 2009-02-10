@@ -48,7 +48,8 @@ public class ServicesInstance
         activator = new Activator();
     }
 
-    public void activate() throws Exception
+    public void activate()
+        throws Exception
     {
         for( ServiceReference serviceReference : serviceReferences )
         {
@@ -59,7 +60,8 @@ public class ServicesInstance
         }
     }
 
-    public void passivate() throws Exception
+    public void passivate()
+        throws Exception
     {
         activator.passivate();
     }

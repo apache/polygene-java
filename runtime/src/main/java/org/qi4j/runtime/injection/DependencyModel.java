@@ -20,6 +20,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.Collections;
+import java.io.Serializable;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
 import org.qi4j.runtime.composite.BindingException;
@@ -36,7 +37,7 @@ import org.qi4j.spi.composite.DependencyDescriptor;
  * move all the extraction code to a TypeUtils class
  */
 public final class DependencyModel
-    implements Binder, DependencyDescriptor
+    implements Binder, DependencyDescriptor, Serializable
 {
     public static boolean isOptional( Annotation injectionAnnotation, Annotation[] annotations )
     {

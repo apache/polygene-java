@@ -17,6 +17,7 @@ package org.qi4j.bootstrap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.io.Serializable;
 
 /**
  * Assembler that delegates to a collection of Assemblies.
@@ -24,7 +25,7 @@ import java.util.Collection;
  * Makes it easy to collect and compose assemblers into bigger assemblers.
  */
 public final class AssemblerCollection
-    implements Assembler
+    implements Assembler, Serializable
 {
     Collection<Assembler> assemblers;
 

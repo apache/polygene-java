@@ -14,11 +14,17 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -28,10 +34,31 @@ import org.qi4j.spi.sideeffect.MethodSideEffectsDescriptor;
  * TODO
  */
 public final class MethodSideEffectsModel
-    implements Binder, MethodSideEffectsDescriptor
+    implements Binder, MethodSideEffectsDescriptor, Serializable
 {
-    private final Method method;
+    private Method method;
     private List<MethodSideEffectModel> sideEffectModels = null;
+
+    private void writeObject( ObjectOutputStream out )
+        throws IOException
+    {
+        try
+        {
+            SerializationUtil.writeMethod( out, method );
+            out.writeObject( sideEffectModels );
+        }
+        catch( NotSerializableException e )
+        {
+            System.err.println( "NotSerializable in " + getClass() );
+            throw e;
+        }
+    }
+
+    private void readObject( ObjectInputStream in ) throws IOException, ClassNotFoundException
+    {
+        method = SerializationUtil.readMethod( in );
+        sideEffectModels = (List<MethodSideEffectModel>) in.readObject();
+    }
 
     public MethodSideEffectsModel( Method method, List<MethodSideEffectModel> sideEffectModels )
     {

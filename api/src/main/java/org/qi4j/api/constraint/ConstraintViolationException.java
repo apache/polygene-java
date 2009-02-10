@@ -43,6 +43,7 @@ public class ConstraintViolationException extends IllegalArgumentException
 {
     private static final long serialVersionUID = 1L;
 
+    // TODO: Method is not serializable, so this won't work.
     private final Method method;
     private final Collection<ConstraintViolation> constraintViolations;
 

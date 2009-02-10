@@ -14,6 +14,11 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -21,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.injection.Name;
+import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.util.Annotations;
 import org.qi4j.spi.constraint.MethodConstraintsDescriptor;
@@ -29,10 +35,31 @@ import org.qi4j.spi.constraint.MethodConstraintsDescriptor;
  * TODO
  */
 public final class MethodConstraintsModel
-    implements MethodConstraintsDescriptor
+    implements MethodConstraintsDescriptor, Serializable
 {
     private List<ValueConstraintsModel> parameterConstraintModels;
-    private final Method method;
+    private Method method;
+
+    private void writeObject( ObjectOutputStream out )
+        throws IOException
+    {
+        try
+        {
+            SerializationUtil.writeMethod( out, method );
+            out.writeObject( parameterConstraintModels );
+        }
+        catch( NotSerializableException e )
+        {
+            System.err.println( "NotSerializable in " + getClass() );
+            throw e;
+        }
+    }
+
+    private void readObject( ObjectInputStream in ) throws IOException, ClassNotFoundException
+    {
+        method = SerializationUtil.readMethod( in );
+        parameterConstraintModels = (List<ValueConstraintsModel>) in.readObject();
+    }
 
     public MethodConstraintsModel( Method method, ConstraintsModel constraintsModel )
     {
@@ -48,7 +75,7 @@ public final class MethodConstraintsModel
             Name nameAnnotation = Annotations.getAnnotationOfType( parameterAnnotation, Name.class );
             String name = nameAnnotation == null ? "param" + ( i + 1 ) : nameAnnotation.value();
 
-            boolean optional = Annotations.getAnnotationOfType( parameterAnnotation,  Optional.class) != null;
+            boolean optional = Annotations.getAnnotationOfType( parameterAnnotation, Optional.class ) != null;
             ValueConstraintsModel parameterConstraintsModel = constraintsModel.constraintsFor( parameterAnnotation, parameterTypes[ i ], name, optional );
             if( parameterConstraintsModel.isConstrained() )
             {

@@ -16,6 +16,7 @@ package org.qi4j.runtime;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import static java.lang.reflect.Proxy.getInvocationHandler;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ import org.qi4j.spi.object.ObjectDescriptor;
  * Incarnation of Qi4j.
  */
 public final class Qi4jRuntime
-    implements Qi4jSPI
+    implements Qi4jSPI, Serializable
 {
     public Qi4jRuntime()
     {

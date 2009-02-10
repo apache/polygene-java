@@ -15,12 +15,13 @@
 package org.qi4j.api.constraint;
 
 import java.lang.annotation.Annotation;
+import java.io.Serializable;
 
 /**
  * All Constraints must implement this interface, which is used for each
  * value validation.
  */
-public interface Constraint<A extends Annotation, P>
+public interface Constraint<A extends Annotation, P> extends Serializable
 {
     /**
      * For each value or parameter which should be checked this method will be invoked.

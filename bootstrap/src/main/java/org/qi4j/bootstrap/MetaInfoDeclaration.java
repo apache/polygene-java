@@ -21,12 +21,13 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.util.MethodKeyMap;
 
 /**
  * Declaration of a Property or Association.
  */
 public final class MetaInfoDeclaration
-    implements PropertyDeclarations, AssociationDeclarations
+    implements PropertyDeclarations, AssociationDeclarations, Serializable
 {
     Map<Class<?>, InfoHolder<?>> mixinPropertyDeclarations = new HashMap<Class<?>, InfoHolder<?>>();
 
@@ -76,9 +77,10 @@ public final class MetaInfoDeclaration
     }
 
     private static class InfoHolder<T>
-        implements InvocationHandler, PropertyDeclarations, InfoDeclaration<T>
+        implements InvocationHandler, PropertyDeclarations, InfoDeclaration<T>, Serializable
     {
         private final static class MethodInfo
+            implements Serializable
         {
             Object initialValue;
             MetaInfo metaInfo;
@@ -90,7 +92,7 @@ public final class MetaInfoDeclaration
         }
 
         private final Class<T> mixinType;
-        private final Map<Method, MethodInfo> methodInfos = new HashMap<Method, MethodInfo>();
+        private final Map<Method, MethodInfo> methodInfos = new MethodKeyMap<MethodInfo>();
         // temporary holder
         private MetaInfo metaInfo = null;
 

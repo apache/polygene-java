@@ -17,6 +17,7 @@ package org.qi4j.runtime.structure;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.io.Serializable;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.service.Activator;
 import org.qi4j.spi.structure.ApplicationSPI;
@@ -83,12 +84,14 @@ public class ApplicationInstance
         return null;
     }
 
-    public void activate() throws Exception
+    public void activate()
+        throws Exception
     {
         layerActivator.activate( layerInstances );
     }
 
-    public void passivate() throws Exception
+    public void passivate()
+        throws Exception
     {
         layerActivator.passivate();
     }

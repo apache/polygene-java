@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.io.Serializable;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
@@ -40,7 +41,7 @@ import org.qi4j.spi.composite.InvalidCompositeException;
  * TODO
  */
 public final class MixinModel
-    implements Binder, MixinDescriptor
+    implements Binder, MixinDescriptor, Serializable
 {
     private final Class mixinClass;
     private final ConstructorsModel constructorsModel;

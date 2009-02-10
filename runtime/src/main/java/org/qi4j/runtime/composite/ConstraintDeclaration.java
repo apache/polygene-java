@@ -17,6 +17,7 @@ package org.qi4j.runtime.composite;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.io.Serializable;
 import org.qi4j.api.constraint.Constraint;
 import static org.qi4j.api.util.Classes.getRawClass;
 
@@ -24,6 +25,7 @@ import static org.qi4j.api.util.Classes.getRawClass;
  * TODO
  */
 public final class ConstraintDeclaration
+    implements Serializable
 {
     private final Class<? extends Constraint<?, ?>> constraintClass;
     private final Type declaredIn;

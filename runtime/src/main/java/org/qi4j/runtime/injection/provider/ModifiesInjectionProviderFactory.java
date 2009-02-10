@@ -5,14 +5,16 @@ import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
+import java.io.Serializable;
 
 /**
  * TODO
  */
 public final class ModifiesInjectionProviderFactory
-    implements InjectionProviderFactory
+    implements InjectionProviderFactory, Serializable
 {
-    public InjectionProvider newInjectionProvider( Resolution bindingContext, DependencyModel dependencyModel ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( Resolution bindingContext, DependencyModel dependencyModel )
+        throws InvalidInjectionException
     {
         if( bindingContext.composite() != null )
         {
@@ -31,7 +33,8 @@ public final class ModifiesInjectionProviderFactory
         }
     }
 
-    private class ModifiedInjectionProvider implements InjectionProvider
+    private class ModifiedInjectionProvider
+        implements InjectionProvider, Serializable
     {
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {

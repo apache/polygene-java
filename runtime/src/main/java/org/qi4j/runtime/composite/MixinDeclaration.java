@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.io.Serializable;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
 import org.qi4j.api.common.ConstructionException;
@@ -26,14 +27,15 @@ import org.qi4j.api.common.ConstructionException;
  * TODO
  */
 public final class MixinDeclaration
+    implements Serializable
 {
     private final Class mixinClass;
-    private final Type declaredIn;
+    private final Class declaredIn;
 
     private AppliesToFilter appliesToFilter;
     private final boolean generic;
 
-    public MixinDeclaration( Class mixinClass, Type declaredIn )
+    public MixinDeclaration( Class mixinClass, Class declaredIn )
     {
         this.mixinClass = mixinClass;
         this.generic = InvocationHandler.class.isAssignableFrom( mixinClass );

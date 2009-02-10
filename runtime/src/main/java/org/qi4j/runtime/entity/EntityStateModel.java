@@ -18,11 +18,13 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.io.Serializable;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.runtime.entity.association.AssociationInstance;
 import org.qi4j.runtime.entity.association.AssociationsInstance;
 import org.qi4j.runtime.entity.association.AssociationsModel;
@@ -40,7 +42,7 @@ import org.qi4j.spi.property.PropertyType;
  * TODO
  */
 public final class EntityStateModel
-    implements EntityStateDescriptor
+    implements EntityStateDescriptor, Serializable
 {
     private final EntityPropertiesModel propertiesModel;
     private final AssociationsModel associationsModel;
@@ -171,7 +173,7 @@ public final class EntityStateModel
         {
             if( properties == null )
             {
-                properties = new HashMap<Method, Property<?>>();
+                properties = new MethodKeyMap<Property<?>>();
             }
 
             Property<?> property = properties.get( accessor );
@@ -189,7 +191,7 @@ public final class EntityStateModel
         {
             if( associations == null )
             {
-                associations = new HashMap<Method, AbstractAssociation>();
+                associations = new MethodKeyMap<AbstractAssociation>();
             }
 
             AbstractAssociation association = associations.get( accessor );

@@ -15,6 +15,7 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
+import java.io.Serializable;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
@@ -27,6 +28,7 @@ import org.qi4j.runtime.property.PropertiesModel;
  * TODO
  */
 public final class ValueModel extends CompositeModel
+    implements Serializable
 {
     public static ValueModel newModel( final Class<? extends Composite> compositeType,
                                        final Visibility visibility,

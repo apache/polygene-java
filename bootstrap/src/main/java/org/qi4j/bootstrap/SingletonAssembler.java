@@ -16,11 +16,11 @@ package org.qi4j.bootstrap;
 
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.CompositeBuilderFactory;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
 /**
  * Base class for Assembler that creates an Application
@@ -33,17 +33,61 @@ import org.qi4j.api.structure.Module;
 public abstract class SingletonAssembler
     implements Assembler
 {
-    private Energy4Java is = new Energy4Java();
-
+    private Energy4Java is;
     private Application applicationInstance;
     private Module moduleInstance;
 
+    /**
+     * Creates a Qi4j Runtime instance containing one Layer with one Module.
+     * The Layer will be named "Layer 1" and the Module will be named "Module 1". It is possible to add
+     * additional layers and modules via the Assembler interface that must be implemented in the subclass of this
+     * class.
+     *
+     * @throws IllegalStateException Either if the model can not be created from the disk, or some inconsistency in
+     *                               the programming model makes it impossible to create it.
+     */
     public SingletonAssembler()
         throws IllegalStateException
     {
+        this( false );
+    }
+
+    /**
+     * Creates a Qi4j Runtime instance containing one Layer with one Module.
+     * The Layer will be named "Layer 1" and the Module will be named "Module 1". It is possible to add
+     * additional layers and modules via the Assembler interface that must be implemented in the subclass of this
+     * class.
+     *
+     * @param fastBootSupport If set to true, any existing application instance saved to disk will be retrieved,
+     *                        instead of building the model from scratch. If not exist, then the model will be built
+     *                        from scratch and then saved to disk for future invocations. If this argument is set to
+     *                        true, the caller should ensure that the classes on the classpath are fully-compatible
+     *                        with the saved binary. Practically no changes to the application model is compatible with
+     *                        a previously stored instance.
+     * @throws IllegalStateException Either if the model can not be created from the disk, or some inconsistency in
+     *                               the programming model makes it impossible to create it.
+     */
+    public SingletonAssembler( boolean fastBootSupport )
+        throws IllegalStateException
+    {
+        is = new Energy4Java();
         try
         {
-            applicationInstance = is.newApplication( this );
+            if( fastBootSupport )
+            {
+                try
+                {
+                    applicationInstance = is.loadApplication();
+                }
+                catch( HibernatingApplicationInvalidException e )
+                {
+                    e.printStackTrace();
+                }
+            }
+            if( applicationInstance == null )
+            {
+                applicationInstance = is.newApplication( this );
+            }
         }
         catch( AssemblyException e )
         {

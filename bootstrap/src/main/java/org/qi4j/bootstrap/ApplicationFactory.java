@@ -77,4 +77,18 @@ public interface ApplicationFactory
      * @return the runtime instance
      */
     Qi4jSPI runtime();
+
+    
+    /** Load the ApplicationModel from disk, bind and instantiate from that.
+     *
+     * Whenever an Application instance is created, its ApplicationModel will be saved in a binary
+     * format on disk. This method can use that file to speed up the boot process for large applications, by
+     * not having to examine and interpret the ApplicationModel from scratch.
+     *
+     * @return An Application instance.
+     * @throws HibernatingApplicationInvalidException If the file on disk can not be read.
+     * @throws AssemblyException If some Assembly failure occured during binding or instantiation of the application.
+     */
+    Application loadApplication()
+        throws HibernatingApplicationInvalidException, AssemblyException;
 }

@@ -18,6 +18,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.io.Serializable;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.composite.CompositeBuilder;
 import org.qi4j.api.composite.CompositeBuilderFactory;
@@ -194,12 +195,14 @@ public class ModuleInstance
     }
 
 
-    public void activate() throws Exception
+    public void activate()
+        throws Exception
     {
         services.activate();
     }
 
-    public void passivate() throws Exception
+    public void passivate()
+        throws Exception
     {
         services.passivate();
     }

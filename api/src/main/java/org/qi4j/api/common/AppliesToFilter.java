@@ -15,13 +15,14 @@
 package org.qi4j.api.common;
 
 import java.lang.reflect.Method;
+import java.io.Serializable;
 
 /**
  * Implementations of this interface can be specified in the AppliesTo.
  * An instance of the provided class will be used to test if the modifier or mixin
  * should be applied to the method or not.
  */
-public interface AppliesToFilter
+public interface AppliesToFilter extends Serializable
 {
     AppliesToFilter ALWAYS = new AppliesToFilter()
     {

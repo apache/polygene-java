@@ -15,6 +15,7 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
+import java.io.Serializable;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.spi.composite.CompositeInstance;
@@ -23,6 +24,7 @@ import org.qi4j.spi.composite.CompositeInstance;
  * TODO
  */
 public final class MixinsModel extends AbstractMixinsModel
+    implements Serializable
 {
     private StateModel stateModel;
 

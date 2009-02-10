@@ -17,6 +17,7 @@ package org.qi4j.runtime.injection.provider;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.Serializable;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.InvalidValueCompositeException;
 import org.qi4j.api.composite.ValueComposite;
@@ -38,7 +39,7 @@ import org.qi4j.spi.composite.CompositeDescriptor;
  * TODO
  */
 public final class InjectionProviderFactoryStrategy
-    implements InjectionProviderFactory
+    implements InjectionProviderFactory, Serializable
 {
     private final Map<Class<? extends Annotation>, InjectionProviderFactory> generalProviderFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();
     private final Map<Class<? extends Annotation>, InjectionProviderFactory> valuesProviderFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();

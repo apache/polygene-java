@@ -17,6 +17,7 @@ package org.qi4j.runtime.structure;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.entity.EntityModel;

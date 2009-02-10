@@ -3,6 +3,7 @@ package org.qi4j.runtime.injection.provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
+import java.io.Serializable;
 import org.qi4j.runtime.composite.CompositeMethodModel;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -14,7 +15,7 @@ import org.qi4j.runtime.injection.InjectionProviderFactory;
  * TODO
  */
 public final class InvocationInjectionProviderFactory
-    implements InjectionProviderFactory
+    implements InjectionProviderFactory, Serializable
 {
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel ) throws InvalidInjectionException
     {
@@ -31,7 +32,8 @@ public final class InvocationInjectionProviderFactory
         }
     }
 
-    private class InvocationDependencyResolution implements InjectionProvider
+    private class InvocationDependencyResolution
+        implements InjectionProvider, Serializable
     {
         private final Resolution resolution;
         private final DependencyModel dependencyModel;

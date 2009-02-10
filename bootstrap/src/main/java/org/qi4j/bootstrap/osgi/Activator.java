@@ -30,7 +30,7 @@ import org.osgi.framework.BundleContext;
 import org.qi4j.bootstrap.ApplicationFactory;
 import org.qi4j.bootstrap.internal.ServiceLoader;
 
-public class Activator
+public final class Activator
     implements BundleActivator
 {
     private BundleWatcher<URL> urlBundleWatcher;

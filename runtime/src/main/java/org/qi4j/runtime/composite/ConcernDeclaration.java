@@ -15,14 +15,15 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Type;
+import java.io.Serializable;
 
 /**
  * TODO
  */
-public final class ConcernDeclaration
-    extends AbstractModifierDeclaration
+public final class ConcernDeclaration extends AbstractModifierDeclaration
+    implements Serializable
 {
-    public ConcernDeclaration( Class concernClass, Type declaredIn )
+    public ConcernDeclaration( Class concernClass, Class declaredIn )
     {
         super( concernClass, declaredIn );
     }

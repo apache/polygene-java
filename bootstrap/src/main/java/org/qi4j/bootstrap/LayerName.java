@@ -14,11 +14,13 @@
 
 package org.qi4j.bootstrap;
 
+import java.io.Serializable;
+
 /**
  * Set the name of the layer
  */
 public final class LayerName
-    implements Assembler
+    implements Assembler, Serializable
 {
     private String name;
 

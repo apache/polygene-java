@@ -15,6 +15,7 @@
 package org.qi4j.runtime.bootstrap;
 
 import java.util.List;
+import java.io.Serializable;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
@@ -26,7 +27,7 @@ import org.qi4j.runtime.service.ServiceModel;
  * Declaration of a Service. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#addServices(Class[])}.
  */
 public final class ServiceDeclarationImpl
-    implements ServiceDeclaration
+    implements ServiceDeclaration, Serializable
 {
     private Iterable<Class<? extends ServiceComposite>> serviceTypes;
     private ModuleAssemblyImpl moduleAssembly;

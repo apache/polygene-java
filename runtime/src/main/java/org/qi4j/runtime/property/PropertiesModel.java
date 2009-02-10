@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.io.Serializable;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.ConstraintViolationException;
@@ -29,6 +30,9 @@ import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.util.MethodKeyMap;
+import org.qi4j.api.util.MethodSet;
+import org.qi4j.api.util.MethodValueMap;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
@@ -40,10 +44,11 @@ import org.qi4j.spi.property.PropertyDescriptor;
  * TODO
  */
 public final class PropertiesModel
+    implements Serializable
 {
-    final Set<Method> methods = new HashSet<Method>();
+    final Set<Method> methods = new MethodSet();
     final List<PropertyModel> propertyModels = new ArrayList<PropertyModel>();
-    final Map<String, Method> accessors = new HashMap<String, Method>();
+    final Map<String, Method> accessors = new MethodValueMap<String>();
     private final ConstraintsModel constraints;
     private PropertyDeclarations propertyDeclarations;
     private boolean immutable;
@@ -75,7 +80,7 @@ public final class PropertiesModel
 
     public PropertiesInstance newBuilderInstance()
     {
-        Map<Method, Property<?>> properties = new HashMap<Method, Property<?>>();
+        Map<Method, Property<?>> properties = new MethodKeyMap<Property<?>>();
         for( PropertyModel propertyModel : propertyModels )
         {
             Property property = propertyModel.newBuilderInstance();
@@ -87,7 +92,7 @@ public final class PropertiesModel
 
     public PropertiesInstance newDefaultInstance()
     {
-        Map<Method, Property<?>> properties = new HashMap<Method, Property<?>>();
+        Map<Method, Property<?>> properties = new MethodKeyMap<Property<?>>();
         for( PropertyModel propertyModel : propertyModels )
         {
             Property property = propertyModel.newDefaultInstance();
@@ -99,7 +104,7 @@ public final class PropertiesModel
 
     public PropertiesInstance newInstance( StateHolder state )
     {
-        Map<Method, Property<?>> properties = new HashMap<Method, Property<?>>();
+        Map<Method, Property<?>> properties = new MethodKeyMap<Property<?>>();
         for( PropertyModel propertyModel : propertyModels )
         {
             Property property = propertyModel.newInstance( state.getProperty( propertyModel.accessor() ).get() );

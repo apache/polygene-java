@@ -32,6 +32,7 @@ import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.service.ImportedServiceModel;
 import org.qi4j.spi.structure.DescriptorVisitor;
+import java.io.Serializable;
 
 /**
  * Adapter of modelvisitor for the SPI descriptors

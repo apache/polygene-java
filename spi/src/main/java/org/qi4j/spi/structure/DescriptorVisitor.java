@@ -31,6 +31,7 @@ import org.qi4j.spi.sideeffect.MethodSideEffectsDescriptor;
 import org.qi4j.spi.mixin.MixinDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
+import java.io.Serializable;
 
 /**
  * Extend and override this class in order to introspect a Qi4j model.

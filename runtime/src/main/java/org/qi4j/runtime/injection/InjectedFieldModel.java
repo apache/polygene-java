@@ -14,10 +14,16 @@
 
 package org.qi4j.runtime.injection;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
+import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -28,10 +34,32 @@ import org.qi4j.spi.composite.InjectedFieldDescriptor;
  * TODO
  */
 public final class InjectedFieldModel
-    implements InjectedFieldDescriptor
+    implements InjectedFieldDescriptor, Serializable
 {
-    private final DependencyModel dependencyModel;
-    private final Field injectedField;
+    private DependencyModel dependencyModel;
+    private Field injectedField;
+
+
+    private void writeObject( ObjectOutputStream out )
+        throws IOException
+    {
+        try
+        {
+            out.writeObject( dependencyModel );
+            SerializationUtil.writeField( out, injectedField );
+        }
+        catch( NotSerializableException e )
+        {
+            System.err.println( "NotSerializable in " + getClass() );
+            throw e;
+        }
+    }
+
+    private void readObject( ObjectInputStream in ) throws IOException, ClassNotFoundException
+    {
+        dependencyModel = (DependencyModel) in.readObject();
+        injectedField = SerializationUtil.readField( in );
+    }
 
     public InjectedFieldModel( Field injectedField, DependencyModel dependencyModel )
     {

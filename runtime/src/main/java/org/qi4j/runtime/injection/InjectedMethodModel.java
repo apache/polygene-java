@@ -14,8 +14,14 @@
 
 package org.qi4j.runtime.injection;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -25,11 +31,33 @@ import org.qi4j.spi.composite.InjectedMethodDescriptor;
  * TODO
  */
 public final class InjectedMethodModel
-    implements InjectedMethodDescriptor
+    implements InjectedMethodDescriptor, Serializable
 {
     // Model
-    private final Method method;
-    private final InjectedParametersModel parameters;
+    private Method method;
+    private InjectedParametersModel parameters;
+
+    private void writeObject( ObjectOutputStream out )
+        throws IOException
+    {
+        try
+        {
+            SerializationUtil.writeMethod( out, method );
+            out.writeObject( parameters );
+        }
+        catch( NotSerializableException e )
+        {
+            System.err.println( "NotSerializable in " + getClass() );
+            throw e;
+        }
+    }
+
+    private void readObject( ObjectInputStream in )
+        throws IOException, ClassNotFoundException
+    {
+        method = SerializationUtil.readMethod( in );
+        parameters = (InjectedParametersModel) in.readObject();
+    }
 
     public InjectedMethodModel( Method method, InjectedParametersModel parameters )
     {
@@ -57,7 +85,7 @@ public final class InjectedMethodModel
         Object[] params = parameters.newParametersInstance( context );
         try
         {
-            if( ! method.isAccessible() )
+            if( !method.isAccessible() )
             {
                 method.setAccessible( true );
             }

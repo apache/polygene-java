@@ -15,6 +15,7 @@
 package org.qi4j.runtime.bootstrap;
 
 import java.util.List;
+import java.io.Serializable;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.EntityDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
@@ -26,7 +27,8 @@ import org.qi4j.api.common.MetaInfo;
 /**
  * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addComposites(Class[])}.
  */
-public final class EntityDeclarationImpl implements EntityDeclaration
+public final class EntityDeclarationImpl
+    implements EntityDeclaration, Serializable
 {
     private Class<? extends EntityComposite>[] compositeTypes;
     private MetaInfo metaInfo = new MetaInfo();

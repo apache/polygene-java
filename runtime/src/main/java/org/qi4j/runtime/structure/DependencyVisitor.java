@@ -17,12 +17,12 @@ package org.qi4j.runtime.structure;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;
 import org.qi4j.runtime.injection.InjectedParametersModel;
+import java.io.Serializable;
 
 /**
  * TODO
  */
-public abstract class DependencyVisitor
-    extends ModelVisitor
+public abstract class DependencyVisitor extends ModelVisitor
 {
     private final Specification<DependencyModel> specification;
 

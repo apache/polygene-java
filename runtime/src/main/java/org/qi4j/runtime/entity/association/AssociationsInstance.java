@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.entity.association.AbstractAssociation;
+import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 
@@ -42,7 +43,7 @@ public final class AssociationsInstance
     {
         if( associations == null )
         {
-            associations = new HashMap<Method, AbstractAssociation>();
+            associations = new MethodKeyMap<AbstractAssociation>();
         }
 
         AbstractAssociation association = associations.get( accessor );

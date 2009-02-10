@@ -19,6 +19,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Set;
+import java.io.Serializable;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
@@ -33,7 +34,7 @@ import org.qi4j.runtime.structure.ModelVisitor;
  * TODO
  */
 public final class ServiceModel
-    implements ServiceDescriptor
+    implements ServiceDescriptor, Serializable
 {
     private final Class<? extends Composite> type;
     private final Visibility visibility;

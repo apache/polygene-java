@@ -146,6 +146,7 @@ public class GenericAssociationInfo
         return "urn:qi4j:entity:" + getDeclaringClassName( accessor ) + "#";
     }
 
+    // TODO: Serialization fro Method
     private Method accessor;
     private MetaInfo metainfo;
     private boolean immutable;

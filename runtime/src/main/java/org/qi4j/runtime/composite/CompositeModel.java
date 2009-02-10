@@ -17,6 +17,7 @@ package org.qi4j.runtime.composite;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.io.Serializable;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -39,7 +40,7 @@ import org.qi4j.spi.composite.StateDescriptor;
  * TODO
  */
 public class CompositeModel
-    implements Binder, CompositeDescriptor
+    implements Binder, CompositeDescriptor, Serializable
 {
     public static CompositeModel newModel( final Class<? extends Composite> compositeType,
                                            final Visibility visibility,

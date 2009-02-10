@@ -71,7 +71,8 @@ public final class ServiceReferenceInstance<T>
         return serviceInstance != null;
     }
 
-    public void activate() throws Exception
+    public void activate()
+        throws Exception
     {
         if( serviceModel.isInstantiateOnStartup() )
         {
@@ -79,7 +80,8 @@ public final class ServiceReferenceInstance<T>
         }
     }
 
-    public void passivate() throws Exception
+    public void passivate()
+        throws Exception
     {
         if( serviceInstance != null )
         {

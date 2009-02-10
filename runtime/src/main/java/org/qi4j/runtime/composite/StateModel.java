@@ -17,6 +17,7 @@ package org.qi4j.runtime.composite;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
+import java.io.Serializable;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.property.Property;
@@ -30,7 +31,7 @@ import org.qi4j.spi.property.PropertyDescriptor;
  * TODO
  */
 public final class StateModel
-    implements StateDescriptor
+    implements StateDescriptor, Serializable
 {
     private final PropertiesModel propertiesModel;
 

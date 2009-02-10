@@ -18,6 +18,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 import static org.qi4j.api.util.Classes.fieldsOf;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
@@ -29,7 +30,7 @@ import static org.qi4j.runtime.util.Annotations.getInjectionAnnotation;
  * TODO
  */
 public final class InjectedFieldsModel
-    implements Binder
+    implements Binder, Serializable
 {
     private final List<InjectedFieldModel> fields = new ArrayList<InjectedFieldModel>();
 

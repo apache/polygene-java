@@ -14,6 +14,11 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationHandler;
@@ -23,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.DependencyVisitor;
@@ -34,21 +40,50 @@ import org.qi4j.spi.composite.CompositeMethodDescriptor;
  * TODO
  */
 public final class CompositeMethodModel
-    implements Binder, CompositeMethodDescriptor
+    implements Binder, CompositeMethodDescriptor, Serializable
 {
     // Model
-    private final Method method;
-    private final MethodConstraintsModel methodConstraints;
-    private final MethodConcernsModel methodConcerns;
-    private final MethodSideEffectsModel methodSideEffects;
-    private final AbstractMixinsModel mixins;
-    private final AnnotatedElement annotations;
+    private Method method;
+    private MethodConstraintsModel methodConstraints;
+    private MethodConcernsModel methodConcerns;
+    private MethodSideEffectsModel methodSideEffects;
+    private AbstractMixinsModel mixins;
+    private AnnotatedElement annotations;
 
     // Context
-    private final SynchronizedCompositeMethodInstancePool instancePool = new SynchronizedCompositeMethodInstancePool();
-//    private final CompositeMethodInstancePool instancePool = new AtomicCompositeMethodInstancePool();
-//    private final CompositeMethodInstancePool instancePool = new ThreadLocalCompositeMethodInstancePool();
+    private SynchronizedCompositeMethodInstancePool instancePool;
+    //    private final CompositeMethodInstancePool instancePool = new AtomicCompositeMethodInstancePool();
+    //    private final CompositeMethodInstancePool instancePool = new ThreadLocalCompositeMethodInstancePool();
     private MethodConstraintsInstance methodConstraintsInstance;
+
+    private void writeObject( ObjectOutputStream out )
+        throws IOException
+    {
+        try
+        {
+            SerializationUtil.writeMethod( out, method );
+            out.writeObject( mixins );
+            out.writeObject( methodConcerns );
+            out.writeObject( methodSideEffects );
+            out.writeObject( methodConstraints );
+        }
+        catch( NotSerializableException e )
+        {
+            System.err.println( "NotSerializable in " + getClass() );
+            throw e;
+        }
+    }
+
+    private void readObject( ObjectInputStream in )
+        throws IOException, ClassNotFoundException
+    {
+        this.method = SerializationUtil.readMethod( in );
+        mixins = (AbstractMixinsModel) in.readObject();
+        methodConcerns = (MethodConcernsModel) in.readObject();
+        methodSideEffects = (MethodSideEffectsModel) in.readObject();
+        methodConstraints = (MethodConstraintsModel) in.readObject();
+        initialize();
+    }
 
     public CompositeMethodModel( Method method,
                                  MethodConstraintsModel methodConstraintsModel,
@@ -57,12 +92,18 @@ public final class CompositeMethodModel
                                  AbstractMixinsModel mixinsModel )
     {
         this.method = method;
-        method.setAccessible( true );
         mixins = mixinsModel;
         methodConcerns = methodConcernsModel;
         methodSideEffects = methodSideEffectsModel;
         methodConstraints = methodConstraintsModel;
+        initialize();
+    }
+
+    private void initialize()
+    {
         annotations = new CompositeMethodAnnotatedElement();
+        this.method.setAccessible( true );
+        instancePool = new SynchronizedCompositeMethodInstancePool();
     }
 
     // Model
@@ -127,18 +168,18 @@ public final class CompositeMethodModel
     {
         FragmentInvocationHandler mixinInvocationHandler = mixins.newInvocationHandler( method );
         InvocationHandler invoker = mixinInvocationHandler;
-        if (methodConcerns.hasConcerns())
+        if( methodConcerns.hasConcerns() )
         {
             MethodConcernsInstance concernsInstance = methodConcerns.newInstance( moduleInstance, mixinInvocationHandler );
             invoker = concernsInstance;
         }
-        if (methodSideEffects.hasSideEffects())
+        if( methodSideEffects.hasSideEffects() )
         {
             MethodSideEffectsInstance sideEffectsInstance = methodSideEffects.newInstance( moduleInstance, invoker );
             invoker = sideEffectsInstance;
         }
 
-        return new CompositeMethodInstance( invoker, mixinInvocationHandler, method, mixins.methodIndex.get(method ));
+        return new CompositeMethodInstance( invoker, mixinInvocationHandler, method, mixins.methodIndex.get( method ) );
     }
 
     public AnnotatedElement annotatedElement()
@@ -174,7 +215,7 @@ public final class CompositeMethodModel
     }
 
     public class CompositeMethodAnnotatedElement
-        implements AnnotatedElement
+        implements AnnotatedElement, Serializable
     {
         public boolean isAnnotationPresent( Class<? extends Annotation> annotationClass )
         {

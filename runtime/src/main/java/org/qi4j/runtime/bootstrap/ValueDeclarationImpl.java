@@ -15,6 +15,7 @@
 package org.qi4j.runtime.bootstrap;
 
 import java.util.List;
+import java.io.Serializable;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.ValueComposite;
@@ -27,7 +28,7 @@ import org.qi4j.runtime.composite.CompositeModel;
  * Declaration of a ValueComposite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addValues(Class[])}.
  */
 public final class ValueDeclarationImpl
-    implements ValueDeclaration
+    implements ValueDeclaration, Serializable
 {
     private Class<? extends ValueComposite>[] compositeTypes;
     private MetaInfo metaInfo = new MetaInfo();

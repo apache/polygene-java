@@ -16,6 +16,10 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.io.Serializable;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.IOException;
 import static org.qi4j.api.util.Classes.interfacesOf;
 import static org.qi4j.api.util.Classes.toClassArray;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
@@ -29,24 +33,22 @@ import org.qi4j.runtime.structure.ModuleInstance;
  * TODO
  */
 public abstract class AbstractModifierModel
-    implements Binder
+    implements Binder, Serializable
 {
     private final Class modifierClass;
 
-    private final ConstructorsModel constructorsModel;
-    private final InjectedFieldsModel injectedFieldsModel;
-    private final InjectedMethodsModel injectedMethodsModel;
+    private  ConstructorsModel constructorsModel;
+    private  InjectedFieldsModel injectedFieldsModel;
+    private  InjectedMethodsModel injectedMethodsModel;
 
-    private final Class[] nextInterfaces;
+    private  Class[] nextInterfaces;
 
     public AbstractModifierModel( Class modifierClass )
     {
         this.modifierClass = modifierClass;
-
         constructorsModel = new ConstructorsModel( modifierClass );
         injectedFieldsModel = new InjectedFieldsModel( modifierClass );
         injectedMethodsModel = new InjectedMethodsModel( modifierClass );
-
         nextInterfaces = toClassArray( interfacesOf( modifierClass ) );
     }
 

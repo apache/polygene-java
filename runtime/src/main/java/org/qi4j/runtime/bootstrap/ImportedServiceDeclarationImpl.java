@@ -15,6 +15,7 @@
 package org.qi4j.runtime.bootstrap;
 
 import java.util.List;
+import java.io.Serializable;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
@@ -27,7 +28,7 @@ import org.qi4j.spi.service.importer.InstanceImporter;
  * Declaration of an imported Service. Created by {@link ModuleAssemblyImpl#importServices(Class[])}.
  */
 public final class ImportedServiceDeclarationImpl
-    implements ImportedServiceDeclaration
+    implements ImportedServiceDeclaration, Serializable
 {
     private Class<? extends ServiceImporter> serviceProvider = InstanceImporter.class;
     private Iterable<Class> serviceTypes;

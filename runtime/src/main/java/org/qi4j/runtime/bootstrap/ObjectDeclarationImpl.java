@@ -16,6 +16,7 @@ package org.qi4j.runtime.bootstrap;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.io.Serializable;
 import org.qi4j.bootstrap.ObjectDeclaration;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.runtime.object.ObjectModel;
@@ -26,7 +27,7 @@ import org.qi4j.api.common.MetaInfo;
  * Declaration of an Object. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#addObjects(Class[])}.
  */
 public final class ObjectDeclarationImpl
-    implements ObjectDeclaration
+    implements ObjectDeclaration, Serializable
 {
     private Iterable<Class> objectTypes;
     private MetaInfo metaInfo = new MetaInfo();

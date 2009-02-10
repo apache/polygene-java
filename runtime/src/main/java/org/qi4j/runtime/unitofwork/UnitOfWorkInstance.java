@@ -211,7 +211,7 @@ public final class UnitOfWorkInstance
         }
         catch( EntityNotFoundException e )
         {
-            throw new NoSuchEntityException( entityModel.type().getName(), entityModel.type().getName() );
+            throw new NoSuchEntityException( identity, entityModel.type().getName() );
         }
     }
 

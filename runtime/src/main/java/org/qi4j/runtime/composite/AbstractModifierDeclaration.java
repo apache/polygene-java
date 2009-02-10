@@ -19,6 +19,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.io.Serializable;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
 import org.qi4j.api.common.ConstructionException;
@@ -27,17 +28,17 @@ import org.qi4j.api.common.ConstructionException;
  * TODO
  */
 public abstract class AbstractModifierDeclaration
+    implements Serializable
 {
     private final Class modifierClass;
-    private final Type declaredIn;
+    private final Class declaredIn;
 
     private AppliesToFilter appliesToFilter;
 
-    public AbstractModifierDeclaration( Class modifierClass, Type declaredIn )
+    public AbstractModifierDeclaration( Class modifierClass, Class declaredIn )
     {
         this.modifierClass = modifierClass;
         this.declaredIn = declaredIn;
-
         createAppliesToFilter( modifierClass );
     }
 

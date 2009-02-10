@@ -15,12 +15,14 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.annotation.Annotation;
+import java.io.Serializable;
 import org.qi4j.api.constraint.Constraint;
 
 /**
  * TODO
  */
 public final class ConstraintInstance<A extends Annotation, T>
+    implements Serializable
 {
     private final Constraint<A, T> constraint;
     private final A annotation;

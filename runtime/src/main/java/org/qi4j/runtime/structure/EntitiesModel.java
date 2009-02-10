@@ -15,6 +15,7 @@
 package org.qi4j.runtime.structure;
 
 import java.util.List;
+import java.io.Serializable;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
@@ -25,7 +26,7 @@ import org.qi4j.api.common.Visibility;
  * TODO
  */
 public class EntitiesModel
-    implements Binder
+    implements Binder, Serializable
 {
     private final List<EntityModel> entityModels;
 

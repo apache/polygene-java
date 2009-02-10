@@ -18,7 +18,16 @@
 
 package org.qi4j.bootstrap;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.Iterator;
 import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.internal.ServiceLoader;
@@ -31,7 +40,7 @@ import org.qi4j.spi.Qi4jSPI;
  * This class will use the Service Loader mechanism in Java to try to locate a runtime that implements
  * the ApplicationFactory interface. This avoids a direct dependency from the bootstrap to the runtime.
  */
-public class Energy4Java
+public final class Energy4Java
 {
     private static ServiceLoader serviceLoader;
 
@@ -62,10 +71,18 @@ public class Energy4Java
         this.factory = factory;
     }
 
+    public Application loadApplication()
+        throws HibernatingApplicationInvalidException, AssemblyException
+    {
+        return factory.loadApplication();
+    }
+
     public Application newApplication( Assembler assembler )
         throws AssemblyException
     {
-        return factory.newApplication( assembler );
+        Application application;
+            application = factory.newApplication( assembler );
+        return application;
     }
 
     public Application newApplication( Assembler[][][] assemblers )
@@ -80,7 +97,7 @@ public class Energy4Java
         return factory.newApplication( applicationAssembly );
     }
 
-    public ApplicationAssembly newApplicationAssembly()
+    public  ApplicationAssembly newApplicationAssembly()
     {
         return factory.newApplicationAssembly();
     }
@@ -89,7 +106,7 @@ public class Energy4Java
     {
         return factory.runtime();
     }
-    
+
     private static ApplicationFactory findQi4jApplicationFactory()
         throws BootstrapException
     {

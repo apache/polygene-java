@@ -33,7 +33,7 @@ import org.qi4j.bootstrap.ApplicationFactory;
  * is used to locate an instance of the ApplicationFactory
  * interface.
  */
-public class ServiceLoader
+public final class ServiceLoader
 {
     private static LinkedList<ClassLoader> loaders;
 

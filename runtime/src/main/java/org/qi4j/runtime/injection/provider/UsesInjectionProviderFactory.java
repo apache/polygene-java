@@ -12,12 +12,13 @@ import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.structure.ModuleInstance;
+import java.io.Serializable;
 
 /**
  * TODO
  */
 public final class UsesInjectionProviderFactory
-    implements InjectionProviderFactory
+    implements InjectionProviderFactory, Serializable
 {
     public UsesInjectionProviderFactory()
     {
@@ -30,7 +31,7 @@ public final class UsesInjectionProviderFactory
     }
 
     private class UsesInjectionProvider
-        implements InjectionProvider
+        implements InjectionProvider, Serializable
     {
         private final DependencyModel dependency;
 

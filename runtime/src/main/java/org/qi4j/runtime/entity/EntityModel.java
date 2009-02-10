@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -62,7 +63,7 @@ import org.qi4j.spi.entity.UnknownEntityTypeException;
  * TODO
  */
 public final class EntityModel
-    implements Binder, CompositeDescriptor, EntityDescriptor
+    implements Binder, CompositeDescriptor, EntityDescriptor, Serializable
 {
     public static EntityModel newModel( Class<? extends EntityComposite> type,
                                         Visibility visibility,

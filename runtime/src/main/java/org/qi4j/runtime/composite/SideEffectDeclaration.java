@@ -15,14 +15,15 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Type;
+import java.io.Serializable;
 
 /**
  * TODO
  */
-public final class SideEffectDeclaration
-    extends AbstractModifierDeclaration
+public final class SideEffectDeclaration extends AbstractModifierDeclaration
+    implements Serializable
 {
-    public SideEffectDeclaration( Class sideEffectClass, Type declaredIn )
+    public SideEffectDeclaration( Class sideEffectClass, Class declaredIn )
     {
         super( sideEffectClass, declaredIn );
     }

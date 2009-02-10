@@ -18,7 +18,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.io.Serializable;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -27,7 +29,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
  * TODO
  */
 public final class CompositeMethodsModel
-    implements Binder
+    implements Binder, Serializable
 {
     private final HashMap<Method, CompositeMethodModel> methods;
     private final Class<? extends Composite> type;
@@ -42,7 +44,7 @@ public final class CompositeMethodsModel
                                   SideEffectsDeclaration sideEffectsModel,
                                   AbstractMixinsModel mixinsModel )
     {
-        methods = new HashMap<Method, CompositeMethodModel>();
+        methods = new MethodKeyMap<CompositeMethodModel>();
         this.type = type;
         this.constraintsModel = constraintsModel;
         this.concernsModel = concernsModel;

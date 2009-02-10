@@ -15,13 +15,14 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
+import java.io.Serializable;
 import org.qi4j.api.common.AppliesToFilter;
 
 /**
  * TODO
  */
 final class AnnotationAppliesToFilter
-    implements AppliesToFilter
+    implements AppliesToFilter, Serializable
 {
     private final Class annotationType;
 

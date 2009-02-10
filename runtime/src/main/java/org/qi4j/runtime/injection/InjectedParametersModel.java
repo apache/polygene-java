@@ -17,6 +17,7 @@ package org.qi4j.runtime.injection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.io.Serializable;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.Binder;
@@ -29,7 +30,7 @@ import org.qi4j.spi.composite.InjectedParametersDescriptor;
  * TODO
  */
 public final class InjectedParametersModel
-    implements Binder, InjectedParametersDescriptor
+    implements Binder, InjectedParametersDescriptor, Serializable
 {
     private final List<DependencyModel> parameterDependencies;
 

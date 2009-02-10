@@ -23,12 +23,12 @@ import org.qi4j.api.injection.InjectionScope;
 /**
  * Annotation to denote the injection of a property, association or
  * StateHolder.
- *
+ * <pre><code>
  * &#64;State Property<String> propertyName;
  * &#64;State Association<MyEntity> associationName;
  * &#64;State StateHolder state;
  * &#64;State EntityStateHolder entityState;
- *
+ * </code></pre>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )

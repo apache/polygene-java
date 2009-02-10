@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.io.Serializable;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.sideeffect.SideEffects;
@@ -30,8 +31,9 @@ import org.qi4j.api.concern.Concerns;
  * Used to declare and access metainfo about types.
  */
 public final class MetaInfo
+    implements Serializable
 {
-    private static HashSet ignored;
+    private static HashSet<Class> ignored;
 
     static
     {

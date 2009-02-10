@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.io.Serializable;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
@@ -29,7 +30,7 @@ import org.qi4j.spi.structure.ApplicationDescriptor;
  * TODO
  */
 public final class ApplicationModel
-    implements ApplicationDescriptor
+    implements ApplicationDescriptor, Serializable
 {
     private final String name;
     private final List<LayerModel> layers;

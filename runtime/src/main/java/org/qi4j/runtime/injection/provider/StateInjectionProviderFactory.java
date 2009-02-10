@@ -14,14 +14,16 @@ import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
+import java.io.Serializable;
 
 /**
  * TODO
  */
 public final class StateInjectionProviderFactory
-    implements InjectionProviderFactory
+    implements InjectionProviderFactory, Serializable
 {
-    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
+        throws InvalidInjectionException
     {
         if( StateHolder.class.isAssignableFrom( dependencyModel.rawInjectionType()))
         {
@@ -81,7 +83,8 @@ public final class StateInjectionProviderFactory
         throw new InjectionProviderException( "Injected value has invalid type" );
     }
 
-    private class PropertyInjectionProvider implements InjectionProvider
+    private class PropertyInjectionProvider
+        implements InjectionProvider, Serializable
     {
         private final PropertyDescriptor propertyDescriptor;
 
@@ -104,7 +107,8 @@ public final class StateInjectionProviderFactory
         }
     }
 
-    private class AssociationInjectionProvider implements InjectionProvider
+    private class AssociationInjectionProvider
+        implements InjectionProvider, Serializable
     {
         private final AssociationDescriptor associationDescriptor;
 
@@ -127,7 +131,8 @@ public final class StateInjectionProviderFactory
         }
     }
 
-    private class StateInjectionProvider implements InjectionProvider
+    private class StateInjectionProvider
+        implements InjectionProvider, Serializable
     {
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {

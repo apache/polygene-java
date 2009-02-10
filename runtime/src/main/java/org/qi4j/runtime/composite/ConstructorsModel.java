@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.io.Serializable;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.CallbackFilter;
 import net.sf.cglib.proxy.Enhancer;
@@ -40,7 +41,7 @@ import org.qi4j.runtime.util.Annotations;
  * TODO
  */
 public final class ConstructorsModel
-    implements Binder
+    implements Binder, Serializable
 {
     private final Class fragmentClass;
     private final List<ConstructorModel> constructorModels;

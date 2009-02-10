@@ -17,13 +17,14 @@ package org.qi4j.runtime.structure;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.io.Serializable;
 import org.qi4j.spi.structure.UsedLayersDescriptor;
 
 /**
  * TODO
  */
 public final class UsedLayersModel
-    implements UsedLayersDescriptor
+    implements UsedLayersDescriptor, Serializable
 {
     private final List<LayerModel> usedLayers;
 

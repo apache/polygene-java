@@ -16,6 +16,7 @@ package org.qi4j.api.property;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.io.Serializable;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
 import org.qi4j.api.injection.scope.State;
@@ -36,7 +37,7 @@ public class PropertyMixin
     }
 
     public static class PropertyFilter
-        implements AppliesToFilter
+        implements AppliesToFilter, Serializable
     {
         public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> modifierClass )
         {

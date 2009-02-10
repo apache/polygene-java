@@ -28,7 +28,7 @@ public class EntityStateAdapter
 {
     private EntityState entityState;
 
-    public EntityStateAdapter( EntityState entityState)
+    public EntityStateAdapter( EntityState entityState )
     {
         this.entityState = entityState;
     }

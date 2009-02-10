@@ -16,6 +16,7 @@ package org.qi4j.runtime.bootstrap;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.LayerAssembly;
 
@@ -25,7 +26,7 @@ import org.qi4j.bootstrap.LayerAssembly;
  * and create LayerAssemblies.
  */
 public final class ApplicationAssemblyImpl
-    implements ApplicationAssembly
+    implements ApplicationAssembly, Serializable
 {
     private List<LayerAssemblyImpl> layerAssemblies = new ArrayList<LayerAssemblyImpl>();
     private String name = "Application";

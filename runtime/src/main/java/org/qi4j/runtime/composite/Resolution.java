@@ -15,6 +15,7 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Field;
+import java.io.Serializable;
 import org.qi4j.runtime.structure.ApplicationModel;
 import org.qi4j.runtime.structure.LayerModel;
 import org.qi4j.runtime.structure.ModuleModel;
@@ -25,6 +26,7 @@ import org.qi4j.spi.object.ObjectDescriptor;
  * TODO
  */
 public final class Resolution
+    implements Serializable
 {
     private final ApplicationModel application;
     private final LayerModel layer;

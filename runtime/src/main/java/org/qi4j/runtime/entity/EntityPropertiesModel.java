@@ -22,12 +22,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.io.Serializable;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.util.MethodKeyMap;
+import org.qi4j.api.util.MethodSet;
+import org.qi4j.api.util.MethodValueMap;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
@@ -44,11 +48,12 @@ import org.qi4j.spi.property.PropertyType;
  * TODO
  */
 public final class EntityPropertiesModel
+    implements Serializable
 {
-    private final Set<Method> methods = new HashSet<Method>();
+    private final Set<Method> methods = new MethodSet();
     private final List<EntityPropertyModel> propertyModels = new ArrayList<EntityPropertyModel>();
-    private final Map<Method, EntityPropertyModel> mapMethodPropertyModel = new HashMap<Method, EntityPropertyModel>();
-    private final Map<String, Method> accessors = new HashMap<String, Method>();
+    private final Map<Method, EntityPropertyModel> mapMethodPropertyModel = new MethodKeyMap<EntityPropertyModel>();
+    private final Map<String, Method> accessors = new MethodValueMap<String>();
     private final ConstraintsModel constraints;
     private PropertyDeclarations propertyDeclarations;
     private boolean immutable;

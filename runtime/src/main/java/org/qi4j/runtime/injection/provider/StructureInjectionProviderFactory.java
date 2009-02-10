@@ -18,6 +18,7 @@
 package org.qi4j.runtime.injection.provider;
 
 import java.lang.reflect.Type;
+import java.io.Serializable;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.api.object.ObjectBuilderFactory;
@@ -34,15 +35,16 @@ import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.spi.Qi4jSPI;
 
 public final class StructureInjectionProviderFactory
-    implements InjectionProviderFactory
+    implements InjectionProviderFactory, Serializable
 {
-    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel ) 
+        throws InvalidInjectionException
     {
         return new StructureInjectionProvider( resolution, dependencyModel );
     }
 
     private static class StructureInjectionProvider
-        implements InjectionProvider
+        implements InjectionProvider, Serializable
     {
         final Resolution resolution;
         private final DependencyModel dependencyModel;

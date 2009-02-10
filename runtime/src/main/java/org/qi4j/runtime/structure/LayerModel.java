@@ -16,6 +16,7 @@ package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.spi.structure.LayerDescriptor;
@@ -24,7 +25,7 @@ import org.qi4j.spi.structure.LayerDescriptor;
  * TODO
  */
 public final class LayerModel
-    implements Binder, LayerDescriptor
+    implements Binder, LayerDescriptor, Serializable
 {
     // Model
     private final String name;

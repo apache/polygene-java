@@ -22,18 +22,21 @@ import static java.util.Collections.singleton;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.io.Serializable;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.sideeffect.SideEffects;
 import static org.qi4j.api.util.Classes.genericInterfacesOf;
+import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.runtime.util.Annotations;
 
 /**
  * TODO
  */
 public final class SideEffectsDeclaration
+    implements Serializable
 {
     private final List<SideEffectDeclaration> sideEffectDeclarations = new ArrayList<SideEffectDeclaration>();
-    private final Map<Method, MethodSideEffectsModel> methodSideEffects = new HashMap<Method, MethodSideEffectsModel>();
+    private final Map<Method, MethodSideEffectsModel> methodSideEffects = new MethodKeyMap<MethodSideEffectsModel>();
 
     public SideEffectsDeclaration( Class type )
     {
@@ -90,13 +93,17 @@ public final class SideEffectsDeclaration
 
     private void addSideEffectDeclaration( Type type )
     {
-        SideEffects annotation = Annotations.getAnnotation( type, SideEffects.class );
-        if( annotation != null )
+        if( type instanceof Class )
         {
-            Class[] sideEffectClasses = annotation.value();
-            for( Class sideEffectClass : sideEffectClasses )
+            final Class clazz = (Class) type;
+            SideEffects annotation = Annotations.getAnnotation( type, SideEffects.class );
+            if( annotation != null )
             {
-                sideEffectDeclarations.add( new SideEffectDeclaration( sideEffectClass, type ) );
+                Class[] sideEffectClasses = annotation.value();
+                for( Class sideEffectClass : sideEffectClasses )
+                {
+                    sideEffectDeclarations.add( new SideEffectDeclaration( sideEffectClass, clazz ) );
+                }
             }
         }
     }

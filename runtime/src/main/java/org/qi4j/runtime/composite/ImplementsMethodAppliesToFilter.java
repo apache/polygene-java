@@ -16,13 +16,14 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.io.Serializable;
 import org.qi4j.api.common.AppliesToFilter;
 
 /**
  * TODO
  */
 final class ImplementsMethodAppliesToFilter
-    implements AppliesToFilter
+    implements AppliesToFilter, Serializable
 {
     public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
     {

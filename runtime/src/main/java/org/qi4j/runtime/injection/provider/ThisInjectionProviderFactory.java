@@ -3,6 +3,7 @@ package org.qi4j.runtime.injection.provider;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.io.Serializable;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
@@ -13,9 +14,10 @@ import org.qi4j.runtime.injection.InjectionProviderFactory;
  * TODO
  */
 public final class ThisInjectionProviderFactory
-    implements InjectionProviderFactory
+    implements InjectionProviderFactory, Serializable
 {
-    public InjectionProvider newInjectionProvider( Resolution bindingContext, DependencyModel dependencyModel ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( Resolution bindingContext, DependencyModel dependencyModel )
+        throws InvalidInjectionException
     {
         if( bindingContext.composite() != null )
         {
@@ -48,7 +50,7 @@ public final class ThisInjectionProviderFactory
     }
 
     private class ThisInjectionProvider
-        implements InjectionProvider
+        implements InjectionProvider, Serializable
     {
         Constructor proxyConstructor;
 

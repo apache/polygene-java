@@ -18,6 +18,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
@@ -26,7 +27,7 @@ import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.api.service.ServiceReference;
 
 public final class ServiceInjectionProviderFactory
-    implements InjectionProviderFactory
+    implements InjectionProviderFactory, Serializable
 {
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         throws InvalidInjectionException
@@ -64,7 +65,7 @@ public final class ServiceInjectionProviderFactory
     }
 
     static class IterableServiceReferenceProvider
-        implements InjectionProvider
+        implements InjectionProvider, Serializable
     {
         private final Type serviceType;
 
@@ -80,7 +81,7 @@ public final class ServiceInjectionProviderFactory
     }
 
     private static class IterableServiceProvider
-        implements InjectionProvider
+        implements InjectionProvider, Serializable
     {
         private final Type serviceType;
 
@@ -102,7 +103,7 @@ public final class ServiceInjectionProviderFactory
     }
 
     private static class ServiceReferenceProvider
-        implements InjectionProvider
+        implements InjectionProvider, Serializable
     {
         private final Type serviceType;
 
@@ -119,7 +120,7 @@ public final class ServiceInjectionProviderFactory
     }
 
     private static class ServiceProvider
-        implements InjectionProvider
+        implements InjectionProvider, Serializable
     {
         private final Type serviceType;
 

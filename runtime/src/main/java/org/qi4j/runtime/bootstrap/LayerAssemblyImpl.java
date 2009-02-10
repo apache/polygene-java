@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.io.Serializable;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -29,7 +30,7 @@ import static org.qi4j.api.util.NullArgumentException.validateNotNull;
  * what other Layers this Layer is using by calling {@link LayerAssemblyImpl#uses(LayerAssembly)}.
  */
 public final class LayerAssemblyImpl
-    implements LayerAssembly
+    implements LayerAssembly, Serializable
 {
     private ApplicationAssembly applicationAssembly;
     private List<ModuleAssemblyImpl> moduleAssemblies;

@@ -25,10 +25,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.io.Serializable;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.UsageGraph;
+import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.InvalidCompositeException;
 
@@ -36,14 +38,16 @@ import org.qi4j.spi.composite.InvalidCompositeException;
  * TODO
  */
 public abstract class AbstractMixinsModel
+    implements Serializable
 {
     protected final Set<MixinDeclaration> mixins = new LinkedHashSet<MixinDeclaration>();
 
-    protected final Map<Method, MixinModel> methodImplementation = new HashMap<Method, MixinModel>();
-    protected List<MixinModel> mixinModels = new ArrayList<MixinModel>();
-    private final Map<Class, Integer> mixinIndex = new HashMap<Class, Integer>();
-    protected final Map<Method, Integer> methodIndex = new HashMap<Method, Integer>();
+    protected final Map<Method, MixinModel> methodImplementation = new MethodKeyMap<MixinModel>();
+    protected final Map<Method, Integer> methodIndex = new MethodKeyMap<Integer>();
     private final Class<? extends Composite> compositeType;
+    protected List<MixinModel> mixinModels = new ArrayList<MixinModel>();
+
+    private final Map<Class, Integer> mixinIndex = new HashMap<Class, Integer>();
     private final Set<Class> mixinTypes = new HashSet<Class>();
 
     public AbstractMixinsModel( Class<? extends Composite> compositeType )
@@ -180,13 +184,14 @@ public abstract class AbstractMixinsModel
     {
         if( type instanceof Class )
         {
-            Mixins annotation = Mixins.class.cast( ( (Class) type ).getAnnotation( Mixins.class ) );
+            final Class clazz = (Class) type;
+            Mixins annotation = Mixins.class.cast( clazz.getAnnotation( Mixins.class ) );
             if( annotation != null )
             {
                 Class[] mixinClasses = annotation.value();
                 for( Class mixinClass : mixinClasses )
                 {
-                    declarations.add( new MixinDeclaration( mixinClass, type ) );
+                    declarations.add( new MixinDeclaration( mixinClass, clazz ) );
                 }
             }
         }

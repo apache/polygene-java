@@ -14,6 +14,11 @@
 
 package org.qi4j.runtime.entity.association;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -35,6 +40,7 @@ import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.util.Classes;
 import static org.qi4j.api.util.Classes.getRawClass;
+import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
@@ -47,33 +53,63 @@ import org.qi4j.spi.entity.association.ManyAssociationType;
  * TODO
  */
 public final class AssociationModel
-    implements AssociationDescriptor
+    implements AssociationDescriptor, Serializable
 {
-    private final MetaInfo metaInfo;
-    private final String name;
-    private final Type type;
-    private final Method accessor;
-    private final String qualifiedName;
-    private final String uri;
-    private final String rdf;
-    private final ValueConstraintsInstance constraints;
-    private final boolean queryable;
-    private final boolean immutable;
-    private final boolean aggregated;
+    private MetaInfo metaInfo;
+    private String name;
+    private Type type;
+    private Method accessor;
+    private String qualifiedName;
+    private String uri;
+    private String rdf;
+    private ValueConstraintsInstance constraints;
+    private boolean queryable;
+    private boolean immutable;
+    private boolean aggregated;
+
+    private void writeObject( ObjectOutputStream out )
+        throws IOException
+    {
+        try
+        {
+            out.writeObject( metaInfo );
+            SerializationUtil.writeMethod( out, accessor );
+            out.writeObject( constraints );
+        }
+        catch( NotSerializableException e )
+        {
+            System.err.println( "NotSerializable in " + getClass() );
+            throw e;
+        }
+    }
+
+    private void readObject( ObjectInputStream in ) throws IOException, ClassNotFoundException
+    {
+        metaInfo = (MetaInfo) in.readObject();
+        accessor = SerializationUtil.readMethod( in );
+        constraints = (ValueConstraintsInstance) in.readObject();
+        initialize();
+    }
+
 
     public AssociationModel( Method accessor, ValueConstraintsInstance valueConstraintsInstance, MetaInfo metaInfo )
     {
         this.metaInfo = metaInfo;
+        this.constraints = valueConstraintsInstance;
+        this.accessor = accessor;
+        initialize();
+    }
+
+    private void initialize()
+    {
         this.name = accessor.getName();
         this.type = GenericAssociationInfo.getAssociationType( accessor );
-        this.accessor = accessor;
         this.qualifiedName = GenericAssociationInfo.getQualifiedName( accessor );
         this.uri = GenericAssociationInfo.toURI( qualifiedName() );
         this.immutable = metaInfo.get( Immutable.class ) != null;
         this.aggregated = metaInfo.get( Aggregated.class ) != null;
         RDF uriAnnotation = accessor().getAnnotation( RDF.class );
         this.rdf = uriAnnotation == null ? null : uriAnnotation.value();
-        this.constraints = valueConstraintsInstance;
 
         final Queryable queryable = accessor.getAnnotation( Queryable.class );
         this.queryable = queryable == null || queryable.value();

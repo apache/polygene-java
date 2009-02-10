@@ -15,6 +15,7 @@
 package org.qi4j.runtime.entity;
 
 import java.lang.reflect.Method;
+import java.io.Serializable;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Queryable;
@@ -30,6 +31,7 @@ import org.qi4j.spi.property.PropertyType;
  * TODO
  */
 public final class EntityPropertyModel extends PropertyModel
+    implements Serializable
 {
 
     private final boolean queryable;

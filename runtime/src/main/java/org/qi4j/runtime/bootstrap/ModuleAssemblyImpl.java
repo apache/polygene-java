@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.io.Serializable;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.CompositeDeclaration;
@@ -59,7 +60,7 @@ import org.qi4j.api.common.MetaInfo;
  * call.
  */
 public final class ModuleAssemblyImpl
-    implements ModuleAssembly
+    implements ModuleAssembly, Serializable
 {
     private LayerAssembly layerAssembly;
     private String name;

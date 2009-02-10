@@ -22,17 +22,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.io.Serializable;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.concern.Concerns;
 import static org.qi4j.api.util.Classes.genericInterfacesOf;
+import org.qi4j.api.util.MethodKeyMap;
 
 /**
  * TODO
  */
 public final class ConcernsDeclaration
+    implements Serializable
 {
     private final List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
-    private final Map<Method, MethodConcernsModel> methodConcernsModels = new HashMap<Method, MethodConcernsModel>();
+    private final Map<Method, MethodConcernsModel> methodConcernsModels = new MethodKeyMap<MethodConcernsModel>();
 
     public ConcernsDeclaration( Class type )
     {
@@ -74,13 +77,14 @@ public final class ConcernsDeclaration
     {
         if( type instanceof Class )
         {
-            Concerns annotation = Concerns.class.cast( ( (Class) type ).getAnnotation( Concerns.class ) );
+            final Class clazz = (Class) type;
+            Concerns annotation = Concerns.class.cast( clazz.getAnnotation( Concerns.class ) );
             if( annotation != null )
             {
                 Class[] concernClasses = annotation.value();
                 for( Class concernClass : concernClasses )
                 {
-                    concerns.add( new ConcernDeclaration( concernClass, type ) );
+                    concerns.add( new ConcernDeclaration( concernClass, clazz ) );
                 }
             }
         }

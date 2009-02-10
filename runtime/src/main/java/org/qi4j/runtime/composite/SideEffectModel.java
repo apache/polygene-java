@@ -14,11 +14,13 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
+
 /**
  * TODO
  */
-public final class SideEffectModel
-    extends AbstractModifierModel
+public final class SideEffectModel extends AbstractModifierModel
+    implements Serializable
 {
     public SideEffectModel( Class sideEffectClass )
     {

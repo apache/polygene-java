@@ -15,14 +15,15 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.annotation.Annotation;
+import java.io.Serializable;
 import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.common.ConstructionException;
 
 /**
  * TODO
  */
-public final class CompositeConstraintModel
-    extends AbstractConstraintModel
+public final class CompositeConstraintModel extends AbstractConstraintModel
+    implements Serializable
 {
     private ValueConstraintsModel constraintsModel;
 

@@ -14,9 +14,15 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.Binder;
@@ -28,11 +34,32 @@ import org.qi4j.spi.composite.InvalidCompositeException;
  * TODO
  */
 public final class ConstructorModel
-    implements Binder, ConstructorDescriptor
+    implements Binder, ConstructorDescriptor, Serializable
 {
-    private final Constructor constructor;
+    private Constructor constructor;
 
-    private final InjectedParametersModel parameters;
+    private InjectedParametersModel parameters;
+
+    private void writeObject( ObjectOutputStream out )
+        throws IOException
+    {
+        try
+        {
+            SerializationUtil.writeConstructor( out, constructor );
+            out.writeObject( parameters );
+        }
+        catch( NotSerializableException e )
+        {
+            System.err.println( "NotSerializable in " + getClass() );
+            throw e;
+        }
+    }
+
+    private void readObject( ObjectInputStream in ) throws IOException, ClassNotFoundException
+    {
+        constructor = SerializationUtil.readConstructor( in );
+        parameters = (InjectedParametersModel) in.readObject();
+    }
 
     public ConstructorModel( Constructor constructor, InjectedParametersModel parameters )
     {

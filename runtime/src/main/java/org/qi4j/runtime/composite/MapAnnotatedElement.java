@@ -17,13 +17,14 @@ package org.qi4j.runtime.composite;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Map;
+import java.io.Serializable;
 
 /**
  * Custom implementation of AnnotatedElement. This is primarily used
  * to aggregate annotations in interface and mixin methods.
  */
 public final class MapAnnotatedElement
-    implements AnnotatedElement
+    implements AnnotatedElement, Serializable
 {
     final Map<Class<? extends Annotation>, Annotation> annotations;
 

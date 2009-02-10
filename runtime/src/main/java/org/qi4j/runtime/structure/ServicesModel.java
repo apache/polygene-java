@@ -17,6 +17,7 @@ package org.qi4j.runtime.structure;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.service.ServiceReferenceInstance;
 import org.qi4j.runtime.service.ImportedServiceModel;
@@ -29,6 +30,7 @@ import org.qi4j.api.service.ServiceReference;
  * TODO
  */
 public class ServicesModel
+    implements Serializable
 {
     private final Iterable<ServiceModel> serviceModels;
     private List<ImportedServiceModel> importedServiceModels;
