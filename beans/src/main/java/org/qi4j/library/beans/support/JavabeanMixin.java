@@ -33,6 +33,7 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.util.MethodKeyMap;
 
 @AppliesTo( { JavabeanMixin.JavabeanSupportFilter.class } )
 public class JavabeanMixin
@@ -46,7 +47,7 @@ public class JavabeanMixin
     public JavabeanMixin( @This Composite thisComposite, @Uses Object pojo )
     {
         this.pojo = pojo;
-        handlers = new HashMap<Method, Object>();
+        handlers = new MethodKeyMap<Object>();
         Class<? extends Composite> type = thisComposite.type();
         for( Method method : type.getMethods() )
         {

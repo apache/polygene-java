@@ -28,6 +28,7 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.util.MethodKeyMap;
 
 /**
  * @author edward.yakop@gmail.com
@@ -44,7 +45,7 @@ public final class StateInvocationHandler<T>
     public StateInvocationHandler( @Uses Class aType )
     {
         type = aType;
-        fields = new HashMap<Method, BoundField>();
+        fields = new MethodKeyMap<BoundField>();
     }
 
     @SuppressWarnings( "unchecked" )

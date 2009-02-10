@@ -44,7 +44,8 @@ public class DecoratorMixin
         {
             try
             {
-                return method.invoke( delegate, args );
+                final Object invocation = method.invoke( delegate, args );
+                return invocation;
             }
             catch( InvocationTargetException e )
             {
@@ -52,16 +53,31 @@ public class DecoratorMixin
             }
             catch( IllegalArgumentException e )
             {
-                System.err.println( "method: " + method.getDeclaringClass().getName() + "." + method.getName() );
-                System.err.println( "delegate: " + delegate );
-                System.err.println( "delegateType: " + delegate.getClass().getName() );
-                System.err.println( "arguments: " );
-                for( Object arg : args )
-                {
-                    System.err.println( "    " + arg.getClass().getName() );
-                }
-                throw e;
+                String message = constructMessage( method, args );
+                System.err.println( message );
+                throw new IllegalArgumentException( message, e );
             }
         }
+    }
+
+    private String constructMessage( Method method, Object[] args )
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.append( "method: " );
+        builder.append( method.getDeclaringClass().getName() );
+        builder.append( "." );
+        builder.append( method.getName() );
+        builder.append( "\ndelegate: " );
+        builder.append( delegate );
+        builder.append( "\ndelegateType: " );
+        builder.append( delegate.getClass().getName() );
+        builder.append( "\narguments: \n" );
+        for( Object arg : args )
+        {
+            builder.append( "    " );
+            builder.append( arg.getClass().getName() );
+            builder.append( '\n' );
+        }
+        return builder.toString();
     }
 }

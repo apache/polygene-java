@@ -23,6 +23,10 @@ Embed-Transitive:  true
 Ignore-Package: org.apache.bsf, \
                 org.apache.bsf.util, \
                 sun.misc, \
+                com.sun.mirror.apt, \
+                com.sun.mirror.declaration, \
+                com.sun.mirror.type, \
+                com.sun.mirror.util, \
                 com_cenqua_clover, \
                 clover.com.lowagie.text.xml, \
                 clover.it.unimi.dsi.fastutil.booleans, \
