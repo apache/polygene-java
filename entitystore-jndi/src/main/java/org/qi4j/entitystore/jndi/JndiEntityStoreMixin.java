@@ -24,6 +24,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
+import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -46,6 +48,7 @@ import org.qi4j.spi.entity.EntityTypeRegistryMixin;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.ReadOnlyEntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.entity.helpers.DefaultEntityState;
@@ -146,10 +149,25 @@ public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
     public EntityState newEntityState( QualifiedIdentity identity )
         throws EntityStoreException
     {
-//        if( isReadOnly )
+        if( isReadOnly )
         {
             throw new ReadOnlyEntityStoreException( "JndiEntityStore is read-only." );
         }
+
+        EntityType entityType = getEntityType( identity.type() );
+        try
+        {
+            Attributes attrs = lookup( identity.identity() );
+            if( attrs != null && attrs.size() > 1 )
+            {
+                throw new EntityAlreadyExistsException( descriptor.identity(), identity );
+            }
+        }
+        catch( NamingException e )
+        {
+            throw new EntityStoreException( e );
+        }
+        return new DefaultEntityState( identity, entityType );
     }
 
     public EntityState getEntityState( QualifiedIdentity identity )
@@ -217,6 +235,28 @@ public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
         return attrs;
     }
 
+    private Map<String, Object> getProperties( Attributes attrs, EntityType entityType )
+        throws NamingException
+    {
+        Map<String, Object> result = new HashMap<String, Object>();
+        Iterable<PropertyType> props = entityType.properties();
+        for( PropertyType property : props )
+        {
+            String qualifiedName = property.qualifiedName();
+            int pos = qualifiedName.lastIndexOf( ':' );
+            String propertyName = qualifiedName.substring( pos + 1 );
+            if( !RESTRICTED_PROPERTIES.contains( propertyName ) )
+            {
+                Attribute attribute = attrs.get( propertyName );
+                if( attribute != null )
+                {
+                    result.put( qualifiedName, attribute.get() );
+                }
+            }
+        }
+        return result;
+    }
+
     private Map<String, QualifiedIdentity> getAssociations( Attributes attrs, EntityType entityType )
         throws NamingException
     {
@@ -260,10 +300,8 @@ public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
         return result;
     }
 
-    private Map<String, Object> getProperties( Attributes attrs, EntityType entityType )
-        throws NamingException
+    private void putProperties( Attributes attrs, EntityType entityType, Map<String, Object> values )
     {
-        Map<String, Object> result = new HashMap<String, Object>();
         Iterable<PropertyType> props = entityType.properties();
         for( PropertyType property : props )
         {
@@ -272,14 +310,46 @@ public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
             String propertyName = qualifiedName.substring( pos + 1 );
             if( !RESTRICTED_PROPERTIES.contains( propertyName ) )
             {
-                Attribute attribute = attrs.get( propertyName );
-                if( attribute != null )
-                {
-                    result.put( qualifiedName, attribute.get() );
-                }
+                attrs.put( propertyName, values.get( propertyName ) );
             }
         }
-        return result;
+    }
+
+    private void putAssociations( Attributes attrs, EntityType entityType, Map<String, QualifiedIdentity> associations )
+    {
+//        Iterable<AssociationType> assocs = entityType.associations();
+//        for( AssociationType associationType : assocs )
+//        {
+//            String qualifiedName = associationType.qualifiedName();
+//            int pos = qualifiedName.lastIndexOf( ':' );
+//            String associationName = qualifiedName.substring( pos );
+//            Attribute attribute = attrs.get( associationName );
+//            String identity = (String) attribute.get();
+//            QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( identity, associationType.type() );
+//            result.put( attribute.getID(), qualifiedIdentity );
+//        }
+    }
+
+    private void putManyAssociations( Attributes attrs, EntityType entityType, Map<String, Collection<QualifiedIdentity>> manyAssociations )
+    {
+//        Iterable<ManyAssociationType> assocs = entityType.manyAssociations();
+//        for( ManyAssociationType associationType : assocs )
+//        {
+//            String qualifiedName = associationType.qualifiedName();
+//            int pos = qualifiedName.lastIndexOf( ':' );
+//            String associationName = qualifiedName.substring( pos );
+//            Attribute attribute = attrs.get( associationName );
+//            String identity = (String) attribute.get();
+//            QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( identity, associationType.type() );
+//            String assocName = attribute.getID();
+//            Collection<QualifiedIdentity> entry = result.get( assocName );
+//            if( entry == null )
+//            {
+//                entry = new ArrayList<QualifiedIdentity>();
+//                result.put( assocName, entry );
+//            }
+//            entry.add( qualifiedIdentity );
+//        }
     }
 
     public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> updatedStates, Iterable<QualifiedIdentity> removedStates )
@@ -289,6 +359,77 @@ public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
         {
             throw new ReadOnlyEntityStoreException( "JndiEntityStore is read-only." );
         }
+//        boolean turbo = configuration.configuration().turboMode().get();
+//        lock.writeLock().lock();
+//
+//        long lastModified = System.currentTimeMillis();
+//        try
+//        {
+//            storeNewStates( newStates, lastModified );
+//            storeLoadedStates( loadedStates, lastModified );
+//            removeRemovedStates( removedStates, lastModified );
+//        }
+//        catch( Throwable e )
+//        {
+//            lock.writeLock().unlock();
+//            if( e instanceof EntityStoreException )
+//            {
+//                throw (EntityStoreException) e;
+//            }
+//            else
+//            {
+//                throw new EntityStoreException( e );
+//            }
+//        }
+//
+//        return new StateCommitter()
+//        {
+//            public void commit()
+//            {
+//                try
+//                {
+//                    recordManager.commit();
+//                }
+//                catch( IOException e )
+//                {
+//                    e.printStackTrace();
+//                }
+//                finally
+//                {
+//                    lock.writeLock().unlock();
+//                }
+//            }
+//
+//            public void cancel()
+//            {
+//
+//                try
+//                {
+//                    recordManager.rollback();
+//                    initializeIndex(); // HTree indices are invalid after rollbacks according to the JDBM docs
+//                }
+//                catch( IOException e )
+//                {
+//                    e.printStackTrace();
+//                }
+//                finally
+//                {
+//                    lock.writeLock().unlock();
+//                }
+//            }
+//        };
+    }
+
+    private void storeNewStates( Iterable<EntityState> newStates, long lastModified )
+    {
+//        for( EntityState newEntity : newStates )
+//        {
+//            DefaultEntityState defState = (DefaultEntityState) newEntity;
+//            Attributes attrs = lookup( defState.qualifiedIdentity().identity() );
+//            putProperties( attrs, defState.entityType(), defState.getProperties() );
+//            putAssociations( attrs, defState.entityType(), defState.getAssociations() );
+//            putManyAssociations( attrs, defState.entityType(), defState.getManyAssociations() );
+//        }
     }
 
     public Iterator<EntityState> iterator()
