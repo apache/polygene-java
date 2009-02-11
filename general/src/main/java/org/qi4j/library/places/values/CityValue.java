@@ -17,7 +17,7 @@
  */
 package org.qi4j.library.places.values;
 
-import org.qi4j.api.composite.ValueComposite;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.library.places.City;
 import org.qi4j.library.places.HasCountry;
 import org.qi4j.library.places.HasState;

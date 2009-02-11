@@ -17,8 +17,8 @@
  */
 package org.qi4j.library.places.values;
 
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.library.places.State;
-import org.qi4j.api.composite.ValueComposite;
 
 public interface StateValue extends State, ValueComposite
 {

@@ -13,9 +13,9 @@
  */
 package org.qi4j.library.general.model.values;
 
-import org.qi4j.library.general.model.properties.ContactValue;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.library.general.model.properties.ContactType;
-import org.qi4j.api.composite.ValueComposite;
+import org.qi4j.library.general.model.properties.ContactValue;
 
 /**
  * Generic interface for a contact such as phone number, fax-number, email, msn, etc.

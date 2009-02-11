@@ -48,6 +48,10 @@ Ignore-Package: org.apache.bsf, \
                 cloverantlr.debug, \
                 cloverantlr.preprocessor, \
                 com.sun.jdmk.comm, \
+                com.sun.mirror.apt, \
+                com.sun.mirror.declaration, \
+                com.sun.mirror.type, \
+                com.sun.mirror.util, \
                 com.werken.xpath, \
                 javax.accessibility, \
                 javax.imageio, \
@@ -77,4 +81,3 @@ Ignore-Package: org.apache.bsf, \
                 org.w3c.dom, \
                 org.xml.sax, \
                 org.xml.sax.helpers
-

@@ -17,7 +17,7 @@
  */
 package org.qi4j.library.general.model.values;
 
-import org.qi4j.api.composite.ValueComposite;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.library.general.model.Comment;
 
 public interface CommentValue extends Comment, ValueComposite

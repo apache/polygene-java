@@ -17,7 +17,7 @@
  */
 package org.qi4j.library.places.values;
 
-import org.qi4j.api.composite.ValueComposite;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.library.places.Country;
 
 public interface CountryValue extends Country, ValueComposite
