@@ -15,32 +15,25 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.io.Serializable;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.ValueComposite;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.property.PropertiesModel;
-import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
-import org.qi4j.spi.composite.StateDescriptor;
 
 /**
  * TODO
  */
 public class CompositeModel
-    implements Binder, CompositeDescriptor, Serializable
+    extends AbstractCompositeModel
 {
     public static CompositeModel newModel( final Class<? extends Composite> compositeType,
                                            final Visibility visibility,
@@ -61,14 +54,6 @@ public class CompositeModel
             compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
     }
 
-    protected final MixinsModel mixinsModel;
-    protected final CompositeMethodsModel compositeMethodsModel;
-    private final Class<? extends Composite> compositeType;
-    private final Visibility visibility;
-    private final MetaInfo metaInfo;
-    private final StateModel stateModel;
-    private final Class<? extends Composite> proxyClass;
-
     protected CompositeModel( final Class<? extends Composite> compositeType,
                               final Visibility visibility,
                               final MetaInfo metaInfo,
@@ -77,56 +62,7 @@ public class CompositeModel
                               final CompositeMethodsModel compositeMethodsModel
     )
     {
-        this.compositeType = compositeType;
-        this.visibility = visibility;
-        this.metaInfo = metaInfo;
-        this.stateModel = stateModel;
-
-        // Create proxy class
-        this.proxyClass = createProxyClass( compositeType );
-
-        this.mixinsModel = mixinsModel;
-
-        this.compositeMethodsModel = compositeMethodsModel;
-    }
-
-    // Model
-    public Class<? extends Composite> type()
-    {
-        return compositeType;
-    }
-
-    public StateDescriptor state()
-    {
-        return stateModel;
-    }
-
-    public MetaInfo metaInfo()
-    {
-        return metaInfo;
-    }
-
-    public Visibility visibility()
-    {
-        return visibility;
-    }
-
-    public Class<? extends Composite> proxyClass()
-    {
-        return proxyClass;
-    }
-
-    public Iterable<Class> mixinTypes()
-    {
-        return mixinsModel.mixinTypes();
-    }
-
-    @SuppressWarnings( "unchecked" )
-    private Class<? extends Composite> createProxyClass( Class<? extends Composite> compositeType )
-    {
-        ClassLoader proxyClassloader = compositeType.getClassLoader();
-        Class[] interfaces = new Class[]{ compositeType };
-        return (Class<? extends Composite>) Proxy.getProxyClass( proxyClassloader, interfaces );
+        super(compositeType, visibility,  metaInfo, mixinsModel, stateModel, compositeMethodsModel);
     }
 
     public void visitModel( ModelVisitor modelVisitor )
@@ -143,18 +79,6 @@ public class CompositeModel
         resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null, null );
         compositeMethodsModel.bind( resolution );
         mixinsModel.bind( resolution );
-    }
-
-    // Context
-    public Object invoke( MixinsInstance mixins, Object proxy, Method method, Object[] args, ModuleInstance moduleInstance )
-        throws Throwable
-    {
-        return compositeMethodsModel.invoke( mixins, proxy, method, args, moduleInstance );
-    }
-
-    public Object getMixin( Object[] mixins, Method method )
-    {
-        return mixinsModel.getMixin( mixins, method );
     }
 
     public Composite newProxy( InvocationHandler invocationHandler )
@@ -175,18 +99,10 @@ public class CompositeModel
                                                    UsesInstance uses,
                                                    StateHolder state )
     {
-        stateModel.checkConstraints( state );
+        stateModel.checkConstraints( state, false );
 
         Object[] mixins = mixinsModel.newMixinHolder();
-        CompositeInstance compositeInstance;
-        if( ValueComposite.class.isAssignableFrom( compositeType ) )
-        {
-            compositeInstance = new ValueCompositeInstance( this, moduleInstance, mixins, state );
-        }
-        else
-        {
-            compositeInstance = new DefaultCompositeInstance( this, moduleInstance, mixins, state );
-        }
+        CompositeInstance compositeInstance = new DefaultCompositeInstance( this, moduleInstance, mixins, state );
 
         try
         {
@@ -199,7 +115,7 @@ public class CompositeModel
         }
         catch( InvalidCompositeException e )
         {
-            e.setFailingCompositeType( compositeType );
+            e.setFailingCompositeType( type() );
             e.setMessage( "Invalid Cyclic Mixin usage dependency" );
             throw e;
         }
@@ -224,12 +140,12 @@ public class CompositeModel
 
     public String toURI()
     {
-        return Classes.toURI( compositeType );
+        return Classes.toURI( type() );
     }
 
     @Override public String toString()
     {
-        return compositeType.getName();
+        return type().getName();
     }
 
 }

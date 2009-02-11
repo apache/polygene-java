@@ -18,11 +18,11 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Iterator;
+import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeBuilder;
-import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
 
@@ -44,7 +44,7 @@ public final class CompositeBuilderInstance<T>
         }
         catch( NoSuchMethodException e )
         {
-            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: EntityBuilderInstance" );
+            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: CompositeBuilderInstance" );
         }
     }
 

@@ -17,17 +17,17 @@ package org.qi4j.runtime.structure;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.Serializable;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
-import org.qi4j.runtime.composite.CompositeModel;
-import org.qi4j.runtime.entity.EntityModel;
-import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.spi.service.Activator;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.common.Visibility;
+import org.qi4j.runtime.composite.CompositeModel;
+import org.qi4j.runtime.composite.ValueModel;
+import org.qi4j.runtime.entity.EntityModel;
+import org.qi4j.runtime.object.ObjectModel;
+import org.qi4j.spi.service.Activator;
 
 /**
  * TODO
@@ -116,6 +116,50 @@ public class LayerInstance
             else
             {
                 return usedLayersInstance.findModuleForComposite( mixinType );
+            }
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public ModuleInstance findModuleForValue( Class valueType, Visibility visibility )
+    {
+        // Check this layer
+        ModuleInstance foundModule = null;
+        for( ModuleInstance moduleInstance : moduleInstances )
+        {
+            ValueModel valueModel = moduleInstance.values().model().getValueModelFor( valueType, visibility );
+            if( valueModel != null )
+            {
+                if( foundModule != null )
+                {
+                    throw new AmbiguousTypeException( valueType );
+                }
+                else
+                {
+                    foundModule = moduleInstance;
+                }
+            }
+        }
+
+        if( foundModule != null )
+        {
+            return foundModule;
+        }
+
+        if( visibility == Visibility.layer )
+        {
+            // Check application scope
+            foundModule = findModuleForValue( valueType, Visibility.application );
+            if( foundModule != null )
+            {
+                return foundModule;
+            }
+            else
+            {
+                return usedLayersInstance.findModuleForValue( valueType );
             }
         }
         else

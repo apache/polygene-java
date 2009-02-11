@@ -38,10 +38,10 @@ public class DefaultCompositeInstance
     private final Composite proxy;
     private final Object[] mixins;
     protected StateHolder state;
-    private final CompositeModel compositeModel;
+    private final AbstractCompositeModel compositeModel;
     private final ModuleInstance moduleInstance;
 
-    public DefaultCompositeInstance( CompositeModel compositeModel, ModuleInstance moduleInstance, Object[] mixins, StateHolder state )
+    public DefaultCompositeInstance( AbstractCompositeModel compositeModel, ModuleInstance moduleInstance, Object[] mixins, StateHolder state )
     {
         this.compositeModel = compositeModel;
         this.moduleInstance = moduleInstance;
@@ -82,7 +82,7 @@ public class DefaultCompositeInstance
         return moduleInstance;
     }
 
-    public CompositeModel compositeModel()
+    public AbstractCompositeModel compositeModel()
     {
         return compositeModel;
     }

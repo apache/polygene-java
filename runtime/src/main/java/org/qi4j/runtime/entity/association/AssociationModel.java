@@ -242,7 +242,7 @@ public final class AssociationModel
     {
         if( constraints != null )
         {
-            List<ConstraintViolation> violations = constraints.checkConstraints( value );
+            List<ConstraintViolation> violations = constraints.checkConstraints( value, false );
             if( !violations.isEmpty() )
             {
                 throw new ConstraintViolationException( accessor, violations );

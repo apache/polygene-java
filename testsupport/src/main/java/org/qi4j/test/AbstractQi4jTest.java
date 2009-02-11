@@ -17,17 +17,18 @@ package org.qi4j.test;
 import org.junit.After;
 import org.junit.Before;
 import org.qi4j.api.Qi4j;
+import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.service.ServiceFinder;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.api.composite.CompositeBuilderFactory;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.api.object.ObjectBuilderFactory;
-import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.api.structure.Application;
-import org.qi4j.api.structure.Module;
 
 /**
  * Base class for Composite tests.
@@ -43,6 +44,7 @@ public abstract class AbstractQi4jTest
 
     protected CompositeBuilderFactory compositeBuilderFactory;
     protected ObjectBuilderFactory objectBuilderFactory;
+    protected ValueBuilderFactory valueBuilderFactory;
     protected UnitOfWorkFactory unitOfWorkFactory;
     protected ServiceFinder serviceLocator;
 
@@ -59,6 +61,7 @@ public abstract class AbstractQi4jTest
         moduleInstance = application.findModule( "Layer 1", "Module 1" );
         compositeBuilderFactory = moduleInstance.compositeBuilderFactory();
         objectBuilderFactory = moduleInstance.objectBuilderFactory();
+        valueBuilderFactory = moduleInstance.valueBuilderFactory();
         unitOfWorkFactory = moduleInstance.unitOfWorkFactory();
         serviceLocator = moduleInstance.serviceFinder();
     }

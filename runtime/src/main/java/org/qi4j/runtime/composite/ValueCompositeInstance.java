@@ -17,26 +17,23 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Proxy;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.runtime.composite.DefaultCompositeInstance;
-import org.qi4j.runtime.composite.MixinsInstance;
-import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.spi.composite.CompositeInstance;
 
 /**
- * InvocationHandler for proxy objects.
+ * ValueComposite instance
  */
 public final class ValueCompositeInstance extends DefaultCompositeInstance
     implements CompositeInstance, MixinsInstance
 {
-    public static ValueCompositeInstance getCompositeInstance( Composite composite )
+    public static ValueCompositeInstance getValueInstance( ValueComposite composite )
     {
         return (ValueCompositeInstance) Proxy.getInvocationHandler( composite );
     }
 
-    public ValueCompositeInstance( CompositeModel compositeModel, ModuleInstance moduleInstance, Object[] mixins, StateHolder state )
+    public ValueCompositeInstance( ValueModel compositeModel, ModuleInstance moduleInstance, Object[] mixins, StateHolder state )
     {
         super( compositeModel, moduleInstance, mixins, state );
     }

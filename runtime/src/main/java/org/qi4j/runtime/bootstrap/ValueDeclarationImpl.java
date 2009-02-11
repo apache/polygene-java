@@ -14,15 +14,14 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.util.List;
 import java.io.Serializable;
+import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.ValueComposite;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.bootstrap.ValueDeclaration;
 import org.qi4j.runtime.composite.ValueModel;
-import org.qi4j.runtime.composite.CompositeModel;
 
 /**
  * Declaration of a ValueComposite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addValues(Class[])}.
@@ -51,15 +50,15 @@ public final class ValueDeclarationImpl
         return this;
     }
 
-    void addValues( List<CompositeModel> values, PropertyDeclarations propertyDecs )
+    void addValues( List<ValueModel> values, PropertyDeclarations propertyDecs )
     {
         for( Class<? extends ValueComposite> compositeType : compositeTypes )
         {
-            ValueModel compositeModel = ValueModel.newModel( compositeType,
+            ValueModel valueModel = ValueModel.newModel( compositeType,
                                                                visibility,
                                                                new MetaInfo( metaInfo ).withAnnotations( compositeType ),
                                                                propertyDecs );
-            values.add( compositeModel );
+            values.add( valueModel );
         }
     }
 }

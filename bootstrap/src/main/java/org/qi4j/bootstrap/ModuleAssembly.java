@@ -19,9 +19,9 @@
 package org.qi4j.bootstrap;
 
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.ValueComposite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.value.ValueComposite;
 
 /**
  * The ModuleAssembly is used to register any information about

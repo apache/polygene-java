@@ -14,20 +14,24 @@
 
 package org.qi4j.runtime.composite;
 
-import java.lang.reflect.Method;
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.InvalidValueCompositeException;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.property.StateHolder;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.property.PropertiesModel;
+import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.composite.InvalidCompositeException;
 
 /**
  * TODO
  */
-public final class ValueModel extends CompositeModel
+public final class ValueModel extends AbstractCompositeModel
     implements Serializable
 {
     public static ValueModel newModel( final Class<? extends Composite> compositeType,
@@ -53,7 +57,15 @@ public final class ValueModel extends CompositeModel
         super( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
     }
 
-    @Override public void bind( Resolution resolution )
+    public void visitModel( ModelVisitor modelVisitor )
+    {
+        modelVisitor.visit( this );
+
+        compositeMethodsModel.visitModel( modelVisitor );
+        mixinsModel.visitModel( modelVisitor );
+    }
+
+    public void bind( Resolution resolution )
         throws BindingException
     {
         resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null, null );
@@ -70,5 +82,33 @@ public final class ValueModel extends CompositeModel
                 }
             }
         }
+    }
+
+    public ValueCompositeInstance newValueInstance( ModuleInstance moduleInstance,
+                                                   StateHolder state, boolean isPrototype )
+    {
+        stateModel.checkConstraints( state, isPrototype );
+
+        Object[] mixins = mixinsModel.newMixinHolder();
+
+        ValueCompositeInstance compositeInstance = new ValueCompositeInstance( this, moduleInstance, mixins, state );
+
+        try
+        {
+            // Instantiate all mixins
+            mixinsModel.newMixins( compositeInstance,
+                                   UsesInstance.NO_USES,
+                                   state,
+                                   mixins );
+
+        }
+        catch( InvalidCompositeException e )
+        {
+            e.setFailingCompositeType( type() );
+            e.setMessage( "Invalid Cyclic Mixin usage dependency" );
+            throw e;
+        }
+        // Return
+        return compositeInstance;
     }
 }

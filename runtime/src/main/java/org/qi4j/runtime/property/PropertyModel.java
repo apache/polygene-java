@@ -31,7 +31,6 @@ import org.qi4j.api.property.ComputedPropertyInstance;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
-import org.qi4j.bootstrap.DefaultValues;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.spi.property.PropertyDescriptor;
@@ -158,6 +157,23 @@ public class PropertyModel
         return wrapProperty(property);
     }
 
+    public Property<?> newBuilderInstance(Object initialValue)
+    {
+        // Properties cannot be immutable during construction
+
+        Property<?> property;
+        if( computed )
+        {
+            property = new ComputedPropertyInfo<Object>( builderInfo );
+        }
+        else
+        {
+            property = new PropertyInstance<Object>( builderInfo, initialValue, this );
+        }
+
+        return wrapProperty(property);
+    }
+
     public Property<?> newDefaultInstance()
     {
         // Construct instance without using a builder
@@ -182,12 +198,12 @@ public class PropertyModel
         return wrapProperty( property );
     }
 
-    public void checkConstraints( Object value )
+    public void checkConstraints( Object value, boolean isPrototype )
         throws ConstraintViolationException
     {
         if( constraints != null )
         {
-            List<ConstraintViolation> violations = constraints.checkConstraints( value );
+            List<ConstraintViolation> violations = constraints.checkConstraints( value, isPrototype );
             if( !violations.isEmpty() )
             {
                 throw new ConstraintViolationException( accessor, violations );

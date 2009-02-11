@@ -83,7 +83,7 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
 
         if( constraints != null )
         {
-            constraints.checkConstraints( aNewValue );
+            constraints.checkConstraints( aNewValue, false );
         }
 
         // Allow voters to vote on change

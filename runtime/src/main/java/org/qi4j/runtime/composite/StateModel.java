@@ -14,13 +14,13 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
-import java.io.Serializable;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.spi.composite.StateDescriptor;
@@ -43,6 +43,12 @@ public final class StateModel
     public StateHolder newBuilderState()
     {
         PropertiesInstance properties = propertiesModel.newBuilderInstance();
+        return new StateInstance(properties);
+    }
+
+    public StateHolder newBuilderState(StateHolder state)
+    {
+        PropertiesInstance properties = propertiesModel.newBuilderInstance(state);
         return new StateInstance(properties);
     }
 
@@ -100,11 +106,11 @@ public final class StateModel
         return Collections.EMPTY_LIST;
     }
 
-    public void checkConstraints( StateHolder state )
+    public void checkConstraints( StateHolder state, boolean isPrototype )
         throws ConstraintViolationException
     {
         StateInstance stateInstance = (StateModel.StateInstance) state;
-        stateInstance.checkConstraints();
+        stateInstance.checkConstraints(isPrototype);
     }
 
     public final class StateInstance
@@ -122,10 +128,10 @@ public final class StateModel
             return properties.propertyFor( propertyMethod );
         }
 
-        public void checkConstraints()
+        public void checkConstraints( boolean isPrototype )
             throws ConstraintViolationException
         {
-            propertiesModel.checkConstraints( properties );
+            propertiesModel.checkConstraints( properties, isPrototype );
         }
 
         @Override

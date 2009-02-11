@@ -14,10 +14,10 @@
 
 package org.qi4j.runtime.structure;
 
+import java.io.Serializable;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.spi.structure.ModuleDescriptor;
-import java.io.Serializable;
 
 /**
  * TODO
@@ -28,6 +28,7 @@ public class ModuleModel
     private final CompositesModel compositesModel;
     private final EntitiesModel entitiesModel;
     private final ObjectsModel objectsModel;
+    private final ValuesModel valuesModel;
     private final ServicesModel servicesModel;
 
     private final String name;
@@ -36,12 +37,14 @@ public class ModuleModel
                         CompositesModel compositesModel,
                         EntitiesModel entitiesModel,
                         ObjectsModel objectsModel,
+                        ValuesModel valuesModel,
                         ServicesModel servicesModel )
     {
         this.name = name;
         this.compositesModel = compositesModel;
         this.entitiesModel = entitiesModel;
         this.objectsModel = objectsModel;
+        this.valuesModel = valuesModel;
         this.servicesModel = servicesModel;
     }
 
@@ -65,6 +68,11 @@ public class ModuleModel
         return objectsModel;
     }
 
+    public ValuesModel values()
+    {
+        return valuesModel;
+    }
+
     public ServicesModel services()
     {
         return servicesModel;
@@ -78,6 +86,7 @@ public class ModuleModel
         entitiesModel.visitModel( modelVisitor );
         servicesModel.visitModel( modelVisitor );
         objectsModel.visitModel( modelVisitor );
+        valuesModel.visitModel( modelVisitor );
     }
 
     // Binding
@@ -88,12 +97,13 @@ public class ModuleModel
         compositesModel.bind( resolution );
         entitiesModel.bind( resolution );
         objectsModel.bind( resolution );
+        valuesModel.bind( resolution );
     }
 
     // Context
     public ModuleInstance newInstance( LayerInstance layerInstance )
     {
-        return new ModuleInstance( this, layerInstance, compositesModel, entitiesModel, objectsModel, servicesModel );
+        return new ModuleInstance( this, layerInstance, compositesModel, entitiesModel, objectsModel, valuesModel, servicesModel );
     }
 
     @Override public String toString()

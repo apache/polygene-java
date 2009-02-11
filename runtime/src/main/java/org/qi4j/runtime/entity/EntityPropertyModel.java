@@ -14,8 +14,8 @@
 
 package org.qi4j.runtime.entity;
 
-import java.lang.reflect.Method;
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Queryable;
@@ -68,7 +68,7 @@ public final class EntityPropertyModel extends PropertyModel
         Object value = property.get();
 
         // Check constraints
-        checkConstraints( value );
+        checkConstraints( value, false );
 
         entityState.setProperty( qualifiedName(), value );
     }

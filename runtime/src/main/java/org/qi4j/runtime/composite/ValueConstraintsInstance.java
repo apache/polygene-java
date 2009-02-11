@@ -14,13 +14,12 @@
 
 package org.qi4j.runtime.composite;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.lang.annotation.Annotation;
-import java.io.Serializable;
-import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.constraint.ConstraintViolation;
 
 /**
  * TODO
@@ -61,7 +60,7 @@ public final class ValueConstraintsInstance
         }
     }
 
-    public List<ConstraintViolation> checkConstraints( Object value )
+    public List<ConstraintViolation> checkConstraints( Object value, boolean isPrototype )
     {
         List<ConstraintViolation> violations = null;
 
@@ -72,14 +71,14 @@ public final class ValueConstraintsInstance
                 violations = Collections.emptyList();
         } else
         {
-            if (value == null)
+            if (value == null && !isPrototype)
             {
                 violations = new ArrayList<ConstraintViolation>();
                 violations.add( new ConstraintViolation( name, OPTIONAL, null) );
             }
         }
 
-        if (violations == null)
+        if (violations == null && value != null)
         {
             for( ConstraintInstance constraint : constraints )
             {

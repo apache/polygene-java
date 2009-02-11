@@ -34,6 +34,10 @@ import java.lang.annotation.Target;
  * Float: 0F
  * Boolean: false
  * String: ""
+ * List: empty java.util.ArrayList
+ * Set: empty java.util.HashSet
+ * Collection: empty java.util.ArrayList
+ * enum: first declared value
  * </pre>
  * If this annotation is not used, the property will be set to null.
  */

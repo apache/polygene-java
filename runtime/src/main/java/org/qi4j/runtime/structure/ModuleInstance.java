@@ -18,31 +18,34 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-import java.io.Serializable;
+import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.composite.CompositeBuilder;
 import org.qi4j.api.composite.CompositeBuilderFactory;
-import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
-import org.qi4j.runtime.composite.CompositeModel;
-import org.qi4j.runtime.composite.UsesInstance;
-import org.qi4j.runtime.entity.EntityModel;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.value.NoSuchValueException;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.api.value.ValueBuilderFactory;
+import org.qi4j.runtime.composite.CompositeModel;
+import org.qi4j.runtime.composite.UsesInstance;
+import org.qi4j.runtime.composite.ValueModel;
+import org.qi4j.runtime.entity.EntityModel;
+import org.qi4j.runtime.object.ObjectModel;
+import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
-import org.qi4j.api.structure.Module;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.usecase.Usecase;
 
 /**
  * TODO
@@ -55,25 +58,29 @@ public class ModuleInstance
     private final CompositesInstance composites;
     private final EntitiesInstance entities;
     private final ObjectsInstance objects;
+    private final ValuesInstance values;
     private final ServicesInstance services;
 
     private final CompositeBuilderFactory compositeBuilderFactory;
     private final ObjectBuilderFactory objectBuilderFactory;
+    private final ValueBuilderFactory valueBuilderFactory;
     private final UnitOfWorkFactory unitOfWorkFactory;
     private final ServiceFinder serviceFinder;
     private final ClassLoader classLoader;
 
-    public ModuleInstance( ModuleModel moduleModel, LayerInstance layerInstance, CompositesModel compositesModel, EntitiesModel entitiesModel, ObjectsModel objectsModel, ServicesModel servicesModel )
+    public ModuleInstance( ModuleModel moduleModel, LayerInstance layerInstance, CompositesModel compositesModel, EntitiesModel entitiesModel, ObjectsModel objectsModel, ValuesModel valuesModel, ServicesModel servicesModel )
     {
         this.moduleModel = moduleModel;
         this.layerInstance = layerInstance;
         composites = new CompositesInstance( compositesModel, this );
         entities = new EntitiesInstance( entitiesModel, this );
         objects = new ObjectsInstance( objectsModel, this );
+        values = new ValuesInstance( valuesModel, this );
         services = servicesModel.newInstance( this );
 
         compositeBuilderFactory = new CompositeBuilderFactoryInstance();
         objectBuilderFactory = new ObjectBuilderFactoryInstance();
+        valueBuilderFactory = new ValueBuilderFactoryInstance();
         unitOfWorkFactory = new UnitOfWorkFactoryInstance();
         serviceFinder = new ServiceFinderInstance();
         classLoader = new ModuleClassLoader( Thread.currentThread().getContextClassLoader() );
@@ -110,6 +117,11 @@ public class ModuleInstance
         return objects;
     }
 
+    public ValuesInstance values()
+    {
+        return values;
+    }
+
     public ServicesInstance services()
     {
         return services;
@@ -123,6 +135,11 @@ public class ModuleInstance
     public ObjectBuilderFactory objectBuilderFactory()
     {
         return objectBuilderFactory;
+    }
+
+    public ValueBuilderFactory valueBuilderFactory()
+    {
+        return valueBuilderFactory;
     }
 
     public UnitOfWorkFactory unitOfWorkFactory()
@@ -162,6 +179,24 @@ public class ModuleInstance
     private CompositeModel getCompositeModelFor( Class mixinType, final Visibility visibility )
     {
         return composites.model().getCompositeModelFor( mixinType, visibility );
+    }
+
+    public ModuleInstance findModuleForValue( Class valueType )
+    {
+        // Check local first
+        ValueModel model = getValueModelFor( valueType, Visibility.module );
+        if( model != null )
+        {
+            return this;
+        }
+
+        // Check layer
+        return layerInstance.findModuleForValue( valueType, Visibility.layer );
+    }
+
+    private ValueModel getValueModelFor( Class valueType, final Visibility visibility )
+    {
+        return values.model().getValueModelFor( valueType, visibility );
     }
 
 
@@ -218,6 +253,19 @@ public class ModuleInstance
         CompositesInstance compositesInstance = realModuleInstance.composites();
         CompositesModel compositesModel = compositesInstance.model();
         return compositesModel.getCompositeModelFor( mixinType );
+    }
+
+    public CompositeDescriptor findValueFor( Class valueType )
+    {
+        //TODO Cache this result
+        ModuleInstance realModuleInstance = findModuleForValue( valueType );
+        if( realModuleInstance == null )
+        {
+            return null;
+        }
+        ValuesInstance valuesInstance = realModuleInstance.values();
+        ValuesModel valuesModel = valuesInstance.model();
+        return valuesModel.getValueModelFor( valueType );
     }
 
     public EntityModel findEntityCompositeFor( Class<? extends EntityComposite> entityCompositeType )
@@ -365,6 +413,32 @@ public class ModuleInstance
             }
             ObjectModel objectModel = realModuleInstance.objects().model().getObjectModelFor( type );
             return type.cast( objectModel.newInstance( realModuleInstance, UsesInstance.NO_USES ) );
+        }
+    }
+
+    private class ValueBuilderFactoryInstance
+        implements ValueBuilderFactory
+    {
+        public <T> ValueBuilder<T> newValueBuilder( Class<T> valueType ) throws NoSuchValueException
+        {
+            ModuleInstance realModuleInstance = findModuleForValue( valueType );
+            if( realModuleInstance == null )
+            {
+                throw new NoSuchValueException( valueType.getName(), name() );
+            }
+            return realModuleInstance.values().newValueBuilder( valueType );
+        }
+
+        public <T> T newValue( Class<T> valueType ) throws NoSuchValueException, ConstructionException
+        {
+            ModuleInstance realModuleInstance = findModuleForValue( valueType );
+            if( realModuleInstance == null )
+            {
+                throw new NoSuchValueException( valueType.getName(), name() );
+            }
+
+            ValueModel valueModel = realModuleInstance.values().model().getValueModelFor( valueType );
+            return valueType.cast( valueModel.newValueInstance( realModuleInstance, valueModel.newDefaultState(), false ).proxy() );
         }
     }
 

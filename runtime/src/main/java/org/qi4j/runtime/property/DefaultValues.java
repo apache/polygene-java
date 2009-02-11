@@ -12,11 +12,17 @@
  *
  */
 
-package org.qi4j.bootstrap;
+package org.qi4j.runtime.property;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Default values for various property types
@@ -42,6 +48,42 @@ public final class DefaultValues
 
     public static Object getDefaultValue( Type type )
     {
-        return defaultValues.get( type );
+        Object value = defaultValues.get( type );
+        if (value == null)
+        {
+            if (type instanceof ParameterizedType)
+            {
+                // List<Foo> -> List
+                type = (( ParameterizedType )type).getRawType();
+            }
+
+            // Handle some types separately
+            if (type.equals( List.class))
+            {
+                value = new ArrayList();
+            } else if (type.equals( Set.class))
+            {
+                value = new HashSet();
+            } else if (type.equals( Collection.class))
+            {
+                value = new ArrayList();
+            } else if (((Class)type).isEnum())
+            {
+                try
+                {
+                    value = ((Class)type).getFields()[0].get( null );
+                }
+                catch( IllegalAccessException e )
+                {
+                    // Should never happen
+                    e.printStackTrace();
+                }
+            } else
+            {
+                throw new IllegalArgumentException("Cannot use @UseDefaults with type "+type.toString());
+            }
+        }
+
+        return value;
     }
 }

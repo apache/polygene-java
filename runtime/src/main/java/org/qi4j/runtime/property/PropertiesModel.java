@@ -14,15 +14,17 @@
 
 package org.qi4j.runtime.property;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.io.Serializable;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.ConstraintViolationException;
@@ -33,10 +35,13 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.api.util.MethodSet;
 import org.qi4j.api.util.MethodValueMap;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
+import org.qi4j.runtime.composite.ValueCompositeInstance;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
+import org.qi4j.runtime.composite.ValueModel;
 import org.qi4j.runtime.util.Annotations;
 import org.qi4j.spi.property.PropertyDescriptor;
 
@@ -90,6 +95,30 @@ public final class PropertiesModel
         return new PropertiesInstance( properties );
     }
 
+    public PropertiesInstance newBuilderInstance( StateHolder state )
+    {
+        Map<Method, Property<?>> properties = new HashMap<Method, Property<?>>();
+        for( PropertyModel propertyModel : propertyModels )
+        {
+            Property property;
+            if( !propertyModel.isComputed() )
+            {
+                Object initialValue = state.getProperty( propertyModel.accessor() ).get();
+
+                initialValue = cloneInitialValue( initialValue, true );
+
+                property = propertyModel.newBuilderInstance( initialValue );
+            }
+            else
+            {
+                property = propertyModel.newBuilderInstance();
+            }
+            properties.put( propertyModel.accessor(), property );
+        }
+
+        return new PropertiesInstance( properties );
+    }
+
     public PropertiesInstance newDefaultInstance()
     {
         Map<Method, Property<?>> properties = new MethodKeyMap<Property<?>>();
@@ -107,11 +136,65 @@ public final class PropertiesModel
         Map<Method, Property<?>> properties = new MethodKeyMap<Property<?>>();
         for( PropertyModel propertyModel : propertyModels )
         {
-            Property property = propertyModel.newInstance( state.getProperty( propertyModel.accessor() ).get() );
+            Object initialValue = state.getProperty( propertyModel.accessor() ).get();
+
+            initialValue = cloneInitialValue( initialValue, false );
+
+            // Create property instance
+            Property property = propertyModel.newInstance( initialValue );
             properties.put( propertyModel.accessor(), property );
         }
-
         return new PropertiesInstance( properties );
+    }
+
+    private Object cloneInitialValue( Object initialValue, boolean isPrototype )
+    {
+        if( initialValue instanceof Collection )
+        {
+            Collection initialCollection = (Collection) initialValue;
+            Collection newCollection;
+            // Create new unmodifiable collection
+            if( initialValue instanceof List )
+            {
+                newCollection = new ArrayList();
+                initialValue = isPrototype ? newCollection : Collections.unmodifiableList( (List<? extends Object>) newCollection );
+            } else
+            {
+                newCollection = new HashSet();
+                initialValue = isPrototype ? newCollection : Collections.unmodifiableSet( (Set<? extends Object>) newCollection );
+            }
+
+            // Copy values, ensuring that values are cloned correctly
+            for( Object value : initialCollection )
+            {
+                if (value instanceof ValueComposite )
+                {
+                    value = cloneValue( value, isPrototype );
+
+                }
+
+                newCollection.add( value );
+            }
+        } else if (initialValue instanceof ValueComposite)
+        {
+            initialValue = cloneValue(initialValue, isPrototype);
+        }
+        return initialValue;
+    }
+
+    private Object cloneValue( Object value, boolean isPrototype )
+    {
+        // Create real value
+        ValueCompositeInstance instance = ValueCompositeInstance.getValueInstance( (ValueComposite) value );
+
+        ValueModel model = (ValueModel) instance.compositeModel();
+        StateHolder state;
+        if (isPrototype)
+            state = model.state().newBuilderState( instance.state() );
+        else
+            state = model.state().newState( instance.state() );
+        ValueCompositeInstance newInstance = model.newValueInstance( instance.module(), state, isPrototype );
+        return newInstance.proxy();
     }
 
     public Method accessorFor( String qualifiedName )
@@ -143,7 +226,7 @@ public final class PropertiesModel
         return null;
     }
 
-    public void checkConstraints( PropertiesInstance properties )
+    public void checkConstraints( PropertiesInstance properties, boolean isPrototype )
         throws ConstraintViolationException
     {
         for( PropertyModel propertyModel : propertyModels )
@@ -151,7 +234,7 @@ public final class PropertiesModel
             Property property = properties.propertyFor( propertyModel.accessor() );
             if( !propertyModel.isComputed() )
             {
-                propertyModel.checkConstraints( property.get() );
+                propertyModel.checkConstraints( property.get(), isPrototype );
             }
         }
     }
@@ -167,7 +250,8 @@ public final class PropertiesModel
             valueConstraintsInstance = valueConstraintsModel.newInstance();
         }
         MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
-        Object initialValue = propertyDeclarations.getInitialValue( method );        boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
+        Object initialValue = propertyDeclarations.getInitialValue( method );
+        boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
         PropertyModel propertyModel = new PropertyModel( method, immutable, valueConstraintsInstance, metaInfo, initialValue );
         return propertyModel;
     }

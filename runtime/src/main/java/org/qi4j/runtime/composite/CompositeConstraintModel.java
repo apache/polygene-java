@@ -14,10 +14,10 @@
 
 package org.qi4j.runtime.composite;
 
-import java.lang.annotation.Annotation;
 import java.io.Serializable;
-import org.qi4j.api.constraint.Constraint;
+import java.lang.annotation.Annotation;
 import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.constraint.Constraint;
 
 /**
  * TODO
@@ -59,7 +59,7 @@ public final class CompositeConstraintModel extends AbstractConstraintModel
 
         public boolean isValid( Annotation annotation, Object value ) throws NullPointerException
         {
-            return valueConstraintsInstance.checkConstraints( value ).size() == 0;
+            return valueConstraintsInstance.checkConstraints( value, false ).size() == 0;
         }
     }
 }

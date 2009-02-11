@@ -16,9 +16,9 @@ package org.qi4j.runtime.structure;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.common.Visibility;
 
 /**
  * TODO
@@ -43,6 +43,25 @@ public final class UsedLayersInstance
                 if( foundModule != null )
                 {
                     throw new AmbiguousTypeException( mixinType );
+                }
+                foundModule = module;
+            }
+        }
+
+        return foundModule;
+    }
+
+    public ModuleInstance findModuleForValue( Class valueType )
+    {
+        ModuleInstance foundModule = null;
+        for( LayerInstance usedLayerInstance : usedLayerInstances )
+        {
+            ModuleInstance module = usedLayerInstance.findModuleForValue( valueType, Visibility.application );
+            if( module != null )
+            {
+                if( foundModule != null )
+                {
+                    throw new AmbiguousTypeException( valueType );
                 }
                 foundModule = module;
             }

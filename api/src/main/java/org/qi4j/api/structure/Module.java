@@ -19,6 +19,7 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.value.ValueBuilderFactory;
 
 /**
  * API for interacting with a Module. Instances
@@ -32,6 +33,8 @@ public interface Module
     CompositeBuilderFactory compositeBuilderFactory();
 
     ObjectBuilderFactory objectBuilderFactory();
+
+    ValueBuilderFactory valueBuilderFactory();
 
     UnitOfWorkFactory unitOfWorkFactory();
 

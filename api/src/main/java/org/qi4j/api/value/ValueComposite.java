@@ -12,8 +12,9 @@
  *
  */
 
-package org.qi4j.api.composite;
+package org.qi4j.api.value;
 
+import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Immutable;
 
 /**

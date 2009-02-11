@@ -14,7 +14,8 @@ Private-Package: org.qi4j.runtime, \
                  org.qi4j.runtime.service, \
                  org.qi4j.runtime.structure, \
                  org.qi4j.runtime.unitofwork, \
-                 org.qi4j.runtime.util
+                 org.qi4j.runtime.util, \
+                 org.qi4j.runtime.value
 
 Import-Package: net.sf.cglib.asm;version=2.1.3, \
                 net.sf.cglib.asm.attrs;version=2.1.3, \
@@ -53,6 +54,7 @@ Import-Package: net.sf.cglib.asm;version=2.1.3, \
                 org.qi4j.api.unitofwork, \
                 org.qi4j.api.usecase, \
                 org.qi4j.api.util, \
+                org.qi4j.api.value, \
                 org.qi4j.spi, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.concern, \
