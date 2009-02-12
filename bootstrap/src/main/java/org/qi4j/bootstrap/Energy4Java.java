@@ -18,16 +18,7 @@
 
 package org.qi4j.bootstrap;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.Iterator;
 import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.internal.ServiceLoader;
@@ -75,6 +66,12 @@ public final class Energy4Java
         throws HibernatingApplicationInvalidException, AssemblyException
     {
         return factory.loadApplication();
+    }
+
+    public Application newApplication( ApplicationAssembler assembler )
+        throws AssemblyException
+    {
+        return assembler.assemble( factory );
     }
 
     public Application newApplication( Assembler assembler )
