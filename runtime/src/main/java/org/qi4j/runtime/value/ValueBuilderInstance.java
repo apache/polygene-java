@@ -75,6 +75,7 @@ public final class ValueBuilderInstance<T>
         ValueCompositeInstance valueInstance = ValueCompositeInstance.getValueInstance( (ValueComposite) value );
         StateHolder state = valueInstance.state();
         this.state = valueModel.newBuilderState( state );
+        prototypeInstance = null;
 
         return this;
     }
