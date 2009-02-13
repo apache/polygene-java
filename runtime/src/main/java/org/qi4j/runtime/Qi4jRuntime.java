@@ -35,13 +35,13 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.composite.DefaultCompositeInstance;
 import static org.qi4j.runtime.composite.DefaultCompositeInstance.getCompositeInstance;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.injection.DependencyModel;
+import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.structure.CompositesInstance;
 import org.qi4j.runtime.structure.CompositesModel;
 import org.qi4j.runtime.structure.DependencyVisitor;
@@ -150,7 +150,7 @@ public final class Qi4jRuntime
 
     public Class<?> getConfigurationType( Composite serviceComposite )
     {
-        CompositeModel descriptor = (CompositeModel) getCompositeDescriptor( serviceComposite );
+        ServiceModel descriptor = (ServiceModel) getCompositeDescriptor( serviceComposite );
         final List<DependencyModel> dependencyModels = new ArrayList<DependencyModel>();
         descriptor.visitModel( new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
         {

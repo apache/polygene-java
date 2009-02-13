@@ -16,6 +16,7 @@ package org.qi4j.runtime.service;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
@@ -23,56 +24,81 @@ import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.CompositeBuilder;
-import org.qi4j.api.object.ObjectBuilder;
+import org.qi4j.api.property.Immutable;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.ServiceDescriptor;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
+import org.qi4j.bootstrap.MetaInfoDeclaration;
+import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.runtime.composite.AbstractCompositeModel;
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.composite.CompositeMethodsModel;
+import org.qi4j.runtime.composite.ConcernsDeclaration;
+import org.qi4j.runtime.composite.ConstraintsModel;
+import org.qi4j.runtime.composite.DefaultCompositeInstance;
+import org.qi4j.runtime.composite.MixinsModel;
+import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.composite.SideEffectsDeclaration;
+import org.qi4j.runtime.composite.StateModel;
+import org.qi4j.runtime.composite.UsesInstance;
+import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.composite.CompositeInstance;
+import org.qi4j.spi.composite.InvalidCompositeException;
 
 /**
  * TODO
  */
 public final class ServiceModel
+    extends AbstractCompositeModel
     implements ServiceDescriptor, Serializable
 {
-    private final Class<? extends Composite> type;
-    private final Visibility visibility;
+    public static ServiceModel newModel( final Class<? extends Composite> compositeType,
+                                           final Visibility visibility,
+                                           final MetaInfo metaInfo,
+                                           final Iterable<Class<?>> concerns,
+                                           final Iterable<Class<?>> sideEffects,
+                                           final String moduleName,
+                                           final String identity,
+                                           final boolean instantiateOnStartup)
+    {
+        PropertyDeclarations propertyDeclarations = new MetaInfoDeclaration();
+        ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
+        boolean immutable = metaInfo.get( Immutable.class ) != null;
+        PropertiesModel propertiesModel = new PropertiesModel( constraintsModel, propertyDeclarations, immutable );
+        StateModel stateModel = new StateModel( propertiesModel );
+        MixinsModel mixinsModel = new MixinsModel( compositeType, stateModel );
+        ConcernsDeclaration concernsModel = new ConcernsDeclaration( compositeType, concerns );
+        SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
+        CompositeMethodsModel compositeMethodsModel =
+            new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
+
+        return new ServiceModel(
+            compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, moduleName, identity, instantiateOnStartup );
+    }
+
+
     private final String identity;
     private final boolean instantiateOnStartup;
-    private final MetaInfo metaInfo;
     private String moduleName;
 
     public ServiceModel( Class<? extends Composite> compositeType,
                          Visibility visibility,
-                         String identity,
-                         boolean instantiateOnStartup,
                          MetaInfo metaInfo,
+                         MixinsModel mixinsModel,
+                         StateModel stateModel,
+                         CompositeMethodsModel compositeMethodsModel,
                          String moduleName,
-                         Iterable<Class<?>> concerns,
-                         Iterable<Class<?>> sideEffects)
+                         String identity,
+                         boolean instantiateOnStartup)
     {
-        type = compositeType;
-        this.visibility = visibility;
+        super(compositeType,  visibility,  metaInfo,  mixinsModel,  stateModel, compositeMethodsModel);
+
         this.identity = identity;
         this.instantiateOnStartup = instantiateOnStartup;
-        this.metaInfo = metaInfo;
         this.moduleName = moduleName;
-    }
-
-    public Class<? extends Composite> type()
-    {
-        return type;
-    }
-
-    public Visibility visibility()
-    {
-        return visibility;
-    }
-
-    public MetaInfo metaInfo()
-    {
-        return metaInfo;
     }
 
     public boolean isInstantiateOnStartup()
@@ -93,13 +119,23 @@ public final class ServiceModel
     public void visitModel( ModelVisitor modelVisitor )
     {
         modelVisitor.visit( this );
+
+        compositeMethodsModel.visitModel( modelVisitor );
+        mixinsModel.visitModel( modelVisitor );
     }
 
+    // Binding
+    public void bind( Resolution resolution ) throws BindingException
+    {
+        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null, null );
+        compositeMethodsModel.bind( resolution );
+        mixinsModel.bind( resolution );
+    }
 
     public boolean isServiceFor( Type serviceType, Visibility visibility )
     {
         // Check visibility
-        if( visibility != this.visibility )
+        if( visibility != visibility() )
         {
             return false;
         }
@@ -109,14 +145,14 @@ public final class ServiceModel
         {
             // Plain class check
             Class serviceClass = (Class) serviceType;
-            return serviceClass.isAssignableFrom( type );
+            return serviceClass.isAssignableFrom( type() );
         }
         else if( serviceType instanceof ParameterizedType )
         {
             // Parameterized type check. This is useful for example Wrapper<Foo> usages
             ParameterizedType paramType = (ParameterizedType) serviceType;
             Class rawClass = (Class) paramType.getRawType();
-            Set<Type> types = Classes.genericInterfacesOf( type );
+            Set<Type> types = Classes.genericInterfacesOf( type() );
             for( Type type1 : types )
             {
                 if( type1 instanceof ParameterizedType && rawClass.isAssignableFrom( Classes.getRawClass( type1 ) ) )
@@ -146,45 +182,62 @@ public final class ServiceModel
         return false;
     }
 
-    public ServiceInstance<?> newInstance( Module module )
+    public ServiceInstance newInstance( ModuleInstance module )
     {
-        Object instance;
-        if( Composite.class.isAssignableFrom( type() ) )
+        Object[] mixins = mixinsModel.newMixinHolder();
+
+        // Service has no state
+        StateHolder stateHolder = new StateHolder()
         {
-            CompositeBuilder<?> builder = module.compositeBuilderFactory().newCompositeBuilder( type() );
-            builder.use( this );
-            instance = builder.newInstance();
+            public Property<?> getProperty( Method propertyMethod )
+            {
+                return null;
+            }
+        };
+        CompositeInstance compositeInstance = new DefaultCompositeInstance( this, module, mixins, stateHolder );
+
+        UsesInstance uses = new UsesInstance();
+        uses.use( this );
+
+        try
+        {
+            // Instantiate all mixins
+            mixinsModel.newMixins( compositeInstance,
+                                   uses,
+                                   stateHolder,
+                                   mixins );
+
         }
-        else
+        catch( InvalidCompositeException e )
         {
-            ObjectBuilder<?> builder = module.objectBuilderFactory().newObjectBuilder( type() );
-            builder.use( this );
-            instance = builder.newInstance();
+            e.setFailingCompositeType( type() );
+            e.setMessage( "Invalid Cyclic Mixin usage dependency" );
+            throw e;
         }
 
-        return new ServiceInstance<Object>( instance, this );
+        return new ServiceInstance( compositeInstance, this );
     }
 
-    public Object newProxy( InvocationHandler serviceInvocationHandler )
+    public Composite newProxy( InvocationHandler serviceInvocationHandler )
     {
-        if( type.isInterface() )
+        if( type().isInterface() )
         {
-            return Proxy.newProxyInstance( type.getClassLoader(),
-                                           new Class[]{ type },
-                                           serviceInvocationHandler );
+            return Composite.class.cast(Proxy.newProxyInstance( type().getClassLoader(),
+                                           new Class[]{ type() },
+                                           serviceInvocationHandler ));
         }
         else
         {
-            Class[] interfaces = type.getInterfaces();
-            return Proxy.newProxyInstance( type.getClassLoader(),
+            Class[] interfaces = type().getInterfaces();
+            return Composite.class.cast(Proxy.newProxyInstance( type().getClassLoader(),
                                            interfaces,
-                                           serviceInvocationHandler );
+                                           serviceInvocationHandler ));
         }
 
     }
 
     @Override public String toString()
     {
-        return type.getName() + ":" + identity;
+        return type().getName() + ":" + identity;
     }
 }

@@ -96,6 +96,7 @@ public class ModuleModel
 
         compositesModel.bind( resolution );
         entitiesModel.bind( resolution );
+        servicesModel.bind(resolution);
         objectsModel.bind( resolution );
         valuesModel.bind( resolution );
     }

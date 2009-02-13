@@ -14,12 +14,12 @@
 
 package org.qi4j.runtime.service;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Set;
-import java.io.Serializable;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
@@ -142,11 +142,11 @@ public final class ImportedServiceModel
         return false;
     }
 
-    public ImportedServiceInstance<?> importInstance( Module module )
+    public <T> ImportedServiceInstance<T> importInstance( Module module )
     {
         ServiceImporter importer = module.objectBuilderFactory().newObject( serviceImporter );
-        Object instance = importer.importService( this );
-        return new ImportedServiceInstance<Object>( instance, importer, this );
+        T instance = (T) importer.importService( this );
+        return new ImportedServiceInstance<T>( instance, importer, this );
     }
 
     public Object newProxy( InvocationHandler serviceInvocationHandler )

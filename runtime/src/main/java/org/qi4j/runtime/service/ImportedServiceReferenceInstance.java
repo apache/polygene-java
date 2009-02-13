@@ -69,7 +69,7 @@ public final class ImportedServiceReferenceInstance<T>
             {
                 if( serviceInstance == null )
                 {
-                    serviceInstance = (ImportedServiceInstance<T>) serviceModel.importInstance( module );
+                    serviceInstance = (ImportedServiceInstance<T>) serviceModel.<T>importInstance( module );
                     instance = serviceInstance.instance();
                 }
             }

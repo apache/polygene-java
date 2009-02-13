@@ -19,8 +19,14 @@ package org.qi4j.api.property;
  * by using this interface. It creates a first-class
  * object for the property from which you can get and
  * set the value, and access any metadata about it.
- * The generic type of the Property must be fully
- * Serializable and must not have any injected members.
+ * The type of the Property can be one of the following:
+ * <ul>
+ * <li> A boxed primitive (Long,Integer,Boolean, etc.)</li>
+ * <li> String</li>
+ * <li> A serializable</li>
+ * <li> A ValueComposite</li>
+ * <li> A List, Set or Collection of any of the above</li>
+ * </ul>
  */
 public interface Property<T>
     extends PropertyInfo

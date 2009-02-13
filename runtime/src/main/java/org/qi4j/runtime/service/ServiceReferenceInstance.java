@@ -15,16 +15,13 @@
 package org.qi4j.runtime.service;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.service.Activator;
-import org.qi4j.api.structure.Module;
 
 /**
  * Implementation of ServiceReference. This manages the actual instance of the service
@@ -36,14 +33,14 @@ import org.qi4j.api.structure.Module;
 public final class ServiceReferenceInstance<T>
     implements ServiceReference<T>, Activatable
 {
-    private volatile ServiceInstance<T> serviceInstance;
-    private Object instance;
+    private volatile ServiceInstance serviceInstance;
+    private CompositeInstance instance;
     private final T serviceProxy;
-    private final Module module;
+    private final ModuleInstance module;
     private final ServiceModel serviceModel;
     private final Activator activator = new Activator();
 
-    public ServiceReferenceInstance( ServiceModel serviceModel, Module module )
+    public ServiceReferenceInstance( ServiceModel serviceModel, ModuleInstance module )
     {
         this.module = module;
         this.serviceModel = serviceModel;
@@ -90,24 +87,24 @@ public final class ServiceReferenceInstance<T>
         }
     }
 
-    private Object getInstance()
+    private CompositeInstance getInstance()
         throws ServiceImporterException
     {
         // DCL that works with Java 1.5 volatile semantics
-        if( serviceInstance == null )
+        if( instance == null )
         {
             synchronized( this )
             {
-                if( serviceInstance == null )
+                if( instance == null )
                 {
-                    serviceInstance = (ServiceInstance<T>) serviceModel.newInstance( module );
-                    T providedInstance = serviceInstance.instance();
+                    serviceInstance = serviceModel.newInstance( module );
+                    CompositeInstance providedInstance = serviceInstance.instance();
 
-                    if( providedInstance instanceof Activatable )
+                    if( providedInstance.<T>proxy() instanceof Activatable )
                     {
                         try
                         {
-                            activator.activate( (Activatable) providedInstance );
+                            activator.activate( (Activatable) providedInstance.proxy() );
                         }
                         catch( Exception e )
                         {
@@ -116,23 +113,7 @@ public final class ServiceReferenceInstance<T>
                         }
                     }
 
-                    if( providedInstance instanceof Composite )
-                    {
-                        InvocationHandler handler = Proxy.getInvocationHandler( providedInstance );
-                        if( handler instanceof CompositeInstance )
-                        {
-                            instance = handler;
-                        }
-                        else
-                        {
-                            instance = providedInstance;
-                        }
-
-                    }
-                    else
-                    {
-                        instance = providedInstance;
-                    }
+                    instance = providedInstance;
                 }
             }
         }
@@ -160,24 +141,9 @@ public final class ServiceReferenceInstance<T>
             {
                 return serviceModel.toString();
             }
-            Object instance = getInstance();
+            CompositeInstance instance = getInstance();
 
-            if( instance instanceof InvocationHandler )
-            {
-                InvocationHandler handler = (InvocationHandler) instance;
-                return handler.invoke( serviceInstance.instance(), method, objects );
-            }
-            else
-            {
-                try
-                {
-                    return method.invoke( instance, objects );
-                }
-                catch( InvocationTargetException e )
-                {
-                    throw e.getTargetException();
-                }
-            }
+            return instance.invoke( object, method, objects );
         }
 
         @Override public String toString()

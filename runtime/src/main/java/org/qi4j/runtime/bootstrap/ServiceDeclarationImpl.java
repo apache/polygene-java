@@ -92,14 +92,14 @@ public final class ServiceDeclarationImpl
                 id = generateId( serviceModels, serviceType );
             }
 
-            ServiceModel serviceModel = new ServiceModel( serviceType,
-                                                          visibility,
-                                                          id,
-                                                          instantiateOnStartup,
-                                                          new MetaInfo( metaInfo ).withAnnotations( serviceType ),
-                                                          moduleAssembly.name(),
-                                                          concerns,
-                                                          sideEffects);
+            ServiceModel serviceModel = ServiceModel.newModel( serviceType, 
+                                                               visibility,
+                                                               metaInfo,
+                                                               concerns,
+                                                               sideEffects,
+                                                               moduleAssembly.name(),
+                                                               id,
+                                                               instantiateOnStartup);
             serviceModels.add( serviceModel );
         }
     }

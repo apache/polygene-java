@@ -14,23 +14,24 @@
 
 package org.qi4j.runtime.structure;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.Serializable;
-import org.qi4j.runtime.service.ServiceModel;
-import org.qi4j.runtime.service.ServiceReferenceInstance;
-import org.qi4j.runtime.service.ImportedServiceModel;
-import org.qi4j.runtime.service.ImportedServiceReferenceInstance;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.service.ImportedServiceModel;
+import org.qi4j.runtime.service.ImportedServiceReferenceInstance;
+import org.qi4j.runtime.service.ServiceModel;
+import org.qi4j.runtime.service.ServiceReferenceInstance;
 
 /**
  * TODO
  */
 public class ServicesModel
-    implements Serializable
+    implements Serializable, Binder
 {
     private final Iterable<ServiceModel> serviceModels;
     private List<ImportedServiceModel> importedServiceModels;
@@ -61,7 +62,16 @@ public class ServicesModel
         return foundServices;
     }
 
-    public ServicesInstance newInstance( Module module )
+    public void bind( Resolution resolution )
+        throws BindingException
+    {
+        for( ServiceModel serviceModel : serviceModels )
+        {
+            serviceModel.bind( resolution );
+        }
+    }
+
+    public ServicesInstance newInstance( ModuleInstance module )
     {
         List<ServiceReference> serviceReferences = new ArrayList<ServiceReference>();
         for( ServiceModel serviceModel : serviceModels )

@@ -15,24 +15,25 @@
 package org.qi4j.runtime.service;
 
 import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.spi.composite.CompositeInstance;
 
 /**
  * TODO
  */
-public final class ServiceInstance<T>
+public final class ServiceInstance
 {
-    private final T instance;
+    private final CompositeInstance instance;
     private final ServiceDescriptor serviceDescriptor;
 
 
-    public ServiceInstance( T instance,
+    public ServiceInstance( CompositeInstance instance,
                             ServiceDescriptor serviceDescriptor )
     {
         this.serviceDescriptor = serviceDescriptor;
         this.instance = instance;
     }
 
-    public T instance()
+    public CompositeInstance instance()
     {
         return instance;
     }

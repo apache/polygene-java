@@ -17,7 +17,6 @@ package org.qi4j.runtime.bootstrap;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -309,30 +308,6 @@ public final class ModuleAssemblyImpl
                 );
             }
             identities.add( identity );
-        }
-
-        for( ServiceModel serviceModel : serviceModels )
-        {
-            if( Composite.class.isAssignableFrom( serviceModel.type() ) )
-            {
-                boolean found = false;
-                for( CompositeModel compositeModel : compositeModels )
-                {
-                    if( serviceModel.type().isAssignableFrom( compositeModel.type() ) )
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-
-                // Auto-add implementation as Composite with Module visibility.
-                if( !found )
-                {
-                    Class<? extends Composite> serviceModelType = serviceModel.type();
-                    CompositeModel compositeModel = CompositeModel.newModel( serviceModelType, Visibility.module, new MetaInfo(), metaInfoDeclaration, Collections.<Class<?>>emptyList(), Collections.<Class<?>>emptyList() );
-                    compositeModels.add( compositeModel );
-                }
-            }
         }
 
         for( ImportedServiceModel importedServiceModel : importedServiceModels )
