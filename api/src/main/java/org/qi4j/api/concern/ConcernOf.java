@@ -25,6 +25,9 @@ import org.qi4j.api.concern.internal.ConcernFor;
  * the chain.
  * <p/>
  * Generic Concerns should subclass {@link GenericConcern} instead.
+ * <p/>
+ * Concerns implementations must be thread-safe in their implementation,
+ * as multiple threads may share instances.
  */
 public abstract class ConcernOf<T>
 {

@@ -24,6 +24,9 @@ import org.qi4j.api.sideeffect.internal.SideEffectFor;
  * that SideEffects can use to get the result of the original invocation.
  * <p/>
  * Generic SideEffects should subclass {@link GenericSideEffect} instead.
+ * <p/>
+ * SideEffects implementations must be thread-safe in their implementation,
+ * as multiple threads may share instances.
  */
 public abstract class SideEffectOf<T>
 {
