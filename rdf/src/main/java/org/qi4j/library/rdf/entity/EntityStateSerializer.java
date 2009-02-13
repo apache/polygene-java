@@ -14,11 +14,11 @@
 
 package org.qi4j.library.rdf.entity;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.math.BigDecimal;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Literal;
@@ -42,6 +42,7 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.QualifierQualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
+import org.qi4j.spi.property.PrimitiveType;
 import org.qi4j.spi.property.PropertyType;
 
 /**
@@ -280,10 +281,14 @@ public class EntityStateSerializer
             if (propertyType.rdf() != null)
                 graph.add( propertyURI, Rdfs.SUB_PROPERTY_OF, values.createURI( propertyType.rdf() ));
 
-            URI type = dataTypes.get( propertyType.type() );
-            if( type != null )
+            // TODO Support more types
+            if (propertyType.type() instanceof PrimitiveType )
             {
-                graph.add( propertyURI, Rdfs.RANGE, type );
+                URI type = dataTypes.get( ((PrimitiveType)propertyType.type()).type() );
+                if( type != null )
+                {
+                    graph.add( propertyURI, Rdfs.RANGE, type );
+                }
             }
         }
     }
