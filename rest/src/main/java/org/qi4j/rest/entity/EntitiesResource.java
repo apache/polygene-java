@@ -24,22 +24,23 @@ import java.util.Map;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.association.AssociationType;
+import org.qi4j.spi.entity.association.ManyAssociationType;
+import org.qi4j.spi.property.PrimitiveType;
+import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
-import org.qi4j.api.structure.Module;
 import org.restlet.Context;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
@@ -199,10 +200,11 @@ public class EntitiesResource extends Resource
             EntityType entityType = entityState.entityType();
             for( PropertyType propertyType : entityType.properties() )
             {
-                if( propertyType.propertyType() != PropertyType.PropertyTypeEnum.COMPUTED )
+                if( propertyType.propertyType() != PropertyType.PropertyTypeEnum.COMPUTED && propertyType.type() instanceof PrimitiveType )
                 {
                     String newStringValue = form.getFirstValue( propertyType.qualifiedName() );
-                    Object newValue = EntityResource.toValue( newStringValue, propertyType.qualifiedName(), propertyType.type() );
+                    PrimitiveType primitiveType = (PrimitiveType) propertyType.type();
+                    Object newValue = EntityResource.toValue( newStringValue, propertyType.qualifiedName(), primitiveType.type() );
                     entityState.setProperty( propertyType.qualifiedName(), newValue );
                 }
             }

@@ -34,20 +34,21 @@ import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
-import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.UnknownEntityTypeException;
+import org.qi4j.spi.entity.association.AssociationType;
+import org.qi4j.spi.entity.association.ManyAssociationType;
+import org.qi4j.spi.property.PrimitiveType;
+import org.qi4j.spi.property.PropertyType;
 import org.restlet.Context;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
@@ -348,10 +349,10 @@ public class EntityResource extends Resource
         {
             for( PropertyType propertyType : entity.entityType().properties() )
             {
-                if( propertyType.propertyType() == PropertyType.PropertyTypeEnum.MUTABLE )
+                if( propertyType.propertyType() == PropertyType.PropertyTypeEnum.MUTABLE && propertyType.type() instanceof PrimitiveType )
                 {
                     String newStringValue = form.getFirstValue( propertyType.qualifiedName() );
-                    Object newValue = toValue( newStringValue, propertyType.qualifiedName(), propertyType.type() );
+                    Object newValue = toValue( newStringValue, propertyType.qualifiedName(), ((PrimitiveType)propertyType.type()).type() );
                     entity.setProperty( propertyType.qualifiedName(), newValue );
                 }
             }

@@ -19,16 +19,17 @@ import org.openrdf.model.Statement;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.structure.Module;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
-import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.api.structure.Module;
+import org.qi4j.spi.property.PrimitiveType;
+import org.qi4j.spi.property.PropertyType;
 import org.restlet.Context;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
@@ -139,15 +140,19 @@ public class EntityTypeResource extends Resource
         buf.append( "<fieldset><legend>Properties</legend>\n<table>" );
         for( PropertyType propertyType : entityType.properties() )
         {
-            buf.append( "<tr><td>" +
-                        "<label for=\"" + propertyType.qualifiedName() + "\" >" +
-                        GenericPropertyInfo.getName( propertyType.qualifiedName() ) +
-                        "</label></td>\n" +
-                        "<td><input " +
-                        "type=\"text\" " +
-                        "readonly=\"true\" " +
-                        "name=\"" + propertyType.qualifiedName() + "\" " +
-                        "value=\"" + propertyType.type() + "\"></td></tr>" );
+            // TODO support more types
+            if (propertyType.type() instanceof PrimitiveType )
+            {
+                buf.append( "<tr><td>" +
+                            "<label for=\"" + propertyType.qualifiedName() + "\" >" +
+                            GenericPropertyInfo.getName( propertyType.qualifiedName() ) +
+                            "</label></td>\n" +
+                            "<td><input " +
+                            "type=\"text\" " +
+                            "readonly=\"true\" " +
+                            "name=\"" + propertyType.qualifiedName() + "\" " +
+                            "value=\"" + propertyType.type() + "\"></td></tr>" );
+            }
         }
         buf.append( "</table></fieldset>\n" );
 

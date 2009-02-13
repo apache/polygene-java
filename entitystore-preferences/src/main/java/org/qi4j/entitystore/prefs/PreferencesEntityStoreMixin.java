@@ -29,26 +29,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceDescriptor;
-import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.spi.entity.helpers.DefaultEntityState;
-import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.api.structure.Application;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.EntityTypeRegistryMixin;
-import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.api.structure.Application;
-import org.qi4j.api.common.MetaInfo;
+import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.entity.association.AssociationType;
+import org.qi4j.spi.entity.association.ManyAssociationType;
+import org.qi4j.spi.entity.helpers.DefaultEntityState;
+import org.qi4j.spi.property.PrimitiveType;
+import org.qi4j.spi.property.PropertyType;
 
 /**
  * Implementation of EntityStore that is backed by the Preferences API.
@@ -147,29 +148,33 @@ public class PreferencesEntityStoreMixin
             {
                 String name = GenericPropertyInfo.getName( propertyType.qualifiedName() );
                 Object value = null;
-                if( propertyType.type().equals( String.class.getName() ) )
+                if (propertyType.type() instanceof PrimitiveType )
                 {
-                    value = preferences.get( name, null );
-                }
-                else if( propertyType.type().equals( Long.class.getName() ) )
-                {
-                    value = preferences.getLong( name, 0L );
-                }
-                else if( propertyType.type().equals( Integer.class.getName() ) )
-                {
-                    value = preferences.getInt( name, 0 );
-                }
-                else if( propertyType.type().equals( Boolean.class.getName() ) )
-                {
-                    value = preferences.getBoolean( name, false );
-                }
-                else if( propertyType.type().equals( Float.class.getName() ) )
-                {
-                    value = preferences.getFloat( name, 0F );
-                }
-                else if( propertyType.type().equals( Double.class.getName() ) )
-                {
-                    value = preferences.getDouble( name, 0D );
+                    String primitiveType = ((PrimitiveType)propertyType.type()).type();
+                    if( primitiveType.equals( String.class.getName() ) )
+                    {
+                        value = preferences.get( name, null );
+                    }
+                    else if( primitiveType.equals( Long.class.getName() ) )
+                    {
+                        value = preferences.getLong( name, 0L );
+                    }
+                    else if( primitiveType.equals( Integer.class.getName() ) )
+                    {
+                        value = preferences.getInt( name, 0 );
+                    }
+                    else if( primitiveType.equals( Boolean.class.getName() ) )
+                    {
+                        value = preferences.getBoolean( name, false );
+                    }
+                    else if( primitiveType.equals( Float.class.getName() ) )
+                    {
+                        value = preferences.getFloat( name, 0F );
+                    }
+                    else if( primitiveType.equals( Double.class.getName() ) )
+                    {
+                        value = preferences.getDouble( name, 0D );
+                    }
                 }
                 else
                 {
