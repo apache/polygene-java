@@ -49,10 +49,14 @@ final class LayerGroupLayout
     public final Rectangle2D applyLayout( LayoutConstraint constraint )
     {
         return arrangeChildrenHorizontally( constraint );
+        //return arrangeChildrenHorizontally( constraint, 1 );
     }
 
     public final Dimension preferredDimension()
     {
         return preferredDimensionIfChildrenArrangedHorizontally();
+        //return preferredDimensionIfChildrenArrangedHorizontally(1);
+
+        
     }
 }

@@ -92,5 +92,28 @@ final class ApplicationLayout extends AbstractContainerLayout<LayerGroupLayout>
     public Dimension preferredDimension()
     {
         return preferredDimensionIfChildrenArrangedVertically();
+
+        /*Dimension size = preferredDimensionIfChildrenArrangedVertically();
+        int width = size.width;
+        int height = size.height;
+
+        double scale = nodeItem.getVisualization().getDisplay( 0 ).getScale();
+        if( scale < 1 )
+        {
+            double sWidth = width * scale;
+            double sHeight = height * scale;
+
+            if(  (width - sWidth ) >= (PADDING_LEFT + PADDING_RIGHT)
+                || (height - sHeight) >= (PADDING_TOP + PADDING_BOTTOM) )
+            {
+
+                size = new Dimension( 0, 0);
+                //System.out.println(nodeItem.getString( "name" ));
+
+            }
+        }
+
+        return size;
+        */
     }
 }

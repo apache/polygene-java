@@ -53,6 +53,12 @@ final class ModuleArtifactLayout
         int y = topLeftHandCorner.y;
         double width = dimension.getWidth();
         double height = dimension.getHeight();
+
+        if (preferredDimension.width == 0 || preferredDimension.height == 0) {
+            width = 0;
+            height = 0;
+        }
+
         nodeItem.setBounds( x, y, width, height );
 
         return nodeItem.getBounds();
@@ -63,6 +69,23 @@ final class ModuleArtifactLayout
         Dimension dimension = labelDimension();
         double width = dimension.getWidth() + PADDING_LEFT + PADDING_RIGHT;
         double height = dimension.getHeight() + PADDING_TOP + PADDING_BOTTOM;
+        //dimension.setSize( width, height );
+
+        double scale = nodeItem.getVisualization().getDisplay( 0 ).getScale();
+        if( scale < 1 )
+        {
+            double sWidth = width * scale;
+            double sHeight = height * scale;
+
+            if( ( sWidth <= ( width - ( PADDING_LEFT + PADDING_RIGHT ) )
+              || sHeight <= ( height - ( PADDING_TOP + PADDING_BOTTOM ) ) ) )
+            {
+                width = 0;
+                height = 0;
+
+            }
+        }
+
         dimension.setSize( width, height );
 
         return dimension;

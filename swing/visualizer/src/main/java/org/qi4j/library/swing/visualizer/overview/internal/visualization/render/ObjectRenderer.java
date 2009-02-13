@@ -41,11 +41,19 @@ final class ObjectRenderer
 
     public final void render( Graphics2D g, VisualItem item )
     {
+        /*if (!isRenderable( g, item )) {
+            return;
+        }*/
+
         Rectangle2D rect = item.getBounds();
         int x = (int) rect.getX();
         int y = (int) rect.getY();
         int width = (int) rect.getWidth();
         int height = (int) rect.getHeight();
+
+        if (width == 0 || height == 0) {
+            return; 
+        }
 
         g.setPaint( fillColor( item ) );
         g.fillRoundRect( x, y, width, height, 3, 3 );

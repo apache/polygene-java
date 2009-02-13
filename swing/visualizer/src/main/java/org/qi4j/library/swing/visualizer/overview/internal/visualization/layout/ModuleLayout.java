@@ -57,11 +57,13 @@ final class ModuleLayout extends AbstractContainerLayout<ModuleArtifactGroupLayo
 
     public final Rectangle2D applyLayout( LayoutConstraint constraint )
     {
-        return arrangeChildrenHorizontally( constraint );
+        //return arrangeChildrenHorizontally( constraint );
+        return arrangeChildrenHorizontally( constraint, nodeItem.getVisualization().getDisplay( 0 ).getScale() );
     }
 
     public final Dimension preferredDimension()
     {
-        return preferredDimensionIfChildrenArrangedHorizontally();
+        //return preferredDimensionIfChildrenArrangedHorizontally();
+        return preferredDimensionIfChildrenArrangedHorizontally(nodeItem.getVisualization().getDisplay( 0 ).getScale());
     }
 }

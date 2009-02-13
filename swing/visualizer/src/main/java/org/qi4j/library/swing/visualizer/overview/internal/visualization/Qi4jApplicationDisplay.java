@@ -57,6 +57,7 @@ public final class Qi4jApplicationDisplay extends Display
     private static final double DEFAULT_ZOOM_SCALE = 0.8;
 
     private Qi4jApplicationVisualization visualization;
+    private ApplicationDetailDescriptor appDescriptor;
 
     public Qi4jApplicationDisplay( SelectionListener aListener )
         throws IllegalArgumentException
@@ -72,6 +73,19 @@ public final class Qi4jApplicationDisplay extends Display
         addKeyboardActions();
     }
 
+    @Override
+    public void zoom(java.awt.geom.Point2D p, double scale)
+    {
+        relayout();
+        super.zoom(p, scale);
+    }
+
+    protected void relayout() {
+        if (appDescriptor == null) { return; }
+        visualization.populate( appDescriptor );
+        visualization.launch();
+    }
+
     /**
      * Display the specified application descriptor.
      *
@@ -80,6 +94,7 @@ public final class Qi4jApplicationDisplay extends Display
      */
     public final void display( ApplicationDetailDescriptor aDescriptor )
     {
+        this.appDescriptor = aDescriptor;
         visualization.populate( aDescriptor );
         visualization.launch();
     }
@@ -232,7 +247,8 @@ public final class Qi4jApplicationDisplay extends Display
             int widthAfterZoom = (int) ( bounds.getWidth() * displayScale * zoomScale );
             int heightAfterZoom = (int) ( bounds.getHeight() * displayScale * zoomScale );
 
-            if( widthAfterZoom <= getWidth() && heightAfterZoom <= getHeight() )
+            //if( widthAfterZoom <= getWidth() && heightAfterZoom <= getHeight() )
+            if( widthAfterZoom < 250 && heightAfterZoom < 250 )
             {
                 zoomToFitContainer();
             }
@@ -248,6 +264,8 @@ public final class Qi4jApplicationDisplay extends Display
                 }
                 repaint();
             }
+
+            // Limit the zoom up to 300x300
         }
     }
 

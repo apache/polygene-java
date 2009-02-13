@@ -76,16 +76,16 @@ public final class Qi4jApplicationVisualization extends Visualization
     {
         reset();
 
-        graph = new Graph( true );
+        Graph tGraph = new Graph( true );
 
         if( aDescriptor != null )
         {
             ApplicationGraphBuilder builder = new ApplicationGraphBuilder( aDescriptor );
-            builder.populate( graph );
+            builder.populate( tGraph );
         }
 
         removeGroup( GROUP_GRAPH );
-        add( GROUP_GRAPH, graph );
+        add( GROUP_GRAPH, tGraph );
 
         int count = getDisplayCount();
         for( int i = 0; i < count; i++ )
@@ -93,6 +93,7 @@ public final class Qi4jApplicationVisualization extends Visualization
             Display display = getDisplay( i );
             display.setDamageRedraw( false );
         }
+        graph = tGraph;
     }
 
     final void launch()

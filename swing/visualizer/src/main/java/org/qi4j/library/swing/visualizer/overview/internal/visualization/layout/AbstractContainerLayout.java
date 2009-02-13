@@ -75,6 +75,42 @@ abstract class AbstractContainerLayout<V extends AbstractLayout> extends Abstrac
         return new Dimension( maxChildWidth, maxChildHeight );
     }
 
+    protected final Rectangle2D arrangeChildrenHorizontally( LayoutConstraint aConstraint, double scale )
+    {
+        Rectangle2D bounds = arrangeChildrenHorizontally( aConstraint );
+
+        if( scale >= 1 )
+        {
+            return bounds;
+        }
+
+        double width = bounds.getWidth();
+        double height = bounds.getHeight();
+
+        double sWidth = width * scale;
+        double sHeight = height * scale;
+        Dimension dimLabel = labelDimension();
+
+        if( ( sWidth <= ( dimLabel.width + ( PADDING_LEFT + PADDING_RIGHT ) )
+              || sHeight <= ( dimLabel.height + ( PADDING_TOP + PADDING_BOTTOM ) ) ) )
+        {
+
+            bounds.setRect( bounds.getX(), bounds.getY(), 0, 0 );
+            nodeItem.setBounds( bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight() );
+
+            Iterable<V> children = children();
+            for( V child : children )
+            {
+                if (child.nodeItem != null) {
+                    Rectangle2D childBounds = child.nodeItem.getBounds();
+                    child.nodeItem.setBounds( childBounds.getX(), childBounds.getY(), 0, 0 );
+                }
+            }
+        }
+
+        return bounds;
+    }
+
     // TODO: Follow dimension constraints
     protected final Rectangle2D arrangeChildrenHorizontally( LayoutConstraint aConstraint )
     {
@@ -103,7 +139,9 @@ abstract class AbstractContainerLayout<V extends AbstractLayout> extends Abstrac
 
                 Rectangle2D childBound = child.applyLayout( constraint );
                 double childWidth = childBound.getWidth();
+                if (childWidth > 0) {
                 xPos += childWidth + hSpace;
+                }
             }
             xPos -= hSpace;
             yPos += childDimension.getHeight();
@@ -200,6 +238,40 @@ abstract class AbstractContainerLayout<V extends AbstractLayout> extends Abstrac
         return dimension.height;
     }
 
+    protected final Rectangle2D arrangeChildrenVertically( LayoutConstraint aConstraint, double scale )
+    {
+        Rectangle2D bounds = arrangeChildrenVertically( aConstraint );
+
+        double width = bounds.getWidth();
+        double height = bounds.getHeight();
+
+        if( scale < 1 )
+        {
+            double sWidth = width * scale;
+            double sHeight = height * scale;
+            Dimension dimLabel = labelDimension();
+
+            if( ( sWidth  <= ( dimLabel.width + (PADDING_LEFT + PADDING_RIGHT) )
+                ||  sHeight  <= ( dimLabel.height + (PADDING_TOP + PADDING_BOTTOM) ) ) ) {
+
+                bounds.setRect( bounds.getX(), bounds.getY(), 0, 0 );
+                nodeItem.setBounds( bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight() );
+
+                Iterable<V> children = children();
+                for( V child : children )
+                {
+                    if (child.nodeItem != null)
+                    {
+                        Rectangle2D childBounds = child.nodeItem.getBounds();
+                        child.nodeItem.setBounds( childBounds.getX(), childBounds.getY(), 0, 0 );
+                    }
+                }
+            }
+        }
+
+        return bounds;
+    }
+
     // TODO: Follow dimension constraints
     protected final Rectangle2D arrangeChildrenVertically( LayoutConstraint aConstraint )
     {
@@ -230,8 +302,9 @@ abstract class AbstractContainerLayout<V extends AbstractLayout> extends Abstrac
                 LayoutConstraint constraint = new LayoutConstraint( childLocation, sizeConstraint );
 
                 Rectangle2D childBounds = child.applyLayout( constraint );
+                if (childHeight > 0) {
                 yPos += ( childBounds.getHeight() + vSpace );
-
+                } 
             }
 
             xPos += childWidth;
@@ -255,6 +328,30 @@ abstract class AbstractContainerLayout<V extends AbstractLayout> extends Abstrac
         return childWidth;
     }
 
+    protected final Dimension preferredDimensionIfChildrenArrangedHorizontally(double scale)
+    {
+        Dimension size = preferredDimensionIfChildrenArrangedHorizontally();
+
+        if( scale >= 1 )
+        {
+            return size;
+        }
+
+        int width = size.width;
+        int height = size.height;
+
+        double sWidth = width * scale;
+        double sHeight = height * scale;
+        Dimension dimLabel = labelDimension();
+
+        if( ( sWidth <= ( dimLabel.width + ( PADDING_LEFT + PADDING_RIGHT ) )
+              || sHeight <= ( dimLabel.height + ( PADDING_TOP + PADDING_BOTTOM ) ) ) )
+        {
+            size.setSize( 0,0 );
+        }
+
+        return size;
+    }
 
     protected final Dimension preferredDimensionIfChildrenArrangedHorizontally()
     {
@@ -288,6 +385,27 @@ abstract class AbstractContainerLayout<V extends AbstractLayout> extends Abstrac
         return new Dimension( width, height );
     }
 
+    protected final Dimension preferredDimensionIfChildrenArrangedVertically(double scale) {
+        Dimension size = preferredDimensionIfChildrenArrangedVertically();
+        int width = size.width;
+        int height = size.height;
+
+        if( scale < 1 )
+        {
+            double sWidth = width * scale;
+            double sHeight = height * scale;
+            Dimension dimLabel = labelDimension();
+
+            if( ( sWidth  <= ( dimLabel.width + (PADDING_LEFT + PADDING_RIGHT) )
+                ||  sHeight  <= ( dimLabel.height + (PADDING_TOP + PADDING_BOTTOM) ) ) ) {
+
+                size = new Dimension( 0, 0);
+            }
+        }
+
+        return size;
+    }
+
     protected final Dimension preferredDimensionIfChildrenArrangedVertically()
     {
         Dimension labelDimension = labelDimension();
@@ -310,7 +428,10 @@ abstract class AbstractContainerLayout<V extends AbstractLayout> extends Abstrac
             for( V child : children )
             {
                 Dimension childDimension = child.preferredDimension();
-                height += ( childDimension.getHeight() + vSpace );
+                if (childDimension.getHeight() > 0 )
+                {
+                    height += ( childDimension.getHeight() + vSpace );
+                }
             }
 
             width += childWidth;

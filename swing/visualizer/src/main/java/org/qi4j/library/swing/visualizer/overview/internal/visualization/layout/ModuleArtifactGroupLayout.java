@@ -62,12 +62,15 @@ final class ModuleArtifactGroupLayout
     @Override
     public final Rectangle2D applyLayout( LayoutConstraint constraint )
     {
-        return arrangeChildrenVertically( constraint );
+        //return arrangeChildrenVertically( constraint );
+        return arrangeChildrenVertically( constraint, nodeItem.getVisualization().getDisplay( 0 ).getScale() );
     }
 
     @Override
     public final Dimension preferredDimension()
     {
-        return preferredDimensionIfChildrenArrangedVertically();
+
+        //return preferredDimensionIfChildrenArrangedVertically();
+        return preferredDimensionIfChildrenArrangedVertically(nodeItem.getVisualization().getDisplay( 0 ).getScale());
     }
 }

@@ -23,6 +23,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.AffineTransform;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.FIELD_NAME;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_LEFT;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.GraphConstants.PADDING_TOP;
@@ -35,14 +36,87 @@ import prefuse.visual.VisualItem;
 abstract class AbstractRenderer
     implements Renderer
 {
+    // the zoom scale value
+    protected double scale = 1;
+
+    public void zoom(double scale) {
+        this.scale = scale;
+    }
+
+    protected boolean isRenderable(Graphics2D graphics, VisualItem item) {
+        boolean b = true;
+
+        String name = (String) item.get( FIELD_NAME );
+        if (name == null) {
+            return b;
+        }
+
+        if (scale >= 1) { return b; }
+
+        Rectangle2D rect = item.getBounds();
+
+        double w = (rect.getWidth()  * scale) - (PADDING_LEFT + 5) ;
+        double h = (rect.getHeight() *  scale) - 2 ;
+
+        Font headerFont = headerFont( item );
+        FontMetrics fm = graphics.getFontMetrics( headerFont );
+        //String name = (String) item.get( FIELD_NAME );
+
+        int sw = fm.stringWidth( name );
+
+        if (w < sw || h < fm.getHeight()) {
+            b = false;
+        }
+
+        return b;
+    }
+
     protected final void drawName( Graphics2D graphics, VisualItem item, int x, int y )
     {
-        Font font = headerFont( item );
+        /*Font font = headerFont( item );
 
         Point headerLocation = headerLocation( item, x, y );
 
         String name = (String) item.get( FIELD_NAME );
         graphics.drawString( name, headerLocation.x, headerLocation.y );
+        */
+
+        String name = (String) item.get( FIELD_NAME );
+        if (name == null) { return; }
+
+        AffineTransform oldAt =  graphics.getTransform();
+
+
+        //////////////////////
+        // HACK, default 50px for reasonable text display ???
+        Rectangle2D rect = item.getBounds();
+        rect = oldAt.createTransformedShape( rect ).getBounds2D();
+
+        double width =  rect.getWidth() * item.getVisualization().getDisplay( 0 ).getScale();
+        if (width < 50) {
+            return;
+        }
+        /*width += 10;
+        
+        Font headerFont = headerFont( item );
+        FontMetrics fm = DEFAULT_GRAPHICS.getFontMetrics( headerFont );
+        int sw = fm.stringWidth( name );
+
+        if (width < sw) {
+            return; 
+        }*/
+        //////////////////////////
+
+
+
+        Point2D headerLocation = headerLocation( graphics, item, x, y );
+
+        headerLocation = oldAt.transform( headerLocation, null );
+
+        graphics.setTransform( new AffineTransform( ) );
+        graphics.drawString( name, Math.round( headerLocation.getX() + 0.5), Math.round(headerLocation.getY() + 0.5 ));
+        graphics.setTransform( oldAt );
+        
     }
 
     protected Point headerLocation( VisualItem item, int x, int y )
@@ -54,6 +128,17 @@ abstract class AbstractRenderer
         y = y + ( PADDING_TOP / 2 ) + fm.getHeight();
 
         return new Point( x, y );
+    }
+
+    protected Point2D headerLocation( Graphics2D graphics, VisualItem item, int x, int y )
+    {
+        Font headerFont = headerFont( item );
+        FontMetrics fm = graphics.getFontMetrics( headerFont );
+
+        double dx = x + PADDING_LEFT;
+        double dy = y + ( PADDING_TOP ) + fm.getHeight();
+
+        return new Point2D.Double( dx, dy );
     }
 
     protected Font headerFont( VisualItem item )
