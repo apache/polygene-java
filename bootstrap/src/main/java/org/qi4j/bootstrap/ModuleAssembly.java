@@ -60,4 +60,5 @@ public interface ModuleAssembly
 
     <T> InfoDeclaration<T> on( Class<T> mixinType );
 
+    public void visit(AssemblyVisitor visitor);
 }

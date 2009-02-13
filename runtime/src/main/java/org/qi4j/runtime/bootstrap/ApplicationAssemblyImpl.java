@@ -14,10 +14,11 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.Serializable;
 import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.AssemblyVisitor;
 import org.qi4j.bootstrap.LayerAssembly;
 
 /**
@@ -41,6 +42,15 @@ public final class ApplicationAssemblyImpl
     public void setName( String name )
     {
         this.name = name;
+    }
+
+    public void visit( AssemblyVisitor visitor )
+    {
+        visitor.visitApplication( this );
+        for( LayerAssemblyImpl layerAssembly : layerAssemblies )
+        {
+            layerAssembly.visit( visitor );
+        }
     }
 
     public List<LayerAssemblyImpl> getLayerAssemblies()

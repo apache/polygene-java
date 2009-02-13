@@ -43,4 +43,6 @@ public interface ApplicationAssembly
      * @param name
      */
     void setName( String name );
+
+    public void visit(AssemblyVisitor visitor);
 }

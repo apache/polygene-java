@@ -31,6 +31,7 @@ import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.AssemblyVisitor;
 import org.qi4j.bootstrap.CompositeDeclaration;
 import org.qi4j.bootstrap.EntityDeclaration;
 import org.qi4j.bootstrap.ImportedServiceDeclaration;
@@ -196,6 +197,41 @@ public final class ModuleAssemblyImpl
     public <T> InfoDeclaration<T> on( Class<T> mixinType )
     {
         return metaInfoDeclaration.on( mixinType );
+    }
+
+    public void visit( AssemblyVisitor visitor )
+    {
+        visitor.visitModule( this );
+
+        for( CompositeDeclarationImpl compositeDeclaration : compositeDeclarations )
+        {
+            visitor.visitComposite( compositeDeclaration );
+        }
+
+        for( EntityDeclarationImpl entityDeclaration : entityDeclarations )
+        {
+            visitor.visitEntity( entityDeclaration );
+        }
+
+        for( ObjectDeclarationImpl objectDeclaration : objectDeclarations )
+        {
+            visitor.visitObject( objectDeclaration );
+        }
+
+        for( ServiceDeclarationImpl serviceDeclaration : serviceDeclarations )
+        {
+            visitor.visitService( serviceDeclaration );
+        }
+
+        for( ImportedServiceDeclarationImpl importedServiceDeclaration : importedServiceDeclarations )
+        {
+            visitor.visitImportedService( importedServiceDeclaration );
+        }
+
+        for( ValueDeclarationImpl valueDeclaration : valueDeclarations )
+        {
+            visitor.visitValue( valueDeclaration );
+        }
     }
 
     ModuleModel assembleModule()

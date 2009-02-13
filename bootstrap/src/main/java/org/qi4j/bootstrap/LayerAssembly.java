@@ -29,4 +29,6 @@ public interface LayerAssembly
     void setName( String name );
 
     void uses( LayerAssembly layerAssembly );
+
+    public void visit(AssemblyVisitor visitor);
 }

@@ -14,15 +14,16 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.io.Serializable;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.AssemblyVisitor;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
-import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
 /**
  * Assembly of a Layer. From here you can create more ModuleAssemblies for
@@ -69,6 +70,15 @@ public final class LayerAssemblyImpl
     {
         validateNotNull( "layerAssembly", layerAssembly );
         uses.add( layerAssembly );
+    }
+
+    public void visit( AssemblyVisitor visitor )
+    {
+        visitor.visitLayer( this );
+        for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies )
+        {
+            moduleAssembly.visit( visitor );
+        }
     }
 
     List<ModuleAssemblyImpl> getModuleAssemblies()
