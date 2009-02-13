@@ -60,7 +60,7 @@ public final class MixinModel
         injectedMethodsModel = new InjectedMethodsModel( mixinClass );
 
         concernsDeclaration = new ConcernsDeclaration( mixinClass, Collections.<Class<?>>emptyList() );
-        sideEffectsDeclaration = new SideEffectsDeclaration( mixinClass );
+        sideEffectsDeclaration = new SideEffectsDeclaration( mixinClass, Collections.<Class<?>>emptyList() );
 
         thisMixinTypes = buildThisMixinTypes();
     }

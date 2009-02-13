@@ -31,6 +31,8 @@ public interface ServiceDeclaration
 
     ServiceDeclaration withConcerns(Class<?>... concerns);
 
+    ServiceDeclaration withSideEffects(Class<?>... sideEffects);
+
     ServiceDeclaration identifiedBy( String identity );
 
     ServiceDeclaration instantiateOnStartup();

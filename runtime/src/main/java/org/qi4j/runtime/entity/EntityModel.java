@@ -70,7 +70,8 @@ public final class EntityModel
                                         MetaInfo metaInfo,
                                         PropertyDeclarations propertyDecs,
                                         AssociationDeclarations associationDecs,
-                                        Iterable<Class<?>> concerns)
+                                        Iterable<Class<?>> concerns,
+                                        Iterable<Class<?>> sideEffects)
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( type );
         boolean immutable = metaInfo.get( Immutable.class ) != null;;
@@ -79,7 +80,7 @@ public final class EntityModel
         EntityStateModel stateModel = new EntityStateModel( entityPropertiesModel, associationsModel );
         EntityMixinsModel mixinsModel = new EntityMixinsModel( type, stateModel );
         ConcernsDeclaration concernsDeclaration = new ConcernsDeclaration( type, concerns );
-        SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( type );
+        SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( type, sideEffects );
         CompositeMethodsModel compositeMethodsModel = new CompositeMethodsModel( type,
                                                                                  constraintsModel,
                                                                                  concernsDeclaration,

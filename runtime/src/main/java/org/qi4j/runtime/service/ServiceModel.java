@@ -49,7 +49,8 @@ public final class ServiceModel
                          boolean instantiateOnStartup,
                          MetaInfo metaInfo,
                          String moduleName,
-                         Iterable<Class<?>> concerns)
+                         Iterable<Class<?>> concerns,
+                         Iterable<Class<?>> sideEffects)
     {
         type = compositeType;
         this.visibility = visibility;

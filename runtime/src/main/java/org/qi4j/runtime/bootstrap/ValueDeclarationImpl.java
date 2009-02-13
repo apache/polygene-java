@@ -33,6 +33,7 @@ public final class ValueDeclarationImpl
 {
     private Class<? extends ValueComposite>[] compositeTypes;
     private List<Class<?>> concerns = new ArrayList<Class<?>>( );
+    private List<Class<?>> sideEffects = new ArrayList<Class<?>>( );
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
@@ -59,6 +60,12 @@ public final class ValueDeclarationImpl
         return this;
     }
 
+    public ValueDeclaration withSideEffects( Class<?>... sideEffects )
+    {
+        this.sideEffects.addAll( Arrays.asList(sideEffects ));
+        return this;
+    }
+
     void addValues( List<ValueModel> values, PropertyDeclarations propertyDecs )
     {
         for( Class<? extends ValueComposite> compositeType : compositeTypes )
@@ -67,7 +74,8 @@ public final class ValueDeclarationImpl
                                                                visibility,
                                                                new MetaInfo( metaInfo ).withAnnotations( compositeType ),
                                                                propertyDecs,
-                                                               concerns);
+                                                               concerns,
+                                                               sideEffects);
             values.add( valueModel );
         }
     }

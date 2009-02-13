@@ -36,6 +36,7 @@ public final class EntityDeclarationImpl
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
     private List<Class<?>> concerns = new ArrayList<Class<?>>( );
+    private List<Class<?>> sideEffects = new ArrayList<Class<?>>( );
 
     public EntityDeclarationImpl( Class<? extends EntityComposite>... compositeTypes )
     {
@@ -60,6 +61,12 @@ public final class EntityDeclarationImpl
         return this;
     }
 
+    public EntityDeclaration withSideEffects( Class<?>... sideEffects )
+    {
+        this.sideEffects.addAll( Arrays.asList(sideEffects ));
+        return this;
+    }
+
     void addEntities( List<EntityModel> entities, PropertyDeclarations propertyDecs, AssociationDeclarations associationDecs )
     {
         for( Class<? extends EntityComposite> compositeType : compositeTypes )
@@ -69,7 +76,8 @@ public final class EntityDeclarationImpl
                                                                new MetaInfo( metaInfo ).withAnnotations( compositeType ),
                                                                propertyDecs,
                                                                associationDecs,
-                                                               concerns);
+                                                               concerns,
+                                                               sideEffects);
             entities.add( compositeModel );
         }
     }

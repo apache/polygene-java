@@ -30,4 +30,6 @@ public interface EntityDeclaration
     EntityDeclaration visibleIn( Visibility visibility );
 
     EntityDeclaration withConcerns(Class<?>... concerns);
+
+    EntityDeclaration withSideEffects(Class<?>... sideEffects);
 }

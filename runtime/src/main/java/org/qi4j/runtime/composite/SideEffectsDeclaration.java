@@ -14,15 +14,14 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import static java.util.Collections.singleton;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.Serializable;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.sideeffect.SideEffects;
 import static org.qi4j.api.util.Classes.genericInterfacesOf;
@@ -38,7 +37,7 @@ public final class SideEffectsDeclaration
     private final List<SideEffectDeclaration> sideEffectDeclarations = new ArrayList<SideEffectDeclaration>();
     private final Map<Method, MethodSideEffectsModel> methodSideEffects = new MethodKeyMap<MethodSideEffectsModel>();
 
-    public SideEffectsDeclaration( Class type )
+    public SideEffectsDeclaration( Class type, Iterable<Class<?>> sideEffects)
     {
         Collection<Type> types = asSideEffectsTargetTypes( type );
 
@@ -46,6 +45,12 @@ public final class SideEffectsDeclaration
         for( Type aType : types )
         {
             addSideEffectDeclaration( aType );
+        }
+
+        // Add sideeffects from assembly
+        for( Class<?> sideEffect : sideEffects )
+        {
+            this.sideEffectDeclarations.add( new SideEffectDeclaration( sideEffect, null ) );
         }
     }
 

@@ -39,7 +39,8 @@ public class CompositeModel
                                            final Visibility visibility,
                                            final MetaInfo metaInfo,
                                            final PropertyDeclarations propertyDeclarations,
-                                           final Iterable<Class<?>> concerns)
+                                           final Iterable<Class<?>> concerns,
+                                           final Iterable<Class<?>> sideEffects)
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
         boolean immutable = metaInfo.get( Immutable.class ) != null;
@@ -47,7 +48,7 @@ public class CompositeModel
         StateModel stateModel = new StateModel( propertiesModel );
         MixinsModel mixinsModel = new MixinsModel( compositeType, stateModel );
         ConcernsDeclaration concernsModel = new ConcernsDeclaration( compositeType, concerns );
-        SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType );
+        SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
         CompositeMethodsModel compositeMethodsModel =
             new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
 

@@ -329,7 +329,7 @@ public final class ModuleAssemblyImpl
                 if( !found )
                 {
                     Class<? extends Composite> serviceModelType = serviceModel.type();
-                    CompositeModel compositeModel = CompositeModel.newModel( serviceModelType, Visibility.module, new MetaInfo(), metaInfoDeclaration, Collections.<Class<?>>emptyList() );
+                    CompositeModel compositeModel = CompositeModel.newModel( serviceModelType, Visibility.module, new MetaInfo(), metaInfoDeclaration, Collections.<Class<?>>emptyList(), Collections.<Class<?>>emptyList() );
                     compositeModels.add( compositeModel );
                 }
             }
