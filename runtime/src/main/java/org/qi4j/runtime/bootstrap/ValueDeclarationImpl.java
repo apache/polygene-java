@@ -15,6 +15,8 @@
 package org.qi4j.runtime.bootstrap;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -30,6 +32,7 @@ public final class ValueDeclarationImpl
     implements ValueDeclaration, Serializable
 {
     private Class<? extends ValueComposite>[] compositeTypes;
+    private List<Class<?>> concerns = new ArrayList<Class<?>>( );
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
@@ -50,6 +53,12 @@ public final class ValueDeclarationImpl
         return this;
     }
 
+    public ValueDeclaration withConcerns( Class<?>... concerns )
+    {
+        this.concerns.addAll( Arrays.asList(concerns ));
+        return this;
+    }
+
     void addValues( List<ValueModel> values, PropertyDeclarations propertyDecs )
     {
         for( Class<? extends ValueComposite> compositeType : compositeTypes )
@@ -57,7 +66,8 @@ public final class ValueDeclarationImpl
             ValueModel valueModel = ValueModel.newModel( compositeType,
                                                                visibility,
                                                                new MetaInfo( metaInfo ).withAnnotations( compositeType ),
-                                                               propertyDecs );
+                                                               propertyDecs,
+                                                               concerns);
             values.add( valueModel );
         }
     }

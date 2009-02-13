@@ -25,11 +25,13 @@ import org.qi4j.api.common.Visibility;
  */
 public interface ServiceDeclaration
 {
+    ServiceDeclaration setMetaInfo( Object serviceAttribute );
+
     ServiceDeclaration visibleIn( Visibility visibility );
+
+    ServiceDeclaration withConcerns(Class<?>... concerns);
 
     ServiceDeclaration identifiedBy( String identity );
 
     ServiceDeclaration instantiateOnStartup();
-
-    ServiceDeclaration setMetaInfo( Object serviceAttribute );
 }

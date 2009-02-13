@@ -14,15 +14,14 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.io.Serializable;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.concern.Concerns;
 import static org.qi4j.api.util.Classes.genericInterfacesOf;
@@ -37,8 +36,14 @@ public final class ConcernsDeclaration
     private final List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
     private final Map<Method, MethodConcernsModel> methodConcernsModels = new MethodKeyMap<MethodConcernsModel>();
 
-    public ConcernsDeclaration( Class type )
+    public ConcernsDeclaration( Class type, Iterable<Class<?>> concerns)
     {
+        // Add concerns from assembly
+        for( Class<?> concern : concerns )
+        {
+            this.concerns.add( new ConcernDeclaration( concern, null ) );
+        }
+
         // Find concern declarations
         Set<Type> types = ( type.isInterface() ? genericInterfacesOf( type ) : Collections.singleton( (Type) type ) );
 

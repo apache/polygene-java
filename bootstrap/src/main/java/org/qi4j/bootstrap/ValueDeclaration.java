@@ -28,4 +28,6 @@ public interface ValueDeclaration
     ValueDeclaration setMetaInfo( Object info );
 
     ValueDeclaration visibleIn( Visibility visibility );
+
+    ValueDeclaration withConcerns(Class<?>... concerns);
 }

@@ -16,6 +16,7 @@ package org.qi4j.runtime.entity;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Queryable;
@@ -89,6 +90,8 @@ public final class EntityPropertyModel extends PropertyModel
             type = PropertyType.PropertyTypeEnum.MUTABLE;
         }
 
-        return new PropertyType( qualifiedName(), Classes.getRawClass( type() ).getName(), toURI(), toRDF(), queryable, type );
+        Type valueType = Classes.getRawClass( type() );
+
+        return new PropertyType( qualifiedName(), valueType, toURI(), toRDF(), queryable, type );
     }
 }

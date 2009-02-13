@@ -14,15 +14,17 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.util.List;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.composite.Composite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.CompositeDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.runtime.composite.CompositeModel;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.common.MetaInfo;
 
 /**
  * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addComposites(Class[])}.
@@ -31,6 +33,7 @@ public final class CompositeDeclarationImpl
     implements CompositeDeclaration, Serializable
 {
     private Class<? extends Composite>[] compositeTypes;
+    private List<Class<?>> concerns = new ArrayList<Class<?>>( );
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
@@ -52,6 +55,12 @@ public final class CompositeDeclarationImpl
         return this;
     }
 
+    public CompositeDeclaration withConcerns( Class<?>... concerns )
+    {
+        this.concerns.addAll( Arrays.asList(concerns ));
+        return this;
+    }
+
     void addComposites( List<CompositeModel> composites, PropertyDeclarations propertyDeclarations )
     {
         for( Class<? extends Composite> compositeType : compositeTypes )
@@ -61,7 +70,7 @@ public final class CompositeDeclarationImpl
             CompositeModel compositeModel = CompositeModel.newModel( compositeType,
                                                                      visibility,
                                                                      compositeMetaInfo,
-                                                                     propertyDeclarations );
+                                                                     propertyDeclarations, concerns );
             composites.add( compositeModel );
         }
     }

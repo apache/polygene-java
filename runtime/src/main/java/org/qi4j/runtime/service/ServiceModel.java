@@ -14,12 +14,12 @@
 
 package org.qi4j.runtime.service;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Set;
-import java.io.Serializable;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
@@ -46,7 +46,10 @@ public final class ServiceModel
     public ServiceModel( Class<? extends Composite> compositeType,
                          Visibility visibility,
                          String identity,
-                         boolean instantiateOnStartup, MetaInfo metaInfo, String moduleName )
+                         boolean instantiateOnStartup,
+                         MetaInfo metaInfo,
+                         String moduleName,
+                         Iterable<Class<?>> concerns)
     {
         type = compositeType;
         this.visibility = visibility;

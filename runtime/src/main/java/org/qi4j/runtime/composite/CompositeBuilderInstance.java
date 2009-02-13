@@ -130,7 +130,7 @@ public final class CompositeBuilderInstance<T>
 
         CompositeInstance compositeInstance = compositeModel.newCompositeInstance( moduleInstance, uses == null ? UsesInstance.NO_USES : uses, instanceState );
         state = null; // Reset state - TODO should create a copy lazily
-        return compositeType.cast( compositeInstance.proxy() );
+        return compositeInstance.<T>proxy();
     }
 
     public Iterator<T> iterator()

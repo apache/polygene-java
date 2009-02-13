@@ -14,18 +14,18 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.io.Serializable;
+import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.injection.scope.This;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
 import org.qi4j.runtime.injection.InjectedMethodsModel;
@@ -34,8 +34,8 @@ import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.DependencyVisitor;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.CompositeInstance;
-import org.qi4j.spi.mixin.MixinDescriptor;
 import org.qi4j.spi.composite.InvalidCompositeException;
+import org.qi4j.spi.mixin.MixinDescriptor;
 
 /**
  * TODO
@@ -59,7 +59,7 @@ public final class MixinModel
         injectedFieldsModel = new InjectedFieldsModel( mixinClass );
         injectedMethodsModel = new InjectedMethodsModel( mixinClass );
 
-        concernsDeclaration = new ConcernsDeclaration( mixinClass );
+        concernsDeclaration = new ConcernsDeclaration( mixinClass, Collections.<Class<?>>emptyList() );
         sideEffectsDeclaration = new SideEffectsDeclaration( mixinClass );
 
         thisMixinTypes = buildThisMixinTypes();

@@ -14,12 +14,12 @@
 
 package org.qi4j.runtime.entity;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.Serializable;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -69,7 +69,8 @@ public final class EntityModel
                                         Visibility visibility,
                                         MetaInfo metaInfo,
                                         PropertyDeclarations propertyDecs,
-                                        AssociationDeclarations associationDecs )
+                                        AssociationDeclarations associationDecs,
+                                        Iterable<Class<?>> concerns)
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( type );
         boolean immutable = metaInfo.get( Immutable.class ) != null;;
@@ -77,7 +78,7 @@ public final class EntityModel
         AssociationsModel associationsModel = new AssociationsModel( constraintsModel, associationDecs );
         EntityStateModel stateModel = new EntityStateModel( entityPropertiesModel, associationsModel );
         EntityMixinsModel mixinsModel = new EntityMixinsModel( type, stateModel );
-        ConcernsDeclaration concernsDeclaration = new ConcernsDeclaration( type );
+        ConcernsDeclaration concernsDeclaration = new ConcernsDeclaration( type, concerns );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( type );
         CompositeMethodsModel compositeMethodsModel = new CompositeMethodsModel( type,
                                                                                  constraintsModel,

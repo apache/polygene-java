@@ -14,10 +14,8 @@
 
 package org.qi4j.runtime.value;
 
-import java.lang.reflect.Method;
 import java.util.Iterator;
 import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
@@ -26,30 +24,13 @@ import org.qi4j.runtime.composite.ValueModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
- * TODO
+ * Implementation of ValueBuilder
  */
 public final class ValueBuilderInstance<T>
     implements ValueBuilder<T>
 {
-    private static final Method TYPE_METHOD;
-    private static final Method METAINFO_METHOD;
-
-    static
-    {
-        try
-        {
-            TYPE_METHOD = Composite.class.getMethod( "type" );
-            METAINFO_METHOD = Composite.class.getMethod( "metaInfo", Class.class );
-        }
-        catch( NoSuchMethodException e )
-        {
-            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: ValueBuilderInstance" );
-        }
-    }
-
     private final ModuleInstance moduleInstance;
     private final ValueModel valueModel;
-    private final Class<T> valueType;
 
     // lazy initialized in accessor
     private T prototypeInstance;
@@ -62,12 +43,6 @@ public final class ValueBuilderInstance<T>
         this.moduleInstance = moduleInstance;
 
         this.valueModel = valueModel;
-        valueType = (Class<T>) valueModel.type();
-    }
-
-    public Class<T> valueType()
-    {
-        return valueType;
     }
 
     public ValueBuilder<T> withPrototype( T value )
@@ -85,7 +60,7 @@ public final class ValueBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = (T) valueModel.newValueInstance( moduleInstance, getState(), true ).proxy();
+            prototypeInstance = valueModel.newValueInstance( moduleInstance, getState(), true ).<T>proxy();
         }
 
         return prototypeInstance;
@@ -104,7 +79,7 @@ public final class ValueBuilderInstance<T>
         }
 
         ValueCompositeInstance valueCompositeInstance = valueModel.newValueInstance( moduleInstance, instanceState, false );
-        return valueType.cast( valueCompositeInstance.proxy() );
+        return valueCompositeInstance.<T>proxy();
     }
 
     public Iterator<T> iterator()

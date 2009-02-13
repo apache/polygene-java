@@ -57,9 +57,9 @@ public class DefaultCompositeInstance
         return compositeModel.invoke( this, proxy, method, args, moduleInstance );
     }
 
-    public Composite proxy()
+    public <T> T proxy()
     {
-        return proxy;
+        return (T) proxy;
     }
 
     public MetaInfo metaInfo()

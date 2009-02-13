@@ -28,4 +28,6 @@ public interface EntityDeclaration
     EntityDeclaration setMetaInfo( Object info );
 
     EntityDeclaration visibleIn( Visibility visibility );
+
+    EntityDeclaration withConcerns(Class<?>... concerns);
 }

@@ -14,8 +14,10 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.util.List;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
@@ -30,6 +32,7 @@ public final class ServiceDeclarationImpl
     implements ServiceDeclaration, Serializable
 {
     private Iterable<Class<? extends ServiceComposite>> serviceTypes;
+    private List<Class<?>> concerns = new ArrayList<Class<?>>( );
     private ModuleAssemblyImpl moduleAssembly;
     private String identity;
     private boolean instantiateOnStartup = false;
@@ -66,6 +69,12 @@ public final class ServiceDeclarationImpl
         return this;
     }
 
+    public ServiceDeclaration withConcerns( Class<?>... concerns )
+    {
+        this.concerns.addAll( Arrays.asList(concerns ));
+        return this;
+    }
+
     void addServices( List<ServiceModel> serviceModels )
     {
         for( Class<? extends Composite> serviceType : serviceTypes )
@@ -81,7 +90,8 @@ public final class ServiceDeclarationImpl
                                                           id,
                                                           instantiateOnStartup,
                                                           new MetaInfo( metaInfo ).withAnnotations( serviceType ),
-                                                          moduleAssembly.name() );
+                                                          moduleAssembly.name(),
+                                                          concerns);
             serviceModels.add( serviceModel );
         }
     }

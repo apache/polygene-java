@@ -28,4 +28,6 @@ public interface CompositeDeclaration
     CompositeDeclaration setMetaInfo( Object info );
 
     CompositeDeclaration visibleIn( Visibility visibility );
+
+    CompositeDeclaration withConcerns(Class<?>... concerns);
 }

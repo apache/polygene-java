@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -23,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.io.Serializable;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.CallbackFilter;
 import net.sf.cglib.proxy.Enhancer;
@@ -137,7 +137,7 @@ public final class ConstructorsModel
 
             if( messageBuilder.indexOf( "$" ) >= 0 )
             {
-                messageBuilder.append( "\nNon-static inner classes can not be used as Mixin implementations." );
+                messageBuilder.append( "\nNon-static inner classes can not be used." );
             }
 
             String message = messageBuilder.toString();

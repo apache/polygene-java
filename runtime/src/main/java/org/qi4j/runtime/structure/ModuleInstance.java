@@ -385,7 +385,7 @@ public class ModuleInstance
             }
 
             CompositeModel compositeModel = realModuleInstance.composites().model().getCompositeModelFor( mixinType );
-            return mixinType.cast( compositeModel.newCompositeInstance( realModuleInstance, UsesInstance.NO_USES, compositeModel.newDefaultState() ).proxy() );
+            return compositeModel.newCompositeInstance( realModuleInstance, UsesInstance.NO_USES, compositeModel.newDefaultState() ).<T>proxy();
         }
     }
 
@@ -438,7 +438,7 @@ public class ModuleInstance
             }
 
             ValueModel valueModel = realModuleInstance.values().model().getValueModelFor( valueType );
-            return valueType.cast( valueModel.newValueInstance( realModuleInstance, valueModel.newDefaultState(), false ).proxy() );
+            return valueModel.newValueInstance( realModuleInstance, valueModel.newDefaultState(), false ).<T>proxy();
         }
     }
 

@@ -26,7 +26,7 @@ import org.qi4j.runtime.composite.ConstraintsCheck;
  */
 public class PropertyInstance<T> extends AbstractPropertyInstance<T>
 {
-    protected T value;
+    protected volatile T value;
     protected ConstraintsCheck constraints;
 
     /**

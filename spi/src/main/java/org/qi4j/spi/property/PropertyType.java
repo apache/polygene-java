@@ -15,6 +15,12 @@
 package org.qi4j.spi.property;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import org.qi4j.api.property.Property;
 
 /**
  * TODO
@@ -28,21 +34,21 @@ public class PropertyType
     }
 
     private final String qualifiedName;
-    private final String type;
+    private final ValueType type;
     private final String uri;
     private String rdf;
     private final boolean queryable;
     private final PropertyTypeEnum propertyType;
 
     public PropertyType( final String qualifiedName,
-                         final String type,
+                         final Type type,
                          final String uri,
                          final String rdf,
                          final boolean queryable,
                          final PropertyTypeEnum propertyType )
     {
         this.qualifiedName = qualifiedName;
-        this.type = type;
+        this.type = createValueType(type);
         this.uri = uri;
         this.rdf = rdf;
         this.queryable = queryable;
@@ -54,7 +60,7 @@ public class PropertyType
         return qualifiedName;
     }
 
-    public String type()
+    public ValueType type()
     {
         return type;
     }
@@ -82,5 +88,37 @@ public class PropertyType
     @Override public String toString()
     {
         return qualifiedName + "(" + type + "," + uri + ")";
+    }
+
+    private ValueType createValueType(Type type)
+    {
+        ValueType valueType = null;
+        if (CollectionType.isCollection( type ))
+        {
+            ParameterizedType pt = (ParameterizedType) type;
+            valueType = new CollectionType(((Class)pt.getRawType()).getName(), createValueType( pt.getActualTypeArguments()[0] ));
+        } else if (CompoundType.isCompound( type ))
+        {
+            Class valueTypeClass = (Class)type;
+            List<ValueType> types = new ArrayList<ValueType>( ); 
+            for( Method method : valueTypeClass.getMethods() )
+            {
+                Type returnType = method.getGenericReturnType();
+                if (returnType instanceof ParameterizedType && ((ParameterizedType)returnType).getRawType().equals( Property.class))
+                {
+                    Type propType = ((ParameterizedType)returnType).getActualTypeArguments()[0];
+                    types.add(createValueType( propType ));
+                }
+            }
+            valueType = new CompoundType(valueTypeClass.getName(), types);
+        } else if (PrimitiveType.isPrimitive( type ))
+        {
+            valueType = new PrimitiveType(((Class)type).getName());
+        } else
+        {
+            valueType = new SerializableType(((Class)type).getName());
+        }
+
+        return valueType;
     }
 }

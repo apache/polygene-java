@@ -37,13 +37,14 @@ public final class ValueModel extends AbstractCompositeModel
     public static ValueModel newModel( final Class<? extends Composite> compositeType,
                                        final Visibility visibility,
                                        final MetaInfo metaInfo,
-                                       final PropertyDeclarations propertyDeclarations )
+                                       final PropertyDeclarations propertyDeclarations,
+                                       final Iterable<Class<?>> concerns)
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
         PropertiesModel propertiesModel = new PropertiesModel( constraintsModel, propertyDeclarations, true );
         StateModel stateModel = new StateModel( propertiesModel );
         MixinsModel mixinsModel = new MixinsModel( compositeType, stateModel );
-        ConcernsDeclaration concernsModel = new ConcernsDeclaration( compositeType );
+        ConcernsDeclaration concernsModel = new ConcernsDeclaration( compositeType, concerns );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType );
         // TODO: Disable constraints, concerns and sideeffects??
         CompositeMethodsModel compositeMethodsModel =

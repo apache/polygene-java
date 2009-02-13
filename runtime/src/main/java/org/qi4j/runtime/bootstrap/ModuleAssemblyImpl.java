@@ -17,6 +17,7 @@ package org.qi4j.runtime.bootstrap;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -292,7 +293,7 @@ public final class ModuleAssemblyImpl
                 if( !found )
                 {
                     Class<? extends Composite> serviceModelType = serviceModel.type();
-                    CompositeModel compositeModel = CompositeModel.newModel( serviceModelType, Visibility.module, new MetaInfo(), metaInfoDeclaration );
+                    CompositeModel compositeModel = CompositeModel.newModel( serviceModelType, Visibility.module, new MetaInfo(), metaInfoDeclaration, Collections.<Class<?>>emptyList() );
                     compositeModels.add( compositeModel );
                 }
             }

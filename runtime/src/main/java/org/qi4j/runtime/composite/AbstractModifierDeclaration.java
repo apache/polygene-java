@@ -14,12 +14,12 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.io.Serializable;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
 import org.qi4j.api.common.ConstructionException;
@@ -115,7 +115,7 @@ public abstract class AbstractModifierDeclaration
 
     @Override public String toString()
     {
-        return modifierClass.getName() + " declared in " + declaredIn;
+        return modifierClass.getName() + (declaredIn == null ? "" : " declared in " + declaredIn);
     }
 
 }

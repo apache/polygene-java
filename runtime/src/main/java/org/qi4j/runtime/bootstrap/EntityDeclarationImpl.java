@@ -14,15 +14,17 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.util.List;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.EntityDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.runtime.entity.EntityModel;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.common.MetaInfo;
 
 /**
  * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addComposites(Class[])}.
@@ -33,6 +35,7 @@ public final class EntityDeclarationImpl
     private Class<? extends EntityComposite>[] compositeTypes;
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
+    private List<Class<?>> concerns = new ArrayList<Class<?>>( );
 
     public EntityDeclarationImpl( Class<? extends EntityComposite>... compositeTypes )
     {
@@ -51,6 +54,12 @@ public final class EntityDeclarationImpl
         return this;
     }
 
+    public EntityDeclaration withConcerns( Class<?>... concerns )
+    {
+        this.concerns.addAll( Arrays.asList(concerns ));
+        return this;
+    }
+
     void addEntities( List<EntityModel> entities, PropertyDeclarations propertyDecs, AssociationDeclarations associationDecs )
     {
         for( Class<? extends EntityComposite> compositeType : compositeTypes )
@@ -59,7 +68,8 @@ public final class EntityDeclarationImpl
                                                                visibility,
                                                                new MetaInfo( metaInfo ).withAnnotations( compositeType ),
                                                                propertyDecs,
-                                                               associationDecs );
+                                                               associationDecs,
+                                                               concerns);
             entities.add( compositeModel );
         }
     }
