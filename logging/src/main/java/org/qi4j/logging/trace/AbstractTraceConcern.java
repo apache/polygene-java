@@ -68,7 +68,8 @@ public abstract class AbstractTraceConcern extends ConcernOf<InvocationHandler>
             if( doTrace )
             {
                 long duration = System.nanoTime() - timeStamp;
-                traceService.traceException( compositeType, api.dereference( thisComposite ), method, args, t, entryTime, duration );
+                Composite object = api.dereference( thisComposite );
+                traceService.traceException( compositeType, object, method, args, t, entryTime, duration );
             }
             throw t;
         }
