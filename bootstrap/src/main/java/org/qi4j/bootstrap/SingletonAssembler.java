@@ -15,6 +15,7 @@
 package org.qi4j.bootstrap;
 
 import org.qi4j.api.Qi4j;
+import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
@@ -140,4 +141,10 @@ public abstract class SingletonAssembler
     {
         return moduleInstance.serviceFinder();
     }
+
+    public final ValueBuilderFactory valueBuilderFactory()
+    {
+        return moduleInstance.valueBuilderFactory();
+    }
+
 }
