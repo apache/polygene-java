@@ -17,6 +17,8 @@
     <!--    <module>components</module> -->
     <module>binding</module>
     <module>visualizer</module>
+    <module>entity-viewer</module>
+    <!-- <module>envisage</module> -->
   </modules>
 
   <dependencies>
