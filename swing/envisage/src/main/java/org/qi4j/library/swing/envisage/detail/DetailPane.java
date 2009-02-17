@@ -17,25 +17,14 @@
 package org.qi4j.library.swing.envisage.detail;
 
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import java.awt.BorderLayout;
 
 /**
+ * Abstract Base class for DetailPane
+ * 
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
-public class DetailPanel extends JPanel
+public abstract class DetailPane extends JPanel
 {
-    public DetailPanel()
-    {
-        JTabbedPane tabPane = new JTabbedPane( );
+    public abstract void setDescriptor(Object objectDescriptor);
 
-        this.setLayout( new BorderLayout() );
-        this.add(tabPane, BorderLayout.CENTER);
-
-        tabPane.add( "Commons", new JPanel() );
-        tabPane.add( "Methods", new JPanel() );
-        tabPane.add( "State", new JPanel() );
-        tabPane.add( "Dependency", new JPanel() );
-
-    }
 }

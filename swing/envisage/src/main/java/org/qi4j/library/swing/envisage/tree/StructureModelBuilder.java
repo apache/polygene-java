@@ -18,12 +18,12 @@ package org.qi4j.library.swing.envisage.tree;
 
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.DefaultMutableTreeNode;
-import org.qi4j.library.swing.visualizer.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.descriptor.LayerDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.descriptor.ModuleDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.descriptor.EntityDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.descriptor.ObjectDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 
 /**
  * Helper class to build tree model as structure

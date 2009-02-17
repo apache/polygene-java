@@ -17,15 +17,17 @@
 package org.qi4j.library.swing.envisage;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.JSplitPane;
-import java.awt.BorderLayout;
+import javax.swing.UIManager;
+import javax.swing.LookAndFeel;
 import java.awt.Dimension;
-import org.qi4j.library.swing.envisage.tree.ApplicationModelPanel;
-import org.qi4j.library.swing.envisage.detail.DetailPanel;
+import org.qi4j.library.swing.envisage.EnvisageFrame;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.api.structure.Application;
+import com.jgoodies.looks.LookUtils;
+import com.jgoodies.looks.Options;
+import com.jgoodies.looks.plastic.PlasticLookAndFeel;
+import com.jgoodies.looks.plastic.theme.ExperienceBlue;
 
 /**
  * Qi4J Application Viewer
@@ -40,29 +42,37 @@ public class Envisage
 
     public void run(Energy4Java qi4j, Application application)
     {
+        initLookAndFeel();
+
         this.qi4j = qi4j;
         this.application = application;
         
-        final JPanel mainPane = createMainPanel();
+        //final JPanel mainPane = createMainPanel();
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                showMainFrame(mainPane);
+                showMainFrame();
             }
         });
-
     }
 
-    private void showMainFrame(JPanel mainPane) {
-        JFrame frame = new JFrame("Envisage");
+    private void showMainFrame() {
+        EnvisageFrame mainFrame = new EnvisageFrame( qi4j, application );
+        mainFrame.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
+        mainFrame.setSize( new Dimension(800, 600) );
+        mainFrame.setVisible( true );
+        
+
+        /*JFrame frame = new JFrame("Envisage");
         frame.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
         frame.setSize( new Dimension(800, 600) );
         frame.setLayout( new BorderLayout( ) );
         frame.add( mainPane, BorderLayout.CENTER );
         frame.setVisible( true );
+        */
     }
 
-    private JPanel createMainPanel()
+    /*private JPanel createMainPanel()
     {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout( new BorderLayout( ) );
@@ -70,15 +80,52 @@ public class Envisage
         JSplitPane splitPane = new JSplitPane( );
         mainPanel.add( splitPane, BorderLayout.CENTER );
 
-        ApplicationModelPanel appModelPanel = new ApplicationModelPanel();
-        appModelPanel.initQi4J( qi4j, application );
+        ApplicationModelPane appModelPane = new ApplicationModelPane();
+        appModelPane.initQi4J( qi4j, application );
 
-        DetailPanel detailPane = new DetailPanel();
+        DetailModelPane detailModelPane = new DetailModelPane();
 
-        splitPane.setLeftComponent( appModelPanel );
-        splitPane.setRightComponent( detailPane );
+        splitPane.setLeftComponent( appModelPane );
+        splitPane.setRightComponent( detailModelPane );
         splitPane.setDividerLocation( 300 );
 
         return mainPanel;
+    } */
+
+    private void initLookAndFeel() {
+        String osName = System.getProperty("os.name").toUpperCase();
+
+        // set default swing bold to false, only for JVM 1.5 or above
+        UIManager.put("swing.boldMetal", Boolean.FALSE);
+
+        // set LaF
+        LookAndFeel lnf = UIManager.getLookAndFeel();
+        if (lnf != null && lnf.getID().equalsIgnoreCase("Metal")) {
+            String lnfClassName = null;
+            if (osName.startsWith("MAC")) {
+                System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Envisage"); //TODO i18n
+                System.setProperty("apple.laf.useScreenMenuBar","true");
+                lnfClassName = UIManager.getSystemLookAndFeelClassName();
+            } else if (osName.startsWith("WINDOWS")) {
+                UIManager.put("ClassLoader", LookUtils.class.getClassLoader());
+                lnfClassName = Options.getSystemLookAndFeelClassName();
+                Options.setUseNarrowButtons(false);
+            } else {
+                UIManager.put("ClassLoader", LookUtils.class.getClassLoader());
+                lnfClassName = Options.getCrossPlatformLookAndFeelClassName();
+                PlasticLookAndFeel.setTabStyle(PlasticLookAndFeel.TAB_STYLE_METAL_VALUE);
+                PlasticLookAndFeel.setPlasticTheme(new ExperienceBlue());
+                Options.setUseNarrowButtons(false);
+                //PlasticLookAndFeel.setMyCurrentTheme(new ExperienceBlueDefaultFont());  // for CJK Font
+            }
+
+            if (lnfClassName != null) {
+                try {
+                    UIManager.setLookAndFeel(lnfClassName);
+                } catch (Exception ex) {
+                    System.err.println("Unable to set LookAndFeel, use default LookAndFeel.\n" + ex.getMessage());
+                }
+            }
+        }
     }
 }

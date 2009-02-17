@@ -78,11 +78,7 @@
     <orderEntry type="library" exported="" name="Maven: commons-dbcp:commons-dbcp:1.2.2" level="project" />
     <orderEntry type="library" exported="" name="Maven: commons-pool:commons-pool:1.3" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.slf4j:slf4j-simple:1.4.2" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.qi4j.library:qi4j-lib-swing-visualizer:0.6-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.prefuse:prefuse:20071021" level="project" />
-    <orderEntry type="library" exported="" name="Maven: com.jgoodies:forms:1.2.1" level="project" />
     <orderEntry type="library" exported="" name="Maven: com.jgoodies:looks:2.2.0" level="project" />
-    <orderEntry type="library" exported="" name="Maven: jgoodies:forms:1.0.5" level="project" />
   </component>
 </module>
 

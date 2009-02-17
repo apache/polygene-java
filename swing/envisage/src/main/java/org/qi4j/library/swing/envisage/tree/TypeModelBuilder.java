@@ -18,10 +18,15 @@ package org.qi4j.library.swing.envisage.tree;
 
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.DefaultMutableTreeNode;
-import org.qi4j.library.swing.visualizer.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.descriptor.LayerDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.descriptor.ModuleDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
 
 /**
  * Helper class to build tree model as type
@@ -30,47 +35,103 @@ import org.qi4j.library.swing.visualizer.model.descriptor.ModuleDetailDescriptor
  */
 public class TypeModelBuilder
 {
-    private static final int SERVICES_NODE = 0;
-    private static final int ENTITIES_NODE = 1;
-    private static final int VALUES_NODE = 2;
-    private static final int TRANSIENTs_NODE = 3;
-    private static final int OBJECTS_NODE = 4;
+
+    private List<ServiceDetailDescriptor> serviceList;
+    private List<EntityDetailDescriptor> entityList;
+    private List<ObjectDetailDescriptor> objectList;
 
     public static MutableTreeNode build( ApplicationDetailDescriptor descriptor )
     {
-        //TypeModelBuilder builder = new TypeModelBuilder();
-        //return builder.buildApplicationNode( descriptor );
+        TypeModelBuilder builder = new TypeModelBuilder();
+        return builder.buildNode( descriptor );
+    }
 
-        return new DefaultMutableTreeNode("Type Root (not done yet)");
+    private TypeModelBuilder() {
+        serviceList = new ArrayList<ServiceDetailDescriptor>();
+        entityList = new ArrayList<EntityDetailDescriptor>();
+        objectList = new ArrayList<ObjectDetailDescriptor>();
     }
 
     private MutableTreeNode buildNode( ApplicationDetailDescriptor descriptor )
     {
+        traverseLayers( descriptor.layers() );
+
+        // sort based on name order
+        // TODO sort on name order not done yet
+        //Collections.sort( serviceList );
+        //Collections.sort( serviceList );
+
         DefaultMutableTreeNode root = new DefaultMutableTreeNode( descriptor );
-        root.add( new DefaultMutableTreeNode ("Services") );
-        root.add( new DefaultMutableTreeNode ("Entities") );
-        root.add( new DefaultMutableTreeNode ("Values") );
-        root.add( new DefaultMutableTreeNode ("Transients") );
-        root.add( new DefaultMutableTreeNode ("Objects") );
-        traverseLayers( root, descriptor.layers() );
+        DefaultMutableTreeNode child;        
+
+        child = new DefaultMutableTreeNode ("Services");
+        addChild(child, serviceList);
+        root.add( child );
+
+        child = new DefaultMutableTreeNode ("Entities");
+        addChild(child, entityList);
+        root.add( child );
+
+        // TODO not done yet
+        child = new DefaultMutableTreeNode ("Values");
+        //addChild(child, objectList);
+        root.add( child );
+
+        // TODO not done yet
+        child = new DefaultMutableTreeNode ("Transients");
+        //addChild(child, objectList);
+        root.add( child );
+
+        child = new DefaultMutableTreeNode ("Objects");
+        addChild(child, objectList);
+        root.add( child );
+
         return root;
     }
 
-    private void traverseLayers( DefaultMutableTreeNode root, Iterable<LayerDetailDescriptor> iter )
+    private void addChild(DefaultMutableTreeNode node, List list)
+    {
+        for (int i=0; i<list.size(); i++)
+        {
+            node.add( new DefaultMutableTreeNode( list.get(i) ) );
+        }
+    }
+
+    private void traverseLayers( Iterable<LayerDetailDescriptor> iter )
     {
         for( LayerDetailDescriptor descriptor : iter )
         {
-            //buildModulesNode( node, descriptor.modules() );
-            traverseModules( root, descriptor.modules() );
+            traverseModules( descriptor.modules() );
         }
     }
 
-    private void traverseModules( DefaultMutableTreeNode root, Iterable<ModuleDetailDescriptor> iter )
+    private void traverseModules( Iterable<ModuleDetailDescriptor> iter )
     {
         for( ModuleDetailDescriptor descriptor : iter )
         {
-            //buildModulesNode( node, descriptor.modules() );
+
+            // Services
+            for( ServiceDetailDescriptor child : descriptor.services() )
+            {
+                serviceList.add(child);
+            }
+
+            // Entities
+            for( EntityDetailDescriptor child : descriptor.entities() )
+            {
+                entityList.add(child);
+            }
+
+            //Values
+            
+            // Transient
+
+            // Objects
+            for( ObjectDetailDescriptor child : descriptor.objects() )
+            {
+                objectList.add(child);
+            }
+
         }
     }
-
 }
