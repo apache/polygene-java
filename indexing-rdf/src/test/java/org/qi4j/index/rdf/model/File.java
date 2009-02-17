@@ -17,6 +17,7 @@
  */
 package org.qi4j.index.rdf.model;
 
+import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Property;
 
 /**
@@ -25,6 +26,7 @@ import org.qi4j.api.property.Property;
  * @author Alin Dreghiciu (adreghiciu@gmail.com)
  * @since 0.6.0, February 16, 2009
  */
+@Queryable( false )
 public interface File
 {
     Property<String> value();

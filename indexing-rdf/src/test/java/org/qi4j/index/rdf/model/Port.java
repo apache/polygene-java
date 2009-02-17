@@ -17,6 +17,7 @@
  */
 package org.qi4j.index.rdf.model;
 
+import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Property;
 
 /**
@@ -27,5 +28,5 @@ import org.qi4j.api.property.Property;
  */
 public interface Port
 {
-    Property<Integer> value();
+    @Queryable( false ) Property<Integer> value();
 }

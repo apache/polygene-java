@@ -17,8 +17,9 @@
  */
 package org.qi4j.index.rdf.model;
 
-import org.qi4j.api.property.Property;
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.property.Property;
 
 /**
  * TODO Add JavaDoc.
@@ -30,7 +31,7 @@ public interface URL
 {
     Property<Protocol> protocol();
 
-    @Optional Property<Host> host();
+    @Optional @Queryable( false ) Property<Host> host();
 
     @Optional Property<Port> port();
 

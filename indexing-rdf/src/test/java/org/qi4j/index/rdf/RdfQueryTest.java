@@ -55,6 +55,7 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.model.City;
 import org.qi4j.index.rdf.model.Domain;
 import org.qi4j.index.rdf.model.Female;
+import org.qi4j.index.rdf.model.File;
 import org.qi4j.index.rdf.model.Male;
 import org.qi4j.index.rdf.model.Nameable;
 import org.qi4j.index.rdf.model.Person;
@@ -68,6 +69,7 @@ import org.qi4j.index.rdf.model.values.ProtocolValue;
 import org.qi4j.index.rdf.model.values.URLValue;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
+import org.qi4j.runtime.query.NotQueryableException;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.spi.query.EntityFinderException;
 
@@ -486,14 +488,50 @@ public class RdfQueryTest
         assertThat( query.find().name().get(), is( equalTo( "Gaming" ) ) );
     }
 
-    @Test
-    @Ignore( "Skip this test till we get the ValueComposite indexing working" )
-    public void script25() throws EntityFinderException
+    @Test( expected = NotQueryableException.class )
+    public void script25()
+    {
+        qbf.newQueryBuilder( File.class );
+    }
+
+    @Test( expected = NotQueryableException.class )
+    public void script26()
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         qb.where(
-            eq( person.personalURL().get().protocol().get().value(), "http" )
+            eq( person.personalURL().get().file().get().value(), "some/path" )
+        );
+    }
+
+    @Test( expected = NotQueryableException.class )
+    public void script27()
+    {
+        QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        qb.where(
+            eq( person.personalURL().get().host().get().value(), "www.qi4j.org" )
+        );
+    }
+
+    @Test( expected = NotQueryableException.class )
+    public void script28()
+    {
+        QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        qb.where(
+            eq( person.personalURL().get().port().get().value(), 8080 )
+        );
+    }
+
+    @Test
+    @Ignore( "Skip this test till we get the ValueComposite indexing working" )
+    public void script29()
+    {
+        QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        qb.where(
+            eq( person.personalURL().get().file().get().value(), "some" )
         );
         Query<Person> query = qb.newQuery();
         verifyUnorderedResults( query, "Jack Doe" );
