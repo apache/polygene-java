@@ -20,15 +20,22 @@ package org.qi4j.index.rdf;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.index.rdf.model.Account;
 import org.qi4j.index.rdf.model.Cat;
 import org.qi4j.index.rdf.model.City;
 import org.qi4j.index.rdf.model.Domain;
 import org.qi4j.index.rdf.model.Female;
 import org.qi4j.index.rdf.model.Male;
+import org.qi4j.index.rdf.model.Protocol;
+import org.qi4j.index.rdf.model.URL;
 import org.qi4j.index.rdf.model.entities.CatEntity;
 import org.qi4j.index.rdf.model.entities.FemaleEntity;
 import org.qi4j.index.rdf.model.entities.MaleEntity;
+import org.qi4j.index.rdf.model.values.ProtocolValue;
+import org.qi4j.index.rdf.model.values.URLValue;
+import org.qi4j.bootstrap.SingletonAssembler;
 
 /**
  * TODO Add JavaDoc
@@ -38,9 +45,12 @@ import org.qi4j.index.rdf.model.entities.MaleEntity;
  */
 class Network
 {
-    static void populate( UnitOfWork unitOfWork )
+    static void populate( SingletonAssembler assembler )
         throws UnitOfWorkCompletionException
     {
+        UnitOfWork unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
+        ValueBuilderFactory valueBuilderFactory = assembler.valueBuilderFactory();
+
         NameableAssert.clear();
         Domain gaming;
         {
@@ -56,7 +66,7 @@ class Network
         {
             EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class );
             programming = domainBuilder.stateOfComposite();
-            programming.name().set("Programming");
+            programming.name().set( "Programming" );
             programming.description().set( "Programing domain" );
             programming = domainBuilder.newInstance();
             NameableAssert.trace( programming );
@@ -86,7 +96,7 @@ class Network
         {
             EntityBuilder<City> cityBuilder = unitOfWork.newEntityBuilder( City.class );
             kualaLumpur = cityBuilder.stateOfComposite();
-            kualaLumpur.name().set("Kuala Lumpur" );
+            kualaLumpur.name().set( "Kuala Lumpur" );
             kualaLumpur.country().set( "Malaysia" );
             kualaLumpur.county().set( "Some Jaya" );
             kualaLumpur = cityBuilder.newInstance();
@@ -152,6 +162,15 @@ class Network
         }
 
         {
+            ValueBuilder<URLValue> urlValueBuilder = valueBuilderFactory.newValueBuilder( URLValue.class );
+            URL url = urlValueBuilder.prototype();
+
+            ValueBuilder<ProtocolValue> protocolValueBuilder = valueBuilderFactory.newValueBuilder( ProtocolValue.class );
+            Protocol protocol = protocolValueBuilder.prototype();
+            protocol.value().set( "http" );
+
+            url.protocol().set( protocolValueBuilder.newInstance() );
+
             EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder( MaleEntity.class );
             Male jackDoe = maleBuilder.stateOfComposite();
             jackDoe.name().set( "Jack Doe" );
@@ -163,6 +182,7 @@ class Network
             jackDoe.mainAccount().set( jacksAccount );
             jackDoe.accounts().add( annsAccount );
             jackDoe.accounts().add( jacksAccount );
+            //jackDoe.personalURL().set( urlValueBuilder.newInstance() );
             jackDoe = maleBuilder.newInstance();
             NameableAssert.trace( jackDoe );
         }

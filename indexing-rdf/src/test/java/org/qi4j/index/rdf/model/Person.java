@@ -44,6 +44,8 @@ public interface Person
 
     @Optional Property<String> email();
 
+    @Optional Property<URL> personalURL();
+
     @Queryable( false ) Property<String> password();
 
     @Queryable( false ) @Optional Association<Account> mainAccount();

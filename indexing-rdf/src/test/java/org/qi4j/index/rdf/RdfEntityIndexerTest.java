@@ -18,20 +18,22 @@
 package org.qi4j.index.rdf;
 
 import org.junit.Test;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import static org.qi4j.index.rdf.Network.populate;
+import org.qi4j.index.rdf.model.entities.AccountEntity;
 import org.qi4j.index.rdf.model.entities.CatEntity;
 import org.qi4j.index.rdf.model.entities.CityEntity;
 import org.qi4j.index.rdf.model.entities.DomainEntity;
 import org.qi4j.index.rdf.model.entities.FemaleEntity;
 import org.qi4j.index.rdf.model.entities.MaleEntity;
-import org.qi4j.index.rdf.model.entities.AccountEntity;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.library.rdf.repository.MemoryRepositoryService;
+import org.qi4j.index.rdf.model.values.ProtocolValue;
+import org.qi4j.index.rdf.model.values.URLValue;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
+import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 
 public class RdfEntityIndexerTest
@@ -52,6 +54,10 @@ public class RdfEntityIndexerTest
                     AccountEntity.class,
                     CatEntity.class
                 );
+                module.addValues(
+                    ProtocolValue.class,
+                    URLValue.class
+                );
                 module.addServices(
                     MemoryEntityStoreService.class,
                     UuidIdentityGeneratorService.class,
@@ -61,7 +67,7 @@ public class RdfEntityIndexerTest
                 );
             }
         };
-        populate( assembler.unitOfWorkFactory().newUnitOfWork() );
+        populate( assembler );
         assembler.serviceFinder().findService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
     }
 }

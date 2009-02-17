@@ -27,28 +27,8 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.Ignore;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.index.rdf.model.City;
-import org.qi4j.index.rdf.model.Domain;
-import org.qi4j.index.rdf.model.Female;
-import org.qi4j.index.rdf.model.Male;
-import org.qi4j.index.rdf.model.Nameable;
-import org.qi4j.index.rdf.model.Person;
-import org.qi4j.index.rdf.model.entities.CatEntity;
-import org.qi4j.index.rdf.model.entities.CityEntity;
-import org.qi4j.index.rdf.model.entities.DomainEntity;
-import org.qi4j.index.rdf.model.entities.FemaleEntity;
-import org.qi4j.index.rdf.model.entities.MaleEntity;
-import org.qi4j.index.rdf.model.entities.AccountEntity;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.library.rdf.repository.MemoryRepositoryService;
-import org.qi4j.library.rdf.entity.EntityStateSerializer;
+import org.junit.Test;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
@@ -66,6 +46,28 @@ import static org.qi4j.api.query.QueryExpressions.orderBy;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.ServiceFinder;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.SingletonAssembler;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.index.rdf.model.City;
+import org.qi4j.index.rdf.model.Domain;
+import org.qi4j.index.rdf.model.Female;
+import org.qi4j.index.rdf.model.Male;
+import org.qi4j.index.rdf.model.Nameable;
+import org.qi4j.index.rdf.model.Person;
+import org.qi4j.index.rdf.model.entities.AccountEntity;
+import org.qi4j.index.rdf.model.entities.CatEntity;
+import org.qi4j.index.rdf.model.entities.CityEntity;
+import org.qi4j.index.rdf.model.entities.DomainEntity;
+import org.qi4j.index.rdf.model.entities.FemaleEntity;
+import org.qi4j.index.rdf.model.entities.MaleEntity;
+import org.qi4j.index.rdf.model.values.ProtocolValue;
+import org.qi4j.index.rdf.model.values.URLValue;
+import org.qi4j.library.rdf.entity.EntityStateSerializer;
+import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.spi.query.EntityFinderException;
 
@@ -91,6 +93,10 @@ public class RdfQueryTest
                     AccountEntity.class,
                     CatEntity.class
                 );
+                module.addValues(
+                    ProtocolValue.class,
+                    URLValue.class
+                );
                 module.addServices(
                     MemoryRepositoryService.class,
                     MemoryEntityStoreService.class,
@@ -101,7 +107,7 @@ public class RdfQueryTest
                 module.addObjects( EntityStateSerializer.class );
             }
         };
-        Network.populate( assembler.unitOfWorkFactory().newUnitOfWork() );
+        Network.populate( assembler );
         unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
         qbf = unitOfWork.queryBuilderFactory();
     }
@@ -143,13 +149,13 @@ public class RdfQueryTest
                                               final String... names )
     {
         final List<String> expected = new ArrayList<String>( Arrays.asList( names ) );
-        final List<String> actual = new ArrayList<String>( );
+        final List<String> actual = new ArrayList<String>();
         for( Nameable result : results )
         {
             actual.add( result.name().get() );
         }
 
-        assertThat("Result is incorrect", actual, equalTo(expected));
+        assertThat( "Result is incorrect", actual, equalTo( expected ) );
     }
 
     @Test
@@ -454,7 +460,7 @@ public class RdfQueryTest
         );
     }
 
-    @Ignore("Skip this one for now. It sporadically fails sometimes." )
+    @Ignore( "Skip this one for now. It sporadically fails sometimes." )
     @Test
     public void script23()
         throws EntityFinderException

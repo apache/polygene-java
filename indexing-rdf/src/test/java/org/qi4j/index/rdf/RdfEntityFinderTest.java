@@ -24,26 +24,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import static org.qi4j.index.rdf.NameableAssert.assertNames;
-import static org.qi4j.index.rdf.NameableAssert.toList;
-import org.qi4j.index.rdf.model.Domain;
-import org.qi4j.index.rdf.model.Female;
-import org.qi4j.index.rdf.model.Male;
-import org.qi4j.index.rdf.model.Nameable;
-import org.qi4j.index.rdf.model.Person;
-import org.qi4j.index.rdf.model.entities.CatEntity;
-import org.qi4j.index.rdf.model.entities.CityEntity;
-import org.qi4j.index.rdf.model.entities.DomainEntity;
-import org.qi4j.index.rdf.model.entities.FemaleEntity;
-import org.qi4j.index.rdf.model.entities.MaleEntity;
-import org.qi4j.index.rdf.model.entities.AccountEntity;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.library.rdf.repository.MemoryRepositoryService;
-import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import static org.qi4j.api.query.QueryExpressions.and;
 import static org.qi4j.api.query.QueryExpressions.eq;
 import static org.qi4j.api.query.QueryExpressions.ge;
@@ -58,6 +38,28 @@ import static org.qi4j.api.query.QueryExpressions.templateFor;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.SingletonAssembler;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import static org.qi4j.index.rdf.NameableAssert.assertNames;
+import static org.qi4j.index.rdf.NameableAssert.toList;
+import org.qi4j.index.rdf.model.Domain;
+import org.qi4j.index.rdf.model.Female;
+import org.qi4j.index.rdf.model.Male;
+import org.qi4j.index.rdf.model.Nameable;
+import org.qi4j.index.rdf.model.Person;
+import org.qi4j.index.rdf.model.entities.AccountEntity;
+import org.qi4j.index.rdf.model.entities.CatEntity;
+import org.qi4j.index.rdf.model.entities.CityEntity;
+import org.qi4j.index.rdf.model.entities.DomainEntity;
+import org.qi4j.index.rdf.model.entities.FemaleEntity;
+import org.qi4j.index.rdf.model.entities.MaleEntity;
+import org.qi4j.index.rdf.model.values.ProtocolValue;
+import org.qi4j.index.rdf.model.values.URLValue;
+import org.qi4j.library.rdf.entity.EntityStateSerializer;
+import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.spi.query.EntityFinder;
@@ -92,6 +94,10 @@ public class RdfEntityFinderTest
                     AccountEntity.class,
                     CatEntity.class
                 );
+                module.addValues(
+                    ProtocolValue.class,
+                    URLValue.class
+                );
                 module.addServices(
                     MemoryEntityStoreService.class,
                     UuidIdentityGeneratorService.class,
@@ -103,7 +109,7 @@ public class RdfEntityFinderTest
 //                module.addComposites( NativeRdfConfiguration.class );
             }
         };
-        Network.populate( assembler.unitOfWorkFactory().newUnitOfWork() );
+        Network.populate( assembler );
         entityFinder = assembler.serviceFinder().findService( RdfQueryService.class ).get();
     }
 
