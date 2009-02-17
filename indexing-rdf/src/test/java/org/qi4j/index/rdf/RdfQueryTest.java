@@ -496,7 +496,7 @@ public class RdfQueryTest
             eq( person.personalURL().get().protocol().get().value(), "http" )
         );
         Query<Person> query = qb.newQuery();
-        verifyUnorderedResults( query, "Joe Doe" );
+        verifyUnorderedResults( query, "Jack Doe" );
     }
 
 }
