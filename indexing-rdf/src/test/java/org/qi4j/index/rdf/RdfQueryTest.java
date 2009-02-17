@@ -486,4 +486,17 @@ public class RdfQueryTest
         assertThat( query.find().name().get(), is( equalTo( "Gaming" ) ) );
     }
 
+    @Test
+    @Ignore( "Skip this test till we get the ValueComposite indexing working" )
+    public void script25() throws EntityFinderException
+    {
+        QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        qb.where(
+            eq( person.personalURL().get().protocol().get().value(), "http" )
+        );
+        Query<Person> query = qb.newQuery();
+        verifyUnorderedResults( query, "Joe Doe" );
+    }
+
 }

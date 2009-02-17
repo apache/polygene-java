@@ -83,6 +83,10 @@ public class Triples
         {
             subject = addTriple( propertyReference.traversedAssociation(), false ).value;
         }
+        else if (propertyReference.traversedProperty() != null)
+        {
+            subject = addTriple( propertyReference.traversedProperty(), false ).value;
+        }
         String prefix = addNamespace( GenericPropertyInfo.toNamespace( propertyReference.propertyAccessor() ) );
         return addTriple( subject, prefix + ":" + propertyReference.propertyName(), optional );
     }
