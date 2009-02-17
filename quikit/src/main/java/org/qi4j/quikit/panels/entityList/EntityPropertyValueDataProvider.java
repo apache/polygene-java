@@ -30,13 +30,13 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.structure.Module;
 import org.qi4j.quikit.DisplayInfo;
 import org.qi4j.quikit.application.QuikitSession;
 import static org.qi4j.quikit.panels.entityList.EntityPropertyValueDataProvider.EntityFieldValue;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.api.structure.Module;
 
 /**
  * @author edward.yakop@gmail.com
@@ -89,7 +89,7 @@ final class EntityPropertyValueDataProvider
             spi = quikitSession.getQi4jSpi();
 
             CompositeDescriptor compositeDescriptor = spi.getCompositeDescriptor( currentEntityClass, module );
-            Iterable<PropertyDescriptor> propertyDescriptorIterable = compositeDescriptor.state().properties();
+            Iterable<? extends PropertyDescriptor> propertyDescriptorIterable = compositeDescriptor.state().properties();
             for( PropertyDescriptor descriptor : propertyDescriptorIterable )
             {
                 DisplayInfo displayInfo = descriptor.metaInfo( DisplayInfo.class );

@@ -40,8 +40,8 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.QualifierQualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.spi.property.PrimitiveType;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.value.PrimitiveType;
 
 /**
  * TODO

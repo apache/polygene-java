@@ -54,7 +54,7 @@ public class ManyAssociationTableModelMixin
         this.spi = spi;
         isList = association instanceof ListAssociation;
         EntityDescriptor descriptor = spi.getEntityDescriptor( (Class) association.type(), module );
-        List<PropertyDescriptor> properties = descriptor.state().properties();
+        List<? extends PropertyDescriptor> properties = descriptor.state().properties();
         columns = new ArrayList<PropertyDescriptor>();
         for( PropertyDescriptor propertyType : properties )
         {

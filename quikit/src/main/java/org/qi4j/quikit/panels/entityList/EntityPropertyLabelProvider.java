@@ -23,13 +23,13 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.structure.Module;
 import org.qi4j.quikit.DisplayInfo;
 import org.qi4j.quikit.application.QuikitSession;
 import static org.qi4j.quikit.panels.entityList.EntityPropertyLabelProvider.PropertyLabel;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.api.structure.Module;
 
 final class EntityPropertyLabelProvider
     implements IDataProvider<PropertyLabel>
@@ -74,7 +74,7 @@ final class EntityPropertyLabelProvider
             spi = quikitSession.getQi4jSpi();
 
             CompositeDescriptor compositeDescriptor = spi.getCompositeDescriptor( currentEntityCompositeClassModel, module );
-            Iterable<PropertyDescriptor> propertyDescriptorIterable = compositeDescriptor.state().properties();
+            Iterable<? extends PropertyDescriptor> propertyDescriptorIterable = compositeDescriptor.state().properties();
             for( PropertyDescriptor propertyDescriptor : propertyDescriptorIterable )
             {
                 DisplayInfo displayInfo = propertyDescriptor.metaInfo( DisplayInfo.class );
