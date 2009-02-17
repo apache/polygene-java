@@ -56,11 +56,19 @@ public interface PropertyReference<T>
     Class<T> propertyType();
 
     /**
-     * Gets the traversed association used to get to this property  or null if there was no traversal involved.
+     * Gets the traversed association used to get to this property or null if there was no association traversal
+     * involved.
      *
      * @return traversed association used to get to this property.
      */
     AssociationReference traversedAssociation();
+
+    /**
+     * Gets the traversed property used to get to this property or null if there was no property traversal involved.
+     *
+     * @return traversed property used to get to this property.
+     */
+    PropertyReference traversedProperty();
 
     /**
      * Evaluates the property reference against a target object.

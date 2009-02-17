@@ -56,28 +56,29 @@ public final class PropertyReferenceImpl<T>
     /**
      * Traversed association.
      */
-    private final AssociationReference traversed;
-
+    private final AssociationReference traversedAssociation;
     /**
-     * Constructor.
-     *
-     * @param accessor method that acts as property
+     * Traversed property.
      */
-    public PropertyReferenceImpl( final Method accessor )
-    {
-        this( accessor, null );
-    }
+    private final PropertyReference traversedProperty;
 
     /**
      * Constructor.
      *
-     * @param accessor  method that acts as property
-     * @param traversed traversed association
+     * @param accessor             method that acts as property
+     * @param traversedAssociation traversed association
+     * @param traversedProperty    traversed property
      */
     @SuppressWarnings( "unchecked" )
     public PropertyReferenceImpl( final Method accessor,
-                                  final AssociationReference traversed )
+                                  final AssociationReference traversedAssociation,
+                                  final PropertyReference traversedProperty )
     {
+        if( traversedAssociation != null
+            && traversedProperty != null )
+        {
+            throw new IllegalArgumentException( "Only one of association or property can be set" );
+        }
         this.accessor = accessor;
         name = accessor.getName();
         declaringType = accessor.getDeclaringClass();
@@ -97,7 +98,8 @@ public final class PropertyReferenceImpl<T>
             throw new QueryException( "Non-queryable property:" + accessor );
         }
         type = (Class<T>) propertyTypeAsType;
-        this.traversed = traversed;
+        this.traversedAssociation = traversedAssociation;
+        this.traversedProperty = traversedProperty;
     }
 
     /**
@@ -137,7 +139,15 @@ public final class PropertyReferenceImpl<T>
      */
     public AssociationReference traversedAssociation()
     {
-        return traversed;
+        return traversedAssociation;
+    }
+
+    /**
+     * @see org.qi4j.api.query.grammar.PropertyReference#traversedProperty()
+     */
+    public PropertyReference traversedProperty()
+    {
+        return traversedProperty;
     }
 
     /**
@@ -149,6 +159,10 @@ public final class PropertyReferenceImpl<T>
         if( traversedAssociation() != null )
         {
             actual = traversedAssociation().eval( target );
+        }
+        else if( traversedProperty() != null )
+        {
+            actual = traversedProperty().eval( target );
         }
         if( actual != null )
         {
@@ -168,7 +182,8 @@ public final class PropertyReferenceImpl<T>
     public String toString()
     {
         return new StringBuilder()
-            .append( traversed == null ? "" : traversed.toString() + "." )
+            .append( traversedAssociation == null ? "" : traversedAssociation.toString() + "." )
+            .append( traversedProperty == null ? "" : traversedProperty.toString() + "." )
             .append( declaringType.getSimpleName() )
             .append( ":" )
             .append( name )

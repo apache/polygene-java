@@ -20,10 +20,11 @@ package org.qi4j.runtime.query.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import static java.lang.reflect.Proxy.newProxyInstance;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
-import org.qi4j.runtime.query.grammar.impl.PropertyReferenceImpl;
 import org.qi4j.runtime.query.QueryException;
+import org.qi4j.runtime.query.grammar.impl.PropertyReferenceImpl;
 
 /**
  * TODO Add JavaDoc
@@ -37,23 +38,15 @@ final class PropertyReferenceProxy
     /**
      * Constructor.
      *
-     * @param accessor property accessor method
-     */
-    PropertyReferenceProxy( final Method accessor )
-    {
-        this( accessor, null );
-    }
-
-    /**
-     * Constructor.
-     *
      * @param accessor             property accessor method
      * @param traversedAssociation traversed association
+     * @param traversedProperty    traversed property
      */
     PropertyReferenceProxy( final Method accessor,
-                            final AssociationReference traversedAssociation )
+                            final AssociationReference traversedAssociation,
+                            final PropertyReference traversedProperty )
     {
-        propertyReference = new PropertyReferenceImpl( accessor, traversedAssociation );
+        propertyReference = new PropertyReferenceImpl( accessor, traversedAssociation, traversedProperty );
     }
 
     public Object invoke( final Object proxy,
@@ -69,6 +62,15 @@ final class PropertyReferenceProxy
         if( "toString".equals( method.getName() ) )
         {
             return propertyReference.toString();
+        }
+        if( args == null && "get".equals( method.getName() ) )
+        {
+            Class<?> propertyClass = propertyReference.propertyType();
+            return newProxyInstance(
+                getClass().getClassLoader(),
+                new Class[]{ propertyClass, PropertyReference.class },
+                new MixinTypeProxy( propertyClass, propertyReference )
+            );
         }
         // TODO handle equals/hashcode?
         throw new QueryException( "Only property methods can be used. Not " + method.getName() + "()." );

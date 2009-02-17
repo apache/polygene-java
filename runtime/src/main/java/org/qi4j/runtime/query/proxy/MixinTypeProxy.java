@@ -43,6 +43,10 @@ public final class MixinTypeProxy
      * Traversed association.
      */
     private final AssociationReference traversedAssociation;
+    /**
+     * Traversed property.
+     */
+    private final PropertyReference traversedProperty;
 
     /**
      * Constructor.
@@ -51,7 +55,7 @@ public final class MixinTypeProxy
      */
     public MixinTypeProxy( final Class templateClass )
     {
-        this( templateClass, null );
+        this( templateClass, null, null );
     }
 
     /**
@@ -63,8 +67,35 @@ public final class MixinTypeProxy
     public MixinTypeProxy( final Class templateClass,
                            final AssociationReference traversedAssociation )
     {
+        this( templateClass, traversedAssociation, null );
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param templateClass     class of template this proxy is for
+     * @param traversedProperty traversed property
+     */
+    public MixinTypeProxy( final Class templateClass,
+                           final PropertyReference traversedProperty )
+    {
+        this( templateClass, null, traversedProperty );
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param templateClass        class of template this proxy is for
+     * @param traversedAssociation traversed association
+     * @param traversedProperty    traversed property
+     */
+    private MixinTypeProxy( final Class templateClass,
+                            final AssociationReference traversedAssociation,
+                            final PropertyReference traversedProperty )
+    {
         this.templateClass = templateClass;
         this.traversedAssociation = traversedAssociation;
+        this.traversedProperty = traversedProperty;
     }
 
     public Object invoke( final Object proxy,
@@ -79,7 +110,7 @@ public final class MixinTypeProxy
                 return newProxyInstance(
                     getClass().getClassLoader(),
                     new Class[]{ methodReturnType, PropertyReference.class },
-                    new PropertyReferenceProxy( method, traversedAssociation )
+                    new PropertyReferenceProxy( method, traversedAssociation, traversedProperty )
                 );
             }
             else if( Association.class.isAssignableFrom( methodReturnType ) )

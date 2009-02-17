@@ -26,8 +26,8 @@ import java.lang.reflect.Type;
 import org.qi4j.api.entity.association.Qualifier;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.util.Classes;
-import org.qi4j.runtime.query.grammar.impl.AssociationReferenceImpl;
 import org.qi4j.runtime.query.QueryException;
+import org.qi4j.runtime.query.grammar.impl.AssociationReferenceImpl;
 
 /**
  * TODO Add JavaDoc
@@ -91,12 +91,10 @@ public final class AssociationReferenceProxy
                     new Class[]{ roleType },
                     new MixinTypeProxy( roleType, associationReference.withQualifier( AssociationReference.ReferenceType.ROLE ) ) );
 
-                Qualifier associationQualifier = Qualifier.qualifier( associated, role );
-                return associationQualifier;
+                return Qualifier.qualifier( associated, role );
             }
             else
             {
-
                 Class<?> associationClass = (Class<?>) associationType;
                 return newProxyInstance(
                     this.getClass().getClassLoader(),
