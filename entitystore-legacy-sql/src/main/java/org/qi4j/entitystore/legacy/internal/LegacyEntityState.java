@@ -35,8 +35,10 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
+import org.qi4j.spi.entity.helpers.DefaultValueState;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.value.ValueState;
 
 /**
  * {@code IBatisEntityState} represents {@code IBatis} version of {@link org.qi4j.spi.entity.EntityState}.
@@ -320,5 +322,10 @@ public final class LegacyEntityState
     public void markAsLoaded()
     {
         status = EntityStatus.LOADED;
+    }
+
+    public ValueState newValueState( Map<String, Object> values )
+    {
+        return new DefaultValueState(values);
     }
 }

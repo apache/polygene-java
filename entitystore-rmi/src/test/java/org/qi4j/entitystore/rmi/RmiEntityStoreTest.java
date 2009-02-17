@@ -16,16 +16,12 @@
  */
 package org.qi4j.entitystore.rmi;
 
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.test.entity.AbstractEntityStoreTest;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
-import org.qi4j.entitystore.rmi.ClientRmiEntityStoreService;
-import org.qi4j.entitystore.rmi.RegistryConfiguration;
-import org.qi4j.entitystore.rmi.RegistryService;
-import org.qi4j.entitystore.rmi.ServerRmiEntityStoreService;
+import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
  * Test the RMI store
@@ -40,8 +36,9 @@ public class RmiEntityStoreTest
         module.addServices( ClientRmiEntityStoreService.class, UuidIdentityGeneratorService.class );
 
         ModuleAssembly remote = module.layerAssembly().newModuleAssembly( "Server" );
-        remote.addEntities( TestEntity.class, TestValue.class ).visibleIn( Visibility.module );
+        remote.addEntities( TestEntity.class ).visibleIn( Visibility.module );
         remote.addEntities( RegistryConfiguration.class );
+        remote.addValues( TestValue.class ).visibleIn( Visibility.module );
         remote.addServices( ServerRmiEntityStoreService.class,
                             RegistryService.class,
                             MemoryEntityStoreService.class ).instantiateOnStartup();

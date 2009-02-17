@@ -28,6 +28,8 @@ import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.helpers.DefaultValueState;
+import org.qi4j.spi.value.ValueState;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -278,6 +280,12 @@ public class DirectEntityState implements CommittableEntityState
     public void markAsLoaded()
     {
         status = EntityStatus.LOADED;
+    }
+
+    public ValueState newValueState( Map<String, Object> values )
+    {
+        // TODO Replace with something Neo4j specific!
+        return new DefaultValueState(values);
     }
 
     // Implementation internals

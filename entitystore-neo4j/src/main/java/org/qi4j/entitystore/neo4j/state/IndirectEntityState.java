@@ -23,6 +23,8 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.helpers.DefaultValueState;
+import org.qi4j.spi.value.ValueState;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -206,6 +208,11 @@ public class IndirectEntityState implements CommittableEntityState
     public void markAsLoaded()
     {
         status = EntityStatus.LOADED;
+    }
+
+    public ValueState newValueState( Map<String, Object> values )
+    {
+        return new DefaultValueState(values);
     }
 
     // Implementation internals

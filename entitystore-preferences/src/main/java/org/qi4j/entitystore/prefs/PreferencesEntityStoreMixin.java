@@ -48,8 +48,8 @@ import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.entity.helpers.DefaultEntityState;
-import org.qi4j.spi.property.PrimitiveType;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.value.PrimitiveType;
 
 /**
  * Implementation of EntityStore that is backed by the Preferences API.

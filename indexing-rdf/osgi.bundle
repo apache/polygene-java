@@ -38,6 +38,7 @@ Import-Package: org.apache.commons.logging, \
                 org.qi4j.spi.property, \
                 org.qi4j.spi.query, \
                 org.qi4j.spi.structure, \
+                org.qi4j.spi.value, \
                 org.slf4j, \
                 org.w3c.dom, \
                 org.xml.sax, \
