@@ -19,7 +19,8 @@ Import-Package: org.qi4j.api, \
                 org.qi4j.api.sideeffect, \
                 org.qi4j.api.structure, \
                 org.qi4j.api.unitofwork, \
-                org.qi4j.api.util
+                org.qi4j.api.util, \
+                org.qi4j.api.value
 
 Export-Package: org.qi4j.spi;version=${pom.version}, \
                 org.qi4j.spi.composite;version=${pom.version}, \
@@ -38,4 +39,5 @@ Export-Package: org.qi4j.spi;version=${pom.version}, \
                 org.qi4j.spi.service.importer;version=${pom.version}, \
                 org.qi4j.spi.sideeffect, \
                 org.qi4j.spi.structure;version=${pom.version}, \
+                org.qi4j.spi.value;version=${pom.version}, \
                 org.qi4j.entitystore.memory;version=${pom.version}

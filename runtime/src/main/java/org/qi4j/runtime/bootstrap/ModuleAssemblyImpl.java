@@ -42,7 +42,6 @@ import org.qi4j.bootstrap.ObjectDeclaration;
 import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.bootstrap.ValueDeclaration;
 import org.qi4j.runtime.composite.CompositeModel;
-import org.qi4j.runtime.composite.ValueModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.service.ImportedServiceModel;
@@ -53,6 +52,7 @@ import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.ObjectsModel;
 import org.qi4j.runtime.structure.ServicesModel;
 import org.qi4j.runtime.structure.ValuesModel;
+import org.qi4j.runtime.value.ValueModel;
 
 /**
  * Assembly of a Module. This is where you register all objects, Composites,

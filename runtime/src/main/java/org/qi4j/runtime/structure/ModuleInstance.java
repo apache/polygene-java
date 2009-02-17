@@ -28,6 +28,7 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
@@ -40,10 +41,10 @@ import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.composite.UsesInstance;
-import org.qi4j.runtime.composite.ValueModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
 
@@ -316,6 +317,10 @@ public class ModuleInstance
         Class clazz = composites.model().getClassForName( type );
         if( clazz == null )
         {
+            clazz = values.model().getClassForName( type );
+        }
+        if( clazz == null )
+        {
             clazz = entities.model().getClassForName( type );
         }
         if( clazz == null )
@@ -385,7 +390,7 @@ public class ModuleInstance
             }
 
             CompositeModel compositeModel = realModuleInstance.composites().model().getCompositeModelFor( mixinType );
-            return compositeModel.newCompositeInstance( realModuleInstance, UsesInstance.NO_USES, compositeModel.newDefaultState() ).<T>proxy();
+            return compositeModel.newCompositeInstance( realModuleInstance, UsesInstance.NO_USES, compositeModel.newInitialState() ).<T>proxy();
         }
     }
 
@@ -438,7 +443,9 @@ public class ModuleInstance
             }
 
             ValueModel valueModel = realModuleInstance.values().model().getValueModelFor( valueType );
-            return valueModel.newValueInstance( realModuleInstance, valueModel.newDefaultState(), false ).<T>proxy();
+            StateHolder initialState = valueModel.newInitialState();
+            valueModel.checkConstraints( initialState, false );
+            return valueModel.newValueInstance( realModuleInstance, initialState ).<T>proxy();
         }
     }
 

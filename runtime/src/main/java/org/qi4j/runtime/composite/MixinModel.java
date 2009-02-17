@@ -93,7 +93,12 @@ public final class MixinModel
     }
 
     // Context
-    public Object newInstance( CompositeInstance compositeInstance, UsesInstance uses, StateHolder state )
+    public Object newInstance( CompositeInstance compositeInstance, StateHolder state)
+    {
+        return newInstance(compositeInstance, state, UsesInstance.NO_USES);
+    }
+    
+    public Object newInstance( CompositeInstance compositeInstance, StateHolder state, UsesInstance uses )
     {
         InjectionContext injectionContext = new InjectionContext( compositeInstance, uses, state );
         Object mixin;

@@ -14,15 +14,13 @@
 
 package org.qi4j.runtime.entity.association;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.io.Serializable;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.association.AbstractAssociation;
@@ -44,7 +42,7 @@ import org.qi4j.spi.entity.association.ManyAssociationType;
 /**
  * TODO
  */
-public final class AssociationsModel
+public final class EntityAssociationsModel
     implements Serializable
 {
     private final Set<Method> methods = new MethodSet();
@@ -54,7 +52,7 @@ public final class AssociationsModel
     private final ConstraintsModel constraints;
     private AssociationDeclarations associationDeclarations;
 
-    public AssociationsModel( ConstraintsModel constraints, AssociationDeclarations associationDeclarations )
+    public EntityAssociationsModel( ConstraintsModel constraints, AssociationDeclarations associationDeclarations )
     {
         this.constraints = constraints;
         this.associationDeclarations = associationDeclarations;

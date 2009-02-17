@@ -12,31 +12,28 @@
  *
  */
 
-package org.qi4j.runtime.composite;
+package org.qi4j.runtime.value;
 
-import java.io.Serializable;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.spi.composite.CompositeInstance;
+import org.qi4j.runtime.composite.AbstractStateModel;
+import org.qi4j.runtime.property.PropertiesInstance;
+import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.value.ValueState;
 
 /**
- * Model for Composite mixins
+ * State model for values
  */
-public final class MixinsModel extends AbstractMixinsModel
-    implements Serializable
+public final class ValueStateModel
+    extends AbstractStateModel<ValuePropertiesModel>
 {
-    public MixinsModel( Class<? extends Composite> compositeType)
+    public ValueStateModel( ValuePropertiesModel propertiesModel)
     {
-        super( compositeType );
+        super(propertiesModel);
     }
 
-    // Context
-    public void newMixins( CompositeInstance compositeInstance, UsesInstance uses, StateHolder state, Object[] mixins )
+    public StateHolder newInstance( ModuleInstance moduleInstance, ValueState state )
     {
-        int i = 0;
-        for( MixinModel mixinModel : mixinModels )
-        {
-            mixins[ i++ ] = mixinModel.newInstance( compositeInstance, state, uses );
-        }
+        PropertiesInstance properties = propertiesModel.newInstance( moduleInstance, state );
+        return new StateInstance(properties);
     }
 }

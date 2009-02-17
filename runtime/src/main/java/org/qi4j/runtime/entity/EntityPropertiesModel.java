@@ -17,112 +17,33 @@ package org.qi4j.runtime.entity;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.io.Serializable;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.util.MethodKeyMap;
-import org.qi4j.api.util.MethodSet;
-import org.qi4j.api.util.MethodValueMap;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
+import org.qi4j.runtime.property.AbstractPropertiesModel;
 import org.qi4j.runtime.property.PropertiesInstance;
-import org.qi4j.runtime.property.PropertyModel;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.util.Annotations;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
 
 /**
- * TODO
+ * Model for Properties in Entities
  */
 public final class EntityPropertiesModel
-    implements Serializable
+    extends AbstractPropertiesModel<EntityPropertyModel>
 {
-    private final Set<Method> methods = new MethodSet();
-    private final List<EntityPropertyModel> propertyModels = new ArrayList<EntityPropertyModel>();
-    private final Map<Method, EntityPropertyModel> mapMethodPropertyModel = new MethodKeyMap<EntityPropertyModel>();
-    private final Map<String, Method> accessors = new MethodValueMap<String>();
-    private final ConstraintsModel constraints;
-    private PropertyDeclarations propertyDeclarations;
-    private boolean immutable;
-
     public EntityPropertiesModel( ConstraintsModel constraints, PropertyDeclarations propertyDeclarations, boolean immutable )
     {
-        this.constraints = constraints;
-        this.propertyDeclarations = propertyDeclarations;
-        this.immutable = immutable;
-    }
-
-    public void addPropertyFor( Method method )
-    {
-        if( !methods.contains( method ) )
-        {
-            if( Property.class.isAssignableFrom( method.getReturnType() ) )
-            {
-                EntityPropertyModel propertyModel = newPropertyModel( method );
-                final String qualifiedName = propertyModel.qualifiedName();
-                if( !accessors.containsKey( qualifiedName ) )
-                {
-                    accessors.put( qualifiedName, propertyModel.accessor() );
-                    propertyModels.add( propertyModel );
-                    mapMethodPropertyModel.put( method, propertyModel );
-                }
-            }
-            methods.add( method );
-        }
-    }
-
-    public PropertiesInstance newBuilderInstance()
-    {
-        Map<Method, Property<?>> properties = new HashMap<Method, Property<?>>();
-        for( PropertyModel propertyModel : propertyModels )
-        {
-            Property property = propertyModel.newBuilderInstance();
-            properties.put( propertyModel.accessor(), property );
-        }
-
-        return new PropertiesInstance( properties );
-    }
-
-    public Property<?> newInstance( Method accessor, EntityState state, UnitOfWorkInstance uow )
-    {
-        return mapMethodPropertyModel.get( accessor ).newEntityInstance( state, uow );
-    }
-
-    public PropertyDescriptor getPropertyByName( String name )
-    {
-        for( EntityPropertyModel propertyModel : propertyModels )
-        {
-            if( propertyModel.name().equals( name ) )
-            {
-                return propertyModel;
-            }
-        }
-        return null;
-    }
-
-    public PropertyDescriptor getPropertyByQualifiedName( String name )
-    {
-        for( EntityPropertyModel propertyModel : propertyModels )
-        {
-            if( propertyModel.qualifiedName().equals( name ) )
-            {
-                return propertyModel;
-            }
-        }
-        return null;
+        super(constraints, propertyDeclarations,  immutable);
     }
 
     public void setState( PropertiesInstance properties, EntityState entityState )
@@ -138,22 +59,17 @@ public final class EntityPropertiesModel
         }
     }
 
-    public List<PropertyDescriptor> properties()
-    {
-        return new ArrayList<PropertyDescriptor>( propertyModels );
-    }
-
     public Iterable<PropertyType> propertyTypes()
     {
         List<PropertyType> propertyTypes = new ArrayList<PropertyType>();
-        for( EntityPropertyModel propertyModel : propertyModels )
+        for( EntityPropertyModel propertyModel : properties() )
         {
             propertyTypes.add( propertyModel.propertyType() );
         }
         return propertyTypes;
     }
 
-    private EntityPropertyModel newPropertyModel( Method method )
+    protected EntityPropertyModel newPropertyModel( Method method )
     {
         Annotation[] annotations = Annotations.getMethodAndTypeAnnotations( method );
         boolean optional = Annotations.getAnnotationOfType( annotations, Optional.class ) != null;

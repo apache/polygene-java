@@ -30,7 +30,7 @@ import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 
 /**
- * TODO
+ * Model for Transient Composites
  */
 public class CompositeModel
     extends AbstractCompositeModel
@@ -46,11 +46,12 @@ public class CompositeModel
         boolean immutable = metaInfo.get( Immutable.class ) != null;
         PropertiesModel propertiesModel = new PropertiesModel( constraintsModel, propertyDeclarations, immutable );
         StateModel stateModel = new StateModel( propertiesModel );
-        MixinsModel mixinsModel = new MixinsModel( compositeType, stateModel );
+        MixinsModel mixinsModel = new MixinsModel( compositeType );
         ConcernsDeclaration concernsModel = new ConcernsDeclaration( compositeType, concerns );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
         CompositeMethodsModel compositeMethodsModel =
             new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
+        stateModel.addStateFor( compositeMethodsModel.methods() );
 
         return new CompositeModel(
             compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
@@ -109,7 +110,7 @@ public class CompositeModel
         try
         {
             // Instantiate all mixins
-            mixinsModel.newMixins( compositeInstance,
+            ((MixinsModel)mixinsModel).newMixins( compositeInstance,
                                    uses,
                                    state,
                                    mixins );
@@ -127,17 +128,12 @@ public class CompositeModel
 
     public StateHolder newBuilderState()
     {
-        return stateModel.newBuilderState();
-    }
-
-    public StateHolder newDefaultState()
-    {
-        return stateModel.newDefaultInstance();
+        return stateModel.newBuilderInstance();
     }
 
     public StateHolder newState( StateHolder state )
     {
-        return stateModel.newState( state );
+        return stateModel.newInstance( state );
     }
 
     public String toURI()

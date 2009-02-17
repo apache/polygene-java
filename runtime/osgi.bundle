@@ -70,7 +70,8 @@ Import-Package: net.sf.cglib.asm;version=2.1.3, \
                 org.qi4j.spi.service, \
                 org.qi4j.spi.service.importer, \
                 org.qi4j.spi.sideeffect, \
-                org.qi4j.spi.structure
+                org.qi4j.spi.structure, \
+                org.qi4j.spi.value
 
 Export-Package: net.sf.cglib.asm;version=2.1.3, \
                 net.sf.cglib.asm.attrs;version=2.1.3, \

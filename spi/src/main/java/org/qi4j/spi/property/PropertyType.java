@@ -20,14 +20,66 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.entity.RDF;
+import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.util.Classes;
+import org.qi4j.spi.value.CollectionType;
+import org.qi4j.spi.value.CompoundType;
+import org.qi4j.spi.value.PrimitiveType;
+import org.qi4j.spi.value.SerializableType;
+import org.qi4j.spi.value.ValueType;
 
 /**
  * TODO
  */
 public class PropertyType
-    implements Serializable
+    implements Serializable, Comparable<PropertyType>
 {
+    public static ValueType createValueType(Type type)
+    {
+        ValueType valueType = null;
+        if (CollectionType.isCollection( type ))
+        {
+            if (type instanceof ParameterizedType)
+            {
+                ParameterizedType pt = (ParameterizedType) type;
+                valueType = new CollectionType(((Class)pt.getRawType()).getName(), createValueType( pt.getActualTypeArguments()[0] ));
+            } else
+            {
+                valueType = new CollectionType(((Class)type).getName(), createValueType( Object.class ));
+            }
+        } else if ( CompoundType.isCompound( type ))
+        {
+            Class valueTypeClass = (Class)type;
+            List<PropertyType> types = new ArrayList<PropertyType>( );
+            for( Method method : valueTypeClass.getMethods() )
+            {
+                Type returnType = method.getGenericReturnType();
+                if (returnType instanceof ParameterizedType && ((ParameterizedType)returnType).getRawType().equals( Property.class))
+                {
+                    Type propType = ((ParameterizedType)returnType).getActualTypeArguments()[0];
+                    RDF rdfAnnotation = method.getAnnotation( RDF.class );
+                    String rdf = rdfAnnotation == null ? null : rdfAnnotation.value();
+                    Queryable queryableAnnotation = method.getAnnotation( Queryable.class );
+                    boolean queryable = queryableAnnotation == null ? true : queryableAnnotation.value();
+                    PropertyType propertyType = new PropertyType( GenericPropertyInfo.getQualifiedName( method ), createValueType(propType), GenericPropertyInfo.toURI( method ), rdf, queryable, PropertyTypeEnum.IMMUTABLE);
+                    types.add(propertyType);
+                }
+            }
+            valueType = new CompoundType(valueTypeClass.getName(), types);
+        } else if ( PrimitiveType.isPrimitive( type ))
+        {
+            valueType = new PrimitiveType(((Class)type).getName());
+        } else
+        {
+            valueType = new SerializableType( Classes.getRawClass(type).getName());
+        }
+
+        return valueType;
+    }
+
     public enum PropertyTypeEnum
     {
         MUTABLE, IMMUTABLE, COMPUTED
@@ -41,14 +93,14 @@ public class PropertyType
     private final PropertyTypeEnum propertyType;
 
     public PropertyType( final String qualifiedName,
-                         final Type type,
+                         final ValueType type,
                          final String uri,
                          final String rdf,
                          final boolean queryable,
                          final PropertyTypeEnum propertyType )
     {
         this.qualifiedName = qualifiedName;
-        this.type = createValueType(type);
+        this.type = type;
         this.uri = uri;
         this.rdf = rdf;
         this.queryable = queryable;
@@ -90,35 +142,8 @@ public class PropertyType
         return qualifiedName + "(" + type + "," + uri + ")";
     }
 
-    private ValueType createValueType(Type type)
+    public int compareTo( PropertyType pt )
     {
-        ValueType valueType = null;
-        if (CollectionType.isCollection( type ))
-        {
-            ParameterizedType pt = (ParameterizedType) type;
-            valueType = new CollectionType(((Class)pt.getRawType()).getName(), createValueType( pt.getActualTypeArguments()[0] ));
-        } else if (CompoundType.isCompound( type ))
-        {
-            Class valueTypeClass = (Class)type;
-            List<ValueType> types = new ArrayList<ValueType>( ); 
-            for( Method method : valueTypeClass.getMethods() )
-            {
-                Type returnType = method.getGenericReturnType();
-                if (returnType instanceof ParameterizedType && ((ParameterizedType)returnType).getRawType().equals( Property.class))
-                {
-                    Type propType = ((ParameterizedType)returnType).getActualTypeArguments()[0];
-                    types.add(createValueType( propType ));
-                }
-            }
-            valueType = new CompoundType(valueTypeClass.getName(), types);
-        } else if (PrimitiveType.isPrimitive( type ))
-        {
-            valueType = new PrimitiveType(((Class)type).getName());
-        } else
-        {
-            valueType = new SerializableType(((Class)type).getName());
-        }
-
-        return valueType;
+        return qualifiedName.compareTo( pt.qualifiedName );
     }
 }

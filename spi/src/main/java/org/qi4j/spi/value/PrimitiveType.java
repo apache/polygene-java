@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.spi.property;
+package org.qi4j.spi.value;
 
 import java.lang.reflect.Type;
 import java.util.HashSet;
@@ -45,6 +45,8 @@ public class PrimitiveType
         {
             Class typeClass = (Class) type;
             if (typeClass.isPrimitive())
+                return true;
+            else if (typeClass.isEnum())
                 return true;
         }
 

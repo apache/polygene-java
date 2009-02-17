@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2008, Edward Yakop. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,45 +11,38 @@
  * limitations under the License.
  *
  */
-package org.qi4j.runtime.property;
+package org.qi4j.runtime.value;
 
 import org.qi4j.api.property.AbstractPropertyInstance;
 import org.qi4j.api.property.PropertyInfo;
-import org.qi4j.runtime.composite.ConstraintsCheck;
 
 /**
- * {@code PropertyInstance} represents a property.
+ * {@code ValuePropertyInstance} represents a ValueComposite property. It is always immutable.
  *
  * @author Rickard Öberg
- * @since 0.1.0
  */
-public class PropertyInstance<T> extends AbstractPropertyInstance<T>
+public class ValuePropertyInstance<T> extends AbstractPropertyInstance<T>
 {
-    private volatile T value;
-    private ConstraintsCheck constraints;
+    protected T value;
 
     /**
      * Construct an instance of {@code PropertyInstance} with the specified arguments.
      *
      * @param aPropertyInfo The property info. This argument must not be {@code null}.
      * @param aValue        The property value.
-     * @param constraints constraint checker for this property
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
-     * @since 0.1.0
      */
-    public PropertyInstance( PropertyInfo aPropertyInfo, T aValue, ConstraintsCheck constraints )
+    public ValuePropertyInstance( PropertyInfo aPropertyInfo, T aValue)
         throws IllegalArgumentException
     {
         super( aPropertyInfo );
         value = aValue;
-        this.constraints = constraints;
     }
 
     /**
      * Returns this property value.
      *
      * @return This property value.
-     * @since 0.1.0
      */
     public T get()
     {
@@ -64,22 +56,13 @@ public class PropertyInstance<T> extends AbstractPropertyInstance<T>
      */
     public void set( T aNewValue )
     {
-        if( isImmutable())
-            throw new IllegalStateException( "Property [" + qualifiedName() + "] is immutable." );
-
-        if( constraints != null)
-        {
-            constraints.checkConstraints( aNewValue, false );
-        }
-
-        value = aNewValue;
+        throw new IllegalStateException( "Property [" + qualifiedName() + "] is immutable." );
     }
 
     /**
      * Returns the value as string.
      *
      * @return The value as string.
-     * @since 0.1.0
      */
     @Override
     public String toString()

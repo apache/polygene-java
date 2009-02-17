@@ -14,6 +14,8 @@
 
 package org.qi4j.api.property;
 
+import java.math.BigDecimal;
+
 /**
  * Convenience class for mathematical operations on
  * numerical properties.
@@ -117,6 +119,31 @@ public class NumberProperty
    public static Property<Float> div(Property<Float> property, float amount)
    {
       property.set(property.get()/amount);
+      return property;
+   }
+
+   // BigDecimal operations
+   public static Property<BigDecimal> add(Property<BigDecimal> property, BigDecimal amount)
+   {
+      property.set(property.get().add(amount));
+      return property;
+   }
+
+   public static Property<BigDecimal> mult(Property<BigDecimal> property, BigDecimal amount)
+   {
+      property.set(property.get().multiply(amount));
+      return property;
+   }
+
+   public static Property<BigDecimal> sub(Property<BigDecimal> property, BigDecimal amount)
+   {
+      property.set(property.get().subtract(amount));
+      return property;
+   }
+
+   public static Property<BigDecimal> div(Property<BigDecimal> property, BigDecimal amount)
+   {
+      property.set(property.get().divide(amount));
       return property;
    }
 }

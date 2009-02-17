@@ -12,29 +12,34 @@
  *
  */
 
-package org.qi4j.runtime.composite;
+package org.qi4j.runtime.value;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.InvalidValueCompositeException;
-import org.qi4j.api.property.Property;
+import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.runtime.property.PropertiesModel;
+import org.qi4j.runtime.composite.AbstractCompositeModel;
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.composite.CompositeMethodsModel;
+import org.qi4j.runtime.composite.ConcernsDeclaration;
+import org.qi4j.runtime.composite.ConstraintsModel;
+import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.composite.SideEffectsDeclaration;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
+import org.qi4j.spi.value.ValueState;
 
 /**
- * TODO
+ * Model for ValueComposites
  */
 public final class ValueModel extends AbstractCompositeModel
     implements Serializable
 {
-    public static ValueModel newModel( final Class<? extends Composite> compositeType,
+    public static ValueModel newModel( final Class<? extends ValueComposite> compositeType,
                                        final Visibility visibility,
                                        final MetaInfo metaInfo,
                                        final PropertyDeclarations propertyDeclarations,
@@ -42,19 +47,21 @@ public final class ValueModel extends AbstractCompositeModel
                                        final Iterable<Class<?>> sideEffects)
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
-        PropertiesModel propertiesModel = new PropertiesModel( constraintsModel, propertyDeclarations, true );
-        StateModel stateModel = new StateModel( propertiesModel );
-        MixinsModel mixinsModel = new MixinsModel( compositeType, stateModel );
+        ValuePropertiesModel propertiesModel = new ValuePropertiesModel( constraintsModel, propertyDeclarations);
+
+        ValueStateModel stateModel = new ValueStateModel( propertiesModel);
+        ValueMixinsModel mixinsModel = new ValueMixinsModel( compositeType );
         ConcernsDeclaration concernsModel = new ConcernsDeclaration( compositeType, concerns );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
         // TODO: Disable constraints, concerns and sideeffects??
         CompositeMethodsModel compositeMethodsModel =
             new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
+        stateModel.addStateFor( compositeMethodsModel.methods() );
 
         return new ValueModel( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
     }
 
-    private ValueModel( final Class<? extends Composite> compositeType, final Visibility visibility, final MetaInfo metaInfo, final MixinsModel mixinsModel, final StateModel stateModel, final CompositeMethodsModel compositeMethodsModel )
+    private ValueModel( final Class<? extends ValueComposite> compositeType, final Visibility visibility, final MetaInfo metaInfo, final ValueMixinsModel mixinsModel, final ValueStateModel stateModel, final CompositeMethodsModel compositeMethodsModel )
     {
         super( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
     }
@@ -73,33 +80,25 @@ public final class ValueModel extends AbstractCompositeModel
         resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null, null );
         compositeMethodsModel.bind( resolution );
         mixinsModel.bind( resolution );
-        
-        for( Method method : compositeMethodsModel.methods() )
-        {
-            if( !Composite.class.equals( method.getDeclaringClass() ) )
-            {
-                if( !Property.class.isAssignableFrom( method.getReturnType() ) )
-                {
-                    throw new InvalidValueCompositeException( "Only Property methods are allowed in ValueComposites: " + method.getReturnType() );
-                }
-            }
-        }
     }
 
-    public ValueCompositeInstance newValueInstance( ModuleInstance moduleInstance,
-                                                   StateHolder state, boolean isPrototype )
+    public void checkConstraints( StateHolder state, boolean allowNull )
+        throws ConstraintViolationException
     {
-        stateModel.checkConstraints( state, isPrototype );
+        stateModel.checkConstraints( state, allowNull );
+    }
 
+    public ValueInstance newValueInstance( ModuleInstance moduleInstance,
+                                                   StateHolder state)
+    {
         Object[] mixins = mixinsModel.newMixinHolder();
 
-        ValueCompositeInstance compositeInstance = new ValueCompositeInstance( this, moduleInstance, mixins, state );
+        ValueInstance instance = new ValueInstance( this, moduleInstance, mixins, state );
 
         try
         {
             // Instantiate all mixins
-            mixinsModel.newMixins( compositeInstance,
-                                   UsesInstance.NO_USES,
+            ((ValueMixinsModel)mixinsModel).newMixins( instance,
                                    state,
                                    mixins );
 
@@ -111,6 +110,12 @@ public final class ValueModel extends AbstractCompositeModel
             throw e;
         }
         // Return
-        return compositeInstance;
+        return instance;
+    }
+
+    public ValueInstance newValueInstance( ModuleInstance moduleInstance, ValueState state)
+    {
+        StateHolder stateHolder = ((ValueStateModel)stateModel).newInstance( moduleInstance, state );
+        return newValueInstance( moduleInstance, stateHolder );
     }
 }

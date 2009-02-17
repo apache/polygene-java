@@ -42,7 +42,7 @@ import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.SideEffectsDeclaration;
-import org.qi4j.runtime.entity.association.AssociationsModel;
+import org.qi4j.runtime.entity.association.EntityAssociationsModel;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -74,11 +74,11 @@ public final class EntityModel
                                         Iterable<Class<?>> sideEffects)
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( type );
-        boolean immutable = metaInfo.get( Immutable.class ) != null;;
+        boolean immutable = metaInfo.get( Immutable.class ) != null;
         EntityPropertiesModel entityPropertiesModel = new EntityPropertiesModel( constraintsModel, propertyDecs, immutable );
-        AssociationsModel associationsModel = new AssociationsModel( constraintsModel, associationDecs );
+        EntityAssociationsModel associationsModel = new EntityAssociationsModel( constraintsModel, associationDecs );
         EntityStateModel stateModel = new EntityStateModel( entityPropertiesModel, associationsModel );
-        EntityMixinsModel mixinsModel = new EntityMixinsModel( type, stateModel );
+        EntityMixinsModel mixinsModel = new EntityMixinsModel( type );
         ConcernsDeclaration concernsDeclaration = new ConcernsDeclaration( type, concerns );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( type, sideEffects );
         CompositeMethodsModel compositeMethodsModel = new CompositeMethodsModel( type,
@@ -86,6 +86,7 @@ public final class EntityModel
                                                                                  concernsDeclaration,
                                                                                  sideEffectsModel,
                                                                                  mixinsModel );
+        stateModel.addStateFor( compositeMethodsModel.methods() );
 
         return new EntityModel( type,
                                 visibility,

@@ -121,7 +121,7 @@ public final class CompositeBuilderInstance<T>
         StateHolder instanceState;
         if( state == null )
         {
-            instanceState = compositeModel.newDefaultState();
+            instanceState = compositeModel.newInitialState();
         }
         else
         {

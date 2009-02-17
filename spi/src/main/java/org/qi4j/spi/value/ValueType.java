@@ -12,38 +12,14 @@
  *
  */
 
-package org.qi4j.spi.property;
+package org.qi4j.spi.value;
 
-import java.lang.reflect.Type;
-import java.util.List;
+import java.io.Serializable;
 
 /**
  * TODO
  */
-public class CompoundType
-    implements ValueType
+public interface ValueType
+    extends Serializable
 {
-    public static boolean isCompound( Type type)
-    {
-        return type instanceof Class && ((Class)type).isInterface();        
-    }
-
-    private String type;
-    private List<ValueType> types;
-
-    public CompoundType( String type, List<ValueType> types )
-    {
-        this.type = type;
-        this.types = types;
-    }
-
-    public String type()
-    {
-        return type;
-    }
-
-    public Iterable<ValueType> types()
-    {
-        return types;
-    }
 }

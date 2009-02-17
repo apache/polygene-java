@@ -26,5 +26,5 @@ public interface StateDescriptor
 
     PropertyDescriptor getPropertyByQualifiedName( String name );
 
-    List<PropertyDescriptor> properties();
+    List<? extends PropertyDescriptor> properties();
 }

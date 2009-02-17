@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.spi.property;
+package org.qi4j.spi.value;
 
 /**
  * TODO
@@ -28,6 +28,11 @@ public class SerializableType
     }
 
     public String type()
+    {
+        return type;
+    }
+
+    @Override public String toString()
     {
         return type;
     }

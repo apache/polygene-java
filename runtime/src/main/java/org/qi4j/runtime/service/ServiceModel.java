@@ -69,7 +69,7 @@ public final class ServiceModel
         boolean immutable = metaInfo.get( Immutable.class ) != null;
         PropertiesModel propertiesModel = new PropertiesModel( constraintsModel, propertyDeclarations, immutable );
         StateModel stateModel = new StateModel( propertiesModel );
-        MixinsModel mixinsModel = new MixinsModel( compositeType, stateModel );
+        MixinsModel mixinsModel = new MixinsModel( compositeType );
         ConcernsDeclaration concernsModel = new ConcernsDeclaration( compositeType, concerns );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
         CompositeMethodsModel compositeMethodsModel =
@@ -202,7 +202,7 @@ public final class ServiceModel
         try
         {
             // Instantiate all mixins
-            mixinsModel.newMixins( compositeInstance,
+            ((MixinsModel)mixinsModel).newMixins( compositeInstance,
                                    uses,
                                    stateHolder,
                                    mixins );

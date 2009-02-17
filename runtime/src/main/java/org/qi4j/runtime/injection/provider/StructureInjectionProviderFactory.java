@@ -17,8 +17,8 @@
  */
 package org.qi4j.runtime.injection.provider;
 
-import java.lang.reflect.Type;
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.api.object.ObjectBuilderFactory;
@@ -27,6 +27,7 @@ import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
@@ -66,6 +67,10 @@ public final class StructureInjectionProviderFactory
             else if( type.equals( ObjectBuilderFactory.class ) )
             {
                 return context.moduleInstance().objectBuilderFactory();
+            }
+            else if( type.equals( ValueBuilderFactory.class ) )
+            {
+                return context.moduleInstance().valueBuilderFactory();
             }
             else if( type.equals( UnitOfWorkFactory.class ) )
             {

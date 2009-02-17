@@ -14,12 +14,11 @@
 
 package org.qi4j.spi.property;
 
-import java.io.Serializable;
-
 /**
  * TODO
  */
-public interface ValueType
-    extends Serializable
+public interface PropertyTypeDescriptor
+    extends PropertyDescriptor
 {
+    PropertyType propertyType();
 }

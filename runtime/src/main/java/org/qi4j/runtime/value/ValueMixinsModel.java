@@ -12,35 +12,29 @@
  *
  */
 
-package org.qi4j.runtime.entity;
+package org.qi4j.runtime.value;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.entity.Entity;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.composite.AbstractMixinsModel;
-import org.qi4j.runtime.composite.MixinDeclaration;
 import org.qi4j.runtime.composite.MixinModel;
-import org.qi4j.runtime.composite.UsesInstance;
 
 /**
- * TODO
+ * Model for mixins in ValueComposites
  */
-public final class EntityMixinsModel extends AbstractMixinsModel
-    implements Serializable
+public final class ValueMixinsModel extends AbstractMixinsModel
 {
-    public EntityMixinsModel( Class<? extends Composite> compositeType)
+    public ValueMixinsModel( Class<? extends Composite> compositeType)
     {
         super( compositeType );
-        mixins.add( new MixinDeclaration( EntityMixin.class, Entity.class ) );
     }
 
-    public Object newMixin( EntityInstance entityInstance, StateHolder state, Object[] mixins, Method method )
+    public void newMixins( ValueInstance compositeInstance, StateHolder state, Object[] mixins )
     {
-        MixinModel model = methodImplementation.get( method );
-        Object mixin = model.newInstance( entityInstance, state, UsesInstance.NO_USES );
-        mixins[methodIndex.get( method )] = mixin;
-        return mixin;
+        int i = 0;
+        for( MixinModel mixinModel : mixinModels )
+        {
+            mixins[ i++ ] = mixinModel.newInstance( compositeInstance, state);
+        }
     }
 }

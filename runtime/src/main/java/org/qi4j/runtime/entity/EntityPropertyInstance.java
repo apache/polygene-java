@@ -14,14 +14,28 @@
  */
 package org.qi4j.runtime.entity;
 
-import org.qi4j.api.property.PropertyInfo;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.qi4j.api.property.AbstractPropertyInstance;
+import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.PropertyStateChange;
 import org.qi4j.api.unitofwork.StateChangeListener;
 import org.qi4j.api.unitofwork.StateChangeVoter;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.composite.ConstraintsCheck;
-import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.property.PropertyDescriptor;
+import org.qi4j.spi.property.PropertyTypeDescriptor;
+import org.qi4j.spi.value.CompoundType;
+import org.qi4j.spi.value.SerializableType;
+import org.qi4j.spi.value.ValueState;
+import org.qi4j.spi.value.ValueType;
 
 /**
  * {@code EntityPropertyInstance} represents a property whose value should be backed by an EntityState.
@@ -29,12 +43,15 @@ import org.qi4j.spi.entity.EntityState;
  * @author Rickard Öberg
  * @since 0.1.0
  */
-public class EntityPropertyInstance<T> extends PropertyInstance<T>
+public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
 {
     private static final Object NOT_LOADED = new Object();
 
     private EntityState entityState;
     private UnitOfWorkInstance uow;
+
+    private T value;
+    private ConstraintsCheck constraints;
 
     /**
      * Construct an instance of {@code PropertyInstance} with the specified arguments.
@@ -45,10 +62,12 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
      * @since 0.1.0
      */
-    public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState, ConstraintsCheck constraints, UnitOfWorkInstance uow )
+    public EntityPropertyInstance( EntityPropertyModel aPropertyInfo, EntityState entityState, ConstraintsCheck constraints, UnitOfWorkInstance uow )
         throws IllegalArgumentException
     {
-        super( aPropertyInfo, (T) NOT_LOADED, constraints );
+        super( aPropertyInfo);
+        this.constraints = constraints;
+        this.value = (T) NOT_LOADED;
         this.entityState = entityState;
         this.uow = uow;
     }
@@ -64,6 +83,12 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
         if( value == NOT_LOADED )
         {
             value = (T) entityState.getProperty( qualifiedName() );
+
+            if (value instanceof ValueState )
+            {
+                ValueState valueState = (ValueState) value;
+                value = ( (EntityPropertyModel) propertyInfo ).<T>getValue( uow.module(), valueState );
+            }
         }
 
         return value;
@@ -107,8 +132,8 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
         }
 
         // Change property
-        entityState.setProperty( qualifiedName(), aNewValue );
-        super.set( aNewValue );
+        entityState.setProperty( qualifiedName(), storableValue(((EntityPropertyModel)propertyInfo).propertyType().type(), aNewValue) );
+        value = aNewValue;
 
         // Notify listeners
         if( stateChangeListeners != null )
@@ -137,5 +162,45 @@ public class EntityPropertyInstance<T> extends PropertyInstance<T>
     {
         value = (T) NOT_LOADED;
         entityState = newState;
+    }
+
+    private Object storableValue( ValueType type, Object value)
+    {
+        if (type instanceof CompoundType)
+        {
+            CompoundType compoundType = (CompoundType) type;
+            Map<String,Object> values = new HashMap<String, Object>();
+
+            ValueComposite valueComposite = (ValueComposite) value;
+            ValueInstance instance = ValueInstance.getValueInstance( valueComposite );
+            List<PropertyDescriptor> properties = instance.compositeModel().state().properties();
+            for( PropertyDescriptor property : properties )
+            {
+
+                PropertyTypeDescriptor propertyDescriptor = (PropertyTypeDescriptor) property;
+                Property valueProperty = instance.state().getProperty( property.accessor() );
+                ValueType compoundPropertyType = propertyDescriptor.propertyType().type();
+                Object propertyValue = storableValue( compoundPropertyType, valueProperty.get());
+                values.put(propertyDescriptor.qualifiedName(), propertyValue);
+            }
+            value = entityState.newValueState( values );
+        } else if (type instanceof SerializableType )
+        {
+            // Serialize value
+            try
+            {
+                ByteArrayOutputStream bout = new ByteArrayOutputStream();
+                ObjectOutputStream out = new ObjectOutputStream( bout );
+                out.writeObject( value );
+                out.close();
+                value = bout.toByteArray();
+            }
+            catch( IOException e )
+            {
+                throw new IllegalArgumentException("Could not serialize value", e);
+            }
+        }
+
+        return value;
     }
 }

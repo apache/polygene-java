@@ -14,28 +14,35 @@
 
 package org.qi4j.runtime.entity;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
-import org.qi4j.runtime.property.PropertyModel;
+import org.qi4j.runtime.property.AbstractPropertyModel;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.property.PropertyTypeDescriptor;
+import org.qi4j.spi.value.CompoundType;
+import org.qi4j.spi.value.ValueState;
 
 /**
  * TODO
  */
-public final class EntityPropertyModel extends PropertyModel
-    implements Serializable
+public final class EntityPropertyModel extends AbstractPropertyModel
+    implements PropertyTypeDescriptor
 {
-
     private final boolean queryable;
+    private final PropertyType propertyType;
+    private final PropertyInfo propertyInfo;
 
     public EntityPropertyModel( Method anAccessor,
                                 boolean immutable,
@@ -46,14 +53,51 @@ public final class EntityPropertyModel extends PropertyModel
         super( anAccessor, immutable, constraints, metaInfo, defaultValue );
         final Queryable queryable = anAccessor.getAnnotation( Queryable.class );
         this.queryable = queryable == null || queryable.value();
+
+        PropertyType.PropertyTypeEnum type;
+        if( isComputed() )
+        {
+            type = PropertyType.PropertyTypeEnum.COMPUTED;
+        }
+        else if( isImmutable() )
+        {
+            type = PropertyType.PropertyTypeEnum.IMMUTABLE;
+        }
+        else
+        {
+            type = PropertyType.PropertyTypeEnum.MUTABLE;
+        }
+
+        Type valueType = Classes.getRawClass( type() );
+
+        propertyType = new PropertyType( qualifiedName(), PropertyType.createValueType( valueType), toURI(), toRDF(), this.queryable, type );
+
+        propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), name(), qualifiedName(), type() );
     }
 
-    public Property newEntityInstance( EntityState state, UnitOfWorkInstance uow )
+
+    public PropertyType propertyType()
+    {
+        return propertyType;
+    }
+
+    public boolean isQueryable()
+    {
+        return queryable;
+    }
+
+    public Property<?> newInstance( Object value )
+    {
+        // Unused
+        return null;
+    }
+
+    public Property newInstance( EntityState state, UnitOfWorkInstance uow )
     {
         Property property;
         if( isComputed() )
         {
-            property = super.newDefaultInstance();
+            property = new ComputedPropertyInfo<Object>( propertyInfo );
         }
         else
         {
@@ -74,24 +118,20 @@ public final class EntityPropertyModel extends PropertyModel
         entityState.setProperty( qualifiedName(), value );
     }
 
-    public PropertyType propertyType()
+    public <T> T getValue( ModuleInstance moduleInstance, ValueState valueState )
     {
-        PropertyType.PropertyTypeEnum type;
-        if( isComputed() )
+        T value;
+        if ( propertyType.type() instanceof CompoundType )
         {
-            type = PropertyType.PropertyTypeEnum.COMPUTED;
-        }
-        else if( isImmutable() )
+            CompoundType compoundType = (CompoundType) propertyType.type();
+            Class valueClass = moduleInstance.findClassForName( compoundType.type() );
+            ValueModel model = (ValueModel) moduleInstance.findModuleForValue( valueClass ).findValueFor( valueClass );
+            value = model.newValueInstance( moduleInstance, valueState ).<T>proxy();
+        } else
         {
-            type = PropertyType.PropertyTypeEnum.IMMUTABLE;
-        }
-        else
-        {
-            type = PropertyType.PropertyTypeEnum.MUTABLE;
+            value = (T) valueState.getProperty( qualifiedName() );
         }
 
-        Type valueType = Classes.getRawClass( type() );
-
-        return new PropertyType( qualifiedName(), valueType, toURI(), toRDF(), queryable, type );
+        return value;
     }
 }

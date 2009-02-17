@@ -6,5 +6,7 @@ package org.qi4j.spi.entity;
  */
 public enum EntityStatus
 {
-    NEW, LOADED, REMOVED
+    NEW, // When the Entity has just been created in the UnitOfWork 
+    LOADED,  // When it has been previously created, and is loaded through the UnitOfWork
+    REMOVED // When the Entity has been removed in the UnitOfWork
 }

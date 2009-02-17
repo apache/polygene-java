@@ -19,7 +19,7 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
-import org.qi4j.runtime.composite.ValueModel;
+import org.qi4j.runtime.value.ValueModel;
 
 /**
  * TODO

@@ -24,14 +24,14 @@ import org.qi4j.runtime.composite.MethodConstraintsModel;
 import org.qi4j.runtime.composite.MethodSideEffectModel;
 import org.qi4j.runtime.composite.MethodSideEffectsModel;
 import org.qi4j.runtime.composite.MixinModel;
-import org.qi4j.runtime.composite.ValueModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;
 import org.qi4j.runtime.injection.InjectedMethodModel;
 import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.object.ObjectModel;
-import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.service.ImportedServiceModel;
+import org.qi4j.runtime.service.ServiceModel;
+import org.qi4j.runtime.value.ValueModel;
 
 /**
  * TODO

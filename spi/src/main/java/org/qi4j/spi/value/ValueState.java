@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,18 +12,12 @@
  *
  */
 
-package org.qi4j.runtime.composite;
-
-import org.qi4j.runtime.property.PropertiesModel;
+package org.qi4j.spi.value;
 
 /**
- * Model for Transient Composite state.
+ * TODO
  */
-public final class StateModel
-    extends AbstractStateModel
+public interface ValueState
 {
-    public StateModel( PropertiesModel propertiesModel )
-    {
-        super(propertiesModel);
-    }
+    Object getProperty( String qualifiedName );
 }

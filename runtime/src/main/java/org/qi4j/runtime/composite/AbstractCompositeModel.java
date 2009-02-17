@@ -35,19 +35,19 @@ import org.qi4j.spi.composite.CompositeDescriptor;
 public abstract class AbstractCompositeModel
     implements Binder, CompositeDescriptor, Serializable
 {
-    protected final MixinsModel mixinsModel;
+    protected final AbstractMixinsModel mixinsModel;
     protected final CompositeMethodsModel compositeMethodsModel;
     private final Class<? extends Composite> compositeType;
     private final Visibility visibility;
     private final MetaInfo metaInfo;
-    protected final StateModel stateModel;
+    protected final AbstractStateModel stateModel;
     protected final Class<? extends Composite> proxyClass;
 
     protected AbstractCompositeModel( final Class<? extends Composite> compositeType,
                               final Visibility visibility,
                               final MetaInfo metaInfo,
-                              final MixinsModel mixinsModel,
-                              final StateModel stateModel,
+                              final AbstractMixinsModel mixinsModel,
+                              final AbstractStateModel stateModel,
                               final CompositeMethodsModel compositeMethodsModel
     )
     {
@@ -70,7 +70,7 @@ public abstract class AbstractCompositeModel
         return compositeType;
     }
 
-    public StateModel state()
+    public AbstractStateModel state()
     {
         return stateModel;
     }
@@ -133,22 +133,22 @@ public abstract class AbstractCompositeModel
 
     public StateHolder newBuilderState()
     {
-        return stateModel.newBuilderState();
+        return stateModel.newBuilderInstance();
     }
 
     public StateHolder newBuilderState(StateHolder state)
     {
-        return stateModel.newBuilderState(state);
+        return stateModel.newBuilderInstance(state);
     }
 
-    public StateHolder newDefaultState()
+    public StateHolder newInitialState()
     {
-        return stateModel.newDefaultInstance();
+        return stateModel.newInitialInstance();
     }
 
     public StateHolder newState( StateHolder state )
     {
-        return stateModel.newState( state );
+        return stateModel.newInstance( state );
     }
 
     public String toURI()

@@ -19,8 +19,6 @@ import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.runtime.composite.ValueCompositeInstance;
-import org.qi4j.runtime.composite.ValueModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
@@ -47,7 +45,7 @@ public final class ValueBuilderInstance<T>
 
     public ValueBuilder<T> withPrototype( T value )
     {
-        ValueCompositeInstance valueInstance = ValueCompositeInstance.getValueInstance( (ValueComposite) value );
+        ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) value );
         StateHolder state = valueInstance.state();
         this.state = valueModel.newBuilderState( state );
         prototypeInstance = null;
@@ -60,7 +58,7 @@ public final class ValueBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = valueModel.newValueInstance( moduleInstance, getState(), true ).<T>proxy();
+            prototypeInstance = valueModel.newValueInstance( moduleInstance, getState() ).<T>proxy();
         }
 
         return prototypeInstance;
@@ -71,15 +69,16 @@ public final class ValueBuilderInstance<T>
         StateHolder instanceState;
         if( state == null )
         {
-            instanceState = valueModel.newDefaultState();
+            instanceState = valueModel.newInitialState();
         }
         else
         {
             instanceState = valueModel.newState(state);
         }
 
-        ValueCompositeInstance valueCompositeInstance = valueModel.newValueInstance( moduleInstance, instanceState, false );
-        return valueCompositeInstance.<T>proxy();
+        valueModel.checkConstraints( instanceState, false);
+        ValueInstance valueInstance = valueModel.newValueInstance( moduleInstance, instanceState );
+        return valueInstance.<T>proxy();
     }
 
     public Iterator<T> iterator()

@@ -17,9 +17,8 @@
 package org.qi4j.spi.entity;
 
 import java.util.Collection;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityType;
+import java.util.Map;
+import org.qi4j.spi.value.ValueState;
 
 /**
  */
@@ -57,9 +56,27 @@ public interface EntityState
      */
     void remove();
 
+    /**
+     * The status of this EntityState
+     *
+     * @return the status
+     */
     EntityStatus status();
 
+    /**
+     * The Entitytype describes the "schema" for the Entity, including a list
+     * of all properties and associations, and all relevant metadata about them.
+     *
+     * @return the EntityType
+     */
     EntityType entityType();
+
+    /**
+     * Get the value of a property with the given qualified name
+     *
+     * @param qualifiedName of the property
+     * @return the value of the property
+     */
 
     Object getProperty( String qualifiedName );
 
@@ -78,4 +95,6 @@ public interface EntityState
     Iterable<String> manyAssociationNames();
 
     void markAsLoaded();
+
+    ValueState newValueState( Map<String, Object> values);
 }

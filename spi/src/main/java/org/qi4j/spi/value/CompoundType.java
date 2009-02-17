@@ -12,47 +12,46 @@
  *
  */
 
-package org.qi4j.spi.property;
+package org.qi4j.spi.value;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import org.qi4j.api.value.ValueComposite;
+import org.qi4j.spi.property.PropertyType;
 
 /**
  * TODO
  */
-public class CollectionType
+public class CompoundType
     implements ValueType
 {
-    public static boolean isCollection( Type type)
+    public static boolean isCompound( Type type)
     {
-        if (type instanceof ParameterizedType )
-        {
-            ParameterizedType pt = (ParameterizedType) type;
-            if (pt.getRawType().equals( Collection.class) || pt.getRawType().equals( List.class) || pt.getRawType().equals( Set.class))
-                return true;
-        }
-
-        return false;
+        return type instanceof Class && ValueComposite.class.isAssignableFrom((Class)type);
     }
 
-    private String collectionType;
-    private ValueType type;
+    private String type;
+    private List<PropertyType> types;
 
-    public CollectionType( String collectionType, ValueType type )
+    public CompoundType( String type, List<PropertyType> types )
     {
-        this.collectionType = collectionType;
         this.type = type;
+        Collections.sort(types); // Sort by property name
+        this.types = types;
     }
 
-    public String collectionType()
+    public String type()
     {
-        return collectionType;
+        return type;
     }
 
-    public ValueType type()
+    public List<PropertyType> types()
+    {
+        return types;
+    }
+
+    @Override public String toString()
     {
         return type;
     }

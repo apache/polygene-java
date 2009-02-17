@@ -15,13 +15,15 @@
 package org.qi4j.runtime.entity;
 
 import java.util.Collection;
+import java.util.Map;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.value.ValueState;
 
 /**
- * TODO
+ * Adapter for EntityState. Subclass and override methods to use.
  */
 public class EntityStateAdapter
     implements EntityState
@@ -111,5 +113,10 @@ public class EntityStateAdapter
     public void markAsLoaded()
     {
         entityState.markAsLoaded();
+    }
+
+    public ValueState newValueState( Map<String, Object> values )
+    {
+        return entityState.newValueState( values );
     }
 }

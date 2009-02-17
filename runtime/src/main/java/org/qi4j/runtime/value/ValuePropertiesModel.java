@@ -12,32 +12,54 @@
  *
  */
 
-package org.qi4j.runtime.property;
+package org.qi4j.runtime.value;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.GenericPropertyInfo;
-import org.qi4j.api.property.Immutable;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
+import org.qi4j.runtime.property.AbstractPropertiesModel;
+import org.qi4j.runtime.property.PropertiesInstance;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.util.Annotations;
+import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.value.ValueState;
 
 /**
- * Model for properties in Transient Composites
+ * Properties model for values
  */
-public final class PropertiesModel
-    extends AbstractPropertiesModel<PropertyModel>
+public final class ValuePropertiesModel
+    extends AbstractPropertiesModel<ValuePropertyModel>
 {
-    public PropertiesModel( ConstraintsModel constraints, PropertyDeclarations propertyDeclarations, boolean immutable )
+    public ValuePropertiesModel( ConstraintsModel constraints, PropertyDeclarations propertyDeclarations )
     {
-        super(constraints, propertyDeclarations, immutable);
+        super(constraints, propertyDeclarations, true);
     }
 
-    protected PropertyModel newPropertyModel( Method method )
+    public PropertiesInstance newInstance( ModuleInstance moduleInstance, ValueState state )
+    {
+        Map<Method, Property<?>> properties = new MethodKeyMap<Property<?>>();
+        for( ValuePropertyModel propertyModel : propertyModels )
+        {
+            Object propertyValue = propertyModel.getValue( moduleInstance, state );
+
+            // Create property instance
+            Property property = propertyModel.newInstance( propertyValue );
+            properties.put( propertyModel.accessor(), property );
+        }
+        return new PropertiesInstance( properties );
+    }
+
+    protected ValuePropertyModel newPropertyModel( Method method )
     {
         Annotation[] annotations = Annotations.getMethodAndTypeAnnotations( method );
         boolean optional = Annotations.getAnnotationOfType( annotations, Optional.class ) != null;
@@ -49,8 +71,16 @@ public final class PropertiesModel
         }
         MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
         Object initialValue = propertyDeclarations.getInitialValue( method );
-        boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
-        PropertyModel propertyModel = new PropertyModel( method, immutable, valueConstraintsInstance, metaInfo, initialValue );
-        return propertyModel;
+        return new ValuePropertyModel( method, valueConstraintsInstance, metaInfo, initialValue );
+    }
+
+    public List<PropertyType> propertyTypes()
+    {
+        for( ValuePropertyModel valuePropertyModel : mapMethodPropertyModel.values() )
+        {
+            valuePropertyModel.propertyType().type();
+        }
+
+        return null;
     }
 }

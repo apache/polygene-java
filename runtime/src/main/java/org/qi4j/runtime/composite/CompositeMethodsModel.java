@@ -14,11 +14,11 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import java.io.Serializable;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.runtime.structure.Binder;
@@ -26,7 +26,7 @@ import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
- * TODO
+ * Model for Composite methods. This includes both private and public methods.
  */
 public final class CompositeMethodsModel
     implements Binder, Serializable
@@ -115,7 +115,7 @@ public final class CompositeMethodsModel
         }
     }
 
-    Iterable<Method> methods()
+    public Iterable<Method> methods()
     {
         return methods.keySet();
     }

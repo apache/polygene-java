@@ -1,17 +1,17 @@
 package org.qi4j.test.entity;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import static org.hamcrest.CoreMatchers.equalTo;
 import org.junit.After;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
-import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.Association;
@@ -20,16 +20,13 @@ import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.entity.association.Qualifier;
 import org.qi4j.api.entity.association.SetAssociation;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.entity.EntityState;
@@ -50,7 +47,8 @@ public abstract class AbstractEntityStoreTest
         throws AssemblyException
     {
         module.addServices( UuidIdentityGeneratorService.class );
-        module.addEntities( TestEntity.class, TestValue.class );
+        module.addEntities( TestEntity.class);
+        module.addValues( TestValue.class, TestValue2.class );
         module.addObjects( getClass() );
     }
 
@@ -77,6 +75,40 @@ public abstract class AbstractEntityStoreTest
         }
     }
 
+    protected TestEntity createEntity( UnitOfWork unitOfWork )
+        throws UnitOfWorkCompletionException
+    {
+        // Create entity
+        EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
+        TestEntity instance = builder.newInstance();
+
+        instance.name().set( "Test" );
+        instance.association().set( instance );
+
+        // Set value
+        ValueBuilder<TestValue2> valueBuilder2 = valueBuilderFactory.newValueBuilder( TestValue2.class );
+        valueBuilder2.prototype().stringValue().set("Bar");
+
+        ValueBuilder<TestValue> valueBuilder = valueBuilderFactory.newValueBuilder( TestValue.class );
+        TestValue prototype = valueBuilder.prototype();
+        prototype.listProperty().get().add( "Foo" );
+        prototype.valueProperty().set( valueBuilder2.newInstance() );
+        Map<String, String> mapValue = new HashMap<String, String>();
+        mapValue.put( "foo", "bar" );
+        prototype.serializableProperty().set( mapValue );
+
+        instance.valueProperty().set( valueBuilder.newInstance() );
+        instance.manyAssociation().add( instance );
+
+        instance.listAssociation().add( instance );
+        instance.listAssociation().add( instance );
+        instance.listAssociation().add( instance );
+
+        instance.setAssociation().add( instance );
+        instance.setAssociation().add( instance );
+        return instance;
+    }
+
     @Test
     public void whenNewEntityThenCanFindEntity()
         throws Exception
@@ -95,6 +127,7 @@ public abstract class AbstractEntityStoreTest
             // Check state
             assertThat( "property has correct value", instance.name().get(), equalTo( "Test" ) );
             assertThat( "property has correct value", instance.unsetName().get(), equalTo( null ) );
+            assertThat( "property has correct value", instance.valueProperty().get().valueProperty().get().stringValue().get(), equalTo( "Bar" ) );
             assertThat( "association has correct value", instance.association().get(), equalTo( instance ) );
             assertThat( "manyAssociation has correct value", instance.manyAssociation().iterator().next(), equalTo( instance ) );
             assertThat( "listAssociation has correct value", instance.listAssociation().iterator().next(), equalTo( instance ) );
@@ -141,39 +174,6 @@ public abstract class AbstractEntityStoreTest
         {
             unitOfWork.discard();
         }
-    }
-
-    protected TestEntity createEntity( UnitOfWork unitOfWork )
-        throws UnitOfWorkCompletionException
-    {
-        // Create entity
-        EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
-        TestEntity instance = builder.newInstance();
-        String id = instance.identity().get();
-
-        instance.name().set( "Test" );
-        instance.association().set( instance );
-
-/*
-        EntityBuilder<TestValue> testValue = unitOfWork.newEntityBuilder( TestValue.class );
-        TestValue state = testValue.stateOfComposite();
-        state.someValue().set( "Foo" );
-        state.otherValue().set( 5 );
-
-        TestValue value = testValue.newInstance();
-        instance.valueProperty().set( value );
-        value.mutate();
-*/
-
-        instance.manyAssociation().add( instance );
-
-        instance.listAssociation().add( instance );
-        instance.listAssociation().add( instance );
-        instance.listAssociation().add( instance );
-
-        instance.setAssociation().add( instance );
-        instance.setAssociation().add( instance );
-        return instance;
     }
 
     @Test
@@ -364,62 +364,33 @@ public abstract class AbstractEntityStoreTest
     }
 
     public interface TestValue
-        extends ValueComposite<TestValue>, EntityComposite
+        extends ValueComposite
     {
-        @Immutable Property<String> someValue();
+        @UseDefaults
+        Property<String> stringProperty();
 
-        @Immutable Property<Integer> otherValue();
+        @UseDefaults
+        Property<Integer> intProperty();
+        
+        @UseDefaults
+        Property<TestEnum> enumProperty();
+
+        @UseDefaults
+        Property<List<String>> listProperty();
+
+        Property<TestValue2> valueProperty();
+
+        Property<Map<String,String>> serializableProperty();
     }
 
-    public interface Mutable<T>
+    public interface TestValue2
+        extends ValueComposite
     {
-        EntityBuilder<T> mutate();
-
+        Property<String> stringValue();
     }
-
-    @Mixins( ValueComposite.ValueCompositeMixin.class )
-    public interface ValueComposite<T>
-        extends Mutable<T>
+    
+    public enum TestEnum
     {
-
-        public abstract class ValueCompositeMixin<T>
-            implements Mutable<T>
-        {
-            @This EntityComposite entity;
-            @Structure CompositeBuilderFactory cbf;
-            @Structure UnitOfWorkFactory uowf;
-
-            public EntityBuilder<T> mutate()
-            {
-                final EntityBuilder<T> entityBuilder = (EntityBuilder<T>) uowf.currentUnitOfWork().newEntityBuilder( entity.type() );
-                //CompositeBuilder<T> builder = (CompositeBuilder<T>) cbf.newCompositeBuilder( entity.type() );
-                T state = entityBuilder.stateOfComposite();
-
-                // Copy current state
-                Method[] methods = state.getClass().getMethods();
-                for( Method method : methods )
-                {
-                    if( Property.class.isAssignableFrom( method.getReturnType() ) )
-                    {
-                        try
-                        {
-                            Property<Object> oldProperty = (Property<Object>) method.invoke( entity );
-                            Property<Object> newProperty = (Property<Object>) method.invoke( state );
-                            newProperty.set( oldProperty.get() );
-                        }
-                        catch( IllegalAccessException e )
-                        {
-                            e.printStackTrace();
-                        }
-                        catch( InvocationTargetException e )
-                        {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-                return entityBuilder;
-            }
-        }
+        VALUE1, VALUE2, VALUE3
     }
 }

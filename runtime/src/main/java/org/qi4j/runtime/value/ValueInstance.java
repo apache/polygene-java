@@ -14,26 +14,28 @@
  *
  */
 
-package org.qi4j.runtime.composite;
+package org.qi4j.runtime.value;
 
 import java.lang.reflect.Proxy;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.runtime.composite.DefaultCompositeInstance;
+import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
 
 /**
  * ValueComposite instance
  */
-public final class ValueCompositeInstance extends DefaultCompositeInstance
+public final class ValueInstance extends DefaultCompositeInstance
     implements CompositeInstance, MixinsInstance
 {
-    public static ValueCompositeInstance getValueInstance( ValueComposite composite )
+    public static ValueInstance getValueInstance( ValueComposite composite )
     {
-        return (ValueCompositeInstance) Proxy.getInvocationHandler( composite );
+        return (ValueInstance) Proxy.getInvocationHandler( composite );
     }
 
-    public ValueCompositeInstance( ValueModel compositeModel, ModuleInstance moduleInstance, Object[] mixins, StateHolder state )
+    public ValueInstance( ValueModel compositeModel, ModuleInstance moduleInstance, Object[] mixins, StateHolder state )
     {
         super( compositeModel, moduleInstance, mixins, state );
     }
@@ -52,7 +54,7 @@ public final class ValueCompositeInstance extends DefaultCompositeInstance
 
         try
         {
-            ValueCompositeInstance that = (ValueCompositeInstance) Proxy.getInvocationHandler( o );
+            ValueInstance that = (ValueInstance) Proxy.getInvocationHandler( o );
             return state.equals( that.state );
         }
         catch( ClassCastException e )

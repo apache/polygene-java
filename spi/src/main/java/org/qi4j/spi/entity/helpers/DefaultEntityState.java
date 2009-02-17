@@ -27,11 +27,12 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.ManyAssociationType;
+import org.qi4j.spi.value.ValueState;
 
 /**
  * Standard implementation of EntityState.
@@ -226,6 +227,11 @@ public class DefaultEntityState
     public void markAsLoaded()
     {
         status = EntityStatus.LOADED;
+    }
+
+    public ValueState newValueState( Map<String, Object> values)
+    {
+        return new DefaultValueState(values);
     }
 
     protected class ModificationTrackerCollection<T extends Collection<QualifiedIdentity>>

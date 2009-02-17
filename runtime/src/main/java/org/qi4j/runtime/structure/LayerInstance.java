@@ -24,9 +24,9 @@ import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
 import org.qi4j.runtime.composite.CompositeModel;
-import org.qi4j.runtime.composite.ValueModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
+import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.service.Activator;
 
 /**

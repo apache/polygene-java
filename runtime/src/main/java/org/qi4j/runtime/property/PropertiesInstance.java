@@ -19,7 +19,7 @@ import java.util.Map;
 import org.qi4j.api.property.Property;
 
 /**
- * TODO
+ * Collection of Property instances.
  */
 public final class PropertiesInstance
 {

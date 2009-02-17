@@ -15,19 +15,18 @@
 package org.qi4j.runtime.entity;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.Serializable;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.util.MethodKeyMap;
+import org.qi4j.runtime.composite.AbstractStateModel;
 import org.qi4j.runtime.entity.association.AssociationInstance;
 import org.qi4j.runtime.entity.association.AssociationsInstance;
-import org.qi4j.runtime.entity.association.AssociationsModel;
+import org.qi4j.runtime.entity.association.EntityAssociationsModel;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
@@ -35,21 +34,20 @@ import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
 
 /**
  * TODO
  */
 public final class EntityStateModel
-    implements EntityStateDescriptor, Serializable
+    extends AbstractStateModel<EntityPropertiesModel>
+    implements EntityStateDescriptor
 {
-    private final EntityPropertiesModel propertiesModel;
-    private final AssociationsModel associationsModel;
+    private final EntityAssociationsModel associationsModel;
 
-    public EntityStateModel( EntityPropertiesModel propertiesModel, AssociationsModel associationsModel )
+    public EntityStateModel( EntityPropertiesModel propertiesModel, EntityAssociationsModel associationsModel )
     {
-        this.propertiesModel = propertiesModel;
+        super(propertiesModel);
         this.associationsModel = associationsModel;
     }
 
@@ -57,7 +55,7 @@ public final class EntityStateModel
     {
         PropertiesInstance properties = propertiesModel.newBuilderInstance();
         AssociationsInstance associations = associationsModel.newBuilderInstance();
-        return new BuilderStateInstance( properties, associations );
+        return new EntityBuilderStateInstance( properties, associations );
     }
 
     public EntityStateModel.EntityStateInstance newInstance( UnitOfWorkInstance uow, EntityState entityState )
@@ -65,20 +63,13 @@ public final class EntityStateModel
         return new EntityStateInstance( propertiesModel, associationsModel, entityState, uow );
     }
 
-    public void addStateFor( Method method )
+    @Override public void addStateFor( Iterable<Method> methods )
     {
-        propertiesModel.addPropertyFor( method );
-        associationsModel.addAssociationFor( method );
-    }
-
-    public PropertyDescriptor getPropertyByName( String name )
-    {
-        return propertiesModel.getPropertyByName( name );
-    }
-
-    public PropertyDescriptor getPropertyByQualifiedName( String name )
-    {
-        return propertiesModel.getPropertyByQualifiedName( name );
+        super.addStateFor( methods );
+        for( Method method : methods )
+        {
+            associationsModel.addAssociationFor( method );
+        }
     }
 
     public AssociationDescriptor getAssociationByName( String name )
@@ -91,11 +82,6 @@ public final class EntityStateModel
         return associationsModel.getAssociationByQualifiedName( name );
     }
 
-    public List<PropertyDescriptor> properties()
-    {
-        return propertiesModel.properties();
-    }
-
     public List<AssociationDescriptor> associations()
     {
         return associationsModel.associations();
@@ -104,7 +90,7 @@ public final class EntityStateModel
     public void setState( StateHolder state, EntityState entityState )
         throws ConstraintViolationException
     {
-        BuilderStateInstance builderStateInstance = (BuilderStateInstance) state;
+        EntityBuilderStateInstance builderStateInstance = (EntityBuilderStateInstance) state;
 
         propertiesModel.setState( builderStateInstance.properties, entityState );
         associationsModel.setState( builderStateInstance.associations, entityState );
@@ -125,13 +111,13 @@ public final class EntityStateModel
         return associationsModel.manyAssociationTypes();
     }
 
-    private static final class BuilderStateInstance
+    private static final class EntityBuilderStateInstance
         implements EntityStateHolder
     {
         private final PropertiesInstance properties;
         private final AssociationsInstance associations;
 
-        private BuilderStateInstance( PropertiesInstance properties, AssociationsInstance associations )
+        private EntityBuilderStateInstance( PropertiesInstance properties, AssociationsInstance associations )
         {
             this.properties = properties;
             this.associations = associations;
@@ -155,12 +141,12 @@ public final class EntityStateModel
         private Map<Method, AbstractAssociation> associations;
 
         private final EntityPropertiesModel entityPropertiesModel;
-        private final AssociationsModel associationsModel;
+        private final EntityAssociationsModel associationsModel;
         private final EntityState entityState;
         private final UnitOfWorkInstance uow;
 
         private EntityStateInstance(
-            EntityPropertiesModel entityPropertiesModel, AssociationsModel associationsModel, EntityState entityState,
+            EntityPropertiesModel entityPropertiesModel, EntityAssociationsModel associationsModel, EntityState entityState,
             UnitOfWorkInstance uow )
         {
             this.entityPropertiesModel = entityPropertiesModel;
@@ -180,7 +166,8 @@ public final class EntityStateModel
 
             if( property == null )
             {
-                property = entityPropertiesModel.newInstance( accessor, entityState, uow );
+                EntityPropertyModel model = entityPropertiesModel.getPropertyByAccessor( accessor );
+                property = model.newInstance( entityState, uow );
                 properties.put( accessor, property );
             }
 

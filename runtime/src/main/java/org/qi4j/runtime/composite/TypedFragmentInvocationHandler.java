@@ -34,10 +34,12 @@ public final class TypedFragmentInvocationHandler
     {
         try
         {
+/*
             if( !method.isAccessible() )
             {
                 method.setAccessible( true );       // TODO: This is a massive Performance Killer. Needs to be taken care of.
             }
+*/
             return method.invoke( fragment, args );
         }
         catch( InvocationTargetException e )
