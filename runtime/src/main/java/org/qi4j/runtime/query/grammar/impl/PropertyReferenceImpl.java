@@ -22,10 +22,10 @@ package org.qi4j.runtime.query.grammar.impl;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
+import org.qi4j.runtime.query.NotQueryableException;
 import org.qi4j.runtime.query.QueryException;
 
 /**
@@ -92,12 +92,13 @@ public final class PropertyReferenceImpl<T>
         {
             throw new QueryException( "Unsupported property type:" + propertyTypeAsType );
         }
-        Queryable queryable = accessor.getAnnotation( Queryable.class );
-        if( queryable != null && !queryable.value() )
-        {
-            throw new QueryException( "Non-queryable property:" + accessor );
-        }
         type = (Class<T>) propertyTypeAsType;
+
+        // verify that the property accessor is not marked as non queryable
+        NotQueryableException.throwIfNotQueryable( accessor );
+        // verify that the property type itself (value composites) is not marked as non queryable
+        NotQueryableException.throwIfNotQueryable( type );
+
         this.traversedAssociation = traversedAssociation;
         this.traversedProperty = traversedProperty;
     }
