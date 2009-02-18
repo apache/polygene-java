@@ -28,12 +28,9 @@ public class CollectionType
 {
     public static boolean isCollection( Type type)
     {
+        // TODO maybe: return Collection.class.isAssignableFrom( Classes.getRawClass( type ) ); 
         Class cl = Classes.getRawClass( type );
-
-        if (cl.equals( Collection.class) || cl.equals( List.class) || cl.equals( Set.class))
-            return true;
-
-        return false;
+        return cl.equals( Collection.class ) || cl.equals( List.class ) || cl.equals( Set.class );
     }
 
     private String collectionType;
