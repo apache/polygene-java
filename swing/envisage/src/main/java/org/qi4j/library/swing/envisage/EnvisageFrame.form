@@ -10,7 +10,7 @@
       <splitpane id="31bfa" binding="modelSplitPane">
         <constraints border-constraint="Center"/>
         <properties>
-          <dividerLocation value="300"/>
+          <dividerLocation value="250"/>
           <oneTouchExpandable value="true"/>
         </properties>
         <border type="none"/>

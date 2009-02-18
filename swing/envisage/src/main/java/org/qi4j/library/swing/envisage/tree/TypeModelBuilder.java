@@ -24,12 +24,14 @@ import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
+import org.qi4j.library.swing.envisage.util.DescriptorNameComparator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
+import java.util.Comparator;
 
 /**
- * Helper class to build tree model as type
+ * Helper class to build tree model for Qi4J model as Type Tree
  *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
@@ -56,10 +58,12 @@ public class TypeModelBuilder
     {
         traverseLayers( descriptor.layers() );
 
+        DescriptorNameComparator<Object> nameComparator = new DescriptorNameComparator<Object>();
+
         // sort based on name order
-        // TODO sort on name order not done yet
-        //Collections.sort( serviceList );
-        //Collections.sort( serviceList );
+        Collections.sort( serviceList, nameComparator);
+        Collections.sort( entityList, nameComparator);
+        Collections.sort( objectList, nameComparator);
 
         DefaultMutableTreeNode root = new DefaultMutableTreeNode( descriptor );
         DefaultMutableTreeNode child;        

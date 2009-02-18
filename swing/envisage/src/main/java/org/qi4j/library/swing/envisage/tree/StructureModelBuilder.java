@@ -24,14 +24,21 @@ import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
+import org.qi4j.library.swing.envisage.util.DescriptorNameComparator;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
- * Helper class to build tree model as structure
+ * Helper class to build tree model for Qi4J model as Structure Tree
  *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class StructureModelBuilder
 {
+    private DescriptorNameComparator<Object> nameComparator = new DescriptorNameComparator<Object>();
+    private List<Object> tempList = new ArrayList<Object>();   // used for sorting
+
     public static MutableTreeNode build( ApplicationDetailDescriptor descriptor )
     {
         StructureModelBuilder builder = new StructureModelBuilder();
@@ -70,27 +77,51 @@ public class StructureModelBuilder
 
     private void buildServicesNode( DefaultMutableTreeNode parent, Iterable<ServiceDetailDescriptor> iter )
     {
+        tempList.clear();
         for( ServiceDetailDescriptor descriptor : iter )
         {
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode( descriptor );
-            parent.add( node );
+            tempList.add(descriptor);
+        }
+
+        Collections.sort( tempList, nameComparator );
+
+        for (int i=0; i<tempList.size(); i++)
+        {
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode( tempList.get(i) );
+            parent.add( node );            
         }
     }
 
     private void buildEntitiesNode( DefaultMutableTreeNode parent, Iterable<EntityDetailDescriptor> iter )
     {
+        tempList.clear();
         for( EntityDetailDescriptor descriptor : iter )
         {
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode( descriptor );
+            tempList.add(descriptor);
+        }
+
+        Collections.sort( tempList, nameComparator );
+
+        for (int i=0; i<tempList.size(); i++)
+        {
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode( tempList.get(i) );
             parent.add( node );
         }
     }
 
     private void buildObjectsNode( DefaultMutableTreeNode parent, Iterable<ObjectDetailDescriptor> iter )
     {
+        tempList.clear();
         for( ObjectDetailDescriptor descriptor : iter )
         {
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode( descriptor );
+            tempList.add(descriptor);
+        }
+
+        Collections.sort( tempList, nameComparator );
+
+        for (int i=0; i<tempList.size(); i++)
+        {
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode( tempList.get(i) );
             parent.add( node );
         }
     }

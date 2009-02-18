@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.qi4j.library.swing.envisage.detail.DependencyPane">
+  <grid id="27dc6" binding="contentPane" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="500" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="c62e9" binding="todoPane" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none">
+          <size top="64" left="24" bottom="24" right="24"/>
+        </border>
+        <children>
+          <grid id="d4d6d" binding="todoInnerPane" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints/>
+            <properties/>
+            <border type="etched" title="TODO">
+              <size top="24" left="24" bottom="24" right="24"/>
+            </border>
+            <children>
+              <component id="40340" class="javax.swing.JTextArea" binding="todoArea">
+                <constraints border-constraint="Center"/>
+                <properties>
+                  <editable value="false"/>
+                  <text value="What's need to put here:&#10;- List   &#10;- Tree&#10;- Table&#10;- ..."/>
+                  <wrapStyleWord value="true"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

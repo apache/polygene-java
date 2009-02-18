@@ -75,9 +75,7 @@ public class GeneralPane extends DetailPane
             classNameField.setText( descriptor.type().getName() );
             visibilityField.setText( descriptor.visibility().toString() );
 
-            /*
-            instantiateOnStartup = descriptor.isInstantiateOnStartup();
-            */
+            
         }
         else if( objectDesciptor instanceof EntityDetailDescriptor )
         {

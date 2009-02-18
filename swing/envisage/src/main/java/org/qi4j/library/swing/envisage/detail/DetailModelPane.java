@@ -22,45 +22,88 @@ import javax.swing.JScrollPane;
 import javax.swing.BorderFactory;
 import java.awt.BorderLayout;
 import java.util.ResourceBundle;
+import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class DetailModelPane extends JPanel
 {
-    /*protected static final int COMMONS_TAB = 0;
-    protected static final int METHODS_TAB = 1;
-    protected static final int STATES_TAB = 2;
-    protected static final int DEPENDENCIES_TAB = 3;
-    */
+    protected static final int GENERAL_TAB = 0;
+    protected static final int METHOD_TAB = 1;
+    protected static final int STATE_TAB = 2;
+    protected static final int DEPENDENCIE_TAB = 3;
 
     protected ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName());
 
+    protected JTabbedPane tabPane;
     protected GeneralPane generalPane;
+    protected MethodPane methodPane;
     protected StatePane statePane;
+    protected DependencyPane dependencyPane;
+    protected ServiceConfigurationPane serviceConfigurationPane;
+
+    protected int commonTabCount = 0;
 
     public DetailModelPane()
     {
-        JTabbedPane tabPane = new JTabbedPane( );
+        tabPane = new JTabbedPane( );
 
         this.setLayout( new BorderLayout() );
         this.add(tabPane, BorderLayout.CENTER);
 
+        createDetailPane( );
+
+        tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ),  generalPane );
+        tabPane.add( bundle.getString( "CTL_MethodTab.Text" ), methodPane );
+        tabPane.add( bundle.getString( "CTL_StateTab.Text" ), statePane );
+        tabPane.add( bundle.getString( "CTL_DependencyTab.Text" ), dependencyPane );
+    }
+
+    protected void createDetailPane()
+    {
         generalPane = new GeneralPane();
         generalPane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
+        commonTabCount++;
 
         statePane = new StatePane();
         statePane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
+        commonTabCount++;
 
-        tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ), new JScrollPane( generalPane ) );
-        tabPane.add( bundle.getString( "CTL_MethodTab.Text" ), new JScrollPane() );
-        tabPane.add( bundle.getString( "CTL_StateTab.Text" ), new JScrollPane(statePane) );
-        tabPane.add( bundle.getString( "CTL_DependencyTab.Text" ), new JScrollPane() );
+        methodPane = new MethodPane();
+        methodPane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
+        commonTabCount++;
+
+        dependencyPane = new DependencyPane();
+        dependencyPane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
+        commonTabCount++;
+
+        serviceConfigurationPane = new ServiceConfigurationPane();
+        serviceConfigurationPane .setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
     }
 
     public void setDescriptor(Object objectDescriptor)
     {
         generalPane.setDescriptor( objectDescriptor );
         statePane.setDescriptor( objectDescriptor );
+        methodPane.setDescriptor( objectDescriptor );
+        dependencyPane.setDescriptor( objectDescriptor );
+        serviceConfigurationPane.setDescriptor( objectDescriptor );
+
+        if (objectDescriptor instanceof ServiceDetailDescriptor)
+        {
+            int index = tabPane.indexOfComponent( serviceConfigurationPane );
+            if (index == -1)
+            {
+                tabPane.add( bundle.getString( "CTL_ServiceConfiguration.Text" ), serviceConfigurationPane );
+            }
+        } else {
+            int index = tabPane.indexOfComponent( serviceConfigurationPane );
+            if (index != -1)
+            {
+                tabPane.removeTabAt( index );
+            }
+        }
+
     }
 }

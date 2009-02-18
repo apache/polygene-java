@@ -53,7 +53,7 @@ public class EnvisageFrame extends JFrame
         applicationModelPane = new ApplicationModelPane();
         detailModelPane = new DetailModelPane();
 
-        applicationModelPane.initQi4J( qi4j, application );
+        applicationModelPane.initQi4J( application );
 
         modelSplitPane.setLeftComponent( applicationModelPane );
         modelSplitPane.setRightComponent( detailModelPane );
@@ -79,7 +79,9 @@ public class EnvisageFrame extends JFrame
     /**
      * Helper method
      * TODO note complete yet, missing Transient and Value
+     *
      * @param obj descriptor Object
+     * @return true or false
      */
     protected boolean isDetailDescritor( Object obj )
     {
@@ -112,7 +114,7 @@ public class EnvisageFrame extends JFrame
         contentPane = new JPanel();
         contentPane.setLayout( new BorderLayout( 0, 0 ) );
         modelSplitPane = new JSplitPane();
-        modelSplitPane.setDividerLocation( 300 );
+        modelSplitPane.setDividerLocation( 250 );
         modelSplitPane.setOneTouchExpandable( true );
         contentPane.add( modelSplitPane, BorderLayout.CENTER );
     }

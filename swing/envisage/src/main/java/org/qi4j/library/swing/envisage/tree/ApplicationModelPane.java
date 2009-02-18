@@ -45,9 +45,9 @@ import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescrip
 
 /**
  * Application Model View as Swing Component.
- * It allow 2 view:
- * - by Structure
- * - by Type
+ * It support 2 view:<br/>
+ * - by Structure<br/>
+ * - by Type<br/>
  * 
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
@@ -66,7 +66,6 @@ public class ApplicationModelPane extends JPanel
 
     protected boolean selectionInProgress;
 
-    protected Energy4Java qi4j;
     protected Application application;
 
     public ApplicationModelPane( )
@@ -129,13 +128,11 @@ public class ApplicationModelPane extends JPanel
     }
 
     /** Initialize Qi4J for this component
-     * @param qi4j the Energy4Java
-     * @param app the Application 
+     * @param application the Application 
      * */
-    public void initQi4J( Energy4Java qi4j, Application app )
+    public void initQi4J(  Application application )
     {
-        this.qi4j = qi4j;
-        this.application = app;
+        this.application = application;
 
         ApplicationSPI applicationSPI = (ApplicationSPI) application;
         ApplicationDetailDescriptor descriptor = ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor( applicationSPI );
@@ -163,8 +160,7 @@ public class ApplicationModelPane extends JPanel
         Object obj = structureTree.getLastSelectedPathComponent();
         if (obj != null)
         {
-           Object userObject =  ((DefaultMutableTreeNode)obj).getUserObject();
-           return userObject;
+           return ((DefaultMutableTreeNode)obj).getUserObject();
         }
         return null;
     }
@@ -177,11 +173,11 @@ public class ApplicationModelPane extends JPanel
     protected TreeNode findNode(JTree tree, Object object)
     {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getModel().getRoot();
-        TreeNode foundNode = findNode(node, object);
-        return foundNode;
+        return findNode(node, object);
     }
 
     /** Recurvice search or find node that contains the obj
+     * @param node DefaultMutableTreeNode
      * @param obj userObject
      * @return TreeNode or null if could not find
      * */
