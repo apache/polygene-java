@@ -158,6 +158,7 @@ public abstract class AbstractPropertyModel
         }
         else
         {
+            // TODO: shouldn't we check that the type is a Serializable?
             valueType = new SerializableType( Classes.getRawClass( type ).getName() );
         }
 
