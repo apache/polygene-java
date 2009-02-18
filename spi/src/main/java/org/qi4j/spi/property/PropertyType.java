@@ -37,49 +37,6 @@ import org.qi4j.spi.value.ValueType;
 public class PropertyType
     implements Serializable, Comparable<PropertyType>
 {
-    public static ValueType createValueType(Type type)
-    {
-        ValueType valueType = null;
-        if (CollectionType.isCollection( type ))
-        {
-            if (type instanceof ParameterizedType)
-            {
-                ParameterizedType pt = (ParameterizedType) type;
-                valueType = new CollectionType(((Class)pt.getRawType()).getName(), createValueType( pt.getActualTypeArguments()[0] ));
-            } else
-            {
-                valueType = new CollectionType(((Class)type).getName(), createValueType( Object.class ));
-            }
-        } else if ( CompoundType.isCompound( type ))
-        {
-            Class valueTypeClass = (Class)type;
-            List<PropertyType> types = new ArrayList<PropertyType>( );
-            for( Method method : valueTypeClass.getMethods() )
-            {
-                Type returnType = method.getGenericReturnType();
-                if (returnType instanceof ParameterizedType && ((ParameterizedType)returnType).getRawType().equals( Property.class))
-                {
-                    Type propType = ((ParameterizedType)returnType).getActualTypeArguments()[0];
-                    RDF rdfAnnotation = method.getAnnotation( RDF.class );
-                    String rdf = rdfAnnotation == null ? null : rdfAnnotation.value();
-                    Queryable queryableAnnotation = method.getAnnotation( Queryable.class );
-                    boolean queryable = queryableAnnotation == null ? true : queryableAnnotation.value();
-                    PropertyType propertyType = new PropertyType( GenericPropertyInfo.getQualifiedName( method ), createValueType(propType), GenericPropertyInfo.toURI( method ), rdf, queryable, PropertyTypeEnum.IMMUTABLE);
-                    types.add(propertyType);
-                }
-            }
-            valueType = new CompoundType(valueTypeClass.getName(), types);
-        } else if ( PrimitiveType.isPrimitive( type ))
-        {
-            valueType = new PrimitiveType(((Class)type).getName());
-        } else
-        {
-            valueType = new SerializableType( Classes.getRawClass(type).getName());
-        }
-
-        return valueType;
-    }
-
     public enum PropertyTypeEnum
     {
         MUTABLE, IMMUTABLE, COMPUTED

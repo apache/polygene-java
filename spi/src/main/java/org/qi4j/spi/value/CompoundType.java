@@ -26,9 +26,9 @@ import org.qi4j.spi.property.PropertyType;
 public class CompoundType
     implements ValueType
 {
-    public static boolean isCompound( Type type)
+    public static boolean isCompound( Type type )
     {
-        return type instanceof Class && ValueComposite.class.isAssignableFrom((Class)type);
+        return type instanceof Class && ValueComposite.class.isAssignableFrom( (Class) type );
     }
 
     private String type;
@@ -37,7 +37,7 @@ public class CompoundType
     public CompoundType( String type, List<PropertyType> types )
     {
         this.type = type;
-        Collections.sort(types); // Sort by property name
+        Collections.sort( types ); // Sort by property name
         this.types = types;
     }
 

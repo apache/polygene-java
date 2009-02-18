@@ -70,7 +70,7 @@ public final class EntityPropertyModel extends AbstractPropertyModel
 
         Type valueType = Classes.getRawClass( type() );
 
-        propertyType = new PropertyType( qualifiedName(), PropertyType.createValueType( valueType), toURI(), toRDF(), this.queryable, type );
+        propertyType = new PropertyType( qualifiedName(), createValueType( valueType), toURI(), toRDF(), this.queryable, type );
 
         propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), name(), qualifiedName(), type() );
     }

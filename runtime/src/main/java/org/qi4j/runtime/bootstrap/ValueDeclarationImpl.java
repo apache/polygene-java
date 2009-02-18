@@ -36,8 +36,8 @@ public final class ValueDeclarationImpl
     implements ValueDeclaration, Serializable
 {
     private Class<? extends ValueComposite>[] compositeTypes;
-    private List<Class<?>> concerns = new ArrayList<Class<?>>( );
-    private List<Class<?>> sideEffects = new ArrayList<Class<?>>( );
+    private List<Class<?>> concerns = new ArrayList<Class<?>>();
+    private List<Class<?>> sideEffects = new ArrayList<Class<?>>();
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
@@ -52,7 +52,7 @@ public final class ValueDeclarationImpl
                 {
                     if( !Property.class.isAssignableFrom( method.getReturnType() ) )
                     {
-                        throw new InvalidValueCompositeException( "Only Property methods are allowed in ValueComposites: " + method+" in "+compositeType.getName());
+                        throw new InvalidValueCompositeException( "Only Property methods are allowed in ValueComposites: " + method + " in " + compositeType.getName() );
                     }
                 }
             }
@@ -75,13 +75,13 @@ public final class ValueDeclarationImpl
 
     public ValueDeclaration withConcerns( Class<?>... concerns )
     {
-        this.concerns.addAll( Arrays.asList(concerns ));
+        this.concerns.addAll( Arrays.asList( concerns ) );
         return this;
     }
 
     public ValueDeclaration withSideEffects( Class<?>... sideEffects )
     {
-        this.sideEffects.addAll( Arrays.asList(sideEffects ));
+        this.sideEffects.addAll( Arrays.asList( sideEffects ) );
         return this;
     }
 
@@ -90,11 +90,11 @@ public final class ValueDeclarationImpl
         for( Class<? extends ValueComposite> compositeType : compositeTypes )
         {
             ValueModel valueModel = ValueModel.newModel( compositeType,
-                                                               visibility,
-                                                               new MetaInfo( metaInfo ).withAnnotations( compositeType ),
-                                                               propertyDecs,
-                                                               concerns,
-                                                               sideEffects);
+                                                         visibility,
+                                                         new MetaInfo( metaInfo ).withAnnotations( compositeType ),
+                                                         propertyDecs,
+                                                         concerns,
+                                                         sideEffects );
             values.add( valueModel );
         }
     }

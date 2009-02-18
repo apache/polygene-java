@@ -29,12 +29,12 @@ public class PropertyModel
 {
     private PropertyInfo propertyInfo;
 
-    public PropertyModel(
-        Method anAccessor, boolean immutable, ValueConstraintsInstance constraints, MetaInfo aMetaInfo, Object anInitialValue )
+    public PropertyModel( Method anAccessor, boolean immutable, ValueConstraintsInstance constraints,
+                          MetaInfo metaInfo, Object anInitialValue )
     {
-        super(anAccessor, immutable, constraints, aMetaInfo, anInitialValue);
-
-        propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), name(), qualifiedName(), type() );    }
+        super( anAccessor, immutable, constraints, metaInfo, anInitialValue );
+        propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), name(), qualifiedName(), type() );
+    }
 
     @SuppressWarnings( "unchecked" )
     public Property<?> newInstance( Object value )

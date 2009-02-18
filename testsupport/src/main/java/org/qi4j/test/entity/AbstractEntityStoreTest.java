@@ -48,7 +48,7 @@ public abstract class AbstractEntityStoreTest
     {
         module.addServices( UuidIdentityGeneratorService.class );
         module.addEntities( TestEntity.class);
-        module.addValues( TestValue.class, TestValue2.class );
+        module.addValues( TestValue.class, TestValue2.class, TjabbaValue.class );
         module.addObjects( getClass() );
     }
 
@@ -85,19 +85,32 @@ public abstract class AbstractEntityStoreTest
         instance.name().set( "Test" );
         instance.association().set( instance );
 
+        ValueBuilder<Tjabba> valueBuilder4 = valueBuilderFactory.newValueBuilder( Tjabba.class );
+        final Tjabba prototype4 = valueBuilder4.prototype();
+        prototype4.bling().set( "BlinkLjus" );
+
         // Set value
         ValueBuilder<TestValue2> valueBuilder2 = valueBuilderFactory.newValueBuilder( TestValue2.class );
-        valueBuilder2.prototype().stringValue().set("Bar");
+        TestValue2 prototype2 = valueBuilder2.prototype();
+        prototype2.stringValue().set("Bar");
+        prototype2.anotherValue().set( valueBuilder4.newInstance() );
 
-        ValueBuilder<TestValue> valueBuilder = valueBuilderFactory.newValueBuilder( TestValue.class );
-        TestValue prototype = valueBuilder.prototype();
+        ValueBuilder<Tjabba> valueBuilder3 = valueBuilderFactory.newValueBuilder( Tjabba.class );
+        final Tjabba prototype3 = valueBuilder3.prototype();
+        prototype3.bling().set( "Brakfis" );
+
+        ValueBuilder<TestValue> valueBuilder1 = valueBuilderFactory.newValueBuilder( TestValue.class );
+        TestValue prototype = valueBuilder1.prototype();
         prototype.listProperty().get().add( "Foo" );
         prototype.valueProperty().set( valueBuilder2.newInstance() );
+        prototype.tjabbaProperty().set( valueBuilder3.newInstance() );
         Map<String, String> mapValue = new HashMap<String, String>();
         mapValue.put( "foo", "bar" );
         prototype.serializableProperty().set( mapValue );
+        instance.valueProperty().set( valueBuilder1.newInstance() );
 
-        instance.valueProperty().set( valueBuilder.newInstance() );
+
+
         instance.manyAssociation().add( instance );
 
         instance.listAssociation().add( instance );
@@ -335,8 +348,8 @@ public abstract class AbstractEntityStoreTest
             // Check values
             unitOfWork1 = unitOfWorkFactory.newUnitOfWork();
             testEntity1 = unitOfWork1.dereference( testEntity );
-            assertThat( "property name has been set", testEntity1.name().get(), equalTo( "A" ) );
-            assertThat( "version is correct", spi.getEntityState( testEntity1 ).version(), equalTo( 2L ) );
+            assertThat( "property name has not been set", testEntity1.name().get(), equalTo( "A" ) );
+            assertThat( "version is incorrect", spi.getEntityState( testEntity1 ).version(), equalTo( 2L ) );
             unitOfWork1.discard();
         }
     }
@@ -363,8 +376,17 @@ public abstract class AbstractEntityStoreTest
         @Optional Association<Qualifier<TestEntity, TestEntity>> qualifier();
     }
 
-    public interface TestValue
-        extends ValueComposite
+    public interface TjabbaValue extends Tjabba, ValueComposite
+    {
+
+    }
+    
+    public interface Tjabba
+    {
+        Property<String> bling();
+    }
+
+    public interface TestValue extends ValueComposite
     {
         @UseDefaults
         Property<String> stringProperty();
@@ -380,6 +402,8 @@ public abstract class AbstractEntityStoreTest
 
         Property<TestValue2> valueProperty();
 
+        Property<Tjabba> tjabbaProperty();
+
         Property<Map<String,String>> serializableProperty();
     }
 
@@ -387,6 +411,8 @@ public abstract class AbstractEntityStoreTest
         extends ValueComposite
     {
         Property<String> stringValue();
+
+        Property<Tjabba> anotherValue();
     }
     
     public enum TestEnum

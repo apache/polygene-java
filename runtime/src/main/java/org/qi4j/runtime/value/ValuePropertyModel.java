@@ -56,7 +56,7 @@ public final class ValuePropertyModel extends AbstractPropertyModel
         PropertyType.PropertyTypeEnum type;
         type = PropertyType.PropertyTypeEnum.IMMUTABLE;
 
-        ValueType valueType = PropertyType.createValueType( Classes.getRawClass( type() ));
+        ValueType valueType = createValueType( Classes.getRawClass( type() ));
 
         propertyType = new PropertyType( qualifiedName(), valueType, toURI(), toRDF(), isQueryable, type );
         propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), name(), qualifiedName(), type() );

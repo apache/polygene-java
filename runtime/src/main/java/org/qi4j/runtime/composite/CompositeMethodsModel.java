@@ -127,4 +127,9 @@ public final class CompositeMethodsModel
             compositeMethodModel.visitModel( modelVisitor );
         }
     }
+
+    public String toString()
+    {
+        return type.getName(); 
+    }
 }

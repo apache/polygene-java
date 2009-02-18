@@ -65,7 +65,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
     public EntityPropertyInstance( EntityPropertyModel aPropertyInfo, EntityState entityState, ConstraintsCheck constraints, UnitOfWorkInstance uow )
         throws IllegalArgumentException
     {
-        super( aPropertyInfo);
+        super( aPropertyInfo );
         this.constraints = constraints;
         this.value = (T) NOT_LOADED;
         this.entityState = entityState;
@@ -84,7 +84,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
         {
             value = (T) entityState.getProperty( qualifiedName() );
 
-            if (value instanceof ValueState )
+            if( value instanceof ValueState )
             {
                 ValueState valueState = (ValueState) value;
                 value = ( (EntityPropertyModel) propertyInfo ).<T>getValue( uow.module(), valueState );
@@ -116,7 +116,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
         PropertyStateChange change = null;
         if( stateChangeVoters != null )
         {
-            change = new PropertyStateChange( entityState.qualifiedIdentity().identity(), qualifiedName());
+            change = new PropertyStateChange( entityState.qualifiedIdentity().identity(), qualifiedName() );
 
             for( StateChangeVoter stateChangeVoter : stateChangeVoters )
             {
@@ -132,7 +132,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
         }
 
         // Change property
-        entityState.setProperty( qualifiedName(), storableValue(((EntityPropertyModel)propertyInfo).propertyType().type(), aNewValue) );
+        entityState.setProperty( qualifiedName(), storableValue( ( (EntityPropertyModel) propertyInfo ).propertyType().type(), aNewValue ) );
         value = aNewValue;
 
         // Notify listeners
@@ -164,12 +164,11 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
         entityState = newState;
     }
 
-    private Object storableValue( ValueType type, Object value)
+    private Object storableValue( ValueType type, Object value )
     {
-        if (type instanceof CompoundType)
+        if( type instanceof CompoundType )
         {
-            CompoundType compoundType = (CompoundType) type;
-            Map<String,Object> values = new HashMap<String, Object>();
+            Map<String, Object> values = new HashMap<String, Object>();
 
             ValueComposite valueComposite = (ValueComposite) value;
             ValueInstance instance = ValueInstance.getValueInstance( valueComposite );
@@ -180,11 +179,12 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
                 PropertyTypeDescriptor propertyDescriptor = (PropertyTypeDescriptor) property;
                 Property valueProperty = instance.state().getProperty( property.accessor() );
                 ValueType compoundPropertyType = propertyDescriptor.propertyType().type();
-                Object propertyValue = storableValue( compoundPropertyType, valueProperty.get());
-                values.put(propertyDescriptor.qualifiedName(), propertyValue);
+                Object propertyValue = storableValue( compoundPropertyType, valueProperty.get() );
+                values.put( propertyDescriptor.qualifiedName(), propertyValue );
             }
             value = entityState.newValueState( values );
-        } else if (type instanceof SerializableType )
+        }
+        else if( type instanceof SerializableType )
         {
             // Serialize value
             try
@@ -197,7 +197,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
             }
             catch( IOException e )
             {
-                throw new IllegalArgumentException("Could not serialize value", e);
+                throw new IllegalArgumentException( "Could not serialize value", e );
             }
         }
 

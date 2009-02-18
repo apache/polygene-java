@@ -69,7 +69,9 @@ public class ModuleInstance
     private final ServiceFinder serviceFinder;
     private final ClassLoader classLoader;
 
-    public ModuleInstance( ModuleModel moduleModel, LayerInstance layerInstance, CompositesModel compositesModel, EntitiesModel entitiesModel, ObjectsModel objectsModel, ValuesModel valuesModel, ServicesModel servicesModel )
+    public ModuleInstance( ModuleModel moduleModel, LayerInstance layerInstance, CompositesModel compositesModel,
+                           EntitiesModel entitiesModel, ObjectsModel objectsModel, ValuesModel valuesModel,
+                           ServicesModel servicesModel )
     {
         this.moduleModel = moduleModel;
         this.layerInstance = layerInstance;

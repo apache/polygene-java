@@ -20,22 +20,32 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import java.util.ArrayList;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.RDF;
+import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Computed;
 import org.qi4j.api.property.ComputedPropertyInstance;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
+import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.property.PropertyDescriptor;
+import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.value.ValueState;
+import org.qi4j.spi.value.ValueType;
+import org.qi4j.spi.value.CollectionType;
+import org.qi4j.spi.value.CompoundType;
+import org.qi4j.spi.value.PrimitiveType;
+import org.qi4j.spi.value.SerializableType;
 
 /**
  * TODO
@@ -46,52 +56,112 @@ public abstract class AbstractPropertyModel
     private static final long serialVersionUID = 1L;
 
     private final String name;
+
     private final Type type;
+
     private final Method accessor; // Interface accessor
+
     private final String qualifiedName;
+
     private final String uri;
+
     private final String rdf;
 
     private final ValueConstraintsInstance constraints; // May be null
+
     protected final MetaInfo metaInfo;
+
     private final Object initialValue;
+
     private final boolean useDefaults;
+
     private final boolean immutable;
+
     private final boolean computed;
+
     private final boolean needsWrapper;
 
     private PropertyInfo builderInfo;
 
-    public AbstractPropertyModel(
-        Method anAccessor, boolean immutable, ValueConstraintsInstance constraints, MetaInfo aMetaInfo, Object anInitialValue )
+    public AbstractPropertyModel( Method accessor, boolean immutable, ValueConstraintsInstance constraints,
+                                  MetaInfo metaInfo, Object initialValue )
     {
         this.immutable = immutable;
-        metaInfo = aMetaInfo;
-        name = anAccessor.getName();
-        type = GenericPropertyInfo.getPropertyType( anAccessor );
-        accessor = anAccessor;
-        qualifiedName = GenericPropertyInfo.getQualifiedName( anAccessor );
+        this.metaInfo = metaInfo;
+        name = accessor.getName();
+        type = GenericPropertyInfo.getPropertyType( accessor );
+        this.accessor = accessor;
+        qualifiedName = GenericPropertyInfo.getQualifiedName( accessor );
 
         // Check for @UseDefaults annotation
-        if (anInitialValue == null)
+        if( initialValue == null )
         {
-            if (metaInfo.get( UseDefaults.class ) != null)
-                anInitialValue = DefaultValues.getDefaultValue( type );
+            if( this.metaInfo.get( UseDefaults.class ) != null )
+            {
+                initialValue = DefaultValues.getDefaultValue( type );
+            }
         }
 
-        initialValue = anInitialValue;
-        useDefaults = metaInfo.get( UseDefaults.class ) != null;
+        this.initialValue = initialValue;
+        useDefaults = this.metaInfo.get( UseDefaults.class ) != null;
 
         uri = GenericPropertyInfo.toURI( qualifiedName() );
-        RDF uriAnnotation = metaInfo.get( RDF.class );
+        RDF uriAnnotation = this.metaInfo.get( RDF.class );
         rdf = uriAnnotation == null ? null : uriAnnotation.value();
 
         this.constraints = constraints;
 
-        computed = metaInfo.get( Computed.class ) != null;
-        needsWrapper = !accessor.getReturnType().equals(Property.class);
+        computed = this.metaInfo.get( Computed.class ) != null;
+        needsWrapper = !this.accessor.getReturnType().equals( Property.class );
 
-        builderInfo = new GenericPropertyInfo( metaInfo, false, computed, name, qualifiedName, type );
+        builderInfo = new GenericPropertyInfo( this.metaInfo, false, computed, name, qualifiedName, type );
+    }
+
+    protected ValueType createValueType( Type type )
+    {
+        ValueType valueType;
+        if( CollectionType.isCollection( type ) )
+        {
+            if( type instanceof ParameterizedType )
+            {
+                ParameterizedType pt = (ParameterizedType) type;
+                valueType = new CollectionType( ( (Class) pt.getRawType() ).getName(), createValueType( pt.getActualTypeArguments()[ 0 ] ) );
+            }
+            else
+            {
+                valueType = new CollectionType( ( (Class) type ).getName(), createValueType( Object.class ) );
+            }
+        }
+        else if( CompoundType.isCompound( type ) )
+        {
+            Class valueTypeClass = (Class) type;
+            List<PropertyType> types = new ArrayList<PropertyType>();
+            for( Method method : valueTypeClass.getMethods() )
+            {
+                Type returnType = method.getGenericReturnType();
+                if( returnType instanceof ParameterizedType && ( (ParameterizedType) returnType ).getRawType().equals( Property.class ) )
+                {
+                    Type propType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
+                    RDF rdfAnnotation = method.getAnnotation( RDF.class );
+                    String rdf = rdfAnnotation == null ? null : rdfAnnotation.value();
+                    Queryable queryableAnnotation = method.getAnnotation( Queryable.class );
+                    boolean queryable = queryableAnnotation == null || queryableAnnotation.value();
+                    PropertyType propertyType = new PropertyType( GenericPropertyInfo.getQualifiedName( method ), createValueType( propType ), GenericPropertyInfo.toURI( method ), rdf, queryable, PropertyType.PropertyTypeEnum.IMMUTABLE );
+                    types.add( propertyType );
+                }
+            }
+            valueType = new CompoundType( valueTypeClass.getName(), types );
+        }
+        else if( PrimitiveType.isPrimitive( type ) )
+        {
+            valueType = new PrimitiveType( ( (Class) type ).getName() );
+        }
+        else
+        {
+            valueType = new SerializableType( Classes.getRawClass( type ).getName() );
+        }
+
+        return valueType;
     }
 
     public <T> T metaInfo( Class<T> infoType )
@@ -134,7 +204,7 @@ public abstract class AbstractPropertyModel
         Object value = initialValue;
 
         // Check for @UseDefaults annotation
-        if (value == null && useDefaults)
+        if( value == null && useDefaults )
         {
             value = DefaultValues.getDefaultValue( type );
         }
@@ -166,10 +236,10 @@ public abstract class AbstractPropertyModel
             property = new PropertyInstance<Object>( builderInfo, initialValue(), this );
         }
 
-        return wrapProperty(property);
+        return wrapProperty( property );
     }
 
-    public Property<?> newBuilderInstance(Object initialValue)
+    public Property<?> newBuilderInstance( Object initialValue )
     {
         // Properties cannot be immutable during construction
 
@@ -183,7 +253,7 @@ public abstract class AbstractPropertyModel
             property = new PropertyInstance<Object>( builderInfo, initialValue, this );
         }
 
-        return wrapProperty(property);
+        return wrapProperty( property );
     }
 
     public Property<?> newInitialInstance()
@@ -193,7 +263,7 @@ public abstract class AbstractPropertyModel
         return newInstance( initialValue() );
     }
 
-    public abstract Property<?> newInstance(Object value);
+    public abstract Property<?> newInstance( Object value );
 
     public void checkConstraints( Object value, boolean allowNull )
         throws ConstraintViolationException
@@ -249,10 +319,12 @@ public abstract class AbstractPropertyModel
 
     protected Property<?> wrapProperty( Property<?> property )
     {
-        if (needsWrapper && !accessor.getReturnType().isInstance( property ))
+        if( needsWrapper && !accessor.getReturnType().isInstance( property ) )
         {
             // Create proxy
-            property = (Property<?>) Proxy.newProxyInstance( accessor.getReturnType().getClassLoader(), new Class[] {accessor.getReturnType()}, new PropertyHandler(property) );
+            final ClassLoader loader = accessor.getReturnType().getClassLoader();
+            final Class[] type = { accessor.getReturnType() };
+            property = (Property<?>) Proxy.newProxyInstance( loader, type, new PropertyHandler( property ) );
         }
         return property;
     }
@@ -282,7 +354,8 @@ public abstract class AbstractPropertyModel
             p = property;
         }
 
-        public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+        public Object invoke( Object proxy, Method method, Object[] args )
+            throws Throwable
         {
             try
             {
