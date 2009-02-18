@@ -32,6 +32,11 @@ import org.qi4j.index.rdf.model.entities.FemaleEntity;
 import org.qi4j.index.rdf.model.entities.MaleEntity;
 import org.qi4j.index.rdf.model.values.ProtocolValue;
 import org.qi4j.index.rdf.model.values.URLValue;
+import org.qi4j.index.rdf.model.URL;
+import org.qi4j.index.rdf.model.Protocol;
+import org.qi4j.index.rdf.model.Host;
+import org.qi4j.index.rdf.model.Port;
+import org.qi4j.index.rdf.model.File;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
@@ -55,8 +60,11 @@ public class RdfEntityIndexerTest
                     CatEntity.class
                 );
                 module.addValues(
-                    ProtocolValue.class,
-                    URLValue.class
+                    URL.class,
+                    Protocol.class,
+                    Host.class,
+                    Port.class,
+                    File.class
                 );
                 module.addServices(
                     MemoryEntityStoreService.class,

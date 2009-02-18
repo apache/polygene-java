@@ -50,6 +50,11 @@ import org.qi4j.index.rdf.model.Female;
 import org.qi4j.index.rdf.model.Male;
 import org.qi4j.index.rdf.model.Nameable;
 import org.qi4j.index.rdf.model.Person;
+import org.qi4j.index.rdf.model.URL;
+import org.qi4j.index.rdf.model.Protocol;
+import org.qi4j.index.rdf.model.Host;
+import org.qi4j.index.rdf.model.Port;
+import org.qi4j.index.rdf.model.File;
 import org.qi4j.index.rdf.model.entities.AccountEntity;
 import org.qi4j.index.rdf.model.entities.CatEntity;
 import org.qi4j.index.rdf.model.entities.CityEntity;
@@ -95,8 +100,11 @@ public class RdfEntityFinderTest
                     CatEntity.class
                 );
                 module.addValues(
-                    ProtocolValue.class,
-                    URLValue.class
+                    URL.class,
+                    Protocol.class,
+                    Host.class,
+                    Port.class,
+                    File.class
                 );
                 module.addServices(
                     MemoryEntityStoreService.class,

@@ -18,6 +18,7 @@
 package org.qi4j.index.rdf.model;
 
 import org.qi4j.api.property.Property;
+import org.qi4j.api.value.ValueComposite;
 
 /**
  * TODO Add JavaDoc.
@@ -25,7 +26,7 @@ import org.qi4j.api.property.Property;
  * @author Alin Dreghiciu (adreghiciu@gmail.com)
  * @since 0.6.0, February 16, 2009
  */
-public interface Host
+public interface Host extends ValueComposite
 {
     Property<String> value();
 }

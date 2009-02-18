@@ -192,10 +192,10 @@ class Network
         unitOfWork= assembler.unitOfWorkFactory().newUnitOfWork();
 
         {
-            ValueBuilder<URLValue> urlValueBuilder = valueBuilderFactory.newValueBuilder( URLValue.class );
+            ValueBuilder<URL> urlValueBuilder = valueBuilderFactory.newValueBuilder( URL.class );
             URL url = urlValueBuilder.prototype();
 
-            ValueBuilder<ProtocolValue> protocolValueBuilder = valueBuilderFactory.newValueBuilder( ProtocolValue.class );
+            ValueBuilder<Protocol> protocolValueBuilder = valueBuilderFactory.newValueBuilder( Protocol.class );
             Protocol protocol = protocolValueBuilder.prototype();
             protocol.value().set( "http" );
 

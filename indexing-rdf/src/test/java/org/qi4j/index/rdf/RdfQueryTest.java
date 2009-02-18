@@ -56,17 +56,19 @@ import org.qi4j.index.rdf.model.City;
 import org.qi4j.index.rdf.model.Domain;
 import org.qi4j.index.rdf.model.Female;
 import org.qi4j.index.rdf.model.File;
+import org.qi4j.index.rdf.model.Host;
 import org.qi4j.index.rdf.model.Male;
 import org.qi4j.index.rdf.model.Nameable;
 import org.qi4j.index.rdf.model.Person;
+import org.qi4j.index.rdf.model.Port;
+import org.qi4j.index.rdf.model.Protocol;
+import org.qi4j.index.rdf.model.URL;
 import org.qi4j.index.rdf.model.entities.AccountEntity;
 import org.qi4j.index.rdf.model.entities.CatEntity;
 import org.qi4j.index.rdf.model.entities.CityEntity;
 import org.qi4j.index.rdf.model.entities.DomainEntity;
 import org.qi4j.index.rdf.model.entities.FemaleEntity;
 import org.qi4j.index.rdf.model.entities.MaleEntity;
-import org.qi4j.index.rdf.model.values.ProtocolValue;
-import org.qi4j.index.rdf.model.values.URLValue;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.runtime.query.NotQueryableException;
@@ -96,8 +98,11 @@ public class RdfQueryTest
                     CatEntity.class
                 );
                 module.addValues(
-                    ProtocolValue.class,
-                    URLValue.class
+                    URL.class,
+                    Protocol.class,
+                    Host.class,
+                    Port.class,
+                    File.class
                 );
                 module.addServices(
                     MemoryRepositoryService.class,
@@ -525,7 +530,7 @@ public class RdfQueryTest
     }
 
     @Test
-    @Ignore( "Skip this test till we get the ValueComposite indexing working" )
+    //@Ignore( "Skip this test till we get the ValueComposite indexing working" )
     public void script29()
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
