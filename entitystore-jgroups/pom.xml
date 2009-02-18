@@ -55,6 +55,11 @@
       <artifactId>commons-logging</artifactId>
       <version>1.1</version>
     </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-lib-serialization</artifactId>
+      <version>0.6-20090217.010111-23</version>
+    </dependency>
   </dependencies>
   <repositories>
     <repository>

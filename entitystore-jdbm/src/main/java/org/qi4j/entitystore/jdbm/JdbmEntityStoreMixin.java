@@ -46,8 +46,7 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.library.locking.WriteLock;
-import org.qi4j.library.serialization.FastObjectInputStream;
-import org.qi4j.library.serialization.FastObjectOutputStream;
+import org.qi4j.spi.serialization.FastObjectInputStream;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
@@ -136,10 +135,8 @@ public class JdbmEntityStoreMixin
     public EntityState getEntityState( QualifiedIdentity identity ) throws EntityStoreException
     {
         EntityType entityType = getEntityType( identity.type() );
-
         try
         {
-
             try
             {
                 SerializableState serializableState = loadSerializableState( identity.identity() );
@@ -266,7 +263,7 @@ public class JdbmEntityStoreMixin
                                                                  entityStateInstance.getProperties(),
                                                                  entityStateInstance.getAssociations(),
                                                                  entityStateInstance.getManyAssociations() );
-                ObjectOutputStream out = new FastObjectOutputStream( bout, turbo );
+                ObjectOutputStream out = new org.qi4j.spi.serialization.FastObjectOutputStream( bout, turbo );
                 out.writeObject( state );
                 out.close();
                 Long stateIndex = getStateIndex( entityState.qualifiedIdentity().identity() );
@@ -289,7 +286,7 @@ public class JdbmEntityStoreMixin
                                                              entityStateInstance.getProperties(),
                                                              entityStateInstance.getAssociations(),
                                                              entityStateInstance.getManyAssociations() );
-            ObjectOutputStream out = new FastObjectOutputStream( bout, turbo );
+            ObjectOutputStream out = new org.qi4j.spi.serialization.FastObjectOutputStream( bout, turbo );
             out.writeObject( state );
             out.close();
             byte[] stateArray = bout.toByteArray();

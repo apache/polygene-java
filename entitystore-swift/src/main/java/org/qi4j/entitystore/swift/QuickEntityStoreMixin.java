@@ -40,8 +40,8 @@ import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.EntityTypeRegistryMixin;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.serialization.SerializableState;
-import org.qi4j.library.serialization.FastObjectInputStream;
-import org.qi4j.library.serialization.FastObjectOutputStream;
+import org.qi4j.spi.serialization.FastObjectInputStream;
+import org.qi4j.spi.serialization.FastObjectOutputStream;
 
 public class QuickEntityStoreMixin extends EntityTypeRegistryMixin
     implements Activatable

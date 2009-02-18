@@ -15,6 +15,7 @@
     <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
     <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
     <orderEntry type="module" module-name="qi4j-core-api" exported="" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.library:qi4j-lib-serialization:0.6-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="qi4j-lib-rdf" exported="" />
     <orderEntry type="module" module-name="qi4j-lib-constraints" exported="" />
     <orderEntry type="module" module-name="qi4j-core-testsupport" />
