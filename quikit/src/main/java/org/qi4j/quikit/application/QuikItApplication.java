@@ -20,7 +20,6 @@ import org.apache.wicket.Response;
 import org.apache.wicket.Session;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.settings.ISessionSettings;
-import static org.apache.wicket.util.lang.Objects.setObjectStreamFactory;
 import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.injection.scope.Structure;
@@ -86,8 +85,8 @@ public class QuikItApplication extends WebApplication
         sessionSettings.setPageFactory( pageFactory );
 
         // Sets the object stream factory builder
-        Qi4jObjectStreamFactory objectStreamFactory = obf.newObject( Qi4jObjectStreamFactory.class );
-        setObjectStreamFactory( objectStreamFactory );
+//        Qi4jObjectStreamFactory objectStreamFactory = obf.newObject( Qi4jObjectStreamFactory.class );
+//        setObjectStreamFactory( objectStreamFactory );
     }
 
     @Override

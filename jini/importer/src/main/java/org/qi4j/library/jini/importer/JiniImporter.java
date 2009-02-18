@@ -41,16 +41,17 @@ public class JiniImporter
     public Object importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {
+        final Class<?> serviceType = serviceDescriptor.type();
         JiniProxyHandler handler;
         try
         {
-            handler = new JiniProxyHandler( serviceDescriptor, statusService );
+            handler = new JiniProxyHandler( serviceType, statusService );
         }
         catch( IOException e )
         {
             throw new ServiceImporterException( "Unable to establish network.", e );
         }
-        Class[] type = new Class[] { serviceDescriptor.type() };
+        Class[] type = new Class[] { serviceType };
         return Proxy.newProxyInstance( JiniImporter.class.getClassLoader(), type, handler );
     }
 }

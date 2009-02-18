@@ -40,7 +40,7 @@ public class JiniProxyHandler
     private LookupCache lookupCache;
     private Object jiniService;
 
-    JiniProxyHandler( ImportedServiceDescriptor descriptor, JiniStatusService statusService )
+    JiniProxyHandler( Class serviceType, JiniStatusService statusService )
         throws IOException
     {
         this.statusService = statusService;
@@ -50,7 +50,7 @@ public class JiniProxyHandler
         ServiceItemFilter filter = null;
         Entry[] entries = null;             // Lookup all, regardless of entries.
         ServiceID serviceId = null;         // Lookup all, regardless of serviceId.
-        Class[] type = new Class[]{ descriptor.type() };
+        Class[] type = new Class[]{ serviceType };
         ServiceTemplate template = new ServiceTemplate( serviceId, type, entries );
         lookupCache = sdm.createLookupCache( template, filter, this );
         lookupCache.addListener( this );

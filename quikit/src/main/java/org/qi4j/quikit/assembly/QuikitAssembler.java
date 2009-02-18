@@ -16,7 +16,6 @@ package org.qi4j.quikit.assembly;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.quikit.application.Qi4jObjectStreamFactory;
 import org.qi4j.quikit.application.QuikItApplication;
 import org.qi4j.quikit.application.QuikItFilter;
 import org.qi4j.quikit.application.QuikItServlet;
@@ -57,7 +56,7 @@ public class QuikitAssembler
         // Register wicket applications
         aModule.addObjects( QuikItApplication.class );
         aModule.addObjects( QuikitSession.class );
-        aModule.addObjects( Qi4jObjectStreamFactory.class );
+//        aModule.addObjects( Qi4jObjectStreamFactory.class );
 
         aModule.addObjects( QuikItFilter.class );
         aModule.addObjects( QuikItServlet.class );
