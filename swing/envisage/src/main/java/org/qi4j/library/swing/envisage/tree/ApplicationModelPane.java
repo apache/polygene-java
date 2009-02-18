@@ -79,12 +79,16 @@ public class ApplicationModelPane extends JPanel
         structureTree.setShowsRootHandles( true );
         structureTree.setExpandsSelectedPaths( true );
         structureTree.setScrollsOnExpand( true );
+        structureTree.setName( STRUCTURE_VIEW );
+        structureTree.setCellRenderer( new ApplicationModelTreeCellRenderer() );
 
         typeTree = new JTree();
         typeTree.setRootVisible( false );
         typeTree.setShowsRootHandles( true );
         typeTree.setExpandsSelectedPaths( true );
         typeTree.setScrollsOnExpand( true );
+        typeTree.setName( TYPE_VIEW );
+        typeTree.setCellRenderer( new ApplicationModelTreeCellRenderer() );
 
         mainPane = new JPanel();
         cardLayout = new CardLayout( );

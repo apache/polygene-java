@@ -33,6 +33,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.object.ObjectDescriptor;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
@@ -48,6 +49,8 @@ public class GeneralPane extends DetailPane
     private JTextArea todoArea;
     private JPanel todoPane;
     private JPanel todoInnerPane;
+    private JTextField visibilityField;
+    private JLabel visibilityLabel;
 
     public GeneralPane()
     {
@@ -70,24 +73,32 @@ public class GeneralPane extends DetailPane
             ServiceDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor ).descriptor();
             nameField.setText( descriptor.identity() );
             classNameField.setText( descriptor.type().getName() );
+            visibilityField.setText( descriptor.visibility().toString() );
 
             /*
             instantiateOnStartup = descriptor.isInstantiateOnStartup();
-            visibility = descriptor.visibility().toString();
             */
         }
         else if( objectDesciptor instanceof EntityDetailDescriptor )
         {
-
             EntityDescriptor descriptor = ( (EntityDetailDescriptor) objectDesciptor ).descriptor();
-            nameField.setText( objectDesciptor.toString() );
+            //nameField.setText( objectDesciptor.toString() );
+            nameField.setText( descriptor.type().getSimpleName() );
             classNameField.setText( descriptor.type().getName() );
+            visibilityField.setText( descriptor.visibility().toString() );
 
         }
         else if( objectDesciptor instanceof ObjectDetailDescriptor )
         {
-
+            ObjectDescriptor descriptor = ( (ObjectDetailDescriptor) objectDesciptor ).descriptor();
+            nameField.setText( descriptor.type().getSimpleName() );
+            classNameField.setText( descriptor.type().getName() );
+            visibilityField.setText( descriptor.visibility().toString() );
         }
+
+        nameField.setCaretPosition( 0 );
+        classNameField.setCaretPosition( 0 );
+        visibilityField.setCaretPosition( 0 );
     }
 
     {
@@ -155,7 +166,7 @@ public class GeneralPane extends DetailPane
         final JPanel spacer3 = new JPanel();
         gbc = new GridBagConstraints();
         gbc.gridx = 1;
-        gbc.gridy = 3;
+        gbc.gridy = 5;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.VERTICAL;
         contentPane.add( spacer3, gbc );
@@ -163,7 +174,7 @@ public class GeneralPane extends DetailPane
         todoPane.setLayout( new FlowLayout( FlowLayout.CENTER, 5, 5 ) );
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
-        gbc.gridy = 3;
+        gbc.gridy = 5;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets( 64, 0, 0, 0 );
         contentPane.add( todoPane, gbc );
@@ -176,6 +187,27 @@ public class GeneralPane extends DetailPane
         todoArea.setText( "What's else need to put here:\n- Visibility ? \n- ..." );
         todoArea.setWrapStyleWord( true );
         todoInnerPane.add( todoArea, BorderLayout.CENTER );
+        visibilityLabel = new JLabel();
+        this.$$$loadLabelText$$$( visibilityLabel, ResourceBundle.getBundle( "org/qi4j/library/swing/envisage/detail/GeneralPane" ).getString( "CTL_Visibility.Text" ) );
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.anchor = GridBagConstraints.WEST;
+        contentPane.add( visibilityLabel, gbc );
+        final JPanel spacer4 = new JPanel();
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        contentPane.add( spacer4, gbc );
+        visibilityField = new JTextField();
+        visibilityField.setEditable( false );
+        gbc = new GridBagConstraints();
+        gbc.gridx = 2;
+        gbc.gridy = 4;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        contentPane.add( visibilityField, gbc );
     }
 
     /**
