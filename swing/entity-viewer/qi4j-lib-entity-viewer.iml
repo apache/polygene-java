@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module relativePaths="true" type="JAVA_MODULE" version="4">
+<module relativePaths="true" MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_5" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
@@ -22,15 +22,15 @@
     <orderEntry type="library" name="Maven: fest:fest-reflect:1.0" level="project" />
     <orderEntry type="library" name="Maven: net.jcip:jcip-annotations:1.0" level="project" />
     <orderEntry type="library" name="Maven: swinghelper:debug:1.0" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-api:0.6-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-bootstrap:0.6-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-spi:0.6-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-runtime:0.6-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="qi4j-core-api" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-runtime" />
     <orderEntry type="library" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
-    <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-testsupport:0.6-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.qi4j.extension:qi4j-indexing-rdf:0.6-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.qi4j.library:qi4j-lib-rdf:0.6-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.qi4j.library:qi4j-lib-constraints:0.6-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="qi4j-core-testsupport" />
+    <orderEntry type="module" module-name="qi4j-indexing-rdf" exported="" />
+    <orderEntry type="module" module-name="qi4j-lib-rdf" exported="" />
+    <orderEntry type="module" module-name="qi4j-lib-constraints" exported="" />
     <orderEntry type="library" exported="" name="Maven: org.openrdf.sesame:sesame-model:2.2.1" level="project" />
     <orderEntry type="library" exported="" name="Maven: info.aduna.commons:aduna-commons-collections:2.2" level="project" />
     <orderEntry type="library" exported="" name="Maven: info.aduna.commons:aduna-commons-concurrent:2.2" level="project" />
@@ -78,7 +78,7 @@
     <orderEntry type="library" exported="" name="Maven: commons-dbcp:commons-dbcp:1.2.2" level="project" />
     <orderEntry type="library" exported="" name="Maven: commons-pool:commons-pool:1.3" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.slf4j:slf4j-simple:1.4.2" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.qi4j.library:qi4j-lib-swing-visualizer:0.6-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="qi4j-lib-swing-visualizer" exported="" />
     <orderEntry type="library" exported="" name="Maven: org.prefuse:prefuse:20071021" level="project" />
     <orderEntry type="library" exported="" name="Maven: com.jgoodies:forms:1.2.1" level="project" />
     <orderEntry type="library" exported="" name="Maven: com.jgoodies:looks:2.2.0" level="project" />
