@@ -41,6 +41,7 @@ import org.qi4j.spi.entity.QualifierQualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.value.CompoundType;
 import org.qi4j.spi.value.PrimitiveType;
 
 /**
@@ -114,13 +115,27 @@ public class EntityStateSerializer
             {
                 continue; // Skip non-queryable
             }
-
             Object value = entityState.getProperty( propertyType.qualifiedName() );
             if( value != null )
             {
-                URI propertyUri = values.createURI( propertyType.uri() );
-                Literal rdfValue = values.createLiteral( value.toString() );
-                graph.add( entityUri, propertyUri, rdfValue );
+                System.out.println( propertyType.type().getClass() );
+                if( propertyType.type() instanceof PrimitiveType )
+                {
+                    URI propertyUri = values.createURI( propertyType.uri() );
+                    Literal rdfValue = values.createLiteral( value.toString() );
+                    graph.add( entityUri, propertyUri, rdfValue );
+                }
+                else if( propertyType.type() instanceof CompoundType )
+                {
+                    System.out.println( value );
+                }
+                else
+                {
+                    throw new UnsupportedOperationException(
+                        "RDF serialization of property type " + propertyType.type().getClass().getName()
+                        + " not supported (" + propertyType.qualifiedName() + ")"
+                    );
+                }
             }
         }
     }
