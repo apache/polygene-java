@@ -43,6 +43,8 @@ import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.value.CompoundType;
 import org.qi4j.spi.value.PrimitiveType;
+import org.qi4j.spi.value.ValueState;
+import org.qi4j.spi.value.ValueType;
 
 /**
  * TODO
@@ -95,47 +97,78 @@ public class EntityStateSerializer
 
         graph.add( entityUri, Rdfs.TYPE, values.createURI( entityType.toURI() ) );
 
-        serializeProperties( entityState, graph, entityUri, entityType.properties(), includeNonQueryable );
+        serializeProperties(
+            entityType.properties(),
+            new State()
+            {
+                public Object getProperty( final String qualifiedName )
+                {
+                    return entityState.getProperty( qualifiedName );
+                }
+            },
+            graph,
+            entityUri,
+            includeNonQueryable
+        );
         serializeAssociations( entityState, graph, entityUri, entityType.associations(), includeNonQueryable );
         serializeManyAssociations( entityState, graph, entityUri, entityType.manyAssociations(), includeNonQueryable );
     }
 
-    private void serializeProperties( final EntityState entityState,
+    private void serializeProperties( final Iterable<PropertyType> propertyTypes,
+                                      final State state,
                                       final Graph graph,
-                                      final URI entityUri,
-                                      final Iterable<PropertyType> properties,
+                                      final Resource subject,
                                       final boolean includeNonQueryable )
     {
-        ValueFactory values = graph.getValueFactory();
+        final ValueFactory valueFactory = graph.getValueFactory();
 
         // Properties
-        for( PropertyType propertyType : properties )
+        for( PropertyType propertyType : propertyTypes )
         {
             if( !( includeNonQueryable || propertyType.queryable() ) )
             {
                 continue; // Skip non-queryable
             }
-            Object value = entityState.getProperty( propertyType.qualifiedName() );
-            if( value != null )
+            final Object property = state.getProperty( propertyType.qualifiedName() );
+            if( property == null )
             {
-                System.out.println( propertyType.type().getClass() );
-                if( propertyType.type() instanceof PrimitiveType )
-                {
-                    URI propertyUri = values.createURI( propertyType.uri() );
-                    Literal rdfValue = values.createLiteral( value.toString() );
-                    graph.add( entityUri, propertyUri, rdfValue );
-                }
-                else if( propertyType.type() instanceof CompoundType )
-                {
-                    System.out.println( value );
-                }
-                else
-                {
-                    throw new UnsupportedOperationException(
-                        "RDF serialization of property type " + propertyType.type().getClass().getName()
-                        + " not supported (" + propertyType.qualifiedName() + ")"
-                    );
-                }
+                continue; // Skip properties with null values
+            }
+            System.out.println( propertyType.type().getClass() );
+            final ValueType valueType = propertyType.type();
+            if( valueType instanceof PrimitiveType )
+            {
+                final URI predicate = valueFactory.createURI( propertyType.uri() );
+                final Literal object = valueFactory.createLiteral( property.toString() );
+                graph.add( subject, predicate, object );
+            }
+            else if( valueType instanceof CompoundType )
+            {
+                // create a blank node
+                final URI predicate = valueFactory.createURI( propertyType.uri() );
+                final BNode object = valueFactory.createBNode();
+                graph.add( subject, predicate, object );
+                // serialize compound properties
+                serializeProperties(
+                    ( (CompoundType) valueType ).types(),
+                    new State()
+                    {
+                        public Object getProperty( final String qualifiedName )
+                        {
+                            return ( (ValueState) property ).getProperty( qualifiedName );
+                        }
+                    },
+                    graph,
+                    object,
+                    includeNonQueryable
+                );
+            }
+            else
+            {
+                throw new UnsupportedOperationException(
+                    "RDF serialization of property type " + valueType.getClass().getName()
+                    + " not supported (" + propertyType.qualifiedName() + ")"
+                );
             }
         }
     }
@@ -355,4 +388,10 @@ public class EntityStateSerializer
         final URI assocRoleURI = values.createURI( arqi.role().toURI() );
         graph.add( qualifier, Qi4jEntity.QUALIFIER, assocRoleURI );
     }
+
+    private interface State
+    {
+        Object getProperty( String qualifiedName );
+    }
+
 }
