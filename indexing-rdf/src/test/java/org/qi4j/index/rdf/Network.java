@@ -22,6 +22,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
+import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.index.rdf.model.Account;
 import org.qi4j.index.rdf.model.Cat;
 import org.qi4j.index.rdf.model.City;
@@ -33,9 +34,6 @@ import org.qi4j.index.rdf.model.URL;
 import org.qi4j.index.rdf.model.entities.CatEntity;
 import org.qi4j.index.rdf.model.entities.FemaleEntity;
 import org.qi4j.index.rdf.model.entities.MaleEntity;
-import org.qi4j.index.rdf.model.values.ProtocolValue;
-import org.qi4j.index.rdf.model.values.URLValue;
-import org.qi4j.bootstrap.SingletonAssembler;
 
 /**
  * TODO Add JavaDoc
@@ -63,7 +61,7 @@ class Network
         }
 
         unitOfWork.complete();
-        unitOfWork= assembler.unitOfWorkFactory().newUnitOfWork();
+        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         Domain programming;
         {
@@ -76,7 +74,7 @@ class Network
         }
 
         unitOfWork.complete();
-        unitOfWork= assembler.unitOfWorkFactory().newUnitOfWork();
+        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         Domain cooking;
         {
@@ -89,7 +87,7 @@ class Network
         }
 
         unitOfWork.complete();
-        unitOfWork= assembler.unitOfWorkFactory().newUnitOfWork();
+        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         Domain cars;
         {
@@ -102,7 +100,7 @@ class Network
         }
 
         unitOfWork.complete();
-        unitOfWork= assembler.unitOfWorkFactory().newUnitOfWork();
+        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         City kualaLumpur;
         {
@@ -116,7 +114,7 @@ class Network
         }
 
         unitOfWork.complete();
-        unitOfWork= assembler.unitOfWorkFactory().newUnitOfWork();
+        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         City penang;
         {
@@ -130,7 +128,7 @@ class Network
         }
 
         unitOfWork.complete();
-        unitOfWork= assembler.unitOfWorkFactory().newUnitOfWork();
+        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         Account annsAccount;
         {
@@ -141,7 +139,7 @@ class Network
         }
 
         unitOfWork.complete();
-        unitOfWork= assembler.unitOfWorkFactory().newUnitOfWork();
+        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         Account jacksAccount;
         {
@@ -152,7 +150,7 @@ class Network
         }
 
         unitOfWork.complete();
-        unitOfWork= assembler.unitOfWorkFactory().newUnitOfWork();
+        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         Female annDoe;
         {
@@ -171,7 +169,7 @@ class Network
         }
 
         unitOfWork.complete();
-        unitOfWork= assembler.unitOfWorkFactory().newUnitOfWork();
+        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         {
             EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder( MaleEntity.class );
@@ -189,7 +187,7 @@ class Network
         }
 
         unitOfWork.complete();
-        unitOfWork= assembler.unitOfWorkFactory().newUnitOfWork();
+        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         {
             ValueBuilder<URL> urlValueBuilder = valueBuilderFactory.newValueBuilder( URL.class );
@@ -212,13 +210,14 @@ class Network
             jackDoe.mainAccount().set( jacksAccount );
             jackDoe.accounts().add( annsAccount );
             jackDoe.accounts().add( jacksAccount );
-            jackDoe.personalURL().set( urlValueBuilder.newInstance() );
+            //jackDoe.personalURL().set( urlValueBuilder.newInstance() );
             jackDoe = maleBuilder.newInstance();
+            jackDoe.personalURL().set( urlValueBuilder.newInstance() );
             NameableAssert.trace( jackDoe );
         }
 
         unitOfWork.complete();
-        unitOfWork= assembler.unitOfWorkFactory().newUnitOfWork();
+        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         {
             EntityBuilder<CatEntity> catBuilder = unitOfWork.newEntityBuilder( CatEntity.class );

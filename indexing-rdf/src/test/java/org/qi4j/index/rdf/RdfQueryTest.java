@@ -536,7 +536,7 @@ public class RdfQueryTest
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         qb.where(
-            eq( person.personalURL().get().file().get().value(), "some" )
+            eq( person.personalURL().get().protocol().get().value(), "http" )
         );
         Query<Person> query = qb.newQuery();
         verifyUnorderedResults( query, "Jack Doe" );
