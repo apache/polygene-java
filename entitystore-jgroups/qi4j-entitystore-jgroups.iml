@@ -24,6 +24,7 @@
     <orderEntry type="library" name="Maven: logkit:logkit:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: avalon-framework:avalon-framework:4.1.3" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:servlet-api:2.4" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.library:qi4j-lib-serialization:0.6-SNAPSHOT" level="project" />
   </component>
 </module>
 
