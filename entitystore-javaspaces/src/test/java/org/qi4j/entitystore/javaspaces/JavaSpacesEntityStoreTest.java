@@ -25,9 +25,6 @@ import java.security.Policy;
 import net.jini.security.policy.DynamicPolicyProvider;
 import org.junit.After;
 import org.junit.Test;
-import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -63,28 +60,6 @@ public class JavaSpacesEntityStoreTest extends AbstractEntityStoreTest
         module.addAssembler( new JiniJavaSpacesServiceAssembler() );
         module.addAssembler( new JiniLookupServiceAssembler() );
         module.addAssembler( new JiniTransactionServiceAssembler() );
-    }
-
-    protected TestEntity createEntity( UnitOfWork unitOfWork )
-        throws UnitOfWorkCompletionException
-    {
-        // Create entity
-        EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
-        TestEntity instance = builder.newInstance();
-        instance.identity().get();
-
-        instance.name().set( "Test" );
-        instance.association().set( instance );
-
-        instance.manyAssociation().add( instance );
-
-        instance.listAssociation().add( instance );
-        instance.listAssociation().add( instance );
-        instance.listAssociation().add( instance );
-
-        instance.setAssociation().add( instance );
-        instance.setAssociation().add( instance );
-        return instance;
     }
 
     @Override @After public void tearDown()
