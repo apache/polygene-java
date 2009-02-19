@@ -16,26 +16,25 @@
 */
 package org.qi4j.library.swing.envisage.detail;
 
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.JComponent;
-import javax.swing.JTextArea;
-import javax.swing.BorderFactory;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.Insets;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
-import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumnModel;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
-import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.library.swing.envisage.util.TableData;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
 
 /**
+ * Implementation of General DetailPane
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class GeneralPane extends DetailPane
@@ -43,60 +42,31 @@ public class GeneralPane extends DetailPane
     protected ResourceBundle bundle = ResourceBundle.getBundle( this.getClass().getName() );
 
     private JPanel contentPane;
-    private JTextField nameField;
-    private JLabel nameLabel;
-    private JTextField classNameField;
-    private JTextArea todoArea;
-    private JPanel todoPane;
-    private JPanel todoInnerPane;
-    private JTextField visibilityField;
-    private JLabel visibilityLabel;
+    private JTable table;
+    private GeneralTableModel tableModel;
 
     public GeneralPane()
     {
         this.setLayout( new BorderLayout() );
         this.add( contentPane, BorderLayout.CENTER );
+
+        tableModel = new GeneralTableModel();
+        table.setModel( tableModel );
+
+        TableColumnModel columnModel = table.getColumnModel();
+        columnModel.getColumn( 0 ).setPreferredWidth( 25 );
+        columnModel.getColumn( 1 ).setPreferredWidth( 400 );
     }
 
     protected void clear()
     {
-        nameField.setText( null );
-        classNameField.setText( null );
+        tableModel.clear();
     }
 
     public void setDescriptor( Object objectDesciptor )
     {
         clear();
-
-        if( objectDesciptor instanceof ServiceDetailDescriptor )
-        {
-            ServiceDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor ).descriptor();
-            nameField.setText( descriptor.identity() );
-            classNameField.setText( descriptor.type().getName() );
-            visibilityField.setText( descriptor.visibility().toString() );
-
-            
-        }
-        else if( objectDesciptor instanceof EntityDetailDescriptor )
-        {
-            EntityDescriptor descriptor = ( (EntityDetailDescriptor) objectDesciptor ).descriptor();
-            //nameField.setText( objectDesciptor.toString() );
-            nameField.setText( descriptor.type().getSimpleName() );
-            classNameField.setText( descriptor.type().getName() );
-            visibilityField.setText( descriptor.visibility().toString() );
-
-        }
-        else if( objectDesciptor instanceof ObjectDetailDescriptor )
-        {
-            ObjectDescriptor descriptor = ( (ObjectDetailDescriptor) objectDesciptor ).descriptor();
-            nameField.setText( descriptor.type().getSimpleName() );
-            classNameField.setText( descriptor.type().getName() );
-            visibilityField.setText( descriptor.visibility().toString() );
-        }
-
-        nameField.setCaretPosition( 0 );
-        classNameField.setCaretPosition( 0 );
-        visibilityField.setCaretPosition( 0 );
+        tableModel.reload( objectDesciptor );
     }
 
     {
@@ -116,131 +86,11 @@ public class GeneralPane extends DetailPane
     private void $$$setupUI$$$()
     {
         contentPane = new JPanel();
-        contentPane.setLayout( new GridBagLayout() );
-        nameLabel = new JLabel();
-        this.$$$loadLabelText$$$( nameLabel, ResourceBundle.getBundle( "org/qi4j/library/swing/envisage/detail/GeneralPane" ).getString( "CTL_Name.Text" ) );
-        GridBagConstraints gbc;
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.EAST;
-        contentPane.add( nameLabel, gbc );
-        final JPanel spacer1 = new JPanel();
-        gbc = new GridBagConstraints();
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        contentPane.add( spacer1, gbc );
-        final JPanel spacer2 = new JPanel();
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        contentPane.add( spacer2, gbc );
-        nameField = new JTextField();
-        nameField.setEditable( false );
-        gbc = new GridBagConstraints();
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        contentPane.add( nameField, gbc );
-        final JLabel label1 = new JLabel();
-        this.$$$loadLabelText$$$( label1, ResourceBundle.getBundle( "org/qi4j/library/swing/envisage/detail/GeneralPane" ).getString( "CTL_ClassName.Text" ) );
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.EAST;
-        contentPane.add( label1, gbc );
-        classNameField = new JTextField();
-        classNameField.setEditable( false );
-        gbc = new GridBagConstraints();
-        gbc.gridx = 2;
-        gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        contentPane.add( classNameField, gbc );
-        final JPanel spacer3 = new JPanel();
-        gbc = new GridBagConstraints();
-        gbc.gridx = 1;
-        gbc.gridy = 5;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        contentPane.add( spacer3, gbc );
-        todoPane = new JPanel();
-        todoPane.setLayout( new FlowLayout( FlowLayout.CENTER, 5, 5 ) );
-        gbc = new GridBagConstraints();
-        gbc.gridx = 2;
-        gbc.gridy = 5;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets( 64, 0, 0, 0 );
-        contentPane.add( todoPane, gbc );
-        todoInnerPane = new JPanel();
-        todoInnerPane.setLayout( new BorderLayout( 0, 0 ) );
-        todoPane.add( todoInnerPane );
-        todoInnerPane.setBorder( BorderFactory.createTitledBorder( BorderFactory.createEtchedBorder(), "TODO" ) );
-        todoArea = new JTextArea();
-        todoArea.setEditable( false );
-        todoArea.setText( "What's else need to put here:\n- Visibility ? \n- ..." );
-        todoArea.setWrapStyleWord( true );
-        todoInnerPane.add( todoArea, BorderLayout.CENTER );
-        visibilityLabel = new JLabel();
-        this.$$$loadLabelText$$$( visibilityLabel, ResourceBundle.getBundle( "org/qi4j/library/swing/envisage/detail/GeneralPane" ).getString( "CTL_Visibility.Text" ) );
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.anchor = GridBagConstraints.WEST;
-        contentPane.add( visibilityLabel, gbc );
-        final JPanel spacer4 = new JPanel();
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        contentPane.add( spacer4, gbc );
-        visibilityField = new JTextField();
-        visibilityField.setEditable( false );
-        gbc = new GridBagConstraints();
-        gbc.gridx = 2;
-        gbc.gridy = 4;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        contentPane.add( visibilityField, gbc );
-    }
-
-    /**
-     * @noinspection ALL
-     */
-    private void $$$loadLabelText$$$( JLabel component, String text )
-    {
-        StringBuffer result = new StringBuffer();
-        boolean haveMnemonic = false;
-        char mnemonic = '\0';
-        int mnemonicIndex = -1;
-        for( int i = 0; i < text.length(); i++ )
-        {
-            if( text.charAt( i ) == '&' )
-            {
-                i++;
-                if( i == text.length() )
-                {
-                    break;
-                }
-                if( !haveMnemonic && text.charAt( i ) != '&' )
-                {
-                    haveMnemonic = true;
-                    mnemonic = text.charAt( i );
-                    mnemonicIndex = result.length();
-                }
-            }
-            result.append( text.charAt( i ) );
-        }
-        component.setText( result.toString() );
-        if( haveMnemonic )
-        {
-            component.setDisplayedMnemonic( mnemonic );
-            component.setDisplayedMnemonicIndex( mnemonicIndex );
-        }
+        contentPane.setLayout( new BorderLayout( 0, 0 ) );
+        final JScrollPane scrollPane1 = new JScrollPane();
+        contentPane.add( scrollPane1, BorderLayout.CENTER );
+        table = new JTable();
+        scrollPane1.setViewportView( table );
     }
 
     /**
@@ -250,4 +100,78 @@ public class GeneralPane extends DetailPane
     {
         return contentPane;
     }
+
+    public class GeneralTableModel extends AbstractTableModel
+    {
+        /**
+         * the column names for this model
+         */
+        protected String[] columnNames = { bundle.getString( "Name.Column" ), bundle.getString( "Value.Column" ) };
+        protected ArrayList<TableData> data;
+
+        protected String nameRow = "name";
+        protected String classRow = "class";
+        protected String visibilityRow = "visibility";
+
+
+        public GeneralTableModel()
+        {
+            data = new ArrayList<TableData>();
+        }
+
+        public void reload( Object objectDesciptor )
+        {
+            if( objectDesciptor instanceof ServiceDetailDescriptor )
+            {
+                ServiceDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor ).descriptor();
+                data.add( new TableData( 2, new Object[]{ nameRow, descriptor.identity() } ) );
+                data.add( new TableData( 2, new Object[]{ classRow, descriptor.type().getName() } ) );
+                data.add( new TableData( 2, new Object[]{ visibilityRow, descriptor.visibility().toString() } ) );
+            }
+            else if( objectDesciptor instanceof EntityDetailDescriptor )
+            {
+                EntityDescriptor descriptor = ( (EntityDetailDescriptor) objectDesciptor ).descriptor();
+                data.add( new TableData( 2, new Object[]{ nameRow, descriptor.type().getSimpleName() } ) );
+                data.add( new TableData( 2, new Object[]{ classRow, descriptor.type().getName() } ) );
+                data.add( new TableData( 2, new Object[]{ visibilityRow, descriptor.visibility().toString() } ) );
+            }
+            else if( objectDesciptor instanceof ObjectDetailDescriptor )
+            {
+                ObjectDescriptor descriptor = ( (ObjectDetailDescriptor) objectDesciptor ).descriptor();
+                data.add( new TableData( 2, new Object[]{ nameRow, descriptor.type().getSimpleName() } ) );
+                data.add( new TableData( 2, new Object[]{ classRow, descriptor.type().getName() } ) );
+                data.add( new TableData( 2, new Object[]{ visibilityRow, descriptor.visibility().toString() } ) );
+            }
+
+            fireTableDataChanged();
+        }
+
+        public Object getValueAt( int rowIndex, int columnIndex )
+        {
+            TableData row = data.get( rowIndex );
+            return row.get( columnIndex );
+        }
+
+        public void clear()
+        {
+            data.clear();
+            fireTableDataChanged();
+        }
+
+        public int getColumnCount()
+        {
+            return columnNames.length;
+        }
+
+        public String getColumnName( int col )
+        {
+            return columnNames[ col ];
+        }
+
+        public int getRowCount()
+        {
+            return data.size();
+        }
+    }
 }
+

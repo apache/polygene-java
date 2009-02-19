@@ -16,14 +16,13 @@
 */
 package org.qi4j.library.swing.envisage.detail;
 
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JScrollPane;
-import javax.swing.BorderFactory;
 import java.awt.BorderLayout;
 import java.util.ResourceBundle;
-import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)

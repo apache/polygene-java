@@ -16,13 +16,12 @@
 */
 package org.qi4j.library.swing.envisage.detail;
 
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import java.util.ResourceBundle;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
