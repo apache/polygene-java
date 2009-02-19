@@ -18,8 +18,9 @@
 package org.qi4j.logging.trace.records;
 
 import java.util.List;
-import org.qi4j.api.property.Property;
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.property.Property;
 
 public interface TraceRecord
 {
@@ -35,5 +36,6 @@ public interface TraceRecord
 
     @Optional Property<Throwable> exception();
 
+    @Queryable(false)
     Property<List<String>> arguments();
 }

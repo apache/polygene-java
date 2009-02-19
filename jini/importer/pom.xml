@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.qi4j</groupId>
     <artifactId>qi4j</artifactId>
-    <version>0.5-SNAPSHOT</version>
+    <version>0.6-SNAPSHOT</version>
   </parent>
   <groupId>org.qi4j.library.jini</groupId>
   <artifactId>qi4j-lib-jini-importer</artifactId>
