@@ -19,7 +19,7 @@ import java.security.MessageDigest;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
-import sun.misc.BASE64Encoder;
+import org.qi4j.spi.util.Base64Encoder;
 
 /**
  * SPI-level description of an Entity type. This contains
@@ -74,9 +74,9 @@ public final class EntityType
         return version;
     }
 
-    public boolean isSameVersion(EntityType type)
+    public boolean isSameVersion( EntityType type )
     {
-        return version.equals(type.version);
+        return version.equals( type.version );
     }
 
     public String toURI()
@@ -127,7 +127,7 @@ public final class EntityType
         }
 
         EntityType that = (EntityType) o;
-        return version.equals(that.version ) && type.equals( that.type );
+        return version.equals( that.version ) && type.equals( that.type );
     }
 
     private String calculateSchemaVersion()
@@ -137,7 +137,7 @@ public final class EntityType
             MessageDigest md = MessageDigest.getInstance( "SHA" );
 
             // Entity type
-            md.update( type.getBytes("UTF-8" ));
+            md.update( type.getBytes( "UTF-8" ) );
 
             // Properties
             for( PropertyType property : properties )
@@ -148,16 +148,16 @@ public final class EntityType
             // Associations
             for( AssociationType association : associations )
             {
-                association.calculateVersion(md);
+                association.calculateVersion( md );
             }
 
             // ManyAssociations
             for( ManyAssociationType manyAssociation : manyAssociations )
             {
-                manyAssociation.calculateVersion(md);
+                manyAssociation.calculateVersion( md );
             }
 
-            return new BASE64Encoder().encode( md.digest() );
+            return new String( Base64Encoder.encode( md.digest() ) );
         }
         catch( Exception e )
         {
