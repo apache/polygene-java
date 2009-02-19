@@ -126,7 +126,10 @@ public class RdfQueryTest
     @After
     public void tearDown()
     {
-        unitOfWork.discard();
+        if( unitOfWork != null )
+        {
+            unitOfWork.discard();
+        }
     }
 
     @Test
