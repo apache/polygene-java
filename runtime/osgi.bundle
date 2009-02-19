@@ -41,7 +41,6 @@ Import-Package: net.sf.cglib.asm;version=2.1.3, \
                 org.qi4j.api.entity.association, \
                 org.qi4j.api.injection, \
                 org.qi4j.api.injection.scope, \
-                org.qi4j.api.metainfo, \
                 org.qi4j.api.mixin, \
                 org.qi4j.api.object, \
                 org.qi4j.api.property, \

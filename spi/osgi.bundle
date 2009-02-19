@@ -9,7 +9,6 @@ Import-Package: org.qi4j.api, \
                 org.qi4j.api.entity.association, \
                 org.qi4j.api.injection, \
                 org.qi4j.api.injection.scope, \
-                org.qi4j.api.metainfo, \
                 org.qi4j.api.mixin, \
                 org.qi4j.api.object, \
                 org.qi4j.api.property, \
@@ -41,3 +40,5 @@ Export-Package: org.qi4j.spi;version=${pom.version}, \
                 org.qi4j.spi.structure;version=${pom.version}, \
                 org.qi4j.spi.value;version=${pom.version}, \
                 org.qi4j.entitystore.memory;version=${pom.version}
+
+Private-Package: org.qi4j.spi.util
