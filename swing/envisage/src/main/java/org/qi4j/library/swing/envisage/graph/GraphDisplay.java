@@ -49,11 +49,11 @@ import prefuse.render.AbstractShapeRenderer;
 import prefuse.render.DefaultRendererFactory;
 import prefuse.util.ColorLib;
 import prefuse.util.FontLib;
+import prefuse.util.GraphicsLib;
+import prefuse.util.display.DisplayLib;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
 import java.awt.geom.Point2D;
-import javax.swing.KeyStroke;
-import javax.swing.AbstractAction;
+import java.awt.geom.Rectangle2D;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
@@ -72,6 +72,7 @@ public class GraphDisplay extends Display
     private static final String ANIMATE_ACTION = "animate";
     private static final String LAYOUT_ACTION = "layout";
     private static final String SUB_LAYOUT_ACTION = "subLayout";
+    private static final String AUTO_ZOOM_ACTION = "autoZoom";
 
     private LabelRenderer nodeRenderer;
     private EdgeRenderer edgeRenderer;
@@ -131,7 +132,7 @@ public class GraphDisplay extends Display
         CollapsedSubtreeLayout subLayout = new CollapsedSubtreeLayout(TREE, orientation);
         m_vis.putAction(SUB_LAYOUT_ACTION, subLayout);
 
-        AutoPanAction autoPan = new AutoPanAction();
+        m_vis.putAction( AUTO_ZOOM_ACTION, new AutoZoomAction() );
 
         // create the filtering and layout
         ActionList filter = new ActionList();
@@ -145,6 +146,7 @@ public class GraphDisplay extends Display
         m_vis.putAction(FILTER_ACTION, filter);
 
         // animated transition
+        AutoPanAction autoPan = new AutoPanAction();
         ActionList animate = new ActionList(1000);
         animate.setPacingFunction(new SlowInSlowOutPacer());
         animate.add(autoPan);
@@ -173,23 +175,20 @@ public class GraphDisplay extends Display
         addControlListener(new PanControl());
         addControlListener(new FocusControl(1, FILTER_ACTION));
 
-        registerKeyboardAction( new OrientAction(Constants.ORIENT_LEFT_RIGHT), "left-to-right", KeyStroke.getKeyStroke("ctrl 1"), WHEN_FOCUSED);
-        registerKeyboardAction( new OrientAction(Constants.ORIENT_TOP_BOTTOM), "top-to-bottom", KeyStroke.getKeyStroke("ctrl 2"), WHEN_FOCUSED);
-        registerKeyboardAction( new OrientAction(Constants.ORIENT_RIGHT_LEFT), "right-to-left", KeyStroke.getKeyStroke("ctrl 3"), WHEN_FOCUSED);
-        registerKeyboardAction( new OrientAction(Constants.ORIENT_BOTTOM_TOP), "bottom-to-top", KeyStroke.getKeyStroke("ctrl 4"), WHEN_FOCUSED);
-
         setOrientation(orientation);
     }
 
     public void run (Graph graph)
     {
         m_vis.add(TREE, graph);
-        run();    
+        run();
+        m_vis.run(AUTO_ZOOM_ACTION);
     }
 
     public void run()
     {
         m_vis.run(FILTER_ACTION);
+    
     }
 
     public void setOrientation(int orientation) {
@@ -237,20 +236,15 @@ public class GraphDisplay extends Display
         return orientation;
     }
 
-
-
-    public class OrientAction extends AbstractAction
+    public class AutoZoomAction extends Action
     {
-        private int orientation;
-
-        public OrientAction(int orientation) {
-            this.orientation = orientation;
-        }
-        public void actionPerformed( ActionEvent evt) {
-            setOrientation(orientation);
-            getVisualization().cancel("orient");
-            getVisualization().run(LAYOUT_ACTION);
-            getVisualization().run("orient");
+        public void run(double frac) {
+            int duration = 1000;
+            int margin = 50;
+            Visualization vis = getVisualization();
+            Rectangle2D bounds = vis.getBounds(Visualization.ALL_ITEMS);
+            GraphicsLib.expand(bounds, margin + (int)(1/getScale()));
+            DisplayLib.fitViewToBounds(GraphDisplay.this, bounds, duration);
         }
     }
 

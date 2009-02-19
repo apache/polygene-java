@@ -23,6 +23,7 @@ import javax.swing.BorderFactory;
 import java.awt.BorderLayout;
 import java.util.ResourceBundle;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
@@ -31,8 +32,9 @@ public class DetailModelPane extends JPanel
 {
     protected static final int GENERAL_TAB = 0;
     protected static final int METHOD_TAB = 1;
-    protected static final int STATE_TAB = 2;
-    protected static final int DEPENDENCIE_TAB = 3;
+    protected static final int DEPENDENCIE_TAB = 2;
+    protected static final int STATE_TAB = 3;
+
 
     protected ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName());
 
@@ -56,7 +58,6 @@ public class DetailModelPane extends JPanel
 
         tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ),  generalPane );
         tabPane.add( bundle.getString( "CTL_MethodTab.Text" ), methodPane );
-        tabPane.add( bundle.getString( "CTL_StateTab.Text" ), statePane );
         tabPane.add( bundle.getString( "CTL_DependencyTab.Text" ), dependencyPane );
     }
 
@@ -79,16 +80,31 @@ public class DetailModelPane extends JPanel
         commonTabCount++;
 
         serviceConfigurationPane = new ServiceConfigurationPane();
-        serviceConfigurationPane .setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
+        serviceConfigurationPane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
     }
 
     public void setDescriptor(Object objectDescriptor)
     {
         generalPane.setDescriptor( objectDescriptor );
-        statePane.setDescriptor( objectDescriptor );
         methodPane.setDescriptor( objectDescriptor );
         dependencyPane.setDescriptor( objectDescriptor );
+        statePane.setDescriptor( objectDescriptor );
         serviceConfigurationPane.setDescriptor( objectDescriptor );
+
+        if (objectDescriptor instanceof ObjectDetailDescriptor )
+        {
+            int index = tabPane.indexOfComponent( statePane );
+            if (index != -1)
+            {
+                tabPane.removeTabAt( index );
+            }
+        } else {
+            int index = tabPane.indexOfComponent( statePane );
+            if (index == -1)
+            {
+                tabPane.add( bundle.getString( "CTL_StateTab.Text" ), statePane );
+            }
+        }
 
         if (objectDescriptor instanceof ServiceDetailDescriptor)
         {

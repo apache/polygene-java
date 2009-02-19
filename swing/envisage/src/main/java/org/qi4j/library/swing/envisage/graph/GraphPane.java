@@ -17,6 +17,7 @@
 package org.qi4j.library.swing.envisage.graph;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.api.structure.Application;
 import prefuse.data.Graph;
@@ -51,9 +52,12 @@ public class GraphPane extends JPanel
         {
             public void componentResized( ComponentEvent evt)
             {
-                Component comp = evt.getComponent();
-                Dimension size = comp.getSize();
+                if (!isShowing()) { return; }
+                if (descriptor == null) { return; }
+                
+                Dimension size = GraphPane.this.getSize();
                 display.setSize( size.width, size.height );
+                display.repaint();
             }
         });
     }
@@ -64,6 +68,8 @@ public class GraphPane extends JPanel
         this.descriptor = descriptor;
 
         Graph graph = GraphBuilder.buildGraph( descriptor );
+        Dimension size = getSize();
+        display.setSize( size.width, size.height );
         display.run(graph);
     }
 

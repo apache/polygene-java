@@ -56,17 +56,15 @@ public class EnvisageFrame extends JFrame
 
     public EnvisageFrame( Energy4Java qi4j, Application application )
     {
+
+        this.application = application;
+
         setTitle( bundle.getString( "Application.Title" ) );
         setContentPane( contentPane );
 
         graphPane = new GraphPane();
         applicationModelPane = new TreeModelPane();
         detailModelPane = new DetailModelPane();
-
-        this.application = application;
-        initQi4J();
-        applicationModelPane.initQi4J( application, descriptor );
-        graphPane.initQi4J( application, descriptor );
 
         applicationModelPane.addTreeSelectionListener( new TreeSelectionListener()
         {
@@ -104,8 +102,13 @@ public class EnvisageFrame extends JFrame
 
     public void initQi4J()
     {
+        graphSplitPane.setDividerLocation( 384 );    // 768/2
+        modelSplitPane.setDividerLocation( 300 );
+
         ApplicationSPI applicationSPI = (ApplicationSPI) application;
         descriptor = ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor( applicationSPI );
+        applicationModelPane.initQi4J( application, descriptor );
+        graphPane.initQi4J( application, descriptor );
     }
 
     /**

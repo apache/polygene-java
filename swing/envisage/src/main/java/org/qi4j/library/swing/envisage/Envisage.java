@@ -21,6 +21,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.LookAndFeel;
 import java.awt.Dimension;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import org.qi4j.library.swing.envisage.EnvisageFrame;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.api.structure.Application;
@@ -57,40 +60,25 @@ public class Envisage
     }
 
     private void showMainFrame() {
-        EnvisageFrame mainFrame = new EnvisageFrame( qi4j, application );
+        final EnvisageFrame mainFrame = new EnvisageFrame( qi4j, application );
         mainFrame.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
         mainFrame.setSize( new Dimension(1024, 768) );
         mainFrame.setVisible( true );
-        
 
-        /*JFrame frame = new JFrame("Envisage");
-        frame.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
-        frame.setSize( new Dimension(800, 600) );
-        frame.setLayout( new BorderLayout( ) );
-        frame.add( mainPane, BorderLayout.CENTER );
-        frame.setVisible( true );
-        */
+        mainFrame.addWindowListener( new WindowAdapter()
+        {
+            public void windowOpened( WindowEvent evt)
+            {
+                //mainFrame.initQi4J();
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        mainFrame.initQi4J();
+                    }
+                });
+            }
+        });
     }
 
-    /*private JPanel createMainPanel()
-    {
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout( new BorderLayout( ) );
-
-        JSplitPane splitPane = new JSplitPane( );
-        mainPanel.add( splitPane, BorderLayout.CENTER );
-
-        TreeModelPane appModelPane = new TreeModelPane();
-        appModelPane.initQi4J( qi4j, application );
-
-        DetailModelPane detailModelPane = new DetailModelPane();
-
-        splitPane.setLeftComponent( appModelPane );
-        splitPane.setRightComponent( detailModelPane );
-        splitPane.setDividerLocation( 300 );
-
-        return mainPanel;
-    } */
 
     private void initLookAndFeel() {
         String osName = System.getProperty("os.name").toUpperCase();
