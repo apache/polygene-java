@@ -134,7 +134,6 @@ public class EntityStateSerializer
             {
                 continue; // Skip properties with null values
             }
-            System.out.println( propertyType.type().getClass() );
             final ValueType valueType = propertyType.type();
             if( valueType instanceof PrimitiveType )
             {
