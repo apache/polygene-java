@@ -112,6 +112,8 @@ public class GeneralPane extends DetailPane
         protected String nameRow = "name";
         protected String classRow = "class";
         protected String visibilityRow = "visibility";
+        protected String moduleRow = "module";
+        protected String layerRow = "layer";
 
 
         public GeneralTableModel()
@@ -127,6 +129,8 @@ public class GeneralPane extends DetailPane
                 data.add( new TableData( 2, new Object[]{ nameRow, descriptor.identity() } ) );
                 data.add( new TableData( 2, new Object[]{ classRow, descriptor.type().getName() } ) );
                 data.add( new TableData( 2, new Object[]{ visibilityRow, descriptor.visibility().toString() } ) );
+                data.add( new TableData( 2, new Object[]{ moduleRow, ( (ServiceDetailDescriptor) objectDesciptor ).module().toString() } ) );
+                data.add( new TableData( 2, new Object[]{ layerRow, ( (ServiceDetailDescriptor) objectDesciptor ).module().layer().toString() } ) );
             }
             else if( objectDesciptor instanceof EntityDetailDescriptor )
             {
@@ -134,6 +138,8 @@ public class GeneralPane extends DetailPane
                 data.add( new TableData( 2, new Object[]{ nameRow, descriptor.type().getSimpleName() } ) );
                 data.add( new TableData( 2, new Object[]{ classRow, descriptor.type().getName() } ) );
                 data.add( new TableData( 2, new Object[]{ visibilityRow, descriptor.visibility().toString() } ) );
+                data.add( new TableData( 2, new Object[]{ moduleRow, ( (EntityDetailDescriptor) objectDesciptor ).module().toString() } ) );
+                data.add( new TableData( 2, new Object[]{ layerRow, ( (EntityDetailDescriptor) objectDesciptor ).module().layer().toString() } ) );
             }
             else if( objectDesciptor instanceof ObjectDetailDescriptor )
             {
@@ -141,6 +147,8 @@ public class GeneralPane extends DetailPane
                 data.add( new TableData( 2, new Object[]{ nameRow, descriptor.type().getSimpleName() } ) );
                 data.add( new TableData( 2, new Object[]{ classRow, descriptor.type().getName() } ) );
                 data.add( new TableData( 2, new Object[]{ visibilityRow, descriptor.visibility().toString() } ) );
+                data.add( new TableData( 2, new Object[]{ moduleRow, ( (ObjectDetailDescriptor) objectDesciptor ).module().toString() } ) );
+                data.add( new TableData( 2, new Object[]{ layerRow, ( (ObjectDetailDescriptor) objectDesciptor ).module().layer().toString() } ) );
             }
 
             fireTableDataChanged();
