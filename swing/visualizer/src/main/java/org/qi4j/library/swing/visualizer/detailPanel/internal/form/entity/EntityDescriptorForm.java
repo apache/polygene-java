@@ -25,8 +25,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.library.swing.visualizer.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.library.swing.visualizer.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityType;
 
@@ -72,7 +72,7 @@ public final class EntityDescriptorForm
 
             EntityType entityType = descriptor.entityType();
             isQueryable = entityType.queryable();
-            version = Long.toString( entityType.version() );
+            version = new String( entityType.version() );
         }
 
 

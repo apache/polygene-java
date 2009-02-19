@@ -16,21 +16,21 @@
 */
 package org.qi4j.library.swing.envisage.detail;
 
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.AbstractButton;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ResourceBundle;
-import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
@@ -101,7 +101,7 @@ public class ServiceConfigurationPane extends DetailPane
         todoInnerPane.setBorder( BorderFactory.createTitledBorder( BorderFactory.createEtchedBorder(), "TODO" ) );
         todoArea = new JTextArea();
         todoArea.setEditable( false );
-        todoArea.setText( "What's need to put here:\n- List   \n- Tree\n- Table\n- ..." );
+        todoArea.setText( "What's else need to put here:\n- List   \n- Tree\n- Table\n- ..." );
         todoArea.setWrapStyleWord( true );
         todoInnerPane.add( todoArea, BorderLayout.CENTER );
         final JPanel spacer1 = new JPanel();
