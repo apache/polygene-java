@@ -17,11 +17,12 @@
  */
 package org.qi4j.index.rdf.model;
 
+import java.util.Map;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.common.Optional;
 
 /**
  * TODO Add JavaDoc
@@ -44,11 +45,13 @@ public interface Person
 
     @Optional Property<String> email();
 
-    @Optional Property<URL> personalURL();
+    @Optional Property<URL> personalWebsite();
 
     @Queryable( false ) Property<String> password();
 
     @Queryable( false ) @Optional Association<Account> mainAccount();
 
     @Queryable( false ) ManyAssociation<Account> accounts();
+
+    @Optional Property<Map<String, String>> additionalInfo();
 }

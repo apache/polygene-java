@@ -17,9 +17,6 @@
  */
 package org.qi4j.index.rdf.model;
 
-import java.util.Collection;
-import org.qi4j.api.common.Optional;
-import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
 
@@ -27,17 +24,11 @@ import org.qi4j.api.value.ValueComposite;
  * TODO Add JavaDoc.
  *
  * @author Alin Dreghiciu (adreghiciu@gmail.com)
- * @since 0.6.0, February 16, 2009
+ * @since 0.6.0, February 19, 2009
  */
-public interface URL extends ValueComposite
+public interface QueryParam extends ValueComposite
 {
-    Property<Protocol> protocol();
+    Property<String> name();
 
-    @Optional @Queryable( false ) Property<Host> host();
-
-    @Optional Property<Port> port();
-
-    @Optional Property<File> file();
-
-    @Optional Property<Collection<QueryParam>> queryParams();
+    Property<String> value();
 }

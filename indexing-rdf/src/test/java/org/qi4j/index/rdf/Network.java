@@ -17,6 +17,8 @@
  */
 package org.qi4j.index.rdf;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
@@ -30,6 +32,7 @@ import org.qi4j.index.rdf.model.Domain;
 import org.qi4j.index.rdf.model.Female;
 import org.qi4j.index.rdf.model.Male;
 import org.qi4j.index.rdf.model.Protocol;
+import org.qi4j.index.rdf.model.QueryParam;
 import org.qi4j.index.rdf.model.URL;
 import org.qi4j.index.rdf.model.entities.CatEntity;
 import org.qi4j.index.rdf.model.entities.FemaleEntity;
@@ -190,15 +193,6 @@ class Network
         unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         {
-            ValueBuilder<URL> urlValueBuilder = valueBuilderFactory.newValueBuilder( URL.class );
-            URL url = urlValueBuilder.prototype();
-
-            ValueBuilder<Protocol> protocolValueBuilder = valueBuilderFactory.newValueBuilder( Protocol.class );
-            Protocol protocol = protocolValueBuilder.prototype();
-            protocol.value().set( "http" );
-
-            url.protocol().set( protocolValueBuilder.newInstance() );
-
             EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder( MaleEntity.class );
             Male jackDoe = maleBuilder.stateOfComposite();
             jackDoe.name().set( "Jack Doe" );
@@ -210,7 +204,29 @@ class Network
             jackDoe.mainAccount().set( jacksAccount );
             jackDoe.accounts().add( annsAccount );
             jackDoe.accounts().add( jacksAccount );
-            jackDoe.personalURL().set( urlValueBuilder.newInstance() );
+
+            ValueBuilder<URL> urlBuilder = valueBuilderFactory.newValueBuilder( URL.class );
+            ValueBuilder<Protocol> protocolBuilder = valueBuilderFactory.newValueBuilder( Protocol.class );
+            ValueBuilder<QueryParam> queryParamBuilder = valueBuilderFactory.newValueBuilder( QueryParam.class );
+
+            Protocol protocol = protocolBuilder.prototype();
+            protocol.value().set( "http" );
+
+            List<QueryParam> queryParams = new ArrayList<QueryParam>();
+            QueryParam param = queryParamBuilder.prototype();
+            param.name().set( "user" );
+            param.value().set( "jackdoe" );
+            queryParams.add( queryParamBuilder.newInstance() );
+            param.name().set( "password" );
+            param.value().set( "somepassword" );
+            queryParams.add( queryParamBuilder.newInstance() );
+
+            URL url = urlBuilder.prototype();
+            url.protocol().set( protocolBuilder.newInstance() );
+            url.queryParams().set( queryParams );
+
+            jackDoe.personalWebsite().set( urlBuilder.newInstance() );
+
             jackDoe = maleBuilder.newInstance();
             NameableAssert.trace( jackDoe );
         }

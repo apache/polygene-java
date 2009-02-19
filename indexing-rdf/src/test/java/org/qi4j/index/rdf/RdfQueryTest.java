@@ -19,7 +19,9 @@ package org.qi4j.index.rdf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import org.junit.After;
@@ -62,6 +64,7 @@ import org.qi4j.index.rdf.model.Nameable;
 import org.qi4j.index.rdf.model.Person;
 import org.qi4j.index.rdf.model.Port;
 import org.qi4j.index.rdf.model.Protocol;
+import org.qi4j.index.rdf.model.QueryParam;
 import org.qi4j.index.rdf.model.URL;
 import org.qi4j.index.rdf.model.entities.AccountEntity;
 import org.qi4j.index.rdf.model.entities.CatEntity;
@@ -102,7 +105,8 @@ public class RdfQueryTest
                     Protocol.class,
                     Host.class,
                     Port.class,
-                    File.class
+                    File.class,
+                    QueryParam.class
                 );
                 module.addServices(
                     MemoryRepositoryService.class,
@@ -505,7 +509,7 @@ public class RdfQueryTest
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         qb.where(
-            eq( person.personalURL().get().file().get().value(), "some/path" )
+            eq( person.personalWebsite().get().file().get().value(), "some/path" )
         );
     }
 
@@ -515,7 +519,7 @@ public class RdfQueryTest
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         qb.where(
-            eq( person.personalURL().get().host().get().value(), "www.qi4j.org" )
+            eq( person.personalWebsite().get().host().get().value(), "www.qi4j.org" )
         );
     }
 
@@ -525,18 +529,48 @@ public class RdfQueryTest
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         qb.where(
-            eq( person.personalURL().get().port().get().value(), 8080 )
+            eq( person.personalWebsite().get().port().get().value(), 8080 )
         );
     }
 
     @Test
-    //@Ignore( "Skip this test till we get the ValueComposite indexing working" )
     public void script29()
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         qb.where(
-            eq( person.personalURL().get().protocol().get().value(), "http" )
+            eq( person.personalWebsite().get().protocol().get().value(), "http" )
+        );
+        Query<Person> query = qb.newQuery();
+        verifyUnorderedResults( query, "Jack Doe" );
+    }
+
+    @Test
+    @Ignore( "Wait till 0.7.0?" )
+    public void script30()
+    {
+        QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        QueryParam queryParam = null; //oneOf( person.personalWebsite().get().queryParams() );
+        qb.where(
+            and(
+                eq( queryParam.name(), "foo" ),
+                eq( queryParam.value(), "bar" )
+            )
+        );
+        Query<Person> query = qb.newQuery();
+        verifyUnorderedResults( query, "Jack Doe" );
+    }
+
+    @Test
+    @Ignore( "Wait till 0.7.0?" )
+    public void script31()
+    {
+        QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Map<String, String> info = new HashMap<String, String>();
+        qb.where(
+            eq( person.additionalInfo(), info )
         );
         Query<Person> query = qb.newQuery();
         verifyUnorderedResults( query, "Jack Doe" );
