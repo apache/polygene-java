@@ -19,20 +19,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.DcRdf;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -49,6 +51,7 @@ public class EntitySerializerTest
     {
         module.addServices( MemoryEntityStoreService.class );
         module.addEntities( TestEntity.class );
+        module.addValues( TestValue.class );
         module.addObjects( EntityStateSerializer.class, EntitySerializerTest.class );
     }
 
@@ -83,7 +86,9 @@ public class EntitySerializerTest
 
         EntityDescriptor entityDescriptor = spi.getEntityDescriptor( TestEntity.class, moduleInstance );
 
-        Iterable<Statement> graph = serializer.serialize( entityDescriptor.entityType() );
+        EntityType entityType = entityDescriptor.entityType();
+        System.out.println(entityType.version());
+        Iterable<Statement> graph = serializer.serialize( entityType );
 
         String[] prefixes = new String[]{ "rdf", "dc", " vc" };
         String[] namespaces = new String[]{ Rdfs.RDF, DcRdf.DC, "http://www.w3.org/2001/vcard-rdf/3.0#" };
@@ -97,10 +102,15 @@ public class EntitySerializerTest
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
+            ValueBuilder<TestValue> valueBuilder = valueBuilderFactory.newValueBuilder( TestValue.class );
+            valueBuilder.prototype().test1().set( 4L );
+            TestValue testValue = valueBuilder.newInstance();
+
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( "test1", TestEntity.class );
             TestEntity rickardTemplate = builder.stateOfComposite();
             rickardTemplate.name().set( "Rickard" );
             rickardTemplate.title().set( "Mr" );
+            rickardTemplate.value().set( testValue );
             TestEntity testEntity = builder.newInstance();
 
             EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( "test2", TestEntity.class );
@@ -112,6 +122,10 @@ public class EntitySerializerTest
             niclasTemplate.group().add( testEntity );
             niclasTemplate.group().add( testEntity );
             niclasTemplate.group().add( testEntity );
+            valueBuilder = testValue.buildWith();
+            valueBuilder.prototype().test1().set( 5L );
+            testValue = valueBuilder.newInstance();
+            niclasTemplate.value().set( testValue );
             TestEntity testEntity2 = builder2.newInstance();
             unitOfWork.complete();
         }

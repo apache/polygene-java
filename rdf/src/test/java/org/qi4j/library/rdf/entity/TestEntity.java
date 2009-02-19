@@ -14,15 +14,15 @@
 
 package org.qi4j.library.rdf.entity;
 
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.RDF;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ListAssociation;
 import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.property.Property;
 import org.qi4j.library.constraints.annotation.NotEmpty;
 import org.qi4j.library.rdf.DcRdf;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.common.Optional;
 
 /**
  * TODO
@@ -31,12 +31,14 @@ import org.qi4j.api.common.Optional;
 interface TestEntity
     extends EntityComposite
 {
+    @NotEmpty Property<String> name();
+
     @RDF( DcRdf.DC + "title" )
     @NotEmpty Property<String> title();
 
-    @NotEmpty Property<String> name();
-
     @Optional Association<TestEntity> association();
+
+    Property<TestValue> value();
 
     ManyAssociation<TestEntity> manyAssoc();
 
