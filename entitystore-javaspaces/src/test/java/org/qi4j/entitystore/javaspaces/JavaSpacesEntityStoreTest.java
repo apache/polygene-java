@@ -25,6 +25,7 @@ import java.security.Policy;
 import net.jini.security.policy.DynamicPolicyProvider;
 import org.junit.After;
 import org.junit.Test;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -67,6 +68,12 @@ public class JavaSpacesEntityStoreTest extends AbstractEntityStoreTest
     {
         super.tearDown();
         delete( new File( "qi4jtemp" ) );
+    }
+
+    @Test
+    @Override public void givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification() throws UnitOfWorkCompletionException
+    {
+        super.givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification();
     }
 
     private void delete( File dir )

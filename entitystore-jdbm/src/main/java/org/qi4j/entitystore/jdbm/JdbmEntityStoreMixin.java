@@ -46,7 +46,6 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.library.locking.WriteLock;
-import org.qi4j.spi.serialization.FastObjectInputStream;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
@@ -57,6 +56,7 @@ import org.qi4j.spi.entity.EntityTypeRegistryMixin;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.helpers.DefaultEntityState;
+import org.qi4j.spi.serialization.FastObjectInputStream;
 import org.qi4j.spi.serialization.SerializableState;
 
 /**
@@ -281,7 +281,7 @@ public class JdbmEntityStoreMixin
         {
             DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
             SerializableState state = new SerializableState( entityState.qualifiedIdentity(),
-                                                             entityState.version(),
+                                                             entityState.version()+1,
                                                              lastModified,
                                                              entityStateInstance.getProperties(),
                                                              entityStateInstance.getAssociations(),
