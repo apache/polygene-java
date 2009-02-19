@@ -14,10 +14,6 @@
 
 package org.qi4j.runtime.value;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.Queryable;
@@ -26,20 +22,18 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
-import org.qi4j.runtime.property.AbstractPropertyModel;
+import org.qi4j.runtime.property.PersistentPropertyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
-import org.qi4j.spi.value.CompoundType;
-import org.qi4j.spi.value.SerializableType;
 import org.qi4j.spi.value.ValueState;
 import org.qi4j.spi.value.ValueType;
 
 /**
  * Property model for values
  */
-public final class ValuePropertyModel extends AbstractPropertyModel
-    implements PropertyTypeDescriptor, Serializable
+public final class ValuePropertyModel extends PersistentPropertyModel
+    implements PropertyTypeDescriptor
 {
     private final PropertyType propertyType;
     private PropertyInfo propertyInfo;
@@ -67,37 +61,10 @@ public final class ValuePropertyModel extends AbstractPropertyModel
         return propertyType;
     }
 
-    public <T> T getValue( ModuleInstance moduleInstance, ValueState valueState )
+    public <T> T fromValueState( ModuleInstance moduleInstance, ValueState valueState )
     {
         Object value = valueState.getProperty( qualifiedName() );
-
-        if ( propertyType.type() instanceof CompoundType )
-        {
-            CompoundType compoundType = (CompoundType) propertyType.type();
-            Class valueClass = moduleInstance.findClassForName( compoundType.type() );
-            ValueModel model = (ValueModel) moduleInstance.findModuleForValue( valueClass ).findValueFor( valueClass );
-            value = model.newValueInstance( moduleInstance, (ValueState) value ).<T>proxy();
-        } else if (propertyType.type() instanceof SerializableType )
-        {
-            try
-            {
-                byte[] bytes  = (byte[]) value;
-                ByteArrayInputStream bin = new ByteArrayInputStream( bytes );
-                ObjectInputStream oin = new ObjectInputStream(bin);
-                value = oin.readObject();
-                oin.close();
-            }
-            catch( IOException e )
-            {
-                throw new IllegalStateException("Could not deserialize value", e);
-            }
-            catch( ClassNotFoundException e )
-            {
-                throw new IllegalStateException("Could not find class for serialized value", e);
-            }
-        }
-
-        return (T) value;
+        return super.<T>fromValue( moduleInstance, value );
     }
 
     public Property<?> newInstance( Object value )

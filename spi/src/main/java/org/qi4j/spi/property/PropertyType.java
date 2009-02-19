@@ -15,20 +15,8 @@
 package org.qi4j.spi.property;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.entity.RDF;
-import org.qi4j.api.property.GenericPropertyInfo;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.util.Classes;
-import org.qi4j.spi.value.CollectionType;
-import org.qi4j.spi.value.CompoundType;
-import org.qi4j.spi.value.PrimitiveType;
-import org.qi4j.spi.value.SerializableType;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
 import org.qi4j.spi.value.ValueType;
 
 /**
@@ -37,6 +25,13 @@ import org.qi4j.spi.value.ValueType;
 public class PropertyType
     implements Serializable, Comparable<PropertyType>
 {
+    public void calculateVersion( MessageDigest md )
+        throws UnsupportedEncodingException
+    {
+        md.update( qualifiedName.getBytes("UTF-8" ));
+        type.calculateVersion( md );
+    }
+
     public enum PropertyTypeEnum
     {
         MUTABLE, IMMUTABLE, COMPUTED

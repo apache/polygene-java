@@ -14,6 +14,9 @@
 
 package org.qi4j.spi.value;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+
 /**
  * TODO
  */
@@ -30,6 +33,11 @@ public class SerializableType
     public String type()
     {
         return type;
+    }
+
+    public void calculateVersion( MessageDigest md ) throws UnsupportedEncodingException
+    {
+        md.update( type.getBytes("UTF-8" ));
     }
 
     @Override public String toString()

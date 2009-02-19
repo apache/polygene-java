@@ -34,7 +34,6 @@ import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.value.CompoundType;
 import org.qi4j.spi.value.SerializableType;
-import org.qi4j.spi.value.ValueState;
 import org.qi4j.spi.value.ValueType;
 
 /**
@@ -82,13 +81,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
     {
         if( value == NOT_LOADED )
         {
-            value = (T) entityState.getProperty( qualifiedName() );
-
-            if( value instanceof ValueState )
-            {
-                ValueState valueState = (ValueState) value;
-                value = ( (EntityPropertyModel) propertyInfo ).<T>getValue( uow.module(), valueState );
-            }
+            value = ((EntityPropertyModel) propertyInfo ).<T>fromEntityState( uow.module(), entityState );
         }
 
         return value;
@@ -132,7 +125,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
         }
 
         // Change property
-        entityState.setProperty( qualifiedName(), storableValue( ( (EntityPropertyModel) propertyInfo ).propertyType().type(), aNewValue ) );
+        entityState.setProperty( qualifiedName(), ((EntityPropertyModel)propertyInfo).toValue( aNewValue, entityState ) );
         value = aNewValue;
 
         // Notify listeners

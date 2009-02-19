@@ -15,18 +15,24 @@
 package org.qi4j.spi.entity;
 
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.util.Arrays;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
 
 /**
- * TODO
+ * SPI-level description of an Entity type. This contains
+ * all metainformation about an Entity, including its properties,
+ * associations and many-associations. Also contains functions
+ * for calculating the version, so that Entity types can evolve
+ * safely.
  */
 public final class EntityType
     implements Serializable
 {
     private final String type;
-    private final long schemaVersion; // TODO How to compute this?
+    private final byte[] version;
     private final String uri;
     private final boolean queryable;
     private final Iterable<PropertyType> properties;
@@ -49,7 +55,8 @@ public final class EntityType
         this.properties = properties;
         this.associations = associations;
         this.manyAssociations = manyAssociations;
-        schemaVersion = 1;
+        this.version = calculateSchemaVersion();
+
     }
 
     public String type()
@@ -62,9 +69,14 @@ public final class EntityType
         return mixinTypes;
     }
 
-    public long version()
+    public byte[] version()
     {
-        return schemaVersion;
+        return version;
+    }
+
+    public boolean isSameVersion(EntityType type)
+    {
+        return Arrays.equals( version, type.version );
     }
 
     public String toURI()
@@ -94,15 +106,13 @@ public final class EntityType
 
     @Override public String toString()
     {
-        return type + "(" + schemaVersion + ")";
+        return type + "(" + new String(version) + ")";
     }
 
     public int hashCode()
     {
-        int result;
-        result = type.hashCode();
-        result = 31 * result + (int) ( schemaVersion ^ ( schemaVersion >>> 32 ) );
-        return result;
+        return type.hashCode();
+
     }
 
     public boolean equals( Object o )
@@ -117,6 +127,31 @@ public final class EntityType
         }
 
         EntityType that = (EntityType) o;
-        return schemaVersion == that.schemaVersion && type.equals( that.type );
+        return Arrays.equals(version, that.version ) && type.equals( that.type );
     }
+
+    private byte[] calculateSchemaVersion()
+    {
+        try
+        {
+            MessageDigest md = MessageDigest.getInstance( "SHA" );
+
+            // Entity type
+            md.update( type.getBytes("UTF-8" ));
+
+            // Properties
+            for( PropertyType property : properties )
+            {
+                property.calculateVersion( md );
+            }
+
+            return md.digest();
+        }
+        catch( Exception e )
+        {
+            e.printStackTrace();
+            return "".getBytes();
+        }
+    }
+
 }

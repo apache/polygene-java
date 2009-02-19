@@ -14,7 +14,9 @@
 
 package org.qi4j.spi.value;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.security.MessageDigest;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -58,6 +60,12 @@ public class PrimitiveType
     public PrimitiveType( String type )
     {
         this.type = type;
+    }
+
+    public void calculateVersion( MessageDigest md )
+        throws UnsupportedEncodingException
+    {
+        md.update( type.getBytes("UTF-8" ));
     }
 
     public String type()

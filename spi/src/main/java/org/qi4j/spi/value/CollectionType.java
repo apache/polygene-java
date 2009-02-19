@@ -14,7 +14,9 @@
 
 package org.qi4j.spi.value;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.security.MessageDigest;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -33,27 +35,33 @@ public class CollectionType
         return cl.equals( Collection.class ) || cl.equals( List.class ) || cl.equals( Set.class );
     }
 
-    private String collectionType;
-    private ValueType type;
+    private String type;
+    private ValueType collectedType;
 
-    public CollectionType( String collectionType, ValueType type )
+    public CollectionType( String type, ValueType collectedType )
     {
-        this.collectionType = collectionType;
         this.type = type;
+        this.collectedType = collectedType;
     }
 
-    public String collectionType()
-    {
-        return collectionType;
-    }
-
-    public ValueType type()
+    public String type()
     {
         return type;
     }
 
+    public ValueType collectedType()
+    {
+        return collectedType;
+    }
+
+    public void calculateVersion( MessageDigest md ) throws UnsupportedEncodingException
+    {
+        md.update( type.getBytes("UTF-8" ));
+        collectedType.calculateVersion( md );
+    }
+
     @Override public String toString()
     {
-        return collectionType+"<"+type+">";
+        return type +"<"+ collectedType +">";
     }
 }

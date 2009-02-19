@@ -14,7 +14,9 @@
 
 package org.qi4j.spi.value;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.security.MessageDigest;
 import java.util.Collections;
 import java.util.List;
 import org.qi4j.api.value.ValueComposite;
@@ -49,6 +51,15 @@ public class CompoundType
     public List<PropertyType> types()
     {
         return types;
+    }
+
+    public void calculateVersion( MessageDigest md ) throws UnsupportedEncodingException
+    {
+        md.update( type.getBytes("UTF-8" ));
+        for( PropertyType propertyType : types )
+        {
+            propertyType.calculateVersion(md);
+        }
     }
 
     @Override public String toString()

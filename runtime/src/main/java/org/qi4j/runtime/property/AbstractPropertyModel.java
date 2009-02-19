@@ -18,17 +18,17 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
-import java.lang.reflect.ParameterizedType;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.entity.RDF;
 import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.entity.RDF;
 import org.qi4j.api.property.Computed;
 import org.qi4j.api.property.ComputedPropertyInstance;
 import org.qi4j.api.property.GenericPropertyInfo;
@@ -40,12 +40,12 @@ import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.value.ValueState;
-import org.qi4j.spi.value.ValueType;
 import org.qi4j.spi.value.CollectionType;
 import org.qi4j.spi.value.CompoundType;
 import org.qi4j.spi.value.PrimitiveType;
 import org.qi4j.spi.value.SerializableType;
+import org.qi4j.spi.value.ValueState;
+import org.qi4j.spi.value.ValueType;
 
 /**
  * TODO
@@ -279,7 +279,7 @@ public abstract class AbstractPropertyModel
         }
     }
 
-    public <T> T getValue( ModuleInstance moduleInstance, ValueState valueState )
+    public <T> T fromValue( ModuleInstance moduleInstance, ValueState valueState )
     {
         return null;
     }

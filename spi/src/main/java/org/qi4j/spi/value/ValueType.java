@@ -15,6 +15,8 @@
 package org.qi4j.spi.value;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
 
 /**
  * TODO
@@ -22,4 +24,7 @@ import java.io.Serializable;
 public interface ValueType
     extends Serializable
 {
+    public String type();
+
+    void calculateVersion( MessageDigest md) throws UnsupportedEncodingException;
 }

@@ -50,7 +50,7 @@ public final class ValuePropertiesModel
         Map<Method, Property<?>> properties = new MethodKeyMap<Property<?>>();
         for( ValuePropertyModel propertyModel : propertyModels )
         {
-            Object propertyValue = propertyModel.getValue( moduleInstance, state );
+            Object propertyValue = propertyModel.fromValueState( moduleInstance, state );
 
             // Create property instance
             Property property = propertyModel.newInstance( propertyValue );

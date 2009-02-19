@@ -15,35 +15,20 @@
 package org.qi4j.runtime.entity;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.property.PropertyInfo;
-import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
-import org.qi4j.runtime.property.AbstractPropertyModel;
+import org.qi4j.runtime.property.PersistentPropertyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.property.PropertyTypeDescriptor;
-import org.qi4j.spi.value.CompoundType;
-import org.qi4j.spi.value.ValueState;
 
 /**
  * TODO
  */
-public final class EntityPropertyModel extends AbstractPropertyModel
-    implements PropertyTypeDescriptor
+public final class EntityPropertyModel extends PersistentPropertyModel
 {
-    private final boolean queryable;
-    private final PropertyType propertyType;
-    private final PropertyInfo propertyInfo;
-
     public EntityPropertyModel( Method anAccessor,
                                 boolean immutable,
                                 ValueConstraintsInstance constraints,
@@ -51,39 +36,6 @@ public final class EntityPropertyModel extends AbstractPropertyModel
                                 Object defaultValue )
     {
         super( anAccessor, immutable, constraints, metaInfo, defaultValue );
-        final Queryable queryable = anAccessor.getAnnotation( Queryable.class );
-        this.queryable = queryable == null || queryable.value();
-
-        PropertyType.PropertyTypeEnum type;
-        if( isComputed() )
-        {
-            type = PropertyType.PropertyTypeEnum.COMPUTED;
-        }
-        else if( isImmutable() )
-        {
-            type = PropertyType.PropertyTypeEnum.IMMUTABLE;
-        }
-        else
-        {
-            type = PropertyType.PropertyTypeEnum.MUTABLE;
-        }
-
-        Type valueType = Classes.getRawClass( type() );
-
-        propertyType = new PropertyType( qualifiedName(), createValueType( valueType), toURI(), toRDF(), this.queryable, type );
-
-        propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), name(), qualifiedName(), type() );
-    }
-
-
-    public PropertyType propertyType()
-    {
-        return propertyType;
-    }
-
-    public boolean isQueryable()
-    {
-        return queryable;
     }
 
     public Property<?> newInstance( Object value )
@@ -115,23 +67,13 @@ public final class EntityPropertyModel extends AbstractPropertyModel
         // Check constraints
         checkConstraints( value, false );
 
-        entityState.setProperty( qualifiedName(), value );
+        Object persistentValue = toValue( value, entityState );
+        entityState.setProperty( qualifiedName(), persistentValue );
     }
 
-    public <T> T getValue( ModuleInstance moduleInstance, ValueState valueState )
+    public <T> T fromEntityState( ModuleInstance moduleInstance, EntityState entityState )
     {
-        T value;
-        if ( propertyType.type() instanceof CompoundType )
-        {
-            CompoundType compoundType = (CompoundType) propertyType.type();
-            Class valueClass = moduleInstance.findClassForName( compoundType.type() );
-            ValueModel model = (ValueModel) moduleInstance.findModuleForValue( valueClass ).findValueFor( valueClass );
-            value = model.newValueInstance( moduleInstance, valueState ).<T>proxy();
-        } else
-        {
-            value = (T) valueState.getProperty( qualifiedName() );
-        }
-
-        return value;
+        Object value = entityState.getProperty( qualifiedName() );
+        return super.<T>fromValue( moduleInstance, value );
     }
 }
