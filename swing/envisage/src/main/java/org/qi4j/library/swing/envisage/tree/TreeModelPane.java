@@ -37,11 +37,8 @@ import java.awt.Insets;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.util.ResourceBundle;
-import org.qi4j.spi.structure.ApplicationSPI;
-import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.api.structure.Application;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptorBuilder;
 
 /**
  * Application Model View as Swing Component.
@@ -51,7 +48,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescrip
  * 
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
-public class ApplicationModelPane extends JPanel
+public class TreeModelPane extends JPanel
 {
     protected static final String STRUCTURE_VIEW = "Structure";
     protected static final String TYPE_VIEW = "Type";
@@ -67,8 +64,9 @@ public class ApplicationModelPane extends JPanel
     protected boolean selectionInProgress;
 
     protected Application application;
+    protected ApplicationDetailDescriptor descriptor;
 
-    public ApplicationModelPane( )
+    public TreeModelPane( )
     {
         setLayout(new BorderLayout());
 
@@ -79,7 +77,7 @@ public class ApplicationModelPane extends JPanel
         structureTree.setExpandsSelectedPaths( true );
         structureTree.setScrollsOnExpand( true );
         structureTree.setName( STRUCTURE_VIEW );
-        structureTree.setCellRenderer( new ApplicationModelTreeCellRenderer() );
+        structureTree.setCellRenderer( new TreeModelCellRenderer() );
 
         typeTree = new JTree();
         typeTree.setRootVisible( false );
@@ -87,7 +85,7 @@ public class ApplicationModelPane extends JPanel
         typeTree.setExpandsSelectedPaths( true );
         typeTree.setScrollsOnExpand( true );
         typeTree.setName( TYPE_VIEW );
-        typeTree.setCellRenderer( new ApplicationModelTreeCellRenderer() );
+        typeTree.setCellRenderer( new TreeModelCellRenderer() );
 
         mainPane = new JPanel();
         cardLayout = new CardLayout( );
@@ -130,12 +128,13 @@ public class ApplicationModelPane extends JPanel
     /** Initialize Qi4J for this component
      * @param application the Application 
      * */
-    public void initQi4J(  Application application )
+    public void initQi4J(  Application application, ApplicationDetailDescriptor descriptor )
     {
         this.application = application;
+        this.descriptor = descriptor;
 
-        ApplicationSPI applicationSPI = (ApplicationSPI) application;
-        ApplicationDetailDescriptor descriptor = ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor( applicationSPI );
+        //ApplicationSPI applicationSPI = (ApplicationSPI) application;
+        //ApplicationDetailDescriptor descriptor = ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor( applicationSPI );
 
         // traverse the model and build JTree representation
         MutableTreeNode rootNode1 = StructureModelBuilder.build( descriptor );

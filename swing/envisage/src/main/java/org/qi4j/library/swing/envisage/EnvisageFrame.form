@@ -6,16 +6,6 @@
     </constraints>
     <properties/>
     <border type="none"/>
-    <children>
-      <splitpane id="31bfa" binding="modelSplitPane">
-        <constraints border-constraint="Center"/>
-        <properties>
-          <dividerLocation value="250"/>
-          <oneTouchExpandable value="true"/>
-        </properties>
-        <border type="none"/>
-        <children/>
-      </splitpane>
-    </children>
+    <children/>
   </grid>
 </form>

@@ -34,7 +34,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
  * TreeCellRenderer
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
-public class ApplicationModelTreeCellRenderer extends DefaultTreeCellRenderer
+public class TreeModelCellRenderer extends DefaultTreeCellRenderer
 {
     protected ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName());
 
@@ -47,7 +47,7 @@ public class ApplicationModelTreeCellRenderer extends DefaultTreeCellRenderer
     protected Icon transientIcon;
     protected Icon objectIcon;
 
-    public ApplicationModelTreeCellRenderer()
+    public TreeModelCellRenderer()
     {
         try
         {

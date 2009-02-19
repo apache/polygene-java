@@ -59,7 +59,7 @@ public class Envisage
     private void showMainFrame() {
         EnvisageFrame mainFrame = new EnvisageFrame( qi4j, application );
         mainFrame.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
-        mainFrame.setSize( new Dimension(800, 600) );
+        mainFrame.setSize( new Dimension(1024, 768) );
         mainFrame.setVisible( true );
         
 
@@ -80,7 +80,7 @@ public class Envisage
         JSplitPane splitPane = new JSplitPane( );
         mainPanel.add( splitPane, BorderLayout.CENTER );
 
-        ApplicationModelPane appModelPane = new ApplicationModelPane();
+        TreeModelPane appModelPane = new TreeModelPane();
         appModelPane.initQi4J( qi4j, application );
 
         DetailModelPane detailModelPane = new DetailModelPane();

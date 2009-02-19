@@ -27,9 +27,15 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.value.ValueBuilderFactory;
+import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.library.swing.envisage.Envisage;
 import org.junit.Test;
 
@@ -38,6 +44,24 @@ import org.junit.Test;
  */
 public class EnvisageSample extends AbstractQi4jTest
 {
+
+    public static void main( String[] args ) throws Exception
+    {
+        EnvisageSample sample = new EnvisageSample();
+        sample.runSample();
+    }
+
+    @Test
+    public void runSample() throws Exception
+    {
+        setUp();
+        createTestData();
+        //createTestData2();
+        //createTestData3();
+
+        new Envisage().run( qi4j, application );
+    }
+
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addEntities( CarEntity.class );
@@ -77,23 +101,6 @@ public class EnvisageSample extends AbstractQi4jTest
             e.printStackTrace();
         }
     }
-
-    public static void main( String[] args ) throws Exception
-    {
-
-        EnvisageSample sample = new EnvisageSample();
-        sample.runSample();
-    }
-
-    @Test
-    public void runSample() throws Exception
-    {
-        setUp();
-        createTestData();
-
-        new Envisage().run( qi4j, application );
-    }
-
 
     private String createCar( String manufacturer, String model, int year )
     {
