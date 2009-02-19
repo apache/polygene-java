@@ -24,6 +24,8 @@ import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescrip
 import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 
 /**
  * Build Qi4J application model as Prefuse Tree Graph
@@ -66,9 +68,6 @@ public class GraphBuilder
         {
             Node childNode = tree.addChild( parent );
             childNode.set(NAME, descriptor.descriptor().name());
-
-            //System.out.println("Layer: " + descriptor.descriptor().name());
-
             buildModulesNode( childNode, descriptor.modules() );
         }
     }
@@ -79,16 +78,9 @@ public class GraphBuilder
         {
             Node childNode = tree.addChild( parent );
             childNode.set(NAME, descriptor.descriptor().name());
-
-            //System.out.println("...mod: " + descriptor.descriptor().name());
-
             buildServicesNode( childNode, descriptor.services() );
-
-            /*
-
-            buildEntitiesNode( node, descriptor.entities() );
-            buildObjectsNode( node, descriptor.objects() );
-            */
+            buildEntitiesNode( childNode, descriptor.entities() );
+            buildObjectsNode( childNode, descriptor.objects() );
         }
     }
 
@@ -98,8 +90,24 @@ public class GraphBuilder
         {
             Node childNode = tree.addChild( parent );
             childNode.set(NAME, descriptor.descriptor().identity());
+        }
+    }
 
-            //System.out.println("... ... service: " + descriptor.descriptor().identity());
+    private void buildEntitiesNode( Node parent, Iterable<EntityDetailDescriptor> iter )
+    {
+        for( EntityDetailDescriptor descriptor : iter )
+        {
+            Node childNode = tree.addChild( parent );
+            childNode.set(NAME, descriptor.descriptor().type().getSimpleName());
+        }
+    }
+
+    private void buildObjectsNode( Node parent, Iterable<ObjectDetailDescriptor> iter )
+    {
+        for( ObjectDetailDescriptor descriptor : iter )
+        {
+            Node childNode = tree.addChild( parent );
+            childNode.set(NAME, descriptor.descriptor().type().getSimpleName());
         }
     }
 }
