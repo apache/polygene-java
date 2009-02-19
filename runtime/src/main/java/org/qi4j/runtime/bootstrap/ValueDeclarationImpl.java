@@ -15,15 +15,11 @@
 package org.qi4j.runtime.bootstrap;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.InvalidValueCompositeException;
-import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.bootstrap.ValueDeclaration;
@@ -43,21 +39,6 @@ public final class ValueDeclarationImpl
 
     public ValueDeclarationImpl( Class<? extends ValueComposite>... compositeTypes )
     {
-        // Check that type is valid
-        for( Class<? extends ValueComposite> compositeType : compositeTypes )
-        {
-            for( Method method : compositeType.getMethods() )
-            {
-                if( !Composite.class.equals( method.getDeclaringClass() ) )
-                {
-                    if( !Property.class.isAssignableFrom( method.getReturnType() ) )
-                    {
-                        throw new InvalidValueCompositeException( "Only Property methods are allowed in ValueComposites: " + method + " in " + compositeType.getName() );
-                    }
-                }
-            }
-        }
-
         this.compositeTypes = compositeTypes;
     }
 

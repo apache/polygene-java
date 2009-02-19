@@ -21,9 +21,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.GenericPropertyInfo;
@@ -39,6 +43,7 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
+import org.qi4j.spi.value.CollectionType;
 import org.qi4j.spi.value.CompoundType;
 import org.qi4j.spi.value.SerializableType;
 import org.qi4j.spi.value.ValueState;
@@ -100,6 +105,13 @@ public abstract class PersistentPropertyModel
             return null;
 
         ValueType valueType = propertyType().type();
+        return toValue(valueType, value, entityState );
+    }
+
+    public Object toValue( ValueType valueType, Object value, EntityState entityState )
+    {
+        if (value == null)
+            return null;
 
         if( valueType instanceof CompoundType )
         {
@@ -133,6 +145,25 @@ public abstract class PersistentPropertyModel
             {
                 throw new IllegalArgumentException( "Could not serialize value", e );
             }
+        } else if (valueType instanceof CollectionType )
+        {
+            CollectionType collectionType = (CollectionType)valueType;
+            Collection persistentCollection = null;
+            if (value instanceof List)
+            {
+                List listValue = (List) value;
+                persistentCollection = new ArrayList(listValue.size());
+            } else if (value instanceof Set )
+            {
+                Set setValue = (Set) value;
+                persistentCollection = new HashSet(setValue.size());
+            }
+            for( Object item : (Collection)value )
+            {
+                persistentCollection.add( toValue(collectionType.collectedType(), item, entityState ));
+            }
+            value = persistentCollection;
+
         }
 
         return value;
@@ -141,11 +172,16 @@ public abstract class PersistentPropertyModel
 
     public <T> T fromValue( ModuleInstance moduleInstance, Object value )
     {
+        ValueType valueType = propertyType().type();
+        return this.<T>fromValue(valueType, moduleInstance, value);
+    }
+
+    public <T> T fromValue( ValueType valueType, ModuleInstance moduleInstance, Object value )
+    {
         if (value == null)
             return null;
 
         T result;
-        ValueType valueType = propertyType().type();
         if( valueType instanceof CompoundType )
         {
             CompoundType compoundType = (CompoundType) propertyType().type();
@@ -170,9 +206,26 @@ public abstract class PersistentPropertyModel
             {
                 throw new IllegalStateException("Could not find class for serialized value", e);
             }
-        }
+        } else if (valueType instanceof CollectionType)
+        {
+            CollectionType collectionType = (CollectionType) valueType;
+            Collection loadedCollection = null;
+            if (value instanceof List)
+            {
+                List listValue = (List) value;
+                loadedCollection = new ArrayList(listValue.size());
+            } else if (value instanceof Set )
+            {
+                Set setValue = (Set) value;
+                loadedCollection = new HashSet(setValue.size());
+            }
+            for( Object item : (Collection)value )
+            {
+                loadedCollection.add( fromValue(collectionType.collectedType(), moduleInstance, item ));
+            }
+            result = (T) loadedCollection;
 
-        else
+        } else
         {
             result = (T) value;
         }

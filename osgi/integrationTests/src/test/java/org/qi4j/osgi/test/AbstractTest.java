@@ -46,7 +46,7 @@ abstract class AbstractTest extends DroneTestCase
 
     protected BundleProvision newBundleProvision()
     {
-        String qi4jVersion = System.getProperty( "version.qi4j", "0.5-SNAPSHOT" );
+        String qi4jVersion = System.getProperty( "version.qi4j", "0.6-SNAPSHOT" );
 
         return createBundleProvision()
             .addBundle( "mvn:org.ops4j.pax.logging/pax-logging-api" )
