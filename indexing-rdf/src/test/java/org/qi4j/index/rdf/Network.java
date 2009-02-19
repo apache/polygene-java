@@ -210,9 +210,8 @@ class Network
             jackDoe.mainAccount().set( jacksAccount );
             jackDoe.accounts().add( annsAccount );
             jackDoe.accounts().add( jacksAccount );
-            //jackDoe.personalURL().set( urlValueBuilder.newInstance() );
-            jackDoe = maleBuilder.newInstance();
             jackDoe.personalURL().set( urlValueBuilder.newInstance() );
+            jackDoe = maleBuilder.newInstance();
             NameableAssert.trace( jackDoe );
         }
 
