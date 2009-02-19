@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module relativePaths="false" type="JAVA_MODULE" version="4">
+<module relativePaths="false" MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_5" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
@@ -9,6 +9,25 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="qi4j-core-api" exported="" />
+    <orderEntry type="module" module-name="qi4j-osgi-example" />
+    <orderEntry type="module" module-name="qi4j-core-bootstrap" />
+    <orderEntry type="module" module-name="qi4j-core-spi" />
+    <orderEntry type="library" name="Maven: org.ops4j.pax.logging:pax-logging-api:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.felix:org.osgi.core:1.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.ops4j.pax.drone:pax-drone-spi:0.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.ops4j.pax.drone:pax-drone-api:0.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.ops4j.base:ops4j-base-net:0.5.2" level="project" />
+    <orderEntry type="library" name="Maven: org.ops4j.base:ops4j-base-lang:0.5.2" level="project" />
+    <orderEntry type="library" name="Maven: org.ops4j.base:ops4j-base-monitors:0.5.2" level="project" />
+    <orderEntry type="library" name="Maven: biz.aQute:bndlib:0.0.255" level="project" />
+    <orderEntry type="library" name="Maven: org.ops4j.pax.drone:pax-drone-spi-junit:0.2.0" level="project" />
+    <orderEntry type="library" name="Maven: junit:junit:4.4" level="project" />
+    <orderEntry type="library" name="Maven: org.ops4j.pax.drone:pax-drone-connector-paxrunner:0.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.ops4j.pax.drone:pax-drone-zombie:0.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.ops4j.pax.runner:pax-runner:0.15.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.felix:org.apache.felix.bundlerepository:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.ops4j.base:ops4j-base-io:0.5.2" level="project" />
   </component>
 </module>
 

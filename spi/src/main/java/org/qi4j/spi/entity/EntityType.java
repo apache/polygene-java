@@ -16,10 +16,10 @@ package org.qi4j.spi.entity;
 
 import java.io.Serializable;
 import java.security.MessageDigest;
-import java.util.Arrays;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
+import sun.misc.BASE64Encoder;
 
 /**
  * SPI-level description of an Entity type. This contains
@@ -32,7 +32,7 @@ public final class EntityType
     implements Serializable
 {
     private final String type;
-    private final byte[] version;
+    private final String version;
     private final String uri;
     private final boolean queryable;
     private final Iterable<PropertyType> properties;
@@ -69,14 +69,14 @@ public final class EntityType
         return mixinTypes;
     }
 
-    public byte[] version()
+    public String version()
     {
         return version;
     }
 
     public boolean isSameVersion(EntityType type)
     {
-        return Arrays.equals( version, type.version );
+        return version.equals(type.version);
     }
 
     public String toURI()
@@ -106,7 +106,7 @@ public final class EntityType
 
     @Override public String toString()
     {
-        return type + "(" + new String(version) + ")";
+        return type + "(" + version + ")";
     }
 
     public int hashCode()
@@ -127,10 +127,10 @@ public final class EntityType
         }
 
         EntityType that = (EntityType) o;
-        return Arrays.equals(version, that.version ) && type.equals( that.type );
+        return version.equals(that.version ) && type.equals( that.type );
     }
 
-    private byte[] calculateSchemaVersion()
+    private String calculateSchemaVersion()
     {
         try
         {
@@ -145,12 +145,24 @@ public final class EntityType
                 property.calculateVersion( md );
             }
 
-            return md.digest();
+            // Associations
+            for( AssociationType association : associations )
+            {
+                association.calculateVersion(md);
+            }
+
+            // ManyAssociations
+            for( ManyAssociationType manyAssociation : manyAssociations )
+            {
+                manyAssociation.calculateVersion(md);
+            }
+
+            return new BASE64Encoder().encode( md.digest() );
         }
         catch( Exception e )
         {
             e.printStackTrace();
-            return "".getBytes();
+            return "";
         }
     }
 

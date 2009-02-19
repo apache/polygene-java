@@ -19,6 +19,7 @@
     <module>runtime</module>
     <module>spi</module>
     <module>testsupport</module>
+    <module>osgi</module>
   </modules>
   <developers>
     <developer>

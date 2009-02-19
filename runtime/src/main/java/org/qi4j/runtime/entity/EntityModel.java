@@ -105,6 +105,7 @@ public final class EntityModel
     private final Class<? extends Composite> proxyClass;
     private final String uri;
     private final boolean queryable;
+    private EntityType entityType;
 
     private EntityModel( Class<? extends EntityComposite> type,
                          Visibility visibility,
@@ -156,16 +157,7 @@ public final class EntityModel
 
     public EntityType entityType()
     {
-        List<String> mixinTypes = new ArrayList<String>();
-        for( Class mixinType : mixinsModel.mixinTypes() )
-        {
-            mixinTypes.add( mixinType.getName() );
-        }
-
-        return new EntityType(
-            type.getName(), toURI(), queryable,
-            mixinTypes, stateModel.propertyTypes(), stateModel.associationTypes(), stateModel.manyAssociationTypes()
-        );
+        return entityType;
     }
 
     public boolean hasMixinType( Class<?> mixinType )
@@ -183,6 +175,17 @@ public final class EntityModel
 
     public void bind( Resolution resolution ) throws BindingException
     {
+        List<String> mixinTypes = new ArrayList<String>();
+        for( Class mixinType : mixinsModel.mixinTypes() )
+        {
+            mixinTypes.add( mixinType.getName() );
+        }
+
+        entityType = new EntityType(
+            type.getName(), toURI(), queryable,
+            mixinTypes, stateModel.propertyTypes(), stateModel.associationTypes(), stateModel.manyAssociationTypes()
+        );
+
         resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null, null );
         compositeMethodsModel.bind( resolution );
         mixinsModel.bind( resolution );

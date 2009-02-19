@@ -25,13 +25,6 @@ import org.qi4j.spi.value.ValueType;
 public class PropertyType
     implements Serializable, Comparable<PropertyType>
 {
-    public void calculateVersion( MessageDigest md )
-        throws UnsupportedEncodingException
-    {
-        md.update( qualifiedName.getBytes("UTF-8" ));
-        type.calculateVersion( md );
-    }
-
     public enum PropertyTypeEnum
     {
         MUTABLE, IMMUTABLE, COMPUTED
@@ -97,5 +90,12 @@ public class PropertyType
     public int compareTo( PropertyType pt )
     {
         return qualifiedName.compareTo( pt.qualifiedName );
+    }
+
+    public void calculateVersion( MessageDigest md )
+        throws UnsupportedEncodingException
+    {
+        md.update( qualifiedName.getBytes("UTF-8" ));
+        type.calculateVersion( md );
     }
 }

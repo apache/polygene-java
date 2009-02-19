@@ -32,6 +32,6 @@ import org.qi4j.api.property.Immutable;
  * <li>Instance management for reuse</li>
  */
 @Immutable
-public interface ValueComposite extends Composite
+public interface ValueComposite extends Value, Composite
 {
 }

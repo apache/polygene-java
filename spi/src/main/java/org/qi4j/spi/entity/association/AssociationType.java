@@ -15,6 +15,8 @@
 package org.qi4j.spi.entity.association;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
 
 /**
  * TODO
@@ -73,4 +75,10 @@ public final class AssociationType
         return qualifiedName + "(" + type + "," + uri + ")";
     }
 
+    public void calculateVersion( MessageDigest md ) throws UnsupportedEncodingException
+    {
+        md.update( qualifiedName.getBytes("UTF-8" ));
+        md.update( type.getBytes("UTF-8" ));
+        
+    }
 }
