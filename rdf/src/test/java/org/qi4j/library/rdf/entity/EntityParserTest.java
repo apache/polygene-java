@@ -21,14 +21,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -48,6 +49,7 @@ public class EntityParserTest
     {
         module.addServices( MemoryEntityStoreService.class );
         module.addEntities( TestEntity.class );
+        module.addValues( TestValue.class );
         module.addObjects( EntityStateSerializer.class, EntityStateParser.class, EntityParserTest.class );
     }
 
@@ -91,10 +93,15 @@ public class EntityParserTest
     void createDummyData()
         throws UnitOfWorkCompletionException
     {
+        ValueBuilder<TestValue> valueBuilder = valueBuilderFactory.newValueBuilder( TestValue.class );
+        valueBuilder.prototype().test1().set( 4L );
+        TestValue testValue = valueBuilder.newInstance();
+
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( "test1", TestEntity.class );
         builder.stateOfComposite().name().set( "Rickard" );
         builder.stateOfComposite().title().set( "Developer" );
+        builder.stateOfComposite().value().set( testValue );
         TestEntity testEntity = builder.newInstance();
 
         EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( "test2", TestEntity.class );
@@ -105,6 +112,7 @@ public class EntityParserTest
         builder2.stateOfComposite().group().add( testEntity );
         builder2.stateOfComposite().group().add( testEntity );
         builder2.stateOfComposite().group().add( testEntity );
+        builder2.stateOfComposite().value().set( testValue );
         builder2.newInstance();
         unitOfWork.complete();
     }
