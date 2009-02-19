@@ -64,7 +64,8 @@ public class EntityStateParser
                 Resource subject = statement.getSubject();
                 URI predicate = statement.getPredicate();
                 Value object = statement.getObject();
-                if( subject instanceof BNode )
+                if( subject instanceof BNode
+                    && object instanceof URI )
                 {
                     // ManyAssociation item
                     String uri = predicate.toString();

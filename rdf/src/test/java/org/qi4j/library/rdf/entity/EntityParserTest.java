@@ -27,6 +27,7 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.api.property.Property;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -81,7 +82,9 @@ public class EntityParserTest
             TestEntity entity2 = unitOfWork.find( "test2", TestEntity.class );
             assertThat( "values are ok", entity2.name().get(), equalTo( "Niclas" ) );
             assertThat( "values are ok", entity2.association().get(), equalTo( entity ) );
-
+            // TODO test that Value Composites are parsed correctly
+            final Property<Long> longProperty = entity2.value().get().test1();
+            final Property<String> stringProperty = entity2.value().get().test2();
             unitOfWork.complete();
         }
         catch( Exception e )
