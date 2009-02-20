@@ -45,6 +45,8 @@ import org.qi4j.spi.value.CompoundType;
 import org.qi4j.spi.value.PrimitiveType;
 import org.qi4j.spi.value.ValueState;
 import org.qi4j.spi.value.ValueType;
+import org.qi4j.spi.value.CollectionType;
+import org.qi4j.spi.value.SerializableType;
 
 /**
  * JAVADOC
@@ -161,6 +163,14 @@ public class EntityStateSerializer
                     object,
                     includeNonQueryable
                 );
+            }
+            else if( valueType instanceof CollectionType )
+            {
+                // TODO Support indexing of collection value types (Property<Collection<X>>)
+            }
+            else if( valueType instanceof SerializableType )
+            {
+                // TODO Support indexing of serializable value types (Property<X extends Serializable>)
             }
             else
             {
