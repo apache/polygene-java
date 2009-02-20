@@ -81,9 +81,7 @@ public abstract class PersistentPropertyModel
             type = PropertyType.PropertyTypeEnum.MUTABLE;
         }
 
-        Type valueType = Classes.getRawClass( type() );
-
-        propertyType = new PropertyType( qualifiedName(), createValueType( valueType ), toURI(), toRDF(), this.queryable, type );
+        propertyType = new PropertyType( qualifiedName(), createValueType( type() ), toURI(), toRDF(), this.queryable, type );
 
         propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), name(), qualifiedName(), type() );
     }
