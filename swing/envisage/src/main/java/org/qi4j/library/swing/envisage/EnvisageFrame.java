@@ -30,6 +30,8 @@ import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptorBuilder;
 import org.qi4j.library.swing.envisage.graph.GraphPane;
+import org.qi4j.library.swing.envisage.graph.event.ItemSelectionListener;
+import org.qi4j.library.swing.envisage.graph.event.ItemSelectionEvent;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.api.structure.Application;
 import org.qi4j.spi.structure.ApplicationSPI;
@@ -48,7 +50,7 @@ public class EnvisageFrame extends JFrame
     private JSplitPane modelSplitPane;
 
     private GraphPane graphPane;
-    private TreeModelPane applicationModelPane;
+    private TreeModelPane treeModelPane;
     private DetailModelPane detailModelPane;
 
     private Application application;
@@ -63,10 +65,10 @@ public class EnvisageFrame extends JFrame
         setContentPane( contentPane );
 
         graphPane = new GraphPane();
-        applicationModelPane = new TreeModelPane();
+        treeModelPane = new TreeModelPane();
         detailModelPane = new DetailModelPane();
 
-        applicationModelPane.addTreeSelectionListener( new TreeSelectionListener()
+        treeModelPane.addTreeSelectionListener( new TreeSelectionListener()
         {
             public void valueChanged( TreeSelectionEvent evt )
             {
@@ -74,30 +76,31 @@ public class EnvisageFrame extends JFrame
             }
         } );
 
+        graphPane.getGraphDisplay().addItemSelectionListener( new ItemSelectionListener()
+        {
+            public void valueChanged( ItemSelectionEvent evt )
+            {
+                graphItemSelectionItemValueChanged( evt );
+            }
+        } );
+
         modelSplitPane = new JSplitPane();
         modelSplitPane.setOrientation( JSplitPane.HORIZONTAL_SPLIT );
         modelSplitPane.setDividerLocation( 300 );
         modelSplitPane.setOneTouchExpandable( true );
-        modelSplitPane.setLeftComponent( applicationModelPane );
+        modelSplitPane.setLeftComponent( treeModelPane );
         modelSplitPane.setRightComponent( detailModelPane );
 
         graphSplitPane = new JSplitPane();
         graphSplitPane.setOrientation( JSplitPane.VERTICAL_SPLIT );
         graphSplitPane.setDividerLocation( 512 );
         graphSplitPane.setOneTouchExpandable( true );
-        graphSplitPane.setTopComponent( graphPane );
-        graphSplitPane.setBottomComponent( modelSplitPane );
+        //graphSplitPane.setTopComponent( graphPane );
+        //graphSplitPane.setBottomComponent( modelSplitPane );
+        graphSplitPane.setTopComponent( modelSplitPane );
+        graphSplitPane.setBottomComponent( graphPane );
 
         contentPane.add( graphSplitPane, BorderLayout.CENTER );
-    }
-
-    protected void applicationModelPaneValueChanged( TreeSelectionEvent evt )
-    {
-        Object obj = applicationModelPane.getLastSelected();
-        if( isDetailDescritor( obj ) )
-        {
-            detailModelPane.setDescriptor( obj );
-        }
     }
 
     public void initQi4J()
@@ -107,7 +110,7 @@ public class EnvisageFrame extends JFrame
 
         ApplicationSPI applicationSPI = (ApplicationSPI) application;
         descriptor = ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor( applicationSPI );
-        applicationModelPane.initQi4J( application, descriptor );
+        treeModelPane.initQi4J( application, descriptor );
         graphPane.initQi4J( application, descriptor );
     }
 
@@ -128,6 +131,20 @@ public class EnvisageFrame extends JFrame
         }
 
         return false;
+    }
+
+    protected void applicationModelPaneValueChanged( TreeSelectionEvent evt )
+    {
+        Object obj = treeModelPane.getLastSelected();
+        if( isDetailDescritor( obj ) )
+        {
+            detailModelPane.setDescriptor( obj );
+        }
+    }
+
+    protected void graphItemSelectionItemValueChanged( ItemSelectionEvent evt )
+    {
+        treeModelPane.setSelectedValue( evt.getObject() );
     }
 
 

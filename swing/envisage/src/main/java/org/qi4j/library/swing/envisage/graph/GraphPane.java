@@ -78,4 +78,8 @@ public class GraphPane extends JPanel
         display.run();
     }
 
+    public GraphDisplay getGraphDisplay()
+    {
+        return display;
+    }
 }

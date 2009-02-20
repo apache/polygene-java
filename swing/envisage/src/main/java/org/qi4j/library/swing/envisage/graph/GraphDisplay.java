@@ -24,6 +24,7 @@ import prefuse.controls.PanControl;
 import prefuse.controls.WheelZoomControl;
 import prefuse.controls.ZoomControl;
 import prefuse.controls.ZoomToFitControl;
+import prefuse.controls.ControlAdapter;
 import prefuse.activity.SlowInSlowOutPacer;
 import prefuse.action.Action;
 import prefuse.action.ItemAction;
@@ -52,15 +53,20 @@ import prefuse.util.FontLib;
 import prefuse.util.GraphicsLib;
 import prefuse.util.display.DisplayLib;
 import java.awt.Color;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import org.qi4j.library.swing.envisage.graph.event.ItemSelectionListener;
+import org.qi4j.library.swing.envisage.graph.event.ItemSelectionEvent;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class GraphDisplay extends Display
 {
-    private static final String NAME_LABEL = "name";
+    public static final String NAME_LABEL = "name";
+    public static final String USER_OBJECT = "userObject";
+        
     private static final String TREE = "tree";
     private static final String TREE_NODES = "tree.nodes";
     private static final String TREE_EDGES = "tree.edges";
@@ -159,13 +165,14 @@ public class GraphDisplay extends Display
         m_vis.alwaysRunAfter(FILTER_ACTION, ANIMATE_ACTION);
 
         // create animator for orientation changes
-        ActionList orient = new ActionList(2000);
+        /*ActionList orient = new ActionList(2000);
         orient.setPacingFunction(new SlowInSlowOutPacer());
         orient.add(autoPan);
         orient.add(new QualityControlAnimator());
         orient.add(new LocationAnimator(TREE_NODES));
         orient.add(new RepaintAction());
         m_vis.putAction("orient", orient);
+        */
 
         // initialize the display
         setItemSorter(new TreeDepthItemSorter());
@@ -174,8 +181,19 @@ public class GraphDisplay extends Display
         addControlListener(new WheelZoomControl());
         addControlListener(new PanControl());
         addControlListener(new FocusControl(1, FILTER_ACTION));
+        addControlListener( new ItemSelectionControl() );
 
-        setOrientation(orientation);
+        // set orientation
+        //setOrientation(orientation);
+        nodeRenderer.setHorizontalAlignment(Constants.LEFT);
+        edgeRenderer.setHorizontalAlignment1(Constants.RIGHT);
+        edgeRenderer.setHorizontalAlignment2(Constants.LEFT);
+        edgeRenderer.setVerticalAlignment1(Constants.CENTER);
+        edgeRenderer.setVerticalAlignment2(Constants.CENTER);
+        NodeLinkTreeLayout rtl = (NodeLinkTreeLayout)m_vis.getAction(LAYOUT_ACTION);
+        CollapsedSubtreeLayout stl = (CollapsedSubtreeLayout)m_vis.getAction(SUB_LAYOUT_ACTION);
+        rtl.setOrientation(orientation);
+        stl.setOrientation(orientation);
     }
 
     public void run (Graph graph)
@@ -191,7 +209,42 @@ public class GraphDisplay extends Display
     
     }
 
-    public void setOrientation(int orientation) {
+    /**
+     * Adds a listener that's notified each time a change to the selection occurs.
+     *
+     * @param listener the ItemSelectionListener to add
+     */
+    public void addItemSelectionListener( ItemSelectionListener listener )
+    {
+        listenerList.add( ItemSelectionListener.class, listener );
+    }
+
+    /**
+     * Removes a listener from the list that's notified each time a change to the selection occurs.
+     *
+     * @param listener the ItemSelectionListener to remove
+     */
+    public void removeItemSelectionListener( ItemSelectionListener listener )
+    {
+        listenerList.remove( ItemSelectionListener.class, listener );
+    }
+
+    protected void fireSelectionValueChanged( ItemSelectionEvent evt)
+    {
+        // Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for( int i = listeners.length - 2; i >= 0; i -= 2 )
+        {
+            if( listeners[ i ] == ItemSelectionListener.class )
+            {
+                ( (ItemSelectionListener) listeners[ i + 1 ] ).valueChanged( evt );
+            }
+        }
+    }
+
+    /*private void setOrientation(int orientation) {
         NodeLinkTreeLayout rtl = (NodeLinkTreeLayout)m_vis.getAction(LAYOUT_ACTION);
         CollapsedSubtreeLayout stl = (CollapsedSubtreeLayout)m_vis.getAction(SUB_LAYOUT_ACTION);
         switch ( orientation ) {
@@ -234,7 +287,7 @@ public class GraphDisplay extends Display
     public int getOrientation()
     {
         return orientation;
-    }
+    }*/ 
 
     public class AutoZoomAction extends Action
     {
@@ -288,7 +341,7 @@ public class GraphDisplay extends Display
         }
     }
 
-    public static class NodeColorAction extends ColorAction
+    public class NodeColorAction extends ColorAction
     {
 
         public NodeColorAction(String group)
@@ -306,6 +359,15 @@ public class GraphDisplay extends Display
             else
                 return ColorLib.rgba(255,255,255,0);
         }
+    }
 
+    public class ItemSelectionControl extends ControlAdapter
+    {
+        public final void itemClicked( VisualItem anItem, MouseEvent anEvent )
+        {
+            Object object =  anItem.get( USER_OBJECT );
+            ItemSelectionEvent evt = new ItemSelectionEvent( this, object);
+            fireSelectionValueChanged( evt );
+        }
     }
 }

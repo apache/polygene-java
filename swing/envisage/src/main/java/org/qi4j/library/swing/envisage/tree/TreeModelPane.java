@@ -165,6 +165,20 @@ public class TreeModelPane extends JPanel
         return null;
     }
 
+    public void setSelectedValue(Object obj)
+    {
+        if (obj == null) { return; }
+
+        TreeNode node = findNode( structureTree, obj );
+        if (node != null)
+        {
+            DefaultTreeModel treeModel = (DefaultTreeModel)structureTree.getModel();
+            TreePath treePath = new TreePath(treeModel.getPathToRoot( node ));
+            structureTree.setSelectionPath( treePath );
+            structureTree.scrollPathToVisible( treePath );
+        }
+    }
+
     /** Just a helper method to find the node which contains the userObject
      * @param tree the JTree to search into 
      * @param object the user object

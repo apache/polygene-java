@@ -34,9 +34,6 @@ import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
  */
 public class GraphBuilder
 {
-    private static final String NAME   = "name";
-    private static final String USER_OBJECT  = "userObject";
-
     private Tree tree = null;
 
     public static Graph buildGraph( ApplicationDetailDescriptor descriptor )
@@ -49,15 +46,15 @@ public class GraphBuilder
     {
         tree = new Tree();
         Table nodeTable = tree.getNodeTable();
-        nodeTable.addColumn(NAME, String.class);
-        nodeTable.addColumn(USER_OBJECT, Object.class);
+        nodeTable.addColumn(GraphDisplay.NAME_LABEL, String.class);
+        nodeTable.addColumn(GraphDisplay.USER_OBJECT, Object.class);
     }
 
     private Graph buildApplicationNode( ApplicationDetailDescriptor descriptor )
     {
         Node node = tree.addRoot();
-        node.set(NAME, descriptor.descriptor().name());
-        node.set(USER_OBJECT, descriptor);
+        node.set(GraphDisplay.NAME_LABEL, descriptor.descriptor().name());
+        node.set(GraphDisplay.USER_OBJECT, descriptor);
 
         buildLayersNode( node, descriptor.layers() );
 
@@ -70,8 +67,8 @@ public class GraphBuilder
         for( LayerDetailDescriptor descriptor : iter )
         {
             Node childNode = tree.addChild( parent );
-            childNode.set(NAME, descriptor.descriptor().name());
-            childNode.set(USER_OBJECT, descriptor );
+            childNode.set(GraphDisplay.NAME_LABEL, descriptor.descriptor().name());
+            childNode.set(GraphDisplay.USER_OBJECT, descriptor );
             buildModulesNode( childNode, descriptor.modules() );
         }
     }
@@ -81,8 +78,8 @@ public class GraphBuilder
         for( ModuleDetailDescriptor descriptor : iter )
         {
             Node childNode = tree.addChild( parent );
-            childNode.set(NAME, descriptor.descriptor().name());
-            childNode.set(USER_OBJECT, descriptor );
+            childNode.set(GraphDisplay.NAME_LABEL, descriptor.descriptor().name());
+            childNode.set(GraphDisplay.USER_OBJECT, descriptor );
             buildServicesNode( childNode, descriptor.services() );
             buildEntitiesNode( childNode, descriptor.entities() );
             buildObjectsNode( childNode, descriptor.objects() );
@@ -94,8 +91,8 @@ public class GraphBuilder
         for( ServiceDetailDescriptor descriptor : iter )
         {
             Node childNode = tree.addChild( parent );
-            childNode.set(NAME, descriptor.descriptor().identity());
-            childNode.set(USER_OBJECT, descriptor );
+            childNode.set(GraphDisplay.NAME_LABEL, descriptor.descriptor().identity());
+            childNode.set(GraphDisplay.USER_OBJECT, descriptor );
         }
     }
 
@@ -104,8 +101,8 @@ public class GraphBuilder
         for( EntityDetailDescriptor descriptor : iter )
         {
             Node childNode = tree.addChild( parent );
-            childNode.set(NAME, descriptor.descriptor().type().getSimpleName());
-            childNode.set(USER_OBJECT, descriptor );
+            childNode.set(GraphDisplay.NAME_LABEL, descriptor.descriptor().type().getSimpleName());
+            childNode.set(GraphDisplay.USER_OBJECT, descriptor );
         }
     }
 
@@ -114,8 +111,8 @@ public class GraphBuilder
         for( ObjectDetailDescriptor descriptor : iter )
         {
             Node childNode = tree.addChild( parent );
-            childNode.set(NAME, descriptor.descriptor().type().getSimpleName());
-            childNode.set(USER_OBJECT, descriptor );
+            childNode.set(GraphDisplay.NAME_LABEL, descriptor.descriptor().type().getSimpleName());
+            childNode.set(GraphDisplay.USER_OBJECT, descriptor );
         }
     }
 }

@@ -18,10 +18,19 @@ package org.qi4j.library.swing.envisage.detail;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JList;
+import javax.swing.JSplitPane;
+import javax.swing.JScrollPane;
+import javax.swing.DefaultListModel;
+import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.CompositeMethodDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.spi.entity.EntityDescriptor;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
@@ -31,20 +40,23 @@ public class MethodPane extends DetailPane
     //protected ResourceBundle bundle = ResourceBundle.getBundle( this.getClass().getName() );
 
     private JPanel contentPane;
-    private JPanel todoPane;
-    private JPanel todoInnerPane;
-    private JTextArea todoArea;
+    private JList methodList;
+    private JPanel infoPane;
+
+    private DefaultListModel listModel;
 
     public MethodPane()
     {
         this.setLayout( new BorderLayout() );
         this.add( contentPane, BorderLayout.CENTER );
+
+        listModel = new DefaultListModel();
+        methodList.setModel( listModel );
     }
 
     protected void clear()
     {
-        //nameField.setText( null );
-        //classNameField.setText( null );
+        listModel.clear();
     }
 
     public void setDescriptor( Object objectDesciptor )
@@ -52,6 +64,23 @@ public class MethodPane extends DetailPane
         clear();
 
         // TODO
+        if( objectDesciptor instanceof ServiceDetailDescriptor )
+        {
+            ServiceDetailDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor );
+        }
+        else if( objectDesciptor instanceof EntityDetailDescriptor )
+        {
+            EntityDetailDescriptor descriptor = ( (EntityDetailDescriptor) objectDesciptor );
+            reload( descriptor.methods() );
+        }
+    }
+
+    private void reload( Iterable<CompositeMethodDetailDescriptor> iter )
+    {
+        for( CompositeMethodDetailDescriptor descriptor : iter )
+        {
+            listModel.addElement( descriptor );
+        }
     }
 
     {
@@ -72,18 +101,15 @@ public class MethodPane extends DetailPane
     {
         contentPane = new JPanel();
         contentPane.setLayout( new BorderLayout( 0, 0 ) );
-        todoPane = new JPanel();
-        todoPane.setLayout( new FlowLayout( FlowLayout.CENTER, 5, 5 ) );
-        contentPane.add( todoPane, BorderLayout.CENTER );
-        todoInnerPane = new JPanel();
-        todoInnerPane.setLayout( new BorderLayout( 0, 0 ) );
-        todoPane.add( todoInnerPane );
-        todoInnerPane.setBorder( BorderFactory.createTitledBorder( BorderFactory.createEtchedBorder(), "TODO" ) );
-        todoArea = new JTextArea();
-        todoArea.setEditable( false );
-        todoArea.setText( "What's need to put here:\n- List   \n- Tree\n- Table\n- ..." );
-        todoArea.setWrapStyleWord( true );
-        todoInnerPane.add( todoArea, BorderLayout.CENTER );
+        final JSplitPane splitPane1 = new JSplitPane();
+        contentPane.add( splitPane1, BorderLayout.CENTER );
+        final JScrollPane scrollPane1 = new JScrollPane();
+        splitPane1.setLeftComponent( scrollPane1 );
+        methodList = new JList();
+        scrollPane1.setViewportView( methodList );
+        infoPane = new JPanel();
+        infoPane.setLayout( new GridBagLayout() );
+        splitPane1.setRightComponent( infoPane );
     }
 
     /**
