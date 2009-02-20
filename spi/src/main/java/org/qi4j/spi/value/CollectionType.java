@@ -30,7 +30,6 @@ public class CollectionType
 {
     public static boolean isCollection( Type type)
     {
-        // TODO maybe: return Collection.class.isAssignableFrom( Classes.getRawClass( type ) ); 
         Class cl = Classes.getRawClass( type );
         return cl.equals( Collection.class ) || cl.equals( List.class ) || cl.equals( Set.class );
     }
