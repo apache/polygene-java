@@ -24,8 +24,8 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.Wrapper;
-import org.qi4j.index.rdf.RdfQueryParser;
 import org.qi4j.index.rdf.RdfFactory;
+import org.qi4j.index.rdf.RdfQueryParser;
 import org.qi4j.index.rdf.callback.CollectingQualifiedIdentityResultCallback;
 import org.qi4j.index.rdf.callback.QualifiedIdentityResultCallback;
 import org.qi4j.index.rdf.callback.SingleQualifiedIdentityResultCallback;
@@ -40,7 +40,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLReaderAdapter;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  */
 public class SPARQLEntityFinderMixin
     implements EntityFinder

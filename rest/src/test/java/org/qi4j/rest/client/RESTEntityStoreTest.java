@@ -30,7 +30,7 @@ import org.qi4j.rest.TestEntity;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class RESTEntityStoreTest
     extends AbstractQi4jTest

@@ -20,7 +20,7 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.spi.entity.EntityStore;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Mixins( RESTEntityStoreServiceMixin.class )
 public interface RESTEntityStoreService

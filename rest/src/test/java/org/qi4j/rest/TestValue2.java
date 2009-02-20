@@ -19,7 +19,7 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface TestValue2
     extends ValueComposite

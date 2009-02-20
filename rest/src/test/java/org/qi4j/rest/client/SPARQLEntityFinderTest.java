@@ -19,22 +19,22 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.query.Query;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.RdfFactoryService;
-import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityStateParser;
-import org.qi4j.api.query.Query;
+import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.rest.Main;
 import org.qi4j.rest.TestEntity;
-import org.qi4j.api.structure.Application;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class SPARQLEntityFinderTest
     extends AbstractQi4jTest

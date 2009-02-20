@@ -31,8 +31,8 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.util.Classes;
-import org.qi4j.index.rdf.RdfQueryParser;
 import org.qi4j.index.rdf.RdfFactory;
+import org.qi4j.index.rdf.RdfQueryParser;
 import org.qi4j.index.rdf.callback.CollectingQualifiedIdentityResultCallback;
 import org.qi4j.index.rdf.callback.QualifiedIdentityResultCallback;
 import org.qi4j.index.rdf.callback.SingleQualifiedIdentityResultCallback;
@@ -41,8 +41,8 @@ import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 
 /**
- * TODO Add JavaDoc
- * TODO shall we support different implementation as SERQL?
+ * JAVADOC Add JavaDoc
+ * JAVADOC shall we support different implementation as SERQL?
  */
 public class RdfEntityFinderMixin
     implements EntityFinder

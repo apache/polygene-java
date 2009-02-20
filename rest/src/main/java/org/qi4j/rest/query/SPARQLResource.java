@@ -61,7 +61,7 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.Variant;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class SPARQLResource
     extends Resource

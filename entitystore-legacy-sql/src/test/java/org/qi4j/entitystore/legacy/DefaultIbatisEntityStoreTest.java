@@ -26,7 +26,7 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Ignore( "Unclear if it is possible to make a subclass of the EntityStore test suite (AbstractEntityStoreTest)." )
 public class DefaultIbatisEntityStoreTest

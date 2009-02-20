@@ -40,7 +40,7 @@ import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  */
 public class RdfEntityIndexerMixin
     implements EntityStoreListener, Initializable

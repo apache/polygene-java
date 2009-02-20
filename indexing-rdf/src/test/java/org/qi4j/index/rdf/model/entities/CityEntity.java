@@ -21,7 +21,7 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.index.rdf.model.City;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  *
  * @author Alin Dreghiciu
  * @since March 18, 2008

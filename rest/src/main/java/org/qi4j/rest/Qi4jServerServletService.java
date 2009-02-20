@@ -19,7 +19,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Mixins( Qi4jServerServlet.class )
 public interface Qi4jServerServletService

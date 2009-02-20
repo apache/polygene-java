@@ -27,7 +27,7 @@ import org.qi4j.api.property.Property;
 import org.qi4j.library.rdf.DcRdf;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface TestEntity
     extends EntityComposite

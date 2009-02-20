@@ -21,7 +21,7 @@ import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  */
 public interface RdfQueryParser
 {

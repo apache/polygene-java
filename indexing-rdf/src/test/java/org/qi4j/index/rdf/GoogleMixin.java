@@ -17,12 +17,12 @@
  */
 package org.qi4j.index.rdf;
 
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.index.rdf.model.Person;
-import org.qi4j.api.injection.scope.Structure;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  *
  * @author Alin Dreghiciu
  * @since March 20, 2008

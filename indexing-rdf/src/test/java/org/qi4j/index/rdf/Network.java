@@ -39,7 +39,7 @@ import org.qi4j.index.rdf.model.entities.FemaleEntity;
 import org.qi4j.index.rdf.model.entities.MaleEntity;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  *
  * @author Alin Dreghiciu
  * @since March 20, 2008

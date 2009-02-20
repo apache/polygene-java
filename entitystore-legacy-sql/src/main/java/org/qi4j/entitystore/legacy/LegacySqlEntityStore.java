@@ -24,13 +24,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
-import static org.qi4j.api.util.NullArgumentException.validateNotNull;
-import org.qi4j.entitystore.legacy.dbInitializer.DBInitializer;
-import org.qi4j.entitystore.legacy.internal.LegacyEntityState;
+import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.structure.Module;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
+import org.qi4j.entitystore.legacy.dbInitializer.DBInitializer;
+import org.qi4j.entitystore.legacy.internal.LegacyEntityState;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
@@ -42,11 +43,10 @@ import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.UnknownEntityTypeException;
-import org.qi4j.api.structure.Module;
 
 /**
- * TODO: Figure out how does transaction supposed for all EntityStore methods.
- * TODO: identity is a keyword in SQL. We need to have an alias for this identity property for query purposes.
+ * JAVADOC: Figure out how does transaction supposed for all EntityStore methods.
+ * JAVADOC: identity is a keyword in SQL. We need to have an alias for this identity property for query purposes.
  */
 public class LegacySqlEntityStore
     implements EntityStore, Activatable

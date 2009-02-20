@@ -21,7 +21,7 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.index.rdf.model.Account;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  *
  * @author Alin Dreghiciu
  * @since 0.4.0, August 28, 2008

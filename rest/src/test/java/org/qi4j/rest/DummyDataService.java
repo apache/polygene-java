@@ -14,17 +14,17 @@
 
 package org.qi4j.rest;
 
-import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import static org.qi4j.api.entity.association.Qualifier.qualifier;
 import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Mixins( DummyDataService.DummyDataMixin.class )
 public interface DummyDataService

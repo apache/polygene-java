@@ -6,7 +6,7 @@ import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Property;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Queryable( false )
 public interface JdbmConfiguration

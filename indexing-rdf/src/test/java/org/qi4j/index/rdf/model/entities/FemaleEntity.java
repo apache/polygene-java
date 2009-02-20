@@ -21,7 +21,7 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.index.rdf.model.Female;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  *
  * @author Alin Dreghiciu
  * @since April 09, 2008

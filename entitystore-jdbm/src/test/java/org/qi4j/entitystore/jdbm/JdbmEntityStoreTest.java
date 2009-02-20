@@ -18,18 +18,15 @@ package org.qi4j.entitystore.jdbm;
 
 import java.io.File;
 import org.junit.After;
-import static org.junit.Assert.assertThat;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
-import org.qi4j.entitystore.jdbm.JdbmConfiguration;
-import org.qi4j.entitystore.jdbm.JdbmEntityStoreService;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class JdbmEntityStoreTest extends AbstractEntityStoreTest
 {

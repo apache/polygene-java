@@ -21,7 +21,7 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
 
 /**
- * TODO Add JavaDoc.
+ * JAVADOC Add JavaDoc.
  *
  * @author Alin Dreghiciu (adreghiciu@gmail.com)
  * @since 0.6.0, February 16, 2009

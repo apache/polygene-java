@@ -20,7 +20,7 @@ package org.qi4j.index.rdf;
 import org.qi4j.index.rdf.model.Person;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  *
  * @author Alin Dreghiciu
  * @since March 20, 2008

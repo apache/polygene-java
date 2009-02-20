@@ -19,12 +19,10 @@ import org.junit.After;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import static org.qi4j.entitystore.prefs.PreferenceEntityStoreInfo.PreferenceNode.USER_ROOT;
-import org.qi4j.entitystore.prefs.PreferenceEntityStoreInfo;
-import org.qi4j.entitystore.prefs.PreferencesEntityStoreService;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class PreferencesEntityStoreTest extends AbstractEntityStoreTest
 {

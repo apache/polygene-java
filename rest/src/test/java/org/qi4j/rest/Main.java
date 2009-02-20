@@ -14,6 +14,8 @@
 
 package org.qi4j.rest;
 
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
@@ -22,11 +24,9 @@ import org.qi4j.bootstrap.ModuleName;
 import org.qi4j.library.http.JettyServiceAssembler;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.rest.assembly.RestAssembler;
-import org.qi4j.api.structure.Application;
-import org.qi4j.api.common.Visibility;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class Main
 {

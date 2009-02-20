@@ -22,10 +22,9 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.rdfxml.util.RDFXMLPrettyWriter;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.index.rdf.RdfExport;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class RdfExportMixin
     implements RdfExport

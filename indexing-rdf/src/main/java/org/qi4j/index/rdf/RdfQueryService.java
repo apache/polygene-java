@@ -19,15 +19,13 @@ package org.qi4j.index.rdf;
 
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.spi.query.EntityFinder;
-import org.qi4j.spi.entity.EntityStoreListener;
-import org.qi4j.index.rdf.internal.RdfEntityIndexerMixin;
 import org.qi4j.index.rdf.internal.RdfEntityFinderMixin;
-import org.qi4j.index.rdf.RdfExportMixin;
-import org.qi4j.index.rdf.RdfExport;
+import org.qi4j.index.rdf.internal.RdfEntityIndexerMixin;
+import org.qi4j.spi.entity.EntityStoreListener;
+import org.qi4j.spi.query.EntityFinder;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  */
 @Mixins( { RdfEntityIndexerMixin.class, RdfEntityFinderMixin.class, RdfExportMixin.class } )
 public interface RdfQueryService

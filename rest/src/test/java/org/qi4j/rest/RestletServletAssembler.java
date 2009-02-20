@@ -21,7 +21,7 @@ import static org.qi4j.library.http.Servlets.addServlets;
 import static org.qi4j.library.http.Servlets.serve;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class RestletServletAssembler implements Assembler
 {

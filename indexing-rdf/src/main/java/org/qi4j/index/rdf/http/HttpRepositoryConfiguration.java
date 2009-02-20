@@ -18,7 +18,7 @@ import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Property;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  */
 @Queryable( false )
 public interface HttpRepositoryConfiguration extends EntityComposite

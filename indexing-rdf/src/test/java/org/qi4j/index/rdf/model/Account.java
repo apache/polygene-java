@@ -20,7 +20,7 @@ package org.qi4j.index.rdf.model;
 import org.qi4j.api.property.Property;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  *
  * @author Alin Dreghiciu
  * @since 0.4.0, August 28, 2008

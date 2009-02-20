@@ -19,7 +19,7 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.spi.query.EntityFinder;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Mixins( SPARQLEntityFinderMixin.class )
 public interface SPARQLEntityFinderService

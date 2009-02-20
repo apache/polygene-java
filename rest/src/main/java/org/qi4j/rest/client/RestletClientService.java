@@ -21,7 +21,7 @@ import org.qi4j.api.service.Wrapper;
 import org.restlet.Client;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Mixins( RestletClientMixin.class )
 public interface RestletClientService extends Wrapper<Client>, ServiceComposite, Activatable

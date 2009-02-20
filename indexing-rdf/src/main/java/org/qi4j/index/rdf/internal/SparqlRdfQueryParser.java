@@ -32,12 +32,11 @@ import org.qi4j.api.query.grammar.PropertyIsNullPredicate;
 import org.qi4j.api.query.grammar.PropertyNullPredicate;
 import org.qi4j.api.query.grammar.SingleValueExpression;
 import org.qi4j.api.query.grammar.ValueExpression;
-import org.qi4j.index.rdf.RdfQueryParser;
 import org.qi4j.index.rdf.Namespaces;
-import org.qi4j.index.rdf.internal.Triples;
+import org.qi4j.index.rdf.RdfQueryParser;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  */
 public class SparqlRdfQueryParser
     implements RdfQueryParser
