@@ -15,7 +15,7 @@
 * limitations under the License.
 */
 
-package org.qi4j.swing.library.swing.envisage.sample;
+package org.qi4j.library.swing.envisage.sample;
 
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -27,15 +27,9 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.structure.Module;
-import org.qi4j.api.composite.CompositeBuilderFactory;
-import org.qi4j.api.object.ObjectBuilderFactory;
-import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.library.swing.envisage.Envisage;
 import org.junit.Test;
 

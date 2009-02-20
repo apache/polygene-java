@@ -35,6 +35,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 public class GraphBuilder
 {
     private static final String NAME   = "name";
+    private static final String USER_OBJECT  = "userObject";
 
     private Tree tree = null;
 
@@ -49,12 +50,14 @@ public class GraphBuilder
         tree = new Tree();
         Table nodeTable = tree.getNodeTable();
         nodeTable.addColumn(NAME, String.class);
+        nodeTable.addColumn(USER_OBJECT, Object.class);
     }
 
     private Graph buildApplicationNode( ApplicationDetailDescriptor descriptor )
     {
         Node node = tree.addRoot();
         node.set(NAME, descriptor.descriptor().name());
+        node.set(USER_OBJECT, descriptor);
 
         buildLayersNode( node, descriptor.layers() );
 
@@ -68,6 +71,7 @@ public class GraphBuilder
         {
             Node childNode = tree.addChild( parent );
             childNode.set(NAME, descriptor.descriptor().name());
+            childNode.set(USER_OBJECT, descriptor );
             buildModulesNode( childNode, descriptor.modules() );
         }
     }
@@ -78,6 +82,7 @@ public class GraphBuilder
         {
             Node childNode = tree.addChild( parent );
             childNode.set(NAME, descriptor.descriptor().name());
+            childNode.set(USER_OBJECT, descriptor );
             buildServicesNode( childNode, descriptor.services() );
             buildEntitiesNode( childNode, descriptor.entities() );
             buildObjectsNode( childNode, descriptor.objects() );
@@ -90,6 +95,7 @@ public class GraphBuilder
         {
             Node childNode = tree.addChild( parent );
             childNode.set(NAME, descriptor.descriptor().identity());
+            childNode.set(USER_OBJECT, descriptor );
         }
     }
 
@@ -99,6 +105,7 @@ public class GraphBuilder
         {
             Node childNode = tree.addChild( parent );
             childNode.set(NAME, descriptor.descriptor().type().getSimpleName());
+            childNode.set(USER_OBJECT, descriptor );
         }
     }
 
@@ -108,6 +115,7 @@ public class GraphBuilder
         {
             Node childNode = tree.addChild( parent );
             childNode.set(NAME, descriptor.descriptor().type().getSimpleName());
+            childNode.set(USER_OBJECT, descriptor );
         }
     }
 }

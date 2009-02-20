@@ -129,8 +129,8 @@ public class GeneralPane extends DetailPane
                 data.add( new TableData( 2, new Object[]{ nameRow, descriptor.identity() } ) );
                 data.add( new TableData( 2, new Object[]{ classRow, descriptor.type().getName() } ) );
                 data.add( new TableData( 2, new Object[]{ visibilityRow, descriptor.visibility().toString() } ) );
-                data.add( new TableData( 2, new Object[]{ moduleRow, ( (ServiceDetailDescriptor) objectDesciptor ).module().toString() } ) );
-                data.add( new TableData( 2, new Object[]{ layerRow, ( (ServiceDetailDescriptor) objectDesciptor ).module().layer().toString() } ) );
+                data.add( new TableData( 2, new Object[]{ moduleRow, ( (ServiceDetailDescriptor) objectDesciptor ).module() } ) );
+                data.add( new TableData( 2, new Object[]{ layerRow, ( (ServiceDetailDescriptor) objectDesciptor ).module().layer() } ) );
             }
             else if( objectDesciptor instanceof EntityDetailDescriptor )
             {
@@ -138,8 +138,8 @@ public class GeneralPane extends DetailPane
                 data.add( new TableData( 2, new Object[]{ nameRow, descriptor.type().getSimpleName() } ) );
                 data.add( new TableData( 2, new Object[]{ classRow, descriptor.type().getName() } ) );
                 data.add( new TableData( 2, new Object[]{ visibilityRow, descriptor.visibility().toString() } ) );
-                data.add( new TableData( 2, new Object[]{ moduleRow, ( (EntityDetailDescriptor) objectDesciptor ).module().toString() } ) );
-                data.add( new TableData( 2, new Object[]{ layerRow, ( (EntityDetailDescriptor) objectDesciptor ).module().layer().toString() } ) );
+                data.add( new TableData( 2, new Object[]{ moduleRow, ( (EntityDetailDescriptor) objectDesciptor ).module() } ) );
+                data.add( new TableData( 2, new Object[]{ layerRow, ( (EntityDetailDescriptor) objectDesciptor ).module().layer() } ) );
             }
             else if( objectDesciptor instanceof ObjectDetailDescriptor )
             {
@@ -147,8 +147,8 @@ public class GeneralPane extends DetailPane
                 data.add( new TableData( 2, new Object[]{ nameRow, descriptor.type().getSimpleName() } ) );
                 data.add( new TableData( 2, new Object[]{ classRow, descriptor.type().getName() } ) );
                 data.add( new TableData( 2, new Object[]{ visibilityRow, descriptor.visibility().toString() } ) );
-                data.add( new TableData( 2, new Object[]{ moduleRow, ( (ObjectDetailDescriptor) objectDesciptor ).module().toString() } ) );
-                data.add( new TableData( 2, new Object[]{ layerRow, ( (ObjectDetailDescriptor) objectDesciptor ).module().layer().toString() } ) );
+                data.add( new TableData( 2, new Object[]{ moduleRow, ( (ObjectDetailDescriptor) objectDesciptor ).module() } ) );
+                data.add( new TableData( 2, new Object[]{ layerRow, ( (ObjectDetailDescriptor) objectDesciptor ).module().layer() } ) );
             }
 
             fireTableDataChanged();
