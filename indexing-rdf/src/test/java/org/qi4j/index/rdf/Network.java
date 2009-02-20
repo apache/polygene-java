@@ -223,7 +223,7 @@ class Network
 
             URL url = urlBuilder.prototype();
             url.protocol().set( protocolBuilder.newInstance() );
-            //url.queryParams().set( queryParams );
+            url.queryParams().set( queryParams );
 
             jackDoe.personalWebsite().set( urlBuilder.newInstance() );
 
