@@ -14,7 +14,7 @@ package org.qi4j.scripting.common;
 import java.io.PrintStream;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class ScriptUtilImpl
     implements ScriptUtil

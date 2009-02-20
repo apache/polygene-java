@@ -26,21 +26,21 @@ import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.RDFWriterFactory;
 import org.openrdf.rio.n3.N3WriterFactory;
 import org.openrdf.rio.rdfxml.RDFXMLWriterFactory;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.LayerAssembly;
-import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.sideeffect.SideEffectOf;
 import org.qi4j.api.sideeffect.SideEffects;
-import org.qi4j.api.injection.scope.This;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.LayerAssembly;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.rdf.model.ApplicationSerializer;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class ApplicationXmlTest extends AbstractQi4jTest
 {

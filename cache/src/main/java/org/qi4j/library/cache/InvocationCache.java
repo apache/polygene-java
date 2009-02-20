@@ -13,7 +13,7 @@ package org.qi4j.library.cache;
 
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface InvocationCache
 {

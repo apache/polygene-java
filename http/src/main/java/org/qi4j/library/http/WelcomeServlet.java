@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class WelcomeServlet
     extends HttpServlet

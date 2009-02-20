@@ -27,7 +27,7 @@ import org.qi4j.spi.structure.LayerDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 class ApplicationVisitor extends DescriptorVisitor
 {

@@ -20,13 +20,13 @@ import org.junit.Test;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.api.injection.scope.Service;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class MemoryRepositoryTest
     extends AbstractQi4jTest

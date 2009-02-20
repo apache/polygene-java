@@ -18,7 +18,7 @@ import org.qi4j.api.constraint.Constraint;
 import org.qi4j.library.constraints.annotation.InstanceOf;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class InstanceOfConstraint
     implements Constraint<InstanceOf, Object>

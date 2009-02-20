@@ -25,9 +25,9 @@ import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 /**
- * TODO: Icon
- * TODO: Localization
- * TODO: HTML
+ * JAVADOC: Icon
+ * JAVADOC: Localization
+ * JAVADOC: HTML
  *
  * @author edward.yakop@gmail.com
  * @since 0.5

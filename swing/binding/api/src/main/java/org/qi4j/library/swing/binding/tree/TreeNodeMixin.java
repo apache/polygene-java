@@ -26,7 +26,7 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class TreeNodeMixin
     implements TreeNode

@@ -4,7 +4,7 @@ import org.qi4j.api.constraint.Constraint;
 import org.qi4j.library.constraints.annotation.MaxLength;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class MaxLengthConstraint
     implements Constraint<MaxLength, String>

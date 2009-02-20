@@ -15,8 +15,8 @@
 package org.qi4j.library.http;
 
 import java.io.File;
-import java.net.URL;
 import java.net.InetAddress;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
@@ -29,17 +29,17 @@ import static org.mortbay.jetty.servlet.Context.SESSIONS;
 import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.servlet.FilterHolder;
 import org.mortbay.jetty.servlet.ServletHolder;
+import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.library.http.Dispatchers.Dispatcher;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.library.http.Dispatchers.Dispatcher;
 
 /**
- * TODO
+ * JAVADOC
  */
 class JettyMixin
     implements Activatable, HttpService

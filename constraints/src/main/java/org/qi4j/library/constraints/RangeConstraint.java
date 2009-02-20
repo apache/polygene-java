@@ -4,7 +4,7 @@ import org.qi4j.api.constraint.Constraint;
 import org.qi4j.library.constraints.annotation.Range;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class RangeConstraint
     implements Constraint<Range, Number>

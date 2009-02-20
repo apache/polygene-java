@@ -15,14 +15,14 @@
 package org.qi4j.library.swing.binding.example.file;
 
 import java.io.File;
-import org.qi4j.api.sideeffect.SideEffectOf;
 import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.sideeffect.SideEffectOf;
 import org.qi4j.library.swing.binding.tree.Descriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public abstract class PathToNameLifecycleSideEffect extends SideEffectOf<Lifecycle>
     implements Lifecycle

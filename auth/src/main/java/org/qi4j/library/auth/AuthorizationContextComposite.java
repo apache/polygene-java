@@ -18,7 +18,7 @@ package org.qi4j.library.auth;
 import org.qi4j.api.composite.Composite;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface AuthorizationContextComposite extends Composite, AuthorizationContext
 {

@@ -20,7 +20,7 @@ import org.qi4j.api.property.Property;
 import org.qi4j.library.constraints.annotation.Matches;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  */
 public interface NativeConfiguration extends ConfigurationComposite
 {

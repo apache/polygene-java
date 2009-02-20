@@ -15,7 +15,7 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Mixins;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Mixins( JRubyMixin.class )
 public interface JRubyComposite

@@ -4,7 +4,7 @@ import org.qi4j.api.constraint.Constraint;
 import org.qi4j.library.constraints.annotation.MinLength;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class MinLengthConstraint
     implements Constraint<MinLength, String>

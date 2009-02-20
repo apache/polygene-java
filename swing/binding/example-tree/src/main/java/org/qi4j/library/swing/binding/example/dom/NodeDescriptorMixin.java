@@ -22,7 +22,7 @@ import org.qi4j.library.swing.binding.tree.Descriptor;
 import org.w3c.dom.Node;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class NodeDescriptorMixin
     implements Descriptor

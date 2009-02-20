@@ -25,7 +25,7 @@ import org.qi4j.library.constraints.annotation.NotEmpty;
 import org.qi4j.library.rdf.DcRdf;
 
 /**
- * TODO
+ * JAVADOC
  */
 @RDF( "http://purl.org/dc/dcmitype/PhysicalObject" )
 interface TestEntity

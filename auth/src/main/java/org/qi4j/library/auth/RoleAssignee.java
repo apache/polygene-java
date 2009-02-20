@@ -16,7 +16,7 @@
 package org.qi4j.library.auth;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface RoleAssignee
 {

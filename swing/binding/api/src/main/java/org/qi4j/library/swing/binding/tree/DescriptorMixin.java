@@ -18,7 +18,7 @@ import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.property.Property;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class DescriptorMixin
     implements Descriptor, Descriptor.MutableDescriptor

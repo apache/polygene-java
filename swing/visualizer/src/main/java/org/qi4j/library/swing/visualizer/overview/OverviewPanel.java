@@ -20,8 +20,8 @@ import com.jgoodies.forms.layout.FormLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
-import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.api.injection.scope.Uses;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.visualizer.listener.SelectionListener;
 import org.qi4j.library.swing.visualizer.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.visualizer.overview.internal.toolbar.OverviewToolbar;
@@ -30,7 +30,7 @@ import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApp
 import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApplicationVisualization;
 
 /**
- * TODO
+ * JAVADOC
  *
  * @author Sonny Gill
  * @author edward.yakop@gmail.com

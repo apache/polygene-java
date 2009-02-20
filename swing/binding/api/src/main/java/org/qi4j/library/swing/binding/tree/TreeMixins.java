@@ -17,7 +17,7 @@ package org.qi4j.library.swing.binding.tree;
 import org.qi4j.api.mixin.Mixins;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Mixins( { DescriptorMixin.class } )
 public interface TreeMixins

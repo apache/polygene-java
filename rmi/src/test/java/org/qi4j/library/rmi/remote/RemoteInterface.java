@@ -16,7 +16,7 @@ import java.rmi.Remote;
 import org.qi4j.library.cache.Cached;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Cached
 public interface RemoteInterface

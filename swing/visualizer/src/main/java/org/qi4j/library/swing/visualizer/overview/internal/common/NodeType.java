@@ -1,7 +1,7 @@
 package org.qi4j.library.swing.visualizer.overview.internal.common;
 
 /**
- * TODO JAVADOC
+ * JAVADOC JAVADOC
  *
  * @author edward.yakop@gmail.com
  * @see GraphConstants#FIELD_TYPE

@@ -20,16 +20,16 @@ import javax.swing.JFrame;
 import javax.swing.JTree;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.qi4j.api.composite.CompositeBuilder;
+import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.api.composite.CompositeBuilder;
-import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.library.swing.binding.tree.TreeNodeComposite;
 import org.w3c.dom.Document;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class Main
 {

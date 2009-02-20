@@ -21,7 +21,7 @@ import org.qi4j.api.injection.scope.This;
  * Before the next target invocation, this modifier invokes
  * {@link Validatable#validate()}.
  * <p/>
- * TODO: We need to distinguish between Validatable on create, delete and update.
+ * JAVADOC: We need to distinguish between Validatable on create, delete and update.
  */
 public class LifecycleValidationConcern extends ConcernOf<Lifecycle>
     implements Lifecycle

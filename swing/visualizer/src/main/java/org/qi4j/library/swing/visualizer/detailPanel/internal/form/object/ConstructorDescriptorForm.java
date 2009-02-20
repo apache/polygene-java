@@ -40,7 +40,7 @@ import org.qi4j.spi.composite.DependencyDescriptor;
 import org.qi4j.spi.composite.InjectedParametersDescriptor;
 
 /**
- * TODO Localization
+ * JAVADOC Localization
  *
  * @author edward.yakop@gmail.com
  * @since 0.5

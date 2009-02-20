@@ -6,7 +6,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Mixins( Aggregated.AggregatedMixin.class )
 public interface Aggregated

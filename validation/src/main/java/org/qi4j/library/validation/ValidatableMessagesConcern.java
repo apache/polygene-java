@@ -6,7 +6,7 @@ import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.injection.scope.This;
 
 /**
- * TODO
+ * JAVADOC
  */
 @AppliesTo( Validatable.class )
 public abstract class ValidatableMessagesConcern extends ConcernOf<Validatable>

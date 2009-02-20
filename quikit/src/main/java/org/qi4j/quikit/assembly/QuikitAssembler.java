@@ -13,15 +13,17 @@
  */
 package org.qi4j.quikit.assembly;
 
+import static org.qi4j.api.common.Visibility.layer;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.library.http.ServletInfo;
 import org.qi4j.quikit.application.QuikItApplication;
 import org.qi4j.quikit.application.QuikItFilter;
 import org.qi4j.quikit.application.QuikItServlet;
 import org.qi4j.quikit.application.QuikItServletServiceFactory;
-import org.qi4j.quikit.application.QuikitSession;
 import org.qi4j.quikit.application.QuikitServletService;
+import org.qi4j.quikit.application.QuikitSession;
 import org.qi4j.quikit.assembly.composites.QuikItApplicationFactoryComposite;
 import org.qi4j.quikit.assembly.composites.QuikItPageFactoryComposite;
 import org.qi4j.quikit.pages.EntityFormEditPage;
@@ -32,11 +34,9 @@ import org.qi4j.quikit.panels.EntityFormEditPanel;
 import org.qi4j.quikit.panels.EntityFormViewPanel;
 import org.qi4j.quikit.panels.EntityTypeListViewPanel;
 import org.qi4j.quikit.panels.entityList.EntityListViewPanelAssembler;
-import static org.qi4j.api.common.Visibility.layer;
-import org.qi4j.library.http.ServletInfo;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class QuikitAssembler
     implements Assembler

@@ -5,20 +5,20 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertTrue;
 import org.junit.Test;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.sideeffect.SideEffects;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.executor.ExecuteService;
 import org.qi4j.library.executor.ExecuteSideEffect;
 import org.qi4j.library.executor.ExecutorSideEffect;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class ExecuteSideEffectTest
     extends AbstractQi4jTest

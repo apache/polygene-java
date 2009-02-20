@@ -16,16 +16,16 @@ package org.qi4j.library.swing.binding.example.file;
 
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.concern.Concerns;
-import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.entity.Lifecycle;
-import org.qi4j.library.swing.binding.tree.ContainerMixin;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.library.swing.binding.tree.Child;
 import org.qi4j.library.swing.binding.tree.Container;
+import org.qi4j.library.swing.binding.tree.ContainerMixin;
 import org.qi4j.library.swing.binding.tree.Descriptor;
 import org.qi4j.library.swing.binding.tree.TreeMixins;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Concerns( { DirectoryListingContainerConcern.class } )
 @Mixins( ContainerMixin.class )

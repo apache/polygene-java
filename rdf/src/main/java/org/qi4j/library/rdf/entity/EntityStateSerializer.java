@@ -47,7 +47,7 @@ import org.qi4j.spi.value.ValueState;
 import org.qi4j.spi.value.ValueType;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class EntityStateSerializer
 {

@@ -18,7 +18,7 @@ package org.qi4j.library.auth;
 import org.qi4j.api.entity.association.ListAssociation;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface ProtectedResource
 {

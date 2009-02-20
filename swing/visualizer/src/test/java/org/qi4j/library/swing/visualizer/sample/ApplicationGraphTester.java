@@ -16,23 +16,23 @@ package org.qi4j.library.swing.visualizer.sample;
 
 import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
 import javax.swing.UIManager;
+import static org.qi4j.api.common.Visibility.application;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.AssociationMixin;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.AssociationMixin;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.swing.visualizer.VisualizerLauncher;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.structure.Application;
-import static org.qi4j.api.common.Visibility.application;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class ApplicationGraphTester
 {

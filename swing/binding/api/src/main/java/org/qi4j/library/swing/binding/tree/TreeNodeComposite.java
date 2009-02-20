@@ -21,7 +21,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.library.framework.DecoratorMixin;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Mixins( { TreeNodeMixin.class, DescriptorTreeCellRendererMixin.class, DecoratorMixin.class } )
 public interface TreeNodeComposite extends TreeNode, TreeCellRenderer, Descriptor, Composite

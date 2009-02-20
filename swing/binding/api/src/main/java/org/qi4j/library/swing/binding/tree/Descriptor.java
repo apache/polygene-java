@@ -14,11 +14,11 @@
  */
 package org.qi4j.library.swing.binding.tree;
 
-import org.qi4j.api.property.Property;
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.property.Property;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface Descriptor
 {

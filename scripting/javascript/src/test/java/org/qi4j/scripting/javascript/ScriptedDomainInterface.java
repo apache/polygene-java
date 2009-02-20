@@ -12,7 +12,7 @@
 package org.qi4j.scripting.javascript;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class ScriptedDomainInterface
     extends JavaScriptMixin

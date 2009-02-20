@@ -15,7 +15,7 @@ import org.qi4j.api.mixin.Mixins;
 */
 
 /**
- * TODO
+ * JAVADOC
  */
 @Mixins( JavaScriptMixin.class )
 public interface JavaScriptComposite

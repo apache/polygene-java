@@ -44,8 +44,8 @@ import prefuse.visual.VisualItem;
 import prefuse.visual.sort.ItemSorter;
 
 /**
- * TODO: Javadoc
- * TODO: Auto center when the window is resized
+ * JAVADOC: Javadoc
+ * JAVADOC: Auto center when the window is resized
  *
  * @author Sonny Gill
  * @author edward.yakop@gmail.com

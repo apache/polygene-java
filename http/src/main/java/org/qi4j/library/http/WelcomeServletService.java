@@ -14,12 +14,12 @@
 
 package org.qi4j.library.http;
 
+import javax.servlet.Servlet;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
-import javax.servlet.Servlet;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Mixins( WelcomeServlet.class )
 public interface WelcomeServletService extends Servlet, ServiceComposite

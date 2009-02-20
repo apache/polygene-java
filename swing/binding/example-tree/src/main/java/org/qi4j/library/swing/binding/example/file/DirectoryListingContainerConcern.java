@@ -21,11 +21,11 @@ import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.library.swing.binding.tree.Container;
 import org.qi4j.library.swing.binding.tree.Child;
+import org.qi4j.library.swing.binding.tree.Container;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class DirectoryListingContainerConcern extends ConcernOf<Container>
     implements Container

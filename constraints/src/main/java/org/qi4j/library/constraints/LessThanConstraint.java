@@ -4,7 +4,7 @@ import org.qi4j.api.constraint.Constraint;
 import org.qi4j.library.constraints.annotation.LessThan;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class LessThanConstraint
     implements Constraint<LessThan, Number>

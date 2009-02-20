@@ -3,7 +3,7 @@ package org.qi4j.library.validation;
 import java.util.Collection;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface ValidationMessages
 {

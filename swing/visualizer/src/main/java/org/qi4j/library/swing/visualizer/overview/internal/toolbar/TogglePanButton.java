@@ -31,8 +31,8 @@ import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApp
 import prefuse.controls.PanControl;
 
 /**
- * TODO: Icon
- * TODO: Localization
+ * JAVADOC: Icon
+ * JAVADOC: Localization
  *
  * @author edward.yakop@gmail.com
  * @author Sonny Gill

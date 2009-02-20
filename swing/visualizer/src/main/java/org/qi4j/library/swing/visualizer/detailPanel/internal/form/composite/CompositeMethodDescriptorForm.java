@@ -31,7 +31,7 @@ import org.qi4j.library.swing.visualizer.model.descriptor.CompositeDetailDescrip
 import org.qi4j.library.swing.visualizer.model.descriptor.CompositeMethodDetailDescriptor;
 
 /**
- * TODO: Use prefuse to draw invocation stack per method
+ * JAVADOC: Use prefuse to draw invocation stack per method
  *
  * @author edward.yakop@gmail.com
  * @since 0.5

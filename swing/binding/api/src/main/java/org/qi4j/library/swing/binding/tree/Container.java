@@ -17,7 +17,7 @@ package org.qi4j.library.swing.binding.tree;
 import java.util.List;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface Container
 {

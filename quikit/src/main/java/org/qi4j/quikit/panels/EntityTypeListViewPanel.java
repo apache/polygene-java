@@ -24,9 +24,9 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.structure.Module;
 import org.qi4j.quikit.pages.EntityListViewPage;
 import static org.qi4j.quikit.pages.EntityListViewPage.PARAM_ENTITY_TYPE;
-import org.qi4j.api.structure.Module;
 
 public final class EntityTypeListViewPanel extends Panel
 {
@@ -39,7 +39,7 @@ public final class EntityTypeListViewPanel extends Panel
         super( aWicketId );
 
         ArrayList<Class> bindings = new ArrayList<Class>();
-/* TODO
+/* JAVADOC
         Map<Class<? extends Composite>, CompositeBinding> composites = aModule.getCompositeBindings();
         for( CompositeBinding binding : composites.values() )
         {

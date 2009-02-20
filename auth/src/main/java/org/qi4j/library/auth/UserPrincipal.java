@@ -18,7 +18,7 @@ package org.qi4j.library.auth;
 import java.security.Principal;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class UserPrincipal
     implements Principal

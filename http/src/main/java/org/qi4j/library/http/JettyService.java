@@ -19,7 +19,7 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Mixins( JettyMixin.class )
 interface JettyService extends HttpService, Activatable, ServiceComposite

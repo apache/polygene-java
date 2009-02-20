@@ -25,7 +25,7 @@ import org.qi4j.library.rmi.remote.RemoteInterfaceImpl;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class RMIMixinTest
     extends AbstractQi4jTest

@@ -19,7 +19,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Mixins( UnitOfWorkFilter.class )
 public interface UnitOfWorkFilterService extends Filter, ServiceComposite

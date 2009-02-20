@@ -15,12 +15,12 @@
 package org.qi4j.library.swing.binding.example.file;
 
 import java.io.File;
-import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.sideeffect.SideEffects;
 
 /**
- * TODO
+ * JAVADOC
  */
 @SideEffects( PathToNameLifecycleSideEffect.class )
 public interface FilePath

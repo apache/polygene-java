@@ -16,27 +16,27 @@
 */
 package org.qi4j.library.swing.envisage;
 
-import javax.swing.JPanel;
-import javax.swing.JFrame;
-import javax.swing.JSplitPane;
+import java.awt.BorderLayout;
+import java.util.ResourceBundle;
 import javax.swing.JComponent;
-import javax.swing.event.TreeSelectionListener;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import org.qi4j.api.structure.Application;
+import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.library.swing.envisage.detail.DetailModelPane;
-import org.qi4j.library.swing.envisage.tree.TreeModelPane;
-import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
+import org.qi4j.library.swing.envisage.graph.GraphPane;
+import org.qi4j.library.swing.envisage.graph.event.ItemSelectionEvent;
+import org.qi4j.library.swing.envisage.graph.event.ItemSelectionListener;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptorBuilder;
-import org.qi4j.library.swing.envisage.graph.GraphPane;
-import org.qi4j.library.swing.envisage.graph.event.ItemSelectionListener;
-import org.qi4j.library.swing.envisage.graph.event.ItemSelectionEvent;
-import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.api.structure.Application;
+import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.library.swing.envisage.tree.TreeModelPane;
 import org.qi4j.spi.structure.ApplicationSPI;
-import java.util.ResourceBundle;
-import java.awt.BorderLayout;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)

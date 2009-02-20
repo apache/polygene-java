@@ -5,7 +5,7 @@ import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.mixin.Mixins;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Concerns( { ReadLockConcern.class, WriteLockConcern.class } )
 @Mixins( ReentrantReadWriteLock.class )

@@ -18,7 +18,7 @@ package org.qi4j.library.auth;
 import org.qi4j.api.entity.EntityComposite;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface NamedPermissionEntity extends EntityComposite, NamedPermission
 {

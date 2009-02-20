@@ -20,7 +20,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.METHOD } )

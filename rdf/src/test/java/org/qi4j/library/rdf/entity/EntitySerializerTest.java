@@ -39,7 +39,7 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class EntitySerializerTest
     extends AbstractQi4jTest

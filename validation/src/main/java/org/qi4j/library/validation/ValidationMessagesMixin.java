@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class ValidationMessagesMixin
     implements ValidationMessages

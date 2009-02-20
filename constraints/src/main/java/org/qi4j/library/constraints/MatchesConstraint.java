@@ -5,7 +5,7 @@ import org.qi4j.api.constraint.Constraint;
 import org.qi4j.library.constraints.annotation.Matches;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class MatchesConstraint
     implements Constraint<Matches, String>

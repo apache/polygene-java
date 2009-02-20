@@ -21,7 +21,7 @@ import org.qi4j.library.swing.binding.tree.Descriptor;
 import org.qi4j.library.swing.binding.tree.TreeMixins;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface FileComposite extends Child, Descriptor, FilePath, TreeMixins, Lifecycle, Composite
 {

@@ -5,7 +5,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.sideeffect.SideEffects;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Mixins( InvocationCacheMixin.class )
 @Concerns( ReturnCachedValueOnExceptionConcern.class )

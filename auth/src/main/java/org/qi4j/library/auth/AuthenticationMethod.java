@@ -18,7 +18,7 @@ package org.qi4j.library.auth;
 import org.qi4j.api.property.Property;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface AuthenticationMethod
     extends Property<String>

@@ -17,15 +17,15 @@ package org.qi4j.library.swing.binding.example.file;
 import java.io.File;
 import javax.swing.JFrame;
 import javax.swing.JTree;
+import org.qi4j.api.composite.CompositeBuilder;
+import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.api.composite.CompositeBuilder;
-import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.library.swing.binding.tree.TreeNodeComposite;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class Main
 {

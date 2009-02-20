@@ -26,8 +26,8 @@ import org.qi4j.library.swing.visualizer.overview.internal.visualization.Prefuse
 import org.qi4j.library.swing.visualizer.overview.internal.visualization.Qi4jApplicationDisplay;
 
 /**
- * TODO: Localization
- * TODO: icon
+ * JAVADOC: Localization
+ * JAVADOC: icon
  *
  * @author edward.yakop@gmail.com
  * @since 0.5
