@@ -30,7 +30,7 @@ import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.structure.ModelVisitor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class ImportedServiceModel
     implements ImportedServiceDescriptor, Serializable

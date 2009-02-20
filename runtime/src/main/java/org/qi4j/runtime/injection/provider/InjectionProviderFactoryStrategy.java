@@ -36,7 +36,7 @@ import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.spi.composite.CompositeDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class InjectionProviderFactoryStrategy
     implements InjectionProviderFactory, Serializable

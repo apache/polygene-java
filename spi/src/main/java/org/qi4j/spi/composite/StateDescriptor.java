@@ -18,7 +18,7 @@ import java.util.List;
 import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface StateDescriptor
 {

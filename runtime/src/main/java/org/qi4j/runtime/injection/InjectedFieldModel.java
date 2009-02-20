@@ -31,7 +31,7 @@ import org.qi4j.runtime.structure.Specification;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class InjectedFieldModel
     implements InjectedFieldDescriptor, Serializable

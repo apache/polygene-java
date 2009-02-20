@@ -20,7 +20,7 @@ import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.spi.structure.ModuleDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class ModuleModel
     implements Binder, ModuleDescriptor, Serializable

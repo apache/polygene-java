@@ -15,6 +15,7 @@
 package org.qi4j.runtime.composite;
 
 import java.io.Serializable;
+import java.util.List;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.spi.composite.CompositeInstance;
@@ -25,9 +26,9 @@ import org.qi4j.spi.composite.CompositeInstance;
 public final class MixinsModel extends AbstractMixinsModel
     implements Serializable
 {
-    public MixinsModel( Class<? extends Composite> compositeType)
+    public MixinsModel( Class<? extends Composite> compositeType, List<Class<?>> assemblyMixins )
     {
-        super( compositeType );
+        super( compositeType, assemblyMixins );
     }
 
     // Context

@@ -19,7 +19,7 @@ import java.util.List;
 import org.qi4j.api.service.Activatable;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class Activator
 {

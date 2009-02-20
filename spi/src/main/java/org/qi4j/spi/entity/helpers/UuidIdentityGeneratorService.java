@@ -14,12 +14,12 @@
 
 package org.qi4j.spi.entity.helpers;
 
-import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.entity.IdentityGenerator;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 
 /**
- * TODO
+ * JAVADOC
  */
 @Mixins( UuidIdentityGeneratorMixin.class )
 public interface UuidIdentityGeneratorService

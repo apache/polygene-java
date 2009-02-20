@@ -6,7 +6,7 @@ import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class FastObjectOutputStream
     extends ObjectOutputStream

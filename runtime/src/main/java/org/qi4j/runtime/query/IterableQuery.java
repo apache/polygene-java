@@ -25,7 +25,7 @@ import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class IterableQuery<T>
     extends AbstractQuery<T>
@@ -137,7 +137,7 @@ public class IterableQuery<T>
     }
 
     /**
-     * TODO not very effcient as caling count more times will rerun the query
+     * JAVADOC not very effcient as caling count more times will rerun the query
      *
      * @see Query#count()
      */

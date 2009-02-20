@@ -37,7 +37,7 @@ import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class EntityStateModel
     extends AbstractStateModel<EntityPropertiesModel>

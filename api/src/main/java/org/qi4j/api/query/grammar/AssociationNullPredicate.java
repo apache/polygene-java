@@ -19,7 +19,7 @@
 package org.qi4j.api.query.grammar;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC
  *
  * @author Alin Dreghiciu
  * @since 0.2.0, April 09, 2008

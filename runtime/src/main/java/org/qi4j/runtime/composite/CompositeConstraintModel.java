@@ -20,7 +20,7 @@ import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.constraint.Constraint;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class CompositeConstraintModel extends AbstractConstraintModel
     implements Serializable

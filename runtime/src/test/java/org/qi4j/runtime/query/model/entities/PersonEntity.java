@@ -22,7 +22,7 @@ import org.qi4j.runtime.query.model.Person;
 
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  *
  * @author Alin Dreghiciu
  * @since March 20, 2008

@@ -17,7 +17,7 @@ package org.qi4j.runtime.injection;
 import org.qi4j.runtime.injection.provider.InjectionProviderException;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface InjectionProvider
 {

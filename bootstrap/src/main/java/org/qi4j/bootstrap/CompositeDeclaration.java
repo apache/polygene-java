@@ -32,4 +32,6 @@ public interface CompositeDeclaration
     CompositeDeclaration withConcerns(Class<?>... concerns);
 
     CompositeDeclaration withSideEffects(Class<?>... sideEffects);
+
+    CompositeDeclaration withMixins( Class<?>... mixins );
 }

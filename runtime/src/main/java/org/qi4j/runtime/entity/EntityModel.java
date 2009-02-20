@@ -60,7 +60,7 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.UnknownEntityTypeException;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class EntityModel
     implements Binder, CompositeDescriptor, EntityDescriptor, Serializable
@@ -71,14 +71,15 @@ public final class EntityModel
                                         PropertyDeclarations propertyDecs,
                                         AssociationDeclarations associationDecs,
                                         Iterable<Class<?>> concerns,
-                                        Iterable<Class<?>> sideEffects)
+                                        Iterable<Class<?>> sideEffects,
+                                        List<Class<?>> mixins )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( type );
         boolean immutable = metaInfo.get( Immutable.class ) != null;
         EntityPropertiesModel entityPropertiesModel = new EntityPropertiesModel( constraintsModel, propertyDecs, immutable );
         EntityAssociationsModel associationsModel = new EntityAssociationsModel( constraintsModel, associationDecs );
         EntityStateModel stateModel = new EntityStateModel( entityPropertiesModel, associationsModel );
-        EntityMixinsModel mixinsModel = new EntityMixinsModel( type );
+        EntityMixinsModel mixinsModel = new EntityMixinsModel( type, mixins );
         ConcernsDeclaration concernsDeclaration = new ConcernsDeclaration( type, concerns );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( type, sideEffects );
         CompositeMethodsModel compositeMethodsModel = new CompositeMethodsModel( type,

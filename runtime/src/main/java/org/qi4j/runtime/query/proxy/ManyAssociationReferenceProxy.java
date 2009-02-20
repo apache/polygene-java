@@ -24,11 +24,11 @@ import java.lang.reflect.Type;
 import org.qi4j.api.entity.association.Qualifier;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.util.Classes;
-import org.qi4j.runtime.query.grammar.impl.ManyAssociationReferenceImpl;
 import org.qi4j.runtime.query.QueryException;
+import org.qi4j.runtime.query.grammar.impl.ManyAssociationReferenceImpl;
 
 /**
- * TODO: Add javadoc
+ * JAVADOC: Add javadoc
  *
  * @author edward.yakop@gmail.com
  */

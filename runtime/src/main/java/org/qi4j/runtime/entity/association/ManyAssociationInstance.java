@@ -16,7 +16,7 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
     implements ManyAssociation<T>

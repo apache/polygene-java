@@ -20,7 +20,12 @@ import org.qi4j.api.entity.association.Qualifier;
 import org.qi4j.api.util.Classes;
 
 /**
- * TODO
+ * A Qualified Identity is the combination of the Composite type name and the identity of a specific
+ * Entity instance. When stringified, these two are separated by the ":" character. Example:
+ * <pre>
+ * com.mycompany.mydomain.SomeEntity:123456
+ * </pre>
+ * where "com.mycompany.mydomain.SomeEntity" is the Composite type, and "123456" is the identity.
  */
 public class QualifiedIdentity
     implements Serializable

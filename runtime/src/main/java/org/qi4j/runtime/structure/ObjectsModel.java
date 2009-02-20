@@ -14,16 +14,16 @@
 
 package org.qi4j.runtime.structure;
 
-import java.util.List;
 import java.io.Serializable;
+import java.util.List;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.object.ObjectModel;
-import org.qi4j.api.common.Visibility;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class ObjectsModel
     implements Binder, Serializable

@@ -17,7 +17,7 @@
 package org.qi4j.spi.concern;
 
 /**
- * TODO
+ * JAVADOC
  *
  * @author edward.yakop@gmail.com
  * @since 0.5

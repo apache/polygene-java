@@ -18,7 +18,7 @@ import org.qi4j.api.composite.CompositeBuilder;
 import org.qi4j.runtime.composite.CompositeBuilderInstance;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class CompositesInstance
 {

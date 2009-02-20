@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 import org.qi4j.api.common.MetaInfo;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface AssociationDeclarations
 {

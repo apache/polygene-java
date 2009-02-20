@@ -35,6 +35,7 @@ public final class CompositeDeclarationImpl
     private Class<? extends Composite>[] compositeTypes;
     private List<Class<?>> concerns = new ArrayList<Class<?>>( );
     private List<Class<?>> sideEffects = new ArrayList<Class<?>>( );
+    private List<Class<?>> mixins = new ArrayList<Class<?>>( );
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
@@ -68,6 +69,12 @@ public final class CompositeDeclarationImpl
         return this;
     }
 
+    public CompositeDeclaration withMixins( Class<?>... mixins )
+    {
+        this.mixins.addAll(Arrays.asList(mixins));
+        return this;
+    }
+
     void addComposites( List<CompositeModel> composites, PropertyDeclarations propertyDeclarations )
     {
         for( Class<? extends Composite> compositeType : compositeTypes )
@@ -77,7 +84,7 @@ public final class CompositeDeclarationImpl
             CompositeModel compositeModel = CompositeModel.newModel( compositeType,
                                                                      visibility,
                                                                      compositeMetaInfo,
-                                                                     propertyDeclarations, concerns, sideEffects );
+                                                                     propertyDeclarations, concerns, sideEffects, mixins );
             composites.add( compositeModel );
         }
     }

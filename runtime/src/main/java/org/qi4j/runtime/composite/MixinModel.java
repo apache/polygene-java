@@ -38,7 +38,7 @@ import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.mixin.MixinDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class MixinModel
     implements Binder, MixinDescriptor, Serializable

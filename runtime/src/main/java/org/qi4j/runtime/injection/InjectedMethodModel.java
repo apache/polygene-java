@@ -28,7 +28,7 @@ import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.InjectedMethodDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class InjectedMethodModel
     implements InjectedMethodDescriptor, Serializable

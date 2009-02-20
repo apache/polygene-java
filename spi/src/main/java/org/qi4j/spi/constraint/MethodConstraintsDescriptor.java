@@ -15,7 +15,7 @@
 package org.qi4j.spi.constraint;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface MethodConstraintsDescriptor
 {

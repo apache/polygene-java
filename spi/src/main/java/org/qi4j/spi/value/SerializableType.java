@@ -18,7 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class SerializableType
     implements ValueType

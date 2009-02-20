@@ -1,5 +1,6 @@
 package org.qi4j.runtime.injection.provider;
 
+import java.io.Serializable;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.injection.scope.State;
@@ -14,10 +15,9 @@ import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
-import java.io.Serializable;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class StateInjectionProviderFactory
     implements InjectionProviderFactory, Serializable

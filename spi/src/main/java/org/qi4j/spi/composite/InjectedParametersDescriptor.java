@@ -15,7 +15,7 @@
 package org.qi4j.spi.composite;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface InjectedParametersDescriptor
 {

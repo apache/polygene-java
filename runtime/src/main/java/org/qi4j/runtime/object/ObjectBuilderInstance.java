@@ -21,7 +21,7 @@ import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class ObjectBuilderInstance<T>
     implements ObjectBuilder<T>

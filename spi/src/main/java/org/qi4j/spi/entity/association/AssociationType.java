@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class AssociationType
     implements Serializable

@@ -34,7 +34,7 @@ import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.value.ValueModel;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class ModelVisitor
 {

@@ -30,7 +30,7 @@ import org.qi4j.runtime.query.QueryException;
 import org.qi4j.runtime.query.grammar.impl.AssociationReferenceImpl;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  */
 public final class AssociationReferenceProxy
     implements InvocationHandler

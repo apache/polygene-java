@@ -21,7 +21,7 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.runtime.query.model.Male;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  *
  * @author Alin Dreghiciu
  * @since April 09, 2008

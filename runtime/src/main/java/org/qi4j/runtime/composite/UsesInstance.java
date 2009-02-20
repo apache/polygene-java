@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class UsesInstance
 {

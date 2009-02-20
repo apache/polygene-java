@@ -6,7 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class FastObjectInputStream
     extends ObjectInputStream

@@ -29,7 +29,7 @@ import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.runtime.query.QueryException;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  */
 public final class MixinTypeProxy
     implements InvocationHandler

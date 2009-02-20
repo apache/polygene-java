@@ -18,7 +18,7 @@ import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.runtime.value.ValueBuilderInstance;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class ValuesInstance
 {

@@ -15,6 +15,7 @@
 package org.qi4j.runtime.value;
 
 import java.io.Serializable;
+import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.constraint.ConstraintViolationException;
@@ -43,14 +44,15 @@ public final class ValueModel extends AbstractCompositeModel
                                        final Visibility visibility,
                                        final MetaInfo metaInfo,
                                        final PropertyDeclarations propertyDeclarations,
-                                       final Iterable<Class<?>> concerns,
-                                       final Iterable<Class<?>> sideEffects)
+                                       final List<Class<?>> concerns,
+                                       final List<Class<?>> sideEffects,
+                                       final List<Class<?>> mixins )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
         ValuePropertiesModel propertiesModel = new ValuePropertiesModel( constraintsModel, propertyDeclarations);
 
         ValueStateModel stateModel = new ValueStateModel( propertiesModel);
-        ValueMixinsModel mixinsModel = new ValueMixinsModel( compositeType );
+        ValueMixinsModel mixinsModel = new ValueMixinsModel( compositeType, mixins );
         ConcernsDeclaration concernsModel = new ConcernsDeclaration( compositeType, concerns );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
         // TODO: Disable constraints, concerns and sideeffects??

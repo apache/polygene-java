@@ -18,7 +18,7 @@ import java.lang.reflect.Type;
 import org.qi4j.api.entity.association.Association;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class EntityBuilderAssociation<T>
     implements Association<T>

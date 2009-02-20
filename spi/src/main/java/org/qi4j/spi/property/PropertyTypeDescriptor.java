@@ -15,7 +15,7 @@
 package org.qi4j.spi.property;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface PropertyTypeDescriptor
     extends PropertyDescriptor

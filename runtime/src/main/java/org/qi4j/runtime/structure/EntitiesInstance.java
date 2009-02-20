@@ -16,18 +16,18 @@ package org.qi4j.runtime.structure;
 
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.IdentityGenerator;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
-import org.qi4j.runtime.unitofwork.EntityBuilderInstance;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
+import org.qi4j.runtime.unitofwork.EntityBuilderInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.api.service.ServiceReference;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class EntitiesInstance
 {

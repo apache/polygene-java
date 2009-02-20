@@ -18,7 +18,7 @@ import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.provider.InvalidInjectionException;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface InjectionProviderFactory
 {

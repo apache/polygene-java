@@ -15,7 +15,7 @@
 package org.qi4j.spi.concern;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface MethodConcernDescriptor
 {

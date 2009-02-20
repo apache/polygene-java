@@ -23,7 +23,7 @@ import org.qi4j.api.value.ValueComposite;
 import org.qi4j.spi.property.PropertyType;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class CompoundType
     implements ValueType

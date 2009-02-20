@@ -18,7 +18,7 @@
 package org.qi4j.test.mock;
 
 /**
- * TODO Add JavaDoc.
+ * JAVADOC Add JavaDoc.
  *
  * @author Alin Dreghiciu
  */

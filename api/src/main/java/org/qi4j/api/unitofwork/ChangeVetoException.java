@@ -15,7 +15,7 @@
 package org.qi4j.api.unitofwork;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class ChangeVetoException extends IllegalArgumentException
 {

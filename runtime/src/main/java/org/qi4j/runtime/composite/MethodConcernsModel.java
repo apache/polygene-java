@@ -30,7 +30,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.concern.MethodConcernsDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class MethodConcernsModel
     implements Binder, MethodConcernsDescriptor, Serializable

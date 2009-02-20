@@ -17,7 +17,7 @@ package org.qi4j.spi.entity;
 import org.qi4j.spi.composite.CompositeDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface EntityDescriptor
     extends CompositeDescriptor

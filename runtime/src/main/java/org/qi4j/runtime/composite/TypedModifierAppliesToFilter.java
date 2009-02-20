@@ -14,12 +14,12 @@
 
 package org.qi4j.runtime.composite;
 
-import java.lang.reflect.Method;
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import org.qi4j.api.common.AppliesToFilter;
 
 /**
- * TODO
+ * JAVADOC
  */
 final class TypedModifierAppliesToFilter
     implements AppliesToFilter, Serializable

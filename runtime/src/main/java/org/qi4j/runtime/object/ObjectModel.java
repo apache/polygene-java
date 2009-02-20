@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.object;
 
+import java.io.Serializable;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -30,10 +31,9 @@ import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.object.ObjectDescriptor;
-import java.io.Serializable;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class ObjectModel
     implements Binder, ObjectDescriptor, Serializable

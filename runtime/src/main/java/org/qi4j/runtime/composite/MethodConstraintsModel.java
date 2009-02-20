@@ -32,7 +32,7 @@ import org.qi4j.runtime.util.Annotations;
 import org.qi4j.spi.constraint.MethodConstraintsDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class MethodConstraintsModel
     implements MethodConstraintsDescriptor, Serializable

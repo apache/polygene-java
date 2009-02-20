@@ -15,7 +15,7 @@
 package org.qi4j.runtime.property;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class InvalidPropertyException
     extends RuntimeException

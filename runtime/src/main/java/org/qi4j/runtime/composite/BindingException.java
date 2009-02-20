@@ -17,7 +17,7 @@ package org.qi4j.runtime.composite;
 import org.qi4j.runtime.injection.provider.InvalidInjectionException;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class BindingException
     extends Exception

@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -49,27 +50,28 @@ import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class ServiceModel
     extends AbstractCompositeModel
     implements ServiceDescriptor, Serializable
 {
     public static ServiceModel newModel( final Class<? extends Composite> compositeType,
-                                           final Visibility visibility,
-                                           final MetaInfo metaInfo,
-                                           final Iterable<Class<?>> concerns,
-                                           final Iterable<Class<?>> sideEffects,
-                                           final String moduleName,
-                                           final String identity,
-                                           final boolean instantiateOnStartup)
+                                         final Visibility visibility,
+                                         final MetaInfo metaInfo,
+                                         final List<Class<?>> concerns,
+                                         final List<Class<?>> sideEffects,
+                                         final List<Class<?>> mixins,
+                                         final String moduleName,
+                                         final String identity,
+                                         final boolean instantiateOnStartup )
     {
         PropertyDeclarations propertyDeclarations = new MetaInfoDeclaration();
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
         boolean immutable = metaInfo.get( Immutable.class ) != null;
         PropertiesModel propertiesModel = new PropertiesModel( constraintsModel, propertyDeclarations, immutable );
         StateModel stateModel = new StateModel( propertiesModel );
-        MixinsModel mixinsModel = new MixinsModel( compositeType );
+        MixinsModel mixinsModel = new MixinsModel( compositeType, mixins );
         ConcernsDeclaration concernsModel = new ConcernsDeclaration( compositeType, concerns );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
         CompositeMethodsModel compositeMethodsModel =

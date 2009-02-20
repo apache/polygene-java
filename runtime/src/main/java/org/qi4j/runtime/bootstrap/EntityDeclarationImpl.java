@@ -37,6 +37,7 @@ public final class EntityDeclarationImpl
     private Visibility visibility = Visibility.module;
     private List<Class<?>> concerns = new ArrayList<Class<?>>( );
     private List<Class<?>> sideEffects = new ArrayList<Class<?>>( );
+    private List<Class<?>> mixins = new ArrayList<Class<?>>( );
 
     public EntityDeclarationImpl( Class<? extends EntityComposite>... compositeTypes )
     {
@@ -67,6 +68,12 @@ public final class EntityDeclarationImpl
         return this;
     }
 
+    public EntityDeclaration withMixins( Class<?>... mixins )
+    {
+        this.mixins.addAll( Arrays.asList(mixins ));
+        return this;
+    }
+
     void addEntities( List<EntityModel> entities, PropertyDeclarations propertyDecs, AssociationDeclarations associationDecs )
     {
         for( Class<? extends EntityComposite> compositeType : compositeTypes )
@@ -77,7 +84,8 @@ public final class EntityDeclarationImpl
                                                                propertyDecs,
                                                                associationDecs,
                                                                concerns,
-                                                               sideEffects);
+                                                               sideEffects,
+                                                               mixins);
             entities.add( compositeModel );
         }
     }

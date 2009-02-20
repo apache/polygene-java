@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import org.qi4j.api.entity.association.ListAssociation;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class EntityBuilderListAssociation<T> extends ArrayList<T>
     implements ListAssociation<T>

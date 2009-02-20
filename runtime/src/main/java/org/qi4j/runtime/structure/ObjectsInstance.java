@@ -18,7 +18,7 @@ import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.runtime.object.ObjectBuilderInstance;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class ObjectsInstance
 {

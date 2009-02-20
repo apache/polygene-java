@@ -1,9 +1,9 @@
 package org.qi4j.runtime.injection.provider;
 
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.io.Serializable;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
@@ -11,7 +11,7 @@ import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class ThisInjectionProviderFactory
     implements InjectionProviderFactory, Serializable
@@ -31,7 +31,7 @@ public final class ThisInjectionProviderFactory
 
             return new ThisInjectionProvider( thisType );
 
-/* TODO Needs to be fixed to support internal mixins
+/* JAVADOC Needs to be fixed to support internal mixins
             // Check if the composite implements the desired type
             if( dependencyModel.getRawType().isAssignableFrom( fragmentKey.getCompositeType() ) )
             {

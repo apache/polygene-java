@@ -23,7 +23,7 @@ import java.util.Set;
 import org.qi4j.api.util.Classes;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class CollectionType
     implements ValueType

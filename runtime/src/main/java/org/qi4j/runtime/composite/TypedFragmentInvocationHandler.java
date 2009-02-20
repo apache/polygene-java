@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
 import org.qi4j.spi.composite.InvalidCompositeException;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class TypedFragmentInvocationHandler
     extends FragmentInvocationHandler

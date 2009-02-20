@@ -38,7 +38,7 @@ import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.util.Annotations;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class ConstructorsModel
     implements Binder, Serializable

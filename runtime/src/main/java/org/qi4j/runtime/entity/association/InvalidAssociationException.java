@@ -15,7 +15,7 @@
 package org.qi4j.runtime.entity.association;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class InvalidAssociationException
     extends RuntimeException

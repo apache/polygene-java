@@ -14,12 +14,12 @@
 
 package org.qi4j.runtime.unitofwork;
 
-import org.qi4j.spi.entity.EntityState;
 import org.qi4j.api.usecase.StateUsage;
 import org.qi4j.runtime.entity.EntityStateAdapter;
+import org.qi4j.spi.entity.EntityState;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class RecordingEntityState
     extends EntityStateAdapter

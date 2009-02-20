@@ -19,7 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class MethodConcernsInstance
     implements InvocationHandler

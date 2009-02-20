@@ -17,7 +17,7 @@ package org.qi4j.spi.composite;
 import java.lang.reflect.Constructor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface ConstructorDescriptor
 {

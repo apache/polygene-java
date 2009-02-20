@@ -31,7 +31,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.sideeffect.MethodSideEffectsDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class MethodSideEffectsModel
     implements Binder, MethodSideEffectsDescriptor, Serializable

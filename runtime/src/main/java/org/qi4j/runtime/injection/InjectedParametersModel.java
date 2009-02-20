@@ -14,10 +14,10 @@
 
 package org.qi4j.runtime.injection;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.io.Serializable;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.Binder;
@@ -27,7 +27,7 @@ import static org.qi4j.runtime.structure.Specification.CollectionFilter.filterBy
 import org.qi4j.spi.composite.InjectedParametersDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class InjectedParametersModel
     implements Binder, InjectedParametersDescriptor, Serializable

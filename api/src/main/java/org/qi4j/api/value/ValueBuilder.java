@@ -17,7 +17,7 @@ package org.qi4j.api.value;
 import org.qi4j.api.common.ConstructionException;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface ValueBuilder<T>
     extends Iterable<T>

@@ -14,8 +14,8 @@
 
 package org.qi4j.runtime.composite;
 
-import java.lang.reflect.Field;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import org.qi4j.runtime.structure.ApplicationModel;
 import org.qi4j.runtime.structure.LayerModel;
 import org.qi4j.runtime.structure.ModuleModel;
@@ -23,7 +23,7 @@ import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class Resolution
     implements Serializable

@@ -18,7 +18,7 @@ import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface Binder
 {

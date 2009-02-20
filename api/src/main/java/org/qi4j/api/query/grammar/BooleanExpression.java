@@ -20,7 +20,7 @@
 package org.qi4j.api.query.grammar;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  */
 public interface BooleanExpression
 {

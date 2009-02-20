@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 import org.qi4j.spi.mixin.MixinDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface CompositeMethodDescriptor
 {

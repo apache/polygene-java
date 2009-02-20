@@ -27,7 +27,7 @@ import org.qi4j.runtime.query.QueryException;
 import org.qi4j.runtime.query.grammar.impl.PropertyReferenceImpl;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  */
 final class PropertyReferenceProxy
     implements InvocationHandler

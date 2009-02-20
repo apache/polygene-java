@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class SideEffectInvocationHandlerResult
     implements InvocationHandler, Serializable

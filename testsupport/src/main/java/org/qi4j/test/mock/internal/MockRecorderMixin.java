@@ -23,7 +23,7 @@ import org.qi4j.test.mock.MockRecorder;
 import org.qi4j.test.mock.MockResolverType;
 
 /**
- * TODO Add JavaDoc.
+ * JAVADOC Add JavaDoc.
  *
  * @author Alin Dreghiciu
  */

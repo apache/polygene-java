@@ -15,7 +15,7 @@
 package org.qi4j.spi.value;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface ValueState
 {

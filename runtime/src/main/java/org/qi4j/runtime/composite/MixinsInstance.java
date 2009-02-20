@@ -17,7 +17,7 @@ package org.qi4j.runtime.composite;
 import java.lang.reflect.Method;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface MixinsInstance
 {

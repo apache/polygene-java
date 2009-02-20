@@ -18,14 +18,13 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.qi4j.runtime.service.ServiceModel;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.spi.service.Activator;
-import org.qi4j.api.common.Visibility;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class ServicesInstance
     implements Activatable

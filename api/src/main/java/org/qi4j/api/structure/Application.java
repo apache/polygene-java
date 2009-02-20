@@ -17,7 +17,7 @@ package org.qi4j.api.structure;
 import org.qi4j.api.service.Activatable;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface Application
     extends Activatable

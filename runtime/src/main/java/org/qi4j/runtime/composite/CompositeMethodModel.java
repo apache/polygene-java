@@ -37,7 +37,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class CompositeMethodModel
     implements Binder, CompositeMethodDescriptor, Serializable

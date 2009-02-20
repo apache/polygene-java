@@ -30,7 +30,7 @@ import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.service.Activator;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class LayerInstance
     implements Layer, Activatable

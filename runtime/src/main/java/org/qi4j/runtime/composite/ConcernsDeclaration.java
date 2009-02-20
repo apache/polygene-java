@@ -28,7 +28,7 @@ import static org.qi4j.api.util.Classes.genericInterfacesOf;
 import org.qi4j.api.util.MethodKeyMap;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class ConcernsDeclaration
     implements Serializable

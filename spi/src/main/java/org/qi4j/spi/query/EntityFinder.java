@@ -17,13 +17,13 @@
  */
 package org.qi4j.spi.query;
 
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.api.common.Optional;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  *
  * @since March 24, 2008
  */

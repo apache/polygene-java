@@ -19,7 +19,7 @@ import java.util.LinkedHashSet;
 import org.qi4j.api.entity.association.SetAssociation;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class EntityBuilderSetAssociation<T> extends LinkedHashSet<T>
     implements SetAssociation<T>

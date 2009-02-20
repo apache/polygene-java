@@ -30,7 +30,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public abstract class AbstractCompositeModel
     implements Binder, CompositeDescriptor, Serializable

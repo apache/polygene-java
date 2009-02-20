@@ -1,9 +1,9 @@
 package org.qi4j.runtime.injection.provider;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
-import java.io.Serializable;
 import org.qi4j.runtime.composite.CompositeMethodModel;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -12,7 +12,7 @@ import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class InvocationInjectionProviderFactory
     implements InjectionProviderFactory, Serializable

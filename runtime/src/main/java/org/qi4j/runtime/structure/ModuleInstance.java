@@ -49,7 +49,7 @@ import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class ModuleInstance
     implements Module, Activatable

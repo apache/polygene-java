@@ -18,7 +18,7 @@
 package org.qi4j.spi.query;
 
 /**
- * TODO Add JavaDoc.
+ * JAVADOC Add JavaDoc.
  *
  * @author Alin Dreghiciu
  * @since 0.1.0, April 02, 2008

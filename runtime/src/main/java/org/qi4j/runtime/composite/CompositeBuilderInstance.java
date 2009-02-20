@@ -27,7 +27,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class CompositeBuilderInstance<T>
     implements CompositeBuilder<T>

@@ -20,7 +20,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 /**
- * TODO Javadoc
+ * JAVADOC Javadoc
  *
  * @author edward.yakop@gmail.com
  * @since 0.5

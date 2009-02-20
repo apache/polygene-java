@@ -25,7 +25,7 @@ import org.qi4j.api.common.AppliesToFilter;
 import org.qi4j.api.common.ConstructionException;
 
 /**
- * TODO
+ * JAVADOC
  */
 public abstract class AbstractModifierDeclaration
     implements Serializable

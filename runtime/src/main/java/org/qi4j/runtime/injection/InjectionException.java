@@ -15,7 +15,7 @@
 package org.qi4j.runtime.injection;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class InjectionException extends RuntimeException
 {

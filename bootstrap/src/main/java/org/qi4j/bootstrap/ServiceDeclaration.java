@@ -33,6 +33,8 @@ public interface ServiceDeclaration
 
     ServiceDeclaration withSideEffects(Class<?>... sideEffects);
 
+    ServiceDeclaration withMixins(Class<?>... mixins);
+
     ServiceDeclaration identifiedBy( String identity );
 
     ServiceDeclaration instantiateOnStartup();

@@ -14,12 +14,9 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.io.Serializable;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.IOException;
 import static org.qi4j.api.util.Classes.interfacesOf;
 import static org.qi4j.api.util.Classes.toClassArray;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
@@ -30,7 +27,7 @@ import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
- * TODO
+ * JAVADOC
  */
 public abstract class AbstractModifierModel
     implements Binder, Serializable

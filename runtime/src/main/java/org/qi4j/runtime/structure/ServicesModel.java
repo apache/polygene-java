@@ -28,7 +28,7 @@ import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.service.ServiceReferenceInstance;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class ServicesModel
     implements Serializable, Binder

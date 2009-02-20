@@ -17,7 +17,7 @@ package org.qi4j.spi.constraint;
 import java.lang.annotation.Annotation;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface ConstraintDescriptor
 {

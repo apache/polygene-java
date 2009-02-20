@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 import org.qi4j.api.property.PropertyInfo;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface PropertyDescriptor
     extends PropertyInfo

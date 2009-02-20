@@ -1,7 +1,7 @@
 package org.qi4j.runtime.composite;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface CompositeMethodInstancePool
 {

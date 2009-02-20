@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import org.qi4j.api.concern.ConcernOf;
 
 /**
- * TODO Add JavaDoc.
+ * JAVADOC Add JavaDoc.
  *
  * @author Alin Dreghiciu
  */

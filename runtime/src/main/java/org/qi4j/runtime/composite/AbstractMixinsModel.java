@@ -31,6 +31,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.api.util.UsageGraph;
+import org.qi4j.bootstrap.Assembler;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.InvalidCompositeException;
 
@@ -51,17 +52,23 @@ public abstract class AbstractMixinsModel
     private final Map<Class, Integer> mixinIndex = new HashMap<Class, Integer>();
     private final Set<Class> mixinTypes = new HashSet<Class>();
 
-    public AbstractMixinsModel( Class<? extends Composite> compositeType )
+    public AbstractMixinsModel( Class<? extends Composite> compositeType, List<Class<?>> assemblyMixins )
     {
         this.compositeType = compositeType;
 
+        // Add assembly mixins
+        for( Class<?> assemblyMixin : assemblyMixins )
+        {
+            this.mixins.add(new MixinDeclaration(assemblyMixin, Assembler.class));
+        }
+
         // Find mixin declarations
-        mixins.add( new MixinDeclaration( CompositeMixin.class, Composite.class ) );
+        this.mixins.add( new MixinDeclaration( CompositeMixin.class, Composite.class ) );
         Set<Class> interfaces = Classes.interfacesOf( compositeType );
 
         for( Class anInterface : interfaces )
         {
-            addMixinDeclarations( anInterface, mixins );
+            addMixinDeclarations( anInterface, this.mixins );
             mixinTypes.add( anInterface );
         }
     }

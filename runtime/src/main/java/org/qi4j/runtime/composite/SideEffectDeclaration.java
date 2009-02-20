@@ -14,11 +14,10 @@
 
 package org.qi4j.runtime.composite;
 
-import java.lang.reflect.Type;
 import java.io.Serializable;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class SideEffectDeclaration extends AbstractModifierDeclaration
     implements Serializable

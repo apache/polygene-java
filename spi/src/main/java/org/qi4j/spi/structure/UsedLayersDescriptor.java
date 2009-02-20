@@ -15,7 +15,7 @@
 package org.qi4j.spi.structure;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface UsedLayersDescriptor
 {

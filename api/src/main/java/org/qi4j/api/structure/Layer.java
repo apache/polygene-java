@@ -15,7 +15,7 @@
 package org.qi4j.api.structure;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface Layer
 {

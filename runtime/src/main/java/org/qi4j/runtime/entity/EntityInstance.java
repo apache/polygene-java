@@ -45,7 +45,7 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class EntityInstance
     implements CompositeInstance, MixinsInstance

@@ -14,11 +14,11 @@
 
 package org.qi4j.runtime.service;
 
-import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.service.ServiceImporter;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class ImportedServiceInstance<T>
 {

@@ -50,7 +50,7 @@ import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class AssociationModel
     implements AssociationDescriptor, Serializable

@@ -14,11 +14,11 @@
 
 package org.qi4j.runtime.structure;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.Serializable;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
@@ -27,7 +27,7 @@ import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class ApplicationModel
     implements ApplicationDescriptor, Serializable

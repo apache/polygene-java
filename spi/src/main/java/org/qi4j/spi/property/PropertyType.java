@@ -20,7 +20,7 @@ import java.security.MessageDigest;
 import org.qi4j.spi.value.ValueType;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class PropertyType
     implements Serializable, Comparable<PropertyType>

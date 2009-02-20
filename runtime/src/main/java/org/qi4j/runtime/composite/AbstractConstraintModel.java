@@ -14,13 +14,13 @@
 
 package org.qi4j.runtime.composite;
 
-import java.lang.annotation.Annotation;
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.constraint.ConstraintDescriptor;
 
 /**
- * TODO
+ * JAVADOC
  */
 public abstract class AbstractConstraintModel
     implements ConstraintDescriptor, Serializable

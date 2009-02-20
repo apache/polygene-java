@@ -29,7 +29,7 @@ import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.runtime.util.Annotations;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class SideEffectsDeclaration
     implements Serializable

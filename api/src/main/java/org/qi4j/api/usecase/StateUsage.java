@@ -22,7 +22,7 @@ import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class StateUsage
     implements Serializable

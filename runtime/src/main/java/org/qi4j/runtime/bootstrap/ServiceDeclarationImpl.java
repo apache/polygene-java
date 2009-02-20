@@ -34,6 +34,7 @@ public final class ServiceDeclarationImpl
     private Iterable<Class<? extends ServiceComposite>> serviceTypes;
     private List<Class<?>> concerns = new ArrayList<Class<?>>( );
     private List<Class<?>> sideEffects = new ArrayList<Class<?>>( );
+    private List<Class<?>> mixins = new ArrayList<Class<?>>( );
     private ModuleAssemblyImpl moduleAssembly;
     private String identity;
     private boolean instantiateOnStartup = false;
@@ -82,6 +83,12 @@ public final class ServiceDeclarationImpl
         return this;
     }
 
+    public ServiceDeclaration withMixins( Class<?>... mixins )
+    {
+        this.mixins.addAll( Arrays.asList(mixins ));
+        return this;
+    }
+
     void addServices( List<ServiceModel> serviceModels )
     {
         for( Class<? extends Composite> serviceType : serviceTypes )
@@ -97,6 +104,7 @@ public final class ServiceDeclarationImpl
                                                                metaInfo,
                                                                concerns,
                                                                sideEffects,
+                                                               mixins,
                                                                moduleAssembly.name(),
                                                                id,
                                                                instantiateOnStartup);

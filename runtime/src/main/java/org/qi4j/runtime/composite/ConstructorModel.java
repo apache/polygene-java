@@ -31,7 +31,7 @@ import org.qi4j.spi.composite.ConstructorDescriptor;
 import org.qi4j.spi.composite.InvalidCompositeException;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class ConstructorModel
     implements Binder, ConstructorDescriptor, Serializable

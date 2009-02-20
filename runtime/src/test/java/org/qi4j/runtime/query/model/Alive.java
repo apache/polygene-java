@@ -18,7 +18,7 @@
 package org.qi4j.runtime.query.model;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  *
  * @author Alin Dreghiciu
  * @since March 31, 2008

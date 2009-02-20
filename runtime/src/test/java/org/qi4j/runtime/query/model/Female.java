@@ -17,11 +17,11 @@
  */
 package org.qi4j.runtime.query.model;
 
-import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.entity.association.Association;
 
 /**
- * TODO Add JavaDoc
+ * JAVADOC Add JavaDoc
  *
  * @author Alin Dreghiciu
  * @since April 09, 2008

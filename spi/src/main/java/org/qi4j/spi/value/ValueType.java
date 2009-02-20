@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface ValueType
     extends Serializable

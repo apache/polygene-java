@@ -18,7 +18,7 @@ import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class ServiceInstance
 {

@@ -15,7 +15,7 @@
 package org.qi4j.spi.sideeffect;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface MethodSideEffectDescriptor
 {

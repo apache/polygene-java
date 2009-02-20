@@ -32,4 +32,6 @@ public interface EntityDeclaration
     EntityDeclaration withConcerns(Class<?>... concerns);
 
     EntityDeclaration withSideEffects(Class<?>... sideEffects);
+
+    EntityDeclaration withMixins( Class<?>... mixins );
 }

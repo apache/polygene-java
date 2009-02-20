@@ -25,7 +25,7 @@ import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class EntityPropertyModel extends PersistentPropertyModel
 {

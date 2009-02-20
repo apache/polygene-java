@@ -32,4 +32,6 @@ public interface ValueDeclaration
     ValueDeclaration withConcerns(Class<?>... concerns);
 
     ValueDeclaration withSideEffects(Class<?>... sideEffects);
+
+    ValueDeclaration withMixins(Class<?>... mixins);
 }

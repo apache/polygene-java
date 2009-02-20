@@ -22,7 +22,7 @@ import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.value.ValueModel;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class ValuesModel
     implements Binder

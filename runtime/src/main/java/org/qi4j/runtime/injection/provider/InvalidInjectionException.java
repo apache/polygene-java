@@ -1,7 +1,7 @@
 package org.qi4j.runtime.injection.provider;
 
 /**
- * TODO
+ * JAVADOC
  */
 public class InvalidInjectionException extends Exception
 {

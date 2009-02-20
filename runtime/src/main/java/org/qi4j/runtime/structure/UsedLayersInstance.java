@@ -21,7 +21,7 @@ import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.service.ServiceReference;
 
 /**
- * TODO
+ * JAVADOC
  */
 public final class UsedLayersInstance
 {

@@ -20,7 +20,7 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.structure.Module;
 
 /**
- * TODO
+ * JAVADOC
  */
 public interface CompositeInstance extends InvocationHandler
 {
