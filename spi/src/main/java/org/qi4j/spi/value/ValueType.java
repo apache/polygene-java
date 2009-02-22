@@ -26,5 +26,6 @@ public interface ValueType
 {
     public String type();
 
-    void calculateVersion( MessageDigest md) throws UnsupportedEncodingException;
+    void calculateVersion( MessageDigest md)
+        throws UnsupportedEncodingException;
 }

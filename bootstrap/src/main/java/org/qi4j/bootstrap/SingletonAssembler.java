@@ -76,14 +76,14 @@ public abstract class SingletonAssembler
         {
             if( fastBootSupport )
             {
-                try
-                {
-                    applicationInstance = is.loadApplication();
-                }
-                catch( HibernatingApplicationInvalidException e )
-                {
-                    e.printStackTrace();
-                }
+//                try
+//                {
+//                    applicationInstance = is.loadApplication();
+//                }
+//                catch( HibernatingApplicationInvalidException e )
+//                {
+//                    e.printStackTrace();
+//                }
             }
             if( applicationInstance == null )
             {

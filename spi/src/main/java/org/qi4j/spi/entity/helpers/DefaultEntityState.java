@@ -70,8 +70,8 @@ public class DefaultEntityState
     private EntityStatus status;
     private boolean modified;
 
-    private final long version;
-    private final long lastModified;
+    protected long version;
+    protected long lastModified;
     private final QualifiedIdentity identity;
     private final EntityType entityType;
 
