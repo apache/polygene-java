@@ -62,8 +62,7 @@ import org.qi4j.spi.serialization.SerializableState;
 /**
  * JDBM implementation of SerializationStore
  */
-public class JdbmEntityStoreMixin
-    extends EntityTypeRegistryMixin
+public class JdbmEntityStoreMixin extends EntityTypeRegistryMixin
     implements Activatable
 {
     private @This ReadWriteLock lock;
