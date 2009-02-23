@@ -31,7 +31,7 @@ import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
-import org.qi4j.api.unitofwork.EntityCompositeNotFoundException;
+import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.StateChangeListener;
 import org.qi4j.api.unitofwork.StateChangeVoter;
@@ -144,7 +144,7 @@ public final class UnitOfWorkInstance
         ModuleInstance realModuleInstance = moduleInstance.findModuleForEntity( mixinType );
         if( realModuleInstance == null )
         {
-            throw new EntityCompositeNotFoundException( mixinType.getName() );
+            throw new EntityTypeNotFoundException( mixinType.getName() );
         }
 
         EntityBuilder<T> builder = realModuleInstance.entities().newEntityBuilder( mixinType, this, unitOfWorkStore );
@@ -167,14 +167,14 @@ public final class UnitOfWorkInstance
     }
 
     public <T> T find( String identity, Class<T> mixinType )
-        throws EntityCompositeNotFoundException, NoSuchEntityException
+        throws EntityTypeNotFoundException, NoSuchEntityException
     {
         checkOpen();
 
         final ModuleInstance realModule = moduleInstance.findModuleForEntity( mixinType );
         if( realModule == null )
         {
-            throw new EntityCompositeNotFoundException( mixinType.getName() );
+            throw new EntityTypeNotFoundException( mixinType.getName() );
         }
         EntitiesInstance entitiesInstance = realModule.entities();
         EntitiesModel entitiesModel = entitiesInstance.model();
@@ -219,14 +219,14 @@ public final class UnitOfWorkInstance
     }
 
     public <T> T getReference( String identity, Class<T> mixinType )
-        throws EntityCompositeNotFoundException, NoSuchEntityException
+        throws EntityTypeNotFoundException, NoSuchEntityException
     {
         checkOpen();
 
         ModuleInstance entityModuleInstance = this.moduleInstance.findModuleForEntity( mixinType );
         if( entityModuleInstance == null )
         {
-            throw new EntityCompositeNotFoundException( mixinType.getName());
+            throw new EntityTypeNotFoundException( mixinType.getName());
         }
 
         EntityModel entityModel = entityModuleInstance.entities().model().getEntityModelFor( mixinType );
@@ -254,7 +254,7 @@ public final class UnitOfWorkInstance
     }
 
     public <T> T dereference( T entity )
-        throws EntityCompositeNotFoundException
+        throws EntityTypeNotFoundException
     {
         EntityComposite entityComposite = (EntityComposite) entity;
         EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );

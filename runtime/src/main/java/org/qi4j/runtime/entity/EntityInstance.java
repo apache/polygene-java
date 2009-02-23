@@ -28,7 +28,7 @@ import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.unitofwork.EntityCompositeNotFoundException;
+import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.usecase.StateUsage;
 import org.qi4j.runtime.composite.CompositeMethodInstance;
@@ -217,7 +217,7 @@ public final class EntityInstance
     {
         if( status() == EntityStatus.REMOVED )
         {
-            throw new EntityCompositeNotFoundException( entity.type().getName() );
+            throw new EntityTypeNotFoundException( entity.type().getName() );
         }
         if( entityState() == null )
         {

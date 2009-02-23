@@ -19,13 +19,13 @@ package org.qi4j.api.unitofwork;
  * Qi4j exception to be thrown in case that an entity composite
  * was not found during a lookup call.
  */
-public class EntityCompositeNotFoundException extends UnitOfWorkException
+public class EntityTypeNotFoundException extends UnitOfWorkException
 {
     private final String compositeType;
 
-    public EntityCompositeNotFoundException( String compositeType )
+    public EntityTypeNotFoundException( String entityType )
     {
-        this.compositeType = compositeType;
+        this.compositeType = entityType;
     }
 
     public String compositeType()
@@ -35,6 +35,6 @@ public class EntityCompositeNotFoundException extends UnitOfWorkException
 
     @Override public String getMessage()
     {
-        return "Could not find a Composite of type " + compositeType + ")";
+        return "Could not find an EntityComposite of type " + compositeType + ")";
     }
 }

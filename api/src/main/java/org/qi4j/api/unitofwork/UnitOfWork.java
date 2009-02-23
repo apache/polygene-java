@@ -129,11 +129,11 @@ public interface UnitOfWork
      * @param identity of the entity
      * @param type of the entity
      * @return the entity
-     * @throws EntityCompositeNotFoundException if no entity type could be found
+     * @throws EntityTypeNotFoundException if no entity type could be found
      *
      */
     <T> T find( String identity, Class<T> type )
-        throws EntityCompositeNotFoundException;
+        throws EntityTypeNotFoundException;
 
     /**
      * Get a reference to an Entity of the given mixin type with the given identity.
@@ -142,11 +142,11 @@ public interface UnitOfWork
      * @param identity of the entity
      * @param type of the entity
      * @return the entity
-     * @throws EntityCompositeNotFoundException if no entity type could be found
+     * @throws EntityTypeNotFoundException if no entity type could be found
      *
      */
     <T> T getReference( String identity, Class<T> type )
-        throws EntityCompositeNotFoundException;
+        throws EntityTypeNotFoundException;
 
     /**
      * If you have a reference to an Entity from another
@@ -155,11 +155,11 @@ public interface UnitOfWork
      *
      * @param entity the Entity to be dereferenced
      * @return an Entity from this UnitOfWork
-     * @throws EntityCompositeNotFoundException if no entity type could be found
+     * @throws EntityTypeNotFoundException if no entity type could be found
      *
      */
     <T> T dereference( T entity )
-        throws EntityCompositeNotFoundException;
+        throws EntityTypeNotFoundException;
 
     /**
      * Refresh the state of a given Entity. Call this if you

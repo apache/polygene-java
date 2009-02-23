@@ -5,7 +5,7 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.Qualifier;
-import org.qi4j.api.unitofwork.EntityCompositeNotFoundException;
+import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -92,7 +92,7 @@ public abstract class AbstractAssociationInstance<T>
         }
         catch( ClassNotFoundException e )
         {
-            throw new EntityCompositeNotFoundException( entityId.type() );
+            throw new EntityTypeNotFoundException( entityId.type() );
         }
     }
 
