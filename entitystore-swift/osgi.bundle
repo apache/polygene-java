@@ -19,7 +19,6 @@ Import-Package: org.qi4j.api.composite, \
                 org.qi4j.entitystore.memory, \
                 org.qi4j.spi.entity.helpers, \
                 org.qi4j.library.locking, \
-                org.qi4j.library.serialization, \
                 org.qi4j.spi, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.entity, \

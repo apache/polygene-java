@@ -45,11 +45,6 @@
       <version>0.6-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.qi4j.library</groupId>
-      <artifactId>qi4j-lib-serialization</artifactId>
-      <version>0.6-SNAPSHOT</version>
-    </dependency>
-    <dependency>
       <groupId>jdbm</groupId>
       <artifactId>jdbm</artifactId>
       <version>1.0</version>
