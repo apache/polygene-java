@@ -4,12 +4,12 @@
   <parent>
     <groupId>org.qi4j</groupId>
     <artifactId>qi4j</artifactId>
-    <version>0.6</version>
+    <version>0.7-SNAPSHOT</version>
   </parent>
   <groupId>org.qi4j.library.spaces</groupId>
   <artifactId>qi4j-lib-spaces</artifactId>
   <name>Qi4j Library - Spaces</name>
-  <version>0.6</version>
+  <version>0.7-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
