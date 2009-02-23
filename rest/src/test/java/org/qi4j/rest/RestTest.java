@@ -40,8 +40,9 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.unitofwork.EntityCompositeNotFoundException;
+import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -50,6 +51,7 @@ import org.qi4j.api.property.Property;
 import org.qi4j.rest.assembly.RestAssembler;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.api.structure.Application;
+import org.qi4j.api.common.Optional;
 import org.qi4j.test.AbstractQi4jTest;
 
 @Ignore( "Need to rebuild tests after larger changes to implementation." )
@@ -89,14 +91,18 @@ public class RestTest extends AbstractQi4jTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            PersonEntity maryDoe = uow.newEntity( "P2", PersonEntity.class );
+            EntityBuilder<PersonEntity> builder1 = uow.newEntityBuilder( "P2", PersonEntity.class );
+            PersonEntity maryDoe = builder1.stateOfComposite();
             maryDoe.firstname().set( "Mary" );
             maryDoe.lastname().set( "Doe" );
+            maryDoe = builder1.newInstance();
 
-            PersonEntity joeDoe = uow.newEntity( "P1", PersonEntity.class );
+            EntityBuilder<PersonEntity> builder2 = uow.newEntityBuilder( "P1", PersonEntity.class );
+            PersonEntity joeDoe = builder2.stateOfComposite();
             joeDoe.firstname().set( "Joe" );
             joeDoe.lastname().set( "Doe" );
             joeDoe.mother().set( maryDoe );
+            builder2.newInstance();
 
             uow.complete();
         }
@@ -151,7 +157,7 @@ public class RestTest extends AbstractQi4jTest
             {
                 entity = work.find( "P1", PersonEntity.class );
             }
-            catch( EntityCompositeNotFoundException expected )
+            catch( NoSuchEntityException expected )
             {
                 // expected
             }
@@ -253,6 +259,7 @@ public class RestTest extends AbstractQi4jTest
 
         Property<String> lastname();
 
+        @Optional
         Association<Person> mother();
     }
 }
