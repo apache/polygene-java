@@ -37,7 +37,8 @@ public class RESTEntityStoreTest
 {
     Application server;
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addEntities( TestEntity.class );
 
@@ -48,22 +49,28 @@ public class RESTEntityStoreTest
         store.addServices( RESTEntityStoreService.class ).visibleIn( Visibility.layer );
     }
 
-    @Override @Before public void setUp() throws Exception
+    @Override @Before
+    public void setUp()
+        throws Exception
     {
         server = new Main().application();
 
         super.setUp();
     }
 
-    @Override @After public void tearDown() throws Exception
+    @Override @After
+    public void tearDown()
+        throws Exception
     {
+        Thread.sleep(1000);
         super.tearDown();
-
+        Thread.sleep( 1000 );
         server.passivate();
     }
 
     @Test
-    public void testEntityStore() throws UnitOfWorkCompletionException
+    public void testEntityStore()
+        throws UnitOfWorkCompletionException
     {
         // Load state
         {
