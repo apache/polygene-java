@@ -19,6 +19,8 @@ package org.qi4j.library.swing.envisage.detail;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -27,9 +29,21 @@ import javax.swing.JList;
 import javax.swing.JSplitPane;
 import javax.swing.JScrollPane;
 import javax.swing.DefaultListModel;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumnModel;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeMethodDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.MixinDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.MethodConcernDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.MethodConcernsDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.MethodSideEffectDetailDescriptor;
+import org.qi4j.library.swing.envisage.util.TableData;
 import org.qi4j.spi.entity.EntityDescriptor;
 
 /**
@@ -42,6 +56,8 @@ public class MethodPane extends DetailPane
     private JPanel contentPane;
     private JList methodList;
     private JPanel infoPane;
+    private JTable detailTable;
+    private DetailTableModel detailTableModel;
 
     private DefaultListModel listModel;
 
@@ -52,11 +68,21 @@ public class MethodPane extends DetailPane
 
         listModel = new DefaultListModel();
         methodList.setModel( listModel );
-    }
 
-    protected void clear()
-    {
-        listModel.clear();
+        detailTableModel = new DetailTableModel();
+        detailTable.setModel( detailTableModel );
+
+        TableColumnModel columnModel = detailTable.getColumnModel();
+        columnModel.getColumn( 0 ).setPreferredWidth( 30 );
+        columnModel.getColumn( 1 ).setPreferredWidth( 400 );
+
+        methodList.addListSelectionListener( new ListSelectionListener()
+        {
+            public void valueChanged( ListSelectionEvent evt )
+            {
+                methodListValueChanged( evt );
+            }
+        } );
     }
 
     public void setDescriptor( Object objectDesciptor )
@@ -79,8 +105,39 @@ public class MethodPane extends DetailPane
     {
         for( CompositeMethodDetailDescriptor descriptor : iter )
         {
+            /* TODO, The Methods tab should show all the methods of all Mixins (private and public separated)
+             * that don't return one of Property, Association or ManyAssociation.
+             */
             listModel.addElement( descriptor );
+            //descriptor.descriptor()
         }
+
+        if( !listModel.isEmpty() )
+        {
+            methodList.setSelectedIndex( 0 );
+        }
+    }
+
+
+    protected void clear()
+    {
+        listModel.clear();
+        detailTableModel.clear();
+    }
+
+    protected void methodListValueChanged( ListSelectionEvent evt )
+    {
+        if( evt.getValueIsAdjusting() )
+        {
+            return;
+        }
+        Object obj = methodList.getSelectedValue();
+        if( obj == null )
+        {
+            detailTableModel.clear();
+            return;
+        }
+        detailTableModel.reload( (CompositeMethodDetailDescriptor) obj );
     }
 
     {
@@ -102,14 +159,19 @@ public class MethodPane extends DetailPane
         contentPane = new JPanel();
         contentPane.setLayout( new BorderLayout( 0, 0 ) );
         final JSplitPane splitPane1 = new JSplitPane();
+        splitPane1.setOneTouchExpandable( true );
         contentPane.add( splitPane1, BorderLayout.CENTER );
         final JScrollPane scrollPane1 = new JScrollPane();
         splitPane1.setLeftComponent( scrollPane1 );
         methodList = new JList();
         scrollPane1.setViewportView( methodList );
         infoPane = new JPanel();
-        infoPane.setLayout( new GridBagLayout() );
+        infoPane.setLayout( new BorderLayout( 0, 0 ) );
         splitPane1.setRightComponent( infoPane );
+        final JScrollPane scrollPane2 = new JScrollPane();
+        infoPane.add( scrollPane2, BorderLayout.CENTER );
+        detailTable = new JTable();
+        scrollPane2.setViewportView( detailTable );
     }
 
     /**
@@ -119,4 +181,89 @@ public class MethodPane extends DetailPane
     {
         return contentPane;
     }
+
+    public class DetailTableModel extends AbstractTableModel
+    {
+        /**
+         * the column names for this model
+         */
+        //protected String[] columnNames = { bundle.getString( "Name.Column" ), bundle.getString( "Value.Column" ) };
+        protected String[] columnNames = { "Name", "Value" };
+        protected ArrayList<TableData> data;
+
+        public DetailTableModel()
+        {
+            data = new ArrayList<TableData>();
+        }
+
+        public void reload( CompositeMethodDetailDescriptor descriptor )
+        {
+            clear();
+
+            // mixin type
+            data.add( new TableData( 2, new Object[]{ "class", descriptor.descriptor().mixin().mixinClass() } ) );
+
+            // TODO constraint
+
+            // concern
+            boolean first = true;
+            for( MethodConcernDetailDescriptor concern : descriptor.concerns().concerns() )
+            {
+                if( first )
+                {
+                    data.add( new TableData( 2, new Object[]{ "concern", concern.toString() } ) );
+                    first = false;
+                }
+                else
+                {
+                    data.add( new TableData( 2, new Object[]{ "", concern.toString() } ) );
+                }
+            }
+
+            // sideEffect
+            first = false;
+            for( MethodSideEffectDetailDescriptor sideEffect : descriptor.sideEffects().sideEffects() )
+            {
+                if( first )
+                {
+                    data.add( new TableData( 2, new Object[]{ "sideEffect", sideEffect.toString() } ) );
+                    first = false;
+                }
+                else
+                {
+                    data.add( new TableData( 2, new Object[]{ "", sideEffect.toString() } ) );
+                }
+            }
+
+            fireTableDataChanged();
+        }
+
+        public Object getValueAt( int rowIndex, int columnIndex )
+        {
+            TableData row = data.get( rowIndex );
+            return row.get( columnIndex );
+        }
+
+        public void clear()
+        {
+            data.clear();
+            fireTableDataChanged();
+        }
+
+        public int getColumnCount()
+        {
+            return columnNames.length;
+        }
+
+        public String getColumnName( int col )
+        {
+            return columnNames[ col ];
+        }
+
+        public int getRowCount()
+        {
+            return data.size();
+        }
+    }
+
 }
