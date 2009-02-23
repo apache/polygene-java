@@ -17,10 +17,10 @@
 package org.qi4j.library.swing.envisage.school.domain.model.school.assembler;
 
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.unitofwork.EntityCompositeNotFoundException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.library.swing.envisage.school.domain.model.school.School;
 import org.qi4j.library.swing.envisage.school.domain.model.school.SchoolRepository;
@@ -64,7 +64,7 @@ interface SchoolRepositoryService extends SchoolRepository, ServiceComposite
                 uow.apply();
                 return school;
             }
-            catch( EntityCompositeNotFoundException e )
+            catch( NoSuchEntityException e )
             {
                 uow.discard();
                 return null;
