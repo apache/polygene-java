@@ -28,7 +28,7 @@ import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.api.concern.Concerns;
 
 /**
- * Used to declare and access metainfo about types.
+ * Used to declare and access meta-info.
  */
 public final class MetaInfo
     implements Serializable
@@ -44,7 +44,6 @@ public final class MetaInfo
     }
 
     private final Map<Class<?>, Object> metaInfoMap;
-
 
     public MetaInfo()
     {
@@ -98,5 +97,10 @@ public final class MetaInfo
             }
         }
         return this;
+    }
+
+    @Override public String toString()
+    {
+        return metaInfoMap.toString();
     }
 }

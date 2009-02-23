@@ -14,50 +14,34 @@
 
 package org.qi4j.api.usecase;
 
+import org.qi4j.api.common.MetaInfo;
+
 /**
  * Builder for Usecases.
  */
 public class UsecaseBuilder
 {
-    public static UsecaseBuilder buildUsecase()
+    public static UsecaseBuilder buildUsecase(String aName)
     {
-        return new UsecaseBuilder();
+        return new UsecaseBuilder(aName);
     }
 
-    private CAP guarantees = CAP.CP;
+    private MetaInfo metaInfo = new MetaInfo();
     private String name;
-    private StateUsage stateUsage;
 
-    private UsecaseBuilder()
+    private UsecaseBuilder(String name)
     {
+        this.name = name;
     }
 
-    public UsecaseBuilder named( String aName )
+    public UsecaseBuilder with( Object metaInfo)
     {
-        name = aName;
-        return this;
-    }
-
-    public UsecaseBuilder withGuarantees( CAP cap )
-    {
-        guarantees = cap;
-        return this;
-    }
-
-    public UsecaseBuilder uses( StateUsage stateUsage )
-    {
-        this.stateUsage = stateUsage;
+        this.metaInfo.set( metaInfo );
         return this;
     }
 
     public Usecase newUsecase()
     {
-        StateUsage usecaseStateUsage = stateUsage;
-        if( usecaseStateUsage == null )
-        {
-            usecaseStateUsage = new StateUsage( true );
-        }
-
-        return new Usecase( name, guarantees, usecaseStateUsage );
+        return new Usecase( name, metaInfo );
     }
 }

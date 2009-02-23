@@ -43,6 +43,8 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.usecase.StateUsage;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
@@ -85,6 +87,7 @@ public final class UnitOfWorkInstance
     private UnitOfWorkStore unitOfWorkStore;
     private List<StateChangeListener> stateChangeListeners;
     private List<StateChangeVoter> stateChangeVoters;
+    private MetaInfo metaInfo;
 
     static
     {
@@ -351,6 +354,13 @@ public final class UnitOfWorkInstance
         return usecase;
     }
 
+    public MetaInfo metaInfo()
+    {
+        if (metaInfo == null)
+            metaInfo = new MetaInfo();
+        return metaInfo;
+    }
+
     public void pause()
     {
         if( !paused )
@@ -453,9 +463,10 @@ public final class UnitOfWorkInstance
         cache.clear();
 
         // Turn off recording for the state usage
-        if( usecase.stateUsage().isRecording() )
+        StateUsage stateUsage = usecase.metaInfo().get( StateUsage.class );
+        if( stateUsage != null && stateUsage.isRecording() )
         {
-            usecase.stateUsage().setRecording( false );
+            stateUsage.setRecording( false );
         }
     }
 

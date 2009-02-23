@@ -295,7 +295,7 @@ public final class EntityInstance
     private EntityState wrapEntityState( EntityState entityState )
     {
         // If we have a recording LoadingPolicy, wrap the EntityState
-        StateUsage stateUsage = uow.usecase().stateUsage();
+        StateUsage stateUsage = uow.usecase().metaInfo().get( StateUsage.class);
         if( stateUsage != null && stateUsage.isRecording() )
         {
             entityState = new RecordingEntityState( entityState, stateUsage );

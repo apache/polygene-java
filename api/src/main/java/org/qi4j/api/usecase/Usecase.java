@@ -14,42 +14,48 @@
 
 package org.qi4j.api.usecase;
 
+import org.qi4j.api.common.MetaInfo;
+
 /**
  * A Usecase. A Usecase is used as a model for UnitOfWork, and helps
  * implementations decide what to do in certain circumstances.
  */
 public class Usecase
 {
-    public static final Usecase DEFAULT = new Usecase( "Default", CAP.CA, new StateUsage( false ) );
+    public static final Usecase DEFAULT = new Usecase( "Default", new MetaInfo());
 
     private String name;
-    private CAP guarantees;
-    private StateUsage stateUsage;
+    private MetaInfo metaInfo = new MetaInfo();
 
-    Usecase( String name, CAP guarantees, StateUsage stateUsage )
+    Usecase( String name, MetaInfo metaInfo )
     {
         this.name = name;
-        this.guarantees = guarantees;
-        this.stateUsage = stateUsage;
+        this.metaInfo = metaInfo;
     }
 
+    /**
+     * Name of the usecase.
+     *
+     * @return the name
+     */
     public String name()
     {
         return name;
     }
 
-    public CAP guarantees()
+    /**
+     * Meta-info for the usecase. This can be of any type, and is typically set when creating the usecase
+     * and read during the execution of the usecase.
+     *
+     * @return
+     */
+    public MetaInfo metaInfo()
     {
-        return guarantees;
-    }
-
-    public StateUsage stateUsage()
-    {
-        return stateUsage;
+        return metaInfo;
     }
 
     @Override public String toString()
     {
-        return name + ", guarantees " + guarantees + ", uses " + stateUsage;
+        return name + ", meta info:" + metaInfo;
     }
 }
