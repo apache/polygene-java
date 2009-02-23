@@ -24,6 +24,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.MixinDetailDescriptor;
 import org.qi4j.library.swing.envisage.util.DescriptorNameComparator;
 import java.util.List;
 import java.util.ArrayList;
@@ -88,6 +89,7 @@ public class StructureModelBuilder
         for (int i=0; i<tempList.size(); i++)
         {
             DefaultMutableTreeNode node = new DefaultMutableTreeNode( tempList.get(i) );
+            ServiceDetailDescriptor ddescriptor = (ServiceDetailDescriptor)tempList.get(i);
             parent.add( node );            
         }
     }

@@ -31,10 +31,10 @@ import org.qi4j.library.swing.envisage.graph.GraphPane;
 import org.qi4j.library.swing.envisage.graph.event.ItemSelectionEvent;
 import org.qi4j.library.swing.envisage.graph.event.ItemSelectionListener;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptorBuilder;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptorBuilder;
 import org.qi4j.library.swing.envisage.tree.TreeModelPane;
 import org.qi4j.spi.structure.ApplicationSPI;
 

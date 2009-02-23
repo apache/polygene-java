@@ -7,7 +7,7 @@
     <properties/>
     <border type="none"/>
     <children>
-      <splitpane id="24b86">
+      <splitpane id="24b86" binding="splitPane">
         <constraints border-constraint="Center"/>
         <properties>
           <oneTouchExpandable value="true"/>
