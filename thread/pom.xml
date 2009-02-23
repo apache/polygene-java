@@ -3,44 +3,44 @@
   <parent>
     <groupId>org.qi4j</groupId>
     <artifactId>qi4j</artifactId>
-    <version>0.6-SNAPSHOT</version>
+    <version>0.6</version>
   </parent>
   <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-lib-thread</artifactId>
   <name>Qi4j Library - Thread</name>
-  <version>0.6-SNAPSHOT</version>
+  <version>0.6</version>
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-api</artifactId>
-      <version>0.6-SNAPSHOT</version>
+      <version>0.6</version>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-bootstrap</artifactId>
-      <version>0.6-SNAPSHOT</version>
+      <version>0.6</version>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-testsupport</artifactId>
-      <version>0.6-SNAPSHOT</version>
+      <version>0.6</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-runtime</artifactId>
-      <version>0.6-SNAPSHOT</version>
+      <version>0.6</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.qi4j.library</groupId>
       <artifactId>qi4j-lib-constraints</artifactId>
-      <version>0.6-SNAPSHOT</version>
+      <version>0.6</version>
     </dependency>
     <dependency>
       <groupId>org.qi4j.library</groupId>
       <artifactId>qi4j-lib-uid</artifactId>
-      <version>0.6-SNAPSHOT</version>
+      <version>0.6</version>
     </dependency>
   </dependencies>
 </project>
