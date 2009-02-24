@@ -31,9 +31,6 @@ import org.qi4j.library.swing.envisage.graph.GraphPane;
 import org.qi4j.library.swing.envisage.graph.event.ItemSelectionEvent;
 import org.qi4j.library.swing.envisage.graph.event.ItemSelectionListener;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptorBuilder;
 import org.qi4j.library.swing.envisage.tree.TreeModelPane;
 import org.qi4j.spi.structure.ApplicationSPI;
@@ -116,35 +113,13 @@ public class EnvisageFrame extends JFrame
         graphPane.initQi4J( application, descriptor );
     }
 
-    /**
-     * Helper method
-     * TODO note complete yet, missing Transient and Value
-     *
-     * @param obj descriptor Object
-     * @return true or false
-     */
-    protected boolean isDetailDescritor( Object obj )
-    {
-        if( obj instanceof ServiceDetailDescriptor
-            || obj instanceof EntityDetailDescriptor
-            || obj instanceof ObjectDetailDescriptor )
-        {
-            return true;
-        }
-
-        return false;
-    }
-
     protected void applicationModelPaneValueChanged( TreeSelectionEvent evt )
     {
         Object obj = treeModelPane.getLastSelected();
-        if( isDetailDescritor( obj ) )
+        detailModelPane.setDescriptor( obj );
+        if( !graphItemSelectionInProgress )
         {
-            detailModelPane.setDescriptor( obj );
-            if( !graphItemSelectionInProgress )
-            {
-                graphPane.getGraphDisplay().setSelectedValue( obj );
-            }
+            graphPane.getGraphDisplay().setSelectedValue( obj );
         }
     }
 
