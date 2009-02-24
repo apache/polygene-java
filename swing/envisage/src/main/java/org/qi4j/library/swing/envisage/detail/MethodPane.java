@@ -17,43 +17,38 @@
 package org.qi4j.library.swing.envisage.detail;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
 import java.awt.Component;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JList;
-import javax.swing.JSplitPane;
-import javax.swing.JScrollPane;
-import javax.swing.DefaultListModel;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.JTable;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.ListSelectionEvent;
-import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.property.Property;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeMethodDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.MixinDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.MethodConcernDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.MethodConcernsDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.MethodSideEffectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.InjectedMethodDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.util.TableData;
-import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.api.composite.Composite;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
@@ -64,31 +59,32 @@ public class MethodPane extends DetailPane
 
     private JPanel contentPane;
     private JList methodList;
-    private JPanel infoPane;
     private JTable detailTable;
     private JSplitPane splitPane;
     private DetailTableModel detailTableModel;
 
-    private DefaultListModel listModel;
+    private DefaultListModel methodListModel;
 
     public MethodPane()
     {
         this.setLayout( new BorderLayout() );
         this.add( contentPane, BorderLayout.CENTER );
 
-        listModel = new DefaultListModel();
-        methodList.setModel( listModel );
+        methodListModel = new DefaultListModel();
+        methodList.setModel( methodListModel );
         methodList.setCellRenderer( new MethodListCellRenderer() );
         methodList.setPrototypeCellValue( "12345678901234567890" );
+        methodList.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
 
         detailTableModel = new DetailTableModel();
         detailTable.setModel( detailTableModel );
 
         TableColumnModel columnModel = detailTable.getColumnModel();
         columnModel.getColumn( 0 ).setPreferredWidth( 30 );
-        columnModel.getColumn( 1 ).setPreferredWidth( 400 );
+        columnModel.getColumn( 1 ).setPreferredWidth( 300 );
 
-        splitPane.setDividerLocation( .3 );
+        //splitPane.setResizeWeight( .1 );
+        //splitPane.setDividerLocation( .3 );
 
         methodList.addListSelectionListener( new ListSelectionListener()
         {
@@ -103,7 +99,7 @@ public class MethodPane extends DetailPane
     {
         clear();
 
-        // TODO
+        // TODO for other type wait until QI-195 solved
         if( objectDesciptor instanceof ServiceDetailDescriptor )
         {
             ServiceDetailDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor );
@@ -120,6 +116,16 @@ public class MethodPane extends DetailPane
         }
     }
 
+
+    /**
+     * TODO
+     * The Methods tab should show all the methods of all Mixins (private and public separated)
+     * that don't return one of Property, Association or ManyAssociation.
+     *
+     * "private" and "public" refers to if the interface they are declared in is extended by the Composite.
+     * If yes, then it is a public method, meaning, clients can call it.
+     * If no, then it is a private mixin type, and can only be used internally through @This injections.
+     */
     private void reload( Iterable<CompositeMethodDetailDescriptor> iter )
     {
         List<CompositeMethodDetailDescriptor> publicList = new ArrayList<CompositeMethodDetailDescriptor>();
@@ -127,13 +133,6 @@ public class MethodPane extends DetailPane
 
         for( CompositeMethodDetailDescriptor descriptor : iter )
         {
-            /* TODO, The Methods tab should show all the methods of all Mixins (private and public separated)
-             * that don't return one of Property, Association or ManyAssociation.
-             *
-             * "private" and "public" refers to if the interface they are declared in is extended by the Composite.
-             * If yes, then it is a public method, meaning, clients can call it.
-             * If no, then it is a private mixin type, and can only be used internally through @This injections. 
-             */
             Class clazz = descriptor.descriptor().method().getDeclaringClass();
             if( Composite.class.isAssignableFrom( clazz ) )
             {
@@ -145,18 +144,22 @@ public class MethodPane extends DetailPane
             }
         }
 
+        // filter Property, Association, and ManyAssociation
+        doFilter( publicList );
+        doFilter( privateList );
+
         // list public first, then private
         for( CompositeMethodDetailDescriptor descriptor : publicList )
         {
-            listModel.addElement( descriptor );
+            methodListModel.addElement( descriptor );
         }
 
         for( CompositeMethodDetailDescriptor descriptor : privateList )
         {
-            listModel.addElement( descriptor );
+            methodListModel.addElement( descriptor );
         }
 
-        if( !listModel.isEmpty() )
+        if( !methodListModel.isEmpty() )
         {
             methodList.setSelectedIndex( 0 );
         }
@@ -165,11 +168,55 @@ public class MethodPane extends DetailPane
 
     protected void clear()
     {
-        listModel.clear();
+        methodListModel.clear();
         detailTableModel.clear();
     }
 
-    protected void methodListValueChanged( ListSelectionEvent evt )
+    /**
+     * TODO filter other than Property, Association or ManyAssociation
+     * Is this the correct way ???
+     */
+    private void doFilter( List<CompositeMethodDetailDescriptor> list )
+    {
+        if( list.isEmpty() )
+        {
+            return;
+        }
+
+        Iterator<CompositeMethodDetailDescriptor> iter = list.iterator();
+        while( iter.hasNext() )
+        {
+            CompositeMethodDetailDescriptor descriptor = iter.next();
+            Method method = descriptor.descriptor().method();
+            if( Property.class.isAssignableFrom( method.getReturnType() ) )
+            {
+                iter.remove();
+            }
+            else if( Association.class.isAssignableFrom( method.getReturnType() ) )
+            {
+                iter.remove();
+            }
+            else if( ManyAssociation.class.isAssignableFrom( method.getReturnType() ) )
+            {
+                iter.remove();
+            }
+        }
+    }
+
+    private void doFilter( List<CompositeMethodDetailDescriptor> list, String filter )
+    {
+        Iterator<CompositeMethodDetailDescriptor> iter = list.iterator();
+        while( iter.hasNext() )
+        {
+            CompositeMethodDetailDescriptor descriptor = iter.next();
+            if( descriptor.descriptor().method().getName().equals( filter ) )
+            {
+                iter.remove();
+            }
+        }
+    }
+
+    private void methodListValueChanged( ListSelectionEvent evt )
     {
         if( evt.getValueIsAdjusting() )
         {
@@ -203,17 +250,13 @@ public class MethodPane extends DetailPane
         contentPane = new JPanel();
         contentPane.setLayout( new BorderLayout( 0, 0 ) );
         splitPane = new JSplitPane();
-        splitPane.setOneTouchExpandable( true );
         contentPane.add( splitPane, BorderLayout.CENTER );
         final JScrollPane scrollPane1 = new JScrollPane();
         splitPane.setLeftComponent( scrollPane1 );
         methodList = new JList();
         scrollPane1.setViewportView( methodList );
-        infoPane = new JPanel();
-        infoPane.setLayout( new BorderLayout( 0, 0 ) );
-        splitPane.setRightComponent( infoPane );
         final JScrollPane scrollPane2 = new JScrollPane();
-        infoPane.add( scrollPane2, BorderLayout.CENTER );
+        splitPane.setRightComponent( scrollPane2 );
         detailTable = new JTable();
         scrollPane2.setViewportView( detailTable );
     }
@@ -226,7 +269,7 @@ public class MethodPane extends DetailPane
         return contentPane;
     }
 
-    public class DetailTableModel extends AbstractTableModel
+    class DetailTableModel extends AbstractTableModel
     {
         /**
          * the column names for this model
@@ -310,7 +353,7 @@ public class MethodPane extends DetailPane
         }
     }
 
-    public class MethodListCellRenderer extends DefaultListCellRenderer
+    class MethodListCellRenderer extends DefaultListCellRenderer
     {
         protected Icon publicIcon;
         protected Icon privateIcon;
@@ -357,4 +400,6 @@ public class MethodPane extends DetailPane
             return this;
         }
     }
+
+
 }

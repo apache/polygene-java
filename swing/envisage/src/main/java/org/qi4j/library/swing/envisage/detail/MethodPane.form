@@ -9,9 +9,7 @@
     <children>
       <splitpane id="24b86" binding="splitPane">
         <constraints border-constraint="Center"/>
-        <properties>
-          <oneTouchExpandable value="true"/>
-        </properties>
+        <properties/>
         <border type="none"/>
         <children>
           <scrollpane id="b00c1">
@@ -27,28 +25,19 @@
               </component>
             </children>
           </scrollpane>
-          <grid id="9c9f8" binding="infoPane" layout-manager="BorderLayout" hgap="0" vgap="0">
+          <scrollpane id="fb413">
             <constraints>
               <splitpane position="right"/>
             </constraints>
             <properties/>
-            <border type="none">
-              <size top="8" left="8" bottom="8" right="8"/>
-            </border>
+            <border type="none"/>
             <children>
-              <scrollpane id="fb413">
-                <constraints border-constraint="Center"/>
+              <component id="f694" class="javax.swing.JTable" binding="detailTable">
+                <constraints/>
                 <properties/>
-                <border type="none"/>
-                <children>
-                  <component id="f694" class="javax.swing.JTable" binding="detailTable">
-                    <constraints/>
-                    <properties/>
-                  </component>
-                </children>
-              </scrollpane>
+              </component>
             </children>
-          </grid>
+          </scrollpane>
         </children>
       </splitpane>
     </children>
