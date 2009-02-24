@@ -80,8 +80,8 @@ public class MethodPane extends DetailPane
         detailTable.setModel( detailTableModel );
 
         TableColumnModel columnModel = detailTable.getColumnModel();
-        columnModel.getColumn( 0 ).setPreferredWidth( 30 );
-        columnModel.getColumn( 1 ).setPreferredWidth( 300 );
+        columnModel.getColumn( 0 ).setPreferredWidth( 90 );
+        columnModel.getColumn( 1 ).setPreferredWidth( 400 );
 
         //splitPane.setResizeWeight( .1 );
         //splitPane.setDividerLocation( .3 );
@@ -173,8 +173,10 @@ public class MethodPane extends DetailPane
     }
 
     /**
-     * TODO filter other than Property, Association or ManyAssociation
-     * Is this the correct way ???
+     * Do the filter for method return type (Property, Association, ManyAssociation)
+     * by removing the entry from the list.
+     *
+     * @param list list of CompositeMethodDetailDescriptor
      */
     private void doFilter( List<CompositeMethodDetailDescriptor> list )
     {
@@ -197,19 +199,6 @@ public class MethodPane extends DetailPane
                 iter.remove();
             }
             else if( ManyAssociation.class.isAssignableFrom( method.getReturnType() ) )
-            {
-                iter.remove();
-            }
-        }
-    }
-
-    private void doFilter( List<CompositeMethodDetailDescriptor> list, String filter )
-    {
-        Iterator<CompositeMethodDetailDescriptor> iter = list.iterator();
-        while( iter.hasNext() )
-        {
-            CompositeMethodDetailDescriptor descriptor = iter.next();
-            if( descriptor.descriptor().method().getName().equals( filter ) )
             {
                 iter.remove();
             }
@@ -288,7 +277,8 @@ public class MethodPane extends DetailPane
             clear();
 
             // mixin type
-            data.add( new TableData( 2, new Object[]{ "class", descriptor.descriptor().mixin().mixinClass() } ) );
+            data.add( new TableData( 2, new Object[]{ "mixin", descriptor.descriptor().mixin().mixinClass() } ) );
+            data.add( new TableData( 2, new Object[]{ "return", descriptor.descriptor().method().getGenericReturnType() } ) );
 
             // TODO constraint
 

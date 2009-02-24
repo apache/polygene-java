@@ -54,8 +54,8 @@ public class GeneralPane extends DetailPane
         table.setModel( tableModel );
 
         TableColumnModel columnModel = table.getColumnModel();
-        columnModel.getColumn( 0 ).setPreferredWidth( 25 );
-        columnModel.getColumn( 1 ).setPreferredWidth( 400 );
+        columnModel.getColumn( 0 ).setPreferredWidth( 90 );
+        columnModel.getColumn( 1 ).setPreferredWidth( 550 );
     }
 
     protected void clear()
