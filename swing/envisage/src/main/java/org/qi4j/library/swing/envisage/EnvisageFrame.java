@@ -56,6 +56,8 @@ public class EnvisageFrame extends JFrame
     private Application application;
     private ApplicationDetailDescriptor descriptor;
 
+    private boolean graphItemSelectionInProgress;
+
     public EnvisageFrame( Energy4Java qi4j, Application application )
     {
 
@@ -139,12 +141,24 @@ public class EnvisageFrame extends JFrame
         if( isDetailDescritor( obj ) )
         {
             detailModelPane.setDescriptor( obj );
+            if( !graphItemSelectionInProgress )
+            {
+                graphPane.getGraphDisplay().setSelectedValue( obj );
+            }
         }
     }
 
     protected void graphItemSelectionItemValueChanged( ItemSelectionEvent evt )
     {
-        treeModelPane.setSelectedValue( evt.getObject() );
+        graphItemSelectionInProgress = true;
+        try
+        {
+            treeModelPane.setSelectedValue( evt.getObject() );
+        }
+        finally
+        {
+            graphItemSelectionInProgress = false;
+        }
     }
 
 

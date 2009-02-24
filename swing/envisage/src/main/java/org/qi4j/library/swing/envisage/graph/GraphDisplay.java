@@ -40,9 +40,11 @@ import prefuse.action.assignment.FontAction;
 import prefuse.action.layout.CollapsedSubtreeLayout;
 import prefuse.action.layout.graph.NodeLinkTreeLayout;
 import prefuse.data.Graph;
+import prefuse.data.Tree;
 import prefuse.data.tuple.TupleSet;
 import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.VisualItem;
+import prefuse.visual.NodeItem;
 import prefuse.visual.sort.TreeDepthItemSorter;
 import prefuse.render.EdgeRenderer;
 import prefuse.render.LabelRenderer;
@@ -56,6 +58,7 @@ import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Iterator;
 import org.qi4j.library.swing.envisage.graph.event.ItemSelectionListener;
 import org.qi4j.library.swing.envisage.graph.event.ItemSelectionEvent;
 
@@ -138,8 +141,6 @@ public class GraphDisplay extends Display
         CollapsedSubtreeLayout subLayout = new CollapsedSubtreeLayout(TREE, orientation);
         m_vis.putAction(SUB_LAYOUT_ACTION, subLayout);
 
-        m_vis.putAction( AUTO_ZOOM_ACTION, new AutoZoomAction() );
-
         // create the filtering and layout
         ActionList filter = new ActionList();
         filter.add(new FisheyeTreeFilter(TREE, 2));
@@ -164,6 +165,9 @@ public class GraphDisplay extends Display
         m_vis.putAction(ANIMATE_ACTION, animate);
         m_vis.alwaysRunAfter(FILTER_ACTION, ANIMATE_ACTION);
 
+        m_vis.putAction( AUTO_ZOOM_ACTION, new AutoZoomAction() );
+        //m_vis.putAction( )
+
         // create animator for orientation changes
         /*ActionList orient = new ActionList(2000);
         orient.setPacingFunction(new SlowInSlowOutPacer());
@@ -181,7 +185,7 @@ public class GraphDisplay extends Display
         addControlListener(new WheelZoomControl());
         addControlListener(new PanControl());
         addControlListener(new FocusControl(1, FILTER_ACTION));
-        addControlListener( new ItemSelectionControl() );
+        addControlListener(new ItemSelectionControl());
 
         // set orientation
         //setOrientation(orientation);
@@ -206,7 +210,43 @@ public class GraphDisplay extends Display
     public void run()
     {
         m_vis.run(FILTER_ACTION);
-    
+    }
+
+
+    /** select the specified object
+     * @param object the object to select eg: Descriptor 
+     * */
+    public void setSelectedValue(Object object)
+    {
+        if (object == null)
+        {
+            return;
+        }
+
+        VisualItem item = null;
+
+        Iterator iter = m_vis.items(TREE);
+        while (iter.hasNext())
+        {
+            VisualItem tItem = (VisualItem)iter.next();
+            if (!(tItem instanceof NodeItem) )
+            {
+                continue;
+            }
+            Object tObj = tItem.get(USER_OBJECT);
+            if (tObj.equals( object))
+            {
+                item = tItem;
+                break;
+            }
+        }
+
+        if (item != null)
+        {
+            TupleSet ts = m_vis.getFocusGroup(Visualization.FOCUS_ITEMS);
+            ts.setTuple(item);
+            m_vis.run(FILTER_ACTION);
+        }
     }
 
     /**
