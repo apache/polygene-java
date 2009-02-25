@@ -25,6 +25,19 @@
               </component>
             </children>
           </scrollpane>
+          <scrollpane id="5fb60">
+            <constraints>
+              <splitpane position="right"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="cc763" class="javax.swing.JTable" binding="methodDetailTable">
+                <constraints/>
+                <properties/>
+              </component>
+            </children>
+          </scrollpane>
         </children>
       </splitpane>
     </children>

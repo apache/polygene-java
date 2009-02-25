@@ -29,9 +29,6 @@ import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
  */
 public class DetailModelPane extends JPanel
 {
-    protected static final int GENERAL_TAB = 0;
-    protected static final int METHOD_TAB = 1;
-    protected static final int DEPENDENCY_TAB = 2;
 
     protected ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName());
 
@@ -53,8 +50,8 @@ public class DetailModelPane extends JPanel
         createDetailPane( );
 
         tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ),  generalPane );
-        tabPane.add( bundle.getString( "CTL_MethodTab.Text" ), methodPane );
         tabPane.add( bundle.getString( "CTL_DependencyTab.Text" ), dependencyPane );
+        tabPane.add( bundle.getString( "CTL_MethodTab.Text" ), methodPane );
     }
 
     protected void createDetailPane()
@@ -82,8 +79,8 @@ public class DetailModelPane extends JPanel
     public void setDescriptor(Object objectDescriptor)
     {
         generalPane.setDescriptor( objectDescriptor );
-        methodPane.setDescriptor( objectDescriptor );
         dependencyPane.setDescriptor( objectDescriptor );
+        methodPane.setDescriptor( objectDescriptor );
         statePane.setDescriptor( objectDescriptor );
         serviceConfigurationPane.setDescriptor( objectDescriptor );
         serviceUsagePane.setDescriptor( objectDescriptor );

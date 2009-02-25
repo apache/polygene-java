@@ -51,6 +51,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.util.TableData;
 
 /**
+ *  Implementation of Composite Method Panel
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class MethodPane extends DetailPane
@@ -59,11 +60,11 @@ public class MethodPane extends DetailPane
 
     private JPanel contentPane;
     private JList methodList;
-    private JTable detailTable;
+    private JTable methodDetailTable;
     private JSplitPane splitPane;
-    private DetailTableModel detailTableModel;
 
     private DefaultListModel methodListModel;
+    private MethodDetailTableModel methodDetailTableModel;
 
     public MethodPane()
     {
@@ -76,11 +77,11 @@ public class MethodPane extends DetailPane
         methodList.setPrototypeCellValue( "12345678901234567890" );
         methodList.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
 
-        detailTableModel = new DetailTableModel();
-        detailTable.setModel( detailTableModel );
+        methodDetailTableModel = new MethodDetailTableModel();
+        methodDetailTable.setModel( methodDetailTableModel );
 
-        TableColumnModel columnModel = detailTable.getColumnModel();
-        columnModel.getColumn( 0 ).setPreferredWidth( 90 );
+        TableColumnModel columnModel = methodDetailTable.getColumnModel();
+        columnModel.getColumn( 0 ).setPreferredWidth( 75 );
         columnModel.getColumn( 1 ).setPreferredWidth( 400 );
 
         //splitPane.setResizeWeight( .1 );
@@ -169,7 +170,7 @@ public class MethodPane extends DetailPane
     protected void clear()
     {
         methodListModel.clear();
-        detailTableModel.clear();
+        methodDetailTableModel.clear();
     }
 
     /**
@@ -214,10 +215,10 @@ public class MethodPane extends DetailPane
         Object obj = methodList.getSelectedValue();
         if( obj == null )
         {
-            detailTableModel.clear();
+            methodDetailTableModel.clear();
             return;
         }
-        detailTableModel.reload( (CompositeMethodDetailDescriptor) obj );
+        methodDetailTableModel.reload( (CompositeMethodDetailDescriptor) obj );
     }
 
     {
@@ -246,8 +247,8 @@ public class MethodPane extends DetailPane
         scrollPane1.setViewportView( methodList );
         final JScrollPane scrollPane2 = new JScrollPane();
         splitPane.setRightComponent( scrollPane2 );
-        detailTable = new JTable();
-        scrollPane2.setViewportView( detailTable );
+        methodDetailTable = new JTable();
+        scrollPane2.setViewportView( methodDetailTable );
     }
 
     /**
@@ -258,7 +259,7 @@ public class MethodPane extends DetailPane
         return contentPane;
     }
 
-    class DetailTableModel extends AbstractTableModel
+    class MethodDetailTableModel extends AbstractTableModel
     {
         /**
          * the column names for this model
@@ -267,7 +268,7 @@ public class MethodPane extends DetailPane
         protected String[] columnNames = { "Name", "Value" };
         protected ArrayList<TableData> data;
 
-        public DetailTableModel()
+        public MethodDetailTableModel()
         {
             data = new ArrayList<TableData>();
         }
