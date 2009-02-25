@@ -6,6 +6,7 @@ import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.Qualifier;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -34,12 +35,7 @@ public abstract class AbstractAssociationInstance<T>
         return associationInfo.metaInfo( infoType );
     }
 
-    public String name()
-    {
-        return associationInfo.name();
-    }
-
-    public String qualifiedName()
+    public QualifiedName qualifiedName()
     {
         return associationInfo.qualifiedName();
     }

@@ -27,6 +27,7 @@ import java.util.Set;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.api.util.MethodValueMap;
 import org.qi4j.api.value.ValueComposite;
@@ -42,7 +43,7 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
     implements Serializable
 {
     protected final List<T> propertyModels = new ArrayList<T>();
-    private final Map<String, Method> accessors = new MethodValueMap<String>();
+    private final Map<QualifiedName, Method> accessors = new MethodValueMap<QualifiedName>();
     protected final Map<Method, T> mapMethodPropertyModel = new MethodKeyMap<T>();
     protected final ConstraintsModel constraints;
     protected PropertyDeclarations propertyDeclarations;
@@ -185,16 +186,11 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
         return newInstance.proxy();
     }
 
-    public Method accessorFor( String qualifiedName )
-    {
-        return accessors.get( qualifiedName );
-    }
-
     public T getPropertyByName( String name )
     {
         for( T propertyModel : propertyModels )
         {
-            if( propertyModel.name().equals( name ) )
+            if( propertyModel.qualifiedName().name().equals( name ) )
             {
                 return propertyModel;
             }
@@ -202,7 +198,7 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
         return null;
     }
 
-    public T getPropertyByQualifiedName( String name )
+    public T getPropertyByQualifiedName( QualifiedName name )
     {
         for( T propertyModel : propertyModels )
         {

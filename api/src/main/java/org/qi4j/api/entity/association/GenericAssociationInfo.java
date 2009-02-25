@@ -21,43 +21,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.Aggregated;
 import org.qi4j.api.property.Immutable;
 
 public class GenericAssociationInfo
     implements AssociationInfo
 {
-    public static String getName( String qualifiedName )
-    {
-        int idx = qualifiedName.lastIndexOf( ":" );
-        return qualifiedName.substring( idx + 1 );
-    }
-
-    public static String getDeclaringClassName( String qualifiedName )
-    {
-        int idx = qualifiedName.lastIndexOf( ":" );
-        return qualifiedName.substring( 0, idx + 1 );
-    }
-
-    public static String getDeclaringClassName( Method accessor )
-    {
-        return accessor.getDeclaringClass().getName();
-    }
-
-    public static String getQualifiedName( Method accessor )
-    {
-        String className = accessor.getDeclaringClass().getName();
-        className = className.replace( '$', '-' );
-        return className + ":" + accessor.getName();
-    }
-
-    public static String getQualifiedName( Class<?> declaringClass, String name )
-    {
-        String className = declaringClass.getName();
-        className = className.replace( '$', '-' );
-        return className + ":" + name;
-    }
-
     public static Type getAssociationType( Method accessor )
     {
         return getAssociationType( accessor.getGenericReturnType() );
@@ -87,40 +57,6 @@ public class GenericAssociationInfo
     }
 
     /**
-     * Get URI for an association.
-     *
-     * @param accessor accessor method
-     * @return association URI
-     */
-    public static String toURI( final Method accessor )
-    {
-        return toURI( getQualifiedName( accessor ) );
-    }
-
-    /**
-     * Get URI for an association.
-     *
-     * @param declaringClass interface of the property
-     * @param name of the property
-     * @return property URI
-     */
-    public static String toURI( final Class declaringClass, String name )
-    {
-        return toURI( getQualifiedName( declaringClass, name ) );
-    }
-
-    /**
-     * Get URI for a qualified name.
-     *
-     * @param qualifiedName of the association
-     * @return association URI
-     */
-    public static String toURI( final String qualifiedName )
-    {
-        return "urn:qi4j:entity:" + qualifiedName.replace( ':', '#' );
-    }
-
-    /**
      * Get qualified association name from a URI
      *
      * @param uri of the association
@@ -128,36 +64,23 @@ public class GenericAssociationInfo
      */
     public static String toQualifiedName( final String uri )
     {
-        return uri.substring( "urn:qi4j:entity:".length() ).replace( '#', ':' );
+        return uri.substring( "urn:qi4j:entitytype:".length() ).replace( '#', ':' );
     }
 
-    /**
-     * Get namespace for an association.
-     *
-     * @param accessor accessor method
-     * @return association namespace
-     */
-    public static String toNamespace( final Method accessor )
-    {
-        if( accessor == null )
-        {
-            return null;
-        }
-        return "urn:qi4j:entity:" + getDeclaringClassName( accessor ) + "#";
-    }
-
-    // TODO: Serialization fro Method
-    private Method accessor;
+    private QualifiedName qualifiedName;
+    private Type type;
     private MetaInfo metainfo;
     private boolean immutable;
     private boolean aggregated;
 
     public GenericAssociationInfo( Method accessor, MetaInfo metainfo )
     {
-        this.accessor = accessor;
+        this.qualifiedName = new QualifiedName( accessor );
         this.metainfo = metainfo;
         immutable = metainfo.get( Immutable.class ) != null;
         aggregated = metainfo.get( Aggregated.class ) != null;
+        Type methodReturnType = accessor.getGenericReturnType();
+        type = getAssociationType( methodReturnType );
     }
 
     public <T> T metaInfo( Class<T> infoType )
@@ -167,20 +90,17 @@ public class GenericAssociationInfo
 
     public String name()
     {
-        return accessor.getName();
+        return qualifiedName.name();
     }
 
-    public String qualifiedName()
+    public QualifiedName qualifiedName()
     {
-        String className = accessor.getDeclaringClass().getName();
-        className = className.replace( '$', '&' );
-        return className + ":" + accessor.getName();
+        return qualifiedName;
     }
 
     public Type type()
     {
-        Type methodReturnType = accessor.getGenericReturnType();
-        return getAssociationType( methodReturnType );
+        return type;
     }
 
     public boolean isImmutable()

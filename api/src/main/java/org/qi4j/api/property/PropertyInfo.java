@@ -15,6 +15,7 @@
 package org.qi4j.api.property;
 
 import java.lang.reflect.Type;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * Provide access to metadata information about a property.
@@ -38,19 +39,12 @@ public interface PropertyInfo
     <T> T metaInfo( Class<T> infoType );
 
     /**
-     * Get the name of the property, which is equal to the name of the metod that declared it.
-     *
-     * @return the name of the property.
-     */
-    String name();
-
-    /**
      * Get the qualified name of the property which is equal to:<br/>
      * <interface name>:<method name>
      *
      * @return the qualified name of the property
      */
-    String qualifiedName();
+    QualifiedName qualifiedName();
 
     /**
      * Get the type of the property. If the property is declared

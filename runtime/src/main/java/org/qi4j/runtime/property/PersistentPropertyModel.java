@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
@@ -81,9 +82,9 @@ public abstract class PersistentPropertyModel
             type = PropertyType.PropertyTypeEnum.MUTABLE;
         }
 
-        propertyType = new PropertyType( qualifiedName(), createValueType( type() ), toURI(), toRDF(), this.queryable, type );
+        propertyType = new PropertyType( qualifiedName(), createValueType( type() ), toRDF(), this.queryable, type );
 
-        propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), name(), qualifiedName(), type() );
+        propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), qualifiedName(), type() );
     }
 
     public PropertyType propertyType()
@@ -113,7 +114,7 @@ public abstract class PersistentPropertyModel
 
         if( valueType instanceof CompoundType )
         {
-            Map<String, Object> values = new HashMap<String, Object>();
+            Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
 
             ValueComposite valueComposite = (ValueComposite) value;
             ValueInstance instance = ValueInstance.getValueInstance( valueComposite );

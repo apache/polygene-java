@@ -14,8 +14,6 @@
 
 package org.qi4j.bootstrap;
 
-import org.qi4j.api.structure.Application;
-
 /**
  * Implement this interface to create the root class that
  * is responsible for assembling your entire application.
@@ -30,6 +28,6 @@ import org.qi4j.api.structure.Application;
  */
 public interface ApplicationAssembler
 {
-    Application assemble(ApplicationFactory applicationFactory)
+    ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory)
             throws AssemblyException;
 }

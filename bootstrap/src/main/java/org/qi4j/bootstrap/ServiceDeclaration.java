@@ -21,7 +21,8 @@ package org.qi4j.bootstrap;
 import org.qi4j.api.common.Visibility;
 
 /**
- * Fluent API for declaring services hosted in Qi4j.
+ * Fluent API for declaring services hosted in Qi4j. Instances
+ * of this API are acquired by calling {@link ModuleAssembly#addServices(Class[])}.
  */
 public interface ServiceDeclaration
 {

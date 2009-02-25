@@ -22,6 +22,7 @@ import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.runtime.composite.AbstractStateModel;
 import org.qi4j.runtime.entity.association.AssociationInstance;
@@ -77,7 +78,7 @@ public final class EntityStateModel
         return associationsModel.getAssociationByName( name );
     }
 
-    public AssociationDescriptor getAssociationByQualifiedName( String name )
+    public AssociationDescriptor getAssociationByQualifiedName( QualifiedName name )
     {
         return associationsModel.getAssociationByQualifiedName( name );
     }

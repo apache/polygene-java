@@ -33,7 +33,7 @@ public class PropertyModel
                           MetaInfo metaInfo, Object anInitialValue )
     {
         super( anAccessor, immutable, constraints, metaInfo, anInitialValue );
-        propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), name(), qualifiedName(), type() );
+        propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), qualifiedName(), type() );
     }
 
     @SuppressWarnings( "unchecked" )

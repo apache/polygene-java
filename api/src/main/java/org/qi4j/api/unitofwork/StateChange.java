@@ -14,15 +14,17 @@
 
 package org.qi4j.api.unitofwork;
 
+import org.qi4j.api.common.QualifiedName;
+
 /**
  * Base class for state changes. 
  */
 public class StateChange
 {
     private String source;
-    private String qualifiedName;
+    private QualifiedName qualifiedName;
 
-    public StateChange( String source, String qualifiedName )
+    public StateChange( String source, QualifiedName qualifiedName )
     {
         this.source = source;
         this.qualifiedName = qualifiedName;
@@ -33,7 +35,7 @@ public class StateChange
         return source;
     }
 
-    public String qualifiedName()
+    public QualifiedName qualifiedName()
     {
         return qualifiedName;
     }

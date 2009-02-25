@@ -49,21 +49,46 @@ import org.qi4j.runtime.structure.EntitiesInstance;
 import org.qi4j.runtime.structure.EntitiesModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.runtime.bootstrap.ApplicationAssemblyFactoryImpl;
+import org.qi4j.runtime.bootstrap.ApplicationFactoryImpl;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.object.ObjectDescriptor;
+import org.qi4j.bootstrap.spi.Qi4jRuntime;
+import org.qi4j.bootstrap.spi.ApplicationFactory;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 
 /**
  * Incarnation of Qi4j.
  */
-public final class Qi4jRuntime
-    implements Qi4jSPI, Serializable
+public final class Qi4jRuntimeImpl
+    implements Qi4jSPI, Qi4jRuntime, Serializable
 {
-    public Qi4jRuntime()
+    ApplicationAssemblyFactory applicationAssemblyFactory;
+    ApplicationFactory applicationFactory;
+
+    public Qi4jRuntimeImpl()
     {
+        applicationAssemblyFactory = new ApplicationAssemblyFactoryImpl();
+        applicationFactory = new ApplicationFactoryImpl(this);
+    }
+
+    public ApplicationAssemblyFactory applicationAssemblyFactory()
+    {
+        return applicationAssemblyFactory;
+    }
+
+    public ApplicationFactory applicationFactory()
+    {
+        return applicationFactory;
+    }
+
+    public Qi4jSPI spi()
+    {
+        return this;
     }
 
     // API

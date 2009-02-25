@@ -87,7 +87,13 @@ public abstract class SingletonAssembler
             }
             if( applicationInstance == null )
             {
-                applicationInstance = is.newApplication( this );
+                applicationInstance = is.newApplication( new ApplicationAssembler()
+                {
+                    public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
+                    {
+                        return applicationFactory.newApplicationAssembly( SingletonAssembler.this );
+                    }
+                });
             }
         }
         catch( AssemblyException e )
@@ -109,7 +115,7 @@ public abstract class SingletonAssembler
 
     public final Qi4j runtime()
     {
-        return is.runtime();
+        return is.spi();
     }
 
     public final Application application()

@@ -19,6 +19,7 @@
 package org.qi4j.api.property;
 
 import java.lang.reflect.Method;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * {@code ComputedPropertyInstance} is the base implementation of {@link Property}.
@@ -65,7 +66,7 @@ public abstract class ComputedPropertyInstance<T>
     public void set( T anIgnoredValue )
         throws IllegalArgumentException, IllegalStateException
     {
-        String qualifiedName = qualifiedName();
+        QualifiedName qualifiedName = qualifiedName();
         throw new IllegalStateException( "Property [" + qualifiedName + "] is read-only" );
     }
 }

@@ -32,13 +32,14 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.ApplicationFactory;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.HibernatingApplicationInvalidException;
-import org.qi4j.runtime.Qi4jRuntime;
+import org.qi4j.bootstrap.spi.ApplicationFactory;
+import org.qi4j.runtime.Qi4jRuntimeImpl;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.structure.ApplicationModel;
 import org.qi4j.runtime.structure.LayerModel;
@@ -47,18 +48,17 @@ import org.qi4j.runtime.structure.UsedLayersModel;
 import org.qi4j.spi.Qi4jSPI;
 
 /**
- * Factory for ApplicationContext.
+ * Factory for Applications.
  */
 public final class ApplicationFactoryImpl
-    implements ApplicationFactory, Serializable
+    implements ApplicationFactory
 {
     private static final String BOOT_FILENAME = "application-model.qi4j";
+    private Qi4jSPI spi;
 
-    private Qi4jSPI runtime;
-
-    public ApplicationFactoryImpl()
+    public ApplicationFactoryImpl(Qi4jSPI spi)
     {
-        this.runtime = new Qi4jRuntime();
+        this.spi = spi;
     }
 
     public Application loadApplication()
@@ -77,43 +77,6 @@ public final class ApplicationFactoryImpl
         {
             throw new HibernatingApplicationInvalidException( hibernateFile(), e );
         }
-    }
-
-    public Application newApplication( Assembler assembler )
-        throws AssemblyException
-    {
-        return newApplication( new Assembler[][][]{ { { assembler } } } );
-    }
-
-    public Application newApplication( Assembler[][][] assemblers )
-        throws AssemblyException
-    {
-        ApplicationAssembly applicationAssembly = newApplicationAssembly();
-        applicationAssembly.setName( "Application" );
-
-        // Build all layers bottom-up
-        LayerAssembly below = null;
-        for( int layer = assemblers.length - 1; layer >= 0; layer-- )
-        {
-            // Create Layer
-            LayerAssembly layerAssembly = applicationAssembly.newLayerAssembly( "Layer " + ( layer + 1 ) );
-            for( int module = 0; module < assemblers[ layer ].length; module++ )
-            {
-                // Create Module
-                ModuleAssembly moduleAssembly = layerAssembly.newModuleAssembly( "Module " + ( module + 1 ) );
-                for( int assembly = 0; assembly < assemblers[ layer ][ module ].length; assembly++ )
-                {
-                    // Register Assembler
-                    moduleAssembly.addAssembler( assemblers[ layer ][ module ][ assembly ] );
-                }
-            }
-            if( below != null )
-            {
-                layerAssembly.uses( below ); // Link layers
-            }
-            below = layerAssembly;
-        }
-        return newApplication( applicationAssembly );
     }
 
     public Application newApplication( ApplicationAssembly assembly )
@@ -157,29 +120,7 @@ public final class ApplicationFactoryImpl
             mapAssemblyModel.put( layerAssembly, layerModel );
             layerModels.add( layerModel );
         }
-// TODO: TypeVariableImpl and ParameterizedTypeImpl are not serializable and causes problems.
-//       Removing this section to avoid the vivid Exceptions that otherwise shows up.
-//        try
-//        {
-//            storeApplicationModel( applicationModel );
-//        }
-//        catch( IOException e )
-//        {
-//            System.err.println( "Unable to store the application to " + hibernateFile() );
-//            e.printStackTrace();
-//            hibernateFile().delete();
-//        }
         return createInstance( applicationModel );
-    }
-
-    public ApplicationAssembly newApplicationAssembly()
-    {
-        return new ApplicationAssemblyImpl();
-    }
-
-    public Qi4jSPI runtime()
-    {
-        return runtime;
     }
 
     private Application createInstance( ApplicationModel applicationModel )
@@ -194,7 +135,7 @@ public final class ApplicationFactoryImpl
             throw new AssemblyException( e );
         }
 
-        return applicationModel.newInstance( runtime );
+        return applicationModel.newInstance( spi );
     }
 
 

@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.util.Iterator;
 import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.internal.ServiceLoader;
+import org.qi4j.bootstrap.spi.ApplicationFactory;
+import org.qi4j.bootstrap.spi.Qi4jRuntime;
 import org.qi4j.spi.Qi4jSPI;
 
 /**
@@ -29,13 +31,13 @@ import org.qi4j.spi.Qi4jSPI;
  * and call one of the factory methods to get started.
  *
  * This class will use the Service Loader mechanism in Java to try to locate a runtime that implements
- * the ApplicationFactory interface. This avoids a direct dependency from the bootstrap to the runtime.
+ * the Qi4jRuntime interface. This avoids a direct dependency from the bootstrap to the runtime.
  */
 public final class Energy4Java
 {
     private static ServiceLoader serviceLoader;
 
-    private ApplicationFactory factory;
+    private Qi4jRuntime runtime;
 
     static
     {
@@ -54,62 +56,38 @@ public final class Energy4Java
 
     public Energy4Java()
     {
-        this( findQi4jApplicationFactory() );
+        this( findQi4jRuntime() );
     }
 
-    public Energy4Java( ApplicationFactory factory )
+    public Energy4Java( Qi4jRuntime runtime )
     {
-        this.factory = factory;
+        this.runtime = runtime;
     }
 
     public Application loadApplication()
         throws HibernatingApplicationInvalidException, AssemblyException
     {
-        return factory.loadApplication();
+        return ((ApplicationFactory) runtime ).loadApplication();
     }
 
     public Application newApplication( ApplicationAssembler assembler )
         throws AssemblyException
     {
-        return assembler.assemble( factory );
+        ApplicationAssembly assembly = assembler.assemble( runtime.applicationAssemblyFactory() );
+        return runtime.applicationFactory().newApplication(assembly);
     }
 
-    public Application newApplication( Assembler assembler )
-        throws AssemblyException
+    public Qi4jSPI spi()
     {
-        Application application;
-            application = factory.newApplication( assembler );
-        return application;
+        return runtime.spi();
     }
 
-    public Application newApplication( Assembler[][][] assemblers )
-        throws AssemblyException
-    {
-        return factory.newApplication( assemblers );
-    }
-
-    public Application newApplication( ApplicationAssembly applicationAssembly )
-        throws AssemblyException
-    {
-        return factory.newApplication( applicationAssembly );
-    }
-
-    public  ApplicationAssembly newApplicationAssembly()
-    {
-        return factory.newApplicationAssembly();
-    }
-
-    public Qi4jSPI runtime()
-    {
-        return factory.runtime();
-    }
-
-    private static ApplicationFactory findQi4jApplicationFactory()
+    private static Qi4jRuntime findQi4jRuntime()
         throws BootstrapException
     {
         try
         {
-            Iterator<? extends ApplicationFactory> providers = serviceLoader.providers();
+            Iterator<? extends Qi4jRuntime> providers = serviceLoader.providers( Qi4jRuntime.class).iterator();
             if( providers.hasNext() )
             {
                 return providers.next();
@@ -117,9 +95,9 @@ public final class Energy4Java
         }
         catch( IOException e )
         {
-            throw new BootstrapException( "Unable to load a ApplicationFactory provider.", e );
+            throw new BootstrapException( "Unable to load a Qi4j runtime provider.", e );
         }
-        throw new BootstrapException( "No Application Factory providers found." );
+        throw new BootstrapException( "No Qi4j runtime providers found." );
     }
 
     public static void notifyRuntimeShutdown()

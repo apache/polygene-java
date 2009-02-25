@@ -17,6 +17,7 @@ package org.qi4j.spi.entity.association;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * JAVADOC
@@ -24,26 +25,23 @@ import java.security.MessageDigest;
 public final class AssociationType
     implements Serializable
 {
-    private final String qualifiedName;
+    private final QualifiedName qualifiedName;
     private final String type;
-    private final String uri;
     private final String rdf;
     private final boolean queryable;
 
-    public AssociationType( final String qualifiedName,
+    public AssociationType( final QualifiedName qualifiedName,
                             final String type,
-                            final String uri,
                             final String rdf,
                             final boolean queryable )
     {
         this.qualifiedName = qualifiedName;
         this.type = type;
-        this.uri = uri;
         this.rdf = rdf;
         this.queryable = queryable;
     }
 
-    public String qualifiedName()
+    public QualifiedName qualifiedName()
     {
         return qualifiedName;
     }
@@ -51,12 +49,6 @@ public final class AssociationType
     public String type()
     {
         return type;
-    }
-
-    public String uri()
-    {
-        return uri;
-
     }
 
     public String rdf()
@@ -72,12 +64,12 @@ public final class AssociationType
 
     @Override public String toString()
     {
-        return qualifiedName + "(" + type + "," + uri + ")";
+        return qualifiedName + "(" + type + ")";
     }
 
     public void calculateVersion( MessageDigest md ) throws UnsupportedEncodingException
     {
-        md.update( qualifiedName.getBytes("UTF-8" ));
+        md.update( qualifiedName.toString().getBytes("UTF-8" ));
         md.update( type.getBytes("UTF-8" ));
         
     }

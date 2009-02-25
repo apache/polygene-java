@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import org.qi4j.spi.value.ValueType;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * JAVADOC
@@ -30,29 +31,26 @@ public class PropertyType
         MUTABLE, IMMUTABLE, COMPUTED
     }
 
-    private final String qualifiedName;
+    private final QualifiedName qualifiedName;
     private final ValueType type;
-    private final String uri;
     private String rdf;
     private final boolean queryable;
     private final PropertyTypeEnum propertyType;
 
-    public PropertyType( final String qualifiedName,
+    public PropertyType( final QualifiedName qualifiedName,
                          final ValueType type,
-                         final String uri,
                          final String rdf,
                          final boolean queryable,
                          final PropertyTypeEnum propertyType )
     {
         this.qualifiedName = qualifiedName;
         this.type = type;
-        this.uri = uri;
         this.rdf = rdf;
         this.queryable = queryable;
         this.propertyType = propertyType;
     }
 
-    public String qualifiedName()
+    public QualifiedName qualifiedName()
     {
         return qualifiedName;
     }
@@ -67,11 +65,6 @@ public class PropertyType
         return propertyType;
     }
 
-    public String uri()
-    {
-        return uri;
-    }
-
     public String rdf()
     {
         return rdf;
@@ -84,7 +77,7 @@ public class PropertyType
 
     @Override public String toString()
     {
-        return qualifiedName + "(" + type + "," + uri + ")";
+        return qualifiedName + "(" + type + ")";
     }
 
     public int compareTo( PropertyType pt )
@@ -95,7 +88,7 @@ public class PropertyType
     public void calculateVersion( MessageDigest md )
         throws UnsupportedEncodingException
     {
-        md.update( qualifiedName.getBytes("UTF-8" ));
+        md.update( qualifiedName.toString().getBytes("UTF-8" ));
         type.calculateVersion( md );
     }
 }

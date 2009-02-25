@@ -52,8 +52,8 @@ public final class ValuePropertyModel extends PersistentPropertyModel
 
         ValueType valueType = createValueType( type());
 
-        propertyType = new PropertyType( qualifiedName(), valueType, toURI(), toRDF(), isQueryable, type );
-        propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), name(), qualifiedName(), type() );
+        propertyType = new PropertyType( qualifiedName(), valueType, toRDF(), isQueryable, type );
+        propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), qualifiedName(), type() );
     }
 
     public PropertyType propertyType()

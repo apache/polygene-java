@@ -23,6 +23,4 @@ import org.qi4j.api.entity.association.AssociationInfo;
 public interface AssociationDescriptor extends AssociationInfo
 {
     Method accessor();
-
-    String toURI();
 }

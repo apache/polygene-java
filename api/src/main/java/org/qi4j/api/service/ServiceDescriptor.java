@@ -31,4 +31,6 @@ public interface ServiceDescriptor
     boolean isInstantiateOnStartup();
 
     MetaInfo metaInfo();
+
+    Class<?> configurationType();
 }

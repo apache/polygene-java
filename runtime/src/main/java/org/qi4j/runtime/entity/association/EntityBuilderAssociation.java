@@ -16,6 +16,7 @@ package org.qi4j.runtime.entity.association;
 
 import java.lang.reflect.Type;
 import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * JAVADOC
@@ -46,12 +47,7 @@ public final class EntityBuilderAssociation<T>
         return model.metaInfo( infoType );
     }
 
-    public String name()
-    {
-        return model.name();
-    }
-
-    public String qualifiedName()
+    public QualifiedName qualifiedName()
     {
         return model.qualifiedName();
     }

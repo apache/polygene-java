@@ -14,13 +14,15 @@
 
 package org.qi4j.api.unitofwork;
 
+import org.qi4j.api.common.QualifiedName;
+
 /**
  * Property change event
  */
 public class PropertyStateChange
     extends StateChange
 {
-    public PropertyStateChange( String source, String qualifiedName)
+    public PropertyStateChange( String source, QualifiedName qualifiedName)
     {
         super( source, qualifiedName );
     }

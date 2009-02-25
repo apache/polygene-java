@@ -17,6 +17,7 @@ package org.qi4j.spi.entity.association;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * JAVADOC
@@ -31,29 +32,26 @@ public final class ManyAssociationType
         MANY, LIST, SET
     }
 
-    private final String qualifiedName;
+    private final QualifiedName qualifiedName;
     private final ManyAssociationTypeEnum associationType;
     private final String type;
-    private final String uri;
     private final String rdf;
     private final boolean queryable;
 
-    public ManyAssociationType( final String qualifiedName,
+    public ManyAssociationType( final QualifiedName qualifiedName,
                                 final ManyAssociationTypeEnum associationType,
                                 final String type,
-                                final String uri,
                                 final String rdf,
                                 final boolean queryable )
     {
         this.qualifiedName = qualifiedName;
         this.associationType = associationType;
         this.type = type;
-        this.uri = uri;
         this.rdf = rdf;
         this.queryable = queryable;
     }
 
-    public String qualifiedName()
+    public QualifiedName qualifiedName()
     {
         return qualifiedName;
     }
@@ -68,12 +66,6 @@ public final class ManyAssociationType
         return type;
     }
 
-    public String uri()
-    {
-        return uri;
-
-    }
-
     public String rdf()
     {
         return rdf;
@@ -86,12 +78,12 @@ public final class ManyAssociationType
 
     @Override public String toString()
     {
-        return qualifiedName + "(" + type + "," + uri + ")";
+        return qualifiedName + "(" + type + ")";
     }
 
     public void calculateVersion( MessageDigest md ) throws UnsupportedEncodingException
     {
-        md.update( qualifiedName.getBytes("UTF-8" ));
+        md.update( qualifiedName.toString().getBytes("UTF-8" ));
         md.update( type.getBytes("UTF-8" ));
     }
 }

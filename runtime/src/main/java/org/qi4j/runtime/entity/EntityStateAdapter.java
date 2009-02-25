@@ -21,6 +21,7 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.value.ValueState;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * Adapter for EntityState. Subclass and override methods to use.
@@ -70,42 +71,42 @@ public class EntityStateAdapter
         return entityState.entityType();
     }
 
-    public Object getProperty( String qualifiedName )
+    public Object getProperty( QualifiedName qualifiedName )
     {
         return entityState.getProperty( qualifiedName );
     }
 
-    public void setProperty( String qualifiedName, Object newValue )
+    public void setProperty( QualifiedName qualifiedName, Object newValue )
     {
         entityState.setProperty( qualifiedName, newValue );
     }
 
-    public QualifiedIdentity getAssociation( String qualifiedName )
+    public QualifiedIdentity getAssociation( QualifiedName qualifiedName )
     {
         return entityState.getAssociation( qualifiedName );
     }
 
-    public void setAssociation( String qualifiedName, QualifiedIdentity newEntity )
+    public void setAssociation( QualifiedName qualifiedName, QualifiedIdentity newEntity )
     {
         entityState.setAssociation( qualifiedName, newEntity );
     }
 
-    public Collection<QualifiedIdentity> getManyAssociation( String qualifiedName )
+    public Collection<QualifiedIdentity> getManyAssociation( QualifiedName qualifiedName )
     {
         return entityState.getManyAssociation( qualifiedName );
     }
 
-    public Iterable<String> propertyNames()
+    public Iterable<QualifiedName> propertyNames()
     {
         return entityState.propertyNames();
     }
 
-    public Iterable<String> associationNames()
+    public Iterable<QualifiedName> associationNames()
     {
         return entityState.associationNames();
     }
 
-    public Iterable<String> manyAssociationNames()
+    public Iterable<QualifiedName> manyAssociationNames()
     {
         return entityState.manyAssociationNames();
     }
@@ -115,7 +116,7 @@ public class EntityStateAdapter
         entityState.markAsLoaded();
     }
 
-    public ValueState newValueState( Map<String, Object> values )
+    public ValueState newValueState( Map<QualifiedName, Object> values )
     {
         return entityState.newValueState( values );
     }

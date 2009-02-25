@@ -21,6 +21,7 @@ package org.qi4j.api.property;
 
 import java.lang.reflect.Type;
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * {@code AbstractPropertyInstance} is the base implementation of {@link org.qi4j.api.property.Property}.
@@ -60,23 +61,12 @@ public abstract class AbstractPropertyInstance<T>
     }
 
     /**
-     * Returns the property name. Must not return {@code null}.
-     *
-     * @return The property name.
-     * @since 0.1.0
-     */
-    public final String name()
-    {
-        return propertyInfo.name();
-    }
-
-    /**
      * Returns the qualified name of this {@code Property}. Must not return {@code null}.
      *
      * @return The qualified name of this {@code Property}.
      * @since 0.1.0
      */
-    public final String qualifiedName()
+    public final QualifiedName qualifiedName()
     {
         return propertyInfo.qualifiedName();
     }
@@ -94,6 +84,16 @@ public abstract class AbstractPropertyInstance<T>
     public boolean isComputed()
     {
         return propertyInfo.isComputed();
+    }
+
+    public T _()
+    {
+        return get();
+    }
+
+    public void _( T newValue ) throws IllegalArgumentException, IllegalStateException
+    {
+        set(newValue);
     }
 
     /**

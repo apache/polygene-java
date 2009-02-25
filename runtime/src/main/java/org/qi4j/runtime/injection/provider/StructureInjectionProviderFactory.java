@@ -34,6 +34,7 @@ import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.structure.ApplicationSPI;
 
 public final class StructureInjectionProviderFactory
     implements InjectionProviderFactory, Serializable
@@ -88,7 +89,7 @@ public final class StructureInjectionProviderFactory
             {
                 return context.moduleInstance().layerInstance();
             }
-            else if( Application.class.isAssignableFrom( (Class<?>) type ) )
+            else if( Application.class.isAssignableFrom( (Class<?>) type ) || ApplicationSPI.class.isAssignableFrom( (Class<?>) type ) )
             {
                 return context.moduleInstance().layerInstance().applicationInstance();
             }

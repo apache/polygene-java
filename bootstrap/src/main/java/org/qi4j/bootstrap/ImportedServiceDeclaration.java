@@ -22,7 +22,8 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceImporter;
 
 /**
- * Fluent API for declaring imported services.
+ * Fluent API for declaring imported services. Instances
+ * of this API are acquired by calling {@link ModuleAssembly#importServices(Class[])}.
  */
 public interface ImportedServiceDeclaration
 {

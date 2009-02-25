@@ -21,6 +21,7 @@ import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.unitofwork.AssociationStateChange;
 import org.qi4j.api.unitofwork.StateChangeListener;
 import org.qi4j.api.unitofwork.StateChangeVoter;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -110,12 +111,7 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
         return associationInfo.metaInfo( infoType );
     }
 
-    public String name()
-    {
-        return associationInfo.name();
-    }
-
-    public String qualifiedName()
+    public QualifiedName qualifiedName()
     {
         return associationInfo.qualifiedName();
     }

@@ -24,6 +24,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
@@ -56,11 +57,9 @@ public final class AssociationModel
     implements AssociationDescriptor, Serializable
 {
     private MetaInfo metaInfo;
-    private String name;
     private Type type;
     private Method accessor;
-    private String qualifiedName;
-    private String uri;
+    private QualifiedName qualifiedName;
     private String rdf;
     private ValueConstraintsInstance constraints;
     private boolean queryable;
@@ -102,10 +101,8 @@ public final class AssociationModel
 
     private void initialize()
     {
-        this.name = accessor.getName();
         this.type = GenericAssociationInfo.getAssociationType( accessor );
-        this.qualifiedName = GenericAssociationInfo.getQualifiedName( accessor );
-        this.uri = GenericAssociationInfo.toURI( qualifiedName() );
+        this.qualifiedName = new QualifiedName( accessor );
         this.immutable = metaInfo.get( Immutable.class ) != null;
         this.aggregated = metaInfo.get( Aggregated.class ) != null;
         RDF uriAnnotation = accessor().getAnnotation( RDF.class );
@@ -120,12 +117,7 @@ public final class AssociationModel
         return metaInfo.get( infoType );
     }
 
-    public String name()
-    {
-        return name;
-    }
-
-    public String qualifiedName()
+    public QualifiedName qualifiedName()
     {
         return qualifiedName;
     }
@@ -148,18 +140,6 @@ public final class AssociationModel
     public Method accessor()
     {
         return accessor;
-    }
-
-    public String toURI()
-    {
-        return uri;
-    }
-
-    public String toNameSpace()
-    {
-        return "urn:qi4j:association:"
-               + Classes.normalizeClassToURI( GenericPropertyInfo.getDeclaringClassName( accessor ) )
-               + ":";
     }
 
     public boolean isManyAssociation()
@@ -311,7 +291,7 @@ public final class AssociationModel
 
     public AssociationType associationType()
     {
-        return new AssociationType( qualifiedName, getRawClass( type ).getName(), uri, rdf, queryable );
+        return new AssociationType( qualifiedName, getRawClass( type ).getName(), rdf, queryable );
     }
 
     public ManyAssociationType manyAssociationType()
@@ -329,6 +309,6 @@ public final class AssociationModel
         {
             manyAssocType = ManyAssociationType.ManyAssociationTypeEnum.MANY;
         }
-        return new ManyAssociationType( qualifiedName, manyAssocType, getRawClass( type ).getName(), uri, rdf, queryable );
+        return new ManyAssociationType( qualifiedName, manyAssocType, getRawClass( type ).getName(), rdf, queryable );
     }
 }

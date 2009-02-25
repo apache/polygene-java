@@ -29,7 +29,6 @@ Import-Package: net.sf.cglib.asm;version=2.1.3, \
                 net.sf.cglib.util;version=2.1.3, \
                 org.qi4j.api, \
                 org.qi4j.api.appliesto, \
-                org.qi4j.bootstrap, \
                 org.qi4j.api.common, \
                 org.qi4j.api.composite, \
                 org.qi4j.api.composite.internal, \
@@ -54,6 +53,8 @@ Import-Package: net.sf.cglib.asm;version=2.1.3, \
                 org.qi4j.api.usecase, \
                 org.qi4j.api.util, \
                 org.qi4j.api.value, \
+                org.qi4j.bootstrap, \
+                org.qi4j.bootstrap.spi, \
                 org.qi4j.spi, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.concern, \

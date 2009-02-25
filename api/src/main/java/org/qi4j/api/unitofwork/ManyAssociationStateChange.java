@@ -16,6 +16,7 @@ package org.qi4j.api.unitofwork;
 
 import java.util.Collection;
 import org.qi4j.api.entity.Entity;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * ManyAssociation change event
@@ -31,7 +32,7 @@ public class ManyAssociationStateChange
     private ChangeType changeType;
     private Collection<Entity> changes;
 
-    public ManyAssociationStateChange( String source, String qualifiedName, ChangeType changeType, Collection<Entity> changes)
+    public ManyAssociationStateChange( String source, QualifiedName qualifiedName, ChangeType changeType, Collection<Entity> changes)
     {
         super( source, qualifiedName );
         this.changeType = changeType;

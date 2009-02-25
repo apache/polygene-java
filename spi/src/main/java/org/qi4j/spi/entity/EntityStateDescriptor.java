@@ -19,13 +19,14 @@ package org.qi4j.spi.entity;
 
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
+import org.qi4j.api.common.QualifiedName;
 import java.util.List;
 
 public interface EntityStateDescriptor extends StateDescriptor
 {
     AssociationDescriptor getAssociationByName( String name );
 
-    AssociationDescriptor getAssociationByQualifiedName( String name );
+    AssociationDescriptor getAssociationByQualifiedName( QualifiedName name );
 
     List<AssociationDescriptor> associations();
     

@@ -20,6 +20,7 @@ package org.qi4j.api.property;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import org.qi4j.api.util.NullArgumentException;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * Use the ImmutableFacade if you have a Property that you want to
@@ -47,7 +48,16 @@ public class ImmutableFacade<T>
         throw new IllegalArgumentException( "Property '" + qualifiedName() + "' is immutable." );
     }
 
-    // PropertyInfo
+    public T _()
+    {
+        return get();
+    }
+
+    public void _( T newValue ) throws IllegalArgumentException, IllegalStateException
+    {
+        set(newValue);
+    }
+
     // I think that using T again here is a mistake...
     public <V> V metaInfo( Class<V> infoType )
     {
@@ -63,12 +73,7 @@ public class ImmutableFacade<T>
         return target.metaInfo( infoType );
     }
 
-    public String name()
-    {
-        return target.name();
-    }
-
-    public String qualifiedName()
+    public QualifiedName qualifiedName()
     {
         return target.qualifiedName();
     }

@@ -24,6 +24,7 @@ import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.structure.Application;
 
 /**
  * Encapsulation of the Qi4j SPI. This is implemented by the runtime.

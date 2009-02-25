@@ -17,6 +17,7 @@ package org.qi4j.spi.entity.helpers;
 import java.io.Serializable;
 import java.util.Map;
 import org.qi4j.spi.value.ValueState;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * Default implementation of ValueState.
@@ -24,19 +25,19 @@ import org.qi4j.spi.value.ValueState;
 public class DefaultValueState
     implements ValueState, Serializable
 {
-    final Map<String, Object> values;
+    final Map<QualifiedName, Object> values;
 
-    public DefaultValueState( Map<String, Object> values )
+    public DefaultValueState( Map<QualifiedName, Object> values )
     {
         this.values = values;
     }
 
-    public Object getProperty( String qualifiedName )
+    public Object getProperty( QualifiedName qualifiedName )
     {
         return values.get( qualifiedName );
     }
 
-    public Map<String, Object> values()
+    public Map<QualifiedName, Object> values()
     {
         return values;
     }

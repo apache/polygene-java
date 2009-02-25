@@ -22,6 +22,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Set;
+import java.util.ArrayList;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
@@ -30,6 +31,8 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.util.Classes;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.configuration.Configuration;
 import org.qi4j.bootstrap.MetaInfoDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.AbstractCompositeModel;
@@ -46,6 +49,8 @@ import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.structure.DependencyVisitor;
+import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 
@@ -85,6 +90,7 @@ public final class ServiceModel
     private final String identity;
     private final boolean instantiateOnStartup;
     private String moduleName;
+    private final Class configurationType;
 
     public ServiceModel( Class<? extends Composite> compositeType,
                          Visibility visibility,
@@ -101,6 +107,9 @@ public final class ServiceModel
         this.identity = identity;
         this.instantiateOnStartup = instantiateOnStartup;
         this.moduleName = moduleName;
+
+        // Calculate configuration type
+        this.configurationType = calculateConfigurationType();
     }
 
     public boolean isInstantiateOnStartup()
@@ -116,6 +125,11 @@ public final class ServiceModel
     public String moduleName()
     {
         return moduleName;
+    }
+
+    public Class configurationType()
+    {
+        return configurationType;
     }
 
     public void visitModel( ModelVisitor modelVisitor )
@@ -241,5 +255,38 @@ public final class ServiceModel
     @Override public String toString()
     {
         return type().getName() + ":" + identity;
+    }
+
+    private Class calculateConfigurationType()
+    {
+        final List<DependencyModel> dependencyModels = new ArrayList<DependencyModel>();
+        visitModel( new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
+        {
+            @Override
+            public void visitDependency( DependencyModel dependencyModel )
+            {
+                dependencyModels.add( dependencyModel );
+            }
+        } );
+
+        Class injectionClass = null;
+        for( DependencyModel dependencyModel : dependencyModels )
+        {
+            if( dependencyModel.rawInjectionType().equals( Configuration.class ) )
+            {
+                if( injectionClass == null )
+                {
+                    injectionClass = dependencyModel.injectionClass();
+                }
+                else
+                {
+                    if( injectionClass.isAssignableFrom( dependencyModel.injectionClass() ) )
+                    {
+                        injectionClass = dependencyModel.injectionClass();
+                    }
+                }
+            }
+        }
+        return injectionClass;
     }
 }

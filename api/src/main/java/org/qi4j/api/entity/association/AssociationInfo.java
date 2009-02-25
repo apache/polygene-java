@@ -15,6 +15,7 @@
 package org.qi4j.api.entity.association;
 
 import java.lang.reflect.Type;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * Metadata about an Association.
@@ -31,14 +32,6 @@ public interface AssociationInfo
     <T> T metaInfo( Class<T> infoType );
 
     /**
-     * Get the unqualified name of the association. This is the method
-     * name of the association.
-     *
-     * @return the name of the association
-     */
-    String name();
-
-    /**
      * Get the qualified name of the association. This is constructed by
      * concatenating the name of the declaring interface with the name
      * of the method, using ":" as separator. Example:<br/>
@@ -49,7 +42,7 @@ public interface AssociationInfo
      *
      * @return the qualified name of the association
      */
-    String qualifiedName();
+    QualifiedName qualifiedName();
 
     /**
      * Get the type of the associated Entities

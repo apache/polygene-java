@@ -19,6 +19,7 @@ package org.qi4j.spi.entity;
 import java.util.Collection;
 import java.util.Map;
 import org.qi4j.spi.value.ValueState;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  */
@@ -78,23 +79,23 @@ public interface EntityState
      * @return the value of the property
      */
 
-    Object getProperty( String qualifiedName );
+    Object getProperty( QualifiedName qualifiedName );
 
-    void setProperty( String qualifiedName, Object newValue );
+    void setProperty( QualifiedName qualifiedName, Object newValue );
 
-    QualifiedIdentity getAssociation( String qualifiedName );
+    QualifiedIdentity getAssociation( QualifiedName qualifiedName );
 
-    void setAssociation( String qualifiedName, QualifiedIdentity newEntity );
+    void setAssociation( QualifiedName qualifiedName, QualifiedIdentity newEntity );
 
-    Collection<QualifiedIdentity> getManyAssociation( String qualifiedName );
+    Collection<QualifiedIdentity> getManyAssociation( QualifiedName qualifiedName );
 
-    Iterable<String> propertyNames();
+    Iterable<QualifiedName> propertyNames();
 
-    Iterable<String> associationNames();
+    Iterable<QualifiedName> associationNames();
 
-    Iterable<String> manyAssociationNames();
+    Iterable<QualifiedName> manyAssociationNames();
 
     void markAsLoaded();
 
-    ValueState newValueState( Map<String, Object> values);
+    ValueState newValueState( Map<QualifiedName, Object> values);
 }

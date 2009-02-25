@@ -18,8 +18,8 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
-import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * JAVADOC
@@ -31,7 +31,7 @@ public final class StateUsage
 
     private Set<String> usedEntityTypes = new HashSet<String>();
     private Set<String> usedMixinTypes = new HashSet<String>();
-    private Set<String> usedProperties = new HashSet<String>(); // Qualified names of properties that are used
+    private Set<QualifiedName> usedProperties = new HashSet<QualifiedName>(); // Qualified names of properties that are used
     private boolean recording;
 
     public StateUsage()
@@ -43,7 +43,7 @@ public final class StateUsage
         this.recording = recording;
     }
 
-    public Set<String> usedProperties()
+    public Set<QualifiedName> usedProperties()
     {
         return usedProperties;
     }
@@ -71,18 +71,18 @@ public final class StateUsage
         {
             if( Property.class.isAssignableFrom( mixinMethod.getReturnType() ) )
             {
-                String qualifiedName = GenericPropertyInfo.getQualifiedName( mixinMethod );
+                QualifiedName qualifiedName = new QualifiedName( mixinMethod );
                 usedProperties.add( qualifiedName );
-                usedMixinTypes.add( GenericPropertyInfo.getDeclaringClassName( qualifiedName ) );
+                usedMixinTypes.add( qualifiedName.type() );
             }
         }
         return this;
     }
 
-    public StateUsage usesProperty( String qualifiedName )
+    public StateUsage usesProperty( QualifiedName qualifiedName )
     {
         usedProperties.add( qualifiedName );
-        usedMixinTypes.add( GenericPropertyInfo.getDeclaringClassName( qualifiedName ) );
+        usedMixinTypes.add( qualifiedName.type() );
         return this;
     }
 

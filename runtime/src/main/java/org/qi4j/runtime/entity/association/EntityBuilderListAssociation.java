@@ -17,6 +17,7 @@ package org.qi4j.runtime.entity.association;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import org.qi4j.api.entity.association.ListAssociation;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * JAVADOC
@@ -29,12 +30,7 @@ public final class EntityBuilderListAssociation<T> extends ArrayList<T>
         return null;
     }
 
-    public String name()
-    {
-        return null;
-    }
-
-    public String qualifiedName()
+    public QualifiedName qualifiedName()
     {
         return null;
     }

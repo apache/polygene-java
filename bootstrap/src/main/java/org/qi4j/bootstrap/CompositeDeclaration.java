@@ -21,7 +21,8 @@ package org.qi4j.bootstrap;
 import org.qi4j.api.common.Visibility;
 
 /**
- * Fluent API for declaring Composites.
+ * Fluent API for declaring Composites. Instances
+ * of this API are acquired by calling {@link ModuleAssembly#addComposites(Class[])}.
  */
 public interface CompositeDeclaration
 {

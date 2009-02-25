@@ -21,40 +21,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.util.Classes;
 
 public final class GenericPropertyInfo
     implements PropertyInfo
 {
-    public static String getName( String qualifiedName )
-    {
-        int idx = qualifiedName.lastIndexOf( ":" );
-        return qualifiedName.substring( idx + 1 );
-    }
-
-    public static String getDeclaringClassName( String qualifiedName )
-    {
-        int idx = qualifiedName.lastIndexOf( ":" );
-        return qualifiedName.substring( 0, idx );
-    }
-
-    public static String getDeclaringClassName( Method accessor )
-    {
-        return accessor.getDeclaringClass().getName();
-    }
-
-    public static String getQualifiedName( Method accessor )
-    {
-        return getQualifiedName( accessor.getDeclaringClass(), accessor.getName() );
-    }
-
-    public static String getQualifiedName( Class<?> declaringClass, String name )
-    {
-        String className = declaringClass.getName();
-        className = className.replace( '$', '-' );
-        return className + ":" + name;
-    }
-
     public static Type getPropertyType( Method accessor )
     {
         return getPropertyType( accessor.getGenericReturnType() );
@@ -86,79 +58,15 @@ public final class GenericPropertyInfo
         return null;
     }
 
-    /**
-     * Get URI for a property.
-     *
-     * @param accessor accessor method
-     * @return property URI
-     */
-    public static String toURI( final Method accessor )
-    {
-        return toURI( getQualifiedName( accessor ) );
-    }
-
-    /**
-     * Get URI for a property.
-     *
-     * @param declaringClass of the property
-     * @param name           of the property
-     * @return property URI
-     */
-    public static String toURI( final Class declaringClass, String name )
-    {
-        return toURI( getQualifiedName( declaringClass, name ) );
-    }
-
-    /**
-     * Get URI for a qualified property name.
-     *
-     * @param qualifiedName of the property
-     * @return property URI
-     */
-    public static String toURI( final String qualifiedName )
-    {
-        return "urn:qi4j:entity:" + qualifiedName.replace( ':', '#' );
-    }
-
-    /**
-     * Get qualified property name from a URI
-     *
-     * @param uri of the property
-     * @return property qualified property name
-     */
-    public static String toQualifiedName( final String uri )
-    {
-        return uri.substring( "urn:qi4j:entity:".length() ).replace( '#', ':' );
-    }
-
-    /**
-     * Get namespace for a property.
-     *
-     * @param accessor accessor method
-     * @return property namespace
-     */
-    public static String toNamespace( final Method accessor )
-    {
-        if( accessor == null )
-        {
-            return null;
-        }
-        return "urn:qi4j:entity:"
-               + Classes.normalizeClassToURI( getDeclaringClassName( accessor ) )
-               + "#";
-    }
-
     private MetaInfo infos;
     private boolean immutable;
     private boolean computed;
-    private final String qualifiedName;
-    private final String name;
+    private final QualifiedName qualifiedName;
     private final Type type;
 
     public GenericPropertyInfo( Method accessor )
     {
-        this.qualifiedName = getQualifiedName( accessor );
-        this.name = getName( qualifiedName );
+        this.qualifiedName = new QualifiedName( accessor );
         this.type = getPropertyType( accessor );
         infos = new MetaInfo().withAnnotations( accessor );
         immutable = metaInfo( Immutable.class ) != null;
@@ -171,8 +79,7 @@ public final class GenericPropertyInfo
         {
             Method accessor = declaringClass.getMethod( accessorName );
 
-            this.qualifiedName = getQualifiedName( accessor );
-            this.name = getName( qualifiedName );
+            this.qualifiedName = new QualifiedName( accessor );
             this.type = getPropertyType( accessor );
             infos = new MetaInfo().withAnnotations( accessor );
             immutable = metaInfo( Immutable.class ) != null;
@@ -185,13 +92,12 @@ public final class GenericPropertyInfo
         }
     }
 
-    public GenericPropertyInfo( MetaInfo infos, boolean immutable, boolean computed, String qualifiedName, String name, Type type )
+    public GenericPropertyInfo( MetaInfo infos, boolean immutable, boolean computed, QualifiedName qualifiedName, Type type )
     {
         this.infos = infos;
         this.immutable = immutable;
         this.computed = computed;
         this.qualifiedName = qualifiedName;
-        this.name = name;
         this.type = type;
     }
 
@@ -202,10 +108,10 @@ public final class GenericPropertyInfo
 
     public String name()
     {
-        return name;
+        return qualifiedName.name();
     }
 
-    public String qualifiedName()
+    public QualifiedName qualifiedName()
     {
         return qualifiedName;
     }

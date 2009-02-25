@@ -24,14 +24,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.LinkedList;
-import org.qi4j.bootstrap.ApplicationFactory;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 
 /**
- * Implementation of ServiceLoader mechanism in Java. This
- * is used to locate an instance of the ApplicationFactory
- * interface.
+ * Implementation of ServiceLoader mechanism in Java.
  */
 public final class ServiceLoader
 {
@@ -45,19 +42,7 @@ public final class ServiceLoader
 
     public static void addClassloader( ClassLoader loader )
     {
-        Enumeration cfg;
-        try
-        {
-            cfg = loader.getResources( "META-INF/services/" + ApplicationFactory.class.getName() );
-            if( cfg.hasMoreElements() )
-            {
-                loaders.add( loader );
-            }
-        }
-        catch( IOException e )
-        {
-            // ignore, nothing we can do.
-        }
+        loaders.add( loader );
     }
 
     public static void removeClassloader( ClassLoader loader )
@@ -65,24 +50,24 @@ public final class ServiceLoader
         loaders.remove( loader );
     }
 
-    public Iterator<? extends ApplicationFactory> providers()
+    public <T> Iterable<T> providers(Class<T> providerClass)
         throws IOException
     {
-        LinkedList<ApplicationFactory> result = new LinkedList<ApplicationFactory>();
+        LinkedList<T> result = new LinkedList<T>();
         for( ClassLoader loader : loaders )
         {
-            Enumeration cfg = loader.getResources( "META-INF/services/" + ApplicationFactory.class.getName() );
+            Enumeration cfg = loader.getResources( "META-INF/services/" + providerClass.getName() );
             while( cfg.hasMoreElements() )
             {
                 URL rc = (URL) cfg.nextElement();
                 processResource( loader, result, rc );
             }
         }
-        return result.iterator();
+        return result;
     }
 
-    private void processResource(
-        ClassLoader classLoader, LinkedList<ApplicationFactory> result,
+    private <T> void processResource(
+        ClassLoader classLoader, LinkedList<T> result,
         URL rc )
         throws IOException
     {
@@ -125,36 +110,36 @@ public final class ServiceLoader
         return line;
     }
 
-    private void processProvider( LinkedList<ApplicationFactory> result,
+    private <T> void processProvider( LinkedList<T> result,
                                   ClassLoader classLoader, String providerClassName )
         throws IOException
     {
-        Class<? extends ApplicationFactory> provider = loadProvider( classLoader, providerClassName );
+        Class<T> provider = loadProvider( classLoader, providerClassName );
         if( provider == null )
         {
             return;
         }
-        ApplicationFactory instance = instantiateProvider( provider );
+        T instance = instantiateProvider( provider );
         if( instance == null )
         {
             return;
         }
-        if( !result.contains( provider ) )
+        if( !result.contains( instance ) )
         {
             result.add( instance );
         }
 
     }
 
-    private Class<? extends ApplicationFactory> loadProvider( ClassLoader ldr, String line )
+    private <T> Class<T> loadProvider( ClassLoader ldr, String line )
     {
         try
         {
-            return (Class<? extends ApplicationFactory>) ldr.loadClass( line );
+            return (Class<T>) ldr.loadClass( line );
         }
         catch( ClassCastException ex )
         {
-            System.err.println( "Class " + line + " was not of " + ApplicationFactory.class.getName() + " subtype." );
+            System.err.println( "Class " + line + " was not of " + ApplicationAssemblyFactory.class.getName() + " subtype." );
         }
         catch( ClassNotFoundException ex )
         {
@@ -163,7 +148,7 @@ public final class ServiceLoader
         return null;
     }
 
-    private ApplicationFactory instantiateProvider( Class<? extends ApplicationFactory> provider )
+    private <T> T instantiateProvider( Class<T> provider )
         throws IOException
     {
         try

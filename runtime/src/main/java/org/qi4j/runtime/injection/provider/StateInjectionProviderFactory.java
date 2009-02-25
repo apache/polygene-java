@@ -126,7 +126,7 @@ public final class StateInjectionProviderFactory
             }
             else
             {
-                throw new InjectionProviderException( "Non-optional association " + associationDescriptor.name() + " had no association" );
+                throw new InjectionProviderException( "Non-optional association " + associationDescriptor.qualifiedName() + " had no association" );
             }
         }
     }

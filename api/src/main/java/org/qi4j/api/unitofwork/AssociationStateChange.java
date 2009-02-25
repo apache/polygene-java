@@ -15,6 +15,7 @@
 package org.qi4j.api.unitofwork;
 
 import org.qi4j.api.entity.Entity;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * Association change event
@@ -24,7 +25,7 @@ public class AssociationStateChange
 {
     Entity newValue;
 
-    public AssociationStateChange( String source, String qualifiedName, Entity newValue )
+    public AssociationStateChange( String source, QualifiedName qualifiedName, Entity newValue )
     {
         super( source, qualifiedName );
         this.newValue = newValue;

@@ -33,6 +33,7 @@ import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.value.ValueState;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * Standard implementation of EntityState.
@@ -40,9 +41,9 @@ import org.qi4j.spi.value.ValueState;
 public class DefaultEntityState
     implements EntityState, Serializable
 {
-    public static Map<String, Collection<QualifiedIdentity>> newManyCollections( EntityType entityType )
+    public static Map<QualifiedName, Collection<QualifiedIdentity>> newManyCollections( EntityType entityType )
     {
-        Map<String, Collection<QualifiedIdentity>> manyAssociations = new HashMap<String, Collection<QualifiedIdentity>>();
+        Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations = new HashMap<QualifiedName, Collection<QualifiedIdentity>>();
         for( ManyAssociationType manyAssociationType : entityType.manyAssociations() )
         {
             switch( manyAssociationType.associationType() )
@@ -75,13 +76,13 @@ public class DefaultEntityState
     private final QualifiedIdentity identity;
     private final EntityType entityType;
 
-    protected final Map<String, Object> properties;
-    protected final Map<String, QualifiedIdentity> associations;
-    protected final Map<String, Collection<QualifiedIdentity>> manyAssociations;
+    protected final Map<QualifiedName, Object> properties;
+    protected final Map<QualifiedName, QualifiedIdentity> associations;
+    protected final Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations;
 
     public DefaultEntityState( QualifiedIdentity identity, EntityType entityType )
     {
-        this( 0, System.currentTimeMillis(), identity, EntityStatus.NEW, entityType, new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), newManyCollections( entityType ) );
+        this( 0, System.currentTimeMillis(), identity, EntityStatus.NEW, entityType, new HashMap<QualifiedName, Object>(), new HashMap<QualifiedName, QualifiedIdentity>(), newManyCollections( entityType ) );
     }
 
     public DefaultEntityState( long version,
@@ -89,9 +90,9 @@ public class DefaultEntityState
                                QualifiedIdentity identity,
                                EntityStatus status,
                                EntityType entityType,
-                               Map<String, Object> properties,
-                               Map<String, QualifiedIdentity> associations,
-                               Map<String, Collection<QualifiedIdentity>> manyAssociations )
+                               Map<QualifiedName, Object> properties,
+                               Map<QualifiedName, QualifiedIdentity> associations,
+                               Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations )
     {
         this.version = version;
         this.lastModified = lastModified;
@@ -119,29 +120,29 @@ public class DefaultEntityState
         return identity;
     }
 
-    public Object getProperty( String qualifiedName )
+    public Object getProperty( QualifiedName qualifiedName )
     {
         return properties.get( qualifiedName );
     }
 
-    public void setProperty( String qualifiedName, Object newValue )
+    public void setProperty( QualifiedName qualifiedName, Object newValue )
     {
         properties.put( qualifiedName, newValue );
         modified = true;
     }
 
-    public QualifiedIdentity getAssociation( String qualifiedName )
+    public QualifiedIdentity getAssociation( QualifiedName qualifiedName )
     {
         return associations.get( qualifiedName );
     }
 
-    public void setAssociation( String qualifiedName, QualifiedIdentity newEntity )
+    public void setAssociation( QualifiedName qualifiedName, QualifiedIdentity newEntity )
     {
         associations.put( qualifiedName, newEntity );
         modified = true;
     }
 
-    public Collection<QualifiedIdentity> getManyAssociation( String qualifiedName )
+    public Collection<QualifiedIdentity> getManyAssociation( QualifiedName qualifiedName )
     {
         Collection<QualifiedIdentity> manyAssociation = manyAssociations.get( qualifiedName );
 
@@ -179,17 +180,17 @@ public class DefaultEntityState
         return entityType;
     }
 
-    public Iterable<String> propertyNames()
+    public Iterable<QualifiedName> propertyNames()
     {
         return properties.keySet();
     }
 
-    public Iterable<String> associationNames()
+    public Iterable<QualifiedName> associationNames()
     {
         return associations.keySet();
     }
 
-    public Iterable<String> manyAssociationNames()
+    public Iterable<QualifiedName> manyAssociationNames()
     {
         return manyAssociations.keySet();
     }
@@ -199,17 +200,17 @@ public class DefaultEntityState
         return modified;
     }
 
-    public Map<String, Object> getProperties()
+    public Map<QualifiedName, Object> getProperties()
     {
         return properties;
     }
 
-    public Map<String, QualifiedIdentity> getAssociations()
+    public Map<QualifiedName, QualifiedIdentity> getAssociations()
     {
         return associations;
     }
 
-    public Map<String, Collection<QualifiedIdentity>> getManyAssociations()
+    public Map<QualifiedName, Collection<QualifiedIdentity>> getManyAssociations()
     {
         return manyAssociations;
     }
@@ -229,7 +230,7 @@ public class DefaultEntityState
         status = EntityStatus.LOADED;
     }
 
-    public ValueState newValueState( Map<String, Object> values)
+    public ValueState newValueState( Map<QualifiedName, Object> values)
     {
         return new DefaultValueState(values);
     }

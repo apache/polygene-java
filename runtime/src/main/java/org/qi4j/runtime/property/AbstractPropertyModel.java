@@ -34,6 +34,7 @@ import org.qi4j.api.property.ComputedPropertyInstance;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
@@ -55,15 +56,11 @@ public abstract class AbstractPropertyModel
 {
     private static final long serialVersionUID = 1L;
 
-    private final String name;
-
     private final Type type;
 
     private final Method accessor; // Interface accessor
 
-    private final String qualifiedName;
-
-    private final String uri;
+    private final QualifiedName qualifiedName;
 
     private final String rdf;
 
@@ -88,10 +85,9 @@ public abstract class AbstractPropertyModel
     {
         this.immutable = immutable;
         this.metaInfo = metaInfo;
-        name = accessor.getName();
         type = GenericPropertyInfo.getPropertyType( accessor );
         this.accessor = accessor;
-        qualifiedName = GenericPropertyInfo.getQualifiedName( accessor );
+        qualifiedName = new QualifiedName( accessor );
 
         // Check for @UseDefaults annotation
         if( initialValue == null )
@@ -105,7 +101,6 @@ public abstract class AbstractPropertyModel
         this.initialValue = initialValue;
         useDefaults = this.metaInfo.get( UseDefaults.class ) != null;
 
-        uri = GenericPropertyInfo.toURI( qualifiedName() );
         RDF uriAnnotation = this.metaInfo.get( RDF.class );
         rdf = uriAnnotation == null ? null : uriAnnotation.value();
 
@@ -114,7 +109,7 @@ public abstract class AbstractPropertyModel
         computed = this.metaInfo.get( Computed.class ) != null;
         needsWrapper = !this.accessor.getReturnType().equals( Property.class );
 
-        builderInfo = new GenericPropertyInfo( this.metaInfo, false, computed, name, qualifiedName, type );
+        builderInfo = new GenericPropertyInfo( this.metaInfo, false, computed, qualifiedName, type );
     }
 
     protected ValueType createValueType( Type type )
@@ -146,7 +141,7 @@ public abstract class AbstractPropertyModel
                     String rdf = rdfAnnotation == null ? null : rdfAnnotation.value();
                     Queryable queryableAnnotation = method.getAnnotation( Queryable.class );
                     boolean queryable = queryableAnnotation == null || queryableAnnotation.value();
-                    PropertyType propertyType = new PropertyType( GenericPropertyInfo.getQualifiedName( method ), createValueType( propType ), GenericPropertyInfo.toURI( method ), rdf, queryable, PropertyType.PropertyTypeEnum.IMMUTABLE );
+                    PropertyType propertyType = new PropertyType( new QualifiedName( method ), createValueType( propType ), rdf, queryable, PropertyType.PropertyTypeEnum.IMMUTABLE );
                     types.add( propertyType );
                 }
             }
@@ -172,10 +167,10 @@ public abstract class AbstractPropertyModel
 
     public String name()
     {
-        return name;
+        return qualifiedName.name();
     }
 
-    public String qualifiedName()
+    public QualifiedName qualifiedName()
     {
         return qualifiedName;
     }
@@ -211,11 +206,6 @@ public abstract class AbstractPropertyModel
         }
 
         return value;
-    }
-
-    public String toURI()
-    {
-        return uri;
     }
 
     public String toRDF()
@@ -341,7 +331,7 @@ public abstract class AbstractPropertyModel
 
         public T get()
         {
-            throw new IllegalStateException( "Property [" + name() + "] must be computed" );
+            throw new IllegalStateException( "Property [" + qualifiedName().name() + "] must be computed" );
         }
     }
 

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import org.qi4j.api.property.AbstractPropertyInstance;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.unitofwork.PropertyStateChange;
 import org.qi4j.api.unitofwork.StateChangeListener;
 import org.qi4j.api.unitofwork.StateChangeVoter;
@@ -161,7 +162,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
     {
         if( type instanceof CompoundType )
         {
-            Map<String, Object> values = new HashMap<String, Object>();
+            Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
 
             ValueComposite valueComposite = (ValueComposite) value;
             ValueInstance instance = ValueInstance.getValueInstance( valueComposite );

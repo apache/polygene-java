@@ -45,6 +45,7 @@ import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.StateUsage;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
@@ -833,7 +834,7 @@ public final class UnitOfWorkInstance
             }
 
             UnitOfWorkEntityState entityState = new UnitOfWorkEntityState( 0, System.currentTimeMillis(), identity, EntityStatus.NEW, entityType,
-                                                                           new HashMap<String, Object>(), new HashMap<String, QualifiedIdentity>(), new HashMap<String, Collection<QualifiedIdentity>>(), null );
+                                                                           new HashMap<QualifiedName, Object>(), new HashMap<QualifiedName, QualifiedIdentity>(), new HashMap<QualifiedName, Collection<QualifiedIdentity>>(), null );
             return entityState;
         }
 
@@ -865,9 +866,9 @@ public final class UnitOfWorkInstance
                                                                                      identity,
                                                                                      EntityStatus.LOADED,
                                                                                      entityType,
-                                                                                     new HashMap<String, Object>(),
-                                                                                     new HashMap<String, QualifiedIdentity>(),
-                                                                                     new HashMap<String, Collection<QualifiedIdentity>>(),
+                                                                                     new HashMap<QualifiedName, Object>(),
+                                                                                     new HashMap<QualifiedName, QualifiedIdentity>(),
+                                                                                     new HashMap<QualifiedName, Collection<QualifiedIdentity>>(),
                                                                                      parentState );
             return unitOfWorkEntityState;
         }
@@ -890,18 +891,18 @@ public final class UnitOfWorkInstance
                 EntityComposite entityInstance = newEntityBuilder( uowState.qualifiedIdentity().identity(), type ).newInstance();
 
                 EntityState parentState = EntityInstance.getEntityInstance( entityInstance ).entityState();
-                Iterable<String> propertyNames = uowState.propertyNames();
-                for( String propertyName : propertyNames )
+                Iterable<QualifiedName> propertyNames = uowState.propertyNames();
+                for( QualifiedName propertyName : propertyNames )
                 {
                     parentState.setProperty( propertyName, uowState.getProperty( propertyName ) );
                 }
-                Iterable<String> associationNames = uowState.associationNames();
-                for( String associationName : associationNames )
+                Iterable<QualifiedName> associationNames = uowState.associationNames();
+                for( QualifiedName associationName : associationNames )
                 {
                     parentState.setAssociation( associationName, uowState.getAssociation( associationName ) );
                 }
-                Iterable<String> manyAssociationNames = uowState.manyAssociationNames();
-                for( String manyAssociationName : manyAssociationNames )
+                Iterable<QualifiedName> manyAssociationNames = uowState.manyAssociationNames();
+                for( QualifiedName manyAssociationName : manyAssociationNames )
                 {
                     Collection<QualifiedIdentity> collection = parentState.getManyAssociation( manyAssociationName );
                     Collection<QualifiedIdentity> newCollection = uowState.getManyAssociation( manyAssociationName );
@@ -932,20 +933,20 @@ public final class UnitOfWorkInstance
                     EntityInstance entityInstance = EntityInstance.getEntityInstance( instance );
 
                     EntityState parentState = uowState.getParentState();
-                    Iterable<String> propertyNames = uowState.propertyNames();
-                    for( String propertyName : propertyNames )
+                    Iterable<QualifiedName> propertyNames = uowState.propertyNames();
+                    for( QualifiedName propertyName : propertyNames )
                     {
                         Object value = uowState.getProperty( propertyName );
                         parentState.setProperty( propertyName, value );
                     }
-                    Iterable<String> associationNames = uowState.associationNames();
-                    for( String associationName : associationNames )
+                    Iterable<QualifiedName> associationNames = uowState.associationNames();
+                    for( QualifiedName associationName : associationNames )
                     {
                         QualifiedIdentity value = uowState.getAssociation( associationName );
                         parentState.setAssociation( associationName, value );
                     }
-                    Iterable<String> manyAssociationNames = uowState.manyAssociationNames();
-                    for( String manyAssociationName : manyAssociationNames )
+                    Iterable<QualifiedName> manyAssociationNames = uowState.manyAssociationNames();
+                    for( QualifiedName manyAssociationName : manyAssociationNames )
                     {
                         Collection<QualifiedIdentity> collection = parentState.getManyAssociation( manyAssociationName );
                         Collection<QualifiedIdentity> newCollection = uowState.getManyAssociation( manyAssociationName );
@@ -997,16 +998,16 @@ public final class UnitOfWorkInstance
                                        QualifiedIdentity identity,
                                        EntityStatus status,
                                        EntityType entityType,
-                                       Map<String, Object> properties,
-                                       Map<String, QualifiedIdentity> associations,
-                                       Map<String, Collection<QualifiedIdentity>> manyAssociations,
+                                       Map<QualifiedName, Object> properties,
+                                       Map<QualifiedName, QualifiedIdentity> associations,
+                                       Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations,
                                        EntityState parentState )
         {
             super( entityVersion, lastModified, identity, status, entityType, properties, associations, manyAssociations );
             this.parentState = parentState;
         }
 
-        public Object getProperty( String qualifiedName )
+        public Object getProperty( QualifiedName qualifiedName )
         {
             if( properties.containsKey( qualifiedName ) )
             {
@@ -1017,7 +1018,7 @@ public final class UnitOfWorkInstance
             return parentState == null ? null : parentState.getProperty( qualifiedName );
         }
 
-        public QualifiedIdentity getAssociation( String qualifiedName )
+        public QualifiedIdentity getAssociation( QualifiedName qualifiedName )
         {
             if( associations.containsKey( qualifiedName ) )
             {
@@ -1027,7 +1028,7 @@ public final class UnitOfWorkInstance
             return parentState == null ? null : parentState.getAssociation( qualifiedName );
         }
 
-        public Collection<QualifiedIdentity> getManyAssociation( String qualifiedName )
+        public Collection<QualifiedIdentity> getManyAssociation( QualifiedName qualifiedName )
         {
             if( manyAssociations.containsKey( qualifiedName ) )
             {

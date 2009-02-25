@@ -21,7 +21,8 @@ package org.qi4j.bootstrap;
 import org.qi4j.api.common.Visibility;
 
 /**
- * Fluent API for declaring entities
+ * Fluent API for declaring entities. Instances
+ * of this API are acquired by calling {@link ModuleAssembly#addEntities(Class[])}.
  */
 public interface EntityDeclaration
 {

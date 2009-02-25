@@ -25,7 +25,5 @@ public interface PropertyDescriptor
 {
     Method accessor();
 
-    String toURI();
-
     Object initialValue();
 }

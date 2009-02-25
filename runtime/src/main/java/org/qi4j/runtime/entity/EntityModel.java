@@ -124,8 +124,11 @@ public final class EntityModel
         this.compositeMethodsModel = compositeMethodsModel;
 
         this.proxyClass = createProxyClass( type );
+/*
         RDF uri = type.getAnnotation( RDF.class );
         this.uri = uri == null ? Classes.toURI( type ) : uri.value();
+*/
+        this.uri = Classes.toURI(type);
 
         final Queryable queryable = type.getAnnotation( Queryable.class );
         this.queryable = queryable == null || queryable.value();

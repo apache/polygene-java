@@ -14,23 +14,25 @@
 
 package org.qi4j.api.unitofwork;
 
+import org.qi4j.api.common.QualifiedName;
+
 /**
  * Filter change events based on the qualified name of the change
  */
 public class StateChangeQualifiedNameFilter
     implements StateChangeListener, StateChangeVoter
 {
-    private String qualifiedName;
+    private QualifiedName qualifiedName;
     private StateChangeVoter voterDelegate;
     private StateChangeListener listenerDelegate;
 
-    public StateChangeQualifiedNameFilter( String qualifiedName, StateChangeVoter delegate )
+    public StateChangeQualifiedNameFilter( QualifiedName qualifiedName, StateChangeVoter delegate )
     {
         this.qualifiedName = qualifiedName;
         this.voterDelegate = delegate;
     }
 
-    public StateChangeQualifiedNameFilter( String qualifiedName, StateChangeListener delegate )
+    public StateChangeQualifiedNameFilter( QualifiedName qualifiedName, StateChangeListener delegate )
     {
         this.qualifiedName = qualifiedName;
         this.listenerDelegate = delegate;

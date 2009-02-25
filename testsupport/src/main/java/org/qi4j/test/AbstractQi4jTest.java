@@ -28,6 +28,9 @@ import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.bootstrap.ApplicationAssembler;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.spi.Qi4jSPI;
 
 /**
@@ -54,7 +57,7 @@ public abstract class AbstractQi4jTest
     {
         qi4j = new Energy4Java();
         application = newApplication();
-        api = spi = qi4j.runtime();
+        api = spi = qi4j.spi();
         application.activate();
 
         // Assume only one module
@@ -69,7 +72,13 @@ public abstract class AbstractQi4jTest
     protected Application newApplication()
         throws AssemblyException
     {
-        return qi4j.newApplication( this );
+        return qi4j.newApplication( new ApplicationAssembler()
+        {
+            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
+            {
+                return applicationFactory.newApplicationAssembly( AbstractQi4jTest.this);
+            }
+        });
     }
 
     @After public void tearDown() throws Exception

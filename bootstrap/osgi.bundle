@@ -21,4 +21,5 @@ Import-Package: org.ops4j.pax.swissbox.core, \
                 org.qi4j.api.util, \
                 org.qi4j.api.value
 
-Export-Package: org.qi4j.bootstrap;version=${pom.version}
+Export-Package: org.qi4j.bootstrap;version=${pom.version}, \
+                org.qi4j.bootstrap.spi;version=${pom.version}

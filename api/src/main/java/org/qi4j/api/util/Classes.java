@@ -315,7 +315,7 @@ public class Classes
         throws NullPointerException
     {
         className = normalizeClassToURI( className );
-        return "urn:qi4j:entity:" + className;
+        return "urn:qi4j:entitytype:" + className;
     }
 
     /**
@@ -328,7 +328,7 @@ public class Classes
     public static String toClassName( String uri )
         throws NullPointerException
     {
-        uri = uri.substring( "urn:qi4j:entity:".length() );
+        uri = uri.substring( "urn:qi4j:entitytype:".length() );
         uri = denormalizeURIToClass( uri );
         return uri;
     }

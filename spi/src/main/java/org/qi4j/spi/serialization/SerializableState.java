@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * Serializable state for a single entity. This includes the version
@@ -31,15 +32,15 @@ public final class SerializableState
     private final QualifiedIdentity identity;
     private final long entityVersion;
     private final long lastModified;
-    private final Map<String, Object> properties;
-    private final Map<String, QualifiedIdentity> associations;
-    private final Map<String, Collection<QualifiedIdentity>> manyAssociations;
+    private final Map<QualifiedName, Object> properties;
+    private final Map<QualifiedName, QualifiedIdentity> associations;
+    private final Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations;
 
     public SerializableState( QualifiedIdentity identity,
                               long entityVersion, long lastModified,
-                              Map<String, Object> properties,
-                              Map<String, QualifiedIdentity> associations,
-                              Map<String, Collection<QualifiedIdentity>> manyAssociations )
+                              Map<QualifiedName, Object> properties,
+                              Map<QualifiedName, QualifiedIdentity> associations,
+                              Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations )
     {
         this.identity = identity;
         this.entityVersion = entityVersion;
@@ -64,17 +65,17 @@ public final class SerializableState
         return lastModified;
     }
 
-    public Map<String, Object> properties()
+    public Map<QualifiedName, Object> properties()
     {
         return properties;
     }
 
-    public Map<String, QualifiedIdentity> associations()
+    public Map<QualifiedName, QualifiedIdentity> associations()
     {
         return associations;
     }
 
-    public Map<String, Collection<QualifiedIdentity>> manyAssociations()
+    public Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations()
     {
         return manyAssociations;
     }

@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.util.MethodKeyMap;
@@ -48,7 +49,7 @@ public final class EntityAssociationsModel
     private final Set<Method> methods = new MethodSet();
     private final List<AssociationModel> associationModels = new ArrayList<AssociationModel>();
     private final Map<Method, AssociationModel> mapMethodAssociationModel = new MethodKeyMap<AssociationModel>();
-    private final Map<String, Method> accessors = new MethodValueMap<String>();
+    private final Map<QualifiedName, Method> accessors = new MethodValueMap<QualifiedName>();
     private final ConstraintsModel constraints;
     private AssociationDeclarations associationDeclarations;
 
@@ -102,11 +103,6 @@ public final class EntityAssociationsModel
         return new AssociationsInstance( this, uow, state );
     }
 
-    public Method accessorFor( String qualifiedName )
-    {
-        return accessors.get( qualifiedName );
-    }
-
     public AssociationsInstance newBuilderInstance()
     {
         return new AssociationsInstance( this, null, null );
@@ -126,7 +122,7 @@ public final class EntityAssociationsModel
     {
         for( AssociationModel associationModel : associationModels )
         {
-            if( associationModel.name().equals( name ) )
+            if( associationModel.qualifiedName().name().equals( name ) )
             {
                 return associationModel;
             }
@@ -135,7 +131,7 @@ public final class EntityAssociationsModel
         return null;
     }
 
-    public AssociationDescriptor getAssociationByQualifiedName( String name )
+    public AssociationDescriptor getAssociationByQualifiedName( QualifiedName name )
     {
         for( AssociationModel associationModel : associationModels )
         {

@@ -25,7 +25,8 @@ import org.qi4j.spi.entity.EntityState;
 public interface EntityStore
     extends Iterable<EntityState>
 {
-    void registerEntityType( EntityType entityType );
+    void registerEntityType( EntityType entityType )
+        throws EntityStoreException;
 
     EntityType getEntityType( String aEntityType );
 

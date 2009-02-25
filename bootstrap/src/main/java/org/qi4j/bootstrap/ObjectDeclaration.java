@@ -21,7 +21,8 @@ package org.qi4j.bootstrap;
 import org.qi4j.api.common.Visibility;
 
 /**
- * Fluent API for declaring objects
+ * Fluent API for declaring objects.Instances
+ * of this API are acquired by calling {@link ModuleAssembly#addObjects(Class[])}.
  */
 public interface ObjectDeclaration
 {

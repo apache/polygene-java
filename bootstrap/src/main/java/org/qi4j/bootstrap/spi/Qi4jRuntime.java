@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,20 +12,17 @@
  *
  */
 
-package org.qi4j.spi.composite;
+package org.qi4j.bootstrap.spi;
 
-import java.util.List;
-import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.api.common.QualifiedName;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import org.qi4j.spi.Qi4jSPI;
 
 /**
- * JAVADOC
+ * This interface has to be implemented by Qi4j runtimes.
  */
-public interface StateDescriptor
+public interface Qi4jRuntime
 {
-    PropertyDescriptor getPropertyByName( String name );
-
-    PropertyDescriptor getPropertyByQualifiedName( QualifiedName name );
-
-    List<? extends PropertyDescriptor> properties();
+    ApplicationAssemblyFactory applicationAssemblyFactory();
+    ApplicationFactory applicationFactory();
+    Qi4jSPI spi();
 }
