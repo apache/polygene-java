@@ -131,6 +131,7 @@ public class GeneralPane extends DetailPane
                 data.add( new TableData( 2, new Object[]{ visibilityRow, descriptor.visibility().toString() } ) );
                 data.add( new TableData( 2, new Object[]{ moduleRow, ( (ServiceDetailDescriptor) objectDesciptor ).module() } ) );
                 data.add( new TableData( 2, new Object[]{ layerRow, ( (ServiceDetailDescriptor) objectDesciptor ).module().layer() } ) );
+                data.add( new TableData( 2, new Object[]{ "startup", ( (ServiceDetailDescriptor) objectDesciptor ).descriptor().isInstantiateOnStartup() } ) );
             }
             else if( objectDesciptor instanceof EntityDetailDescriptor )
             {

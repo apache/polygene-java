@@ -17,22 +17,15 @@
 package org.qi4j.library.swing.envisage.detail;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.util.ResourceBundle;
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 
 /**
+ * Implementation of Service Configuration Panel
+ *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class ServiceConfigurationPane extends DetailPane
@@ -40,10 +33,6 @@ public class ServiceConfigurationPane extends DetailPane
     protected ResourceBundle bundle = ResourceBundle.getBundle( this.getClass().getName() );
 
     private JPanel contentPane;
-    private JPanel todoPane;
-    private JPanel todoInnerPane;
-    private JTextArea todoArea;
-    private JCheckBox instantiateStartupCheck;
 
     public ServiceConfigurationPane()
     {
@@ -53,7 +42,7 @@ public class ServiceConfigurationPane extends DetailPane
 
     protected void clear()
     {
-        instantiateStartupCheck.setSelected( false );
+
     }
 
     public void setDescriptor( Object objectDesciptor )
@@ -65,8 +54,6 @@ public class ServiceConfigurationPane extends DetailPane
             return;
         }
         ServiceDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor ).descriptor();
-        instantiateStartupCheck.setSelected( descriptor.isInstantiateOnStartup() );
-        //descriptor.
     }
 
     {
@@ -86,123 +73,7 @@ public class ServiceConfigurationPane extends DetailPane
     private void $$$setupUI$$$()
     {
         contentPane = new JPanel();
-        contentPane.setLayout( new GridBagLayout() );
-        todoPane = new JPanel();
-        todoPane.setLayout( new FlowLayout( FlowLayout.CENTER, 5, 5 ) );
-        GridBagConstraints gbc;
-        gbc = new GridBagConstraints();
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets( 64, 0, 0, 0 );
-        contentPane.add( todoPane, gbc );
-        todoInnerPane = new JPanel();
-        todoInnerPane.setLayout( new BorderLayout( 0, 0 ) );
-        todoPane.add( todoInnerPane );
-        todoInnerPane.setBorder( BorderFactory.createTitledBorder( BorderFactory.createEtchedBorder(), "TODO" ) );
-        todoArea = new JTextArea();
-        todoArea.setEditable( false );
-        todoArea.setText( "What's else need to put here:\n- List   \n- Tree\n- Table\n- ..." );
-        todoArea.setWrapStyleWord( true );
-        todoInnerPane.add( todoArea, BorderLayout.CENTER );
-        final JPanel spacer1 = new JPanel();
-        gbc = new GridBagConstraints();
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        contentPane.add( spacer1, gbc );
-        final JLabel label1 = new JLabel();
-        this.$$$loadLabelText$$$( label1, ResourceBundle.getBundle( "org/qi4j/library/swing/envisage/detail/ServiceConfigurationPane" ).getString( "CTL_InstantiateStartup.Text" ) );
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.EAST;
-        contentPane.add( label1, gbc );
-        final JPanel spacer2 = new JPanel();
-        gbc = new GridBagConstraints();
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        contentPane.add( spacer2, gbc );
-        instantiateStartupCheck = new JCheckBox();
-        this.$$$loadButtonText$$$( instantiateStartupCheck, ResourceBundle.getBundle( "org/qi4j/library/swing/envisage/detail/ServiceConfigurationPane" ).getString( "CTL_Startup.Text" ) );
-        gbc = new GridBagConstraints();
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        contentPane.add( instantiateStartupCheck, gbc );
-    }
-
-    /**
-     * @noinspection ALL
-     */
-    private void $$$loadLabelText$$$( JLabel component, String text )
-    {
-        StringBuffer result = new StringBuffer();
-        boolean haveMnemonic = false;
-        char mnemonic = '\0';
-        int mnemonicIndex = -1;
-        for( int i = 0; i < text.length(); i++ )
-        {
-            if( text.charAt( i ) == '&' )
-            {
-                i++;
-                if( i == text.length() )
-                {
-                    break;
-                }
-                if( !haveMnemonic && text.charAt( i ) != '&' )
-                {
-                    haveMnemonic = true;
-                    mnemonic = text.charAt( i );
-                    mnemonicIndex = result.length();
-                }
-            }
-            result.append( text.charAt( i ) );
-        }
-        component.setText( result.toString() );
-        if( haveMnemonic )
-        {
-            component.setDisplayedMnemonic( mnemonic );
-            component.setDisplayedMnemonicIndex( mnemonicIndex );
-        }
-    }
-
-    /**
-     * @noinspection ALL
-     */
-    private void $$$loadButtonText$$$( AbstractButton component, String text )
-    {
-        StringBuffer result = new StringBuffer();
-        boolean haveMnemonic = false;
-        char mnemonic = '\0';
-        int mnemonicIndex = -1;
-        for( int i = 0; i < text.length(); i++ )
-        {
-            if( text.charAt( i ) == '&' )
-            {
-                i++;
-                if( i == text.length() )
-                {
-                    break;
-                }
-                if( !haveMnemonic && text.charAt( i ) != '&' )
-                {
-                    haveMnemonic = true;
-                    mnemonic = text.charAt( i );
-                    mnemonicIndex = result.length();
-                }
-            }
-            result.append( text.charAt( i ) );
-        }
-        component.setText( result.toString() );
-        if( haveMnemonic )
-        {
-            component.setMnemonic( mnemonic );
-            component.setDisplayedMnemonicIndex( mnemonicIndex );
-        }
+        contentPane.setLayout( new BorderLayout( 0, 0 ) );
     }
 
     /**
