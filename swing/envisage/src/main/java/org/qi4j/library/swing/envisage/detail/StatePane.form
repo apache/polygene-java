@@ -7,32 +7,26 @@
     <properties/>
     <border type="none"/>
     <children>
-      <grid id="da11f" binding="todoPane" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+      <splitpane id="e5c0d" binding="splitPane">
         <constraints border-constraint="Center"/>
         <properties/>
-        <border type="none">
-          <size top="64" left="24" bottom="24" right="24"/>
-        </border>
+        <border type="none"/>
         <children>
-          <grid id="4a5b0" binding="todoInnerPane" layout-manager="BorderLayout" hgap="0" vgap="0">
-            <constraints/>
+          <scrollpane id="321ea">
+            <constraints>
+              <splitpane position="left"/>
+            </constraints>
             <properties/>
-            <border type="etched" title="TODO">
-              <size top="24" left="24" bottom="24" right="24"/>
-            </border>
+            <border type="none"/>
             <children>
-              <component id="427aa" class="javax.swing.JTextArea" binding="todoArea">
-                <constraints border-constraint="Center"/>
-                <properties>
-                  <editable value="false"/>
-                  <text value="What's need to put here:&#10;- List   &#10;- Tree&#10;- Table&#10;- ..."/>
-                  <wrapStyleWord value="true"/>
-                </properties>
+              <component id="975eb" class="javax.swing.JList" binding="methodList">
+                <constraints/>
+                <properties/>
               </component>
             </children>
-          </grid>
+          </scrollpane>
         </children>
-      </grid>
+      </splitpane>
     </children>
   </grid>
 </form>

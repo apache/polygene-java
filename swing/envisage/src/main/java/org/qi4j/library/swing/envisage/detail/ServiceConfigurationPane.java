@@ -66,6 +66,7 @@ public class ServiceConfigurationPane extends DetailPane
         }
         ServiceDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor ).descriptor();
         instantiateStartupCheck.setSelected( descriptor.isInstantiateOnStartup() );
+        //descriptor.
     }
 
     {

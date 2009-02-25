@@ -31,9 +31,7 @@ public class DetailModelPane extends JPanel
 {
     protected static final int GENERAL_TAB = 0;
     protected static final int METHOD_TAB = 1;
-    protected static final int DEPENDENCIE_TAB = 2;
-    protected static final int STATE_TAB = 3;
-
+    protected static final int DEPENDENCY_TAB = 2;
 
     protected ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName());
 
@@ -43,8 +41,7 @@ public class DetailModelPane extends JPanel
     protected StatePane statePane;
     protected DependencyPane dependencyPane;
     protected ServiceConfigurationPane serviceConfigurationPane;
-
-    protected int commonTabCount = 0;
+    protected ServiceUsagePane serviceUsagePane;
 
     public DetailModelPane()
     {
@@ -64,22 +61,22 @@ public class DetailModelPane extends JPanel
     {
         generalPane = new GeneralPane();
         generalPane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
-        commonTabCount++;
 
         statePane = new StatePane();
         statePane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
-        commonTabCount++;
 
         methodPane = new MethodPane();
         methodPane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
-        commonTabCount++;
 
         dependencyPane = new DependencyPane();
         dependencyPane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
-        commonTabCount++;
 
         serviceConfigurationPane = new ServiceConfigurationPane();
         serviceConfigurationPane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
+
+        serviceUsagePane = new ServiceUsagePane();
+        serviceUsagePane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
+
     }
 
     public void setDescriptor(Object objectDescriptor)
@@ -89,6 +86,7 @@ public class DetailModelPane extends JPanel
         dependencyPane.setDescriptor( objectDescriptor );
         statePane.setDescriptor( objectDescriptor );
         serviceConfigurationPane.setDescriptor( objectDescriptor );
+        serviceUsagePane.setDescriptor( objectDescriptor );
 
         if (objectDescriptor instanceof ObjectDetailDescriptor )
         {
@@ -111,11 +109,13 @@ public class DetailModelPane extends JPanel
             if (index == -1)
             {
                 tabPane.add( bundle.getString( "CTL_ServiceConfiguration.Text" ), serviceConfigurationPane );
+                tabPane.add( bundle.getString( "CTL_ServiceUsage.Text" ), serviceUsagePane );                
             }
         } else {
             int index = tabPane.indexOfComponent( serviceConfigurationPane );
             if (index != -1)
             {
+                tabPane.removeTabAt( index );
                 tabPane.removeTabAt( index );
             }
         }

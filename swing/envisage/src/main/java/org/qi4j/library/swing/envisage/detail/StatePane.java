@@ -17,11 +17,19 @@
 package org.qi4j.library.swing.envisage.detail;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
+import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import org.qi4j.library.swing.envisage.model.descriptor.CompositeMethodDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
@@ -31,27 +39,81 @@ public class StatePane extends DetailPane
     //protected ResourceBundle bundle = ResourceBundle.getBundle( this.getClass().getName() );
 
     private JPanel contentPane;
-    private JPanel todoPane;
-    private JPanel todoInnerPane;
-    private JTextArea todoArea;
+    private JList methodList;
+    private JSplitPane splitPane;
+
+    private DefaultListModel methodListModel;
 
     public StatePane()
     {
         this.setLayout( new BorderLayout() );
         this.add( contentPane, BorderLayout.CENTER );
+
+        methodListModel = new DefaultListModel();
+        methodList.setModel( methodListModel );
+        //methodList.setCellRenderer( new MethodListCellRenderer() );
+        methodList.setPrototypeCellValue( "12345678901234567890" );
+        methodList.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
+
+        //splitPane.setDividerLocation( .1 );
+
+        methodList.addListSelectionListener( new ListSelectionListener()
+        {
+            public void valueChanged( ListSelectionEvent evt )
+            {
+                methodListValueChanged( evt );
+            }
+        } );
     }
 
     protected void clear()
     {
-        //nameField.setText( null );
-        //classNameField.setText( null );
+        methodListModel.clear();
     }
 
     public void setDescriptor( Object objectDesciptor )
     {
         clear();
 
-        // TODO
+        // TODO for other type wait until QI-195 solved
+        if( objectDesciptor instanceof ServiceDetailDescriptor )
+        {
+            ServiceDetailDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor );
+        }
+        else if( objectDesciptor instanceof EntityDetailDescriptor )
+        {
+            EntityDetailDescriptor descriptor = ( (EntityDetailDescriptor) objectDesciptor );
+            reload( descriptor.methods() );
+        }
+        else if( objectDesciptor instanceof ObjectDetailDescriptor )
+        {
+            ObjectDetailDescriptor descriptor = ( (ObjectDetailDescriptor) objectDesciptor );
+            //reload( descriptor.injectedMethods() );
+        }
+    }
+
+    private void reload( Iterable<CompositeMethodDetailDescriptor> iter )
+    {
+        for( CompositeMethodDetailDescriptor descriptor : iter )
+        {
+            
+        }
+    }
+
+    public void methodListValueChanged( ListSelectionEvent evt )
+    {
+        if( evt.getValueIsAdjusting() )
+        {
+            return;
+        }
+        /*Object obj = methodList.getSelectedValue();
+        if( obj == null )
+        {
+            detailTableModel.clear();
+            return;
+        }
+        detailTableModel.reload( (CompositeMethodDetailDescriptor) obj );
+        */
     }
 
     {
@@ -72,18 +134,12 @@ public class StatePane extends DetailPane
     {
         contentPane = new JPanel();
         contentPane.setLayout( new BorderLayout( 0, 0 ) );
-        todoPane = new JPanel();
-        todoPane.setLayout( new FlowLayout( FlowLayout.CENTER, 5, 5 ) );
-        contentPane.add( todoPane, BorderLayout.CENTER );
-        todoInnerPane = new JPanel();
-        todoInnerPane.setLayout( new BorderLayout( 0, 0 ) );
-        todoPane.add( todoInnerPane );
-        todoInnerPane.setBorder( BorderFactory.createTitledBorder( BorderFactory.createEtchedBorder(), "TODO" ) );
-        todoArea = new JTextArea();
-        todoArea.setEditable( false );
-        todoArea.setText( "What's need to put here:\n- List   \n- Tree\n- Table\n- ..." );
-        todoArea.setWrapStyleWord( true );
-        todoInnerPane.add( todoArea, BorderLayout.CENTER );
+        splitPane = new JSplitPane();
+        contentPane.add( splitPane, BorderLayout.CENTER );
+        final JScrollPane scrollPane1 = new JScrollPane();
+        splitPane.setLeftComponent( scrollPane1 );
+        methodList = new JList();
+        scrollPane1.setViewportView( methodList );
     }
 
     /**
