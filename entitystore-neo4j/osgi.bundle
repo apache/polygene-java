@@ -10,6 +10,7 @@ Import-Package: javax.transaction,\
                 org.apache.lucene.store, \
                 org.qi4j.api.composite, \
                 org.qi4j.api.common, \
+                org.qi4j.api.configuration, \
                 org.qi4j.api.entity, \
                 org.qi4j.api.entity.association, \
                 org.qi4j.api.mixin, \
@@ -21,6 +22,7 @@ Import-Package: javax.transaction,\
                 org.qi4j.entity, \
                 org.qi4j.entity.association, \
                 org.qi4j.entitystore.memory, \
+                org.qi4j.library.constraints.annotation, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.entity, \
                 org.qi4j.spi.entity.association, \

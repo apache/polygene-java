@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.entitystore.legacy.IdentifierConverter;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
@@ -51,9 +52,9 @@ public final class LegacyEntityState
     private final EntityType entityType;
     private final QualifiedIdentity identity;
 
-    private final Map<String, Object> propertyValues = new HashMap<String, Object>();
-    private final Map<String, QualifiedIdentity> associations = new HashMap<String, QualifiedIdentity>();
-    private final Map<String, Collection<QualifiedIdentity>> manyAssociations = new HashMap<String, Collection<QualifiedIdentity>>();
+    private final Map<QualifiedName, Object> propertyValues = new HashMap<QualifiedName, Object>();
+    private final Map<QualifiedName, QualifiedIdentity> associations = new HashMap<QualifiedName, QualifiedIdentity>();
+    private final Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations = new HashMap<QualifiedName, Collection<QualifiedIdentity>>();
     private long version;
     private long lastModified;
     private EntityStatus status;
@@ -70,7 +71,7 @@ public final class LegacyEntityState
      */
     public LegacyEntityState(
         final EntityType entityType, final QualifiedIdentity identity,
-        final Map<String, Object> rawData,
+        final Map<QualifiedName, Object> rawData,
         final long version, final long lastModified,
         final EntityStatus status )
         throws IllegalArgumentException
@@ -89,7 +90,7 @@ public final class LegacyEntityState
         this.lastModified = lastModified;
     }
 
-    private void mapData( final EntityType entityType, final Map<String, Object> rawData )
+    private void mapData( final EntityType entityType, final Map<QualifiedName, Object> rawData )
     {
         Map<String, Object> convertedData = identifierConverter.convertKeys( rawData );
         System.err.println( rawData );
@@ -102,7 +103,7 @@ public final class LegacyEntityState
     {
         for( final AssociationType associationDescriptor : stateDescriptor.associations() )
         {
-            final String qualifiedName = associationDescriptor.qualifiedName();
+            final QualifiedName qualifiedName = associationDescriptor.qualifiedName();
             final String typeName = associationDescriptor.type();
             final String associationId = (String) identifierConverter.getValueFromData( rawData, qualifiedName );
             if( associationId != null )
@@ -113,7 +114,7 @@ public final class LegacyEntityState
 
         for( final ManyAssociationType associationDescriptor : stateDescriptor.manyAssociations() )
         {
-            final String qualifiedName = associationDescriptor.qualifiedName();
+            final QualifiedName qualifiedName = associationDescriptor.qualifiedName();
             final String typeName = associationDescriptor.type();
             Collection<String> identifiers = (Collection<String>) identifierConverter.getValueFromData( rawData, qualifiedName );
             if( identifiers != null && !identifiers.isEmpty() )
@@ -150,7 +151,7 @@ public final class LegacyEntityState
     {
         for( final PropertyType propertyDescriptor : compositeModel.properties() )
         {
-            final String qualifiedName = propertyDescriptor.qualifiedName();
+            final QualifiedName qualifiedName = propertyDescriptor.qualifiedName();
             final Object value = identifierConverter.getValueFromData( rawData, qualifiedName );
             setProperty( qualifiedName, convertValue( propertyDescriptor, value ) );
         }
@@ -231,90 +232,82 @@ public final class LegacyEntityState
      * @return The property value given qualified name.
      * @since 0.2.0
      */
-    public final Object getProperty( final String qualifiedName )
+    public final Object getProperty( final QualifiedName qualifiedName )
     {
-        validateNotNull( "qualifiedName", qualifiedName );
-        return propertyValues.get( convertIdentifier( qualifiedName ) );
+        return propertyValues.get( qualifiedName );
     }
 
-    public void setProperty( final String qualifiedName, final Object newValue )
+    public void setProperty( final QualifiedName qualifiedName, final Object newValue )
     {
-        validateNotNull( "qualifiedName", qualifiedName );
-        propertyValues.put( convertIdentifier( qualifiedName ), newValue );
+        propertyValues.put( qualifiedName, newValue );
     }
 
-    public QualifiedIdentity getAssociation( final String qualifiedName )
+    public QualifiedIdentity getAssociation( final QualifiedName qualifiedName )
     {
-        validateNotNull( "qualifiedName", qualifiedName );
         if( status == REMOVED )
         {
             return null;
         }
 
-        final String convertedIdentifier = convertIdentifier( qualifiedName );
-        if( !associations.containsKey( convertedIdentifier ) )
+        if( !associations.containsKey( qualifiedName ) )
         {
             return null;
         }
-        final QualifiedIdentity qualifiedIdentity = associations.get( convertedIdentifier );
+        final QualifiedIdentity qualifiedIdentity = associations.get( qualifiedName );
         return qualifiedIdentity == null ? QualifiedIdentity.NULL : qualifiedIdentity;
     }
 
-    public void setAssociation( final String qualifiedName, final QualifiedIdentity qualifiedIdentity )
+    public void setAssociation( final QualifiedName qualifiedName, final QualifiedIdentity qualifiedIdentity )
     {
-        validateNotNull( "qualifiedName", qualifiedName );
         if( status == REMOVED )
         {
             throw new EntityNotFoundException( "IbatisEntityStore", qualifiedIdentity() );
         }
-        final String convertedIdentifier = convertIdentifier( qualifiedName );
-        associations.put( convertedIdentifier, qualifiedIdentity != null ? qualifiedIdentity : QualifiedIdentity.NULL );
+        associations.put( qualifiedName, qualifiedIdentity != null ? qualifiedIdentity : QualifiedIdentity.NULL );
     }
 
-    public Collection<QualifiedIdentity> getManyAssociation( final String qualifiedName )
+    public Collection<QualifiedIdentity> getManyAssociation( final QualifiedName qualifiedName )
     {
-        validateNotNull( "qualifiedName", qualifiedName );
         if( status == REMOVED )
         {
             return null;
         }
 
-        return manyAssociations.get( convertIdentifier( qualifiedName ) );
+        return manyAssociations.get( qualifiedName );
     }
 
     public Collection<QualifiedIdentity> setManyAssociation(
-        final String qualifiedName, final Collection<QualifiedIdentity> newManyAssociations )
+        final QualifiedName qualifiedName, final Collection<QualifiedIdentity> newManyAssociations )
     {
         validateNotNull( "qualifiedName", qualifiedName );
         if( status == REMOVED )
         {
             throw new EntityNotFoundException( "IbatisEntityStore", qualifiedIdentity() );
         }
-        final String convertedIdentifier = convertIdentifier( qualifiedName );
-        return manyAssociations.put( convertedIdentifier, newManyAssociations );
+        return manyAssociations.put( qualifiedName, newManyAssociations );
     }
 
-    public String convertIdentifier( final String qualifiedIdentifier )
+    public String convertIdentifier( final QualifiedName qualifiedIdentifier )
     {
         return identifierConverter.convertIdentifier( qualifiedIdentifier );
     }
 
-    public final Iterable<String> propertyNames()
+    public final Iterable<QualifiedName> propertyNames()
     {
         return Collections.unmodifiableSet( propertyValues.keySet() );
     }
 
-    public final Iterable<String> associationNames()
+    public final Iterable<QualifiedName> associationNames()
     {
         return Collections.unmodifiableSet( associations.keySet() );
     }
 
-    public final Iterable<String> manyAssociationNames()
+    public final Iterable<QualifiedName> manyAssociationNames()
     {
         return Collections.unmodifiableSet( manyAssociations.keySet() );
     }
 
-    public Map<String, Object> getPropertyValues()
+    public Map<QualifiedName, Object> getPropertyValues()
     {
         return propertyValues;
     }
@@ -324,7 +317,7 @@ public final class LegacyEntityState
         status = EntityStatus.LOADED;
     }
 
-    public ValueState newValueState( Map<String, Object> values )
+    public ValueState newValueState( Map<QualifiedName, Object> values )
     {
         return new DefaultValueState(values);
     }

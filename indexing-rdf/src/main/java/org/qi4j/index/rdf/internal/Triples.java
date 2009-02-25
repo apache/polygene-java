@@ -29,6 +29,7 @@ import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.ManyAssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.util.Classes;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.index.rdf.Namespaces;
 
 public class Triples
@@ -62,7 +63,7 @@ public class Triples
         triples.add(
             new Triple(
                 "?entity",
-                addNamespace( GenericPropertyInfo.toNamespace( getIdentityAccessor( Identity.class ) ) ) + ":identity",
+                addNamespace( new QualifiedName(Identity.class, "identity" ).toNamespace() ) + ":identity",
                 "?identity",
                 false
             )
@@ -87,7 +88,7 @@ public class Triples
         {
             subject = addTriple( propertyReference.traversedProperty(), false ).value;
         }
-        String prefix = addNamespace( GenericPropertyInfo.toNamespace( propertyReference.propertyAccessor() ) );
+        String prefix = addNamespace( new QualifiedName(propertyReference.propertyAccessor() ).toNamespace() );
         return addTriple( subject, prefix + ":" + propertyReference.propertyName(), optional );
     }
 
@@ -112,7 +113,7 @@ public class Triples
         {
             subject = addTriple( associationReference.traversedAssociation(), false ).value;
         }
-        String prefix = addNamespace( GenericAssociationInfo.toNamespace( associationReference.associationAccessor() ) );
+        String prefix = addNamespace( new QualifiedName( associationReference.associationAccessor() ).toNamespace() );
         return addTriple( subject, prefix + ":" + associationReference.associationName(), optional );
     }
 
@@ -125,7 +126,7 @@ public class Triples
         {
             subject = addTriple( traversedAssociation, false ).value;
         }
-        String predicatePrefix = addNamespace( GenericAssociationInfo.toNamespace( manyAssociationReference.associationAccessor() ) );
+        String predicatePrefix = addNamespace( new QualifiedName(manyAssociationReference.associationAccessor()).toNamespace() );
         String predicate = predicatePrefix + ":" + manyAssociationReference.associationName();
         Triple collectionTriple = addTriple( subject, predicate, optional );
 

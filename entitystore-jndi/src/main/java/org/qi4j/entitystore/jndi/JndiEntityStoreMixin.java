@@ -24,8 +24,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
-import java.io.IOException;
-import java.io.ByteArrayOutputStream;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -40,6 +38,7 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStoreException;
@@ -181,10 +180,10 @@ public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
 
             long version = getVersion( attrs );
             long lastModified = getLastModified( attrs );
-            Map<String, Object> properties = getProperties( attrs, entityType );
+            Map<QualifiedName, Object> properties = getProperties( attrs, entityType );
 //            properties.put( "identity", id);
-            Map<String, QualifiedIdentity> associations = getAssociations( attrs, entityType );
-            Map<String, Collection<QualifiedIdentity>> manyAssociations = getmanyAssociations( attrs, entityType );
+            Map<QualifiedName, QualifiedIdentity> associations = getAssociations( attrs, entityType );
+            Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations = getManyAssociations( attrs, entityType );
             return new DefaultEntityState( version,
                                            lastModified,
                                            identity,
@@ -235,16 +234,15 @@ public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
         return attrs;
     }
 
-    private Map<String, Object> getProperties( Attributes attrs, EntityType entityType )
+    private Map<QualifiedName, Object> getProperties( Attributes attrs, EntityType entityType )
         throws NamingException
     {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<QualifiedName, Object> result = new HashMap<QualifiedName, Object>();
         Iterable<PropertyType> props = entityType.properties();
         for( PropertyType property : props )
         {
-            String qualifiedName = property.qualifiedName();
-            int pos = qualifiedName.lastIndexOf( ':' );
-            String propertyName = qualifiedName.substring( pos + 1 );
+            QualifiedName qualifiedName = property.qualifiedName();
+            String propertyName = qualifiedName.name();
             if( !RESTRICTED_PROPERTIES.contains( propertyName ) )
             {
                 Attribute attribute = attrs.get( propertyName );
@@ -257,34 +255,32 @@ public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
         return result;
     }
 
-    private Map<String, QualifiedIdentity> getAssociations( Attributes attrs, EntityType entityType )
+    private Map<QualifiedName, QualifiedIdentity> getAssociations( Attributes attrs, EntityType entityType )
         throws NamingException
     {
-        Map<String, QualifiedIdentity> result = new HashMap<String, QualifiedIdentity>();
+        Map<QualifiedName, QualifiedIdentity> result = new HashMap<QualifiedName, QualifiedIdentity>();
         Iterable<AssociationType> assocs = entityType.associations();
         for( AssociationType associationType : assocs )
         {
-            String qualifiedName = associationType.qualifiedName();
-            int pos = qualifiedName.lastIndexOf( ':' );
-            String associationName = qualifiedName.substring( pos );
+            QualifiedName qualifiedName = associationType.qualifiedName();
+            String associationName = qualifiedName.name();
             Attribute attribute = attrs.get( associationName );
             String identity = (String) attribute.get();
             QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( identity, associationType.type() );
-            result.put( attribute.getID(), qualifiedIdentity );
+            result.put( qualifiedName, qualifiedIdentity );
         }
         return result;
     }
 
-    private Map<String, Collection<QualifiedIdentity>> getmanyAssociations( Attributes attrs, EntityType entityType )
+    private Map<QualifiedName, Collection<QualifiedIdentity>> getManyAssociations( Attributes attrs, EntityType entityType )
         throws NamingException
     {
-        Map<String, Collection<QualifiedIdentity>> result = new HashMap<String, Collection<QualifiedIdentity>>();
+        Map<QualifiedName, Collection<QualifiedIdentity>> result = new HashMap<QualifiedName, Collection<QualifiedIdentity>>();
         Iterable<ManyAssociationType> assocs = entityType.manyAssociations();
         for( ManyAssociationType associationType : assocs )
         {
-            String qualifiedName = associationType.qualifiedName();
-            int pos = qualifiedName.lastIndexOf( ':' );
-            String associationName = qualifiedName.substring( pos );
+            QualifiedName qualifiedName = associationType.qualifiedName();
+            String associationName = qualifiedName.name();
             Attribute attribute = attrs.get( associationName );
             String identity = (String) attribute.get();
             QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( identity, associationType.type() );
@@ -293,7 +289,7 @@ public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
             if( entry == null )
             {
                 entry = new ArrayList<QualifiedIdentity>();
-                result.put( assocName, entry );
+                result.put( qualifiedName, entry );
             }
             entry.add( qualifiedIdentity );
         }
@@ -305,9 +301,8 @@ public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
         Iterable<PropertyType> props = entityType.properties();
         for( PropertyType property : props )
         {
-            String qualifiedName = property.qualifiedName();
-            int pos = qualifiedName.lastIndexOf( ':' );
-            String propertyName = qualifiedName.substring( pos + 1 );
+            QualifiedName qualifiedName = property.qualifiedName();
+            String propertyName = qualifiedName.name();
             if( !RESTRICTED_PROPERTIES.contains( propertyName ) )
             {
                 attrs.put( propertyName, values.get( propertyName ) );
@@ -471,9 +466,9 @@ public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
 
                         long version = Long.parseLong( (String) attributes.get( instanceVersionAttribute ).get() );
                         long lastModified = Long.parseLong( (String) attributes.get( lastModifiedDateAttribute ).get() );
-                        Map<String, Object> properties = getProperties( attributes, entityType );
-                        Map<String, QualifiedIdentity> associations = getAssociations( attributes, entityType );
-                        Map<String, Collection<QualifiedIdentity>> manyAssociations = getmanyAssociations( attributes, entityType );
+                        Map<QualifiedName, Object> properties = getProperties( attributes, entityType );
+                        Map<QualifiedName, QualifiedIdentity> associations = getAssociations( attributes, entityType );
+                        Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations = getManyAssociations( attributes, entityType );
                         return new DefaultEntityState( version,
                                                        lastModified,
                                                        identity,

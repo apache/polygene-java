@@ -29,6 +29,7 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.RdfFactoryService;
 import org.qi4j.library.rdf.entity.EntityStateParser;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
+import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.rest.Main;
 import org.qi4j.rest.TestEntity;
 import org.qi4j.test.AbstractQi4jTest;
@@ -46,7 +47,7 @@ public class SPARQLEntityFinderTest
     {
         module.addEntities( TestEntity.class );
         ModuleAssembly store = module.layerAssembly().newModuleAssembly( "REST Store/Finder" );
-        store.addObjects( EntityStateSerializer.class, EntityStateParser.class);
+        store.addObjects( EntityStateSerializer.class, EntityStateParser.class, EntityTypeSerializer.class);
         store.addEntities( RESTEntityStoreConfiguration.class, SPARQLEntityFinderConfiguration.class );
         store.addServices( MemoryEntityStoreService.class, RestletClientService.class );
         store.addServices( RESTEntityStoreService.class, SPARQLEntityFinderService.class, RdfFactoryService.class ).visibleIn( Visibility.layer );

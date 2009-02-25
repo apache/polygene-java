@@ -27,6 +27,7 @@ import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -38,16 +39,16 @@ public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity
     private final RelationshipType internalType;
     private final RelationshipType startType;
     private final RelationshipType endType;
-    private final String qualifiedName;
+    private final QualifiedName qualifiedName;
     private final NeoIdentityIndex idIndex;
 
-    public DirectIdentityList( NeoService neo, NeoIdentityIndex idIndex, DirectEntityState state, String qualifiedName )
+    public DirectIdentityList( NeoService neo, NeoIdentityIndex idIndex, DirectEntityState state, QualifiedName qualifiedName )
     {
         this.neo = neo;
         this.state = state;
-        this.internalType = LinkType.INTERNAL.getRelationshipType( qualifiedName );
-        this.startType = LinkType.START.getRelationshipType( qualifiedName );
-        this.endType = LinkType.END.getRelationshipType( qualifiedName );
+        this.internalType = LinkType.INTERNAL.getRelationshipType( qualifiedName.name() );
+        this.startType = LinkType.START.getRelationshipType( qualifiedName.name() );
+        this.endType = LinkType.END.getRelationshipType( qualifiedName.name() );
         this.qualifiedName = qualifiedName;
         this.idIndex = idIndex;
     }

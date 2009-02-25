@@ -26,6 +26,7 @@ import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -35,14 +36,14 @@ public class DirectUnorderedCollection extends AbstractCollection<QualifiedIdent
     private final DirectEntityState state;
     private final RelationshipType associationType;
     private final DuplicationChecker checker;
-    private final String qualifiedName;
+    private final QualifiedName qualifiedName;
     private final NeoIdentityIndex idIndex;
 
-    public DirectUnorderedCollection( NeoIdentityIndex idIndex, DuplicationChecker checker, final DirectEntityState state, final String qualifiedName )
+    public DirectUnorderedCollection( NeoIdentityIndex idIndex, DuplicationChecker checker, final DirectEntityState state, final QualifiedName qualifiedName )
     {
         this.idIndex = idIndex;
         this.state = state;
-        this.associationType = LinkType.UNQUALIFIED.getRelationshipType( qualifiedName );
+        this.associationType = LinkType.UNQUALIFIED.getRelationshipType( qualifiedName.name() );
         this.qualifiedName = qualifiedName;
         this.checker = checker;
     }

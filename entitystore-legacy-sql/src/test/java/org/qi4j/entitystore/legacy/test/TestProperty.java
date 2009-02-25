@@ -16,13 +16,14 @@ package org.qi4j.entitystore.legacy.test;
 
 import java.lang.reflect.Type;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.common.QualifiedName;
 
 public class TestProperty<T> implements Property<T>
 {
     private final T value;
-    private final String name;
+    private final QualifiedName name;
 
-    public TestProperty( T value, String name )
+    public TestProperty( T value, QualifiedName name )
     {
         this.value = value;
         this.name = name;
@@ -34,6 +35,16 @@ public class TestProperty<T> implements Property<T>
     }
 
     public void set( T newValue ) throws IllegalArgumentException
+    {
+        set(newValue);
+    }
+
+    public T _()
+    {
+        return get();
+    }
+
+    public void _( T newValue ) throws IllegalArgumentException, IllegalStateException
     {
     }
 
@@ -54,10 +65,10 @@ public class TestProperty<T> implements Property<T>
 
     public String name()
     {
-        return name;
+        return name.name();
     }
 
-    public String qualifiedName()
+    public QualifiedName qualifiedName()
     {
         return name;
     }

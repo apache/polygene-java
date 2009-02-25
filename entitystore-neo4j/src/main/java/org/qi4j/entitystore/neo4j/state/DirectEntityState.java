@@ -30,6 +30,7 @@ import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.helpers.DefaultValueState;
 import org.qi4j.spi.value.ValueState;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -53,7 +54,7 @@ public class DirectEntityState implements CommittableEntityState
     private EntityStatus status;
     private EntityType entityType;
     private final LoadedDescriptor descriptor;
-    private final Map<String, Collection<QualifiedIdentity>> manyAssociations = new HashMap<String, Collection<QualifiedIdentity>>();
+    private final Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations = new HashMap<QualifiedName, Collection<QualifiedIdentity>>();
     private boolean loaded = false;
     final NeoService neo;
 
@@ -201,41 +202,41 @@ public class DirectEntityState implements CommittableEntityState
         return entityType;
     }
 
-    public Iterable<String> propertyNames()
+    public Iterable<QualifiedName> propertyNames()
     {
         return descriptor.getPropertyNames();
     }
 
-    public Iterable<String> associationNames()
+    public Iterable<QualifiedName> associationNames()
     {
         return descriptor.getAssociationNames();
     }
 
-    public Iterable<String> manyAssociationNames()
+    public Iterable<QualifiedName> manyAssociationNames()
     {
         return descriptor.getManyAssociationNames();
     }
 
-    public Object getProperty( String qualifiedName )
+    public Object getProperty( QualifiedName qualifiedName )
     {
-        return underlyingNode.getProperty( qualifiedName, null );
+        return underlyingNode.getProperty( qualifiedName.toString(), null );
     }
 
-    public void setProperty( String qualifiedName, Object newValue )
+    public void setProperty( QualifiedName qualifiedName, Object newValue )
     {
         if( newValue != null )
         {
-            underlyingNode.setProperty( qualifiedName, newValue );
+            underlyingNode.setProperty( qualifiedName.toString(), newValue );
         }
-        else if( underlyingNode.hasProperty( qualifiedName ) )
+        else if( underlyingNode.hasProperty( qualifiedName.toString() ) )
         {
-            underlyingNode.removeProperty( qualifiedName );
+            underlyingNode.removeProperty( qualifiedName.toString() );
         }
     }
 
-    public QualifiedIdentity getAssociation( String qualifiedName )
+    public QualifiedIdentity getAssociation( QualifiedName qualifiedName )
     {
-        RelationshipType associationType = getAssociationType( qualifiedName );
+        RelationshipType associationType = getAssociationType( qualifiedName.name() );
         Relationship relation = underlyingNode.getSingleRelationship( associationType, Direction.OUTGOING );
         if( relation != null )
         {
@@ -247,9 +248,9 @@ public class DirectEntityState implements CommittableEntityState
         }
     }
 
-    public void setAssociation( String qualifiedName, QualifiedIdentity newEntity )
+    public void setAssociation( QualifiedName qualifiedName, QualifiedIdentity newEntity )
     {
-        RelationshipType associationType = getAssociationType( qualifiedName );
+        RelationshipType associationType = getAssociationType( qualifiedName.name() );
         Relationship relation = underlyingNode.getSingleRelationship( associationType, Direction.OUTGOING );
         if( relation != null )
         {
@@ -267,14 +268,9 @@ public class DirectEntityState implements CommittableEntityState
         }
     }
 
-    public Collection<QualifiedIdentity> getManyAssociation( String qualifiedName )
+    public Collection<QualifiedIdentity> getManyAssociation( QualifiedName qualifiedName )
     {
         return manyAssociations.get( qualifiedName );
-    }
-
-    public Collection<QualifiedIdentity> setManyAssociation( String qualifiedName, Collection<QualifiedIdentity> newManyAssociation )
-    {
-        throw new UnsupportedOperationException();
     }
 
     public void markAsLoaded()
@@ -282,7 +278,7 @@ public class DirectEntityState implements CommittableEntityState
         status = EntityStatus.LOADED;
     }
 
-    public ValueState newValueState( Map<String, Object> values )
+    public ValueState newValueState( Map<QualifiedName, Object> values )
     {
         // TODO Replace with something Neo4j specific!
         return new DefaultValueState(values);
@@ -303,12 +299,12 @@ public class DirectEntityState implements CommittableEntityState
         return new QualifiedIdentity( id, clazz );
     }
 
-    public int getSizeOfCollection( String qualifiedName )
+    public int getSizeOfCollection( QualifiedName qualifiedName )
     {
         return (Integer) underlyingNode.getProperty( COLLECTION_SIZE_PROPERTY_PREFIX + qualifiedName, 0 );
     }
 
-    public void setSizeOfCollection( String qualifiedName, int size )
+    public void setSizeOfCollection( QualifiedName qualifiedName, int size )
     {
         underlyingNode.setProperty( COLLECTION_SIZE_PROPERTY_PREFIX + qualifiedName, size );
     }

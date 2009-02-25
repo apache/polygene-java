@@ -16,7 +16,6 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +26,7 @@ import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -78,8 +78,8 @@ public class LoadedDescriptor
 
     private final Node descriptionNode;
     private final List<ManyAssociationFactory> manyAssociations = new LinkedList<ManyAssociationFactory>();
-    private final List<String> associations = new LinkedList<String>();
-    private final List<String> properties = new LinkedList<String>();
+    private final List<QualifiedName> associations = new LinkedList<QualifiedName>();
+    private final List<QualifiedName> properties = new LinkedList<QualifiedName>();
 
     private LoadedDescriptor( EntityType descriptor, Node descriptionNode )
     {
@@ -110,27 +110,41 @@ public class LoadedDescriptor
         String[] associations = (String[]) descriptionNode.getProperty( ASSOCIATIONS_PROPERTY_KEY );
         String[] properties = (String[]) descriptionNode.getProperty( ASSOCIATIONS_PROPERTY_KEY );
         String[] manyAssociations = (String[]) descriptionNode.getProperty( ASSOCIATIONS_PROPERTY_KEY );
-        this.associations.addAll( Arrays.asList( associations ) );
-        this.properties.addAll( Arrays.asList( properties ) );
+        for( String association : associations )
+        {
+            this.associations.add( new QualifiedName( association) );
+        }
+        for( String property : properties )
+        {
+            this.properties.add(new QualifiedName(property));
+        }
         for( String association : manyAssociations )
         {
             String typeString = (String) descriptionNode.getProperty( FACTORY_TYPE_PROPERTY_PREFIX + association );
-            this.manyAssociations.add( ManyAssociationFactory.load( association, typeString ) );
+            this.manyAssociations.add( ManyAssociationFactory.load( new QualifiedName(association), typeString ) );
         }
     }
 
     private void store()
     {
         String[] associations = new String[this.associations.size()];
-        associations = this.associations.toArray( associations );
+        int idx = 0;
+        for( QualifiedName association : this.associations )
+        {
+            associations[idx++] = association.toString();
+        }
         String[] properties = new String[this.properties.size()];
-        properties = this.properties.toArray( properties );
+        idx = 0;
+        for( QualifiedName property : this.properties )
+        {
+            properties[idx++] = property.toString();
+        }
         String[] manyAssociations = new String[this.manyAssociations.size()];
         int index = 0;
         for( ManyAssociationFactory factory : this.manyAssociations )
         {
-            String qName = factory.getQualifiedName();
-            manyAssociations[ index++ ] = qName;
+            QualifiedName qName = factory.getQualifiedName();
+            manyAssociations[ index++ ] = qName.toString();
             descriptionNode.setProperty( FACTORY_TYPE_PROPERTY_PREFIX + qName, factory.typeString() );
         }
         descriptionNode.setProperty( ASSOCIATIONS_PROPERTY_KEY, associations );
@@ -148,31 +162,31 @@ public class LoadedDescriptor
         return new ImmutableIterable<ManyAssociationFactory>( manyAssociations );
     }
 
-    Iterable<String> getPropertyNames()
+    Iterable<QualifiedName> getPropertyNames()
     {
-        return new ImmutableIterable<String>( properties );
+        return new ImmutableIterable<QualifiedName>( properties );
     }
 
-    Iterable<String> getAssociationNames()
+    Iterable<QualifiedName> getAssociationNames()
     {
-        return new ImmutableIterable<String>( associations );
+        return new ImmutableIterable<QualifiedName>( associations );
     }
 
-    Iterable<String> getManyAssociationNames()
+    Iterable<QualifiedName> getManyAssociationNames()
     {
-        return new Iterable<String>()
+        return new Iterable<QualifiedName>()
         {
-            public Iterator<String> iterator()
+            public Iterator<QualifiedName> iterator()
             {
                 final Iterator<ManyAssociationFactory> iter = manyAssociations.iterator();
-                return new Iterator<String>()
+                return new Iterator<QualifiedName>()
                 {
                     public boolean hasNext()
                     {
                         return iter.hasNext();
                     }
 
-                    public String next()
+                    public QualifiedName next()
                     {
                         return iter.next().getQualifiedName();
                     }

@@ -45,6 +45,7 @@ import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.UnknownEntityTypeException;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * RMI server implementation of EntityStore
@@ -83,9 +84,9 @@ public class ServerRemoteEntityStoreMixin
     {
         EntityState state = getEntityState( entityStore, identity );
 
-        Map<String, Object> properties = copyProperties( state );
-        Map<String, QualifiedIdentity> associations = copyAssociations( state );
-        Map<String, Collection<QualifiedIdentity>> manyAssociations = copyManyAssociations( state );
+        Map<QualifiedName, Object> properties = copyProperties( state );
+        Map<QualifiedName, QualifiedIdentity> associations = copyAssociations( state );
+        Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations = copyManyAssociations( state );
 
         return new DefaultEntityState( state.version(),
                                        state.lastModified(),
@@ -97,10 +98,10 @@ public class ServerRemoteEntityStoreMixin
                                        manyAssociations );
     }
 
-    private Map<String, Collection<QualifiedIdentity>> copyManyAssociations( EntityState state )
+    private Map<QualifiedName, Collection<QualifiedIdentity>> copyManyAssociations( EntityState state )
     {
-        Map<String, Collection<QualifiedIdentity>> manyAssociations = new HashMap<String, Collection<QualifiedIdentity>>();
-        for( String associationName : state.manyAssociationNames() )
+        Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations = new HashMap<QualifiedName, Collection<QualifiedIdentity>>();
+        for( QualifiedName associationName : state.manyAssociationNames() )
         {
             Collection<QualifiedIdentity> idCollection = state.getManyAssociation( associationName );
             if( idCollection instanceof Set )
@@ -117,10 +118,10 @@ public class ServerRemoteEntityStoreMixin
         return manyAssociations;
     }
 
-    private Map<String, QualifiedIdentity> copyAssociations( EntityState state )
+    private Map<QualifiedName, QualifiedIdentity> copyAssociations( EntityState state )
     {
-        Map<String, QualifiedIdentity> associations = new HashMap<String, QualifiedIdentity>();
-        for( String associationName : state.associationNames() )
+        Map<QualifiedName, QualifiedIdentity> associations = new HashMap<QualifiedName, QualifiedIdentity>();
+        for( QualifiedName associationName : state.associationNames() )
         {
             QualifiedIdentity id = state.getAssociation( associationName );
             associations.put( associationName, id );
@@ -128,10 +129,10 @@ public class ServerRemoteEntityStoreMixin
         return associations;
     }
 
-    private Map<String, Object> copyProperties( EntityState state )
+    private Map<QualifiedName, Object> copyProperties( EntityState state )
     {
-        Map<String, Object> properties = new HashMap<String, Object>();
-        for( String propertyName : state.propertyNames() )
+        Map<QualifiedName, Object> properties = new HashMap<QualifiedName, Object>();
+        for( QualifiedName propertyName : state.propertyNames() )
         {
             Object value = state.getProperty( propertyName );
             properties.put( propertyName, value );

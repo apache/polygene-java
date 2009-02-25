@@ -33,6 +33,7 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
+import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStoreListener;
@@ -46,7 +47,8 @@ public class RdfEntityIndexerMixin
     implements EntityStoreListener, Initializable
 {
     @Service private Repository repository;
-    @Uses private EntityStateSerializer serializer;
+    @Uses private EntityStateSerializer stateSerializer;
+    @Uses private EntityTypeSerializer typeSerializer;
 
     private Set<EntityType> indexedEntityTypes;
     private ValueFactory valueFactory;
@@ -133,7 +135,7 @@ public class RdfEntityIndexerMixin
         final URI entityURI = getValueFactory().createURI( qualifiedIdentity.toURI() );
 
         Graph graph = new GraphImpl();
-        serializer.serialize( entityState, false, graph );
+        stateSerializer.serialize( entityState, false, graph );
 
         connection.add( graph, entityURI );
     }
@@ -154,7 +156,7 @@ public class RdfEntityIndexerMixin
         // remove composite type if already present
         connection.clear( compositeURI );
 
-        Iterable<Statement> statements = serializer.serialize( entityType );
+        Iterable<Statement> statements = typeSerializer.serialize( entityType );
         connection.add( statements, compositeURI );
 
 /*

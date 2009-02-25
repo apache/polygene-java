@@ -32,7 +32,7 @@ import org.qi4j.library.rdf.DcRdf;
 public interface TestEntity
     extends EntityComposite
 {
-    @UseDefaults @RDF( DcRdf.DC + "title" ) Property<String> name();
+    @UseDefaults @RDF( DcRdf.NAMESPACE + "title" ) Property<String> name();
 
     @UseDefaults
     Property<Integer> age();

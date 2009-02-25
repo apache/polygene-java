@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
@@ -106,10 +107,10 @@ public class PreferencesEntityStoreMixin
     public EntityState getEntityState( QualifiedIdentity identity )
         throws EntityStoreException
     {
-        Map<String, Object> properties = new HashMap<String, Object>();
-        Map<String, QualifiedIdentity> associations = new HashMap<String, QualifiedIdentity>();
+        Map<QualifiedName, Object> properties = new HashMap<QualifiedName, Object>();
+        Map<QualifiedName, QualifiedIdentity> associations = new HashMap<QualifiedName, QualifiedIdentity>();
         EntityType entityType = getEntityType( identity.type() );
-        Map<String, Collection<QualifiedIdentity>> manyAssociations = DefaultEntityState.newManyCollections( entityType );
+        Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations = DefaultEntityState.newManyCollections( entityType );
 
         try
         {
@@ -139,14 +140,14 @@ public class PreferencesEntityStoreMixin
         return root.node( anIdentity.identity() );
     }
 
-    private void loadProperties( Preferences preferences, Map<String, Object> properties, EntityType type )
+    private void loadProperties( Preferences preferences, Map<QualifiedName, Object> properties, EntityType type )
         throws EntityStoreException
     {
         try
         {
             for( PropertyType propertyType : type.properties() )
             {
-                String name = GenericPropertyInfo.getName( propertyType.qualifiedName() );
+                String name = propertyType.qualifiedName().name();
                 Object value = null;
                 if (propertyType.type() instanceof PrimitiveType )
                 {
@@ -197,7 +198,7 @@ public class PreferencesEntityStoreMixin
 
     private void loadAssociations(
         Preferences preferences,
-        Map<String, QualifiedIdentity> associations,
+        Map<QualifiedName, QualifiedIdentity> associations,
         EntityType type )
         throws EntityStoreException
     {
@@ -205,7 +206,7 @@ public class PreferencesEntityStoreMixin
         {
             for( AssociationType associationType : type.associations() )
             {
-                String name = GenericAssociationInfo.getName( associationType.qualifiedName() );
+                String name = associationType.qualifiedName().name();
 
                 String value = preferences.get( name, null );
 
@@ -223,7 +224,7 @@ public class PreferencesEntityStoreMixin
 
     private void loadManyAssociations(
         Preferences preferences,
-        Map<String, Collection<QualifiedIdentity>> associations,
+        Map<QualifiedName, Collection<QualifiedIdentity>> associations,
         EntityType type )
         throws EntityStoreException
     {
@@ -231,7 +232,7 @@ public class PreferencesEntityStoreMixin
         {
             for( ManyAssociationType manyAssociationType : type.manyAssociations() )
             {
-                String name = GenericAssociationInfo.getName( manyAssociationType.qualifiedName() );
+                String name = manyAssociationType.qualifiedName().name();
                 Collection<QualifiedIdentity> collection = associations.get( manyAssociationType.qualifiedName() );
                 String value = preferences.get( name, null );
 
@@ -325,7 +326,7 @@ public class PreferencesEntityStoreMixin
         for( PropertyType property : state.entityType().properties() )
         {
             Object value = state.getProperty( property.qualifiedName() );
-            String propertyName = GenericPropertyInfo.getName( property.qualifiedName() );
+            String propertyName = property.qualifiedName().name();
             if( value == null )
             {
                 node.remove( propertyName );
@@ -375,7 +376,7 @@ public class PreferencesEntityStoreMixin
         for( AssociationType associationType : state.entityType().associations() )
         {
             QualifiedIdentity qid = state.getAssociation( associationType.qualifiedName() );
-            String associationName = GenericAssociationInfo.getName( associationType.qualifiedName() );
+            String associationName = associationType.qualifiedName().name();
             if( qid == null )
             {
                 node.remove( associationName );
@@ -389,7 +390,7 @@ public class PreferencesEntityStoreMixin
         // ManyAssociations
         for( ManyAssociationType manyAssociationType : state.entityType().manyAssociations() )
         {
-            String associationName = GenericAssociationInfo.getName( manyAssociationType.qualifiedName() );
+            String associationName = manyAssociationType.qualifiedName().name();
             Collection<QualifiedIdentity> qids = state.getManyAssociation( manyAssociationType.qualifiedName() );
             StringBuilder qidsString = new StringBuilder();
             for( QualifiedIdentity qid : qids )

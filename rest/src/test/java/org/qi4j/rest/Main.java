@@ -23,6 +23,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ModuleName;
 import org.qi4j.library.http.JettyServiceAssembler;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
+import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.rest.assembly.RestAssembler;
 
 /**
@@ -41,46 +42,8 @@ public class Main
     public Main() throws Exception
     {
         Energy4Java qi4j = new Energy4Java();
-        application = qi4j.newApplication( new Assembler[][][]
-            {
-                // UI
-                {
-                    {
-                        new ModuleName( "Configuration store" ),
-                        new MemoryEntityStoreServiceAssembler(),
-                    },
-                    {
-                        new ModuleName( "Restlet servlet" ),
-                        new RestletServletAssembler(),
-                    },
-                    {
-                        new ModuleName( "Jetty" ),
-                        new JettyServiceAssembler()
-                    }
-                },
-                // Domain
-                {
-                    {
-                        new ModuleName( "Restlet application" ),
-                        new RestAssembler(),
-                    },
-                    {
-                        new ModuleName( "RDF" ),
-                        new RDFAssembler(),
-                    },
-                    {
-                        new ModuleName( "Domain" ),
-                        new DomainAssembler(),
-                    }
-                },
-                // Infrastructure
-                {
-                    {
-                        new ModuleName( "Configuration store" ),
-                        new MemoryEntityStoreServiceAssembler(),
-                    }
-                }
-            } );
+        qi4j.newApplication( new MainAssembler());
+        application = qi4j.newApplication( new MainAssembler());
         application.activate();
     }
 
@@ -96,5 +59,6 @@ class RDFAssembler
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addObjects( EntityStateSerializer.class ).visibleIn( Visibility.layer );
+        module.addObjects( EntityTypeSerializer.class ).visibleIn( Visibility.layer );
     }
 }

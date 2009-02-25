@@ -202,7 +202,7 @@ public class EntitiesResource extends Resource
             {
                 if( propertyType.propertyType() != PropertyType.PropertyTypeEnum.COMPUTED && propertyType.type() instanceof PrimitiveType )
                 {
-                    String newStringValue = form.getFirstValue( propertyType.qualifiedName() );
+                    String newStringValue = form.getFirstValue( propertyType.qualifiedName().toString() );
                     PrimitiveType primitiveType = (PrimitiveType) propertyType.type();
                     Object newValue = EntityResource.toValue( newStringValue, propertyType.qualifiedName(), primitiveType.type() );
                     entityState.setProperty( propertyType.qualifiedName(), newValue );
@@ -210,7 +210,7 @@ public class EntitiesResource extends Resource
             }
             for( AssociationType associationType : entityType.associations() )
             {
-                String newStringAssociation = form.getFirstValue( associationType.qualifiedName() );
+                String newStringAssociation = form.getFirstValue( associationType.qualifiedName().toString() );
                 if( newStringAssociation == null || newStringAssociation.equals( "" ) )
                 {
                     entityState.setAssociation( associationType.qualifiedName(), null );
@@ -222,7 +222,7 @@ public class EntitiesResource extends Resource
             }
             for( ManyAssociationType associationType : entityType.manyAssociations() )
             {
-                String newStringAssociation = form.getFirstValue( associationType.qualifiedName() );
+                String newStringAssociation = form.getFirstValue( associationType.qualifiedName().toString() );
                 Collection<QualifiedIdentity> manyAssociation = entityState.getManyAssociation( associationType.qualifiedName() );
                 if( newStringAssociation == null )
                 {
@@ -321,7 +321,7 @@ public class EntitiesResource extends Resource
             PropertyType.PropertyTypeEnum propertyTypeEnum = propertyType.propertyType();
             out.append( "<tr><td>" +
                         "<label for=\"" + propertyType.qualifiedName() + "\" >" +
-                        GenericPropertyInfo.getName( propertyType.qualifiedName() ) +
+                        propertyType.qualifiedName().name() +
                         "</label></td>\n" +
                         "<td><input " +
                         "type=\"text\" " +
@@ -336,7 +336,7 @@ public class EntitiesResource extends Resource
         {
             out.append( "<tr><td>" +
                         "<label for=\"" + associationType.qualifiedName() + "\" >" +
-                        GenericAssociationInfo.getName( associationType.qualifiedName() ) +
+                        associationType.qualifiedName().name() +
                         "</label></td>\n" +
                         "<td><input " +
                         "type=\"text\" " +
@@ -351,7 +351,7 @@ public class EntitiesResource extends Resource
         {
             out.append( "<tr><td>" +
                         "<label for=\"" + associationType.qualifiedName() + "\" >" +
-                        GenericAssociationInfo.getName( associationType.qualifiedName() ) +
+                        associationType.qualifiedName().name() +
                         "</label></td>\n" +
                         "<td><textarea " +
                         "rows=\"10\" " +

@@ -28,7 +28,7 @@ public class IBatisClientTest
     private LegacySqlClient client;
     private static final String TEST_ID = TestConfig.JANE_SMITH_ID;
 
-    @Test public void loadExisingPerson() throws Exception
+    @Test public void loadExistingPerson() throws Exception
     {
         final QualifiedIdentity id = new QualifiedIdentity( TEST_ID, PersonComposite.class );
         assertEquals( "id", TEST_ID, id.identity() );

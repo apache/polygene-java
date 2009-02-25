@@ -63,6 +63,7 @@ import org.qi4j.index.rdf.model.entities.DomainEntity;
 import org.qi4j.index.rdf.model.entities.FemaleEntity;
 import org.qi4j.index.rdf.model.entities.MaleEntity;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
+import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
@@ -89,7 +90,7 @@ public class RdfEntityFinderTest
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                module.addObjects( EntityStateSerializer.class );
+                module.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
                 module.addEntities(
                     MaleEntity.class,
                     FemaleEntity.class,

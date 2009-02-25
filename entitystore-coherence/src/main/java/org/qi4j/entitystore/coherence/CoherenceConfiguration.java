@@ -20,12 +20,11 @@ package org.qi4j.entitystore.coherence;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.configuration.ConfigurationComposite;
 import sun.security.util.Cache;
 
-@Queryable( false )
 public interface CoherenceConfiguration
-    extends EntityComposite
+    extends ConfigurationComposite
 {
     Property<String> cacheName();
-
 }

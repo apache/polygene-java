@@ -39,6 +39,7 @@ import org.junit.Test;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ApplicationAssemblerAdapter;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -61,17 +62,16 @@ public class RestTest extends AbstractQi4jTest
     protected Application newApplication()
         throws AssemblyException
     {
-        Assembler[][][] assemblers = new Assembler[][][]
+        return qi4j.newApplication( new ApplicationAssemblerAdapter(new Assembler[][][]
             {
                 {
                     {
-                        this,
+                        RestTest.this,
                         new RestAssembler(),
                         new RdfMemoryStoreAssembler()
                     }
                 }
-            };
-        return qi4j.newApplication( assemblers );
+            }){});
     }
 
     public void assemble( ModuleAssembly module )

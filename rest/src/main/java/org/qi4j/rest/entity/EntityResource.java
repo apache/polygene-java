@@ -35,6 +35,7 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.spi.Qi4jSPI;
@@ -67,7 +68,7 @@ import org.restlet.resource.WriterRepresentation;
 
 public class EntityResource extends Resource
 {
-    public static Object toValue( String newStringValue, String propertyName, String propertyType )
+    public static Object toValue( String newStringValue, QualifiedName propertyName, String propertyType )
         throws IllegalArgumentException
     {
         Object newValue = null;
@@ -92,7 +93,7 @@ public class EntityResource extends Resource
         return newValue;
     }
 
-    public static Object toString( Object newValue, String propertyName )
+    public static Object toString( Object newValue, QualifiedName propertyName )
         throws IllegalArgumentException
     {
         if( newValue == null )
@@ -231,7 +232,7 @@ public class EntityResource extends Resource
                     }
                     out.println( "<tr><td>" +
                                  "<label for=\"" + propertyType.qualifiedName() + "\" >" +
-                                 GenericPropertyInfo.getName( propertyType.qualifiedName() ) +
+                                 propertyType.qualifiedName().name() +
                                  "</label></td>\n" +
                                  "<td><input " +
                                  "type=\"text\" " +
@@ -251,7 +252,7 @@ public class EntityResource extends Resource
                     }
                     out.println( "<tr><td>" +
                                  "<label for=\"" + associationType.qualifiedName() + "\" >" +
-                                 GenericAssociationInfo.getName( associationType.qualifiedName() ) +
+                                 associationType.qualifiedName().name() +
                                  "</label></td>\n" +
                                  "<td><input " +
                                  "type=\"text\" " +
@@ -273,7 +274,7 @@ public class EntityResource extends Resource
 
                     out.println( "<tr><td>" +
                                  "<label for=\"" + associationType.qualifiedName() + "\" >" +
-                                 GenericAssociationInfo.getName( associationType.qualifiedName() ) +
+                                 associationType.qualifiedName().name() +
                                  "</label></td>\n" +
                                  "<td><textarea " +
                                  "rows=\"10\" " +
@@ -351,14 +352,14 @@ public class EntityResource extends Resource
             {
                 if( propertyType.propertyType() == PropertyType.PropertyTypeEnum.MUTABLE && propertyType.type() instanceof PrimitiveType )
                 {
-                    String newStringValue = form.getFirstValue( propertyType.qualifiedName() );
+                    String newStringValue = form.getFirstValue( propertyType.qualifiedName().toString() );
                     Object newValue = toValue( newStringValue, propertyType.qualifiedName(), ((PrimitiveType)propertyType.type()).type() );
                     entity.setProperty( propertyType.qualifiedName(), newValue );
                 }
             }
             for( AssociationType associationType : entity.entityType().associations() )
             {
-                String newStringAssociation = form.getFirstValue( associationType.qualifiedName() );
+                String newStringAssociation = form.getFirstValue( associationType.qualifiedName().toString() );
                 if( newStringAssociation == null || newStringAssociation.equals( "" ) )
                 {
                     entity.setAssociation( associationType.qualifiedName(), null );
@@ -370,7 +371,7 @@ public class EntityResource extends Resource
             }
             for( ManyAssociationType associationType : entity.entityType().manyAssociations() )
             {
-                String newStringAssociation = form.getFirstValue( associationType.qualifiedName() );
+                String newStringAssociation = form.getFirstValue( associationType.qualifiedName().toString() );
                 Collection<QualifiedIdentity> manyAssociation = entity.getManyAssociation( associationType.qualifiedName() );
                 if( newStringAssociation == null )
                 {

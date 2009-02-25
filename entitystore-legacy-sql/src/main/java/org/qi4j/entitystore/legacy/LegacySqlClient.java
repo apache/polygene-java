@@ -25,6 +25,7 @@ import java.util.Properties;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.api.common.QualifiedName;
 
 public class LegacySqlClient
     implements Serializable, StateCommitter

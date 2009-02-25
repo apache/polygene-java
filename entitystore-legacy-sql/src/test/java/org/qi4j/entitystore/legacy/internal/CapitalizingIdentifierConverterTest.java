@@ -3,6 +3,7 @@ package org.qi4j.entitystore.legacy.internal;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import org.qi4j.entitystore.legacy.internal.CapitalizingIdentifierConverter;
+import org.qi4j.api.common.QualifiedName;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -14,48 +15,58 @@ public class CapitalizingIdentifierConverterTest
 {
     private final CapitalizingIdentifierConverter converter = new CapitalizingIdentifierConverter();
 
-    @Test public void convertToUpperCase() {
-        assertEquals("identity -> ID","ID", converter.convertIdentifier( "identity" ));
-        assertEquals("uppercase ABC","ABC", converter.convertIdentifier( "abc" ));
-        assertEquals("removed qualified prefix","ABC", converter.convertIdentifier( "aaa:abc" ));
-        assertEquals("removed qualified prefixes","ABC", converter.convertIdentifier( "aaa:bbb:abc" ));
-    }
-    @Test public void removeFromMap() {
-        Map<String,Object> rawData = new HashMap<String,Object>();
-        rawData.put("ABC","test");
-        assertEquals("converted key and found value","test", converter.getValueFromData( rawData, "abc" ));
-        assertEquals( "entry removed" , 0, rawData.size());
-    }
-    @Test public void nullIfNotFound() {
-        Map<String,Object> rawData = new HashMap<String,Object>();
-        assertEquals("converted key and found value",null, converter.getValueFromData( rawData, "abc" ));
+    @Test public void convertToUpperCase()
+    {
+        assertEquals( "identity -> ID", "ID", converter.convertIdentifier( new QualifiedName( "abc:identity" ) ) );
+        assertEquals( "uppercase ABC", "ABC", converter.convertIdentifier( new QualifiedName( "abc:abc" ) ) );
+        assertEquals( "removed qualified prefix", "ABC", converter.convertIdentifier( new QualifiedName( "aaa:abc" ) ) );
+        assertEquals( "removed qualified prefixes", "ABC", converter.convertIdentifier( new QualifiedName( "aaa:bbb:abc" ) ) );
     }
 
-    @Test public void convertMapKeys() {
-        Map<String,Object> rawData = new HashMap<String,Object>();
-        rawData.put("abc","test1");
-        rawData.put("DEF","test2");
-        rawData.put("aaa:GHI","test3");
-        rawData.put("aaa:bbb:JKL","test4");
-        final Map<String, Object> convertedData = converter.convertKeys( rawData );
-        assertEquals( "all entries remained" ,4,convertedData.size());
-        assertEquals("converted key and found value ABC","test1",convertedData.get("ABC"));
-        assertEquals("converted key and found value DEF","test2",convertedData.get("DEF"));
-        assertEquals("converted key and found value GHI","test3",convertedData.get("GHI"));
-        assertEquals("converted key and found value JKL","test4",convertedData.get("JKL"));
+    @Test public void removeFromMap()
+    {
+        Map<String, Object> rawData = new HashMap<String, Object>();
+        rawData.put( "ABC", "test" );
+        assertEquals( "converted key and found value", "test", converter.getValueFromData( rawData, new QualifiedName( "aaa:abc" ) ) );
+        assertEquals( "entry removed", 0, rawData.size() );
     }
-    @Test(expected = IllegalArgumentException.class)
-    public void failDuplicateKeys() {
-        Map<String,Object> rawData = new HashMap<String,Object>();
-        rawData.put("abc","test1");
-        rawData.put("ABC","test2");
+
+    @Test public void nullIfNotFound()
+    {
+        Map<String, Object> rawData = new HashMap<String, Object>();
+        assertEquals( "converted key and found value", null, converter.getValueFromData( rawData, new QualifiedName( "aaa:abc" ) ) );
+    }
+
+    @Test public void convertMapKeys()
+    {
+        Map<QualifiedName, Object> rawData = new HashMap<QualifiedName, Object>();
+        rawData.put( new QualifiedName( "abc:abc" ), "test1" );
+        rawData.put( new QualifiedName( "abc:DEF" ), "test2" );
+        rawData.put( new QualifiedName( "aaa:GHI" ), "test3" );
+        rawData.put( new QualifiedName( "aaa:bbb:JKL" ), "test4" );
+        final Map<String, Object> convertedData = converter.convertKeys( rawData );
+        assertEquals( "all entries remained", 4, convertedData.size() );
+        assertEquals( "converted key and found value ABC", "test1", convertedData.get( "ABC" ) );
+        assertEquals( "converted key and found value DEF", "test2", convertedData.get( "DEF" ) );
+        assertEquals( "converted key and found value GHI", "test3", convertedData.get( "GHI" ) );
+        assertEquals( "converted key and found value JKL", "test4", convertedData.get( "JKL" ) );
+    }
+
+    @Test( expected = IllegalArgumentException.class )
+    public void failDuplicateKeys()
+    {
+        Map<QualifiedName, Object> rawData = new HashMap<QualifiedName, Object>();
+        rawData.put( new QualifiedName( "abc" ), "test1" );
+        rawData.put( new QualifiedName( "ABC" ), "test2" );
         converter.convertKeys( rawData );
     }
-    @Test(expected = IllegalArgumentException.class)
-    public void failDuplicateQualfiedKeys() {
-        Map<String,Object> rawData = new HashMap<String,Object>();
-        rawData.put("abc","test1");
-        rawData.put("aaa:abc","test2");
+
+    @Test( expected = IllegalArgumentException.class )
+    public void failDuplicateQualfiedKeys()
+    {
+        Map<QualifiedName, Object> rawData = new HashMap<QualifiedName, Object>();
+        rawData.put( new QualifiedName( "abc" ), "test1" );
+        rawData.put( new QualifiedName( "aaa:abc" ), "test2" );
         converter.convertKeys( rawData );
     }
 }

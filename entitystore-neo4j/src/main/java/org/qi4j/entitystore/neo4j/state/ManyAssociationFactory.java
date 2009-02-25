@@ -22,6 +22,7 @@ import java.util.Map;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.RelationshipType;
 import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -32,12 +33,12 @@ import org.qi4j.spi.entity.association.AssociationDescriptor;
  */
 class ManyAssociationFactory
 {
-    private static final Map<String, ManyAssociationFactory> cache = new HashMap<String, ManyAssociationFactory>();
+    private static final Map<QualifiedName, ManyAssociationFactory> cache = new HashMap<QualifiedName, ManyAssociationFactory>();
 
 
     static ManyAssociationFactory getFactory( ManyAssociationType model )
     {
-        String qName = model.qualifiedName();
+        QualifiedName qName = model.qualifiedName();
         ManyAssociationFactory value = cache.get( qName );
         if( value == null )
         {
@@ -53,7 +54,7 @@ class ManyAssociationFactory
         return value;
     }
 
-    public static ManyAssociationFactory load( String qName, String typeString )
+    public static ManyAssociationFactory load( QualifiedName qName, String typeString )
     {
         ManyAssociationFactory value = cache.get( qName );
         if( value == null )
@@ -70,7 +71,7 @@ class ManyAssociationFactory
         return value;
     }
 
-    private final String qName;
+    private final QualifiedName qName;
     private final CollectionFactory factory;
 
     private ManyAssociationFactory( ManyAssociationType model )
@@ -79,13 +80,13 @@ class ManyAssociationFactory
         this.factory = CollectionFactory.getFactoryFor( model );
     }
 
-    public ManyAssociationFactory( String qName, String typeString )
+    public ManyAssociationFactory( QualifiedName qName, String typeString )
     {
         this.qName = qName;
         this.factory = CollectionFactory.getFactoryFor( typeString );
     }
 
-    String getQualifiedName()
+    QualifiedName getQualifiedName()
     {
         return qName;
     }
@@ -107,7 +108,7 @@ class ManyAssociationFactory
 
     RelationshipType createAssociationType( LinkType type )
     {
-        return type.getRelationshipType( qName );
+        return type.getRelationshipType( qName.name() );
     }
 
     public String typeString()

@@ -38,6 +38,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.legacy.dbInitializer.DBInitializerConfiguration;
 import org.qi4j.entitystore.legacy.test.TestProperty;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * @author edward.yakop@gmail.com
@@ -280,7 +281,7 @@ public class DerbyDatabaseHandler
 
     private <T> Property<T> createProperty( final String name, final T value )
     {
-        return new TestProperty<T>( value, name );
+        return new TestProperty<T>( value, new QualifiedName(DBInitializerConfiguration.class, name) );
     }
 
     public int executeStatement( final String sql, final ResultSetCallback callback )

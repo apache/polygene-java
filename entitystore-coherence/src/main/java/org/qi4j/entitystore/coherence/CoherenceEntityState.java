@@ -29,6 +29,7 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.helpers.DefaultEntityState;
+import org.qi4j.api.common.QualifiedName;
 
 class CoherenceEntityState extends DefaultEntityState
     implements PortableObject, EntityState
@@ -38,7 +39,7 @@ class CoherenceEntityState extends DefaultEntityState
         super( identity, entityType );
     }
 
-    public CoherenceEntityState( long version, long lastModified, QualifiedIdentity identity, EntityStatus status, EntityType entityType, Map<String, Object> properties, Map<String, QualifiedIdentity> associations, Map<String, Collection<QualifiedIdentity>> manyAssociations )
+    public CoherenceEntityState( long version, long lastModified, QualifiedIdentity identity, EntityStatus status, EntityType entityType, Map<QualifiedName, Object> properties, Map<QualifiedName, QualifiedIdentity> associations, Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations )
     {
         super( version, lastModified, identity, status, entityType, properties, associations, manyAssociations );
     }
@@ -60,7 +61,7 @@ class CoherenceEntityState extends DefaultEntityState
         for( int i = 0; i < propertyCounter; i++ )
         {
             Object propertyValue = pofReader.readObject( i + counter );
-            properties.put( propertyNames.get( i ), propertyValue );
+            properties.put( new QualifiedName(propertyNames.get( i )), propertyValue );
         }
         pofReader.readRemainder();
         clearModified();
@@ -76,14 +77,14 @@ class CoherenceEntityState extends DefaultEntityState
         }
         pofWriter.writeLong( counter++, version );
         pofWriter.writeLong( counter++, lastModified );
-        for( String propName : properties.keySet() )
+        for( QualifiedName propName : properties.keySet() )
         {
-            pofWriter.writeString( counter++, propName );
+            pofWriter.writeString( counter++, propName.toString() );
         }
         pofWriter.writeString( counter++, "" );
         pofWriter.writeInt( counter, counter - 1 );
         counter++;
-        for( String propName : properties.keySet() )
+        for( QualifiedName propName : properties.keySet() )
         {
             Object propertyValue = getProperty( propName );
             pofWriter.writeObject( counter++, propertyValue );

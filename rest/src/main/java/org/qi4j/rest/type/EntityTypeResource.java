@@ -21,8 +21,11 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.structure.Module;
-import org.qi4j.library.rdf.entity.EntityStateSerializer;
+import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
+import org.qi4j.library.rdf.Rdfs;
+import org.qi4j.library.rdf.DcRdf;
+import org.qi4j.library.rdf.Qi4jEntityType;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityType;
@@ -44,7 +47,7 @@ import org.restlet.resource.Variant;
 
 public class EntityTypeResource extends Resource
 {
-    @Uses private EntityStateSerializer entitySerializer;
+    @Uses private EntityTypeSerializer entityTypeSerializer;
     @Structure private Module module;
     @Structure private Qi4jSPI spi;
 
@@ -103,10 +106,12 @@ public class EntityTypeResource extends Resource
         {
 
             EntityType entityType = entityDescriptor.entityType();
-            Iterable<Statement> statements = entitySerializer.serialize( entityType );
+            Iterable<Statement> statements = entityTypeSerializer.serialize( entityType );
 
             StringWriter out = new StringWriter();
-            new RdfXmlSerializer().serialize( statements, out );
+            String[] prefixes = new String[]{ "rdf", "dc", " vc", "qi4j" };
+            String[] namespaces = new String[]{ Rdfs.RDF, DcRdf.NAMESPACE, "http://www.w3.org/2001/vcard-rdf/3.0#", Qi4jEntityType.NAMESPACE };
+            new RdfXmlSerializer().serialize( statements, out, prefixes, namespaces );
 
             return new StringRepresentation( out.toString(), MediaType.APPLICATION_RDF_XML );
         }
@@ -145,7 +150,7 @@ public class EntityTypeResource extends Resource
             {
                 buf.append( "<tr><td>" +
                             "<label for=\"" + propertyType.qualifiedName() + "\" >" +
-                            GenericPropertyInfo.getName( propertyType.qualifiedName() ) +
+                            propertyType.qualifiedName().name() +
                             "</label></td>\n" +
                             "<td><input " +
                             "type=\"text\" " +
@@ -161,7 +166,7 @@ public class EntityTypeResource extends Resource
         {
             buf.append( "<tr><td>" +
                         "<label for=\"" + associationType.qualifiedName() + "\" >" +
-                        GenericAssociationInfo.getName( associationType.qualifiedName() ) +
+                        associationType.qualifiedName().name() +
                         "</label></td>\n" +
                         "<td><input " +
                         "type=\"text\" " +
@@ -177,7 +182,7 @@ public class EntityTypeResource extends Resource
         {
             buf.append( "<tr><td>" +
                         "<label for=\"" + associationType.qualifiedName() + "\" >" +
-                        GenericAssociationInfo.getName( associationType.qualifiedName() ) +
+                        associationType.qualifiedName().name() +
                         "</label></td>\n" +
                         "<td><input " +
                         "type=\"text\" " +

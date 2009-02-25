@@ -18,6 +18,7 @@ package org.qi4j.entitystore.neo4j.state;
 
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -38,9 +39,9 @@ public enum LinkType
         suffix = "::" + name();
     }
 
-    private String getRelationshipTypeName( String qualifiedName )
+    private String getRelationshipTypeName( String name )
     {
-        return qualifiedName + suffix;
+        return name + suffix;
     }
 
     public boolean isInstance( Relationship relation )
@@ -48,9 +49,9 @@ public enum LinkType
         return relation.getType().name().endsWith( suffix );
     }
 
-    public RelationshipType getRelationshipType( String qualifiedName )
+    public RelationshipType getRelationshipType( String name )
     {
-        return new AssociationRelationshipType( getRelationshipTypeName( qualifiedName ) );
+        return new AssociationRelationshipType( getRelationshipTypeName( name ) );
     }
 
     private static class AssociationRelationshipType implements RelationshipType

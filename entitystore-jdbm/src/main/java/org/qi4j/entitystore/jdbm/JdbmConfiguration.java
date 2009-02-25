@@ -4,13 +4,14 @@ import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.configuration.ConfigurationComposite;
 
 /**
  * JAVADOC
  */
 @Queryable( false )
 public interface JdbmConfiguration
-    extends EntityComposite
+    extends ConfigurationComposite
 {
     Property<String> file();
 

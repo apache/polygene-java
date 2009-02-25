@@ -21,6 +21,7 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.configuration.ConfigurationComposite;
 
 /**
  * Configuration for the JNDI EntityStore.
@@ -29,7 +30,7 @@ import org.qi4j.api.property.Property;
  * below mirrors the meaning found for the constants in the <code>javax.naming.Context</code> interface.
  * </p>
  */
-public interface JndiConfiguration extends EntityComposite
+public interface JndiConfiguration extends ConfigurationComposite
 {
 
     /**

@@ -27,6 +27,7 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.entitystore.legacy.DerbyDatabaseHandler;
 import org.qi4j.entitystore.legacy.entity.PersonComposite;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -125,7 +126,7 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
 
         for( final PropertyDescriptor propertyDescriptor : compositeBinding.state().properties() )
         {
-            final String propertyName = propertyDescriptor.name();
+            final String propertyName = propertyDescriptor.qualifiedName().name();
             if( "identity".equals( propertyName ) )
             {
                 continue;
@@ -144,9 +145,9 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
         assertNotNull( "identity", qualifiedIdentity );
         org.junit.Assert.assertEquals( "identity", id, qualifiedIdentity.identity() );
 
-        org.junit.Assert.assertEquals( "identity", id, state.getProperty( "identity" ) );
-        org.junit.Assert.assertEquals( "firstName", firstName, state.getProperty( "firstName" ) );
-        org.junit.Assert.assertEquals( "lastName", lastName, state.getProperty( "lastName" ) );
+        org.junit.Assert.assertEquals( "identity", id, state.getProperty( new QualifiedName("identity") ) );
+        org.junit.Assert.assertEquals( "firstName", firstName, state.getProperty( new QualifiedName("firstName" )) );
+        org.junit.Assert.assertEquals( "lastName", lastName, state.getProperty( new QualifiedName("lastName") ) );
     }
 
     protected void assertPersonEquals( final String id, final String firstName, final String lastName, final PersonComposite person )

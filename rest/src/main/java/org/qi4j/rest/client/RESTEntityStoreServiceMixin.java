@@ -35,6 +35,7 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.Wrapper;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.entity.EntityTypeRegistryMixin;
 import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.helpers.DefaultEntityState;
@@ -114,8 +115,8 @@ public class RESTEntityStoreServiceMixin
                         DefaultEntityState entityState = new DefaultEntityState( version, modified,
                                                                                  anIdentity, EntityStatus.LOADED,
                                                                                  entityType,
-                                                                                 new HashMap<String, Object>(),
-                                                                                 new HashMap<String, QualifiedIdentity>(),
+                                                                                 new HashMap<QualifiedName, Object>(),
+                                                                                 new HashMap<QualifiedName, QualifiedIdentity>(),
                                                                                  DefaultEntityState.newManyCollections( entityType ) );
                         parser.parse( statements, entityState );
                         entityState.clearModified();

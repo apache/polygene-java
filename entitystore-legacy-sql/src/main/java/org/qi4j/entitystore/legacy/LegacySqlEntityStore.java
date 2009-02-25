@@ -30,6 +30,7 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Module;
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.entitystore.legacy.dbInitializer.DBInitializer;
 import org.qi4j.entitystore.legacy.internal.LegacyEntityState;
 import org.qi4j.spi.Qi4jSPI;
@@ -51,8 +52,8 @@ import org.qi4j.spi.entity.UnknownEntityTypeException;
 public class LegacySqlEntityStore
     implements EntityStore, Activatable
 {
-    private static final String VERSION = "VERSION";
-    private static final String LASTMODIFIED = "LASTMODIFIED";
+    private static final QualifiedName VERSION = new QualifiedName("VERSION");
+    private static final QualifiedName LASTMODIFIED = new QualifiedName("LASTMODIFIED");
 
 
     @Structure private Qi4jSPI spi;
@@ -89,7 +90,7 @@ public class LegacySqlEntityStore
         checkActivation();
 
         EntityType type = getEntityType( identity );
-        return new LegacyEntityState( type, identity, new HashMap<String, Object>(), 0L, System.currentTimeMillis(), NEW );
+        return new LegacyEntityState( type, identity, new HashMap<QualifiedName, Object>(), 0L, System.currentTimeMillis(), NEW );
     }
 
     /**
@@ -117,12 +118,11 @@ public class LegacySqlEntityStore
      * @throws EntityNotFoundException Thrown if the entity does not exists.
      * @since 0.2.0
      */
-    public final EntityState
-    getEntityState( final QualifiedIdentity anIdentity )
+    public final EntityState getEntityState( final QualifiedIdentity anIdentity )
         throws EntityStoreException
     {
         checkActivation();
-        final Map<String, Object> rawData = getRawData( anIdentity );
+        final Map<QualifiedName, Object> rawData = getRawData( anIdentity );
         Long version = (Long) rawData.get( VERSION );
         if( version == null )
         {
@@ -147,15 +147,21 @@ public class LegacySqlEntityStore
      * @throws EntityStoreException Thrown if retrieval failed.
      * @since 0.1.0
      */
-    private Map<String, Object> getRawData( final QualifiedIdentity anIdentity )
+    private Map<QualifiedName, Object> getRawData( final QualifiedIdentity anIdentity )
         throws EntityStoreException
     {
         validateNotNull( "anIdentity", anIdentity );
         checkActivation();
-        final Map<String, Object> compositePropertyValues = config.executeLoad( anIdentity );
-        if( compositePropertyValues == null )
+        final Map<String, Object> rawData = config.executeLoad( anIdentity );
+        if( rawData == null )
         {
             throw new EntityNotFoundException( this.toString(), anIdentity );
+        }
+
+        final Map<QualifiedName, Object> compositePropertyValues = new HashMap<QualifiedName, Object>();
+        for( Map.Entry<String, Object> stringObjectEntry : rawData.entrySet() )
+        {
+            compositePropertyValues.put( new QualifiedName(stringObjectEntry.getKey()), stringObjectEntry.getValue());
         }
 
         return compositePropertyValues;
@@ -185,14 +191,14 @@ public class LegacySqlEntityStore
 
         for( final EntityState state : newStates )
         {
-            Map<String, Object> properties = getProperties( state );
+            Map<QualifiedName, Object> properties = getProperties( state );
             properties.put( VERSION, 1 );
             properties.put( LASTMODIFIED, System.currentTimeMillis() );
             config.executeUpdate( "insert", state.qualifiedIdentity(), properties );
         }
         for( final EntityState state : loadedStates )
         {
-            Map<String, Object> properties = getProperties( state );
+            Map<QualifiedName, Object> properties = getProperties( state );
             properties.put( VERSION, state.version() + 1 );
             properties.put( LASTMODIFIED, System.currentTimeMillis() );
             config.executeUpdate( "update", state.qualifiedIdentity(), properties );
@@ -206,18 +212,18 @@ public class LegacySqlEntityStore
     }
 
 
-    private Map<String, Object> getProperties( final EntityState state )
+    private Map<QualifiedName, Object> getProperties( final EntityState state )
     {
-        final Map<String, Object> result = new HashMap<String, Object>();
-        for( final String propertyName : state.propertyNames() )
+        final Map<QualifiedName, Object> result = new HashMap<QualifiedName, Object>();
+        for( final QualifiedName propertyName : state.propertyNames() )
         {
             result.put( propertyName, state.getProperty( propertyName ) );
         }
-        for( final String assocName : state.associationNames() )
+        for( final QualifiedName assocName : state.associationNames() )
         {
             result.put( assocName, state.getAssociation( assocName ).identity() );
         }
-        for( final String manyAssocName : state.manyAssociationNames() )
+        for( final QualifiedName manyAssocName : state.manyAssociationNames() )
         {
             final Collection<QualifiedIdentity> manyAssociation = state.getManyAssociation( manyAssocName );
             result.put( manyAssocName, stringIdentifiersOf( manyAssociation ) );

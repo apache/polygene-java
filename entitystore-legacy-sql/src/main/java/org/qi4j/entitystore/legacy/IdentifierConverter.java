@@ -14,12 +14,13 @@
 package org.qi4j.entitystore.legacy;
 
 import java.util.Map;
+import org.qi4j.api.common.QualifiedName;
 
 public interface IdentifierConverter
 {
-    String convertIdentifier( String qualifiedIdentifier );
+    String convertIdentifier( QualifiedName qualifiedIdentifier );
 
-    Map<String, Object> convertKeys( Map<String, Object> rawData );
+    Map<String, Object> convertKeys( Map<QualifiedName, Object> rawData );
 
-    Object getValueFromData( Map<String, Object> rawData, String qualifiedName );
+    Object getValueFromData( Map<String, Object> rawData, QualifiedName name );
 }

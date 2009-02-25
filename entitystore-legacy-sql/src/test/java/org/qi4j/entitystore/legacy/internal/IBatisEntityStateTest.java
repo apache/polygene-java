@@ -28,6 +28,7 @@ import org.qi4j.entitystore.legacy.entity.HasFirstName;
 import org.qi4j.entitystore.legacy.entity.HasLastName;
 import org.qi4j.entitystore.legacy.entity.PersonComposite;
 import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -43,19 +44,19 @@ public final class IBatisEntityStateTest extends AbstractQi4jTest
     @Test public void usesGivenFirstNameProperty()
         throws NoSuchMethodException
     {
-        final Map<String, Object> janeValues = Collections.<String, Object>singletonMap( "firstName", "Jane" );
+        final Map<QualifiedName, Object> janeValues = Collections.<QualifiedName, Object>singletonMap( new QualifiedName("person:firstName"), "Jane" );
         final EntityState jane = newPersonEntityState( janeValues );
         final String firstNameProperty = getPropertyValue( jane, HasFirstName.class, "firstName" );
         assertNotNull( firstNameProperty );
 
-        assertEquals( janeValues.get( "firstName" ), firstNameProperty );
+        assertEquals( janeValues.get( new QualifiedName("person:firstName") ), firstNameProperty );
     }
 
     private String getPropertyValue( final EntityState person, final Class<?> type, final String propertyName )
         throws NoSuchMethodException
     {
         final Method method = type.getMethod( propertyName );
-        return (String) person.getProperty( GenericPropertyInfo.getQualifiedName( method ) );
+        return (String) person.getProperty( new QualifiedName( method ) );
     }
 
     public final void assemble( final ModuleAssembly module ) throws AssemblyException
@@ -66,7 +67,7 @@ public final class IBatisEntityStateTest extends AbstractQi4jTest
         module.on( HasLastName.class ).to().lastName().set( DEFAULT_LAST_NAME );
     }
 
-    protected LegacyEntityState newPersonEntityState( final Map<String, Object> initialValues )
+    protected LegacyEntityState newPersonEntityState( final Map<QualifiedName, Object> initialValues )
     {
 
         return new LegacyEntityState( spi.getEntityDescriptor( PersonComposite.class, moduleInstance ).entityType(),
