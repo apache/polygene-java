@@ -126,9 +126,9 @@ public class StatePane extends DetailPane
 
         for( CompositeMethodDetailDescriptor descriptor : iter )
         {
-            Class compositeClazz = descriptor.composite().descriptor().type();
+            Class compositeClass = descriptor.composite().descriptor().type();
             Class mixinMethodClass = descriptor.descriptor().method().getDeclaringClass();
-            if( compositeClazz.isAssignableFrom( mixinMethodClass ) )
+            if( mixinMethodClass.isAssignableFrom( compositeClass ) )
             {
                 publicList.add( descriptor );
             }
@@ -361,9 +361,9 @@ public class StatePane extends DetailPane
 
             Icon icon = null;
             CompositeMethodDetailDescriptor descriptor = (CompositeMethodDetailDescriptor) value;
-            Class compositeClazz = descriptor.composite().descriptor().type();
+            Class compositeClass = descriptor.composite().descriptor().type();
             Class mixinMethodClass = descriptor.descriptor().method().getDeclaringClass();
-            if( compositeClazz.isAssignableFrom( mixinMethodClass ) )
+            if( mixinMethodClass.isAssignableFrom( compositeClass ) )
             {
                 icon = publicIcon;
             }
