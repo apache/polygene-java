@@ -185,26 +185,22 @@ public final class ToStringUtils
         else if( PropertyType.class.isAssignableFrom( valueClass ) )
         {
             PropertyType propertyType = (PropertyType) anObject;
-            String name = propertyType.qualifiedName();
-
-            int lastIndexOfDot = name.lastIndexOf( "." );
-            return name.substring( lastIndexOfDot + 1 );
+            String name = propertyType.qualifiedName().name();
+            return name;
         }
         else if( AssociationType.class.isAssignableFrom( valueClass ) )
         {
             AssociationType associationType = (AssociationType) anObject;
-            String name = associationType.qualifiedName();
+            String name = associationType.qualifiedName().name();
 
-            int lastIndexOfDot = name.lastIndexOf( "." );
-            return name.substring( lastIndexOfDot + 1 );
+            return name;
         }
         else if( ManyAssociationType.class.isAssignableFrom( valueClass ) )
         {
             ManyAssociationType manyAssociationType = (ManyAssociationType) anObject;
-            String name = manyAssociationType.qualifiedName();
+            String name = manyAssociationType.qualifiedName().name();
 
-            int lastIndexOfDot = name.lastIndexOf( "." );
-            return name.substring( lastIndexOfDot + 1 );
+            return name;
         }
 
 

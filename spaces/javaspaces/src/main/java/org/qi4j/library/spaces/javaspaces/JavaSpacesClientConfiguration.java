@@ -19,8 +19,9 @@ package org.qi4j.library.spaces.javaspaces;
 
 import org.qi4j.api.property.Property;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.configuration.ConfigurationComposite;
 
-public interface JavaSpacesClientConfiguration extends EntityComposite
+public interface JavaSpacesClientConfiguration extends ConfigurationComposite
 {
     Property<String> groups();
 }

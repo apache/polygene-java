@@ -12,6 +12,7 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.library.swing.binding.IllegalBindingException;
 import org.qi4j.library.swing.binding.StateModel;
 import org.qi4j.library.swing.binding.SwingAdapter;
@@ -76,16 +77,7 @@ public final class BoundAssociation<T> extends AbstractBinding<T, T, Association
         return actualAssociation.metaInfo( infoType );
     }
 
-    public String name()
-    {
-        if( actualAssociation == null )
-        {
-            return null;
-        }
-        return actualAssociation.name();
-    }
-
-    public String qualifiedName()
+    public QualifiedName qualifiedName()
     {
         if( actualAssociation == null )
         {

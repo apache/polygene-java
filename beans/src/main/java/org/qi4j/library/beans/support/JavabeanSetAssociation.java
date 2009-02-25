@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.entity.association.SetAssociation;
 
@@ -51,12 +52,7 @@ public class JavabeanSetAssociation
         return delegate.metaInfo( infoType );
     }
 
-    public String name()
-    {
-        return delegate.name();
-    }
-
-    public String qualifiedName()
+    public QualifiedName qualifiedName()
     {
         return delegate.qualifiedName();
     }

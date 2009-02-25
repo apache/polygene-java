@@ -31,6 +31,7 @@ import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
+import org.qi4j.api.common.QualifiedName;
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.library.swing.binding.IllegalBindingException;
 import org.qi4j.library.swing.binding.StateModel;
@@ -98,6 +99,16 @@ public final class BoundProperty<T> extends AbstractBinding<T, T, Property<T>>
         throw new UnsupportedOperationException( "set() is not allowed in binding templates." );
     }
 
+    public T _()
+    {
+        return get();
+    }
+
+    public void _( T newValue ) throws IllegalArgumentException, IllegalStateException
+    {
+        set(newValue);
+    }
+
     public final <K> K metaInfo( Class<K> infoType )
     {
         return propertyInfo().metaInfo( infoType );
@@ -112,12 +123,7 @@ public final class BoundProperty<T> extends AbstractBinding<T, T, Property<T>>
         return propertyInfo;
     }
 
-    public final String name()
-    {
-        return propertyInfo().name();
-    }
-
-    public final String qualifiedName()
+    public final QualifiedName qualifiedName()
     {
         return propertyInfo().qualifiedName();
     }

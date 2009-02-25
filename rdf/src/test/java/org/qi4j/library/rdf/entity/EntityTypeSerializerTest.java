@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,27 +30,29 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.DcRdf;
 import org.qi4j.library.rdf.Rdfs;
+import org.qi4j.library.rdf.Qi4jEntityType;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
-import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.test.AbstractQi4jTest;
+
 
 /**
  * JAVADOC
  */
-public class EntitySerializerTest
+public class EntityTypeSerializerTest
     extends AbstractQi4jTest
 {
     @Service EntityStore entityStore;
-    @Uses EntityStateSerializer serializer;
+    @Uses EntityTypeSerializer serializer;
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addServices( MemoryEntityStoreService.class );
         module.addEntities( TestEntity.class );
         module.addValues( TestValue.class );
-        module.addObjects( EntityStateSerializer.class, EntitySerializerTest.class );
+        module.addObjects( EntityTypeSerializer.class, EntityTypeSerializerTest.class );
     }
 
     @Override @Before
@@ -60,20 +62,21 @@ public class EntitySerializerTest
 
         createDummyData();
 
-        objectBuilderFactory.newObjectBuilder( EntitySerializerTest.class ).injectTo( this );
+        objectBuilderFactory.newObjectBuilder( EntityTypeSerializerTest.class ).injectTo( this );
     }
 
     @Test
-    public void testEntitySerializer() throws RDFHandlerException
+    public void testEntityTypeSerializer() throws RDFHandlerException
     {
-        QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( "test2", TestEntity.class );
-        EntityState entityState = entityStore.getEntityState( qualifiedIdentity );
 
-        Iterable<Statement> graph = serializer.serialize( entityState );
+        EntityDescriptor entityDescriptor = spi.getEntityDescriptor( TestEntity.class, moduleInstance );
 
-        String[] prefixes = new String[]{ "rdf", "dc", " vc" };
-        String[] namespaces = new String[]{ Rdfs.RDF, DcRdf.NAMESPACE, "http://www.w3.org/2001/vcard-rdf/3.0#" };
+        EntityType entityType = entityDescriptor.entityType();
+        System.out.println(entityType.version());
+        Iterable<Statement> graph = serializer.serialize( entityType );
 
+        String[] prefixes = new String[]{ "rdf", "dc", " vc", "qi4j" };
+        String[] namespaces = new String[]{ Rdfs.RDF, DcRdf.NAMESPACE, "http://www.w3.org/2001/vcard-rdf/3.0#", Qi4jEntityType.NAMESPACE };
 
         new RdfXmlSerializer().serialize( graph, new PrintWriter( System.out ), prefixes, namespaces );
     }
@@ -123,5 +126,3 @@ public class EntitySerializerTest
 
     }
 }
-
-

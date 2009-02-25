@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Collections;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
@@ -26,42 +27,56 @@ import org.openrdf.model.Value;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.util.Classes;
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.library.rdf.Rdfs;
+import org.qi4j.library.rdf.Qi4jEntityType;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
 
 /**
- * JAVADOC
+ * Parser for RDF to EntityType.
  */
-public class EntityStateParser
+public class EntityTypeParser
 {
-    private String identityUri;
-
-    public EntityStateParser()
+    public EntityTypeParser()
     {
-        identityUri = new QualifiedName(Identity.class, "identity" ).toURI();
     }
 
-    public void parse( Iterable<Statement> entityGraph, EntityState entityState )
+    public EntityType parse( Iterable<Statement> entityTypeGraph)
     {
-        Map<String, String> propertyValues = new HashMap<String, String>();
-        Map<String, QualifiedIdentity> associationValues = new HashMap<String, QualifiedIdentity>();
-        Map<String, BNode> manyAssociationResources = new HashMap<String, BNode>();
-        Map<BNode, Collection<QualifiedIdentity>> manyAssociationValues = new HashMap<BNode, Collection<QualifiedIdentity>>();
+        String type = null;
+        String uri = null;
+        boolean queryable = true;
+        Iterable<String> mixinTypes = new ArrayList<String>();
+        Iterable<PropertyType> properties = new ArrayList<PropertyType>();
+        Iterable<AssociationType> associations = new ArrayList<AssociationType>();
+        Iterable<ManyAssociationType> manyAssociations = new ArrayList<ManyAssociationType>();
 
-        String className = null;
-        for( Statement statement : entityGraph )
+        for( Statement statement : entityTypeGraph )
         {
             if( statement.getPredicate().equals( Rdfs.TYPE ) )
             {
-                className = Classes.toClassName( statement.getObject().toString() );
+                type = Classes.toClassName( statement.getObject().toString() );
+                uri = statement.getSubject().stringValue();
             }
-            else
+            else if (statement.getPredicate().equals( Qi4jEntityType.TYPE ))
             {
+                queryable = Boolean.parseBoolean( statement.getObject().stringValue());
+            }
+            else if (statement.getPredicate().equals( Qi4jEntityType.QUERYABLE ))
+            {
+                queryable = Boolean.parseBoolean( statement.getObject().stringValue());
+            }
+            else if (statement.getPredicate().equals( Qi4jEntityType.VERSION ))
+            {
+                queryable = Boolean.parseBoolean( statement.getObject().stringValue());
+            }
+
+/*
+
                 Resource subject = statement.getSubject();
                 URI predicate = statement.getPredicate();
                 Value object = statement.getObject();
@@ -96,38 +111,10 @@ public class EntityStateParser
                     propertyValues.put( uri, object.stringValue() );
                 }
             }
+*/
         }
 
-        String id = propertyValues.get( identityUri );
-
-        if( className == null || id == null )
-        {
-            return;
-        }
-
-        for( PropertyType propertyType : entityState.entityType().properties() )
-        {
-            entityState.setProperty( propertyType.qualifiedName(), propertyValues.get( propertyType.qualifiedName().toURI() ) );
-        }
-
-        for( AssociationType associationType : entityState.entityType().associations() )
-        {
-            QualifiedIdentity entity = associationValues.get( associationType.qualifiedName().toURI() );
-            if( entity != null )
-            {
-                entityState.setAssociation( associationType.qualifiedName(), entity );
-            }
-        }
-
-        for( ManyAssociationType manyAssociationType : entityState.entityType().manyAssociations() )
-        {
-            Collection<QualifiedIdentity> entities = manyAssociationValues.get( manyAssociationResources.get( manyAssociationType.qualifiedName().toURI() ) );
-            if( entities != null )
-            {
-                Collection<QualifiedIdentity> stateEntities = entityState.getManyAssociation( manyAssociationType.qualifiedName() );
-                stateEntities.clear();
-                stateEntities.addAll( entities );
-            }
-        }
+        EntityType entityType = new EntityType(type, uri, queryable, mixinTypes, properties, associations, manyAssociations);
+        return entityType;
     }
 }

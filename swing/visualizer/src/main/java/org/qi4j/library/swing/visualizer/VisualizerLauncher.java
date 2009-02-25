@@ -23,6 +23,9 @@ import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ApplicationAssembler;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.library.swing.visualizer.assembly.VisualizerAssembler;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.structure.Application;
@@ -60,14 +63,20 @@ public final class VisualizerLauncher
         throws Exception
     {
         Energy4Java energy4Java = new Energy4Java();
-        ApplicationAssembly applicationAssembly = energy4Java.newApplicationAssembly();
-        applicationAssembly.setName( "Qi4j visualizer" );
 
-        LayerAssembly visualizerLayer = applicationAssembly.newLayerAssembly( LAYER_VISUALIZER );
-        ModuleAssembly visualizerModule = visualizerLayer.newModuleAssembly( MODULE_VISUALIZER );
-        visualizerModule.addAssembler( new VisualizerAssembler( false ) );
+        Application application = energy4Java.newApplication( new ApplicationAssembler()
+        {
+            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
+            {
+                ApplicationAssembly applicationAssembly = applicationFactory.newApplicationAssembly();
+                applicationAssembly.setName( "Qi4j visualizer" );
 
-        Application application = energy4Java.newApplication( applicationAssembly );
+                LayerAssembly visualizerLayer = applicationAssembly.newLayerAssembly( LAYER_VISUALIZER );
+                ModuleAssembly visualizerModule = visualizerLayer.newModuleAssembly( MODULE_VISUALIZER );
+                visualizerModule.addAssembler( new VisualizerAssembler( false ) );
+                return applicationAssembly;
+            }
+        });
         application.activate();
         return application;
     }

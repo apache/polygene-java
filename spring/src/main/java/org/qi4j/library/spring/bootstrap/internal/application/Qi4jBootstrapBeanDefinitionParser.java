@@ -19,6 +19,8 @@ package org.qi4j.library.spring.bootstrap.internal.application;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.bootstrap.ApplicationAssembler;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import static org.qi4j.library.spring.bootstrap.Constants.*;
 import org.qi4j.library.spring.bootstrap.Qi4jApplicationBootstrap;
 import org.qi4j.api.structure.Application;
@@ -97,7 +99,7 @@ public final class Qi4jBootstrapBeanDefinitionParser
 
 
     private Application createQi4jApplication(
-        Element anElement, ParserContext aParserContext, Qi4jApplicationBootstrap aBootstrap
+        Element anElement, ParserContext aParserContext, final Qi4jApplicationBootstrap aBootstrap
     )
     {
         if( aBootstrap == null )
@@ -106,12 +108,18 @@ public final class Qi4jBootstrapBeanDefinitionParser
         }
 
         Energy4Java energy4Java = new Energy4Java();
-        ApplicationAssembly applicationAssembly = energy4Java.newApplicationAssembly();
 
         try
         {
-            aBootstrap.assemble( applicationAssembly );
-            return energy4Java.newApplication( applicationAssembly );
+            return energy4Java.newApplication( new ApplicationAssembler()
+            {
+                public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
+                {
+                    final ApplicationAssembly applicationAssembly = applicationFactory.newApplicationAssembly();
+                    aBootstrap.assemble( applicationAssembly );
+                    return applicationAssembly;
+                }
+            });
         }
         catch( AssemblyException e )
         {

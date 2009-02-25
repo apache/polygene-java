@@ -18,11 +18,12 @@
 package org.qi4j.library.ldap.server;
 
 import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.common.Optional;
 
-public interface LdapConfiguration extends EntityComposite
+public interface LdapConfiguration extends ConfigurationComposite
 {
     Property<String> partitionId();
 

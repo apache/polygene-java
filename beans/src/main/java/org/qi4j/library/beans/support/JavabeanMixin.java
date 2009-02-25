@@ -55,14 +55,14 @@ public class JavabeanMixin
             if( Property.class.isAssignableFrom( returnType ) )
             {
                 JavabeanProperty prop = new JavabeanProperty( this, method );
-                Method pojoMethod = findMethod( pojo, prop.name() );
+                Method pojoMethod = findMethod( pojo, prop.qualifiedName().name() );
                 prop.setPojoMethod( pojoMethod );
                 handlers.put( method, prop );
             }
             else if( SetAssociation.class.isAssignableFrom( returnType ) )
             {
                 JavabeanSetAssociation association = new JavabeanSetAssociation( this, method );
-                Method pojoMethod = findMethod( pojo, association.name() );
+                Method pojoMethod = findMethod( pojo, association.qualifiedName().name() );
                 association.setPojoMethod( pojoMethod );
                 handlers.put( method, association );
             }
@@ -70,14 +70,14 @@ public class JavabeanMixin
                      ManyAssociation.class.isAssignableFrom( returnType ) )
             {
                 JavabeanListAssociation association = new JavabeanListAssociation( this, method );
-                Method pojoMethod = findMethod( pojo, association.name() );
+                Method pojoMethod = findMethod( pojo, association.qualifiedName().name() );
                 association.setPojoMethod( pojoMethod );
                 handlers.put( method, association );
             }
             else if( Association.class.isAssignableFrom( returnType ) )
             {
                 JavabeanAssociation association = new JavabeanAssociation( this, method );
-                Method pojoMethod = findMethod( pojo, association.name() );
+                Method pojoMethod = findMethod( pojo, association.qualifiedName().name() );
                 association.pojoMethod = pojoMethod;
                 handlers.put( method, association );
             }

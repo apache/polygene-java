@@ -15,8 +15,7 @@
 package org.qi4j.library.http;
 
 import org.qi4j.api.common.Optional;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
 import org.qi4j.library.constraints.annotation.NotEmpty;
 import org.qi4j.library.constraints.annotation.Range;
@@ -24,9 +23,8 @@ import org.qi4j.library.constraints.annotation.Range;
 /**
  * JAVADOC
  */
-@Queryable( false )
 public interface JettyConfiguration
-    extends EntityComposite
+    extends ConfigurationComposite
 {
     @Range( min = 0, max = 65535 ) Property<Integer> port();
 

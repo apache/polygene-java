@@ -21,8 +21,9 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.configuration.ConfigurationComposite;
 
-public interface MahaloConfiguration extends EntityComposite
+public interface MahaloConfiguration extends ConfigurationComposite
 {
     @Optional @UseDefaults
     Property<Boolean> useJrmp();

@@ -23,7 +23,6 @@ import org.qi4j.api.property.Property;
 /**
  * JAVADOC Add JavaDoc
  */
-@Queryable( false )
 public interface ThreadServiceConfiguration
 {
     Property<String> threadGroupName();

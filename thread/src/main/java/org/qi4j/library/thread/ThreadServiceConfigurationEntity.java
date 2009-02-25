@@ -18,7 +18,8 @@
 package org.qi4j.library.thread;
 
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.configuration.ConfigurationComposite;
 
-public interface ThreadServiceConfigurationEntity extends ThreadServiceConfiguration, EntityComposite
+public interface ThreadServiceConfigurationEntity extends ThreadServiceConfiguration, ConfigurationComposite
 {
 }

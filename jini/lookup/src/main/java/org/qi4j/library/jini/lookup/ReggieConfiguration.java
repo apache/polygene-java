@@ -21,8 +21,9 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.configuration.ConfigurationComposite;
 
-public interface ReggieConfiguration extends EntityComposite
+public interface ReggieConfiguration extends ConfigurationComposite
 {
     @Optional @UseDefaults
     Property<Boolean> useJrmp();

@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.entity.association.ListAssociation;
 
@@ -54,12 +55,7 @@ public class JavabeanListAssociation
         return delegate.metaInfo( infoType );
     }
 
-    public String name()
-    {
-        return delegate.name();
-    }
-
-    public String qualifiedName()
+    public QualifiedName qualifiedName()
     {
         return delegate.qualifiedName();
     }

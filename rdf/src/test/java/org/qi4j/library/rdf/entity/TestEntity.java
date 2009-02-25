@@ -33,7 +33,7 @@ interface TestEntity
 {
     @NotEmpty Property<String> name();
 
-    @RDF( DcRdf.DC + "title" )
+    @RDF( DcRdf.NAMESPACE + "title" )
     @NotEmpty Property<String> title();
 
     @Optional Association<TestEntity> association();

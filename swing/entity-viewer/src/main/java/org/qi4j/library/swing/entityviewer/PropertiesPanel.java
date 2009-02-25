@@ -24,6 +24,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.BorderLayout;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.bootstrap.Energy4Java;
@@ -66,25 +67,25 @@ public class PropertiesPanel extends JPanel
     {
         DefaultTableModel model = new DefaultTableModel();
 
-        Qi4jSPI spi = qi4j.runtime();
+        Qi4jSPI spi = qi4j.spi();
 
         for( Object qObj : query )
         {
             EntityState state = spi.getEntityState( (EntityComposite) qObj );
-            Iterable<String> names = state.propertyNames();
+            Iterable<QualifiedName> names = state.propertyNames();
 
             // genereate column, first time only
             if( model.getColumnCount() < 1 )
             {
-                for( String name : names )
+                for( QualifiedName name : names )
                 {
-                    model.addColumn( unqualifiedPropertyName( name ) );
+                    model.addColumn( name.name() );
                 }
             }
 
             Object[] rowData = new Object[model.getColumnCount()];
             int i = 0;
-            for( String name : names )
+            for( QualifiedName name : names )
             {
                 rowData[ i++ ] = state.getProperty( name );
             }
@@ -93,20 +94,4 @@ public class PropertiesPanel extends JPanel
 
         return model;
     }
-
-    /** Just a help method to unqualied the properties name
-     * @param name qualified full property name, which will be converted to the shorter version
-     * @return shorter version of property name
-     * */
-    protected String unqualifiedPropertyName( String name )
-    {
-        String shortName;
-
-        int i = name.indexOf( ":" );
-        shortName = name.substring( i + 1 );
-
-        return shortName;
-    }
-
-    
 }

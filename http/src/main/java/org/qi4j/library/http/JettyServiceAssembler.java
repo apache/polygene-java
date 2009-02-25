@@ -19,6 +19,7 @@ package org.qi4j.library.http;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.api.common.Visibility;
 
 /**
  * @author edward.yakop@gmail.com
@@ -30,7 +31,7 @@ public final class JettyServiceAssembler
     public final void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addEntities( JettyConfiguration.class );
+        module.addEntities( JettyConfiguration.class ).visibleIn( Visibility.layer );
         module.addServices( JettyService.class ).instantiateOnStartup();
     }
 }

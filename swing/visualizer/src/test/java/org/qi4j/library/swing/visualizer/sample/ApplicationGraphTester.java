@@ -28,6 +28,9 @@ import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ApplicationAssembler;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.swing.visualizer.VisualizerLauncher;
 
@@ -43,36 +46,39 @@ public class ApplicationGraphTester
 
         Energy4Java qi4j = new Energy4Java();
 
-        ApplicationAssembly assembly = qi4j.newApplicationAssembly();
-        assembly.setName( "My Qi4j App" );
+        Application app = qi4j.newApplication( new ApplicationAssembler()
+        {
+            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
+            {
+                ApplicationAssembly assembly = applicationFactory.newApplicationAssembly();
+                assembly.setName( "My Qi4j App" );
 
-        LayerAssembly infrastructureLayer = assembly.newLayerAssembly( "Infrastructure" );
-        infrastructureLayer.newModuleAssembly( "Database" );
+                LayerAssembly infrastructureLayer = assembly.newLayerAssembly( "Infrastructure" );
+                infrastructureLayer.newModuleAssembly( "Database" );
 
-        LayerAssembly domainLayer = assembly.newLayerAssembly( "Domain" );
+                LayerAssembly domainLayer = assembly.newLayerAssembly( "Domain" );
 
-        ModuleAssembly someDomain = domainLayer.newModuleAssembly( "Some domain" );
-        someDomain.addServices( MemoryEntityStoreService.class ).visibleIn( application );
-        someDomain.addEntities( MyEntity.class ).visibleIn( application );
-        someDomain.addComposites( ADomainComposite.class, BDomainComposite.class );
+                ModuleAssembly someDomain = domainLayer.newModuleAssembly( "Some domain" );
+                someDomain.addServices( MemoryEntityStoreService.class ).visibleIn( application );
+                someDomain.addEntities( MyEntity.class ).visibleIn( application );
+                someDomain.addComposites( ADomainComposite.class, BDomainComposite.class );
 
-        LayerAssembly guiLayer = assembly.newLayerAssembly( "UI" );
-        guiLayer.newModuleAssembly( "Plugin 1" );
+                LayerAssembly guiLayer = assembly.newLayerAssembly( "UI" );
+                guiLayer.newModuleAssembly( "Plugin 1" );
 
-        ModuleAssembly plugin2 = guiLayer.newModuleAssembly( "Plugin 2" );
-        plugin2.addComposites( UIComposite.class );
+                ModuleAssembly plugin2 = guiLayer.newModuleAssembly( "Plugin 2" );
+                plugin2.addComposites( UIComposite.class );
 
-        guiLayer.uses( infrastructureLayer );
-        guiLayer.uses( domainLayer );
-        domainLayer.uses( infrastructureLayer );
-
-//        addMoreLayers( assembly );
-
-        Application application = qi4j.newApplication( assembly );
-        application.activate();
+                guiLayer.uses( infrastructureLayer );
+                guiLayer.uses( domainLayer );
+                domainLayer.uses( infrastructureLayer );
+                return assembly;
+            }
+        });
+        app.activate();
 
         VisualizerLauncher visualizerLauncher = new VisualizerLauncher();
-        visualizerLauncher.visualize( application );
+        visualizerLauncher.visualize( app );
     }
 
     private static void addMoreLayers( ApplicationAssembly assembly )

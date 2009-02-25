@@ -21,6 +21,8 @@ import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.bootstrap.ApplicationAssembler;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.library.swing.envisage.school.domain.model.person.assembler.PersonModelAssembler;
 import org.qi4j.library.swing.envisage.school.domain.model.school.assembler.SchoolModelAssembler;
 import org.qi4j.library.swing.envisage.school.infrastructure.mail.MailServiceAssembler;
@@ -43,19 +45,25 @@ public class EnvisageSchoolSample
     private void runSample() throws Exception
     {
         Energy4Java energy4Java = new Energy4Java();
-        ApplicationAssembly appAssembly = energy4Java.newApplicationAssembly();
-        appAssembly.setName( "School" );
 
-        // Create layers
-        LayerAssembly layerInfra = createInfrastructureLayer( appAssembly );
+        Application application = energy4Java.newApplication( new ApplicationAssembler()
+        {
+            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
+            {
+                final ApplicationAssembly appAssembly = applicationFactory.newApplicationAssembly();
+                appAssembly.setName( "School" );
 
-        LayerAssembly layerDomain = createDomainLayer( appAssembly );
-        layerDomain.uses( layerInfra );
+                // Create layers
+                LayerAssembly layerInfra = createInfrastructureLayer( appAssembly );
 
-        LayerAssembly layerUI = createUILayer( appAssembly );
-        layerUI.uses( layerDomain );
+                LayerAssembly layerDomain = createDomainLayer( appAssembly );
+                layerDomain.uses( layerInfra );
 
-        Application application = energy4Java.newApplication( appAssembly );
+                LayerAssembly layerUI = createUILayer( appAssembly );
+                layerUI.uses( layerDomain );
+                return appAssembly;
+            }
+        });
         application.activate();
 
         new Envisage().run( energy4Java, application );

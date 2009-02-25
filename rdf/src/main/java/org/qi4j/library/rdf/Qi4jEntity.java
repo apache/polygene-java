@@ -24,9 +24,9 @@ import org.openrdf.model.impl.URIImpl;
 public interface Qi4jEntity
 {
     // Model
-    String QI4JENTITY = "http://www.qi4j.org/rdf/entity/1.0/";
+    String NAMESPACE = "http://www.qi4j.org/rdf/entity/1.0/";
 
     // Types
-    URI ENTITY = new URIImpl( QI4JENTITY + "entity" );
-    URI QUALIFIER = new URIImpl( QI4JENTITY + "qualifier" );
+    URI ENTITY = new URIImpl( NAMESPACE + "entity" );
+    URI QUALIFIER = new URIImpl( NAMESPACE + "qualifier" );
 }

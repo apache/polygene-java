@@ -11,14 +11,23 @@
  * limitations under the License.
  *
  */
+
 package org.qi4j.library.rdf;
 
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
 
-public interface DcRdf
+
+/**
+ * This is the RDF vocabulary for Qi4j EntityType data.
+ */
+public interface Qi4jEntityType
 {
-    String NAMESPACE = "http://purl.org/dc/elements/1.1/";
-    URI ABOUT = new URIImpl( NAMESPACE + "about" );
-    URI TITLE = new URIImpl( NAMESPACE + "title" );
+    // Namespace
+    String NAMESPACE = "http://www.qi4j.org/rdf/entitytype/1.0/";
+
+    // Predicates
+    URI QUERYABLE = new URIImpl( NAMESPACE + "queryable" );
+    URI VERSION = new URIImpl( NAMESPACE + "version" );
+    URI TYPE = new URIImpl( NAMESPACE + "type" );
 }

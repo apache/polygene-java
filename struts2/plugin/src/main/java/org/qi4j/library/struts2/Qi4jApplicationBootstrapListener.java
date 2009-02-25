@@ -20,10 +20,9 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.bootstrap.ApplicationAssembler;
 
 import static org.qi4j.library.struts2.Constants.SERVLET_ATTRIBUTE;
 
@@ -80,40 +79,12 @@ public abstract class Qi4jApplicationBootstrapListener
         Energy4Java is = new Energy4Java();
 
         // Try create assembler
-        Assembler assembler = createAssembler();
+        final ApplicationAssembler assembler = createAssembler();
         if( assembler != null )
         {
             try
             {
                 return is.newApplication( assembler );
-            }
-            catch( AssemblyException e )
-            {
-                throw new IllegalStateException( e );
-            }
-        }
-
-        // Try create assemblers
-        Assembler[][][] assemblers = createAssemblers();
-        if( assemblers != null )
-        {
-            try
-            {
-                return is.newApplication( assemblers );
-            }
-            catch( AssemblyException e )
-            {
-                throw new IllegalStateException( e );
-            }
-        }
-
-        // Try create application assembly
-        ApplicationAssembly appAssembly = createApplicationAssembly( is );
-        if( appAssembly != null )
-        {
-            try
-            {
-                return is.newApplication( appAssembly );
             }
             catch( AssemblyException e )
             {
@@ -129,28 +100,7 @@ public abstract class Qi4jApplicationBootstrapListener
      *
      * @return An application assembler.
      */
-    protected Assembler createAssembler()
-    {
-        return null;
-    }
-
-    /**
-     * Override this method to create an application assemblers.
-     *
-     * @return An application assemblers.
-     */
-    protected Assembler[][][] createAssemblers()
-    {
-        return null;
-    }
-
-    /**
-     * Override this method to create application assembly.
-     *
-     * @param anEnergy The energy for java.
-     * @return Application assembly.
-     */
-    protected ApplicationAssembly createApplicationAssembly( Energy4Java anEnergy )
+    protected ApplicationAssembler createAssembler()
     {
         return null;
     }

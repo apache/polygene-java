@@ -19,6 +19,9 @@ package org.qi4j.library.struts2.example.listener;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ApplicationAssembler;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.index.rdf.RdfQueryService;
 import org.qi4j.index.rdf.RdfFactoryService;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -44,28 +47,34 @@ import org.qi4j.api.structure.Module;
 public class ExampleBootstrapListener extends Qi4jApplicationBootstrapListener
 {
     @Override
-    protected final Assembler createAssembler()
+    protected final ApplicationAssembler createAssembler()
     {
-        return new Assembler()
+        return new ApplicationAssembler()
         {
-            public void assemble( ModuleAssembly aModule )
-                throws AssemblyException
+            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
             {
-                ActionConfiguration actionConfiguration = new ActionConfiguration();
-                actionConfiguration.addObjects( HelloWorldAction.class, IndexAction.class );
-                actionConfiguration.addComposites( AddItem.class, EditItem.class, ListItems.class );
+                return applicationFactory.newApplicationAssembly( new Assembler()
+                {
+                    public void assemble( ModuleAssembly aModule )
+                        throws AssemblyException
+                    {
+                        ActionConfiguration actionConfiguration = new ActionConfiguration();
+                        actionConfiguration.addObjects( HelloWorldAction.class, IndexAction.class );
+                        actionConfiguration.addComposites( AddItem.class, EditItem.class, ListItems.class );
 
-                aModule.addAssembler( new Struts2PluginAssembler( actionConfiguration ) );
-                aModule.addAssembler( new CodebehindAssembler() );
+                        aModule.addAssembler( new Struts2PluginAssembler( actionConfiguration ) );
+                        aModule.addAssembler( new CodebehindAssembler() );
 
-                aModule.addEntities( Item.class );
-                aModule.addServices(
-                    MemoryEntityStoreService.class,
-                    UuidIdentityGeneratorService.class,
-                    MemoryRepositoryService.class,
-                    RdfQueryService.class, RdfFactoryService.class
-                );
-                aModule.addObjects( EntityStateSerializer.class );
+                        aModule.addEntities( Item.class );
+                        aModule.addServices(
+                            MemoryEntityStoreService.class,
+                            UuidIdentityGeneratorService.class,
+                            MemoryRepositoryService.class,
+                            RdfQueryService.class, RdfFactoryService.class
+                        );
+                        aModule.addObjects( EntityStateSerializer.class );
+                    }
+                } );
             }
         };
     }

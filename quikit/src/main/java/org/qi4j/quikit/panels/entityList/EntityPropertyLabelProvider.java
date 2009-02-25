@@ -84,7 +84,7 @@ final class EntityPropertyLabelProvider
                     String propertyLabel = ( displayInfo != null ) ? displayInfo.getLabel() : null;
                     if( propertyLabel == null )
                     {
-                        propertyLabel = propertyDescriptor.name();
+                        propertyLabel = propertyDescriptor.qualifiedName().name();
                     }
                     int order = ( displayInfo != null ) ? displayInfo.order() : MAX_VALUE;
                     propertyLabels.add( new PropertyLabel( order, propertyLabel ) );

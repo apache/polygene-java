@@ -23,6 +23,8 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ApplicationAssembler;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.library.swing.visualizer.VisualizerLauncher;
 import org.qi4j.library.swing.visualizer.school.admin.AdminAssembler;
 import org.qi4j.library.swing.visualizer.school.domain.model.person.assembler.PersonModelAssembler;
@@ -43,19 +45,26 @@ public final class SchoolApplicationLauncher
         UIManager.setLookAndFeel( new Plastic3DLookAndFeel() );
 
         Energy4Java energy4Java = new Energy4Java();
-        ApplicationAssembly appAssembly = energy4Java.newApplicationAssembly();
-        appAssembly.setName( "School" );
 
-        // Create layers
-        LayerAssembly layerInfra = createInfrastructureLayer( appAssembly );
+        Application application = energy4Java.newApplication( new ApplicationAssembler()
+        {
+            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
+            {
+                ApplicationAssembly appAssembly = applicationFactory.newApplicationAssembly();
+                appAssembly.setName( "School" );
 
-        LayerAssembly layerDomain = createDomainLayer( appAssembly );
-        layerDomain.uses( layerInfra );
+                // Create layers
+                LayerAssembly layerInfra = createInfrastructureLayer( appAssembly );
 
-        LayerAssembly layerUI = createUILayer( appAssembly );
-        layerUI.uses( layerDomain );
+                LayerAssembly layerDomain = createDomainLayer( appAssembly );
+                layerDomain.uses( layerInfra );
 
-        Application application = energy4Java.newApplication( appAssembly );
+                LayerAssembly layerUI = createUILayer( appAssembly );
+                layerUI.uses( layerDomain );
+
+                return appAssembly;
+            }
+        });
         application.activate();
         return application;
     }
