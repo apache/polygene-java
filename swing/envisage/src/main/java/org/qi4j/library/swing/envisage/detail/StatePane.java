@@ -39,7 +39,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.entity.association.ManyAssociation;
@@ -127,8 +126,9 @@ public class StatePane extends DetailPane
 
         for( CompositeMethodDetailDescriptor descriptor : iter )
         {
-            Class clazz = descriptor.descriptor().method().getDeclaringClass();
-            if( Composite.class.isAssignableFrom( clazz ) )
+            Class compositeClazz = descriptor.composite().descriptor().type();
+            Class mixinMethodClass = descriptor.descriptor().method().getDeclaringClass();
+            if( compositeClazz.isAssignableFrom( mixinMethodClass ) )
             {
                 publicList.add( descriptor );
             }
@@ -361,8 +361,9 @@ public class StatePane extends DetailPane
 
             Icon icon = null;
             CompositeMethodDetailDescriptor descriptor = (CompositeMethodDetailDescriptor) value;
-            Class clazz = descriptor.descriptor().method().getDeclaringClass();
-            if( Composite.class.isAssignableFrom( clazz ) )
+            Class compositeClazz = descriptor.composite().descriptor().type();
+            Class mixinMethodClass = descriptor.descriptor().method().getDeclaringClass();
+            if( compositeClazz.isAssignableFrom( mixinMethodClass ) )
             {
                 icon = publicIcon;
             }

@@ -38,7 +38,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
@@ -51,7 +50,8 @@ import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.util.TableData;
 
 /**
- *  Implementation of Composite Method Panel
+ * Implementation of Composite Method Panel
+ *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class MethodPane extends DetailPane
@@ -134,8 +134,9 @@ public class MethodPane extends DetailPane
 
         for( CompositeMethodDetailDescriptor descriptor : iter )
         {
-            Class clazz = descriptor.descriptor().method().getDeclaringClass();
-            if( Composite.class.isAssignableFrom( clazz ) )
+            Class compositeClazz = descriptor.composite().descriptor().type();
+            Class mixinMethodClass = descriptor.descriptor().method().getDeclaringClass();
+            if( compositeClazz.isAssignableFrom( mixinMethodClass ) )
             {
                 publicList.add( descriptor );
             }
@@ -373,8 +374,10 @@ public class MethodPane extends DetailPane
 
             Icon icon = null;
             CompositeMethodDetailDescriptor descriptor = (CompositeMethodDetailDescriptor) value;
-            Class clazz = descriptor.descriptor().method().getDeclaringClass();
-            if( Composite.class.isAssignableFrom( clazz ) )
+
+            Class compositeClazz = descriptor.composite().descriptor().type();
+            Class mixinMethodClass = descriptor.descriptor().method().getDeclaringClass();
+            if( compositeClazz.isAssignableFrom( mixinMethodClass ) )
             {
                 icon = publicIcon;
             }
