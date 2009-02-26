@@ -17,6 +17,7 @@
 package org.qi4j.library.spring.bootstrap.internal.application;
 
 import org.qi4j.api.structure.Application;
+import org.qi4j.spi.structure.ApplicationSPI;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -30,9 +31,9 @@ import org.springframework.beans.factory.InitializingBean;
 public final class Qi4jApplicationFactoryBean
     implements FactoryBean, DisposableBean, InitializingBean
 {
-    private final Application application;
+    private final ApplicationSPI application;
 
-    public Qi4jApplicationFactoryBean( Application qi4jApplication )
+    public Qi4jApplicationFactoryBean( ApplicationSPI qi4jApplication )
     {
         application = qi4jApplication;
     }

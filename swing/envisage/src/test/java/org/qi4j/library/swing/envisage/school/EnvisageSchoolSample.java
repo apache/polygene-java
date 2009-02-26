@@ -30,6 +30,7 @@ import org.qi4j.library.swing.envisage.school.domain.model.person.assembler.Pers
 import org.qi4j.library.swing.envisage.school.domain.model.school.assembler.SchoolModelAssembler;
 import org.qi4j.library.swing.envisage.school.infrastructure.mail.MailServiceAssembler;
 import org.qi4j.library.swing.envisage.school.infrastructure.persistence.PersistenceAssembler;
+import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
@@ -46,8 +47,8 @@ public class EnvisageSchoolSample
     {
         Energy4Java energy4Java = new Energy4Java(); 
 
-        Application application = energy4Java.newApplication( new SchoolAssembler());
-        application.activate();
+        ApplicationSPI application = energy4Java.newApplication( new SchoolAssembler());
+//        application.activate();
 
         new Envisage().run( energy4Java, application );
     }

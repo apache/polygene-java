@@ -19,6 +19,9 @@ package org.qi4j.library.swing.envisage.school.infrastructure.mail.mixins;
 import java.util.Arrays;
 import org.qi4j.library.swing.envisage.school.infrastructure.mail.MailService;
 import org.qi4j.library.swing.envisage.school.infrastructure.mail.Mail;
+import org.qi4j.library.swing.envisage.school.infrastructure.mail.MailConfiguration;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.configuration.Configuration;
 
 /**
  * @author edward.yakop@gmail.com
@@ -27,6 +30,8 @@ import org.qi4j.library.swing.envisage.school.infrastructure.mail.Mail;
 public final class MailServiceMixin
     implements MailService
 {
+    @This Configuration<MailConfiguration> config;
+
     public final void sent( Mail... mails )
     {
         for( Mail mail : mails )

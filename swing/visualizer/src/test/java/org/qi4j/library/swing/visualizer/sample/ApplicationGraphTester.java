@@ -33,6 +33,7 @@ import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.swing.visualizer.VisualizerLauncher;
+import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * JAVADOC
@@ -46,7 +47,7 @@ public class ApplicationGraphTester
 
         Energy4Java qi4j = new Energy4Java();
 
-        Application app = qi4j.newApplication( new ApplicationAssembler()
+        ApplicationSPI app = qi4j.newApplication( new ApplicationAssembler()
         {
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
             {

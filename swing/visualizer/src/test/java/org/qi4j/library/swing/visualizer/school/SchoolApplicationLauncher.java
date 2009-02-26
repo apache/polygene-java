@@ -32,6 +32,7 @@ import org.qi4j.library.swing.visualizer.school.domain.model.school.assembler.Sc
 import org.qi4j.library.swing.visualizer.school.infrastructure.mail.MailServiceAssembler;
 import org.qi4j.library.swing.visualizer.school.infrastructure.persistence.PersistenceAssembler;
 import org.qi4j.api.structure.Application;
+import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * @author edward.yakop@gmail.com
@@ -46,7 +47,7 @@ public final class SchoolApplicationLauncher
 
         Energy4Java energy4Java = new Energy4Java();
 
-        Application application = energy4Java.newApplication( new ApplicationAssembler()
+        ApplicationSPI application = energy4Java.newApplication( new ApplicationAssembler()
         {
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
             {

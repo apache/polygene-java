@@ -28,6 +28,7 @@ import static org.qi4j.library.struts2.Constants.SERVLET_ATTRIBUTE;
 
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
+import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * @author edward.yakop@gmail.com
@@ -37,7 +38,7 @@ public abstract class Qi4jApplicationBootstrapListener
 {
     private static final Logger LOG = Logger.getLogger( Qi4jApplicationBootstrapListener.class.getName() );
 
-    private Application application;
+    private ApplicationSPI application;
 
     public final void contextInitialized( ServletContextEvent sce )
     {
@@ -74,7 +75,7 @@ public abstract class Qi4jApplicationBootstrapListener
     protected abstract Module getQi4jStrutsModule( Application anApplication );
 
 
-    private Application createNewApplication( ServletContext aContext )
+    private ApplicationSPI createNewApplication( ServletContext aContext )
     {
         Energy4Java is = new Energy4Java();
 

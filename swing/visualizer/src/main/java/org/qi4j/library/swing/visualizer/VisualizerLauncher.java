@@ -30,6 +30,7 @@ import org.qi4j.library.swing.visualizer.assembly.VisualizerAssembler;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
+import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * @author edward.yakop@gmail.com
@@ -64,7 +65,7 @@ public final class VisualizerLauncher
     {
         Energy4Java energy4Java = new Energy4Java();
 
-        Application application = energy4Java.newApplication( new ApplicationAssembler()
+        ApplicationSPI application = energy4Java.newApplication( new ApplicationAssembler()
         {
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
             {

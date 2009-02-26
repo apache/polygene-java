@@ -39,5 +39,7 @@ public class MailServiceAssembler implements Assembler
         aModuleAssembly.addServices(
             MailServiceComposite.class
         ).visibleIn( application );
+
+        aModuleAssembly.addEntities( MailConfiguration.class );
     }
 }
