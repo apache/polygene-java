@@ -21,23 +21,22 @@ package org.qi4j.library.swing.envisage.model.descriptor;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
-import org.qi4j.spi.constraint.ConstraintDescriptor;
 import org.qi4j.spi.composite.ConstructorDescriptor;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
 import org.qi4j.spi.composite.InjectedMethodDescriptor;
 import org.qi4j.spi.composite.InjectedParametersDescriptor;
 import org.qi4j.spi.concern.MethodConcernDescriptor;
 import org.qi4j.spi.concern.MethodConcernsDescriptor;
+import org.qi4j.spi.constraint.ConstraintDescriptor;
 import org.qi4j.spi.constraint.MethodConstraintsDescriptor;
+import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.mixin.MixinDescriptor;
+import org.qi4j.spi.object.ObjectDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.sideeffect.MethodSideEffectDescriptor;
 import org.qi4j.spi.sideeffect.MethodSideEffectsDescriptor;
-import org.qi4j.spi.mixin.MixinDescriptor;
-import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.structure.ApplicationDescriptor;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.DescriptorVisitor;
@@ -158,8 +157,9 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public final void visit( ServiceDescriptor aDescriptor )
         {
-            ServiceDetailDescriptor detailDescriptor = new ServiceDetailDescriptor( aDescriptor );
-            currModuleDescriptor.addService( detailDescriptor );
+            ServiceDetailDescriptor descriptor = new ServiceDetailDescriptor( aDescriptor );
+            currModuleDescriptor.addService( descriptor );
+            currCompositeDescriptor = descriptor;
         }
 
         @Override
@@ -174,10 +174,10 @@ public final class ApplicationDetailDescriptorBuilder
         public final void visit( CompositeDescriptor aDescriptor )
         {
             // Commented out by efy: To prevent NPE
-            if( ServiceComposite.class.isAssignableFrom( aDescriptor.type() ) )
+            /*if( ServiceComposite.class.isAssignableFrom( aDescriptor.type() ) )
             {
                 return; // Skip services
-            }
+            }*/
 
             currCompositeDescriptor = new CompositeDetailDescriptor<CompositeDescriptor>( aDescriptor );
             currModuleDescriptor.addComposite( currCompositeDescriptor );

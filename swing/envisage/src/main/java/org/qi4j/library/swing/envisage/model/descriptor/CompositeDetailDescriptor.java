@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
-import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
 
 /**
@@ -28,7 +28,7 @@ import org.qi4j.spi.composite.CompositeMethodDescriptor;
  * @see org.qi4j.spi.composite.CompositeDescriptor
  * @since 0.5
  */
-public class CompositeDetailDescriptor<T extends CompositeDescriptor>
+public class CompositeDetailDescriptor<T extends AbstractCompositeDescriptor>
 {
     protected final T descriptor;
     protected ModuleDetailDescriptor module;

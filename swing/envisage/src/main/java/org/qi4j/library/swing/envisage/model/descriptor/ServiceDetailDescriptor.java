@@ -18,35 +18,34 @@ package org.qi4j.library.swing.envisage.model.descriptor;
 
 import java.util.LinkedList;
 import java.util.List;
-import static org.qi4j.api.util.NullArgumentException.validateNotNull;
-import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.spi.service.ServiceDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
  * @see org.qi4j.spi.service.ServiceDescriptor
  * @since 0.5
  */
-public final class ServiceDetailDescriptor
+public final class ServiceDetailDescriptor extends CompositeDetailDescriptor<ServiceDescriptor>
 {
-    private final ServiceDescriptor descriptor;
-    private ModuleDetailDescriptor module;
+    //private final ServiceDescriptor descriptor;
+    //private ModuleDetailDescriptor module;
 
     ServiceDetailDescriptor( ServiceDescriptor aDescriptor )
-        throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-        descriptor = aDescriptor;
+        //validateNotNull( "aDescriptor", aDescriptor );
+        //descriptor = aDescriptor;
+        super( aDescriptor );
     }
 
     /**
      * @return Descriptor of this {@code ServiceDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
-    public final ServiceDescriptor descriptor()
+    /*public final ServiceDescriptor descriptor()
     {
         return descriptor;
-    }
+    }*/
 
     /**
      * @return layers that can access this service. Never return {@code null}.
@@ -77,7 +76,7 @@ public final class ServiceDetailDescriptor
      * @return Module that owns this {@code ServiceDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
-    public final ModuleDetailDescriptor module()
+    /*public final ModuleDetailDescriptor module()
     {
         return module;
     }
@@ -88,11 +87,11 @@ public final class ServiceDetailDescriptor
         validateNotNull( "aDescriptor", aDescriptor );
 
         module = aDescriptor;
-    }
+    }*/
 
-    @Override
+    /*@Override
     public final String toString()
     {
         return descriptor.type().getSimpleName();
-    }
+    }*/
 }
