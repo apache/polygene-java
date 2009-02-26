@@ -75,7 +75,7 @@ class JettyMixin
         // Iterate the available servlets and add it to the server
         for( ServiceReference<Servlet> servlet : servlets )
         {
-            ServletInfo servletInfo = servlet.metaInfo( ServletInfo.class );
+            ServletInfo servletInfo = servlet.metaInfo().get( ServletInfo.class );
             String servletPath = servletInfo.getPath();
 
             Servlet servletInstance = servlet.get();
@@ -90,7 +90,7 @@ class JettyMixin
         // Iterate the available filters and add it to the server
         for( ServiceReference<Filter> filter : filters )
         {
-            FilterInfo filterInfo = filter.metaInfo( FilterInfo.class );
+            FilterInfo filterInfo = filter.metaInfo().get( FilterInfo.class );
             String filterPath = filterInfo.getPath();
 
             Filter filterInstance = filter.get();

@@ -84,7 +84,7 @@ public class Qi4jFilterDispatcher extends FilterDispatcher
         
         private ActionConfiguration actionConfiguration()
         {
-            return module.serviceFinder().findService( ActionService.class ).metaInfo( ActionConfiguration.class );
+            return module.serviceFinder().findService( ActionService.class ).metaInfo().get( ActionConfiguration.class );
         }
     }
 }
