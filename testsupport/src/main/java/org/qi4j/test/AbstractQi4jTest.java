@@ -32,6 +32,7 @@ import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * Base class for Composite tests.
@@ -43,7 +44,7 @@ public abstract class AbstractQi4jTest
     protected Qi4jSPI spi;
 
     protected Energy4Java qi4j;
-    protected Application application;
+    protected ApplicationSPI application;
 
     protected CompositeBuilderFactory compositeBuilderFactory;
     protected ObjectBuilderFactory objectBuilderFactory;
@@ -69,7 +70,7 @@ public abstract class AbstractQi4jTest
         serviceLocator = moduleInstance.serviceFinder();
     }
 
-    protected Application newApplication()
+    protected ApplicationSPI newApplication()
         throws AssemblyException
     {
         return qi4j.newApplication( new ApplicationAssembler()

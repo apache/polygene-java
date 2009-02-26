@@ -22,6 +22,7 @@ import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * Base class for Assembler that creates an Application
@@ -35,7 +36,7 @@ public abstract class SingletonAssembler
     implements Assembler
 {
     private Energy4Java is;
-    private Application applicationInstance;
+    private ApplicationSPI applicationInstance;
     private Module moduleInstance;
 
     /**
@@ -118,7 +119,7 @@ public abstract class SingletonAssembler
         return is.spi();
     }
 
-    public final Application application()
+    public final ApplicationSPI application()
     {
         return applicationInstance;
     }

@@ -19,6 +19,7 @@ import java.net.UnknownHostException;
 import java.util.List;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.structure.Layer;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.service.Activator;
@@ -67,6 +68,19 @@ public class ApplicationInstance
     public List<LayerInstance> layers()
     {
         return layerInstances;
+    }
+
+    public Layer findLayer( String layerName)
+    {
+        for( LayerInstance layerInstance : layerInstances )
+        {
+            if( layerInstance.model().name().equals( layerName ) )
+            {
+                return layerInstance;
+            }
+        }
+
+        return null;
     }
 
     public Module findModule( String layerName, String moduleName )

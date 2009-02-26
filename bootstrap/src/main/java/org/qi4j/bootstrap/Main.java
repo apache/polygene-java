@@ -15,6 +15,7 @@
 package org.qi4j.bootstrap;
 
 import org.qi4j.api.structure.Application;
+import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * This class can be used as the application class. Ensure that the ApplicationAssembler
@@ -34,7 +35,7 @@ public class Main
         Iterable<ApplicationAssembler> assemblers = Energy4Java.getServiceLoader().providers( ApplicationAssembler.class );
         for( ApplicationAssembler assembler : assemblers )
         {
-            Application application = energy4Java.newApplication( assembler );
+            ApplicationSPI application = energy4Java.newApplication( assembler );
             application.activate();
         }
     }

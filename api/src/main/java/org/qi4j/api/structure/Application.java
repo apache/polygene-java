@@ -18,14 +18,15 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.common.MetaInfo;
 
 /**
- * JAVADOC
+ * The Application represents a whole Qi4j application.
  */
 public interface Application
-    extends Activatable
 {
     String name();
 
     MetaInfo metaInfo();
+
+    Layer findLayer(String layerName);
 
     Module findModule( String layerName, String moduleName );
 }

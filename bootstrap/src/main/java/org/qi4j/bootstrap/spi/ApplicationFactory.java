@@ -19,13 +19,14 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.HibernatingApplicationInvalidException;
 import org.qi4j.api.structure.Application;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * This interface is implemented by Qi4j runtimes
  */
 public interface ApplicationFactory
 {
-    Application newApplication( ApplicationAssembly assembly)
+    ApplicationSPI newApplication( ApplicationAssembly assembly)
         throws AssemblyException;
 
     /** Load the ApplicationModel from disk, bind and instantiate from that.
@@ -38,6 +39,6 @@ public interface ApplicationFactory
      * @throws org.qi4j.bootstrap.HibernatingApplicationInvalidException If the file on disk can not be read.
      * @throws AssemblyException If some Assembly failure occured during binding or instantiation of the application.
      */
-    Application loadApplication()
+    ApplicationSPI loadApplication()
         throws HibernatingApplicationInvalidException, AssemblyException;
 }

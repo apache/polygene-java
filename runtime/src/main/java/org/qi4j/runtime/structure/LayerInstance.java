@@ -29,12 +29,13 @@ import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.service.Activator;
+import org.qi4j.spi.structure.LayerSPI;
 
 /**
  * JAVADOC
  */
 public class LayerInstance
-    implements Layer, Activatable
+    implements Layer, LayerSPI
 {
     private final LayerModel model;
     private final ApplicationInstance applicationInstance;

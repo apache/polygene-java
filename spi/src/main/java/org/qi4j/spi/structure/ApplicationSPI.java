@@ -15,12 +15,13 @@
 package org.qi4j.spi.structure;
 
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.structure.Application;
 
 /**
  * SPI for Applications.
  */
 public interface ApplicationSPI
-    extends Activatable
+    extends Application, Activatable
 {
     void visitDescriptor( DescriptorVisitor visitor );
 }

@@ -41,6 +41,7 @@ import org.qi4j.runtime.structure.LayerModel;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.UsedLayersModel;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * Factory for Applications.
@@ -56,7 +57,7 @@ public final class ApplicationFactoryImpl
         this.spi = spi;
     }
 
-    public Application loadApplication()
+    public ApplicationSPI loadApplication()
         throws HibernatingApplicationInvalidException, AssemblyException
     {
         try
@@ -74,7 +75,7 @@ public final class ApplicationFactoryImpl
         }
     }
 
-    public Application newApplication( ApplicationAssembly assembly )
+    public ApplicationSPI newApplication( ApplicationAssembly assembly )
         throws AssemblyException
     {
         ApplicationAssemblyImpl applicationAssembly = (ApplicationAssemblyImpl) assembly;
@@ -118,7 +119,7 @@ public final class ApplicationFactoryImpl
         return createInstance( applicationModel );
     }
 
-    private Application createInstance( ApplicationModel applicationModel )
+    private ApplicationSPI createInstance( ApplicationModel applicationModel )
         throws AssemblyException
     {
         try

@@ -25,6 +25,7 @@ import org.qi4j.bootstrap.internal.ServiceLoader;
 import org.qi4j.bootstrap.spi.ApplicationFactory;
 import org.qi4j.bootstrap.spi.Qi4jRuntime;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * Main bootstrap class for starting Qi4j and creating new applications. Instantiate this
@@ -70,7 +71,7 @@ public final class Energy4Java
         return ((ApplicationFactory) runtime ).loadApplication();
     }
 
-    public Application newApplication( ApplicationAssembler assembler )
+    public ApplicationSPI newApplication( ApplicationAssembler assembler )
         throws AssemblyException
     {
         ApplicationAssembly assembly = assembler.assemble( runtime.applicationAssemblyFactory() );
