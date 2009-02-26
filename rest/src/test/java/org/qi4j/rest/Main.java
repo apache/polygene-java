@@ -25,13 +25,14 @@ import org.qi4j.library.http.JettyServiceAssembler;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.rest.assembly.RestAssembler;
+import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * JAVADOC
  */
 public class Main
 {
-    private Application application;
+    private ApplicationSPI application;
 
     public static void main( String[] args )
         throws Exception
@@ -47,7 +48,7 @@ public class Main
         application.activate();
     }
 
-    public Application application()
+    public ApplicationSPI application()
     {
         return application;
     }

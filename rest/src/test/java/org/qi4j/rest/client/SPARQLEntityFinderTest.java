@@ -33,6 +33,7 @@ import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.rest.Main;
 import org.qi4j.rest.TestEntity;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * JAVADOC
@@ -40,7 +41,7 @@ import org.qi4j.test.AbstractQi4jTest;
 public class SPARQLEntityFinderTest
     extends AbstractQi4jTest
 {
-    Application server;
+    ApplicationSPI server;
 
     public void assemble( ModuleAssembly module )
         throws AssemblyException

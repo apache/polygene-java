@@ -29,6 +29,7 @@ import org.qi4j.library.rdf.entity.EntityStateParser;
 import org.qi4j.rest.Main;
 import org.qi4j.rest.TestEntity;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * JAVADOC
@@ -36,7 +37,7 @@ import org.qi4j.test.AbstractQi4jTest;
 public class RESTEntityStoreTest
     extends AbstractQi4jTest
 {
-    Application server;
+    ApplicationSPI server;
 
     public void assemble( ModuleAssembly module )
         throws AssemblyException
