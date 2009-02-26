@@ -37,7 +37,7 @@ import org.qi4j.library.swing.visualizer.model.descriptor.MethodConstraintDetail
 import org.qi4j.library.swing.visualizer.model.descriptor.MethodSideEffectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.visualizer.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
@@ -131,21 +131,21 @@ public final class ToStringUtils
         {
             EntityDetailDescriptor detailDescriptor = (EntityDetailDescriptor) anObject;
             EntityDescriptor descriptor = detailDescriptor.descriptor();
-            Class<? extends Composite> entityClass = descriptor.type();
+            Class<?> entityClass = descriptor.type();
             return entityClass.getSimpleName();
         }
         else if( CompositeDetailDescriptor.class.isAssignableFrom( valueClass ) )
         {
             CompositeDetailDescriptor detailDescriptor = (CompositeDetailDescriptor) anObject;
             CompositeDescriptor descriptor = detailDescriptor.descriptor();
-            Class<? extends Composite> compositeClass = descriptor.type();
+            Class<?> compositeClass = descriptor.type();
             return compositeClass.getSimpleName();
         }
         else if( ObjectDetailDescriptor.class.isAssignableFrom( valueClass ) )
         {
             ObjectDetailDescriptor detailDescriptor = (ObjectDetailDescriptor) anObject;
             ObjectDescriptor descriptor = detailDescriptor.descriptor();
-            Class<? extends Composite> objectClassName = descriptor.type();
+            Class<?> objectClassName = descriptor.type();
             return objectClassName.getSimpleName();
         }
         else if( InjectedFieldDetailDescriptor.class.isAssignableFrom( valueClass ) )

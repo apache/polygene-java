@@ -86,7 +86,7 @@ public final class InjectedFieldDescriptorForm
         else
         {
             ObjectDetailDescriptor object = aDescriptor.object();
-            Class<? extends Composite> objectClass = object.descriptor().type();
+            Class<?> objectClass = object.descriptor().type();
             return objectClass.getName();
         }
     }

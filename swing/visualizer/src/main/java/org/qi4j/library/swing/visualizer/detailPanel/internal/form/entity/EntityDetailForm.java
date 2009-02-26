@@ -72,7 +72,7 @@ public final class EntityDetailForm
             try
             {
                 QueryBuilderFactory qbf = uow.queryBuilderFactory();
-                QueryBuilder<? extends Composite> queryBuilder = qbf.newQueryBuilder( aDescriptor.descriptor().type() );
+                QueryBuilder<?> queryBuilder = qbf.newQueryBuilder( aDescriptor.descriptor().type() );
                 Query<EntityComposite> query = (Query<EntityComposite>) queryBuilder.newQuery();
 
                 for( EntityComposite entity : query )

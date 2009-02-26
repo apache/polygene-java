@@ -16,6 +16,8 @@ import org.junit.Assert;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.spi.service.importer.InstanceImporter;
+import org.jruby.Ruby;
 
 public class JRubyMixinTest
     extends AbstractQi4jTest
@@ -24,6 +26,9 @@ public class JRubyMixinTest
         throws AssemblyException
     {
         module.addComposites( JRubyComposite.class );
+
+        Ruby ruby = Ruby.newInstance();
+        module.importServices( Ruby.class ).importedBy( InstanceImporter.class ).setMetaInfo( ruby );
     }
 
     @Test

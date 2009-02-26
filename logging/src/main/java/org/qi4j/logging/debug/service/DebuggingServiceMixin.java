@@ -135,7 +135,7 @@ public class DebuggingServiceMixin
             EntityBuilder<ServiceDebugRecordEntity> builder = uow.newEntityBuilder( ServiceDebugRecordEntity.class );
             ServiceDebugRecordEntity state = builder.stateOfComposite();
             setStandardStuff( composite, message, state, params );
-            state.source().set( ( (ServiceComposite) composite ).serviceDescriptor().identity() );
+            state.source().set( ( (ServiceComposite) composite ).identity().get() );
             ServiceDebugRecordEntity slr = builder.newInstance();
         }
         else if( composite instanceof EntityComposite )

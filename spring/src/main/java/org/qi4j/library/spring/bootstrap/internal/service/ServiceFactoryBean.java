@@ -16,11 +16,10 @@
 */
 package org.qi4j.library.spring.bootstrap.internal.service;
 
-import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.api.structure.Application;
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import static org.springframework.util.Assert.*;
 

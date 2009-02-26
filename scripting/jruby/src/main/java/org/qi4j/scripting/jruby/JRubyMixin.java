@@ -40,6 +40,7 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.property.Property;
 import org.qi4j.scripting.common.ScriptReloadable;
 
@@ -58,7 +59,7 @@ public class JRubyMixin
 {
     @This private Composite me;
 
-    private Ruby runtime;
+    @Service private Ruby runtime;
 
     private Map<Class, IRubyObject> rubyObjects = new HashMap<Class, IRubyObject>();
 
@@ -74,15 +75,6 @@ public class JRubyMixin
     }
 
     @Structure CompositeBuilderFactory factory;
-
-    public JRubyMixin()
-    {
-        runtime = Ruby.getCurrentInstance();
-        if( runtime == null )
-        {
-            runtime = Ruby.newInstance();
-        }
-    }
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {

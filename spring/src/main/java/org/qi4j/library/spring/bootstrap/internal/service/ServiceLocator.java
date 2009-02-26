@@ -16,7 +16,7 @@
 */
 package org.qi4j.library.spring.bootstrap.internal.service;
 
-import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.spi.structure.ApplicationDescriptor;

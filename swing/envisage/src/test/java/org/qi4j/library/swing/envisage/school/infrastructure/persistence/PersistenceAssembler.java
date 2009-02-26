@@ -38,8 +38,7 @@ public class PersistenceAssembler
     public final void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
-        aModule.addObjects( EntityStateSerializer.class );
-        aModule.addObjects( EntityTypeSerializer.class );
+        aModule.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
 
         aModule.addServices(
             UuidIdentityGeneratorService.class,

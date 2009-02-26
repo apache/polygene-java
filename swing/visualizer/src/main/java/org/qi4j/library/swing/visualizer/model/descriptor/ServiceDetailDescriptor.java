@@ -19,7 +19,7 @@ package org.qi4j.library.swing.visualizer.model.descriptor;
 import java.util.LinkedList;
 import java.util.List;
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
-import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.api.common.Visibility;
 
 /**

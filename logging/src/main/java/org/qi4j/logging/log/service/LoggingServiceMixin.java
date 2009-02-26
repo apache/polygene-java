@@ -127,7 +127,7 @@ public abstract class LoggingServiceMixin
             EntityBuilder<ServiceLogRecord> builder = uow.newEntityBuilder( ServiceLogRecord.class );
             ServiceLogRecord state = builder.stateOfComposite();
             setStandardStuff( type, composite, category, message, state, params );
-            state.source().set( ( (ServiceComposite) composite ).serviceDescriptor().identity() );
+            state.source().set( ( (ServiceComposite) composite ).identity().get() );
             ServiceLogRecord slr = builder.newInstance();
         }
         else if( composite instanceof EntityComposite )

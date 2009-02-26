@@ -19,12 +19,12 @@ package org.qi4j.library.swing.envisage.model.descriptor;
 import java.util.LinkedList;
 import java.util.List;
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
-import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.api.common.Visibility;
 
 /**
  * @author edward.yakop@gmail.com
- * @see org.qi4j.api.service.ServiceDescriptor
+ * @see org.qi4j.spi.service.ServiceDescriptor
  * @since 0.5
  */
 public final class ServiceDetailDescriptor

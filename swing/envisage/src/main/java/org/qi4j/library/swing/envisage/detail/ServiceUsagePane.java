@@ -18,8 +18,8 @@ package org.qi4j.library.swing.envisage.detail;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
-import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
 
 /**
  * Service Usage tab, which shows all the 'users' of the Service,

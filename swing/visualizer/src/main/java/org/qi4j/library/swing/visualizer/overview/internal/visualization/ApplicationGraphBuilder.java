@@ -50,7 +50,7 @@ import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeTyp
 import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.MODULE;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.OBJECT;
 import static org.qi4j.library.swing.visualizer.overview.internal.common.NodeType.SERVICE;
-import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
@@ -257,7 +257,7 @@ final class ApplicationGraphBuilder
             addHiddenEdge( aGraph, entitiesNode, entityNode );
 
             EntityDescriptor descriptor = entityDetailDescriptor.descriptor();
-            Class<? extends Composite> entityClass = descriptor.type();
+            Class<?> entityClass = descriptor.type();
             entityNode.setString( FIELD_NAME, entityClass.getSimpleName() );
             entityNode.set( FIELD_TYPE, ENTITY );
             entityNode.set( FIELD_DESCRIPTOR, entityDetailDescriptor );
@@ -285,7 +285,7 @@ final class ApplicationGraphBuilder
             addHiddenEdge( aGraph, compositesNode, compositeNode );
 
             CompositeDescriptor descriptor = compositeDetailDescriptor.descriptor();
-            Class<? extends Composite> compositeClass = descriptor.type();
+            Class<?> compositeClass = descriptor.type();
             String nodeName = compositeClass.getSimpleName();
             compositeNode.setString( FIELD_NAME, nodeName );
             compositeNode.set( FIELD_TYPE, COMPOSITE );
@@ -315,7 +315,7 @@ final class ApplicationGraphBuilder
             addHiddenEdge( aGraph, objectsNode, objectNode );
 
             ObjectDescriptor objectDescriptor = objectDetailDescriptor.descriptor();
-            Class<? extends Composite> objectClassName = objectDescriptor.type();
+            Class<?> objectClassName = objectDescriptor.type();
             objectNode.setString( FIELD_NAME, objectClassName.getSimpleName() );
             objectNode.set( FIELD_TYPE, OBJECT );
             objectNode.set( FIELD_DESCRIPTOR, objectDetailDescriptor );
