@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Stack;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.composite.CompositeBuilder;
 import org.qi4j.api.composite.CompositeBuilderFactory;
@@ -93,6 +94,11 @@ public class ModuleInstance
     public String name()
     {
         return moduleModel.name();
+    }
+
+    public MetaInfo metaInfo()
+    {
+        return moduleModel.metaInfo();
     }
 
     public ModuleModel model()

@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.service.Activator;
@@ -53,9 +54,9 @@ public final class ServiceReferenceInstance<T>
         return serviceModel.identity();
     }
 
-    public <K> K metaInfo( Class<K> infoType )
+    public MetaInfo metaInfo()
     {
-        return serviceModel.metaInfo().get( infoType );
+        return serviceModel.metaInfo();
     }
 
     public synchronized T get()

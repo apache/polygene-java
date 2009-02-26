@@ -18,6 +18,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
@@ -63,6 +64,11 @@ public class LayerInstance
     public String name()
     {
         return model.name();
+    }
+
+    public MetaInfo metaInfo()
+    {
+        return model.metaInfo();
     }
 
     public List<Module> modules()

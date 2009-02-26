@@ -20,6 +20,7 @@ import java.util.List;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyVisitor;
 import org.qi4j.bootstrap.LayerAssembly;
+import org.qi4j.api.common.MetaInfo;
 
 /**
  * The representation of an entire application. From
@@ -31,6 +32,7 @@ public final class ApplicationAssemblyImpl
 {
     private List<LayerAssemblyImpl> layerAssemblies = new ArrayList<LayerAssemblyImpl>();
     private String name = "Application";
+    private MetaInfo metaInfo = new MetaInfo();
 
     public LayerAssembly newLayerAssembly( String name )
     {
@@ -39,9 +41,16 @@ public final class ApplicationAssemblyImpl
         return layerAssembly;
     }
 
-    public void setName( String name )
+    public ApplicationAssembly setName( String name )
     {
         this.name = name;
+        return this;
+    }
+
+    public ApplicationAssembly setMetaInfo( Object info )
+    {
+        metaInfo.set( info );
+        return this;
     }
 
     public void visit( AssemblyVisitor visitor )
@@ -56,6 +65,12 @@ public final class ApplicationAssemblyImpl
     public List<LayerAssemblyImpl> getLayerAssemblies()
     {
         return layerAssemblies;
+    }
+
+
+    public MetaInfo metaInfo()
+    {
+        return metaInfo;
     }
 
     public String name()

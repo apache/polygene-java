@@ -42,7 +42,9 @@ public interface ApplicationAssembly
      * Set the name of the application
      * @param name
      */
-    void setName( String name );
+    ApplicationAssembly setName( String name );
+
+    ApplicationAssembly setMetaInfo( Object info );
 
     public void visit(AssemblyVisitor visitor);
 }

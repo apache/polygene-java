@@ -19,6 +19,7 @@ import java.net.UnknownHostException;
 import java.util.List;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.service.Activator;
 import org.qi4j.spi.structure.ApplicationSPI;
@@ -34,7 +35,6 @@ public class ApplicationInstance
     private final Qi4jSPI runtime;
     private final List<LayerInstance> layerInstances;
     private final Activator layerActivator;
-    private final String uri;
 
     public ApplicationInstance( ApplicationModel model, Qi4jSPI runtime, List<LayerInstance> layerInstances )
     {
@@ -42,7 +42,6 @@ public class ApplicationInstance
         this.runtime = runtime;
         this.layerInstances = layerInstances;
         layerActivator = new Activator();
-        uri = createApplicationUri();
     }
 
     public ApplicationModel model()
@@ -60,9 +59,9 @@ public class ApplicationInstance
         return model.name();
     }
 
-    public String toURI()
+    public MetaInfo metaInfo()
     {
-        return uri;
+        return model.metaInfo();
     }
 
     public List<LayerInstance> layers()
@@ -98,29 +97,5 @@ public class ApplicationInstance
     public void visitDescriptor( DescriptorVisitor visitor )
     {
         model.visitModel( new DescriptorModelVisitor( visitor ) );
-    }
-
-    private String createApplicationUri()
-    {
-        String hostname;
-        try
-        {
-            hostname = InetAddress.getLocalHost().getHostName();
-        }
-        catch( UnknownHostException e )
-        {
-            // Can not happen ?
-            hostname = "localhost";
-        }
-        String jvminstance = System.getProperty( "qi4j.jvm.name" );
-        if( jvminstance != null )
-        {
-            jvminstance = ":" + jvminstance;
-        }
-        else
-        {
-            jvminstance = "";
-        }
-        return "urn:qi4j:instance:" + hostname + jvminstance + ":" + model.name();
     }
 }

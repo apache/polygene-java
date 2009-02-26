@@ -36,7 +36,7 @@ public interface ModuleAssembly
 
     LayerAssembly layerAssembly();
 
-    void setName( String name );
+    ModuleAssembly setName( String name );
 
     String name();
 

@@ -18,6 +18,7 @@ import java.io.Serializable;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.spi.structure.ModuleDescriptor;
+import org.qi4j.api.common.MetaInfo;
 
 /**
  * JAVADOC
@@ -32,15 +33,17 @@ public class ModuleModel
     private final ServicesModel servicesModel;
 
     private final String name;
+    private MetaInfo metaInfo;
 
     public ModuleModel( String name,
-                        CompositesModel compositesModel,
+                        MetaInfo metaInfo, CompositesModel compositesModel,
                         EntitiesModel entitiesModel,
                         ObjectsModel objectsModel,
                         ValuesModel valuesModel,
                         ServicesModel servicesModel )
     {
         this.name = name;
+        this.metaInfo = metaInfo;
         this.compositesModel = compositesModel;
         this.entitiesModel = entitiesModel;
         this.objectsModel = objectsModel;
@@ -51,6 +54,11 @@ public class ModuleModel
     public String name()
     {
         return name;
+    }
+
+    public MetaInfo metaInfo()
+    {
+        return metaInfo;
     }
 
     public CompositesModel composites()

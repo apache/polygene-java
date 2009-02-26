@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Arrays;
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyVisitor;
 import org.qi4j.bootstrap.LayerAssembly;
@@ -28,7 +30,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 /**
  * Assembly of a Layer. From here you can create more ModuleAssemblies for
  * the Layer that is being assembled. It is also here that you define
- * what other Layers this Layer is using by calling {@link LayerAssemblyImpl#uses(LayerAssembly)}.
+ * what other Layers this Layer is using by calling {@link LayerAssemblyImpl#uses(org.qi4j.bootstrap.LayerAssembly[])} .
  */
 public final class LayerAssemblyImpl
     implements LayerAssembly, Serializable
@@ -38,6 +40,7 @@ public final class LayerAssemblyImpl
     private Set<LayerAssembly> uses;
 
     private String name;
+    private MetaInfo metaInfo = new MetaInfo();
 
     public LayerAssemblyImpl( ApplicationAssembly applicationAssembly, String name )
     {
@@ -60,16 +63,23 @@ public final class LayerAssemblyImpl
         return applicationAssembly;
     }
 
-    public void setName( String name )
+    public LayerAssembly setName( String name )
     {
         this.name = name;
+        return this;
     }
 
-    public void uses( LayerAssembly layerAssembly )
+    public LayerAssembly setMetaInfo( Object info )
+    {
+        metaInfo.set(info);
+        return this;
+    }
+
+    public LayerAssembly uses( LayerAssembly... layerAssembly )
         throws IllegalArgumentException
     {
-        validateNotNull( "layerAssembly", layerAssembly );
-        uses.add( layerAssembly );
+        uses.addAll( Arrays.asList( layerAssembly ) );
+        return this;
     }
 
     public void visit( AssemblyVisitor visitor )
@@ -81,14 +91,19 @@ public final class LayerAssemblyImpl
         }
     }
 
-    List<ModuleAssemblyImpl> getModuleAssemblies()
+    List<ModuleAssemblyImpl> moduleAssemblies()
     {
         return moduleAssemblies;
     }
 
-    Set<LayerAssembly> getUses()
+    Set<LayerAssembly> uses()
     {
         return uses;
+    }
+
+    public MetaInfo metaInfo()
+    {
+        return metaInfo;
     }
 
     public String name()

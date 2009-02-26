@@ -25,6 +25,7 @@ import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.injection.provider.InjectionProviderFactoryStrategy;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationDescriptor;
+import org.qi4j.api.common.MetaInfo;
 
 /**
  * JAVADOC
@@ -33,12 +34,14 @@ public final class ApplicationModel
     implements ApplicationDescriptor, Serializable
 {
     private final String name;
+    private MetaInfo metaInfo;
     private final List<LayerModel> layers;
     private final InjectionProviderFactory ipf;
 
-    public ApplicationModel( String name, List<LayerModel> layers )
+    public ApplicationModel( String name, MetaInfo metaInfo, List<LayerModel> layers )
     {
         this.name = name;
+        this.metaInfo = metaInfo;
         this.layers = layers;
         ipf = new InjectionProviderFactoryStrategy();
     }
@@ -46,6 +49,12 @@ public final class ApplicationModel
     public String name()
     {
         return name;
+    }
+
+
+    public MetaInfo metaInfo()
+    {
+        return metaInfo;
     }
 
     public String toURI()

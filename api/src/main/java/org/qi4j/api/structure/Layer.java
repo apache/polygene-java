@@ -14,10 +14,14 @@
 
 package org.qi4j.api.structure;
 
+import org.qi4j.api.common.MetaInfo;
+
 /**
  * JAVADOC
  */
 public interface Layer
 {
     String name();
+
+    MetaInfo metaInfo();
 }

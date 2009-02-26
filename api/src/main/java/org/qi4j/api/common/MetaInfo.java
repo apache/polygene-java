@@ -26,6 +26,7 @@ import org.qi4j.api.util.Classes;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.service.ServiceFinder;
 
 /**
  * Used to declare and access meta-info.
@@ -102,5 +103,10 @@ public final class MetaInfo
     @Override public String toString()
     {
         return metaInfoMap.toString();
+    }
+
+    public void remove( Class serviceFinderClass)
+    {
+        metaInfoMap.remove( serviceFinderClass );
     }
 }

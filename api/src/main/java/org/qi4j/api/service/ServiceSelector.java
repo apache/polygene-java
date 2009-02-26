@@ -74,7 +74,7 @@ public final class ServiceSelector<T>
             {
                 for( ServiceReference<T> service : services )
                 {
-                    Object metaObject = service.metaInfo( metaInfo.getClass() );
+                    Object metaObject = service.metaInfo().get( metaInfo.getClass() );
                     if( metaObject != null && metaInfo.equals(metaObject))
                     {
                         return service;
@@ -111,7 +111,7 @@ public final class ServiceSelector<T>
             {
                 for( ServiceReference<T> service : services )
                 {
-                    ServiceTags serviceTags = service.metaInfo( ServiceTags.class );
+                    ServiceTags serviceTags = service.metaInfo().get( ServiceTags.class );
 
                     if( tags != null && serviceTags.hasTags( tags ) )
                     {

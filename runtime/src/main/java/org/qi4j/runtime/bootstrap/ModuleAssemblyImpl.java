@@ -66,6 +66,7 @@ public final class ModuleAssemblyImpl
 {
     private LayerAssembly layerAssembly;
     private String name;
+    private MetaInfo metaInfo = new MetaInfo();
     private final List<CompositeDeclarationImpl> compositeDeclarations = new ArrayList<CompositeDeclarationImpl>();
     private final List<EntityDeclarationImpl> entityDeclarations = new ArrayList<EntityDeclarationImpl>();
     private final List<ValueDeclarationImpl> valueDeclarations = new ArrayList<ValueDeclarationImpl>();
@@ -92,14 +93,21 @@ public final class ModuleAssemblyImpl
         return layerAssembly;
     }
 
-    public void setName( String name )
+    public ModuleAssembly setName( String name )
     {
         this.name = name;
+        return this;
     }
 
     public String name()
     {
         return name;
+    }
+
+    public ModuleAssembly setMetaInfo(Object info)
+    {
+        metaInfo.set(info);
+        return this;
     }
 
     public ValueDeclaration addValues( Class<? extends ValueComposite>... compositeTypes )
@@ -249,7 +257,7 @@ public final class ModuleAssemblyImpl
         }
 
         ModuleModel moduleModel = new ModuleModel( name,
-                                                   new CompositesModel( compositeModels ),
+                                                   metaInfo, new CompositesModel( compositeModels ),
                                                    new EntitiesModel( entityModels ),
                                                    new ObjectsModel( objectModels ),
                                                    new ValuesModel( valueModels ),

@@ -20,6 +20,7 @@ import java.util.List;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.spi.structure.LayerDescriptor;
+import org.qi4j.api.common.MetaInfo;
 
 /**
  * JAVADOC
@@ -29,14 +30,17 @@ public final class LayerModel
 {
     // Model
     private final String name;
+    private MetaInfo metaInfo;
     private final UsedLayersModel usedLayersModel;
     private final List<ModuleModel> modules;
 
     public LayerModel( String name,
+                       MetaInfo metaInfo,
                        UsedLayersModel usedLayersModel,
                        List<ModuleModel> modules )
     {
         this.name = name;
+        this.metaInfo = metaInfo;
         this.usedLayersModel = usedLayersModel;
         this.modules = modules;
     }
@@ -44,6 +48,12 @@ public final class LayerModel
     public String name()
     {
         return name;
+    }
+
+
+    public MetaInfo metaInfo()
+    {
+        return metaInfo;
     }
 
     public UsedLayersModel usedLayers()

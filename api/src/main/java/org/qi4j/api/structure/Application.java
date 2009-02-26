@@ -15,6 +15,7 @@
 package org.qi4j.api.structure;
 
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.common.MetaInfo;
 
 /**
  * JAVADOC
@@ -24,7 +25,7 @@ public interface Application
 {
     String name();
 
-    String toURI();
+    MetaInfo metaInfo();
 
     Module findModule( String layerName, String moduleName );
 }

@@ -18,7 +18,6 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -32,14 +31,10 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
-import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.LayerAssembly;
-import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.HibernatingApplicationInvalidException;
 import org.qi4j.bootstrap.spi.ApplicationFactory;
-import org.qi4j.runtime.Qi4jRuntimeImpl;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.structure.ApplicationModel;
 import org.qi4j.runtime.structure.LayerModel;
@@ -84,14 +79,14 @@ public final class ApplicationFactoryImpl
     {
         ApplicationAssemblyImpl applicationAssembly = (ApplicationAssemblyImpl) assembly;
         List<LayerModel> layerModels = new ArrayList<LayerModel>();
-        ApplicationModel applicationModel = new ApplicationModel( applicationAssembly.name(), layerModels );
+        ApplicationModel applicationModel = new ApplicationModel( applicationAssembly.name(), applicationAssembly.metaInfo(), layerModels );
         List<LayerAssemblyImpl> layerAssemblies = new ArrayList<LayerAssemblyImpl>( applicationAssembly.getLayerAssemblies() );
         Map<LayerAssembly, LayerModel> mapAssemblyModel = new HashMap<LayerAssembly, LayerModel>();
         nextLayer:
         while( layerAssemblies.size() > 0 )
         {
             LayerAssemblyImpl layerAssembly = layerAssemblies.remove( 0 );
-            Set<LayerAssembly> usesLayers = layerAssembly.getUses();
+            Set<LayerAssembly> usesLayers = layerAssembly.uses();
             List<LayerModel> usedLayers = new ArrayList<LayerModel>();
             for( LayerAssembly usesLayer : usesLayers )
             {
@@ -111,9 +106,9 @@ public final class ApplicationFactoryImpl
             {
                 throw new AssemblyException( "Layer must have name set" );
             }
-            LayerModel layerModel = new LayerModel( name, usedLayersModel, moduleModels );
+            LayerModel layerModel = new LayerModel( name, layerAssembly.metaInfo(), usedLayersModel, moduleModels );
 
-            for( ModuleAssemblyImpl moduleAssembly : layerAssembly.getModuleAssemblies() )
+            for( ModuleAssemblyImpl moduleAssembly : layerAssembly.moduleAssemblies() )
             {
                 moduleModels.add( moduleAssembly.assembleModule() );
             }

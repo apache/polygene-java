@@ -25,6 +25,7 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -145,8 +146,18 @@ public final class ImportedServiceModel
     public <T> ImportedServiceInstance<T> importInstance( Module module )
     {
         ServiceImporter importer = module.objectBuilderFactory().newObject( serviceImporter );
-        T instance = (T) importer.importService( this );
-        return new ImportedServiceInstance<T>( instance, importer, this );
+        try
+        {
+            T instance = (T) importer.importService( this );
+            return new ImportedServiceInstance<T>( instance, importer, this );
+        }
+        catch( ServiceImporterException e )
+        {
+            throw e;
+        } catch (Exception e)
+        {
+            throw new ServiceImporterException( "Could not import service "+identity, e);
+        }
     }
 
     public Object newProxy( InvocationHandler serviceInvocationHandler )

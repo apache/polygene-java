@@ -20,6 +20,7 @@ import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilderFactory;
+import org.qi4j.api.common.MetaInfo;
 
 /**
  * API for interacting with a Module. Instances
@@ -29,6 +30,8 @@ import org.qi4j.api.value.ValueBuilderFactory;
 public interface Module
 {
     String name();
+
+    MetaInfo metaInfo();
 
     CompositeBuilderFactory compositeBuilderFactory();
 
