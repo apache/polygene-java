@@ -17,7 +17,6 @@
     <orderEntry type="module" module-name="qi4j-core-testsupport" />
     <orderEntry type="library" name="Maven: junit:junit:4.4" level="project" />
     <orderEntry type="module" module-name="qi4j-lib-locking" exported="" />
-    <orderEntry type="library" exported="" name="Maven: org.qi4j.library:qi4j-lib-serialization:0.6-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="qi4j-core-runtime" />
     <orderEntry type="library" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.springframework.ldap:spring-ldap:1.2.1" level="project" />
