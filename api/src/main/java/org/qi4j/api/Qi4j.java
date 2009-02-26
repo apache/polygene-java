@@ -50,13 +50,12 @@ public interface Qi4j
      * This is used by ConfigurationMixin to figure out the configuration instance used by
      * a Service using {@link org.qi4j.api.configuration.Configuration}.
      *
-     * @param configurationType the type of the configuration
      * @param serviceComposite the service instance
      * @param uow the UnitOfWork from which the configuration will be loaded
      * @return configuration instance
      * @throws InstantiationException thrown if the configuration cannot be instantiated
      */
-    <T> T getConfigurationInstance( Class<? extends T> configurationType, Composite serviceComposite, UnitOfWork uow ) 
+    <T> T getConfigurationInstance( Composite serviceComposite, UnitOfWork uow )
         throws InstantiationException;
 
     Class<?> getConfigurationType( Composite serviceComposite );

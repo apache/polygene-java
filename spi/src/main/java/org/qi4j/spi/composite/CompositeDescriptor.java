@@ -22,16 +22,7 @@ import org.qi4j.api.composite.Composite;
  * JAVADOC
  */
 public interface CompositeDescriptor
+    extends AbstractCompositeDescriptor
 {
-    Class<? extends Composite> type();
-
     StateDescriptor state();
-
-    Visibility visibility();
-
-    String toURI();
-
-    Iterable<Class> mixinTypes();
-
-    MetaInfo metaInfo();
 }

@@ -123,7 +123,6 @@ public final class CompositeMethodModel
         resolution = new Resolution( resolution.application(),
                                      resolution.layer(),
                                      resolution.module(),
-                                     resolution.composite(),
                                      resolution.object(),
                                      this,
                                      null //no field

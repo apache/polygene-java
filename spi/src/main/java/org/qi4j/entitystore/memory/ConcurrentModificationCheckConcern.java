@@ -106,7 +106,7 @@ public abstract class ConcurrentModificationCheckConcern extends ConcernOf<Entit
 
         if( concurrentModifications != null )
         {
-            throw new ConcurrentEntityStateModificationException( service.serviceDescriptor().identity(), concurrentModifications );
+            throw new ConcurrentEntityStateModificationException( service.identity().get(), concurrentModifications );
         }
     }
 

@@ -31,7 +31,6 @@ public final class Resolution
     private final ApplicationModel application;
     private final LayerModel layer;
     private final ModuleModel module;
-    private final CompositeDescriptor compositeDescriptor;
     private ObjectDescriptor objectDescriptor;
     private final CompositeMethodModel method;
     private final Field field;
@@ -39,7 +38,6 @@ public final class Resolution
     public Resolution( ApplicationModel application,
                        LayerModel layer,
                        ModuleModel module,
-                       CompositeDescriptor compositeDescriptor,
                        ObjectDescriptor objectDescriptor,
                        CompositeMethodModel method,
                        Field field )
@@ -47,7 +45,6 @@ public final class Resolution
         this.application = application;
         this.layer = layer;
         this.module = module;
-        this.compositeDescriptor = compositeDescriptor;
         this.objectDescriptor = objectDescriptor;
         this.method = method;
         this.field = field;
@@ -68,11 +65,6 @@ public final class Resolution
         return module;
     }
 
-    public CompositeDescriptor composite()
-    {
-        return compositeDescriptor;
-    }
-
     public ObjectDescriptor object()
     {
         return objectDescriptor;
@@ -90,6 +82,6 @@ public final class Resolution
 
     public Resolution forField( final Field injectedField )
     {
-        return new Resolution( application, layer, module, compositeDescriptor, objectDescriptor, method, injectedField );
+        return new Resolution( application, layer, module, objectDescriptor, method, injectedField );
     }
 }

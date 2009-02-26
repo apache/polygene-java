@@ -34,6 +34,8 @@ import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.composite.AbstractCompositeDescriptor;
+import org.qi4j.spi.object.ObjectDescriptor;
 
 /**
  * JAVADOC
@@ -68,15 +70,13 @@ public final class InjectionProviderFactoryStrategy
         {
             throw new InvalidInjectionException( "Unknown injection annotation @" + injectionAnnotationType.getSimpleName() );
         }
-        CompositeDescriptor composite = resolution.composite();
-        if( composite != null )
+        ObjectDescriptor composite = resolution.object();
+        Class<?> compositeType = composite.type();
+        if( factory1 != null && ValueComposite.class.isAssignableFrom( compositeType ) )
         {
-            Class<? extends Composite> compositeType = composite.type();
-            if( factory1 != null && ValueComposite.class.isAssignableFrom( compositeType ) )
-            {
-                throw new InvalidValueCompositeException( "@" + injectionAnnotationType.getSimpleName() + " is not allowed in ValueComposites: " + compositeType );
-            }
+            throw new InvalidValueCompositeException( "@" + injectionAnnotationType.getSimpleName() + " is not allowed in ValueComposites: " + compositeType );
         }
+
         InjectionProviderFactory factory;
         if( factory1 == null )
         {

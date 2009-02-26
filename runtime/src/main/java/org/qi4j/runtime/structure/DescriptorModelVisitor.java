@@ -14,7 +14,7 @@
 
 package org.qi4j.runtime.structure;
 
-import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.runtime.composite.AbstractConstraintModel;
 import org.qi4j.runtime.composite.CompositeMethodModel;
 import org.qi4j.runtime.composite.CompositeModel;
@@ -32,6 +32,7 @@ import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.service.ImportedServiceModel;
 import org.qi4j.runtime.service.ServiceModel;
+import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.structure.DescriptorVisitor;
 
 /**
@@ -65,6 +66,31 @@ public class DescriptorModelVisitor extends ModelVisitor
     @Override public void visit( CompositeModel compositeModel )
     {
         visitor.visit( compositeModel );
+    }
+
+    @Override public void visit( EntityModel entityModel )
+    {
+        visitor.visit( entityModel );
+    }
+
+    @Override public void visit( ValueModel valueModel )
+    {
+        visitor.visit( valueModel );
+    }
+
+    @Override public void visit( ServiceModel serviceModel )
+    {
+        visitor.visit( (ServiceDescriptor) serviceModel );
+    }
+
+    @Override public void visit( ImportedServiceModel serviceModel )
+    {
+        visitor.visit( serviceModel );
+    }
+
+    @Override public void visit( ObjectModel objectModel )
+    {
+        visitor.visit( objectModel );
     }
 
     @Override public void visit( CompositeMethodModel compositeMethodModel )
@@ -125,25 +151,5 @@ public class DescriptorModelVisitor extends ModelVisitor
     @Override public void visit( MixinModel mixinModel )
     {
         visitor.visit( mixinModel );
-    }
-
-    @Override public void visit( EntityModel entityModel )
-    {
-        visitor.visit( entityModel );
-    }
-
-    @Override public void visit( ServiceModel serviceModel )
-    {
-        visitor.visit( (ServiceDescriptor) serviceModel );
-    }
-
-    @Override public void visit( ImportedServiceModel serviceModel )
-    {
-        visitor.visit( serviceModel );
-    }
-
-    @Override public void visit( ObjectModel objectModel )
-    {
-        visitor.visit( objectModel );
     }
 }

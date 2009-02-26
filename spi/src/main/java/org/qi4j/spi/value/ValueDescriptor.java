@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,25 +12,15 @@
  *
  */
 
-package org.qi4j.api.service;
+package org.qi4j.spi.value;
 
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.Visibility;
+import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.composite.StateDescriptor;
 
 /**
- * {@code ServiceDescriptor} provides meta informations of a service.
+ * JAVADOC
  */
-public interface ServiceDescriptor
+public interface ValueDescriptor
+    extends CompositeDescriptor
 {
-    Class<?> type();
-
-    String identity();
-
-    Visibility visibility();
-
-    boolean isInstantiateOnStartup();
-
-    MetaInfo metaInfo();
-
-    Class<?> configurationType();
 }

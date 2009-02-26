@@ -38,14 +38,14 @@ import org.qi4j.spi.object.ObjectDescriptor;
 public final class ObjectModel
     implements Binder, ObjectDescriptor, Serializable
 {
-    private final Class objectType;
+    private final Class<?> objectType;
     private final Visibility visibility;
     private final MetaInfo metaInfo;
     private final ConstructorsModel constructorsModel;
     private final InjectedFieldsModel injectedFieldsModel;
     private final InjectedMethodsModel injectedMethodsModel;
 
-    public ObjectModel( Class objectType,
+    public ObjectModel( Class<?> objectType,
                         Visibility visibility,
                         MetaInfo metaInfo )
     {
@@ -58,7 +58,7 @@ public final class ObjectModel
         injectedMethodsModel = new InjectedMethodsModel( objectType );
     }
 
-    public Class type()
+    public Class<?> type()
     {
         return objectType;
     }
@@ -91,7 +91,7 @@ public final class ObjectModel
 
     public void bind( Resolution resolution ) throws BindingException
     {
-        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), null, this, null, null );
+        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
 
         constructorsModel.bind( resolution );
         injectedFieldsModel.bind( resolution );

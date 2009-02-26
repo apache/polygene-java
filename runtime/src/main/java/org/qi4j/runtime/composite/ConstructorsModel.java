@@ -36,6 +36,7 @@ import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.util.Annotations;
+import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 
 /**
  * JAVADOC
@@ -124,15 +125,15 @@ public final class ConstructorsModel
         if( boundConstructors.size() == 0 )
         {
             StringBuilder messageBuilder = new StringBuilder( "Found no constructor that could be bound: " );
-            if( resolution.composite() == null )
-            {
-                messageBuilder.append( resolution.object().toString() );
-            }
-            else
+            if( resolution.object() instanceof AbstractCompositeDescriptor)
             {
                 messageBuilder.append( fragmentClass.getName() )
                     .append( " in " )
-                    .append( resolution.composite().toString() );
+                    .append( resolution.object().toString() );
+            }
+            else
+            {
+                messageBuilder.append( resolution.object().toString() );
             }
 
             if( messageBuilder.indexOf( "$" ) >= 0 )

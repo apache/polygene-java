@@ -19,11 +19,9 @@ import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
@@ -67,17 +65,11 @@ public interface Configuration<T>
 
         public ConfigurationMixin( @Structure Qi4j api,
                                    @This ServiceComposite me,
-                                   @Structure UnitOfWorkFactory uowf,
-                                   @Uses ServiceDescriptor descriptor )
+                                   @Structure UnitOfWorkFactory uowf)
             throws Exception
         {
             uow = uowf.newUnitOfWork();
-            Class<? extends T> configType = (Class<? extends T>) api.getConfigurationType( me );
-            if( configType == null )
-            {
-                throw new InstantiationException( "Could not figure out type of Configuration" );
-            }
-            configuration = api.getConfigurationInstance( configType, me, uow );
+            configuration = api.<T>getConfigurationInstance( me, uow );
         }
 
         public T configuration()

@@ -92,7 +92,7 @@ public class ModuleModel
     // Binding
     public void bind( Resolution resolution ) throws BindingException
     {
-        resolution = new Resolution( resolution.application(), resolution.layer(), this, null, null, null, null );
+        resolution = new Resolution( resolution.application(), resolution.layer(), this, null, null, null );
 
         compositesModel.bind( resolution );
         entitiesModel.bind( resolution );

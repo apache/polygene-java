@@ -12,7 +12,9 @@ import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.spi.composite.StateDescriptor;
+import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityStateDescriptor;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
 
@@ -33,7 +35,7 @@ public final class StateInjectionProviderFactory
         else if( Property.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
         {
             // @State Property<String> name;
-            StateDescriptor descriptor = resolution.composite().state();
+            StateDescriptor descriptor = ((CompositeDescriptor)resolution.object()).state();
             State annotation = (State) dependencyModel.injectionAnnotation();
             String name;
             if( annotation.value().equals( "" ) )
@@ -58,7 +60,7 @@ public final class StateInjectionProviderFactory
         else if( AbstractAssociation.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
         {
             // @State Association<MyEntity> name;
-            EntityStateDescriptor descriptor = (EntityStateDescriptor) resolution.composite().state();
+            EntityStateDescriptor descriptor = ((EntityDescriptor) resolution.object()).state();
             State annotation = (State) dependencyModel.injectionAnnotation();
             String name;
             if( annotation.value().equals( "" ) )

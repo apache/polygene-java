@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;

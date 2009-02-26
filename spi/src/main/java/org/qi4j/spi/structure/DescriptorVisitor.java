@@ -14,7 +14,7 @@
 
 package org.qi4j.spi.structure;
 
-import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
@@ -31,7 +31,7 @@ import org.qi4j.spi.sideeffect.MethodSideEffectsDescriptor;
 import org.qi4j.spi.mixin.MixinDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
-import java.io.Serializable;
+import org.qi4j.spi.value.ValueDescriptor;
 
 /**
  * Extend and override this class in order to introspect a Qi4j model.
@@ -68,6 +68,10 @@ public class DescriptorVisitor
     }
 
     public void visit( ObjectDescriptor objectDescriptor )
+    {
+    }
+
+    public void visit( ValueDescriptor valueDescriptor )
     {
     }
 

@@ -30,7 +30,6 @@ import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -124,23 +123,24 @@ public final class Qi4jRuntimeImpl
         return null; // No super Composite type found
     }
 
-    public <T> T getConfigurationInstance( Class<? extends T> configType, Composite serviceComposite, UnitOfWork uow )
+    public <T> T getConfigurationInstance( Composite serviceComposite, UnitOfWork uow )
         throws InstantiationException
     {
-        ServiceDescriptor descriptor = ((ServiceComposite) serviceComposite).serviceDescriptor();
+        ServiceModel serviceModel = (ServiceModel) DefaultCompositeInstance.getCompositeInstance( serviceComposite ).compositeModel();
+
+        String identity = ((ServiceComposite) serviceComposite).identity().get();
         Object configuration;
         try
         {
-            String identity = descriptor.identity();
-            configuration = uow.find( identity, configType );
+            configuration = uow.find( identity, serviceModel.configurationType() );
         }
         catch( NoSuchEntityException e )
         {
 
-            EntityBuilder<? extends T> configBuilder = uow.newEntityBuilder( descriptor.identity(), configType );
+            EntityBuilder<? extends T> configBuilder = uow.newEntityBuilder( identity, serviceModel.configurationType() );
             // Check for defaults
-            String s = descriptor.identity() + ".properties";
-            InputStream asStream = descriptor.type().getResourceAsStream( s );
+            String s = identity + ".properties";
+            InputStream asStream = serviceComposite.type().getResourceAsStream( s );
             if( asStream != null )
             {
                 try
@@ -170,7 +170,7 @@ public final class Qi4jRuntimeImpl
         {
             uow.pause();
         }
-        return configType.cast( configuration);
+        return (T) configuration;
     }
 
     public Class<?> getConfigurationType( Composite serviceComposite )

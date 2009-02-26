@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
@@ -42,10 +44,8 @@ import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.DISCAR
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.StateUsage;
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.usecase.Usecase;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
@@ -677,7 +677,7 @@ public final class UnitOfWorkInstance
                 protected void execute( EntityInstance instance )
                     throws Exception
                 {
-                    if (instance.proxy() instanceof UnitOfWorkCallback)
+                    if (instance.<Object>proxy() instanceof UnitOfWorkCallback)
                     {
                         UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast(instance.proxy());
                         callback.beforeCompletion();
@@ -719,7 +719,7 @@ public final class UnitOfWorkInstance
                 protected void execute( EntityInstance instance )
                     throws Exception
                 {
-                    if (instance.proxy() instanceof UnitOfWorkCallback)
+                    if (instance.<Object>proxy() instanceof UnitOfWorkCallback)
                     {
                         UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast(instance.proxy());
                         callback.afterCompletion(status);

@@ -6,6 +6,7 @@ import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
+import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 
 /**
  * JAVADOC
@@ -16,7 +17,7 @@ public final class ModifiesInjectionProviderFactory
     public InjectionProvider newInjectionProvider( Resolution bindingContext, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {
-        if( bindingContext.composite() != null )
+        if( bindingContext.object() instanceof AbstractCompositeDescriptor )
         {
             if( dependencyModel.injectionClass().isAssignableFrom( dependencyModel.injectedClass() ) )
             {
@@ -24,7 +25,7 @@ public final class ModifiesInjectionProviderFactory
             }
             else
             {
-                throw new InvalidInjectionException( "Composite " + bindingContext.composite().type() + " does not implement @ConcernFor type " + dependencyModel.injectionClass().getName() + " in modifier " + dependencyModel.injectedClass().getName() );
+                throw new InvalidInjectionException( "Composite " + bindingContext.object().type() + " does not implement @ConcernFor type " + dependencyModel.injectionClass().getName() + " in modifier " + dependencyModel.injectedClass().getName() );
             }
         }
         else

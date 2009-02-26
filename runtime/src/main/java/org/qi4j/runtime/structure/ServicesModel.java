@@ -94,5 +94,10 @@ public class ServicesModel
         {
             serviceModel.visitModel( modelVisitor );
         }
+
+        for( ImportedServiceModel importedServiceModel : importedServiceModels )
+        {
+            importedServiceModel.visitModel( modelVisitor );
+        }
     }
 }

@@ -25,11 +25,12 @@ import java.util.Set;
 import java.util.ArrayList;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.configuration.Configuration;
@@ -47,12 +48,14 @@ import org.qi4j.runtime.composite.SideEffectsDeclaration;
 import org.qi4j.runtime.composite.StateModel;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.property.PropertiesModel;
+import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.DependencyVisitor;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
+import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
  * JAVADOC
@@ -81,6 +84,7 @@ public final class ServiceModel
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
         CompositeMethodsModel compositeMethodsModel =
             new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
+        stateModel.addStateFor( compositeMethodsModel.methods() );
 
         return new ServiceModel(
             compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, moduleName, identity, instantiateOnStartup );
@@ -143,7 +147,7 @@ public final class ServiceModel
     // Binding
     public void bind( Resolution resolution ) throws BindingException
     {
-        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null, null );
+        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
         compositeMethodsModel.bind( resolution );
         mixinsModel.bind( resolution );
     }
@@ -207,7 +211,8 @@ public final class ServiceModel
         {
             public Property<?> getProperty( Method propertyMethod )
             {
-                return null;
+                PropertyModel propertyDescriptor = (PropertyModel) stateModel.getPropertyByQualifiedName( new QualifiedName( propertyMethod ) );
+                return propertyDescriptor.newInstance( identity );
             }
         };
         CompositeInstance compositeInstance = new DefaultCompositeInstance( this, module, mixins, stateHolder );

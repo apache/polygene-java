@@ -108,9 +108,9 @@ public final class EntityInstance
         return identity;
     }
 
-    public EntityComposite proxy()
+    public <T> T proxy()
     {
-        return proxy;
+        return (T) proxy;
     }
 
     public MetaInfo metaInfo()

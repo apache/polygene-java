@@ -27,7 +27,6 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.entity.RDF;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.StateHolder;
@@ -42,12 +41,13 @@ import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.SideEffectsDeclaration;
+import org.qi4j.runtime.composite.AbstractCompositeModel;
+import org.qi4j.runtime.composite.AbstractStateModel;
 import org.qi4j.runtime.entity.association.EntityAssociationsModel;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
@@ -63,7 +63,8 @@ import org.qi4j.spi.entity.UnknownEntityTypeException;
  * JAVADOC
  */
 public final class EntityModel
-    implements Binder, CompositeDescriptor, EntityDescriptor, Serializable
+    extends AbstractCompositeModel
+    implements EntityDescriptor
 {
     public static EntityModel newModel( Class<? extends EntityComposite> type,
                                         Visibility visibility,
@@ -97,13 +98,6 @@ public final class EntityModel
                                 compositeMethodsModel );
     }
 
-    private final Class<? extends EntityComposite> type;
-    private final Visibility visibility;
-    private final MetaInfo info;
-    private final EntityMixinsModel mixinsModel;
-    private final EntityStateModel stateModel;
-    private final CompositeMethodsModel compositeMethodsModel;
-    private final Class<? extends Composite> proxyClass;
     private final String uri;
     private final boolean queryable;
     private EntityType entityType;
@@ -116,18 +110,8 @@ public final class EntityModel
                          CompositeMethodsModel compositeMethodsModel
     )
     {
-        this.type = type;
-        this.visibility = visibility;
-        this.info = info;
-        this.mixinsModel = mixinsModel;
-        this.stateModel = stateModel;
-        this.compositeMethodsModel = compositeMethodsModel;
+        super(type, visibility, info, mixinsModel, stateModel, compositeMethodsModel);
 
-        this.proxyClass = createProxyClass( type );
-/*
-        RDF uri = type.getAnnotation( RDF.class );
-        this.uri = uri == null ? Classes.toURI( type ) : uri.value();
-*/
         this.uri = Classes.toURI(type);
 
         final Queryable queryable = type.getAnnotation( Queryable.class );
@@ -136,27 +120,12 @@ public final class EntityModel
 
     public Class<? extends EntityComposite> type()
     {
-        return type;
+        return (Class<? extends EntityComposite>) super.type();
     }
 
-    public Visibility visibility()
+    @Override public EntityStateModel state()
     {
-        return visibility;
-    }
-
-    public MetaInfo metaInfo()
-    {
-        return info;
-    }
-
-    public EntityStateDescriptor state()
-    {
-        return stateModel;
-    }
-
-    public Iterable<Class> mixinTypes()
-    {
-        return mixinsModel.mixinTypes();
+        return (EntityStateModel) super.state();
     }
 
     public EntityType entityType()
@@ -185,21 +154,21 @@ public final class EntityModel
             mixinTypes.add( mixinType.getName() );
         }
 
+        EntityStateModel entityStateModel = (EntityStateModel) stateModel;
         entityType = new EntityType(
-            type.getName(), toURI(), queryable,
-            mixinTypes, stateModel.propertyTypes(), stateModel.associationTypes(), stateModel.manyAssociationTypes()
+            type().getName(), toURI(), queryable,
+            mixinTypes, entityStateModel.propertyTypes(), entityStateModel.associationTypes(), entityStateModel.manyAssociationTypes()
         );
 
-        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null, null );
+        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
         compositeMethodsModel.bind( resolution );
         mixinsModel.bind( resolution );
     }
 
     public QualifiedIdentity newQualifiedIdentity( String identity )
     {
-        return new QualifiedIdentity( identity, type );
+        return new QualifiedIdentity( identity, type() );
     }
-
 
     public EntityInstance getInstance( UnitOfWorkInstance unitOfWorkInstance, EntityStore store, QualifiedIdentity qid, ModuleInstance moduleInstance )
     {
@@ -212,22 +181,11 @@ public final class EntityModel
         return instance;
     }
 
-    public Object invoke( MixinsInstance mixins, Object proxy, Method method, Object[] args, ModuleInstance moduleInstance )
-        throws Throwable
-    {
-        return compositeMethodsModel.invoke( mixins, proxy, method, args, moduleInstance );
-    }
-
-    public Object getMixin( Object[] mixins, Method method )
-    {
-        return mixinsModel.getMixin( mixins, method );
-    }
-
     public Object[] initialize( UnitOfWorkInstance uow, EntityState entityState, EntityInstance entityInstance )
     {
         Object[] mixins = mixinsModel.newMixinHolder();
         entityInstance.setMixins( mixins );
-        EntityStateModel.EntityStateInstance state = stateModel.newInstance( uow, entityState );
+        EntityStateModel.EntityStateInstance state = ((EntityStateModel)stateModel).newInstance( uow, entityState );
         entityInstance.setEntityState( state );
 //        mixinsModel.newMixins( entityInstance, state, mixins );
         return mixins;
@@ -236,7 +194,7 @@ public final class EntityModel
 
     public Object newMixin( Object[] mixins, EntityStateModel.EntityStateInstance entityState, EntityInstance entityInstance, Method method )
     {
-        return mixinsModel.newMixin( entityInstance, entityState, mixins, method );
+        return ((EntityMixinsModel)mixinsModel).newMixin( entityInstance, entityState, mixins, method );
     }
 
     public EntityComposite newProxy( EntityInstance entityInstance )
@@ -254,7 +212,7 @@ public final class EntityModel
 
     public EntityStateHolder newBuilderState()
     {
-        return stateModel.newBuilderInstance();
+        return ((EntityStateModel)stateModel).newBuilderInstance();
     }
 
     private Class<? extends Composite> createProxyClass( Class<? extends Composite> compositeType )
@@ -294,7 +252,7 @@ public final class EntityModel
             }
             while( entityState == null );
 
-            stateModel.setState( state, entityState );
+            ((EntityStateModel)stateModel).setState( state, entityState );
             return entityState;
         }
         catch( EntityAlreadyExistsException e )
@@ -344,6 +302,6 @@ public final class EntityModel
 
     @Override public String toString()
     {
-        return type.getName();
+        return type().getName();
     }
 }

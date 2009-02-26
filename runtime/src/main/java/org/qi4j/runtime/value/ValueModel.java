@@ -33,12 +33,13 @@ import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.value.ValueState;
+import org.qi4j.spi.value.ValueDescriptor;
 
 /**
  * Model for ValueComposites
  */
 public final class ValueModel extends AbstractCompositeModel
-    implements Serializable
+    implements ValueDescriptor, Serializable
 {
     public static ValueModel newModel( final Class<? extends ValueComposite> compositeType,
                                        final Visibility visibility,
@@ -79,7 +80,7 @@ public final class ValueModel extends AbstractCompositeModel
     public void bind( Resolution resolution )
         throws BindingException
     {
-        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null, null );
+        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
         compositeMethodsModel.bind( resolution );
         mixinsModel.bind( resolution );
     }

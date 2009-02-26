@@ -23,7 +23,7 @@ import org.qi4j.api.composite.Composite;
  */
 public interface ObjectDescriptor
 {
-    Class<? extends Composite> type();
+    Class<?> type();
 
     String toURI();
 

@@ -22,5 +22,7 @@ import org.qi4j.spi.composite.CompositeDescriptor;
 public interface EntityDescriptor
     extends CompositeDescriptor
 {
+    EntityStateDescriptor state();
+
     EntityType entityType();
 }

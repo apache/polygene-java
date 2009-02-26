@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,18 +12,21 @@
  *
  */
 
-package org.qi4j.runtime.composite;
+package org.qi4j.spi.service;
 
-import org.qi4j.runtime.property.PropertiesModel;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 
 /**
- * Model for Transient Composite state.
+ * {@code ServiceDescriptor} provides meta informations of a service.
  */
-public final class StateModel
-    extends AbstractStateModel<PropertiesModel>
+public interface ServiceDescriptor
+    extends AbstractCompositeDescriptor
 {
-    public StateModel( PropertiesModel propertiesModel )
-    {
-        super(propertiesModel);
-    }
+    String identity();
+
+    boolean isInstantiateOnStartup();
+
+    Class<?> configurationType();
 }
