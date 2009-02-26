@@ -35,7 +35,6 @@ import prefuse.action.animate.LocationAnimator;
 import prefuse.action.animate.QualityControlAnimator;
 import prefuse.action.animate.VisibilityAnimator;
 import prefuse.action.assignment.ColorAction;
-import prefuse.action.assignment.DataColorAction;
 import prefuse.action.assignment.FontAction;
 import prefuse.action.filter.FisheyeTreeFilter;
 import prefuse.action.layout.CollapsedSubtreeLayout;
@@ -49,7 +48,6 @@ import prefuse.controls.WheelZoomControl;
 import prefuse.controls.ZoomControl;
 import prefuse.controls.ZoomToFitControl;
 import prefuse.data.Graph;
-import prefuse.data.Node;
 import prefuse.data.tuple.TupleSet;
 import prefuse.render.AbstractShapeRenderer;
 import prefuse.render.DefaultRendererFactory;
@@ -64,7 +62,6 @@ import prefuse.visual.AggregateItem;
 import prefuse.visual.AggregateTable;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
-import prefuse.visual.VisualTree;
 import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.sort.TreeDepthItemSorter;
 
@@ -137,14 +134,14 @@ public class GraphDisplay extends Display
         };
         ColorAction layerColor = new DataColorAction(LAYER, NAME_LABEL, Constants.NOMINAL, VisualItem.FILLCOLOR, palette);
         */
-        ColorAction layerColor = new DataColorAction(LAYER, NAME_LABEL, Constants.LINEAR_SCALE, VisualItem.FILLCOLOR );
+        //ColorAction layerColor = new DataColorAction(LAYER, NAME_LABEL, Constants.LINEAR_SCALE, VisualItem.FILLCOLOR );
         //ItemAction layerColor = new ColorAction(LAYER, VisualItem.STROKECOLOR, ColorLib.rgb(255,0,0));
 
 
         // quick repaint
         ActionList repaint = new ActionList();
         repaint.add(nodeColor);
-        repaint.add(new AggregateLayout(LAYER));
+        //repaint.add(new AggregateLayout(LAYER));
         //repaint.add(layerColor);
         repaint.add(new RepaintAction());
         m_vis.putAction(REPAINT_ACTION, repaint);
@@ -157,7 +154,7 @@ public class GraphDisplay extends Display
         // animate paint change
         ActionList animatePaint = new ActionList(400);
         animatePaint.add(new ColorAnimator(TREE_NODES));
-        animatePaint.add(new AggregateLayout(LAYER));
+        //animatePaint.add(new AggregateLayout(LAYER));
         //animatePaint.add(layerColor);
         animatePaint.add(new RepaintAction());
         m_vis.putAction(ANIMATE_PAINT_ACTION, animatePaint);
@@ -179,8 +176,8 @@ public class GraphDisplay extends Display
         filter.add(textColor);
         filter.add(nodeColor);
         filter.add(edgeColor);
-        filter.add(layerColor);
-        filter.add(new AggregateLayout(LAYER));
+        //filter.add(layerColor);
+        //filter.add(new AggregateLayout(LAYER));
         //filter.add(layerColor);
         m_vis.putAction(FILTER_ACTION, filter);
 
@@ -233,13 +230,11 @@ public class GraphDisplay extends Display
 
     public void run (Graph graph)
     {
-        /*m_vis.add(TREE, graph);
+        m_vis.add(TREE, graph);
         run();
         m_vis.run(AUTO_ZOOM_ACTION);
-        */
-        
 
-        VisualTree visualTree = (VisualTree)m_vis.add(TREE, graph);
+        /*VisualTree visualTree = (VisualTree)m_vis.add(TREE, graph);
         AggregateTable aggrTable = m_vis.addAggregates( LAYER );
         aggrTable.addColumn(VisualItem.POLYGON, float[].class);
         aggrTable.addColumn(NAME_LABEL, String.class);
@@ -259,10 +254,10 @@ public class GraphDisplay extends Display
         /*aggrItem = (AggregateItem)aggrTable.addItem();
         aggrItem.setString( NAME_LABEL, "UI" );
         aggrItem.addItem( (VisualItem)node.getChild(2 ) ); // ui uses domain
-        */
 
         run();
         //m_vis.run(AUTO_ZOOM_ACTION);
+        */
     }
 
     public void run()
@@ -463,6 +458,10 @@ public class GraphDisplay extends Display
     {
         public final void itemClicked( VisualItem anItem, MouseEvent anEvent )
         {
+            if (!anItem.canGet( USER_OBJECT, Object.class ))
+            {
+                 return;
+            }
             Object object =  anItem.get( USER_OBJECT );
             ItemSelectionEvent evt = new ItemSelectionEvent( this, object);
             fireSelectionValueChanged( evt );
