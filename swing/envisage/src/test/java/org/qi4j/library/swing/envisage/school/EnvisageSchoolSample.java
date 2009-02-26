@@ -46,67 +46,9 @@ public class EnvisageSchoolSample
     {
         Energy4Java energy4Java = new Energy4Java(); 
 
-        Application application = energy4Java.newApplication( new ApplicationAssembler()
-        {
-            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
-            {
-                final ApplicationAssembly appAssembly = applicationFactory.newApplicationAssembly();
-                appAssembly.setName( "School" );
-
-                // Create layers
-                LayerAssembly layerInfra = createInfrastructureLayer( appAssembly );
-
-                LayerAssembly layerDomain = createDomainLayer( appAssembly );
-                layerDomain.uses( layerInfra );
-
-                LayerAssembly layerUI = createUILayer( appAssembly );
-                layerUI.uses( layerDomain );
-                return appAssembly;
-            }
-        });
+        Application application = energy4Java.newApplication( new SchoolAssembler());
         application.activate();
 
         new Envisage().run( energy4Java, application );
-    }
-
-    private LayerAssembly createInfrastructureLayer( ApplicationAssembly appAssembly )
-        throws AssemblyException
-    {
-        LayerAssembly layerInfrastructure = appAssembly.newLayerAssembly( "Infrastructure" );
-
-        ModuleAssembly moduleMail = layerInfrastructure.newModuleAssembly( "Mail" );
-        moduleMail.addAssembler( new MailServiceAssembler() );
-
-        ModuleAssembly modulePersistence = layerInfrastructure.newModuleAssembly( "Persistence" );
-        modulePersistence.addAssembler( new PersistenceAssembler() );
-
-        return layerInfrastructure;
-    }
-
-    private LayerAssembly createDomainLayer( ApplicationAssembly appAssembly )
-        throws AssemblyException
-    {
-        LayerAssembly layerDomain = appAssembly.newLayerAssembly( "domain" );
-
-        ModuleAssembly modulePerson = layerDomain.newModuleAssembly( "person" );
-        modulePerson.addAssembler( new PersonModelAssembler() );
-
-        ModuleAssembly moduleSchool = layerDomain.newModuleAssembly( "school" );
-        moduleSchool.addAssembler( new SchoolModelAssembler() );
-
-
-        return layerDomain;
-    }
-
-    private LayerAssembly createUILayer( ApplicationAssembly appAssembly )
-        throws AssemblyException
-    {
-        LayerAssembly layerUI = appAssembly.newLayerAssembly( "UI" );
-
-        // Add admin
-        ModuleAssembly moduleAdmin = layerUI.newModuleAssembly( "admin" );
-        moduleAdmin.addAssembler( new AdminAssembler() );
-
-        return layerUI;
     }
 }
