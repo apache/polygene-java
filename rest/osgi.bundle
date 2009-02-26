@@ -50,6 +50,7 @@ Import-Package: com.noelios.restlet.ext.servlet, \
                 org.qi4j.spi.entity.helpers, \
                 org.qi4j.spi.property, \
                 org.qi4j.spi.query, \
+                org.qi4j.spi.service, \
                 org.qi4j.spi.structure, \
                 org.qi4j.spi.value, \
                 org.xml.sax, \

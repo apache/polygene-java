@@ -17,7 +17,8 @@ Import-Package:\
     org.qi4j.spi.entity,\
     org.qi4j.spi.entity.association,\
     org.qi4j.spi.entity.helpers,\
-    org.qi4j.spi.property
+    org.qi4j.spi.property, \
+    org.qi4j.spi.service
 
 Export-Package:\
     org.qi4j.entitystore.jndi

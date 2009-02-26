@@ -63,7 +63,7 @@ public final class EntityTypesResource extends Resource
         {
             @Override public void visit( EntityDescriptor entityDescriptor )
             {
-                Class<? extends Composite> entityType = entityDescriptor.type();
+                Class<?> entityType = entityDescriptor.type();
                 if( spi.getEntityDescriptor( entityType, module ) != null )
                 {
                     entityTypes.add( entityType.getName() );

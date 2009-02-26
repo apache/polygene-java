@@ -32,6 +32,7 @@ Import-Package: javax.crypto, \
                 org.qi4j.spi.entity, \
                 org.qi4j.spi.entity.helpers, \
                 org.qi4j.spi.serialization, \
+                org.qi4j.spi.service, \
                 org.w3c.dom
 
 Export-Package: org.qi4j.entitystore.jgroups, \

@@ -33,7 +33,7 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.library.rdf.entity.EntityStateParser;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.configuration.Configuration;
-import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.api.service.Wrapper;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.entity.EntityTypeRegistryMixin;

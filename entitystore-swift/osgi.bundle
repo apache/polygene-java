@@ -23,6 +23,7 @@ Import-Package: org.qi4j.api.composite, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.entity, \
                 org.qi4j.spi.query, \
+                org.qi4j.spi.service, \
                 org.qi4j.spi.serialization
 
 Export-Package: org.qi4j.entitystore.swift

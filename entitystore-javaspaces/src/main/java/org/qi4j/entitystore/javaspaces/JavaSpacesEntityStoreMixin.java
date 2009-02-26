@@ -29,7 +29,7 @@ import org.qi4j.library.locking.WriteLock;
 import org.qi4j.library.spaces.Space;
 import org.qi4j.library.spaces.SpaceException;
 import org.qi4j.library.spaces.SpaceTransaction;
-import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.helpers.DefaultEntityState;
 import org.qi4j.spi.entity.StateCommitter;

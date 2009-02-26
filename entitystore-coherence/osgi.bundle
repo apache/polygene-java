@@ -48,6 +48,7 @@ Import-Package: org.qi4j.api.common, \
                 org.qi4j.library.locking, \
                 org.qi4j.spi.entity, \
                 org.qi4j.spi.entity.helpers, \
+                org.qi4j.spi.service, \
                 com.tangosol.coherence, \
                 com.tangosol.coherence.component, \
                 com.tangosol.coherence.component.application, \
