@@ -36,7 +36,7 @@ public class InstanceImporter
     public Object importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
     {
         Object instance = serviceDescriptor.metaInfo().get( serviceDescriptor.type() );
-        if (instance != null)
+        if (instance == null)
         {
             instance = module.metaInfo().get(serviceDescriptor.type() );
             if (instance == null)
