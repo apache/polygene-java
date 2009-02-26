@@ -106,6 +106,7 @@ public class StatePane extends DetailPane
         if( objectDesciptor instanceof ServiceDetailDescriptor )
         {
             ServiceDetailDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor );
+            reload( descriptor.methods() );
         }
         else if( objectDesciptor instanceof EntityDetailDescriptor )
         {

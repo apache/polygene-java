@@ -108,6 +108,11 @@ public class DependencyPane extends DetailPane
         if( objectDesciptor instanceof ServiceDetailDescriptor )
         {
             ServiceDetailDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor );
+            Iterable<MixinDetailDescriptor> iter = descriptor.mixins();
+            for( MixinDetailDescriptor mixinDescriptor : iter )
+            {
+                reload( mixinDescriptor.injectedFields() );
+            }
         }
         else if( objectDesciptor instanceof EntityDetailDescriptor )
         {
@@ -120,8 +125,8 @@ public class DependencyPane extends DetailPane
         }
         else if( objectDesciptor instanceof ObjectDetailDescriptor )
         {
-            ObjectDetailDescriptor descriptor = ( (ObjectDetailDescriptor) objectDesciptor );
-            //reload( descriptor.injectedMethods() );
+            // Object does not have this info 
+
         }
 
         if( !fieldListModel.isEmpty() )

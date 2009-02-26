@@ -16,51 +16,57 @@
 */
 package org.qi4j.library.swing.envisage.graph;
 
-import prefuse.Constants;
-import prefuse.Display;
-import prefuse.Visualization;
-import prefuse.controls.FocusControl;
-import prefuse.controls.PanControl;
-import prefuse.controls.WheelZoomControl;
-import prefuse.controls.ZoomControl;
-import prefuse.controls.ZoomToFitControl;
-import prefuse.controls.ControlAdapter;
-import prefuse.activity.SlowInSlowOutPacer;
-import prefuse.action.Action;
-import prefuse.action.ItemAction;
-import prefuse.action.RepaintAction;
-import prefuse.action.ActionList;
-import prefuse.action.filter.FisheyeTreeFilter;
-import prefuse.action.animate.ColorAnimator;
-import prefuse.action.animate.LocationAnimator;
-import prefuse.action.animate.VisibilityAnimator;
-import prefuse.action.animate.QualityControlAnimator;
-import prefuse.action.assignment.ColorAction;
-import prefuse.action.assignment.FontAction;
-import prefuse.action.layout.CollapsedSubtreeLayout;
-import prefuse.action.layout.graph.NodeLinkTreeLayout;
-import prefuse.data.Graph;
-import prefuse.data.Tree;
-import prefuse.data.tuple.TupleSet;
-import prefuse.visual.expression.InGroupPredicate;
-import prefuse.visual.VisualItem;
-import prefuse.visual.NodeItem;
-import prefuse.visual.sort.TreeDepthItemSorter;
-import prefuse.render.EdgeRenderer;
-import prefuse.render.LabelRenderer;
-import prefuse.render.AbstractShapeRenderer;
-import prefuse.render.DefaultRendererFactory;
-import prefuse.util.ColorLib;
-import prefuse.util.FontLib;
-import prefuse.util.GraphicsLib;
-import prefuse.util.display.DisplayLib;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
-import org.qi4j.library.swing.envisage.graph.event.ItemSelectionListener;
 import org.qi4j.library.swing.envisage.graph.event.ItemSelectionEvent;
+import org.qi4j.library.swing.envisage.graph.event.ItemSelectionListener;
+import prefuse.Constants;
+import prefuse.Display;
+import prefuse.Visualization;
+import prefuse.action.Action;
+import prefuse.action.ActionList;
+import prefuse.action.ItemAction;
+import prefuse.action.RepaintAction;
+import prefuse.action.animate.ColorAnimator;
+import prefuse.action.animate.LocationAnimator;
+import prefuse.action.animate.QualityControlAnimator;
+import prefuse.action.animate.VisibilityAnimator;
+import prefuse.action.assignment.ColorAction;
+import prefuse.action.assignment.DataColorAction;
+import prefuse.action.assignment.FontAction;
+import prefuse.action.filter.FisheyeTreeFilter;
+import prefuse.action.layout.CollapsedSubtreeLayout;
+import prefuse.action.layout.Layout;
+import prefuse.action.layout.graph.NodeLinkTreeLayout;
+import prefuse.activity.SlowInSlowOutPacer;
+import prefuse.controls.ControlAdapter;
+import prefuse.controls.FocusControl;
+import prefuse.controls.PanControl;
+import prefuse.controls.WheelZoomControl;
+import prefuse.controls.ZoomControl;
+import prefuse.controls.ZoomToFitControl;
+import prefuse.data.Graph;
+import prefuse.data.Node;
+import prefuse.data.tuple.TupleSet;
+import prefuse.render.AbstractShapeRenderer;
+import prefuse.render.DefaultRendererFactory;
+import prefuse.render.EdgeRenderer;
+import prefuse.render.LabelRenderer;
+import prefuse.render.PolygonRenderer;
+import prefuse.util.ColorLib;
+import prefuse.util.FontLib;
+import prefuse.util.GraphicsLib;
+import prefuse.util.display.DisplayLib;
+import prefuse.visual.AggregateItem;
+import prefuse.visual.AggregateTable;
+import prefuse.visual.NodeItem;
+import prefuse.visual.VisualItem;
+import prefuse.visual.VisualTree;
+import prefuse.visual.expression.InGroupPredicate;
+import prefuse.visual.sort.TreeDepthItemSorter;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
@@ -73,6 +79,8 @@ public class GraphDisplay extends Display
     private static final String TREE = "tree";
     private static final String TREE_NODES = "tree.nodes";
     private static final String TREE_EDGES = "tree.edges";
+
+    private static final String LAYER = "layer";
 
     private static final String FILTER_ACTION = "filter";
     private static final String REPAINT_ACTION = "repaint";
@@ -105,8 +113,14 @@ public class GraphDisplay extends Display
         nodeRenderer.setRoundedCorner(8,8);
         edgeRenderer = new EdgeRenderer(Constants.EDGE_TYPE_CURVE);
 
+        // draw aggregates as polygons with curved edges
+        PolygonRenderer layerRenderer = new PolygonRenderer(Constants.POLY_TYPE_STACK);
+        layerRenderer.setCurveSlack(0.15f);
+        //EdgeRenderer layerRenderer = new EdgeRenderer(Constants.EDGE_TYPE_LINE, Constants.EDGE_ARROW_FORWARD);
+
         DefaultRendererFactory rf = new DefaultRendererFactory(nodeRenderer);
         rf.add(new InGroupPredicate(TREE_EDGES), edgeRenderer);
+        rf.add(new InGroupPredicate(LAYER), layerRenderer);
         m_vis.setRendererFactory(rf);
 
         // colors
@@ -116,9 +130,22 @@ public class GraphDisplay extends Display
 
         ItemAction edgeColor = new ColorAction(TREE_EDGES, VisualItem.STROKECOLOR, ColorLib.rgb(200,200,200));
 
+        /*int[] palette = new int[] {
+            ColorLib.rgba(255,200,200,150),
+            ColorLib.rgba(200,255,200,150),
+            ColorLib.rgba(200,200,255,150)
+        };
+        ColorAction layerColor = new DataColorAction(LAYER, NAME_LABEL, Constants.NOMINAL, VisualItem.FILLCOLOR, palette);
+        */
+        ColorAction layerColor = new DataColorAction(LAYER, NAME_LABEL, Constants.LINEAR_SCALE, VisualItem.FILLCOLOR );
+        //ItemAction layerColor = new ColorAction(LAYER, VisualItem.STROKECOLOR, ColorLib.rgb(255,0,0));
+
+
         // quick repaint
         ActionList repaint = new ActionList();
         repaint.add(nodeColor);
+        repaint.add(new AggregateLayout(LAYER));
+        //repaint.add(layerColor);
         repaint.add(new RepaintAction());
         m_vis.putAction(REPAINT_ACTION, repaint);
 
@@ -130,6 +157,8 @@ public class GraphDisplay extends Display
         // animate paint change
         ActionList animatePaint = new ActionList(400);
         animatePaint.add(new ColorAnimator(TREE_NODES));
+        animatePaint.add(new AggregateLayout(LAYER));
+        //animatePaint.add(layerColor);
         animatePaint.add(new RepaintAction());
         m_vis.putAction(ANIMATE_PAINT_ACTION, animatePaint);
 
@@ -150,6 +179,9 @@ public class GraphDisplay extends Display
         filter.add(textColor);
         filter.add(nodeColor);
         filter.add(edgeColor);
+        filter.add(layerColor);
+        filter.add(new AggregateLayout(LAYER));
+        //filter.add(layerColor);
         m_vis.putAction(FILTER_ACTION, filter);
 
         // animated transition
@@ -166,7 +198,6 @@ public class GraphDisplay extends Display
         m_vis.alwaysRunAfter(FILTER_ACTION, ANIMATE_ACTION);
 
         m_vis.putAction( AUTO_ZOOM_ACTION, new AutoZoomAction() );
-        //m_vis.putAction( )
 
         // create animator for orientation changes
         /*ActionList orient = new ActionList(2000);
@@ -202,9 +233,36 @@ public class GraphDisplay extends Display
 
     public void run (Graph graph)
     {
-        m_vis.add(TREE, graph);
+        /*m_vis.add(TREE, graph);
         run();
         m_vis.run(AUTO_ZOOM_ACTION);
+        */
+        
+
+        VisualTree visualTree = (VisualTree)m_vis.add(TREE, graph);
+        AggregateTable aggrTable = m_vis.addAggregates( LAYER );
+        aggrTable.addColumn(VisualItem.POLYGON, float[].class);
+        aggrTable.addColumn(NAME_LABEL, String.class);
+
+        Node node = visualTree.getRoot();
+        AggregateItem aggrItem = (AggregateItem)aggrTable.addItem();
+        aggrItem.setString( NAME_LABEL, "Infrastructure" );
+        aggrItem.addItem( (VisualItem)node.getChild(0 ) );
+        aggrItem.addItem( (VisualItem)node.getChild(1 ) );
+        //aggrItem.addItem( (VisualItem)node.getChild(2 ) );
+
+        aggrItem = (AggregateItem)aggrTable.addItem();
+        aggrItem.setString( NAME_LABEL, "Domain" );
+        aggrItem.addItem( (VisualItem)node.getChild(1 ) );
+        aggrItem.addItem( (VisualItem)node.getChild(2 ) );
+
+        /*aggrItem = (AggregateItem)aggrTable.addItem();
+        aggrItem.setString( NAME_LABEL, "UI" );
+        aggrItem.addItem( (VisualItem)node.getChild(2 ) ); // ui uses domain
+        */
+
+        run();
+        //m_vis.run(AUTO_ZOOM_ACTION);
     }
 
     public void run()
@@ -410,4 +468,84 @@ public class GraphDisplay extends Display
             fireSelectionValueChanged( evt );
         }
     }
+
+    class AggregateLayout extends Layout
+    {
+
+    private int m_margin = 5; // convex hull pixel margin
+    private double[] m_pts;   // buffer for computing convex hulls
+
+    public AggregateLayout(String aggrGroup) {
+        super(aggrGroup);
+    }
+
+    /**
+     * 
+     */
+    public void run(double frac) {
+
+        AggregateTable aggr = (AggregateTable)m_vis.getGroup(m_group);
+        // do we have any  to process?
+        int num = aggr.getTupleCount();
+        if ( num == 0 ) return;
+
+        // update buffers
+        int maxsz = 0;
+        for ( Iterator aggrs = aggr.tuples(); aggrs.hasNext();  )
+            maxsz = Math.max(maxsz, 4*2*
+                    ((AggregateItem)aggrs.next()).getAggregateSize());
+        if ( m_pts == null || maxsz > m_pts.length ) {
+            m_pts = new double[maxsz];
+        }
+
+        // compute and assign convex hull for each aggregate
+        Iterator aggrs = m_vis.visibleItems(m_group);
+        while ( aggrs.hasNext() ) {
+            AggregateItem aitem = (AggregateItem)aggrs.next();
+
+            int idx = 0;
+            if ( aitem.getAggregateSize() == 0 ) continue;
+            VisualItem item = null;
+            Iterator iter = aitem.items();
+            while ( iter.hasNext() ) {
+                item = (VisualItem)iter.next();
+                if ( item.isVisible() ) {
+                    addPoint(m_pts, idx, item, m_margin);
+                    idx += 2*4;
+                }
+            }
+            // if no aggregates are visible, do nothing
+            if ( idx == 0 ) continue;
+
+            // compute convex hull
+            double[] nhull = GraphicsLib.convexHull(m_pts, idx);
+
+            // prepare viz attribute array
+            float[]  fhull = (float[])aitem.get(VisualItem.POLYGON);
+            if ( fhull == null || fhull.length < nhull.length )
+                fhull = new float[nhull.length];
+            else if ( fhull.length > nhull.length )
+                fhull[nhull.length] = Float.NaN;
+
+            // copy hull values
+            for ( int j=0; j<nhull.length; j++ )
+                fhull[j] = (float)nhull[j];
+            aitem.set(VisualItem.POLYGON, fhull);
+            aitem.setValidated(false); // force invalidation
+        }
+    }
+
+    private void addPoint(double[] pts, int idx,
+                                 VisualItem item, int growth)
+    {
+        Rectangle2D b = item.getBounds();
+        double minX = (b.getMinX())-growth, minY = (b.getMinY())-growth;
+        double maxX = (b.getMaxX())+growth, maxY = (b.getMaxY())+growth;
+        pts[idx]   = minX; pts[idx+1] = minY;
+        pts[idx+2] = minX; pts[idx+3] = maxY;
+        pts[idx+4] = maxX; pts[idx+5] = minY;
+        pts[idx+6] = maxX; pts[idx+7] = maxY;
+    }
+
+} 
 }

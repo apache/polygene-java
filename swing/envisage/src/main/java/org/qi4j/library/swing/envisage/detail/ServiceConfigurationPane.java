@@ -20,8 +20,8 @@ import java.awt.BorderLayout;
 import java.util.ResourceBundle;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
 
 /**
  * Implementation of Service Configuration Panel
@@ -54,6 +54,11 @@ public class ServiceConfigurationPane extends DetailPane
             return;
         }
         ServiceDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor ).descriptor();
+        Class<?> config = descriptor.configurationType();
+        if( config != null )
+        {
+            System.out.println( "ServiceConfiguration: " + config.toString() );
+        }
     }
 
     {
