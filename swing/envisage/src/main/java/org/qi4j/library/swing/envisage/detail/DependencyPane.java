@@ -40,6 +40,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.InjectedFieldDetailDescr
 import org.qi4j.library.swing.envisage.model.descriptor.MixinDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
 import org.qi4j.spi.composite.DependencyDescriptor;
 
 /**
@@ -105,7 +106,6 @@ public class DependencyPane extends DetailPane
     {
         clear();
 
-        // TODO for other type wait until QI-195 solved
         if( objectDesciptor instanceof ServiceDetailDescriptor )
         {
             ServiceDetailDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor );
@@ -124,6 +124,18 @@ public class DependencyPane extends DetailPane
                 reload( mixinDescriptor.injectedFields() );
             }
         }
+        else if( objectDesciptor instanceof ValueDetailDescriptor )
+        {
+            ValueDetailDescriptor descriptor = ( (ValueDetailDescriptor) objectDesciptor );
+            Iterable<MixinDetailDescriptor> iter = descriptor.mixins();
+            for( MixinDetailDescriptor mixinDescriptor : iter )
+            {
+                reload( mixinDescriptor.injectedFields() );
+            }
+        }
+        /* TODO transient once available
+         *
+         */
         else if( objectDesciptor instanceof ObjectDetailDescriptor )
         {
             // Object does not have this info 

@@ -42,6 +42,8 @@ public class DetailModelPane extends JPanel
     protected ServiceConfigurationPane serviceConfigurationPane;
     protected ServiceUsagePane serviceUsagePane;
 
+    protected boolean linkActivatedInProgress;
+
     public DetailModelPane()
     {
         tabPane = new JTabbedPane( );
@@ -119,7 +121,10 @@ public class DetailModelPane extends JPanel
             }
         }
 
-        tabPane.setSelectedIndex( 0 );
+        if ( linkActivatedInProgress )
+        {
+            tabPane.setSelectedIndex( 0 );
+        }
     }
 
     /**
@@ -145,16 +150,24 @@ public class DetailModelPane extends JPanel
 
     void fireLinkActivated( LinkEvent evt)
     {
-        // Guaranteed to return a non-null array
-        Object[] listeners = listenerList.getListenerList();
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
-        for( int i = listeners.length - 2; i >= 0; i -= 2 )
+        linkActivatedInProgress = true;
+        try
         {
-            if( listeners[ i ] == LinkListener.class )
+            // Guaranteed to return a non-null array
+            Object[] listeners = listenerList.getListenerList();
+            // Process the listeners last to first, notifying
+            // those that are interested in this event
+            for( int i = listeners.length - 2; i >= 0; i -= 2 )
             {
-                ( (LinkListener) listeners[ i + 1 ] ).activated( evt );
+                if( listeners[ i ] == LinkListener.class )
+                {
+                    ( (LinkListener) listeners[ i + 1 ] ).activated( evt );
+                }
             }
+        }
+        finally
+        {
+            linkActivatedInProgress = false;
         }
     }
 }
