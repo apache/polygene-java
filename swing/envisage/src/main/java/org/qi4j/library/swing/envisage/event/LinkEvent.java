@@ -14,17 +14,17 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.envisage.graph.event;
+package org.qi4j.library.swing.envisage.event;
 
 import java.util.EventObject;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
-public class ItemSelectionEvent extends EventObject
+public class LinkEvent extends EventObject
 {
     protected Object object;
-    public ItemSelectionEvent(Object source, Object object)
+    public LinkEvent(Object source, Object object)
     {
         super(source);
         this.object = object;

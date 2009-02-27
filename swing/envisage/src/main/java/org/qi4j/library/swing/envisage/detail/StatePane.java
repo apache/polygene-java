@@ -69,8 +69,9 @@ public class StatePane extends DetailPane
     private DefaultListModel methodListModel;
     private MethodDetailTableModel methodDetailTableModel;
 
-    public StatePane()
+    public StatePane( DetailModelPane detailModelPane )
     {
+        super( detailModelPane );
         this.setLayout( new BorderLayout() );
         this.add( contentPane, BorderLayout.CENTER );
 

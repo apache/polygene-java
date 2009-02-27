@@ -25,16 +25,17 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;
-import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.util.TableData;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
 
 /**
  * Implementation of General DetailPane
+ *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class GeneralPane extends DetailPane
@@ -45,8 +46,9 @@ public class GeneralPane extends DetailPane
     private JTable table;
     private GeneralTableModel tableModel;
 
-    public GeneralPane()
+    public GeneralPane( DetailModelPane detailModelPane )
     {
+        super( detailModelPane );
         this.setLayout( new BorderLayout() );
         this.add( contentPane, BorderLayout.CENTER );
 

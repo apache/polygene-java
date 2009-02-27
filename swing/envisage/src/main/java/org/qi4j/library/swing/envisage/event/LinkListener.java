@@ -14,14 +14,14 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.envisage.graph.event;
+package org.qi4j.library.swing.envisage.event;
 
 import java.util.EventListener;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
-public interface ItemSelectionListener extends EventListener
+public interface LinkListener extends EventListener
 {
-    public void valueChanged(ItemSelectionEvent evt);
+    public void activated( LinkEvent evt);
 }

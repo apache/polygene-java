@@ -21,6 +21,8 @@ import java.util.ResourceBundle;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import org.qi4j.library.swing.envisage.event.LinkEvent;
+import org.qi4j.library.swing.envisage.event.LinkListener;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 
@@ -56,22 +58,22 @@ public class DetailModelPane extends JPanel
 
     protected void createDetailPane()
     {
-        generalPane = new GeneralPane();
+        generalPane = new GeneralPane(this);
         generalPane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
 
-        statePane = new StatePane();
+        statePane = new StatePane(this);
         statePane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
 
-        methodPane = new MethodPane();
+        methodPane = new MethodPane(this);
         methodPane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
 
-        dependencyPane = new DependencyPane();
+        dependencyPane = new DependencyPane(this);
         dependencyPane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
 
-        serviceConfigurationPane = new ServiceConfigurationPane();
+        serviceConfigurationPane = new ServiceConfigurationPane(this);
         serviceConfigurationPane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
 
-        serviceUsagePane = new ServiceUsagePane();
+        serviceUsagePane = new ServiceUsagePane(this);
         serviceUsagePane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
 
     }
@@ -117,5 +119,42 @@ public class DetailModelPane extends JPanel
             }
         }
 
+        tabPane.setSelectedIndex( 0 );
+    }
+
+    /**
+     * Add a listener that's notified each time a LinkEvent occurs.
+     *
+     * @param listener the LinkListener to add
+     */
+    public void addLinkListener( LinkListener listener )
+    {
+        listenerList.add( LinkListener.class, listener );
+    }
+
+    /**
+     * Remove a listener that's notified each time a LinkEvent occurs.
+     *
+     * @param listener the LinkListener to remove
+     */
+    public void removeLinkListener( LinkListener listener )
+    {
+        listenerList.remove( LinkListener.class, listener );
+    }
+    
+
+    void fireLinkActivated( LinkEvent evt)
+    {
+        // Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for( int i = listeners.length - 2; i >= 0; i -= 2 )
+        {
+            if( listeners[ i ] == LinkListener.class )
+            {
+                ( (LinkListener) listeners[ i + 1 ] ).activated( evt );
+            }
+        }
     }
 }

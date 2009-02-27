@@ -37,9 +37,9 @@ import org.qi4j.spi.service.ServiceDescriptor;
 public class ServiceUsagePane extends DetailPane
 {
 
-    public ServiceUsagePane()
+    public ServiceUsagePane( DetailModelPane detailModelPane )
     {
-
+        super( detailModelPane );
     }
 
     public void setDescriptor( Object objectDesciptor )
@@ -52,7 +52,7 @@ public class ServiceUsagePane extends DetailPane
         }
 
         ServiceDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor ).descriptor();
-        
+
     }
 
     private void clear()

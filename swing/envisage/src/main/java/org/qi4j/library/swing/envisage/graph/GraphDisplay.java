@@ -21,8 +21,8 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
-import org.qi4j.library.swing.envisage.graph.event.ItemSelectionEvent;
-import org.qi4j.library.swing.envisage.graph.event.ItemSelectionListener;
+import org.qi4j.library.swing.envisage.event.LinkEvent;
+import org.qi4j.library.swing.envisage.event.LinkListener;
 import prefuse.Constants;
 import prefuse.Display;
 import prefuse.Visualization;
@@ -252,26 +252,26 @@ public class GraphDisplay extends Display
     }
 
     /**
-     * Adds a listener that's notified each time a change to the selection occurs.
+     * Add a listener that's notified each time a change to the selection occurs.
      *
-     * @param listener the ItemSelectionListener to add
+     * @param listener the LinkListener to add
      */
-    public void addItemSelectionListener( ItemSelectionListener listener )
+    public void addLinkListener( LinkListener listener )
     {
-        listenerList.add( ItemSelectionListener.class, listener );
+        listenerList.add( LinkListener.class, listener );
     }
 
     /**
-     * Removes a listener from the list that's notified each time a change to the selection occurs.
+     * Remove a listener from the list that's notified each time a change to the selection occurs.
      *
-     * @param listener the ItemSelectionListener to remove
+     * @param listener the LinkListener to remove
      */
-    public void removeItemSelectionListener( ItemSelectionListener listener )
+    public void removeLinkListener( LinkListener listener )
     {
-        listenerList.remove( ItemSelectionListener.class, listener );
+        listenerList.remove( LinkListener.class, listener );
     }
 
-    protected void fireSelectionValueChanged( ItemSelectionEvent evt)
+    protected void fireLinkActivated( LinkEvent evt)
     {
         // Guaranteed to return a non-null array
         Object[] listeners = listenerList.getListenerList();
@@ -279,9 +279,9 @@ public class GraphDisplay extends Display
         // those that are interested in this event
         for( int i = listeners.length - 2; i >= 0; i -= 2 )
         {
-            if( listeners[ i ] == ItemSelectionListener.class )
+            if( listeners[ i ] == LinkListener.class )
             {
-                ( (ItemSelectionListener) listeners[ i + 1 ] ).valueChanged( evt );
+                ( (LinkListener) listeners[ i + 1 ] ).activated( evt );
             }
         }
     }
@@ -369,8 +369,8 @@ public class GraphDisplay extends Display
                  return;
             }
             Object object =  anItem.get( USER_OBJECT );
-            ItemSelectionEvent evt = new ItemSelectionEvent( this, object);
-            fireSelectionValueChanged( evt );
+            LinkEvent evt = new LinkEvent( this, object);
+            fireLinkActivated( evt );
         }
     }
     

@@ -27,9 +27,9 @@ import javax.swing.event.TreeSelectionListener;
 import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.library.swing.envisage.detail.DetailModelPane;
+import org.qi4j.library.swing.envisage.event.LinkEvent;
+import org.qi4j.library.swing.envisage.event.LinkListener;
 import org.qi4j.library.swing.envisage.graph.GraphPane;
-import org.qi4j.library.swing.envisage.graph.event.ItemSelectionEvent;
-import org.qi4j.library.swing.envisage.graph.event.ItemSelectionListener;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptorBuilder;
 import org.qi4j.library.swing.envisage.tree.TreeModelPane;
@@ -75,11 +75,19 @@ public class EnvisageFrame extends JFrame
             }
         } );
 
-        graphPane.getGraphDisplay().addItemSelectionListener( new ItemSelectionListener()
+        graphPane.getGraphDisplay().addLinkListener( new LinkListener()
         {
-            public void valueChanged( ItemSelectionEvent evt )
+            public void activated( LinkEvent evt )
             {
-                graphItemSelectionItemValueChanged( evt );
+                graphItemLinkActivated( evt );
+            }
+        } );
+
+        detailModelPane.addLinkListener( new LinkListener()
+        {
+            public void activated( LinkEvent evt )
+            {
+                detailModelPaneLinkActivated( evt );
             }
         } );
 
@@ -123,7 +131,7 @@ public class EnvisageFrame extends JFrame
         }
     }
 
-    protected void graphItemSelectionItemValueChanged( ItemSelectionEvent evt )
+    protected void graphItemLinkActivated( LinkEvent evt )
     {
         graphItemSelectionInProgress = true;
         try
@@ -134,6 +142,11 @@ public class EnvisageFrame extends JFrame
         {
             graphItemSelectionInProgress = false;
         }
+    }
+
+    protected void detailModelPaneLinkActivated( LinkEvent evt )
+    {
+        treeModelPane.setSelectedValue( evt.getObject() );
     }
 
 

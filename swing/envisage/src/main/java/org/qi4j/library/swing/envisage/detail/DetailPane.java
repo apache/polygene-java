@@ -25,6 +25,17 @@ import javax.swing.JPanel;
  */
 public abstract class DetailPane extends JPanel
 {
+    protected DetailModelPane detailModelPane;
+
+    public DetailPane( DetailModelPane detailModelPane )
+    {
+        if (detailModelPane == null)
+        {
+            throw new IllegalArgumentException( "detailModelPane could not null");
+        }
+        this.detailModelPane = detailModelPane;
+    }
+
     public abstract void setDescriptor(Object objectDescriptor);
 
 }

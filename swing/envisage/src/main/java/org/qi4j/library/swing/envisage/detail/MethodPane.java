@@ -66,8 +66,9 @@ public class MethodPane extends DetailPane
     private DefaultListModel methodListModel;
     private MethodDetailTableModel methodDetailTableModel;
 
-    public MethodPane()
+    public MethodPane( DetailModelPane detailModelPane )
     {
+        super( detailModelPane );
         this.setLayout( new BorderLayout() );
         this.add( contentPane, BorderLayout.CENTER );
 

@@ -16,27 +16,27 @@
 */
 package org.qi4j.library.swing.envisage.tree;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JLabel;
-import javax.swing.BorderFactory;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ResourceBundle;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 import org.qi4j.api.structure.Application;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 
@@ -167,6 +167,8 @@ public class TreeModelPane extends JPanel
     public void setSelectedValue(Object obj)
     {
         if (obj == null) { return; }
+
+        //System.out.println(obj.toString());
 
         TreeNode node = findNode( structureTree, obj );
         if (node != null)

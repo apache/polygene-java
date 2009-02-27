@@ -16,18 +16,14 @@
 */
 package org.qi4j.library.swing.envisage.graph;
 
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.api.structure.Application;
-import prefuse.data.Graph;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Robot;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.MouseEvent;
+import javax.swing.JPanel;
+import org.qi4j.api.structure.Application;
+import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
+import prefuse.data.Graph;
 
 /**
  * Just a simple wrapper for ApplicationModelDisplay

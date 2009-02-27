@@ -96,7 +96,7 @@ public final class LayerDetailDescriptor
      * @return Application that owns this {@code LayerDetailDescriptor}. Never return {@code null}.
      * @since 0.5
      */
-    final ApplicationDetailDescriptor application()
+    public final ApplicationDetailDescriptor application()
     {
         return application;
     }

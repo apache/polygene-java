@@ -62,8 +62,9 @@ public class DependencyPane extends DetailPane
 
     private DefaultListModel fieldListModel;
 
-    public DependencyPane()
+    public DependencyPane( DetailModelPane detailModelPane )
     {
+        super( detailModelPane );
         this.setLayout( new BorderLayout() );
         this.add( contentPane, BorderLayout.CENTER );
 
