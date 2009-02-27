@@ -17,6 +17,7 @@
 package org.qi4j.library.swing.envisage.detail;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -29,6 +30,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.text.html.HTMLEditorKit;
 import org.qi4j.library.swing.envisage.event.LinkEvent;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
@@ -55,6 +57,8 @@ public class ServiceConfigurationPane extends DetailPane
     private JLabel typeLabel;
 
     private Object configDesciptor;
+    private Cursor defaultCursor;
+    private Cursor linkCursor;
 
     public ServiceConfigurationPane( DetailModelPane detailModelPane )
     {
@@ -76,7 +80,21 @@ public class ServiceConfigurationPane extends DetailPane
             {
                 linkActivated();
             }
+
+            public void mouseEntered( MouseEvent evt )
+            {
+                setCursor( linkCursor );
+            }
+
+            public void mouseExited( MouseEvent evt )
+            {
+                setCursor( defaultCursor );
+            }
         } );
+
+        defaultCursor = getCursor();
+        linkCursor = new HTMLEditorKit().getLinkCursor();
+
     }
 
     protected void linkActivated()
