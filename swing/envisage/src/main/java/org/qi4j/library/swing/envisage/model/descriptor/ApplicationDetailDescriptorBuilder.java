@@ -43,10 +43,12 @@ import org.qi4j.spi.structure.DescriptorVisitor;
 import org.qi4j.spi.structure.LayerDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
 import org.qi4j.spi.structure.UsedLayersDescriptor;
+import org.qi4j.spi.value.ValueDescriptor;
 
 /**
  * @author Sonny Gill
  * @author edward.yakop@gmail.com
+ * @author Tonny Kohar (tonny.kohar@gmail.com)
  * @since 0.5
  */
 public final class ApplicationDetailDescriptorBuilder
@@ -167,6 +169,14 @@ public final class ApplicationDetailDescriptorBuilder
         {
             EntityDetailDescriptor descriptor = new EntityDetailDescriptor( aDescriptor );
             currModuleDescriptor.addEntity( descriptor );
+            currCompositeDescriptor = descriptor;
+        }
+
+        @Override
+        public final void visit( ValueDescriptor aDescriptor )
+        {
+            ValueDetailDescriptor descriptor = new ValueDetailDescriptor( aDescriptor );
+            currModuleDescriptor.addValue( descriptor );
             currCompositeDescriptor = descriptor;
         }
 

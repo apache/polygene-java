@@ -23,6 +23,7 @@ import org.qi4j.spi.structure.ModuleDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
+ * @author Tonny Kohar (tonny.kohar@gmail.com)
  * @see org.qi4j.spi.structure.ModuleDescriptor
  * @since 0.5
  */
@@ -33,6 +34,7 @@ public final class ModuleDetailDescriptor
     private final List<ServiceDetailDescriptor> services;
     private final List<EntityDetailDescriptor> entities;
     private final List<CompositeDetailDescriptor> composites;
+    private final List<ValueDetailDescriptor> values;
     private final List<ObjectDetailDescriptor> objects;
 
     ModuleDetailDescriptor( ModuleDescriptor aDescriptor )
@@ -45,6 +47,7 @@ public final class ModuleDetailDescriptor
         services = new LinkedList<ServiceDetailDescriptor>();
         entities = new LinkedList<EntityDetailDescriptor>();
         composites = new LinkedList<CompositeDetailDescriptor>();
+        values = new LinkedList<ValueDetailDescriptor>(); 
         objects = new LinkedList<ObjectDetailDescriptor>();
     }
 
@@ -73,6 +76,15 @@ public final class ModuleDetailDescriptor
     public final Iterable<EntityDetailDescriptor> entities()
     {
         return entities;
+    }
+
+    /**
+     * @return Values of this {@code ModuleDetailDescriptor}. Never return {@code null}.
+     * @since 0.7
+     */
+    public final Iterable<ValueDetailDescriptor> values()
+    {
+        return values;
     }
 
     /**
@@ -125,6 +137,15 @@ public final class ModuleDetailDescriptor
 
         aDescriptor.setModule( this );
         entities.add( aDescriptor );
+    }
+
+    final void addValue( ValueDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setModule( this );
+        values.add( aDescriptor );
     }
 
     final void addComposite( CompositeDetailDescriptor aDescriptor )

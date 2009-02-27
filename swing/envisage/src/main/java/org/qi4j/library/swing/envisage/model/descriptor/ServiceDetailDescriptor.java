@@ -23,29 +23,16 @@ import org.qi4j.spi.service.ServiceDescriptor;
 
 /**
  * @author edward.yakop@gmail.com
+ * @author Tonny Kohar (tonny.kohar@gmail.com)
  * @see org.qi4j.spi.service.ServiceDescriptor
  * @since 0.5
  */
 public final class ServiceDetailDescriptor extends CompositeDetailDescriptor<ServiceDescriptor>
 {
-    //private final ServiceDescriptor descriptor;
-    //private ModuleDetailDescriptor module;
-
     ServiceDetailDescriptor( ServiceDescriptor aDescriptor )
     {
-        //validateNotNull( "aDescriptor", aDescriptor );
-        //descriptor = aDescriptor;
         super( aDescriptor );
     }
-
-    /**
-     * @return Descriptor of this {@code ServiceDetailDescriptor}. Never return {@code null}.
-     * @since 0.5
-     */
-    /*public final ServiceDescriptor descriptor()
-    {
-        return descriptor;
-    }*/
 
     /**
      * @return layers that can access this service. Never return {@code null}.
@@ -71,27 +58,4 @@ public final class ServiceDetailDescriptor extends CompositeDetailDescriptor<Ser
             return layer.usedBy();
         }
     }
-
-    /**
-     * @return Module that owns this {@code ServiceDetailDescriptor}. Never return {@code null}.
-     * @since 0.5
-     */
-    /*public final ModuleDetailDescriptor module()
-    {
-        return module;
-    }
-
-    final void setModule( ModuleDetailDescriptor aDescriptor )
-        throws IllegalArgumentException
-    {
-        validateNotNull( "aDescriptor", aDescriptor );
-
-        module = aDescriptor;
-    }*/
-
-    /*@Override
-    public final String toString()
-    {
-        return descriptor.type().getSimpleName();
-    }*/
 }

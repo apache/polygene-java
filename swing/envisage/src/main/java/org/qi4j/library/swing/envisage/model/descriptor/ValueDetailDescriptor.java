@@ -1,4 +1,4 @@
-/*  Copyright 2008 Edward Yakop.
+/*  Copyright 2009 Tonny Kohar.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,17 +16,14 @@
 */
 package org.qi4j.library.swing.envisage.model.descriptor;
 
-import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.value.ValueDescriptor;
 
 /**
- * @author edward.yakop@gmail.com
  * @author Tonny Kohar (tonny.kohar@gmail.com)
- * @see org.qi4j.spi.entity.EntityDescriptor
- * @since 0.5
  */
-public final class EntityDetailDescriptor extends CompositeDetailDescriptor<EntityDescriptor>
+public class ValueDetailDescriptor extends CompositeDetailDescriptor<ValueDescriptor>
 {
-    EntityDetailDescriptor( EntityDescriptor aDescriptor )
+    ValueDetailDescriptor( ValueDescriptor aDescriptor )
     {
         super( aDescriptor );
     }
