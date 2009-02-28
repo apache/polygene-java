@@ -102,7 +102,7 @@ public final class AssociationModel
     private void initialize()
     {
         this.type = GenericAssociationInfo.getAssociationType( accessor );
-        this.qualifiedName = new QualifiedName( accessor );
+        this.qualifiedName = QualifiedName.fromMethod(accessor);
         this.immutable = metaInfo.get( Immutable.class ) != null;
         this.aggregated = metaInfo.get( Aggregated.class ) != null;
         RDF uriAnnotation = accessor().getAnnotation( RDF.class );

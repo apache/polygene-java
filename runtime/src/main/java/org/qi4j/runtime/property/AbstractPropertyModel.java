@@ -35,7 +35,6 @@ import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -47,6 +46,7 @@ import org.qi4j.spi.value.PrimitiveType;
 import org.qi4j.spi.value.SerializableType;
 import org.qi4j.spi.value.ValueState;
 import org.qi4j.spi.value.ValueType;
+import static org.qi4j.api.common.TypeName.nameOf;
 
 /**
  * JAVADOC
@@ -87,19 +87,17 @@ public abstract class AbstractPropertyModel
         this.metaInfo = metaInfo;
         type = GenericPropertyInfo.getPropertyType( accessor );
         this.accessor = accessor;
-        qualifiedName = new QualifiedName( accessor );
+        qualifiedName = QualifiedName.fromMethod(accessor);
 
         // Check for @UseDefaults annotation
-        if( initialValue == null )
+        useDefaults = this.metaInfo.get( UseDefaults.class ) != null;
+
+        if( initialValue == null && useDefaults )
         {
-            if( this.metaInfo.get( UseDefaults.class ) != null )
-            {
-                initialValue = DefaultValues.getDefaultValue( type );
-            }
+            initialValue = DefaultValues.getDefaultValue( type );
         }
 
         this.initialValue = initialValue;
-        useDefaults = this.metaInfo.get( UseDefaults.class ) != null;
 
         RDF uriAnnotation = this.metaInfo.get( RDF.class );
         rdf = uriAnnotation == null ? null : uriAnnotation.value();
@@ -120,11 +118,11 @@ public abstract class AbstractPropertyModel
             if( type instanceof ParameterizedType )
             {
                 ParameterizedType pt = (ParameterizedType) type;
-                valueType = new CollectionType( ( (Class) pt.getRawType() ).getName(), createValueType( pt.getActualTypeArguments()[ 0 ] ) );
+                valueType = new CollectionType( nameOf( type ), createValueType( pt.getActualTypeArguments()[ 0 ] ) );
             }
             else
             {
-                valueType = new CollectionType( ( (Class) type ).getName(), createValueType( Object.class ) );
+                valueType = new CollectionType( nameOf( type ), createValueType( Object.class ) );
             }
         }
         else if( CompoundType.isCompound( type ) )
@@ -141,20 +139,20 @@ public abstract class AbstractPropertyModel
                     String rdf = rdfAnnotation == null ? null : rdfAnnotation.value();
                     Queryable queryableAnnotation = method.getAnnotation( Queryable.class );
                     boolean queryable = queryableAnnotation == null || queryableAnnotation.value();
-                    PropertyType propertyType = new PropertyType( new QualifiedName( method ), createValueType( propType ), rdf, queryable, PropertyType.PropertyTypeEnum.IMMUTABLE );
+                    PropertyType propertyType = new PropertyType(QualifiedName.fromMethod(method), createValueType(propType), rdf, queryable, PropertyType.PropertyTypeEnum.IMMUTABLE);
                     types.add( propertyType );
                 }
             }
-            valueType = new CompoundType( valueTypeClass.getName(), types );
+            valueType = new CompoundType( nameOf(valueTypeClass), types );
         }
         else if( PrimitiveType.isPrimitive( type ) )
         {
-            valueType = new PrimitiveType( ( (Class) type ).getName() );
+            valueType = new PrimitiveType( nameOf(type ) );
         }
         else
         {
             // TODO: shouldn't we check that the type is a Serializable?
-            valueType = new SerializableType( Classes.getRawClass( type ).getName() );
+            valueType = new SerializableType( nameOf( type ) );
         }
 
         return valueType;

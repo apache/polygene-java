@@ -14,13 +14,13 @@
 
 package org.qi4j.spi.value;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
-import java.security.MessageDigest;
 import java.util.Collections;
 import java.util.List;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.common.TypeName;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.entity.SchemaVersion;
 
 /**
  * JAVADOC
@@ -33,17 +33,17 @@ public class CompoundType
         return type instanceof Class && ValueComposite.class.isAssignableFrom( (Class) type );
     }
 
-    private String type;
+    private final TypeName type;
     private List<PropertyType> types;
 
-    public CompoundType( String type, List<PropertyType> types )
+    public CompoundType( TypeName type, List<PropertyType> types )
     {
         this.type = type;
         Collections.sort( types ); // Sort by property name
         this.types = types;
     }
 
-    public String type()
+    public TypeName type()
     {
         return type;
     }
@@ -53,17 +53,17 @@ public class CompoundType
         return types;
     }
 
-    public void calculateVersion( MessageDigest md ) throws UnsupportedEncodingException
+    public void versionize( SchemaVersion schemaVersion )
     {
-        md.update( type.getBytes("UTF-8" ));
+        schemaVersion.versionize( type );
         for( PropertyType propertyType : types )
         {
-            propertyType.calculateVersion(md);
+            propertyType.versionize( schemaVersion );
         }
     }
 
     @Override public String toString()
     {
-        return type;
+        return type.toString();
     }
 }

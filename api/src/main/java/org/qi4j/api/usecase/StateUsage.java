@@ -71,7 +71,7 @@ public final class StateUsage
         {
             if( Property.class.isAssignableFrom( mixinMethod.getReturnType() ) )
             {
-                QualifiedName qualifiedName = new QualifiedName( mixinMethod );
+                QualifiedName qualifiedName = QualifiedName.fromMethod(mixinMethod);
                 usedProperties.add( qualifiedName );
                 usedMixinTypes.add( qualifiedName.type() );
             }

@@ -15,9 +15,10 @@
 package org.qi4j.spi.entity.association;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
+
 import org.qi4j.api.common.QualifiedName;
+import static org.qi4j.api.common.TypeName.nameOf;
+import org.qi4j.spi.entity.SchemaVersion;
 
 /**
  * JAVADOC
@@ -81,9 +82,9 @@ public final class ManyAssociationType
         return qualifiedName + "(" + type + ")";
     }
 
-    public void calculateVersion( MessageDigest md ) throws UnsupportedEncodingException
+    public void versionize( SchemaVersion schemaVersion )
     {
-        md.update( qualifiedName.toString().getBytes("UTF-8" ));
-        md.update( type.getBytes("UTF-8" ));
+        schemaVersion.versionize( qualifiedName);
+        schemaVersion.versionize( nameOf(type));
     }
 }

@@ -15,8 +15,9 @@
 package org.qi4j.spi.value;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
+
+import org.qi4j.api.common.TypeName;
+import org.qi4j.spi.entity.SchemaVersion;
 
 /**
  * JAVADOC
@@ -24,8 +25,7 @@ import java.security.MessageDigest;
 public interface ValueType
     extends Serializable
 {
-    public String type();
+    public TypeName type();
 
-    void calculateVersion( MessageDigest md)
-        throws UnsupportedEncodingException;
+    void versionize( SchemaVersion schemaVersion );
 }

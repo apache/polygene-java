@@ -66,7 +66,7 @@ public final class GenericPropertyInfo
 
     public GenericPropertyInfo( Method accessor )
     {
-        this.qualifiedName = new QualifiedName( accessor );
+        this.qualifiedName = QualifiedName.fromMethod(accessor);
         this.type = getPropertyType( accessor );
         infos = new MetaInfo().withAnnotations( accessor );
         immutable = metaInfo( Immutable.class ) != null;
@@ -79,7 +79,7 @@ public final class GenericPropertyInfo
         {
             Method accessor = declaringClass.getMethod( accessorName );
 
-            this.qualifiedName = new QualifiedName( accessor );
+            this.qualifiedName = QualifiedName.fromMethod(accessor);
             this.type = getPropertyType( accessor );
             infos = new MetaInfo().withAnnotations( accessor );
             immutable = metaInfo( Immutable.class ) != null;

@@ -14,13 +14,14 @@
 
 package org.qi4j.spi.value;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
-import java.security.MessageDigest;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.qi4j.api.util.Classes;
+import org.qi4j.api.common.TypeName;
+import static org.qi4j.api.common.TypeName.nameOf;
+import org.qi4j.spi.entity.SchemaVersion;
 
 /**
  * JAVADOC
@@ -34,16 +35,16 @@ public class CollectionType
         return cl.equals( Collection.class ) || cl.equals( List.class ) || cl.equals( Set.class );
     }
 
-    private String type;
+    private TypeName type;
     private ValueType collectedType;
 
-    public CollectionType( String type, ValueType collectedType )
+    public CollectionType( TypeName type, ValueType collectedType )
     {
         this.type = type;
         this.collectedType = collectedType;
     }
 
-    public String type()
+    public TypeName type()
     {
         return type;
     }
@@ -53,10 +54,10 @@ public class CollectionType
         return collectedType;
     }
 
-    public void calculateVersion( MessageDigest md ) throws UnsupportedEncodingException
+    public void versionize( SchemaVersion schemaVersion )
     {
-        md.update( type.getBytes("UTF-8" ));
-        collectedType.calculateVersion( md );
+        schemaVersion.versionize( type );
+        collectedType.versionize( schemaVersion );
     }
 
     @Override public String toString()

@@ -49,41 +49,32 @@ public final class DefaultValues
     public static Object getDefaultValue( Type type )
     {
         Object value = defaultValues.get( type );
-        if (value == null)
+        if( value != null )
         {
-            if (type instanceof ParameterizedType)
-            {
-                // List<Foo> -> List
-                type = (( ParameterizedType )type).getRawType();
-            }
-
-            // Handle some types separately
-            if (type.equals( List.class))
-            {
-                value = new ArrayList();
-            } else if (type.equals( Set.class))
-            {
-                value = new HashSet();
-            } else if (type.equals( Collection.class))
-            {
-                value = new ArrayList();
-            } else if (((Class)type).isEnum())
-            {
-                try
-                {
-                    value = ((Class)type).getFields()[0].get( null );
-                }
-                catch( IllegalAccessException e )
-                {
-                    // Should never happen
-                    e.printStackTrace();
-                }
-            } else
-            {
-                throw new IllegalArgumentException("Cannot use @UseDefaults with type "+type.toString());
-            }
+            return value;
+        }
+        if( type instanceof ParameterizedType )
+        {
+            // List<Foo> -> List
+            type = ( (ParameterizedType) type ).getRawType();
         }
 
-        return value;
+        if( type instanceof Class )
+        {
+            Class typeAsClass = (Class) type;
+            if( Set.class.isAssignableFrom( typeAsClass ) )
+            {
+                return new HashSet();
+            }
+            if( Collection.class.isAssignableFrom( typeAsClass ) )
+            {
+                return new ArrayList();
+            }
+            if( typeAsClass.isEnum() )
+            {
+                return ( (Class) type ).getEnumConstants()[ 0 ];
+            }
+        }
+        throw new IllegalArgumentException( "Cannot use @UseDefaults with type " + type.toString() );
     }
 }

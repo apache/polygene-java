@@ -15,11 +15,10 @@
 package org.qi4j.spi.entity;
 
 import java.io.Serializable;
-import java.security.MessageDigest;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
+import static org.qi4j.api.common.TypeName.nameOf;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.util.Base64Encoder;
 
 /**
  * SPI-level description of an Entity type. This contains
@@ -134,30 +133,31 @@ public final class EntityType
     {
         try
         {
-            MessageDigest md = MessageDigest.getInstance( "SHA" );
+            final SchemaVersion schemaVersion = new SchemaVersion();
 
             // Entity type
-            md.update( type.getBytes( "UTF-8" ) );
+            schemaVersion.versionize(nameOf( type ));
 
             // Properties
             for( PropertyType property : properties )
             {
-                property.calculateVersion( md );
+                 property.versionize( schemaVersion );
             }
 
             // Associations
             for( AssociationType association : associations )
             {
-                association.calculateVersion( md );
+                association.versionize( schemaVersion );
             }
 
             // ManyAssociations
             for( ManyAssociationType manyAssociation : manyAssociations )
             {
-                manyAssociation.calculateVersion( md );
+                manyAssociation.versionize( schemaVersion );
             }
 
-            return new String( Base64Encoder.encode( md.digest() ) );
+
+            return schemaVersion.base64();
         }
         catch( Exception e )
         {

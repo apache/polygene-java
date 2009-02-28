@@ -21,6 +21,8 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Collection;
+import static java.util.Arrays.asList;
 import java.io.Serializable;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.mixin.Mixins;
@@ -34,26 +36,16 @@ import org.qi4j.api.service.ServiceFinder;
 public final class MetaInfo
     implements Serializable
 {
-    private static HashSet<Class> ignored;
+    private final static Collection<Class> ignored = new HashSet<Class>(asList( Mixins.class , Concerns.class , SideEffects.class ));
 
-    static
-    {
-        ignored = new HashSet<Class>();
-        ignored.add( Mixins.class );
-        ignored.add( Concerns.class );
-        ignored.add( SideEffects.class );
-    }
-
-    private final Map<Class<?>, Object> metaInfoMap;
+    private final Map<Class<?>, Object> metaInfoMap = new LinkedHashMap<Class<?>, Object>();
 
     public MetaInfo()
     {
-        metaInfoMap = new LinkedHashMap<Class<?>, Object>();
     }
 
     public MetaInfo( MetaInfo metaInfo )
     {
-        metaInfoMap = new LinkedHashMap<Class<?>, Object>();
         metaInfoMap.putAll( metaInfo.metaInfoMap );
     }
 

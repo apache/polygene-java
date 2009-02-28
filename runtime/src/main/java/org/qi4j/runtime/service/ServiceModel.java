@@ -211,7 +211,7 @@ public final class ServiceModel
         {
             public Property<?> getProperty( Method propertyMethod )
             {
-                PropertyModel propertyDescriptor = (PropertyModel) stateModel.getPropertyByQualifiedName( new QualifiedName( propertyMethod ) );
+                PropertyModel propertyDescriptor = (PropertyModel) stateModel.getPropertyByQualifiedName(QualifiedName.fromMethod(propertyMethod));
                 return propertyDescriptor.newInstance( identity );
             }
         };

@@ -15,9 +15,8 @@
 package org.qi4j.spi.property;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
 import org.qi4j.spi.value.ValueType;
+import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.api.common.QualifiedName;
 
 /**
@@ -85,10 +84,10 @@ public class PropertyType
         return qualifiedName.compareTo( pt.qualifiedName );
     }
 
-    public void calculateVersion( MessageDigest md )
-        throws UnsupportedEncodingException
+    public void versionize( SchemaVersion schemaVersion )
     {
-        md.update( qualifiedName.toString().getBytes("UTF-8" ));
-        type.calculateVersion( md );
+
+        schemaVersion.versionize( qualifiedName );
+        type.versionize( schemaVersion );
     }
 }

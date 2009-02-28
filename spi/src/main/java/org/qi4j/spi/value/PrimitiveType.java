@@ -14,11 +14,12 @@
 
 package org.qi4j.spi.value;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
-import java.security.MessageDigest;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.qi4j.api.common.TypeName;
+import org.qi4j.spi.entity.SchemaVersion;
 
 /**
  * Primitive type
@@ -55,26 +56,25 @@ public class PrimitiveType
         return primitiveClasses.contains( type );
     }
 
-    private String type;
+    private final TypeName type;
 
-    public PrimitiveType( String type )
+    public PrimitiveType( TypeName type )
     {
         this.type = type;
     }
 
-    public void calculateVersion( MessageDigest md )
-        throws UnsupportedEncodingException
+    public void versionize( SchemaVersion schemaVersion )
     {
-        md.update( type.getBytes("UTF-8" ));
+        schemaVersion.versionize( type );
     }
 
-    public String type()
+    public TypeName type()
     {
         return type;
     }
 
     @Override public String toString()
     {
-        return type;
+        return type.toString();
     }
 }

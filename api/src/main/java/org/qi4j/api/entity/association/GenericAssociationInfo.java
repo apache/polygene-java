@@ -75,7 +75,7 @@ public class GenericAssociationInfo
 
     public GenericAssociationInfo( Method accessor, MetaInfo metainfo )
     {
-        this.qualifiedName = new QualifiedName( accessor );
+        this.qualifiedName = QualifiedName.fromMethod(accessor);
         this.metainfo = metainfo;
         immutable = metainfo.get( Immutable.class ) != null;
         aggregated = metainfo.get( Aggregated.class ) != null;

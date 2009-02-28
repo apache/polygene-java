@@ -86,19 +86,20 @@ public final class Energy4Java
     private static Qi4jRuntime findQi4jRuntime()
         throws BootstrapException
     {
+
         try
         {
-            Iterator<? extends Qi4jRuntime> providers = serviceLoader.providers( Qi4jRuntime.class).iterator();
-            if( providers.hasNext() )
+            final Qi4jRuntime runtime = serviceLoader.firstProvider( Qi4jRuntime.class );
+            if( runtime != null )
             {
-                return providers.next();
+                return runtime;
             }
+            throw new BootstrapException( "No Qi4j runtime providers found." );
         }
         catch( IOException e )
         {
             throw new BootstrapException( "Unable to load a Qi4j runtime provider.", e );
         }
-        throw new BootstrapException( "No Qi4j runtime providers found." );
     }
 
     public static void notifyRuntimeShutdown()

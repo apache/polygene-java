@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,13 +33,13 @@ import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
-import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.api.common.TypeName;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
@@ -184,7 +183,8 @@ public abstract class PersistentPropertyModel
         if( valueType instanceof CompoundType )
         {
             CompoundType compoundType = (CompoundType) propertyType().type();
-            Class valueClass = moduleInstance.findClassForName( compoundType.type() );
+            final TypeName typeName = compoundType.type();
+            Class valueClass = moduleInstance.findClassForName( typeName.name() );
             ValueModel model = (ValueModel) moduleInstance.findModuleForValue( valueClass ).findValueFor( valueClass );
             result = model.newValueInstance( moduleInstance, ((ValueState)value) ).<T>proxy();
         } else if (valueType instanceof SerializableType )

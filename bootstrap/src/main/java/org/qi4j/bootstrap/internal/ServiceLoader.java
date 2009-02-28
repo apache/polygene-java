@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.LinkedList;
+import java.util.Iterator;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 
 /**
@@ -32,11 +33,9 @@ import org.qi4j.bootstrap.ApplicationAssemblyFactory;
  */
 public final class ServiceLoader
 {
-    private static LinkedList<ClassLoader> loaders;
-
+    private final static LinkedList<ClassLoader> loaders = new LinkedList<ClassLoader>(); 
     static
     {
-        loaders = new LinkedList<ClassLoader>();
         addClassloader( ServiceLoader.class.getClassLoader() );
     }
 
@@ -50,25 +49,32 @@ public final class ServiceLoader
         loaders.remove( loader );
     }
 
-    public <T> Iterable<T> providers(Class<T> providerClass)
+    public <T> Iterable<T> providers(Class<T> neededType)
         throws IOException
     {
         LinkedList<T> result = new LinkedList<T>();
         for( ClassLoader loader : loaders )
         {
-            Enumeration cfg = loader.getResources( "META-INF/services/" + providerClass.getName() );
+            Enumeration cfg = loader.getResources( "META-INF/services/" + neededType.getName() );
             while( cfg.hasMoreElements() )
             {
                 URL rc = (URL) cfg.nextElement();
-                processResource( loader, result, rc );
+                processResource( loader, result, rc , neededType);
             }
         }
         return result;
     }
-
+    public <T> T firstProvider(Class<T> neededType) throws IOException
+    {
+        final Iterator<T> allProviders = providers( neededType ).iterator();
+        if (allProviders.hasNext()) return allProviders.next();
+        System.err.println(  "No provider found for " + neededType + "." );
+        return null;
+    }
+    
     private <T> void processResource(
         ClassLoader classLoader, LinkedList<T> result,
-        URL rc )
+        URL rc, Class<T> neededType )
         throws IOException
     {
         InputStream in = null;
@@ -82,7 +88,10 @@ public final class ServiceLoader
             while( null != line )
             {
                 String providerClassName = trimLine( line );
-                processProvider( result, classLoader, providerClassName );
+                if (line.length()>0)
+                {
+                    processProvider( result, classLoader, providerClassName , neededType);
+                }
                 line = rd.readLine();
             }
         }
@@ -111,10 +120,9 @@ public final class ServiceLoader
     }
 
     private <T> void processProvider( LinkedList<T> result,
-                                  ClassLoader classLoader, String providerClassName )
-        throws IOException
+                                      ClassLoader classLoader, String providerClassName, Class<T> neededType )
     {
-        Class<T> provider = loadProvider( classLoader, providerClassName );
+        Class<T> provider = loadProvider( classLoader, providerClassName, neededType );
         if( provider == null )
         {
             return;
@@ -131,25 +139,25 @@ public final class ServiceLoader
 
     }
 
-    private <T> Class<T> loadProvider( ClassLoader ldr, String line )
+    private <T> Class<T> loadProvider( ClassLoader ldr, String providerClassName, Class<T> neededType )
     {
         try
         {
-            return (Class<T>) ldr.loadClass( line );
+            final Class<?> providerClass = ldr.loadClass( providerClassName );
+            return (Class<T>) providerClass.asSubclass( neededType );
         }
         catch( ClassCastException ex )
         {
-            System.err.println( "Class " + line + " was not of " + ApplicationAssemblyFactory.class.getName() + " subtype." );
+            System.err.println( "Class " + providerClassName + " was not of " + neededType.getName() + " subtype." );
         }
         catch( ClassNotFoundException ex )
         {
-            System.err.println( "Class " + line + " was not found. Skipping." );
+            System.err.println( "Class " + providerClassName + " was not found. Skipping." );
         }
         return null;
     }
 
     private <T> T instantiateProvider( Class<T> provider )
-        throws IOException
     {
         try
         {
