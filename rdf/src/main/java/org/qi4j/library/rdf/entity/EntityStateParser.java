@@ -43,7 +43,7 @@ public class EntityStateParser
 
     public EntityStateParser()
     {
-        identityUri = new QualifiedName(Identity.class, "identity" ).toURI();
+        identityUri = QualifiedName.fromClass(Identity.class, "identity" ).toURI();
     }
 
     public void parse( Iterable<Statement> entityGraph, EntityState entityState )

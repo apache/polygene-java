@@ -15,7 +15,6 @@
 package org.qi4j.library.rdf.entity;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,17 +34,12 @@ import org.qi4j.library.rdf.Qi4jEntity;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.library.rdf.Qi4jEntityType;
-import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.QualifierQualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.value.CompoundType;
 import org.qi4j.spi.value.PrimitiveType;
-import org.qi4j.spi.value.ValueState;
-import org.qi4j.spi.value.ValueType;
 
 /**
  * JAVADOC
@@ -183,7 +177,8 @@ public class EntityTypeSerializer
             // TODO Support more types
             if( propertyType.type() instanceof PrimitiveType )
             {
-                URI type = dataTypes.get( ( (PrimitiveType) propertyType.type() ).type() );
+                final PrimitiveType primitiveType = (PrimitiveType) propertyType.type();
+                URI type = dataTypes.get( primitiveType.type().name() );
                 if( type != null )
                 {
                     graph.add( propertyURI, Rdfs.RANGE, type );
