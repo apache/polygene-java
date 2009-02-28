@@ -85,7 +85,7 @@ class ApplicationVisitor extends DescriptorVisitor
     {
         compositeUri = context.createCompositeUri( moduleUri, objectDescriptor.type() );
         context.addType( compositeUri, Qi4jRdf.TYPE_OBJECT );
-        context.addRelationship( moduleUri, Qi4jRdf.RELATIONSHIP_ENTITY, compositeUri );
+        context.addRelationship( moduleUri, Qi4jRdf.RELATIONSHIP_OBJECT, compositeUri );
     }
 
     @Override public void visit( CompositeMethodDescriptor compositeMethodDescriptor )
