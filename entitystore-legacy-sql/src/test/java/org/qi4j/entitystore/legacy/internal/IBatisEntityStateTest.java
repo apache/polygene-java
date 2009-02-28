@@ -44,19 +44,19 @@ public final class IBatisEntityStateTest extends AbstractQi4jTest
     @Test public void usesGivenFirstNameProperty()
         throws NoSuchMethodException
     {
-        final Map<QualifiedName, Object> janeValues = Collections.<QualifiedName, Object>singletonMap( new QualifiedName("person:firstName"), "Jane" );
+        final Map<QualifiedName, Object> janeValues = Collections.<QualifiedName, Object>singletonMap(QualifiedName.fromQN("person:firstName"), "Jane");
         final EntityState jane = newPersonEntityState( janeValues );
         final String firstNameProperty = getPropertyValue( jane, HasFirstName.class, "firstName" );
         assertNotNull( firstNameProperty );
 
-        assertEquals( janeValues.get( new QualifiedName("person:firstName") ), firstNameProperty );
+        assertEquals( janeValues.get(QualifiedName.fromQN("person:firstName")), firstNameProperty );
     }
 
     private String getPropertyValue( final EntityState person, final Class<?> type, final String propertyName )
         throws NoSuchMethodException
     {
         final Method method = type.getMethod( propertyName );
-        return (String) person.getProperty( new QualifiedName( method ) );
+        return (String) person.getProperty(QualifiedName.fromMethod(method));
     }
 
     public final void assemble( final ModuleAssembly module ) throws AssemblyException

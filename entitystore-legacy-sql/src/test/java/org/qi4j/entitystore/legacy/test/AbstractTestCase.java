@@ -145,9 +145,9 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
         assertNotNull( "identity", qualifiedIdentity );
         org.junit.Assert.assertEquals( "identity", id, qualifiedIdentity.identity() );
 
-        org.junit.Assert.assertEquals( "identity", id, state.getProperty( new QualifiedName("identity") ) );
-        org.junit.Assert.assertEquals( "firstName", firstName, state.getProperty( new QualifiedName("firstName" )) );
-        org.junit.Assert.assertEquals( "lastName", lastName, state.getProperty( new QualifiedName("lastName") ) );
+        org.junit.Assert.assertEquals( "identity", id, state.getProperty(QualifiedName.fromQN("identity")) );
+        org.junit.Assert.assertEquals( "firstName", firstName, state.getProperty(QualifiedName.fromQN("firstName")) );
+        org.junit.Assert.assertEquals( "lastName", lastName, state.getProperty(QualifiedName.fromQN("lastName")) );
     }
 
     protected void assertPersonEquals( final String id, final String firstName, final String lastName, final PersonComposite person )

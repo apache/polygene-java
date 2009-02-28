@@ -281,7 +281,7 @@ public class DerbyDatabaseHandler
 
     private <T> Property<T> createProperty( final String name, final T value )
     {
-        return new TestProperty<T>( value, new QualifiedName(DBInitializerConfiguration.class, name) );
+        return new TestProperty<T>( value, QualifiedName.fromClass(DBInitializerConfiguration.class, name) );
     }
 
     public int executeStatement( final String sql, final ResultSetCallback callback )

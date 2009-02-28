@@ -31,19 +31,13 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.TypeName;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.api.structure.Application;
-import org.qi4j.spi.entity.EntityNotFoundException;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.EntityTypeRegistryMixin;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.entity.*;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.entity.helpers.DefaultEntityState;
@@ -149,30 +143,28 @@ public class PreferencesEntityStoreMixin
                 Object value = null;
                 if (propertyType.type() instanceof PrimitiveType )
                 {
-                    String primitiveType = ((PrimitiveType)propertyType.type()).type();
-                    if( primitiveType.equals( String.class.getName() ) )
+                    final PrimitiveType primitiveType = (PrimitiveType) propertyType.type();
+                    TypeName typeName = primitiveType.type();
+                    if( typeName.isClass( String.class ) )
                     {
                         value = preferences.get( name, null );
                     }
-                    else if( primitiveType.equals( Long.class.getName() ) )
+                    else if( typeName.isClass( Long.class ) )
                     {
                         value = preferences.getLong( name, 0L );
                     }
-                    else if( primitiveType.equals( Integer.class.getName() ) )
+                    else if (typeName.isClass(Integer.class))
                     {
-                        value = preferences.getInt( name, 0 );
-                    }
-                    else if( primitiveType.equals( Boolean.class.getName() ) )
+                        value = preferences.getInt(name, 0);
+                    } else if (typeName.isClass(Boolean.class))
                     {
-                        value = preferences.getBoolean( name, false );
-                    }
-                    else if( primitiveType.equals( Float.class.getName() ) )
+                        value = preferences.getBoolean(name, false);
+                    } else if (typeName.isClass(Float.class))
                     {
-                        value = preferences.getFloat( name, 0F );
-                    }
-                    else if( primitiveType.equals( Double.class.getName() ) )
+                        value = preferences.getFloat(name, 0F);
+                    } else if (typeName.isClass(Double.class))
                     {
-                        value = preferences.getDouble( name, 0D );
+                        value = preferences.getDouble(name, 0D);
                     }
                 }
                 else

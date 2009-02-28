@@ -112,16 +112,16 @@ public class LoadedDescriptor
         String[] manyAssociations = (String[]) descriptionNode.getProperty( ASSOCIATIONS_PROPERTY_KEY );
         for( String association : associations )
         {
-            this.associations.add( new QualifiedName( association) );
+            this.associations.add(QualifiedName.fromQN(association));
         }
         for( String property : properties )
         {
-            this.properties.add(new QualifiedName(property));
+            this.properties.add(QualifiedName.fromQN(property));
         }
         for( String association : manyAssociations )
         {
             String typeString = (String) descriptionNode.getProperty( FACTORY_TYPE_PROPERTY_PREFIX + association );
-            this.manyAssociations.add( ManyAssociationFactory.load( new QualifiedName(association), typeString ) );
+            this.manyAssociations.add( ManyAssociationFactory.load(QualifiedName.fromQN(association), typeString) );
         }
     }
 

@@ -61,7 +61,7 @@ class CoherenceEntityState extends DefaultEntityState
         for( int i = 0; i < propertyCounter; i++ )
         {
             Object propertyValue = pofReader.readObject( i + counter );
-            properties.put( new QualifiedName(propertyNames.get( i )), propertyValue );
+            properties.put(QualifiedName.fromQN(propertyNames.get(i)), propertyValue);
         }
         pofReader.readRemainder();
         clearModified();

@@ -167,8 +167,8 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         final EntityState state = loadEntity( TestConfig.JANE_SMITH_ID );
         assertPersonEntityStateEquals( TestConfig.JANE_SMITH_ID, "Jane", "Smith", state );
         assertEquals( "ACCOUNTS", state.manyAssociationNames().iterator().next() );
-        assertEquals( "no association accounts", null, state.getAssociation( new QualifiedName("ACCOUNTS") ) );
-        final Collection<QualifiedIdentity> manyAssociation = state.getManyAssociation( new QualifiedName("ACCOUNTS") );
+        assertEquals( "no association accounts", null, state.getAssociation(QualifiedName.fromQN("ACCOUNTS")) );
+        final Collection<QualifiedIdentity> manyAssociation = state.getManyAssociation(QualifiedName.fromQN("ACCOUNTS"));
         assertEquals( "many association accounts", 2, manyAssociation.size() );
         assertTrue( "account reference 1", manyAssociation.contains( createId( "1", Account.class ) ) );
         assertTrue( "account reference 2", manyAssociation.contains( createId( "2", Account.class ) ) );

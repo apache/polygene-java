@@ -30,22 +30,15 @@ import java.util.Date;
 import java.util.Map;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
-import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.TypeName;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
-import org.qi4j.spi.entity.EntityNotFoundException;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.UnknownEntityTypeException;
+import org.qi4j.spi.entity.*;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
@@ -68,7 +61,7 @@ import org.restlet.resource.WriterRepresentation;
 
 public class EntityResource extends Resource
 {
-    public static Object toValue( String newStringValue, QualifiedName propertyName, String propertyType )
+    public static Object toValue( String stringValue, QualifiedName propertyName, TypeName propertyType )
         throws IllegalArgumentException
     {
         Object newValue = null;
@@ -76,18 +69,18 @@ public class EntityResource extends Resource
         {
             // TODO A ton of more types need to be added here. Converter registration mechanism needed?
             newValue = null;
-            if( propertyType.equals( String.class.getName() ) )
+            if( propertyType.isClass( String.class ) )
             {
-                newValue = newStringValue;
+                newValue = stringValue;
             }
-            else if( propertyType.equals( Integer.class.getName() ) )
+            else if( propertyType.isClass( Integer.class ) )
             {
-                newValue = Integer.parseInt( newStringValue );
+                newValue = Integer.parseInt( stringValue );
             }
         }
         catch( Exception e )
         {
-            throw new IllegalArgumentException( "Value '" + newStringValue + "' is not of type " + propertyType );
+            throw new IllegalArgumentException( "Value '" + stringValue + "' is not of type " + propertyType );
         }
 
         return newValue;
@@ -353,7 +346,8 @@ public class EntityResource extends Resource
                 if( propertyType.propertyType() == PropertyType.PropertyTypeEnum.MUTABLE && propertyType.type() instanceof PrimitiveType )
                 {
                     String newStringValue = form.getFirstValue( propertyType.qualifiedName().toString() );
-                    Object newValue = toValue( newStringValue, propertyType.qualifiedName(), ((PrimitiveType)propertyType.type()).type() );
+                    final PrimitiveType primitiveType = (PrimitiveType) propertyType.type();
+                    Object newValue = toValue( newStringValue, propertyType.qualifiedName(), primitiveType.type() );
                     entity.setProperty( propertyType.qualifiedName(), newValue );
                 }
             }

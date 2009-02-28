@@ -52,8 +52,8 @@ import org.qi4j.spi.entity.UnknownEntityTypeException;
 public class LegacySqlEntityStore
     implements EntityStore, Activatable
 {
-    private static final QualifiedName VERSION = new QualifiedName("VERSION");
-    private static final QualifiedName LASTMODIFIED = new QualifiedName("LASTMODIFIED");
+    private static final QualifiedName VERSION = QualifiedName.fromQN("VERSION");
+    private static final QualifiedName LASTMODIFIED = QualifiedName.fromQN("LASTMODIFIED");
 
 
     @Structure private Qi4jSPI spi;
@@ -161,7 +161,7 @@ public class LegacySqlEntityStore
         final Map<QualifiedName, Object> compositePropertyValues = new HashMap<QualifiedName, Object>();
         for( Map.Entry<String, Object> stringObjectEntry : rawData.entrySet() )
         {
-            compositePropertyValues.put( new QualifiedName(stringObjectEntry.getKey()), stringObjectEntry.getValue());
+            compositePropertyValues.put(QualifiedName.fromQN(stringObjectEntry.getKey()), stringObjectEntry.getValue());
         }
 
         return compositePropertyValues;
