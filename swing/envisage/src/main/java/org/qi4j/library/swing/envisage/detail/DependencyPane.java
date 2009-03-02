@@ -172,7 +172,7 @@ public class DependencyPane extends DetailPane
 
         DependencyDescriptor dependencyDescriptor = descriptor.descriptor().dependency();
         classNameLabel.setText( dependencyDescriptor.injectedClass().getName() );
-        annotationLabel.setText( dependencyDescriptor.injectionAnnotation().toString() );
+        annotationLabel.setText( "@" + dependencyDescriptor.injectionAnnotation().annotationType().getSimpleName() );
         optionalLabel.setText( Boolean.toString( dependencyDescriptor.optional() ) );
         injectionClassLabel.setText( dependencyDescriptor.injectionClass().getName() );
         injectionTypeLabel.setText( dependencyDescriptor.injectionType().toString() );

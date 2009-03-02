@@ -247,12 +247,16 @@ public class ServiceUsagePane extends DetailPane
                 Class<? extends Annotation> clazz = annotation.annotationType();
                 if( Uses.class.equals( clazz ) || Service.class.equals( clazz ) )
                 {
-                    TableData rowData = new TableData( 5 );
-                    rowData.set( 0, descriptor.composite() );
-                    rowData.set( 1, descriptorField );
-                    rowData.set( 2, descriptor.composite().module() );
-                    rowData.set( 3, descriptor.composite().module().layer() );
-                    usageTableModel.addRowData( rowData );
+
+                    if( dependencyDescriptor.injectionClass().equals( this.descriptor.descriptor().type() ) )
+                    {
+                        TableData rowData = new TableData( 5 );
+                        rowData.set( 0, descriptor.composite() );
+                        rowData.set( 1, descriptorField );
+                        rowData.set( 2, descriptor.composite().module() );
+                        rowData.set( 3, descriptor.composite().module().layer() );
+                        usageTableModel.addRowData( rowData );
+                    }
                 }
             }
         }
