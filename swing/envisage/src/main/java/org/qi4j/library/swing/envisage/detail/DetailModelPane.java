@@ -21,6 +21,7 @@ import java.util.ResourceBundle;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 import org.qi4j.library.swing.envisage.event.LinkEvent;
 import org.qi4j.library.swing.envisage.event.LinkListener;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
@@ -80,7 +81,18 @@ public class DetailModelPane extends JPanel
 
     }
 
-    public void setDescriptor(Object objectDescriptor)
+    public void setDescriptor(final Object objectDescriptor)
+    {
+        SwingUtilities.invokeLater( new Runnable()
+        {
+            public void run()
+            {
+                setDescriptorImpl(objectDescriptor );   
+            }
+        });
+    }
+
+    private void setDescriptorImpl(Object objectDescriptor)
     {
         generalPane.setDescriptor( objectDescriptor );
         dependencyPane.setDescriptor( objectDescriptor );
@@ -123,6 +135,7 @@ public class DetailModelPane extends JPanel
 
         if ( linkActivatedInProgress )
         {
+            linkActivatedInProgress = false;
             tabPane.setSelectedIndex( 0 );
         }
     }
@@ -151,23 +164,16 @@ public class DetailModelPane extends JPanel
     void fireLinkActivated( LinkEvent evt)
     {
         linkActivatedInProgress = true;
-        try
+        // Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for( int i = listeners.length - 2; i >= 0; i -= 2 )
         {
-            // Guaranteed to return a non-null array
-            Object[] listeners = listenerList.getListenerList();
-            // Process the listeners last to first, notifying
-            // those that are interested in this event
-            for( int i = listeners.length - 2; i >= 0; i -= 2 )
+            if( listeners[ i ] == LinkListener.class )
             {
-                if( listeners[ i ] == LinkListener.class )
-                {
-                    ( (LinkListener) listeners[ i + 1 ] ).activated( evt );
-                }
+                ( (LinkListener) listeners[ i + 1 ] ).activated( evt );
             }
-        }
-        finally
-        {
-            linkActivatedInProgress = false;
         }
     }
 }

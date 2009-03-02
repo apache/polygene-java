@@ -17,6 +17,9 @@
 package org.qi4j.library.swing.envisage.detail;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.event.MouseEvent;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -24,10 +27,17 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.MouseInputAdapter;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumnModel;
+import javax.swing.text.html.HTMLEditorKit;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.library.swing.envisage.event.LinkEvent;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.InjectedFieldDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
@@ -60,6 +70,10 @@ public class ServiceUsagePane extends DetailPane
     private JTable usageTable;
     private JPanel contentPane;
 
+    private Object linkObject;
+    private Cursor defaultCursor;
+    private Cursor linkCursor;
+
     public ServiceUsagePane( DetailModelPane detailModelPane )
     {
         super( detailModelPane );
@@ -68,11 +82,75 @@ public class ServiceUsagePane extends DetailPane
 
         usageTableModel = new UsageTableModel();
         usageTable.setModel( usageTableModel );
+        usageTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
 
-        /*TableColumnModel columnModel = usageTable.getColumnModel();
-        columnModel.getColumn( 0 ).setPreferredWidth( 90 );
+        TableColumnModel columnModel = usageTable.getColumnModel();
+        columnModel.getColumn( 0 ).setCellRenderer( new OwnerCellRenderer() );
+        columnModel.getColumn( 1 ).setCellRenderer( new FieldCellRenderer() );
+
+        /*columnModel.getColumn( 0 ).setPreferredWidth( 90 );
         columnModel.getColumn( 1 ).setPreferredWidth( 550 );
         */
+
+        defaultCursor = getCursor();
+        linkCursor = new HTMLEditorKit().getLinkCursor();
+
+        MouseInputAdapter mouseInputListener = new MouseInputAdapter()
+        {
+            public void mouseMoved( MouseEvent evt )
+            {
+                // Column 1 is the Owner Column
+                int col = usageTable.columnAtPoint( evt.getPoint() );
+                if( col == 0 )
+                {
+                    setCursor( linkCursor );
+                }
+                else
+                {
+                    if( !getCursor().equals( defaultCursor ) )
+                    {
+                        setCursor( defaultCursor );
+                    }
+                }
+            }
+
+            public void mouseClicked( MouseEvent evt )
+            {
+                if( evt.getClickCount() < 2 )
+                {
+                    return;
+                }
+
+                int col = usageTable.columnAtPoint( evt.getPoint() );
+                if( col != 0 )
+                {
+                    return;
+                }
+
+                int row = usageTable.rowAtPoint( evt.getPoint() );
+                if( row < 0 )
+                {
+                    return;
+                }
+
+                linkObject = usageTableModel.getValueAt( row, col );
+                linkActivated();
+                linkObject = null;
+            }
+        };
+
+        usageTable.addMouseMotionListener( mouseInputListener );
+        usageTable.addMouseListener( mouseInputListener );
+    }
+
+    protected void linkActivated()
+    {
+        if( linkObject == null )
+        {
+            return;
+        }
+        LinkEvent linkEvt = new LinkEvent( this, linkObject );
+        detailModelPane.fireLinkActivated( linkEvt );
     }
 
     public void setDescriptor( Object objectDesciptor )
@@ -99,6 +177,7 @@ public class ServiceUsagePane extends DetailPane
     private void clear()
     {
         descriptor = null;
+        linkObject = null;
         usageTableModel.clear();
     }
 
@@ -171,9 +250,8 @@ public class ServiceUsagePane extends DetailPane
                     TableData rowData = new TableData( 5 );
                     rowData.set( 0, descriptor.composite() );
                     rowData.set( 1, descriptorField );
-                    rowData.set( 2, "@" + annotation.annotationType().getSimpleName() );
-                    rowData.set( 3, descriptor.composite().module() );
-                    rowData.set( 4, descriptor.composite().module().layer() );
+                    rowData.set( 2, descriptor.composite().module() );
+                    rowData.set( 3, descriptor.composite().module().layer() );
                     usageTableModel.addRowData( rowData );
                 }
             }
@@ -217,7 +295,7 @@ public class ServiceUsagePane extends DetailPane
         /**
          * the column names for this model
          */
-        protected String[] columnNames = { bundle.getString( "Owner.Column" ), bundle.getString( "Usage.Column" ), bundle.getString( "Annotation.Column" ),  bundle.getString( "Module.Column" ), bundle.getString( "Layer.Column" ) };
+        protected String[] columnNames = { bundle.getString( "Owner.Column" ), bundle.getString( "Usage.Column" ), bundle.getString( "Module.Column" ), bundle.getString( "Layer.Column" ) };
         protected ArrayList<TableData> data;
 
         public UsageTableModel()
@@ -261,6 +339,41 @@ public class ServiceUsagePane extends DetailPane
         public int getRowCount()
         {
             return data.size();
+        }
+    }
+
+    public class OwnerCellRenderer extends DefaultTableCellRenderer
+    {
+
+        @Override
+        public final Component getTableCellRendererComponent( JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column )
+        {
+            if( value != null )
+            {
+                CompositeDetailDescriptor descriptor = (CompositeDetailDescriptor) value;
+                value = "<html><a href=\"" + descriptor.toString() + "\">" + descriptor.toString() + "</a></html>";
+            }
+
+            super.getTableCellRendererComponent( table, value, isSelected, hasFocus, row, column );
+
+            return this;
+        }
+    }
+
+    public class FieldCellRenderer extends DefaultTableCellRenderer
+    {
+        @Override
+        public final Component getTableCellRendererComponent( JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column )
+        {
+            if( value != null )
+            {
+                InjectedFieldDetailDescriptor descriptor = (InjectedFieldDetailDescriptor) value;
+                DependencyDescriptor dependencyDescriptor = descriptor.descriptor().dependency();
+                Annotation annotation = dependencyDescriptor.injectionAnnotation();
+                value = descriptor.toString() + " (@" + annotation.annotationType().getSimpleName() + ")";
+            }
+
+            return super.getTableCellRendererComponent( table, value, isSelected, hasFocus, row, column );
         }
     }
 
