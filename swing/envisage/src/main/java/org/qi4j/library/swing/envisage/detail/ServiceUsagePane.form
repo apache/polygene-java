@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.qi4j.library.swing.envisage.detail.ServiceUsagePane">
-  <grid id="27dc6" layout-manager="BorderLayout" hgap="0" vgap="0">
+  <grid id="27dc6" binding="contentPane" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
-      <xy x="20" y="20" width="500" height="400"/>
+      <xy x="20" y="20" width="374" height="274"/>
     </constraints>
     <properties/>
     <border type="none"/>
-    <children/>
+    <children>
+      <scrollpane id="da4b1">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="7dfce" class="javax.swing.JTable" binding="usageTable">
+            <constraints/>
+            <properties/>
+          </component>
+        </children>
+      </scrollpane>
+    </children>
   </grid>
 </form>
