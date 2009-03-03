@@ -41,12 +41,14 @@ import javax.swing.table.TableColumnModel;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
+import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeMethodDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.MethodConcernDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.MethodSideEffectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
 import org.qi4j.library.swing.envisage.util.TableData;
 
 /**
@@ -101,7 +103,6 @@ public class MethodPane extends DetailPane
     {
         clear();
 
-        // TODO for other type wait until QI-195 solved
         if( objectDesciptor instanceof ServiceDetailDescriptor )
         {
             ServiceDetailDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor );
@@ -110,6 +111,16 @@ public class MethodPane extends DetailPane
         else if( objectDesciptor instanceof EntityDetailDescriptor )
         {
             EntityDetailDescriptor descriptor = ( (EntityDetailDescriptor) objectDesciptor );
+            reload( descriptor.methods() );
+        }
+        else if( objectDesciptor instanceof CompositeDetailDescriptor )
+        {
+            CompositeDetailDescriptor descriptor = ( (CompositeDetailDescriptor) objectDesciptor );
+            reload( descriptor.methods() );
+        }
+        else if( objectDesciptor instanceof ValueDetailDescriptor )
+        {
+            ValueDetailDescriptor descriptor = ( (ValueDetailDescriptor) objectDesciptor );
             reload( descriptor.methods() );
         }
         else if( objectDesciptor instanceof ObjectDetailDescriptor )

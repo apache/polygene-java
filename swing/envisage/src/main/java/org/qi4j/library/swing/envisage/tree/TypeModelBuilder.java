@@ -16,19 +16,20 @@
 */
 package org.qi4j.library.swing.envisage.tree;
 
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.DefaultMutableTreeNode;
-import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
-import org.qi4j.library.swing.envisage.util.DescriptorNameComparator;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.List;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
+import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
+import org.qi4j.library.swing.envisage.util.DescriptorNameComparator;
 
 /**
  * Helper class to build tree model for Qi4J model as Type Tree
@@ -40,7 +41,10 @@ public class TypeModelBuilder
 
     private List<ServiceDetailDescriptor> serviceList;
     private List<EntityDetailDescriptor> entityList;
+    private List<CompositeDetailDescriptor> transientList;
+    private List<ValueDetailDescriptor> valueList;
     private List<ObjectDetailDescriptor> objectList;
+
 
     public static MutableTreeNode build( ApplicationDetailDescriptor descriptor )
     {
@@ -51,6 +55,8 @@ public class TypeModelBuilder
     private TypeModelBuilder() {
         serviceList = new ArrayList<ServiceDetailDescriptor>();
         entityList = new ArrayList<EntityDetailDescriptor>();
+        transientList = new ArrayList<CompositeDetailDescriptor>();
+        valueList = new  ArrayList<ValueDetailDescriptor>();
         objectList = new ArrayList<ObjectDetailDescriptor>();
     }
 
@@ -63,6 +69,8 @@ public class TypeModelBuilder
         // sort based on name order
         Collections.sort( serviceList, nameComparator);
         Collections.sort( entityList, nameComparator);
+        Collections.sort( transientList, nameComparator);
+        Collections.sort( valueList, nameComparator);
         Collections.sort( objectList, nameComparator);
 
         DefaultMutableTreeNode root = new DefaultMutableTreeNode( descriptor );
@@ -76,14 +84,12 @@ public class TypeModelBuilder
         addChild(child, entityList);
         root.add( child );
 
-        // TODO not done yet
-        child = new DefaultMutableTreeNode ("Values");
-        //addChild(child, objectList);
+        child = new DefaultMutableTreeNode ("Transients");
+        addChild(child, transientList);
         root.add( child );
 
-        // TODO not done yet
-        child = new DefaultMutableTreeNode ("Transients");
-        //addChild(child, objectList);
+        child = new DefaultMutableTreeNode ("Values");
+        addChild(child, valueList);
         root.add( child );
 
         child = new DefaultMutableTreeNode ("Objects");
@@ -126,9 +132,18 @@ public class TypeModelBuilder
                 entityList.add(child);
             }
 
-            //Values
-            
             // Transient
+            for( CompositeDetailDescriptor child : descriptor.composites() )
+            {
+                transientList.add(child);
+            }
+
+            //Values
+            for( ValueDetailDescriptor child : descriptor.values() )
+            {
+                valueList.add(child);
+            }
+
 
             // Objects
             for( ObjectDetailDescriptor child : descriptor.objects() )

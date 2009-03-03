@@ -35,6 +35,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.InjectedFieldDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.MixinDetailDescriptor;
@@ -124,6 +125,15 @@ public class DependencyPane extends DetailPane
                 reload( mixinDescriptor.injectedFields() );
             }
         }
+        else if( objectDesciptor instanceof CompositeDetailDescriptor )
+        {
+            CompositeDetailDescriptor descriptor = ( (CompositeDetailDescriptor) objectDesciptor );
+            Iterable<MixinDetailDescriptor> iter = descriptor.mixins();
+            for( MixinDetailDescriptor mixinDescriptor : iter )
+            {
+                reload( mixinDescriptor.injectedFields() );
+            }
+        }
         else if( objectDesciptor instanceof ValueDetailDescriptor )
         {
             ValueDetailDescriptor descriptor = ( (ValueDetailDescriptor) objectDesciptor );
@@ -133,9 +143,6 @@ public class DependencyPane extends DetailPane
                 reload( mixinDescriptor.injectedFields() );
             }
         }
-        /* TODO transient once available
-         *
-         */
         else if( objectDesciptor instanceof ObjectDetailDescriptor )
         {
             // Object does not have this info 

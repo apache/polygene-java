@@ -17,11 +17,13 @@
 package org.qi4j.library.swing.envisage.graph;
 
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
 import prefuse.data.Edge;
 import prefuse.data.Graph;
 import prefuse.data.Node;
@@ -56,9 +58,7 @@ public class GraphBuilder
 
     private Graph buildApplicationNode( ApplicationDetailDescriptor descriptor )
     {
-        Node node = graph.addNode();
-        node.set(GraphDisplay.NAME_LABEL, descriptor.descriptor().name());
-        node.set(GraphDisplay.USER_OBJECT, descriptor);
+        Node node = addChild(null, descriptor.descriptor().name(), descriptor );
 
         buildLayersNode( node, descriptor.layers() );
         buildUsesNode ( node, descriptor.layers());
@@ -100,14 +100,25 @@ public class GraphBuilder
         return node;
     }
 
+    private Node addChild(Node parent, String name, Object object)
+    {
+        Node childNode = graph.addNode(  );
+        childNode.set(GraphDisplay.NAME_LABEL, name);
+        childNode.set(GraphDisplay.USER_OBJECT, object);
+
+        // check for application node
+        if (parent != null)
+        {
+            graph.addEdge( parent, childNode );
+        }
+        return childNode;
+    }
+
     private void buildLayersNode( Node parent, Iterable<LayerDetailDescriptor> iter )
     {
         for( LayerDetailDescriptor descriptor : iter )
         {
-            Node childNode = graph.addNode(  );
-            childNode.set(GraphDisplay.NAME_LABEL, descriptor.descriptor().name());
-            childNode.set(GraphDisplay.USER_OBJECT, descriptor );
-            graph.addEdge( parent, childNode );
+            Node childNode = addChild(parent, descriptor.descriptor().name(), descriptor );           
             buildModulesNode( childNode, descriptor.modules() );
         }
     }
@@ -116,14 +127,12 @@ public class GraphBuilder
     {
         for( ModuleDetailDescriptor descriptor : iter )
         {
-            Node childNode = graph.addNode(  );
-            childNode.set(GraphDisplay.NAME_LABEL, descriptor.descriptor().name());
-            childNode.set(GraphDisplay.USER_OBJECT, descriptor );
-            graph.addEdge( parent, childNode );
+            Node childNode = addChild(parent, descriptor.descriptor().name(), descriptor );
+            
             buildServicesNode( childNode, descriptor.services() );
             buildEntitiesNode( childNode, descriptor.entities() );
-            // TODO buildValuesNode
-            //buildValuesNode( childNode, descriptor.values() );
+            buildTransientsNode( childNode, descriptor.composites() );
+            buildValuesNode( childNode, descriptor.values() );
             buildObjectsNode( childNode, descriptor.objects() );
         }
     }
@@ -132,10 +141,7 @@ public class GraphBuilder
     {
         for( ServiceDetailDescriptor descriptor : iter )
         {
-            Node childNode = graph.addNode(  );
-            childNode.set(GraphDisplay.NAME_LABEL, descriptor.descriptor().identity());
-            childNode.set(GraphDisplay.USER_OBJECT, descriptor );
-            graph.addEdge( parent, childNode );
+            addChild(parent, descriptor.descriptor().type().getSimpleName(), descriptor );    
         }
     }
 
@@ -143,10 +149,23 @@ public class GraphBuilder
     {
         for( EntityDetailDescriptor descriptor : iter )
         {
-            Node childNode = graph.addNode(  );
-            childNode.set(GraphDisplay.NAME_LABEL, descriptor.descriptor().type().getSimpleName());
-            childNode.set(GraphDisplay.USER_OBJECT, descriptor );
-            graph.addEdge( parent, childNode );
+            addChild(parent, descriptor.descriptor().type().getSimpleName(), descriptor );
+        }
+    }
+
+    private void buildTransientsNode ( Node parent, Iterable<CompositeDetailDescriptor> iter )
+    {
+        for( CompositeDetailDescriptor descriptor : iter )
+        {
+            addChild(parent, descriptor.descriptor().type().getSimpleName(), descriptor );
+        }
+    }
+
+    private void buildValuesNode( Node parent, Iterable<ValueDetailDescriptor> iter )
+    {
+        for( ValueDetailDescriptor descriptor : iter )
+        {
+            addChild(parent, descriptor.descriptor().type().getSimpleName(), descriptor );
         }
     }
 
@@ -154,10 +173,7 @@ public class GraphBuilder
     {
         for( ObjectDetailDescriptor descriptor : iter )
         {
-            Node childNode = graph.addNode(  );
-            childNode.set(GraphDisplay.NAME_LABEL, descriptor.descriptor().type().getSimpleName());
-            childNode.set(GraphDisplay.USER_OBJECT, descriptor );
-            graph.addEdge( parent, childNode );
+            addChild(parent, descriptor.descriptor().type().getSimpleName(), descriptor );
         }
     }
 }
