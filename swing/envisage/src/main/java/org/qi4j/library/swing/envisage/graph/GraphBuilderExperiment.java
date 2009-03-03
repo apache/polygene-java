@@ -22,6 +22,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import prefuse.data.Edge;
 import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.data.Table;
@@ -41,10 +42,13 @@ public class GraphBuilderExperiment
 
     private GraphBuilderExperiment()
     {
-        graph = new Graph();
+        graph = new Graph(true);
         Table nodeTable = graph.getNodeTable();
         nodeTable.addColumn( GraphDisplay.NAME_LABEL, String.class);
         nodeTable.addColumn(GraphDisplay.USER_OBJECT, Object.class);
+
+        Table edgeTable = graph.getEdgeTable();
+        edgeTable.addColumn(GraphDisplay.USES_EDGES, Boolean.class, false);
     }
 
     private Graph buildApplicationNode( ApplicationDetailDescriptor descriptor )
@@ -54,6 +58,8 @@ public class GraphBuilderExperiment
         node.set(GraphDisplay.USER_OBJECT, descriptor);
 
         buildLayersNode( node, descriptor.layers() );
+
+        buildUsesNode ( node, descriptor.layers());
 
         return graph;
     }
@@ -67,44 +73,56 @@ public class GraphBuilderExperiment
             childNode.set(GraphDisplay.NAME_LABEL, descriptor.descriptor().name());
             childNode.set(GraphDisplay.USER_OBJECT, descriptor );
             graph.addEdge( parent, childNode );
-            //buildModulesNode( childNode, descriptor.modules() );
+            buildModulesNode( childNode, descriptor.modules() );
+        }
+    }
+
+    private void buildUsesNode(Node parent, Iterable<LayerDetailDescriptor> iter)
+    {
+        for( LayerDetailDescriptor descriptor : iter )
+        {
+            Node source = findNode( parent, descriptor );
+
+            for (LayerDetailDescriptor usesDescriptor : descriptor.usedLayers())
+            {
+                Node target = findNode(parent, usesDescriptor);
+                Edge edge = graph.addEdge( source, target );
+                edge.set( GraphDisplay.USES_EDGES, true );
+            }
         }
 
         // TESTING Uses/Layer
-        Table edgeTable = graph.getEdgeTable();
-        edgeTable.addColumn(GraphDisplay.USES_EDGES, String.class);
+        /*Node node = parent;
 
-        Node node = parent;
-
-        /*System.out.println(node.getChild(0).get(GraphDisplay.NAME_LABEL ));
+        System.out.println(node.getChild(0).get(GraphDisplay.NAME_LABEL ));
         System.out.println(node.getChild(1).get(GraphDisplay.NAME_LABEL ));
         System.out.println(node.getChild(2).get(GraphDisplay.NAME_LABEL ));
+
+
+
+        Edge edge = graph.addEdge( node.getChild(1), node.getChild(0) );
+        edge.set( GraphDisplay.USES_EDGES, true );
+        edge = graph.addEdge( node.getChild(2), node.getChild(1) );
+        edge.set( GraphDisplay.USES_EDGES, true );
         */
+    }
 
+    private Node findNode(Node parent, Object userObject)
+    {
+        Node node = null;
 
-        graph.addEdge( node.getChild(0), node.getChild(1) );
-        graph.addEdge( node.getChild(1), node.getChild(2) );
-
-        /*int iRow = edgeTable.addRow();
-        edgeTable.set(iRow,GraphDisplay.USES_EDGES, "domainUsesInfra");
-        edgeTable.setInt(iRow,Graph.DEFAULT_SOURCE_KEY, node.getChild(1).getRow());  // domain use infra
-        edgeTable.setInt(iRow,Graph.DEFAULT_TARGET_KEY, node.getChild(0).getRow());
-
-        iRow = edgeTable.addRow();
-        edgeTable.set(iRow,GraphDisplay.USES_EDGES, "uiUseDomain");
-        edgeTable.setInt(iRow,Graph.DEFAULT_SOURCE_KEY, node.getChild(2).getRow()); // ui use domain
-        edgeTable.setInt(iRow,Graph.DEFAULT_TARGET_KEY, node.getChild(1).getRow());
-        */
-
-        System.out.println("go here");
-
-        int index = 0;
-        for( LayerDetailDescriptor descriptor : iter )
+        for (int i=0; i<parent.getChildCount(); i++)
         {
-            Node childNode = parent.getChild( index );
-            buildModulesNode( childNode, descriptor.modules() );
-            index++;
+            Node tNode = parent.getChild( i );
+            Object obj = tNode.get(GraphDisplay.USER_OBJECT);
+            if (obj.equals( userObject ))
+            {
+                node = tNode;
+                break;
+            }
         }
+
+        return node;
     }
 
     private void buildModulesNode( Node parent, Iterable<ModuleDetailDescriptor> iter )

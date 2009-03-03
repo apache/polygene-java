@@ -47,6 +47,8 @@ import prefuse.controls.WheelZoomControl;
 import prefuse.controls.ZoomControl;
 import prefuse.controls.ZoomToFitControl;
 import prefuse.data.Graph;
+import prefuse.data.expression.Predicate;
+import prefuse.data.expression.parser.ExpressionParser;
 import prefuse.data.tuple.TupleSet;
 import prefuse.render.AbstractShapeRenderer;
 import prefuse.render.DefaultRendererFactory;
@@ -55,10 +57,9 @@ import prefuse.render.LabelRenderer;
 import prefuse.util.ColorLib;
 import prefuse.util.FontLib;
 import prefuse.util.GraphicsLib;
+import prefuse.util.PrefuseLib;
 import prefuse.util.display.DisplayLib;
-import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
-import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.sort.TreeDepthItemSorter;
 
 /**
@@ -69,9 +70,9 @@ public class GraphDisplay extends Display
     public static final String NAME_LABEL = "name";
     public static final String USER_OBJECT = "userObject";
         
-    private static final String TREE = "graph";
-    private static final String TREE_NODES = "graph.nodes";
-    private static final String TREE_EDGES = "graph.edges";
+    private static final String GRAPH = "graph";
+    private static final String GRAPH_NODES = "graph.nodes";
+    private static final String GRAPH_EDGES = "graph.edges";
     public static final String USES_EDGES = "uses.edges";
 
     private static final String FILTER_ACTION = "filter";
@@ -85,6 +86,7 @@ public class GraphDisplay extends Display
 
     private LabelRenderer nodeRenderer;
     private EdgeRenderer edgeRenderer;
+    private EdgeRenderer usesRenderer;
 
     private int orientation = Constants.ORIENT_LEFT_RIGHT;
 
@@ -103,26 +105,25 @@ public class GraphDisplay extends Display
         nodeRenderer.setRenderType( AbstractShapeRenderer.RENDER_TYPE_FILL);
         nodeRenderer.setHorizontalAlignment(Constants.LEFT);
         nodeRenderer.setRoundedCorner(8,8);
-        edgeRenderer = new EdgeRenderer(Constants.EDGE_TYPE_CURVE, Constants.EDGE_ARROW_FORWARD);
+        edgeRenderer = new EdgeRenderer(Constants.EDGE_TYPE_CURVE);
+        usesRenderer = new EdgeRenderer(Constants.EDGE_TYPE_CURVE, Constants.EDGE_ARROW_FORWARD); 
 
-        //Predicate pDirect = (Predicate) ExpressionParser.parse("ISEDGE() AND relation == 'direct'", true);
-        //Predicate pParent = (Predicate) ExpressionParser.parse("ISEDGE() AND relation == 'parent'", true);
-        //Predicate pPreceding = (Predicate) ExpressionParser.parse("ISEDGE() AND relation == 'preceding'", true);
+        Predicate edgesPredicate = (Predicate) ExpressionParser.parse("ingroup('graph.edges') AND [" + USES_EDGES + "]==false", true);
+        Predicate usesPredicate = (Predicate) ExpressionParser.parse("ingroup('graph.edges') AND [" + USES_EDGES + "]==true", true);
 
         DefaultRendererFactory rf = new DefaultRendererFactory(nodeRenderer);
-        rf.add(new InGroupPredicate(TREE_EDGES), edgeRenderer);
-        //rf.add(pDirect, new EdgeRenderer(Constants.EDGE_TYPE_LINE, Constants.EDGE_ARROW_NONE));
-        //rf.add(pParent, new EdgeRenderer(Constants.EDGE_TYPE_LINE, Constants.EDGE_ARROW_FORWARD));
-        //rf.add(pPreceding, new EdgeRenderer(Constants.EDGE_TYPE_LINE, Constants.EDGE_ARROW_FORWARD)); 
+        rf.add(edgesPredicate, edgeRenderer);
+        rf.add(usesPredicate, usesRenderer );
         m_vis.setRendererFactory(rf);
 
         // colors
-        ItemAction nodeColor = new NodeColorAction(TREE_NODES);
-        ItemAction textColor = new ColorAction(TREE_NODES, VisualItem.TEXTCOLOR, ColorLib.rgb(0,0,0));
+        ItemAction nodeColor = new NodeColorAction( GRAPH_NODES );
+        ItemAction textColor = new ColorAction( GRAPH_NODES, VisualItem.TEXTCOLOR, ColorLib.rgb(0,0,0));
         m_vis.putAction("textColor", textColor);
 
-        ItemAction edgeColor = new ColorAction(TREE_EDGES, VisualItem.STROKECOLOR, ColorLib.rgb(200,200,200));
-        ItemAction edgeArrow = new ColorAction(TREE_EDGES, VisualItem.FILLCOLOR, ColorLib.rgb(0,0,0));
+        ItemAction edgeColor = new ColorAction( GRAPH_EDGES, edgesPredicate, VisualItem.STROKECOLOR, ColorLib.rgb(200,200,200));
+        ItemAction usesColor= new ColorAction( GRAPH_EDGES, usesPredicate, VisualItem.STROKECOLOR, ColorLib.rgb(255,100,100));
+        ItemAction usesArrow = new ColorAction( GRAPH_EDGES, usesPredicate, VisualItem.FILLCOLOR, ColorLib.rgb(255,100,100));
 
         // quick repaint
         ActionList repaint = new ActionList();
@@ -137,29 +138,29 @@ public class GraphDisplay extends Display
 
         // animate paint change
         ActionList animatePaint = new ActionList(400);
-        animatePaint.add(new ColorAnimator(TREE_NODES));
+        animatePaint.add(new ColorAnimator( GRAPH_NODES ));
         animatePaint.add(new RepaintAction());
         m_vis.putAction(ANIMATE_PAINT_ACTION, animatePaint);
 
         // create the tree layout action
-        NodeLinkTreeLayout treeLayout = new NodeLinkTreeLayout(TREE, orientation, 50, 0, 8);
+        NodeLinkTreeLayout treeLayout = new NodeLinkTreeLayout( GRAPH, orientation, 50, 0, 8);
         treeLayout.setLayoutAnchor(new Point2D.Double(25,300));
-        //RadialTreeLayout treeLayout = new RadialTreeLayout(TREE);
         m_vis.putAction(LAYOUT_ACTION, treeLayout);
 
-        CollapsedSubtreeLayout subLayout = new CollapsedSubtreeLayout(TREE, orientation);
+        CollapsedSubtreeLayout subLayout = new CollapsedSubtreeLayout( GRAPH, orientation);
         m_vis.putAction(SUB_LAYOUT_ACTION, subLayout);
 
         // create the filtering and layout
         ActionList filter = new ActionList();
-        filter.add(new FisheyeTreeFilter(TREE, 2));
-        filter.add(new FontAction(TREE_NODES, FontLib.getFont("Tahoma", 16)));
+        filter.add(new ExtendedFisheyeTreeFilter( GRAPH, 2));
+        filter.add(new FontAction( GRAPH_NODES, FontLib.getFont("Tahoma", 16)));
         filter.add(treeLayout);
         filter.add(subLayout);
         filter.add(textColor);
         filter.add(nodeColor);
         filter.add(edgeColor);
-        filter.add(edgeArrow);
+        filter.add(usesColor);
+        filter.add(usesArrow);
         m_vis.putAction(FILTER_ACTION, filter);
 
         // animated transition
@@ -168,9 +169,9 @@ public class GraphDisplay extends Display
         animate.setPacingFunction(new SlowInSlowOutPacer());
         animate.add(autoPan);
         animate.add(new QualityControlAnimator());
-        animate.add(new VisibilityAnimator(TREE));
-        animate.add(new LocationAnimator(TREE_NODES));
-        animate.add(new ColorAnimator(TREE_NODES));
+        animate.add(new VisibilityAnimator( GRAPH ));
+        animate.add(new LocationAnimator( GRAPH_NODES ));
+        animate.add(new ColorAnimator( GRAPH_NODES ));
         animate.add(new RepaintAction());
         m_vis.putAction(ANIMATE_ACTION, animate);
         m_vis.alwaysRunAfter(FILTER_ACTION, ANIMATE_ACTION);
@@ -192,6 +193,10 @@ public class GraphDisplay extends Display
         edgeRenderer.setHorizontalAlignment2(Constants.LEFT);
         edgeRenderer.setVerticalAlignment1(Constants.CENTER);
         edgeRenderer.setVerticalAlignment2(Constants.CENTER);
+        usesRenderer.setHorizontalAlignment1(Constants.CENTER);
+        usesRenderer.setHorizontalAlignment2(Constants.CENTER);
+        usesRenderer.setVerticalAlignment1(Constants.TOP);
+        usesRenderer.setVerticalAlignment2(Constants.CENTER);
         NodeLinkTreeLayout rtl = (NodeLinkTreeLayout)m_vis.getAction(LAYOUT_ACTION);
         CollapsedSubtreeLayout stl = (CollapsedSubtreeLayout)m_vis.getAction(SUB_LAYOUT_ACTION);
         rtl.setOrientation(orientation);
@@ -200,12 +205,12 @@ public class GraphDisplay extends Display
 
     public void run (Graph graph)
     {
-        m_vis.add(TREE, graph);
+        m_vis.add( GRAPH, graph);
         run();
         m_vis.run(AUTO_ZOOM_ACTION);
 
         // disable edges interactive
-        m_vis.setInteractive(TREE_EDGES, null, false);
+        m_vis.setInteractive( GRAPH_EDGES, null, false);
 
     }
 
@@ -227,14 +232,10 @@ public class GraphDisplay extends Display
 
         VisualItem item = null;
 
-        Iterator iter = m_vis.items(TREE);
+        Iterator iter = m_vis.items( GRAPH_NODES );
         while (iter.hasNext())
         {
             VisualItem tItem = (VisualItem)iter.next();
-            if (!(tItem instanceof NodeItem) )
-            {
-                continue;
-            }
             Object tObj = tItem.get(USER_OBJECT);
             if (tObj.equals( object))
             {
@@ -371,6 +372,31 @@ public class GraphDisplay extends Display
             Object object =  anItem.get( USER_OBJECT );
             LinkEvent evt = new LinkEvent( this, object);
             fireLinkActivated( evt );
+        }
+    }
+
+
+    public class ExtendedFisheyeTreeFilter extends FisheyeTreeFilter
+    {
+        public ExtendedFisheyeTreeFilter( String group, int distance )
+        {
+            super( group, distance );
+        }
+
+        public void run( double frac )
+        {
+            super.run( frac );
+
+            // set uses_edges always visible
+            Iterator items = m_vis.items( GRAPH_EDGES );
+            while( items.hasNext() )
+            {
+                VisualItem item = (VisualItem) items.next();
+                if (item.getBoolean( USES_EDGES ))
+                {
+                    PrefuseLib.updateVisible( item, true );
+                }
+            }
         }
     }
     
