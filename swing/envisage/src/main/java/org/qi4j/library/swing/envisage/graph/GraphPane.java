@@ -48,12 +48,12 @@ public class GraphPane extends JPanel
         {
             public void componentResized( ComponentEvent evt)
             {
-                if (!isShowing()) { return; }
-                if (descriptor == null) { return; }
-                
+                //if (!isShowing()) { return; }
+                //if (descriptor == null) { return; }
+
                 Dimension size = GraphPane.this.getSize();
                 display.setSize( size.width, size.height );
-                display.repaint();
+                repaint();
             }
         });
     }
