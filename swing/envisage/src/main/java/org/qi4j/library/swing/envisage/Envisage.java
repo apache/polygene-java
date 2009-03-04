@@ -16,21 +16,19 @@
 */
 package org.qi4j.library.swing.envisage;
 
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.LookAndFeel;
-import java.awt.Dimension;
-import java.awt.event.WindowListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import org.qi4j.library.swing.envisage.EnvisageFrame;
-import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.api.structure.Application;
 import com.jgoodies.looks.LookUtils;
 import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.theme.ExperienceBlue;
+import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.JFrame;
+import javax.swing.LookAndFeel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import org.qi4j.api.structure.Application;
+import org.qi4j.bootstrap.Energy4Java;
 
 /**
  * Qi4J Application Viewer
@@ -82,6 +80,9 @@ public class Envisage
 
     private void initLookAndFeel() {
         String osName = System.getProperty("os.name").toUpperCase();
+
+        // set to use swing anti alias text
+        System.setProperty("swing.aatext", "true");
 
         // set default swing bold to false, only for JVM 1.5 or above
         UIManager.put("swing.boldMetal", Boolean.FALSE);
