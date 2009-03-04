@@ -26,5 +26,5 @@ import org.qi4j.library.swing.envisage.school.infrastructure.mail.mixins.MailSer
 @Mixins( MailServiceMixin.class )
 public interface MailService
 {
-    void sent( Mail... mails );
+    void send( Mail... mails );
 }

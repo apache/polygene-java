@@ -31,6 +31,7 @@ import net.jini.lookup.ServiceDiscoveryEvent;
 import net.jini.lookup.ServiceDiscoveryListener;
 import net.jini.lookup.ServiceDiscoveryManager;
 import net.jini.lookup.ServiceItemFilter;
+import org.qi4j.api.service.ServiceImporterException;
 
 public class JiniProxyHandler
     implements InvocationHandler, ServiceDiscoveryListener
@@ -60,23 +61,26 @@ public class JiniProxyHandler
     {
         synchronized( this )
         {
-            if( jiniService != null )
+            if( jiniService == null )
             {
-                return method.invoke( jiniService, args );
+                ServiceItem item = lookupCache.lookup( null );
+                if (item == null)
+                {
+                    throw new ServiceImporterException("Jini service currently not available");
+                }
+                jiniService = item.service;
+
+                if (jiniService == null)
+                    throw new ServiceImporterException("Jini service currently not available");
             }
-            ServiceItem item = lookupCache.lookup( null );
-            if (item == null)
-            {
-                return null; // TODO: Handle not available
-            }
-            jiniService = item.service;
-            if( jiniService != null )
-            {
-                return method.invoke( jiniService, args );
-            }
-            // TODO: Handle not available!!!
-            return null;
+
+            return method.invoke( jiniService, args );
         }
+    }
+
+    public synchronized boolean isActive()
+    {
+        return jiniService != null;
     }
 
     public void serviceAdded( ServiceDiscoveryEvent serviceDiscoveryEvent )

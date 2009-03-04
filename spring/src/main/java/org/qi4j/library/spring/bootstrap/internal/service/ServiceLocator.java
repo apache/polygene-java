@@ -84,8 +84,8 @@ final class ServiceLocator extends DescriptorVisitor
             Module module = anApplication.findModule( layerName, moduleName );
             ServiceFinder serviceFinder = module.serviceFinder();
             Class type = serviceDescriptor.type();
-            Iterable<ServiceReference> serviceRefs = serviceFinder.findServices( type );
-            for( ServiceReference serviceRef : serviceRefs )
+            Iterable<ServiceReference<Object>> serviceRefs = serviceFinder.<Object>findServices( type );
+            for( ServiceReference<Object> serviceRef : serviceRefs )
             {
                 if( serviceId.equals( serviceRef.identity() ) )
                 {

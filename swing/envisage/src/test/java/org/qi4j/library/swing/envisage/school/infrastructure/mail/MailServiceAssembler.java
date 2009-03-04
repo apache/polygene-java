@@ -32,7 +32,7 @@ public class MailServiceAssembler implements Assembler
     public void assemble( ModuleAssembly aModuleAssembly )
         throws AssemblyException
     {
-        aModuleAssembly.addComposites(
+        aModuleAssembly.addValues(
             MailComposite.class
         ).visibleIn( application );
 

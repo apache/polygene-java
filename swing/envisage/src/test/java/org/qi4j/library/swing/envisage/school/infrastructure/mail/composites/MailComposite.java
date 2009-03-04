@@ -17,11 +17,12 @@
 package org.qi4j.library.swing.envisage.school.infrastructure.mail.composites;
 
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.library.swing.envisage.school.infrastructure.mail.Mail;
 
 /**
  * @author edward.yakop@gmail.com
  */
-public interface MailComposite extends Mail, Composite
+public interface MailComposite extends Mail, ValueComposite
 {
 }

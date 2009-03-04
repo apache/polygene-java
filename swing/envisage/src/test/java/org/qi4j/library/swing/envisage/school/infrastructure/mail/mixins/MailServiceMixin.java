@@ -32,7 +32,7 @@ public final class MailServiceMixin
 {
     @This Configuration<MailConfiguration> config;
 
-    public final void sent( Mail... mails )
+    public final void send( Mail... mails )
     {
         for( Mail mail : mails )
         {

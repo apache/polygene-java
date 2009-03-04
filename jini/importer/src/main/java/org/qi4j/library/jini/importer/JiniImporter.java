@@ -54,4 +54,10 @@ public class JiniImporter
         Class[] type = new Class[] { serviceType };
         return Proxy.newProxyInstance( JiniImporter.class.getClassLoader(), type, handler );
     }
+
+    public boolean isActive( Object instance )
+    {
+        JiniProxyHandler jiniHandler = (JiniProxyHandler) Proxy.getInvocationHandler( instance );
+        return jiniHandler.isActive();
+    }
 }

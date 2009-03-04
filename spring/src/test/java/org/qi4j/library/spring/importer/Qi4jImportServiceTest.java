@@ -95,7 +95,7 @@ public final class Qi4jImportServiceTest
 
         assembler.objectBuilderFactory().newObjectBuilder( Qi4jImportServiceTest.class ).injectTo( this );
 
-        CommentService foundService = service( finder.findServices( CommentService.class ), withId("commentService2" ));
+        CommentService foundService = service( finder.<CommentService>findServices( CommentService.class ), withId("commentService2" ));
         assertThat("service with correct id has been selected", foundService.comment( "pizza" ), equalTo( "pizza is good." ));
     }
 }

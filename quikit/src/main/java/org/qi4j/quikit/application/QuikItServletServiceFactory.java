@@ -29,4 +29,8 @@ public final class QuikItServletServiceFactory
         return objectBuilderFactory.newObject( QuikItServlet.class );
     }
 
+    public boolean isActive( Object instance )
+    {
+        return true;
+    }
 }

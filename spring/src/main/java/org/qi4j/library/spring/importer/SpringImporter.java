@@ -49,4 +49,9 @@ public class SpringImporter
             throw new ServiceImporterException("Could not import Spring service with id "+serviceDescriptor.identity(), e);
         }
     }
+
+    public boolean isActive( Object instance )
+    {
+        return true;
+    }
 }

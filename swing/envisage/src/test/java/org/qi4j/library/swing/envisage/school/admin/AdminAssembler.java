@@ -21,6 +21,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.swing.envisage.school.admin.pages.composites.ListUserPageComposite;
 import org.qi4j.library.swing.envisage.school.admin.pages.composites.UserDetailPageComposite;
+import org.qi4j.library.swing.envisage.school.admin.pages.composites.ListSchoolsPageComposite;
 import static org.qi4j.api.common.Visibility.layer;
 
 /**
@@ -34,6 +35,7 @@ public class AdminAssembler
         throws AssemblyException
     {
         aModule.addComposites(
+            ListSchoolsPageComposite.class,
             ListUserPageComposite.class,
             UserDetailPageComposite.class
         ).visibleIn( layer );

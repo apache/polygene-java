@@ -88,7 +88,7 @@ public class AuthTest
             role.permissions().add( permission );
 
             // Find authorization service
-            Authorization authorization = serviceLocator.findService( Authorization.class ).get();
+            Authorization authorization = serviceLocator.<Authorization>findService( Authorization.class ).get();
 
             // Create authorization context
             CompositeBuilder<AuthorizationContext> accb = compositeBuilderFactory.newCompositeBuilder( AuthorizationContext.class );

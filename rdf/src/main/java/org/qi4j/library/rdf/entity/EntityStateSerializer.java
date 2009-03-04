@@ -27,10 +27,8 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.GraphImpl;
-import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.XMLSchema;
-import org.qi4j.api.util.Classes;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.library.rdf.Qi4jEntity;
 import org.qi4j.library.rdf.Qi4jRdf;
@@ -42,7 +40,7 @@ import org.qi4j.spi.entity.QualifierQualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.value.CompoundType;
+import org.qi4j.spi.value.ValueCompositeType;
 import org.qi4j.spi.value.PrimitiveType;
 import org.qi4j.spi.value.ValueState;
 import org.qi4j.spi.value.ValueType;
@@ -144,7 +142,7 @@ public class EntityStateSerializer
                 final Literal object = valueFactory.createLiteral( property.toString() );
                 graph.add( subject, predicate, object );
             }
-            else if( valueType instanceof CompoundType )
+            else if( valueType instanceof ValueCompositeType )
             {
                 // create a blank node
                 final URI predicate = valueFactory.createURI( propertyType.qualifiedName().toURI() );
@@ -152,7 +150,7 @@ public class EntityStateSerializer
                 graph.add( subject, predicate, object );
                 // serialize compound properties
                 serializeProperties(
-                    ( (CompoundType) valueType ).types(),
+                    ( (ValueCompositeType) valueType ).types(),
                     new State()
                     {
                         public Object getProperty( final QualifiedName qualifiedName )
