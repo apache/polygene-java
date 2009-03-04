@@ -185,6 +185,8 @@ public class DependencyPane extends DetailPane
         injectionClassLabel.setText( dependencyDescriptor.injectionClass().getName() );
         injectionTypeLabel.setText( dependencyDescriptor.injectionType().toString() );
         injectionTypeRawLabel.setText( dependencyDescriptor.rawInjectionType().getName() );
+
+        System.out.println( dependencyDescriptor.injectedServices() );
     }
 
     /**
@@ -195,14 +197,7 @@ public class DependencyPane extends DetailPane
      */
     private boolean isDependencyField( Class<? extends Annotation> clazz )
     {
-        boolean b = false;
-
-        if( Uses.class.equals( clazz ) || Service.class.equals( clazz ) )
-        {
-            b = true;
-        }
-
-        return b;
+        return Uses.class.equals( clazz ) || Service.class.equals( clazz );
     }
 
     private void fieldListValueChanged( ListSelectionEvent evt )

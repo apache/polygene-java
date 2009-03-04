@@ -20,6 +20,8 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import static org.qi4j.api.common.Visibility.layer;
+import static org.qi4j.api.common.Visibility.application;
+import org.qi4j.api.common.Visibility;
 
 /**
  * @author edward.yakop@gmail.com
@@ -36,7 +38,7 @@ public final class PersonModelAssembler
         ).visibleIn( layer );
 
         aModule.addServices( SamplePersonBootstrapService.class )
-            .visibleIn( layer )
+            .visibleIn( application )
             .instantiateOnStartup();
     }
 }

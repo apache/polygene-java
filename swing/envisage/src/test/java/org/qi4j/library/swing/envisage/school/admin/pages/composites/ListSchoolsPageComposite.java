@@ -19,6 +19,7 @@ package org.qi4j.library.swing.envisage.school.admin.pages.composites;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.library.swing.envisage.school.admin.pages.ListUserPage;
 import org.qi4j.library.swing.envisage.school.admin.pages.mixins.Page;
 import org.qi4j.library.swing.envisage.school.domain.model.school.SchoolRepository;
@@ -34,6 +35,7 @@ public interface ListSchoolsPageComposite extends Page, Composite
     class ListSchoolsPageMixin
         implements Page
     {
+        @Service Iterable<ServiceComposite> services;
         @Service SchoolRepository schools;
 
         public String generateHtml()
