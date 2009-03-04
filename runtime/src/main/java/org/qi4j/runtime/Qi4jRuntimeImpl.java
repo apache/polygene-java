@@ -34,22 +34,23 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.runtime.composite.DefaultCompositeInstance;
 import static org.qi4j.runtime.composite.DefaultCompositeInstance.getCompositeInstance;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
+import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.service.ServiceModel;
-import org.qi4j.runtime.structure.CompositesInstance;
-import org.qi4j.runtime.structure.CompositesModel;
 import org.qi4j.runtime.structure.DependencyVisitor;
-import org.qi4j.runtime.structure.EntitiesInstance;
-import org.qi4j.runtime.structure.EntitiesModel;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.structure.ModuleVisitor;
+import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.bootstrap.ApplicationAssemblyFactoryImpl;
 import org.qi4j.runtime.bootstrap.ApplicationFactoryImpl;
+import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
@@ -91,12 +92,12 @@ public final class Qi4jRuntimeImpl
     }
 
     // API
-    public Composite dereference( Composite composite )
+    public <T extends Composite> T dereference( T composite )
     {
         InvocationHandler handler = getInvocationHandler( composite );
         if( handler instanceof ProxyReferenceInvocationHandler )
         {
-            return (Composite) ( (ProxyReferenceInvocationHandler) handler ).proxy();
+            return (T) ( (ProxyReferenceInvocationHandler) handler ).proxy();
         }
         if( handler instanceof CompositeInstance )
         {
@@ -221,45 +222,53 @@ public final class Qi4jRuntimeImpl
     // SPI
     public CompositeDescriptor getCompositeDescriptor( Composite composite )
     {
-        Class<? extends Composite> compositeClass = composite.getClass();
-        if( EntityComposite.class.isAssignableFrom( compositeClass ) )
-        {
-            EntityInstance entityInstance = (EntityInstance) getInvocationHandler( composite );
-            return entityInstance.entityModel();
-        }
-        else
-        {
-            DefaultCompositeInstance defaultCompositeInstance = getCompositeInstance( composite );
-            return defaultCompositeInstance.compositeModel();
-        }
+        DefaultCompositeInstance defaultCompositeInstance = getCompositeInstance( composite );
+        return defaultCompositeInstance.compositeModel();
     }
 
     @SuppressWarnings( "unchecked" )
     public CompositeDescriptor getCompositeDescriptor( Class mixinType, Module module )
     {
         ModuleInstance moduleInstance = (ModuleInstance) module;
-        if( !Composite.class.isAssignableFrom( mixinType ) )
+        CompositeFinder finder = new CompositeFinder();
+        finder.type = mixinType;
+        moduleInstance.model().visitModules( finder );
+        return finder.model;
+    }
+
+    class CompositeFinder
+        implements ModuleVisitor
+    {
+        Class type;
+        CompositeModel model;
+
+        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
         {
-            EntitiesInstance entitiesInstance = moduleInstance.entities();
-            EntitiesModel entitiesModel = entitiesInstance.model();
-            EntityModel entityModel = entitiesModel.getEntityModelFor( mixinType );
-
-            if( entityModel != null )
-            {
-                return entityModel;
-            }
-
-            // It's not entities, let's try composite
-            CompositesInstance compositesInstance = moduleInstance.composites();
-            CompositesModel compositesModel = compositesInstance.model();
-            return compositesModel.getCompositeModelFor( mixinType );
+            model = moduleModel.composites().getCompositeModelFor( type, visibility );
+            return model == null;
         }
-        else if( EntityComposite.class.isAssignableFrom( mixinType ) )
+    }
+
+    public ObjectDescriptor getObjectDescriptor( Class objectType, Module module )
+    {
+        ModuleInstance moduleInstance = (ModuleInstance) module;
+        ObjectFinder finder = new ObjectFinder();
+        finder.type = objectType;
+        moduleInstance.model().visitModules( finder );
+        return finder.model;
+    }
+
+    class ObjectFinder
+        implements ModuleVisitor
+    {
+        Class type;
+        ObjectModel model;
+
+        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
         {
-            return moduleInstance.findEntityCompositeFor( mixinType );
+            model = moduleModel.objects().getObjectModelFor( type, visibility );
+            return model == null;
         }
-
-        return moduleInstance.findCompositeFor( mixinType );
     }
 
     public StateHolder getState( Composite composite )
@@ -277,7 +286,23 @@ public final class Qi4jRuntimeImpl
     public EntityDescriptor getEntityDescriptor( Class mixinType, Module module )
     {
         ModuleInstance moduleInstance = (ModuleInstance) module;
-        return moduleInstance.findEntityCompositeFor( mixinType );
+        EntityFinder finder = new EntityFinder();
+        finder.type = mixinType;
+        moduleInstance.model().visitModules( finder );
+        return finder.model;
+    }
+
+    class EntityFinder
+        implements ModuleVisitor
+    {
+        Class type;
+        EntityModel model;
+
+        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
+        {
+            model = moduleModel.entities().getEntityModelFor( type, visibility );
+            return model == null;
+        }
     }
 
     public EntityState getEntityState( EntityComposite composite )
@@ -288,13 +313,6 @@ public final class Qi4jRuntimeImpl
     public EntityStateHolder getState( EntityComposite composite )
     {
         return EntityInstance.getEntityInstance( composite ).state();
-    }
-
-    @SuppressWarnings( "unchecked" )
-    public ObjectDescriptor getObjectDescriptor( Class objectType, Module module )
-    {
-        ModuleInstance moduleInstance = (ModuleInstance) module;
-        return moduleInstance.findObjectFor( objectType );
     }
 
     public void setMixins( Composite composite, Object[] mixins )

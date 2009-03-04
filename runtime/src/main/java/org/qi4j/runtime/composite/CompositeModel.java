@@ -16,6 +16,7 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.InvocationHandler;
 import java.util.List;
+import java.util.ArrayList;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -40,7 +41,7 @@ public class CompositeModel
                                            final Visibility visibility,
                                            final MetaInfo metaInfo,
                                            final PropertyDeclarations propertyDeclarations,
-                                           final Iterable<Class<?>> concerns,
+                                           final Iterable<Class<?>> assemblyConcerns,
                                            final Iterable<Class<?>> sideEffects, List<Class<?>> mixins )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
@@ -48,7 +49,12 @@ public class CompositeModel
         PropertiesModel propertiesModel = new PropertiesModel( constraintsModel, propertyDeclarations, immutable );
         StateModel stateModel = new StateModel( propertiesModel );
         MixinsModel mixinsModel = new MixinsModel( compositeType, mixins );
-        ConcernsDeclaration concernsModel = new ConcernsDeclaration( compositeType, concerns );
+
+        List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
+        ConcernsDeclaration.concernDeclarations( assemblyConcerns, concerns );
+        ConcernsDeclaration.concernDeclarations( compositeType, concerns );
+        ConcernsDeclaration concernsModel = new ConcernsDeclaration( concerns );
+
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
         CompositeMethodsModel compositeMethodsModel =
             new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );

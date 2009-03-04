@@ -37,11 +37,14 @@ import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
+import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.structure.Binder;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.value.CollectionType;
-import org.qi4j.spi.value.CompoundType;
+import org.qi4j.spi.value.ValueCompositeType;
 import org.qi4j.spi.value.PrimitiveType;
 import org.qi4j.spi.value.SerializableType;
 import org.qi4j.spi.value.ValueState;
@@ -52,7 +55,7 @@ import static org.qi4j.api.common.TypeName.nameOf;
  * JAVADOC
  */
 public abstract class AbstractPropertyModel
-    implements Serializable, PropertyDescriptor, ConstraintsCheck
+    implements Serializable, PropertyDescriptor, ConstraintsCheck, Binder
 {
     private static final long serialVersionUID = 1L;
 
@@ -92,11 +95,6 @@ public abstract class AbstractPropertyModel
         // Check for @UseDefaults annotation
         useDefaults = this.metaInfo.get( UseDefaults.class ) != null;
 
-        if( initialValue == null && useDefaults )
-        {
-            initialValue = DefaultValues.getDefaultValue( type );
-        }
-
         this.initialValue = initialValue;
 
         RDF uriAnnotation = this.metaInfo.get( RDF.class );
@@ -125,7 +123,7 @@ public abstract class AbstractPropertyModel
                 valueType = new CollectionType( nameOf( type ), createValueType( Object.class ) );
             }
         }
-        else if( CompoundType.isCompound( type ) )
+        else if( ValueCompositeType.isValueComposite( type ) )
         {
             Class valueTypeClass = (Class) type;
             List<PropertyType> types = new ArrayList<PropertyType>();
@@ -143,7 +141,7 @@ public abstract class AbstractPropertyModel
                     types.add( propertyType );
                 }
             }
-            valueType = new CompoundType( nameOf(valueTypeClass), types );
+            valueType = new ValueCompositeType( nameOf(valueTypeClass), types );
         }
         else if( PrimitiveType.isPrimitive( type ) )
         {
@@ -209,6 +207,11 @@ public abstract class AbstractPropertyModel
     public String toRDF()
     {
         return rdf;
+    }
+
+    public void bind( Resolution resolution ) throws BindingException
+    {
+        // TODO Select ValueComposite type
     }
 
     public Property<?> newBuilderInstance()

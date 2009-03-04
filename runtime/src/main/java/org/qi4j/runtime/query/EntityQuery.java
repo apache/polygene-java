@@ -155,8 +155,12 @@ final class EntityQuery<T>
     {
         final ModuleInstance moduleInstance = unitOfWorkInstance.module();
         final String entityTypeAsString = qualifiedIdentity.type();
-        final Class<T> entityType = moduleInstance.findClassForName( entityTypeAsString );
-        if( entityType == null )
+        final Class<T> entityType;
+        try
+        {
+            entityType = (Class<T>) moduleInstance.classLoader().loadClass( entityTypeAsString );
+        }
+        catch( ClassNotFoundException e )
         {
             throw new QueryExecutionException( String.format( "Entity type %s not found", entityTypeAsString ) );
         }

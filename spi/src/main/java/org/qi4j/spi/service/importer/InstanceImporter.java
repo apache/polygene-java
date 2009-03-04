@@ -49,4 +49,9 @@ public class InstanceImporter
 
         return instance;
     }
+
+    public boolean isActive( Object instance )
+    {
+        return true;
+    }
 }

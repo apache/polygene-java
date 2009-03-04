@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Stack;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
@@ -52,6 +53,8 @@ import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
 import org.qi4j.runtime.structure.EntitiesInstance;
 import org.qi4j.runtime.structure.EntitiesModel;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.structure.ModuleVisitor;
+import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
@@ -142,13 +145,16 @@ public final class UnitOfWorkInstance
     {
         checkOpen();
 
-        ModuleInstance realModuleInstance = moduleInstance.findModuleForEntity( mixinType );
-        if( realModuleInstance == null )
+        EntityFinder finder = new EntityFinder();
+        finder.mixinType = mixinType;
+        moduleInstance.visitModules( finder );
+
+        if( finder.model == null )
         {
             throw new EntityTypeNotFoundException( mixinType.getName() );
         }
 
-        EntityBuilder<T> builder = realModuleInstance.entities().newEntityBuilder( mixinType, this, unitOfWorkStore );
+        EntityBuilder<T> builder = finder.module.entities().newEntityBuilder( finder.model, this, unitOfWorkStore );
         if( identity != null )
         {
             builder.stateFor( Identity.class ).identity().set( identity );
@@ -172,14 +178,14 @@ public final class UnitOfWorkInstance
     {
         checkOpen();
 
-        final ModuleInstance realModule = moduleInstance.findModuleForEntity( mixinType );
-        if( realModule == null )
+        EntityFinder finder = new EntityFinder();
+        finder.mixinType = mixinType;
+        moduleInstance.visitModules( finder );
+
+        if( finder.model == null )
         {
             throw new EntityTypeNotFoundException( mixinType.getName() );
         }
-        EntitiesInstance entitiesInstance = realModule.entities();
-        EntitiesModel entitiesModel = entitiesInstance.model();
-        EntityModel entityModel = entitiesModel.getEntityModelFor( mixinType );
 
         // TODO: Argument check.
 
@@ -188,8 +194,8 @@ public final class UnitOfWorkInstance
             EntityComposite entity = getCachedEntity( identity, mixinType );
             if( entity == null )
             {   // Not yet in cache
-                EntityInstance entityInstance = realModule.entities().loadEntityInstance( identity, entityModel, this, unitOfWorkStore );
-                Map<String, EntityComposite> entityCache = getEntityCache( entityModel.type() );
+                EntityInstance entityInstance = finder.module.entities().loadEntityInstance( identity, finder.model, this, unitOfWorkStore );
+                Map<String, EntityComposite> entityCache = getEntityCache( finder.model.type() );
                 entity = entityInstance.proxy();
                 entityCache.put( identity, entity );
             }
@@ -206,7 +212,7 @@ public final class UnitOfWorkInstance
                     // Check if it has been removed
                     if( entityInstance.status() == EntityStatus.REMOVED )
                     {
-                        throw new NoSuchEntityException( identity, entityModel.type().getName() );
+                        throw new NoSuchEntityException( identity, finder.model.type().getName() );
                     }
                 }
             }
@@ -215,7 +221,7 @@ public final class UnitOfWorkInstance
         }
         catch( EntityNotFoundException e )
         {
-            throw new NoSuchEntityException( identity, entityModel.type().getName() );
+            throw new NoSuchEntityException( identity, finder.model.type().getName() );
         }
     }
 
@@ -224,21 +230,22 @@ public final class UnitOfWorkInstance
     {
         checkOpen();
 
-        ModuleInstance entityModuleInstance = this.moduleInstance.findModuleForEntity( mixinType );
-        if( entityModuleInstance == null )
+        EntityFinder finder = new EntityFinder();
+        finder.mixinType = mixinType;
+        moduleInstance.visitModules( finder );
+
+        if( finder.model == null )
         {
-            throw new EntityTypeNotFoundException( mixinType.getName());
+            throw new EntityTypeNotFoundException( mixinType.getName() );
         }
 
-        EntityModel entityModel = entityModuleInstance.entities().model().getEntityModelFor( mixinType );
-
-        EntityComposite entity = getCachedEntity( identity, entityModel.type() );
+        EntityComposite entity = getCachedEntity( identity, finder.model.type() );
         if( entity == null )
         {
             // Create entity moduleInstance
-            EntityInstance compositeInstance = entityModuleInstance.entities().getEntityInstance( identity, entityModel, this, unitOfWorkStore );
+            EntityInstance compositeInstance = finder.module.entities().getEntityInstance( identity, finder.model, this, unitOfWorkStore );
             entity = compositeInstance.proxy();
-            Map<String, EntityComposite> entityCache = getEntityCache( entityModel.type() );
+            Map<String, EntityComposite> entityCache = getEntityCache( finder.model.type() );
             entityCache.put( identity, entity );
         }
         else
@@ -247,7 +254,7 @@ public final class UnitOfWorkInstance
             EntityInstance entityInstance = EntityInstance.getEntityInstance( entity );
             if( entityInstance.status() == EntityStatus.REMOVED )
             {
-                throw new NoSuchEntityException( identity, entityModel.type().getName() );
+                throw new NoSuchEntityException( identity, finder.model.type().getName() );
             }
         }
 
@@ -762,15 +769,24 @@ public final class UnitOfWorkInstance
     private EntityComposite getCachedEntity( QualifiedIdentity entityId )
     {
         String type = entityId.type();
-        Class compositeType = moduleInstance.findClassForName( type );
-        Map<String, EntityComposite> entityCache = cache.get( compositeType );
-        if( entityCache == null )
+        try
         {
+            Class compositeType = (Class) moduleInstance.classLoader().loadClass( type );
+            Map<String, EntityComposite> entityCache = cache.get( compositeType );
+            if( entityCache == null )
+            {
+                return null;
+            }
+
+            EntityComposite composite = entityCache.get( entityId.identity() );
+            return composite;
+        }
+        catch( ClassNotFoundException e )
+        {
+            // TODO Throw an exception here?
+            e.printStackTrace();
             return null;
         }
-
-        EntityComposite composite = entityCache.get( entityId.identity() );
-        return composite;
     }
 
     private void checkOpen()
@@ -1075,6 +1091,22 @@ public final class UnitOfWorkInstance
         public List<QualifiedIdentity> getRemovedState()
         {
             return removedState;
+        }
+    }
+
+    class EntityFinder
+        implements ModuleVisitor
+    {
+        Class mixinType;
+        ModuleInstance module;
+        EntityModel model;
+
+        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
+        {
+            model = moduleModel.entities().getEntityModelFor( mixinType, visibility );
+            if (model != null)
+                module = moduleInstance;
+            return model == null;
         }
     }
 }

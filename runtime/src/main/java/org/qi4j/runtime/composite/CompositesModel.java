@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.runtime.structure;
+package org.qi4j.runtime.composite;
 
 import java.io.Serializable;
 import java.util.List;
@@ -21,6 +21,8 @@ import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
 
 /**
  * JAVADOC
@@ -72,21 +74,6 @@ public class CompositesModel
         }
 
         return foundModel;
-    }
-
-    public CompositeModel getCompositeModelFor( Class mixinType )
-    {
-        CompositeModel compositeModel = getCompositeModelFor( mixinType, Visibility.module );
-        if( compositeModel == null )
-        {
-            compositeModel = getCompositeModelFor( mixinType, Visibility.layer );
-        }
-        if( compositeModel == null )
-        {
-            compositeModel = getCompositeModelFor( mixinType, Visibility.application );
-        }
-
-        return compositeModel;
     }
 
     public Class getClassForName( String type )

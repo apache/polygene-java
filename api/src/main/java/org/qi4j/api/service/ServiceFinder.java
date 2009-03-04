@@ -14,6 +14,8 @@
 
 package org.qi4j.api.service;
 
+import java.lang.reflect.Type;
+
 /**
  * Interface used to query for ServiceReferences. Each ServiceFinder is
  * obtained from a specific Module, and the lookup rules are the following:
@@ -31,7 +33,7 @@ public interface ServiceFinder
      * @param serviceType the type that the Service must implement
      * @return a ServiceReference if one is found, or null if none exists
      */
-    <T> ServiceReference<T> findService( Class<T> serviceType );
+    <T> ServiceReference<T> findService( Type serviceType );
 
     /**
      * Find ServiceReferences that implements the given type.
@@ -42,5 +44,5 @@ public interface ServiceFinder
      * @param serviceType the type that the Services must implement
      * @return an iterable of ServiceReferences for the given type. It is empty if none exist
      */
-    <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType );
+    <T> Iterable<ServiceReference<T>> findServices( Type serviceType );
 }

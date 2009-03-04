@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.runtime.structure;
+package org.qi4j.runtime.object;
 
 import java.io.Serializable;
 import java.util.List;
@@ -21,6 +21,8 @@ import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.object.ObjectModel;
+import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
 
 /**
  * JAVADOC
@@ -71,21 +73,6 @@ public class ObjectsModel
         }
 
         return foundModel;
-    }
-
-    public ObjectModel getObjectModelFor( Class type )
-    {
-        ObjectModel objectModel = getObjectModelFor( type, Visibility.module );
-        if( objectModel == null )
-        {
-            objectModel = getObjectModelFor( type, Visibility.layer );
-        }
-        if( objectModel == null )
-        {
-            objectModel = getObjectModelFor( type, Visibility.application );
-        }
-
-        return objectModel;
     }
 
     public Class getClassForName( String type )

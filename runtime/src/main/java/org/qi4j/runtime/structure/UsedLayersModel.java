@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.spi.structure.UsedLayersDescriptor;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.composite.AmbiguousTypeException;
+import org.qi4j.runtime.composite.CompositeModel;
 
 /**
  * JAVADOC
@@ -38,6 +41,25 @@ public final class UsedLayersModel
         return usedLayers;
     }
 
+    public CompositeModel findCompositeFor( Class mixinType )
+    {
+        CompositeModel foundModel = null;
+        for( LayerModel usedLayer : usedLayers )
+        {
+            CompositeModel module = usedLayer.findCompositeFor( mixinType, Visibility.application );
+            if( module != null )
+            {
+                if( foundModel != null )
+                {
+                    throw new AmbiguousTypeException( mixinType );
+                }
+                foundModel = module;
+            }
+        }
+
+        return foundModel;
+    }
+
     public UsedLayersInstance newInstance( Map<LayerModel, LayerInstance> layerInstanceMap )
     {
         List<LayerInstance> usedLayerInstances = new ArrayList<LayerInstance>();
@@ -47,5 +69,15 @@ public final class UsedLayersModel
         }
 
         return new UsedLayersInstance( usedLayerInstances );
+    }
+
+    public boolean visitModules( ModuleVisitor visitor )
+    {
+        for( LayerModel usedLayerModel : usedLayers )
+        {
+            if (!usedLayerModel.visitModules( visitor, Visibility.application ))
+                return false;
+        }
+        return true;
     }
 }

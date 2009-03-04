@@ -32,103 +32,13 @@ public final class UsedLayersInstance
         this.usedLayerInstances = usedLayerInstances;
     }
 
-    public ModuleInstance findModuleForComposite( Class mixinType )
-    {
-        ModuleInstance foundModule = null;
-        for( LayerInstance usedLayerInstance : usedLayerInstances )
-        {
-            ModuleInstance module = usedLayerInstance.findModuleForComposite( mixinType, Visibility.application );
-            if( module != null )
-            {
-                if( foundModule != null )
-                {
-                    throw new AmbiguousTypeException( mixinType );
-                }
-                foundModule = module;
-            }
-        }
-
-        return foundModule;
-    }
-
-    public ModuleInstance findModuleForValue( Class valueType )
-    {
-        ModuleInstance foundModule = null;
-        for( LayerInstance usedLayerInstance : usedLayerInstances )
-        {
-            ModuleInstance module = usedLayerInstance.findModuleForValue( valueType, Visibility.application );
-            if( module != null )
-            {
-                if( foundModule != null )
-                {
-                    throw new AmbiguousTypeException( valueType );
-                }
-                foundModule = module;
-            }
-        }
-
-        return foundModule;
-    }
-
-    public ModuleInstance findModuleForEntity( Class mixinType )
-    {
-        ModuleInstance foundModule = null;
-        for( LayerInstance usedLayerInstance : usedLayerInstances )
-        {
-            ModuleInstance module = usedLayerInstance.findModuleForEntity( mixinType, Visibility.application );
-            if( module != null )
-            {
-                if( foundModule != null )
-                {
-                    throw new AmbiguousTypeException( mixinType );
-                }
-                foundModule = module;
-            }
-        }
-
-        return foundModule;
-    }
-
-    public ModuleInstance findModuleForObject( Class type )
-    {
-        ModuleInstance foundModule = null;
-        for( LayerInstance usedLayerInstance : usedLayerInstances )
-        {
-            ModuleInstance module = usedLayerInstance.findModuleForObject( type, Visibility.application );
-            if( module != null )
-            {
-                if( foundModule != null )
-                {
-                    throw new AmbiguousTypeException( type );
-                }
-                foundModule = module;
-            }
-        }
-
-        return foundModule;
-    }
-
-
-    public <T> void getServiceReferencesFor( Type serviceType, List<ServiceReference<T>> serviceReferences )
+    public boolean visitModules( ModuleVisitor visitor )
     {
         for( LayerInstance usedLayerInstance : usedLayerInstances )
         {
-            usedLayerInstance.getServiceReferencesFor( serviceType, Visibility.application, serviceReferences );
+            if (!usedLayerInstance.visitModules( visitor, Visibility.application ))
+                return false;
         }
-    }
-
-    public Class getClassForName( String type )
-    {
-        Class clazz;
-        for( LayerInstance usedLayerInstance : usedLayerInstances )
-        {
-            clazz = usedLayerInstance.getClassForName( type );
-            if( clazz != null )
-            {
-                return clazz;
-            }
-        }
-
-        return null;
+        return true;
     }
 }

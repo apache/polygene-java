@@ -33,6 +33,7 @@ import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.api.util.UsageGraph;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.runtime.structure.Binder;
 import org.qi4j.spi.composite.InvalidCompositeException;
 
 /**
@@ -40,7 +41,7 @@ import org.qi4j.spi.composite.InvalidCompositeException;
  * and mixin implementations.
  */
 public abstract class AbstractMixinsModel
-    implements Serializable
+    implements Serializable, Binder
 {
     protected final Set<MixinDeclaration> mixins = new LinkedHashSet<MixinDeclaration>();
 

@@ -12,12 +12,13 @@
  *
  */
 
-package org.qi4j.runtime.structure;
+package org.qi4j.runtime.service;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
@@ -65,13 +66,30 @@ public class ServicesInstance
         activator.passivate();
     }
 
-    public <T> void getServiceReferencesFor( Type serviceType, Visibility visibility, List<ServiceReference<T>> serviceReferences )
+    public <T> ServiceReference<T> getServiceWithIdentity( String serviceIdentity )
     {
-        Iterable<String> serviceModels = servicesModel.getServiceIdentitiesFor( serviceType, visibility );
+        return mapIdentityServiceReference.get( serviceIdentity );
+    }
 
-        for( String serviceModel : serviceModels )
+    public <T> ServiceReference<T> getServiceFor( Type type, Visibility visibility )
+    {
+        ServiceModel serviceModel = servicesModel.getServiceFor(type, visibility);
+
+        ServiceReference<T> serviceRef = null;
+        if (serviceModel != null)
+            serviceRef = mapIdentityServiceReference.get( serviceModel.identity());
+
+        return serviceRef;
+    }
+
+
+    public <T> void getServicesFor( Type type, Visibility visibility, List<ServiceReference<T>> serviceReferences )
+    {
+        List<ServiceModel> serviceModels = new ArrayList<ServiceModel>( );
+        servicesModel.getServicesFor( type, visibility, serviceModels );
+        for( ServiceModel serviceModel : serviceModels )
         {
-            serviceReferences.add( mapIdentityServiceReference.get( serviceModel ) );
+            serviceReferences.add( mapIdentityServiceReference.get(serviceModel.identity() ));
         }
     }
 
@@ -86,4 +104,5 @@ public class ServicesInstance
         }
         return str += "}";
     }
+
 }

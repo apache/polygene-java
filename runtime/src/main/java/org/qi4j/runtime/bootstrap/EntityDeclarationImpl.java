@@ -25,6 +25,8 @@ import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.EntityDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.entity.EntityModel;
+import org.qi4j.runtime.composite.ConcernsDeclaration;
+import org.qi4j.runtime.composite.ConcernDeclaration;
 
 /**
  * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addComposites(Class[])}.
@@ -78,12 +80,17 @@ public final class EntityDeclarationImpl
     {
         for( Class<? extends EntityComposite> compositeType : compositeTypes )
         {
+            List<ConcernDeclaration> concernDeclarations = new ArrayList<ConcernDeclaration>( );
+            ConcernsDeclaration.concernDeclarations( concerns, concernDeclarations );
+            ConcernsDeclaration.concernDeclarations( compositeType, concernDeclarations );
+            ConcernsDeclaration concernsDeclaration = new ConcernsDeclaration( concernDeclarations );
+
             EntityModel compositeModel = EntityModel.newModel( compositeType,
                                                                visibility,
                                                                new MetaInfo( metaInfo ).withAnnotations( compositeType ),
                                                                propertyDecs,
                                                                associationDecs,
-                                                               concerns,
+                                                               concernsDeclaration,
                                                                sideEffects,
                                                                mixins);
             entities.add( compositeModel );

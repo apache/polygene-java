@@ -28,4 +28,6 @@ public interface ServiceImporter
      */
     Object importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException;
+
+    boolean isActive( Object instance );
 }

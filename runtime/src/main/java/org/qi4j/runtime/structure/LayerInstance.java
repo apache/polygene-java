@@ -20,7 +20,6 @@ import java.util.List;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.AmbiguousTypeException;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
@@ -87,183 +86,6 @@ public class LayerInstance
         return usedLayersInstance;
     }
 
-    public ModuleInstance findModuleForComposite( Class mixinType, Visibility visibility )
-    {
-        // Check this layer
-        ModuleInstance foundModule = null;
-        for( ModuleInstance moduleInstance : moduleInstances )
-        {
-            CompositeModel compositeModel = moduleInstance.composites().model().getCompositeModelFor( mixinType, visibility );
-            if( compositeModel != null )
-            {
-                if( foundModule != null )
-                {
-                    throw new AmbiguousTypeException( mixinType );
-                }
-                else
-                {
-                    foundModule = moduleInstance;
-                }
-            }
-        }
-
-        if( foundModule != null )
-        {
-            return foundModule;
-        }
-
-        if( visibility == Visibility.layer )
-        {
-            // Check application scope
-            foundModule = findModuleForComposite( mixinType, Visibility.application );
-            if( foundModule != null )
-            {
-                return foundModule;
-            }
-            else
-            {
-                return usedLayersInstance.findModuleForComposite( mixinType );
-            }
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    public ModuleInstance findModuleForValue( Class valueType, Visibility visibility )
-    {
-        // Check this layer
-        ModuleInstance foundModule = null;
-        for( ModuleInstance moduleInstance : moduleInstances )
-        {
-            ValueModel valueModel = moduleInstance.values().model().getValueModelFor( valueType, visibility );
-            if( valueModel != null )
-            {
-                if( foundModule != null )
-                {
-                    throw new AmbiguousTypeException( valueType );
-                }
-                else
-                {
-                    foundModule = moduleInstance;
-                }
-            }
-        }
-
-        if( foundModule != null )
-        {
-            return foundModule;
-        }
-
-        if( visibility == Visibility.layer )
-        {
-            // Check application scope
-            foundModule = findModuleForValue( valueType, Visibility.application );
-            if( foundModule != null )
-            {
-                return foundModule;
-            }
-            else
-            {
-                return usedLayersInstance.findModuleForValue( valueType );
-            }
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    public ModuleInstance findModuleForEntity( Class mixinType, Visibility visibility )
-    {
-        // Check this layer
-        ModuleInstance foundModule = null;
-        for( ModuleInstance moduleInstance : moduleInstances )
-        {
-            EntityModel entityModel = moduleInstance.entities().model().getEntityModelFor( mixinType, visibility );
-            if( entityModel != null )
-            {
-                if( foundModule != null )
-                {
-                    throw new AmbiguousTypeException( mixinType );
-                }
-                else
-                {
-                    foundModule = moduleInstance;
-                }
-            }
-        }
-
-        if( foundModule != null )
-        {
-            return foundModule;
-        }
-
-        if( visibility == Visibility.layer )
-        {
-            // Check application scope
-            foundModule = findModuleForEntity( mixinType, Visibility.application );
-            if( foundModule != null )
-            {
-                return foundModule;
-            }
-            else
-            {
-                return usedLayersInstance.findModuleForEntity( mixinType );
-            }
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-
-    public ModuleInstance findModuleForObject( Class type, Visibility visibility )
-    {
-        // Check this layer
-        ModuleInstance foundModule = null;
-        for( ModuleInstance moduleInstance : moduleInstances )
-        {
-            ObjectModel objectModel = moduleInstance.objects().model().getObjectModelFor( type, visibility );
-            if( objectModel != null )
-            {
-                if( foundModule != null )
-                {
-                    throw new AmbiguousTypeException( type );
-                }
-                else
-                {
-                    foundModule = moduleInstance;
-                }
-            }
-        }
-
-        if( foundModule != null )
-        {
-            return foundModule;
-        }
-
-        if( visibility == Visibility.layer )
-        {
-            // Check application scope
-            foundModule = findModuleForObject( type, Visibility.application );
-            if( foundModule != null )
-            {
-                return foundModule;
-            }
-            else
-            {
-                return usedLayersInstance.findModuleForObject( type );
-            }
-        }
-        else
-        {
-            return null;
-        }
-    }
-
     public ModuleInstance findModule( String moduleName )
     {
         for( ModuleInstance moduleInstance : moduleInstances )
@@ -282,60 +104,36 @@ public class LayerInstance
         moduleActivator.activate( moduleInstances );
     }
 
+    public boolean visitModules( ModuleVisitor visitor, Visibility visibility )
+    {
+        // Visit modules in this layer
+        ModuleInstance foundModule = null;
+        for( ModuleInstance moduleInstance : moduleInstances )
+        {
+            if (!visitor.visitModule( moduleInstance, moduleInstance.model(), visibility ))
+                return false;
+        }
+
+        if( visibility == Visibility.layer )
+        {
+            // Visit modules in this layer
+            if (!visitModules( visitor, Visibility.application ))
+                return false;
+
+            // Visit modules in used layers
+            return usedLayersInstance.visitModules(visitor);
+        }
+
+        return true;
+    }
+
     public void passivate() throws Exception
     {
         moduleActivator.passivate();
     }
 
-    public Class findClassForName( String type )
-    {
-        Class clazz = getClassForName( type );
-
-        if( clazz == null )
-        {
-            clazz = usedLayersInstance.getClassForName( type );
-        }
-
-        return clazz;
-    }
-
-    public Class getClassForName( String type )
-    {
-        Class clazz;
-        for( ModuleInstance moduleInstance : moduleInstances )
-        {
-            clazz = moduleInstance.getClassForName( type );
-            if( clazz != null )
-            {
-                return clazz;
-            }
-        }
-
-        return null;
-    }
-
     @Override public String toString()
     {
         return model.toString();
-    }
-
-    public <T> void getServiceReferencesFor( Type serviceType, Visibility visibility, List<ServiceReference<T>> serviceReferences )
-    {
-        // Check this layer
-        for( ModuleInstance moduleInstance : moduleInstances )
-        {
-            moduleInstance.services().getServiceReferencesFor( serviceType, visibility, serviceReferences );
-        }
-
-        if( visibility == Visibility.layer )
-        {
-            // Check application scope
-            for( ModuleInstance moduleInstance : moduleInstances )
-            {
-                moduleInstance.services().getServiceReferencesFor( serviceType, Visibility.application, serviceReferences );
-            }
-
-            usedLayersInstance.getServiceReferencesFor( serviceType, serviceReferences );
-        }
     }
 }

@@ -248,10 +248,18 @@ final class QueryImpl<T>
                 public T next()
                 {
                     QualifiedIdentity foundEntity = foundEntities.next();
-                    final Class<T> entityType = unitOfWorkInstance.module().findClassForName( foundEntity.type() );
-                    // TODO shall we throw an exception if class cannot be found?
-                    final T entity = unitOfWorkInstance.getReference( foundEntity.identity(), entityType );
-                    return entity;
+                    try
+                    {
+                        final Class<T> entityType = (Class<T>) unitOfWorkInstance.module().classLoader().loadClass( foundEntity.type() );
+                        final T entity = unitOfWorkInstance.getReference( foundEntity.identity(), entityType );
+                        return entity;
+                    }
+                    catch( ClassNotFoundException e )
+                    {
+                        // TODO shall we throw an exception if class cannot be found?
+                        e.printStackTrace();
+                        return null;
+                    }
                 }
 
                 public void remove()

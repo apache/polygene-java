@@ -71,7 +71,7 @@ public final class EntityModel
                                         MetaInfo metaInfo,
                                         PropertyDeclarations propertyDecs,
                                         AssociationDeclarations associationDecs,
-                                        Iterable<Class<?>> concerns,
+                                        ConcernsDeclaration concernsDeclaration,
                                         Iterable<Class<?>> sideEffects,
                                         List<Class<?>> mixins )
     {
@@ -81,7 +81,6 @@ public final class EntityModel
         EntityAssociationsModel associationsModel = new EntityAssociationsModel( constraintsModel, associationDecs );
         EntityStateModel stateModel = new EntityStateModel( entityPropertiesModel, associationsModel );
         EntityMixinsModel mixinsModel = new EntityMixinsModel( type, mixins );
-        ConcernsDeclaration concernsDeclaration = new ConcernsDeclaration( type, concerns );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( type, sideEffects );
         CompositeMethodsModel compositeMethodsModel = new CompositeMethodsModel( type,
                                                                                  constraintsModel,
@@ -163,6 +162,7 @@ public final class EntityModel
         resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
         compositeMethodsModel.bind( resolution );
         mixinsModel.bind( resolution );
+        stateModel.bind( resolution );
     }
 
     public QualifiedIdentity newQualifiedIdentity( String identity )

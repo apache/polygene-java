@@ -34,8 +34,7 @@ import org.qi4j.spi.service.Activator;
 public final class ServiceReferenceInstance<T>
     implements ServiceReference<T>, Activatable
 {
-    private volatile ServiceInstance serviceInstance;
-    private CompositeInstance instance;
+    private volatile CompositeInstance instance;
     private final T serviceProxy;
     private final ModuleInstance module;
     private final ServiceModel serviceModel;
@@ -66,7 +65,7 @@ public final class ServiceReferenceInstance<T>
 
     public boolean isActive()
     {
-        return serviceInstance != null;
+        return instance != null;
     }
 
     public void activate()
@@ -81,10 +80,10 @@ public final class ServiceReferenceInstance<T>
     public void passivate()
         throws Exception
     {
-        if( serviceInstance != null )
+        if( instance != null )
         {
             activator.passivate();
-            serviceInstance = null;
+            instance = null;
         }
     }
 
@@ -98,23 +97,20 @@ public final class ServiceReferenceInstance<T>
             {
                 if( instance == null )
                 {
-                    serviceInstance = serviceModel.newInstance( module );
-                    CompositeInstance providedInstance = serviceInstance.instance();
+                    instance = serviceModel.newInstance( module );
 
-                    if( providedInstance.<T>proxy() instanceof Activatable )
+                    if( instance.<T>proxy() instanceof Activatable )
                     {
                         try
                         {
-                            activator.activate( (Activatable) providedInstance.proxy() );
+                            activator.activate( (Activatable) instance.proxy() );
                         }
                         catch( Exception e )
                         {
-                            serviceInstance = null;
+                            instance = null;
                             throw new ServiceImporterException( e );
                         }
                     }
-
-                    instance = providedInstance;
                 }
             }
         }
@@ -124,7 +120,7 @@ public final class ServiceReferenceInstance<T>
 
     @Override public String toString()
     {
-        return serviceModel.identity() + ", active=" + ( serviceInstance != null ) + ", module='" + serviceModel.moduleName() + "'";
+        return serviceModel.identity() + ", active=" + isActive() + ", module='" + serviceModel.moduleName() + "'";
     }
 
 

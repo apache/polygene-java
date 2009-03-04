@@ -12,32 +12,28 @@
  *
  */
 
-package org.qi4j.runtime.structure;
+package org.qi4j.runtime.composite;
 
-import org.qi4j.api.object.ObjectBuilder;
-import org.qi4j.runtime.object.ObjectBuilderInstance;
+import org.qi4j.api.composite.CompositeBuilder;
+import org.qi4j.runtime.composite.CompositeBuilderInstance;
+import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
  * JAVADOC
  */
-public class ObjectsInstance
+public class CompositesInstance
 {
+    private final CompositesModel composites;
     private final ModuleInstance moduleInstance;
-    private final ObjectsModel objects;
 
-    public ObjectsInstance( ObjectsModel objectsModel, ModuleInstance moduleInstance )
+    public CompositesInstance( CompositesModel composites, ModuleInstance moduleInstance )
     {
+        this.composites = composites;
         this.moduleInstance = moduleInstance;
-        this.objects = objectsModel;
     }
 
-    public ObjectsModel model()
+    public CompositesModel model()
     {
-        return objects;
-    }
-
-    public <T> ObjectBuilder<T> newObjectBuilder( Class<T> type )
-    {
-        return new ObjectBuilderInstance<T>( moduleInstance, objects.getObjectModelFor( type ) );
+        return composites;
     }
 }

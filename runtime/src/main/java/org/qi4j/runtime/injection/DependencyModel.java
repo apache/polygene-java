@@ -21,11 +21,14 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.Collections;
+import java.util.List;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.provider.InvalidInjectionException;
+import org.qi4j.runtime.injection.provider.CachingInjectionProviderDecorator;
+import org.qi4j.runtime.injection.provider.ServiceInjectionProviderFactory;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.Specification;
 import org.qi4j.runtime.util.Annotations;
@@ -243,6 +246,20 @@ public final class DependencyModel
     public boolean optional()
     {
         return optional;
+    }
+
+    public List injectedServices()
+    {
+/*
+        if (injectionProvider instanceof CachingInjectionProviderDecorator)
+        {
+            InjectionProvider decoratedProvider = ((CachingInjectionProviderDecorator)injectionProvider).decoratedProvider();
+            if (decoratedProvider instanceof ServiceInjectionProviderFactory.)
+        }
+
+        return injectionProvider;
+*/
+        return null;
     }
 
     // Binding

@@ -12,32 +12,26 @@
  *
  */
 
-package org.qi4j.runtime.structure;
+package org.qi4j.runtime.value;
 
-import org.qi4j.api.composite.CompositeBuilder;
-import org.qi4j.runtime.composite.CompositeBuilderInstance;
+import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
  * JAVADOC
  */
-public class CompositesInstance
+public class ValuesInstance
 {
-    private final CompositesModel composites;
+    private final ValuesModel values;
     private final ModuleInstance moduleInstance;
 
-    public CompositesInstance( CompositesModel composites, ModuleInstance moduleInstance )
+    public ValuesInstance( ValuesModel values, ModuleInstance moduleInstance )
     {
-        this.composites = composites;
+        this.values = values;
         this.moduleInstance = moduleInstance;
     }
 
-    public CompositesModel model()
+    public ValuesModel model()
     {
-        return composites;
-    }
-
-    public <T> CompositeBuilder<T> newCompositeBuilder( Class<T> mixinType )
-    {
-        return new CompositeBuilderInstance<T>( moduleInstance, composites.getCompositeModelFor( mixinType ) );
+        return values;
     }
 }

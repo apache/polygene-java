@@ -33,6 +33,11 @@ public final class CachingInjectionProviderDecorator
         this.decoratedProvider = injectionProvider;
     }
 
+    public InjectionProvider decoratedProvider()
+    {
+        return decoratedProvider;
+    }
+
     public Object provideInjection( InjectionContext context ) throws InjectionProviderException
     {
         if( singletonInstance == null )

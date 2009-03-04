@@ -149,7 +149,7 @@ public final class ImportedServiceModel
         try
         {
             T instance = (T) importer.importService( this );
-            return new ImportedServiceInstance<T>( instance, importer, this );
+            return new ImportedServiceInstance<T>( instance, importer );
         }
         catch( ServiceImporterException e )
         {

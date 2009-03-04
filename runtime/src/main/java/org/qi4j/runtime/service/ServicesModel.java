@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.runtime.structure;
+package org.qi4j.runtime.service;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -22,10 +22,11 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
-import org.qi4j.runtime.service.ImportedServiceModel;
-import org.qi4j.runtime.service.ImportedServiceReferenceInstance;
 import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.service.ServiceReferenceInstance;
+import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.structure.ModelVisitor;
 
 /**
  * JAVADOC
@@ -34,32 +35,10 @@ public class ServicesModel
     implements Serializable, Binder
 {
     private final Iterable<ServiceModel> serviceModels;
-    private List<ImportedServiceModel> importedServiceModels;
 
-    public ServicesModel( Iterable<ServiceModel> serviceModels, List<ImportedServiceModel> importedServiceModels )
+    public ServicesModel( Iterable<ServiceModel> serviceModels)
     {
         this.serviceModels = serviceModels;
-        this.importedServiceModels = importedServiceModels;
-    }
-
-    public Iterable<String> getServiceIdentitiesFor( Type serviceType, Visibility visibility )
-    {
-        List<String> foundServices = new ArrayList<String>();
-        for( ServiceModel serviceModel : serviceModels )
-        {
-            if( serviceModel.isServiceFor( serviceType, visibility ) )
-            {
-                foundServices.add( serviceModel.identity() );
-            }
-        }
-        for( ImportedServiceModel serviceModel : importedServiceModels )
-        {
-            if( serviceModel.isServiceFor( serviceType, visibility ) )
-            {
-                foundServices.add( serviceModel.identity() );
-            }
-        }
-        return foundServices;
     }
 
     public void bind( Resolution resolution )
@@ -79,11 +58,6 @@ public class ServicesModel
             ServiceReferenceInstance serviceReferenceInstance = new ServiceReferenceInstance( serviceModel, module );
             serviceReferences.add( serviceReferenceInstance );
         }
-        for( ImportedServiceModel serviceModel : importedServiceModels )
-        {
-            ImportedServiceReferenceInstance serviceReferenceInstance = new ImportedServiceReferenceInstance( serviceModel, module );
-            serviceReferences.add( serviceReferenceInstance );
-        }
 
         return new ServicesInstance( this, serviceReferences );
     }
@@ -94,10 +68,29 @@ public class ServicesModel
         {
             serviceModel.visitModel( modelVisitor );
         }
+    }
 
-        for( ImportedServiceModel importedServiceModel : importedServiceModels )
+    public ServiceModel getServiceFor( Type type, Visibility visibility )
+    {
+        for( ServiceModel serviceModel : serviceModels )
         {
-            importedServiceModel.visitModel( modelVisitor );
+            if( serviceModel.isServiceFor( type, visibility ) )
+            {
+                return serviceModel;
+            }
+        }
+
+        return null;
+    }
+
+    public void getServicesFor( Type type, Visibility visibility, List<ServiceModel> models )
+    {
+        for( ServiceModel serviceModel : serviceModels )
+        {
+            if( serviceModel.isServiceFor( type, visibility ) )
+            {
+                models.add( serviceModel );
+            }
         }
     }
 }

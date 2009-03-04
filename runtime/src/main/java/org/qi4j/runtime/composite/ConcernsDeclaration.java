@@ -33,24 +33,50 @@ import org.qi4j.api.util.MethodKeyMap;
 public final class ConcernsDeclaration
     implements Serializable
 {
-    private final List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
-    private final Map<Method, MethodConcernsModel> methodConcernsModels = new MethodKeyMap<MethodConcernsModel>();
-
-    public ConcernsDeclaration( Class type, Iterable<Class<?>> concerns)
+    public static void concernDeclarations(Class type, List<ConcernDeclaration> concerns)
     {
-        // Add concerns from assembly
-        for( Class<?> concern : concerns )
-        {
-            this.concerns.add( new ConcernDeclaration( concern, null ) );
-        }
-
         // Find concern declarations
         Set<Type> types = ( type.isInterface() ? genericInterfacesOf( type ) : Collections.singleton( (Type) type ) );
 
         for( Type aType : types )
         {
-            addConcernDeclarations( aType );
+            addConcernDeclarations( aType, concerns );
         }
+
+    }
+
+    public static void concernDeclarations(Iterable<Class<?>> concernclasses, List<ConcernDeclaration> concerns)
+    {
+        // Add concerns from assembly
+        for( Class<?> concern : concernclasses )
+        {
+            concerns.add( new ConcernDeclaration( concern, null ) );
+        }
+    }
+
+    private static void addConcernDeclarations( Type type, List<ConcernDeclaration> concerns )
+    {
+        if( type instanceof Class )
+        {
+            final Class clazz = (Class) type;
+            Concerns annotation = Concerns.class.cast( clazz.getAnnotation( Concerns.class ) );
+            if( annotation != null )
+            {
+                Class[] concernClasses = annotation.value();
+                for( Class concernClass : concernClasses )
+                {
+                    concerns.add( new ConcernDeclaration( concernClass, clazz ) );
+                }
+            }
+        }
+    }
+
+    private final List<ConcernDeclaration> concerns;
+    private final Map<Method, MethodConcernsModel> methodConcernsModels = new MethodKeyMap<MethodConcernsModel>();
+
+    public ConcernsDeclaration( List<ConcernDeclaration> concerns)
+    {
+        this.concerns = concerns;
     }
 
     // Model
@@ -78,20 +104,4 @@ public final class ConcernsDeclaration
         }
     }
 
-    private void addConcernDeclarations( Type type )
-    {
-        if( type instanceof Class )
-        {
-            final Class clazz = (Class) type;
-            Concerns annotation = Concerns.class.cast( clazz.getAnnotation( Concerns.class ) );
-            if( annotation != null )
-            {
-                Class[] concernClasses = annotation.value();
-                for( Class concernClass : concernClasses )
-                {
-                    concerns.add( new ConcernDeclaration( concernClass, clazz ) );
-                }
-            }
-        }
-    }
 }

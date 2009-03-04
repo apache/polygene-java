@@ -21,12 +21,17 @@ import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.ServiceSelector;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * If several services are available with a given type, and you want to constrain
  * the current module to use a specific one, then use this importer. Specify a
  * ServiceSelector.Selector criteria as meta-info for the service, which will be applied
  * to the list of available services, and the first match will be chosen.
+ *
+ * This importer will avoid selecting itself, as could be possible if the ServiceSelector.first()
+ * filter is used.
  */
 public class ServiceSelectorImporter
     implements ServiceImporter
@@ -38,6 +43,20 @@ public class ServiceSelectorImporter
         ServiceSelector.Selector selector = serviceDescriptor.metaInfo().get( ServiceSelector.Selector.class );
         Class serviceType = serviceDescriptor.type();
         Iterable<ServiceReference<Object>> services = locator.findServices( serviceType );
-        return ServiceSelector.service( services, selector );
+        List<ServiceReference<Object>> filteredServices = new ArrayList<ServiceReference<Object>>();
+        for( ServiceReference<Object> service : services )
+        {
+            ServiceSelector.Selector selector1 = service.metaInfo().get( ServiceSelector.Selector.class );
+            if ( selector1 != null && selector1 == selector)
+                continue;
+
+            filteredServices.add( service );
+        }
+        return ServiceSelector.service( filteredServices, selector );
+    }
+
+    public boolean isActive( Object instance )
+    {
+        return true;
     }
 }

@@ -12,32 +12,26 @@
  *
  */
 
-package org.qi4j.runtime.structure;
+package org.qi4j.runtime.object;
 
-import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.runtime.value.ValueBuilderInstance;
+import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
  * JAVADOC
  */
-public class ValuesInstance
+public class ObjectsInstance
 {
-    private final ValuesModel values;
     private final ModuleInstance moduleInstance;
+    private final ObjectsModel objects;
 
-    public ValuesInstance( ValuesModel values, ModuleInstance moduleInstance )
+    public ObjectsInstance( ObjectsModel objectsModel, ModuleInstance moduleInstance )
     {
-        this.values = values;
         this.moduleInstance = moduleInstance;
+        this.objects = objectsModel;
     }
 
-    public ValuesModel model()
+    public ObjectsModel model()
     {
-        return values;
-    }
-
-    public <T> ValueBuilder<T> newValueBuilder( Class<T> valueType )
-    {
-        return new ValueBuilderInstance<T>( moduleInstance, values.getValueModelFor( valueType ) );
+        return objects;
     }
 }

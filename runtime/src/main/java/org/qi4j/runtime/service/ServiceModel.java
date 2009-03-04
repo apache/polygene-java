@@ -47,6 +47,7 @@ import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.SideEffectsDeclaration;
 import org.qi4j.runtime.composite.StateModel;
 import org.qi4j.runtime.composite.UsesInstance;
+import org.qi4j.runtime.composite.ConcernDeclaration;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -67,7 +68,7 @@ public final class ServiceModel
     public static ServiceModel newModel( final Class<? extends Composite> compositeType,
                                          final Visibility visibility,
                                          final MetaInfo metaInfo,
-                                         final List<Class<?>> concerns,
+                                         final List<Class<?>> assemblyConcerns,
                                          final List<Class<?>> sideEffects,
                                          final List<Class<?>> mixins,
                                          final String moduleName,
@@ -80,7 +81,11 @@ public final class ServiceModel
         PropertiesModel propertiesModel = new PropertiesModel( constraintsModel, propertyDeclarations, immutable );
         StateModel stateModel = new StateModel( propertiesModel );
         MixinsModel mixinsModel = new MixinsModel( compositeType, mixins );
-        ConcernsDeclaration concernsModel = new ConcernsDeclaration( compositeType, concerns );
+
+        List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
+        ConcernsDeclaration.concernDeclarations( assemblyConcerns, concerns );
+        ConcernsDeclaration.concernDeclarations( compositeType, concerns );
+        ConcernsDeclaration concernsModel = new ConcernsDeclaration( concerns );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
         CompositeMethodsModel compositeMethodsModel =
             new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
@@ -202,7 +207,7 @@ public final class ServiceModel
         return false;
     }
 
-    public ServiceInstance newInstance( ModuleInstance module )
+    public CompositeInstance newInstance( ModuleInstance module )
     {
         Object[] mixins = mixinsModel.newMixinHolder();
 
@@ -236,7 +241,7 @@ public final class ServiceModel
             throw e;
         }
 
-        return new ServiceInstance( compositeInstance, this );
+        return compositeInstance;
     }
 
     public Composite newProxy( InvocationHandler serviceInvocationHandler )

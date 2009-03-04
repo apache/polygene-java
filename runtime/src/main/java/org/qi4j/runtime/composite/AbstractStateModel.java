@@ -24,6 +24,7 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.runtime.property.AbstractPropertiesModel;
 import org.qi4j.runtime.property.PropertiesInstance;
+import org.qi4j.runtime.structure.Binder;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
@@ -32,7 +33,7 @@ import org.qi4j.spi.property.PropertyDescriptor;
  * Base model for Composite state
  */
 public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
-    implements StateDescriptor, Serializable
+    implements StateDescriptor, Serializable, Binder
 {
     protected final T propertiesModel;
 
@@ -86,6 +87,11 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
     public List<? extends PropertyDescriptor> properties()
     {
         return propertiesModel.properties();
+    }
+
+    public void bind( Resolution resolution ) throws BindingException
+    {
+        propertiesModel.bind( resolution );
     }
 
     public List<AssociationDescriptor> associations()

@@ -33,7 +33,7 @@ import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
-import org.qi4j.spi.value.CompoundType;
+import org.qi4j.spi.value.ValueCompositeType;
 import org.qi4j.spi.value.SerializableType;
 import org.qi4j.spi.value.ValueType;
 
@@ -160,7 +160,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
 
     private Object storableValue( ValueType type, Object value )
     {
-        if( type instanceof CompoundType )
+        if( type instanceof ValueCompositeType )
         {
             Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
 

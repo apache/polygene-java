@@ -49,14 +49,14 @@ public class EntitiesInstance
         return entities;
     }
 
-    public <T> EntityBuilder<T> newEntityBuilder( Class<T> mixinType, UnitOfWorkInstance uow, EntityStore entityStore )
+    public <T> EntityBuilder<T> newEntityBuilder( EntityModel entityModel, UnitOfWorkInstance uow, EntityStore entityStore )
     {
         if( entityStore == null )
         {
             entityStore = getStore();
         }
 
-        return new EntityBuilderInstance<T>( moduleInstance, entities.getEntityModelFor( mixinType ), uow, entityStore, getIdentityGenerator() );
+        return new EntityBuilderInstance<T>( moduleInstance, entityModel, uow, entityStore, getIdentityGenerator() );
     }
 
     public EntityInstance loadEntityInstance( String identity, EntityModel entityModel, UnitOfWorkInstance uow, EntityStore entityStore )
@@ -88,14 +88,17 @@ public class EntitiesInstance
     // todo DCL??
     private EntityStore getStore()
     {
-        if( store == null )
+        synchronized( this )
         {
-            ServiceReference<EntityStore> service = moduleInstance.findService( EntityStore.class );
-            if( service == null )
+            if( store == null )
             {
-                throw new UnitOfWorkException( "No EntityStore service available in module " + moduleInstance.name() );
+                ServiceReference<EntityStore> service = moduleInstance.serviceFinder().findService( EntityStore.class );
+                if( service == null )
+                {
+                    throw new UnitOfWorkException( "No EntityStore service available in module " + moduleInstance.name() );
+                }
+                store = service.get();
             }
-            store = service.get();
         }
         return store;
     }
@@ -103,14 +106,17 @@ public class EntitiesInstance
     // todo DCL??
     private IdentityGenerator getIdentityGenerator()
     {
-        if( generator == null )
+        synchronized (this)
         {
-            ServiceReference<IdentityGenerator> service = moduleInstance.findService( IdentityGenerator.class );
-            if( service == null )
+            if( generator == null )
             {
-                return null;
+                ServiceReference<IdentityGenerator> service = moduleInstance.serviceFinder().findService( IdentityGenerator.class );
+                if( service == null )
+                {
+                    return null;
+                }
+                generator = service.get();
             }
-            generator = service.get();
         }
         return generator;
     }

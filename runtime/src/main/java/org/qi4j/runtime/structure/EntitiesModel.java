@@ -73,21 +73,6 @@ public class EntitiesModel
         return foundModel;
     }
 
-    public EntityModel getEntityModelFor( Class mixinType )
-    {
-        EntityModel entityModel = getEntityModelFor( mixinType, Visibility.module );
-        if( entityModel == null )
-        {
-            entityModel = getEntityModelFor( mixinType, Visibility.layer );
-        }
-        if( entityModel == null )
-        {
-            entityModel = getEntityModelFor( mixinType, Visibility.application );
-        }
-
-        return entityModel;
-    }
-
     public Class getClassForName( String type )
     {
         for( EntityModel entityModel : entityModels )

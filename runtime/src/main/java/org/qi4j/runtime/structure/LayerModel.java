@@ -19,8 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.spi.structure.LayerDescriptor;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.composite.AmbiguousTypeException;
 
 /**
  * JAVADOC
@@ -82,6 +85,50 @@ public final class LayerModel
     }
 
     // Context
+    public CompositeModel findCompositeFor( Class mixinType, Visibility visibility )
+    {
+        // Check this layer
+        CompositeModel foundModel = null;
+        for( ModuleModel model : modules )
+        {
+            CompositeModel compositeModel = model.composites().getCompositeModelFor( mixinType, visibility );
+            if( compositeModel != null )
+            {
+                if( foundModel != null )
+                {
+                    throw new AmbiguousTypeException( mixinType );
+                }
+                else
+                {
+                    foundModel = compositeModel;
+                }
+            }
+        }
+
+        if( foundModel != null )
+        {
+            return foundModel;
+        }
+
+        if( visibility == Visibility.layer )
+        {
+            // Check application scope
+            foundModel = findCompositeFor( mixinType, Visibility.application );
+            if( foundModel != null )
+            {
+                return foundModel;
+            }
+            else
+            {
+                return usedLayersModel.findCompositeFor( mixinType );
+            }
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     public LayerInstance newInstance( ApplicationInstance applicationInstance, UsedLayersInstance usedLayerInstance )
     {
         List<ModuleInstance> moduleInstances = new ArrayList<ModuleInstance>();
@@ -98,5 +145,28 @@ public final class LayerModel
     @Override public String toString()
     {
         return name;
+    }
+
+    public boolean visitModules( ModuleVisitor visitor, Visibility visibility )
+    {
+        // Visit modules in this layer
+        ModuleInstance foundModule = null;
+        for( ModuleModel moduleModel : modules )
+        {
+            if (!visitor.visitModule( null, moduleModel, visibility ))
+                return false;
+        }
+
+        if( visibility == Visibility.layer )
+        {
+            // Visit modules in this layer
+            if (!visitModules( visitor, Visibility.application ))
+                return false;
+
+            // Visit modules in used layers
+            return usedLayersModel.visitModules(visitor);
+        }
+
+        return true;
     }
 }

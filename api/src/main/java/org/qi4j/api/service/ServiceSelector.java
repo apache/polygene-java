@@ -15,6 +15,7 @@
 package org.qi4j.api.service;
 
 import java.util.Iterator;
+import java.io.Serializable;
 
 /**
  * This class helps you select a particular service
@@ -113,7 +114,7 @@ public final class ServiceSelector<T>
                 {
                     ServiceTags serviceTags = service.metaInfo().get( ServiceTags.class );
 
-                    if( tags != null && serviceTags.hasTags( tags ) )
+                    if( serviceTags != null && serviceTags.hasTags( tags ) )
                     {
                         return service;
                     }
@@ -181,6 +182,7 @@ public final class ServiceSelector<T>
     }
 
     public interface Selector
+        extends Serializable
     {
         <T> ServiceReference<T> select( Iterable<ServiceReference<T>> services );
     }

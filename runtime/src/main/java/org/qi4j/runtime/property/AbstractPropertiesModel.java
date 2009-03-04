@@ -33,14 +33,17 @@ import org.qi4j.api.util.MethodValueMap;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
+import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.runtime.value.ValueModel;
+import org.qi4j.runtime.structure.Binder;
 
 /**
  * Base class for properties model
  */
 public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
-    implements Serializable
+    implements Serializable, Binder
 {
     protected final List<T> propertyModels = new ArrayList<T>();
     private final Map<QualifiedName, Method> accessors = new MethodValueMap<QualifiedName>();
@@ -64,6 +67,14 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
             propertyModels.add( propertyModel );
             accessors.put( propertyModel.qualifiedName(), propertyModel.accessor() );
             mapMethodPropertyModel.put( method, propertyModel );
+        }
+    }
+
+    public void bind( Resolution resolution ) throws BindingException
+    {
+        for( T propertyModel : propertyModels )
+        {
+            propertyModel.bind( resolution );
         }
     }
 

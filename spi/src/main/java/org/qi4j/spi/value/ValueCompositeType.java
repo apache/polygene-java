@@ -25,18 +25,18 @@ import org.qi4j.spi.entity.SchemaVersion;
 /**
  * JAVADOC
  */
-public class CompoundType
+public class ValueCompositeType
     implements ValueType
 {
-    public static boolean isCompound( Type type )
+    public static boolean isValueComposite( Type type )
     {
-        return type instanceof Class && ValueComposite.class.isAssignableFrom( (Class) type );
+        return type instanceof Class && ((Class)type).isInterface();
     }
 
     private final TypeName type;
     private List<PropertyType> types;
 
-    public CompoundType( TypeName type, List<PropertyType> types )
+    public ValueCompositeType( TypeName type, List<PropertyType> types )
     {
         this.type = type;
         Collections.sort( types ); // Sort by property name

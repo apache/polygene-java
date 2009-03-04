@@ -16,6 +16,7 @@ package org.qi4j.runtime.value;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.ArrayList;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.constraint.ConstraintViolationException;
@@ -29,6 +30,7 @@ import org.qi4j.runtime.composite.ConcernsDeclaration;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.SideEffectsDeclaration;
+import org.qi4j.runtime.composite.ConcernDeclaration;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
@@ -45,7 +47,7 @@ public final class ValueModel extends AbstractCompositeModel
                                        final Visibility visibility,
                                        final MetaInfo metaInfo,
                                        final PropertyDeclarations propertyDeclarations,
-                                       final List<Class<?>> concerns,
+                                       final List<Class<?>> assemblyConcerns,
                                        final List<Class<?>> sideEffects,
                                        final List<Class<?>> mixins )
     {
@@ -54,7 +56,11 @@ public final class ValueModel extends AbstractCompositeModel
 
         ValueStateModel stateModel = new ValueStateModel( propertiesModel);
         ValueMixinsModel mixinsModel = new ValueMixinsModel( compositeType, mixins );
-        ConcernsDeclaration concernsModel = new ConcernsDeclaration( compositeType, concerns );
+
+        List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
+        ConcernsDeclaration.concernDeclarations( assemblyConcerns, concerns );
+        ConcernsDeclaration.concernDeclarations( compositeType, concerns );
+        ConcernsDeclaration concernsModel = new ConcernsDeclaration( concerns );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
         // TODO: Disable constraints, concerns and sideeffects??
         CompositeMethodsModel compositeMethodsModel =

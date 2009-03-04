@@ -34,17 +34,21 @@ import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.structure.ModuleVisitor;
+import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.api.common.TypeName;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.value.CollectionType;
-import org.qi4j.spi.value.CompoundType;
+import org.qi4j.spi.value.ValueCompositeType;
 import org.qi4j.spi.value.SerializableType;
 import org.qi4j.spi.value.ValueState;
 import org.qi4j.spi.value.ValueType;
@@ -111,7 +115,7 @@ public abstract class PersistentPropertyModel
         if (value == null)
             return null;
 
-        if( valueType instanceof CompoundType )
+        if( valueType instanceof ValueCompositeType )
         {
             Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
 
@@ -180,13 +184,25 @@ public abstract class PersistentPropertyModel
             return null;
 
         T result;
-        if( valueType instanceof CompoundType )
+        if( valueType instanceof ValueCompositeType )
         {
-            CompoundType compoundType = (CompoundType) propertyType().type();
-            final TypeName typeName = compoundType.type();
-            Class valueClass = moduleInstance.findClassForName( typeName.name() );
-            ValueModel model = (ValueModel) moduleInstance.findModuleForValue( valueClass ).findValueFor( valueClass );
-            result = model.newValueInstance( moduleInstance, ((ValueState)value) ).<T>proxy();
+            ValueCompositeType valueCompositeType = (ValueCompositeType) propertyType().type();
+            final TypeName typeName = valueCompositeType.type();
+            ValueFinder finder = new ValueFinder();
+            try
+            {
+                finder.type = moduleInstance.classLoader().loadClass( typeName.toString() );
+            }
+            catch( ClassNotFoundException e )
+            {
+                throw new NoSuchValueException( typeName.toString(), moduleInstance.name());
+            }
+            moduleInstance.visitModules( finder );
+
+            if (finder.model == null)
+                throw new NoSuchValueException(typeName.toString(), moduleInstance.name());
+
+            result = finder.model.newValueInstance( finder.module, (ValueState) value).<T>proxy();
         } else if (valueType instanceof SerializableType )
         {
             try
@@ -232,4 +248,21 @@ public abstract class PersistentPropertyModel
         return result;
     }
 
+    class ValueFinder
+        implements ModuleVisitor
+    {
+        public Class type;
+        public ValueModel model;
+        public ModuleInstance module;
+
+        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
+        {
+
+            model = moduleModel.values().getValueModelFor(type, visibility);
+            if (model != null)
+                module = moduleInstance;
+
+            return model == null;
+        }
+    }
 }

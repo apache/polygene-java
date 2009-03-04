@@ -57,7 +57,7 @@ public final class ImportedServiceReferenceInstance<T>
 
     public boolean isActive()
     {
-        return serviceInstance != null;
+        return serviceInstance != null && serviceInstance.isActive();
     }
 
     private T getInstance()
@@ -81,6 +81,6 @@ public final class ImportedServiceReferenceInstance<T>
 
     @Override public String toString()
     {
-        return serviceModel.identity() + ", active=" + ( serviceInstance != null ) + ", module='" + serviceModel.moduleName() + "'";
+        return serviceModel.identity() + ", active=" + isActive() + ", module='" + serviceModel.moduleName() + "'";
     }
 }

@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.service;
 
-import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporter;
 
 /**
@@ -23,16 +22,13 @@ import org.qi4j.api.service.ServiceImporter;
 public final class ImportedServiceInstance<T>
 {
     private final T instance;
-    private final ServiceImporter factory;
-    private final ImportedServiceDescriptor serviceDescriptor;
+    private final ServiceImporter importer;
 
 
     public ImportedServiceInstance( T instance,
-                            ServiceImporter factory,
-                            ImportedServiceDescriptor serviceDescriptor )
+                            ServiceImporter importer )
     {
-        this.factory = factory;
-        this.serviceDescriptor = serviceDescriptor;
+        this.importer = importer;
         this.instance = instance;
     }
 
@@ -41,8 +37,13 @@ public final class ImportedServiceInstance<T>
         return instance;
     }
 
-    public ImportedServiceDescriptor importedServiceDescriptor()
+    public ServiceImporter importer()
     {
-        return serviceDescriptor;
+        return importer;
+    }
+
+    public boolean isActive()
+    {
+        return importer.isActive(instance);
     }
 }

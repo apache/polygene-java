@@ -44,14 +44,15 @@ import org.qi4j.bootstrap.ValueDeclaration;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
+import org.qi4j.runtime.object.ObjectsModel;
 import org.qi4j.runtime.service.ImportedServiceModel;
 import org.qi4j.runtime.service.ServiceModel;
-import org.qi4j.runtime.structure.CompositesModel;
+import org.qi4j.runtime.service.ServicesModel;
+import org.qi4j.runtime.service.ImportedServicesModel;
+import org.qi4j.runtime.composite.CompositesModel;
 import org.qi4j.runtime.structure.EntitiesModel;
 import org.qi4j.runtime.structure.ModuleModel;
-import org.qi4j.runtime.structure.ObjectsModel;
-import org.qi4j.runtime.structure.ServicesModel;
-import org.qi4j.runtime.structure.ValuesModel;
+import org.qi4j.runtime.value.ValuesModel;
 import org.qi4j.runtime.value.ValueModel;
 
 /**
@@ -261,7 +262,8 @@ public final class ModuleAssemblyImpl
                                                    new EntitiesModel( entityModels ),
                                                    new ObjectsModel( objectModels ),
                                                    new ValuesModel( valueModels ),
-                                                   new ServicesModel( serviceModels, importedServiceModels ) );
+                                                   new ServicesModel( serviceModels),
+                                                   new ImportedServicesModel( importedServiceModels ) );
 
         for( CompositeDeclarationImpl compositeDeclaration : compositeDeclarations )
         {

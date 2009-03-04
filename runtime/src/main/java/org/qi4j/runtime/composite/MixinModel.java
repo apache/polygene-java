@@ -20,6 +20,8 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.This;
@@ -59,7 +61,9 @@ public final class MixinModel
         injectedFieldsModel = new InjectedFieldsModel( mixinClass );
         injectedMethodsModel = new InjectedMethodsModel( mixinClass );
 
-        concernsDeclaration = new ConcernsDeclaration( mixinClass, Collections.<Class<?>>emptyList() );
+        List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
+        ConcernsDeclaration.concernDeclarations( mixinClass, concerns );
+        concernsDeclaration = new ConcernsDeclaration( concerns );
         sideEffectsDeclaration = new SideEffectsDeclaration( mixinClass, Collections.<Class<?>>emptyList() );
 
         thisMixinTypes = buildThisMixinTypes();
