@@ -32,7 +32,6 @@ import javax.swing.event.MouseInputAdapter;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
-import javax.swing.text.html.HTMLEditorKit;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.library.swing.envisage.event.LinkEvent;
@@ -93,7 +92,7 @@ public class ServiceUsagePane extends DetailPane
         */
 
         defaultCursor = getCursor();
-        linkCursor = new HTMLEditorKit().getLinkCursor();
+        linkCursor = LinkEvent.LINK_CURSOR;
 
         MouseInputAdapter mouseInputListener = new MouseInputAdapter()
         {
@@ -116,10 +115,10 @@ public class ServiceUsagePane extends DetailPane
 
             public void mouseClicked( MouseEvent evt )
             {
-                if( evt.getClickCount() < 2 )
+                /*if( evt.getClickCount() < 2 )
                 {
                     return;
-                }
+                }*/
 
                 int col = usageTable.columnAtPoint( evt.getPoint() );
                 if( col != 0 )
@@ -196,7 +195,7 @@ public class ServiceUsagePane extends DetailPane
             collectInServices( descriptor.services() );
             collectInEntities( descriptor.entities() );
             collectInValues( descriptor.values() );
-            // TODO collectInTransients
+            collectInTransients( descriptor.composites() );
 
             // Object doesn not have mixin, so does not have the required info
             //collectInObjects( descriptor.objects() );
@@ -229,6 +228,14 @@ public class ServiceUsagePane extends DetailPane
     private void collectInValues( Iterable<ValueDetailDescriptor> iter )
     {
         for( ValueDetailDescriptor descriptor : iter )
+        {
+            collectInMixin( descriptor.mixins() );
+        }
+    }
+
+    private void collectInTransients( Iterable<CompositeDetailDescriptor> iter )
+    {
+        for( CompositeDetailDescriptor descriptor : iter )
         {
             collectInMixin( descriptor.mixins() );
         }

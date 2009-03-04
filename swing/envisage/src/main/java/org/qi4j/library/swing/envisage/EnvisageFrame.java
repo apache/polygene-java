@@ -45,6 +45,7 @@ import org.qi4j.library.swing.envisage.tree.TreeModelPane;
 import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
+ * Envisage Main Frame
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class EnvisageFrame extends JFrame

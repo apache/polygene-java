@@ -30,7 +30,6 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.text.html.HTMLEditorKit;
 import org.qi4j.library.swing.envisage.event.LinkEvent;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
@@ -66,6 +65,9 @@ public class ServiceConfigurationPane extends DetailPane
         this.setLayout( new BorderLayout() );
         this.add( contentPane, BorderLayout.CENTER );
 
+        defaultCursor = getCursor();
+        linkCursor = LinkEvent.LINK_CURSOR;
+
         linkButton.addActionListener( new ActionListener()
         {
             public void actionPerformed( ActionEvent evt )
@@ -91,9 +93,6 @@ public class ServiceConfigurationPane extends DetailPane
                 setCursor( defaultCursor );
             }
         } );
-
-        defaultCursor = getCursor();
-        linkCursor = new HTMLEditorKit().getLinkCursor();
 
     }
 

@@ -16,13 +16,17 @@
 */
 package org.qi4j.library.swing.envisage.event;
 
+import java.awt.Cursor;
 import java.util.EventObject;
+import javax.swing.text.html.HTMLEditorKit;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class LinkEvent extends EventObject
 {
+    public static final Cursor LINK_CURSOR = new HTMLEditorKit().getLinkCursor();
+
     protected Object object;
     public LinkEvent(Object source, Object object)
     {

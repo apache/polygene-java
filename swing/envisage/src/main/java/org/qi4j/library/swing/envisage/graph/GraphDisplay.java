@@ -165,7 +165,7 @@ public class GraphDisplay extends Display
 
         // animated transition
         AutoPanAction autoPan = new AutoPanAction();
-        ActionList animate = new ActionList(1000);
+        ActionList animate = new ActionList(800);
         animate.setPacingFunction(new SlowInSlowOutPacer());
         animate.add(autoPan);
         animate.add(new QualityControlAnimator());
@@ -290,7 +290,7 @@ public class GraphDisplay extends Display
     public class AutoZoomAction extends Action
     {
         public void run(double frac) {
-            int duration = 1000;
+            int duration = 20;
             int margin = 50;
             Visualization vis = getVisualization();
             Rectangle2D bounds = vis.getBounds(Visualization.ALL_ITEMS);

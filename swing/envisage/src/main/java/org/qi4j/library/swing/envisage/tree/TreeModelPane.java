@@ -198,9 +198,18 @@ public class TreeModelPane extends JPanel
      * */
     private TreeNode findNode(DefaultMutableTreeNode node, Object obj)
     {
-        if (node.getUserObject().equals( obj )) {
+        if (obj instanceof String)
+        {
+            if (node.getUserObject().toString().equals( obj.toString() ))
+            {
+                return node;
+            }
+        }
+        else if (node.getUserObject().equals( obj ))
+        {
             return node;
         }
+
 
         TreeNode foundNode = null;
         for (int i=0; i<node.getChildCount(); i++ )

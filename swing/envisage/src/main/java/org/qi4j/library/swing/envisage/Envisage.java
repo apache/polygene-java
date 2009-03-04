@@ -48,8 +48,6 @@ public class Envisage
         this.qi4j = qi4j;
         this.application = application;
         
-        //final JPanel mainPane = createMainPanel();
-
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 showMainFrame();
@@ -67,7 +65,6 @@ public class Envisage
         {
             public void windowOpened( WindowEvent evt)
             {
-                //mainFrame.initQi4J();
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         mainFrame.initQi4J();
@@ -81,7 +78,7 @@ public class Envisage
     private void initLookAndFeel() {
         String osName = System.getProperty("os.name").toUpperCase();
 
-        // set to use swing anti alias text
+        // set to use swing anti alias text only for JVM <= 1.5 
         System.setProperty("swing.aatext", "true");
 
         // set default swing bold to false, only for JVM 1.5 or above
@@ -106,7 +103,7 @@ public class Envisage
                 PlasticLookAndFeel.setPlasticTheme(new ExperienceBlue());
                 Options.setUseNarrowButtons(false);
                 //PlasticLookAndFeel.setMyCurrentTheme(new ExperienceBlueDefaultFont());  // for CJK Font
-            }
+            } 
 
             if (lnfClassName != null) {
                 try {

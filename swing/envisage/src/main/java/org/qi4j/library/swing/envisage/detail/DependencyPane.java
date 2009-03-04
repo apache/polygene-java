@@ -17,11 +17,16 @@
 package org.qi4j.library.swing.envisage.detail;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.MouseEvent;
 import java.lang.annotation.Annotation;
 import java.util.ResourceBundle;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -33,8 +38,10 @@ import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.MouseInputAdapter;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.library.swing.envisage.event.LinkEvent;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.InjectedFieldDetailDescriptor;
@@ -60,9 +67,14 @@ public class DependencyPane extends DetailPane
     private JLabel injectionClassLabel;
     private JLabel injectionTypeLabel;
     private JLabel injectionTypeRawLabel;
-
+    private JList injectedServiceList;
+    private JPanel detailPane;
 
     private DefaultListModel fieldListModel;
+    private DefaultListModel injectedServiceListModel;
+
+    private Cursor defaultCursor;
+    private Cursor linkCursor;
 
     public DependencyPane( DetailModelPane detailModelPane )
     {
@@ -73,10 +85,16 @@ public class DependencyPane extends DetailPane
         fieldListModel = new DefaultListModel();
         fieldList.setModel( fieldListModel );
         fieldList.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
-        fieldList.setPrototypeCellValue( "12345678901234567890" );
+        fieldList.setPrototypeCellValue( "123456789012345" );
 
-        //splitPane.setResizeWeight( .1 );
-        //splitPane.setDividerLocation( .3 );
+        injectedServiceListModel = new DefaultListModel();
+        injectedServiceList.setModel( injectedServiceListModel );
+        injectedServiceList.setCellRenderer( new InjectedServiceListCellRenderer() );
+        injectedServiceList.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
+        injectedServiceList.setPrototypeCellValue( "123456789012345" );
+
+        Dimension minSize = new Dimension( 20, 20 );
+        detailPane.setMinimumSize( minSize );
 
         fieldList.addListSelectionListener( new ListSelectionListener()
         {
@@ -85,6 +103,59 @@ public class DependencyPane extends DetailPane
                 fieldListValueChanged( evt );
             }
         } );
+
+
+        defaultCursor = getCursor();
+        linkCursor = LinkEvent.LINK_CURSOR;
+
+        MouseInputAdapter mouseInputListener = new MouseInputAdapter()
+        {
+            public void mouseMoved( MouseEvent evt )
+            {
+                int i = injectedServiceList.locationToIndex( evt.getPoint() );
+                if( i != -1 )
+                {
+                    setCursor( linkCursor );
+                }
+                else
+                {
+                    setCursor( defaultCursor );
+                }
+            }
+
+            public void mouseExited( MouseEvent evt )
+            {
+                setCursor( defaultCursor );
+            }
+
+            public void mouseClicked( MouseEvent evt )
+            {
+                /*if( evt.getClickCount() < 2 )
+                {
+                    return;
+                }*/
+
+                int i = injectedServiceList.locationToIndex( evt.getPoint() );
+                if( i != -1 )
+                {
+                    Object linkObject = injectedServiceListModel.get( i );
+                    linkActivated( linkObject );
+                }
+            }
+        };
+
+        injectedServiceList.addMouseListener( mouseInputListener );
+        injectedServiceList.addMouseMotionListener( mouseInputListener );
+    }
+
+    protected void linkActivated( Object linkObject )
+    {
+        if( linkObject == null )
+        {
+            return;
+        }
+        LinkEvent linkEvt = new LinkEvent( this, linkObject );
+        detailModelPane.fireLinkActivated( linkEvt );
     }
 
     protected void clear()
@@ -101,6 +172,7 @@ public class DependencyPane extends DetailPane
         injectionClassLabel.setText( null );
         injectionTypeLabel.setText( null );
         injectionTypeRawLabel.setText( null );
+        injectedServiceListModel.clear();
     }
 
     public void setDescriptor( Object objectDesciptor )
@@ -145,7 +217,7 @@ public class DependencyPane extends DetailPane
         }
         else if( objectDesciptor instanceof ObjectDetailDescriptor )
         {
-            // Object does not have this info 
+            // Object does not have this info
 
         }
 
@@ -179,14 +251,17 @@ public class DependencyPane extends DetailPane
 
         DependencyDescriptor dependencyDescriptor = descriptor.descriptor().dependency();
 
-        classNameLabel.setText( dependencyDescriptor.injectedClass().getName() );
+        classNameLabel.setText( dependencyDescriptor.injectedClass().getSimpleName() );
         annotationLabel.setText( "@" + dependencyDescriptor.injectionAnnotation().annotationType().getSimpleName() );
         optionalLabel.setText( Boolean.toString( dependencyDescriptor.optional() ) );
         injectionClassLabel.setText( dependencyDescriptor.injectionClass().getName() );
         injectionTypeLabel.setText( dependencyDescriptor.injectionType().toString() );
         injectionTypeRawLabel.setText( dependencyDescriptor.rawInjectionType().getName() );
 
-        System.out.println( dependencyDescriptor.injectedServices() );
+        for( String str : dependencyDescriptor.injectedServices() )
+        {
+            injectedServiceListModel.addElement( str );
+        }
     }
 
     /**
@@ -234,10 +309,10 @@ public class DependencyPane extends DetailPane
         splitPane.setLeftComponent( scrollPane1 );
         fieldList = new JList();
         scrollPane1.setViewportView( fieldList );
-        final JPanel panel1 = new JPanel();
-        panel1.setLayout( new GridBagLayout() );
-        splitPane.setRightComponent( panel1 );
-        panel1.setBorder( BorderFactory.createTitledBorder( BorderFactory.createEmptyBorder( 8, 8, 8, 8 ), null ) );
+        detailPane = new JPanel();
+        detailPane.setLayout( new GridBagLayout() );
+        splitPane.setRightComponent( detailPane );
+        detailPane.setBorder( BorderFactory.createTitledBorder( BorderFactory.createEmptyBorder( 8, 8, 8, 8 ), null ) );
         final JLabel label1 = new JLabel();
         this.$$$loadLabelText$$$( label1, ResourceBundle.getBundle( "org/qi4j/library/swing/envisage/detail/DependencyPane" ).getString( "CTL_ClassName.Text" ) );
         GridBagConstraints gbc;
@@ -245,154 +320,169 @@ public class DependencyPane extends DetailPane
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.EAST;
-        panel1.add( label1, gbc );
+        detailPane.add( label1, gbc );
         final JPanel spacer1 = new JPanel();
         gbc = new GridBagConstraints();
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel1.add( spacer1, gbc );
+        detailPane.add( spacer1, gbc );
         final JPanel spacer2 = new JPanel();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.VERTICAL;
-        panel1.add( spacer2, gbc );
+        detailPane.add( spacer2, gbc );
         final JLabel label2 = new JLabel();
         this.$$$loadLabelText$$$( label2, ResourceBundle.getBundle( "org/qi4j/library/swing/envisage/detail/DependencyPane" ).getString( "CTL_Optional.Text" ) );
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.EAST;
-        panel1.add( label2, gbc );
+        detailPane.add( label2, gbc );
         final JLabel label3 = new JLabel();
         this.$$$loadLabelText$$$( label3, ResourceBundle.getBundle( "org/qi4j/library/swing/envisage/detail/DependencyPane" ).getString( "CTL_Annotation.Text" ) );
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.anchor = GridBagConstraints.EAST;
-        panel1.add( label3, gbc );
+        detailPane.add( label3, gbc );
         final JPanel spacer3 = new JPanel();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.fill = GridBagConstraints.VERTICAL;
-        panel1.add( spacer3, gbc );
+        detailPane.add( spacer3, gbc );
         final JPanel spacer4 = new JPanel();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.fill = GridBagConstraints.VERTICAL;
-        panel1.add( spacer4, gbc );
+        detailPane.add( spacer4, gbc );
         final JLabel label4 = new JLabel();
         this.$$$loadLabelText$$$( label4, ResourceBundle.getBundle( "org/qi4j/library/swing/envisage/detail/DependencyPane" ).getString( "CTL_InjectionClass.Text" ) );
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 10;
         gbc.anchor = GridBagConstraints.EAST;
-        panel1.add( label4, gbc );
+        detailPane.add( label4, gbc );
         final JPanel spacer5 = new JPanel();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 11;
         gbc.fill = GridBagConstraints.VERTICAL;
-        panel1.add( spacer5, gbc );
+        detailPane.add( spacer5, gbc );
         final JLabel label5 = new JLabel();
         this.$$$loadLabelText$$$( label5, ResourceBundle.getBundle( "org/qi4j/library/swing/envisage/detail/DependencyPane" ).getString( "CTL_InjectionType.Text" ) );
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 12;
         gbc.anchor = GridBagConstraints.EAST;
-        panel1.add( label5, gbc );
+        detailPane.add( label5, gbc );
         final JPanel spacer6 = new JPanel();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 13;
         gbc.fill = GridBagConstraints.VERTICAL;
-        panel1.add( spacer6, gbc );
+        detailPane.add( spacer6, gbc );
         classNameLabel = new JLabel();
-        classNameLabel.setText( "Label" );
+        classNameLabel.setText( "none" );
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.anchor = GridBagConstraints.WEST;
-        panel1.add( classNameLabel, gbc );
+        detailPane.add( classNameLabel, gbc );
         annotationLabel = new JLabel();
-        annotationLabel.setText( "Label" );
+        annotationLabel.setText( "none" );
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 4;
         gbc.anchor = GridBagConstraints.WEST;
-        panel1.add( annotationLabel, gbc );
+        detailPane.add( annotationLabel, gbc );
         injectionClassLabel = new JLabel();
-        injectionClassLabel.setText( "Label" );
+        injectionClassLabel.setText( "none" );
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 10;
         gbc.anchor = GridBagConstraints.WEST;
-        panel1.add( injectionClassLabel, gbc );
+        detailPane.add( injectionClassLabel, gbc );
         injectionTypeLabel = new JLabel();
-        injectionTypeLabel.setText( "Label" );
+        injectionTypeLabel.setText( "none" );
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 12;
         gbc.anchor = GridBagConstraints.WEST;
-        panel1.add( injectionTypeLabel, gbc );
+        detailPane.add( injectionTypeLabel, gbc );
         optionalLabel = new JLabel();
-        optionalLabel.setText( "Label" );
+        optionalLabel.setText( "none" );
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.WEST;
-        panel1.add( optionalLabel, gbc );
+        detailPane.add( optionalLabel, gbc );
         injectionTypeRawLabel = new JLabel();
-        injectionTypeRawLabel.setText( "Label" );
+        injectionTypeRawLabel.setText( "none" );
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 14;
         gbc.anchor = GridBagConstraints.WEST;
-        panel1.add( injectionTypeRawLabel, gbc );
+        detailPane.add( injectionTypeRawLabel, gbc );
         final JLabel label6 = new JLabel();
         this.$$$loadLabelText$$$( label6, ResourceBundle.getBundle( "org/qi4j/library/swing/envisage/detail/DependencyPane" ).getString( "CTL_InjectionTypeRaw.Text" ) );
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 14;
         gbc.anchor = GridBagConstraints.EAST;
-        panel1.add( label6, gbc );
+        detailPane.add( label6, gbc );
         final JPanel spacer7 = new JPanel();
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 15;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        panel1.add( spacer7, gbc );
-        final JPanel spacer8 = new JPanel();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 7;
         gbc.fill = GridBagConstraints.VERTICAL;
-        panel1.add( spacer8, gbc );
-        final JPanel spacer9 = new JPanel();
+        detailPane.add( spacer7, gbc );
+        final JPanel spacer8 = new JPanel();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 9;
         gbc.fill = GridBagConstraints.VERTICAL;
-        panel1.add( spacer9, gbc );
+        detailPane.add( spacer8, gbc );
         final JLabel label7 = new JLabel();
         this.$$$loadLabelText$$$( label7, ResourceBundle.getBundle( "org/qi4j/library/swing/envisage/detail/DependencyPane" ).getString( "CTL_Injection.Text" ) );
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 8;
         gbc.anchor = GridBagConstraints.WEST;
-        panel1.add( label7, gbc );
+        detailPane.add( label7, gbc );
+        final JScrollPane scrollPane2 = new JScrollPane();
+        gbc = new GridBagConstraints();
+        gbc.gridx = 2;
+        gbc.gridy = 16;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        detailPane.add( scrollPane2, gbc );
+        injectedServiceList = new JList();
+        scrollPane2.setViewportView( injectedServiceList );
+        final JPanel spacer9 = new JPanel();
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 15;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        detailPane.add( spacer9, gbc );
+        final JLabel label8 = new JLabel();
+        this.$$$loadLabelText$$$( label8, ResourceBundle.getBundle( "org/qi4j/library/swing/envisage/detail/DependencyPane" ).getString( "CTL_InjectedServices.Text" ) );
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 16;
+        gbc.anchor = GridBagConstraints.NORTHEAST;
+        detailPane.add( label8, gbc );
         final JSeparator separator1 = new JSeparator();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 6;
         gbc.gridwidth = 3;
         gbc.fill = GridBagConstraints.BOTH;
-        panel1.add( separator1, gbc );
+        detailPane.add( separator1, gbc );
     }
 
     /**
@@ -437,5 +527,23 @@ public class DependencyPane extends DetailPane
     {
         return contentPane;
     }
+
+    class InjectedServiceListCellRenderer extends DefaultListCellRenderer
+    {
+        public Component getListCellRendererComponent( JList list, Object value, int index, boolean isSelected, boolean cellHasFocus )
+        {
+            if( value != null )
+            {
+                String id = (String) value;
+                value = "<html><a href=\"" + id + "\">" + id + "</a></html>";
+            }
+
+            super.getListCellRendererComponent( list, value, index, isSelected, cellHasFocus );
+
+            return this;
+        }
+
+    }
+
 }
 
