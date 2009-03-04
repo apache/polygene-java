@@ -19,6 +19,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.rdf.RdfFactoryService;
 import org.qi4j.index.rdf.RdfQueryService;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
+import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.library.rdf.repository.NativeRepositoryService;
 
@@ -32,6 +33,6 @@ public class RdfNativeSesameStoreAssembler
         module.addServices( NativeRepositoryService.class ).instantiateOnStartup().identifiedBy( "rdf-indexing" );
         module.addServices( RdfQueryService.class ).instantiateOnStartup();
         module.addServices( RdfFactoryService.class );
-        module.addObjects( EntityStateSerializer.class );
+        module.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
     }
 }
