@@ -217,8 +217,8 @@ public class DependencyPane extends DetailPane
         }
         else if( objectDesciptor instanceof ObjectDetailDescriptor )
         {
-            // Object does not have this info
-
+            ObjectDetailDescriptor descriptor = ( (ObjectDetailDescriptor) objectDesciptor );
+            reload( descriptor.injectedFields() );
         }
 
         if( !fieldListModel.isEmpty() )

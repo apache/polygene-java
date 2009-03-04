@@ -42,6 +42,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.InjectedFieldDetailDescr
 import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.MixinDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
 import org.qi4j.library.swing.envisage.util.TableData;
@@ -196,17 +197,13 @@ public class ServiceUsagePane extends DetailPane
             collectInEntities( descriptor.entities() );
             collectInValues( descriptor.values() );
             collectInTransients( descriptor.composites() );
-
-            // Object doesn not have mixin, so does not have the required info
-            //collectInObjects( descriptor.objects() );
+            collectInObjects( descriptor.objects() );
         }
     }
 
 
     private void collectInServices( Iterable<ServiceDetailDescriptor> iter )
     {
-        Object configDescriptor = null;
-
         for( ServiceDetailDescriptor descriptor : iter )
         {
             if( descriptor.equals( this.descriptor ) )
@@ -241,29 +238,70 @@ public class ServiceUsagePane extends DetailPane
         }
     }
 
+    private void collectInObjects( Iterable<ObjectDetailDescriptor> iter )
+    {
+        for( ObjectDetailDescriptor descriptor : iter )
+        {
+            collectInInjectedField( descriptor.injectedFields(), descriptor );
+        }
+    }
+
     private void collectInMixin( Iterable<MixinDetailDescriptor> iter )
     {
         for( MixinDetailDescriptor descriptor : iter )
         {
-            Iterable<InjectedFieldDetailDescriptor> iterField = descriptor.injectedFields();
-            for( InjectedFieldDetailDescriptor descriptorField : iterField )
+            collectInInjectedField( descriptor.injectedFields(), descriptor );
+        }
+    }
+
+    private void collectInInjectedField( Iterable<InjectedFieldDetailDescriptor> iter, Object ownerDescriptor )
+    {
+        for( InjectedFieldDetailDescriptor descriptorField : iter )
+        {
+            DependencyDescriptor dependencyDescriptor = descriptorField.descriptor().dependency();
+            Annotation annotation = dependencyDescriptor.injectionAnnotation();
+
+            Class<? extends Annotation> clazz = annotation.annotationType();
+            if( Uses.class.equals( clazz ) || Service.class.equals( clazz ) )
             {
-                DependencyDescriptor dependencyDescriptor = descriptorField.descriptor().dependency();
-                Annotation annotation = dependencyDescriptor.injectionAnnotation();
-
-                Class<? extends Annotation> clazz = annotation.annotationType();
-                if( Uses.class.equals( clazz ) || Service.class.equals( clazz ) )
+                boolean used = false;
+                if( dependencyDescriptor.injectionClass().equals( this.descriptor.descriptor().type() ) )
                 {
-
-                    if( dependencyDescriptor.injectionClass().equals( this.descriptor.descriptor().type() ) )
+                    used = true;
+                }
+                else
+                {
+                    // collect in injectedServices
+                    for( String name : dependencyDescriptor.injectedServices() )
                     {
-                        TableData rowData = new TableData( 5 );
-                        rowData.set( 0, descriptor.composite() );
-                        rowData.set( 1, descriptorField );
-                        rowData.set( 2, descriptor.composite().module() );
-                        rowData.set( 3, descriptor.composite().module().layer() );
-                        usageTableModel.addRowData( rowData );
+                        if( name.equals( this.descriptor.descriptor().identity() ) )
+                        {
+                            used = true;
+                        }
                     }
+                }
+
+                if( used )
+                {
+                    TableData rowData = new TableData( 5 );
+                    if( ownerDescriptor instanceof MixinDetailDescriptor )
+                    {
+                        MixinDetailDescriptor mixinDescriptor = (MixinDetailDescriptor) ownerDescriptor;
+                        rowData.set( 0, mixinDescriptor.composite() );
+                        rowData.set( 1, descriptorField );
+                        rowData.set( 2, mixinDescriptor.composite().module() );
+                        rowData.set( 3, mixinDescriptor.composite().module().layer() );
+                    }
+                    else
+                    {
+                        // assume ObjectDetailDescriptor
+                        ObjectDetailDescriptor objectDescriptor = (ObjectDetailDescriptor) ownerDescriptor;
+                        rowData.set( 0, objectDescriptor );
+                        rowData.set( 1, descriptorField );
+                        rowData.set( 2, objectDescriptor.module() );
+                        rowData.set( 3, objectDescriptor.module().layer() );
+                    }
+                    usageTableModel.addRowData( rowData );
                 }
             }
         }
