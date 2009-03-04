@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Collection;
 import java.io.Serializable;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -91,8 +92,13 @@ public final class ServiceInjectionProviderFactory
         }
     }
 
+    public interface ServiceInjector
+    {
+        List<String> injectedServices();
+    }
+
     private static class IterableServiceReferenceProvider
-        implements InjectionProvider, Serializable
+        implements InjectionProvider, ServiceInjector, Serializable
     {
         private final ServicesFinder servicesFinder;
 
@@ -128,10 +134,26 @@ public final class ServiceInjectionProviderFactory
 
             return serviceReferences;
         }
+
+        public List<String> injectedServices()
+        {
+            List<String> services = new ArrayList<String>();
+            Collection<List<String>> stringLists = servicesFinder.serviceIdentities.values();
+            for( List<String> stringList : stringLists )
+            {
+                services.addAll(stringList );
+            }
+            stringLists = servicesFinder.importedServiceIdentities.values();
+            for( List<String> stringList : stringLists )
+            {
+                services.addAll(stringList );
+            }
+            return services;
+        }
     }
 
     private static class IterableServiceProvider
-        implements InjectionProvider, Serializable
+        implements InjectionProvider, ServiceInjector, Serializable
     {
         private final ServicesFinder servicesFinder;
 
@@ -167,10 +189,26 @@ public final class ServiceInjectionProviderFactory
 
             return serviceInstances;
         }
+
+        public List<String> injectedServices()
+        {
+            List<String> services = new ArrayList<String>();
+            Collection<List<String>> stringLists = servicesFinder.serviceIdentities.values();
+            for( List<String> stringList : stringLists )
+            {
+                services.addAll(stringList );
+            }
+            stringLists = servicesFinder.importedServiceIdentities.values();
+            for( List<String> stringList : stringLists )
+            {
+                services.addAll(stringList );
+            }
+            return services;
+        }
     }
 
     private static class ServiceReferenceProvider
-        implements InjectionProvider, Serializable
+        implements InjectionProvider, ServiceInjector, Serializable
     {
         private final ServiceFinder serviceFinder;
 
@@ -200,10 +238,18 @@ public final class ServiceInjectionProviderFactory
 
             return reference;
         }
+
+        public List<String> injectedServices()
+        {
+            List<String> services = new ArrayList<String>();
+            if (serviceFinder.identity != null)
+                services.add(serviceFinder.identity);
+            return services;
+        }
     }
 
     private static class ServiceProvider
-        implements InjectionProvider, Serializable
+        implements InjectionProvider, ServiceInjector, Serializable
     {
         private final ServiceFinder serviceFinder;
 
@@ -231,6 +277,15 @@ public final class ServiceInjectionProviderFactory
             }
 
             return instance;
+        }
+
+
+        public List<String> injectedServices()
+        {
+            List<String> services = new ArrayList<String>();
+            if (serviceFinder.identity != null)
+                services.add(serviceFinder.identity);
+            return services;
         }
     }
 

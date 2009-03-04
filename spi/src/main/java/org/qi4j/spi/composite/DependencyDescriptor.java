@@ -38,4 +38,6 @@ public interface DependencyDescriptor
     Class<?> injectionClass();
 
     boolean optional();
+
+    Iterable<String> injectedServices();
 }

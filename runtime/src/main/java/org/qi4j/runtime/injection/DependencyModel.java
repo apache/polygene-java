@@ -248,18 +248,20 @@ public final class DependencyModel
         return optional;
     }
 
-    public List injectedServices()
+    public Iterable<String> injectedServices()
     {
-/*
+        Iterable<String> services = Collections.emptyList();
+
         if (injectionProvider instanceof CachingInjectionProviderDecorator)
         {
             InjectionProvider decoratedProvider = ((CachingInjectionProviderDecorator)injectionProvider).decoratedProvider();
-            if (decoratedProvider instanceof ServiceInjectionProviderFactory.)
+            if (decoratedProvider instanceof ServiceInjectionProviderFactory.ServiceInjector)
+            {
+                services = ((ServiceInjectionProviderFactory.ServiceInjector)decoratedProvider).injectedServices();
+            }
         }
-
-        return injectionProvider;
-*/
-        return null;
+        
+        return services;
     }
 
     // Binding
