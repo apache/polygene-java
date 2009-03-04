@@ -281,7 +281,7 @@ public abstract class TestBase extends AbstractQi4jTest
         super.setUp();
         if( !useTxService )
         {
-            txFactory = serviceLocator.findService( NeoTransactionService.class ).get();
+            txFactory = serviceLocator.<NeoTransactionService>findService( NeoTransactionService.class ).get();
         }
     }
 }

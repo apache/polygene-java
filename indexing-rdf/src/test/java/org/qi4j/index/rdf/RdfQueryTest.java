@@ -138,7 +138,7 @@ public class RdfQueryTest
     {
         ServiceFinder serviceFinder = assembler.serviceFinder();
         RdfIndexerExporterComposite rdfIndexerExporter =
-            serviceFinder.findService( RdfIndexerExporterComposite.class ).get();
+            serviceFinder.<RdfIndexerExporterComposite>findService( RdfIndexerExporterComposite.class ).get();
         rdfIndexerExporter.toRDF( System.out );
     }
 

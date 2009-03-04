@@ -68,11 +68,6 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
     }
 
 
-    protected CompositeDescriptor getCompositeDescriptor( final Class<? extends EntityComposite> compositeType )
-    {
-        return spi.getCompositeDescriptor( compositeType, moduleInstance );
-    }
-
     @Before public void setUp() throws Exception
     {
         derbyDatabaseHandler = new DerbyDatabaseHandler();

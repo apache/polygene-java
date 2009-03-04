@@ -35,4 +35,9 @@ class MBeanServerImporter
         else
             return MBeanServerFactory.createMBeanServer();
     }
+
+    public boolean isActive( Object instance )
+    {
+        return true;
+    }
 }

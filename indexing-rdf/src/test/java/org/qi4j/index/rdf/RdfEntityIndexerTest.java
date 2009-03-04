@@ -77,6 +77,6 @@ public class RdfEntityIndexerTest
             }
         };
         populate( assembler );
-        assembler.serviceFinder().findService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
+        assembler.serviceFinder().<RdfIndexerExporterComposite>findService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
     }
 }

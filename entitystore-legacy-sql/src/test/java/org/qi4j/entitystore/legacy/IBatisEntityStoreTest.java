@@ -69,7 +69,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
 
         final EntityState state = entityStore.newEntityState( id( NEW_TEST_ID ) );
         assertNotNull( state );
-        checkEntityStateProperties( getCompositeDescriptor( PersonComposite.class ), state, false );
+        checkEntityStateProperties( spi.getEntityDescriptor( PersonComposite.class, moduleInstance ), state, false );
         uow.complete();
     }
 
@@ -220,6 +220,6 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     private LegacySqlEntityStoreService getEntityStore() throws Exception
     {
         assertNotNull( moduleInstance );
-        return moduleInstance.serviceFinder().findService( LegacySqlEntityStoreService.class ).get();
+        return moduleInstance.serviceFinder().<LegacySqlEntityStoreService>findService( LegacySqlEntityStoreService.class ).get();
     }
 }

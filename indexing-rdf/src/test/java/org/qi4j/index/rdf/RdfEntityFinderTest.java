@@ -119,7 +119,7 @@ public class RdfEntityFinderTest
             }
         };
         Network.populate( assembler );
-        entityFinder = assembler.serviceFinder().findService( RdfQueryService.class ).get();
+        entityFinder = assembler.serviceFinder().<RdfQueryService>findService( RdfQueryService.class ).get();
     }
 
     @Test

@@ -20,17 +20,18 @@ package org.qi4j.index.rdf.internal;
 import org.qi4j.index.rdf.RdfFactoryService;
 import org.qi4j.index.rdf.RdfQueryParser;
 import org.qi4j.index.rdf.UnsupportedLanguageException;
+import org.qi4j.index.rdf.RdfFactory;
 import org.openrdf.query.QueryLanguage;
 
-public abstract class RdfFactoryMixin
-    implements RdfFactoryService
+public class RdfFactoryMixin
+    implements RdfFactory
 {
 
     public RdfQueryParser newQueryParser( QueryLanguage language )
     {
         if( language.equals( QueryLanguage.SPARQL ) )
         {
-        return new SparqlRdfQueryParser();
+            return new SparqlRdfQueryParser();
         }
         throw new UnsupportedLanguageException( language );
     }
