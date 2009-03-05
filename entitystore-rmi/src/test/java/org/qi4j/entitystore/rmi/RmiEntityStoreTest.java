@@ -29,7 +29,8 @@ import org.qi4j.test.entity.AbstractEntityStoreTest;
 public class RmiEntityStoreTest
     extends AbstractEntityStoreTest
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         super.assemble( module );
         module.setName( "Module 1" );
