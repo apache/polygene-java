@@ -20,7 +20,6 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.print.PrinterJob;
 import java.util.ResourceBundle;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -30,6 +29,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import org.qi4j.api.structure.Application;
@@ -40,12 +40,13 @@ import org.qi4j.library.swing.envisage.event.LinkListener;
 import org.qi4j.library.swing.envisage.graph.GraphPane;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptorBuilder;
-import org.qi4j.library.swing.envisage.print.ComponentPrintable;
+import org.qi4j.library.swing.envisage.print.PDFWriter;
 import org.qi4j.library.swing.envisage.tree.TreeModelPane;
 import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * Envisage Main Frame
+ *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class EnvisageFrame extends JFrame
@@ -144,9 +145,9 @@ public class EnvisageFrame extends JFrame
         {
             public void actionPerformed( ActionEvent evt )
             {
-                if( evt.getActionCommand().equals( "print" ) )
+                if( evt.getActionCommand().equals( "export" ) )
                 {
-                    printInvoked();
+                    exportAsPDF();
                 }
                 if( evt.getActionCommand().equals( "exit" ) )
                 {
@@ -162,9 +163,9 @@ public class EnvisageFrame extends JFrame
         menu.setMnemonic( KeyEvent.VK_F );
         menuBar.add( menu );
 
-        JMenuItem menuItem = new JMenuItem( "Print", KeyEvent.VK_P );
-        menuItem.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_P, ActionEvent.CTRL_MASK ) );
-        menuItem.setActionCommand( "print" );
+        JMenuItem menuItem = new JMenuItem( "Export As PDF", KeyEvent.VK_E );
+        menuItem.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_E, ActionEvent.CTRL_MASK ) );
+        menuItem.setActionCommand( "export" );
         menuItem.addActionListener( menuActionListener );
         menu.add( menuItem );
 
@@ -204,25 +205,16 @@ public class EnvisageFrame extends JFrame
         treeModelPane.setSelectedValue( evt.getObject() );
     }
 
-    protected void printInvoked()
+    protected void exportAsPDF()
     {
-        PrinterJob job = PrinterJob.getPrinterJob();
-
-        job.setPrintable( new ComponentPrintable( this ) );
-
-        job.setJobName( "envisage" ); // TODO i18n
-
-        if( job.printDialog() )
+        SwingUtilities.invokeLater( new Runnable()
         {
-            try
+            public void run()
             {
-                job.print();
+                PDFWriter pdf = new PDFWriter();
+                pdf.write( EnvisageFrame.this, descriptor, graphPane.getGraphDisplay() );
             }
-            catch( Exception ex )
-            {
-                /* Handle Exception */
-            }
-        }
+        } );
     }
 
     {
