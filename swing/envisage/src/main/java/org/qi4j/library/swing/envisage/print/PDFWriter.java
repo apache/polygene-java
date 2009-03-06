@@ -34,6 +34,21 @@ import org.pdfbox.pdmodel.font.PDType1Font;
 import org.pdfbox.pdmodel.graphics.xobject.PDJpeg;
 import org.qi4j.library.swing.envisage.graph.GraphDisplay;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.InjectedFieldDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.MixinDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
+import org.qi4j.spi.composite.AbstractCompositeDescriptor;
+import org.qi4j.spi.composite.DependencyDescriptor;
+import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.object.ObjectDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
+import org.qi4j.spi.value.ValueDescriptor;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
@@ -42,13 +57,34 @@ public class PDFWriter
 {
     protected PDDocument doc = null;
     protected PDPageContentStream curContentStream = null;
-    
+    protected PDRectangle curPageSize;
+    protected float curY;
+    protected PDFont curFont;
+    protected float curFontSize;
+
+    protected String APPLICATION = "Application";
+    protected String LAYER = "Layer";
+    protected String MODULE = "Module";
+
+
     protected PDFont normalFont = PDType1Font.HELVETICA;
-    protected PDFont header1Font = PDType1Font.HELVETICA_BOLD;
-    protected PDFont header2Font = PDType1Font.HELVETICA_BOLD_OBLIQUE;
-    protected float header1FontSize = 16;
-    protected float header2FontSize = 14;
-    protected float normalFontSize = 12;
+    protected PDFont header1Font = PDType1Font.HELVETICA_BOLD;  // Application
+    protected PDFont header2Font = PDType1Font.HELVETICA_BOLD;  // Layer
+    protected PDFont header3Font = PDType1Font.HELVETICA_BOLD; // Module
+    protected PDFont header4Font = PDType1Font.HELVETICA_BOLD; // Type
+    protected PDFont header5Font = PDType1Font.HELVETICA_BOLD_OBLIQUE; // Type
+    protected float normalFontSize = 10;
+    protected float header1FontSize = 18;
+    protected float header2FontSize = 16;
+    protected float header3FontSize = 14;
+    protected float header4FontSize = 12;
+    protected float header5FontSize = 12;
+
+
+    protected float startX = 40;
+    protected float startY = 40;
+    protected float lineSpace = 15;
+    protected float headerLineSpace = 25;
 
     public void write ( Component parent, ApplicationDetailDescriptor descriptor, GraphDisplay graphDisplay)
     {
@@ -192,34 +228,238 @@ public class PDFWriter
 
     private void writePage(ApplicationDetailDescriptor descriptor) throws Exception
     {
-        curContentStream = createNewPage();
-        curContentStream.setFont( header1Font, header1FontSize );
-        curContentStream.drawString( descriptor.toString() );
+        createNewPage();
+        setFont( header1Font, header1FontSize );
+        writeString( APPLICATION + " : " + descriptor.toString());
 
-        //curContentStream.draw
-        //descriptor.layers();
-         //buildLayersNode( node, descriptor.layers() );
+        writeLayerPage( descriptor.layers() );
     }
 
-    private PDPageContentStream createNewPage() throws Exception
+    private void writeLayerPage( Iterable<LayerDetailDescriptor> iter) throws Exception
+    {
+        for( LayerDetailDescriptor descriptor : iter )
+        {
+            setFont( header2Font, header2FontSize );
+            writeString(LAYER+ " : " + descriptor.toString(), headerLineSpace);
+
+            writeModulePage(descriptor.modules());
+        }
+    }
+
+    private void writeModulePage( Iterable<ModuleDetailDescriptor> iter) throws Exception
+    {
+        for( ModuleDetailDescriptor descriptor : iter )
+        {
+            setFont( header3Font, header3FontSize );
+            writeString(MODULE + " : " + descriptor.toString(), headerLineSpace);
+
+            writeServicePage ( descriptor.services() );
+            writeEntityPage( descriptor.entities() );
+            writeTransientPage( descriptor.composites() );
+            writeValuePage( descriptor.values() );
+            writeObjectPage( descriptor.objects() );
+
+            /*Node childNode = addChild(parent, descriptor.descriptor().name(), descriptor );
+
+            buildServicesNode( childNode, descriptor.services() );
+            buildEntitiesNode( childNode, descriptor.entities() );
+            buildTransientsNode( childNode, descriptor.composites() );
+            buildValuesNode( childNode, descriptor.values() );
+            buildObjectsNode( childNode, descriptor.objects() );
+            */
+        }
+    }
+
+    private void writeServicePage( Iterable<ServiceDetailDescriptor> iter) throws Exception
+    {
+        for( ServiceDetailDescriptor descriptor : iter )
+        {
+            setFont( header4Font, header4FontSize);
+            writeString(descriptor.toString(), headerLineSpace);
+            writeTypeGeneralPage( descriptor );
+            writeTypeDependencyPage( descriptor);
+        }
+    }
+
+    private void writeEntityPage( Iterable<EntityDetailDescriptor> iter) throws Exception
+    {
+        for( EntityDetailDescriptor descriptor : iter )
+        {
+            setFont( header4Font, header4FontSize);
+            writeString(descriptor.toString(), headerLineSpace);
+            writeTypeGeneralPage( descriptor );
+            writeTypeDependencyPage( descriptor);
+        }
+    }
+
+    private void writeTransientPage( Iterable<CompositeDetailDescriptor> iter) throws Exception
+    {
+        for( CompositeDetailDescriptor descriptor : iter )
+        {
+            setFont( header4Font, header4FontSize);
+            writeString(descriptor.toString(), headerLineSpace);
+            writeTypeGeneralPage( descriptor );
+            writeTypeDependencyPage( descriptor);
+        }
+    }
+
+    private void writeValuePage( Iterable<ValueDetailDescriptor> iter) throws Exception
+    {
+        for( ValueDetailDescriptor descriptor : iter )
+        {
+            setFont( header4Font, header4FontSize);
+            writeString(descriptor.toString(), headerLineSpace);
+            writeTypeGeneralPage( descriptor );
+            writeTypeDependencyPage( descriptor);
+        }
+    }
+
+    private void writeObjectPage( Iterable<ObjectDetailDescriptor> iter) throws Exception
+    {
+        for( ObjectDetailDescriptor descriptor : iter )
+        {
+            setFont( header4Font, header4FontSize);
+            writeString(descriptor.toString(), headerLineSpace);
+            writeTypeGeneralPage( descriptor );
+            writeTypeDependencyPage( descriptor);
+        }
+    }
+
+    private void writeTypeGeneralPage (Object objectDesciptor) throws Exception
+    {
+
+        setFont( header5Font, header5FontSize );
+        writeString( "General: ", headerLineSpace );
+
+        setFont( normalFont, normalFontSize );
+
+        if( objectDesciptor instanceof ServiceDetailDescriptor )
+        {
+            ServiceDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor ).descriptor();
+            writeString( "- identity: " + descriptor.identity() );
+            writeString( "- class: " + descriptor.type().getSimpleName() );
+            writeString( "- visibility: " + descriptor.visibility().toString() );
+            writeString( "- startup: " + ( (ServiceDetailDescriptor) objectDesciptor ).descriptor().isInstantiateOnStartup() );
+        }
+        else if( objectDesciptor instanceof EntityDetailDescriptor )
+        {
+            EntityDescriptor descriptor = ( (EntityDetailDescriptor) objectDesciptor ).descriptor();
+            writeString( "- name: " + descriptor.type().getSimpleName() );
+            writeString( "- class: " + descriptor.type().getSimpleName() );
+            writeString( "- visibility: " + descriptor.visibility().toString() );
+        }
+        else if( objectDesciptor instanceof ValueDetailDescriptor )
+        {
+            ValueDescriptor descriptor = ( (ValueDetailDescriptor) objectDesciptor ).descriptor();
+            writeString( "- name: " + descriptor.type().getSimpleName() );
+            writeString( "- class: " + descriptor.type().getSimpleName() );
+            writeString( "- visibility: " + descriptor.visibility().toString() );
+        }
+        else if( objectDesciptor instanceof ObjectDetailDescriptor )
+        {
+            ObjectDescriptor descriptor = ( (ObjectDetailDescriptor) objectDesciptor ).descriptor();
+            writeString( "- name: " + descriptor.type().getSimpleName() );
+            writeString( "- class: " + descriptor.type().getSimpleName() );
+            writeString( "- visibility: " + descriptor.visibility().toString() );
+        }
+        else if( objectDesciptor instanceof CompositeDetailDescriptor )
+        {
+            AbstractCompositeDescriptor descriptor = ( (CompositeDetailDescriptor) objectDesciptor ).descriptor();
+            writeString( "- name: " + descriptor.type().getSimpleName() );
+            writeString( "- class: " + descriptor.type().getSimpleName() );
+            writeString( "- visibility: " + descriptor.visibility().toString() );
+        }
+    }
+
+    private void writeTypeDependencyPage (Object objectDesciptor) throws Exception
+    {
+        setFont( header5Font, header5FontSize );
+        writeString( "Dependencies: ", headerLineSpace );
+
+        if (objectDesciptor instanceof CompositeDetailDescriptor)
+        {
+            CompositeDetailDescriptor descriptor = (CompositeDetailDescriptor) objectDesciptor;
+            Iterable<MixinDetailDescriptor> iter = descriptor.mixins();
+            for( MixinDetailDescriptor mixinDescriptor : iter )
+            {
+                writeTypeDependencyPage( mixinDescriptor.injectedFields() );
+            }
+        }
+        else if (objectDesciptor instanceof ObjectDetailDescriptor)
+        {
+            ObjectDetailDescriptor descriptor = ( (ObjectDetailDescriptor) objectDesciptor );
+            writeTypeDependencyPage( descriptor.injectedFields() );
+        }
+    }
+
+    private void writeTypeDependencyPage( Iterable<InjectedFieldDetailDescriptor> iter ) throws Exception
+    {
+        setFont( normalFont, normalFontSize );
+        for( InjectedFieldDetailDescriptor descriptor : iter )
+        {
+            DependencyDescriptor dependencyDescriptor = descriptor.descriptor().dependency();
+            writeString( "- name: "  + dependencyDescriptor.injectedClass().getSimpleName() );
+            writeString( "    * annotation: @"  + dependencyDescriptor.injectionAnnotation().annotationType().getSimpleName() );
+            writeString( "    * optional: " + Boolean.toString( dependencyDescriptor.optional()));
+            writeString( "    * type: " + dependencyDescriptor.injectionType().getClass().getSimpleName());
+            writeString( "    * services: ");
+            for( String str : dependencyDescriptor.injectedServices() )
+            {
+                writeString( "        - " + str);
+            }
+        }
+    }
+
+    private void writeString(String text) throws Exception
+    {
+        writeString( text, this.lineSpace );   
+    }
+
+    private void writeString(String text, float lineSpace) throws Exception
+    {
+        // check for page size, if necessary create new page
+        if ((curY - lineSpace) <= startY) {
+            //System.out.println("new line: " + curY + " - " + lineSpace + " = " + (curY-lineSpace) );
+            createNewPage();
+        }
+
+        curY = curY - lineSpace;
+        curContentStream.moveTextPositionByAmount( 0, -lineSpace );
+        curContentStream.drawString( text );
+    }
+
+    private void setFont (PDFont font, float fontSize) throws Exception
+    {
+        curFont = font;
+        curFontSize = fontSize;
+        curContentStream.setFont( curFont, curFontSize );
+    }
+
+    private void createNewPage() throws Exception
     {
         if (curContentStream != null)
         {
+            curContentStream.endText();
             curContentStream.close();
         }
 
         PDPage page = new PDPage();
         doc.addPage( page );
 
-        PDPageContentStream contentStream = new PDPageContentStream(doc, page);
+        curContentStream = new PDPageContentStream(doc, page);
 
-        PDRectangle pdRect = page.getArtBox();
-        System.out.println("pSize: " + pdRect.getWidth() + "," + pdRect.getHeight());
+        curPageSize = page.getArtBox();
+        //System.out.println("pSize: " + pdRect.getWidth() + "," + pdRect.getHeight());
         
-        contentStream.beginText();
-        contentStream.moveTextPositionByAmount( 20, pdRect.getHeight() - 40);
+        curContentStream.beginText();
+        curY = curPageSize.getHeight() - startY;
+        curContentStream.moveTextPositionByAmount( startX, curY );
 
-        return contentStream;
+        if (curFont != null)
+        {
+            setFont (curFont,  curFontSize);
+        }
+
     }
 
     private double scaleToFit (double srcW, double srcH, double destW, double destH)
