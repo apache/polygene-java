@@ -23,6 +23,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import org.pdfbox.pdmodel.PDDocument;
@@ -32,9 +36,13 @@ import org.pdfbox.pdmodel.edit.PDPageContentStream;
 import org.pdfbox.pdmodel.font.PDFont;
 import org.pdfbox.pdmodel.font.PDType1Font;
 import org.pdfbox.pdmodel.graphics.xobject.PDJpeg;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.property.Property;
 import org.qi4j.library.swing.envisage.graph.GraphDisplay;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.CompositeMethodDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.InjectedFieldDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
@@ -278,6 +286,7 @@ public class PDFWriter
             writeString(descriptor.toString(), headerLineSpace);
             writeTypeGeneralPage( descriptor );
             writeTypeDependencyPage( descriptor);
+            writeTypeMethodPage( descriptor );
         }
     }
 
@@ -289,6 +298,7 @@ public class PDFWriter
             writeString(descriptor.toString(), headerLineSpace);
             writeTypeGeneralPage( descriptor );
             writeTypeDependencyPage( descriptor);
+            writeTypeMethodPage( descriptor );
         }
     }
 
@@ -300,6 +310,7 @@ public class PDFWriter
             writeString(descriptor.toString(), headerLineSpace);
             writeTypeGeneralPage( descriptor );
             writeTypeDependencyPage( descriptor);
+            writeTypeMethodPage( descriptor );
         }
     }
 
@@ -311,6 +322,7 @@ public class PDFWriter
             writeString(descriptor.toString(), headerLineSpace);
             writeTypeGeneralPage( descriptor );
             writeTypeDependencyPage( descriptor);
+            writeTypeMethodPage( descriptor );
         }
     }
 
@@ -322,6 +334,7 @@ public class PDFWriter
             writeString(descriptor.toString(), headerLineSpace);
             writeTypeGeneralPage( descriptor );
             writeTypeDependencyPage( descriptor);
+            // object don't have methods
         }
     }
 
@@ -410,6 +423,51 @@ public class PDFWriter
         }
     }
 
+    private void writeTypeMethodPage(Object objectDesciptor) throws Exception
+    {
+        if (!CompositeDetailDescriptor.class.isAssignableFrom( objectDesciptor.getClass() ) )
+        {
+            return;            
+        }
+
+        setFont( header5Font, header5FontSize );
+        writeString( "Methods: ", headerLineSpace );
+
+        CompositeDetailDescriptor descriptor = (CompositeDetailDescriptor) objectDesciptor;
+        Iterable<CompositeMethodDetailDescriptor> iter = descriptor.methods();
+
+        List<CompositeMethodDetailDescriptor> publicList = new ArrayList<CompositeMethodDetailDescriptor>();
+        List<CompositeMethodDetailDescriptor> privateList = new ArrayList<CompositeMethodDetailDescriptor>();
+
+        for( CompositeMethodDetailDescriptor methodDescriptor : iter )
+        {
+            Class compositeClass = methodDescriptor.composite().descriptor().type();
+            Class mixinMethodClass = methodDescriptor.descriptor().method().getDeclaringClass();
+            if( mixinMethodClass.isAssignableFrom( compositeClass ) )
+            {
+                publicList.add( methodDescriptor );
+            }
+            else
+            {
+                privateList.add( methodDescriptor );
+            }
+        }
+
+        doFilterMethod( publicList );
+        doFilterMethod( privateList );
+
+        // combine into one list
+        publicList.addAll( privateList );
+
+        setFont( normalFont, normalFontSize );
+        for( CompositeMethodDetailDescriptor methodDescriptor : publicList )
+        {
+            writeString( "- name: " + methodDescriptor.toString() );
+            writeString( "    * mixins: " +  methodDescriptor.descriptor().mixin().mixinClass() );
+            writeString( "    * return: " +  methodDescriptor.descriptor().method().getGenericReturnType() );
+        }
+    }
+
     private void writeString(String text) throws Exception
     {
         writeString( text, this.lineSpace );   
@@ -484,6 +542,34 @@ public class PDFWriter
         }
         return scale;
     }
+
+    private void doFilterMethod( List<CompositeMethodDetailDescriptor> list )
+    {
+        if( list.isEmpty() )
+        {
+            return;
+        }
+
+        Iterator<CompositeMethodDetailDescriptor> iter = list.iterator();
+        while( iter.hasNext() )
+        {
+            CompositeMethodDetailDescriptor descriptor = iter.next();
+            Method method = descriptor.descriptor().method();
+            if( Property.class.isAssignableFrom( method.getReturnType() ) )
+            {
+                iter.remove();
+            }
+            else if( Association.class.isAssignableFrom( method.getReturnType() ) )
+            {
+                iter.remove();
+            }
+            else if( ManyAssociation.class.isAssignableFrom( method.getReturnType() ) )
+            {
+                iter.remove();
+            }
+        }
+    }
+
 
     class PDFFileFilter extends FileFilter
     {
