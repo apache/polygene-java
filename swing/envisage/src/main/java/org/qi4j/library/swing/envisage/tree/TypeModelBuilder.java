@@ -29,7 +29,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
-import org.qi4j.library.swing.envisage.util.DescriptorNameComparator;
+import org.qi4j.library.swing.envisage.model.util.DescriptorNameComparator;
 
 /**
  * Helper class to build tree model for Qi4J model as Type Tree

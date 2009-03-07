@@ -14,21 +14,29 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.qi4j.library.swing.envisage.util;
+package org.qi4j.library.swing.envisage.model.util;
 
-import java.util.Comparator;
-import java.text.Collator;
+import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 
 /**
- * DescriptorName comparator.
- * Implementation it is using toString() for comparing
- * 
+ * Collection of Desciptor Utilities
+ *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
-public class DescriptorNameComparator<T> implements Comparator<T>
+public class DescriptorUtilities
 {
-    public  int compare( T o1, T o2 )
+    private DescriptorUtilities()
     {
-        return o1.toString().compareTo( o2.toString() );
+        throw new Error("This is a utility class for static methods");
     }
+
+    /** Return Descriptor Detail
+     * @return Descritpor Detail or null 
+     * */
+    public static Object findServiceConfiguration ( ServiceDetailDescriptor descriptor )
+    {
+        return new ServiceConfigurationFinder().findConfigurationDescriptor( descriptor );
+    }
+
+
 }

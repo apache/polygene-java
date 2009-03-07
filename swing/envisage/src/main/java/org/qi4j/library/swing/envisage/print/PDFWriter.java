@@ -51,6 +51,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.util.DescriptorUtilities;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 import org.qi4j.spi.composite.DependencyDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -240,100 +241,96 @@ public class PDFWriter
         setFont( header1Font, header1FontSize );
         writeString( APPLICATION + " : " + descriptor.toString());
 
-        writeLayerPage( descriptor.layers() );
+        writeLayersPage( descriptor.layers() );
     }
 
-    private void writeLayerPage( Iterable<LayerDetailDescriptor> iter) throws Exception
+    private void writeLayersPage( Iterable<LayerDetailDescriptor> iter) throws Exception
     {
         for( LayerDetailDescriptor descriptor : iter )
         {
             setFont( header2Font, header2FontSize );
             writeString(LAYER+ " : " + descriptor.toString(), headerLineSpace);
 
-            writeModulePage(descriptor.modules());
+            writeModulesPage(descriptor.modules());
         }
     }
 
-    private void writeModulePage( Iterable<ModuleDetailDescriptor> iter) throws Exception
+    private void writeModulesPage( Iterable<ModuleDetailDescriptor> iter) throws Exception
     {
         for( ModuleDetailDescriptor descriptor : iter )
         {
             setFont( header3Font, header3FontSize );
             writeString(MODULE + " : " + descriptor.toString(), headerLineSpace);
 
-            writeServicePage ( descriptor.services() );
-            writeEntityPage( descriptor.entities() );
-            writeTransientPage( descriptor.composites() );
-            writeValuePage( descriptor.values() );
-            writeObjectPage( descriptor.objects() );
-
-            /*Node childNode = addChild(parent, descriptor.descriptor().name(), descriptor );
-
-            buildServicesNode( childNode, descriptor.services() );
-            buildEntitiesNode( childNode, descriptor.entities() );
-            buildTransientsNode( childNode, descriptor.composites() );
-            buildValuesNode( childNode, descriptor.values() );
-            buildObjectsNode( childNode, descriptor.objects() );
-            */
+            writeServicesPage( descriptor.services() );
+            writeEntitiesPage( descriptor.entities() );
+            writeTransientsPage( descriptor.composites() );
+            writeValuesPage( descriptor.values() );
+            writeObjectsPage( descriptor.objects() );
         }
     }
 
-    private void writeServicePage( Iterable<ServiceDetailDescriptor> iter) throws Exception
+    private void writeServicesPage( Iterable<ServiceDetailDescriptor> iter) throws Exception
     {
         for( ServiceDetailDescriptor descriptor : iter )
         {
             setFont( header4Font, header4FontSize);
             writeString(descriptor.toString(), headerLineSpace);
             writeTypeGeneralPage( descriptor );
-            writeTypeDependencyPage( descriptor);
-            writeTypeMethodPage( descriptor );
+            writeTypeDependenciesPage( descriptor);
+            writeTypeMethodsPage( descriptor );
+            writeTypeStatesPage( descriptor );
+            writeTypeServiceConfigurationPage ( descriptor );
         }
     }
 
-    private void writeEntityPage( Iterable<EntityDetailDescriptor> iter) throws Exception
+    private void writeEntitiesPage( Iterable<EntityDetailDescriptor> iter) throws Exception
     {
         for( EntityDetailDescriptor descriptor : iter )
         {
             setFont( header4Font, header4FontSize);
             writeString(descriptor.toString(), headerLineSpace);
             writeTypeGeneralPage( descriptor );
-            writeTypeDependencyPage( descriptor);
-            writeTypeMethodPage( descriptor );
+            writeTypeDependenciesPage( descriptor);
+            writeTypeMethodsPage( descriptor );
+            writeTypeStatesPage( descriptor );
         }
     }
 
-    private void writeTransientPage( Iterable<CompositeDetailDescriptor> iter) throws Exception
+    private void writeTransientsPage( Iterable<CompositeDetailDescriptor> iter) throws Exception
     {
         for( CompositeDetailDescriptor descriptor : iter )
         {
             setFont( header4Font, header4FontSize);
             writeString(descriptor.toString(), headerLineSpace);
             writeTypeGeneralPage( descriptor );
-            writeTypeDependencyPage( descriptor);
-            writeTypeMethodPage( descriptor );
+            writeTypeDependenciesPage( descriptor);
+            writeTypeMethodsPage( descriptor );
+            writeTypeStatesPage( descriptor );
         }
     }
 
-    private void writeValuePage( Iterable<ValueDetailDescriptor> iter) throws Exception
+    private void writeValuesPage( Iterable<ValueDetailDescriptor> iter) throws Exception
     {
         for( ValueDetailDescriptor descriptor : iter )
         {
             setFont( header4Font, header4FontSize);
             writeString(descriptor.toString(), headerLineSpace);
             writeTypeGeneralPage( descriptor );
-            writeTypeDependencyPage( descriptor);
-            writeTypeMethodPage( descriptor );
+            writeTypeDependenciesPage( descriptor);
+            writeTypeMethodsPage( descriptor );
+            writeTypeStatesPage( descriptor );
         }
     }
 
-    private void writeObjectPage( Iterable<ObjectDetailDescriptor> iter) throws Exception
+    private void writeObjectsPage( Iterable<ObjectDetailDescriptor> iter) throws Exception
     {
         for( ObjectDetailDescriptor descriptor : iter )
         {
             setFont( header4Font, header4FontSize);
             writeString(descriptor.toString(), headerLineSpace);
             writeTypeGeneralPage( descriptor );
-            writeTypeDependencyPage( descriptor);
+            writeTypeDependenciesPage( descriptor);
             // object don't have methods
         }
     }
@@ -384,7 +381,7 @@ public class PDFWriter
         }
     }
 
-    private void writeTypeDependencyPage (Object objectDesciptor) throws Exception
+    private void writeTypeDependenciesPage(Object objectDesciptor) throws Exception
     {
         setFont( header5Font, header5FontSize );
         writeString( "Dependencies: ", headerLineSpace );
@@ -395,17 +392,17 @@ public class PDFWriter
             Iterable<MixinDetailDescriptor> iter = descriptor.mixins();
             for( MixinDetailDescriptor mixinDescriptor : iter )
             {
-                writeTypeDependencyPage( mixinDescriptor.injectedFields() );
+                writeTypeDependenciesPage( mixinDescriptor.injectedFields() );
             }
         }
         else if (objectDesciptor instanceof ObjectDetailDescriptor)
         {
             ObjectDetailDescriptor descriptor = ( (ObjectDetailDescriptor) objectDesciptor );
-            writeTypeDependencyPage( descriptor.injectedFields() );
+            writeTypeDependenciesPage( descriptor.injectedFields() );
         }
     }
 
-    private void writeTypeDependencyPage( Iterable<InjectedFieldDetailDescriptor> iter ) throws Exception
+    private void writeTypeDependenciesPage( Iterable<InjectedFieldDetailDescriptor> iter ) throws Exception
     {
         setFont( normalFont, normalFontSize );
         for( InjectedFieldDetailDescriptor descriptor : iter )
@@ -423,7 +420,7 @@ public class PDFWriter
         }
     }
 
-    private void writeTypeMethodPage(Object objectDesciptor) throws Exception
+    private void writeTypeMethodsPage(Object objectDesciptor) throws Exception
     {
         if (!CompositeDetailDescriptor.class.isAssignableFrom( objectDesciptor.getClass() ) )
         {
@@ -453,8 +450,8 @@ public class PDFWriter
             }
         }
 
-        doFilterMethod( publicList );
-        doFilterMethod( privateList );
+        doFilterMethods( publicList );
+        doFilterMethods( privateList );
 
         // combine into one list
         publicList.addAll( privateList );
@@ -466,6 +463,97 @@ public class PDFWriter
             writeString( "    * mixins: " +  methodDescriptor.descriptor().mixin().mixinClass() );
             writeString( "    * return: " +  methodDescriptor.descriptor().method().getGenericReturnType() );
         }
+    }
+
+    private void writeTypeStatesPage(Object objectDesciptor) throws Exception
+    {
+        if (!CompositeDetailDescriptor.class.isAssignableFrom( objectDesciptor.getClass() ) )
+        {
+            return;
+        }
+
+        setFont( header5Font, header5FontSize );
+        writeString( "States: ", headerLineSpace );
+
+        CompositeDetailDescriptor descriptor = (CompositeDetailDescriptor) objectDesciptor;
+        Iterable<CompositeMethodDetailDescriptor> iter = descriptor.methods();
+
+        List<CompositeMethodDetailDescriptor> publicList = new ArrayList<CompositeMethodDetailDescriptor>();
+        List<CompositeMethodDetailDescriptor> privateList = new ArrayList<CompositeMethodDetailDescriptor>();
+
+        for( CompositeMethodDetailDescriptor methodDescriptor : iter )
+        {
+            Class compositeClass = methodDescriptor.composite().descriptor().type();
+            Class mixinMethodClass = methodDescriptor.descriptor().method().getDeclaringClass();
+            if( mixinMethodClass.isAssignableFrom( compositeClass ) )
+            {
+                publicList.add( methodDescriptor );
+            }
+            else
+            {
+                privateList.add( methodDescriptor );
+            }
+        }
+
+        doFilterStates( publicList );
+        doFilterStates( privateList );
+
+        // combine into one list
+        publicList.addAll( privateList );
+
+        setFont( normalFont, normalFontSize );
+        for( CompositeMethodDetailDescriptor methodDescriptor : publicList )
+        {
+            writeString( "- name: " + methodDescriptor.toString() );
+            writeString( "    * mixins: " +  methodDescriptor.descriptor().mixin().mixinClass() );
+            writeString( "    * return: " +  methodDescriptor.descriptor().method().getGenericReturnType() );
+        }
+    }
+
+    private void writeTypeServiceConfigurationPage(Object objectDesciptor) throws Exception
+    {
+        setFont( header5Font, header5FontSize );
+        writeString( "Configuration: ", headerLineSpace );
+
+        Object configDescriptor = DescriptorUtilities.findServiceConfiguration( (ServiceDetailDescriptor) objectDesciptor );
+
+        if (configDescriptor == null)
+        {
+            return;
+        }
+
+        ObjectDescriptor spiDescriptor = null;
+        String typeString = null;
+        if( configDescriptor instanceof ServiceDetailDescriptor )
+        {
+            spiDescriptor = ( (ServiceDetailDescriptor) configDescriptor ).descriptor();
+            typeString = "Service";
+        }
+        else if( configDescriptor instanceof EntityDetailDescriptor )
+        {
+            spiDescriptor = ( (EntityDetailDescriptor) configDescriptor ).descriptor();
+            typeString = "Entity";
+        }
+        else if( configDescriptor instanceof ValueDetailDescriptor )
+        {
+            spiDescriptor = ( (ValueDetailDescriptor) configDescriptor ).descriptor();
+            typeString = "Value";
+        }
+        else if( configDescriptor instanceof ObjectDetailDescriptor )
+        {
+            spiDescriptor = ( (ObjectDetailDescriptor) configDescriptor ).descriptor();
+            typeString = "Object";
+        }
+        else if( configDescriptor instanceof CompositeDetailDescriptor )
+        {
+            spiDescriptor = ( (ObjectDetailDescriptor) configDescriptor ).descriptor();
+            typeString = "Transient";
+        }
+
+        setFont( normalFont, normalFontSize );
+        writeString( "- name: "  + spiDescriptor.type().getSimpleName() );
+        writeString( "- class: "  + spiDescriptor.type().getName() );
+        writeString( "- type: " + typeString );
     }
 
     private void writeString(String text) throws Exception
@@ -543,7 +631,7 @@ public class PDFWriter
         return scale;
     }
 
-    private void doFilterMethod( List<CompositeMethodDetailDescriptor> list )
+    private void doFilterMethods( List<CompositeMethodDetailDescriptor> list )
     {
         if( list.isEmpty() )
         {
@@ -567,6 +655,28 @@ public class PDFWriter
             {
                 iter.remove();
             }
+        }
+    }
+
+    private void doFilterStates( List<CompositeMethodDetailDescriptor> list )
+    {
+        if( list.isEmpty() )
+        {
+            return;
+        }
+
+        Iterator<CompositeMethodDetailDescriptor> iter = list.iterator();
+        while( iter.hasNext() )
+        {
+            CompositeMethodDetailDescriptor descriptor = iter.next();
+            Method method = descriptor.descriptor().method();
+            if( Property.class.isAssignableFrom( method.getReturnType() )
+                || Association.class.isAssignableFrom( method.getReturnType() )
+                || ManyAssociation.class.isAssignableFrom( method.getReturnType() ) )
+            {
+                continue;
+            }
+            iter.remove();
         }
     }
 

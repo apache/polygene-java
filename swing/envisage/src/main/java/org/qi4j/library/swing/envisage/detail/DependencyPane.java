@@ -43,12 +43,9 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.library.swing.envisage.event.LinkEvent;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.InjectedFieldDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.MixinDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
 import org.qi4j.spi.composite.DependencyDescriptor;
 
 /**
@@ -177,36 +174,9 @@ public class DependencyPane extends DetailPane
     {
         clear();
 
-        if( objectDesciptor instanceof ServiceDetailDescriptor )
-        {
-            ServiceDetailDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor );
-            Iterable<MixinDetailDescriptor> iter = descriptor.mixins();
-            for( MixinDetailDescriptor mixinDescriptor : iter )
-            {
-                reload( mixinDescriptor.injectedFields() );
-            }
-        }
-        else if( objectDesciptor instanceof EntityDetailDescriptor )
-        {
-            EntityDetailDescriptor descriptor = ( (EntityDetailDescriptor) objectDesciptor );
-            Iterable<MixinDetailDescriptor> iter = descriptor.mixins();
-            for( MixinDetailDescriptor mixinDescriptor : iter )
-            {
-                reload( mixinDescriptor.injectedFields() );
-            }
-        }
-        else if( objectDesciptor instanceof CompositeDetailDescriptor )
+       if( objectDesciptor instanceof CompositeDetailDescriptor )
         {
             CompositeDetailDescriptor descriptor = ( (CompositeDetailDescriptor) objectDesciptor );
-            Iterable<MixinDetailDescriptor> iter = descriptor.mixins();
-            for( MixinDetailDescriptor mixinDescriptor : iter )
-            {
-                reload( mixinDescriptor.injectedFields() );
-            }
-        }
-        else if( objectDesciptor instanceof ValueDetailDescriptor )
-        {
-            ValueDetailDescriptor descriptor = ( (ValueDetailDescriptor) objectDesciptor );
             Iterable<MixinDetailDescriptor> iter = descriptor.mixins();
             for( MixinDetailDescriptor mixinDescriptor : iter )
             {

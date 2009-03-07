@@ -27,7 +27,7 @@ public class ColorUtilities
 {
     private ColorUtilities()
     {
-        throw new Error("ColorUtilities is a utility class for static methods");
+        throw new Error("This is a utility class for static methods");
     }
 
     /** Return the equivalent AWT {@code Color} of the supplied hexString in format eg #FF33D2

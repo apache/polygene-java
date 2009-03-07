@@ -43,12 +43,8 @@ import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeMethodDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.MethodConcernDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.MethodSideEffectDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
 import org.qi4j.library.swing.envisage.util.TableData;
 
 /**
@@ -103,36 +99,21 @@ public class MethodPane extends DetailPane
     {
         clear();
 
-        if( objectDesciptor instanceof ServiceDetailDescriptor )
-        {
-            ServiceDetailDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor );
-            reload( descriptor.methods() );
-        }
-        else if( objectDesciptor instanceof EntityDetailDescriptor )
-        {
-            EntityDetailDescriptor descriptor = ( (EntityDetailDescriptor) objectDesciptor );
-            reload( descriptor.methods() );
-        }
-        else if( objectDesciptor instanceof CompositeDetailDescriptor )
+        if( objectDesciptor instanceof CompositeDetailDescriptor )
         {
             CompositeDetailDescriptor descriptor = ( (CompositeDetailDescriptor) objectDesciptor );
             reload( descriptor.methods() );
         }
-        else if( objectDesciptor instanceof ValueDetailDescriptor )
+        /*else if( objectDesciptor instanceof ObjectDetailDescriptor )
         {
-            ValueDetailDescriptor descriptor = ( (ValueDetailDescriptor) objectDesciptor );
-            reload( descriptor.methods() );
-        }
-        else if( objectDesciptor instanceof ObjectDetailDescriptor )
-        {
-            ObjectDetailDescriptor descriptor = ( (ObjectDetailDescriptor) objectDesciptor );
+            // Object does not have methods
+            //ObjectDetailDescriptor descriptor = ( (ObjectDetailDescriptor) objectDesciptor );
             //reload( descriptor.injectedMethods() );
-        }
+        }*/
     }
 
 
     /**
-     * TODO
      * The Methods tab should show all the methods of all Mixins (private and public separated)
      * that don't return one of Property, Association or ManyAssociation.
      *
