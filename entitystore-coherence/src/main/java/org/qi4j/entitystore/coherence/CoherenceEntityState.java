@@ -215,8 +215,13 @@ class CoherenceEntityState extends DefaultEntityState
         }
     }
 
-    void updateVersion()
+    void increaseVersion()
     {
         version++;
+    }
+
+    public void markAsLoaded()
+    {
+        status = EntityStatus.LOADED;
     }
 }

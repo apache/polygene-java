@@ -312,9 +312,10 @@ public final class LegacyEntityState
         return propertyValues;
     }
 
-    public void markAsLoaded()
+    public void hasBeenApplied()
     {
         status = EntityStatus.LOADED;
+        version++;
     }
 
     public ValueState newValueState( Map<QualifiedName, Object> values )

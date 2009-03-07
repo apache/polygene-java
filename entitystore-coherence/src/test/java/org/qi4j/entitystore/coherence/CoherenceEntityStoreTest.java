@@ -18,7 +18,9 @@ package org.qi4j.entitystore.coherence;
 
 import java.io.File;
 import org.junit.After;
+import org.junit.Test;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -38,6 +40,24 @@ public class CoherenceEntityStoreTest extends AbstractEntityStoreTest
         ModuleAssembly config = module.layerAssembly().newModuleAssembly( "config" );
         config.addEntities( CoherenceConfiguration.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
+    }
+
+    @Test
+    @Override public void whenRemovedEntityThenCannotFindEntity() throws Exception
+    {
+        super.whenRemovedEntityThenCannotFindEntity();
+    }
+
+    @Test
+    @Override public void givenPropertyIsModifiedWhenUnitOfWorkCompletesThenStoreState() throws UnitOfWorkCompletionException
+    {
+        super.givenPropertyIsModifiedWhenUnitOfWorkCompletesThenStoreState();
+    }
+
+    @Test
+    @Override public void givenEntityIsNotModifiedWhenUnitOfWorkCompletesThenDontStoreState() throws UnitOfWorkCompletionException
+    {
+        super.givenEntityIsNotModifiedWhenUnitOfWorkCompletesThenDontStoreState();
     }
 
     @Override @After public void tearDown() throws Exception

@@ -273,7 +273,7 @@ public class DirectEntityState implements CommittableEntityState
         return manyAssociations.get( qualifiedName );
     }
 
-    public void markAsLoaded()
+    public void hasBeenApplied()
     {
         status = EntityStatus.LOADED;
     }

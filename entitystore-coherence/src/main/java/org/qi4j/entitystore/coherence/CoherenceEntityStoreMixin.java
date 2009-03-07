@@ -85,8 +85,6 @@ public class CoherenceEntityStoreMixin extends EntityTypeRegistryMixin
             {
                 throw new EntityNotFoundException( descriptor.identity(), identity );
             }
-            state.markAsLoaded();
-            state.clearModified();
             return state;
         }
     }
@@ -133,10 +131,16 @@ public class CoherenceEntityStoreMixin extends EntityTypeRegistryMixin
                         final CoherenceEntityState value = state.getValue();
                         if( value.status() == EntityStatus.LOADED )
                         {
-                            value.updateVersion();
+                            if (value.isModified())
+                            {
+                                value.increaseVersion();
+                            }
+                        } else
+                        {
+                            value.markAsLoaded();
                         }
-                        cache.put( state.getKey(), value );
                         value.clearModified();
+                        cache.put( state.getKey(), value );
                     }
                 }
             }

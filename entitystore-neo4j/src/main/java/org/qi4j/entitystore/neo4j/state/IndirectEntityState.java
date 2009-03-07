@@ -34,7 +34,7 @@ public class IndirectEntityState implements CommittableEntityState
 {
     // Cached state
     private final DirectEntityState state;
-    private final long version;
+    private long version;
     private final long lastModified;
     private EntityStatus status;
 
@@ -201,9 +201,10 @@ public class IndirectEntityState implements CommittableEntityState
         return manyAssociations.get( qualifiedName );
     }
 
-    public void markAsLoaded()
+    public void hasBeenApplied()
     {
         status = EntityStatus.LOADED;
+        version++;
     }
 
     public ValueState newValueState( Map<QualifiedName, Object> values )
