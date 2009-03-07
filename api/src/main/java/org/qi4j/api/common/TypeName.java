@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 import java.io.Serializable;
 
 import org.qi4j.api.util.Classes;
+import org.qi4j.api.util.NullArgumentException;
 
 public class TypeName implements Serializable, Comparable<TypeName>
 {
@@ -11,7 +12,7 @@ public class TypeName implements Serializable, Comparable<TypeName>
 
     public static TypeName nameOf( Class type )
     {
-        if (type==null) throw new IllegalArgumentException( "type must not be null ");
+        NullArgumentException.validateNotNull( "type",type );
         return new TypeName( type.getName() );
     }
 
@@ -26,10 +27,7 @@ public class TypeName implements Serializable, Comparable<TypeName>
     
     private TypeName( String name)
     {
-        if( name == null || name.trim().length() == 0 )
-        {
-            throw new IllegalArgumentException( "name must not be null or empty" );
-        }
+        NullArgumentException.validateNotEmpty( "name",name );
         this.name = name;
     }
 
@@ -54,6 +52,7 @@ public class TypeName implements Serializable, Comparable<TypeName>
     }
 
     public boolean isClass(final Class<?> type) {
+        NullArgumentException.validateNotNull( "type",type );
         return type.getName().equals(name);
     }
 

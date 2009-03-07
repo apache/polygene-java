@@ -16,6 +16,7 @@ package org.qi4j.api.common;
 
 import java.lang.reflect.Method;
 import java.io.Serializable;
+import org.qi4j.api.util.NullArgumentException;
 
 /**
  * A QualifiedName is created by combining the name of a method and the
@@ -29,7 +30,7 @@ public class QualifiedName
 
     public static QualifiedName fromMethod(Method method)
     {
-        if (method==null) throw new IllegalArgumentException( "method must not be null");
+        NullArgumentException.validateNotNull( "method",method );
         return fromClass(method.getDeclaringClass(),method.getName());
     }
 
@@ -43,14 +44,14 @@ public class QualifiedName
     }
     public QualifiedName( TypeName typeName, String name )
     {
-        if (typeName ==null) throw new IllegalArgumentException( "TypeName must not be null");
-        if (name==null || name.trim().length()==0) throw new IllegalArgumentException( "Name must not be null or empty");
+        NullArgumentException.validateNotNull( "typeName",typeName );
+        NullArgumentException.validateNotEmpty( "name",name );
         this.typeName = typeName;
         this.name = name;
     }
 
     public static QualifiedName fromQN(String qualifiedName) {
-        if (qualifiedName == null || qualifiedName.trim().length() == 0 ) throw new IllegalArgumentException( "qualifiedName must not be null or empty");
+        NullArgumentException.validateNotEmpty( "qualifiedName",qualifiedName );
         int idx = qualifiedName.lastIndexOf( ":" );
         if (idx == -1)
         {
@@ -88,7 +89,7 @@ public class QualifiedName
 
     @Override public String toString()
     {
-        return typeName.normalized() +":"+name;
+        return typeName +":"+name;
     }
 
     @Override
@@ -115,8 +116,10 @@ public class QualifiedName
         return 31 * typeName.hashCode() + name.hashCode();
     }
 
-    public int compareTo( QualifiedName o )
+    public int compareTo( QualifiedName other )
     {
-        return toString().compareTo( o.toString() );
+        final int result = typeName.compareTo( other.typeName );
+        if (result!=0) return result;
+        return name.compareTo( other.name );
     }
 }
