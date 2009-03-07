@@ -8,6 +8,7 @@ import org.qi4j.api.entity.association.Qualifier;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.QualifierQualifiedIdentity;
@@ -19,10 +20,10 @@ public abstract class AbstractAssociationInstance<T>
     implements AbstractAssociation
 {
     protected final AssociationInfo associationInfo;
-    protected final UnitOfWorkInstance unitOfWork;
+    protected final ModuleUnitOfWork unitOfWork;
     protected EntityState entityState;
 
-    public AbstractAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, EntityState entityState )
+    public AbstractAssociationInstance( AssociationInfo associationInfo, ModuleUnitOfWork unitOfWork, EntityState entityState )
     {
         this.associationInfo = associationInfo;
         this.unitOfWork = unitOfWork;

@@ -44,6 +44,7 @@ import static org.qi4j.api.util.Classes.getRawClass;
 import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
@@ -184,7 +185,7 @@ public final class AssociationModel
         return instance;
     }
 
-    public AbstractAssociation newInstance( UnitOfWorkInstance uow, EntityState state )
+    public AbstractAssociation newInstance( ModuleUnitOfWork uow, EntityState state )
     {
         AbstractAssociation associationInstance;
         if( !isManyAssociation() )
@@ -193,8 +194,6 @@ public final class AssociationModel
         }
         else
         {
-            Collection<QualifiedIdentity> manyAssociation = state.getManyAssociation( qualifiedName );
-
             if( isListAssociation() )
             {
                 associationInstance = new ListAssociationInstance<Object>( this, uow, state );

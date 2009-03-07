@@ -23,6 +23,7 @@ import org.qi4j.api.unitofwork.StateChangeListener;
 import org.qi4j.api.unitofwork.StateChangeVoter;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
@@ -36,7 +37,7 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
 
     private T value = (T) NOT_LOADED;
 
-    public AssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, EntityState entityState )
+    public AssociationInstance( AssociationInfo associationInfo, ModuleUnitOfWork unitOfWork, EntityState entityState )
     {
         super( associationInfo, unitOfWork, entityState );
 
@@ -67,7 +68,7 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
         associationModel.checkConstraints( newValue );
 
         // Allow voters to vote on change
-        Iterable<StateChangeVoter> stateChangeVoters = unitOfWork.stateChangeVoters();
+        Iterable<StateChangeVoter> stateChangeVoters = unitOfWork.instance().stateChangeVoters();
         AssociationStateChange change = null;
         if( stateChangeVoters != null )
         {
@@ -87,7 +88,7 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
         this.value = newValue;
 
         // Notify listeners
-        Iterable<StateChangeListener> stateChangeListeners = unitOfWork.stateChangeListeners();
+        Iterable<StateChangeListener> stateChangeListeners = unitOfWork.instance().stateChangeListeners();
         if( stateChangeListeners != null )
         {
             if (change == null)

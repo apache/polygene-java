@@ -20,6 +20,7 @@ package org.qi4j.runtime.query;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryExecutionException;
 import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.query.EntityFinderException;
@@ -27,6 +28,7 @@ import org.qi4j.spi.query.named.NamedEntityFinder;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import java.util.Iterator;
 import java.util.HashMap;
+import sun.applet.AppletClassLoader;
 
 public class NamedQueryImpl<T>
     implements Query<T>
@@ -37,13 +39,15 @@ public class NamedQueryImpl<T>
     private HashMap<String, Object> variables;
     private Class<T> resultType;
     private String queryName;
-    private UnitOfWorkInstance unitOfWorkInstance;
+    private UnitOfWork unitOfWork;
     private NamedEntityFinder namedFinder;
+    private ClassLoader classLoader;
 
-    public NamedQueryImpl( NamedEntityFinder namedFinder, UnitOfWorkInstance unitOfWorkInstance, String queryName, Class<T> resultType )
+    public NamedQueryImpl( NamedEntityFinder namedFinder, UnitOfWork unitOfWork, ClassLoader classLoader, String queryName, Class<T> resultType )
     {
         this.namedFinder = namedFinder;
-        this.unitOfWorkInstance = unitOfWorkInstance;
+        this.unitOfWork = unitOfWork;
+        this.classLoader = classLoader;
         this.queryName = queryName;
         this.resultType = resultType;
         this.variables = new HashMap<String, Object>();
@@ -108,10 +112,8 @@ public class NamedQueryImpl<T>
         {
             try
             {
-                ModuleInstance moduleInstance = unitOfWorkInstance.module();
-                ClassLoader loader = moduleInstance.classLoader();
-                final Class<T> entityType = (Class<T>) loader.loadClass( foundEntity.type() );
-                return unitOfWorkInstance.getReference( foundEntity.identity(), entityType );
+                final Class<T> entityType = (Class<T>) classLoader.loadClass( foundEntity.type() );
+                return unitOfWork.getReference( foundEntity.identity(), entityType );
             }
             catch( ClassNotFoundException e )
             {
@@ -159,8 +161,8 @@ public class NamedQueryImpl<T>
                     final Class<T> entityType;
                     try
                     {
-                        entityType = (Class<T>) unitOfWorkInstance.module().classLoader().loadClass( foundEntity.type() );
-                        final T entity = unitOfWorkInstance.getReference( foundEntity.identity(), entityType );
+                        entityType = (Class<T>) classLoader.loadClass( foundEntity.type() );
+                        final T entity = unitOfWork.getReference( foundEntity.identity(), entityType );
                         return entity;
                     }
                     catch( ClassNotFoundException e )

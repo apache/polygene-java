@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,21 +12,23 @@
  *
  */
 
-package org.qi4j.spi.service;
+package org.qi4j.runtime.unitofwork;
 
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.spi.composite.AbstractCompositeDescriptor;
+import org.qi4j.runtime.entity.EntityInstance;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStore;
 
 /**
- * {@code ServiceDescriptor} provides meta informations of a service.
- */
-public interface ServiceDescriptor
-    extends AbstractCompositeDescriptor
+ * JAVADOC
+*/
+class EntityStateStore
 {
-    String identity();
+    EntityInstance instance; // May be null
+    EntityState state; // May be null
+    EntityStore store;
 
-    boolean isInstantiateOnStartup();
-
-    <T> Class<T> configurationType();
+    @Override public String toString()
+    {
+        return instance.qualifiedIdentity()+" "+state+" "+store;
+    }
 }

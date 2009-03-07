@@ -24,21 +24,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.Identity;
-import org.qi4j.api.object.ObjectBuilderFactory;
-import org.qi4j.api.query.QueryBuilderFactory;
-import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.StateChangeListener;
 import org.qi4j.api.unitofwork.StateChangeVoter;
-import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCallback;
 import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.COMPLETED;
 import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.DISCARDED;
@@ -50,11 +42,8 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
-import org.qi4j.runtime.structure.EntitiesInstance;
-import org.qi4j.runtime.structure.EntitiesModel;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.runtime.structure.ModuleVisitor;
-import org.qi4j.runtime.structure.ModuleModel;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
@@ -64,27 +53,20 @@ import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.UnknownEntityTypeException;
-import org.qi4j.spi.entity.helpers.DefaultEntityState;
 
 public final class UnitOfWorkInstance
-    implements UnitOfWork
 {
     public static final ThreadLocal<Stack<UnitOfWorkInstance>> current;
 
-    private final HashMap<Class<? extends EntityComposite>, Map<String, EntityComposite>> cache;
+    final HashMap<QualifiedIdentity, EntityStateStore> stateCache;
 
     private boolean open;
 
     private boolean paused;
 
-    private final ModuleInstance moduleInstance;
-
     /**
      * Lazy query builder factory.
      */
-    private QueryBuilderFactory queryBuilderFactory;
-
     private Usecase usecase;
 
     private List<UnitOfWorkCallback> callbacks;
@@ -105,170 +87,87 @@ public final class UnitOfWorkInstance
         QueryBuilderFactoryImpl.initialize();
     }
 
-    public UnitOfWorkInstance( ModuleInstance moduleInstance, Usecase usecase )
+    public UnitOfWorkInstance( Usecase usecase )
     {
-        this.moduleInstance = moduleInstance;
         this.open = true;
-        cache = new HashMap<Class<? extends EntityComposite>, Map<String, EntityComposite>>();
+        stateCache = new HashMap<QualifiedIdentity, EntityStateStore>();
         current.get().push( this );
         paused = false;
         this.usecase = usecase;
     }
 
     // Nested unit of work
-    public UnitOfWorkInstance( ModuleInstance moduleInstance, Usecase nestedUsecase, UnitOfWorkStore unitOfWorkStore )
+    public UnitOfWorkInstance( Usecase nestedUsecase, UnitOfWorkStore unitOfWorkStore )
     {
-        this( moduleInstance, nestedUsecase );
+        this( nestedUsecase );
         this.unitOfWorkStore = unitOfWorkStore;
     }
 
-    public <T> T newEntity( Class<T> compositeType )
-        throws NoSuchEntityException
-    {
-        return newEntityBuilder( compositeType ).newInstance();
-    }
-
-    public <T> T newEntity( String identity, Class<T> compositeType )
-        throws NoSuchEntityException
-    {
-        return newEntityBuilder( identity, compositeType ).newInstance();
-    }
-
-    public <T> EntityBuilder<T> newEntityBuilder( Class<T> mixinType )
-        throws NoSuchEntityException
-    {
-        return newEntityBuilder( null, mixinType );
-    }
-
-    public <T> EntityBuilder<T> newEntityBuilder( String identity, Class<T> mixinType )
+    public <T> EntityBuilder<T> newEntityBuilder( String identity, EntityModel model, EntityStore store, ModuleInstance moduleInstance, ModuleUnitOfWork moduleUnitOfWork )
         throws NoSuchEntityException
     {
         checkOpen();
 
-        EntityFinder finder = new EntityFinder();
-        finder.mixinType = mixinType;
-        moduleInstance.visitModules( finder );
+        EntityBuilder<T> builder;
 
-        if( finder.model == null )
-        {
-            throw new EntityTypeNotFoundException( mixinType.getName() );
-        }
-
-        EntityBuilder<T> builder = finder.module.entities().newEntityBuilder( finder.model, this, unitOfWorkStore );
         if( identity != null )
         {
-            builder.stateFor( Identity.class ).identity().set( identity );
+            builder = new EntityBuilderInstance<T>( moduleInstance, model, moduleUnitOfWork, store, identity );
+        }
+        else
+        {
+            builder = new EntityBuilderInstance<T>( moduleInstance, model, moduleUnitOfWork, store, moduleInstance.entities().identityGenerator() );
         }
         return builder;
     }
 
-    public void remove( Object entity )
-    {
-        checkOpen();
-
-        EntityComposite entityComposite = (EntityComposite) entity;
-
-        EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
-
-        compositeInstance.remove();
-    }
-
-    public <T> T find( String identity, Class<T> mixinType )
+    public EntityInstance getReference( String identity, ModuleUnitOfWork uow, EntityModel model, ModuleInstance module)
         throws EntityTypeNotFoundException, NoSuchEntityException
     {
         checkOpen();
 
-        EntityFinder finder = new EntityFinder();
-        finder.mixinType = mixinType;
-        moduleInstance.visitModules( finder );
+        QualifiedIdentity qid = new QualifiedIdentity( identity, model.type().getName() );
+        EntityStateStore entityStateStore = stateCache.get( qid );
+        EntityInstance entityInstance;
+        if( entityStateStore == null )
+        {   // Not yet in cache
 
-        if( finder.model == null )
-        {
-            throw new EntityTypeNotFoundException( mixinType.getName() );
-        }
+            entityStateStore = getEffectiveEntityStateStore( qid, model.entityType() );
+            EntityStore entityStore;
 
-        // TODO: Argument check.
-
-        try
-        {
-            EntityComposite entity = getCachedEntity( identity, mixinType );
-            if( entity == null )
-            {   // Not yet in cache
-                EntityInstance entityInstance = finder.module.entities().loadEntityInstance( identity, finder.model, this, unitOfWorkStore );
-                Map<String, EntityComposite> entityCache = getEntityCache( finder.model.type() );
-                entity = entityInstance.proxy();
-                entityCache.put( identity, entity );
-            }
+            // Check if this is a root UoW, or if no parent UoW knows about this entity
+            if (unitOfWorkStore == null || entityStateStore == null)
+                entityStore = module.entities().entityStore();
             else
             {
-                EntityInstance entityInstance = EntityInstance.getEntityInstance( entity );
-                if( entityInstance.isReference() )
-                {
-                    // Check that state exists
-                    entityInstance.load();
-                }
-                else
-                {
-                    // Check if it has been removed
-                    if( entityInstance.status() == EntityStatus.REMOVED )
-                    {
-                        throw new NoSuchEntityException( identity, finder.model.type().getName() );
-                    }
-                }
+                entityStore = unitOfWorkStore;
             }
 
-            return mixinType.cast( entity );
-        }
-        catch( EntityNotFoundException e )
-        {
-            throw new NoSuchEntityException( identity, finder.model.type().getName() );
-        }
-    }
 
-    public <T> T getReference( String identity, Class<T> mixinType )
-        throws EntityTypeNotFoundException, NoSuchEntityException
-    {
-        checkOpen();
+            entityInstance = model.getInstance( uow, module, qid );
 
-        EntityFinder finder = new EntityFinder();
-        finder.mixinType = mixinType;
-        moduleInstance.visitModules( finder );
+            if( entityStateStore == null )
+            {
+                entityStateStore = new EntityStateStore();
+                entityStateStore.state = entityInstance.entityState();
+                entityStateStore.store = entityStore;
+            }
 
-        if( finder.model == null )
-        {
-            throw new EntityTypeNotFoundException( mixinType.getName() );
-        }
+            entityStateStore.instance = entityInstance;
 
-        EntityComposite entity = getCachedEntity( identity, finder.model.type() );
-        if( entity == null )
-        {
-            // Create entity moduleInstance
-            EntityInstance compositeInstance = finder.module.entities().getEntityInstance( identity, finder.model, this, unitOfWorkStore );
-            entity = compositeInstance.proxy();
-            Map<String, EntityComposite> entityCache = getEntityCache( finder.model.type() );
-            entityCache.put( identity, entity );
+            stateCache.put( qid, entityStateStore );
         }
         else
         {
+            entityInstance = entityStateStore.instance;
             // Check if it has been removed
-            EntityInstance entityInstance = EntityInstance.getEntityInstance( entity );
             if( entityInstance.status() == EntityStatus.REMOVED )
             {
-                throw new NoSuchEntityException( identity, finder.model.type().getName() );
+                throw new NoSuchEntityException( identity, model.type().getName() );
             }
         }
 
-        return mixinType.cast( entity );
-    }
-
-    public <T> T dereference( T entity )
-        throws EntityTypeNotFoundException
-    {
-        EntityComposite entityComposite = (EntityComposite) entity;
-        EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
-        String id = compositeInstance.qualifiedIdentity().identity();
-        Class<? extends EntityComposite> type = compositeInstance.type();
-        return (T) getReference( id, type );
+        return entityInstance;
     }
 
     public void refresh( Object entity )
@@ -311,18 +210,18 @@ public final class UnitOfWorkInstance
         throws UnitOfWorkException
     {
         // Refresh the entire unit of work
-        for( Map<String, EntityComposite> map : cache.values() )
+        for( EntityStateStore entityStateStore : stateCache.values() )
         {
-            for( EntityComposite entity : map.values() )
+            try
             {
-                try
+                if( entityStateStore.instance != null )
                 {
-                    refresh( entity );
+                    refresh( entityStateStore.instance.proxy() );
                 }
-                catch( NoSuchEntityException e )
-                {
-                    // Ignore
-                }
+            }
+            catch( NoSuchEntityException e )
+            {
+                // Ignore
             }
         }
     }
@@ -331,7 +230,7 @@ public final class UnitOfWorkInstance
     {
         checkOpen();
 
-        cache.clear();
+        stateCache.clear();
     }
 
     public boolean contains( Object entity )
@@ -339,22 +238,9 @@ public final class UnitOfWorkInstance
         checkOpen();
 
         EntityComposite entityComposite = (EntityComposite) entity;
-        return getCachedEntity( entityComposite.identity().get(), entityComposite.type() ) != null;
-    }
-
-    public CompositeBuilderFactory compositeBuilderFactory()
-    {
-        return moduleInstance.compositeBuilderFactory();
-    }
-
-    public ObjectBuilderFactory objectBuilderFactory()
-    {
-        return moduleInstance.objectBuilderFactory();
-    }
-
-    public UnitOfWorkFactory unitOfWorkFactory()
-    {
-        return moduleInstance.unitOfWorkFactory();
+        EntityInstance instance = EntityInstance.getEntityInstance( entityComposite );
+        EntityStateStore ess = stateCache.get( instance.qualifiedIdentity() );
+        return ess != null && ess.instance == instance;
     }
 
     public Usecase usecase()
@@ -364,8 +250,10 @@ public final class UnitOfWorkInstance
 
     public MetaInfo metaInfo()
     {
-        if (metaInfo == null)
+        if( metaInfo == null )
+        {
             metaInfo = new MetaInfo();
+        }
         return metaInfo;
     }
 
@@ -387,17 +275,6 @@ public final class UnitOfWorkInstance
         }
     }
 
-    public QueryBuilderFactory queryBuilderFactory()
-    {
-        checkOpen();
-        if( queryBuilderFactory == null )
-        {
-            ServiceFinder finder = moduleInstance.serviceFinder();
-            queryBuilderFactory = new QueryBuilderFactoryImpl( this, finder );
-        }
-        return queryBuilderFactory;
-    }
-
     public void complete()
         throws UnitOfWorkCompletionException
     {
@@ -408,6 +285,24 @@ public final class UnitOfWorkInstance
         throws UnitOfWorkCompletionException, ConcurrentEntityModificationException
     {
         complete( true );
+    }
+
+    public EntityState refresh(QualifiedIdentity qid)
+    {
+        if (unitOfWorkStore != null)
+        {
+            unitOfWorkStore.refresh(qid);
+        }
+
+        EntityStateStore ess = stateCache.get( qid );
+        if (ess != null)
+        {
+            // Refresh state
+            return ess.state = ess.store.getEntityState( qid );
+        } else
+        {
+            return null; // TODO Can this happen?
+        }
     }
 
     private void complete( boolean completeAndContinue )
@@ -421,14 +316,23 @@ public final class UnitOfWorkInstance
         // Check callbacks
         notifyBeforeCompletion( currentCallbacks );
 
-        Map<EntityStore, StoreCompletion> storeCompletion = createCompleteLists();
-
-        List<StateCommitter> committers = commitCompleteLists( storeCompletion );
-
-        // Commit all changes
-        for( StateCommitter committer : committers )
+        if( unitOfWorkStore != null )
         {
-            committer.commit();
+            // Merge state with underlying UoW
+            unitOfWorkStore.mergeWith( stateCache );
+        }
+        else
+        {
+            // Commit state to EntityStores
+            Map<EntityStore, StoreCompletion> storeCompletion = createCompleteLists();
+
+            List<StateCommitter> committers = commitCompleteLists( storeCompletion );
+
+            // Commit all changes
+            for( StateCommitter committer : committers )
+            {
+                committer.commit();
+            }
         }
 
         if( completeAndContinue )
@@ -468,7 +372,7 @@ public final class UnitOfWorkInstance
         checkOpen();
         current.get().pop();
         open = false;
-        cache.clear();
+        stateCache.clear();
 
         // Turn off recording for the state usage
         StateUsage stateUsage = usecase.metaInfo().get( StateUsage.class );
@@ -483,13 +387,6 @@ public final class UnitOfWorkInstance
         return open;
     }
 
-    public ModuleInstance module()
-    {
-        checkOpen();
-
-        return moduleInstance;
-    }
-
     public void addUnitOfWorkCallback( UnitOfWorkCallback callback )
     {
         if( callbacks == null )
@@ -502,21 +399,27 @@ public final class UnitOfWorkInstance
 
     public void removeUnitOfWorkCallback( UnitOfWorkCallback callback )
     {
-        if (callbacks != null )
+        if( callbacks != null )
+        {
             callbacks.remove( callback );
+        }
     }
 
     public void addStateChangeVoter( StateChangeVoter voter )
     {
-        if (stateChangeVoters == null)
+        if( stateChangeVoters == null )
+        {
             stateChangeVoters = new ArrayList();
+        }
         stateChangeVoters.add( voter );
     }
 
     public void removeStateChangeVoter( StateChangeVoter voter )
     {
-        if (stateChangeVoters != null)
+        if( stateChangeVoters != null )
+        {
             stateChangeVoters.remove( voter );
+        }
     }
 
     public Iterable<StateChangeVoter> stateChangeVoters()
@@ -526,22 +429,29 @@ public final class UnitOfWorkInstance
 
     public void addStateChangeListener( StateChangeListener listener )
     {
-        if (stateChangeListeners == null)
+        if( stateChangeListeners == null )
+        {
             stateChangeListeners = new ArrayList();
+        }
         stateChangeListeners.add( listener );
     }
 
     public void removeStateChangeListener( StateChangeListener listener )
     {
-        if (stateChangeListeners != null)
+        if( stateChangeListeners != null )
+        {
             stateChangeListeners.remove( listener );
+        }
     }
 
-    void createEntity( EntityComposite instance )
+    public void createEntity( EntityInstance instance, EntityStore entityStore )
     {
-        Class<? extends EntityComposite> compositeType = (Class<? extends EntityComposite>) instance.type();
-        Map<String, EntityComposite> entityCache = getEntityCache( compositeType );
-        entityCache.put( instance.identity().get(), instance );
+        QualifiedIdentity qid = instance.qualifiedIdentity();
+        EntityStateStore entityStateStore = new EntityStateStore();
+        entityStateStore.instance = instance;
+        entityStateStore.state = instance.entityState();
+        entityStateStore.store = entityStore;
+        stateCache.put( qid, entityStateStore );
     }
 
     private List<StateCommitter> commitCompleteLists( Map<EntityStore, StoreCompletion> storeCompletion )
@@ -573,7 +483,8 @@ public final class UnitOfWorkInstance
                     Collection<EntityComposite> modifiedEntities = new ArrayList<EntityComposite>();
                     for( QualifiedIdentity modifiedEntityIdentity : modifiedEntityIdentities )
                     {
-                        modifiedEntities.add( getCachedEntity( modifiedEntityIdentity ) );
+                        EntityStateStore entityStateStore = stateCache.get( modifiedEntityIdentity );
+                        modifiedEntities.add( entityStateStore.instance.<EntityComposite>proxy() );
                     }
                     throw new ConcurrentEntityModificationException( modifiedEntities );
                 }
@@ -589,79 +500,52 @@ public final class UnitOfWorkInstance
     private Map<EntityStore, StoreCompletion> createCompleteLists()
     {
         Map<EntityStore, StoreCompletion> storeCompletion = new HashMap<EntityStore, StoreCompletion>();
-        for( Map.Entry<Class<? extends EntityComposite>, Map<String, EntityComposite>> entry : cache.entrySet() )
+        for( EntityStateStore entityStateStore : stateCache.values() )
         {
-            Map<String, EntityComposite> entities = entry.getValue();
-            for( EntityComposite entityInstance : entities.values() )
+            EntityStore store = entityStateStore.store;
+            StoreCompletion storeCompletionList = storeCompletion.get( store );
+            if( storeCompletionList == null )
             {
-                EntityInstance instance = EntityInstance.getEntityInstance( entityInstance );
-
-                EntityStore store = instance.store();
-                StoreCompletion storeCompletionList = storeCompletion.get( store );
-                if( storeCompletionList == null )
+                storeCompletionList = new StoreCompletion();
+                storeCompletion.put( store, storeCompletionList );
+            }
+            EntityState entityState = entityStateStore.state;
+            if (entityState != null)
+            {
+                if( entityState.status() == EntityStatus.LOADED )
                 {
-                    storeCompletionList = new StoreCompletion();
-                    storeCompletion.put( store, storeCompletionList );
+                    storeCompletionList.getUpdatedState().add( entityState );
                 }
-
-                if( instance.status() == EntityStatus.LOADED )
+                else if( entityState.status() == EntityStatus.NEW )
                 {
-                    EntityState entityState = instance.entityState();
-                    if( entityState != null )
-                    {
-                        storeCompletionList.getUpdatedState().add( entityState );
-                    }
+                    storeCompletionList.getNewState().add( entityState );
                 }
-                else if( instance.status() == EntityStatus.NEW )
+                else
                 {
-                    storeCompletionList.getNewState().add( instance.entityState() );
-                }
-                if( instance.status() == EntityStatus.REMOVED )
-                {
-                    storeCompletionList.getRemovedState().add( instance.qualifiedIdentity() );
+                    storeCompletionList.getRemovedState().add( entityState.qualifiedIdentity() );
                 }
             }
         }
+
         return storeCompletion;
     }
 
     private void continueWithState()
     {
-        // Update state status for continue
-        for( Map.Entry<Class<? extends EntityComposite>, Map<String, EntityComposite>> entry : cache.entrySet() )
+        Iterator<EntityStateStore> stateStores = stateCache.values().iterator();
+        while( stateStores.hasNext() )
         {
-            Map<String, EntityComposite> entities = entry.getValue();
-            Iterator<EntityComposite> entityIterator = entities.values().iterator();
-            while( entityIterator.hasNext() )
+            EntityStateStore entityStateStore = stateStores.next();
+            EntityState entityState = entityStateStore.state;
+            if( entityState.status() != EntityStatus.REMOVED )
             {
-                EntityComposite entityInstance = entityIterator.next();
-                EntityInstance instance = EntityInstance.getEntityInstance( entityInstance );
-
-                EntityStore store = instance.store();
-
-                if( instance.status() == EntityStatus.NEW )
-                {
-                    instance.entityState().markAsLoaded();
-                }
-                if( instance.status() == EntityStatus.REMOVED )
-                {
-                    entityIterator.remove();
-                }
+                entityState.hasBeenApplied();
+            }
+            else
+            {
+                stateStores.remove();
             }
         }
-    }
-
-    private Map<String, EntityComposite> getEntityCache( Class<? extends EntityComposite> compositeType )
-    {
-        Map<String, EntityComposite> entityCache = cache.get( compositeType );
-
-        if( entityCache == null )
-        {
-            entityCache = new HashMap<String, EntityComposite>();
-            cache.put( compositeType, entityCache );
-        }
-
-        return entityCache;
     }
 
     private void notifyBeforeCompletion( List<UnitOfWorkCallback> callbacks )
@@ -684,9 +568,9 @@ public final class UnitOfWorkInstance
                 protected void execute( EntityInstance instance )
                     throws Exception
                 {
-                    if (instance.<Object>proxy() instanceof UnitOfWorkCallback)
+                    if( instance.<Object>proxy() instanceof UnitOfWorkCallback )
                     {
-                        UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast(instance.proxy());
+                        UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast( instance.proxy() );
                         callback.beforeCompletion();
                     }
                 }
@@ -695,7 +579,8 @@ public final class UnitOfWorkInstance
         catch( UnitOfWorkCompletionException e )
         {
             throw e;
-        } catch (Exception e)
+        }
+        catch( Exception e )
         {
             throw new UnitOfWorkCompletionException( e );
         }
@@ -726,34 +611,22 @@ public final class UnitOfWorkInstance
                 protected void execute( EntityInstance instance )
                     throws Exception
                 {
-                    if (instance.<Object>proxy() instanceof UnitOfWorkCallback)
+                    if( instance.<Object>proxy() instanceof UnitOfWorkCallback )
                     {
-                        UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast(instance.proxy());
-                        callback.afterCompletion(status);
+                        UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast( instance.proxy() );
+                        callback.afterCompletion( status );
                     }
                 }
             }.execute();
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             // Ignore
         }
 
     }
 
-    private EntityComposite getCachedEntity( String identity, Class compositeType )
-    {
-        Map<String, EntityComposite> entityCache = cache.get( compositeType );
-
-        if( entityCache == null )
-        {
-            return null;
-        }
-
-        return entityCache.get( identity );
-    }
-
-    private EntityState getCachedState( QualifiedIdentity entityId )
+    EntityState getCachedState( QualifiedIdentity entityId )
     {
         EntityComposite composite = getCachedEntity( entityId );
         if( composite != null )
@@ -768,28 +641,29 @@ public final class UnitOfWorkInstance
 
     private EntityComposite getCachedEntity( QualifiedIdentity entityId )
     {
-        String type = entityId.type();
-        try
-        {
-            Class compositeType = (Class) moduleInstance.classLoader().loadClass( type );
-            Map<String, EntityComposite> entityCache = cache.get( compositeType );
-            if( entityCache == null )
-            {
-                return null;
-            }
+        EntityStateStore entityStateStore = stateCache.get( entityId );
+        return entityStateStore == null ? null : entityStateStore.instance.<EntityComposite>proxy();
+    }
 
-            EntityComposite composite = entityCache.get( entityId.identity() );
-            return composite;
-        }
-        catch( ClassNotFoundException e )
+    EntityStateStore getEffectiveEntityStateStore( QualifiedIdentity qi, EntityType entityType )
+    {
+        EntityStateStore entityStateStore = stateCache.get( qi );
+        if( entityStateStore != null )
         {
-            // TODO Throw an exception here?
-            e.printStackTrace();
+            return entityStateStore;
+        }
+
+        if( unitOfWorkStore != null )
+        {
+            return unitOfWorkStore.getEffectiveEntityStateStore( qi, entityType );
+        }
+        else
+        {
             return null;
         }
     }
 
-    private void checkOpen()
+    public void checkOpen()
     {
         if( !isOpen() )
         {
@@ -802,267 +676,28 @@ public final class UnitOfWorkInstance
         return stateChangeListeners;
     }
 
-    public UnitOfWorkStore newEntityStore()
+    public EntityState getEntityState( QualifiedIdentity qualifiedIdentity, EntityModel entity )
+        throws EntityStoreException
     {
-        return new UnitOfWorkStore();
+        EntityStateStore ess = stateCache.get( qualifiedIdentity );
+        if (ess.state == null)
+        {
+            ess.state = entity.getEntityState( ess.store, qualifiedIdentity );
+        }
+        return ess.state;
     }
 
     abstract class ForEachEntity
     {
         public void execute() throws Exception
         {
-            for( Map.Entry<Class<? extends EntityComposite>, Map<String, EntityComposite>> entry : cache.entrySet() )
+            for( EntityStateStore entry : stateCache.values() )
             {
-                Map<String, EntityComposite> entities = entry.getValue();
-                for( EntityComposite entityComposite : entities.values() )
-                {
-                    EntityComposite entityInstance = entityComposite;
-                    EntityInstance instance = EntityInstance.getEntityInstance( entityInstance );
-                    execute( instance );
-                }
+                execute( entry.instance );
             }
         }
 
-        protected abstract void execute(EntityInstance instance) throws Exception;
-    }
-
-    private class UnitOfWorkStore
-        implements EntityStore
-    {
-        final Map<String, EntityType> entityTypes = new HashMap<String, EntityType>();
-
-        public void registerEntityType( EntityType entityType )
-        {
-            entityTypes.put( entityType.type(), entityType );
-        }
-
-        public EntityType getEntityType( String aEntityType )
-        {
-            return entityTypes.get( aEntityType );
-        }
-
-        public EntityState newEntityState( QualifiedIdentity identity ) throws EntityStoreException
-        {
-            EntityType entityType = entityTypes.get( identity.type() );
-            if( entityType == null )
-            {
-                throw new UnknownEntityTypeException( identity.type() );
-            }
-
-            UnitOfWorkEntityState entityState = new UnitOfWorkEntityState( 0, System.currentTimeMillis(), identity, EntityStatus.NEW, entityType,
-                                                                           new HashMap<QualifiedName, Object>(), new HashMap<QualifiedName, QualifiedIdentity>(), new HashMap<QualifiedName, Collection<QualifiedIdentity>>(), null );
-            return entityState;
-        }
-
-        public EntityState getEntityState( QualifiedIdentity identity ) throws EntityStoreException
-        {
-            EntityType entityType = entityTypes.get( identity.type() );
-            if( entityType == null )
-            {
-                throw new UnknownEntityTypeException( identity.type() );
-            }
-
-            EntityState parentState = getCachedState( identity );
-            if( parentState == null )
-            {
-                // Force load into parent
-                try
-                {
-                    Class<? extends EntityComposite> entityClass = (Class<? extends EntityComposite>) moduleInstance.classLoader().loadClass( identity.type() );
-                    parentState = EntityInstance.getEntityInstance( find( identity.identity(), entityClass ) ).entityState();
-                }
-                catch( ClassNotFoundException e )
-                {
-                    throw new EntityStoreException( e );
-                }
-            }
-
-            UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( parentState.version(),
-                                                                                     parentState.lastModified(),
-                                                                                     identity,
-                                                                                     EntityStatus.LOADED,
-                                                                                     entityType,
-                                                                                     new HashMap<QualifiedName, Object>(),
-                                                                                     new HashMap<QualifiedName, QualifiedIdentity>(),
-                                                                                     new HashMap<QualifiedName, Collection<QualifiedIdentity>>(),
-                                                                                     parentState );
-            return unitOfWorkEntityState;
-        }
-
-        public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException
-        {
-            // Create new entity and transfer state
-            for( EntityState newState : newStates )
-            {
-                UnitOfWorkEntityState uowState = (UnitOfWorkEntityState) newState;
-                Class<? extends EntityComposite> type = null;
-                try
-                {
-                    type = (Class<? extends EntityComposite>) moduleInstance.classLoader().loadClass( uowState.qualifiedIdentity().type() );
-                }
-                catch( ClassNotFoundException e )
-                {
-                    throw new EntityStoreException( e );
-                }
-                EntityComposite entityInstance = newEntityBuilder( uowState.qualifiedIdentity().identity(), type ).newInstance();
-
-                EntityState parentState = EntityInstance.getEntityInstance( entityInstance ).entityState();
-                Iterable<QualifiedName> propertyNames = uowState.propertyNames();
-                for( QualifiedName propertyName : propertyNames )
-                {
-                    parentState.setProperty( propertyName, uowState.getProperty( propertyName ) );
-                }
-                Iterable<QualifiedName> associationNames = uowState.associationNames();
-                for( QualifiedName associationName : associationNames )
-                {
-                    parentState.setAssociation( associationName, uowState.getAssociation( associationName ) );
-                }
-                Iterable<QualifiedName> manyAssociationNames = uowState.manyAssociationNames();
-                for( QualifiedName manyAssociationName : manyAssociationNames )
-                {
-                    Collection<QualifiedIdentity> collection = parentState.getManyAssociation( manyAssociationName );
-                    Collection<QualifiedIdentity> newCollection = uowState.getManyAssociation( manyAssociationName );
-
-                    // TODO This can be soooo much more optimized by comparing the collections and matching them
-                    // up by doing individual add/removes
-                    collection.clear();
-                    collection.addAll( newCollection );
-                }
-            }
-
-            // Copy state back to already loaded entities
-            for( EntityState loadedState : loadedStates )
-            {
-                UnitOfWorkEntityState uowState = (UnitOfWorkEntityState) loadedState;
-                if( uowState.isChanged() )
-                {
-                    Class<? extends EntityComposite> type = null;
-                    try
-                    {
-                        type = (Class<? extends EntityComposite>) moduleInstance.classLoader().loadClass( uowState.qualifiedIdentity().type() );
-                    }
-                    catch( ClassNotFoundException e )
-                    {
-                        throw new EntityStoreException( e );
-                    }
-                    EntityComposite instance = find( uowState.qualifiedIdentity().identity(), type );
-                    EntityInstance entityInstance = EntityInstance.getEntityInstance( instance );
-
-                    EntityState parentState = uowState.getParentState();
-                    Iterable<QualifiedName> propertyNames = uowState.propertyNames();
-                    for( QualifiedName propertyName : propertyNames )
-                    {
-                        Object value = uowState.getProperty( propertyName );
-                        parentState.setProperty( propertyName, value );
-                    }
-                    Iterable<QualifiedName> associationNames = uowState.associationNames();
-                    for( QualifiedName associationName : associationNames )
-                    {
-                        QualifiedIdentity value = uowState.getAssociation( associationName );
-                        parentState.setAssociation( associationName, value );
-                    }
-                    Iterable<QualifiedName> manyAssociationNames = uowState.manyAssociationNames();
-                    for( QualifiedName manyAssociationName : manyAssociationNames )
-                    {
-                        Collection<QualifiedIdentity> collection = parentState.getManyAssociation( manyAssociationName );
-                        Collection<QualifiedIdentity> newCollection = uowState.getManyAssociation( manyAssociationName );
-
-                        // TODO This can be soooo much more optimized by comparing the collections and matching them
-                        // up by doing individual add/removes
-                        collection.clear();
-                        collection.addAll( newCollection );
-                    }
-
-                    entityInstance.state().refresh( parentState );
-                }
-            }
-
-            // Remove entities
-            for( QualifiedIdentity removedState : removedStates )
-            {
-                EntityState parentState = getCachedState( removedState );
-                if( parentState != null )
-                {
-                    parentState.remove(); // Mark for deletion when parent unit completes
-                }
-            }
-
-            return new StateCommitter()
-            {
-                public void commit()
-                {
-                }
-
-                public void cancel()
-                {
-                }
-            };
-        }
-
-        public Iterator<EntityState> iterator()
-        {
-            return null;
-        }
-    }
-
-    private static class UnitOfWorkEntityState
-        extends DefaultEntityState
-    {
-        private final EntityState parentState;
-
-        private UnitOfWorkEntityState( long entityVersion, long lastModified,
-                                       QualifiedIdentity identity,
-                                       EntityStatus status,
-                                       EntityType entityType,
-                                       Map<QualifiedName, Object> properties,
-                                       Map<QualifiedName, QualifiedIdentity> associations,
-                                       Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations,
-                                       EntityState parentState )
-        {
-            super( entityVersion, lastModified, identity, status, entityType, properties, associations, manyAssociations );
-            this.parentState = parentState;
-        }
-
-        public Object getProperty( QualifiedName qualifiedName )
-        {
-            if( properties.containsKey( qualifiedName ) )
-            {
-                return properties.get( qualifiedName );
-            }
-
-            // Get from parent state
-            return parentState == null ? null : parentState.getProperty( qualifiedName );
-        }
-
-        public QualifiedIdentity getAssociation( QualifiedName qualifiedName )
-        {
-            if( associations.containsKey( qualifiedName ) )
-            {
-                return associations.get( qualifiedName );
-            }
-
-            return parentState == null ? null : parentState.getAssociation( qualifiedName );
-        }
-
-        public Collection<QualifiedIdentity> getManyAssociation( QualifiedName qualifiedName )
-        {
-            if( manyAssociations.containsKey( qualifiedName ) )
-            {
-                return manyAssociations.get( qualifiedName );
-            }
-
-            return parentState == null ? null : parentState.getManyAssociation( qualifiedName );
-        }
-
-        public EntityState getParentState()
-        {
-            return parentState;
-        }
-
-        public boolean isChanged()
-        {
-            return properties.size() > 0 || associations.size() > 0 || manyAssociations.size() > 0;
-        }
+        protected abstract void execute( EntityInstance instance ) throws Exception;
     }
 
     private static class StoreCompletion
@@ -1091,22 +726,6 @@ public final class UnitOfWorkInstance
         public List<QualifiedIdentity> getRemovedState()
         {
             return removedState;
-        }
-    }
-
-    class EntityFinder
-        implements ModuleVisitor
-    {
-        Class mixinType;
-        ModuleInstance module;
-        EntityModel model;
-
-        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
-        {
-            model = moduleModel.entities().getEntityModelFor( mixinType, visibility );
-            if (model != null)
-                module = moduleInstance;
-            return model == null;
         }
     }
 }

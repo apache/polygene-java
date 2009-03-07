@@ -111,9 +111,9 @@ public class EntityStateAdapter
         return entityState.manyAssociationNames();
     }
 
-    public void markAsLoaded()
+    public void hasBeenApplied()
     {
-        entityState.markAsLoaded();
+        entityState.hasBeenApplied();
     }
 
     public ValueState newValueState( Map<QualifiedName, Object> values )

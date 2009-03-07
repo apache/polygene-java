@@ -29,19 +29,19 @@ import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.usecase.StateUsage;
 import org.qi4j.runtime.composite.CompositeMethodInstance;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.runtime.unitofwork.RecordingEntityState;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 
 /**
@@ -72,27 +72,24 @@ public final class EntityInstance
     }
 
     private final EntityComposite proxy;
-    private final UnitOfWorkInstance uow;
-    private final EntityStore store;
+    private final ModuleUnitOfWork uow;
+    private ModuleInstance moduleInstance;
     private final EntityModel entity;
-    private final ModuleInstance moduleInstance;
-    private final QualifiedIdentity identity;
+    private final QualifiedIdentity qualifiedIdentity;
 
     private Object[] mixins;
     private EntityState entityState;
     private EntityStatus status;
     private EntityStateModel.EntityStateInstance state;
 
-    public EntityInstance( UnitOfWorkInstance uow, EntityStore store, EntityModel entity, ModuleInstance moduleInstance, QualifiedIdentity identity, EntityStatus status, EntityState entityState)
+    public EntityInstance( ModuleUnitOfWork uow, ModuleInstance moduleInstance, EntityModel entity, QualifiedIdentity qualifiedIdentity, EntityStatus status, EntityState entityState )
     {
         this.uow = uow;
-        this.store = store;
-        this.entity = entity;
         this.moduleInstance = moduleInstance;
-        this.identity = identity;
+        this.entity = entity;
+        this.qualifiedIdentity = qualifiedIdentity;
         this.status = status;
-
-        this.entityState = wrapEntityState( entityState);
+        this.entityState = entityState;
 
         proxy = entity.newProxy( this );
     }
@@ -100,12 +97,12 @@ public final class EntityInstance
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
-        return entity.invoke( this, this.proxy, method, args, moduleInstance );
+        return entity.invoke( this, this.proxy, method, args, uow.module() );
     }
 
     public QualifiedIdentity qualifiedIdentity()
     {
-        return identity;
+        return qualifiedIdentity;
     }
 
     public <T> T proxy()
@@ -136,17 +133,6 @@ public final class EntityInstance
     public ModuleInstance module()
     {
         return moduleInstance;
-    }
-
-
-    public EntityStore store()
-    {
-        return store;
-    }
-
-    public UnitOfWork unitOfWork()
-    {
-        return uow;
     }
 
     public EntityState entityState()
@@ -204,13 +190,20 @@ public final class EntityInstance
     {
         if( status() == EntityStatus.LOADED && entityState != null )
         {
-            // Only refresh if the state has actually changed
-            EntityState newEntityState = store.getEntityState( identity );
+            EntityState newEntityState = uow.instance().refresh( qualifiedIdentity );
+            
             if( newEntityState.version() != entityState.version() )
             {
-                refresh( newEntityState );
+                entityState = newEntityState;
+                state.refresh( newEntityState );
             }
         }
+    }
+
+    public void refreshState()
+    {
+        if (entityState != null && state != null)
+            state.refresh( entityState );
     }
 
     private void initState()
@@ -221,22 +214,15 @@ public final class EntityInstance
         }
         if( entityState() == null )
         {
-            entityState = entity.getEntityState( store, identity );
+            entityState = uow.instance().getEntityState( qualifiedIdentity, entity );
         }
         mixins = entity.initialize( uow, entityState, this );
-    }
-
-    private void refresh( EntityState newState )
-    {
-        entityState = newState;
-
-        state.refresh( newState );
     }
 
 
     @Override public int hashCode()
     {
-        return identity.hashCode();
+        return qualifiedIdentity.hashCode();
     }
 
     @Override public boolean equals( Object o )
@@ -244,7 +230,7 @@ public final class EntityInstance
         try
         {
             Identity other = ( (Identity) o );
-            return other != null && other.identity().get().equals( identity.identity() );
+            return other != null && other.identity().get().equals( qualifiedIdentity.identity() );
         }
         catch( ClassCastException e )
         {
@@ -254,7 +240,7 @@ public final class EntityInstance
 
     @Override public String toString()
     {
-        return identity.toString();
+        return qualifiedIdentity.toString();
     }
 
     public void cast( EntityInstance newEntityInstance )
@@ -283,35 +269,32 @@ public final class EntityInstance
     }
 
     public EntityState load()
+        throws NoSuchEntityException
     {
         if( entityState == null && status() == EntityStatus.LOADED )
         {
-            entityState = wrapEntityState( entity.getEntityState( store, identity ) );
+            try
+            {
+                entityState = uow.instance().getEntityState(qualifiedIdentity, entity );
+            }
+            catch( EntityNotFoundException e )
+            {
+                throw new NoSuchEntityException(qualifiedIdentity.identity(), type().toString());
+            }
         }
 
         return entityState;
     }
 
-    private EntityState wrapEntityState( EntityState entityState )
-    {
-        // If we have a recording LoadingPolicy, wrap the EntityState
-        StateUsage stateUsage = uow.usecase().metaInfo().get( StateUsage.class);
-        if( stateUsage != null && stateUsage.isRecording() )
-        {
-            entityState = new RecordingEntityState( entityState, stateUsage );
-        }
-
-        return entityState;
-    }
-
-    public void remove()
+    public void remove( UnitOfWork unitOfWork )
         throws LifecycleException
     {
         invokeRemove();
 
-        removeAggregatedEntities();
+        removeAggregatedEntities(unitOfWork);
 
-
+        if (entityState != null)
+            entityState.remove();
         status = EntityStatus.REMOVED;
         entityState = null;
         mixins = null;
@@ -336,7 +319,7 @@ public final class EntityInstance
         }
     }
 
-    private void removeAggregatedEntities()
+    private void removeAggregatedEntities( UnitOfWork unitOfWork )
     {
         // Calculate aggregated Entities
         EntityStateDescriptor stateDescriptor = entity.state();
@@ -365,7 +348,7 @@ public final class EntityInstance
         // Remove aggregated Entities
         for( Object aggregatedEntity : aggregatedEntities )
         {
-            unitOfWork().remove( aggregatedEntity );
+            unitOfWork.remove( aggregatedEntity );
         }
     }
 

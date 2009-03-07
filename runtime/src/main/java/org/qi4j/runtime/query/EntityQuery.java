@@ -22,6 +22,7 @@ import java.util.Iterator;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryExecutionException;
 import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -42,11 +43,13 @@ final class EntityQuery<T>
     /**
      * Parent unit of work.
      */
-    private final UnitOfWorkInstance unitOfWorkInstance;
+    private final UnitOfWork unitOfWorkInstance;
     /**
      * Entity finder to be used to locate entities.
      */
     private final EntityFinder entityFinder;
+
+    private final ClassLoader classLoader;
 
     /**
      * Constructor.
@@ -56,14 +59,16 @@ final class EntityQuery<T>
      * @param resultType         type of queried entities; cannot be null
      * @param whereClause        where clause
      */
-    EntityQuery( final UnitOfWorkInstance unitOfWorkInstance,
+    EntityQuery( final UnitOfWork unitOfWorkInstance,
                  final EntityFinder entityFinder,
+                 final ClassLoader classLoader,
                  final Class<T> resultType,
                  final BooleanExpression whereClause )
     {
         super( resultType, whereClause );
         this.unitOfWorkInstance = unitOfWorkInstance;
         this.entityFinder = entityFinder;
+        this.classLoader = classLoader;
     }
 
     /**
@@ -153,12 +158,11 @@ final class EntityQuery<T>
      */
     private T loadEntity( final QualifiedIdentity qualifiedIdentity )
     {
-        final ModuleInstance moduleInstance = unitOfWorkInstance.module();
         final String entityTypeAsString = qualifiedIdentity.type();
         final Class<T> entityType;
         try
         {
-            entityType = (Class<T>) moduleInstance.classLoader().loadClass( entityTypeAsString );
+            entityType = (Class<T>) classLoader.loadClass( entityTypeAsString );
         }
         catch( ClassNotFoundException e )
         {

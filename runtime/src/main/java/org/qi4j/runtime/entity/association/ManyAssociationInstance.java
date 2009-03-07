@@ -12,6 +12,7 @@ import org.qi4j.api.unitofwork.ManyAssociationStateChange;
 import org.qi4j.api.unitofwork.StateChangeListener;
 import org.qi4j.api.unitofwork.StateChangeVoter;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
@@ -21,7 +22,7 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
     implements ManyAssociation<T>
 {
-    public ManyAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, EntityState entityState )
+    public ManyAssociationInstance( AssociationInfo associationInfo, ModuleUnitOfWork unitOfWork, EntityState entityState )
     {
         super( associationInfo, unitOfWork, entityState );
     }
@@ -278,7 +279,7 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
     protected ManyAssociationStateChange vote( ManyAssociationStateChange.ChangeType changeType, Collection<Entity> changes )
     {
         ManyAssociationStateChange change = null;
-        Iterable<StateChangeVoter> stateChangeVoters = unitOfWork.stateChangeVoters();
+        Iterable<StateChangeVoter> stateChangeVoters = unitOfWork.instance().stateChangeVoters();
         if( stateChangeVoters != null )
         {
             change = new ManyAssociationStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), changeType, changes );
@@ -294,7 +295,7 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
     protected ManyAssociationStateChange vote( ManyAssociationStateChange.ChangeType changeType, Entity changeEntity )
     {
         ManyAssociationStateChange change = null;
-        Iterable<StateChangeVoter> stateChangeVoters = unitOfWork.stateChangeVoters();
+        Iterable<StateChangeVoter> stateChangeVoters = unitOfWork.instance().stateChangeVoters();
         if( stateChangeVoters != null )
         {
             Collection<Entity> changes = Collections.singletonList( changeEntity );
@@ -311,7 +312,7 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
     protected void notify( ManyAssociationStateChange change, ManyAssociationStateChange.ChangeType changeType, Collection<Entity> changes )
     {
         // Notify listeners
-        Iterable<StateChangeListener> stateChangeListeners = unitOfWork.stateChangeListeners();
+        Iterable<StateChangeListener> stateChangeListeners = unitOfWork.instance().stateChangeListeners();
         if( stateChangeListeners != null )
         {
             if( change == null )
@@ -329,7 +330,7 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
     protected void notify( ManyAssociationStateChange change, ManyAssociationStateChange.ChangeType changeType, Entity changeEntity )
     {
         // Notify listeners
-        Iterable<StateChangeListener> stateChangeListeners = unitOfWork.stateChangeListeners();
+        Iterable<StateChangeListener> stateChangeListeners = unitOfWork.instance().stateChangeListeners();
         if( stateChangeListeners != null )
         {
             if( change == null )

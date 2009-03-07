@@ -27,6 +27,6 @@ public interface StateHolder
      * @param propertyMethod of the property
      * @return the property
      */
-    Property<?> getProperty( Method propertyMethod );
+    <T> Property<T> getProperty( Method propertyMethod );
 
 }

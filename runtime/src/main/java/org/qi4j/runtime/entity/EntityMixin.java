@@ -31,10 +31,4 @@ public final class EntityMixin
         EntityInstance handler = EntityInstance.getEntityInstance( meAsEntity );
         return handler.isReference();
     }
-
-    public UnitOfWork unitOfWork()
-    {
-        EntityInstance handler = EntityInstance.getEntityInstance( meAsEntity );
-        return handler.unitOfWork();
-    }
 }

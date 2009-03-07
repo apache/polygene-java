@@ -49,44 +49,8 @@ public class EntitiesInstance
         return entities;
     }
 
-    public <T> EntityBuilder<T> newEntityBuilder( EntityModel entityModel, UnitOfWorkInstance uow, EntityStore entityStore )
-    {
-        if( entityStore == null )
-        {
-            entityStore = getStore();
-        }
-
-        return new EntityBuilderInstance<T>( moduleInstance, entityModel, uow, entityStore, getIdentityGenerator() );
-    }
-
-    public EntityInstance loadEntityInstance( String identity, EntityModel entityModel, UnitOfWorkInstance uow, EntityStore entityStore )
-    {
-        QualifiedIdentity qid = entityModel.newQualifiedIdentity( identity );
-
-        if( entityStore == null )
-        {
-            entityStore = getStore();
-        }
-
-        EntityState state = entityModel.getEntityState( entityStore, qid );
-
-        return entityModel.loadInstance( uow, entityStore, qid, moduleInstance, state );
-    }
-
-    public EntityInstance getEntityInstance( String identity, EntityModel entityModel, UnitOfWorkInstance unitOfWorkInstance, EntityStore entityStore )
-    {
-        QualifiedIdentity qid = entityModel.newQualifiedIdentity( identity );
-
-        if( entityStore == null )
-        {
-            entityStore = getStore();
-        }
-
-        return entityModel.getInstance( unitOfWorkInstance, entityStore, qid, moduleInstance );
-    }
-
     // todo DCL??
-    private EntityStore getStore()
+    public EntityStore entityStore()
     {
         synchronized( this )
         {
@@ -104,7 +68,7 @@ public class EntitiesInstance
     }
 
     // todo DCL??
-    private IdentityGenerator getIdentityGenerator()
+    public  IdentityGenerator identityGenerator()
     {
         synchronized (this)
         {

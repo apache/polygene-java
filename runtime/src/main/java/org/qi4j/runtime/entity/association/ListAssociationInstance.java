@@ -20,6 +20,7 @@ import java.util.ListIterator;
 import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.ListAssociation;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
@@ -33,12 +34,12 @@ public final class ListAssociationInstance<T>
 {
     private List<QualifiedIdentity> subList;
 
-    public ListAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, EntityState entityState )
+    public ListAssociationInstance( AssociationInfo associationInfo, ModuleUnitOfWork unitOfWork, EntityState entityState )
     {
         super( associationInfo, unitOfWork, entityState );
     }
 
-    public ListAssociationInstance( AssociationInfo associationInfo, UnitOfWorkInstance unitOfWork, EntityState entityState, List<QualifiedIdentity> subList )
+    public ListAssociationInstance( AssociationInfo associationInfo, ModuleUnitOfWork unitOfWork, EntityState entityState, List<QualifiedIdentity> subList )
     {
         super( associationInfo, unitOfWork, entityState );
         this.subList = subList;

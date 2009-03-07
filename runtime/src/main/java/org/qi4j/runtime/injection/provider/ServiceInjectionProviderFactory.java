@@ -35,6 +35,8 @@ import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.service.ImportedServiceModel;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.injection.scope.Structure;
 
 public final class ServiceInjectionProviderFactory
     implements InjectionProviderFactory, Serializable

@@ -26,10 +26,12 @@ import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.unitofwork.PropertyStateChange;
 import org.qi4j.api.unitofwork.StateChangeListener;
 import org.qi4j.api.unitofwork.StateChangeVoter;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.value.ValueInstance;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
@@ -48,7 +50,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
     private static final Object NOT_LOADED = new Object();
 
     private EntityState entityState;
-    private UnitOfWorkInstance uow;
+    private ModuleUnitOfWork uow;
 
     private T value;
     private ConstraintsCheck constraints;
@@ -62,7 +64,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
      * @since 0.1.0
      */
-    public EntityPropertyInstance( EntityPropertyModel aPropertyInfo, EntityState entityState, ConstraintsCheck constraints, UnitOfWorkInstance uow )
+    public EntityPropertyInstance( EntityPropertyModel aPropertyInfo, EntityState entityState, ConstraintsCheck constraints, ModuleUnitOfWork uow )
         throws IllegalArgumentException
     {
         super( aPropertyInfo );
@@ -106,7 +108,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
         }
 
         // Allow voters to vote on change
-        Iterable<StateChangeVoter> stateChangeVoters = uow.stateChangeVoters();
+        Iterable<StateChangeVoter> stateChangeVoters = uow.instance().stateChangeVoters();
         PropertyStateChange change = null;
         if( stateChangeVoters != null )
         {
@@ -118,7 +120,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
             }
         }
 
-        Iterable<StateChangeListener> stateChangeListeners = uow.stateChangeListeners();
+        Iterable<StateChangeListener> stateChangeListeners = uow.instance().stateChangeListeners();
         if( stateChangeListeners != null )
         {
             // Have to create this here in order to get old value

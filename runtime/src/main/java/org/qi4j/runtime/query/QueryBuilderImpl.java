@@ -23,7 +23,7 @@ import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.query.grammar.BooleanExpression;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.spi.query.EntityFinder;
 
 /**
@@ -39,11 +39,14 @@ final class QueryBuilderImpl<T>
     /**
      * Parent unit of work.
      */
-    private final UnitOfWorkInstance unitOfWorkInstance;
+    private final UnitOfWork unitOfWork;
     /**
      * Entity finder to be used to locate entities.
      */
     private final EntityFinder entityFinder;
+
+    private final ClassLoader classLoader;
+
     /**
      * Type of queried entities.
      */
@@ -56,16 +59,18 @@ final class QueryBuilderImpl<T>
     /**
      * Constructor.
      *
-     * @param unitOfWorkInstance parent unit of work; cannot be null
+     * @param unitOfWork parent unit of work; cannot be null
      * @param entityFinder       entity finder to be used to locate entities; canot be null
      * @param resultType         type of queried entities; cannot be null
      */
-    public QueryBuilderImpl( final UnitOfWorkInstance unitOfWorkInstance,
+    public QueryBuilderImpl( final UnitOfWork unitOfWork,
                              final EntityFinder entityFinder,
+                             final ClassLoader classLoader,
                              final Class<T> resultType )
     {
-        this.unitOfWorkInstance = unitOfWorkInstance;
+        this.unitOfWork = unitOfWork;
         this.entityFinder = entityFinder;
+        this.classLoader = classLoader;
         this.resultType = resultType;
         this.whereClause = null;
     }
@@ -99,7 +104,7 @@ final class QueryBuilderImpl<T>
         {
             throw new MissingIndexingSystemException();
         }
-        return new EntityQuery<T>( unitOfWorkInstance, entityFinder, resultType, whereClause );
+        return new EntityQuery<T>( unitOfWork, entityFinder, classLoader, resultType, whereClause );
     }
 
     /**

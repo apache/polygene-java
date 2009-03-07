@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,21 +12,28 @@
  *
  */
 
-package org.qi4j.spi.service;
+package org.qi4j.runtime.structure;
 
-import org.qi4j.api.common.MetaInfo;
+import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 
 /**
- * {@code ServiceDescriptor} provides meta informations of a service.
- */
-public interface ServiceDescriptor
-    extends AbstractCompositeDescriptor
+ * JAVADOC
+*/
+class EntityFinder
+    implements ModuleVisitor
 {
-    String identity();
+    Class mixinType;
+    ModuleInstance module;
+    EntityModel model;
 
-    boolean isInstantiateOnStartup();
-
-    <T> Class<T> configurationType();
+    public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
+    {
+        model = moduleModel.entities().getEntityModelFor( mixinType, visibility );
+        if( model != null )
+        {
+            module = moduleInstance;
+        }
+        return model == null;
+    }
 }

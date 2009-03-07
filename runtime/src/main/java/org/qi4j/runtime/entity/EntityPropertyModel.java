@@ -21,6 +21,7 @@ import org.qi4j.api.property.Property;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PersistentPropertyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 
@@ -44,7 +45,7 @@ public final class EntityPropertyModel extends PersistentPropertyModel
         return null;
     }
 
-    public Property newInstance( EntityState state, UnitOfWorkInstance uow )
+    public Property newInstance( EntityState state, ModuleUnitOfWork uow )
     {
         Property property;
         if( isComputed() )

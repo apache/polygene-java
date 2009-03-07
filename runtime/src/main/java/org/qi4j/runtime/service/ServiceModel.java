@@ -136,7 +136,7 @@ public final class ServiceModel
         return moduleName;
     }
 
-    public Class configurationType()
+    public <T> Class<T> configurationType()
     {
         return configurationType;
     }

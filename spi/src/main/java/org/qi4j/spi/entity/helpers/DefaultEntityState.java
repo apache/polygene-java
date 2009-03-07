@@ -68,7 +68,7 @@ public class DefaultEntityState
         return manyAssociations;
     }
 
-    private EntityStatus status;
+    protected EntityStatus status;
     private boolean modified;
 
     protected long version;
@@ -225,9 +225,10 @@ public class DefaultEntityState
         modified = false;
     }
 
-    public void markAsLoaded()
+    public void hasBeenApplied()
     {
         status = EntityStatus.LOADED;
+        version++;
     }
 
     public ValueState newValueState( Map<QualifiedName, Object> values)

@@ -30,6 +30,7 @@ import org.qi4j.runtime.entity.association.AssociationsInstance;
 import org.qi4j.runtime.entity.association.EntityAssociationsModel;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
@@ -59,7 +60,7 @@ public final class EntityStateModel
         return new EntityBuilderStateInstance( properties, associations );
     }
 
-    public EntityStateModel.EntityStateInstance newInstance( UnitOfWorkInstance uow, EntityState entityState )
+    public EntityStateModel.EntityStateInstance newInstance( ModuleUnitOfWork uow, EntityState entityState )
     {
         return new EntityStateInstance( propertiesModel, associationsModel, entityState, uow );
     }
@@ -144,11 +145,11 @@ public final class EntityStateModel
         private final EntityPropertiesModel entityPropertiesModel;
         private final EntityAssociationsModel associationsModel;
         private final EntityState entityState;
-        private final UnitOfWorkInstance uow;
+        private final ModuleUnitOfWork uow;
 
         private EntityStateInstance(
             EntityPropertiesModel entityPropertiesModel, EntityAssociationsModel associationsModel, EntityState entityState,
-            UnitOfWorkInstance uow )
+            ModuleUnitOfWork uow )
         {
             this.entityPropertiesModel = entityPropertiesModel;
             this.associationsModel = associationsModel;

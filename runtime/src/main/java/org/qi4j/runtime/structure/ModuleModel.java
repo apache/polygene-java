@@ -15,6 +15,8 @@
 package org.qi4j.runtime.structure;
 
 import java.io.Serializable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.CompositesModel;
@@ -159,6 +161,8 @@ public class ModuleModel
     private class ModuleClassLoader
         extends ClassLoader
     {
+        Map<String, Class> classes = new ConcurrentHashMap<String, Class>();
+
         private ModuleClassLoader( ClassLoader classLoader )
         {
             super( classLoader );
@@ -166,16 +170,22 @@ public class ModuleModel
 
         @Override protected Class<?> findClass( String name ) throws ClassNotFoundException
         {
-            ClassFinder finder = new ClassFinder();
-            finder.type = name;
-            visitModules( finder );
-
-            if (finder.clazz == null)
+            Class clazz = classes.get( name );
+            if (clazz == null)
             {
-                throw new ClassNotFoundException( name );
+                ClassFinder finder = new ClassFinder();
+                finder.type = name;
+                visitModules( finder );
+
+                if (finder.clazz == null)
+                {
+                    throw new ClassNotFoundException( name );
+                }
+                clazz = finder.clazz;
+                classes.put(name, clazz);
             }
 
-            return finder.clazz;
+            return clazz;
         }
     }
 

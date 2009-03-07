@@ -19,6 +19,7 @@ import java.util.Map;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 
 /**
@@ -28,10 +29,10 @@ public final class AssociationsInstance
 {
     private Map<Method, AbstractAssociation> associations;
     private final EntityAssociationsModel associationsModel;
-    private final UnitOfWorkInstance uow;
+    private final ModuleUnitOfWork uow;
     private final EntityState state;
 
-    public AssociationsInstance( EntityAssociationsModel associationsModel, UnitOfWorkInstance uow, EntityState state )
+    public AssociationsInstance( EntityAssociationsModel associationsModel, ModuleUnitOfWork uow, EntityState state )
     {
         this.associationsModel = associationsModel;
         this.uow = uow;

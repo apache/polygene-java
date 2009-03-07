@@ -35,6 +35,7 @@ import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.util.Annotations;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
@@ -91,7 +92,7 @@ public final class EntityAssociationsModel
         return new ArrayList<AssociationDescriptor>( associationModels );
     }
 
-    public AssociationsInstance newInstance( UnitOfWorkInstance uow, EntityState state )
+    public AssociationsInstance newInstance( ModuleUnitOfWork uow, EntityState state )
     {
         Map<Method, AbstractAssociation> associations = new MethodKeyMap<AbstractAssociation>();
         for( AssociationModel associationModel : associationModels )
@@ -113,7 +114,7 @@ public final class EntityAssociationsModel
         return mapMethodAssociationModel.get( accessor ).newDefaultInstance();
     }
 
-    public AbstractAssociation newInstance( Method accessor, EntityState entityState, UnitOfWorkInstance uow )
+    public AbstractAssociation newInstance( Method accessor, EntityState entityState, ModuleUnitOfWork uow )
     {
         return mapMethodAssociationModel.get( accessor ).newInstance( uow, entityState );
     }

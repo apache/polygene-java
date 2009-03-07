@@ -33,6 +33,7 @@ import org.qi4j.api.unitofwork.UnitOfWorkException;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 
@@ -51,7 +52,7 @@ public final class EntityBuilderInstance<T>
 
     private final ModuleInstance moduleInstance;
     private final EntityModel entityModel;
-    private final UnitOfWorkInstance uow;
+    private final ModuleUnitOfWork uow;
     private final EntityStore store;
     private final IdentityGenerator identityGenerator;
 
@@ -74,7 +75,7 @@ public final class EntityBuilderInstance<T>
     }
 
     public EntityBuilderInstance(
-        ModuleInstance moduleInstance, EntityModel entityModel, UnitOfWorkInstance uow, EntityStore store,
+        ModuleInstance moduleInstance, EntityModel entityModel, ModuleUnitOfWork uow, EntityStore store,
         IdentityGenerator identityGenerator )
     {
         this.moduleInstance = moduleInstance;
@@ -82,6 +83,12 @@ public final class EntityBuilderInstance<T>
         this.uow = uow;
         this.store = store;
         this.identityGenerator = identityGenerator;
+    }
+
+    public EntityBuilderInstance( ModuleInstance moduleInstance, EntityModel model, ModuleUnitOfWork uow, EntityStore store, String identity )
+    {
+        this(moduleInstance, model, uow, store, (IdentityGenerator) null);
+        stateFor( Identity.class ).identity().set( identity );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -145,10 +152,10 @@ public final class EntityBuilderInstance<T>
         // Transfer state
         EntityState entityState = entityModel.newEntityState( store, identity.toString(), state );
 
-        EntityInstance instance = entityModel.loadInstance( uow, store, entityState.qualifiedIdentity(), moduleInstance, entityState );
+        EntityInstance instance = entityModel.newInstance( uow, moduleInstance, entityState.qualifiedIdentity(), entityState );
 
         Object proxy = instance.proxy();
-        uow.createEntity( (EntityComposite) proxy );
+        uow.instance().createEntity( instance, store );
 
         // Invoke lifecycle create() method
         if( instance.entityModel().hasMixinType( Lifecycle.class ) )
@@ -186,7 +193,7 @@ public final class EntityBuilderInstance<T>
             public T next()
             {
                 T instance = newInstance();
-                uow.createEntity( (EntityComposite) instance );
+                uow.instance().createEntity( EntityInstance.getEntityInstance((EntityComposite) instance), store );
                 return instance;
             }
 

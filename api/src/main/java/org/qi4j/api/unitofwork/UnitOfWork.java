@@ -76,7 +76,7 @@ public interface UnitOfWork
      * @throws org.qi4j.api.entity.LifecycleException if the entity cannot be created
      */
     <T> T newEntity( Class<T> type )
-        throws NoSuchEntityException, LifecycleException;
+        throws EntityTypeNotFoundException, LifecycleException;
 
     /**
      * Create a new Entity which implements the given mixin type. An EntityComposite
@@ -91,7 +91,7 @@ public interface UnitOfWork
      * @throws LifecycleException if the entity cannot be created
      */
     <T> T newEntity( String identity, Class<T> type )
-        throws NoSuchEntityException, LifecycleException;
+        throws EntityTypeNotFoundException, LifecycleException;
 
     /**
      * Create a new EntityBuilder for an EntityComposite which implements the given mixin type. An EntityComposite
@@ -105,7 +105,7 @@ public interface UnitOfWork
      * @throws LifecycleException
      */
     <T> EntityBuilder<T> newEntityBuilder( Class<T> type )
-        throws NoSuchEntityException;
+        throws EntityTypeNotFoundException;
 
     /**
      * Create a new EntityBuilder for an EntityComposite which implements the given mixin type. An EntityComposite
@@ -120,7 +120,7 @@ public interface UnitOfWork
      * @throws LifecycleException
      */
     <T> EntityBuilder<T> newEntityBuilder( String identity, Class<T> type )
-        throws NoSuchEntityException;
+        throws EntityTypeNotFoundException;
 
     /**
      * Find an Entity of the given mixin type with the give identity. This
@@ -133,7 +133,7 @@ public interface UnitOfWork
      *
      */
     <T> T find( String identity, Class<T> type )
-        throws EntityTypeNotFoundException;
+        throws EntityTypeNotFoundException, NoSuchEntityException;
 
     /**
      * Get a reference to an Entity of the given mixin type with the given identity.

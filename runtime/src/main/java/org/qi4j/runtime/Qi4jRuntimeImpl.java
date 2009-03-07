@@ -47,7 +47,7 @@ import org.qi4j.runtime.structure.DependencyVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleVisitor;
 import org.qi4j.runtime.structure.ModuleModel;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.runtime.bootstrap.ApplicationAssemblyFactoryImpl;
 import org.qi4j.runtime.bootstrap.ApplicationFactoryImpl;
 import org.qi4j.runtime.object.ObjectModel;
@@ -130,15 +130,15 @@ public final class Qi4jRuntimeImpl
         ServiceModel serviceModel = (ServiceModel) DefaultCompositeInstance.getCompositeInstance( serviceComposite ).compositeModel();
 
         String identity = ((ServiceComposite) serviceComposite).identity().get();
-        Object configuration;
+        T configuration;
         try
         {
-            configuration = uow.find( identity, serviceModel.configurationType() );
+            configuration = uow.find( identity, serviceModel.<T>configurationType() );
         }
         catch( NoSuchEntityException e )
         {
 
-            EntityBuilder<? extends T> configBuilder = uow.newEntityBuilder( identity, serviceModel.configurationType() );
+            EntityBuilder<T> configBuilder = uow.newEntityBuilder( identity, serviceModel.<T>configurationType() );
             // Check for defaults
             String s = identity + ".properties";
             InputStream asStream = serviceComposite.type().getResourceAsStream( s );
@@ -211,7 +211,7 @@ public final class Qi4jRuntimeImpl
 
     public Module getModule( UnitOfWork uow )
     {
-        return ((UnitOfWorkInstance) uow).module();
+        return (Module) ((ModuleUnitOfWork) uow);
     }
 
     public Module getModule( Composite composite )

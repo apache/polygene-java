@@ -95,7 +95,7 @@ public interface EntityState
 
     Iterable<QualifiedName> manyAssociationNames();
 
-    void markAsLoaded();
+    void hasBeenApplied();
 
     ValueState newValueState( Map<QualifiedName, Object> values);
 }

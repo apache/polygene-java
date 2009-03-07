@@ -26,6 +26,7 @@ import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.util.NullArgumentException;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.query.EntityFinder;
@@ -44,8 +45,9 @@ public final class QueryBuilderFactoryImpl
     /**
      * Parent unit of work.
      */
-    private final UnitOfWorkInstance unitOfWorkInstance;
+    private final UnitOfWork unitOfWork;
     private ServiceFinder finder;
+    private ClassLoader classLoader;
 
     public static void initialize()
     {
@@ -55,15 +57,16 @@ public final class QueryBuilderFactoryImpl
     /**
      * Constructor.
      *
-     * @param unitOfWorkInstance parent unit of work; cannot be null
+     * @param unitOfWork parent unit of work; cannot be null
      * @param finder             The ServiceFinder of the Module this QueryBuilderFactory belongs to.
      */
-    public QueryBuilderFactoryImpl( final UnitOfWorkInstance unitOfWorkInstance, ServiceFinder finder )
+    public QueryBuilderFactoryImpl( final UnitOfWork unitOfWork, ClassLoader classLoader, ServiceFinder finder )
     {
-        NullArgumentException.validateNotNull( "Unit of work instance", unitOfWorkInstance );
+        NullArgumentException.validateNotNull( "Unit of work instance", unitOfWork );
         NullArgumentException.validateNotNull( "ServiceFinder", finder );
         this.finder = finder;
-        this.unitOfWorkInstance = unitOfWorkInstance;
+        this.unitOfWork = unitOfWork;
+        this.classLoader = classLoader;
     }
 
     /**
@@ -73,25 +76,21 @@ public final class QueryBuilderFactoryImpl
     {
         NotQueryableException.throwIfNotQueryable( resultType );
 
-        ModuleInstance module = unitOfWorkInstance.module();
-        ServiceFinder serviceLocator = module.serviceFinder();
-        final ServiceReference<EntityFinder> serviceReference = serviceLocator.findService( EntityFinder.class );
+        final ServiceReference<EntityFinder> serviceReference = finder.findService( EntityFinder.class );
         if( serviceReference == null )
         {
-            return new QueryBuilderImpl<T>( unitOfWorkInstance, null, resultType );
+            return new QueryBuilderImpl<T>( unitOfWork, null, classLoader, resultType );
         }
-        return new QueryBuilderImpl<T>( unitOfWorkInstance, serviceReference.get(), resultType );
+        return new QueryBuilderImpl<T>( unitOfWork, serviceReference.get(), classLoader, resultType );
     }
 
     public <T> Query<T> newNamedQuery( String name, Class<T> resultType )
     {
-        ModuleInstance module = unitOfWorkInstance.module();
-        ServiceFinder serviceLocator = module.serviceFinder();
-        final ServiceReference<NamedEntityFinder> serviceReference = serviceLocator.findService( NamedEntityFinder.class );
+        final ServiceReference<NamedEntityFinder> serviceReference = finder.findService( NamedEntityFinder.class );
         if( serviceReference == null )
         {
             throw new MissingIndexingSystemException();
         }
-        return new NamedQueryImpl<T>( serviceReference.get(), unitOfWorkInstance, name, resultType );
+        return new NamedQueryImpl<T>( serviceReference.get(), unitOfWork, classLoader, name, resultType );
     }
 }

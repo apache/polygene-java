@@ -47,6 +47,7 @@ import org.qi4j.runtime.entity.association.EntityAssociationsModel;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -170,24 +171,23 @@ public final class EntityModel
         return new QualifiedIdentity( identity, type() );
     }
 
-    public EntityInstance getInstance( UnitOfWorkInstance unitOfWorkInstance, EntityStore store, QualifiedIdentity qid, ModuleInstance moduleInstance )
+    public EntityInstance getInstance( ModuleUnitOfWork uow, ModuleInstance moduleInstance, QualifiedIdentity qid)
     {
-        return loadInstance( unitOfWorkInstance, store, qid, moduleInstance, null );
+        return new EntityInstance( uow, moduleInstance, this, qid, EntityStatus.LOADED, null );
     }
 
-    public EntityInstance loadInstance( UnitOfWorkInstance uow, EntityStore entityStore, QualifiedIdentity identity, ModuleInstance moduleInstance, EntityState state )
+    public EntityInstance newInstance( ModuleUnitOfWork uow, ModuleInstance moduleInstance, QualifiedIdentity identity, EntityState state )
     {
-        EntityInstance instance = new EntityInstance( uow, entityStore, this, moduleInstance, identity, EntityStatus.LOADED, state );
+        EntityInstance instance = new EntityInstance( uow, moduleInstance, this, identity, EntityStatus.NEW, state );
         return instance;
     }
 
-    public Object[] initialize( UnitOfWorkInstance uow, EntityState entityState, EntityInstance entityInstance )
+    public Object[] initialize( ModuleUnitOfWork uow, EntityState entityState, EntityInstance entityInstance )
     {
         Object[] mixins = mixinsModel.newMixinHolder();
         entityInstance.setMixins( mixins );
         EntityStateModel.EntityStateInstance state = ((EntityStateModel)stateModel).newInstance( uow, entityState );
         entityInstance.setEntityState( state );
-//        mixinsModel.newMixins( entityInstance, state, mixins );
         return mixins;
     }
 
@@ -213,13 +213,6 @@ public final class EntityModel
     public EntityStateHolder newBuilderState()
     {
         return ((EntityStateModel)stateModel).newBuilderInstance();
-    }
-
-    private Class<? extends Composite> createProxyClass( Class<? extends Composite> compositeType )
-    {
-        ClassLoader proxyClassloader = compositeType.getClassLoader();
-        Class<?>[] interfaces = new Class<?>[]{ compositeType };
-        return (Class<? extends Composite>) Proxy.getProxyClass( proxyClassloader, interfaces );
     }
 
     public EntityState newEntityState( EntityStore store, String identity, StateHolder state )
