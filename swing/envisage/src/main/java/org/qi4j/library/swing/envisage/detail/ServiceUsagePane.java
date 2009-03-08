@@ -45,7 +45,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
-import org.qi4j.library.swing.envisage.util.TableData;
+import org.qi4j.library.swing.envisage.util.TableRow;
 import org.qi4j.spi.composite.DependencyDescriptor;
 
 /**
@@ -283,25 +283,25 @@ public class ServiceUsagePane extends DetailPane
 
                 if( used )
                 {
-                    TableData rowData = new TableData( 5 );
+                    TableRow row = new TableRow( 5 );
                     if( ownerDescriptor instanceof MixinDetailDescriptor )
                     {
                         MixinDetailDescriptor mixinDescriptor = (MixinDetailDescriptor) ownerDescriptor;
-                        rowData.set( 0, mixinDescriptor.composite() );
-                        rowData.set( 1, descriptorField );
-                        rowData.set( 2, mixinDescriptor.composite().module() );
-                        rowData.set( 3, mixinDescriptor.composite().module().layer() );
+                        row.set( 0, mixinDescriptor.composite() );
+                        row.set( 1, descriptorField );
+                        row.set( 2, mixinDescriptor.composite().module() );
+                        row.set( 3, mixinDescriptor.composite().module().layer() );
                     }
                     else
                     {
                         // assume ObjectDetailDescriptor
                         ObjectDetailDescriptor objectDescriptor = (ObjectDetailDescriptor) ownerDescriptor;
-                        rowData.set( 0, objectDescriptor );
-                        rowData.set( 1, descriptorField );
-                        rowData.set( 2, objectDescriptor.module() );
-                        rowData.set( 3, objectDescriptor.module().layer() );
+                        row.set( 0, objectDescriptor );
+                        row.set( 1, descriptorField );
+                        row.set( 2, objectDescriptor.module() );
+                        row.set( 3, objectDescriptor.module().layer() );
                     }
-                    usageTableModel.addRowData( rowData );
+                    usageTableModel.addRowData( row );
                 }
             }
         }
@@ -345,33 +345,33 @@ public class ServiceUsagePane extends DetailPane
          * the column names for this model
          */
         protected String[] columnNames = { bundle.getString( "Owner.Column" ), bundle.getString( "Usage.Column" ), bundle.getString( "Module.Column" ), bundle.getString( "Layer.Column" ) };
-        protected ArrayList<TableData> data;
+        protected ArrayList<TableRow> row;
 
         public UsageTableModel()
         {
-            data = new ArrayList<TableData>();
+            row = new ArrayList<TableRow>();
         }
 
         /**
          * Add row data
          * Note, this methods does not do fireTableDataChanged
          *
-         * @param rowData TableData to be added
+         * @param row TableData to be added
          */
-        public void addRowData( TableData rowData )
+        public void addRowData( TableRow row )
         {
-            data.add( rowData );
+            this.row.add( row );
         }
 
         public Object getValueAt( int rowIndex, int columnIndex )
         {
-            TableData row = data.get( rowIndex );
+            TableRow row = this.row.get( rowIndex );
             return row.get( columnIndex );
         }
 
         public void clear()
         {
-            data.clear();
+            row.clear();
             fireTableDataChanged();
         }
 
@@ -387,7 +387,7 @@ public class ServiceUsagePane extends DetailPane
 
         public int getRowCount()
         {
-            return data.size();
+            return row.size();
         }
     }
 

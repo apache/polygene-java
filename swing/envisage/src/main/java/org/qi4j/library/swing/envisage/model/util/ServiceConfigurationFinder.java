@@ -17,12 +17,14 @@
 package org.qi4j.library.swing.envisage.model.util;
 
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
+import org.qi4j.spi.object.ObjectDescriptor;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
@@ -71,30 +73,36 @@ class ServiceConfigurationFinder
 
         for( ModuleDetailDescriptor descriptor : iter )
         {
-            Object obj = findInServices( descriptor.services(), configType );
+            Object obj = findInTypes( descriptor.services(), configType );
             if( obj != null )
             {
                 configDescriptor = obj;
                 break;
             }
 
-            obj = findInEntities( descriptor.entities(), configType );
+            obj = findInTypes( descriptor.entities(), configType );
             if( obj != null )
             {
                 configDescriptor = obj;
                 break;
             }
 
-            obj = findInValues( descriptor.values(), configType );
+            // findInTransients
+            obj = findInTypes( descriptor.composites(), configType );
             if( obj != null )
             {
                 configDescriptor = obj;
                 break;
             }
 
-            // TODO findInTransients
+            obj = findInTypes( descriptor.values(), configType );
+            if( obj != null )
+            {
+                configDescriptor = obj;
+                break;
+            }
 
-            obj = findInObjects( descriptor.objects(), configType );
+            obj = findInTypes( descriptor.objects(), configType );
             if( obj != null )
             {
                 configDescriptor = obj;
@@ -105,65 +113,38 @@ class ServiceConfigurationFinder
         return configDescriptor;
     }
 
-    private Object findInServices( Iterable<ServiceDetailDescriptor> iter, Class<?> configType )
+    private Object findInTypes( Iterable iter, Class<?> configType )
     {
         Object configDescriptor = null;
 
-        for( ServiceDetailDescriptor descriptor : iter )
+        for( Object obj : iter )
         {
-            if( configType.equals( descriptor.descriptor().type() ) )
+            ObjectDescriptor descriptor = null;
+
+            if (obj instanceof ServiceDetailDescriptor )
             {
-                configDescriptor = descriptor;
-                break;
+                descriptor = ((ServiceDetailDescriptor) obj).descriptor();
             }
-        }
-
-        return configDescriptor;
-    }
-
-    private Object findInEntities( Iterable<EntityDetailDescriptor> iter, Class<?> configType )
-    {
-        Object configDescriptor = null;
-
-        for( EntityDetailDescriptor descriptor : iter )
-        {
-            if( configType.equals( descriptor.descriptor().type() ) )
+            else if (obj instanceof EntityDetailDescriptor)
             {
-                configDescriptor = descriptor;
-                break;
+                descriptor = ((EntityDetailDescriptor) obj).descriptor();    
             }
-        }
-
-
-        return configDescriptor;
-    }
-
-    private Object findInValues( Iterable<ValueDetailDescriptor> iter, Class<?> configType )
-    {
-        Object configDescriptor = null;
-
-        for( ValueDetailDescriptor descriptor : iter )
-        {
-            if( configType.equals( descriptor.descriptor().type() ) )
+            else if (obj instanceof ValueDetailDescriptor)
             {
-                configDescriptor = descriptor;
-                break;
+                descriptor = ((ValueDetailDescriptor) obj).descriptor();
             }
-        }
-
-
-        return configDescriptor;
-    }
-
-    private Object findInObjects( Iterable<ObjectDetailDescriptor> iter, Class<?> configType )
-    {
-        Object configDescriptor = null;
-
-        for( ObjectDetailDescriptor descriptor : iter )
-        {
-            if( configType.equals( descriptor.descriptor().type() ) )
+            else if (obj instanceof ObjectDetailDescriptor)
             {
-                configDescriptor = descriptor;
+                descriptor = ((ObjectDetailDescriptor) obj).descriptor();
+            }
+            else
+            {
+                descriptor = ((CompositeDetailDescriptor) obj).descriptor();                
+            }
+
+            if( configType.equals( descriptor.type() ) )
+            {
+                configDescriptor = obj;
                 break;
             }
         }

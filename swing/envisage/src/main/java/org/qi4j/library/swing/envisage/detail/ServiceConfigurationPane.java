@@ -124,6 +124,10 @@ public class ServiceConfigurationPane extends DetailPane
         }
 
         configDescriptor = DescriptorUtilities.findServiceConfiguration( (ServiceDetailDescriptor) objectDesciptor );
+        if( configDescriptor == null )
+        {
+            return;
+        }
 
         ObjectDescriptor spiDescriptor = null;
         String typeString = null;

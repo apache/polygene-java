@@ -23,17 +23,17 @@ import java.util.ArrayList;
  *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
-public class TableData
+public class TableRow
 {
 
     protected ArrayList data;
 
-    public TableData( int col )
+    public TableRow( int col )
     {
         this( col, null );
     }
 
-    public TableData( int col, Object[] values )
+    public TableRow( int col, Object[] values )
     {
         data = new ArrayList( col );
 

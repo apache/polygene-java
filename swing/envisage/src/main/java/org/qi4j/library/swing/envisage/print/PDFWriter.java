@@ -146,20 +146,6 @@ public class PDFWriter
             writeGraphPage( graphDisplay );
             writePage( descriptor );
 
-            /*PDPage page = new PDPage();
-            doc.addPage( page );
-
-            PDFont font = PDType1Font.HELVETICA_BOLD;
-
-            PDPageContentStream contentStream = new PDPageContentStream(doc, page);
-            contentStream.beginText();
-            contentStream.setFont( font, 12 );
-            contentStream.moveTextPositionByAmount( 100, 700 );
-            contentStream.drawString( "HELLO WORLD" );
-            contentStream.endText();
-            contentStream.close();
-            */
-
             if (curContentStream != null)
             {
                 curContentStream.close();
@@ -281,6 +267,7 @@ public class PDFWriter
             writeTypeMethodsPage( descriptor );
             writeTypeStatesPage( descriptor );
             writeTypeServiceConfigurationPage ( descriptor );
+            writeTypeServiceUsagePage ( descriptor );
         }
     }
 
@@ -554,6 +541,12 @@ public class PDFWriter
         writeString( "- name: "  + spiDescriptor.type().getSimpleName() );
         writeString( "- class: "  + spiDescriptor.type().getName() );
         writeString( "- type: " + typeString );
+    }
+
+    private void writeTypeServiceUsagePage(Object objectDesciptor) throws Exception
+    {
+        setFont( header5Font, header5FontSize );
+        writeString( "Usage: ", headerLineSpace );
     }
 
     private void writeString(String text) throws Exception

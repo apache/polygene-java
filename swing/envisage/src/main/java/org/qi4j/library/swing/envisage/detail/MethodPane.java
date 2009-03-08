@@ -45,7 +45,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescripto
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeMethodDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.MethodConcernDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.MethodSideEffectDetailDescriptor;
-import org.qi4j.library.swing.envisage.util.TableData;
+import org.qi4j.library.swing.envisage.util.TableRow;
 
 /**
  * Implementation of Composite Method Panel
@@ -261,11 +261,11 @@ public class MethodPane extends DetailPane
          */
         //protected String[] columnNames = { bundle.getString( "Name.Column" ), bundle.getString( "Value.Column" ) };
         protected String[] columnNames = { "Name", "Value" };
-        protected ArrayList<TableData> data;
+        protected ArrayList<TableRow> row;
 
         public MethodDetailTableModel()
         {
-            data = new ArrayList<TableData>();
+            row = new ArrayList<TableRow>();
         }
 
         public void reload( CompositeMethodDetailDescriptor descriptor )
@@ -273,8 +273,8 @@ public class MethodPane extends DetailPane
             clear();
 
             // mixin type
-            data.add( new TableData( 2, new Object[]{ "mixin", descriptor.descriptor().mixin().mixinClass() } ) );
-            data.add( new TableData( 2, new Object[]{ "return", descriptor.descriptor().method().getGenericReturnType() } ) );
+            row.add( new TableRow( 2, new Object[]{ "mixin", descriptor.descriptor().mixin().mixinClass() } ) );
+            row.add( new TableRow( 2, new Object[]{ "return", descriptor.descriptor().method().getGenericReturnType() } ) );
 
             // TODO constraint
 
@@ -284,12 +284,12 @@ public class MethodPane extends DetailPane
             {
                 if( first )
                 {
-                    data.add( new TableData( 2, new Object[]{ "concern", concern.toString() } ) );
+                    row.add( new TableRow( 2, new Object[]{ "concern", concern.toString() } ) );
                     first = false;
                 }
                 else
                 {
-                    data.add( new TableData( 2, new Object[]{ "", concern.toString() } ) );
+                    row.add( new TableRow( 2, new Object[]{ "", concern.toString() } ) );
                 }
             }
 
@@ -299,12 +299,12 @@ public class MethodPane extends DetailPane
             {
                 if( first )
                 {
-                    data.add( new TableData( 2, new Object[]{ "sideEffect", sideEffect.toString() } ) );
+                    row.add( new TableRow( 2, new Object[]{ "sideEffect", sideEffect.toString() } ) );
                     first = false;
                 }
                 else
                 {
-                    data.add( new TableData( 2, new Object[]{ "", sideEffect.toString() } ) );
+                    row.add( new TableRow( 2, new Object[]{ "", sideEffect.toString() } ) );
                 }
             }
 
@@ -313,13 +313,13 @@ public class MethodPane extends DetailPane
 
         public Object getValueAt( int rowIndex, int columnIndex )
         {
-            TableData row = data.get( rowIndex );
+            TableRow row = this.row.get( rowIndex );
             return row.get( columnIndex );
         }
 
         public void clear()
         {
-            data.clear();
+            row.clear();
             fireTableDataChanged();
         }
 
@@ -335,7 +335,7 @@ public class MethodPane extends DetailPane
 
         public int getRowCount()
         {
-            return data.size();
+            return row.size();
         }
     }
 
