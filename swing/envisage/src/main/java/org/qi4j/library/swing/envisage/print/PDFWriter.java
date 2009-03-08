@@ -23,6 +23,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -52,6 +53,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.util.DescriptorUtilities;
+import org.qi4j.library.swing.envisage.util.TableRow;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 import org.qi4j.spi.composite.DependencyDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -547,6 +549,45 @@ public class PDFWriter
     {
         setFont( header5Font, header5FontSize );
         writeString( "Usage: ", headerLineSpace );
+
+        setFont( normalFont, normalFontSize );
+        List<TableRow> rows = DescriptorUtilities.findServiceUsage( (ServiceDetailDescriptor) objectDesciptor );
+        for (TableRow row: rows)
+        {
+
+            String owner;
+            String usage;
+            String module;
+            String layer;
+
+            Object obj = row.get(0);
+            if (obj instanceof CompositeDetailDescriptor)
+            {
+                CompositeDetailDescriptor descriptor = (CompositeDetailDescriptor)obj;
+                owner = descriptor.toString();
+                module = descriptor.module().toString();
+                layer = descriptor.module().layer().toString();
+            }
+            else
+            {
+                ObjectDetailDescriptor descriptor = (ObjectDetailDescriptor)obj;
+                owner = descriptor.toString();
+                module = descriptor.module().toString();
+                layer = descriptor.module().layer().toString();
+            }
+
+
+            InjectedFieldDetailDescriptor injectedFieldescriptor = (InjectedFieldDetailDescriptor) row.get(1);
+            DependencyDescriptor dependencyDescriptor = injectedFieldescriptor.descriptor().dependency();
+            Annotation annotation = dependencyDescriptor.injectionAnnotation();
+            usage = injectedFieldescriptor.toString() + " (@" + annotation.annotationType().getSimpleName() + ")";
+
+
+            writeString( "- owner: "  + row.get( 0 ).toString());
+            writeString( "    * usage: "  + usage );
+            writeString( "    * module: " + module );
+            writeString( "    * layer: " + layer);
+        }
     }
 
     private void writeString(String text) throws Exception

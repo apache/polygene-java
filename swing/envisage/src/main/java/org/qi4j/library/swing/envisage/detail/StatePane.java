@@ -249,11 +249,11 @@ public class StatePane extends DetailPane
          */
         //protected String[] columnNames = { bundle.getString( "Name.Column" ), bundle.getString( "Value.Column" ) };
         protected String[] columnNames = { "Name", "Value" };
-        protected ArrayList<TableRow> row;
+        protected ArrayList<TableRow> rows;
 
         public MethodDetailTableModel()
         {
-            row = new ArrayList<TableRow>();
+            rows = new ArrayList<TableRow>();
         }
 
         public void reload( CompositeMethodDetailDescriptor descriptor )
@@ -261,8 +261,8 @@ public class StatePane extends DetailPane
             clear();
 
             // mixin type
-            row.add( new TableRow( 2, new Object[]{ "mixin", descriptor.descriptor().mixin().mixinClass() } ) );
-            row.add( new TableRow( 2, new Object[]{ "return", descriptor.descriptor().method().getGenericReturnType() } ) );
+            rows.add( new TableRow( 2, new Object[]{ "mixin", descriptor.descriptor().mixin().mixinClass() } ) );
+            rows.add( new TableRow( 2, new Object[]{ "return", descriptor.descriptor().method().getGenericReturnType() } ) );
 
             // TODO constraint
 
@@ -272,12 +272,12 @@ public class StatePane extends DetailPane
             {
                 if( first )
                 {
-                    row.add( new TableRow( 2, new Object[]{ "concern", concern.toString() } ) );
+                    rows.add( new TableRow( 2, new Object[]{ "concern", concern.toString() } ) );
                     first = false;
                 }
                 else
                 {
-                    row.add( new TableRow( 2, new Object[]{ "", concern.toString() } ) );
+                    rows.add( new TableRow( 2, new Object[]{ "", concern.toString() } ) );
                 }
             }
 
@@ -287,12 +287,12 @@ public class StatePane extends DetailPane
             {
                 if( first )
                 {
-                    row.add( new TableRow( 2, new Object[]{ "sideEffect", sideEffect.toString() } ) );
+                    rows.add( new TableRow( 2, new Object[]{ "sideEffect", sideEffect.toString() } ) );
                     first = false;
                 }
                 else
                 {
-                    row.add( new TableRow( 2, new Object[]{ "", sideEffect.toString() } ) );
+                    rows.add( new TableRow( 2, new Object[]{ "", sideEffect.toString() } ) );
                 }
             }
 
@@ -301,13 +301,13 @@ public class StatePane extends DetailPane
 
         public Object getValueAt( int rowIndex, int columnIndex )
         {
-            TableRow row = this.row.get( rowIndex );
+            TableRow row = this.rows.get( rowIndex );
             return row.get( columnIndex );
         }
 
         public void clear()
         {
-            row.clear();
+            rows.clear();
             fireTableDataChanged();
         }
 
@@ -323,7 +323,7 @@ public class StatePane extends DetailPane
 
         public int getRowCount()
         {
-            return row.size();
+            return rows.size();
         }
     }
 

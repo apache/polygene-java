@@ -16,7 +16,9 @@
 */
 package org.qi4j.library.swing.envisage.model.util;
 
+import java.util.List;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.library.swing.envisage.util.TableRow;
 
 /**
  * Collection of Desciptor Utilities
@@ -31,6 +33,7 @@ public class DescriptorUtilities
     }
 
     /** Return Descriptor Detail
+     * @param descriptor ServiceDetailDescriptor
      * @return Descritpor Detail or null 
      * */
     public static Object findServiceConfiguration ( ServiceDetailDescriptor descriptor )
@@ -38,5 +41,12 @@ public class DescriptorUtilities
         return new ServiceConfigurationFinder().findConfigurationDescriptor( descriptor );
     }
 
-
+    /** Return list of Descriptor Detail for particular Service Usage
+     * @param descriptor ServiceDetailDescriptor
+     * @return list of service usage (never return null) 
+     * */
+    public static List<TableRow> findServiceUsage (ServiceDetailDescriptor descriptor)
+    {
+        return new ServiceUsageFinder().findServiceUsage( descriptor );
+    }
 }

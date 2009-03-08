@@ -22,6 +22,7 @@ import java.awt.Cursor;
 import java.awt.event.MouseEvent;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -32,19 +33,10 @@ import javax.swing.event.MouseInputAdapter;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.library.swing.envisage.event.LinkEvent;
-import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.InjectedFieldDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.MixinDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.util.DescriptorUtilities;
 import org.qi4j.library.swing.envisage.util.TableRow;
 import org.qi4j.spi.composite.DependencyDescriptor;
 
@@ -65,7 +57,6 @@ public class ServiceUsagePane extends DetailPane
 {
     protected ResourceBundle bundle = ResourceBundle.getBundle( this.getClass().getName() );
 
-    private ServiceDetailDescriptor descriptor;
     private UsageTableModel usageTableModel;
     private JTable usageTable;
     private JPanel contentPane;
@@ -162,149 +153,16 @@ public class ServiceUsagePane extends DetailPane
             return;
         }
 
-        descriptor = (ServiceDetailDescriptor) objectDesciptor;
+        ServiceDetailDescriptor descriptor = (ServiceDetailDescriptor) objectDesciptor;
 
-        // traverse the appDescritor/model to find the usage
-        ApplicationDetailDescriptor appDescriptor = descriptor.module().layer().application();
-        collectUsage( appDescriptor );
-
-        if( usageTableModel.getRowCount() > 0 )
-        {
-            usageTableModel.fireTableDataChanged();
-        }
+        List<TableRow> rows = DescriptorUtilities.findServiceUsage( descriptor );
+        usageTableModel.addRows( rows );
     }
 
     private void clear()
     {
-        descriptor = null;
         linkObject = null;
         usageTableModel.clear();
-    }
-
-    private void collectUsage( ApplicationDetailDescriptor descriptor )
-    {
-        for( LayerDetailDescriptor childDescriptor : descriptor.layers() )
-        {
-            collectInModules( childDescriptor.modules() );
-        }
-    }
-
-    private void collectInModules( Iterable<ModuleDetailDescriptor> iter )
-    {
-        for( ModuleDetailDescriptor descriptor : iter )
-        {
-            collectInServices( descriptor.services() );
-            collectInEntities( descriptor.entities() );
-            collectInValues( descriptor.values() );
-            collectInTransients( descriptor.composites() );
-            collectInObjects( descriptor.objects() );
-        }
-    }
-
-
-    private void collectInServices( Iterable<ServiceDetailDescriptor> iter )
-    {
-        for( ServiceDetailDescriptor descriptor : iter )
-        {
-            if( descriptor.equals( this.descriptor ) )
-            {
-                continue;
-            }
-            collectInMixin( descriptor.mixins() );
-        }
-    }
-
-    private void collectInEntities( Iterable<EntityDetailDescriptor> iter )
-    {
-        for( EntityDetailDescriptor descriptor : iter )
-        {
-            collectInMixin( descriptor.mixins() );
-        }
-    }
-
-    private void collectInValues( Iterable<ValueDetailDescriptor> iter )
-    {
-        for( ValueDetailDescriptor descriptor : iter )
-        {
-            collectInMixin( descriptor.mixins() );
-        }
-    }
-
-    private void collectInTransients( Iterable<CompositeDetailDescriptor> iter )
-    {
-        for( CompositeDetailDescriptor descriptor : iter )
-        {
-            collectInMixin( descriptor.mixins() );
-        }
-    }
-
-    private void collectInObjects( Iterable<ObjectDetailDescriptor> iter )
-    {
-        for( ObjectDetailDescriptor descriptor : iter )
-        {
-            collectInInjectedField( descriptor.injectedFields(), descriptor );
-        }
-    }
-
-    private void collectInMixin( Iterable<MixinDetailDescriptor> iter )
-    {
-        for( MixinDetailDescriptor descriptor : iter )
-        {
-            collectInInjectedField( descriptor.injectedFields(), descriptor );
-        }
-    }
-
-    private void collectInInjectedField( Iterable<InjectedFieldDetailDescriptor> iter, Object ownerDescriptor )
-    {
-        for( InjectedFieldDetailDescriptor descriptorField : iter )
-        {
-            DependencyDescriptor dependencyDescriptor = descriptorField.descriptor().dependency();
-            Annotation annotation = dependencyDescriptor.injectionAnnotation();
-
-            Class<? extends Annotation> clazz = annotation.annotationType();
-            if( Uses.class.equals( clazz ) || Service.class.equals( clazz ) )
-            {
-                boolean used = false;
-                if( dependencyDescriptor.injectionClass().equals( this.descriptor.descriptor().type() ) )
-                {
-                    used = true;
-                }
-                else
-                {
-                    // collect in injectedServices
-                    for( String name : dependencyDescriptor.injectedServices() )
-                    {
-                        if( name.equals( this.descriptor.descriptor().identity() ) )
-                        {
-                            used = true;
-                        }
-                    }
-                }
-
-                if( used )
-                {
-                    TableRow row = new TableRow( 5 );
-                    if( ownerDescriptor instanceof MixinDetailDescriptor )
-                    {
-                        MixinDetailDescriptor mixinDescriptor = (MixinDetailDescriptor) ownerDescriptor;
-                        row.set( 0, mixinDescriptor.composite() );
-                        row.set( 1, descriptorField );
-                        row.set( 2, mixinDescriptor.composite().module() );
-                        row.set( 3, mixinDescriptor.composite().module().layer() );
-                    }
-                    else
-                    {
-                        // assume ObjectDetailDescriptor
-                        ObjectDetailDescriptor objectDescriptor = (ObjectDetailDescriptor) ownerDescriptor;
-                        row.set( 0, objectDescriptor );
-                        row.set( 1, descriptorField );
-                        row.set( 2, objectDescriptor.module() );
-                        row.set( 3, objectDescriptor.module().layer() );
-                    }
-                    usageTableModel.addRowData( row );
-                }
-            }
-        }
     }
 
     {
@@ -345,33 +203,58 @@ public class ServiceUsagePane extends DetailPane
          * the column names for this model
          */
         protected String[] columnNames = { bundle.getString( "Owner.Column" ), bundle.getString( "Usage.Column" ), bundle.getString( "Module.Column" ), bundle.getString( "Layer.Column" ) };
-        protected ArrayList<TableRow> row;
+        protected ArrayList<TableRow> rows;
 
         public UsageTableModel()
         {
-            row = new ArrayList<TableRow>();
+            rows = new ArrayList<TableRow>();
+        }
+
+        public void addRows( List<TableRow> rows )
+        {
+            int i1 = rows.size();
+            if( i1 > 0 )
+            {
+                i1--;
+            }
+
+            int i2 = 0;
+            for( TableRow row : rows )
+            {
+                this.rows.add( row );
+                i2++;
+            }
+
+            fireTableRowsInserted( i1, i1 + i2 );
         }
 
         /**
          * Add row data
-         * Note, this methods does not do fireTableDataChanged
          *
-         * @param row TableData to be added
+         * @param row TableRow to be added
          */
-        public void addRowData( TableRow row )
+        public void addRow( TableRow row )
         {
-            this.row.add( row );
+            int i1 = rows.size();
+            if( i1 > 0 )
+            {
+                i1--;
+            }
+
+            rows.add( row );
+            fireTableRowsInserted( i1, i1 + 1 );
+
         }
 
         public Object getValueAt( int rowIndex, int columnIndex )
         {
-            TableRow row = this.row.get( rowIndex );
+            TableRow row = rows.get( rowIndex );
             return row.get( columnIndex );
         }
 
         public void clear()
         {
-            row.clear();
+            rows.clear();
             fireTableDataChanged();
         }
 
@@ -387,7 +270,7 @@ public class ServiceUsagePane extends DetailPane
 
         public int getRowCount()
         {
-            return row.size();
+            return rows.size();
         }
     }
 
@@ -399,8 +282,7 @@ public class ServiceUsagePane extends DetailPane
         {
             if( value != null )
             {
-                CompositeDetailDescriptor descriptor = (CompositeDetailDescriptor) value;
-                value = "<html><a href=\"" + descriptor.toString() + "\">" + descriptor.toString() + "</a></html>";
+                value = "<html><a href=\"" + value.toString() + "\">" + value.toString() + "</a></html>";
             }
 
             super.getTableCellRendererComponent( table, value, isSelected, hasFocus, row, column );
