@@ -26,6 +26,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ImportedServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
@@ -44,6 +45,7 @@ public class TreeModelCellRenderer extends DefaultTreeCellRenderer
     protected Icon layerIcon;
     protected Icon moduleIcon;
     protected Icon serviceIcon;
+    protected Icon importedServiceIcon;
     protected Icon entityIcon;
     protected Icon valueIcon;
     protected Icon transientIcon;
@@ -57,6 +59,7 @@ public class TreeModelCellRenderer extends DefaultTreeCellRenderer
             layerIcon = new ImageIcon(getClass().getResource(bundle.getString("ICON_Layer")));
             moduleIcon = new ImageIcon(getClass().getResource(bundle.getString("ICON_Module")));
             serviceIcon = new ImageIcon(getClass().getResource(bundle.getString("ICON_Service")));
+            importedServiceIcon = new ImageIcon(getClass().getResource(bundle.getString("ICON_ImportedService")));
             entityIcon = new ImageIcon(getClass().getResource(bundle.getString("ICON_Entity")));
             valueIcon = new ImageIcon(getClass().getResource(bundle.getString("ICON_Value")));
             transientIcon = new ImageIcon(getClass().getResource(bundle.getString("ICON_Transient")));
@@ -88,6 +91,8 @@ public class TreeModelCellRenderer extends DefaultTreeCellRenderer
             icon = moduleIcon;
         } else if (userObject instanceof ServiceDetailDescriptor ) {
             icon = serviceIcon;
+        } else if (userObject instanceof ImportedServiceDetailDescriptor ) {
+            icon = importedServiceIcon;
         } else if (userObject instanceof EntityDetailDescriptor ) {
             icon = entityIcon;
         } else if (userObject instanceof ValueDetailDescriptor ) {
@@ -102,6 +107,8 @@ public class TreeModelCellRenderer extends DefaultTreeCellRenderer
             if (str.equalsIgnoreCase( "Services" ))
             {
                 icon = serviceIcon;
+            } else if (str.equalsIgnoreCase( "Imported Services" )) {
+                icon = importedServiceIcon;
             } else if (str.equalsIgnoreCase( "Entities" )) {
                 icon = entityIcon;
             } else if (str.equalsIgnoreCase( "Values" )) {

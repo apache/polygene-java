@@ -21,6 +21,7 @@ package org.qi4j.library.swing.envisage.model.descriptor;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
 import org.qi4j.spi.composite.ConstructorDescriptor;
@@ -162,6 +163,14 @@ public final class ApplicationDetailDescriptorBuilder
             ServiceDetailDescriptor descriptor = new ServiceDetailDescriptor( aDescriptor );
             currModuleDescriptor.addService( descriptor );
             currCompositeDescriptor = descriptor;
+        }
+
+        @Override
+        public final void visit( ImportedServiceDescriptor aDescriptor )
+        {
+            ImportedServiceDetailDescriptor descriptor = new ImportedServiceDetailDescriptor( aDescriptor );
+            //currModuleDescriptor.addService( descriptor );
+            //currCompositeDescriptor = descriptor;
         }
 
         @Override

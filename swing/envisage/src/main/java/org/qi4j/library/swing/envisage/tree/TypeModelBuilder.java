@@ -24,6 +24,7 @@ import javax.swing.tree.MutableTreeNode;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ImportedServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
@@ -38,8 +39,8 @@ import org.qi4j.library.swing.envisage.model.util.DescriptorNameComparator;
  */
 public class TypeModelBuilder
 {
-
     private List<ServiceDetailDescriptor> serviceList;
+    private List<ImportedServiceDetailDescriptor> importedServiceList;
     private List<EntityDetailDescriptor> entityList;
     private List<CompositeDetailDescriptor> transientList;
     private List<ValueDetailDescriptor> valueList;
@@ -54,6 +55,7 @@ public class TypeModelBuilder
 
     private TypeModelBuilder() {
         serviceList = new ArrayList<ServiceDetailDescriptor>();
+        importedServiceList = new ArrayList<ImportedServiceDetailDescriptor>();
         entityList = new ArrayList<EntityDetailDescriptor>();
         transientList = new ArrayList<CompositeDetailDescriptor>();
         valueList = new  ArrayList<ValueDetailDescriptor>();
@@ -68,6 +70,7 @@ public class TypeModelBuilder
 
         // sort based on name order
         Collections.sort( serviceList, nameComparator);
+        Collections.sort( importedServiceList, nameComparator);
         Collections.sort( entityList, nameComparator);
         Collections.sort( transientList, nameComparator);
         Collections.sort( valueList, nameComparator);
@@ -78,6 +81,10 @@ public class TypeModelBuilder
 
         child = new DefaultMutableTreeNode ("Services");
         addChild(child, serviceList);
+        root.add( child );
+
+        child = new DefaultMutableTreeNode ("Imported Services");
+        addChild(child, importedServiceList);
         root.add( child );
 
         child = new DefaultMutableTreeNode ("Entities");
