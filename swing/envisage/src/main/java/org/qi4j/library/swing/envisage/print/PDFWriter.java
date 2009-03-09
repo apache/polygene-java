@@ -24,9 +24,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
@@ -37,9 +34,6 @@ import org.pdfbox.pdmodel.edit.PDPageContentStream;
 import org.pdfbox.pdmodel.font.PDFont;
 import org.pdfbox.pdmodel.font.PDType1Font;
 import org.pdfbox.pdmodel.graphics.xobject.PDJpeg;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.property.Property;
 import org.qi4j.library.swing.envisage.graph.GraphDisplay;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
@@ -420,33 +414,10 @@ public class PDFWriter
         writeString( "Methods: ", headerLineSpace );
 
         CompositeDetailDescriptor descriptor = (CompositeDetailDescriptor) objectDesciptor;
-        Iterable<CompositeMethodDetailDescriptor> iter = descriptor.methods();
-
-        List<CompositeMethodDetailDescriptor> publicList = new ArrayList<CompositeMethodDetailDescriptor>();
-        List<CompositeMethodDetailDescriptor> privateList = new ArrayList<CompositeMethodDetailDescriptor>();
-
-        for( CompositeMethodDetailDescriptor methodDescriptor : iter )
-        {
-            Class compositeClass = methodDescriptor.composite().descriptor().type();
-            Class mixinMethodClass = methodDescriptor.descriptor().method().getDeclaringClass();
-            if( mixinMethodClass.isAssignableFrom( compositeClass ) )
-            {
-                publicList.add( methodDescriptor );
-            }
-            else
-            {
-                privateList.add( methodDescriptor );
-            }
-        }
-
-        doFilterMethods( publicList );
-        doFilterMethods( privateList );
-
-        // combine into one list
-        publicList.addAll( privateList );
+        List<CompositeMethodDetailDescriptor> list = DescriptorUtilities.findMethod( descriptor );       
 
         setFont( normalFont, normalFontSize );
-        for( CompositeMethodDetailDescriptor methodDescriptor : publicList )
+        for( CompositeMethodDetailDescriptor methodDescriptor : list )
         {
             writeString( "- name: " + methodDescriptor.toString() );
             writeString( "    * mixins: " +  methodDescriptor.descriptor().mixin().mixinClass() );
@@ -465,33 +436,10 @@ public class PDFWriter
         writeString( "States: ", headerLineSpace );
 
         CompositeDetailDescriptor descriptor = (CompositeDetailDescriptor) objectDesciptor;
-        Iterable<CompositeMethodDetailDescriptor> iter = descriptor.methods();
-
-        List<CompositeMethodDetailDescriptor> publicList = new ArrayList<CompositeMethodDetailDescriptor>();
-        List<CompositeMethodDetailDescriptor> privateList = new ArrayList<CompositeMethodDetailDescriptor>();
-
-        for( CompositeMethodDetailDescriptor methodDescriptor : iter )
-        {
-            Class compositeClass = methodDescriptor.composite().descriptor().type();
-            Class mixinMethodClass = methodDescriptor.descriptor().method().getDeclaringClass();
-            if( mixinMethodClass.isAssignableFrom( compositeClass ) )
-            {
-                publicList.add( methodDescriptor );
-            }
-            else
-            {
-                privateList.add( methodDescriptor );
-            }
-        }
-
-        doFilterStates( publicList );
-        doFilterStates( privateList );
-
-        // combine into one list
-        publicList.addAll( privateList );
+        List<CompositeMethodDetailDescriptor> list = DescriptorUtilities.findState( descriptor );
 
         setFont( normalFont, normalFontSize );
-        for( CompositeMethodDetailDescriptor methodDescriptor : publicList )
+        for( CompositeMethodDetailDescriptor methodDescriptor : list )
         {
             writeString( "- name: " + methodDescriptor.toString() );
             writeString( "    * mixins: " +  methodDescriptor.descriptor().mixin().mixinClass() );
@@ -576,12 +524,10 @@ public class PDFWriter
                 layer = descriptor.module().layer().toString();
             }
 
-
             InjectedFieldDetailDescriptor injectedFieldescriptor = (InjectedFieldDetailDescriptor) row.get(1);
             DependencyDescriptor dependencyDescriptor = injectedFieldescriptor.descriptor().dependency();
             Annotation annotation = dependencyDescriptor.injectionAnnotation();
             usage = injectedFieldescriptor.toString() + " (@" + annotation.annotationType().getSimpleName() + ")";
-
 
             writeString( "- owner: "  + row.get( 0 ).toString());
             writeString( "    * usage: "  + usage );
@@ -664,56 +610,6 @@ public class PDFWriter
         }
         return scale;
     }
-
-    private void doFilterMethods( List<CompositeMethodDetailDescriptor> list )
-    {
-        if( list.isEmpty() )
-        {
-            return;
-        }
-
-        Iterator<CompositeMethodDetailDescriptor> iter = list.iterator();
-        while( iter.hasNext() )
-        {
-            CompositeMethodDetailDescriptor descriptor = iter.next();
-            Method method = descriptor.descriptor().method();
-            if( Property.class.isAssignableFrom( method.getReturnType() ) )
-            {
-                iter.remove();
-            }
-            else if( Association.class.isAssignableFrom( method.getReturnType() ) )
-            {
-                iter.remove();
-            }
-            else if( ManyAssociation.class.isAssignableFrom( method.getReturnType() ) )
-            {
-                iter.remove();
-            }
-        }
-    }
-
-    private void doFilterStates( List<CompositeMethodDetailDescriptor> list )
-    {
-        if( list.isEmpty() )
-        {
-            return;
-        }
-
-        Iterator<CompositeMethodDetailDescriptor> iter = list.iterator();
-        while( iter.hasNext() )
-        {
-            CompositeMethodDetailDescriptor descriptor = iter.next();
-            Method method = descriptor.descriptor().method();
-            if( Property.class.isAssignableFrom( method.getReturnType() )
-                || Association.class.isAssignableFrom( method.getReturnType() )
-                || ManyAssociation.class.isAssignableFrom( method.getReturnType() ) )
-            {
-                continue;
-            }
-            iter.remove();
-        }
-    }
-
 
     class PDFFileFilter extends FileFilter
     {

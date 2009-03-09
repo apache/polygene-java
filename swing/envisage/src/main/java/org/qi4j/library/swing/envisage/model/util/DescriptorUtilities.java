@@ -17,6 +17,8 @@
 package org.qi4j.library.swing.envisage.model.util;
 
 import java.util.List;
+import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.CompositeMethodDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.util.TableRow;
 
@@ -34,6 +36,24 @@ public class DescriptorUtilities
 
     /** Return Descriptor Detail
      * @param descriptor ServiceDetailDescriptor
+     * @return list of Descritpor Detail (never return null) 
+     * */
+    public static List<CompositeMethodDetailDescriptor> findMethod( CompositeDetailDescriptor descriptor )
+    {
+        return new MethodFinder().findMethod(descriptor);
+    }
+
+    /** Return Descriptor Detail
+     * @param descriptor ServiceDetailDescriptor
+     * @return list of Descritpor Detail (never return null)
+     * */
+    public static List<CompositeMethodDetailDescriptor> findState ( CompositeDetailDescriptor descriptor )
+    {
+        return new StateFinder().findState(descriptor);
+    }
+
+    /** Return Descriptor Detail
+     * @param descriptor ServiceDetailDescriptor
      * @return Descritpor Detail or null 
      * */
     public static Object findServiceConfiguration ( ServiceDetailDescriptor descriptor )
@@ -45,7 +65,7 @@ public class DescriptorUtilities
      * @param descriptor ServiceDetailDescriptor
      * @return list of service usage (never return null) 
      * */
-    public static List<TableRow> findServiceUsage (ServiceDetailDescriptor descriptor)
+    public static List<TableRow> findServiceUsage(ServiceDetailDescriptor descriptor)
     {
         return new ServiceUsageFinder().findServiceUsage( descriptor );
     }

@@ -18,9 +18,7 @@ package org.qi4j.library.swing.envisage.detail;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.swing.DefaultListCellRenderer;
@@ -38,13 +36,12 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.property.Property;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeMethodDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.MethodConcernDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.MethodSideEffectDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.util.DescriptorUtilities;
 import org.qi4j.library.swing.envisage.util.TableRow;
 
 /**
@@ -102,103 +99,28 @@ public class MethodPane extends DetailPane
         if( objectDesciptor instanceof CompositeDetailDescriptor )
         {
             CompositeDetailDescriptor descriptor = ( (CompositeDetailDescriptor) objectDesciptor );
-            reload( descriptor.methods() );
+            List<CompositeMethodDetailDescriptor> list = DescriptorUtilities.findMethod( descriptor );
+            for( CompositeMethodDetailDescriptor methodDescriptor : list )
+            {
+                methodListModel.addElement( methodDescriptor );
+            }
+
+            if( !methodListModel.isEmpty() )
+            {
+                methodList.setSelectedIndex( 0 );
+            }
         }
-        /*else if( objectDesciptor instanceof ObjectDetailDescriptor )
+        else if( objectDesciptor instanceof ObjectDetailDescriptor )
         {
             // Object does not have methods
-            //ObjectDetailDescriptor descriptor = ( (ObjectDetailDescriptor) objectDesciptor );
-            //reload( descriptor.injectedMethods() );
-        }*/
-    }
-
-
-    /**
-     * The Methods tab should show all the methods of all Mixins (private and public separated)
-     * that don't return one of Property, Association or ManyAssociation.
-     *
-     * "private" and "public" refers to if the interface they are declared in is extended by the Composite.
-     * If yes, then it is a public method, meaning, clients can call it.
-     * If no, then it is a private mixin type, and can only be used internally through @This injections.
-     */
-    private void reload( Iterable<CompositeMethodDetailDescriptor> iter )
-    {
-        List<CompositeMethodDetailDescriptor> publicList = new ArrayList<CompositeMethodDetailDescriptor>();
-        List<CompositeMethodDetailDescriptor> privateList = new ArrayList<CompositeMethodDetailDescriptor>();
-
-        for( CompositeMethodDetailDescriptor descriptor : iter )
-        {
-            Class compositeClass = descriptor.composite().descriptor().type();
-            Class mixinMethodClass = descriptor.descriptor().method().getDeclaringClass();
-            if( mixinMethodClass.isAssignableFrom( compositeClass ) )
-            {
-                publicList.add( descriptor );
-            }
-            else
-            {
-                privateList.add( descriptor );
-            }
-        }
-
-        // filter Property, Association, and ManyAssociation
-        doFilter( publicList );
-        doFilter( privateList );
-
-        // list public first, then private
-        for( CompositeMethodDetailDescriptor descriptor : publicList )
-        {
-            methodListModel.addElement( descriptor );
-        }
-
-        for( CompositeMethodDetailDescriptor descriptor : privateList )
-        {
-            methodListModel.addElement( descriptor );
-        }
-
-        if( !methodListModel.isEmpty() )
-        {
-            methodList.setSelectedIndex( 0 );
+            return;
         }
     }
-
 
     protected void clear()
     {
         methodListModel.clear();
         methodDetailTableModel.clear();
-    }
-
-    /**
-     * Do the filter for method return type (Property, Association, ManyAssociation)
-     * by removing the entry from the list.
-     *
-     * @param list list of CompositeMethodDetailDescriptor
-     */
-    private void doFilter( List<CompositeMethodDetailDescriptor> list )
-    {
-        if( list.isEmpty() )
-        {
-            return;
-        }
-
-        Iterator<CompositeMethodDetailDescriptor> iter = list.iterator();
-        while( iter.hasNext() )
-        {
-            CompositeMethodDetailDescriptor descriptor = iter.next();
-            Method method = descriptor.descriptor().method();
-            if( Property.class.isAssignableFrom( method.getReturnType() ) )
-            {
-                iter.remove();
-            }
-            else if( Association.class.isAssignableFrom( method.getReturnType() ) )
-            {
-                iter.remove();
-            }
-            else if( ManyAssociation.class.isAssignableFrom( method.getReturnType() ) )
-            {
-                iter.remove();
-            }
-        }
     }
 
     private void methodListValueChanged( ListSelectionEvent evt )

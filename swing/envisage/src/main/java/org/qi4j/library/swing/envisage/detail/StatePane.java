@@ -21,7 +21,6 @@ import java.awt.Component;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.swing.DefaultListCellRenderer;
@@ -49,6 +48,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.CompositeMethodDetailDes
 import org.qi4j.library.swing.envisage.model.descriptor.MethodConcernDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.MethodSideEffectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.util.DescriptorUtilities;
 import org.qi4j.library.swing.envisage.util.TableRow;
 
 /**
@@ -105,7 +105,16 @@ public class StatePane extends DetailPane
         if( objectDesciptor instanceof CompositeDetailDescriptor )
         {
             CompositeDetailDescriptor descriptor = ( (CompositeDetailDescriptor) objectDesciptor );
-            reload( descriptor.methods() );
+            List<CompositeMethodDetailDescriptor> list = DescriptorUtilities.findState( descriptor );
+            for( CompositeMethodDetailDescriptor methodDescriptor : list )
+            {
+                methodListModel.addElement( methodDescriptor );
+            }
+
+            if( !methodListModel.isEmpty() )
+            {
+                methodList.setSelectedIndex( 0 );
+            }
         }
         else if( objectDesciptor instanceof ObjectDetailDescriptor )
         {
@@ -114,79 +123,10 @@ public class StatePane extends DetailPane
         }
     }
 
-    private void reload( Iterable<CompositeMethodDetailDescriptor> iter )
-    {
-        List<CompositeMethodDetailDescriptor> publicList = new ArrayList<CompositeMethodDetailDescriptor>();
-        List<CompositeMethodDetailDescriptor> privateList = new ArrayList<CompositeMethodDetailDescriptor>();
-
-        for( CompositeMethodDetailDescriptor descriptor : iter )
-        {
-            Class compositeClass = descriptor.composite().descriptor().type();
-            Class mixinMethodClass = descriptor.descriptor().method().getDeclaringClass();
-            if( mixinMethodClass.isAssignableFrom( compositeClass ) )
-            {
-                publicList.add( descriptor );
-            }
-            else
-            {
-                privateList.add( descriptor );
-            }
-        }
-
-        // filter Property, Association, and ManyAssociation
-        doFilter( publicList );
-        doFilter( privateList );
-
-        // list public first, then private
-        for( CompositeMethodDetailDescriptor descriptor : publicList )
-        {
-            methodListModel.addElement( descriptor );
-        }
-
-        for( CompositeMethodDetailDescriptor descriptor : privateList )
-        {
-            methodListModel.addElement( descriptor );
-        }
-
-        if( !methodListModel.isEmpty() )
-        {
-            methodList.setSelectedIndex( 0 );
-        }
-
-    }
-
     protected void clear()
     {
         methodListModel.clear();
         methodDetailTableModel.clear();
-    }
-
-    /**
-     * Do the filter for method return type (Property, Association, ManyAssociation)
-     * by removing the entry from the list if not the above.
-     *
-     * @param list list of CompositeMethodDetailDescriptor
-     */
-    private void doFilter( List<CompositeMethodDetailDescriptor> list )
-    {
-        if( list.isEmpty() )
-        {
-            return;
-        }
-
-        Iterator<CompositeMethodDetailDescriptor> iter = list.iterator();
-        while( iter.hasNext() )
-        {
-            CompositeMethodDetailDescriptor descriptor = iter.next();
-            Method method = descriptor.descriptor().method();
-            if( Property.class.isAssignableFrom( method.getReturnType() )
-                || Association.class.isAssignableFrom( method.getReturnType() )
-                || ManyAssociation.class.isAssignableFrom( method.getReturnType() ) )
-            {
-                continue;
-            }
-            iter.remove();
-        }
     }
 
     public void methodListValueChanged( ListSelectionEvent evt )
