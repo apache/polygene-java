@@ -34,11 +34,14 @@ import org.pdfbox.pdmodel.edit.PDPageContentStream;
 import org.pdfbox.pdmodel.font.PDFont;
 import org.pdfbox.pdmodel.font.PDType1Font;
 import org.pdfbox.pdmodel.graphics.xobject.PDJpeg;
+import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.library.swing.envisage.graph.GraphDisplay;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeMethodDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ImportedServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.InjectedFieldDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.MixinDetailDescriptor;
@@ -117,7 +120,6 @@ public class PDFWriter
     public void write( File file, ApplicationDetailDescriptor descriptor, GraphDisplay graphDisplay )
     {
 
-        // TODO add progress bar
         try
         {
             writeImpl( file, descriptor, graphDisplay );
@@ -125,10 +127,6 @@ public class PDFWriter
         catch (Exception ex)
         {
             ex.printStackTrace(  );
-        }
-        finally
-        {
-            // TODO close the progress bar
         }
     }
 
@@ -151,9 +149,16 @@ public class PDFWriter
         }
         finally
         {
+            if (curContentStream != null)
+            {
+                curContentStream.close();
+                curContentStream = null;
+            }
+
             if( doc != null )
             {
                 doc.close();
+                doc = null;
             }
         }
     }
@@ -245,6 +250,7 @@ public class PDFWriter
             writeString(MODULE + " : " + descriptor.toString(), headerLineSpace);
 
             writeServicesPage( descriptor.services() );
+            writeImportedServicesPage( descriptor.importedServices() );
             writeEntitiesPage( descriptor.entities() );
             writeTransientsPage( descriptor.composites() );
             writeValuesPage( descriptor.values() );
@@ -264,6 +270,19 @@ public class PDFWriter
             writeTypeStatesPage( descriptor );
             writeTypeServiceConfigurationPage ( descriptor );
             writeTypeServiceUsagePage ( descriptor );
+        }
+    }
+
+    private void writeImportedServicesPage( Iterable<ImportedServiceDetailDescriptor> iter) throws Exception
+    {
+        for( ImportedServiceDetailDescriptor descriptor : iter )
+        {
+            setFont( header4Font, header4FontSize);
+            writeString(descriptor.toString(), headerLineSpace);
+            writeTypeGeneralPage( descriptor );
+            writeTypeMethodsPage( descriptor );
+            writeTypeServiceUsagePage ( descriptor );
+            writeTypeImportedByPage (descriptor);
         }
     }
 
@@ -534,6 +553,20 @@ public class PDFWriter
             writeString( "    * module: " + module );
             writeString( "    * layer: " + layer);
         }
+    }
+
+    private void writeTypeImportedByPage(Object objectDesciptor) throws Exception
+    {
+        setFont( header5Font, header5FontSize );
+        writeString( "Imported by: ", headerLineSpace );
+
+        ImportedServiceDetailDescriptor detailDescriptor = (ImportedServiceDetailDescriptor) objectDesciptor;
+        ImportedServiceDescriptor descriptor = detailDescriptor.descriptor().importedService();
+        Class<? extends ServiceImporter> importer = descriptor.serviceImporter();
+
+        setFont( normalFont, normalFontSize );
+        writeString( "- name: "  + importer.getSimpleName() );
+        writeString( "- class: "  + importer.toString() );
     }
 
     private void writeString(String text) throws Exception
