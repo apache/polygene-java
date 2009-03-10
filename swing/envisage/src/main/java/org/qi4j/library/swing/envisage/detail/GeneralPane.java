@@ -27,6 +27,8 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ImportedServiceCompositeDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ImportedServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
@@ -138,6 +140,15 @@ public class GeneralPane extends DetailPane
                 rows.add( new TableRow( 2, new Object[]{ moduleRow, ( (ServiceDetailDescriptor) objectDesciptor ).module() } ) );
                 rows.add( new TableRow( 2, new Object[]{ layerRow, ( (ServiceDetailDescriptor) objectDesciptor ).module().layer() } ) );
                 rows.add( new TableRow( 2, new Object[]{ "startup", ( (ServiceDetailDescriptor) objectDesciptor ).descriptor().isInstantiateOnStartup() } ) );
+            }
+            else if( objectDesciptor instanceof ImportedServiceDetailDescriptor )
+            {
+                ImportedServiceCompositeDescriptor descriptor = ( (ImportedServiceDetailDescriptor) objectDesciptor ).descriptor();
+                rows.add( new TableRow( 2, new Object[]{ nameRow, descriptor.type().getSimpleName() } ) );
+                rows.add( new TableRow( 2, new Object[]{ classRow, descriptor.type().getName() } ) );
+                rows.add( new TableRow( 2, new Object[]{ visibilityRow, descriptor.visibility().toString() } ) );
+                rows.add( new TableRow( 2, new Object[]{ moduleRow, ( (ImportedServiceDetailDescriptor) objectDesciptor ).module() } ) );
+                rows.add( new TableRow( 2, new Object[]{ layerRow, ( (ImportedServiceDetailDescriptor) objectDesciptor ).module().layer() } ) );
             }
             else if( objectDesciptor instanceof EntityDetailDescriptor )
             {

@@ -24,6 +24,7 @@ import javax.swing.tree.MutableTreeNode;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ImportedServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
@@ -71,6 +72,7 @@ public class StructureModelBuilder
         {
             DefaultMutableTreeNode node = new DefaultMutableTreeNode( descriptor );
             buildServicesNode( node, descriptor.services() );
+            buildImportedServicesNode( node, descriptor.importedServices() );
             buildEntitiesNode( node, descriptor.entities() );
             buildTransientsNode( node, descriptor.composites() );  // This is transient type
             buildValuesNode( node, descriptor.values() );
@@ -94,6 +96,17 @@ public class StructureModelBuilder
     {
         tempList.clear();
         for( ServiceDetailDescriptor descriptor : iter )
+        {
+            tempList.add(descriptor);
+        }
+
+        addTypeChildren( parent, tempList );
+    }
+
+    private void buildImportedServicesNode( DefaultMutableTreeNode parent, Iterable<ImportedServiceDetailDescriptor> iter )
+    {
+        tempList.clear();
+        for( ImportedServiceDetailDescriptor descriptor : iter )
         {
             tempList.add(descriptor);
         }

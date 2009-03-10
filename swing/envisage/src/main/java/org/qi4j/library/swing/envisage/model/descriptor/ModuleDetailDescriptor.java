@@ -32,6 +32,7 @@ public final class ModuleDetailDescriptor
     private final ModuleDescriptor descriptor;
     private LayerDetailDescriptor layer;
     private final List<ServiceDetailDescriptor> services;
+    private final List<ImportedServiceDetailDescriptor> importedServices;
     private final List<EntityDetailDescriptor> entities;
     private final List<CompositeDetailDescriptor> composites;
     private final List<ValueDetailDescriptor> values;
@@ -45,6 +46,7 @@ public final class ModuleDetailDescriptor
         descriptor = aDescriptor;
 
         services = new LinkedList<ServiceDetailDescriptor>();
+        importedServices = new LinkedList<ImportedServiceDetailDescriptor>(); 
         entities = new LinkedList<EntityDetailDescriptor>();
         composites = new LinkedList<CompositeDetailDescriptor>();
         values = new LinkedList<ValueDetailDescriptor>(); 
@@ -67,6 +69,15 @@ public final class ModuleDetailDescriptor
     public final Iterable<ServiceDetailDescriptor> services()
     {
         return services;
+    }
+
+    /**
+     * @return Values of this {@code ModuleDetailDescriptor}. Never return {@code null}.
+     * @since 0.7
+     */
+    public final Iterable<ImportedServiceDetailDescriptor> importedServices()
+    {
+        return importedServices;
     }
 
     /**
@@ -128,6 +139,15 @@ public final class ModuleDetailDescriptor
 
         aDescriptor.setModule( this );
         services.add( aDescriptor );
+    }
+
+    final void addImportedService( ImportedServiceDetailDescriptor aDescriptor )
+        throws IllegalArgumentException
+    {
+        validateNotNull( "aDescriptor", aDescriptor );
+
+        aDescriptor.setModule( this );
+        importedServices.add( aDescriptor );
     }
 
     final void addEntity( EntityDetailDescriptor aDescriptor )

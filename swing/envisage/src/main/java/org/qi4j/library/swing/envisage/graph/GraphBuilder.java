@@ -19,6 +19,7 @@ package org.qi4j.library.swing.envisage.graph;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ImportedServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
@@ -130,6 +131,7 @@ public class GraphBuilder
             Node childNode = addChild(parent, descriptor.descriptor().name(), descriptor );
             
             buildServicesNode( childNode, descriptor.services() );
+            buildImportedServicesNode( childNode, descriptor.importedServices() );
             buildEntitiesNode( childNode, descriptor.entities() );
             buildTransientsNode( childNode, descriptor.composites() );
             buildValuesNode( childNode, descriptor.values() );
@@ -142,6 +144,14 @@ public class GraphBuilder
         for( ServiceDetailDescriptor descriptor : iter )
         {
             addChild(parent, descriptor.descriptor().type().getSimpleName(), descriptor );    
+        }
+    }
+
+    private void buildImportedServicesNode( Node parent, Iterable<ImportedServiceDetailDescriptor> iter )
+    {
+        for( ImportedServiceDetailDescriptor descriptor : iter )
+        {
+            addChild(parent, descriptor.descriptor().type().getSimpleName(), descriptor );
         }
     }
 

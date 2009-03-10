@@ -168,9 +168,9 @@ public final class ApplicationDetailDescriptorBuilder
         @Override
         public final void visit( ImportedServiceDescriptor aDescriptor )
         {
-            ImportedServiceDetailDescriptor descriptor = new ImportedServiceDetailDescriptor( aDescriptor );
-            //currModuleDescriptor.addService( descriptor );
-            //currCompositeDescriptor = descriptor;
+            ImportedServiceDetailDescriptor descriptor = new ImportedServiceDetailDescriptor( new ImportedServiceCompositeDescriptor( aDescriptor ) );
+            currModuleDescriptor.addImportedService( descriptor );
+            currCompositeDescriptor = descriptor;
         }
 
         @Override

@@ -16,29 +16,17 @@
 */
 package org.qi4j.library.swing.envisage.model.descriptor;
 
-import org.qi4j.api.service.ImportedServiceDescriptor;
-import static org.qi4j.api.util.NullArgumentException.validateNotNull;
-
 /**
+ * TODO need to refactor later, but wait until Qi4J core/spi have proper and consistent API for ImportedService.
+ *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
-public class ImportedServiceDetailDescriptor
+public class ImportedServiceDetailDescriptor extends CompositeDetailDescriptor<ImportedServiceCompositeDescriptor>
 {
-    private final ImportedServiceDescriptor descriptor;
-
-    ImportedServiceDetailDescriptor( ImportedServiceDescriptor aDescriptor )
-        throws IllegalArgumentException
+    ImportedServiceDetailDescriptor( ImportedServiceCompositeDescriptor aDescriptor )
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-
-        descriptor = aDescriptor;
-        //constructors = new LinkedList<ConstructorDetailDescriptor>();
-        //injectedMethods = new LinkedList<InjectedMethodDetailDescriptor>();
-        //injectedFields = new LinkedList<InjectedFieldDetailDescriptor>();
-    }
-
-    public String toString()
-    {
-        return descriptor.type().getSimpleName();
+        super( aDescriptor );
     }
 }
+
+

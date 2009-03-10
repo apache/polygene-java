@@ -133,6 +133,12 @@ public class TypeModelBuilder
                 serviceList.add(child);
             }
 
+            // Imported Services
+            for( ImportedServiceDetailDescriptor child : descriptor.importedServices() )
+            {
+                importedServiceList.add(child);
+            }
+
             // Entities
             for( EntityDetailDescriptor child : descriptor.entities() )
             {
