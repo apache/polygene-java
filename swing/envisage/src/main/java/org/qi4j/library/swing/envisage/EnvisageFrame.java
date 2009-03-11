@@ -110,7 +110,7 @@ public class EnvisageFrame extends JFrame
 
         graphSplitPane = new JSplitPane();
         graphSplitPane.setOrientation( JSplitPane.VERTICAL_SPLIT );
-        graphSplitPane.setDividerLocation( 512 );
+        graphSplitPane.setDividerLocation( 384 ); // 768/2
         graphSplitPane.setOneTouchExpandable( true );
         //graphSplitPane.setTopComponent( graphPane );
         //graphSplitPane.setBottomComponent( modelSplitPane );
@@ -124,8 +124,8 @@ public class EnvisageFrame extends JFrame
 
     public void initQi4J()
     {
-        graphSplitPane.setDividerLocation( 384 );    // 768/2
         modelSplitPane.setDividerLocation( 300 );
+        graphSplitPane.setDividerLocation( 384 );
 
         descriptor = ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor( (ApplicationSPI) application );
         treeModelPane.initQi4J( descriptor );

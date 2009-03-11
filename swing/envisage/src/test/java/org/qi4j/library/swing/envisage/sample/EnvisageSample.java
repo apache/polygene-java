@@ -17,21 +17,21 @@
 
 package org.qi4j.library.swing.envisage.sample;
 
-import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
+import org.junit.Test;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.library.swing.envisage.Envisage;
-import org.junit.Test;
+import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
+import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
@@ -53,7 +53,7 @@ public class EnvisageSample extends AbstractQi4jTest
         //createTestData2();
         //createTestData3();
 
-        new Envisage().run( qi4j, application );
+        new Envisage().run( application );
     }
 
     public void assemble( ModuleAssembly module ) throws AssemblyException

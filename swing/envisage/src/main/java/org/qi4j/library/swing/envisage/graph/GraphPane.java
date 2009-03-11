@@ -21,7 +21,7 @@ import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.JPanel;
-import org.qi4j.api.structure.Application;
+import javax.swing.JTabbedPane;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 import prefuse.data.Graph;
 
@@ -33,39 +33,50 @@ import prefuse.data.Graph;
 public class GraphPane extends JPanel
 {
     private GraphDisplay display;
+    private BoxedGraphDisplay boxedDisplay;
 
     protected ApplicationDetailDescriptor descriptor;
 
     public GraphPane()
     {
         display = new GraphDisplay();
-        setBackground( display.getBackground() );
-        setForeground( display.getForeground() );
-        add( display, BorderLayout.CENTER );
+        boxedDisplay = new BoxedGraphDisplay();
+        //setBackground(display.getBackground());
+        //setForeground(display.getForeground());
+        //add(display, BorderLayout.CENTER);
+
+        JTabbedPane tabPane = new JTabbedPane( );
+        tabPane.add("Tree", display);
+        tabPane.add("Boxed", boxedDisplay);
+
+        add(tabPane, BorderLayout.CENTER);
 
         this.addComponentListener( new ComponentAdapter()
         {
-            public void componentResized( ComponentEvent evt )
+            public void componentResized( ComponentEvent evt)
             {
-                //if (!isShowing()) { return; }
-                //if (descriptor == null) { return; }
-
                 Dimension size = GraphPane.this.getSize();
                 display.setSize( size.width, size.height );
                 repaint();
             }
-        } );
+        });
     }
 
-    public void initQi4J( ApplicationDetailDescriptor descriptor )
+    public void initQi4J( ApplicationDetailDescriptor descriptor)
     {
         this.descriptor = descriptor;
 
         Graph graph = GraphBuilder.buildGraph( descriptor );
         Dimension size = getSize();
         display.setSize( size.width, size.height );
-        display.run( graph );
+        display.run(graph);
+
+        graph = GraphBuilder.buildGraph( descriptor );
+        boxedDisplay.setSize( size.width, size.height );
+        boxedDisplay.run(graph);
     }
+
+
 
     public void refresh()
     {
