@@ -174,7 +174,7 @@ public class DependencyPane extends DetailPane
     {
         clear();
 
-       if( objectDesciptor instanceof CompositeDetailDescriptor )
+        if( objectDesciptor instanceof CompositeDetailDescriptor )
         {
             CompositeDetailDescriptor descriptor = ( (CompositeDetailDescriptor) objectDesciptor );
             Iterable<MixinDetailDescriptor> iter = descriptor.mixins();

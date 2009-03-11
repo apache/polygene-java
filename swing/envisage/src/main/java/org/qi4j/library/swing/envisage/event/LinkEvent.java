@@ -28,9 +28,10 @@ public class LinkEvent extends EventObject
     public static final Cursor LINK_CURSOR = new HTMLEditorKit().getLinkCursor();
 
     protected Object object;
-    public LinkEvent(Object source, Object object)
+
+    public LinkEvent( Object source, Object object )
     {
-        super(source);
+        super( source );
         this.object = object;
     }
 

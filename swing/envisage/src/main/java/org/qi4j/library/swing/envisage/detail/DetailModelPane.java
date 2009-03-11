@@ -38,7 +38,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
 public class DetailModelPane extends JPanel
 {
 
-    protected ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName());
+    protected ResourceBundle bundle = ResourceBundle.getBundle( this.getClass().getName() );
 
     protected JTabbedPane tabPane;
     protected GeneralPane generalPane;
@@ -53,12 +53,12 @@ public class DetailModelPane extends JPanel
 
     public DetailModelPane()
     {
-        tabPane = new JTabbedPane( );
+        tabPane = new JTabbedPane();
 
         this.setLayout( new BorderLayout() );
-        this.add(tabPane, BorderLayout.CENTER);
+        this.add( tabPane, BorderLayout.CENTER );
 
-        createDetailPane( );
+        createDetailPane();
 
         //tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ),  generalPane );
         //tabPane.add( bundle.getString( "CTL_DependencyTab.Text" ), dependencyPane );
@@ -67,41 +67,41 @@ public class DetailModelPane extends JPanel
 
     protected void createDetailPane()
     {
-        generalPane = new GeneralPane(this);
-        generalPane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
+        generalPane = new GeneralPane( this );
+        generalPane.setBorder( BorderFactory.createEmptyBorder( 8, 8, 8, 8 ) );
 
-        statePane = new StatePane(this);
-        statePane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
+        statePane = new StatePane( this );
+        statePane.setBorder( BorderFactory.createEmptyBorder( 8, 8, 8, 8 ) );
 
-        methodPane = new MethodPane(this);
-        methodPane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
+        methodPane = new MethodPane( this );
+        methodPane.setBorder( BorderFactory.createEmptyBorder( 8, 8, 8, 8 ) );
 
-        dependencyPane = new DependencyPane(this);
-        dependencyPane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
+        dependencyPane = new DependencyPane( this );
+        dependencyPane.setBorder( BorderFactory.createEmptyBorder( 8, 8, 8, 8 ) );
 
-        serviceConfigurationPane = new ServiceConfigurationPane(this);
-        serviceConfigurationPane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
+        serviceConfigurationPane = new ServiceConfigurationPane( this );
+        serviceConfigurationPane.setBorder( BorderFactory.createEmptyBorder( 8, 8, 8, 8 ) );
 
-        serviceUsagePane = new ServiceUsagePane(this);
-        serviceUsagePane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
+        serviceUsagePane = new ServiceUsagePane( this );
+        serviceUsagePane.setBorder( BorderFactory.createEmptyBorder( 8, 8, 8, 8 ) );
 
-        importedByPane = new ImportedByPane( this);
-        importedByPane.setBorder( BorderFactory.createEmptyBorder(8, 8, 8, 8) );
+        importedByPane = new ImportedByPane( this );
+        importedByPane.setBorder( BorderFactory.createEmptyBorder( 8, 8, 8, 8 ) );
 
     }
 
-    public void setDescriptor(final Object objectDescriptor)
+    public void setDescriptor( final Object objectDescriptor )
     {
         SwingUtilities.invokeLater( new Runnable()
         {
             public void run()
             {
-                setDescriptorImpl(objectDescriptor );   
+                setDescriptorImpl( objectDescriptor );
             }
-        });
+        } );
     }
 
-    private void setDescriptorImpl(Object objectDescriptor)
+    private void setDescriptorImpl( Object objectDescriptor )
     {
         Component curSelectedComp = tabPane.getSelectedComponent();
         tabPane.removeAll();
@@ -114,45 +114,45 @@ public class DetailModelPane extends JPanel
         serviceUsagePane.setDescriptor( objectDescriptor );
         importedByPane.setDescriptor( objectDescriptor );
 
-        if (objectDescriptor instanceof ServiceDetailDescriptor)
+        if( objectDescriptor instanceof ServiceDetailDescriptor )
         {
-            tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ),  generalPane );
+            tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ), generalPane );
             tabPane.add( bundle.getString( "CTL_DependencyTab.Text" ), dependencyPane );
             tabPane.add( bundle.getString( "CTL_MethodTab.Text" ), methodPane );
-            tabPane.add( bundle.getString( "CTL_StateTab.Text" ), statePane );            
+            tabPane.add( bundle.getString( "CTL_StateTab.Text" ), statePane );
             tabPane.add( bundle.getString( "CTL_ServiceConfiguration.Text" ), serviceConfigurationPane );
             tabPane.add( bundle.getString( "CTL_ServiceUsage.Text" ), serviceUsagePane );
         }
-        else if (objectDescriptor instanceof ImportedServiceDetailDescriptor)
+        else if( objectDescriptor instanceof ImportedServiceDetailDescriptor )
         {
-            tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ),  generalPane );
+            tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ), generalPane );
             tabPane.add( bundle.getString( "CTL_MethodTab.Text" ), methodPane );
             tabPane.add( bundle.getString( "CTL_ServiceUsage.Text" ), serviceUsagePane );
             tabPane.add( bundle.getString( "CTL_ImportedBy.Text" ), importedByPane );
         }
-        else if (objectDescriptor instanceof EntityDetailDescriptor )
+        else if( objectDescriptor instanceof EntityDetailDescriptor )
         {
-            tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ),  generalPane );
+            tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ), generalPane );
             tabPane.add( bundle.getString( "CTL_DependencyTab.Text" ), dependencyPane );
             tabPane.add( bundle.getString( "CTL_MethodTab.Text" ), methodPane );
             tabPane.add( bundle.getString( "CTL_StateTab.Text" ), statePane );
         }
-        else if (objectDescriptor instanceof ValueDetailDescriptor )
+        else if( objectDescriptor instanceof ValueDetailDescriptor )
         {
-            tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ),  generalPane );
+            tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ), generalPane );
             tabPane.add( bundle.getString( "CTL_DependencyTab.Text" ), dependencyPane );
             tabPane.add( bundle.getString( "CTL_MethodTab.Text" ), methodPane );
             tabPane.add( bundle.getString( "CTL_StateTab.Text" ), statePane );
         }
-        else if (objectDescriptor instanceof ObjectDetailDescriptor )
+        else if( objectDescriptor instanceof ObjectDetailDescriptor )
         {
-            tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ),  generalPane );
+            tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ), generalPane );
             tabPane.add( bundle.getString( "CTL_DependencyTab.Text" ), dependencyPane );
             tabPane.add( bundle.getString( "CTL_MethodTab.Text" ), methodPane );
         }
-        else if (objectDescriptor instanceof CompositeDetailDescriptor ) // this is transient
+        else if( objectDescriptor instanceof CompositeDetailDescriptor ) // this is transient
         {
-            tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ),  generalPane );
+            tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ), generalPane );
             tabPane.add( bundle.getString( "CTL_DependencyTab.Text" ), dependencyPane );
             tabPane.add( bundle.getString( "CTL_MethodTab.Text" ), methodPane );
             tabPane.add( bundle.getString( "CTL_StateTab.Text" ), statePane );
@@ -197,9 +197,9 @@ public class DetailModelPane extends JPanel
     {
         listenerList.remove( LinkListener.class, listener );
     }
-    
 
-    void fireLinkActivated( LinkEvent evt)
+
+    void fireLinkActivated( LinkEvent evt )
     {
         linkActivatedInProgress = true;
         // Guaranteed to return a non-null array

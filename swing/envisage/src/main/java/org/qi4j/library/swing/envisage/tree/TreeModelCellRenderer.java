@@ -35,11 +35,12 @@ import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
 
 /**
  * TreeCellRenderer
+ *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class TreeModelCellRenderer extends DefaultTreeCellRenderer
 {
-    protected ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName());
+    protected ResourceBundle bundle = ResourceBundle.getBundle( this.getClass().getName() );
 
     protected Icon applicationIcon;
     protected Icon layerIcon;
@@ -55,18 +56,20 @@ public class TreeModelCellRenderer extends DefaultTreeCellRenderer
     {
         try
         {
-            applicationIcon = new ImageIcon(getClass().getResource(bundle.getString("ICON_Application")));
-            layerIcon = new ImageIcon(getClass().getResource(bundle.getString("ICON_Layer")));
-            moduleIcon = new ImageIcon(getClass().getResource(bundle.getString("ICON_Module")));
-            serviceIcon = new ImageIcon(getClass().getResource(bundle.getString("ICON_Service")));
-            importedServiceIcon = new ImageIcon(getClass().getResource(bundle.getString("ICON_ImportedService")));
-            entityIcon = new ImageIcon(getClass().getResource(bundle.getString("ICON_Entity")));
-            valueIcon = new ImageIcon(getClass().getResource(bundle.getString("ICON_Value")));
-            transientIcon = new ImageIcon(getClass().getResource(bundle.getString("ICON_Transient")));
-            objectIcon = new ImageIcon(getClass().getResource(bundle.getString("ICON_Object")));
+            applicationIcon = new ImageIcon( getClass().getResource( bundle.getString( "ICON_Application" ) ) );
+            layerIcon = new ImageIcon( getClass().getResource( bundle.getString( "ICON_Layer" ) ) );
+            moduleIcon = new ImageIcon( getClass().getResource( bundle.getString( "ICON_Module" ) ) );
+            serviceIcon = new ImageIcon( getClass().getResource( bundle.getString( "ICON_Service" ) ) );
+            importedServiceIcon = new ImageIcon( getClass().getResource( bundle.getString( "ICON_ImportedService" ) ) );
+            entityIcon = new ImageIcon( getClass().getResource( bundle.getString( "ICON_Entity" ) ) );
+            valueIcon = new ImageIcon( getClass().getResource( bundle.getString( "ICON_Value" ) ) );
+            transientIcon = new ImageIcon( getClass().getResource( bundle.getString( "ICON_Transient" ) ) );
+            objectIcon = new ImageIcon( getClass().getResource( bundle.getString( "ICON_Object" ) ) );
 
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
+        }
+        catch( Exception ex )
+        {
+            throw new RuntimeException( ex );
         }
     }
 
@@ -74,54 +77,85 @@ public class TreeModelCellRenderer extends DefaultTreeCellRenderer
     public final Component getTreeCellRendererComponent(
         JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus )
     {
-        super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+        super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus );
 
-        DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode)value;
+        DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) value;
         Object userObject = treeNode.getUserObject();
 
         // determine icon
         Icon icon = null;
 
-        if (userObject instanceof ApplicationDetailDescriptor)
+        if( userObject instanceof ApplicationDetailDescriptor )
         {
             icon = applicationIcon;
-        } else if (userObject instanceof LayerDetailDescriptor ) {
+        }
+        else if( userObject instanceof LayerDetailDescriptor )
+        {
             icon = layerIcon;
-        } else if (userObject instanceof ModuleDetailDescriptor ) {
+        }
+        else if( userObject instanceof ModuleDetailDescriptor )
+        {
             icon = moduleIcon;
-        } else if (userObject instanceof ServiceDetailDescriptor ) {
+        }
+        else if( userObject instanceof ServiceDetailDescriptor )
+        {
             icon = serviceIcon;
-        } else if (userObject instanceof ImportedServiceDetailDescriptor ) {
+        }
+        else if( userObject instanceof ImportedServiceDetailDescriptor )
+        {
             icon = importedServiceIcon;
-        } else if (userObject instanceof EntityDetailDescriptor ) {
+        }
+        else if( userObject instanceof EntityDetailDescriptor )
+        {
             icon = entityIcon;
-        } else if (userObject instanceof ValueDetailDescriptor ) {
+        }
+        else if( userObject instanceof ValueDetailDescriptor )
+        {
             icon = valueIcon;
-        } else if (userObject instanceof CompositeDetailDescriptor ) {
+        }
+        else if( userObject instanceof CompositeDetailDescriptor )
+        {
             icon = transientIcon;
-        } else if (userObject instanceof ObjectDetailDescriptor ) {
+        }
+        else if( userObject instanceof ObjectDetailDescriptor )
+        {
             icon = objectIcon;
-        } else {
+        }
+        else
+        {
             // assume it is string
             String str = userObject.toString();
-            if (str.equalsIgnoreCase( "Services" ))
+            if( str.equalsIgnoreCase( "Services" ) )
             {
                 icon = serviceIcon;
-            } else if (str.equalsIgnoreCase( "Imported Services" )) {
+            }
+            else if( str.equalsIgnoreCase( "Imported Services" ) )
+            {
                 icon = importedServiceIcon;
-            } else if (str.equalsIgnoreCase( "Entities" )) {
+            }
+            else if( str.equalsIgnoreCase( "Entities" ) )
+            {
                 icon = entityIcon;
-            } else if (str.equalsIgnoreCase( "Values" )) {
+            }
+            else if( str.equalsIgnoreCase( "Values" ) )
+            {
                 icon = valueIcon;
-            } else if (str.equalsIgnoreCase( "Transients" )) {
+            }
+            else if( str.equalsIgnoreCase( "Transients" ) )
+            {
                 icon = transientIcon;
-            } else if (str.equalsIgnoreCase( "Objects" )) {
+            }
+            else if( str.equalsIgnoreCase( "Objects" ) )
+            {
                 icon = objectIcon;
             }
         }
 
 
-        if (icon != null) { setIcon( icon ); }
+        if( icon != null )
+        {
+            setIcon( icon );
+        }
 
         return this;
     }

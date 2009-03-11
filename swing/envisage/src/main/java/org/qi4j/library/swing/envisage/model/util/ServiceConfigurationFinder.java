@@ -31,10 +31,10 @@ import org.qi4j.spi.object.ObjectDescriptor;
  */
 class ServiceConfigurationFinder
 {
-    public Object findConfigurationDescriptor(ServiceDetailDescriptor descriptor)
+    public Object findConfigurationDescriptor( ServiceDetailDescriptor descriptor )
     {
         Class<?> configType = descriptor.descriptor().configurationType();
-        
+
         if( configType == null )
         {
             return null;
@@ -48,7 +48,7 @@ class ServiceConfigurationFinder
             return null;
         }
 
-        return obj;        
+        return obj;
     }
 
     private Object findConfigurationDescriptor( ApplicationDetailDescriptor descriptor, Class<?> configType )
@@ -121,25 +121,25 @@ class ServiceConfigurationFinder
         {
             ObjectDescriptor descriptor = null;
 
-            if (obj instanceof ServiceDetailDescriptor )
+            if( obj instanceof ServiceDetailDescriptor )
             {
-                descriptor = ((ServiceDetailDescriptor) obj).descriptor();
+                descriptor = ( (ServiceDetailDescriptor) obj ).descriptor();
             }
-            else if (obj instanceof EntityDetailDescriptor)
+            else if( obj instanceof EntityDetailDescriptor )
             {
-                descriptor = ((EntityDetailDescriptor) obj).descriptor();    
+                descriptor = ( (EntityDetailDescriptor) obj ).descriptor();
             }
-            else if (obj instanceof ValueDetailDescriptor)
+            else if( obj instanceof ValueDetailDescriptor )
             {
-                descriptor = ((ValueDetailDescriptor) obj).descriptor();
+                descriptor = ( (ValueDetailDescriptor) obj ).descriptor();
             }
-            else if (obj instanceof ObjectDetailDescriptor)
+            else if( obj instanceof ObjectDetailDescriptor )
             {
-                descriptor = ((ObjectDetailDescriptor) obj).descriptor();
+                descriptor = ( (ObjectDetailDescriptor) obj ).descriptor();
             }
             else
             {
-                descriptor = ((CompositeDetailDescriptor) obj).descriptor();                
+                descriptor = ( (CompositeDetailDescriptor) obj ).descriptor();
             }
 
             if( configType.equals( descriptor.type() ) )

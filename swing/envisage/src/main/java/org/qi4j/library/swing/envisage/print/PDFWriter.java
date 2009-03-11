@@ -94,26 +94,28 @@ public class PDFWriter
     protected float lineSpace = 15;
     protected float headerLineSpace = 25;
 
-    public void write ( Component parent, ApplicationDetailDescriptor descriptor, GraphDisplay graphDisplay)
+    public void write( Component parent, ApplicationDetailDescriptor descriptor, GraphDisplay graphDisplay )
     {
-        JFileChooser fc = new JFileChooser( );
+        JFileChooser fc = new JFileChooser();
         PDFFileFilter pdfFileFilter = new PDFFileFilter();
-        fc.setFileFilter(pdfFileFilter);
+        fc.setFileFilter( pdfFileFilter );
 
-        int choice = fc.showSaveDialog(parent);
-        if (choice != JFileChooser.APPROVE_OPTION) {
+        int choice = fc.showSaveDialog( parent );
+        if( choice != JFileChooser.APPROVE_OPTION )
+        {
             return;
         }
 
         File file = fc.getSelectedFile();
         String filename = file.toString();
         String ext = ".pdf";
-        if (!filename.endsWith(ext)) {
+        if( !filename.endsWith( ext ) )
+        {
             filename = filename + ext;
-            file = new File(filename);
+            file = new File( filename );
         }
 
-        write(file, descriptor, graphDisplay);
+        write( file, descriptor, graphDisplay );
     }
 
 
@@ -124,9 +126,9 @@ public class PDFWriter
         {
             writeImpl( file, descriptor, graphDisplay );
         }
-        catch (Exception ex)
+        catch( Exception ex )
         {
-            ex.printStackTrace(  );
+            ex.printStackTrace();
         }
     }
 
@@ -140,16 +142,16 @@ public class PDFWriter
             writeGraphPage( graphDisplay );
             writePage( descriptor );
 
-            if (curContentStream != null)
+            if( curContentStream != null )
             {
                 curContentStream.close();
             }
 
-            doc.save( new FileOutputStream(file) );
+            doc.save( new FileOutputStream( file ) );
         }
         finally
         {
-            if (curContentStream != null)
+            if( curContentStream != null )
             {
                 curContentStream.close();
                 curContentStream = null;
@@ -163,28 +165,28 @@ public class PDFWriter
         }
     }
 
-    private void writeGraphPage(GraphDisplay graphDisplay) throws Exception
+    private void writeGraphPage( GraphDisplay graphDisplay ) throws Exception
     {
         BufferedImage img = graphDisplay.getOffscreenBuffer();
         int w = img.getWidth();
         int h = img.getHeight();
 
         // rotate the image, if necessary
-        if (w > h)
+        if( w > h )
         {
-            BufferedImage tImg = new BufferedImage( h, w, img.getType());
+            BufferedImage tImg = new BufferedImage( h, w, img.getType() );
             Graphics2D g2d = tImg.createGraphics();
             g2d.setPaint( Color.WHITE );
-            g2d.fillRect( 0,0, w, h);
+            g2d.fillRect( 0, 0, w, h );
 
             //System.out.println(w +"," + h);
 
             // rotate
-            double x = (h - w)/2.0;
-            double y = (w - h)/2.0;
-            AffineTransform at = AffineTransform.getTranslateInstance(x, y);
-            at.rotate(Math.toRadians(90), w/2.0, h/2.0);
-            g2d.drawRenderedImage(img, at);
+            double x = ( h - w ) / 2.0;
+            double y = ( w - h ) / 2.0;
+            AffineTransform at = AffineTransform.getTranslateInstance( x, y );
+            at.rotate( Math.toRadians( 90 ), w / 2.0, h / 2.0 );
+            g2d.drawRenderedImage( img, at );
             g2d.dispose();
             img = tImg;
             //ImageIO.write( tImg, "png", new File("/home/tonny/qi4j-testimage.png") );
@@ -200,54 +202,54 @@ public class PDFWriter
         //System.out.println("pSize: " + pW + "," + pH);
 
         double scale = scaleToFit( img.getWidth(), img.getHeight(), pdRect.getWidth(), pdRect.getHeight() );
-        if (scale != 1)
+        if( scale != 1 )
         {
-            w = (int)Math.round( (img.getWidth() * scale) + .5 );
-            h = (int)Math.round( (img.getHeight() * scale) + .5 );
-            BufferedImage tImg = new BufferedImage( w, h,  img.getType());
+            w = (int) Math.round( ( img.getWidth() * scale ) + .5 );
+            h = (int) Math.round( ( img.getHeight() * scale ) + .5 );
+            BufferedImage tImg = new BufferedImage( w, h, img.getType() );
             Graphics2D g2d = tImg.createGraphics();
             g2d.setPaint( Color.WHITE );
-            g2d.fillRect( 0,0, w, h);
+            g2d.fillRect( 0, 0, w, h );
 
-            AffineTransform at = AffineTransform.getScaleInstance(scale, scale);
-            g2d.drawRenderedImage(img, at);
+            AffineTransform at = AffineTransform.getScaleInstance( scale, scale );
+            g2d.drawRenderedImage( img, at );
             g2d.dispose();
             img = tImg;
         }
 
-        PDJpeg xImage = new PDJpeg( doc, img);
+        PDJpeg xImage = new PDJpeg( doc, img );
 
         PDPageContentStream contentStream = new PDPageContentStream( doc, page );
-        contentStream.drawImage( xImage, (pdRect.getWidth()-img.getWidth())/2 ,  (pdRect.getHeight()-img.getHeight())/2 );
+        contentStream.drawImage( xImage, ( pdRect.getWidth() - img.getWidth() ) / 2, ( pdRect.getHeight() - img.getHeight() ) / 2 );
         contentStream.close();
     }
 
-    private void writePage(ApplicationDetailDescriptor descriptor) throws Exception
+    private void writePage( ApplicationDetailDescriptor descriptor ) throws Exception
     {
         createNewPage();
         setFont( header1Font, header1FontSize );
-        writeString( APPLICATION + " : " + descriptor.toString());
+        writeString( APPLICATION + " : " + descriptor.toString() );
 
         writeLayersPage( descriptor.layers() );
     }
 
-    private void writeLayersPage( Iterable<LayerDetailDescriptor> iter) throws Exception
+    private void writeLayersPage( Iterable<LayerDetailDescriptor> iter ) throws Exception
     {
         for( LayerDetailDescriptor descriptor : iter )
         {
             setFont( header2Font, header2FontSize );
-            writeString(LAYER+ " : " + descriptor.toString(), headerLineSpace);
+            writeString( LAYER + " : " + descriptor.toString(), headerLineSpace );
 
-            writeModulesPage(descriptor.modules());
+            writeModulesPage( descriptor.modules() );
         }
     }
 
-    private void writeModulesPage( Iterable<ModuleDetailDescriptor> iter) throws Exception
+    private void writeModulesPage( Iterable<ModuleDetailDescriptor> iter ) throws Exception
     {
         for( ModuleDetailDescriptor descriptor : iter )
         {
             setFont( header3Font, header3FontSize );
-            writeString(MODULE + " : " + descriptor.toString(), headerLineSpace);
+            writeString( MODULE + " : " + descriptor.toString(), headerLineSpace );
 
             writeServicesPage( descriptor.services() );
             writeImportedServicesPage( descriptor.importedServices() );
@@ -258,86 +260,86 @@ public class PDFWriter
         }
     }
 
-    private void writeServicesPage( Iterable<ServiceDetailDescriptor> iter) throws Exception
+    private void writeServicesPage( Iterable<ServiceDetailDescriptor> iter ) throws Exception
     {
         for( ServiceDetailDescriptor descriptor : iter )
         {
-            setFont( header4Font, header4FontSize);
-            writeString(descriptor.toString(), headerLineSpace);
+            setFont( header4Font, header4FontSize );
+            writeString( descriptor.toString(), headerLineSpace );
             writeTypeGeneralPage( descriptor );
-            writeTypeDependenciesPage( descriptor);
+            writeTypeDependenciesPage( descriptor );
             writeTypeMethodsPage( descriptor );
             writeTypeStatesPage( descriptor );
-            writeTypeServiceConfigurationPage ( descriptor );
-            writeTypeServiceUsagePage ( descriptor );
+            writeTypeServiceConfigurationPage( descriptor );
+            writeTypeServiceUsagePage( descriptor );
         }
     }
 
-    private void writeImportedServicesPage( Iterable<ImportedServiceDetailDescriptor> iter) throws Exception
+    private void writeImportedServicesPage( Iterable<ImportedServiceDetailDescriptor> iter ) throws Exception
     {
         for( ImportedServiceDetailDescriptor descriptor : iter )
         {
-            setFont( header4Font, header4FontSize);
-            writeString(descriptor.toString(), headerLineSpace);
+            setFont( header4Font, header4FontSize );
+            writeString( descriptor.toString(), headerLineSpace );
             writeTypeGeneralPage( descriptor );
             writeTypeMethodsPage( descriptor );
-            writeTypeServiceUsagePage ( descriptor );
-            writeTypeImportedByPage (descriptor);
+            writeTypeServiceUsagePage( descriptor );
+            writeTypeImportedByPage( descriptor );
         }
     }
 
-    private void writeEntitiesPage( Iterable<EntityDetailDescriptor> iter) throws Exception
+    private void writeEntitiesPage( Iterable<EntityDetailDescriptor> iter ) throws Exception
     {
         for( EntityDetailDescriptor descriptor : iter )
         {
-            setFont( header4Font, header4FontSize);
-            writeString(descriptor.toString(), headerLineSpace);
+            setFont( header4Font, header4FontSize );
+            writeString( descriptor.toString(), headerLineSpace );
             writeTypeGeneralPage( descriptor );
-            writeTypeDependenciesPage( descriptor);
+            writeTypeDependenciesPage( descriptor );
             writeTypeMethodsPage( descriptor );
             writeTypeStatesPage( descriptor );
         }
     }
 
-    private void writeTransientsPage( Iterable<CompositeDetailDescriptor> iter) throws Exception
+    private void writeTransientsPage( Iterable<CompositeDetailDescriptor> iter ) throws Exception
     {
         for( CompositeDetailDescriptor descriptor : iter )
         {
-            setFont( header4Font, header4FontSize);
-            writeString(descriptor.toString(), headerLineSpace);
+            setFont( header4Font, header4FontSize );
+            writeString( descriptor.toString(), headerLineSpace );
             writeTypeGeneralPage( descriptor );
-            writeTypeDependenciesPage( descriptor);
+            writeTypeDependenciesPage( descriptor );
             writeTypeMethodsPage( descriptor );
             writeTypeStatesPage( descriptor );
         }
     }
 
-    private void writeValuesPage( Iterable<ValueDetailDescriptor> iter) throws Exception
+    private void writeValuesPage( Iterable<ValueDetailDescriptor> iter ) throws Exception
     {
         for( ValueDetailDescriptor descriptor : iter )
         {
-            setFont( header4Font, header4FontSize);
-            writeString(descriptor.toString(), headerLineSpace);
+            setFont( header4Font, header4FontSize );
+            writeString( descriptor.toString(), headerLineSpace );
             writeTypeGeneralPage( descriptor );
-            writeTypeDependenciesPage( descriptor);
+            writeTypeDependenciesPage( descriptor );
             writeTypeMethodsPage( descriptor );
             writeTypeStatesPage( descriptor );
         }
     }
 
-    private void writeObjectsPage( Iterable<ObjectDetailDescriptor> iter) throws Exception
+    private void writeObjectsPage( Iterable<ObjectDetailDescriptor> iter ) throws Exception
     {
         for( ObjectDetailDescriptor descriptor : iter )
         {
-            setFont( header4Font, header4FontSize);
-            writeString(descriptor.toString(), headerLineSpace);
+            setFont( header4Font, header4FontSize );
+            writeString( descriptor.toString(), headerLineSpace );
             writeTypeGeneralPage( descriptor );
-            writeTypeDependenciesPage( descriptor);
+            writeTypeDependenciesPage( descriptor );
             // object don't have methods
         }
     }
 
-    private void writeTypeGeneralPage (Object objectDesciptor) throws Exception
+    private void writeTypeGeneralPage( Object objectDesciptor ) throws Exception
     {
 
         setFont( header5Font, header5FontSize );
@@ -383,12 +385,12 @@ public class PDFWriter
         }
     }
 
-    private void writeTypeDependenciesPage(Object objectDesciptor) throws Exception
+    private void writeTypeDependenciesPage( Object objectDesciptor ) throws Exception
     {
         setFont( header5Font, header5FontSize );
         writeString( "Dependencies: ", headerLineSpace );
 
-        if (objectDesciptor instanceof CompositeDetailDescriptor)
+        if( objectDesciptor instanceof CompositeDetailDescriptor )
         {
             CompositeDetailDescriptor descriptor = (CompositeDetailDescriptor) objectDesciptor;
             Iterable<MixinDetailDescriptor> iter = descriptor.mixins();
@@ -397,7 +399,7 @@ public class PDFWriter
                 writeTypeDependenciesPage( mixinDescriptor.injectedFields() );
             }
         }
-        else if (objectDesciptor instanceof ObjectDetailDescriptor)
+        else if( objectDesciptor instanceof ObjectDetailDescriptor )
         {
             ObjectDetailDescriptor descriptor = ( (ObjectDetailDescriptor) objectDesciptor );
             writeTypeDependenciesPage( descriptor.injectedFields() );
@@ -410,43 +412,43 @@ public class PDFWriter
         for( InjectedFieldDetailDescriptor descriptor : iter )
         {
             DependencyDescriptor dependencyDescriptor = descriptor.descriptor().dependency();
-            writeString( "- name: "  + dependencyDescriptor.injectedClass().getSimpleName() );
-            writeString( "    * annotation: @"  + dependencyDescriptor.injectionAnnotation().annotationType().getSimpleName() );
-            writeString( "    * optional: " + Boolean.toString( dependencyDescriptor.optional()));
-            writeString( "    * type: " + dependencyDescriptor.injectionType().getClass().getSimpleName());
-            writeString( "    * services: ");
+            writeString( "- name: " + dependencyDescriptor.injectedClass().getSimpleName() );
+            writeString( "    * annotation: @" + dependencyDescriptor.injectionAnnotation().annotationType().getSimpleName() );
+            writeString( "    * optional: " + Boolean.toString( dependencyDescriptor.optional() ) );
+            writeString( "    * type: " + dependencyDescriptor.injectionType().getClass().getSimpleName() );
+            writeString( "    * services: " );
             for( String str : dependencyDescriptor.injectedServices() )
             {
-                writeString( "        - " + str);
+                writeString( "        - " + str );
             }
         }
     }
 
-    private void writeTypeMethodsPage(Object objectDesciptor) throws Exception
+    private void writeTypeMethodsPage( Object objectDesciptor ) throws Exception
     {
-        if (!CompositeDetailDescriptor.class.isAssignableFrom( objectDesciptor.getClass() ) )
+        if( !CompositeDetailDescriptor.class.isAssignableFrom( objectDesciptor.getClass() ) )
         {
-            return;            
+            return;
         }
 
         setFont( header5Font, header5FontSize );
         writeString( "Methods: ", headerLineSpace );
 
         CompositeDetailDescriptor descriptor = (CompositeDetailDescriptor) objectDesciptor;
-        List<CompositeMethodDetailDescriptor> list = DescriptorUtilities.findMethod( descriptor );       
+        List<CompositeMethodDetailDescriptor> list = DescriptorUtilities.findMethod( descriptor );
 
         setFont( normalFont, normalFontSize );
         for( CompositeMethodDetailDescriptor methodDescriptor : list )
         {
             writeString( "- name: " + methodDescriptor.toString() );
-            writeString( "    * mixins: " +  methodDescriptor.descriptor().mixin().mixinClass() );
-            writeString( "    * return: " +  methodDescriptor.descriptor().method().getGenericReturnType() );
+            writeString( "    * mixins: " + methodDescriptor.descriptor().mixin().mixinClass() );
+            writeString( "    * return: " + methodDescriptor.descriptor().method().getGenericReturnType() );
         }
     }
 
-    private void writeTypeStatesPage(Object objectDesciptor) throws Exception
+    private void writeTypeStatesPage( Object objectDesciptor ) throws Exception
     {
-        if (!CompositeDetailDescriptor.class.isAssignableFrom( objectDesciptor.getClass() ) )
+        if( !CompositeDetailDescriptor.class.isAssignableFrom( objectDesciptor.getClass() ) )
         {
             return;
         }
@@ -461,19 +463,19 @@ public class PDFWriter
         for( CompositeMethodDetailDescriptor methodDescriptor : list )
         {
             writeString( "- name: " + methodDescriptor.toString() );
-            writeString( "    * mixins: " +  methodDescriptor.descriptor().mixin().mixinClass() );
-            writeString( "    * return: " +  methodDescriptor.descriptor().method().getGenericReturnType() );
+            writeString( "    * mixins: " + methodDescriptor.descriptor().mixin().mixinClass() );
+            writeString( "    * return: " + methodDescriptor.descriptor().method().getGenericReturnType() );
         }
     }
 
-    private void writeTypeServiceConfigurationPage(Object objectDesciptor) throws Exception
+    private void writeTypeServiceConfigurationPage( Object objectDesciptor ) throws Exception
     {
         setFont( header5Font, header5FontSize );
         writeString( "Configuration: ", headerLineSpace );
 
         Object configDescriptor = DescriptorUtilities.findServiceConfiguration( (ServiceDetailDescriptor) objectDesciptor );
 
-        if (configDescriptor == null)
+        if( configDescriptor == null )
         {
             return;
         }
@@ -507,19 +509,19 @@ public class PDFWriter
         }
 
         setFont( normalFont, normalFontSize );
-        writeString( "- name: "  + spiDescriptor.type().getSimpleName() );
-        writeString( "- class: "  + spiDescriptor.type().getName() );
+        writeString( "- name: " + spiDescriptor.type().getSimpleName() );
+        writeString( "- class: " + spiDescriptor.type().getName() );
         writeString( "- type: " + typeString );
     }
 
-    private void writeTypeServiceUsagePage(Object objectDesciptor) throws Exception
+    private void writeTypeServiceUsagePage( Object objectDesciptor ) throws Exception
     {
         setFont( header5Font, header5FontSize );
         writeString( "Usage: ", headerLineSpace );
 
         setFont( normalFont, normalFontSize );
         List<TableRow> rows = DescriptorUtilities.findServiceUsage( (ServiceDetailDescriptor) objectDesciptor );
-        for (TableRow row: rows)
+        for( TableRow row : rows )
         {
 
             String owner;
@@ -527,35 +529,35 @@ public class PDFWriter
             String module;
             String layer;
 
-            Object obj = row.get(0);
-            if (obj instanceof CompositeDetailDescriptor)
+            Object obj = row.get( 0 );
+            if( obj instanceof CompositeDetailDescriptor )
             {
-                CompositeDetailDescriptor descriptor = (CompositeDetailDescriptor)obj;
+                CompositeDetailDescriptor descriptor = (CompositeDetailDescriptor) obj;
                 owner = descriptor.toString();
                 module = descriptor.module().toString();
                 layer = descriptor.module().layer().toString();
             }
             else
             {
-                ObjectDetailDescriptor descriptor = (ObjectDetailDescriptor)obj;
+                ObjectDetailDescriptor descriptor = (ObjectDetailDescriptor) obj;
                 owner = descriptor.toString();
                 module = descriptor.module().toString();
                 layer = descriptor.module().layer().toString();
             }
 
-            InjectedFieldDetailDescriptor injectedFieldescriptor = (InjectedFieldDetailDescriptor) row.get(1);
+            InjectedFieldDetailDescriptor injectedFieldescriptor = (InjectedFieldDetailDescriptor) row.get( 1 );
             DependencyDescriptor dependencyDescriptor = injectedFieldescriptor.descriptor().dependency();
             Annotation annotation = dependencyDescriptor.injectionAnnotation();
             usage = injectedFieldescriptor.toString() + " (@" + annotation.annotationType().getSimpleName() + ")";
 
-            writeString( "- owner: "  + row.get( 0 ).toString());
-            writeString( "    * usage: "  + usage );
+            writeString( "- owner: " + row.get( 0 ).toString() );
+            writeString( "    * usage: " + usage );
             writeString( "    * module: " + module );
-            writeString( "    * layer: " + layer);
+            writeString( "    * layer: " + layer );
         }
     }
 
-    private void writeTypeImportedByPage(Object objectDesciptor) throws Exception
+    private void writeTypeImportedByPage( Object objectDesciptor ) throws Exception
     {
         setFont( header5Font, header5FontSize );
         writeString( "Imported by: ", headerLineSpace );
@@ -565,19 +567,20 @@ public class PDFWriter
         Class<? extends ServiceImporter> importer = descriptor.serviceImporter();
 
         setFont( normalFont, normalFontSize );
-        writeString( "- name: "  + importer.getSimpleName() );
-        writeString( "- class: "  + importer.toString() );
+        writeString( "- name: " + importer.getSimpleName() );
+        writeString( "- class: " + importer.toString() );
     }
 
-    private void writeString(String text) throws Exception
+    private void writeString( String text ) throws Exception
     {
-        writeString( text, this.lineSpace );   
+        writeString( text, this.lineSpace );
     }
 
-    private void writeString(String text, float lineSpace) throws Exception
+    private void writeString( String text, float lineSpace ) throws Exception
     {
         // check for page size, if necessary create new page
-        if ((curY - lineSpace) <= startY) {
+        if( ( curY - lineSpace ) <= startY )
+        {
             //System.out.println("new line: " + curY + " - " + lineSpace + " = " + (curY-lineSpace) );
             createNewPage();
         }
@@ -587,7 +590,7 @@ public class PDFWriter
         curContentStream.drawString( text );
     }
 
-    private void setFont (PDFont font, float fontSize) throws Exception
+    private void setFont( PDFont font, float fontSize ) throws Exception
     {
         curFont = font;
         curFontSize = fontSize;
@@ -596,7 +599,7 @@ public class PDFWriter
 
     private void createNewPage() throws Exception
     {
-        if (curContentStream != null)
+        if( curContentStream != null )
         {
             curContentStream.endText();
             curContentStream.close();
@@ -605,40 +608,47 @@ public class PDFWriter
         PDPage page = new PDPage();
         doc.addPage( page );
 
-        curContentStream = new PDPageContentStream(doc, page);
+        curContentStream = new PDPageContentStream( doc, page );
 
         curPageSize = page.getArtBox();
         //System.out.println("pSize: " + pdRect.getWidth() + "," + pdRect.getHeight());
-        
+
         curContentStream.beginText();
         curY = curPageSize.getHeight() - startY;
         curContentStream.moveTextPositionByAmount( startX, curY );
 
-        if (curFont != null)
+        if( curFont != null )
         {
-            setFont (curFont,  curFontSize);
+            setFont( curFont, curFontSize );
         }
 
     }
 
-    private double scaleToFit (double srcW, double srcH, double destW, double destH)
+    private double scaleToFit( double srcW, double srcH, double destW, double destH )
     {
         double scale = 1;
-        if (srcW > srcH) {
-            if (srcW > destW) {
+        if( srcW > srcH )
+        {
+            if( srcW > destW )
+            {
                 scale = destW / srcW;
             }
             srcH = srcH * scale;
-            if (srcH > destH) {
-                scale = scale * (destH / srcH);
+            if( srcH > destH )
+            {
+                scale = scale * ( destH / srcH );
             }
-        } else {
-            if (srcH > destH) {
+        }
+        else
+        {
+            if( srcH > destH )
+            {
                 scale = destH / srcH;
             }
             srcW = srcW * scale;
-            if (srcW > destW ) {
-                scale = scale * (destW / srcW);
+            if( srcW > destW )
+            {
+                scale = scale * ( destW / srcW );
             }
         }
         return scale;

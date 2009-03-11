@@ -46,10 +46,10 @@ public final class ModuleDetailDescriptor
         descriptor = aDescriptor;
 
         services = new LinkedList<ServiceDetailDescriptor>();
-        importedServices = new LinkedList<ImportedServiceDetailDescriptor>(); 
+        importedServices = new LinkedList<ImportedServiceDetailDescriptor>();
         entities = new LinkedList<EntityDetailDescriptor>();
         composites = new LinkedList<CompositeDetailDescriptor>();
-        values = new LinkedList<ValueDetailDescriptor>(); 
+        values = new LinkedList<ValueDetailDescriptor>();
         objects = new LinkedList<ObjectDetailDescriptor>();
     }
 

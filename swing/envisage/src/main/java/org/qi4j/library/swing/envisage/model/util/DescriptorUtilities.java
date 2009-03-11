@@ -31,41 +31,49 @@ public class DescriptorUtilities
 {
     private DescriptorUtilities()
     {
-        throw new Error("This is a utility class for static methods");
+        throw new Error( "This is a utility class for static methods" );
     }
 
-    /** Return Descriptor Detail
-     * @param descriptor ServiceDetailDescriptor
-     * @return list of Descritpor Detail (never return null) 
-     * */
-    public static List<CompositeMethodDetailDescriptor> findMethod( CompositeDetailDescriptor descriptor )
-    {
-        return new MethodFinder().findMethod(descriptor);
-    }
-
-    /** Return Descriptor Detail
+    /**
+     * Return Descriptor Detail
+     *
      * @param descriptor ServiceDetailDescriptor
      * @return list of Descritpor Detail (never return null)
-     * */
-    public static List<CompositeMethodDetailDescriptor> findState ( CompositeDetailDescriptor descriptor )
+     */
+    public static List<CompositeMethodDetailDescriptor> findMethod( CompositeDetailDescriptor descriptor )
     {
-        return new StateFinder().findState(descriptor);
+        return new MethodFinder().findMethod( descriptor );
     }
 
-    /** Return Descriptor Detail
+    /**
+     * Return Descriptor Detail
+     *
      * @param descriptor ServiceDetailDescriptor
-     * @return Descritpor Detail or null 
-     * */
-    public static Object findServiceConfiguration ( ServiceDetailDescriptor descriptor )
+     * @return list of Descritpor Detail (never return null)
+     */
+    public static List<CompositeMethodDetailDescriptor> findState( CompositeDetailDescriptor descriptor )
+    {
+        return new StateFinder().findState( descriptor );
+    }
+
+    /**
+     * Return Descriptor Detail
+     *
+     * @param descriptor ServiceDetailDescriptor
+     * @return Descritpor Detail or null
+     */
+    public static Object findServiceConfiguration( ServiceDetailDescriptor descriptor )
     {
         return new ServiceConfigurationFinder().findConfigurationDescriptor( descriptor );
     }
 
-    /** Return list of Descriptor Detail for particular Service Usage
+    /**
+     * Return list of Descriptor Detail for particular Service Usage
+     *
      * @param descriptor ServiceDetailDescriptor
-     * @return list of service usage (never return null) 
-     * */
-    public static List<TableRow> findServiceUsage(ServiceDetailDescriptor descriptor)
+     * @return list of service usage (never return null)
+     */
+    public static List<TableRow> findServiceUsage( ServiceDetailDescriptor descriptor )
     {
         return new ServiceUsageFinder().findServiceUsage( descriptor );
     }

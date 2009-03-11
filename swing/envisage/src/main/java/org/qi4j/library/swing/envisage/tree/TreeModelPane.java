@@ -37,7 +37,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import org.qi4j.api.structure.Application;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 
 /**
@@ -45,7 +44,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescrip
  * It support 2 view:<br/>
  * - by Structure<br/>
  * - by Type<br/>
- * 
+ *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class TreeModelPane extends JPanel
@@ -53,7 +52,7 @@ public class TreeModelPane extends JPanel
     protected static final String STRUCTURE_VIEW = "Structure";
     protected static final String TYPE_VIEW = "Type";
 
-    protected ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName());
+    protected ResourceBundle bundle = ResourceBundle.getBundle( this.getClass().getName() );
 
     protected JPanel mainPane;
     protected CardLayout cardLayout;
@@ -63,12 +62,11 @@ public class TreeModelPane extends JPanel
 
     protected boolean selectionInProgress;
 
-    protected Application application;
     protected ApplicationDetailDescriptor descriptor;
 
-    public TreeModelPane( )
+    public TreeModelPane()
     {
-        setLayout(new BorderLayout());
+        setLayout( new BorderLayout() );
 
         // init mainPane
         structureTree = new JTree();
@@ -88,49 +86,53 @@ public class TreeModelPane extends JPanel
         typeTree.setCellRenderer( new TreeModelCellRenderer() );
 
         mainPane = new JPanel();
-        cardLayout = new CardLayout( );
+        cardLayout = new CardLayout();
         mainPane.setLayout( cardLayout );
-        mainPane.add(new JScrollPane( structureTree ), STRUCTURE_VIEW);
-        mainPane.add(new JScrollPane( typeTree), TYPE_VIEW);
-        add(mainPane,BorderLayout.CENTER);
+        mainPane.add( new JScrollPane( structureTree ), STRUCTURE_VIEW );
+        mainPane.add( new JScrollPane( typeTree ), TYPE_VIEW );
+        add( mainPane, BorderLayout.CENTER );
 
         // init viewAsCombo
-        JPanel viewAsPane = new JPanel( );
-        viewAsPane.setBorder(BorderFactory.createEmptyBorder(3, 6, 3, 0));
-        viewAsPane.setLayout(new java.awt.GridBagLayout());
+        JPanel viewAsPane = new JPanel();
+        viewAsPane.setBorder( BorderFactory.createEmptyBorder( 3, 6, 3, 0 ) );
+        viewAsPane.setLayout( new java.awt.GridBagLayout() );
 
         GridBagConstraints gridBagConstraints;
-        JLabel viewAsLabel = new JLabel(bundle.getString( "CTL_ViewAs.Text" ));
+        JLabel viewAsLabel = new JLabel( bundle.getString( "CTL_ViewAs.Text" ) );
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = GridBagConstraints.WEST;
-        gridBagConstraints.insets = new Insets(0, 0, 0, 6);
-        viewAsPane.add(viewAsLabel, gridBagConstraints);
-        
-        viewAsCombo = new JComboBox(new DefaultComboBoxModel(new String[] { STRUCTURE_VIEW, TYPE_VIEW })); 
+        gridBagConstraints.insets = new Insets( 0, 0, 0, 6 );
+        viewAsPane.add( viewAsLabel, gridBagConstraints );
+
+        viewAsCombo = new JComboBox( new DefaultComboBoxModel( new String[]{ STRUCTURE_VIEW, TYPE_VIEW } ) );
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
-        viewAsPane.add(viewAsCombo, gridBagConstraints);
+        viewAsPane.add( viewAsCombo, gridBagConstraints );
 
         viewAsCombo.addItemListener( new ItemListener()
         {
-            public void itemStateChanged( ItemEvent evt)
+            public void itemStateChanged( ItemEvent evt )
             {
-                if (evt.getStateChange() == ItemEvent.DESELECTED) { return; }
-                cardLayout.show( mainPane, evt.getItem().toString());
+                if( evt.getStateChange() == ItemEvent.DESELECTED )
+                {
+                    return;
+                }
+                cardLayout.show( mainPane, evt.getItem().toString() );
                 repaint();
             }
-        });
+        } );
 
-        add(viewAsPane, BorderLayout.PAGE_START);
+        add( viewAsPane, BorderLayout.PAGE_START );
     }
 
-    /** Initialize Qi4J for this component
-     * @param application the Application 
-     * */
-    public void initQi4J(  Application application, ApplicationDetailDescriptor descriptor )
+    /**
+     * Initialize Qi4J for this component
+     *
+     * @param descriptor the Application descriptor
+     */
+    public void initQi4J( ApplicationDetailDescriptor descriptor )
     {
-        this.application = application;
         this.descriptor = descriptor;
 
         //ApplicationSPI applicationSPI = (ApplicationSPI) application;
@@ -140,133 +142,159 @@ public class TreeModelPane extends JPanel
         MutableTreeNode rootNode1 = StructureModelBuilder.build( descriptor );
         MutableTreeNode rootNode2 = TypeModelBuilder.build( descriptor );
 
-        structureTree.setModel( new DefaultTreeModel(rootNode1) );
-        typeTree.setModel( new DefaultTreeModel(rootNode2) );
+        structureTree.setModel( new DefaultTreeModel( rootNode1 ) );
+        typeTree.setModel( new DefaultTreeModel( rootNode2 ) );
 
         structureTree.addTreeSelectionListener( new TreeSelectionListener()
         {
-            public void valueChanged( TreeSelectionEvent evt) { structureTreeValueChanged(evt); }
-        });
+            public void valueChanged( TreeSelectionEvent evt )
+            {
+                structureTreeValueChanged();
+            }
+        } );
 
         typeTree.addTreeSelectionListener( new TreeSelectionListener()
         {
-            public void valueChanged( TreeSelectionEvent evt) { typeTreeValueChanged(evt); }
-        });
+            public void valueChanged( TreeSelectionEvent evt )
+            {
+                typeTreeValueChanged();
+            }
+        } );
     }
 
     public Object getLastSelected()
     {
         Object obj = structureTree.getLastSelectedPathComponent();
-        if (obj != null)
+        if( obj != null )
         {
-           return ((DefaultMutableTreeNode)obj).getUserObject();
+            return ( (DefaultMutableTreeNode) obj ).getUserObject();
         }
         return null;
     }
 
-    public void setSelectedValue(Object obj)
+    public void setSelectedValue( Object obj )
     {
-        if (obj == null) { return; }
+        if( obj == null )
+        {
+            return;
+        }
 
         //System.out.println(obj.toString());
 
         TreeNode node = findNode( structureTree, obj );
-        if (node != null)
+        if( node != null )
         {
-            DefaultTreeModel treeModel = (DefaultTreeModel)structureTree.getModel();
-            TreePath treePath = new TreePath(treeModel.getPathToRoot( node ));
+            DefaultTreeModel treeModel = (DefaultTreeModel) structureTree.getModel();
+            TreePath treePath = new TreePath( treeModel.getPathToRoot( node ) );
             structureTree.setSelectionPath( treePath );
             structureTree.scrollPathToVisible( treePath );
         }
     }
 
-    /** Just a helper method to find the node which contains the userObject
-     * @param tree the JTree to search into 
+    /**
+     * Just a helper method to find the node which contains the userObject
+     *
+     * @param tree   the JTree to search into
      * @param object the user object
      * @return TreeNode or null
-     * */
-    protected TreeNode findNode(JTree tree, Object object)
+     */
+    protected TreeNode findNode( JTree tree, Object object )
     {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getModel().getRoot();
-        return findNode(node, object);
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getModel().getRoot();
+        return findNode( node, object );
     }
 
-    /** Recurvice search or find node that contains the obj
+    /**
+     * Recurvice search or find node that contains the obj
+     *
      * @param node DefaultMutableTreeNode
-     * @param obj userObject
+     * @param obj  userObject
      * @return TreeNode or null if could not find
-     * */
-    private TreeNode findNode(DefaultMutableTreeNode node, Object obj)
+     */
+    private TreeNode findNode( DefaultMutableTreeNode node, Object obj )
     {
-        if (obj instanceof String)
+        if( obj instanceof String )
         {
-            if (node.getUserObject().toString().equals( obj.toString() ))
+            if( node.getUserObject().toString().equals( obj.toString() ) )
             {
                 return node;
             }
         }
-        else if (node.getUserObject().equals( obj ))
+        else if( node.getUserObject().equals( obj ) )
         {
             return node;
         }
 
 
         TreeNode foundNode = null;
-        for (int i=0; i<node.getChildCount(); i++ )
+        for( int i = 0; i < node.getChildCount(); i++ )
         {
-            DefaultMutableTreeNode childNode = (DefaultMutableTreeNode)node.getChildAt( i );
-            foundNode = findNode(childNode, obj);
-            if (foundNode != null) {
+            DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt( i );
+            foundNode = findNode( childNode, obj );
+            if( foundNode != null )
+            {
                 break;
             }
         }
-        
+
         return foundNode;
     }
 
-    public void addTreeSelectionListener( TreeSelectionListener listener)
+    public void addTreeSelectionListener( TreeSelectionListener listener )
     {
-        structureTree.addTreeSelectionListener(listener );
-        
+        structureTree.addTreeSelectionListener( listener );
+
     }
 
-    public void removeTreeSelectionListener( TreeSelectionListener listener)
+    public void removeTreeSelectionListener( TreeSelectionListener listener )
     {
         structureTree.removeTreeSelectionListener( listener );
 
     }
 
-    protected void structureTreeValueChanged(TreeSelectionEvent evt)
+    protected void structureTreeValueChanged()
     {
-        if  (selectionInProgress) { return; }
-        
-        Object userObject = getLastSelected();
-        if (userObject == null) { return; }
-        TreeNode node = findNode( typeTree, userObject );
-        if (node != null)
+        if( selectionInProgress )
         {
-            DefaultTreeModel treeModel = (DefaultTreeModel)typeTree.getModel();
-            TreePath treePath = new TreePath(treeModel.getPathToRoot( node ));
+            return;
+        }
+
+        Object userObject = getLastSelected();
+        if( userObject == null )
+        {
+            return;
+        }
+        TreeNode node = findNode( typeTree, userObject );
+        if( node != null )
+        {
+            DefaultTreeModel treeModel = (DefaultTreeModel) typeTree.getModel();
+            TreePath treePath = new TreePath( treeModel.getPathToRoot( node ) );
             typeTree.setSelectionPath( treePath );
             typeTree.scrollPathToVisible( treePath );
         }
     }
 
-    protected void typeTreeValueChanged(TreeSelectionEvent evt)
+    protected void typeTreeValueChanged()
     {
         Object obj = typeTree.getLastSelectedPathComponent();
-        if (obj == null) { return; }
-        Object userObject =  ((DefaultMutableTreeNode)obj).getUserObject();
-        TreeNode node = findNode( structureTree, userObject );
-        if (node != null)
+        if( obj == null )
         {
-            DefaultTreeModel treeModel = (DefaultTreeModel)structureTree.getModel();
-            TreePath treePath = new TreePath(treeModel.getPathToRoot( node ));
+            return;
+        }
+        Object userObject = ( (DefaultMutableTreeNode) obj ).getUserObject();
+        TreeNode node = findNode( structureTree, userObject );
+        if( node != null )
+        {
+            DefaultTreeModel treeModel = (DefaultTreeModel) structureTree.getModel();
+            TreePath treePath = new TreePath( treeModel.getPathToRoot( node ) );
 
             selectionInProgress = true;
-            try {
+            try
+            {
                 structureTree.setSelectionPath( treePath );
-            } finally {
+            }
+            finally
+            {
                 selectionInProgress = false;
             }
             structureTree.scrollPathToVisible( treePath );

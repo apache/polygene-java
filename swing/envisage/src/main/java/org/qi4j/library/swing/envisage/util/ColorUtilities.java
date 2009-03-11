@@ -20,35 +20,41 @@ import java.awt.Color;
 
 /**
  * Collection of Color Utilities
- * 
+ *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class ColorUtilities
 {
     private ColorUtilities()
     {
-        throw new Error("This is a utility class for static methods");
+        throw new Error( "This is a utility class for static methods" );
     }
 
-    /** Return the equivalent AWT {@code Color} of the supplied hexString in format eg #FF33D2
+    /**
+     * Return the equivalent AWT {@code Color} of the supplied hexString in format eg #FF33D2
+     *
      * @param hexString Color in hexString format eg: #FF33D2
      * @return the AWT {@code Color} or null if fail to parse
      */
-    public static final Color hexStringToColor(String hexString) {
+    public static final Color hexStringToColor( String hexString )
+    {
         Color color = null;
         int r = 0;
         int g = 0;
         int b = 0;
 
-        try {
-            String tmpStr = hexString.substring(1,3);
-            r = Integer.parseInt(tmpStr,16);
-            tmpStr = hexString.substring(3,5);
-            g = Integer.parseInt(tmpStr,16);
-            tmpStr = hexString.substring(5,7);
-            b = Integer.parseInt(tmpStr,16);
-            color = new Color(r,g,b);
-        } catch (Exception e) {
+        try
+        {
+            String tmpStr = hexString.substring( 1, 3 );
+            r = Integer.parseInt( tmpStr, 16 );
+            tmpStr = hexString.substring( 3, 5 );
+            g = Integer.parseInt( tmpStr, 16 );
+            tmpStr = hexString.substring( 5, 7 );
+            b = Integer.parseInt( tmpStr, 16 );
+            color = new Color( r, g, b );
+        }
+        catch( Exception e )
+        {
             color = null;
         }
 

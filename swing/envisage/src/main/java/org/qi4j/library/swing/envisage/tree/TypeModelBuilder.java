@@ -53,12 +53,13 @@ public class TypeModelBuilder
         return builder.buildNode( descriptor );
     }
 
-    private TypeModelBuilder() {
+    private TypeModelBuilder()
+    {
         serviceList = new ArrayList<ServiceDetailDescriptor>();
         importedServiceList = new ArrayList<ImportedServiceDetailDescriptor>();
         entityList = new ArrayList<EntityDetailDescriptor>();
         transientList = new ArrayList<CompositeDetailDescriptor>();
-        valueList = new  ArrayList<ValueDetailDescriptor>();
+        valueList = new ArrayList<ValueDetailDescriptor>();
         objectList = new ArrayList<ObjectDetailDescriptor>();
     }
 
@@ -69,48 +70,48 @@ public class TypeModelBuilder
         DescriptorNameComparator<Object> nameComparator = new DescriptorNameComparator<Object>();
 
         // sort based on name order
-        Collections.sort( serviceList, nameComparator);
-        Collections.sort( importedServiceList, nameComparator);
-        Collections.sort( entityList, nameComparator);
-        Collections.sort( transientList, nameComparator);
-        Collections.sort( valueList, nameComparator);
-        Collections.sort( objectList, nameComparator);
+        Collections.sort( serviceList, nameComparator );
+        Collections.sort( importedServiceList, nameComparator );
+        Collections.sort( entityList, nameComparator );
+        Collections.sort( transientList, nameComparator );
+        Collections.sort( valueList, nameComparator );
+        Collections.sort( objectList, nameComparator );
 
         DefaultMutableTreeNode root = new DefaultMutableTreeNode( descriptor );
-        DefaultMutableTreeNode child;        
+        DefaultMutableTreeNode child;
 
-        child = new DefaultMutableTreeNode ("Services");
-        addChild(child, serviceList);
+        child = new DefaultMutableTreeNode( "Services" );
+        addChild( child, serviceList );
         root.add( child );
 
-        child = new DefaultMutableTreeNode ("Imported Services");
-        addChild(child, importedServiceList);
+        child = new DefaultMutableTreeNode( "Imported Services" );
+        addChild( child, importedServiceList );
         root.add( child );
 
-        child = new DefaultMutableTreeNode ("Entities");
-        addChild(child, entityList);
+        child = new DefaultMutableTreeNode( "Entities" );
+        addChild( child, entityList );
         root.add( child );
 
-        child = new DefaultMutableTreeNode ("Transients");
-        addChild(child, transientList);
+        child = new DefaultMutableTreeNode( "Transients" );
+        addChild( child, transientList );
         root.add( child );
 
-        child = new DefaultMutableTreeNode ("Values");
-        addChild(child, valueList);
+        child = new DefaultMutableTreeNode( "Values" );
+        addChild( child, valueList );
         root.add( child );
 
-        child = new DefaultMutableTreeNode ("Objects");
-        addChild(child, objectList);
+        child = new DefaultMutableTreeNode( "Objects" );
+        addChild( child, objectList );
         root.add( child );
 
         return root;
     }
 
-    private void addChild(DefaultMutableTreeNode node, List list)
+    private void addChild( DefaultMutableTreeNode node, List list )
     {
-        for (int i=0; i<list.size(); i++)
+        for( int i = 0; i < list.size(); i++ )
         {
-            node.add( new DefaultMutableTreeNode( list.get(i) ) );
+            node.add( new DefaultMutableTreeNode( list.get( i ) ) );
         }
     }
 
@@ -130,38 +131,38 @@ public class TypeModelBuilder
             // Services
             for( ServiceDetailDescriptor child : descriptor.services() )
             {
-                serviceList.add(child);
+                serviceList.add( child );
             }
 
             // Imported Services
             for( ImportedServiceDetailDescriptor child : descriptor.importedServices() )
             {
-                importedServiceList.add(child);
+                importedServiceList.add( child );
             }
 
             // Entities
             for( EntityDetailDescriptor child : descriptor.entities() )
             {
-                entityList.add(child);
+                entityList.add( child );
             }
 
             // Transient
             for( CompositeDetailDescriptor child : descriptor.composites() )
             {
-                transientList.add(child);
+                transientList.add( child );
             }
 
             //Values
             for( ValueDetailDescriptor child : descriptor.values() )
             {
-                valueList.add(child);
+                valueList.add( child );
             }
 
 
             // Objects
             for( ObjectDetailDescriptor child : descriptor.objects() )
             {
-                objectList.add(child);
+                objectList.add( child );
             }
 
         }

@@ -33,7 +33,7 @@ public class MethodFinder
 {
     public List<CompositeMethodDetailDescriptor> findMethod( CompositeDetailDescriptor descriptor )
     {
-        return findMethod(descriptor.methods());
+        return findMethod( descriptor.methods() );
     }
 
     /**
@@ -68,7 +68,7 @@ public class MethodFinder
 
         // filter Property, Association, and ManyAssociation
         doFilter( publicList );
-        
+
         return publicList;
     }
 

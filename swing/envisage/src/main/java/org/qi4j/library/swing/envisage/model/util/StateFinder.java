@@ -33,7 +33,7 @@ public class StateFinder
 {
     public List<CompositeMethodDetailDescriptor> findState( CompositeDetailDescriptor descriptor )
     {
-        return findState(descriptor.methods());
+        return findState( descriptor.methods() );
     }
 
     private List<CompositeMethodDetailDescriptor> findState( Iterable<CompositeMethodDetailDescriptor> iter )
@@ -60,7 +60,7 @@ public class StateFinder
 
         // filter Property, Association, and ManyAssociation
         doFilter( publicList );
-        
+
         return publicList;
 
     }

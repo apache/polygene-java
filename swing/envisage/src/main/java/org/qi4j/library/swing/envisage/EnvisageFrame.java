@@ -33,7 +33,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import org.qi4j.api.structure.Application;
-import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.library.swing.envisage.detail.DetailModelPane;
 import org.qi4j.library.swing.envisage.event.LinkEvent;
 import org.qi4j.library.swing.envisage.event.LinkListener;
@@ -66,7 +65,7 @@ public class EnvisageFrame extends JFrame
 
     private boolean graphItemSelectionInProgress;
 
-    public EnvisageFrame( Energy4Java qi4j, Application application )
+    public EnvisageFrame( Application application )
     {
 
         this.application = application;
@@ -82,7 +81,7 @@ public class EnvisageFrame extends JFrame
         {
             public void valueChanged( TreeSelectionEvent evt )
             {
-                applicationModelPaneValueChanged( evt );
+                applicationModelPaneValueChanged();
             }
         } );
 
@@ -128,10 +127,9 @@ public class EnvisageFrame extends JFrame
         graphSplitPane.setDividerLocation( 384 );    // 768/2
         modelSplitPane.setDividerLocation( 300 );
 
-        ApplicationSPI applicationSPI = (ApplicationSPI) application;
-        descriptor = ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor( applicationSPI );
-        treeModelPane.initQi4J( application, descriptor );
-        graphPane.initQi4J( application, descriptor );
+        descriptor = ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor( (ApplicationSPI) application );
+        treeModelPane.initQi4J( descriptor );
+        graphPane.initQi4J( descriptor );
     }
 
     /**
@@ -177,7 +175,7 @@ public class EnvisageFrame extends JFrame
         return menuBar;
     }
 
-    protected void applicationModelPaneValueChanged( TreeSelectionEvent evt )
+    protected void applicationModelPaneValueChanged()
     {
         Object obj = treeModelPane.getLastSelected();
         detailModelPane.setDescriptor( obj );

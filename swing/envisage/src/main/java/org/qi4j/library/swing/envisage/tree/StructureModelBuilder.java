@@ -45,7 +45,7 @@ public class StructureModelBuilder
     public static MutableTreeNode build( ApplicationDetailDescriptor descriptor )
     {
         StructureModelBuilder builder = new StructureModelBuilder();
-        return builder.buildApplicationNode( descriptor );       
+        return builder.buildApplicationNode( descriptor );
     }
 
     private MutableTreeNode buildApplicationNode( ApplicationDetailDescriptor descriptor )
@@ -81,13 +81,13 @@ public class StructureModelBuilder
         }
     }
 
-    private void addTypeChildren( DefaultMutableTreeNode parent, List<Object> childList)
+    private void addTypeChildren( DefaultMutableTreeNode parent, List<Object> childList )
     {
         Collections.sort( childList, nameComparator );
 
-        for (int i=0; i<childList.size(); i++)
+        for( int i = 0; i < childList.size(); i++ )
         {
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode( childList.get(i) );
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode( childList.get( i ) );
             parent.add( node );
         }
     }
@@ -97,7 +97,7 @@ public class StructureModelBuilder
         tempList.clear();
         for( ServiceDetailDescriptor descriptor : iter )
         {
-            tempList.add(descriptor);
+            tempList.add( descriptor );
         }
 
         addTypeChildren( parent, tempList );
@@ -108,7 +108,7 @@ public class StructureModelBuilder
         tempList.clear();
         for( ImportedServiceDetailDescriptor descriptor : iter )
         {
-            tempList.add(descriptor);
+            tempList.add( descriptor );
         }
 
         addTypeChildren( parent, tempList );
@@ -119,7 +119,7 @@ public class StructureModelBuilder
         tempList.clear();
         for( EntityDetailDescriptor descriptor : iter )
         {
-            tempList.add(descriptor);
+            tempList.add( descriptor );
         }
 
         addTypeChildren( parent, tempList );
@@ -130,7 +130,7 @@ public class StructureModelBuilder
         tempList.clear();
         for( CompositeDetailDescriptor descriptor : iter )
         {
-            tempList.add(descriptor);
+            tempList.add( descriptor );
         }
 
         addTypeChildren( parent, tempList );
@@ -141,7 +141,7 @@ public class StructureModelBuilder
         tempList.clear();
         for( ValueDetailDescriptor descriptor : iter )
         {
-            tempList.add(descriptor);
+            tempList.add( descriptor );
         }
 
         addTypeChildren( parent, tempList );
@@ -152,7 +152,7 @@ public class StructureModelBuilder
         tempList.clear();
         for( ObjectDetailDescriptor descriptor : iter )
         {
-            tempList.add(descriptor);
+            tempList.add( descriptor );
         }
 
         addTypeChildren( parent, tempList );

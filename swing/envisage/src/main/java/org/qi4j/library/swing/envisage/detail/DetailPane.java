@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 
 /**
  * Abstract Base class for DetailPane
- * 
+ *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public abstract class DetailPane extends JPanel
@@ -29,13 +29,13 @@ public abstract class DetailPane extends JPanel
 
     public DetailPane( DetailModelPane detailModelPane )
     {
-        if (detailModelPane == null)
+        if( detailModelPane == null )
         {
-            throw new IllegalArgumentException( "detailModelPane could not null");
+            throw new IllegalArgumentException( "detailModelPane could not null" );
         }
         this.detailModelPane = detailModelPane;
     }
 
-    public abstract void setDescriptor(Object objectDescriptor);
+    public abstract void setDescriptor( Object objectDescriptor );
 
 }

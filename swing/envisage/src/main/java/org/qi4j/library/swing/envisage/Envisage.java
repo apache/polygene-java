@@ -34,82 +34,95 @@ import org.qi4j.bootstrap.Energy4Java;
  * Qi4J Application Viewer
  *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
- *
  */
 public class Envisage
 {
-    protected Energy4Java qi4j;
     protected Application application;
 
-    public void run(Energy4Java qi4j, Application application)
+    public void run( Application application )
     {
         initLookAndFeel();
 
-        this.qi4j = qi4j;
         this.application = application;
-        
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
+
+        SwingUtilities.invokeLater( new Runnable()
+        {
+            public void run()
+            {
                 showMainFrame();
             }
-        });
+        } );
     }
 
-    private void showMainFrame() {
-        final EnvisageFrame mainFrame = new EnvisageFrame( qi4j, application );
+    private void showMainFrame()
+    {
+        final EnvisageFrame mainFrame = new EnvisageFrame( application );
         mainFrame.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
-        mainFrame.setSize( new Dimension(1024, 768) );
+        mainFrame.setSize( new Dimension( 1024, 768 ) );
         mainFrame.setVisible( true );
 
         mainFrame.addWindowListener( new WindowAdapter()
         {
-            public void windowOpened( WindowEvent evt)
+            public void windowOpened( WindowEvent evt )
             {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
+                SwingUtilities.invokeLater( new Runnable()
+                {
+                    public void run()
+                    {
                         mainFrame.initQi4J();
                     }
-                });
+                } );
             }
-        });
+        } );
     }
 
 
-    private void initLookAndFeel() {
-        String osName = System.getProperty("os.name").toUpperCase();
+    private void initLookAndFeel()
+    {
+        String osName = System.getProperty( "os.name" ).toUpperCase();
 
         // set to use swing anti alias text only for JVM <= 1.5 
-        System.setProperty("swing.aatext", "true");
+        System.setProperty( "swing.aatext", "true" );
 
         // set default swing bold to false, only for JVM 1.5 or above
-        UIManager.put("swing.boldMetal", Boolean.FALSE);
+        UIManager.put( "swing.boldMetal", Boolean.FALSE );
 
         // set LaF
         LookAndFeel lnf = UIManager.getLookAndFeel();
-        if (lnf != null && lnf.getID().equalsIgnoreCase("Metal")) {
+        if( lnf != null && lnf.getID().equalsIgnoreCase( "Metal" ) )
+        {
             String lnfClassName = null;
-            if (osName.startsWith("MAC")) {
-                System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Envisage"); //TODO i18n
-                System.setProperty("apple.laf.useScreenMenuBar","true");
+            if( osName.startsWith( "MAC" ) )
+            {
+                System.setProperty( "com.apple.mrj.application.apple.menu.about.name", "Envisage" ); //TODO i18n
+                System.setProperty( "apple.laf.useScreenMenuBar", "true" );
                 lnfClassName = UIManager.getSystemLookAndFeelClassName();
-            } else if (osName.startsWith("WINDOWS")) {
-                UIManager.put("ClassLoader", LookUtils.class.getClassLoader());
+            }
+            else if( osName.startsWith( "WINDOWS" ) )
+            {
+                UIManager.put( "ClassLoader", LookUtils.class.getClassLoader() );
                 lnfClassName = Options.getSystemLookAndFeelClassName();
-                Options.setUseNarrowButtons(false);
-            } else {
-                UIManager.put("ClassLoader", LookUtils.class.getClassLoader());
+                Options.setUseNarrowButtons( false );
+            }
+            else
+            {
+                UIManager.put( "ClassLoader", LookUtils.class.getClassLoader() );
                 lnfClassName = Options.getCrossPlatformLookAndFeelClassName();
-                PlasticLookAndFeel.setTabStyle(PlasticLookAndFeel.TAB_STYLE_METAL_VALUE);
-                PlasticLookAndFeel.setPlasticTheme(new ExperienceBlue());
-                Options.setUseNarrowButtons(false);
+                PlasticLookAndFeel.setTabStyle( PlasticLookAndFeel.TAB_STYLE_METAL_VALUE );
+                PlasticLookAndFeel.setPlasticTheme( new ExperienceBlue() );
+                Options.setUseNarrowButtons( false );
                 //PlasticLookAndFeel.setMyCurrentTheme(new ExperienceBlueDefaultFont());  // for CJK Font
-            } 
+            }
 
-            if (lnfClassName != null) {
-                try {
-                    UIManager.setLookAndFeel(lnfClassName);
-                } catch (Exception ex) {
-                    System.err.println("Unable to set LookAndFeel, use default LookAndFeel.\n" + ex.getMessage());
+            if( lnfClassName != null )
+            {
+                try
+                {
+                    UIManager.setLookAndFeel( lnfClassName );
+                }
+                catch( Exception ex )
+                {
+                    System.err.println( "Unable to set LookAndFeel, use default LookAndFeel.\n" + ex.getMessage() );
                 }
             }
         }

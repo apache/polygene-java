@@ -23,5 +23,5 @@ import java.util.EventListener;
  */
 public interface LinkListener extends EventListener
 {
-    public void activated( LinkEvent evt);
+    public void activated( LinkEvent evt );
 }

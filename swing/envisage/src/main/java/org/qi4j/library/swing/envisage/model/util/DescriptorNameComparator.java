@@ -21,12 +21,12 @@ import java.util.Comparator;
 /**
  * DescriptorName comparator.
  * Implementation it is using toString() for comparing
- * 
+ *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class DescriptorNameComparator<T> implements Comparator<T>
 {
-    public  int compare( T o1, T o2 )
+    public int compare( T o1, T o2 )
     {
         return o1.toString().compareTo( o2.toString() );
     }

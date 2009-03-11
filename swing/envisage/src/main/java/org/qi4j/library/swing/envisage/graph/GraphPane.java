@@ -34,19 +34,18 @@ public class GraphPane extends JPanel
 {
     private GraphDisplay display;
 
-    protected Application application;
     protected ApplicationDetailDescriptor descriptor;
 
     public GraphPane()
     {
         display = new GraphDisplay();
-        setBackground(display.getBackground());
-        setForeground(display.getForeground());
-        add(display, BorderLayout.CENTER);
+        setBackground( display.getBackground() );
+        setForeground( display.getForeground() );
+        add( display, BorderLayout.CENTER );
 
         this.addComponentListener( new ComponentAdapter()
         {
-            public void componentResized( ComponentEvent evt)
+            public void componentResized( ComponentEvent evt )
             {
                 //if (!isShowing()) { return; }
                 //if (descriptor == null) { return; }
@@ -55,18 +54,17 @@ public class GraphPane extends JPanel
                 display.setSize( size.width, size.height );
                 repaint();
             }
-        });
+        } );
     }
 
-    public void initQi4J(Application application, ApplicationDetailDescriptor descriptor)
+    public void initQi4J( ApplicationDetailDescriptor descriptor )
     {
-        this.application = application;
         this.descriptor = descriptor;
 
         Graph graph = GraphBuilder.buildGraph( descriptor );
         Dimension size = getSize();
         display.setSize( size.width, size.height );
-        display.run(graph);
+        display.run( graph );
     }
 
     public void refresh()
