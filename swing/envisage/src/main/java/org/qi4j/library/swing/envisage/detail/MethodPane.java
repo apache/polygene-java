@@ -43,6 +43,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.MethodSideEffectDetailDe
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.util.DescriptorUtilities;
 import org.qi4j.library.swing.envisage.util.TableRow;
+import org.qi4j.api.util.Classes;
 
 /**
  * Implementation of Composite Method Panel
@@ -195,8 +196,8 @@ public class MethodPane extends DetailPane
             clear();
 
             // mixin type
-            rows.add( new TableRow( 2, new Object[]{ "mixin", descriptor.descriptor().mixin().mixinClass() } ) );
-            rows.add( new TableRow( 2, new Object[]{ "return", descriptor.descriptor().method().getGenericReturnType() } ) );
+            rows.add( new TableRow( 2, new Object[]{ "mixin", descriptor.descriptor().mixin().mixinClass().getSimpleName() } ) );
+            rows.add( new TableRow( 2, new Object[]{ "return", Classes.getSimpleGenericName( descriptor.descriptor().method().getGenericReturnType() ) } ) );
 
             // TODO constraint
 

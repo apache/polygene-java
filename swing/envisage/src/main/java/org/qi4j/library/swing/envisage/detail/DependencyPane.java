@@ -41,6 +41,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.MouseInputAdapter;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.util.Classes;
 import org.qi4j.library.swing.envisage.event.LinkEvent;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.InjectedFieldDetailDescriptor;
@@ -223,7 +224,7 @@ public class DependencyPane extends DetailPane
         classNameLabel.setToolTipText( dependencyDescriptor.injectedClass().getName() );
         annotationLabel.setText( "@" + dependencyDescriptor.injectionAnnotation().annotationType().getSimpleName() );
         optionalLabel.setText( Boolean.toString( dependencyDescriptor.optional() ) );
-        injectionTypeLabel.setText( dependencyDescriptor.injectionType().getClass().getSimpleName() );
+        injectionTypeLabel.setText( Classes.getSimpleGenericName( dependencyDescriptor.injectionType() ) );
         injectionTypeLabel.setToolTipText( dependencyDescriptor.injectionType().toString() );
 
         for( String str : dependencyDescriptor.injectedServices() )

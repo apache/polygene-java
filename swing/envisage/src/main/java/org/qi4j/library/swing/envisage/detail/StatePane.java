@@ -43,6 +43,7 @@ import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.util.Classes;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeMethodDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.MethodConcernDetailDescriptor;
@@ -201,8 +202,8 @@ public class StatePane extends DetailPane
             clear();
 
             // mixin type
-            rows.add( new TableRow( 2, new Object[]{ "mixin", descriptor.descriptor().mixin().mixinClass() } ) );
-            rows.add( new TableRow( 2, new Object[]{ "return", descriptor.descriptor().method().getGenericReturnType() } ) );
+            rows.add( new TableRow( 2, new Object[]{ "mixin", descriptor.descriptor().mixin().mixinClass().getSimpleName() } ) );
+            rows.add( new TableRow( 2, new Object[]{ "return", Classes.getSimpleGenericName( descriptor.descriptor().method().getGenericReturnType() ) } ) );
 
             // TODO constraint
 
