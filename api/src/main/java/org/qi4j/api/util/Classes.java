@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import static java.util.Arrays.asList;
 import java.util.LinkedHashSet;
@@ -160,6 +161,52 @@ public class Classes
             }
         }
         return null;
+    }
+
+    public static String getSimpleGenericName(Type type)
+    {
+        if (type instanceof Class)
+        {
+            return ((Class)type).getSimpleName();
+        } else if (type instanceof ParameterizedType)
+        {
+            ParameterizedType pt = (ParameterizedType) type;
+            String str = getSimpleGenericName( pt.getRawType() );
+            str+="<";
+            String args = "";
+            for( Type typeArgument : pt.getActualTypeArguments() )
+            {
+                if (args.length() != 0)
+                    args+=", ";
+                args+=getSimpleGenericName( typeArgument );
+            }
+            str+=args;
+            str+=">";
+            return str;
+        } else if (type instanceof GenericArrayType)
+        {
+            GenericArrayType gat = (GenericArrayType) type;
+            return getSimpleGenericName( gat.getGenericComponentType())+"[]";
+        } else if (type instanceof TypeVariable)
+        {
+            TypeVariable tv = (TypeVariable) type;
+            return tv.getName();
+        } else if (type instanceof WildcardType )
+        {
+            WildcardType wt = (WildcardType) type;
+            String args = "";
+            for( Type typeArgument : wt.getUpperBounds() )
+            {
+                if (args.length() != 0)
+                    args+=", ";
+                args+=getSimpleGenericName( typeArgument );
+            }
+
+            return "? extends "+args;
+        }else
+        {
+            throw new IllegalArgumentException("Don't know how to deal with type:"+type);
+        }
     }
 
     public static Class<?> getRawClass( final Type genericType )
