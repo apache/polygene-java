@@ -138,7 +138,7 @@ public class BoxedGraphBuilder
             buildEntitiesNode( childNode, descriptor.entities() );
             buildTransientsNode( childNode, descriptor.composites() );
             buildValuesNode( childNode, descriptor.values() );
-            //buildObjectsNode( childNode, descriptor.objects() );
+            buildObjectsNode( childNode, descriptor.objects() );
         }
     }
 
@@ -166,6 +166,7 @@ public class BoxedGraphBuilder
             {
                 String name = "Imported Services";
                 parent = addChild( parent, name, name );
+                first = false;
             }
             addChild( parent, descriptor.descriptor().type().getSimpleName(), descriptor );
         }
@@ -180,6 +181,7 @@ public class BoxedGraphBuilder
             {
                 String name = "Entities";
                 parent = addChild( parent, name, name );
+                first = false;
             }
             addChild( parent, descriptor.descriptor().type().getSimpleName(), descriptor );
         }
@@ -194,6 +196,7 @@ public class BoxedGraphBuilder
             {
                 String name = "Transients";
                 parent = addChild( parent, name, name );
+                first = false;
             }
             addChild( parent, descriptor.descriptor().type().getSimpleName(), descriptor );
         }
@@ -208,6 +211,7 @@ public class BoxedGraphBuilder
             {
                 String name = "Values";
                 parent = addChild( parent, name, name );
+                first = false;
             }
             addChild( parent, descriptor.descriptor().type().getSimpleName(), descriptor );
         }
@@ -222,6 +226,7 @@ public class BoxedGraphBuilder
             {
                 String name = "Objects";
                 parent = addChild( parent, name, name );
+                first = false;
             }
             addChild( parent, descriptor.descriptor().type().getSimpleName(), descriptor );
         }

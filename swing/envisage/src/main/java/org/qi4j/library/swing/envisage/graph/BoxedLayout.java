@@ -128,7 +128,7 @@ public class BoxedLayout extends TreeLayout
             if( depth == 0 )
             {
                 // layer
-                cy = cy + INSET + nodeRect.getHeight();
+                cy = cy + (INSET * 2) + nodeRect.getHeight();
             }
             if( depth == 1 )
             {
