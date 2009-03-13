@@ -34,6 +34,7 @@ import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.action.Action;
 import prefuse.action.ActionList;
+import prefuse.action.ItemAction;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
 import prefuse.action.layout.Layout;
@@ -46,6 +47,7 @@ import prefuse.data.expression.Predicate;
 import prefuse.data.expression.parser.ExpressionParser;
 import prefuse.render.AbstractShapeRenderer;
 import prefuse.render.DefaultRendererFactory;
+import prefuse.render.EdgeRenderer;
 import prefuse.render.LabelRenderer;
 import prefuse.util.ColorLib;
 import prefuse.util.ColorMap;
@@ -73,14 +75,16 @@ public class StackedGraphDisplay extends Display
     }
 
     static final String USER_OBJECT = "userObject";
-    static final String LABEL_NAME = "name";
+    static final String NAME_LABEL = "name";
     static final String LABELS = "labels";
 
     static final String GRAPH = "graph";
     static final String GRAPH_NODES = "graph.nodes";
     static final String GRAPH_EDGES = "graph.edges";
+    static final String USES_EDGES = "uses.edges";
 
     static final String LAYOUT_ACTION = "layout";
+    static final String COLORS_ACTION = "colors";
 
     protected StackedLayout stackedLayout;
 
@@ -88,33 +92,47 @@ public class StackedGraphDisplay extends Display
     {
         super(new Visualization());
 
-        LabelRenderer labelRenderer = new LabelRenderer( LABEL_NAME );
+        LabelRenderer labelRenderer = new LabelRenderer( NAME_LABEL );
         labelRenderer.setVerticalAlignment( Constants.BOTTOM);
         labelRenderer.setHorizontalAlignment( Constants.LEFT );
+
+        EdgeRenderer usesRenderer = new EdgeRenderer( Constants.EDGE_TYPE_CURVE, Constants.EDGE_ARROW_FORWARD );
+        usesRenderer.setHorizontalAlignment1( Constants.CENTER );
+        usesRenderer.setHorizontalAlignment2( Constants.CENTER );
+        usesRenderer.setVerticalAlignment1( Constants.TOP);
+        usesRenderer.setVerticalAlignment2( Constants.BOTTOM);
+
+        Predicate usesPredicate = (Predicate) ExpressionParser.parse( "ingroup('graph.edges') AND [" + USES_EDGES + "]==true", true );
 
         // set up the renderers - one for nodes and one for LABELS
         DefaultRendererFactory rf = new DefaultRendererFactory();
         rf.add(new InGroupPredicate( GRAPH_NODES ), new NodeRenderer());
         rf.add(new InGroupPredicate( LABELS ), labelRenderer);
+        rf.add( usesPredicate, usesRenderer );
         m_vis.setRendererFactory(rf);
 
         // border colors
         final ColorAction borderColor = new BorderColorAction( GRAPH_NODES );
         final ColorAction fillColor = new FillColorAction( GRAPH_NODES );
 
+        ItemAction usesColor = new ColorAction( GRAPH_EDGES, usesPredicate, VisualItem.STROKECOLOR, ColorLib.rgb( 255, 100, 100 ) );
+        ItemAction usesArrow = new ColorAction( GRAPH_EDGES, usesPredicate, VisualItem.FILLCOLOR, ColorLib.rgb( 255, 100, 100 ) );
+
         // color settings
         ActionList colors = new ActionList();
         colors.add(fillColor);
         colors.add(borderColor);
-        m_vis.putAction("colors", colors);
+        colors.add(usesColor);
+        colors.add(usesArrow);
+        m_vis.putAction(COLORS_ACTION, colors);
 
-        // create the single filtering and layout action list
+        // create the layout action list
         stackedLayout = new StackedLayout( GRAPH );
         ActionList layout = new ActionList();
         layout.add( stackedLayout );
         layout.add(new LabelLayout( LABELS ));
-        layout.add(colors);
         layout.add(new AutoPanAction());
+        layout.add(colors);
         layout.add(new RepaintAction());
         m_vis.putAction(LAYOUT_ACTION, layout);
 
@@ -136,7 +154,7 @@ public class StackedGraphDisplay extends Display
         addControlListener( new WheelMouseControl());
         addControlListener( new ItemSelectionControl() );
         addControlListener( new PanControl(true) );
-        addControlListener( new FocusControl( 1, "colors" ) );
+        addControlListener( new FocusControl( 1, COLORS_ACTION ) );
 
         setDamageRedraw( false );
     }
@@ -145,7 +163,10 @@ public class StackedGraphDisplay extends Display
     {
         // add the GRAPH to the visualization
         m_vis.add( GRAPH, graph);
-        m_vis.setVisible( GRAPH_EDGES, null, false);
+
+        // hide edges
+        Predicate edgesPredicate = (Predicate) ExpressionParser.parse( "ingroup('graph.edges') AND [" + USES_EDGES + "]==false", true );
+        m_vis.setVisible( GRAPH_EDGES, edgesPredicate, false);
 
         // make node interactive
         m_vis.setInteractive( GRAPH_NODES, null, true );
@@ -159,7 +180,12 @@ public class StackedGraphDisplay extends Display
 
     public void run()
     {
+        if (isTranformInProgress())
+        {
+            return;
+        }
         // perform layout
+        m_vis.invalidate( GRAPH_NODES );
         m_vis.run(LAYOUT_ACTION);
     }
 
@@ -170,8 +196,7 @@ public class StackedGraphDisplay extends Display
             return;
         }
         stackedLayout.zoomIn();
-        //m_vis.invalidateAll();
-        m_vis.run( LAYOUT_ACTION );
+        run();
     }
 
     public void zoomOut()
@@ -181,8 +206,7 @@ public class StackedGraphDisplay extends Display
             return;
         }
         stackedLayout.zoomOut();
-        //m_vis.invalidateAll();
-        m_vis.run( LAYOUT_ACTION );
+        run();
     }
 
 
@@ -252,14 +276,13 @@ public class StackedGraphDisplay extends Display
     }
 
     /**
-     * Set fill colors for treemap nodes. Search items are colored
-     * in pink, while normal nodes are shaded according to their
+     * Set fill colors for treemap nodes. Normal nodes are shaded according to their
      * depth in the tree.
      */
     public class FillColorAction extends ColorAction {
         private ColorMap cmap = new ColorMap(
             ColorLib.getInterpolatedPalette(10,
-                ColorLib.rgb(120,152,219), ColorLib.rgb(0,0,0)), 0, 9);
+                ColorLib.rgb(120,152,219), ColorLib.rgb(10,10,10)), 0, 9);
 
         public FillColorAction(String group) {
             super(group, VisualItem.FILLCOLOR);
@@ -307,7 +330,7 @@ public class StackedGraphDisplay extends Display
      * A renderer for treemap nodes. Draws simple rectangles, but defers
      * the bounds management to the layout.
      */
-    public static class NodeRenderer extends AbstractShapeRenderer {
+    public class NodeRenderer extends AbstractShapeRenderer {
         private Rectangle2D m_bounds = new Rectangle2D.Double();
 
         public NodeRenderer() {
@@ -376,7 +399,6 @@ public class StackedGraphDisplay extends Display
                 return;
             }
 
-
             // HACK check the container size
             if (container instanceof JViewport)
             {
@@ -396,14 +418,14 @@ public class StackedGraphDisplay extends Display
             double x = (displayBounds.getWidth() - bounds.getWidth()) / 2;
             double y = (displayBounds.getHeight() - bounds.getHeight()) / 2;
 
+            // reset the transform
             try
             {
-                // reset the transform
                 setTransform( new AffineTransform( ) );
             }
             catch (Exception ex)
             {
-                
+                return;    
             }
             if (x < 0)
             {

@@ -97,7 +97,6 @@ public class GraphDisplay extends Display
         Color BACKGROUND = Color.WHITE;
         Color FOREGROUND = Color.BLACK;
 
-        // TODO put into ResourceBundle
         setBackground( BACKGROUND );
         setForeground( FOREGROUND );
 

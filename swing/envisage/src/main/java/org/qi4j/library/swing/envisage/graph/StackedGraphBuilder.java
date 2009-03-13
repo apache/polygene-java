@@ -50,8 +50,8 @@ public class StackedGraphBuilder
         graph = new Graph( true );
 
         Table nodeTable = graph.getNodeTable();
-        nodeTable.addColumn( GraphDisplay.NAME_LABEL, String.class );
-        nodeTable.addColumn( GraphDisplay.USER_OBJECT, Object.class );
+        nodeTable.addColumn( StackedGraphDisplay.NAME_LABEL, String.class );
+        nodeTable.addColumn( StackedGraphDisplay.USER_OBJECT, Object.class );
 
         Table edgeTable = graph.getEdgeTable();
         edgeTable.addColumn( GraphDisplay.USES_EDGES, boolean.class, false );
@@ -81,7 +81,7 @@ public class StackedGraphBuilder
                     continue;
                 }
                 Edge edge = graph.addEdge( source, target );
-                edge.setBoolean( GraphDisplay.USES_EDGES, true );
+                edge.setBoolean( StackedGraphDisplay.USES_EDGES, true );
             }
         }
     }
@@ -93,7 +93,7 @@ public class StackedGraphBuilder
         for( int i = 0; i < parent.getChildCount(); i++ )
         {
             Node tNode = parent.getChild( i );
-            Object obj = tNode.get( GraphDisplay.USER_OBJECT );
+            Object obj = tNode.get( StackedGraphDisplay.USER_OBJECT );
             if( obj.equals( userObject ) )
             {
                 node = tNode;
@@ -107,8 +107,8 @@ public class StackedGraphBuilder
     private Node addChild( Node parent, String name, Object object )
     {
         Node childNode = graph.addNode();
-        childNode.set( GraphDisplay.NAME_LABEL, name );
-        childNode.set( GraphDisplay.USER_OBJECT, object );
+        childNode.set( StackedGraphDisplay.NAME_LABEL, name );
+        childNode.set( StackedGraphDisplay.USER_OBJECT, object );
 
         // check for application node
         if( parent != null )

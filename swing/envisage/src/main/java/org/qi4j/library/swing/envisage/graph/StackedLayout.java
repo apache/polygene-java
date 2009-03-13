@@ -52,9 +52,9 @@ public class StackedLayout extends TreeLayout
     public void zoomOut()
     {
         zoom--;
-        if (zoom < 0)
+        if (zoom < 1)
         {
-            zoom = 0;
+            zoom = 1;
         }
     }
 
