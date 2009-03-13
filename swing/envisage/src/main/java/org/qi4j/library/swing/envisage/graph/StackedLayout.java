@@ -28,13 +28,13 @@ import prefuse.visual.NodeItem;
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
-public class BoxedLayout extends TreeLayout
+public class StackedLayout extends TreeLayout
 {
     public static int INSET = 10;
 
     private int zoom = 2;
 
-    public BoxedLayout(String group) {
+    public StackedLayout(String group) {
         super(group);
     }
 
@@ -81,7 +81,7 @@ public class BoxedLayout extends TreeLayout
         }
 
         String label = node.getString( "name" );
-        FontMetrics fm = Renderer.DEFAULT_GRAPHICS.getFontMetrics( BoxedGraphDisplay.FONT );
+        FontMetrics fm = Renderer.DEFAULT_GRAPHICS.getFontMetrics( StackedGraphDisplay.FONT );
         int width = fm.stringWidth( label);
         int height = fm.getHeight();
         minSize.setSize( width + INSET + INSET,height + INSET + INSET );

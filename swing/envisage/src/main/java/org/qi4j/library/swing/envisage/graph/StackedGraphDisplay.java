@@ -16,14 +16,17 @@
 */
 package org.qi4j.library.swing.envisage.graph;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Shape;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.awt.geom.Point2D;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
+import javax.swing.JViewport;
 import org.qi4j.library.swing.envisage.event.LinkEvent;
 import org.qi4j.library.swing.envisage.event.LinkListener;
 import prefuse.Constants;
@@ -57,7 +60,7 @@ import prefuse.visual.sort.TreeDepthItemSorter;
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
-public class BoxedGraphDisplay extends Display
+public class StackedGraphDisplay extends Display
 {
     public static final Font FONT = FontLib.getFont("Tahoma",12);
 
@@ -79,9 +82,9 @@ public class BoxedGraphDisplay extends Display
 
     static final String LAYOUT_ACTION = "layout";
 
-    protected BoxedLayout boxedLayout;
+    protected StackedLayout stackedLayout;
 
-    public BoxedGraphDisplay()
+    public StackedGraphDisplay()
     {
         super(new Visualization());
 
@@ -106,12 +109,12 @@ public class BoxedGraphDisplay extends Display
         m_vis.putAction("colors", colors);
 
         // create the single filtering and layout action list
-        boxedLayout = new BoxedLayout( GRAPH );
+        stackedLayout = new StackedLayout( GRAPH );
         ActionList layout = new ActionList();
-        layout.add(boxedLayout);
+        layout.add( stackedLayout );
         layout.add(new LabelLayout( LABELS ));
         layout.add(colors);
-        //layout.add(new AutoPanAction());
+        layout.add(new AutoPanAction());
         layout.add(new RepaintAction());
         m_vis.putAction(LAYOUT_ACTION, layout);
 
@@ -166,7 +169,7 @@ public class BoxedGraphDisplay extends Display
         {
             return;
         }
-        boxedLayout.zoomIn();
+        stackedLayout.zoomIn();
         //m_vis.invalidateAll();
         m_vis.run( LAYOUT_ACTION );
     }
@@ -177,7 +180,7 @@ public class BoxedGraphDisplay extends Display
         {
             return;
         }
-        boxedLayout.zoomOut();
+        stackedLayout.zoomOut();
         //m_vis.invalidateAll();
         m_vis.run( LAYOUT_ACTION );
     }
@@ -294,8 +297,8 @@ public class BoxedGraphDisplay extends Display
                 DecoratorItem item = (DecoratorItem)iter.next();
                 VisualItem node = item.getDecoratedItem();
                 Rectangle2D bounds = node.getBounds();
-                setX(item, node, bounds.getX() + BoxedLayout.INSET );
-                setY(item, node, bounds.getY() + BoxedLayout.INSET + 12 );
+                setX(item, node, bounds.getX() + StackedLayout.INSET );
+                setY(item, node, bounds.getY() + StackedLayout.INSET + 12 );
             }
         }
     } // end of inner class LabelLayout
@@ -361,41 +364,58 @@ public class BoxedGraphDisplay extends Display
 
    public class AutoPanAction extends Action
    {
-        private Point2D m_start = new Point2D.Double();
-        private Point2D m_end = new Point2D.Double();
-        private Point2D m_cur = new Point2D.Double();
-        private int m_bias = 0;
-
         public void run( double frac )
         {
-            ///VisualItem vi = boxedLayout.getLayoutRoot();
-            /*Dimension size = getSize(  );
-            m_cur.setLocation( size.getWidth() / 2, size.getHeight() / 2 );
-            panToAbs( m_cur );
+            //panAbs( 200, 0 );
 
-            System.out.println("autoPan: " + size.getWidth() / 2 + " " + size.getHeight() / 2 );
-            */
+            Rectangle2D displayBounds = new Rectangle2D.Double(0,0,getWidth(),getHeight());
 
-
-            /*if( frac == 0.0 )
+            Container container = getParent();
+            if (container == null)
             {
-                int xbias = 0, ybias = 0;
+                return;
+            }
 
-                xbias = m_bias;
 
-                m_cur.setLocation( getWidth() / 2, getHeight() / 2 );
-                getAbsoluteCoordinate( m_cur, m_start );
-                m_end.setLocation( vi.getX() + xbias, vi.getY() + ybias );
-                //panToAbs( m_cur );
-                System.out.println("go here 0");
+            // HACK check the container size
+            if (container instanceof JViewport)
+            {
+                Dimension size = ((JViewport)container).getExtentSize();
+                displayBounds.setRect( 0,0, size.getWidth(), size.getHeight());
             }
             else
             {
-                m_cur.setLocation( m_start.getX() + frac * ( m_end.getX() - m_start.getX() ),
-                                   m_start.getY() + frac * ( m_end.getY() - m_start.getY() ) );
-                panToAbs( m_cur );
-                System.out.println("go here 1");
-            }*/
+                Dimension size = ((Component)container).getSize();
+                displayBounds.setRect( 0,0, size.getWidth(), size.getHeight());
+            }
+
+
+            Rectangle2D bounds = stackedLayout.getLayoutRoot().getBounds();
+
+            // Pan center
+            double x = (displayBounds.getWidth() - bounds.getWidth()) / 2;
+            double y = (displayBounds.getHeight() - bounds.getHeight()) / 2;
+
+            try
+            {
+                // reset the transform
+                setTransform( new AffineTransform( ) );
+            }
+            catch (Exception ex)
+            {
+                
+            }
+            if (x < 0)
+            {
+                x = 0;   
+            }
+
+            if (y < 0)
+            {
+                y = 0;
+            }
+            pan (x, y);
+
         }
    }
 }

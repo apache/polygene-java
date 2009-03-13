@@ -35,17 +35,17 @@ import prefuse.data.Table;
  *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
-public class BoxedGraphBuilder
+public class StackedGraphBuilder
 {
     private Graph graph = null;
 
     public static Graph buildGraph( ApplicationDetailDescriptor descriptor )
     {
-        BoxedGraphBuilder builder = new BoxedGraphBuilder();
+        StackedGraphBuilder builder = new StackedGraphBuilder();
         return builder.buildApplicationNode( descriptor );
     }
 
-    private BoxedGraphBuilder()
+    private StackedGraphBuilder()
     {
         graph = new Graph( true );
 

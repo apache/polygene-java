@@ -35,7 +35,7 @@ import prefuse.data.Graph;
 public class GraphPane extends JPanel
 {
     private GraphDisplay display;
-    private BoxedGraphDisplay boxedDisplay;
+    private StackedGraphDisplay stackedDisplay;
 
     protected ApplicationDetailDescriptor descriptor;
 
@@ -45,33 +45,20 @@ public class GraphPane extends JPanel
     public GraphPane()
     {
         display = new GraphDisplay();
-        boxedDisplay = new BoxedGraphDisplay();
+        stackedDisplay = new StackedGraphDisplay();
 
         scrollPane = new JScrollPane( );
-        scrollPane.setViewportView( boxedDisplay );
-        //int unitInc = 50;
-        //scrollPane.getVerticalScrollBar().setUnitIncrement(unitInc);
-        //scrollPane.getHorizontalScrollBar().setUnitIncrement(unitInc);
-        //scrollPane.setWheelScrollingEnabled(false);
-
-        //boxedDisplay.setPreferredSize( new Dimension( 400,400) );
-
-        /*boxedDisplay.addComponentListener( new ComponentAdapter()
-        {
-            public void componentResized(ComponentEvent evt)
-            {
-                System.out.println("... size: " + boxedDisplay.getSize());
-                System.out.println("... prefSize: " + boxedDisplay.getPreferredSize());
-            }
-        });*/
+        scrollPane.setViewportView( stackedDisplay );
+        int unitInc = 50;
+        scrollPane.getVerticalScrollBar().setUnitIncrement(unitInc);
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(unitInc);
 
         tabPane = new JTabbedPane( );
         tabPane.add("Tree", display);
-        tabPane.add("Boxed", scrollPane);
+        tabPane.add("Stacked", scrollPane);
 
         this.setLayout( new BorderLayout( ) );
         add(tabPane, BorderLayout.CENTER);
-
 
         this.addComponentListener( new ComponentAdapter()
         {
@@ -94,9 +81,9 @@ public class GraphPane extends JPanel
         display.setSize( size.width, size.height );
         display.run(graph);
 
-        graph = BoxedGraphBuilder.buildGraph( descriptor );
-        boxedDisplay.setSize( size.width, size.height );
-        boxedDisplay.run(graph);
+        graph = StackedGraphBuilder.buildGraph( descriptor );
+        stackedDisplay.setSize( size.width, size.height );
+        stackedDisplay.run(graph);
     }
 
     public void refresh()
@@ -112,7 +99,7 @@ public class GraphPane extends JPanel
     public void addLinkListener( LinkListener listener )
     {
         display.addLinkListener( listener );
-        boxedDisplay.addLinkListener( listener );
+        stackedDisplay.addLinkListener( listener );
     }
 
     /**
@@ -123,6 +110,6 @@ public class GraphPane extends JPanel
     public void removeLinkListener( LinkListener listener )
     {
         display.removeLinkListener( listener );
-        boxedDisplay.removeLinkListener( listener );
+        stackedDisplay.removeLinkListener( listener );
     }
 }
