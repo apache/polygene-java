@@ -21,6 +21,7 @@ import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 import prefuse.data.Graph;
@@ -47,7 +48,7 @@ public class GraphPane extends JPanel
 
         JTabbedPane tabPane = new JTabbedPane( );
         tabPane.add("Tree", display);
-        tabPane.add("Boxed", boxedDisplay);
+        tabPane.add("Boxed", new JScrollPane(boxedDisplay));
 
         add(tabPane, BorderLayout.CENTER);
 
@@ -71,12 +72,10 @@ public class GraphPane extends JPanel
         display.setSize( size.width, size.height );
         display.run(graph);
 
-        graph = GraphBuilder.buildGraph( descriptor );
+        graph = BoxedGraphBuilder.buildGraph( descriptor );
         boxedDisplay.setSize( size.width, size.height );
         boxedDisplay.run(graph);
     }
-
-
 
     public void refresh()
     {

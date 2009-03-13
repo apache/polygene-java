@@ -16,10 +16,12 @@
 */
 package org.qi4j.library.swing.envisage.graph;
 
+import java.awt.Font;
 import java.awt.Shape;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
+import prefuse.Constants;
 import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.action.ActionList;
@@ -27,7 +29,6 @@ import prefuse.action.RepaintAction;
 import prefuse.action.animate.ColorAnimator;
 import prefuse.action.assignment.ColorAction;
 import prefuse.action.layout.Layout;
-import prefuse.action.layout.graph.SquarifiedTreeMapLayout;
 import prefuse.controls.ControlAdapter;
 import prefuse.data.Graph;
 import prefuse.data.Schema;
@@ -52,12 +53,14 @@ import prefuse.visual.sort.TreeDepthItemSorter;
 public class BoxedGraphDisplay extends Display
 {
 
+    public static final Font FONT = FontLib.getFont("Tahoma",12);
+
     // create data description of labels, setting colors, fonts ahead of time
     private static final Schema LABEL_SCHEMA = PrefuseLib.getVisualItemSchema();
     static {
         LABEL_SCHEMA.setDefault(VisualItem.INTERACTIVE, false);
         LABEL_SCHEMA.setDefault(VisualItem.TEXTCOLOR, ColorLib.gray(200));
-        LABEL_SCHEMA.setDefault(VisualItem.FONT, FontLib.getFont("Tahoma",12));
+        LABEL_SCHEMA.setDefault(VisualItem.FONT, FONT);
     }
 
     private static final String tree = "tree";
@@ -71,11 +74,16 @@ public class BoxedGraphDisplay extends Display
 
         String label = "name";
 
+        LabelRenderer labelRenderer = new LabelRenderer( label );
+        //labelRenderer.setRenderType( AbstractShapeRenderer.RENDER_TYPE_FILL );
+        labelRenderer.setVerticalAlignment( Constants.BOTTOM);
+        labelRenderer.setHorizontalAlignment( Constants.LEFT );
+        //labelRenderer.setRoundedCorner( 8, 8 );
 
         // set up the renderers - one for nodes and one for labels
         DefaultRendererFactory rf = new DefaultRendererFactory();
         rf.add(new InGroupPredicate(treeNodes), new NodeRenderer());
-        rf.add(new InGroupPredicate(labels), new LabelRenderer(label));
+        rf.add(new InGroupPredicate(labels), labelRenderer);
         m_vis.setRendererFactory(rf);
 
         // border colors
@@ -96,15 +104,14 @@ public class BoxedGraphDisplay extends Display
 
         // create the single filtering and layout action list
         ActionList layout = new ActionList();
-        //layout.add(new FisheyeTreeFilter( tree, 2));
-        layout.add(new SquarifiedTreeMapLayout(tree,20));
+        layout.add(new BoxedLayout(tree));
         layout.add(new LabelLayout(labels));
         layout.add(colors);
         layout.add(new RepaintAction());
         m_vis.putAction("layout", layout);
 
         // initialize our display
-        //setSize(700,600);
+        setSize(400,400);
         setItemSorter(new TreeDepthItemSorter(true));
         addControlListener(new ControlAdapter() {
             public void itemEntered(VisualItem item, MouseEvent e) {
@@ -125,12 +132,12 @@ public class BoxedGraphDisplay extends Display
         m_vis.setVisible(treeEdges, null, false);
 
         // ensure that only leaf nodes are interactive
-        Predicate noLeaf = (Predicate)ExpressionParser.parse("childcount()>0");
+        Predicate noLeaf = (Predicate)ExpressionParser.parse("childcount()>=0");
         m_vis.setInteractive(treeNodes, noLeaf, false);
 
         // add labels to the visualization
         // first create a filter to show labels only at top-level nodes
-        Predicate labelP = (Predicate)ExpressionParser.parse("treedepth()<=2");
+        Predicate labelP = (Predicate)ExpressionParser.parse("treedepth()<=4");
         // now create the labels as decorators of the nodes
         m_vis.addDecorators(labels, treeNodes, labelP, LABEL_SCHEMA);
 
@@ -182,7 +189,7 @@ public class BoxedGraphDisplay extends Display
     public static class FillColorAction extends ColorAction {
         private ColorMap cmap = new ColorMap(
             ColorLib.getInterpolatedPalette(10,
-                ColorLib.rgb(0,0,200), ColorLib.rgb(0,0,0)), 0, 9);
+                ColorLib.rgb(120,152,219), ColorLib.rgb(0,0,0)), 0, 9);
 
         public FillColorAction(String group) {
             super(group, VisualItem.FILLCOLOR);
@@ -220,8 +227,8 @@ public class BoxedGraphDisplay extends Display
                 DecoratorItem item = (DecoratorItem)iter.next();
                 VisualItem node = item.getDecoratedItem();
                 Rectangle2D bounds = node.getBounds();
-                setX(item, null, bounds.getX() + 20);
-                setY(item, null, bounds.getY() + 10);
+                setX(item, node, bounds.getX() + BoxedLayout.INSET );
+                setY(item, node, bounds.getY() + BoxedLayout.INSET + 12 );
                 //setX(item, null, bounds.getCenterX());
                 //setY(item, null, bounds.getCenterY());
             }
