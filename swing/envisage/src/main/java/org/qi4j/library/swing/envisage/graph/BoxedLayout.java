@@ -32,7 +32,7 @@ public class BoxedLayout extends TreeLayout
 {
     public static int INSET = 10;
 
-    private int zoom = 4;
+    private int zoom = 2;
 
     public BoxedLayout(String group) {
         super(group);
@@ -45,8 +45,7 @@ public class BoxedLayout extends TreeLayout
 
         Rectangle2D bounds = root.getBounds();
         Display display = this.getVisualization().getDisplay( 0 );
-        Dimension size = new Dimension( (int)bounds.getX(), (int)bounds.getY() );
-        display.setPreferredSize( size );
+        Dimension size = new Dimension( (int)bounds.getWidth(), (int)bounds.getHeight() );
         display.setSize( size );
     }
 

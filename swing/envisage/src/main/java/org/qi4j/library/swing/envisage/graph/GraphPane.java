@@ -23,6 +23,7 @@ import java.awt.event.ComponentEvent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import org.qi4j.library.swing.envisage.event.LinkListener;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 import prefuse.data.Graph;
 
@@ -39,21 +40,38 @@ public class GraphPane extends JPanel
     protected ApplicationDetailDescriptor descriptor;
 
     protected JTabbedPane tabPane;
-    //protected JScrollPane
+    protected JScrollPane scrollPane;
 
     public GraphPane()
     {
         display = new GraphDisplay();
         boxedDisplay = new BoxedGraphDisplay();
-        //setBackground(display.getBackground());
-        //setForeground(display.getForeground());
-        //add(display, BorderLayout.CENTER);
+
+        scrollPane = new JScrollPane( );
+        scrollPane.setViewportView( boxedDisplay );
+        //int unitInc = 50;
+        //scrollPane.getVerticalScrollBar().setUnitIncrement(unitInc);
+        //scrollPane.getHorizontalScrollBar().setUnitIncrement(unitInc);
+        //scrollPane.setWheelScrollingEnabled(false);
+
+        //boxedDisplay.setPreferredSize( new Dimension( 400,400) );
+
+        /*boxedDisplay.addComponentListener( new ComponentAdapter()
+        {
+            public void componentResized(ComponentEvent evt)
+            {
+                System.out.println("... size: " + boxedDisplay.getSize());
+                System.out.println("... prefSize: " + boxedDisplay.getPreferredSize());
+            }
+        });*/
 
         tabPane = new JTabbedPane( );
         tabPane.add("Tree", display);
-        tabPane.add("Boxed", new JScrollPane(boxedDisplay));
+        tabPane.add("Boxed", scrollPane);
 
+        this.setLayout( new BorderLayout( ) );
         add(tabPane, BorderLayout.CENTER);
+
 
         this.addComponentListener( new ComponentAdapter()
         {
@@ -61,14 +79,8 @@ public class GraphPane extends JPanel
             {
                 Dimension size = GraphPane.this.getSize();
                 display.setSize( size.width, size.height );
-
                 tabPane.revalidate();
-                
                 tabPane.repaint();
-                //display.repaint();
-                //boxedDisplay.repaint();
-
-                //repaint();
             }
         });
     }
@@ -95,5 +107,22 @@ public class GraphPane extends JPanel
     public GraphDisplay getGraphDisplay()
     {
         return display;
+    }
+
+    public void addLinkListener( LinkListener listener )
+    {
+        display.addLinkListener( listener );
+        boxedDisplay.addLinkListener( listener );
+    }
+
+    /**
+     * Remove a listener from the list that's notified each time a change to the selection occurs.
+     *
+     * @param listener the LinkListener to remove
+     */
+    public void removeLinkListener( LinkListener listener )
+    {
+        display.removeLinkListener( listener );
+        boxedDisplay.removeLinkListener( listener );
     }
 }

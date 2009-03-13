@@ -85,7 +85,7 @@ public class EnvisageFrame extends JFrame
             }
         } );
 
-        graphPane.getGraphDisplay().addLinkListener( new LinkListener()
+        graphPane.addLinkListener( new LinkListener()
         {
             public void activated( LinkEvent evt )
             {

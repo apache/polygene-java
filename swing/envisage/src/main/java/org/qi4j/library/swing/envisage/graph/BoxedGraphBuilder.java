@@ -62,7 +62,7 @@ public class BoxedGraphBuilder
         Node node = addChild( null, descriptor.descriptor().name(), descriptor );
 
         buildLayersNode( node, descriptor.layers() );
-        //buildUsesNode( node, descriptor.layers() );
+        buildUsesNode( node, descriptor.layers() );
 
         return graph;
     }

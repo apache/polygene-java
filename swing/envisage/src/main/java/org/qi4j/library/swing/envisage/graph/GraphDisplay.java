@@ -142,7 +142,7 @@ public class GraphDisplay extends Display
         animatePaint.add( new RepaintAction() );
         m_vis.putAction( ANIMATE_PAINT_ACTION, animatePaint );
 
-        // create the tree layout action
+        // create the GRAPH layout action
         NodeLinkTreeLayout treeLayout = new NodeLinkTreeLayout( GRAPH, orientation, 50, 0, 8 );
         treeLayout.setLayoutAnchor( new Point2D.Double( 25, 300 ) );
         m_vis.putAction( LAYOUT_ACTION, treeLayout );

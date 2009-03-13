@@ -20,16 +20,23 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Shape;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
+import org.qi4j.library.swing.envisage.event.LinkEvent;
+import org.qi4j.library.swing.envisage.event.LinkListener;
 import prefuse.Constants;
 import prefuse.Display;
 import prefuse.Visualization;
+import prefuse.action.Action;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
 import prefuse.action.layout.Layout;
 import prefuse.controls.ControlAdapter;
+import prefuse.controls.FocusControl;
+import prefuse.controls.PanControl;
 import prefuse.data.Graph;
 import prefuse.data.Schema;
 import prefuse.data.expression.Predicate;
@@ -54,19 +61,23 @@ public class BoxedGraphDisplay extends Display
 {
     public static final Font FONT = FontLib.getFont("Tahoma",12);
 
-    // create data description of labels, setting colors, fonts ahead of time
-    private static final Schema LABEL_SCHEMA = PrefuseLib.getVisualItemSchema();
+    // create data description of LABELS, setting colors, fonts ahead of time
+    static final Schema LABEL_SCHEMA = PrefuseLib.getVisualItemSchema();
     static {
         LABEL_SCHEMA.setDefault(VisualItem.INTERACTIVE, false);
         LABEL_SCHEMA.setDefault(VisualItem.TEXTCOLOR, ColorLib.gray(200));
         LABEL_SCHEMA.setDefault(VisualItem.FONT, FONT);
     }
 
-    private static final String tree = "graph";
-    private static final String treeNodes = "graph.nodes";
-    private static final String treeEdges = "graph.edges";
-    private static final String labels = "labels";
-    private static final String labelName = "name";
+    static final String USER_OBJECT = "userObject";
+    static final String LABEL_NAME = "name";
+    static final String LABELS = "labels";
+
+    static final String GRAPH = "graph";
+    static final String GRAPH_NODES = "graph.nodes";
+    static final String GRAPH_EDGES = "graph.edges";
+
+    static final String LAYOUT_ACTION = "layout";
 
     protected BoxedLayout boxedLayout;
 
@@ -74,21 +85,19 @@ public class BoxedGraphDisplay extends Display
     {
         super(new Visualization());
 
-        LabelRenderer labelRenderer = new LabelRenderer( labelName );
-        //labelRenderer.setRenderType( AbstractShapeRenderer.RENDER_TYPE_FILL );
+        LabelRenderer labelRenderer = new LabelRenderer( LABEL_NAME );
         labelRenderer.setVerticalAlignment( Constants.BOTTOM);
         labelRenderer.setHorizontalAlignment( Constants.LEFT );
-        //labelRenderer.setRoundedCorner( 8, 8 );
 
-        // set up the renderers - one for nodes and one for labels
+        // set up the renderers - one for nodes and one for LABELS
         DefaultRendererFactory rf = new DefaultRendererFactory();
-        rf.add(new InGroupPredicate(treeNodes), new NodeRenderer());
-        rf.add(new InGroupPredicate(labels), labelRenderer);
+        rf.add(new InGroupPredicate( GRAPH_NODES ), new NodeRenderer());
+        rf.add(new InGroupPredicate( LABELS ), labelRenderer);
         m_vis.setRendererFactory(rf);
 
         // border colors
-        final ColorAction borderColor = new BorderColorAction(treeNodes);
-        final ColorAction fillColor = new FillColorAction(treeNodes);
+        final ColorAction borderColor = new BorderColorAction( GRAPH_NODES );
+        final ColorAction fillColor = new FillColorAction( GRAPH_NODES );
 
         // color settings
         ActionList colors = new ActionList();
@@ -96,25 +105,20 @@ public class BoxedGraphDisplay extends Display
         colors.add(borderColor);
         m_vis.putAction("colors", colors);
 
-        // animate paint change
-        //ActionList animatePaint = new ActionList(400);
-        //animatePaint.add(new ColorAnimator(treeNodes));
-        //animatePaint.add(new RepaintAction());
-        //m_vis.putAction("animatePaint", animatePaint);
-
         // create the single filtering and layout action list
-        boxedLayout = new BoxedLayout( tree );
+        boxedLayout = new BoxedLayout( GRAPH );
         ActionList layout = new ActionList();
         layout.add(boxedLayout);
-        layout.add(new LabelLayout(labels));
+        layout.add(new LabelLayout( LABELS ));
         layout.add(colors);
+        //layout.add(new AutoPanAction());
         layout.add(new RepaintAction());
-        m_vis.putAction("layout", layout);
+        m_vis.putAction(LAYOUT_ACTION, layout);
 
         // initialize our display
         Dimension size = new Dimension( 400,400);
-        setPreferredSize( size );
         setSize( size );
+        setPreferredSize( size );
         setItemSorter(new TreeDepthItemSorter(true));
         addControlListener(new ControlAdapter() {
             public void itemEntered(VisualItem item, MouseEvent e) {
@@ -127,22 +131,25 @@ public class BoxedGraphDisplay extends Display
             }
         });
         addControlListener( new WheelMouseControl());
+        addControlListener( new ItemSelectionControl() );
+        addControlListener( new PanControl(true) );
+        addControlListener( new FocusControl( 1, "colors" ) );
 
         setDamageRedraw( false );
     }
 
     public void run (Graph graph)
     {
-        // add the tree to the visualization
-        m_vis.add(tree, graph);
-        m_vis.setVisible(treeEdges, null, false);
+        // add the GRAPH to the visualization
+        m_vis.add( GRAPH, graph);
+        m_vis.setVisible( GRAPH_EDGES, null, false);
 
         // make node interactive
-        m_vis.setInteractive( treeNodes, null, true );
+        m_vis.setInteractive( GRAPH_NODES, null, true );
 
-        // add labels to the visualization
+        // add LABELS to the visualization
         Predicate labelP = (Predicate)ExpressionParser.parse("VISIBLE()");
-        m_vis.addDecorators(labels, treeNodes, labelP, LABEL_SCHEMA);
+        m_vis.addDecorators( LABELS, GRAPH_NODES, labelP, LABEL_SCHEMA);
 
         run();
     }
@@ -150,7 +157,7 @@ public class BoxedGraphDisplay extends Display
     public void run()
     {
         // perform layout
-        m_vis.run("layout");
+        m_vis.run(LAYOUT_ACTION);
     }
 
     public void zoomIn()
@@ -161,7 +168,7 @@ public class BoxedGraphDisplay extends Display
         }
         boxedLayout.zoomIn();
         //m_vis.invalidateAll();
-        m_vis.run( "layout" );
+        m_vis.run( LAYOUT_ACTION );
     }
 
     public void zoomOut()
@@ -172,9 +179,44 @@ public class BoxedGraphDisplay extends Display
         }
         boxedLayout.zoomOut();
         //m_vis.invalidateAll();
-        m_vis.run( "layout" );
+        m_vis.run( LAYOUT_ACTION );
     }
 
+
+    /**
+     * Add a listener that's notified each time a change to the selection occurs.
+     *
+     * @param listener the LinkListener to add
+     */
+    public void addLinkListener( LinkListener listener )
+    {
+        listenerList.add( LinkListener.class, listener );
+    }
+
+    /**
+     * Remove a listener from the list that's notified each time a change to the selection occurs.
+     *
+     * @param listener the LinkListener to remove
+     */
+    public void removeLinkListener( LinkListener listener )
+    {
+        listenerList.remove( LinkListener.class, listener );
+    }
+
+    protected void fireLinkActivated( LinkEvent evt )
+    {
+        // Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for( int i = listeners.length - 2; i >= 0; i -= 2 )
+        {
+            if( listeners[ i ] == LinkListener.class )
+            {
+                ( (LinkListener) listeners[ i + 1 ] ).activated( evt );
+            }
+        }
+    }
 
     // ------------------------------------------------------------------------
 
@@ -241,7 +283,7 @@ public class BoxedGraphDisplay extends Display
      * of the decorated node and assigns the label coordinates to the center
      * of those bounds.
      */
-    public static class LabelLayout extends Layout
+    public class LabelLayout extends Layout
     {
         public LabelLayout(String group) {
             super(group);
@@ -276,12 +318,12 @@ public class BoxedGraphDisplay extends Display
 
     public class WheelMouseControl extends ControlAdapter
     {
-        public void itemWheelMoved( VisualItem item, java.awt.event.MouseWheelEvent evt )
+        public void itemWheelMoved( VisualItem item, MouseWheelEvent evt )
         {
             zoom(evt.getWheelRotation());
         }
 
-        public void mouseWheelMoved( VisualItem item, java.awt.event.MouseWheelEvent evt )
+        public void mouseWheelMoved( MouseWheelEvent evt )
         {
             zoom(evt.getWheelRotation());
         }
@@ -303,4 +345,57 @@ public class BoxedGraphDisplay extends Display
         }
     }
 
+    public class ItemSelectionControl extends ControlAdapter
+    {
+        public final void itemClicked( VisualItem anItem, MouseEvent anEvent )
+        {
+            if( !anItem.canGet( USER_OBJECT, Object.class ) )
+            {
+                return;
+            }
+            Object object = anItem.get( USER_OBJECT );
+            LinkEvent evt = new LinkEvent( this, object );
+            fireLinkActivated( evt );
+        }
+    }
+
+   public class AutoPanAction extends Action
+   {
+        private Point2D m_start = new Point2D.Double();
+        private Point2D m_end = new Point2D.Double();
+        private Point2D m_cur = new Point2D.Double();
+        private int m_bias = 0;
+
+        public void run( double frac )
+        {
+            ///VisualItem vi = boxedLayout.getLayoutRoot();
+            /*Dimension size = getSize(  );
+            m_cur.setLocation( size.getWidth() / 2, size.getHeight() / 2 );
+            panToAbs( m_cur );
+
+            System.out.println("autoPan: " + size.getWidth() / 2 + " " + size.getHeight() / 2 );
+            */
+
+
+            /*if( frac == 0.0 )
+            {
+                int xbias = 0, ybias = 0;
+
+                xbias = m_bias;
+
+                m_cur.setLocation( getWidth() / 2, getHeight() / 2 );
+                getAbsoluteCoordinate( m_cur, m_start );
+                m_end.setLocation( vi.getX() + xbias, vi.getY() + ybias );
+                //panToAbs( m_cur );
+                System.out.println("go here 0");
+            }
+            else
+            {
+                m_cur.setLocation( m_start.getX() + frac * ( m_end.getX() - m_start.getX() ),
+                                   m_start.getY() + frac * ( m_end.getY() - m_start.getY() ) );
+                panToAbs( m_cur );
+                System.out.println("go here 1");
+            }*/
+        }
+   }
 }
