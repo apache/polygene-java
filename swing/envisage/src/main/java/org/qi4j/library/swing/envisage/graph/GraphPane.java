@@ -38,6 +38,9 @@ public class GraphPane extends JPanel
 
     protected ApplicationDetailDescriptor descriptor;
 
+    protected JTabbedPane tabPane;
+    //protected JScrollPane
+
     public GraphPane()
     {
         display = new GraphDisplay();
@@ -46,7 +49,7 @@ public class GraphPane extends JPanel
         //setForeground(display.getForeground());
         //add(display, BorderLayout.CENTER);
 
-        JTabbedPane tabPane = new JTabbedPane( );
+        tabPane = new JTabbedPane( );
         tabPane.add("Tree", display);
         tabPane.add("Boxed", new JScrollPane(boxedDisplay));
 
@@ -58,7 +61,14 @@ public class GraphPane extends JPanel
             {
                 Dimension size = GraphPane.this.getSize();
                 display.setSize( size.width, size.height );
-                repaint();
+
+                tabPane.revalidate();
+                
+                tabPane.repaint();
+                //display.repaint();
+                //boxedDisplay.repaint();
+
+                //repaint();
             }
         });
     }
