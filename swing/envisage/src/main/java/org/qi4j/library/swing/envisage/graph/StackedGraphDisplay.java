@@ -54,6 +54,7 @@ import prefuse.util.ColorMap;
 import prefuse.util.FontLib;
 import prefuse.util.PrefuseLib;
 import prefuse.visual.DecoratorItem;
+import prefuse.visual.EdgeItem;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
@@ -70,7 +71,7 @@ public class StackedGraphDisplay extends Display
     static final Schema LABEL_SCHEMA = PrefuseLib.getVisualItemSchema();
     static {
         LABEL_SCHEMA.setDefault(VisualItem.INTERACTIVE, false);
-        LABEL_SCHEMA.setDefault(VisualItem.TEXTCOLOR, ColorLib.gray(200));
+        LABEL_SCHEMA.setDefault(VisualItem.TEXTCOLOR, ColorLib.gray(220));
         LABEL_SCHEMA.setDefault(VisualItem.FONT, FONT);
     }
 
@@ -115,8 +116,9 @@ public class StackedGraphDisplay extends Display
         final ColorAction borderColor = new BorderColorAction( GRAPH_NODES );
         final ColorAction fillColor = new FillColorAction( GRAPH_NODES );
 
-        ItemAction usesColor = new ColorAction( GRAPH_EDGES, usesPredicate, VisualItem.STROKECOLOR, ColorLib.rgb( 255, 100, 100 ) );
-        ItemAction usesArrow = new ColorAction( GRAPH_EDGES, usesPredicate, VisualItem.FILLCOLOR, ColorLib.rgb( 255, 100, 100 ) );
+        // uses edge colors
+        ItemAction usesColor = new ColorAction( GRAPH_EDGES, usesPredicate, VisualItem.STROKECOLOR, ColorLib.rgb( 50,50,50 ) );
+        ItemAction usesArrow = new ColorAction( GRAPH_EDGES, usesPredicate, VisualItem.FILLCOLOR, ColorLib.rgb( 50, 50, 50 ) );
 
         // color settings
         ActionList colors = new ActionList();
@@ -140,7 +142,7 @@ public class StackedGraphDisplay extends Display
         Dimension size = new Dimension( 400,400);
         setSize( size );
         setPreferredSize( size );
-        setItemSorter(new TreeDepthItemSorter(true));
+        setItemSorter(new ExtendedTreeDepthItemSorter(true));
         addControlListener(new ControlAdapter() {
             public void itemEntered(VisualItem item, MouseEvent e) {
                 item.setStrokeColor(borderColor.getColor(item));
@@ -439,5 +441,34 @@ public class StackedGraphDisplay extends Display
             pan (x, y);
 
         }
-   }
+    }
+
+    /**
+     * ExtenedTreeDepthItemSorter to alter the default ordering/sorter,
+     * to make sure Edge item is drawn in front. This is for Edge Uses
+     *
+     * */
+    public class ExtendedTreeDepthItemSorter extends TreeDepthItemSorter
+    {
+        public ExtendedTreeDepthItemSorter()
+        {
+            this(false);
+        }
+
+        public ExtendedTreeDepthItemSorter(boolean childrenAbove)
+        {
+            super(childrenAbove);            
+        }
+
+        public int score( VisualItem item )
+        {
+            int score = super.score( item );
+            if( item instanceof EdgeItem )
+            {
+                score = ( 1 << ( 25 + EDGE + NODE ) ); // make it drawn in front of NODE
+            }
+
+            return score;
+        }
+    }
 }
