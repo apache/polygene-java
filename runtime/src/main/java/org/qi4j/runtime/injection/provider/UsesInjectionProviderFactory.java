@@ -54,43 +54,28 @@ public final class UsesInjectionProviderFactory
                 // No @Uses object provided
                 // Try instantiating a Composite or Object for the given type
                 ModuleInstance moduleInstance = context.moduleInstance();
-                try
+
+                ModuleInstance.CompositeFinder compositeFinder = moduleInstance.findCompositeModel( injectionType );
+                if (compositeFinder.model != null)
                 {
-                    CompositeBuilderFactory compositeBF = moduleInstance.compositeBuilderFactory();
-                    return compositeBF.newComposite( injectionType );
-                }
-                catch( NoSuchCompositeException e )
+                    usesObject = compositeFinder.model.newCompositeInstance( compositeFinder.module, uses, context.state() );
+                } else
                 {
-                    // Retry for object
-                    return createObject( injectionType, moduleInstance );
+                    ModuleInstance.ObjectFinder objectFinder = moduleInstance.findObjectModel(injectionType );
+                    if (objectFinder.model != null)
+                    {
+                        usesObject = objectFinder.model.newInstance( objectFinder.module, uses );
+                    }
                 }
-                catch( ConstructionException e )
-                {
-                    // Retry for object
-                    return createObject( injectionType, moduleInstance );
-                }
+
+                if (usesObject != null)
+                    uses.use( usesObject ); // Use this for other injections in same graph
+
+                return usesObject;
             }
             else
             {
                 return usesObject;
-            }
-        }
-
-        @SuppressWarnings( "unchecked" )
-        private Object createObject( Class injectionType, ModuleInstance moduleInstance )
-        {
-            try
-            {
-                ObjectBuilderFactory objectBuilderFactory = moduleInstance.objectBuilderFactory();
-                return objectBuilderFactory.newObject( injectionType );
-            }
-            catch( NoSuchObjectException e1 )
-            {
-                return null;
-            }
-            catch( ConstructionException e2 )
-            {
-                return null;
             }
         }
     }

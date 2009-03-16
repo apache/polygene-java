@@ -255,7 +255,7 @@ public class ModuleInstance
         return finder;
     }
 
-    private CompositeFinder findCompositeModel( Class mixinType )
+    public CompositeFinder findCompositeModel( Class mixinType )
     {
         CompositeFinder finder = compositeFinders.get(mixinType);
         if (finder == null)
@@ -270,7 +270,7 @@ public class ModuleInstance
         return finder;
     }
 
-    private ObjectFinder findObjectModel( Class type )
+    public ObjectFinder findObjectModel( Class type )
     {
         ObjectFinder finder = objectFinders.get(type);
         if (finder == null)
@@ -370,7 +370,7 @@ public class ModuleInstance
         }
     }
 
-    private class CompositeFinder
+    public class CompositeFinder
         extends TypeFinder<CompositeModel>
     {
         protected CompositeModel findModel( ModuleModel model, Visibility visibility )
@@ -405,12 +405,12 @@ public class ModuleInstance
                 throw new NoSuchObjectException( type.getName(), name() );
             }
 
-            return type.cast( finder.model.newInstance( finder.module, UsesInstance.NO_USES ) );
+            return type.cast( finder.model.newInstance( finder.module, new UsesInstance() ) );
         }
 
     }
 
-    private class ObjectFinder
+    public class ObjectFinder
         extends TypeFinder<ObjectModel>
     {
         protected ObjectModel findModel( ModuleModel model, Visibility visibility )
