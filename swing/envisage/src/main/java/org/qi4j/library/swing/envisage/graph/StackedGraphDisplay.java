@@ -27,6 +27,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
 import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
 import org.qi4j.library.swing.envisage.event.LinkEvent;
 import org.qi4j.library.swing.envisage.event.LinkListener;
 import prefuse.Constants;
@@ -38,6 +39,7 @@ import prefuse.action.ItemAction;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
 import prefuse.action.layout.Layout;
+import prefuse.activity.Activity;
 import prefuse.controls.ControlAdapter;
 import prefuse.controls.FocusControl;
 import prefuse.controls.PanControl;
@@ -88,6 +90,8 @@ public class StackedGraphDisplay extends Display
     static final String COLORS_ACTION = "colors";
 
     protected StackedLayout stackedLayout;
+
+    protected Activity activity;
 
     public StackedGraphDisplay()
     {
@@ -153,10 +157,10 @@ public class StackedGraphDisplay extends Display
                 item.getVisualization().repaint();
             }
         });
-        addControlListener( new WheelMouseControl());
-        addControlListener( new ItemSelectionControl() );
-        addControlListener( new PanControl(true) );
         addControlListener( new FocusControl( 1, COLORS_ACTION ) );
+        addControlListener( new WheelMouseControl());
+        addControlListener( new PanControl(true) );
+        addControlListener( new ItemSelectionControl() );
 
         setDamageRedraw( false );
     }
@@ -170,6 +174,8 @@ public class StackedGraphDisplay extends Display
         Predicate edgesPredicate = (Predicate) ExpressionParser.parse( "ingroup('graph.edges') AND [" + USES_EDGES + "]==false", true );
         m_vis.setVisible( GRAPH_EDGES, edgesPredicate, false);
 
+        m_vis.setInteractive( GRAPH_EDGES, null, false );
+
         // make node interactive
         m_vis.setInteractive( GRAPH_NODES, null, true );
 
@@ -182,33 +188,54 @@ public class StackedGraphDisplay extends Display
 
     public void run()
     {
-        if (isTranformInProgress())
+        if (isInProgress())
         {
             return;
         }
+
         // perform layout
-        m_vis.invalidate( GRAPH_NODES );
-        m_vis.run(LAYOUT_ACTION);
+        //m_vis.invalidate( GRAPH_NODES );
+        activity = m_vis.run(LAYOUT_ACTION);
     }
 
     public void zoomIn()
     {
-        if (isTranformInProgress())
+        if (isInProgress())
         {
             return;
         }
+
         stackedLayout.zoomIn();
         run();
     }
 
     public void zoomOut()
     {
-        if (isTranformInProgress())
+        if (isInProgress())
         {
             return;
         }
+
         stackedLayout.zoomOut();
         run();
+    }
+
+    protected boolean isInProgress()
+    {
+        if (isTranformInProgress())
+        {
+            return true;
+        }
+
+        if (activity != null)
+        {
+            if (activity.isRunning())
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
@@ -261,6 +288,10 @@ public class StackedGraphDisplay extends Display
         }
 
         public int getColor(VisualItem item) {
+            if (!(item instanceof NodeItem))
+            {
+                return 0;
+            }
             NodeItem nitem = (NodeItem)item;
             if ( nitem.isHover() )
                 //return ColorLib.rgb(99,130,191);
@@ -356,20 +387,27 @@ public class StackedGraphDisplay extends Display
             zoom(evt.getWheelRotation());
         }
 
-        private void zoom (int rotation)
+        private void zoom( final int rotation )
         {
-            if (rotation == 0)
+            SwingUtilities.invokeLater( new Runnable()
             {
-                return;
-            }
-            if( rotation < 0 )
-            {
-                zoomOut();
-            }
-            else
-            {
-                zoomIn();
-            }
+                public void run()
+                {
+                    if( rotation == 0 )
+                    {
+                        return;
+                    }
+                    if( rotation < 0 )
+                    {
+                        zoomOut();
+                    }
+                    else
+                    {
+                        zoomIn();
+                    }
+                }
+            } );
+
         }
     }
 
@@ -465,7 +503,8 @@ public class StackedGraphDisplay extends Display
             int score = super.score( item );
             if( item instanceof EdgeItem )
             {
-                score = ( 1 << ( 25 + EDGE + NODE ) ); // make it drawn in front of NODE
+                // make it drawn in front of NODE
+                score = ( 1 << ( 25 + EDGE + NODE ) );
             }
 
             return score;
