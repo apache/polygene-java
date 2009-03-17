@@ -20,8 +20,10 @@ import java.util.List;
 import java.util.Map;
 import org.qi4j.spi.structure.UsedLayersDescriptor;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.runtime.composite.CompositeModel;
+import org.qi4j.bootstrap.AssemblyException;
 
 /**
  * JAVADOC
@@ -60,14 +62,9 @@ public final class UsedLayersModel
         return foundModel;
     }
 
-    public UsedLayersInstance newInstance( Map<LayerModel, LayerInstance> layerInstanceMap )
+    public UsedLayersInstance newInstance( List<LayerInstance> usedLayerInstances)
+        throws AssemblyException
     {
-        List<LayerInstance> usedLayerInstances = new ArrayList<LayerInstance>();
-        for( LayerModel usedLayer : usedLayers )
-        {
-            usedLayerInstances.add( layerInstanceMap.get( usedLayer ) );
-        }
-
         return new UsedLayersInstance( usedLayerInstances );
     }
 

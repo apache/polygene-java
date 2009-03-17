@@ -81,6 +81,9 @@ public final class ServiceInjectionProviderFactory
             serviceFinder.serviceType = serviceType;
             resolution.module().visitModules( serviceFinder );
 
+            if (serviceFinder.identity == null)
+                return null;
+
             return new ServiceReferenceProvider( serviceFinder );
         }
         else
@@ -90,6 +93,10 @@ public final class ServiceInjectionProviderFactory
             ServiceFinder serviceFinder = new ServiceFinder();
             serviceFinder.serviceType = serviceType;
             resolution.module().visitModules( serviceFinder );
+
+            if (serviceFinder.identity == null)
+                return null;
+
             return new ServiceProvider( serviceFinder );
         }
     }

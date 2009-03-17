@@ -30,10 +30,14 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.property.ComputedPropertyInstance;
+import org.qi4j.api.property.PropertyInfo;
+import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.bootstrap.MetaInfoDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.AbstractCompositeModel;
@@ -216,10 +220,24 @@ public final class ServiceModel
         {
             public Property<?> getProperty( Method propertyMethod )
             {
-                PropertyModel propertyDescriptor = (PropertyModel) stateModel.getPropertyByQualifiedName(QualifiedName.fromMethod(propertyMethod));
-                return propertyDescriptor.newInstance( identity );
+                if (QualifiedName.fromMethod(propertyMethod).equals( QualifiedName.fromClass( Identity.class, "identity" )))
+                {
+                    PropertyModel propertyDescriptor = (PropertyModel) stateModel.getPropertyByQualifiedName(QualifiedName.fromMethod(propertyMethod));
+                    return propertyDescriptor.newInstance( identity );
+                } else
+                {
+                    // State is set to defaults
+                    return new ComputedPropertyInstance(new GenericPropertyInfo(propertyMethod))
+                    {
+                        public Object get()
+                        {
+                            return null;
+                        }
+                    };
+                }
             }
         };
+        stateHolder = stateModel.newInstance( stateHolder );
         CompositeInstance compositeInstance = new DefaultCompositeInstance( this, module, mixins, stateHolder );
 
         UsesInstance uses = new UsesInstance();

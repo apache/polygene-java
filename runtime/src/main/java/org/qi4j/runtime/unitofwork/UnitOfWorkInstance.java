@@ -263,6 +263,9 @@ public final class UnitOfWorkInstance
         {
             paused = true;
             current.get().pop();
+        } else
+        {
+            throw new UnitOfWorkException( "Unit of work is not active" );
         }
     }
 
@@ -272,6 +275,9 @@ public final class UnitOfWorkInstance
         {
             paused = false;
             current.get().push( this );
+        } else
+        {
+            throw new UnitOfWorkException( "Unit of work has not been paused" );
         }
     }
 
@@ -679,12 +685,24 @@ public final class UnitOfWorkInstance
     public EntityState getEntityState( QualifiedIdentity qualifiedIdentity, EntityModel entity )
         throws EntityStoreException
     {
+        checkOpen();
+
         EntityStateStore ess = stateCache.get( qualifiedIdentity );
-        if (ess.state == null)
+        if (ess == null || ess.state == null)
         {
             ess.state = entity.getEntityState( ess.store, qualifiedIdentity );
         }
         return ess.state;
+    }
+
+    public boolean isPaused()
+    {
+        return paused;
+    }
+
+    @Override public String toString()
+    {
+        return "UnitOfWork "+hashCode()+"("+usecase+"): entities:"+stateCache.size();
     }
 
     abstract class ForEachEntity

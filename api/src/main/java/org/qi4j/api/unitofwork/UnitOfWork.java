@@ -250,6 +250,14 @@ public interface UnitOfWork
     boolean isOpen();
 
     /**
+     * Check if the UnitOfWork is paused. It is not paused after it has been create through the
+     * UnitOfWorkFactory, and it can be paused by calling {@link #pause()} and then resumed by calling
+     * {@link #resume()}.
+     * @return true if this UnitOfWork has been paused.
+     */
+    boolean isPaused();
+
+    /**
      * Pauses this UnitOfWork.
      * <p>
      * Calling this method will cause the underlying UnitOfWork to become the current UnitOfWork until the

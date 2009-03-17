@@ -26,6 +26,7 @@ import org.qi4j.runtime.injection.provider.InjectionProviderFactoryStrategy;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationDescriptor;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.bootstrap.AssemblyException;
 
 /**
  * JAVADOC
@@ -84,18 +85,37 @@ public final class ApplicationModel
 
     // Context
     public ApplicationInstance newInstance( Qi4jSPI runtime )
+        throws AssemblyException
     {
         List<LayerInstance> layerInstances = new ArrayList<LayerInstance>();
         ApplicationInstance applicationInstance = new ApplicationInstance( this, runtime, layerInstances );
 
+        // Create layer instances
         Map<LayerModel, LayerInstance> layerInstanceMap = new HashMap<LayerModel, LayerInstance>();
+        Map<LayerModel, List<LayerInstance>> usedLayers = new HashMap<LayerModel, List<LayerInstance>>( );
         for( LayerModel layer : layers )
         {
-            UsedLayersInstance usedLayersInstance = layer.usedLayers().newInstance( layerInstanceMap );
+            List<LayerInstance> usedLayerInstances = new ArrayList<LayerInstance>();
+            usedLayers.put( layer, usedLayerInstances );
+            UsedLayersInstance usedLayersInstance = layer.usedLayers().newInstance( usedLayerInstances );
             LayerInstance layerInstance = layer.newInstance( applicationInstance, usedLayersInstance );
             layerInstances.add( layerInstance );
             layerInstanceMap.put( layer, layerInstance );
         }
+
+        // Resolve used layer instances
+        for( LayerModel layer : layers )
+        {
+            List<LayerInstance> usedLayerInstances = usedLayers.get( layer );
+            for( LayerModel usedLayer : layer.usedLayers().layers() )
+            {
+                LayerInstance layerInstance = layerInstanceMap.get( usedLayer );
+                if (layerInstance == null)
+                    throw new AssemblyException("Could not find used layer:"+usedLayer.name());
+                usedLayerInstances.add( layerInstance );
+            }
+        }
+
 
         return applicationInstance;
     }

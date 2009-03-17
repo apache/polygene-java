@@ -262,6 +262,11 @@ public class ModuleUnitOfWork
         return uow.isOpen();
     }
 
+    public boolean isPaused()
+    {
+        return uow.isPaused();
+    }
+
     public void pause()
     {
         uow.pause();
@@ -332,5 +337,16 @@ public class ModuleUnitOfWork
         }
 
         return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return uow.hashCode();
+    }
+
+    @Override public String toString()
+    {
+        return uow.toString();
     }
 }

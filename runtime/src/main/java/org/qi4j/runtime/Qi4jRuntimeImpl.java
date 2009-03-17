@@ -26,6 +26,7 @@ import org.qi4j.api.composite.PropertyMapper;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.property.StateHolder;
@@ -35,6 +36,7 @@ import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.common.ConstructionException;
 import org.qi4j.runtime.composite.DefaultCompositeInstance;
 import static org.qi4j.runtime.composite.DefaultCompositeInstance.getCompositeInstance;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
@@ -155,7 +157,18 @@ public final class Qi4jRuntimeImpl
                     throw exception;
                 }
             }
-            configuration = configBuilder.newInstance();
+
+            try
+            {
+                configuration = configBuilder.newInstance();
+            }
+            catch( Exception e1 )
+            {
+                InstantiationException ex = new InstantiationException("Could not instantiate configuration, and no Properties file was found ("+s+")");
+                ex.initCause( e1 );
+                throw ex;
+            }
+
             try
             {
                 uow.apply();

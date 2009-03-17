@@ -28,7 +28,13 @@ public final class EntityMixin
 
     public boolean isReference()
     {
-        EntityInstance handler = EntityInstance.getEntityInstance( meAsEntity );
-        return handler.isReference();
+        EntityInstance instance = EntityInstance.getEntityInstance( meAsEntity );
+        return instance.isReference();
+    }
+
+    public UnitOfWork unitOfWork()
+    {
+        EntityInstance instance = EntityInstance.getEntityInstance( meAsEntity );
+        return instance.unitOfWork();
     }
 }

@@ -28,21 +28,24 @@ public final class ThisInjectionProviderFactory
             if( thisType.isAssignableFrom( bindingContext.object().type() ) )
             {
                 thisType = bindingContext.object().type();
+            } else
+            {
+                AbstractCompositeDescriptor acd = ((AbstractCompositeDescriptor)bindingContext.object());
+                boolean ok = false;
+                for( Class mixinType : acd.mixinTypes() )
+                {
+                    if (thisType.isAssignableFrom( mixinType ))
+                    {
+                        ok = true;
+                        break;
+                    }
+                }
+
+                if (!ok)
+                    throw new InvalidInjectionException( "Composite " + bindingContext.object().type().getName() + " does not implement @This type " + thisType.getName() + " in fragment " + dependencyModel.injectedClass().getName() );
             }
 
             return new ThisInjectionProvider( thisType );
-
-/* JAVADOC Needs to be fixed to support internal mixins
-            // Check if the composite implements the desired type
-            if( dependencyModel.getRawType().isAssignableFrom( fragmentKey.getCompositeType() ) )
-            {
-                return new ThisInjectionProvider(dependencyModel.getRawType());
-            }
-            else
-            {
-                throw new InvalidInjectionException( "Composite " + fragmentKey.getCompositeType() + " does not implement @This type " + dependencyModel.getDependencyType() + " in fragment " + dependencyModel.getDependentType() );
-            }
-*/
         }
         else
         {

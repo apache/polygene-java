@@ -276,12 +276,12 @@ public final class DependencyModel
 
             if( injectionProvider == null && !optional )
             {
-                throw new ConstructionException( "Non-optional @" + rawInjectionClass.getName() + " was null in " + injectedClass.getName() );
+                throw new ConstructionException( "Non-optional @" + rawInjectionClass.getName() + " was not bound in " + injectedClass.getName() );
             }
         }
         catch( InvalidInjectionException e )
         {
-            throw new BindingException( "Could not bind", e );
+            throw new BindingException( "Could not bind dependency injection", e );
         }
     }
 

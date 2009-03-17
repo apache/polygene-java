@@ -81,25 +81,16 @@ public final class ApplicationFactoryImpl
         ApplicationAssemblyImpl applicationAssembly = (ApplicationAssemblyImpl) assembly;
         List<LayerModel> layerModels = new ArrayList<LayerModel>();
         ApplicationModel applicationModel = new ApplicationModel( applicationAssembly.name(), applicationAssembly.metaInfo(), layerModels );
-        List<LayerAssemblyImpl> layerAssemblies = new ArrayList<LayerAssemblyImpl>( applicationAssembly.getLayerAssemblies() );
         Map<LayerAssembly, LayerModel> mapAssemblyModel = new HashMap<LayerAssembly, LayerModel>();
-        nextLayer:
-        while( layerAssemblies.size() > 0 )
+        Map<LayerAssembly, List<LayerModel>> mapUsedLayers = new HashMap<LayerAssembly, List<LayerModel>>( );
+
+        // Build all layers
+        List<LayerAssemblyImpl> layerAssemblies = new ArrayList<LayerAssemblyImpl>( applicationAssembly.getLayerAssemblies() );
+        for( LayerAssemblyImpl layerAssembly : layerAssemblies )
         {
-            LayerAssemblyImpl layerAssembly = layerAssemblies.remove( 0 );
-            Set<LayerAssembly> usesLayers = layerAssembly.uses();
             List<LayerModel> usedLayers = new ArrayList<LayerModel>();
-            for( LayerAssembly usesLayer : usesLayers )
-            {
-                LayerModel layerModel = mapAssemblyModel.get( usesLayer );
-                if( layerModel == null )
-                {
-                    // Used layer not done yet - reevaluate this layer later
-                    layerAssemblies.add( layerAssembly );
-                    continue nextLayer;
-                }
-                usedLayers.add( layerModel );
-            }
+            mapUsedLayers.put( layerAssembly, usedLayers );
+
             UsedLayersModel usedLayersModel = new UsedLayersModel( usedLayers );
             List<ModuleModel> moduleModels = new ArrayList<ModuleModel>();
             String name = layerAssembly.name();
@@ -116,6 +107,19 @@ public final class ApplicationFactoryImpl
             mapAssemblyModel.put( layerAssembly, layerModel );
             layerModels.add( layerModel );
         }
+
+        // Populate used layer lists
+        for( LayerAssemblyImpl layerAssembly : layerAssemblies )
+        {
+            Set<LayerAssembly> usesLayers = layerAssembly.uses();
+            List<LayerModel> usedLayers = mapUsedLayers.get( layerAssembly );
+            for( LayerAssembly usesLayer : usesLayers )
+            {
+                LayerModel layerModel = mapAssemblyModel.get( usesLayer );
+                usedLayers.add( layerModel );
+            }
+        }
+
         return createInstance( applicationModel );
     }
 

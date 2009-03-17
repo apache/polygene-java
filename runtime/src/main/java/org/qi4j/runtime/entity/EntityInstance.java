@@ -135,6 +135,11 @@ public final class EntityInstance
         return moduleInstance;
     }
 
+    public UnitOfWork unitOfWork()
+    {
+        return uow;
+    }
+
     public EntityState entityState()
     {
         EntityState unwrappedState = entityState;
