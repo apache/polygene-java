@@ -25,7 +25,6 @@ import org.qi4j.api.configuration.ConfigurationComposite;
 
 public interface QuickConfiguration extends ConfigurationComposite
 {
-    @Optional
     Property<String> storageDirectory();
 
     @Optional @UseDefaults

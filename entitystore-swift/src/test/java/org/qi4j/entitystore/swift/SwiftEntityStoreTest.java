@@ -25,7 +25,9 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.swift.QuickConfiguration;
 import org.qi4j.entitystore.swift.QuickEntityStoreService;
+import org.junit.Ignore;
 
+@Ignore
 public class SwiftEntityStoreTest extends AbstractEntityStoreTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException

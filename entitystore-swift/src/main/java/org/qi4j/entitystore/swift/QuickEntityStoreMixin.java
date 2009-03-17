@@ -61,14 +61,7 @@ public class QuickEntityStoreMixin extends EntityTypeRegistryMixin
         QuickConfiguration conf = configuration.configuration();
         String storage = conf.storageDirectory().get();
         File storageDir;
-        if( storage == null )
-        {
-            storageDir = new File( "qi4j/quickstore" );
-        }
-        else
-        {
-            storageDir = new File( storage );
-        }
+        storageDir = new File( storage );
         Boolean recover = conf.recover().get();
         if( recover == null )
         {

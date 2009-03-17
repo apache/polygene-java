@@ -59,6 +59,12 @@ class StoreIterator
             {
                 store.seek( position );
                 int blockSize = store.readInt();
+                if (blockSize == 0)
+                {
+                    // TODO This is a bug. Why does it occur??
+                    isAvailable = false;
+                    return;
+                }
                 position = position + blockSize;  // position for next round...
                 byte usage = store.readByte();
                 if( usage == 1 || usage == 2 )
