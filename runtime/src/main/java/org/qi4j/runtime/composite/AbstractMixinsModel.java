@@ -87,7 +87,15 @@ public abstract class AbstractMixinsModel
 
     public boolean hasMixinType( Class<?> mixinType )
     {
-        return mixinTypes.contains( mixinType );
+        for( Class type : mixinTypes )
+        {
+            if (mixinType.isAssignableFrom( type ))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public MixinModel mixinFor( Method method )
@@ -100,8 +108,6 @@ public abstract class AbstractMixinsModel
     {
         if( !methodImplementation.containsKey( method ) )
         {
-            mixinTypes.add( method.getDeclaringClass() );
-
             Class mixinClass = findTypedImplementation( method, mixins );
             if( mixinClass != null )
             {
@@ -137,6 +143,11 @@ public abstract class AbstractMixinsModel
         {
             return methodImplementation.get( method );
         }
+    }
+
+    public void addMixinType( Class mixinType )
+    {
+        mixinTypes.add( mixinType );
     }
 
     private Class findTypedImplementation( Method method, Set<MixinDeclaration> mixins )

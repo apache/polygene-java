@@ -103,10 +103,12 @@ public final class CompositeMethodsModel
                 // Implement @This references
                 methodComposite.addThisInjections( thisDependencies );
                 mixinModel.addThisInjections( thisDependencies );
-
                 methods.put( method, methodComposite );
             }
         }
+
+        // Add type to set of mixin types
+        mixinsModel.addMixinType(mixinType);
 
         // Implement all @This dependencies that were found
         for( Class thisDependency : thisDependencies )
