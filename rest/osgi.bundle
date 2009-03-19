@@ -5,13 +5,15 @@ Export-Package: org.qi4j.rest;version="${pom.version}", \
                 org.qi4j.rest.query;version="${pom.version}", \
                 org.qi4j.rest.type;version="${pom.version}"
 
-Import-Package: com.noelios.restlet.ext.servlet, \
-                javax.servlet, \
+Import-Package: javax.servlet, \
                 org.openrdf.rio, \
                 org.openrdf.rio.helpers, \
                 org.openrdf.rio.rdfxml, \
                 org.restlet, \
                 org.restlet.data, \
+                org.restlet.ext.atom, \
+                org.restlet.ext.servlet, \
+                org.restlet.representation, \
                 org.restlet.resource, \
                 org.restlet.service, \
                 org.restlet.util, \
