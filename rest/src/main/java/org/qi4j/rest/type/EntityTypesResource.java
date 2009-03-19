@@ -29,34 +29,54 @@ import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.DescriptorVisitor;
 import org.restlet.Context;
+import org.restlet.ext.atom.Feed;
+import org.restlet.ext.atom.Entry;
+import org.restlet.ext.atom.Text;
+import org.restlet.ext.atom.Link;
+import org.restlet.representation.Variant;
+import org.restlet.representation.Representation;
+import org.restlet.representation.WriterRepresentation;
 import static org.restlet.data.CharacterSet.UTF_8;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
-import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
-import org.restlet.resource.Variant;
-import org.restlet.resource.WriterRepresentation;
 
 public final class EntityTypesResource extends Resource
 {
-    private final Set<String> entityTypes;
+    @Structure Application application;
+    @Structure Qi4jSPI spi;
+    @Structure Module module;
 
     public EntityTypesResource( @Uses Context context,
                                 @Uses Request request,
-                                @Uses Response response,
-                                @Structure Application application,
-                                final @Structure Qi4jSPI spi,
-                                final @Structure Module module )
+                                @Uses Response response)
     {
         super( context, request, response );
 
         List<Variant> variants = getVariants();
-        variants.add( new Variant( MediaType.TEXT_HTML ) );
+        variants.add( new Variant( MediaType.APPLICATION_ATOM ) );
 
-        entityTypes = new HashSet<String>();
+    }
+
+    @Override
+    public Representation represent( Variant variant )
+        throws ResourceException
+    {
+        if( MediaType.APPLICATION_ATOM.equals( variant.getMediaType() ) )
+        {
+            return representAtom( );
+        }
+
+        throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+    }
+
+    private Representation representAtom() throws ResourceException
+    {
+        final Set<EntityDescriptor> entityTypes = new HashSet<EntityDescriptor>();
+
         // Get all entity types
         ApplicationSPI applicationSPI = (ApplicationSPI) application;
         applicationSPI.visitDescriptor( new DescriptorVisitor()
@@ -66,57 +86,25 @@ public final class EntityTypesResource extends Resource
                 Class<?> entityType = entityDescriptor.type();
                 if( spi.getEntityDescriptor( entityType, module ) != null )
                 {
-                    entityTypes.add( entityType.getName() );
+                    entityTypes.add( entityDescriptor);
                 }
             }
         } );
-    }
 
-    @Override
-    public Representation represent( Variant variant )
-        throws ResourceException
-    {
-        if( MediaType.TEXT_HTML.equals( variant.getMediaType() ) )
+        Feed feed = new Feed();
+        feed.setTitle( new Text(MediaType.TEXT_PLAIN, "Entity types") );
+        List<Entry> entries = feed.getEntries();
+
+        for( EntityDescriptor entityType : entityTypes )
         {
-            return representHTML( entityTypes );
+            Entry entry = new Entry();
+            entry.setTitle( new Text(MediaType.TEXT_PLAIN, entityType.entityType().type()) );
+            Link link = new Link();
+            link.setHref( getRequest().getResourceRef().clone().addSegment( entityType.entityType().version() ));
+            entry.getLinks().add( link );
+            entries.add( entry );
         }
 
-        throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-    }
-
-    private Representation representHTML( final Set<String> entityTypes )
-    {
-        Representation representation = new WriterRepresentation( MediaType.TEXT_HTML )
-        {
-            public void write( Writer buf )
-                throws IOException
-            {
-                PrintWriter out = new PrintWriter( buf );
-
-                String path = getRequest().getResourceRef().getPath();
-                if( !path.endsWith( "/" ) )
-                {
-                    path += "/";
-                }
-
-                try
-                {
-                    out.println( "<html><head><title>All entities</title</head><body><h1>All entities</h1><ul>" );
-
-                    for( String entityType : entityTypes )
-                    {
-                        out.println( "<li><a href=\"" + path + entityType + ".html\">" + entityType + "</a></li>" );
-                    }
-
-                    out.println( "</ul></body></html>" );
-                }
-                finally
-                {
-                    out.close();
-                }
-            }
-        };
-        representation.setCharacterSet( UTF_8 );
-        return representation;
+        return feed;
     }
 }

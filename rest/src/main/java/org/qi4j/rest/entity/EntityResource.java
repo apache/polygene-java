@@ -44,6 +44,10 @@ import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.value.PrimitiveType;
 import org.restlet.Context;
+import org.restlet.representation.Variant;
+import org.restlet.representation.Representation;
+import org.restlet.representation.WriterRepresentation;
+import org.restlet.representation.OutputRepresentation;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
 import org.restlet.data.Language;
@@ -52,12 +56,8 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.data.Tag;
-import org.restlet.resource.OutputRepresentation;
-import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
-import org.restlet.resource.Variant;
-import org.restlet.resource.WriterRepresentation;
 
 public class EntityResource extends Resource
 {

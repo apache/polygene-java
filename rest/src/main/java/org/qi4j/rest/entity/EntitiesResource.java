@@ -23,11 +23,9 @@ import java.util.Collections;
 import java.util.Map;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
-import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.spi.Qi4jSPI;
@@ -49,12 +47,12 @@ import org.restlet.data.Reference;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
-import org.restlet.resource.DomRepresentation;
-import org.restlet.resource.Representation;
+import org.restlet.representation.DomRepresentation;
+import org.restlet.representation.Representation;
+import org.restlet.representation.Variant;
+import org.restlet.representation.WriterRepresentation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
-import org.restlet.resource.Variant;
-import org.restlet.resource.WriterRepresentation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -85,7 +83,6 @@ public class EntitiesResource extends Resource
         getVariants().add( new Variant( MediaType.TEXT_HTML ) );
         getVariants().add( new Variant( MediaType.APPLICATION_RDF_XML ) );
         getVariants().add( new Variant( MediaType.TEXT_XML ) );
-        setModifiable( false );
 
         final Map<String, Object> attributes = getRequest().getAttributes();
         type = (String) attributes.get( "type" );

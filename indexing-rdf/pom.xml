@@ -26,7 +26,7 @@
       <artifactId>qi4j-core-api</artifactId>
       <version>0.7-SNAPSHOT</version>
       <scope>provided</scope>
-    </dependency>
+    </dependency> 
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-spi</artifactId>

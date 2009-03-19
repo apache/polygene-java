@@ -14,12 +14,12 @@
 
 package org.qi4j.rest;
 
-import com.noelios.restlet.ext.servlet.ServerServlet;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.restlet.Application;
 import org.restlet.Context;
+import org.restlet.ext.servlet.ServerServlet;
 
 /**
  * Integration with Qi4j. Register an object extending Application to use.
@@ -35,7 +35,7 @@ public class Qi4jServerServlet
     {
         ObjectBuilder<Application> app = obf.newObjectBuilder( Application.class );
 
-        app.use( context, getServletConfig(), getServletContext() );
+        app.use( context.createChildContext(), getServletConfig(), getServletContext() );
 
         return app.newInstance();
     }

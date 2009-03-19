@@ -47,6 +47,8 @@ import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.restlet.Client;
+import org.restlet.representation.Representation;
+import org.restlet.representation.OutputRepresentation;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Preference;
@@ -54,8 +56,6 @@ import org.restlet.data.Reference;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
-import org.restlet.resource.OutputRepresentation;
-import org.restlet.resource.Representation;
 
 /**
  * EntityStore implementation that uses REST to access EntityState from a server.

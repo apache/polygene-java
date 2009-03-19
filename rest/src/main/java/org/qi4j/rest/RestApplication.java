@@ -96,6 +96,9 @@ public class RestApplication extends Application
     public synchronized Restlet createRoot()
     {
         Router router = new Router( getContext() );
+
+        router.attach("/service", Qi4jServiceResource.class);
+
         router.attach( "/entitytype", createFinder( EntityTypesResource.class ) );
         router.attach( "/entitytype/{type}", createFinder( EntityTypeResource.class ) );
 
@@ -113,7 +116,7 @@ public class RestApplication extends Application
     private Finder createFinder( Class<? extends Resource> resource )
     {
         ObjectBuilder<Finder> builder = factory.newObjectBuilder( Finder.class );
-        builder.use( getContext() );
+        builder.use( getContext().createChildContext() );
         builder.use( resource );
         return builder.newInstance();
     }

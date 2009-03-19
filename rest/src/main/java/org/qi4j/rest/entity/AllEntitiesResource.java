@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.List;
 import org.qi4j.api.entity.Entity;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
@@ -28,17 +29,21 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.restlet.Context;
+import org.restlet.ext.atom.Feed;
+import org.restlet.ext.atom.Entry;
+import org.restlet.ext.atom.Text;
+import org.restlet.ext.atom.Link;
+import org.restlet.representation.Variant;
+import org.restlet.representation.Representation;
+import org.restlet.representation.DomRepresentation;
+import org.restlet.representation.WriterRepresentation;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
-import org.restlet.resource.DomRepresentation;
-import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
-import org.restlet.resource.Variant;
-import org.restlet.resource.WriterRepresentation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -64,6 +69,7 @@ public class AllEntitiesResource extends Resource
         getVariants().add( new Variant( MediaType.APPLICATION_RDF_XML ) );
         getVariants().add( new Variant( MediaType.TEXT_XML ) );
         getVariants().add( new Variant( MediaType.APPLICATION_JAVA_OBJECT ) );
+        getVariants().add( new Variant( MediaType.APPLICATION_ATOM ) );
         setModifiable( true );
     }
 
@@ -82,6 +88,10 @@ public class AllEntitiesResource extends Resource
         else if( MediaType.TEXT_HTML.equals( variant.getMediaType() ) )
         {
             return representHtml();
+        }
+        else if( MediaType.APPLICATION_ATOM.equals( variant.getMediaType() ) )
+        {
+            return representAtom();
         }
 
         throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
@@ -182,6 +192,32 @@ public class AllEntitiesResource extends Resource
         catch( EntityFinderException e )
         {
             throw new ResourceException( e );
+        }
+    }
+
+    private Representation representAtom() throws ResourceException
+    {
+        try
+        {
+            Feed feed = new Feed();
+            feed.setTitle( new Text(MediaType.TEXT_PLAIN, "All entities") );
+            List<Entry> entries = feed.getEntries();
+            final Iterable<QualifiedIdentity> query = entityFinder.findEntities( Entity.class.getName(), null, null, null, null );
+            for( QualifiedIdentity qualifiedIdentity : query )
+            {
+                Entry entry = new Entry();
+                entry.setTitle( new Text(MediaType.TEXT_PLAIN, qualifiedIdentity.toString()) );
+                Link link = new Link();
+                link.setHref( getRequest().getResourceRef().clone().addSegment( qualifiedIdentity.type()).addSegment( qualifiedIdentity.identity() ));
+                entry.getLinks().add( link );
+                entries.add( entry );
+            }
+
+            return feed;
+        }
+        catch( Exception e )
+        {
+            throw new ResourceException(e);
         }
     }
 

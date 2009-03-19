@@ -39,7 +39,7 @@ public class Qi4jFinder extends Finder
         ObjectBuilder<? extends Handler> builder = factory.newObjectBuilder( targetClass );
         builder.use( request );
         builder.use( response );
-        builder.use( getContext() );
+        builder.use( getContext().createChildContext() );
 
         EntityStateSerializer serializer = factory.newObject( EntityStateSerializer.class );
         builder.use( serializer );
