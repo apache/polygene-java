@@ -34,6 +34,8 @@ import org.qi4j.rest.Main;
 import org.qi4j.rest.TestEntity;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.spi.structure.ApplicationSPI;
+import org.restlet.Client;
+import org.restlet.data.Protocol;
 
 /**
  * JAVADOC
@@ -50,8 +52,16 @@ public class SPARQLEntityFinderTest
         ModuleAssembly store = module.layerAssembly().newModuleAssembly( "REST Store/Finder" );
         store.addObjects( EntityStateSerializer.class, EntityStateParser.class, EntityTypeSerializer.class);
         store.addEntities( RESTEntityStoreConfiguration.class, SPARQLEntityFinderConfiguration.class );
-        store.addServices( MemoryEntityStoreService.class, RestletClientService.class );
+        store.addServices( MemoryEntityStoreService.class);
         store.addServices( RESTEntityStoreService.class, SPARQLEntityFinderService.class, RdfFactoryService.class ).visibleIn( Visibility.layer );
+        store.importServices( Client.class );
+    }
+
+    @Override protected void initApplication( Application app ) throws Exception
+    {
+        Client client = new Client( Protocol.HTTP);
+        client.start();
+        app.metaInfo().set( client );
     }
 
     @Override @Before public void setUp() throws Exception

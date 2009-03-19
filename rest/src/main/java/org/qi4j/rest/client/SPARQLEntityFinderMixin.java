@@ -45,7 +45,7 @@ import org.xml.sax.helpers.XMLReaderAdapter;
 public class SPARQLEntityFinderMixin
     implements EntityFinder
 {
-    @Service Wrapper<Client> client;
+    @Service Client client;
     @Service RdfFactory rdfFactory;
 
     public Iterable<QualifiedIdentity> findEntities( String resultType, BooleanExpression whereClause,
@@ -137,7 +137,7 @@ public class SPARQLEntityFinderMixin
             String query = parser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults );
 
             String url = "http://localhost:8040/qi4j/query.rdf?query=" + URLEncoder.encode( query, "UTF-8" );
-            Response response = client.get().get( url );
+            Response response = client.get( url );
             SaxRepresentation sax = response.getEntityAsSax();
             final EntityResultXMLReaderAdapter xmlReaderAdapter = new EntityResultXMLReaderAdapter( callback );
             sax.parse( xmlReaderAdapter );

@@ -68,7 +68,7 @@ public class RESTEntityStoreServiceMixin
     @This Configuration<RESTEntityStoreConfiguration> config;
     @Uses ServiceDescriptor descriptor;
 
-    @Service private Wrapper<Client> client;
+    @Service private Client client;
     private Reference baseRef;
 
     public void activate() throws Exception
@@ -95,7 +95,7 @@ public class RESTEntityStoreServiceMixin
             Reference ref = new Reference( baseRef.toString() + uri );
             Request request = new Request( Method.GET, ref );
             request.getClientInfo().getAcceptedMediaTypes().add( new Preference<MediaType>( MediaType.APPLICATION_JAVA_OBJECT ) );
-            Response response = client.get().handle( request );
+            Response response = client.handle( request );
             if( response.getStatus().isSuccess() )
             {
                 if( response.isEntityAvailable() )
@@ -151,7 +151,7 @@ public class RESTEntityStoreServiceMixin
     {
         Reference ref = new Reference( baseRef.toString() );
 
-        Response response = client.get().post( ref, new OutputRepresentation( MediaType.APPLICATION_JAVA_OBJECT )
+        Response response = client.post( ref, new OutputRepresentation( MediaType.APPLICATION_JAVA_OBJECT )
         {
             public void write( OutputStream outputStream ) throws IOException
             {
