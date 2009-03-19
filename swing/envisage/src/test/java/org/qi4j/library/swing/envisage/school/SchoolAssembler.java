@@ -38,13 +38,13 @@ public class SchoolAssembler
         appAssembly.setName( "School" );
 
         // Create layers
+        LayerAssembly layerUI = createUILayer( appAssembly );
+        LayerAssembly layerDomain = createDomainLayer( appAssembly );
         LayerAssembly layerInfra = createInfrastructureLayer( appAssembly );
 
-        LayerAssembly layerDomain = createDomainLayer( appAssembly );
+        layerUI.uses( layerDomain );
         layerDomain.uses( layerInfra );
 
-        LayerAssembly layerUI = createUILayer( appAssembly );
-        layerUI.uses( layerDomain );
         return appAssembly;
     }
 
