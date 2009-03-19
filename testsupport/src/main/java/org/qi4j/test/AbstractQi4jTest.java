@@ -58,6 +58,7 @@ public abstract class AbstractQi4jTest
     {
         qi4j = new Energy4Java();
         application = newApplication();
+        initApplication( application );
         api = spi = qi4j.spi();
         application.activate();
 
@@ -80,6 +81,10 @@ public abstract class AbstractQi4jTest
                 return applicationFactory.newApplicationAssembly( AbstractQi4jTest.this);
             }
         });
+    }
+
+    protected void initApplication(Application app) throws Exception
+    {
     }
 
     @After public void tearDown() throws Exception
