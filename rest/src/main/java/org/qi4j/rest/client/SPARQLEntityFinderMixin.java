@@ -17,13 +17,14 @@
  */
 package org.qi4j.rest.client;
 
-import java.net.URLEncoder;
 import org.openrdf.query.QueryLanguage;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.service.Wrapper;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.configuration.Configuration;
 import org.qi4j.index.rdf.RdfFactory;
 import org.qi4j.index.rdf.RdfQueryParser;
 import org.qi4j.index.rdf.callback.CollectingQualifiedIdentityResultCallback;
@@ -32,22 +33,38 @@ import org.qi4j.index.rdf.callback.SingleQualifiedIdentityResultCallback;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
-import org.restlet.Client;
 import org.restlet.Uniform;
 import org.restlet.representation.SaxRepresentation;
 import org.restlet.data.Response;
+import org.restlet.data.Reference;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLReaderAdapter;
+import java.net.URLEncoder;
 
 /**
  * JAVADOC Add JavaDoc
  */
 public class SPARQLEntityFinderMixin
-    implements EntityFinder
+    implements EntityFinder, Activatable
 {
+    @This
+    Configuration<SPARQLEntityFinderConfiguration> config;
+
     @Service Uniform client;
     @Service RdfFactory rdfFactory;
+    private Reference baseQueryRef;
+
+    public void activate() throws Exception
+    {
+        baseQueryRef = new Reference(config.configuration().host().get());
+
+        baseQueryRef.addSegment( "qi4j" ).addSegment( "query.rdf" );
+    }
+
+    public void passivate() throws Exception
+    {
+    }
 
     public Iterable<QualifiedIdentity> findEntities( String resultType, BooleanExpression whereClause,
                                                      OrderBy[] orderBySegments, Integer firstResult, Integer maxResults )
@@ -137,8 +154,9 @@ public class SPARQLEntityFinderMixin
             final RdfQueryParser parser = rdfFactory.newQueryParser( QueryLanguage.SPARQL );
             String query = parser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults );
 
-            String url = "http://localhost:8040/qi4j/query.rdf?query=" + URLEncoder.encode( query, "UTF-8" );
-            Response response = client.get( url );
+            Reference queryReference = baseQueryRef.clone();
+            queryReference.addQueryParameter( "query", query );
+            Response response = client.get( queryReference );
             SaxRepresentation sax = response.getEntityAsSax();
             final EntityResultXMLReaderAdapter xmlReaderAdapter = new EntityResultXMLReaderAdapter( callback );
             sax.parse( xmlReaderAdapter );

@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFParser;
+import org.openrdf.rio.RDFParseException;
+import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.helpers.StatementCollector;
 import org.openrdf.rio.rdfxml.RDFXMLParserFactory;
 import org.qi4j.api.injection.scope.Service;
@@ -74,7 +76,8 @@ public class RESTEntityStoreServiceMixin
 
     public void activate() throws Exception
     {
-        baseRef = new Reference( config.configuration().host().get() + "/qi4j/entity/" );
+        baseRef = new Reference( config.configuration().host().get());
+        baseRef.addSegment( "qi4j" ).addSegment( "entity" );
     }
 
     public void passivate() throws Exception
@@ -92,8 +95,7 @@ public class RESTEntityStoreServiceMixin
 
         try
         {
-            String uri = anIdentity.type() + "/" + anIdentity.identity();
-            Reference ref = new Reference( baseRef.toString() + uri );
+            Reference ref = baseRef.clone().addSegment( anIdentity.type() ).addSegment( anIdentity.identity() );
             Request request = new Request( Method.GET, ref );
             request.getClientInfo().getAcceptedMediaTypes().add( new Preference<MediaType>( MediaType.APPLICATION_JAVA_OBJECT ) );
             Response response = client.handle( request );
@@ -102,34 +104,7 @@ public class RESTEntityStoreServiceMixin
                 if( response.isEntityAvailable() )
                 {
                     Representation entity = response.getEntity();
-                    if( entity.getMediaType().equals( MediaType.APPLICATION_RDF_XML ) )
-                    {
-                        Reader reader = entity.getReader();
-                        RDFParser rdfParser = new RDFXMLParserFactory().getParser();
-                        Collection<Statement> statements = new ArrayList<Statement>();
-                        StatementCollector statementCollector = new StatementCollector( statements );
-                        rdfParser.setRDFHandler( statementCollector );
-                        rdfParser.parse( reader, uri );
-
-                        long modified = response.getEntity().getModificationDate().getTime();
-                        long version = Long.parseLong( response.getEntity().getTag().getName() );
-                        DefaultEntityState entityState = new DefaultEntityState( version, modified,
-                                                                                 anIdentity, EntityStatus.LOADED,
-                                                                                 entityType,
-                                                                                 new HashMap<QualifiedName, Object>(),
-                                                                                 new HashMap<QualifiedName, QualifiedIdentity>(),
-                                                                                 DefaultEntityState.newManyCollections( entityType ) );
-                        parser.parse( statements, entityState );
-                        entityState.clearModified();
-                        return entityState;
-                    }
-                    else
-                    {
-                        ObjectInputStream oin = new ObjectInputStream( entity.getStream() );
-                        EntityState state = (EntityState) oin.readObject();
-                        oin.close();
-                        return state;
-                    }
+                    return parseEntityState( anIdentity, entityType, ref, response, entity );
                 }
             }
             else if( response.getStatus().equals( Status.CLIENT_ERROR_NOT_FOUND ) )
@@ -146,6 +121,39 @@ public class RESTEntityStoreServiceMixin
             throw new EntityStoreException( e );
         }
         throw new EntityStoreException();
+    }
+
+    private EntityState parseEntityState( QualifiedIdentity anIdentity, EntityType entityType, Reference ref, Response response, Representation entity )
+        throws IOException, RDFParseException, RDFHandlerException, ClassNotFoundException
+    {
+        if( entity.getMediaType().equals( MediaType.APPLICATION_RDF_XML ) )
+        {
+            Reader reader = entity.getReader();
+            RDFParser rdfParser = new RDFXMLParserFactory().getParser();
+            Collection<Statement> statements = new ArrayList<Statement>();
+            StatementCollector statementCollector = new StatementCollector( statements );
+            rdfParser.setRDFHandler( statementCollector );
+            rdfParser.parse( reader, ref.toString() );
+
+            long modified = response.getEntity().getModificationDate().getTime();
+            long version = Long.parseLong( response.getEntity().getTag().getName() );
+            DefaultEntityState entityState = new DefaultEntityState( version, modified,
+                                                                     anIdentity, EntityStatus.LOADED,
+                                                                     entityType,
+                                                                     new HashMap<QualifiedName, Object>(),
+                                                                     new HashMap<QualifiedName, QualifiedIdentity>(),
+                                                                     DefaultEntityState.newManyCollections( entityType ) );
+            parser.parse( statements, entityState );
+            entityState.clearModified();
+            return entityState;
+        }
+        else
+        {
+            ObjectInputStream oin = new ObjectInputStream( entity.getStream() );
+            EntityState state = (EntityState) oin.readObject();
+            oin.close();
+            return state;
+        }
     }
 
     public StateCommitter prepare( final Iterable<EntityState> newStates, final Iterable<EntityState> loadedStates, final Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException

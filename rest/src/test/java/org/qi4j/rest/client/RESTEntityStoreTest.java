@@ -82,7 +82,7 @@ public class RESTEntityStoreTest
     }
 
     @Test
-    @Ignore( "I can't get this test to run reliably on the SRV03 release machine. Broken Pipe as a SocketException." )
+//    @Ignore( "I can't get this test to run reliably on the SRV03 release machine. Broken Pipe as a SocketException." )
     public void testEntityStore()
         throws UnitOfWorkCompletionException
     {

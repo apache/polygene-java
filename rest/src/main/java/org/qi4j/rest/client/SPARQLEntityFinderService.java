@@ -16,6 +16,7 @@ package org.qi4j.rest.client;
 
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.Activatable;
 import org.qi4j.spi.query.EntityFinder;
 
 /**
@@ -23,6 +24,6 @@ import org.qi4j.spi.query.EntityFinder;
  */
 @Mixins( SPARQLEntityFinderMixin.class )
 public interface SPARQLEntityFinderService
-    extends EntityFinder, ServiceComposite
+    extends EntityFinder, ServiceComposite, Activatable
 {
 }
