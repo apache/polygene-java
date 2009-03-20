@@ -35,6 +35,7 @@ import org.qi4j.rest.TestEntity;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.restlet.Client;
+import org.restlet.Uniform;
 import org.restlet.data.Protocol;
 
 /**
@@ -54,7 +55,7 @@ public class SPARQLEntityFinderTest
         store.addEntities( RESTEntityStoreConfiguration.class, SPARQLEntityFinderConfiguration.class );
         store.addServices( MemoryEntityStoreService.class);
         store.addServices( RESTEntityStoreService.class, SPARQLEntityFinderService.class, RdfFactoryService.class ).visibleIn( Visibility.layer );
-        store.importServices( Client.class );
+        store.importServices( Uniform.class );
     }
 
     @Override protected void initApplication( Application app ) throws Exception

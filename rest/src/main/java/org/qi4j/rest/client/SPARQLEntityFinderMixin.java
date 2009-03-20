@@ -33,6 +33,7 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.restlet.Client;
+import org.restlet.Uniform;
 import org.restlet.representation.SaxRepresentation;
 import org.restlet.data.Response;
 import org.xml.sax.Attributes;
@@ -45,7 +46,7 @@ import org.xml.sax.helpers.XMLReaderAdapter;
 public class SPARQLEntityFinderMixin
     implements EntityFinder
 {
-    @Service Client client;
+    @Service Uniform client;
     @Service RdfFactory rdfFactory;
 
     public Iterable<QualifiedIdentity> findEntities( String resultType, BooleanExpression whereClause,

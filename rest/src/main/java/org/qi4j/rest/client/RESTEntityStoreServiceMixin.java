@@ -47,6 +47,7 @@ import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.restlet.Client;
+import org.restlet.Uniform;
 import org.restlet.representation.Representation;
 import org.restlet.representation.OutputRepresentation;
 import org.restlet.data.MediaType;
@@ -68,7 +69,7 @@ public class RESTEntityStoreServiceMixin
     @This Configuration<RESTEntityStoreConfiguration> config;
     @Uses ServiceDescriptor descriptor;
 
-    @Service private Client client;
+    @Service private Uniform client;
     private Reference baseRef;
 
     public void activate() throws Exception
