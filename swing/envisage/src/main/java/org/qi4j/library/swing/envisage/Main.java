@@ -18,6 +18,7 @@ import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.spi.structure.ApplicationSPI;
+import org.qi4j.spi.structure.ApplicationModelSPI;
 
 /**
  * Start Envisage with a specified application assembler. Specify assembler class
@@ -34,7 +35,7 @@ public class Main
 
         Energy4Java energy4Java = new Energy4Java();
 
-        ApplicationSPI application = energy4Java.newApplication( assembler );
+        ApplicationModelSPI application = energy4Java.newApplicationModel( assembler );
 
         new Envisage().run( application );
     }

@@ -42,6 +42,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescrip
 import org.qi4j.library.swing.envisage.print.PDFWriter;
 import org.qi4j.library.swing.envisage.tree.TreeModelPane;
 import org.qi4j.spi.structure.ApplicationSPI;
+import org.qi4j.spi.structure.ApplicationModelSPI;
 
 /**
  * Envisage Main Frame
@@ -60,12 +61,12 @@ public class EnvisageFrame extends JFrame
     private TreeModelPane treeModelPane;
     private DetailModelPane detailModelPane;
 
-    private Application application;
+    private ApplicationModelSPI application;
     private ApplicationDetailDescriptor descriptor;
 
     private boolean graphItemSelectionInProgress;
 
-    public EnvisageFrame( Application application )
+    public EnvisageFrame( ApplicationModelSPI application )
     {
 
         this.application = application;
@@ -127,7 +128,7 @@ public class EnvisageFrame extends JFrame
         modelSplitPane.setDividerLocation( 300 );
         graphSplitPane.setDividerLocation( 384 );
 
-        descriptor = ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor( (ApplicationSPI) application );
+        descriptor = ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor( application );
         treeModelPane.initQi4J( descriptor );
         graphPane.initQi4J( descriptor );
     }

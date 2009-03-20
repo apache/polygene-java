@@ -53,7 +53,7 @@ public class EnvisageSample extends AbstractQi4jTest
         //createTestData2();
         //createTestData3();
 
-        new Envisage().run( application );
+        new Envisage().run( applicationModel );
     }
 
     public void assemble( ModuleAssembly module ) throws AssemblyException

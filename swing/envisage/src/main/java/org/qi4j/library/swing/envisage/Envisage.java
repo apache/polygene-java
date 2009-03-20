@@ -29,6 +29,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.spi.structure.ApplicationModelSPI;
 
 /**
  * Qi4J Application Viewer
@@ -37,9 +38,9 @@ import org.qi4j.bootstrap.Energy4Java;
  */
 public class Envisage
 {
-    protected Application application;
+    protected ApplicationModelSPI application;
 
-    public void run( Application application )
+    public void run( ApplicationModelSPI application )
     {
         initLookAndFeel();
 
@@ -57,6 +58,7 @@ public class Envisage
     private void showMainFrame()
     {
         final EnvisageFrame mainFrame = new EnvisageFrame( application );
+        mainFrame.setLocationByPlatform( true );
         mainFrame.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
         mainFrame.setSize( new Dimension( 1024, 768 ) );
         mainFrame.setVisible( true );

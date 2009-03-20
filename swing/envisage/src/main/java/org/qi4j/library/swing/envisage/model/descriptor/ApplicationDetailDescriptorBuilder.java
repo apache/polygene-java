@@ -44,6 +44,7 @@ import org.qi4j.spi.structure.DescriptorVisitor;
 import org.qi4j.spi.structure.LayerDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
 import org.qi4j.spi.structure.UsedLayersDescriptor;
+import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.spi.value.ValueDescriptor;
 
 /**
@@ -58,7 +59,7 @@ public final class ApplicationDetailDescriptorBuilder
     {
     }
 
-    public static ApplicationDetailDescriptor createApplicationDetailDescriptor( ApplicationSPI anApplication )
+    public static ApplicationDetailDescriptor createApplicationDetailDescriptor( ApplicationModelSPI anApplication )
     {
         ApplicationDescriptorVisitor visitor = new ApplicationDescriptorVisitor();
         anApplication.visitDescriptor( visitor );
