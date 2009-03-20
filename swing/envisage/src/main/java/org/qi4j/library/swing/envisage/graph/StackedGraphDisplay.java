@@ -29,9 +29,7 @@ import java.util.Iterator;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import org.qi4j.library.swing.envisage.event.LinkEvent;
-import org.qi4j.library.swing.envisage.event.LinkListener;
 import prefuse.Constants;
-import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.action.Action;
 import prefuse.action.ActionList;
@@ -65,7 +63,7 @@ import prefuse.visual.sort.TreeDepthItemSorter;
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
-public class StackedGraphDisplay extends Display
+public class StackedGraphDisplay extends GraphDisplay
 {
     public static final Font FONT = FontLib.getFont("Tahoma",12);
 
@@ -77,15 +75,8 @@ public class StackedGraphDisplay extends Display
         LABEL_SCHEMA.setDefault(VisualItem.FONT, FONT);
     }
 
-    static final String USER_OBJECT = "userObject";
-    static final String NAME_LABEL = "name";
     static final String LABELS = "labels";
-
-    static final String GRAPH = "graph";
-    static final String GRAPH_NODES = "graph.nodes";
-    static final String GRAPH_EDGES = "graph.edges";
-    static final String USES_EDGES = "uses.edges";
-
+    
     static final String LAYOUT_ACTION = "layout";
     static final String COLORS_ACTION = "colors";
 
@@ -198,6 +189,11 @@ public class StackedGraphDisplay extends Display
         activity = m_vis.run(LAYOUT_ACTION);
     }
 
+    public void setSelectedValue( Object object )
+    {
+        //TODO    
+    }
+
     public void zoomIn()
     {
         if (isInProgress())
@@ -236,42 +232,6 @@ public class StackedGraphDisplay extends Display
         }
 
         return false;
-    }
-
-
-    /**
-     * Add a listener that's notified each time a change to the selection occurs.
-     *
-     * @param listener the LinkListener to add
-     */
-    public void addLinkListener( LinkListener listener )
-    {
-        listenerList.add( LinkListener.class, listener );
-    }
-
-    /**
-     * Remove a listener from the list that's notified each time a change to the selection occurs.
-     *
-     * @param listener the LinkListener to remove
-     */
-    public void removeLinkListener( LinkListener listener )
-    {
-        listenerList.remove( LinkListener.class, listener );
-    }
-
-    protected void fireLinkActivated( LinkEvent evt )
-    {
-        // Guaranteed to return a non-null array
-        Object[] listeners = listenerList.getListenerList();
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
-        for( int i = listeners.length - 2; i >= 0; i -= 2 )
-        {
-            if( listeners[ i ] == LinkListener.class )
-            {
-                ( (LinkListener) listeners[ i + 1 ] ).activated( evt );
-            }
-        }
     }
 
     // ------------------------------------------------------------------------

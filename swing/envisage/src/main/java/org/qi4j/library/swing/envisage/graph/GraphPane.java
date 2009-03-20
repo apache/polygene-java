@@ -20,6 +20,9 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -28,14 +31,15 @@ import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescrip
 import prefuse.data.Graph;
 
 /**
- * Just a simple wrapper for ApplicationModelDisplay
+ * Just a simple wrapper for ApplicationModel Graph Display
  *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class GraphPane extends JPanel
 {
-    private GraphDisplay display;
+    private TreeGraphDisplay treeDisplay;
     private StackedGraphDisplay stackedDisplay;
+    private List<GraphDisplay> displays;
 
     protected ApplicationDetailDescriptor descriptor;
 
@@ -44,8 +48,13 @@ public class GraphPane extends JPanel
 
     public GraphPane()
     {
-        display = new GraphDisplay();
+        treeDisplay = new TreeGraphDisplay();
         stackedDisplay = new StackedGraphDisplay();
+
+        List<GraphDisplay> tmpList = new ArrayList<GraphDisplay>(2);
+        tmpList.add(treeDisplay);
+        tmpList.add(stackedDisplay);
+        displays = Collections.unmodifiableList( tmpList );
 
         scrollPane = new JScrollPane( );
         scrollPane.setViewportView( stackedDisplay );
@@ -54,7 +63,7 @@ public class GraphPane extends JPanel
         scrollPane.getHorizontalScrollBar().setUnitIncrement(unitInc);
 
         tabPane = new JTabbedPane( );
-        tabPane.add("Tree", display);
+        tabPane.add("Tree", treeDisplay );
         tabPane.add("Stacked", scrollPane);
 
         this.setLayout( new BorderLayout( ) );
@@ -65,7 +74,7 @@ public class GraphPane extends JPanel
             public void componentResized( ComponentEvent evt)
             {
                 Dimension size = GraphPane.this.getSize();
-                display.setSize( size.width, size.height );
+                treeDisplay.setSize( size.width, size.height );
                 tabPane.revalidate();
                 tabPane.repaint();
             }
@@ -78,27 +87,33 @@ public class GraphPane extends JPanel
 
         Graph graph = GraphBuilder.buildGraph( descriptor );
         Dimension size = getSize();
-        display.setSize( size.width, size.height );
-        display.run(graph);
+        treeDisplay.setSize( size.width, size.height );
+        treeDisplay.run(graph);
 
-        graph = StackedGraphBuilder.buildGraph( descriptor );
+        graph = GraphBuilder.buildGraph( descriptor );
         stackedDisplay.setSize( size.width, size.height );
         stackedDisplay.run(graph);
     }
 
     public void refresh()
     {
-        display.run();
+        treeDisplay.run();
+        stackedDisplay.run();
     }
 
-    public GraphDisplay getGraphDisplay()
+    public List<GraphDisplay> getGraphDisplays()
     {
-        return display;
+        return displays; 
+    }
+
+    public TreeGraphDisplay getGraphDisplay()
+    {
+        return treeDisplay;
     }
 
     public void addLinkListener( LinkListener listener )
     {
-        display.addLinkListener( listener );
+        treeDisplay.addLinkListener( listener );
         stackedDisplay.addLinkListener( listener );
     }
 
@@ -109,7 +124,7 @@ public class GraphPane extends JPanel
      */
     public void removeLinkListener( LinkListener listener )
     {
-        display.removeLinkListener( listener );
+        treeDisplay.removeLinkListener( listener );
         stackedDisplay.removeLinkListener( listener );
     }
 }

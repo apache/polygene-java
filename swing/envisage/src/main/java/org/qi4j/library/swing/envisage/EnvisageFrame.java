@@ -32,7 +32,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import org.qi4j.api.structure.Application;
 import org.qi4j.library.swing.envisage.detail.DetailModelPane;
 import org.qi4j.library.swing.envisage.event.LinkEvent;
 import org.qi4j.library.swing.envisage.event.LinkListener;
@@ -41,7 +40,6 @@ import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescrip
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptorBuilder;
 import org.qi4j.library.swing.envisage.print.PDFWriter;
 import org.qi4j.library.swing.envisage.tree.TreeModelPane;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.ApplicationModelSPI;
 
 /**
@@ -211,7 +209,7 @@ public class EnvisageFrame extends JFrame
             public void run()
             {
                 PDFWriter pdf = new PDFWriter();
-                pdf.write( EnvisageFrame.this, descriptor, graphPane.getGraphDisplay() );
+                pdf.write( EnvisageFrame.this, descriptor, graphPane.getGraphDisplays() );
             }
         } );
     }

@@ -144,48 +144,90 @@ public class GraphBuilder
 
     private void buildServicesNode( Node parent, Iterable<ServiceDetailDescriptor> iter )
     {
+        boolean first = true;
         for( ServiceDetailDescriptor descriptor : iter )
         {
+            if (first)
+            {
+                String name = "Services";
+                parent = addChild( parent, name, name );
+                first = false;
+            }
             addChild( parent, descriptor.descriptor().type().getSimpleName(), descriptor );
         }
     }
 
     private void buildImportedServicesNode( Node parent, Iterable<ImportedServiceDetailDescriptor> iter )
     {
+        boolean first = true;
         for( ImportedServiceDetailDescriptor descriptor : iter )
         {
+            if (first)
+            {
+                String name = "Imported Services";
+                parent = addChild( parent, name, name );
+                first = false;
+            }
             addChild( parent, descriptor.descriptor().type().getSimpleName(), descriptor );
         }
     }
 
     private void buildEntitiesNode( Node parent, Iterable<EntityDetailDescriptor> iter )
     {
+        boolean first = true;
         for( EntityDetailDescriptor descriptor : iter )
         {
+            if (first)
+            {
+                String name = "Entities";
+                parent = addChild( parent, name, name );
+                first = false;
+            }
             addChild( parent, descriptor.descriptor().type().getSimpleName(), descriptor );
         }
     }
 
     private void buildTransientsNode( Node parent, Iterable<CompositeDetailDescriptor> iter )
     {
+        boolean first = true;
         for( CompositeDetailDescriptor descriptor : iter )
         {
+            if (first)
+            {
+                String name = "Transients";
+                parent = addChild( parent, name, name );
+                first = false;
+            }
             addChild( parent, descriptor.descriptor().type().getSimpleName(), descriptor );
         }
     }
 
     private void buildValuesNode( Node parent, Iterable<ValueDetailDescriptor> iter )
     {
+        boolean first = true;
         for( ValueDetailDescriptor descriptor : iter )
         {
+            if (first)
+            {
+                String name = "Values";
+                parent = addChild( parent, name, name );
+                first = false;
+            }
             addChild( parent, descriptor.descriptor().type().getSimpleName(), descriptor );
         }
     }
 
     private void buildObjectsNode( Node parent, Iterable<ObjectDetailDescriptor> iter )
     {
+        boolean first = true;
         for( ObjectDetailDescriptor descriptor : iter )
         {
+            if (first)
+            {
+                String name = "Objects";
+                parent = addChild( parent, name, name );
+                first = false;
+            }
             addChild( parent, descriptor.descriptor().type().getSimpleName(), descriptor );
         }
     }

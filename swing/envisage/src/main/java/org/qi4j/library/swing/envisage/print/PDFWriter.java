@@ -94,7 +94,7 @@ public class PDFWriter
     protected float lineSpace = 15;
     protected float headerLineSpace = 25;
 
-    public void write( Component parent, ApplicationDetailDescriptor descriptor, GraphDisplay graphDisplay )
+    public void write( Component parent, ApplicationDetailDescriptor descriptor, List<GraphDisplay> graphDisplays )
     {
         JFileChooser fc = new JFileChooser();
         PDFFileFilter pdfFileFilter = new PDFFileFilter();
@@ -115,16 +115,16 @@ public class PDFWriter
             file = new File( filename );
         }
 
-        write( file, descriptor, graphDisplay );
+        write( file, descriptor, graphDisplays );
     }
 
 
-    public void write( File file, ApplicationDetailDescriptor descriptor, GraphDisplay graphDisplay )
+    public void write( File file, ApplicationDetailDescriptor descriptor, List<GraphDisplay> graphDisplays )
     {
 
         try
         {
-            writeImpl( file, descriptor, graphDisplay );
+            writeImpl( file, descriptor, graphDisplays );
         }
         catch( Exception ex )
         {
@@ -132,14 +132,19 @@ public class PDFWriter
         }
     }
 
-    protected void writeImpl( File file, ApplicationDetailDescriptor descriptor, GraphDisplay graphDisplay ) throws Exception
+    protected void writeImpl( File file, ApplicationDetailDescriptor descriptor, List<GraphDisplay> graphDisplays ) throws Exception
     {
 
         try
         {
             doc = new PDDocument();
 
-            writeGraphPage( graphDisplay );
+
+            for (GraphDisplay graphDisplay : graphDisplays )
+            {
+                writeGraphPage( graphDisplay );    
+            }
+
             writePage( descriptor );
 
             if( curContentStream != null )
@@ -168,6 +173,12 @@ public class PDFWriter
     private void writeGraphPage( GraphDisplay graphDisplay ) throws Exception
     {
         BufferedImage img = graphDisplay.getOffscreenBuffer();
+        if (img == null)
+        {
+            // Should not happend
+            return;
+        }
+
         int w = img.getWidth();
         int h = img.getHeight();
 
