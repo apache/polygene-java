@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,20 +12,16 @@
  *
  */
 
-package org.qi4j.api.common;
+package org.qi4j.spi.structure;
+
+import org.qi4j.spi.Qi4jSPI;
 
 /**
- * Thrown when an application is considered to not be constructed properly.
- * This happens primarily when client code tries to instantiate Composites
- * and objects which have not been registered in the ModuleAssembly.
+ * JAVADOC
  */
-public class InvalidApplicationException
-    extends RuntimeException
+public interface ApplicationModelSPI
 {
-    private static final long serialVersionUID = 1L;
+    void visitDescriptor( DescriptorVisitor visitor );
 
-    public InvalidApplicationException( String string )
-    {
-        super( string );
-    }
+    ApplicationSPI newInstance( Qi4jSPI runtime);
 }

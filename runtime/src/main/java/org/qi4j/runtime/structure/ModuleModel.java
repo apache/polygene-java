@@ -15,6 +15,7 @@
 package org.qi4j.runtime.structure;
 
 import java.io.Serializable;
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import org.qi4j.runtime.composite.BindingException;
@@ -41,7 +42,7 @@ public class ModuleModel
     private final ValuesModel valuesModel;
     private final ServicesModel servicesModel;
     private ImportedServicesModel importedServicesModel;
-    private final ClassLoader classLoader;
+    private transient ClassLoader classLoader;
 
     private final String name;
     private MetaInfo metaInfo;
@@ -158,6 +159,14 @@ public class ModuleModel
         return name;
     }
 
+     private void readObject(java.io.ObjectInputStream in)
+         throws IOException, ClassNotFoundException
+     {
+         in.defaultReadObject();
+
+         classLoader = new ModuleClassLoader(Thread.currentThread().getContextClassLoader());
+     }
+
     private class ModuleClassLoader
         extends ClassLoader
     {
@@ -189,7 +198,9 @@ public class ModuleModel
         }
     }
 
-    class ClassFinder
+
+
+    static class ClassFinder
         implements ModuleVisitor
     {
         public String type;

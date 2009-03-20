@@ -85,7 +85,7 @@ public final class StateInjectionProviderFactory
         throw new InjectionProviderException( "Injected value has invalid type" );
     }
 
-    private class PropertyInjectionProvider
+    static private class PropertyInjectionProvider
         implements InjectionProvider, Serializable
     {
         private final PropertyDescriptor propertyDescriptor;
@@ -109,7 +109,7 @@ public final class StateInjectionProviderFactory
         }
     }
 
-    private class AssociationInjectionProvider
+    static private class AssociationInjectionProvider
         implements InjectionProvider, Serializable
     {
         private final AssociationDescriptor associationDescriptor;
@@ -133,7 +133,7 @@ public final class StateInjectionProviderFactory
         }
     }
 
-    private class StateInjectionProvider
+    static private class StateInjectionProvider
         implements InjectionProvider, Serializable
     {
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException

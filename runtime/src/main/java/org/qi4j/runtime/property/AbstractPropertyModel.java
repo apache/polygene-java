@@ -15,6 +15,10 @@
 package org.qi4j.runtime.property;
 
 import java.io.Serializable;
+import java.io.ObjectOutputStream;
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -50,6 +54,7 @@ import org.qi4j.spi.value.SerializableType;
 import org.qi4j.spi.value.ValueState;
 import org.qi4j.spi.value.ValueType;
 import static org.qi4j.api.common.TypeName.nameOf;
+import org.qi4j.api.util.SerializationUtil;
 
 /**
  * JAVADOC
@@ -61,7 +66,7 @@ public abstract class AbstractPropertyModel
 
     private final Type type;
 
-    private final Method accessor; // Interface accessor
+    private transient Method accessor; // Interface accessor
 
     private final QualifiedName qualifiedName;
 
@@ -319,6 +324,27 @@ public abstract class AbstractPropertyModel
             property = (Property<?>) Proxy.newProxyInstance( loader, type, new PropertyHandler( property ) );
         }
         return property;
+    }
+
+    private void writeObject( ObjectOutputStream out )
+        throws IOException
+    {
+        out.defaultWriteObject();
+        try
+        {
+            SerializationUtil.writeMethod( out, accessor );
+        }
+        catch( NotSerializableException e )
+        {
+            System.err.println( "NotSerializable in " + getClass() );
+            throw e;
+        }
+    }
+
+    private void readObject( ObjectInputStream in ) throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        accessor = SerializationUtil.readMethod( in );
     }
 
     protected static class ComputedPropertyInfo<T>

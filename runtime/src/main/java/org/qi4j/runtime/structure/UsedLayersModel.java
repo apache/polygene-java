@@ -63,7 +63,6 @@ public final class UsedLayersModel
     }
 
     public UsedLayersInstance newInstance( List<LayerInstance> usedLayerInstances)
-        throws AssemblyException
     {
         return new UsedLayersInstance( usedLayerInstances );
     }

@@ -25,14 +25,17 @@ import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.injection.provider.InjectionProviderFactoryStrategy;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationDescriptor;
+import org.qi4j.spi.structure.ApplicationModelSPI;
+import org.qi4j.spi.structure.DescriptorVisitor;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.bootstrap.AssemblyException;
 
 /**
  * JAVADOC
  */
 public final class ApplicationModel
-    implements ApplicationDescriptor, Serializable
+    implements ApplicationModelSPI, ApplicationDescriptor, Serializable
 {
     private final String name;
     private MetaInfo metaInfo;
@@ -83,9 +86,14 @@ public final class ApplicationModel
         }
     }
 
-    // Context
+    // SPI
+    public void visitDescriptor( DescriptorVisitor visitor )
+    {
+        visitModel( new DescriptorModelVisitor( visitor ) );
+    }
+
     public ApplicationInstance newInstance( Qi4jSPI runtime )
-        throws AssemblyException
+        throws InvalidApplicationException
     {
         List<LayerInstance> layerInstances = new ArrayList<LayerInstance>();
         ApplicationInstance applicationInstance = new ApplicationInstance( this, runtime, layerInstances );
@@ -111,7 +119,7 @@ public final class ApplicationModel
             {
                 LayerInstance layerInstance = layerInstanceMap.get( usedLayer );
                 if (layerInstance == null)
-                    throw new AssemblyException("Could not find used layer:"+usedLayer.name());
+                    throw new InvalidApplicationException("Could not find used layer:"+usedLayer.name());
                 usedLayerInstances.add( layerInstance );
             }
         }

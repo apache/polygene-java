@@ -1,6 +1,10 @@
 package org.qi4j.runtime.injection.provider;
 
 import java.io.Serializable;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.NotSerializableException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -10,6 +14,7 @@ import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
+import org.qi4j.api.util.SerializationUtil;
 
 /**
  * JAVADOC
@@ -28,21 +33,24 @@ public final class ThisInjectionProviderFactory
             if( thisType.isAssignableFrom( bindingContext.object().type() ) )
             {
                 thisType = bindingContext.object().type();
-            } else
+            }
+            else
             {
-                AbstractCompositeDescriptor acd = ((AbstractCompositeDescriptor)bindingContext.object());
+                AbstractCompositeDescriptor acd = ( (AbstractCompositeDescriptor) bindingContext.object() );
                 boolean ok = false;
                 for( Class mixinType : acd.mixinTypes() )
                 {
-                    if (thisType.isAssignableFrom( mixinType ))
+                    if( thisType.isAssignableFrom( mixinType ) )
                     {
                         ok = true;
                         break;
                     }
                 }
 
-                if (!ok)
+                if( !ok )
+                {
                     throw new InvalidInjectionException( "Composite " + bindingContext.object().type().getName() + " does not implement @This type " + thisType.getName() + " in fragment " + dependencyModel.injectedClass().getName() );
+                }
             }
 
             return new ThisInjectionProvider( thisType );
@@ -86,6 +94,25 @@ public final class ThisInjectionProviderFactory
             {
                 throw new InjectionProviderException( "Could not instantiate @This proxy", e );
             }
+        }
+
+        private void writeObject( ObjectOutputStream out )
+            throws IOException
+        {
+            try
+            {
+                SerializationUtil.writeConstructor( out, proxyConstructor );
+            }
+            catch( NotSerializableException e )
+            {
+                System.err.println( "NotSerializable in " + getClass() );
+                throw e;
+            }
+        }
+
+        private void readObject( ObjectInputStream in ) throws IOException, ClassNotFoundException
+        {
+            proxyConstructor = SerializationUtil.readConstructor( in );
         }
     }
 }

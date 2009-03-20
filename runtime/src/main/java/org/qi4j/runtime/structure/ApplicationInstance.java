@@ -110,6 +110,6 @@ public class ApplicationInstance
 
     public void visitDescriptor( DescriptorVisitor visitor )
     {
-        model.visitModel( new DescriptorModelVisitor( visitor ) );
+        model.visitDescriptor( visitor );
     }
 }

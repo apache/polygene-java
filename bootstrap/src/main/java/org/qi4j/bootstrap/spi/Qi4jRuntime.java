@@ -23,6 +23,6 @@ import org.qi4j.spi.Qi4jSPI;
 public interface Qi4jRuntime
 {
     ApplicationAssemblyFactory applicationAssemblyFactory();
-    ApplicationFactory applicationFactory();
+    ApplicationModelFactory applicationModelFactory();
     Qi4jSPI spi();
 }

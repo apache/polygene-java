@@ -329,7 +329,7 @@ public final class ServiceInjectionProviderFactory
     }
 
     static class ServicesFinder
-        implements ModuleVisitor
+        implements ModuleVisitor, Serializable
     {
         public Type serviceType;
 

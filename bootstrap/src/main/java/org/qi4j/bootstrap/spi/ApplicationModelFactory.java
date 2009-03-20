@@ -20,25 +20,14 @@ import org.qi4j.bootstrap.HibernatingApplicationInvalidException;
 import org.qi4j.api.structure.Application;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationSPI;
+import org.qi4j.spi.structure.ApplicationModelSPI;
 
 /**
- * This interface is implemented by Qi4j runtimes
+ * Factory for ApplicationModelSPI's. Takes an ApplicationAssembly, executes it,
+ * and builds an application model from it, which can then be instantiated and activated.
  */
-public interface ApplicationFactory
+public interface ApplicationModelFactory
 {
-    ApplicationSPI newApplication( ApplicationAssembly assembly)
+    ApplicationModelSPI newApplicationModel( ApplicationAssembly assembly)
         throws AssemblyException;
-
-    /** Load the ApplicationModel from disk, bind and instantiate from that.
-     *
-     * Whenever an Application instance is created, its ApplicationModel will be saved in a binary
-     * format on disk. This method can use that file to speed up the boot process for large applications, by
-     * not having to examine and interpret the ApplicationModel from scratch.
-     *
-     * @return An Application instance.
-     * @throws org.qi4j.bootstrap.HibernatingApplicationInvalidException If the file on disk can not be read.
-     * @throws AssemblyException If some Assembly failure occured during binding or instantiation of the application.
-     */
-    ApplicationSPI loadApplication()
-        throws HibernatingApplicationInvalidException, AssemblyException;
 }

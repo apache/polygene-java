@@ -20,12 +20,13 @@ package org.qi4j.api.property;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.io.Serializable;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.util.Classes;
 
 public final class GenericPropertyInfo
-    implements PropertyInfo
+    implements PropertyInfo, Serializable
 {
     public static Type getPropertyType( Method accessor )
     {
