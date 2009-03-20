@@ -194,7 +194,7 @@ public class GraphDisplay extends Display
         edgeRenderer.setVerticalAlignment2( Constants.CENTER );
         usesRenderer.setHorizontalAlignment1( Constants.CENTER );
         usesRenderer.setHorizontalAlignment2( Constants.CENTER );
-        usesRenderer.setVerticalAlignment1( Constants.TOP );
+        usesRenderer.setVerticalAlignment1( Constants.BOTTOM );
         usesRenderer.setVerticalAlignment2( Constants.CENTER );
         NodeLinkTreeLayout rtl = (NodeLinkTreeLayout) m_vis.getAction( LAYOUT_ACTION );
         CollapsedSubtreeLayout stl = (CollapsedSubtreeLayout) m_vis.getAction( SUB_LAYOUT_ACTION );

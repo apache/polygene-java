@@ -104,8 +104,8 @@ public class StackedGraphDisplay extends Display
         EdgeRenderer usesRenderer = new EdgeRenderer( Constants.EDGE_TYPE_CURVE, Constants.EDGE_ARROW_FORWARD );
         usesRenderer.setHorizontalAlignment1( Constants.CENTER );
         usesRenderer.setHorizontalAlignment2( Constants.CENTER );
-        usesRenderer.setVerticalAlignment1( Constants.TOP);
-        usesRenderer.setVerticalAlignment2( Constants.BOTTOM);
+        usesRenderer.setVerticalAlignment1( Constants.BOTTOM);
+        usesRenderer.setVerticalAlignment2( Constants.TOP);
 
         Predicate usesPredicate = (Predicate) ExpressionParser.parse( "ingroup('graph.edges') AND [" + USES_EDGES + "]==true", true );
 
