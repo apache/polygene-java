@@ -52,6 +52,7 @@ import org.qi4j.api.property.Property;
 import org.qi4j.rest.assembly.RestAssembler;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.spi.structure.ApplicationSPI;
+import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.common.Optional;
 import org.qi4j.test.AbstractQi4jTest;
@@ -60,10 +61,10 @@ import org.qi4j.test.AbstractQi4jTest;
 public class RestTest extends AbstractQi4jTest
 {
 
-    protected ApplicationSPI newApplication()
+    protected ApplicationModelSPI newApplication()
         throws AssemblyException
     {
-        return qi4j.newApplication( new ApplicationAssemblerAdapter(new Assembler[][][]
+        return qi4j.newApplicationModel( new ApplicationAssemblerAdapter(new Assembler[][][]
             {
                 {
                     {
