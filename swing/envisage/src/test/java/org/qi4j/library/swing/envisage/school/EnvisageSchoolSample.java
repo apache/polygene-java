@@ -39,8 +39,6 @@ public class EnvisageSchoolSample
 
         ApplicationModelSPI application = energy4Java.newApplicationModel( new SchoolAssembler());
 
-        application = (ApplicationModelSPI) new MarshalledObject(application).get();
-
         new Envisage().run( application );
     }
 }
