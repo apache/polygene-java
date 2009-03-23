@@ -28,6 +28,8 @@ import org.qi4j.library.swing.envisage.event.LinkListener;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ImportedServiceDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
@@ -48,6 +50,8 @@ public class DetailModelPane extends JPanel
     protected ServiceConfigurationPane serviceConfigurationPane;
     protected ServiceUsagePane serviceUsagePane;
     protected ImportedByPane importedByPane;
+    protected SPIPane spiPane;
+    protected APIPane apiPane;
 
     protected boolean linkActivatedInProgress;
 
@@ -59,10 +63,6 @@ public class DetailModelPane extends JPanel
         this.add( tabPane, BorderLayout.CENTER );
 
         createDetailPane();
-
-        //tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ),  generalPane );
-        //tabPane.add( bundle.getString( "CTL_DependencyTab.Text" ), dependencyPane );
-        //tabPane.add( bundle.getString( "CTL_MethodTab.Text" ), methodPane );
     }
 
     protected void createDetailPane()
@@ -87,6 +87,12 @@ public class DetailModelPane extends JPanel
 
         importedByPane = new ImportedByPane( this );
         importedByPane.setBorder( BorderFactory.createEmptyBorder( 8, 8, 8, 8 ) );
+
+        spiPane = new SPIPane( this );
+        spiPane.setBorder( BorderFactory.createEmptyBorder( 8, 8, 8, 8 ) );
+
+        apiPane = new APIPane( this );
+        apiPane.setBorder( BorderFactory.createEmptyBorder( 8, 8, 8, 8 ) );
 
     }
 
@@ -113,8 +119,16 @@ public class DetailModelPane extends JPanel
         serviceConfigurationPane.setDescriptor( objectDescriptor );
         serviceUsagePane.setDescriptor( objectDescriptor );
         importedByPane.setDescriptor( objectDescriptor );
+        spiPane.setDescriptor( objectDescriptor );
+        apiPane.setDescriptor( objectDescriptor );
 
-        if( objectDescriptor instanceof ServiceDetailDescriptor )
+        if( objectDescriptor instanceof LayerDetailDescriptor
+            || objectDescriptor instanceof ModuleDetailDescriptor )
+        {
+            tabPane.add( bundle.getString( "CTL_SPITab.Text" ), spiPane );
+            tabPane.add( bundle.getString( "CTL_APITab.Text" ), apiPane );
+        }
+        else if( objectDescriptor instanceof ServiceDetailDescriptor )
         {
             tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ), generalPane );
             tabPane.add( bundle.getString( "CTL_DependencyTab.Text" ), dependencyPane );
