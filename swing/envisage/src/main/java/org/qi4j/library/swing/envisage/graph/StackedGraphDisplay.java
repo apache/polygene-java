@@ -71,7 +71,7 @@ public class StackedGraphDisplay extends GraphDisplay
     static final Schema LABEL_SCHEMA = PrefuseLib.getVisualItemSchema();
     static {
         LABEL_SCHEMA.setDefault(VisualItem.INTERACTIVE, false);
-        LABEL_SCHEMA.setDefault(VisualItem.TEXTCOLOR, ColorLib.gray(220));
+        LABEL_SCHEMA.setDefault(VisualItem.TEXTCOLOR, ColorLib.rgb( 255, 255, 255 ));
         LABEL_SCHEMA.setDefault(VisualItem.FONT, FONT);
     }
 
@@ -87,6 +87,8 @@ public class StackedGraphDisplay extends GraphDisplay
     public StackedGraphDisplay()
     {
         super(new Visualization());
+
+        setBackground( ColorLib.getColor( 0, 51, 88 ));
 
         LabelRenderer labelRenderer = new LabelRenderer( NAME_LABEL );
         labelRenderer.setVerticalAlignment( Constants.BOTTOM);
@@ -237,9 +239,7 @@ public class StackedGraphDisplay extends GraphDisplay
     // ------------------------------------------------------------------------
 
     /**
-     * Set the stroke color for drawing treemap node outlines. A graded
-     * grayscale ramp is used, with higer nodes in the tree drawn in
-     * lighter shades of gray.
+     * Set the stroke color for drawing treemap node outlines. 
      */
     public class BorderColorAction extends ColorAction {
 
@@ -254,17 +254,11 @@ public class StackedGraphDisplay extends GraphDisplay
             }
             NodeItem nitem = (NodeItem)item;
             if ( nitem.isHover() )
-                //return ColorLib.rgb(99,130,191);
-            return ColorLib.rgb(150,200,200);
-
-            int depth = nitem.getDepth();
-            if ( depth < 2 ) {
-                return ColorLib.gray(100);
-            } else if ( depth < 4 ) {
-                return ColorLib.gray(75);
-            } else {
-                return ColorLib.gray(50);
+            {
+                return ColorLib.rgb(150,200,200);
             }
+
+            return ColorLib.rgb(33,115,170);
         }
     }
 
@@ -274,8 +268,13 @@ public class StackedGraphDisplay extends GraphDisplay
      */
     public class FillColorAction extends ColorAction {
         private ColorMap cmap = new ColorMap(
-            ColorLib.getInterpolatedPalette(10,
-                ColorLib.rgb(120,152,219), ColorLib.rgb(10,10,10)), 0, 9);
+            new int[] {
+                ColorLib.rgb( 11,117,188),
+                ColorLib.rgb(8,99,160),
+                ColorLib.rgb(5,77,126),
+                ColorLib.rgb(2,61,100),
+                ColorLib.rgb(148,55,87)}       
+                , 0, 4);
 
         public FillColorAction(String group) {
             super(group, VisualItem.FILLCOLOR);
@@ -294,7 +293,7 @@ public class StackedGraphDisplay extends GraphDisplay
             }
         }
 
-    } // end of inner class TreeMapColorAction
+    } // end of inner class FillColorAction
 
     /**
      * Set label positions. Labels are assumed to be DecoratorItem instances,
