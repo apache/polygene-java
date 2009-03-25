@@ -39,11 +39,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.qi4j.extension</groupId>
-      <artifactId>qi4j-indexing-rdf</artifactId>
-      <version>0.7-SNAPSHOT</version>
-    </dependency>
-    <dependency>
       <groupId>org.prefuse</groupId>
       <artifactId>prefuse</artifactId>
       <version>20071021</version>
