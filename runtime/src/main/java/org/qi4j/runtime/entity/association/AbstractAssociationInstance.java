@@ -97,7 +97,7 @@ public abstract class AbstractAssociationInstance<T>
     {
         if( composite == null )
         {
-            return QualifiedIdentity.NULL;
+            return null;
         }
 
         if( composite instanceof Qualifier )

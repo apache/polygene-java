@@ -28,7 +28,8 @@ public interface EntityStore
     void registerEntityType( EntityType entityType )
         throws EntityStoreException;
 
-    EntityType getEntityType( String aEntityType );
+    EntityType getEntityType( String aEntityType )
+        throws UnknownEntityTypeException;
 
     /**
      * Create new EntityState for a given identity.
