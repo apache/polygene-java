@@ -23,5 +23,5 @@ import org.qi4j.api.property.Property;
 public interface SPARQLEntityFinderConfiguration
     extends EntityComposite
 {
-    Property<String> host();
+    Property<String> sparqlUrl();
 }

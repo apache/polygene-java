@@ -40,7 +40,6 @@ import org.restlet.data.Reference;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLReaderAdapter;
-import java.net.URLEncoder;
 
 /**
  * JAVADOC Add JavaDoc
@@ -53,13 +52,11 @@ public class SPARQLEntityFinderMixin
 
     @Service Uniform client;
     @Service RdfFactory rdfFactory;
-    private Reference baseQueryRef;
+    private Reference sparqlQueryRef;
 
     public void activate() throws Exception
     {
-        baseQueryRef = new Reference(config.configuration().host().get());
-
-        baseQueryRef.addSegment( "qi4j" ).addSegment( "query.rdf" );
+        sparqlQueryRef = new Reference(config.configuration().sparqlUrl().get());
     }
 
     public void passivate() throws Exception
@@ -154,7 +151,7 @@ public class SPARQLEntityFinderMixin
             final RdfQueryParser parser = rdfFactory.newQueryParser( QueryLanguage.SPARQL );
             String query = parser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults );
 
-            Reference queryReference = baseQueryRef.clone();
+            Reference queryReference = sparqlQueryRef.clone();
             queryReference.addQueryParameter( "query", query );
             Response response = client.get( queryReference );
             SaxRepresentation sax = response.getEntityAsSax();

@@ -36,7 +36,6 @@ import org.qi4j.library.rdf.entity.EntityStateParser;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.api.service.Wrapper;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.entity.EntityTypeRegistryMixin;
 import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
@@ -48,7 +47,6 @@ import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.EntityNotFoundException;
-import org.restlet.Client;
 import org.restlet.Uniform;
 import org.restlet.representation.Representation;
 import org.restlet.representation.OutputRepresentation;
@@ -72,12 +70,11 @@ public class RESTEntityStoreServiceMixin
     @Uses ServiceDescriptor descriptor;
 
     @Service private Uniform client;
-    private Reference baseRef;
+    private Reference entityStoreUrl;
 
     public void activate() throws Exception
     {
-        baseRef = new Reference( config.configuration().host().get());
-        baseRef.addSegment( "qi4j" ).addSegment( "entity" );
+        entityStoreUrl = new Reference( config.configuration().storeUrl().get());
     }
 
     public void passivate() throws Exception
@@ -95,7 +92,7 @@ public class RESTEntityStoreServiceMixin
 
         try
         {
-            Reference ref = baseRef.clone().addSegment( anIdentity.type() ).addSegment( anIdentity.identity() );
+            Reference ref = entityStoreUrl.clone().addSegment( anIdentity.type() ).addSegment( anIdentity.identity() );
             Request request = new Request( Method.GET, ref );
             request.getClientInfo().getAcceptedMediaTypes().add( new Preference<MediaType>( MediaType.APPLICATION_JAVA_OBJECT ) );
             Response response = client.handle( request );
@@ -158,7 +155,7 @@ public class RESTEntityStoreServiceMixin
 
     public StateCommitter prepare( final Iterable<EntityState> newStates, final Iterable<EntityState> loadedStates, final Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException
     {
-        Reference ref = new Reference( baseRef.toString() );
+        Reference ref = entityStoreUrl.clone();
 
         Response response = client.post( ref, new OutputRepresentation( MediaType.APPLICATION_JAVA_OBJECT )
         {

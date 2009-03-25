@@ -19,6 +19,8 @@ import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 import org.qi4j.api.entity.Entity;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
@@ -26,6 +28,8 @@ import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.UnknownEntityTypeException;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.restlet.Context;
@@ -231,6 +235,25 @@ public class AllEntitiesResource extends Resource
             Iterable<EntityState> loadedState = (Iterable<EntityState>) oin.readObject();
             Iterable<QualifiedIdentity> removedState = (Iterable<QualifiedIdentity>) oin.readObject();
 
+            // Ensure that EntityTypes are registered properly
+            Set<EntityType> entityTypes = new HashSet<EntityType>();
+            for( EntityState entityState : newState )
+            {
+                entityTypes.add( entityState.entityType());
+            }
+            for( EntityType entityType : entityTypes )
+            {
+                try
+                {
+                    entityStore.getEntityType( entityType.type() );
+                }
+                catch( UnknownEntityTypeException e )
+                {
+                    entityStore.registerEntityType( entityType );
+                }
+            }
+
+            // Store state
             try
             {
                 entityStore.prepare( newState, loadedState, removedState ).commit();
