@@ -208,12 +208,12 @@ public class PDFWriter
         doc.addPage( page );
 
         PDRectangle pdRect = page.getArtBox();
-        //float pW = pdRect.getWidth();
-        //float pH = pdRect.getHeight();
+        float pW = pdRect.getWidth() - (startX * 2);
+        float pH = pdRect.getHeight() - (startY * 2);
         //System.out.println("pSize: " + pW + "," + pH);
 
-        double scale = scaleToFit( img.getWidth(), img.getHeight(), pdRect.getWidth(), pdRect.getHeight() );
-        if( scale != 1 )
+        double scale = scaleToFit( img.getWidth(), img.getHeight(), pW, pH );
+        if( scale < 1 )
         {
             w = (int) Math.round( ( img.getWidth() * scale ) + .5 );
             h = (int) Math.round( ( img.getHeight() * scale ) + .5 );
