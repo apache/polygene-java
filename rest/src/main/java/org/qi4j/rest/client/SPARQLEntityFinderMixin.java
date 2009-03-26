@@ -154,10 +154,17 @@ public class SPARQLEntityFinderMixin
             Reference queryReference = sparqlQueryRef.clone();
             queryReference.addQueryParameter( "query", query );
             Response response = client.get( queryReference );
+            if (!response.getStatus().isSuccess())
+                throw new SPARQLEntityFinderException(response.getRequest().getResourceRef(), response.getStatus());
+
             SaxRepresentation sax = response.getEntityAsSax();
             final EntityResultXMLReaderAdapter xmlReaderAdapter = new EntityResultXMLReaderAdapter( callback );
             sax.parse( xmlReaderAdapter );
             return xmlReaderAdapter.getRows();
+        }
+        catch( SPARQLEntityFinderException e )
+        {
+            throw e;
         }
         catch( Exception e )
         {
