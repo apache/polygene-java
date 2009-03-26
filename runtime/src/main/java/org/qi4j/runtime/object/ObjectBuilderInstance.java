@@ -32,6 +32,12 @@ public final class ObjectBuilderInstance<T>
     private UsesInstance uses;
     private final Class<T> objectType;
 
+    public ObjectBuilderInstance( ModuleInstance moduleInstance, ObjectModel objectModel, UsesInstance uses)
+    {
+        this(moduleInstance, objectModel);
+        this.uses = uses;
+    }
+
     public ObjectBuilderInstance( ModuleInstance moduleInstance, ObjectModel objectModel )
     {
         this.moduleInstance = moduleInstance;

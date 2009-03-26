@@ -59,6 +59,12 @@ public final class CompositeBuilderInstance<T>
     // lazy initialized in accessor
     private StateHolder state;
 
+    public CompositeBuilderInstance( ModuleInstance moduleInstance, CompositeModel compositeModel, UsesInstance uses )
+    {
+        this(moduleInstance, compositeModel);
+        this.uses = uses;
+    }
+
     public CompositeBuilderInstance( ModuleInstance moduleInstance, CompositeModel compositeModel )
     {
         this.moduleInstance = moduleInstance;

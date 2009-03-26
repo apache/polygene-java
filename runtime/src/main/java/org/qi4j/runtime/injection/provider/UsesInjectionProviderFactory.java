@@ -8,11 +8,13 @@ import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.UsesInstance;
+import org.qi4j.runtime.composite.CompositeBuilderInstance;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.object.ObjectBuilderInstance;
 
 /**
  * JAVADOC
@@ -55,16 +57,22 @@ public final class UsesInjectionProviderFactory
                 // Try instantiating a Composite or Object for the given type
                 ModuleInstance moduleInstance = context.moduleInstance();
 
-                ModuleInstance.CompositeFinder compositeFinder = moduleInstance.findCompositeModel( injectionType );
+                ModuleInstance.CompositeFinder compositeFinder = moduleInstance.findCompositeModel( dependency.injectionClass() );
                 if (compositeFinder.model != null)
                 {
-                    usesObject = compositeFinder.model.newCompositeInstance( compositeFinder.module, uses, context.state() );
+                    if (Iterable.class.equals( injectionType))
+                        usesObject = new CompositeBuilderInstance( compositeFinder.module, compositeFinder.model, uses );
+                    else
+                        usesObject = compositeFinder.model.newCompositeInstance( compositeFinder.module, uses, context.state() );
                 } else
                 {
-                    ModuleInstance.ObjectFinder objectFinder = moduleInstance.findObjectModel(injectionType );
+                    ModuleInstance.ObjectFinder objectFinder = moduleInstance.findObjectModel(dependency.injectionClass() );
                     if (objectFinder.model != null)
                     {
-                        usesObject = objectFinder.model.newInstance( objectFinder.module, uses );
+                        if (Iterable.class.equals(injectionType))
+                            usesObject = new ObjectBuilderInstance(objectFinder.module, objectFinder.model, uses);
+                        else
+                            usesObject = objectFinder.model.newInstance( objectFinder.module, uses );
                     }
                 }
 
