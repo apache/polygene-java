@@ -35,6 +35,16 @@ public final class UsesInstance
 
     public Object useForType( Class<?> type )
     {
+        // Check instances first
+        for( Object use : uses )
+        {
+            if( type.isInstance( use ) )
+            {
+                return use;
+            }
+        }
+
+        // Check builders
         for( Object use : uses )
         {
             if( use instanceof CompositeBuilderInstance )
@@ -51,11 +61,6 @@ public final class UsesInstance
                 {
                     return builder.newInstance();
                 }
-            }
-
-            if( type.isInstance( use ) )
-            {
-                return use;
             }
         }
 
