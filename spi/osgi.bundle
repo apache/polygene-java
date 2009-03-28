@@ -18,17 +18,17 @@ Import-Package: org.qi4j.api, \
                 org.qi4j.api.sideeffect, \
                 org.qi4j.api.structure, \
                 org.qi4j.api.unitofwork, \
-                org.qi4j.api.util, \
-                org.qi4j.api.value
+                org.qi4j.api.util
+
 
 Export-Package: org.qi4j.spi;version=${pom.version}, \
                 org.qi4j.spi.composite;version=${pom.version}, \
-                org.qi4j.spi.concern, \
-                org.qi4j.spi.constraint, \
+                org.qi4j.spi.concern;version=${pom.version}, \
+                org.qi4j.spi.constraint;version=${pom.version}, \
                 org.qi4j.spi.entity;version=${pom.version}, \
                 org.qi4j.spi.entity.association;version=${pom.version}, \
-                org.qi4j.spi.entity.helpers, \
-                org.qi4j.spi.mixin, \
+                org.qi4j.spi.entity.helpers;version=${pom.version}, \
+                org.qi4j.spi.mixin;version=${pom.version}, \
                 org.qi4j.spi.object;version=${pom.version}, \
                 org.qi4j.spi.property;version=${pom.version}, \
                 org.qi4j.spi.query;version=${pom.version}, \
@@ -36,7 +36,7 @@ Export-Package: org.qi4j.spi;version=${pom.version}, \
                 org.qi4j.spi.serialization;version=${pom.version}, \
                 org.qi4j.spi.service;version=${pom.version}, \
                 org.qi4j.spi.service.importer;version=${pom.version}, \
-                org.qi4j.spi.sideeffect, \
+                org.qi4j.spi.sideeffect;version=${pom.version}, \
                 org.qi4j.spi.structure;version=${pom.version}, \
                 org.qi4j.spi.value;version=${pom.version}, \
                 org.qi4j.entitystore.memory;version=${pom.version}
