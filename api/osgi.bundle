@@ -3,5 +3,28 @@ Import-Package:
 Ignore-Package: com_cenqua_clover
 
 Private-Package:
-                 
-Export-Package: org.qi4j.api.*;version=${pom.version}
+
+Export-Package: org.qi4j.api;version=${pom.version}, \
+                org.qi4j.api.common;version=${pom.version}, \
+                org.qi4j.api.composite;version=${pom.version}, \
+                org.qi4j.api.concern;version=${pom.version}, \
+                org.qi4j.api.concern.internal;version=${pom.version}, \
+                org.qi4j.api.configuration;version=${pom.version}, \
+                org.qi4j.api.constraint;version=${pom.version}, \
+                org.qi4j.api.entity;version=${pom.version}, \
+                org.qi4j.api.entity.association;version=${pom.version}, \
+                org.qi4j.api.injection;version=${pom.version}, \
+                org.qi4j.api.injection.scope;version=${pom.version}, \
+                org.qi4j.api.mixin;version=${pom.version}, \
+                org.qi4j.api.object;version=${pom.version}, \
+                org.qi4j.api.property;version=${pom.version}, \
+                org.qi4j.api.query;version=${pom.version}, \
+                org.qi4j.api.query.grammar;version=${pom.version}, \
+                org.qi4j.api.service;version=${pom.version}, \
+                org.qi4j.api.sideeffect;version=${pom.version}, \
+                org.qi4j.api.sideeffect.internal;version=${pom.version}, \
+                org.qi4j.api.structure;version=${pom.version}, \
+                org.qi4j.api.unitofwork;version=${pom.version}, \
+                org.qi4j.api.usecase;version=${pom.version}, \
+                org.qi4j.api.util;version=${pom.version}, \
+                org.qi4j.api.value;version=${pom.version}
