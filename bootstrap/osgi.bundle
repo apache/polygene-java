@@ -11,15 +11,13 @@ Import-Package: org.ops4j.pax.swissbox.core, \
                 org.qi4j.api, \
                 org.qi4j.api.common, \
                 org.qi4j.api.composite, \
-                org.qi4j.api.entity, \
                 org.qi4j.api.object, \
-                org.qi4j.api.property, \
                 org.qi4j.api.service, \
-                org.qi4j.spi, \
                 org.qi4j.api.structure, \
                 org.qi4j.api.unitofwork, \
                 org.qi4j.api.util, \
                 org.qi4j.api.value, \
+                org.qi4j.spi, \
                 org.qi4j.spi.structure
 
 Export-Package: org.qi4j.bootstrap;version=${pom.version}, \
