@@ -7,7 +7,7 @@ Private-Package: org.qi4j.bootstrap.osgi, \
 
 Import-Package: org.ops4j.pax.swissbox.core, \
                 org.ops4j.pax.swissbox.extender, \
-                org.osgi.framework, \
+                org.osgi.framework;version="[1,2)", \
                 org.qi4j.api, \
                 org.qi4j.api.common, \
                 org.qi4j.api.composite, \
