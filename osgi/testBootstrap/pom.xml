@@ -16,7 +16,8 @@
   <name>Qi4j core OSGi test bootstrap</name>
 
   <properties>
-    <version.pax.logging>1.1.1</version.pax.logging>
+    <version.pax.logging>1.3.0</version.pax.logging>
+    <version.pax.swissbox>0.2.0</version.pax.swissbox>
   </properties>
 
   <dependencies>
@@ -27,13 +28,13 @@
     </dependency>
     <dependency>
       <groupId>org.ops4j.pax.logging</groupId>
-      <artifactId>pax-logging-service</artifactId>
+      <artifactId>pax-logging-api</artifactId>
       <version>${version.pax.logging}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.ops4j.pax.logging</groupId>
-      <artifactId>pax-logging-api</artifactId>
+      <artifactId>pax-logging-service</artifactId>
       <version>${version.pax.logging}</version>
       <scope>test</scope>
     </dependency>
@@ -41,6 +42,22 @@
       <groupId>org.ops4j.base</groupId>
       <artifactId>ops4j-base-lang</artifactId>
       <version>0.5.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.ops4j.pax.swissbox</groupId>
+      <artifactId>pax-swissbox-core</artifactId>
+      <version>${version.pax.swissbox}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.swissbox</groupId>
+      <artifactId>pax-swissbox-extender</artifactId>
+      <version>${version.pax.swissbox}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.swissbox</groupId>
+      <artifactId>pax-swissbox-lifecycle</artifactId>
+      <version>${version.pax.swissbox}</version>
     </dependency>
   </dependencies>
 </project>

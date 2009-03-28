@@ -16,12 +16,12 @@
 */
 package org.qi4j.osgi.test;
 
+import java.util.logging.Logger;
 import static org.junit.Assert.assertNotNull;
 import org.junit.runner.RunWith;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.provision;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
-import org.ops4j.pax.exam.Inject;
 import org.ops4j.pax.exam.Option;
 import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.logProfile;
 import org.ops4j.pax.exam.junit.Configuration;
@@ -38,10 +38,9 @@ import org.qi4j.api.structure.Module;
 @RunWith( JUnit4TestRunner.class )
 public abstract class AbstractTest
 {
-    private static final String SYMBOLIC_NAME_QI4J_EXAMPLE = "org.qi4j.core.osgi.qi4j-osgi-example";
+    private final Logger LOGGER = Logger.getLogger( getClass().getName() );
 
-    @Inject
-    private BundleContext bundleContext;
+    private static final String SYMBOLIC_NAME_QI4J_EXAMPLE = "org.qi4j.core.osgi.qi4j-osgi-example";
 
     @Configuration
     public final Option[] configure()
@@ -59,21 +58,21 @@ public abstract class AbstractTest
         String qi4jVersion = System.getProperty( "version.qi4j", "0.7-SNAPSHOT" );
 
         return options( provision(
-            "mvn:org.ops4j.pax.logging/pax-logging-api",
-            "mvn:org.ops4j.pax.logging/pax-logging-service",
-            "mvn:org.qi4j.core/qi4j-core-api/" + qi4jVersion,
-            "mvn:org.qi4j.core/qi4j-core-spi/" + qi4jVersion,
-            "mvn:org.qi4j.core/qi4j-core-runtime/" + qi4jVersion,
-            "mvn:org.ops4j.base/ops4j-base-lang",
-            "mvn:org.ops4j.pax.swissbox/pax-swissbox-extender",
-            "mvn:org.ops4j.pax.swissbox/pax-swissbox-core",
-            "mvn:org.ops4j.pax.swissbox/pax-swissbox-lifecycle",
-            "mvn:org.qi4j.core/qi4j-core-bootstrap/" + qi4jVersion,
-            "mvn:org.qi4j.core.osgi/qi4j-osgi-example/" + qi4jVersion + "@6"
+            "mvn:org.ops4j.pax.logging/pax-logging-api@2",
+            "mvn:org.ops4j.pax.logging/pax-logging-service@2",
+            "mvn:org.qi4j.core/qi4j-core-api/" + qi4jVersion + "@2",
+            "mvn:org.qi4j.core/qi4j-core-spi/" + qi4jVersion + "@2",
+            "mvn:org.ops4j.base/ops4j-base-lang@2",
+            "mvn:org.ops4j.pax.swissbox/pax-swissbox-extender@2",
+            "mvn:org.ops4j.pax.swissbox/pax-swissbox-core@2",
+            "mvn:org.ops4j.pax.swissbox/pax-swissbox-lifecycle@2",
+            "mvn:org.qi4j.core/qi4j-core-bootstrap/" + qi4jVersion + "@2",
+            "mvn:org.qi4j.core/qi4j-core-runtime/" + qi4jVersion + "@3",
+            "mvn:org.qi4j.core.osgi/qi4j-osgi-example/" + qi4jVersion + "@4"
         ) );
     }
 
-    protected final Bundle getQi4jExampleBundle()
+    protected final Bundle getQi4jExampleBundle( BundleContext bundleContext )
     {
         Bundle exampleBundle = null;
         Bundle[] bundles = bundleContext.getBundles();
@@ -91,8 +90,32 @@ public abstract class AbstractTest
         return exampleBundle;
     }
 
-    protected final ServiceReference getModuleServiceRef()
+    protected final ServiceReference getModuleServiceRef( BundleContext bundleContext )
     {
         return bundleContext.getServiceReference( Module.class.getName() );
     }
+
+    protected final void printBundleDetails( BundleContext bundleContext )
+    {
+        Bundle[] bundles = bundleContext.getBundles();
+        for( Bundle bundle : bundles )
+        {
+            LOGGER.info( "Bundle [" + bundle.getSymbolicName() + "] State [" + bundle.getState() + "]" );
+
+            LOGGER.info( "Exported Services: " );
+            ServiceReference[] registeredServices = bundle.getRegisteredServices();
+            if( registeredServices == null || registeredServices.length == 0 )
+            {
+                LOGGER.info( "none" );
+            }
+            else
+            {
+                for( ServiceReference registeredService : registeredServices )
+                {
+                    LOGGER.info( registeredService.toString() );
+                }
+            }
+        }
+    }
+
 }

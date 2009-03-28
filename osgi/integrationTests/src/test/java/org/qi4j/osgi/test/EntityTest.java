@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
+import org.junit.Test;
 import org.ops4j.pax.exam.Inject;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -72,10 +73,11 @@ public final class EntityTest extends AbstractTest
         return identity;
     }
 
+    @Test
     public final void testCRUD()
         throws Throwable
     {
-        ServiceReference moduleRef = getModuleServiceRef();
+        ServiceReference moduleRef = getModuleServiceRef( bundleContext );
         UnitOfWorkFactory uowf = getUnitOfWorkFactory( moduleRef );
 
         // Test creational

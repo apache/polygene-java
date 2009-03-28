@@ -19,6 +19,7 @@
 package org.qi4j.core.test.osgi.internal;
 
 import java.util.Hashtable;
+import java.util.logging.Logger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -37,6 +38,8 @@ import org.qi4j.spi.structure.ApplicationSPI;
 public final class Activator
     implements BundleActivator
 {
+    private static final Logger LOGGER = Logger.getLogger( Activator.class.getName() );
+
     private static final String MODULE_NAME = "Single Module.";
     private static final String LAYER_NAME = "Single Layer.";
 
@@ -46,13 +49,20 @@ public final class Activator
     public void start( BundleContext bundleContext )
         throws Exception
     {
+        LOGGER.info( "Starting Bundle [" + bundleContext.getBundle().getSymbolicName() + "]" );
+
         Energy4Java boot = new Energy4Java();
         ApplicationAssembler assembler = new MyApplicationAssembler();
         application = boot.newApplication( assembler );
+
+        LOGGER.info( "Activating application." );
         application.activate();
 
         Module module = application.findModule( LAYER_NAME, MODULE_NAME );
+        LOGGER.info( "Find module [" + LAYER_NAME + ", " + MODULE_NAME + "] isFound [" + ( module != null ) + "]" );
+
         moduleRegistration = bundleContext.registerService( Module.class.getName(), module, new Hashtable() );
+        LOGGER.info( "Module registered." );
     }
 
     public void stop( BundleContext bundleContext )

@@ -40,7 +40,7 @@ public final class CompositeTest extends AbstractTest
     @Test
     public final void testCreational()
     {
-        ServiceReference moduleServiceRef = getModuleServiceRef();
+        ServiceReference moduleServiceRef = getModuleServiceRef( bundleContext );
         assertNotNull( moduleServiceRef );
 
         Module module = (Module) bundleContext.getService( moduleServiceRef );

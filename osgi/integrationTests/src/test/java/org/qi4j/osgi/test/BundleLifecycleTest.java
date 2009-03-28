@@ -16,11 +16,15 @@
  */
 package org.qi4j.osgi.test;
 
+import java.util.logging.Logger;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import org.junit.Test;
+import org.ops4j.pax.exam.Inject;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.ServiceReference;
 
 /**
  * @author edward.yakop@gmail.com
@@ -28,19 +32,26 @@ import org.osgi.framework.BundleException;
  */
 public class BundleLifecycleTest extends AbstractTest
 {
+
+    @Inject
+    private BundleContext bundleContext;
+
     @Test
     public final void testLifecycle()
         throws BundleException
     {
-        assertNotNull( getModuleServiceRef() );
+//        printBundleDetails( bundleContext );
 
-        Bundle exampleBundle = getQi4jExampleBundle();
+        assertNotNull( getModuleServiceRef( bundleContext ) );
+
+        Bundle exampleBundle = getQi4jExampleBundle( bundleContext );
         exampleBundle.stop();
 
-        assertNull( getModuleServiceRef() );
+        assertNull( getModuleServiceRef( bundleContext ) );
 
         exampleBundle.start();
 
-        assertNotNull( getModuleServiceRef() );
+        assertNotNull( getModuleServiceRef( bundleContext ) );
     }
+
 }
