@@ -16,13 +16,18 @@
 */
 package org.qi4j.osgi.test;
 
-import org.ops4j.pax.drone.api.BundleProvision;
-import static org.ops4j.pax.drone.connector.paxrunner.GenericConnector.create;
-import static org.ops4j.pax.drone.connector.paxrunner.GenericConnector.createBundleProvision;
-import org.ops4j.pax.drone.connector.paxrunner.PaxRunnerConnector;
-import org.ops4j.pax.drone.connector.paxrunner.Platforms;
-import org.ops4j.pax.drone.spi.junit.DroneTestCase;
+import static org.junit.Assert.assertNotNull;
+import org.junit.runner.RunWith;
+import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.CoreOptions.provision;
+import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+import org.ops4j.pax.exam.Inject;
+import org.ops4j.pax.exam.Option;
+import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.logProfile;
+import org.ops4j.pax.exam.junit.Configuration;
+import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.qi4j.api.structure.Module;
 
@@ -30,36 +35,42 @@ import org.qi4j.api.structure.Module;
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-abstract class AbstractTest extends DroneTestCase
+@RunWith( JUnit4TestRunner.class )
+public abstract class AbstractTest
 {
     private static final String SYMBOLIC_NAME_QI4J_EXAMPLE = "org.qi4j.core.osgi.qi4j-osgi-example";
 
-    @Override
-    protected final PaxRunnerConnector configure()
+    @Inject
+    private BundleContext bundleContext;
+
+    @Configuration
+    public final Option[] configure()
     {
-        PaxRunnerConnector connector = create( newBundleProvision() );
-        connector.setPlatform( Platforms.FELIX );
-        // Uncomment to pax-runner to attach to port 5005
-//        connector.addVMOption( "-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=5005,suspend=y" );
-        return connector;
+        return options(
+            logProfile(),
+            // this is how you set the default log level when using pax logging (logProfile)
+            systemProperty( "org.ops4j.pax.logging.DefaultServiceLog.level" ).value( "INFO" )
+        );
     }
 
-    protected BundleProvision newBundleProvision()
+    @Configuration
+    public final Option[] baseProvision()
     {
         String qi4jVersion = System.getProperty( "version.qi4j", "0.7-SNAPSHOT" );
 
-        return createBundleProvision()
-            .addBundle( "mvn:org.ops4j.pax.logging/pax-logging-api" )
-            .addBundle( "mvn:org.ops4j.pax.logging/pax-logging-service" )
-            .addBundle( "mvn:org.qi4j.core/qi4j-core-api/" + qi4jVersion )
-            .addBundle( "mvn:org.qi4j.core/qi4j-core-spi/" + qi4jVersion )
-            .addBundle( "mvn:org.qi4j.core/qi4j-core-runtime/" + qi4jVersion )
-            .addBundle( "mvn:org.ops4j.base/ops4j-base-lang" )
-            .addBundle( "mvn:org.ops4j.pax.swissbox/pax-swissbox-extender" )
-            .addBundle( "mvn:org.ops4j.pax.swissbox/pax-swissbox-core" )
-            .addBundle( "mvn:org.ops4j.pax.swissbox/pax-swissbox-lifecycle" )
-            .addBundle( "mvn:org.qi4j.core/qi4j-core-bootstrap/" + qi4jVersion )
-            .addBundle( "mvn:org.qi4j.core.osgi/qi4j-osgi-example/" + qi4jVersion + "@6" );
+        return options( provision(
+            "mvn:org.ops4j.pax.logging/pax-logging-api",
+            "mvn:org.ops4j.pax.logging/pax-logging-service",
+            "mvn:org.qi4j.core/qi4j-core-api/" + qi4jVersion,
+            "mvn:org.qi4j.core/qi4j-core-spi/" + qi4jVersion,
+            "mvn:org.qi4j.core/qi4j-core-runtime/" + qi4jVersion,
+            "mvn:org.ops4j.base/ops4j-base-lang",
+            "mvn:org.ops4j.pax.swissbox/pax-swissbox-extender",
+            "mvn:org.ops4j.pax.swissbox/pax-swissbox-core",
+            "mvn:org.ops4j.pax.swissbox/pax-swissbox-lifecycle",
+            "mvn:org.qi4j.core/qi4j-core-bootstrap/" + qi4jVersion,
+            "mvn:org.qi4j.core.osgi/qi4j-osgi-example/" + qi4jVersion + "@6"
+        ) );
     }
 
     protected final Bundle getQi4jExampleBundle()

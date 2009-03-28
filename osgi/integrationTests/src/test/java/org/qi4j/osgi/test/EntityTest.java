@@ -16,15 +16,21 @@
 */
 package org.qi4j.osgi.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+import org.ops4j.pax.exam.Inject;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.qi4j.core.test.osgi.AnEntity;
-import org.qi4j.api.unitofwork.EntityCompositeNotFoundException;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.core.test.osgi.AnEntity;
 
 /**
  * @author edward.yakop@gmail.com
@@ -32,6 +38,9 @@ import org.qi4j.api.structure.Module;
  */
 public final class EntityTest extends AbstractTest
 {
+    @Inject
+    private BundleContext bundleContext;
+
     private UnitOfWorkFactory getUnitOfWorkFactory( ServiceReference moduleRef )
     {
         assertNotNull( moduleRef );
@@ -49,7 +58,7 @@ public final class EntityTest extends AbstractTest
         AnEntity entity = uow.newEntity( AnEntity.class );
         assertNotNull( entity );
 
-        String identity = ((Identity)entity).identity().get();
+        String identity = ( (Identity) entity ).identity().get();
 
         Property<String> property = entity.property();
         assertNotNull( property );
@@ -102,7 +111,7 @@ public final class EntityTest extends AbstractTest
             entity = work.find( identity, AnEntity.class );
             fail( "Test removal fail. [" + ( entity == null ) + "] identity [" + identity + "]" );
         }
-        catch( EntityCompositeNotFoundException e )
+        catch( NoSuchEntityException e )
         {
             // Expected
         }

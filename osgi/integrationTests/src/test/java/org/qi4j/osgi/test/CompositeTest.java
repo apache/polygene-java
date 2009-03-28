@@ -16,11 +16,17 @@
 */
 package org.qi4j.osgi.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import org.junit.Test;
+import org.ops4j.pax.exam.Inject;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.qi4j.api.composite.CompositeBuilderFactory;
-import org.qi4j.core.test.osgi.AComposite;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Module;
+import org.qi4j.core.test.osgi.AComposite;
 
 /**
  * @author edward.yakop@gmail.com
@@ -28,6 +34,10 @@ import org.qi4j.api.structure.Module;
  */
 public final class CompositeTest extends AbstractTest
 {
+    @Inject
+    private BundleContext bundleContext;
+
+    @Test
     public final void testCreational()
     {
         ServiceReference moduleServiceRef = getModuleServiceRef();

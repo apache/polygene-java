@@ -22,14 +22,17 @@ import java.util.Hashtable;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.api.structure.Module;
+import org.qi4j.bootstrap.ApplicationAssembler;
+import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
-import org.qi4j.api.structure.Application;
-import org.qi4j.api.structure.Module;
+import org.qi4j.spi.structure.ApplicationSPI;
 
 public final class Activator
     implements BundleActivator
@@ -37,14 +40,14 @@ public final class Activator
     private static final String MODULE_NAME = "Single Module.";
     private static final String LAYER_NAME = "Single Layer.";
 
-    private Application application;
+    private ApplicationSPI application;
     private ServiceRegistration moduleRegistration;
 
     public void start( BundleContext bundleContext )
         throws Exception
     {
         Energy4Java boot = new Energy4Java();
-        Assembler assembler = new ApplicationAssembler();
+        ApplicationAssembler assembler = new MyApplicationAssembler();
         application = boot.newApplication( assembler );
         application.activate();
 
@@ -63,19 +66,22 @@ public final class Activator
     }
 
 
-    private static class ApplicationAssembler
-        implements Assembler
+    private static class MyApplicationAssembler
+        implements ApplicationAssembler
     {
-        public void assemble( ModuleAssembly module )
+        public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
             throws AssemblyException
         {
-            module.layerAssembly().setName( LAYER_NAME );
-            module.setName( MODULE_NAME );
+            ApplicationAssembly applicationAssembly = applicationFactory.newApplicationAssembly();
+            LayerAssembly layerAssembly = applicationAssembly.newLayerAssembly( LAYER_NAME );
+            ModuleAssembly moduleAssembly = layerAssembly.newModuleAssembly( MODULE_NAME );
 
-            module.addComposites( APrivateComposite.class );
-            module.addEntities( AnEntityComposite.class );
-            module.addServices( MemoryEntityStoreService.class );
-            module.addServices( UuidIdentityGeneratorService.class );
+            moduleAssembly.addComposites( APrivateComposite.class );
+            moduleAssembly.addEntities( AnEntityComposite.class );
+            moduleAssembly.addServices( MemoryEntityStoreService.class );
+            moduleAssembly.addServices( UuidIdentityGeneratorService.class );
+
+            return applicationAssembly;
         }
     }
 }

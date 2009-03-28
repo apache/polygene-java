@@ -5,7 +5,6 @@ Private-Package:  org.qi4j.core.test.osgi.internal
 Ignore-Package: com_cenqua_clover
 
 Import-Package: org.osgi.framework, \
-                org.qi4j.bootstrap, \
                 org.qi4j.api.common, \
                 org.qi4j.api.composite, \
                 org.qi4j.api.entity, \
@@ -13,8 +12,9 @@ Import-Package: org.osgi.framework, \
                 org.qi4j.api.mixin, \
                 org.qi4j.api.property, \
                 org.qi4j.api.structure, \
+                org.qi4j.bootstrap, \
                 org.qi4j.entitystore.memory, \
-                org.qi4j.spi.entity, \
-                org.qi4j.spi.entity.helpers
+                org.qi4j.spi.entity.helpers, \
+                org.qi4j.spi.structure
 
 Export-Package: org.qi4j.core.test.osgi;version=${pom.version}

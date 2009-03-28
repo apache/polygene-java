@@ -16,7 +16,9 @@
  */
 package org.qi4j.osgi.test;
 
-import org.ops4j.pax.drone.api.BundleProvision;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
@@ -24,26 +26,9 @@ import org.osgi.framework.BundleException;
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-public final class BundleLifecycleTest extends AbstractTest
+public class BundleLifecycleTest extends AbstractTest
 {
-
-    @Override
-    protected final BundleProvision newBundleProvision()
-    {
-        BundleProvision bundleProvision = super.newBundleProvision();
-        if( "testLifecycleWithCglibInstalled".equals( getName() ) )
-        {
-            bundleProvision.addBundle( "mvn:net.sourceforge.cglib/com.springsource.net.sf.cglib/2.1.3" );
-        }
-        return bundleProvision;
-    }
-
-    public final void testLifecycleWithCglibInstalled()
-        throws BundleException
-    {
-        testLifecycle();
-    }
-
+    @Test
     public final void testLifecycle()
         throws BundleException
     {

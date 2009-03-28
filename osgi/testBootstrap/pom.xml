@@ -17,7 +17,6 @@
 
   <properties>
     <version.pax.logging>1.1.1</version.pax.logging>
-    <version.pax.swissbox>0.2.0</version.pax.swissbox>
   </properties>
 
   <dependencies>
@@ -41,27 +40,7 @@
     <dependency>
       <groupId>org.ops4j.base</groupId>
       <artifactId>ops4j-base-lang</artifactId>
-      <version>0.5.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.pax.swissbox</groupId>
-      <artifactId>pax-swissbox-extender</artifactId>
-      <version>${version.pax.swissbox}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.pax.swissbox</groupId>
-      <artifactId>pax-swissbox-extender</artifactId>
-      <version>${version.pax.swissbox}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.pax.swissbox</groupId>
-      <artifactId>pax-swissbox-lifecycle</artifactId>
-      <version>${version.pax.swissbox}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.pax.drone</groupId>
-      <artifactId>pax-drone-runtime</artifactId>
-      <version>${version.pax.drone}</version>
+      <version>0.5.3</version>
     </dependency>
   </dependencies>
 </project>

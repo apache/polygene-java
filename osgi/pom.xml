@@ -14,6 +14,10 @@
   <name>Qi4j core OSGi (Build POM)</name>
   <packaging>pom</packaging>
 
+  <properties>
+    <version.pax.exam>0.3.0</version.pax.exam>
+  </properties>
+
   <modules>
     <module>testBootstrap</module>
     <module>example</module>
@@ -82,5 +86,25 @@
     </developer>
   </developers>
 
-
+  <dependencies>
+    <!-- Pax exam -->
+    <dependency>
+      <groupId>org.ops4j.pax.exam</groupId>
+      <artifactId>pax-exam</artifactId>
+      <version>${version.pax.exam}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.exam</groupId>
+      <artifactId>pax-exam-junit</artifactId>
+      <version>${version.pax.exam}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.exam</groupId>
+      <artifactId>pax-exam-container-default</artifactId>
+      <version>${version.pax.exam}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>

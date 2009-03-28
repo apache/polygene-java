@@ -53,19 +53,5 @@
       <version>1.2.0</version>
       <scope>test</scope>
     </dependency>
-
-    <!-- Test -->
-    <dependency>
-      <groupId>org.ops4j.pax.drone</groupId>
-      <artifactId>pax-drone-spi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.pax.drone</groupId>
-      <artifactId>pax-drone-spi-junit</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.pax.drone</groupId>
-      <artifactId>pax-drone-connector-paxrunner</artifactId>
-    </dependency>
   </dependencies>
 </project>
