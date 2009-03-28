@@ -27,8 +27,8 @@ import org.ops4j.pax.swissbox.extender.BundleWatcher;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.internal.ServiceLoader;
+import org.qi4j.bootstrap.spi.Qi4jRuntime;
 
 public final class Activator
     implements BundleActivator
@@ -39,7 +39,7 @@ public final class Activator
         throws Exception
     {
         BundleURLScanner urlScanner =
-            new BundleURLScanner( "META-INF/services", ApplicationAssemblyFactory.class.getName(), false );
+            new BundleURLScanner( "META-INF/services", Qi4jRuntime.class.getName(), false );
         urlBundleWatcher = new BundleWatcher<URL>( bundleContext, urlScanner, new Qi4jBundleObserver() );
         urlBundleWatcher.start();
     }
