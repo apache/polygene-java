@@ -12,6 +12,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="qi4j-lib-framework" exported="" />
     <orderEntry type="module" module-name="qi4j-core-api" exported="" />
     <orderEntry type="module" module-name="qi4j-core-testsupport" />
     <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
@@ -26,7 +27,7 @@
     <orderEntry type="library" exported="" name="Maven: org.mortbay.jetty:servlet-api-2.5:6.1.11" level="project" />
     <orderEntry type="library" exported="" name="Maven: javax.servlet:servlet-api:2.4" level="project" />
     <orderEntry type="module" module-name="qi4j-lib-logging" exported="" />
-    <orderEntry type="module" module-name="qi4j-lib-framework" exported="" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.library:qi4j-lib-framework:0.7-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="qi4j-lib-jini-lookup" />
     <orderEntry type="library" exported="" name="Maven: org.apache.river:jini-core:2.1.1" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.apache.river:jini-ext:2.1.1" level="project" />

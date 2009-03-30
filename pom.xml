@@ -14,21 +14,15 @@
   <modules>
     <module>auth</module>
     <module>beans</module>
-    <module>business</module>
     <module>cache</module>
     <module>constraints</module>
-    <module>enumeration</module>
-    <module>exception</module>
     <module>executor</module>
-    <module>framework</module>
-    <module>general</module>
     <module>http</module>
     <module>jini</module>
     <module>ldap</module>
     <module>locking</module>
     <module>logging</module>
     <module>observations</module>
-    <module>quikit</module>
     <module>rdf</module>
     <module>registry</module>
     <module>rmi</module>

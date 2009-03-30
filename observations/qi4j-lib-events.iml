@@ -10,8 +10,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="qi4j-core-api" exported="" />
     <orderEntry type="module" module-name="qi4j-lib-exception" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-api" exported="" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.library:qi4j-lib-exception:0.7-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
     <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
   </component>

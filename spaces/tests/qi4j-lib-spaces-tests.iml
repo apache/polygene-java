@@ -10,13 +10,14 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="qi4j-lib-general" exported="" />
     <orderEntry type="module" module-name="qi4j-core-api" exported="" />
     <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
     <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
     <orderEntry type="module" module-name="qi4j-core-testsupport" exported="" />
     <orderEntry type="library" exported="" name="Maven: junit:junit:4.4" level="project" />
     <orderEntry type="module" module-name="qi4j-lib-spaces-api" exported="" />
-    <orderEntry type="module" module-name="qi4j-lib-general" exported="" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.library:qi4j-lib-general:0.7-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="qi4j-lib-validation" exported="" />
     <orderEntry type="module" module-name="qi4j-lib-constraints" exported="" />
   </component>
