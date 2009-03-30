@@ -16,6 +16,9 @@
 */
 package org.qi4j.library.swing.envisage.graph;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
@@ -25,6 +28,7 @@ import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.util.DescriptorNameComparator;
 import prefuse.data.Edge;
 import prefuse.data.Graph;
 import prefuse.data.Node;
@@ -37,7 +41,9 @@ import prefuse.data.Table;
  */
 public class GraphBuilder
 {
+    private DescriptorNameComparator<Object> nameComparator = new DescriptorNameComparator<Object>();
     private Graph graph = null;
+    private List childList;
 
     public static Graph buildGraph( ApplicationDetailDescriptor descriptor )
     {
@@ -55,6 +61,8 @@ public class GraphBuilder
 
         Table edgeTable = graph.getEdgeTable();
         edgeTable.addColumn( GraphDisplay.USES_EDGES, boolean.class, false );
+
+        childList = new ArrayList();
     }
 
     private Graph buildApplicationNode( ApplicationDetailDescriptor descriptor )
@@ -142,11 +150,25 @@ public class GraphBuilder
         }
     }
 
+    private void sortTypeChildren( Iterable iter )
+    {
+        childList.clear();
+        for( Object obj : iter )
+        {
+            childList.add( obj );
+        }
+
+        Collections.sort( childList, nameComparator );
+    }
+
     private void buildServicesNode( Node parent, Iterable<ServiceDetailDescriptor> iter )
     {
+        sortTypeChildren(iter);
+
         boolean first = true;
-        for( ServiceDetailDescriptor descriptor : iter )
+        for( Object obj : childList )
         {
+            ServiceDetailDescriptor descriptor = (ServiceDetailDescriptor)obj;
             if (first)
             {
                 String name = "Services";
@@ -159,9 +181,12 @@ public class GraphBuilder
 
     private void buildImportedServicesNode( Node parent, Iterable<ImportedServiceDetailDescriptor> iter )
     {
+        sortTypeChildren(iter);
+
         boolean first = true;
-        for( ImportedServiceDetailDescriptor descriptor : iter )
+        for( Object obj : childList )
         {
+            ImportedServiceDetailDescriptor descriptor = (ImportedServiceDetailDescriptor)obj;
             if (first)
             {
                 String name = "Imported Services";
@@ -174,9 +199,12 @@ public class GraphBuilder
 
     private void buildEntitiesNode( Node parent, Iterable<EntityDetailDescriptor> iter )
     {
+        sortTypeChildren(iter);
+        
         boolean first = true;
-        for( EntityDetailDescriptor descriptor : iter )
+        for( Object obj : childList )
         {
+            EntityDetailDescriptor descriptor = (EntityDetailDescriptor)obj;
             if (first)
             {
                 String name = "Entities";
@@ -189,9 +217,12 @@ public class GraphBuilder
 
     private void buildTransientsNode( Node parent, Iterable<CompositeDetailDescriptor> iter )
     {
+        sortTypeChildren(iter);
+        
         boolean first = true;
-        for( CompositeDetailDescriptor descriptor : iter )
+        for( Object obj : childList )
         {
+            CompositeDetailDescriptor descriptor = (CompositeDetailDescriptor)obj;
             if (first)
             {
                 String name = "Transients";
@@ -204,9 +235,12 @@ public class GraphBuilder
 
     private void buildValuesNode( Node parent, Iterable<ValueDetailDescriptor> iter )
     {
+        sortTypeChildren(iter);
+        
         boolean first = true;
-        for( ValueDetailDescriptor descriptor : iter )
+        for( Object obj : childList )
         {
+            ValueDetailDescriptor descriptor = (ValueDetailDescriptor)obj;
             if (first)
             {
                 String name = "Values";
@@ -219,9 +253,12 @@ public class GraphBuilder
 
     private void buildObjectsNode( Node parent, Iterable<ObjectDetailDescriptor> iter )
     {
+        sortTypeChildren(iter);
+        
         boolean first = true;
-        for( ObjectDetailDescriptor descriptor : iter )
+        for( Object obj : childList )
         {
+            ObjectDetailDescriptor descriptor = (ObjectDetailDescriptor)obj;
             if (first)
             {
                 String name = "Objects";

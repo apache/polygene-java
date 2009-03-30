@@ -47,6 +47,11 @@ public class StackedLayout extends TreeLayout
         Display display = this.getVisualization().getDisplay( 0 );
         Dimension size = new Dimension( (int)bounds.getWidth(), (int)bounds.getHeight() );
         display.setSize( size );
+
+        if (!display.isValid())
+        {
+            display.validate();
+        }
     }
 
     public void zoomOut()

@@ -37,7 +37,7 @@ public abstract class GraphDisplay extends Display
 
     public GraphDisplay( Visualization visualization)
     {
-        super(visualization);        
+        super(visualization);
     }
 
     public abstract void run ( Graph graph );

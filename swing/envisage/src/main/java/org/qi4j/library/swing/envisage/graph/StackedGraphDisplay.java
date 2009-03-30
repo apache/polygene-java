@@ -80,6 +80,7 @@ public class StackedGraphDisplay extends GraphDisplay
     
     static final String LAYOUT_ACTION = "layout";
     static final String COLORS_ACTION = "colors";
+    static final String AUTO_PAN_ACTION = "autoPan";
 
     static int OUTLINE_COLOR = ColorLib.rgb(33,115,170);
     static int OUTLINE_FOCUS_COLOR = ColorLib.rgb(255,255,255);  // alternative color ColorLib.rgb(150,200,200);
@@ -129,14 +130,18 @@ public class StackedGraphDisplay extends GraphDisplay
         colors.add(usesArrow);
         m_vis.putAction(COLORS_ACTION, colors);
 
+        ActionList autoPan = new ActionList();
+        autoPan.add(colors);
+        autoPan.add(new AutoPanAction());
+        autoPan.add(new RepaintAction());
+        m_vis.putAction( AUTO_PAN_ACTION, autoPan);
+
         // create the layout action list
         stackedLayout = new StackedLayout( GRAPH );
         ActionList layout = new ActionList();
         layout.add( stackedLayout );
         layout.add(new LabelLayout( LABELS ));
-        layout.add(new AutoPanAction());
-        layout.add(colors);
-        layout.add(new RepaintAction());
+        layout.add(autoPan);
         m_vis.putAction(LAYOUT_ACTION, layout);
 
         // initialize our display
@@ -150,7 +155,7 @@ public class StackedGraphDisplay extends GraphDisplay
         addControlListener( new PanControl(true) );
         addControlListener( new ItemSelectionControl() );
 
-        setDamageRedraw( false );
+        setDamageRedraw( true );
     }
 
     public void run (Graph graph)
@@ -182,7 +187,7 @@ public class StackedGraphDisplay extends GraphDisplay
         }
 
         // perform layout
-        //m_vis.invalidate( GRAPH_NODES );
+        m_vis.invalidate( GRAPH_NODES );
         activity = m_vis.run(LAYOUT_ACTION);
     }
 
@@ -210,14 +215,23 @@ public class StackedGraphDisplay extends GraphDisplay
         if( item != null )
         {
             int depth = item.getDepth();
+            boolean relayout = false;
             if ( depth > stackedLayout.getZoom() )
             {
                 stackedLayout.zoom(depth);
+                relayout = true;
             }
 
             TupleSet ts = m_vis.getFocusGroup( Visualization.FOCUS_ITEMS );
             ts.setTuple( item );
-            m_vis.run( LAYOUT_ACTION );
+            if (relayout)
+            {
+                run();
+            }
+            else
+            {
+                m_vis.run( AUTO_PAN_ACTION );
+            }
         }
     }
 
@@ -437,8 +451,6 @@ public class StackedGraphDisplay extends GraphDisplay
    {
         public void run( double frac )
         {
-            //panAbs( 200, 0 );
-
             Rectangle2D displayBounds = new Rectangle2D.Double(0,0,getWidth(),getHeight());
 
             Container container = getParent();
@@ -459,7 +471,6 @@ public class StackedGraphDisplay extends GraphDisplay
                 displayBounds.setRect( 0,0, size.getWidth(), size.getHeight());
             }
 
-
             Rectangle2D bounds = stackedLayout.getLayoutRoot().getBounds();
 
             // Pan center
@@ -473,7 +484,7 @@ public class StackedGraphDisplay extends GraphDisplay
             }
             catch (Exception ex)
             {
-                return;    
+                return;
             }
             if (x < 0)
             {
@@ -486,6 +497,19 @@ public class StackedGraphDisplay extends GraphDisplay
             }
             pan (x, y);
 
+            TupleSet ts = m_vis.getFocusGroup( Visualization.FOCUS_ITEMS );
+            if( ts.getTupleCount() != 0 )
+            {
+                // get the first selected item and pan center it
+                VisualItem vi = (VisualItem) ts.tuples().next();
+
+                //update scrollbar position
+                if (container instanceof JViewport)
+                {
+                    // TODO there is a bug on Swing scrollRectToVisible
+                    ((JViewport)container).scrollRectToVisible( vi.getBounds().getBounds() );
+                }
+            }
         }
     }
 
