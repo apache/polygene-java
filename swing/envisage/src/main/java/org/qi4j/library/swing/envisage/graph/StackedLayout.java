@@ -67,6 +67,11 @@ public class StackedLayout extends TreeLayout
         }
     }
 
+    public void zoom(int zoom)
+    {
+        this.zoom = zoom;        
+    }
+
     public int getZoom()
     {
         return zoom;

@@ -346,7 +346,7 @@ public class TreeGraphDisplay extends GraphDisplay
                 return;
             }
             Object object = anItem.get( USER_OBJECT );
-            LinkEvent evt = new LinkEvent( this, object );
+            LinkEvent evt = new LinkEvent( TreeGraphDisplay.this, object );
             fireLinkActivated( evt );
         }
     }

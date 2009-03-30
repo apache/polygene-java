@@ -86,5 +86,6 @@
     <orderEntry type="library" exported="" name="Maven: bouncycastle:bcmail-jdk14:136" level="project" />
     <orderEntry type="library" exported="" name="Maven: bouncycastle:bcprov-jdk14:136" level="project" />
   </component>
+  <component name="copyright" />
 </module>
 

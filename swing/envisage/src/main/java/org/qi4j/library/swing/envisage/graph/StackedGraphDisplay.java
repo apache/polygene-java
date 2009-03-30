@@ -45,6 +45,7 @@ import prefuse.data.Graph;
 import prefuse.data.Schema;
 import prefuse.data.expression.Predicate;
 import prefuse.data.expression.parser.ExpressionParser;
+import prefuse.data.tuple.TupleSet;
 import prefuse.render.AbstractShapeRenderer;
 import prefuse.render.DefaultRendererFactory;
 import prefuse.render.EdgeRenderer;
@@ -80,6 +81,9 @@ public class StackedGraphDisplay extends GraphDisplay
     static final String LAYOUT_ACTION = "layout";
     static final String COLORS_ACTION = "colors";
 
+    static int OUTLINE_COLOR = ColorLib.rgb(33,115,170);
+    static int OUTLINE_FOCUS_COLOR = ColorLib.rgb(255,255,255);  // alternative color ColorLib.rgb(150,200,200);
+
     protected StackedLayout stackedLayout;
 
     protected Activity activity;
@@ -110,8 +114,8 @@ public class StackedGraphDisplay extends GraphDisplay
         m_vis.setRendererFactory(rf);
 
         // border colors
-        final ColorAction borderColor = new BorderColorAction( GRAPH_NODES );
-        final ColorAction fillColor = new FillColorAction( GRAPH_NODES );
+        ColorAction borderColor = new BorderColorAction( GRAPH_NODES );
+        ColorAction fillColor = new FillColorAction( GRAPH_NODES );
 
         // uses edge colors
         ItemAction usesColor = new ColorAction( GRAPH_EDGES, usesPredicate, VisualItem.STROKECOLOR, ColorLib.rgb( 50,50,50 ) );
@@ -140,16 +144,7 @@ public class StackedGraphDisplay extends GraphDisplay
         setSize( size );
         setPreferredSize( size );
         setItemSorter(new ExtendedTreeDepthItemSorter(true));
-        addControlListener(new ControlAdapter() {
-            public void itemEntered(VisualItem item, MouseEvent e) {
-                item.setStrokeColor(borderColor.getColor(item));
-                item.getVisualization().repaint();
-            }
-            public void itemExited(VisualItem item, MouseEvent e) {
-                item.setStrokeColor(item.getEndStrokeColor());
-                item.getVisualization().repaint();
-            }
-        });
+        addControlListener( new HoverControl() );
         addControlListener( new FocusControl( 1, COLORS_ACTION ) );
         addControlListener( new WheelMouseControl());
         addControlListener( new PanControl(true) );
@@ -193,7 +188,37 @@ public class StackedGraphDisplay extends GraphDisplay
 
     public void setSelectedValue( Object object )
     {
-        //TODO    
+        if( object == null )
+        {
+            return;
+        }
+
+        NodeItem item = null;
+
+        Iterator iter = m_vis.items( GRAPH_NODES );
+        while( iter.hasNext() )
+        {
+            NodeItem tItem = (NodeItem) iter.next();
+            Object tObj = tItem.get( USER_OBJECT );
+            if( tObj.equals( object ) )
+            {
+                item = tItem;
+                break;
+            }
+        }
+
+        if( item != null )
+        {
+            int depth = item.getDepth();
+            if ( depth > stackedLayout.getZoom() )
+            {
+                stackedLayout.zoom(depth);
+            }
+
+            TupleSet ts = m_vis.getFocusGroup( Visualization.FOCUS_ITEMS );
+            ts.setTuple( item );
+            m_vis.run( LAYOUT_ACTION );
+        }
     }
 
     public void zoomIn()
@@ -239,7 +264,7 @@ public class StackedGraphDisplay extends GraphDisplay
     // ------------------------------------------------------------------------
 
     /**
-     * Set the stroke color for drawing treemap node outlines. 
+     * Set the stroke color for drawing border node outlines. 
      */
     public class BorderColorAction extends ColorAction {
 
@@ -252,13 +277,13 @@ public class StackedGraphDisplay extends GraphDisplay
             {
                 return 0;
             }
-            NodeItem nitem = (NodeItem)item;
-            if ( nitem.isHover() )
+            NodeItem nItem = (NodeItem)item;
+            if( m_vis.isInGroup( nItem, Visualization.FOCUS_ITEMS ) )
             {
-                return ColorLib.rgb(150,200,200);
+                return OUTLINE_FOCUS_COLOR;
             }
 
-            return ColorLib.rgb(33,115,170);
+            return OUTLINE_COLOR;
         }
     }
 
@@ -284,8 +309,13 @@ public class StackedGraphDisplay extends GraphDisplay
         {
             if( item instanceof NodeItem )
             {
-                NodeItem nitem = (NodeItem) item;
-                return cmap.getColor( nitem.getDepth() );
+                NodeItem nItem = (NodeItem) item;
+                if( m_vis.isInGroup( nItem, Visualization.FOCUS_ITEMS ) )
+                {
+                    int c = cmap.getColor( nItem.getDepth() );
+                    return ColorLib.darker( c );
+                }
+                return cmap.getColor( nItem.getDepth() );
             }
             else
             {
@@ -294,6 +324,21 @@ public class StackedGraphDisplay extends GraphDisplay
         }
 
     } // end of inner class FillColorAction
+
+    public class HoverControl extends ControlAdapter
+    {
+        public void itemEntered( VisualItem item, MouseEvent evt )
+        {
+            item.setStrokeColor( OUTLINE_FOCUS_COLOR );
+            item.getVisualization().repaint();
+        }
+
+        public void itemExited( VisualItem item, MouseEvent evt )
+        {
+            item.setStrokeColor( item.getEndStrokeColor() );
+            item.getVisualization().repaint();
+        }
+    }
 
     /**
      * Set label positions. Labels are assumed to be DecoratorItem instances,
@@ -374,12 +419,16 @@ public class StackedGraphDisplay extends GraphDisplay
     {
         public final void itemClicked( VisualItem anItem, MouseEvent anEvent )
         {
+            // update the display
+            anItem.getVisualization().repaint();
+
             if( !anItem.canGet( USER_OBJECT, Object.class ) )
             {
                 return;
             }
+
             Object object = anItem.get( USER_OBJECT );
-            LinkEvent evt = new LinkEvent( this, object );
+            LinkEvent evt = new LinkEvent( StackedGraphDisplay.this, object );
             fireLinkActivated( evt );
         }
     }

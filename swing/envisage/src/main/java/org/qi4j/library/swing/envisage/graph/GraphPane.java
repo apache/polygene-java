@@ -26,6 +26,7 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import org.qi4j.library.swing.envisage.event.LinkEvent;
 import org.qi4j.library.swing.envisage.event.LinkListener;
 import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
 import prefuse.data.Graph;
@@ -69,6 +70,22 @@ public class GraphPane extends JPanel
         this.setLayout( new BorderLayout( ) );
         add(tabPane, BorderLayout.CENTER);
 
+        treeDisplay.addLinkListener( new LinkListener()
+        {
+            public void activated( LinkEvent evt )
+            {
+                graphItemLinkActivated( evt );
+            }
+        } );
+
+        stackedDisplay.addLinkListener( new LinkListener()
+        {
+            public void activated( LinkEvent evt )
+            {
+                graphItemLinkActivated( evt );
+            }
+        } );
+
         this.addComponentListener( new ComponentAdapter()
         {
             public void componentResized( ComponentEvent evt)
@@ -106,11 +123,31 @@ public class GraphPane extends JPanel
         return displays; 
     }
 
-    public TreeGraphDisplay getGraphDisplay()
+    public void setSelectedValue( Object obj )
     {
-        return treeDisplay;
+        treeDisplay.setSelectedValue( obj );
+        stackedDisplay.setSelectedValue( obj );
     }
 
+    private void graphItemLinkActivated(LinkEvent evt)
+    {
+        //System.out.println("this is called");
+        //System.out.println(evt.getSource().getClass());
+        if (evt.getSource().equals( treeDisplay ))
+        {
+             stackedDisplay.setSelectedValue( evt.getObject() );
+        }
+        else if (evt.getSource().equals( stackedDisplay ))
+        {
+            treeDisplay.setSelectedValue( evt.getObject() );            
+        }
+    }
+
+    /**
+     * Add a listener from the list that's notified each time a change to the selection occurs.
+     *
+     * @param listener the LinkListener to add
+     */
     public void addLinkListener( LinkListener listener )
     {
         treeDisplay.addLinkListener( listener );

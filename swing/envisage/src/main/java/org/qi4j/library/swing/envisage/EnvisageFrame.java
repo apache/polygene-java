@@ -180,7 +180,7 @@ public class EnvisageFrame extends JFrame
         detailModelPane.setDescriptor( obj );
         if( !graphItemSelectionInProgress )
         {
-            graphPane.getGraphDisplay().setSelectedValue( obj );
+            graphPane.setSelectedValue( obj );
         }
     }
 

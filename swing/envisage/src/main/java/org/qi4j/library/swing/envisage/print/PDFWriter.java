@@ -79,7 +79,7 @@ public class PDFWriter
     protected PDFont header1Font = PDType1Font.HELVETICA_BOLD;  // Application
     protected PDFont header2Font = PDType1Font.HELVETICA_BOLD;  // Layer
     protected PDFont header3Font = PDType1Font.HELVETICA_BOLD; // Module
-    protected PDFont header4Font = PDType1Font.HELVETICA_BOLD; // Type
+    protected PDFont header4Font = PDType1Font.HELVETICA_BOLD; // Type Container
     protected PDFont header5Font = PDType1Font.HELVETICA_BOLD_OBLIQUE; // Type
     protected float normalFontSize = 10;
     protected float header1FontSize = 18;
