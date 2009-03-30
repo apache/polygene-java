@@ -197,18 +197,7 @@ public class ModuleUnitOfWork
     {
         EntityComposite entityComposite = (EntityComposite) entity;
         EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
-        String id = compositeInstance.qualifiedIdentity().identity();
-        Class<? extends EntityComposite> type = compositeInstance.type();
-
-        EntityFinder finder = moduleInstance.findEntityModel( type );
-
-        if( finder.model == null )
-        {
-            throw new EntityTypeNotFoundException( type.getName() );
-        }
-
-
-        return uow.getReference( id, this, finder.model, moduleInstance ).<T>proxy();
+        return uow.getReference( compositeInstance.qualifiedIdentity().identity(), this, compositeInstance.entityModel(), compositeInstance.module() ).<T>proxy();
     }
 
     public void refresh( Object entity ) throws UnitOfWorkException
