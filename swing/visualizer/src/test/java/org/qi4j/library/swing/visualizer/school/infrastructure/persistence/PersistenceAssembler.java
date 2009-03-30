@@ -24,6 +24,7 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.RdfFactoryService;
 import org.qi4j.index.rdf.RdfQueryService;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
+import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 
@@ -37,7 +38,7 @@ public class PersistenceAssembler
     public final void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
-        aModule.addObjects( EntityStateSerializer.class );
+        aModule.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
 
         aModule.addServices(
             UuidIdentityGeneratorService.class,
