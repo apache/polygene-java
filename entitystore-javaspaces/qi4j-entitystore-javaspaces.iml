@@ -12,6 +12,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="qi4j-lib-framework" />
+    <orderEntry type="module" module-name="qi4j-lib-general" />
     <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
     <orderEntry type="module" module-name="qi4j-core-api" exported="" />
     <orderEntry type="module" module-name="qi4j-core-runtime" />
@@ -28,7 +30,7 @@
     <orderEntry type="library" name="Maven: org.mortbay.jetty:servlet-api-2.5:6.1.11" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:servlet-api:2.4" level="project" />
     <orderEntry type="module" module-name="qi4j-lib-logging" />
-    <orderEntry type="module" module-name="qi4j-lib-framework" />
+    <orderEntry type="library" name="Maven: org.qi4j.library:qi4j-lib-framework:0.7-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.apache.river:jini-core:2.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.river:jini-ext:2.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.river:outrigger:2.1.1" level="project" />
@@ -40,7 +42,7 @@
     <orderEntry type="library" name="Maven: org.apache.river:mahalo:2.1.1" level="project" />
     <orderEntry type="module" module-name="qi4j-lib-spaces-javaspaces" />
     <orderEntry type="module" module-name="qi4j-lib-spaces-tests" />
-    <orderEntry type="module" module-name="qi4j-lib-general" />
+    <orderEntry type="library" name="Maven: org.qi4j.library:qi4j-lib-general:0.7-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="qi4j-lib-validation" />
     <orderEntry type="module" module-name="qi4j-lib-locking" exported="" />
   </component>
