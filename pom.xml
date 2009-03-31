@@ -1,10 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.qi4j</groupId>
-    <artifactId>qi4j</artifactId>
-    <version>0.7-SNAPSHOT</version>
-  </parent>
   <groupId>org.qi4j</groupId>
   <artifactId>qi4j-core</artifactId>
   <name>Qi4j Core (Build POM)</name>
@@ -21,6 +16,32 @@
     <module>testsupport</module>
     <!--module>osgi</module-->
   </modules>
+
+  <repositories>
+    <repository>
+      <id>ops4j-repository</id>
+      <url>http://repository.ops4j.org/maven2</url>
+    </repository>
+    <repository>
+      <id>com.springsource.repository.bundles.external</id>
+      <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
+      <url>http://repository.springsource.com/maven/bundles/external</url>
+    </repository>
+    <repository>
+      <id>ops4j-snapshot</id>
+      <url>http://repository.ops4j.org/mvn-snapshots</url>
+    </repository>
+  </repositories>
+
+  <inceptionYear>2007</inceptionYear>
+  <url>http://www.qi4j.org/</url>
+
+  <scm>
+    <connection>scm:git://dscm.ops4j.org/qi4j-core.git</connection>
+    <developerConnection>scm:git:git@dscm.ops4j.org:qi4j-core.git</developerConnection>
+  </scm>
+
+
   <developers>
     <developer>
       <id>niclas@hedhman.org</id>
@@ -66,4 +87,116 @@
       <timezone>CET</timezone>
     </developer>
   </developers>
+
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-external</artifactId>
+        <version>1.0-alpha-6</version>
+      </extension>
+    </extensions>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.0.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-DocURL>${pom.url}</Bundle-DocURL>
+            <_include>-osgi.bundle</_include>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkMode>once</forkMode>
+          <includes>
+            <include>**/*Test.java</include>
+            <include>**/*TestCase.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.atlassian.maven.plugins</groupId>
+        <artifactId>maven-clover2-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <distributionManagement>
+    <repository>
+      <id>ops4j.releases.deploy</id>
+      <url>scpexe://repository.ops4j.org/var/http/repository.ops4j.org/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <id>ops4j.snapshots.deploy</id>
+      <url>scpexe://repository.ops4j.org/var/http/repository.ops4j.org/mvn-snapshots</url>
+    </snapshotRepository>
+    <site>
+      <id>ops4j.website.deploy</id>
+      <url>scpexe://www.ops4j.org/var/http/www.ops4j.org/projects/qi4j</url>
+    </site>
+  </distributionManagement>
+
+  <licenses>
+    <license>
+      <name>Apache License v2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+      <comments>Copyrights retained by each developer.</comments>
+    </license>
+  </licenses>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <configLocation>etc/checkstyle/ops4j-format.xml</configLocation>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <configuration>
+          <targetJdk>1.5</targetJdk>
+          <sourceEncoding>utf-8</sourceEncoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <tagBase>https://scm.ops4j.org/repos/ops4j/qa/qi4j</tagBase>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </reporting>
+
 </project>
