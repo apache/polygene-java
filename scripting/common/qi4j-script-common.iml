@@ -9,7 +9,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="qi4j-core-api" exported="" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-api:0.7-SNAPSHOT" level="project" />
   </component>
 </module>
 

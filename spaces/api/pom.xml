@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.qi4j</groupId>
-    <artifactId>qi4j</artifactId>
+    <artifactId>qi4j-library</artifactId>
     <version>0.7-SNAPSHOT</version>
   </parent>
   <groupId>org.qi4j.library.spaces</groupId>

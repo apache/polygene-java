@@ -9,10 +9,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="qi4j-core-api" exported="" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-api:0.7-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.apache.directory.server:apacheds-all:1.5.4" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.apache.directory.shared:shared-ldap:0.9.12" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.slf4j:slf4j-api:1.4.2" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.slf4j:slf4j-api:1.4.3" level="project" />
     <orderEntry type="library" exported="" name="Maven: commons-lang:commons-lang:2.3" level="project" />
     <orderEntry type="library" exported="" name="Maven: commons-collections:commons-collections:3.2" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.apache.directory.shared:shared-asn1:0.9.12" level="project" />
