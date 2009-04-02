@@ -21,10 +21,8 @@
 
   <modules>
     <module>auth</module>
-    <module>beans</module>
     <module>cache</module>
     <module>constraints</module>
-    <module>executor</module>
     <module>http</module>
     <module>jini</module>
     <module>ldap</module>
@@ -32,15 +30,10 @@
     <module>logging</module>
     <module>observations</module>
     <module>rdf</module>
-    <module>registry</module>
-    <module>rmi</module>
     <module>scripting</module>
     <module>spaces</module>
     <module>swing</module>
-    <module>transaction</module>
-    <module>thread</module>
     <module>uid</module>
-    <module>validation</module>
     <module>struts2</module>
     <module>spring</module>
   </modules>
