@@ -24,14 +24,12 @@
     <module>cache</module>
     <module>constraints</module>
     <module>http</module>
-    <module>jini</module>
     <module>ldap</module>
     <module>locking</module>
     <module>logging</module>
     <module>observations</module>
     <module>rdf</module>
     <module>scripting</module>
-    <module>spaces</module>
     <module>swing</module>
     <module>uid</module>
     <module>struts2</module>
