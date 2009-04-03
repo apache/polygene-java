@@ -87,8 +87,8 @@
   <build>
     <extensions>
       <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ssh-external</artifactId>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-ssh-external</artifactId>
         <version>1.0-alpha-6</version>
       </extension>
     </extensions>
@@ -191,7 +191,6 @@
           <tagBase>https://scm.ops4j.org/repos/ops4j/qa/qi4j</tagBase>
         </configuration>
       </plugin>
-
     </plugins>
   </reporting>
 
