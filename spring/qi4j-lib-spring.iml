@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module relativePaths="true" MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" inherit-compiler-output="false">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_5" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
@@ -12,6 +12,18 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="Maven: org.springframework:spring-beans:2.5.6" level="project" />
+    <orderEntry type="library" exported="" name="Maven: commons-logging:commons-logging:1.1.1" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.springframework:spring-core:2.5.6" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.springframework:spring-context:2.5.6" level="project" />
+    <orderEntry type="library" exported="" name="Maven: aopalliance:aopalliance:1.0" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-bootstrap:0.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-spi:0.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-api:0.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-runtime:0.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-test:2.5.6" level="project" />
+    <orderEntry type="library" name="Maven: junit:junit:4.4" level="project" />
   </component>
 </module>
 
