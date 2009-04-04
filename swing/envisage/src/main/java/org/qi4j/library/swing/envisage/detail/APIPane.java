@@ -32,6 +32,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * API would be defined as "All service interfaces which are visible for layer
@@ -45,6 +46,8 @@ import java.util.List;
  */
 public class APIPane extends DetailPane
 {
+    protected ResourceBundle bundle = ResourceBundle.getBundle( this.getClass().getName() );
+
     private JPanel contentPane;
     private JTable apiTable;
     private APITableModel apiTableModel;
@@ -181,7 +184,7 @@ public class APIPane extends DetailPane
         /**
          * the column names for this model
          */
-        protected String[] columnNames = { "Service", "Module", "Visibility" };
+        protected String[] columnNames = { bundle.getString( "Service.Column" ), bundle.getString( "Module.Column" ), bundle.getString( "Visibility.Column" ) };
         protected ArrayList<TableRow> rows;
 
         public APITableModel()
