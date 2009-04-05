@@ -44,7 +44,7 @@ import org.qi4j.library.http.Dispatchers.Dispatcher;
 class JettyMixin
     implements Activatable, HttpService
 {
-    private static final Integer DEFAULT_PORT = new Integer( 8080 );
+    private static final Integer DEFAULT_PORT = 8080;
     private Configuration<JettyConfiguration> configuration;
     private @Service Iterable<ServiceReference<Servlet>> servlets;
     private @Service Iterable<ServiceReference<Filter>> filters;

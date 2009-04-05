@@ -33,11 +33,13 @@ public class UnitOfWorkFilter
 {
     @Structure private UnitOfWorkFactory uowf;
 
-    public void init( FilterConfig filterConfig ) throws ServletException
+    public void init( FilterConfig filterConfig )
+        throws ServletException
     {
     }
 
-    public void doFilter( ServletRequest request, ServletResponse response, FilterChain chain ) throws IOException, ServletException
+    public void doFilter( ServletRequest request, ServletResponse response, FilterChain chain )
+        throws IOException, ServletException
     {
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
