@@ -16,11 +16,17 @@
 */
 package org.qi4j.library.swing.envisage.detail;
 
-import java.awt.BorderLayout;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
+import javax.swing.*;
+import java.awt.*;
 
 /**
+ * API would be defined as "All service interfaces which are visible for layer
+ * or application" and SPI would be defined as "All service dependencies which
+ * are not satisfied from within the module". And then similar for Layer. This
+ * way you can select a Module/Layer and immediately see what it produces as
+ * output and requires as input. This is also very very nice for documentation
+ * purposes.
+ *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class SPIPane extends DetailPane

@@ -16,11 +16,10 @@
 */
 package org.qi4j.library.swing.envisage.model.util;
 
-import java.util.List;
-import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.CompositeMethodDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.*;
 import org.qi4j.library.swing.envisage.util.TableRow;
+
+import java.util.List;
 
 /**
  * Collection of Desciptor Utilities
@@ -76,5 +75,15 @@ public class DescriptorUtilities
     public static List<TableRow> findServiceUsage( ServiceDetailDescriptor descriptor )
     {
         return new ServiceUsageFinder().findServiceUsage( descriptor );
+    }
+
+    public static List<ServiceDetailDescriptor> findModuleAPI (ModuleDetailDescriptor descriptor)
+    {
+        return new APIFinder().findModuleAPI(descriptor);
+    }
+
+    public static List<ServiceDetailDescriptor> findLayerAPI (LayerDetailDescriptor descriptor)
+    {
+        return new APIFinder().findLayerAPI(descriptor);
     }
 }
