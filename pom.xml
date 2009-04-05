@@ -26,7 +26,6 @@
     <module>http</module>
     <module>locking</module>
     <module>logging</module>
-    <module>observations</module>
     <module>rdf</module>
     <module>scripting</module>
     <module>swing</module>
