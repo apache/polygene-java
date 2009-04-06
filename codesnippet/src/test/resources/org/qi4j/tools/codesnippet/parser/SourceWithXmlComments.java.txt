@@ -1,0 +1,13 @@
+package org.qi4j.tools.codesnippet.parser;
+
+//--- Example single line xml comment
+// $<foo name="bar">$
+public class SourceWithXmlComments
+{
+    //--- inline xml inside 'multiline' comment
+    void /* $<b>$ */sample/* $</b>$ */( int foobar )
+    {
+        System.out.println("my name is sample");
+    }
+}
+// $</foo>$

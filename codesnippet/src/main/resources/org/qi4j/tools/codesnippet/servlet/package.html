@@ -1,0 +1,113 @@
+  <html><body>
+
+
+      <p>Contains the codesnippet servlet and related classes.</p>
+
+      <h4>How the servlet works</h4>
+
+      <ol>
+      <li><p>
+        The servlet answers HTTP GET requests by mapping the request URL to another URL which is expected 
+        to deliver a single Java<sup>&trade;</sup> source. For a detailed explanation of the mapping see
+        <a href="CodesnippetServlet.html#url-mapping">CodesnippetServlet</a>.
+      </p></li>
+
+      <li><p>
+        The servlet uses the mapped URL to feed the source into a <a href="../parser/JavaXmlCommentsReader.html">JavaXmlCommentsReader</a> instance,
+        which is a <code>java.io.Reader</code> that uses a lexical scanner for Java 1.5 source to recognize special formatted comments.
+        <br/>
+          The syntax of those comments is fairly simple, after the comment starts, a <b><code>$&lt;</code></b>
+          or a <b><code>$&lt;/</code></b> starts the embedded meta-information, and a <b><code>&gt;$</code></b> will end it.
+          An arbitrary number of blanks and tabs around those markers is allowed. The scanner does not interpret the embedded information,
+          so the name <code>JavaXmlCommentsReader</code> may be a bit misleading. But the markers are optimized and intended to embed XML.
+      </p>
+      <h5>Sample with single line comments and inline multiline comments:</h5>
+      <p>
+        <pre><samp>
+            // $&lt;samp&gt;&lt;pre&gt;$
+            int theAnswerIs() 
+            {
+                return /*$&lt;b&gt;$*/42/*$&lt;/b&gt;$*/;
+            }
+            // $&lt;/samp&gt;&lt;/pre&gt;$
+        </samp></pre>
+      </p>
+      <h5>Sample with a valid syntax for the scanner, but <span style="color:red">not</span> for the later stages
+            (so <span style="color:red">don't</span> use it):</h5>
+      <p>
+        <pre><samp>
+            // $&lt; @foobar@ syntax &gt;$
+        </samp></pre>
+      </p>
+      <p>So the <code>JavaXmlCommentsReader</code> effectively turns <em>the inside out</em>. Where the <em>inside</em> in the 
+            source are those special comments in XML syntax as described above, and the <em>ouside</em> is the regular
+            java code (including ordinary comments).<br/>
+         After the processing, the <em>inside</em> is the java code and the <em>outside</em> is the previously embedded XML. An outer
+         root element <b><tt>&lt;java&gt;</tt></b> is automatically added.
+         <br/>
+         Sample input and results of this processing step can be found in the 
+         <tt>tools/codesnippet/src/test/java/org/qi4j/tools/codesnippet/parser</tt> test directory.
+      </p>
+      </li>
+      <li><p>
+           The result of he previous step is then processed with an <a href="../parser/IndentStripFilter.html">IndentStripFilter</a> to
+           remove the indent from the <em>codesnippet</em> (see next step) elements.
+      </p></li>
+      <li><p>The next step is to define the <em>codesnippet</em> syntax, the extraction of a single <em>codesnippet</em> 
+            and the output rendering on top of the XML from the previous step. All of this is done in with XSL transformations.
+            For each output type (see <a href="CodesnippetResponseType.html">CodesnippetResponseType</a>) a transformation
+            is defined (see <tt>tools/codesnippet/src/main/webapp/WEB-INF/snippet.*.xsl</tt>). A <em>codesnippet</em> is
+            recognized as such, if a <tt>&lt;snippet&gt;</tt> element with an <tt>id</tt> attribute is present in the XML.
+      </p>
+      <p>
+       <h5>Sample defining a <em>codesnippet</em> with <tt>id</tt> 'main':</h5>
+        <pre><samp>
+          // $&lt;snippet id="main"&gt;$
+          public class DomainAssembler
+              implements Assembler
+          {
+              public void assemble( ModuleAssembly module ) throws AssemblyException
+              {
+                  module.addEntities( CategoryEntity.class, RecipeEntity.class ).visibleIn( application );
+                  module.on( Category.class ).to().name().set( "New category" );
+              }
+          }
+          // $&lt;/snippet&gt;$
+        </samp></pre>
+        See the <a href="CodesnippetServlet.html#request-params">Request parameters</a> section in the <tt>CodesnippetServlet</tt> 
+        javadoc on how the snippet id is specified in the request URL.
+      </p>
+
+       <h5>XHTML for the above snippet:</h5>
+        <pre><samp>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;&lt;head&gt;&lt;title&gt;Codesnippet main&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&lt;div class="codesnippet" id="main"&gt;&lt;code&gt;&lt;pre&gt;public class DomainAssembler
+    implements Assembler
+{
+    public void assemble( ModuleAssembly module ) throws AssemblyException
+    {
+        module.addEntities( CategoryEntity.class, RecipeEntity.class ).visibleIn( application );
+        module.on( Category.class ).to().name().set( "New category" );
+    }
+}
+&lt;/pre&gt;&lt;/code&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;
+        </samp></pre>
+
+
+       <h5>XML (XHTML fragment) for the above snippet:</h5>
+        <pre><samp>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;div class="codesnippet" id="main"&gt;&lt;code&gt;&lt;pre&gt;public class DomainAssembler
+    implements Assembler
+{
+    public void assemble( ModuleAssembly module ) throws AssemblyException
+    {
+        module.addEntities( CategoryEntity.class, RecipeEntity.class ).visibleIn( application );
+        module.on( Category.class ).to().name().set( "New category" );
+    }
+}
+&lt;/pre&gt;&lt;/code&gt;&lt;/div&gt;
+        </samp></pre>
+
+      </li>
+      </ol>
+    </body></html>

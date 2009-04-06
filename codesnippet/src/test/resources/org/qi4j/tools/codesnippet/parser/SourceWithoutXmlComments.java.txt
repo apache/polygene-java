@@ -1,0 +1,12 @@
+package org.qi4j.tools.codesnippet.parser;
+
+// contains only normal java comments
+/**
+ * A multiline javadoc coment
+ */
+public class SourceWithoutXmlComments
+{
+    /*
+     * A multiline comment
+     */
+}
