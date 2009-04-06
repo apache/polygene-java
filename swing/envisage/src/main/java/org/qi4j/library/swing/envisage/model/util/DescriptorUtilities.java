@@ -26,11 +26,9 @@ import java.util.List;
  *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
-public class DescriptorUtilities
-{
-    private DescriptorUtilities()
-    {
-        throw new Error( "This is a utility class for static methods" );
+public class DescriptorUtilities {
+    private DescriptorUtilities() {
+        throw new Error("This is a utility class for static methods");
     }
 
     /**
@@ -39,9 +37,8 @@ public class DescriptorUtilities
      * @param descriptor ServiceDetailDescriptor
      * @return list of Descritpor Detail (never return null)
      */
-    public static List<CompositeMethodDetailDescriptor> findMethod( CompositeDetailDescriptor descriptor )
-    {
-        return new MethodFinder().findMethod( descriptor );
+    public static List<CompositeMethodDetailDescriptor> findMethod(CompositeDetailDescriptor descriptor) {
+        return new MethodFinder().findMethod(descriptor);
     }
 
     /**
@@ -50,9 +47,8 @@ public class DescriptorUtilities
      * @param descriptor ServiceDetailDescriptor
      * @return list of Descritpor Detail (never return null)
      */
-    public static List<CompositeMethodDetailDescriptor> findState( CompositeDetailDescriptor descriptor )
-    {
-        return new StateFinder().findState( descriptor );
+    public static List<CompositeMethodDetailDescriptor> findState(CompositeDetailDescriptor descriptor) {
+        return new StateFinder().findState(descriptor);
     }
 
     /**
@@ -61,9 +57,8 @@ public class DescriptorUtilities
      * @param descriptor ServiceDetailDescriptor
      * @return Descritpor Detail or null
      */
-    public static Object findServiceConfiguration( ServiceDetailDescriptor descriptor )
-    {
-        return new ServiceConfigurationFinder().findConfigurationDescriptor( descriptor );
+    public static Object findServiceConfiguration(ServiceDetailDescriptor descriptor) {
+        return new ServiceConfigurationFinder().findConfigurationDescriptor(descriptor);
     }
 
     /**
@@ -72,18 +67,50 @@ public class DescriptorUtilities
      * @param descriptor ServiceDetailDescriptor
      * @return list of service usage (never return null)
      */
-    public static List<TableRow> findServiceUsage( ServiceDetailDescriptor descriptor )
-    {
-        return new ServiceUsageFinder().findServiceUsage( descriptor );
+    public static List<TableRow> findServiceUsage(ServiceDetailDescriptor descriptor) {
+        return new ServiceUsageFinder().findServiceUsage(descriptor);
     }
 
-    public static List<ServiceDetailDescriptor> findModuleAPI (ModuleDetailDescriptor descriptor)
-    {
+    /**
+     * Return list of Descriptor Detail for All service interfaces which are visible for the module
+     *
+     * @param descriptor ModuleDetailDescriptor
+     * @return list of ServiceDetailDescriptor (never return null)
+     */
+    public static List<ServiceDetailDescriptor> findModuleAPI(ModuleDetailDescriptor descriptor) {
         return new APIFinder().findModuleAPI(descriptor);
     }
 
-    public static List<ServiceDetailDescriptor> findLayerAPI (LayerDetailDescriptor descriptor)
-    {
+    /**
+     * Return list of Descriptor Detail for All service interfaces which are visible for the layer
+     *
+     * @param descriptor ModuleDetailDescriptor
+     * @return list of ServiceDetailDescriptor (never return null)
+     */
+    public static List<ServiceDetailDescriptor> findLayerAPI(LayerDetailDescriptor descriptor) {
         return new APIFinder().findLayerAPI(descriptor);
+    }
+
+
+    /**
+     * Return list of Descriptor Detail for all service dependencies which
+     * are not satisfied from within the module 
+     *
+     * @param descriptor ModuleDetailDescriptor
+     * @return list of ServiceDetailDescriptor (never return null)
+     */
+    public static List<ServiceDetailDescriptor> findModuleSPI(ModuleDetailDescriptor descriptor) {
+        return new SPIFinder().findModuleSPI(descriptor);
+    }
+
+    /**
+     * Return list of Descriptor Detail for all service dependencies which
+     * are not satisfied from within the layer 
+     *
+     * @param descriptor ModuleDetailDescriptor
+     * @return list of ServiceDetailDescriptor (never return null)
+     */
+    public static List<ServiceDetailDescriptor> findLayerSPI(LayerDetailDescriptor descriptor) {
+        return new SPIFinder().findLayerSPI(descriptor);
     }
 }

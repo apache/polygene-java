@@ -16,8 +16,23 @@
 */
 package org.qi4j.library.swing.envisage.detail;
 
+import org.qi4j.library.swing.envisage.event.LinkEvent;
+import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.util.DescriptorUtilities;
+import org.qi4j.library.swing.envisage.util.TableRow;
+
 import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * API would be defined as "All service interfaces which are visible for layer
@@ -31,23 +46,109 @@ import java.awt.*;
  */
 public class SPIPane extends DetailPane
 {
+    protected ResourceBundle bundle = ResourceBundle.getBundle( this.getClass().getName() );
+    
     private JPanel contentPane;
+    private JTable spiTable;
+    private SPITableModel spiTableModel;
+
+    private Object linkObject;
+    private Cursor defaultCursor;
+    private Cursor linkCursor;
 
     public SPIPane( DetailModelPane detailModelPane )
     {
         super( detailModelPane );
         this.setLayout( new BorderLayout() );
         this.add( contentPane, BorderLayout.CENTER );
+
+        spiTableModel = new SPITableModel();
+        spiTable.setModel(spiTableModel);
+        spiTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
+
+        TableColumnModel columnModel = spiTable.getColumnModel();
+        columnModel.getColumn( 0 ).setCellRenderer( new DependencyCellRenderer() );
+
+        defaultCursor = getCursor();
+        linkCursor = LinkEvent.LINK_CURSOR;
+
+        MouseInputAdapter mouseInputListener = new MouseInputAdapter()
+        {
+            public void mouseMoved( MouseEvent evt )
+            {
+                // Column 1 is the Service Column
+                int col = spiTable.columnAtPoint( evt.getPoint() );
+                if( col == 0 )
+                {
+                    setCursor( linkCursor );
+                }
+                else
+                {
+                    if( !getCursor().equals( defaultCursor ) )
+                    {
+                        setCursor( defaultCursor );
+                    }
+                }
+            }
+
+            public void mouseClicked( MouseEvent evt )
+            {
+                int col = spiTable.columnAtPoint( evt.getPoint() );
+                if( col != 0 )
+                {
+                    return;
+                }
+
+                int row = spiTable.rowAtPoint( evt.getPoint() );
+                if( row < 0 )
+                {
+                    return;
+                }
+
+                linkObject = spiTable.getValueAt( row, col );
+                linkActivated();
+                linkObject = null;
+            }
+        };
+
+        spiTable.addMouseMotionListener( mouseInputListener );
+        spiTable.addMouseListener( mouseInputListener );
     }
 
     public void setDescriptor( Object objectDesciptor )
     {
         clear();
+
+        List<ServiceDetailDescriptor> list = null;
+        if ( objectDesciptor instanceof LayerDetailDescriptor)
+        {
+            list = DescriptorUtilities.findLayerSPI( (LayerDetailDescriptor)objectDesciptor );
+        }
+        else if (objectDesciptor instanceof ModuleDetailDescriptor)
+        {
+            list = DescriptorUtilities.findModuleSPI( (ModuleDetailDescriptor)objectDesciptor );
+        }
+
+        if (list != null)
+        {
+            spiTableModel.addRow(list);
+        }
     }
 
     protected void clear()
     {
+        linkObject = null;
+        spiTableModel.clear();
+    }
 
+    protected void linkActivated()
+    {
+        if( linkObject == null )
+        {
+            return;
+        }
+        LinkEvent linkEvt = new LinkEvent( this, linkObject );
+        detailModelPane.fireLinkActivated( linkEvt );
     }
 
     {
@@ -76,5 +177,91 @@ public class SPIPane extends DetailPane
     public JComponent $$$getRootComponent$$$()
     {
         return contentPane;
+    }
+
+    public class SPITableModel extends AbstractTableModel
+    {
+        /**
+         * the column names for this model
+         */
+        protected String[] columnNames = { bundle.getString( "Dependency.Column" ), bundle.getString( "Module.Column" ), bundle.getString( "Layer.Column" ) };
+        protected ArrayList<TableRow> rows;
+
+        public SPITableModel()
+        {
+            rows = new ArrayList<TableRow>();
+        }
+
+        public void addRow(java.util.List<ServiceDetailDescriptor> list)
+        {
+            if ( list.isEmpty() )
+            {
+                return;
+            }
+
+            int i1 = rows.size();
+            if( i1 > 0 )
+            {
+                i1--;
+            }
+
+            int i2 = 0;
+
+            for( ServiceDetailDescriptor descriptor : list )
+            {
+                TableRow row = new TableRow(columnNames.length);
+                row.set(0, descriptor);
+                row.set(1, descriptor.module());
+                row.set(2, descriptor.module().layer() );
+                this.rows.add(row);
+                i2++;
+            }
+
+            fireTableRowsInserted( i1, i1 + i2 );
+        }
+
+        public Object getValueAt( int rowIndex, int columnIndex )
+        {
+            TableRow row = rows.get( rowIndex );
+            return row.get( columnIndex );
+        }
+
+        public void clear()
+        {
+            rows.clear();
+            fireTableDataChanged();
+        }
+
+        public int getColumnCount()
+        {
+            return columnNames.length;
+        }
+
+        public String getColumnName( int col )
+        {
+            return columnNames[ col ];
+        }
+
+        public int getRowCount()
+        {
+            return rows.size();
+        }
+    }
+
+    public class DependencyCellRenderer extends DefaultTableCellRenderer
+    {
+
+        @Override
+        public final Component getTableCellRendererComponent( JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column )
+        {
+            if( value != null )
+            {
+                value = "<html><a href=\"" + value.toString() + "\">" + value.toString() + "</a></html>";
+            }
+
+            super.getTableCellRendererComponent( table, value, isSelected, hasFocus, row, column );
+
+            return this;
+        }
     }
 }
