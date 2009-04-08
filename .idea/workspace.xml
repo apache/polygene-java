@@ -2,335 +2,11 @@
 <project relativePaths="false" version="4">
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/EntityStateDescriptor.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/EntityStateDescriptor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/unitofwork/UnitOfWorkInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/unitofwork/UnitOfWorkInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/AssociationDeclarations.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/AssociationDeclarations.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/composite/CompositeBuilderFactory.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/composite/CompositeBuilderFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AbstractModifierDeclaration.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AbstractModifierDeclaration.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/injection/scope/State.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/injection/scope/State.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeMethodInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeMethodInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/NotQueryableException.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/NotQueryableException.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/EntityBuilderListAssociation.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/EntityBuilderListAssociation.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/ValueDeclaration.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/ValueDeclaration.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/property/PropertyDescriptor.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/property/PropertyDescriptor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/common/Optional.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/common/Optional.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/value/ValueBuilderFactory.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/value/ValueBuilderFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/InjectedParametersModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/InjectedParametersModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/util/Classes.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/util/Classes.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/usecase/UsecaseBuilder.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/usecase/UsecaseBuilder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/AbstractAssociationInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/AbstractAssociationInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/StateChangeVoter.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/StateChangeVoter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/composite/CompositeDescriptor.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/composite/CompositeDescriptor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/EntityDeclarationImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/EntityDeclarationImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AnnotationAppliesToFilter.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AnnotationAppliesToFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/osgi/Activator.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/osgi/Activator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/InjectionProviderFactoryStrategy.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/InjectionProviderFactoryStrategy.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ModuleUnitOfWork.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ModuleUnitOfWork.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/Qi4jRuntimeImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/Qi4jRuntimeImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MixinDeclaration.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MixinDeclaration.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/composite/CompositeInstance.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/composite/CompositeInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ObjectDeclarationImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ObjectDeclarationImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/ApplicationAssembler.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/ApplicationAssembler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ModuleAssemblyImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ModuleAssemblyImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/AbstractQi4jTest.java" afterPath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/AbstractQi4jTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstraintsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstraintsModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/composite/CompositeMethodDescriptor.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/composite/CompositeMethodDescriptor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/EntityFinder.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/EntityFinder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/grammar/impl/AssociationReferenceImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/grammar/impl/AssociationReferenceImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/ListAssociationInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/ListAssociationInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ProxyReferenceInvocationHandler.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ProxyReferenceInvocationHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/query/named/NamedEntityFinder.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/query/named/NamedEntityFinder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/LayerInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/LayerInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/util/Streams.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/util/Streams.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/InvalidAssociationAccessException.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/InvalidAssociationAccessException.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValuePropertiesModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValuePropertiesModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeMixin.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeMixin.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/ManyAssociationStateChange.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/ManyAssociationStateChange.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/DependencyModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/DependencyModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/InjectedMethodsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/InjectedMethodsModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ValueDeclarationImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ValueDeclarationImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/service/importer/NewObjectImporter.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/service/importer/NewObjectImporter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/NamedQueryImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/NamedQueryImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/UsedLayersInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/UsedLayersInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/injection/scope/Invocation.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/injection/scope/Invocation.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/constraint/ConstraintDeclaration.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/constraint/ConstraintDeclaration.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/CachingInjectionProviderFactoryDecorator.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/CachingInjectionProviderFactoryDecorator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/PropertiesModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/PropertiesModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/value/PrimitiveType.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/value/PrimitiveType.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/mock/MockPlayerConcern.java" afterPath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/mock/MockPlayerConcern.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/proxy/PropertyReferenceProxy.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/proxy/PropertyReferenceProxy.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/helpers/UuidIdentityGeneratorMixin.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/helpers/UuidIdentityGeneratorMixin.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ModuleInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ModuleInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/DefaultValues.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/DefaultValues.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValuePropertyInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValuePropertyInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/entitystore/memory/ConcurrentModificationCheckConcern.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/entitystore/memory/ConcurrentModificationCheckConcern.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/EntityDeclaration.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/EntityDeclaration.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/common/AppliesToFilter.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/common/AppliesToFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/object/ObjectBuilderInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/object/ObjectBuilderInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/LayerModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/LayerModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/serialization/SerializableState.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/serialization/SerializableState.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/IterableQuery.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/IterableQuery.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/Computed.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/Computed.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/EntityModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/EntityModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValueMixinsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValueMixinsModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/common/QualifiedName.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/common/QualifiedName.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AndAppliesToFilter.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AndAppliesToFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodConcernsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodConcernsModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/Queryable.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/Queryable.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MixinModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MixinModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/value/ValueType.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/value/ValueType.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/EntityPropertiesModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/EntityPropertiesModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/value/ValueCompositeType.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/value/ValueCompositeType.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/proxy/AssociationReferenceProxy.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/proxy/AssociationReferenceProxy.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/service/ServiceDescriptor.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/service/ServiceDescriptor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/ManyAssociationInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/ManyAssociationInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/association/ManyAssociationType.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/association/ManyAssociationType.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/util/MethodSet.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/util/MethodSet.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/StructureInjectionProviderFactory.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/StructureInjectionProviderFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/association/AssociationType.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/association/AssociationType.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/object/ObjectBuilderFactory.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/object/ObjectBuilderFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/DescriptorModelVisitor.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/DescriptorModelVisitor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstraintModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstraintModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/PropertyInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/PropertyInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/structure/DescriptorVisitor.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/structure/DescriptorVisitor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/mock/MockPlayerMixin.java" afterPath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/mock/MockPlayerMixin.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MixinsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MixinsModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/service/ServiceReference.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/service/ServiceReference.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AbstractModifierModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AbstractModifierModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ModuleVisitor.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ModuleVisitor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/service/importer/ServiceSelectorImporter.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/service/importer/ServiceSelectorImporter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstructorModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstructorModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/association/AssociationDescriptor.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/association/AssociationDescriptor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/projectCodeStyle.xml" afterPath="$PROJECT_DIR$/.idea/projectCodeStyle.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodSideEffectsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodSideEffectsModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/AbstractPropertyModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/AbstractPropertyModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/UsesInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/UsesInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValuesModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValuesModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/ImmutableFacade.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/ImmutableFacade.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/OrAppliesToFilter.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/OrAppliesToFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/StateChangeAdapter.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/StateChangeAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/association/Qualifier.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/association/Qualifier.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/ComputedPropertyInstance.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/ComputedPropertyInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/EntityMixinsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/EntityMixinsModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ApplicationAssemblyImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ApplicationAssemblyImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/EntityStoreTestAssembler.java" afterPath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/EntityStoreTestAssembler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/spi/Qi4jRuntime.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/spi/Qi4jRuntime.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/proxy/ManyAssociationReferenceProxy.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/proxy/ManyAssociationReferenceProxy.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/StateChangeQualifiedNameFilter.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/StateChangeQualifiedNameFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValuePropertyModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValuePropertyModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodConstraintsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodConstraintsModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/constraint/Constraints.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/constraint/Constraints.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/PropertyDeclarations.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/PropertyDeclarations.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/service/ServiceSelector.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/service/ServiceSelector.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/mock/internal/MockRecorderMixin.java" afterPath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/mock/internal/MockRecorderMixin.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/DefaultCompositeInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/DefaultCompositeInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/UnitOfWorkPropagation.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/UnitOfWorkPropagation.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/usecase/Usecase.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/usecase/Usecase.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/value/ValueBuilder.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/value/ValueBuilder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ModelVisitor.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ModelVisitor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/ModifiesInjectionProviderFactory.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/ModifiesInjectionProviderFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/QueryExpressionsProviderImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/QueryExpressionsProviderImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ImportedServicesInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ImportedServicesInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/UnitOfWork.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/UnitOfWork.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/query/Query.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/query/Query.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConcernsDeclaration.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConcernsDeclaration.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/mixin/Initializable.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/mixin/Initializable.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/common/MetaInfo.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/common/MetaInfo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodSideEffectsInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodSideEffectsInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ApplicationInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ApplicationInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/query/named/QueryResult.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/query/named/QueryResult.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/ModuleAssembly.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/ModuleAssembly.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ThreadLocalCompositeMethodInstancePool.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ThreadLocalCompositeMethodInstancePool.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/util/MethodValueMap.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/util/MethodValueMap.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/NumberProperty.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/NumberProperty.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/PropertiesInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/PropertiesInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ValueConstraintsInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ValueConstraintsInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/service/ServiceTags.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/service/ServiceTags.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeMethodsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeMethodsModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/composite/TransientComposite.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/composite/TransientComposite.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ImportedServicesModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ImportedServicesModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/association/EntityStateHolder.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/association/EntityStateHolder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/InvocationInjectionProviderFactory.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/InvocationInjectionProviderFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/UnitOfWorkConcern.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/UnitOfWorkConcern.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/association/AssociationMixin.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/association/AssociationMixin.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstraintDeclaration.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstraintDeclaration.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/EntitiesModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/EntitiesModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/TypedFragmentAppliesToFilter.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/TypedFragmentAppliesToFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/LayerAssemblyImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/LayerAssemblyImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/common/UseDefaults.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/common/UseDefaults.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/spi/ApplicationModelFactory.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/spi/ApplicationModelFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/AssociationInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/AssociationInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeMethodModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeMethodModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/concern/Concerns.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/concern/Concerns.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/Lifecycle.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/Lifecycle.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/internal/ServiceLoader.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/internal/ServiceLoader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/util/Base64Encoder.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/util/Base64Encoder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/AssociationModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/AssociationModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/PropertyStateChange.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/PropertyStateChange.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/grammar/impl/ManyAssociationReferenceImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/grammar/impl/ManyAssociationReferenceImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositesModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositesModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/SideEffectsDeclaration.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/SideEffectsDeclaration.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AbstractConstraintModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AbstractConstraintModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/PropertyInfo.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/PropertyInfo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/common/AppliesTo.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/common/AppliesTo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/StateModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/StateModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AbstractCompositeModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AbstractCompositeModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/MetaInfoDeclaration.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/MetaInfoDeclaration.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/util/Annotations.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/util/Annotations.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/helpers/DefaultEntityState.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/helpers/DefaultEntityState.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AbstractMixinsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AbstractMixinsModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/property/PropertyType.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/property/PropertyType.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/EntityStore.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/EntityStore.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/unitofwork/UnitOfWorkStore.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/unitofwork/UnitOfWorkStore.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/sideeffect/SideEffects.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/sideeffect/SideEffects.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValueInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValueInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/EntitiesInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/EntitiesInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/query/named/NamedQueryService.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/query/named/NamedQueryService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/CachingInjectionProviderDecorator.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/CachingInjectionProviderDecorator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/LayerAssembly.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/LayerAssembly.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/EntityType.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/EntityType.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/injection/scope/Uses.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/injection/scope/Uses.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/concern/internal/ConcernFor.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/concern/internal/ConcernFor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/InjectedMethodModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/InjectedMethodModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/AssemblerCollection.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/AssemblerCollection.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/EntityBuilderSetAssociation.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/EntityBuilderSetAssociation.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/common/TypeName.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/common/TypeName.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ModuleModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ModuleModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/StateChangeSourceFilter.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/StateChangeSourceFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/composite/ParameterConstraintViolationException.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/composite/ParameterConstraintViolationException.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/proxy/MixinTypeProxy.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/proxy/MixinTypeProxy.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/association/AssociationInfo.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/association/AssociationInfo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/CompositeDeclarationImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/CompositeDeclarationImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValueBuilderInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValueBuilderInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/InjectedFieldModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/InjectedFieldModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/GenericPropertyInfo.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/GenericPropertyInfo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ImplementsMethodAppliesToFilter.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ImplementsMethodAppliesToFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/service/importer/InstanceImporter.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/service/importer/InstanceImporter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/UsedLayersModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/UsedLayersModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/InjectedFieldsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/InjectedFieldsModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/EntityStoreListener.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/EntityStoreListener.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/sideeffect/MethodSideEffectsDescriptor.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/sideeffect/MethodSideEffectsDescriptor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValueStateModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValueStateModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/object/ObjectModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/object/ObjectModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/CompositeDeclaration.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/CompositeDeclaration.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/SetAssociationInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/SetAssociationInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ApplicationAssemblyFactoryImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ApplicationAssemblyFactoryImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/constraint/ConstraintImplementationNotFoundException.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/constraint/ConstraintImplementationNotFoundException.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/injection/Name.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/injection/Name.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/query/QueryExpressionsProvider.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/query/QueryExpressionsProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/sideeffect/internal/SideEffectFor.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/sideeffect/internal/SideEffectFor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/UsesInjectionProviderFactory.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/UsesInjectionProviderFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/service/ServiceComposite.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/service/ServiceComposite.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/EntityBuilderAssociation.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/EntityBuilderAssociation.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/AssociationsInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/AssociationsInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/EntityAssociationsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/EntityAssociationsModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/injection/InjectionScope.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/injection/InjectionScope.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/StateChange.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/StateChange.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/query/QueryExpressions.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/query/QueryExpressions.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/association/GenericAssociationInfo.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/association/GenericAssociationInfo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/mixin/Mixins.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/mixin/Mixins.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/QueryBuilderImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/QueryBuilderImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ServicesModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ServicesModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/EntityStoreListenerNotificationSideEffect.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/EntityStoreListenerNotificationSideEffect.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/util/MethodKeyMap.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/util/MethodKeyMap.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/configuration/Configuration.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/configuration/Configuration.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/unitofwork/EntityBuilderInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/unitofwork/EntityBuilderInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/object/ObjectsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/object/ObjectsModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/Immutable.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/Immutable.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/Main.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/SingletonAssembler.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/SingletonAssembler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/query/named/QueryMethod.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/query/named/QueryMethod.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/entitystore/memory/MemoryEntityStoreService.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/entitystore/memory/MemoryEntityStoreService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/TypeCheckAppliesToFilter.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/TypeCheckAppliesToFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/injection/scope/Structure.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/injection/scope/Structure.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ServiceDeclarationImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ServiceDeclarationImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/EntityQuery.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/EntityQuery.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/EntityStateAdapter.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/EntityStateAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ServiceReferenceInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ServiceReferenceInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/EntityState.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/EntityState.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/injection/scope/This.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/injection/scope/This.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/Qi4jSPI.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/Qi4jSPI.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeBuilderInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeBuilderInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/constraint/Constraint.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/constraint/Constraint.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/query/grammar/PropertyReference.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/query/grammar/PropertyReference.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/composite/Composite.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/composite/Composite.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/SchemaVersion.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/SchemaVersion.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/ServiceInjectionProviderFactory.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/ServiceInjectionProviderFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/util/SerializationUtil.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/util/SerializationUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/composite/StateDescriptor.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/composite/StateDescriptor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ValueConstraintsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ValueConstraintsModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/QueryBuilderFactoryImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/QueryBuilderFactoryImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/TypedFragmentInvocationHandler.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/TypedFragmentInvocationHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/service/Wrapper.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/service/Wrapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/injection/scope/Service.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/injection/scope/Service.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/EntityPropertyModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/EntityPropertyModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/usecase/StateUsage.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/usecase/StateUsage.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/entity/AbstractEntityStoreTest.java" afterPath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/entity/AbstractEntityStoreTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/ThisInjectionProviderFactory.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/ThisInjectionProviderFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/ApplicationAssemblyFactory.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/ApplicationAssemblyFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValueModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValueModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/entitystore/memory/MemoryEntityStoreMixin.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/entitystore/memory/MemoryEntityStoreMixin.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/structure/Application.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/structure/Application.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/EntityStateModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/EntityStateModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/object/ObjectDescriptor.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/object/ObjectDescriptor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/helpers/DefaultValueState.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/helpers/DefaultValueState.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/EntityPropertyInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/EntityPropertyInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/AssemblyVisitor.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/AssemblyVisitor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/AbstractPropertyInstance.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/AbstractPropertyInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/PropertyMixin.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/PropertyMixin.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/unitofwork/EntityStateStore.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/unitofwork/EntityStateStore.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/structure/Module.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/structure/Module.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/composite/CompositeBuilder.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/composite/CompositeBuilder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodSideEffectModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodSideEffectModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/AssociationStateChange.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/AssociationStateChange.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ServicesInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ServicesInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/ServiceDeclaration.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/ServiceDeclaration.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositesInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositesInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/StateInjectionProviderFactory.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/StateInjectionProviderFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/PropertyModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/PropertyModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/unitofwork/RecordingEntityState.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/unitofwork/RecordingEntityState.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ApplicationModelFactoryImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ApplicationModelFactoryImpl.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ImportedServiceModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ImportedServiceModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/Resolution.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/Resolution.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ApplicationModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ApplicationModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/service/Activator.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/service/Activator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ImportedServiceInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ImportedServiceInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/Aggregated.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/Aggregated.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeConstraintModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeConstraintModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodConcernModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodConcernModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/RDF.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/RDF.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/AbstractPropertiesModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/AbstractPropertiesModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/composite/PropertyMapper.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/composite/PropertyMapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AbstractStateModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AbstractStateModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstraintInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstraintInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/grammar/impl/PropertyReferenceImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/grammar/impl/PropertyReferenceImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstructorsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstructorsModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MapAnnotatedElement.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MapAnnotatedElement.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/unitofwork/UnitOfWorkEntityState.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/unitofwork/UnitOfWorkEntityState.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/AbstractQuery.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/AbstractQuery.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodConstraintsInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodConstraintsInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/value/CollectionType.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/value/CollectionType.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/mock/internal/MockResolverProxy.java" afterPath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/mock/internal/MockResolverProxy.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/Energy4Java.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/Energy4Java.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/value/ValueDescriptor.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/value/ValueDescriptor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ImportedServiceReferenceInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ImportedServiceReferenceInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/constraint/ConstraintViolationException.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/constraint/ConstraintViolationException.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ImportedServiceDeclarationImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ImportedServiceDeclarationImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/EntityInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/EntityInstance.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/ApplicationAssembly.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/ApplicationAssembly.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/structure/ApplicationModelSPI.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/structure/ApplicationModelSPI.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/QualifiedIdentity.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/QualifiedIdentity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/TypedModifierAppliesToFilter.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/TypedModifierAppliesToFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/ApplicationAssemblerAdapter.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/ApplicationAssemblerAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ServiceModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ServiceModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/PersistentPropertyModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/PersistentPropertyModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/Qi4j.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/Qi4j.java" />
     </list>
-    <ignored path=".idea/workspace.xml" />
     <ignored path="qi4j-core.iws" />
+    <ignored path=".idea/workspace.xml" />
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="Commander">
@@ -408,9 +84,7 @@
         <entry file="file://$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/Qi4jRuntimeImpl.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="63" column="19" selection-start="2655" selection-end="2655" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -428,9 +102,7 @@
         <entry file="file://$PROJECT_DIR$/spi/src/main/java/org/qi4j/entitystore/memory/MemoryEntityStoreService.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="30" column="17" selection-start="1198" selection-end="1198" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -448,9 +120,7 @@
         <entry file="file://$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/Qi4jSPI.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="30" column="17" selection-start="1164" selection-end="1164" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -459,9 +129,7 @@
         <entry file="file://$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/AbstractQi4jTest.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="35" column="22" selection-start="1303" selection-end="1303" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -469,7 +137,7 @@
       <file leaf-file-name="pom.xml" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="88" column="0" selection-start="2772" selection-end="2772" vertical-scroll-proportion="0.26802218">
+            <state line="94" column="0" selection-start="2971" selection-end="2971" vertical-scroll-proportion="1.9754816">
               <folding />
             </state>
           </provider>
@@ -1048,30 +716,30 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="2" y="22" width="1676" height="1024" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
-      <window_info id="Web Preview" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
-      <window_info id="Dataflow to this" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32985258" sideWeight="0.6634409" order="-1" side_tool="false" />
-      <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
-      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
+      <window_info id="Web Preview" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
+      <window_info id="Dataflow to this" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32985258" sideWeight="0.6634409" order="3" side_tool="false" />
+      <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
+      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.6634409" order="0" side_tool="false" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.66451615" order="0" side_tool="false" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="6" side_tool="false" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32903227" sideWeight="0.5" order="-1" side_tool="false" />
-      <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32795697" sideWeight="0.5" order="8" side_tool="false" />
+      <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="4" side_tool="false" />
-      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
-      <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" />
+      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" />
+      <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" />
       <window_info id="EJB" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="5" side_tool="false" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" />
@@ -1123,9 +791,7 @@
     <entry file="file://$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/Qi4jRuntimeImpl.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="63" column="19" selection-start="2655" selection-end="2655" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1139,9 +805,7 @@
     <entry file="file://$PROJECT_DIR$/spi/src/main/java/org/qi4j/entitystore/memory/MemoryEntityStoreService.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="30" column="17" selection-start="1198" selection-end="1198" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1155,24 +819,20 @@
     <entry file="file://$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/Qi4jSPI.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="30" column="17" selection-start="1164" selection-end="1164" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/AbstractQi4jTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="35" column="22" selection-start="1303" selection-end="1303" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="88" column="0" selection-start="2772" selection-end="2772" vertical-scroll-proportion="0.26802218">
+        <state line="94" column="0" selection-start="2971" selection-end="2971" vertical-scroll-proportion="1.9754816">
           <folding />
         </state>
       </provider>
