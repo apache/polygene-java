@@ -34,17 +34,19 @@ public interface ApplicationAssembly
 
     /**
      * Get the currently set name of the application
+     *
      * @return the name of the application
      */
     String name();
 
     /**
      * Set the name of the application
+     *
      * @param name
      */
     ApplicationAssembly setName( String name );
 
     ApplicationAssembly setMetaInfo( Object info );
 
-    public void visit(AssemblyVisitor visitor);
+    public void visit( AssemblyVisitor visitor );
 }

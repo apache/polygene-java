@@ -14,13 +14,13 @@
 
 package org.qi4j.spi.service.importer;
 
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ServiceImporterException;
-import org.qi4j.api.structure.Module;
-import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Application;
-import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.structure.Layer;
+import org.qi4j.api.structure.Module;
 
 /**
  * Return a predefined service instance that was provided as meta-info. Search for meta-info in the following order:
@@ -36,14 +36,18 @@ public class InstanceImporter
     public Object importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
     {
         Object instance = serviceDescriptor.metaInfo().get( serviceDescriptor.type() );
-        if (instance == null)
+        if( instance == null )
         {
-            instance = module.metaInfo().get(serviceDescriptor.type() );
-            if (instance == null)
-                instance = layer.metaInfo().get(serviceDescriptor.type() );
+            instance = module.metaInfo().get( serviceDescriptor.type() );
+            if( instance == null )
             {
-                if (instance == null)
-                    instance = application.metaInfo().get(serviceDescriptor.type() );
+                instance = layer.metaInfo().get( serviceDescriptor.type() );
+            }
+            {
+                if( instance == null )
+                {
+                    instance = application.metaInfo().get( serviceDescriptor.type() );
+                }
             }
         }
 

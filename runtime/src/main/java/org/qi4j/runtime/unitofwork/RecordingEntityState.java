@@ -14,8 +14,8 @@
 
 package org.qi4j.runtime.unitofwork;
 
-import org.qi4j.api.usecase.StateUsage;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.usecase.StateUsage;
 import org.qi4j.runtime.entity.EntityStateAdapter;
 import org.qi4j.spi.entity.EntityState;
 
@@ -29,7 +29,7 @@ public class RecordingEntityState
 
     public RecordingEntityState( EntityState entityState, StateUsage stateUsage )
     {
-        super(entityState);
+        super( entityState );
         this.stateUsage = stateUsage;
     }
 

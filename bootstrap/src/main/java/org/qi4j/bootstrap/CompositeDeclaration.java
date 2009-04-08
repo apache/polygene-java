@@ -30,9 +30,9 @@ public interface CompositeDeclaration
 
     CompositeDeclaration visibleIn( Visibility visibility );
 
-    CompositeDeclaration withConcerns(Class<?>... concerns);
+    CompositeDeclaration withConcerns( Class<?>... concerns );
 
-    CompositeDeclaration withSideEffects(Class<?>... sideEffects);
+    CompositeDeclaration withSideEffects( Class<?>... sideEffects );
 
     CompositeDeclaration withMixins( Class<?>... mixins );
 }

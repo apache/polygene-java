@@ -38,13 +38,17 @@ public class StateChangeSourceFilter
 
     public void acceptChange( StateChange change ) throws ChangeVetoException
     {
-        if (change.source().equals(source))
+        if( change.source().equals( source ) )
+        {
             voterDelegate.acceptChange( change );
+        }
     }
 
     public void notify( StateChange change )
     {
-        if (change.source().equals(source))
+        if( change.source().equals( source ) )
+        {
             listenerDelegate.notify( change );
+        }
     }
 }

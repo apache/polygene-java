@@ -14,47 +14,30 @@
 
 package org.qi4j.runtime.property;
 
-import java.io.Serializable;
-import java.io.ObjectOutputStream;
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.QualifiedName;
+import static org.qi4j.api.common.TypeName.nameOf;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.RDF;
-import org.qi4j.api.property.Computed;
-import org.qi4j.api.property.ComputedPropertyInstance;
-import org.qi4j.api.property.GenericPropertyInfo;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.property.PropertyInfo;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.runtime.composite.ConstraintsCheck;
-import org.qi4j.runtime.composite.ValueConstraintsInstance;
-import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.api.property.*;
+import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.composite.ConstraintsCheck;
+import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.value.CollectionType;
-import org.qi4j.spi.value.ValueCompositeType;
-import org.qi4j.spi.value.PrimitiveType;
-import org.qi4j.spi.value.SerializableType;
-import org.qi4j.spi.value.ValueState;
-import org.qi4j.spi.value.ValueType;
-import static org.qi4j.api.common.TypeName.nameOf;
-import org.qi4j.api.util.SerializationUtil;
+import org.qi4j.spi.value.*;
+
+import java.io.*;
+import java.lang.reflect.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * JAVADOC
@@ -95,7 +78,7 @@ public abstract class AbstractPropertyModel
         this.metaInfo = metaInfo;
         type = GenericPropertyInfo.getPropertyType( accessor );
         this.accessor = accessor;
-        qualifiedName = QualifiedName.fromMethod(accessor);
+        qualifiedName = QualifiedName.fromMethod( accessor );
 
         // Check for @UseDefaults annotation
         useDefaults = this.metaInfo.get( UseDefaults.class ) != null;
@@ -142,15 +125,15 @@ public abstract class AbstractPropertyModel
                     String rdf = rdfAnnotation == null ? null : rdfAnnotation.value();
                     Queryable queryableAnnotation = method.getAnnotation( Queryable.class );
                     boolean queryable = queryableAnnotation == null || queryableAnnotation.value();
-                    PropertyType propertyType = new PropertyType(QualifiedName.fromMethod(method), createValueType(propType), rdf, queryable, PropertyType.PropertyTypeEnum.IMMUTABLE);
+                    PropertyType propertyType = new PropertyType( QualifiedName.fromMethod( method ), createValueType( propType ), rdf, queryable, PropertyType.PropertyTypeEnum.IMMUTABLE );
                     types.add( propertyType );
                 }
             }
-            valueType = new ValueCompositeType( nameOf(valueTypeClass), types );
+            valueType = new ValueCompositeType( nameOf( valueTypeClass ), types );
         }
         else if( PrimitiveType.isPrimitive( type ) )
         {
-            valueType = new PrimitiveType( nameOf(type ) );
+            valueType = new PrimitiveType( nameOf( type ) );
         }
         else
         {

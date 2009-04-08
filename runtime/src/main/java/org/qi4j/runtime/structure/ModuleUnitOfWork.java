@@ -14,43 +14,32 @@
 
 package org.qi4j.runtime.structure;
 
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.api.unitofwork.NoSuchEntityException;
-import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
-import org.qi4j.api.unitofwork.UnitOfWorkException;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
-import org.qi4j.api.unitofwork.UnitOfWorkCallback;
-import org.qi4j.api.unitofwork.StateChangeVoter;
-import org.qi4j.api.unitofwork.StateChangeListener;
-import org.qi4j.api.query.QueryBuilderFactory;
-import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.entity.LifecycleException;
-import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.Lifecycle;
-import org.qi4j.api.entity.Identity;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.service.ServiceFinder;
+import org.qi4j.api.entity.*;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.api.query.QueryBuilderFactory;
+import org.qi4j.api.service.ServiceFinder;
+import org.qi4j.api.unitofwork.*;
+import org.qi4j.api.usecase.Usecase;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
+import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
+
 import java.lang.reflect.Method;
 
 /**
  * JAVADOC
-*/
+ */
 public class ModuleUnitOfWork
     implements UnitOfWork
 {
     private static final Method IDENTITY_METHOD;
     private static final Method CREATE_METHOD;
+
     static
     {
         try
@@ -104,12 +93,12 @@ public class ModuleUnitOfWork
     public <T> T newEntity( Class<T> type ) throws EntityTypeNotFoundException, LifecycleException
     {
 
-        return newEntity(null, type);
+        return newEntity( null, type );
     }
 
     public <T> T newEntity( String identity, Class<T> type ) throws EntityTypeNotFoundException, LifecycleException
     {
-        EntityFinder finder = moduleInstance.findEntityModel(type);
+        EntityFinder finder = moduleInstance.findEntityModel( type );
 
         if( finder.model == null )
         {
@@ -120,7 +109,7 @@ public class ModuleUnitOfWork
         EntityModel entityModel = finder.model;
 
         // Generate id
-        if (identity == null)
+        if( identity == null )
         {
             identity = finder.module.entities().identityGenerator().generate( entityModel.type() );
         }
@@ -156,7 +145,7 @@ public class ModuleUnitOfWork
 
     public <T> EntityBuilder<T> newEntityBuilder( Class<T> type ) throws EntityTypeNotFoundException
     {
-        return newEntityBuilder(null, type);
+        return newEntityBuilder( null, type );
     }
 
     public <T> EntityBuilder<T> newEntityBuilder( String identity, Class<T> type )
@@ -228,7 +217,7 @@ public class ModuleUnitOfWork
 
         EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
 
-        compositeInstance.remove(this);
+        compositeInstance.remove( this );
     }
 
     public void complete() throws UnitOfWorkCompletionException, ConcurrentEntityModificationException

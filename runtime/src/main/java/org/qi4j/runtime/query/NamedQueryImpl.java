@@ -21,14 +21,12 @@ import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryExecutionException;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.named.NamedEntityFinder;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import java.util.Iterator;
+
 import java.util.HashMap;
-import sun.applet.AppletClassLoader;
+import java.util.Iterator;
 
 public class NamedQueryImpl<T>
     implements Query<T>
@@ -145,7 +143,7 @@ public class NamedQueryImpl<T>
         try
         {
             final Iterator<QualifiedIdentity> foundEntities = namedFinder.findEntities( queryName,
-                resultType.getName(), variables, orderBySegments, firstResult, maxResults
+                                                                                        resultType.getName(), variables, orderBySegments, firstResult, maxResults
             ).iterator();
 
             return new Iterator<T>()

@@ -14,27 +14,20 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.api.util.UsageGraph;
 import org.qi4j.bootstrap.Assembler;
-import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.InvalidCompositeException;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.*;
 
 /**
  * Base implementation of model for mixins. This records the mapping between methods in the Composite
@@ -60,7 +53,7 @@ public abstract class AbstractMixinsModel
         // Add assembly mixins
         for( Class<?> assemblyMixin : assemblyMixins )
         {
-            this.mixins.add(new MixinDeclaration(assemblyMixin, Assembler.class));
+            this.mixins.add( new MixinDeclaration( assemblyMixin, Assembler.class ) );
         }
 
         // Find mixin declarations
@@ -89,7 +82,7 @@ public abstract class AbstractMixinsModel
     {
         for( Class type : mixinTypes )
         {
-            if (mixinType.isAssignableFrom( type ))
+            if( mixinType.isAssignableFrom( type ) )
             {
                 return true;
             }
@@ -257,7 +250,7 @@ public abstract class AbstractMixinsModel
         return new Object[mixinIndex.size()];
     }
 
-    public Object getMixin( Object[] mixins, Method method)
+    public Object getMixin( Object[] mixins, Method method )
     {
         return mixins[ methodIndex.get( method ) ];
     }

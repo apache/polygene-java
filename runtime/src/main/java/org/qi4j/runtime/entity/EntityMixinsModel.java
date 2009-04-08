@@ -14,9 +14,6 @@
 
 package org.qi4j.runtime.entity;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.List;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.Entity;
 import org.qi4j.api.property.StateHolder;
@@ -25,13 +22,17 @@ import org.qi4j.runtime.composite.MixinDeclaration;
 import org.qi4j.runtime.composite.MixinModel;
 import org.qi4j.runtime.composite.UsesInstance;
 
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.List;
+
 /**
  * JAVADOC
  */
 public final class EntityMixinsModel extends AbstractMixinsModel
     implements Serializable
 {
-    public EntityMixinsModel( Class<? extends Composite> compositeType, List<Class<?>> assemblyMixins)
+    public EntityMixinsModel( Class<? extends Composite> compositeType, List<Class<?>> assemblyMixins )
     {
         super( compositeType, assemblyMixins );
         mixins.add( new MixinDeclaration( EntityMixin.class, Entity.class ) );
@@ -41,7 +42,7 @@ public final class EntityMixinsModel extends AbstractMixinsModel
     {
         MixinModel model = methodImplementation.get( method );
         Object mixin = model.newInstance( entityInstance, state, UsesInstance.NO_USES );
-        mixins[methodIndex.get( method )] = mixin;
+        mixins[ methodIndex.get( method ) ] = mixin;
         return mixin;
     }
 }

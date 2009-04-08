@@ -14,11 +14,12 @@
 
 package org.qi4j.runtime.injection.provider;
 
-import java.io.Serializable;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
+
+import java.io.Serializable;
 
 /**
  * JAVADOC
@@ -36,9 +37,13 @@ public class CachingInjectionProviderFactoryDecorator
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel ) throws InvalidInjectionException
     {
         InjectionProvider injectionProvider = decoratedFactory.newInjectionProvider( resolution, dependencyModel );
-        if (injectionProvider != null)
+        if( injectionProvider != null )
+        {
             return new CachingInjectionProviderDecorator( injectionProvider );
+        }
         else
+        {
             return null;
+        }
     }
 }

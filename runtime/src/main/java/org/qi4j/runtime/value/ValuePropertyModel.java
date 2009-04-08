@@ -14,13 +14,11 @@
 
 package org.qi4j.runtime.value;
 
-import java.lang.reflect.Method;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
-import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PersistentPropertyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -28,6 +26,8 @@ import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.value.ValueState;
 import org.qi4j.spi.value.ValueType;
+
+import java.lang.reflect.Method;
 
 /**
  * Property model for values
@@ -39,9 +39,9 @@ public final class ValuePropertyModel extends PersistentPropertyModel
     private PropertyInfo propertyInfo;
 
     public ValuePropertyModel( Method anAccessor,
-                                ValueConstraintsInstance constraints,
-                                MetaInfo metaInfo,
-                                Object defaultValue )
+                               ValueConstraintsInstance constraints,
+                               MetaInfo metaInfo,
+                               Object defaultValue )
     {
         super( anAccessor, true, constraints, metaInfo, defaultValue );
         final Queryable queryable = anAccessor.getAnnotation( Queryable.class );
@@ -50,7 +50,7 @@ public final class ValuePropertyModel extends PersistentPropertyModel
         PropertyType.PropertyTypeEnum type;
         type = PropertyType.PropertyTypeEnum.IMMUTABLE;
 
-        ValueType valueType = createValueType( type());
+        ValueType valueType = createValueType( type() );
 
         propertyType = new PropertyType( qualifiedName(), valueType, toRDF(), isQueryable, type );
         propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), qualifiedName(), type() );

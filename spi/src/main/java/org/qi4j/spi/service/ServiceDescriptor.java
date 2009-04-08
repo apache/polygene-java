@@ -14,8 +14,6 @@
 
 package org.qi4j.spi.service;
 
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 
 /**

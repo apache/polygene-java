@@ -1,6 +1,5 @@
 package org.qi4j.runtime.injection.provider;
 
-import java.io.Serializable;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.injection.scope.State;
@@ -11,12 +10,14 @@ import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
-import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
-import org.qi4j.spi.entity.EntityStateDescriptor;
+import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
+
+import java.io.Serializable;
 
 /**
  * JAVADOC
@@ -27,7 +28,7 @@ public final class StateInjectionProviderFactory
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {
-        if( StateHolder.class.isAssignableFrom( dependencyModel.rawInjectionType()))
+        if( StateHolder.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
         {
             // @State StateHolder properties;
             return new StateInjectionProvider();
@@ -35,7 +36,7 @@ public final class StateInjectionProviderFactory
         else if( Property.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
         {
             // @State Property<String> name;
-            StateDescriptor descriptor = ((CompositeDescriptor)resolution.object()).state();
+            StateDescriptor descriptor = ( (CompositeDescriptor) resolution.object() ).state();
             State annotation = (State) dependencyModel.injectionAnnotation();
             String name;
             if( annotation.value().equals( "" ) )
@@ -60,7 +61,7 @@ public final class StateInjectionProviderFactory
         else if( AbstractAssociation.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
         {
             // @State Association<MyEntity> name;
-            EntityStateDescriptor descriptor = ((EntityDescriptor) resolution.object()).state();
+            EntityStateDescriptor descriptor = ( (EntityDescriptor) resolution.object() ).state();
             State annotation = (State) dependencyModel.injectionAnnotation();
             String name;
             if( annotation.value().equals( "" ) )
@@ -121,7 +122,7 @@ public final class StateInjectionProviderFactory
 
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
-            AbstractAssociation abstractAssociation = ((EntityStateHolder) context.state()).getAssociation( associationDescriptor.accessor() );
+            AbstractAssociation abstractAssociation = ( (EntityStateHolder) context.state() ).getAssociation( associationDescriptor.accessor() );
             if( abstractAssociation != null )
             {
                 return abstractAssociation;

@@ -14,18 +14,9 @@
 
 package org.qi4j.runtime.unitofwork;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.Iterator;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.Identity;
-import org.qi4j.api.entity.IdentityGenerator;
-import org.qi4j.api.entity.Lifecycle;
-import org.qi4j.api.entity.LifecycleException;
+import org.qi4j.api.entity.*;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.property.Property;
@@ -36,6 +27,11 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Iterator;
 
 /**
  * JAVADOC
@@ -87,7 +83,7 @@ public final class EntityBuilderInstance<T>
 
     public EntityBuilderInstance( ModuleInstance moduleInstance, EntityModel model, ModuleUnitOfWork uow, EntityStore store, String identity )
     {
-        this(moduleInstance, model, uow, store, (IdentityGenerator) null);
+        this( moduleInstance, model, uow, store, (IdentityGenerator) null );
         stateFor( Identity.class ).identity().set( identity );
     }
 
@@ -193,7 +189,7 @@ public final class EntityBuilderInstance<T>
             public T next()
             {
                 T instance = newInstance();
-                uow.instance().createEntity( EntityInstance.getEntityInstance((EntityComposite) instance), store );
+                uow.instance().createEntity( EntityInstance.getEntityInstance( (EntityComposite) instance ), store );
                 return instance;
             }
 

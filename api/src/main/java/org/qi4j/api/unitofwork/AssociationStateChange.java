@@ -14,8 +14,8 @@
 
 package org.qi4j.api.unitofwork;
 
-import org.qi4j.api.entity.Entity;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.Entity;
 
 /**
  * Association change event

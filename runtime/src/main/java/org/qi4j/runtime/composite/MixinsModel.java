@@ -14,11 +14,12 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-import java.util.List;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.spi.composite.CompositeInstance;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * Model for Composite mixins

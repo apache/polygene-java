@@ -14,8 +14,8 @@
 
 package org.qi4j.api.service;
 
-import java.util.Iterator;
 import java.io.Serializable;
+import java.util.Iterator;
 
 /**
  * This class helps you select a particular service
@@ -67,7 +67,7 @@ public final class ServiceSelector<T>
         };
     }
 
-    public static Selector whereMetaInfoIs(final Object metaInfo)
+    public static Selector whereMetaInfoIs( final Object metaInfo )
     {
         return new Selector()
         {
@@ -76,7 +76,7 @@ public final class ServiceSelector<T>
                 for( ServiceReference<T> service : services )
                 {
                     Object metaObject = service.metaInfo().get( metaInfo.getClass() );
-                    if( metaObject != null && metaInfo.equals(metaObject))
+                    if( metaObject != null && metaInfo.equals( metaObject ) )
                     {
                         return service;
                     }
@@ -131,10 +131,14 @@ public final class ServiceSelector<T>
             public <T> ServiceReference<T> select( Iterable<ServiceReference<T>> services )
             {
                 Iterator<ServiceReference<T>> iterator = services.iterator();
-                if (iterator.hasNext())
+                if( iterator.hasNext() )
+                {
                     return iterator.next();
+                }
                 else
+                {
                     return null;
+                }
             }
         };
     }

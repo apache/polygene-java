@@ -14,13 +14,6 @@
 
 package org.qi4j.runtime.entity.association;
 
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
@@ -33,13 +26,20 @@ import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.runtime.util.Annotations;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
+import org.qi4j.runtime.util.Annotations;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
+
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * JAVADOC

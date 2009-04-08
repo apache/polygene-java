@@ -40,13 +40,17 @@ public class StateChangeQualifiedNameFilter
 
     public void acceptChange( StateChange change ) throws ChangeVetoException
     {
-        if (change.qualifiedName().equals(qualifiedName))
+        if( change.qualifiedName().equals( qualifiedName ) )
+        {
             voterDelegate.acceptChange( change );
+        }
     }
 
     public void notify( StateChange change )
     {
-        if (change.qualifiedName().equals(qualifiedName))
+        if( change.qualifiedName().equals( qualifiedName ) )
+        {
             listenerDelegate.notify( change );
+        }
     }
 }

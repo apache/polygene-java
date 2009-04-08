@@ -14,11 +14,12 @@
 
 package org.qi4j.spi.serialization;
 
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.spi.entity.QualifiedIdentity;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.api.common.QualifiedName;
 
 /**
  * Serializable state for a single entity. This includes the version

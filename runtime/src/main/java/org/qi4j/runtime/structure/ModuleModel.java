@@ -14,20 +14,21 @@
 
 package org.qi4j.runtime.structure;
 
-import java.io.Serializable;
-import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.Map;
-import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.composite.Resolution;
-import org.qi4j.runtime.composite.CompositesModel;
-import org.qi4j.runtime.service.ServicesModel;
-import org.qi4j.runtime.service.ImportedServicesModel;
-import org.qi4j.runtime.object.ObjectsModel;
-import org.qi4j.runtime.value.ValuesModel;
-import org.qi4j.spi.structure.ModuleDescriptor;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.composite.CompositesModel;
+import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.object.ObjectsModel;
+import org.qi4j.runtime.service.ImportedServicesModel;
+import org.qi4j.runtime.service.ServicesModel;
+import org.qi4j.runtime.value.ValuesModel;
+import org.qi4j.spi.structure.ModuleDescriptor;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * JAVADOC
@@ -53,7 +54,7 @@ public class ModuleModel
                         ObjectsModel objectsModel,
                         ValuesModel valuesModel,
                         ServicesModel servicesModel,
-                        ImportedServicesModel importedServicesModel)
+                        ImportedServicesModel importedServicesModel )
     {
         this.name = name;
         this.metaInfo = metaInfo;
@@ -64,7 +65,7 @@ public class ModuleModel
         this.servicesModel = servicesModel;
         this.importedServicesModel = importedServicesModel;
 
-        this.classLoader = new ModuleClassLoader( Thread.currentThread().getContextClassLoader());
+        this.classLoader = new ModuleClassLoader( Thread.currentThread().getContextClassLoader() );
     }
 
     public String name()
@@ -124,14 +125,16 @@ public class ModuleModel
         valuesModel.visitModel( modelVisitor );
     }
 
-    public void visitModules(ModuleVisitor visitor)
+    public void visitModules( ModuleVisitor visitor )
     {
         // Visit this module
-        if (!visitor.visitModule( null, this, Visibility.module ))
+        if( !visitor.visitModule( null, this, Visibility.module ) )
+        {
             return;
+        }
 
         // Visit layer
-        layerModel.visitModules(visitor, Visibility.layer);
+        layerModel.visitModules( visitor, Visibility.layer );
     }
 
     // Binding
@@ -143,7 +146,7 @@ public class ModuleModel
 
         compositesModel.bind( resolution );
         entitiesModel.bind( resolution );
-        servicesModel.bind(resolution);
+        servicesModel.bind( resolution );
         objectsModel.bind( resolution );
         valuesModel.bind( resolution );
     }
@@ -159,13 +162,13 @@ public class ModuleModel
         return name;
     }
 
-     private void readObject(java.io.ObjectInputStream in)
-         throws IOException, ClassNotFoundException
-     {
-         in.defaultReadObject();
+    private void readObject( java.io.ObjectInputStream in )
+        throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
 
-         classLoader = new ModuleClassLoader(Thread.currentThread().getContextClassLoader());
-     }
+        classLoader = new ModuleClassLoader( Thread.currentThread().getContextClassLoader() );
+    }
 
     private class ModuleClassLoader
         extends ClassLoader
@@ -180,24 +183,23 @@ public class ModuleModel
         @Override protected Class<?> findClass( String name ) throws ClassNotFoundException
         {
             Class clazz = classes.get( name );
-            if (clazz == null)
+            if( clazz == null )
             {
                 ClassFinder finder = new ClassFinder();
                 finder.type = name;
                 visitModules( finder );
 
-                if (finder.clazz == null)
+                if( finder.clazz == null )
                 {
                     throw new ClassNotFoundException( name );
                 }
                 clazz = finder.clazz;
-                classes.put(name, clazz);
+                classes.put( name, clazz );
             }
 
             return clazz;
         }
     }
-
 
 
     static class ClassFinder
@@ -209,12 +211,18 @@ public class ModuleModel
         public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
         {
             clazz = moduleModel.objects().getClassForName( type );
-            if (clazz == null)
+            if( clazz == null )
+            {
                 clazz = moduleModel.composites().getClassForName( type );
-            if (clazz == null)
+            }
+            if( clazz == null )
+            {
                 clazz = moduleModel.entities().getClassForName( type );
-            if (clazz == null)
+            }
+            if( clazz == null )
+            {
                 clazz = moduleModel.values().getClassForName( type );
+            }
 
             return clazz == null;
         }

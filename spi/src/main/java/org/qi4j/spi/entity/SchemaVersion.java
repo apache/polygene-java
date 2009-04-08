@@ -1,13 +1,14 @@
 package org.qi4j.spi.entity;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.spi.util.Base64Encoder;
 
-public class SchemaVersion 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+public class SchemaVersion
 {
     private final MessageDigest md;
 

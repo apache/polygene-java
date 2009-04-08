@@ -20,7 +20,7 @@ import org.qi4j.spi.entity.EntityStore;
 
 /**
  * JAVADOC
-*/
+ */
 class EntityStateStore
 {
     EntityInstance instance; // May be null
@@ -29,6 +29,6 @@ class EntityStateStore
 
     @Override public String toString()
     {
-        return instance.qualifiedIdentity()+" "+state+" "+store;
+        return instance.qualifiedIdentity() + " " + state + " " + store;
     }
 }

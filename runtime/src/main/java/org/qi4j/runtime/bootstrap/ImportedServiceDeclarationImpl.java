@@ -14,8 +14,6 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.util.List;
-import java.io.Serializable;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
@@ -23,6 +21,9 @@ import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.bootstrap.ImportedServiceDeclaration;
 import org.qi4j.runtime.service.ImportedServiceModel;
 import org.qi4j.spi.service.importer.InstanceImporter;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * Declaration of an imported Service. Created by {@link ModuleAssemblyImpl#importServices(Class[])}.
@@ -60,6 +61,7 @@ public final class ImportedServiceDeclarationImpl
         this.identity = identity;
         return this;
     }
+
     public ImportedServiceDeclaration setMetaInfo( Object serviceAttribute )
     {
         metaInfo.set( serviceAttribute );
@@ -77,11 +79,11 @@ public final class ImportedServiceDeclarationImpl
             }
 
             ImportedServiceModel serviceModel = new ImportedServiceModel( serviceType,
-                                                          visibility,
-                                                          serviceProvider,
-                                                          id,
-                                                          new MetaInfo( metaInfo ).withAnnotations( serviceType ),
-                                                          moduleAssembly.name() );
+                                                                          visibility,
+                                                                          serviceProvider,
+                                                                          id,
+                                                                          new MetaInfo( metaInfo ).withAnnotations( serviceType ),
+                                                                          moduleAssembly.name() );
             serviceModels.add( serviceModel );
         }
     }

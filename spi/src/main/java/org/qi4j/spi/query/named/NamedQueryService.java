@@ -17,8 +17,8 @@
  */
 package org.qi4j.spi.query.named;
 
-import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.query.Query;
+import org.qi4j.api.unitofwork.UnitOfWork;
 
 /**
  * NamedQueryService is a provider for named, native and other special query types.
@@ -32,7 +32,7 @@ public interface NamedQueryService
     /**
      * Returns a Query with the given name and result type.
      *
-     * @param name The name of the query. To avoid naming conflicts, FQDNs should be used.
+     * @param name       The name of the query. To avoid naming conflicts, FQDNs should be used.
      * @param resultType the Query result type.
      * @param unitOfWork The UnitOfWork that the Query shall belong to.
      * @return a Query instance.

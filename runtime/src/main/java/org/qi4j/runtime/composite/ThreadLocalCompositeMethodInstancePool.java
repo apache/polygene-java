@@ -27,7 +27,7 @@ public final class ThreadLocalCompositeMethodInstancePool
         CompositeMethodInstance instance = first.get();
         if( instance != null )
         {
-            first.set(instance.getNext());
+            first.set( instance.getNext() );
 
         }
         return instance;
@@ -37,6 +37,6 @@ public final class ThreadLocalCompositeMethodInstancePool
     {
         CompositeMethodInstance currentFirstInstance = first.get();
         instance.setNext( currentFirstInstance );
-        first.set(instance);
+        first.set( instance );
     }
 }

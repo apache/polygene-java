@@ -14,14 +14,14 @@
 
 package org.qi4j.spi.value;
 
+import org.qi4j.api.common.TypeName;
+import org.qi4j.api.util.Classes;
+import org.qi4j.spi.entity.SchemaVersion;
+
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import org.qi4j.api.util.Classes;
-import org.qi4j.api.common.TypeName;
-import static org.qi4j.api.common.TypeName.nameOf;
-import org.qi4j.spi.entity.SchemaVersion;
 
 /**
  * JAVADOC
@@ -29,7 +29,7 @@ import org.qi4j.spi.entity.SchemaVersion;
 public class CollectionType
     implements ValueType
 {
-    public static boolean isCollection( Type type)
+    public static boolean isCollection( Type type )
     {
         Class cl = Classes.getRawClass( type );
         return cl.equals( Collection.class ) || cl.equals( List.class ) || cl.equals( Set.class );
@@ -62,6 +62,6 @@ public class CollectionType
 
     @Override public String toString()
     {
-        return type +"<"+ collectedType +">";
+        return type + "<" + collectedType + ">";
     }
 }

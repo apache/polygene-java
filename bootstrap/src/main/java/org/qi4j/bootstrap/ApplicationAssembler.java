@@ -28,6 +28,6 @@ package org.qi4j.bootstrap;
  */
 public interface ApplicationAssembler
 {
-    ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory)
-            throws AssemblyException;
+    ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
+        throws AssemblyException;
 }

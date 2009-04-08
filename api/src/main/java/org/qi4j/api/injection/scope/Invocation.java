@@ -14,12 +14,9 @@
  */
 package org.qi4j.api.injection.scope;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import org.qi4j.api.injection.InjectionScope;
+
+import java.lang.annotation.*;
 
 /**
  * Annotation to denote the injection of a
@@ -31,7 +28,7 @@ import org.qi4j.api.injection.InjectionScope;
  *  - An AnnotationElement with annotations
  *    from both mixin type, mixin
  *    implementation.
-
+ *
  *  - An Annotation of a specific type
  * </code></pre>
  * Examples:

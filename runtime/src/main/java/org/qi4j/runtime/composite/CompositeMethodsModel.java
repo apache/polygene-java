@@ -14,16 +14,17 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Model for Composite methods. This includes both private and public methods.
@@ -108,7 +109,7 @@ public final class CompositeMethodsModel
         }
 
         // Add type to set of mixin types
-        mixinsModel.addMixinType(mixinType);
+        mixinsModel.addMixinType( mixinType );
 
         // Implement all @This dependencies that were found
         for( Class thisDependency : thisDependencies )
@@ -121,7 +122,7 @@ public final class CompositeMethodsModel
     {
         return methods.keySet();
     }
-    
+
     public void visitModel( ModelVisitor modelVisitor )
     {
         for( CompositeMethodModel compositeMethodModel : methods.values() )
@@ -132,6 +133,6 @@ public final class CompositeMethodsModel
 
     public String toString()
     {
-        return type.getName(); 
+        return type.getName();
     }
 }

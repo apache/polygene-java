@@ -29,6 +29,6 @@ public interface StateChangeVoter
      * @param change the state change event
      * @throws ChangeVetoException thrown if this voter rejects the change
      */
-    void acceptChange(StateChange change)
+    void acceptChange( StateChange change )
         throws ChangeVetoException;
 }

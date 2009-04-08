@@ -14,30 +14,29 @@
  */
 package org.qi4j.runtime.entity;
 
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.property.AbstractPropertyInstance;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.unitofwork.PropertyStateChange;
+import org.qi4j.api.unitofwork.StateChangeListener;
+import org.qi4j.api.unitofwork.StateChangeVoter;
+import org.qi4j.api.value.ValueComposite;
+import org.qi4j.runtime.composite.ConstraintsCheck;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
+import org.qi4j.runtime.value.ValueInstance;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.property.PropertyDescriptor;
+import org.qi4j.spi.property.PropertyTypeDescriptor;
+import org.qi4j.spi.value.SerializableType;
+import org.qi4j.spi.value.ValueCompositeType;
+import org.qi4j.spi.value.ValueType;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.qi4j.api.property.AbstractPropertyInstance;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.unitofwork.PropertyStateChange;
-import org.qi4j.api.unitofwork.StateChangeListener;
-import org.qi4j.api.unitofwork.StateChangeVoter;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.value.ValueComposite;
-import org.qi4j.runtime.composite.ConstraintsCheck;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.runtime.value.ValueInstance;
-import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.property.PropertyTypeDescriptor;
-import org.qi4j.spi.value.ValueCompositeType;
-import org.qi4j.spi.value.SerializableType;
-import org.qi4j.spi.value.ValueType;
 
 /**
  * {@code EntityPropertyInstance} represents a property whose value should be backed by an EntityState.
@@ -84,7 +83,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
     {
         if( value == NOT_LOADED )
         {
-            value = ((EntityPropertyModel) propertyInfo ).<T>fromEntityState( uow.module(), entityState );
+            value = ( (EntityPropertyModel) propertyInfo ).<T>fromEntityState( uow.module(), entityState );
         }
 
         return value;
@@ -128,7 +127,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
         }
 
         // Change property
-        entityState.setProperty( qualifiedName(), ((EntityPropertyModel)propertyInfo).toValue( aNewValue, entityState ) );
+        entityState.setProperty( qualifiedName(), ( (EntityPropertyModel) propertyInfo ).toValue( aNewValue, entityState ) );
         value = aNewValue;
 
         // Notify listeners

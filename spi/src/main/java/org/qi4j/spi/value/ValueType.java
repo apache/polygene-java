@@ -14,10 +14,10 @@
 
 package org.qi4j.spi.value;
 
-import java.io.Serializable;
-
 import org.qi4j.api.common.TypeName;
 import org.qi4j.spi.entity.SchemaVersion;
+
+import java.io.Serializable;
 
 /**
  * JAVADOC

@@ -14,22 +14,18 @@
 
 package org.qi4j.runtime.entity;
 
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.runtime.composite.AbstractStateModel;
 import org.qi4j.runtime.entity.association.AssociationInstance;
 import org.qi4j.runtime.entity.association.AssociationsInstance;
 import org.qi4j.runtime.entity.association.EntityAssociationsModel;
 import org.qi4j.runtime.property.PropertiesInstance;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateDescriptor;
@@ -37,6 +33,10 @@ import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
+
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
 
 /**
  * JAVADOC
@@ -49,7 +49,7 @@ public final class EntityStateModel
 
     public EntityStateModel( EntityPropertiesModel propertiesModel, EntityAssociationsModel associationsModel )
     {
-        super(propertiesModel);
+        super( propertiesModel );
         this.associationsModel = associationsModel;
     }
 

@@ -14,14 +14,15 @@
 
 package org.qi4j.bootstrap;
 
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.util.MethodKeyMap;
+
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.util.MethodKeyMap;
 
 /**
  * Declaration of a Property or Association.
@@ -48,7 +49,7 @@ public final class MetaInfoDeclaration
 
     public MetaInfo getMetaInfo( Method accessor )
     {
-        for( Map.Entry<Class<?>,InfoHolder<?>> entry : mixinPropertyDeclarations.entrySet() )
+        for( Map.Entry<Class<?>, InfoHolder<?>> entry : mixinPropertyDeclarations.entrySet() )
         {
             InfoHolder<?> holder = entry.getValue();
             MetaInfo metaInfo = holder.getMetaInfo( accessor );

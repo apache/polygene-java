@@ -14,13 +14,13 @@
 
 package org.qi4j.spi.value;
 
+import org.qi4j.api.common.TypeName;
+import org.qi4j.spi.entity.SchemaVersion;
+import org.qi4j.spi.property.PropertyType;
+
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
-import org.qi4j.api.value.ValueComposite;
-import org.qi4j.api.common.TypeName;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.entity.SchemaVersion;
 
 /**
  * JAVADOC
@@ -30,7 +30,7 @@ public class ValueCompositeType
 {
     public static boolean isValueComposite( Type type )
     {
-        return type instanceof Class && ((Class)type).isInterface();
+        return type instanceof Class && ( (Class) type ).isInterface();
     }
 
     private final TypeName type;

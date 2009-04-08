@@ -22,13 +22,13 @@ import org.qi4j.api.common.QualifiedName;
 public class PropertyStateChange
     extends StateChange
 {
-    public PropertyStateChange( String source, QualifiedName qualifiedName)
+    public PropertyStateChange( String source, QualifiedName qualifiedName )
     {
         super( source, qualifiedName );
     }
 
     @Override public String toString()
     {
-        return "Property "+qualifiedName()+" changed in "+source();
+        return "Property " + qualifiedName() + " changed in " + source();
     }
 }

@@ -14,10 +14,11 @@
 
 package org.qi4j.spi.entity.helpers;
 
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.spi.value.ValueState;
+
 import java.io.Serializable;
 import java.util.Map;
-import org.qi4j.spi.value.ValueState;
-import org.qi4j.api.common.QualifiedName;
 
 /**
  * Default implementation of ValueState.

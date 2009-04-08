@@ -14,20 +14,21 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.List;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.runtime.property.AbstractPropertiesModel;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Base model for Composite state
@@ -51,19 +52,19 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
     public StateHolder newBuilderInstance()
     {
         PropertiesInstance properties = propertiesModel.newBuilderInstance();
-        return new StateInstance(properties);
+        return new StateInstance( properties );
     }
 
-    public StateHolder newBuilderInstance(StateHolder state)
+    public StateHolder newBuilderInstance( StateHolder state )
     {
-        PropertiesInstance properties = propertiesModel.newBuilderInstance(state);
-        return new StateInstance(properties);
+        PropertiesInstance properties = propertiesModel.newBuilderInstance( state );
+        return new StateInstance( properties );
     }
 
     public StateHolder newInstance( StateHolder state )
     {
         PropertiesInstance properties = propertiesModel.newInstance( state );
-        return new StateInstance(properties);
+        return new StateInstance( properties );
     }
 
     public void addStateFor( Iterable<Method> methods )
@@ -103,7 +104,7 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
         throws ConstraintViolationException
     {
         StateInstance stateInstance = (AbstractStateModel.StateInstance) state;
-        stateInstance.checkConstraints(allowNull);
+        stateInstance.checkConstraints( allowNull );
     }
 
     public final class StateInstance

@@ -14,15 +14,16 @@
 
 package org.qi4j.runtime.service;
 
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.spi.service.Activator;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * JAVADOC
@@ -53,7 +54,7 @@ public class ServicesInstance
     {
         for( ServiceReference serviceReference : serviceReferences )
         {
-            if (serviceReference instanceof Activatable)
+            if( serviceReference instanceof Activatable )
             {
                 activator.activate( (Activatable) serviceReference );
             }
@@ -73,11 +74,13 @@ public class ServicesInstance
 
     public <T> ServiceReference<T> getServiceFor( Type type, Visibility visibility )
     {
-        ServiceModel serviceModel = servicesModel.getServiceFor(type, visibility);
+        ServiceModel serviceModel = servicesModel.getServiceFor( type, visibility );
 
         ServiceReference<T> serviceRef = null;
-        if (serviceModel != null)
-            serviceRef = mapIdentityServiceReference.get( serviceModel.identity());
+        if( serviceModel != null )
+        {
+            serviceRef = mapIdentityServiceReference.get( serviceModel.identity() );
+        }
 
         return serviceRef;
     }
@@ -85,11 +88,11 @@ public class ServicesInstance
 
     public <T> void getServicesFor( Type type, Visibility visibility, List<ServiceReference<T>> serviceReferences )
     {
-        List<ServiceModel> serviceModels = new ArrayList<ServiceModel>( );
+        List<ServiceModel> serviceModels = new ArrayList<ServiceModel>();
         servicesModel.getServicesFor( type, visibility, serviceModels );
         for( ServiceModel serviceModel : serviceModels )
         {
-            serviceReferences.add( mapIdentityServiceReference.get(serviceModel.identity() ));
+            serviceReferences.add( mapIdentityServiceReference.get( serviceModel.identity() ) );
         }
     }
 

@@ -14,21 +14,15 @@
 
 package org.qi4j.runtime.structure;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.composite.AmbiguousTypeException;
-import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
-import org.qi4j.runtime.composite.CompositeModel;
-import org.qi4j.runtime.entity.EntityModel;
-import org.qi4j.runtime.object.ObjectModel;
-import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.service.Activator;
 import org.qi4j.spi.structure.LayerSPI;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * JAVADOC
@@ -110,18 +104,22 @@ public class LayerInstance
         ModuleInstance foundModule = null;
         for( ModuleInstance moduleInstance : moduleInstances )
         {
-            if (!visitor.visitModule( moduleInstance, moduleInstance.model(), visibility ))
+            if( !visitor.visitModule( moduleInstance, moduleInstance.model(), visibility ) )
+            {
                 return false;
+            }
         }
 
         if( visibility == Visibility.layer )
         {
             // Visit modules in this layer
-            if (!visitModules( visitor, Visibility.application ))
+            if( !visitModules( visitor, Visibility.application ) )
+            {
                 return false;
+            }
 
             // Visit modules in used layers
-            return usedLayersInstance.visitModules(visitor);
+            return usedLayersInstance.visitModules( visitor );
         }
 
         return true;

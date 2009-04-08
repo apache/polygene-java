@@ -16,10 +16,11 @@
  */
 package org.qi4j.spi.entity;
 
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.spi.value.ValueState;
+
 import java.util.Collection;
 import java.util.Map;
-import org.qi4j.spi.value.ValueState;
-import org.qi4j.api.common.QualifiedName;
 
 /**
  */
@@ -97,5 +98,5 @@ public interface EntityState
 
     void hasBeenApplied();
 
-    ValueState newValueState( Map<QualifiedName, Object> values);
+    ValueState newValueState( Map<QualifiedName, Object> values );
 }

@@ -14,16 +14,13 @@
 
 package org.qi4j.runtime.structure;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import org.qi4j.spi.structure.UsedLayersDescriptor;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.runtime.composite.CompositeModel;
-import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.spi.structure.UsedLayersDescriptor;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * JAVADOC
@@ -62,7 +59,7 @@ public final class UsedLayersModel
         return foundModel;
     }
 
-    public UsedLayersInstance newInstance( List<LayerInstance> usedLayerInstances)
+    public UsedLayersInstance newInstance( List<LayerInstance> usedLayerInstances )
     {
         return new UsedLayersInstance( usedLayerInstances );
     }
@@ -71,8 +68,10 @@ public final class UsedLayersModel
     {
         for( LayerModel usedLayerModel : usedLayers )
         {
-            if (!usedLayerModel.visitModules( visitor, Visibility.application ))
+            if( !usedLayerModel.visitModules( visitor, Visibility.application ) )
+            {
                 return false;
+            }
         }
         return true;
     }

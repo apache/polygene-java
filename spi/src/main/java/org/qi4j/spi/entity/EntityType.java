@@ -14,11 +14,12 @@
 
 package org.qi4j.spi.entity;
 
-import java.io.Serializable;
+import static org.qi4j.api.common.TypeName.nameOf;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
-import static org.qi4j.api.common.TypeName.nameOf;
 import org.qi4j.spi.property.PropertyType;
+
+import java.io.Serializable;
 
 /**
  * SPI-level description of an Entity type. This contains
@@ -136,12 +137,12 @@ public final class EntityType
             final SchemaVersion schemaVersion = new SchemaVersion();
 
             // Entity type
-            schemaVersion.versionize(nameOf( type ));
+            schemaVersion.versionize( nameOf( type ) );
 
             // Properties
             for( PropertyType property : properties )
             {
-                 property.versionize( schemaVersion );
+                property.versionize( schemaVersion );
             }
 
             // Associations

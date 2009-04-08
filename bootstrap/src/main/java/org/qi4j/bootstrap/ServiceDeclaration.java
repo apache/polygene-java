@@ -30,11 +30,11 @@ public interface ServiceDeclaration
 
     ServiceDeclaration visibleIn( Visibility visibility );
 
-    ServiceDeclaration withConcerns(Class<?>... concerns);
+    ServiceDeclaration withConcerns( Class<?>... concerns );
 
-    ServiceDeclaration withSideEffects(Class<?>... sideEffects);
+    ServiceDeclaration withSideEffects( Class<?>... sideEffects );
 
-    ServiceDeclaration withMixins(Class<?>... mixins);
+    ServiceDeclaration withMixins( Class<?>... mixins );
 
     ServiceDeclaration identifiedBy( String identity );
 

@@ -51,7 +51,7 @@ public interface Qi4j
      * a Service using {@link org.qi4j.api.configuration.Configuration}.
      *
      * @param serviceComposite the service instance
-     * @param uow the UnitOfWork from which the configuration will be loaded
+     * @param uow              the UnitOfWork from which the configuration will be loaded
      * @return configuration instance
      * @throws InstantiationException thrown if the configuration cannot be instantiated
      */
@@ -60,14 +60,16 @@ public interface Qi4j
 
     Class<?> getConfigurationType( Composite serviceComposite );
 
-    /** Returns the Module where the UnitOfWork belongs.
+    /**
+     * Returns the Module where the UnitOfWork belongs.
      *
      * @param uow The UnitOfWork to be checked.
      * @return The Module instance where the UnitOfWork belongs.
      */
     Module getModule( UnitOfWork uow );
 
-    /** Returns the Module where the Composite belongs.
+    /**
+     * Returns the Module where the Composite belongs.
      *
      * @param composite The Composite to be checked.
      * @return The Module instance where the Composite belongs.

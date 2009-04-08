@@ -16,9 +16,6 @@
  */
 package org.qi4j.spi.entity;
 
-import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.EntityState;
-
 /**
  * Interface that must be implemented by store for persistent state of EntityComposites.
  */

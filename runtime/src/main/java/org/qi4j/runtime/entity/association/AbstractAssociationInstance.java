@@ -1,17 +1,17 @@
 package org.qi4j.runtime.entity.association;
 
-import java.lang.reflect.Type;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.Qualifier;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.QualifierQualifiedIdentity;
+
+import java.lang.reflect.Type;
 
 /**
  * Implementation of AbstractAssociation. Includes helper methods for subclasses
@@ -127,7 +127,9 @@ public abstract class AbstractAssociationInstance<T>
     protected void checkImmutable()
     {
         if( isImmutable() )
+        {
             throw new IllegalStateException( "Association [" + qualifiedName() + "] is immutable." );
+        }
     }
 
     protected abstract boolean isSet();

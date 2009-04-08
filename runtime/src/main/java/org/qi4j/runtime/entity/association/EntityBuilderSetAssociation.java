@@ -14,10 +14,11 @@
 
 package org.qi4j.runtime.entity.association;
 
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.association.SetAssociation;
+
 import java.lang.reflect.Type;
 import java.util.LinkedHashSet;
-import org.qi4j.api.entity.association.SetAssociation;
-import org.qi4j.api.common.QualifiedName;
 
 /**
  * JAVADOC

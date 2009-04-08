@@ -14,21 +14,17 @@
 
 package org.qi4j.api.common;
 
+import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.sideeffect.SideEffects;
+import org.qi4j.api.util.Classes;
+
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.Collection;
 import static java.util.Arrays.asList;
-import java.io.Serializable;
-import org.qi4j.api.util.Classes;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.sideeffect.SideEffects;
-import org.qi4j.api.concern.Concerns;
-import org.qi4j.api.service.ServiceFinder;
+import java.util.*;
 
 /**
  * Used to declare and access meta-info.
@@ -36,7 +32,7 @@ import org.qi4j.api.service.ServiceFinder;
 public final class MetaInfo
     implements Serializable
 {
-    private final static Collection<Class> ignored = new HashSet<Class>(asList( Mixins.class , Concerns.class , SideEffects.class ));
+    private final static Collection<Class> ignored = new HashSet<Class>( asList( Mixins.class, Concerns.class, SideEffects.class ) );
 
     private final Map<Class<?>, Object> metaInfoMap = new LinkedHashMap<Class<?>, Object>();
 
@@ -97,7 +93,7 @@ public final class MetaInfo
         return metaInfoMap.toString();
     }
 
-    public void remove( Class serviceFinderClass)
+    public void remove( Class serviceFinderClass )
     {
         metaInfoMap.remove( serviceFinderClass );
     }

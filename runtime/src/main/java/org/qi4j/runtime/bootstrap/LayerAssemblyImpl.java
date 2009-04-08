@@ -14,18 +14,14 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Arrays;
-import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyVisitor;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Assembly of a Layer. From here you can create more ModuleAssemblies for
@@ -71,7 +67,7 @@ public final class LayerAssemblyImpl
 
     public LayerAssembly setMetaInfo( Object info )
     {
-        metaInfo.set(info);
+        metaInfo.set( info );
         return this;
     }
 

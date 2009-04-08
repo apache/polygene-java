@@ -14,10 +14,6 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -28,6 +24,11 @@ import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeDescriptor;
+
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * JAVADOC
@@ -44,11 +45,11 @@ public abstract class AbstractCompositeModel
     protected final Class<? extends Composite> proxyClass;
 
     protected AbstractCompositeModel( final Class<? extends Composite> compositeType,
-                              final Visibility visibility,
-                              final MetaInfo metaInfo,
-                              final AbstractMixinsModel mixinsModel,
-                              final AbstractStateModel stateModel,
-                              final CompositeMethodsModel compositeMethodsModel
+                                      final Visibility visibility,
+                                      final MetaInfo metaInfo,
+                                      final AbstractMixinsModel mixinsModel,
+                                      final AbstractStateModel stateModel,
+                                      final CompositeMethodsModel compositeMethodsModel
     )
     {
         this.compositeType = compositeType;
@@ -136,9 +137,9 @@ public abstract class AbstractCompositeModel
         return stateModel.newBuilderInstance();
     }
 
-    public StateHolder newBuilderState(StateHolder state)
+    public StateHolder newBuilderState( StateHolder state )
     {
-        return stateModel.newBuilderInstance(state);
+        return stateModel.newBuilderInstance( state );
     }
 
     public StateHolder newInitialState()

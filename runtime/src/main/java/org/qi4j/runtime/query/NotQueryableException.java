@@ -17,8 +17,9 @@
  */
 package org.qi4j.runtime.query;
 
-import java.lang.reflect.Method;
 import org.qi4j.api.entity.Queryable;
+
+import java.lang.reflect.Method;
 
 /**
  * Thrown in case that a non queryable type or accessor (marked with @Queriable(false)) is used during query building.

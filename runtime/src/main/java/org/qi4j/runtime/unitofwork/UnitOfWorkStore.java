@@ -14,33 +14,24 @@
 
 package org.qi4j.runtime.unitofwork;
 
-import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.UnknownEntityTypeException;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.runtime.entity.EntityInstance;
-import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import java.util.Map;
-import java.util.HashMap;
+import org.qi4j.spi.entity.*;
+
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * JAVADOC
-*/
+ */
 public class UnitOfWorkStore
     implements EntityStore
 {
     final Map<String, EntityType> entityTypes = new HashMap<String, EntityType>();
     private UnitOfWorkInstance unitOfWork;
 
-    public UnitOfWorkStore( UnitOfWorkInstance unitOfWork)
+    public UnitOfWorkStore( UnitOfWorkInstance unitOfWork )
     {
         this.unitOfWork = unitOfWork;
     }
@@ -138,11 +129,12 @@ public class UnitOfWorkStore
             {
                 EntityState parentState = ess.state;
 
-                if (entry.getValue().state.status() == EntityStatus.REMOVED)
+                if( entry.getValue().state.status() == EntityStatus.REMOVED )
                 {
                     parentState.remove();
                     ess.instance.refreshState();
-                } else
+                }
+                else
                 {
                     UnitOfWorkEntityState state = (UnitOfWorkEntityState) entry.getValue().state;
                     state.mergeTo( parentState );

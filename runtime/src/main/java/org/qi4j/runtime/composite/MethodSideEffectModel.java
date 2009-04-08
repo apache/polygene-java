@@ -14,9 +14,10 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.sideeffect.MethodSideEffectDescriptor;
+
+import java.io.Serializable;
 
 /**
  * JAVADOC

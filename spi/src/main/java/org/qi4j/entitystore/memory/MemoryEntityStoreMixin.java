@@ -1,29 +1,17 @@
 package org.qi4j.entitystore.memory;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.spi.entity.EntityAlreadyExistsException;
-import org.qi4j.spi.entity.EntityNotFoundException;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.EntityTypeRegistryMixin;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.UnknownEntityTypeException;
+import org.qi4j.spi.entity.*;
 import org.qi4j.spi.entity.helpers.DefaultEntityState;
 import org.qi4j.spi.serialization.FastObjectInputStream;
 import org.qi4j.spi.serialization.FastObjectOutputStream;
 import org.qi4j.spi.serialization.SerializableState;
+import org.qi4j.spi.service.ServiceDescriptor;
+
+import java.io.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * In-memory implementation of EntityStore.

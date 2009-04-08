@@ -14,16 +14,14 @@
 
 package org.qi4j.runtime.service;
 
+import org.qi4j.api.common.Visibility;
+import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.runtime.structure.ModuleInstance;
+
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.service.ServiceReference;
-import org.qi4j.runtime.service.ImportedServiceModel;
-import org.qi4j.runtime.service.ImportedServiceReferenceInstance;
-import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.runtime.structure.ModelVisitor;
 
 /**
  * JAVADOC
@@ -76,8 +74,10 @@ public class ImportedServicesModel
     {
         for( ImportedServiceModel importedServiceModel : importedServiceModels )
         {
-            if (importedServiceModel.isServiceFor( type, visibility ))
+            if( importedServiceModel.isServiceFor( type, visibility ) )
+            {
                 serviceModels.add( importedServiceModel );
+            }
         }
     }
 }

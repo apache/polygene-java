@@ -14,8 +14,6 @@
 
 package org.qi4j.spi.entity;
 
-import org.qi4j.spi.entity.EntityState;
-
 /**
  * Implement this interface in a Service if you want it to listen
  * to changes from EntityStores.

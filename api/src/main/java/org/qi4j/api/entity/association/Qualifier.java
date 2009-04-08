@@ -14,8 +14,9 @@
 
 package org.qi4j.api.entity.association;
 
-import java.io.Serializable;
 import org.qi4j.api.entity.EntityComposite;
+
+import java.io.Serializable;
 
 /**
  * Implementation of Association Role Qualifiers. Qualifiers allow Entities in an Association

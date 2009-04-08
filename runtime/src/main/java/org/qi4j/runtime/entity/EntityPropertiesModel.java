@@ -14,11 +14,6 @@
 
 package org.qi4j.runtime.entity;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.ConstraintViolationException;
@@ -35,6 +30,12 @@ import org.qi4j.runtime.util.Annotations;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.PropertyType;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Model for Properties in Entities
  */
@@ -43,7 +44,7 @@ public final class EntityPropertiesModel
 {
     public EntityPropertiesModel( ConstraintsModel constraints, PropertyDeclarations propertyDeclarations, boolean immutable )
     {
-        super(constraints, propertyDeclarations,  immutable);
+        super( constraints, propertyDeclarations, immutable );
     }
 
     public void setState( PropertiesInstance properties, EntityState entityState )

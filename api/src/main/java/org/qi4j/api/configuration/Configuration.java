@@ -65,7 +65,7 @@ public interface Configuration<T>
 
         public ConfigurationMixin( @Structure Qi4j api,
                                    @This ServiceComposite me,
-                                   @Structure UnitOfWorkFactory uowf)
+                                   @Structure UnitOfWorkFactory uowf )
             throws Exception
         {
             uow = uowf.newUnitOfWork();

@@ -2,8 +2,91 @@
 <project relativePaths="false" version="4">
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/qi4j-core.ipr" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/Qi4jSPI.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/Qi4jSPI.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/association/ManyAssociationType.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/association/ManyAssociationType.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/helpers/DefaultEntityState.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/helpers/DefaultEntityState.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/ServiceInjectionProviderFactory.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/ServiceInjectionProviderFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/EntityStateDescriptor.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/EntityStateDescriptor.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/unitofwork/UnitOfWorkInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/unitofwork/UnitOfWorkInstance.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/composite/StateDescriptor.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/composite/StateDescriptor.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AbstractMixinsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AbstractMixinsModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/composite/CompositeBuilderFactory.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/composite/CompositeBuilderFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/property/PropertyType.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/property/PropertyType.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstraintModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstraintModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/PropertyInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/PropertyInstance.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/QueryBuilderFactoryImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/QueryBuilderFactoryImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeMethodInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeMethodInstance.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/service/importer/ServiceSelectorImporter.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/service/importer/ServiceSelectorImporter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/usecase/StateUsage.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/usecase/StateUsage.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/query/named/NamedQueryService.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/query/named/NamedQueryService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/association/AssociationDescriptor.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/association/AssociationDescriptor.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/ThisInjectionProviderFactory.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/ThisInjectionProviderFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/ApplicationAssemblyFactory.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/ApplicationAssemblyFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/value/ValueBuilderFactory.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/value/ValueBuilderFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValueModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValueModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodSideEffectsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodSideEffectsModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/util/Classes.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/util/Classes.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/AbstractAssociationInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/AbstractAssociationInstance.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/structure/Application.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/structure/Application.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/common/TypeName.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/common/TypeName.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/composite/ParameterConstraintViolationException.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/composite/ParameterConstraintViolationException.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ModuleUnitOfWork.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ModuleUnitOfWork.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/Qi4jRuntimeImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/Qi4jRuntimeImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/proxy/MixinTypeProxy.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/proxy/MixinTypeProxy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MixinDeclaration.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MixinDeclaration.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/association/Qualifier.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/association/Qualifier.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/helpers/DefaultValueState.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/helpers/DefaultValueState.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/EntityStoreTestAssembler.java" afterPath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/EntityStoreTestAssembler.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValueBuilderInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValueBuilderInstance.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ObjectDeclarationImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ObjectDeclarationImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/spi/Qi4jRuntime.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/spi/Qi4jRuntime.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodConstraintsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodConstraintsModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/constraint/Constraints.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/constraint/Constraints.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/AbstractQi4jTest.java" afterPath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/AbstractQi4jTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/mock/internal/MockRecorderMixin.java" afterPath="$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/mock/internal/MockRecorderMixin.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstraintsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstraintsModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ServicesInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ServicesInstance.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValueStateModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/value/ValueStateModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ModelVisitor.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ModelVisitor.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/CompositeDeclaration.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/CompositeDeclaration.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/StateInjectionProviderFactory.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/StateInjectionProviderFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/SetAssociationInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/SetAssociationInstance.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ApplicationAssemblyFactoryImpl.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/bootstrap/ApplicationAssemblyFactoryImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ImportedServiceModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ImportedServiceModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/Resolution.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/Resolution.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/CachingInjectionProviderFactoryDecorator.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/injection/provider/CachingInjectionProviderFactoryDecorator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConcernsDeclaration.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConcernsDeclaration.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/Aggregated.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/Aggregated.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeConstraintModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeConstraintModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/common/MetaInfo.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/common/MetaInfo.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodConcernModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MethodConcernModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/EntityBuilderAssociation.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/EntityBuilderAssociation.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ApplicationInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/structure/ApplicationInstance.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ThreadLocalCompositeMethodInstancePool.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ThreadLocalCompositeMethodInstancePool.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/util/MethodValueMap.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/util/MethodValueMap.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstraintInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstraintInstance.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/StateChange.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/unitofwork/StateChange.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstructorsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/ConstructorsModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/PropertiesInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/PropertiesInstance.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/AbstractQuery.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/AbstractQuery.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ImportedServicesModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ImportedServicesModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/DefaultValues.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/property/DefaultValues.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/EntityDeclaration.java" afterPath="$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/EntityDeclaration.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/object/ObjectsModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/object/ObjectsModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/value/ValueDescriptor.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/value/ValueDescriptor.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/AssociationInstance.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/association/AssociationInstance.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeMethodModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/CompositeMethodModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/Lifecycle.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/entity/Lifecycle.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/query/named/QueryMethod.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/query/named/QueryMethod.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MixinModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/MixinModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/QualifiedIdentity.java" afterPath="$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/entity/QualifiedIdentity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/PropertyInfo.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/property/PropertyInfo.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ServiceModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/service/ServiceModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/EntityQuery.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/EntityQuery.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/EntityStateAdapter.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/entity/EntityStateAdapter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AbstractCompositeModel.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/composite/AbstractCompositeModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/proxy/AssociationReferenceProxy.java" afterPath="$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/query/proxy/AssociationReferenceProxy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/Qi4j.java" afterPath="$PROJECT_DIR$/api/src/main/java/org/qi4j/api/Qi4j.java" />
     </list>
     <ignored path=".idea/workspace.xml" />
     <ignored path="qi4j-core.iws" />
@@ -59,6 +142,90 @@
   </component>
   <component name="FavoritesManager">
     <favorites_list name="qi4j-core" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="Qi4j.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/api/src/main/java/org/qi4j/api/Qi4j.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="23" column="17" selection-start="820" selection-end="820" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ApplicationAssembler.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/ApplicationAssembler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="28" column="17" selection-start="1145" selection-end="1145" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Qi4jRuntimeImpl.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/Qi4jRuntimeImpl.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="63" column="19" selection-start="2655" selection-end="2655" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/spi/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MemoryEntityStoreService.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/spi/src/main/java/org/qi4j/entitystore/memory/MemoryEntityStoreService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="30" column="17" selection-start="1198" selection-end="1198" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ConcurrentModificationCheckConcern.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/spi/src/main/java/org/qi4j/entitystore/memory/ConcurrentModificationCheckConcern.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="35" column="22" selection-start="1389" selection-end="1389" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Qi4jSPI.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/Qi4jSPI.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="30" column="17" selection-start="1164" selection-end="1164" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AbstractQi4jTest.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/AbstractQi4jTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="35" column="22" selection-start="1303" selection-end="1303" vertical-scroll-proportion="0.18947369">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -120,6 +287,288 @@
           <option name="myItemId" value="qi4j-core" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core-testsupport" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="testsupport" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="main" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="java" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="test" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core-spi" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core-spi" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="spi" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core-spi" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="spi" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core-spi" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="spi" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="main" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="java" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="spi" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core-spi" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="spi" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="main" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="java" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="memory" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core-runtime" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core-runtime" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="runtime" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core-runtime" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="runtime" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core-runtime" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="runtime" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="main" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core-runtime" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="runtime" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="main" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="java" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="runtime" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core-bootstrap" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core-bootstrap" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="bootstrap" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core-bootstrap" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="bootstrap" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="main" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="java" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="bootstrap" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
       </PATH>
       <PATH>
         <PATH_ELEMENT>
@@ -151,8 +600,46 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-core" />
+          <option name="myItemId" value="qi4j-core-api" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="api" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-core-api" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="api" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="main" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="java" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="api" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
       <PATH>
@@ -163,10 +650,6 @@
         <PATH_ELEMENT>
           <option name="myItemId" value="qi4j-core" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-core" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
     </subPane>
@@ -200,7 +683,7 @@
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="project.structure.side.proportion" value="0.0" />
-    <property name="options.lastSelected" value="org.jetbrains.idea.maven.project.MavenImportingConfigurable" />
+    <property name="options.lastSelected" value="preferences.sourceCode.General" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
   </component>
   <component name="RunManager">
@@ -301,15 +784,15 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="2" y="22" width="1676" height="1024" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Web Preview" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
       <window_info id="Dataflow to this" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32985258" sideWeight="0.6634409" order="-1" side_tool="false" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32985258" sideWeight="0.6634409" order="-1" side_tool="false" />
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.6634409" order="0" side_tool="false" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.6634409" order="0" side_tool="false" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="6" side_tool="false" />
@@ -357,6 +840,72 @@
   <component name="XPathView.XPathProjectComponent">
     <history />
     <find-history />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/org/qi4j/api/Qi4j.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="17" selection-start="820" selection-end="820" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bootstrap/src/main/java/org/qi4j/bootstrap/ApplicationAssembler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="17" selection-start="1145" selection-end="1145" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/runtime/src/main/java/org/qi4j/runtime/Qi4jRuntimeImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="63" column="19" selection-start="2655" selection-end="2655" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spi/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spi/src/main/java/org/qi4j/entitystore/memory/MemoryEntityStoreService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="30" column="17" selection-start="1198" selection-end="1198" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spi/src/main/java/org/qi4j/entitystore/memory/ConcurrentModificationCheckConcern.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="35" column="22" selection-start="1389" selection-end="1389" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spi/src/main/java/org/qi4j/spi/Qi4jSPI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="30" column="17" selection-start="1164" selection-end="1164" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/testsupport/src/main/java/org/qi4j/test/AbstractQi4jTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="35" column="22" selection-start="1303" selection-end="1303" vertical-scroll-proportion="0.18947369">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
   </component>
   <component name="masterDetails">
     <option name="states">

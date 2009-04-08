@@ -14,15 +14,6 @@
 
 package org.qi4j.runtime.entity.association;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.Composite;
@@ -31,25 +22,23 @@ import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Aggregated;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.RDF;
-import org.qi4j.api.entity.association.AbstractAssociation;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.GenericAssociationInfo;
-import org.qi4j.api.entity.association.ListAssociation;
-import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.entity.association.SetAssociation;
-import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.entity.association.*;
 import org.qi4j.api.property.Immutable;
-import org.qi4j.api.util.Classes;
 import static org.qi4j.api.util.Classes.getRawClass;
 import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
+
+import java.io.*;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * JAVADOC
@@ -103,7 +92,7 @@ public final class AssociationModel
     private void initialize()
     {
         this.type = GenericAssociationInfo.getAssociationType( accessor );
-        this.qualifiedName = QualifiedName.fromMethod(accessor);
+        this.qualifiedName = QualifiedName.fromMethod( accessor );
         this.immutable = metaInfo.get( Immutable.class ) != null;
         this.aggregated = metaInfo.get( Aggregated.class ) != null;
         RDF uriAnnotation = accessor().getAnnotation( RDF.class );

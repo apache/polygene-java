@@ -14,28 +14,22 @@
 
 package org.qi4j.runtime.value;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.ArrayList;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.runtime.composite.AbstractCompositeModel;
-import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.composite.CompositeMethodsModel;
-import org.qi4j.runtime.composite.ConcernsDeclaration;
-import org.qi4j.runtime.composite.ConstraintsModel;
-import org.qi4j.runtime.composite.Resolution;
-import org.qi4j.runtime.composite.SideEffectsDeclaration;
-import org.qi4j.runtime.composite.ConcernDeclaration;
+import org.qi4j.runtime.composite.*;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
-import org.qi4j.spi.value.ValueState;
 import org.qi4j.spi.value.ValueDescriptor;
+import org.qi4j.spi.value.ValueState;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Model for ValueComposites
@@ -52,9 +46,9 @@ public final class ValueModel extends AbstractCompositeModel
                                        final List<Class<?>> mixins )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
-        ValuePropertiesModel propertiesModel = new ValuePropertiesModel( constraintsModel, propertyDeclarations);
+        ValuePropertiesModel propertiesModel = new ValuePropertiesModel( constraintsModel, propertyDeclarations );
 
-        ValueStateModel stateModel = new ValueStateModel( propertiesModel);
+        ValueStateModel stateModel = new ValueStateModel( propertiesModel );
         ValueMixinsModel mixinsModel = new ValueMixinsModel( compositeType, mixins );
 
         List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
@@ -98,7 +92,7 @@ public final class ValueModel extends AbstractCompositeModel
     }
 
     public ValueInstance newValueInstance( ModuleInstance moduleInstance,
-                                                   StateHolder state)
+                                           StateHolder state )
     {
         Object[] mixins = mixinsModel.newMixinHolder();
 
@@ -107,9 +101,9 @@ public final class ValueModel extends AbstractCompositeModel
         try
         {
             // Instantiate all mixins
-            ((ValueMixinsModel)mixinsModel).newMixins( instance,
-                                   state,
-                                   mixins );
+            ( (ValueMixinsModel) mixinsModel ).newMixins( instance,
+                                                          state,
+                                                          mixins );
 
         }
         catch( InvalidCompositeException e )
@@ -122,9 +116,9 @@ public final class ValueModel extends AbstractCompositeModel
         return instance;
     }
 
-    public ValueInstance newValueInstance( ModuleInstance moduleInstance, ValueState state)
+    public ValueInstance newValueInstance( ModuleInstance moduleInstance, ValueState state )
     {
-        StateHolder stateHolder = ((ValueStateModel)stateModel).newInstance( moduleInstance, state );
+        StateHolder stateHolder = ( (ValueStateModel) stateModel ).newInstance( moduleInstance, state );
         return newValueInstance( moduleInstance, stateHolder );
     }
 }

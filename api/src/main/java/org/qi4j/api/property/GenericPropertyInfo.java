@@ -17,13 +17,13 @@
  */
 package org.qi4j.api.property;
 
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.QualifiedName;
+
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.io.Serializable;
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.util.Classes;
 
 public final class GenericPropertyInfo
     implements PropertyInfo, Serializable
@@ -67,7 +67,7 @@ public final class GenericPropertyInfo
 
     public GenericPropertyInfo( Method accessor )
     {
-        this.qualifiedName = QualifiedName.fromMethod(accessor);
+        this.qualifiedName = QualifiedName.fromMethod( accessor );
         this.type = getPropertyType( accessor );
         infos = new MetaInfo().withAnnotations( accessor );
         immutable = metaInfo( Immutable.class ) != null;
@@ -80,7 +80,7 @@ public final class GenericPropertyInfo
         {
             Method accessor = declaringClass.getMethod( accessorName );
 
-            this.qualifiedName = QualifiedName.fromMethod(accessor);
+            this.qualifiedName = QualifiedName.fromMethod( accessor );
             this.type = getPropertyType( accessor );
             infos = new MetaInfo().withAnnotations( accessor );
             immutable = metaInfo( Immutable.class ) != null;

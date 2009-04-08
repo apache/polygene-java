@@ -22,14 +22,21 @@ package org.qi4j.bootstrap;
  */
 public interface AssemblyVisitor
 {
-    public void visitApplication(ApplicationAssembly assembly);
-    public void visitLayer(LayerAssembly assembly);
-    public void visitModule(ModuleAssembly assembly);
+    public void visitApplication( ApplicationAssembly assembly );
 
-    public void visitComposite(CompositeDeclaration declaration);
-    public void visitEntity(EntityDeclaration declaration);
-    public void visitService(ServiceDeclaration declaration);
-    public void visitImportedService(ImportedServiceDeclaration declaration);
-    public void visitValue(ValueDeclaration declaration);
-    public void visitObject(ObjectDeclaration declaration);
+    public void visitLayer( LayerAssembly assembly );
+
+    public void visitModule( ModuleAssembly assembly );
+
+    public void visitComposite( CompositeDeclaration declaration );
+
+    public void visitEntity( EntityDeclaration declaration );
+
+    public void visitService( ServiceDeclaration declaration );
+
+    public void visitImportedService( ImportedServiceDeclaration declaration );
+
+    public void visitValue( ValueDeclaration declaration );
+
+    public void visitObject( ObjectDeclaration declaration );
 }

@@ -14,12 +14,12 @@
 
 package org.qi4j.spi.entity.association;
 
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-
 import org.qi4j.api.common.QualifiedName;
 import static org.qi4j.api.common.TypeName.nameOf;
 import org.qi4j.spi.entity.SchemaVersion;
+
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 
 /**
  * JAVADOC
@@ -71,8 +71,8 @@ public final class AssociationType
 
     public void versionize( SchemaVersion schemaVersion ) throws UnsupportedEncodingException
     {
-        schemaVersion.versionize( qualifiedName);
-        schemaVersion.versionize( nameOf( type ));
-        
+        schemaVersion.versionize( qualifiedName );
+        schemaVersion.versionize( nameOf( type ) );
+
     }
 }

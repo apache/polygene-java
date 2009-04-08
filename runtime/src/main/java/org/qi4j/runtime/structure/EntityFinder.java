@@ -14,12 +14,12 @@
 
 package org.qi4j.runtime.structure;
 
-import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.runtime.entity.EntityModel;
 
 /**
  * JAVADOC
-*/
+ */
 class EntityFinder
     implements ModuleVisitor
 {

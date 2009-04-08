@@ -14,11 +14,8 @@
 
 package org.qi4j.runtime.structure;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.qi4j.api.common.InvalidApplicationException;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
@@ -27,9 +24,12 @@ import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationDescriptor;
 import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.spi.structure.DescriptorVisitor;
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.InvalidApplicationException;
-import org.qi4j.bootstrap.AssemblyException;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * JAVADOC
@@ -100,7 +100,7 @@ public final class ApplicationModel
 
         // Create layer instances
         Map<LayerModel, LayerInstance> layerInstanceMap = new HashMap<LayerModel, LayerInstance>();
-        Map<LayerModel, List<LayerInstance>> usedLayers = new HashMap<LayerModel, List<LayerInstance>>( );
+        Map<LayerModel, List<LayerInstance>> usedLayers = new HashMap<LayerModel, List<LayerInstance>>();
         for( LayerModel layer : layers )
         {
             List<LayerInstance> usedLayerInstances = new ArrayList<LayerInstance>();
@@ -118,8 +118,10 @@ public final class ApplicationModel
             for( LayerModel usedLayer : layer.usedLayers().layers() )
             {
                 LayerInstance layerInstance = layerInstanceMap.get( usedLayer );
-                if (layerInstance == null)
-                    throw new InvalidApplicationException("Could not find used layer:"+usedLayer.name());
+                if( layerInstance == null )
+                {
+                    throw new InvalidApplicationException( "Could not find used layer:" + usedLayer.name() );
+                }
                 usedLayerInstances.add( layerInstance );
             }
         }

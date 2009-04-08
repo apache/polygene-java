@@ -14,31 +14,32 @@
 
 package org.qi4j.runtime.unitofwork;
 
-import org.qi4j.spi.entity.helpers.DefaultEntityState;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityType;
-import org.qi4j.api.common.QualifiedName;
-import java.util.Map;
+import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.helpers.DefaultEntityState;
+
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * JAVADOC
-*/
+ */
 class UnitOfWorkEntityState
     extends DefaultEntityState
 {
     private final EntityState parentState;
 
     UnitOfWorkEntityState( long entityVersion, long lastModified,
-                                   QualifiedIdentity identity,
-                                   EntityStatus status,
-                                   EntityType entityType,
-                                   Map<QualifiedName, Object> properties,
-                                   Map<QualifiedName, QualifiedIdentity> associations,
-                                   Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations,
-                                   EntityState parentState )
+                           QualifiedIdentity identity,
+                           EntityStatus status,
+                           EntityType entityType,
+                           Map<QualifiedName, Object> properties,
+                           Map<QualifiedName, QualifiedIdentity> associations,
+                           Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations,
+                           EntityState parentState )
     {
         super( entityVersion, lastModified, identity, status, entityType, properties, associations, manyAssociations );
         this.parentState = parentState;

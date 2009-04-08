@@ -14,9 +14,10 @@
 
 package org.qi4j.runtime.property;
 
+import org.qi4j.api.property.Property;
+
 import java.lang.reflect.Method;
 import java.util.Map;
-import org.qi4j.api.property.Property;
 
 /**
  * Collection of Property instances.

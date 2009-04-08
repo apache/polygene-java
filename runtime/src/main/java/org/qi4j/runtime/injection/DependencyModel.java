@@ -13,27 +13,23 @@
  */
 package org.qi4j.runtime.injection;
 
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
-import java.util.Collections;
-import java.util.List;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
-import org.qi4j.runtime.injection.provider.InvalidInjectionException;
 import org.qi4j.runtime.injection.provider.CachingInjectionProviderDecorator;
+import org.qi4j.runtime.injection.provider.InvalidInjectionException;
 import org.qi4j.runtime.injection.provider.ServiceInjectionProviderFactory;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.Specification;
 import org.qi4j.runtime.util.Annotations;
 import static org.qi4j.runtime.util.CollectionUtils.firstElementOrNull;
 import org.qi4j.spi.composite.DependencyDescriptor;
+
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.util.Collections;
 
 /**
  * JAVADOC
@@ -44,13 +40,15 @@ public final class DependencyModel
 {
     public static boolean isOptional( Annotation injectionAnnotation, Annotation[] annotations )
     {
-        if (Annotations.getAnnotationOfType( annotations, Optional.class ) != null)
+        if( Annotations.getAnnotationOfType( annotations, Optional.class ) != null )
+        {
             return true;
+        }
 
         Method[] methods = injectionAnnotation.annotationType().getMethods();
         for( Method method : methods )
         {
-            if( method.getName().equals("optional") )
+            if( method.getName().equals( "optional" ) )
             {
                 try
                 {
@@ -65,7 +63,7 @@ public final class DependencyModel
 
         return false;
     }
-    
+
     // Model
     private final Annotation injectionAnnotation;
     private final Type injectionType;
@@ -252,15 +250,15 @@ public final class DependencyModel
     {
         Iterable<String> services = Collections.emptyList();
 
-        if (injectionProvider instanceof CachingInjectionProviderDecorator)
+        if( injectionProvider instanceof CachingInjectionProviderDecorator )
         {
-            InjectionProvider decoratedProvider = ((CachingInjectionProviderDecorator)injectionProvider).decoratedProvider();
-            if (decoratedProvider instanceof ServiceInjectionProviderFactory.ServiceInjector)
+            InjectionProvider decoratedProvider = ( (CachingInjectionProviderDecorator) injectionProvider ).decoratedProvider();
+            if( decoratedProvider instanceof ServiceInjectionProviderFactory.ServiceInjector )
             {
-                services = ((ServiceInjectionProviderFactory.ServiceInjector)decoratedProvider).injectedServices();
+                services = ( (ServiceInjectionProviderFactory.ServiceInjector) decoratedProvider ).injectedServices();
             }
         }
-        
+
         return services;
     }
 

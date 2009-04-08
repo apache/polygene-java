@@ -26,14 +26,14 @@ import org.qi4j.spi.value.ValueState;
 public final class ValueStateModel
     extends AbstractStateModel<ValuePropertiesModel>
 {
-    public ValueStateModel( ValuePropertiesModel propertiesModel)
+    public ValueStateModel( ValuePropertiesModel propertiesModel )
     {
-        super(propertiesModel);
+        super( propertiesModel );
     }
 
     public StateHolder newInstance( ModuleInstance moduleInstance, ValueState state )
     {
         PropertiesInstance properties = propertiesModel.newInstance( moduleInstance, state );
-        return new StateInstance(properties);
+        return new StateInstance( properties );
     }
 }

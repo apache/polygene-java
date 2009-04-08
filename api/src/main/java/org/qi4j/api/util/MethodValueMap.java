@@ -17,19 +17,20 @@
  */
 package org.qi4j.api.util;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.lang.reflect.Method;
-import java.io.IOException;
-import java.io.Externalizable;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
 
-/** This is a HashMap subtype where the Value is a Method, for the pure purpose of being Serializable.
+/**
+ * This is a HashMap subtype where the Value is a Method, for the pure purpose of being Serializable.
  *
  * @param <K> The Key in the HashMap.
  */
-public class MethodValueMap<K> extends HashMap<K,Method>
+public class MethodValueMap<K> extends HashMap<K, Method>
     implements Externalizable
 {
     static final long serialVersionUID = 1L;
@@ -38,18 +39,19 @@ public class MethodValueMap<K> extends HashMap<K,Method>
         throws IOException
     {
         out.writeInt( size() );
-        for( Map.Entry<K,Method> entry : entrySet() )
+        for( Map.Entry<K, Method> entry : entrySet() )
         {
             out.writeObject( entry.getKey() );
             Method m = entry.getValue();
             SerializationUtil.writeMethod( out, m );
         }
     }
+
     public void readExternal( ObjectInput in )
         throws IOException, ClassNotFoundException
     {
         int size = in.readInt();
-        for( int i = 0 ; i < size ; i++ )
+        for( int i = 0; i < size; i++ )
         {
             K key = (K) in.readObject();
             Method method = SerializationUtil.readMethod( in );

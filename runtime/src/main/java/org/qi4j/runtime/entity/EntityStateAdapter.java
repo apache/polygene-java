@@ -14,14 +14,15 @@
 
 package org.qi4j.runtime.entity;
 
-import java.util.Collection;
-import java.util.Map;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.value.ValueState;
-import org.qi4j.api.common.QualifiedName;
+
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Adapter for EntityState. Subclass and override methods to use.

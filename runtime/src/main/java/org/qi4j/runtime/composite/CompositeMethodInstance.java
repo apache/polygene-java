@@ -46,7 +46,7 @@ public final class CompositeMethodInstance
 
     public Object getMixin( Object[] mixins )
     {
-        return mixins[methodIdx];
+        return mixins[ methodIdx ];
     }
 
     public Object invoke( Object composite, Object[] params, Object mixin )
@@ -56,7 +56,7 @@ public final class CompositeMethodInstance
 
         try
         {
-            return invoker.invoke( composite, method, params);
+            return invoker.invoke( composite, method, params );
         }
         finally
         {

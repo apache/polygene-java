@@ -18,14 +18,13 @@
 
 package org.qi4j.bootstrap;
 
-import java.io.IOException;
-import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.internal.ServiceLoader;
-import org.qi4j.bootstrap.spi.ApplicationModelFactory;
 import org.qi4j.bootstrap.spi.Qi4jRuntime;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.ApplicationModelSPI;
+import org.qi4j.spi.structure.ApplicationSPI;
+
+import java.io.IOException;
 
 /**
  * Main bootstrap class for starting Qi4j and creating new applications. Instantiate this
@@ -65,17 +64,17 @@ public final class Energy4Java
         this.runtime = runtime;
     }
 
-    public ApplicationModelSPI newApplicationModel(ApplicationAssembler assembler) throws AssemblyException
+    public ApplicationModelSPI newApplicationModel( ApplicationAssembler assembler ) throws AssemblyException
     {
         ApplicationAssembly assembly = assembler.assemble( runtime.applicationAssemblyFactory() );
-        return runtime.applicationModelFactory().newApplicationModel(assembly);
+        return runtime.applicationModelFactory().newApplicationModel( assembly );
     }
 
     public ApplicationSPI newApplication( ApplicationAssembler assembler )
         throws AssemblyException
     {
         ApplicationModelSPI model = newApplicationModel( assembler );
-        return model.newInstance(runtime.spi());
+        return model.newInstance( runtime.spi() );
     }
 
     public Qi4jSPI spi()

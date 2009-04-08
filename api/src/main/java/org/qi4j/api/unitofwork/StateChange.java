@@ -17,7 +17,7 @@ package org.qi4j.api.unitofwork;
 import org.qi4j.api.common.QualifiedName;
 
 /**
- * Base class for state changes. 
+ * Base class for state changes.
  */
 public class StateChange
 {

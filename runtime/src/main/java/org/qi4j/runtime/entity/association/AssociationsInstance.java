@@ -14,13 +14,13 @@
 
 package org.qi4j.runtime.entity.association;
 
-import java.lang.reflect.Method;
-import java.util.Map;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.util.MethodKeyMap;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
+
+import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * JAVADOC

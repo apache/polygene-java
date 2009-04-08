@@ -16,10 +16,6 @@ package org.qi4j.bootstrap.spi;
 
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.HibernatingApplicationInvalidException;
-import org.qi4j.api.structure.Application;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.ApplicationModelSPI;
 
 /**
@@ -28,6 +24,6 @@ import org.qi4j.spi.structure.ApplicationModelSPI;
  */
 public interface ApplicationModelFactory
 {
-    ApplicationModelSPI newApplicationModel( ApplicationAssembly assembly)
+    ApplicationModelSPI newApplicationModel( ApplicationAssembly assembly )
         throws AssemblyException;
 }

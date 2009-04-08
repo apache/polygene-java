@@ -28,9 +28,9 @@ public interface LayerAssembly
 
     LayerAssembly setName( String name );
 
-    LayerAssembly setMetaInfo(Object info);
+    LayerAssembly setMetaInfo( Object info );
 
     LayerAssembly uses( LayerAssembly... layerAssembly );
 
-    public void visit(AssemblyVisitor visitor);
+    public void visit( AssemblyVisitor visitor );
 }

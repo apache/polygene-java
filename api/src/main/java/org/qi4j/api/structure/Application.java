@@ -14,7 +14,6 @@
 
 package org.qi4j.api.structure;
 
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.common.MetaInfo;
 
 /**
@@ -26,7 +25,7 @@ public interface Application
 
     MetaInfo metaInfo();
 
-    Layer findLayer(String layerName);
+    Layer findLayer( String layerName );
 
     Module findModule( String layerName, String moduleName );
 }

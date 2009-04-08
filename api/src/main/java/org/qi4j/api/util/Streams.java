@@ -17,11 +17,7 @@
  */
 package org.qi4j.api.util;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 public class Streams
 {

@@ -23,5 +23,5 @@ public interface ApplicationModelSPI
 {
     void visitDescriptor( DescriptorVisitor visitor );
 
-    ApplicationSPI newInstance( Qi4jSPI runtime);
+    ApplicationSPI newInstance( Qi4jSPI runtime );
 }

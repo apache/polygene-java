@@ -13,12 +13,9 @@
  */
 package org.qi4j.api.injection.scope;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import org.qi4j.api.injection.InjectionScope;
+
+import java.lang.annotation.*;
 
 /**
  * Annotation to denote the injection of a property, association or
@@ -36,8 +33,10 @@ import org.qi4j.api.injection.InjectionScope;
 @InjectionScope
 public @interface State
 {
-    /** Name of the property or association.
+    /**
+     * Name of the property or association.
      * If not set then name will be name of field.
+     *
      * @return the name
      */
     public abstract String value() default "";

@@ -24,6 +24,6 @@ public final class StateModel
 {
     public StateModel( PropertiesModel propertiesModel )
     {
-        super(propertiesModel);
+        super( propertiesModel );
     }
 }

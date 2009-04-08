@@ -14,34 +14,18 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.io.BufferedInputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.IOException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.BufferedOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.LayerAssembly;
-import org.qi4j.bootstrap.HibernatingApplicationInvalidException;
 import org.qi4j.bootstrap.spi.ApplicationModelFactory;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.structure.ApplicationModel;
 import org.qi4j.runtime.structure.LayerModel;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.UsedLayersModel;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.ApplicationModelSPI;
+
+import java.util.*;
 
 /**
  * Factory for Applications.
@@ -56,7 +40,7 @@ public final class ApplicationModelFactoryImpl
         List<LayerModel> layerModels = new ArrayList<LayerModel>();
         ApplicationModel applicationModel = new ApplicationModel( applicationAssembly.name(), applicationAssembly.metaInfo(), layerModels );
         Map<LayerAssembly, LayerModel> mapAssemblyModel = new HashMap<LayerAssembly, LayerModel>();
-        Map<LayerAssembly, List<LayerModel>> mapUsedLayers = new HashMap<LayerAssembly, List<LayerModel>>( );
+        Map<LayerAssembly, List<LayerModel>> mapUsedLayers = new HashMap<LayerAssembly, List<LayerModel>>();
 
         // Build all layers
         List<LayerAssemblyImpl> layerAssemblies = new ArrayList<LayerAssemblyImpl>( applicationAssembly.getLayerAssemblies() );

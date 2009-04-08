@@ -16,13 +16,14 @@
 
 package org.qi4j.runtime.composite;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * InvocationHandler for proxy objects.
@@ -117,7 +118,7 @@ public class DefaultCompositeInstance
     public Object invoke( Object composite, Object[] params, CompositeMethodInstance methodInstance )
         throws Throwable
     {
-        Object mixin = methodInstance.getMixin(mixins);
+        Object mixin = methodInstance.getMixin( mixins );
         return methodInstance.invoke( composite, params, mixin );
     }
 

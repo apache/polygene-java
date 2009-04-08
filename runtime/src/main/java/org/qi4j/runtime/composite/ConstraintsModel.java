@@ -14,18 +14,19 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.constraint.ConstraintImplementationNotFoundException;
 import org.qi4j.api.constraint.Constraints;
 import static org.qi4j.api.util.Classes.genericInterfacesOf;
 import static org.qi4j.runtime.util.Annotations.isCompositeConstraintAnnotation;
 import static org.qi4j.runtime.util.Annotations.isConstraintAnnotation;
+
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * JAVADOC
@@ -48,6 +49,7 @@ public final class ConstraintsModel
         }
 
     }
+
     public ValueConstraintsModel constraintsFor( Annotation[] constraintAnnotations, Type valueType, String name, boolean optional )
     {
         List<AbstractConstraintModel> constraintModels = new ArrayList<AbstractConstraintModel>();

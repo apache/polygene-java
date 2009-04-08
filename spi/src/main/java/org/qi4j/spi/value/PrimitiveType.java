@@ -14,12 +14,12 @@
 
 package org.qi4j.spi.value;
 
+import org.qi4j.api.common.TypeName;
+import org.qi4j.spi.entity.SchemaVersion;
+
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.qi4j.api.common.TypeName;
-import org.qi4j.spi.entity.SchemaVersion;
 
 /**
  * Primitive type
@@ -42,15 +42,19 @@ public class PrimitiveType
         primitiveClasses.add( String.class );
     }
 
-    public static boolean isPrimitive( Type type)
+    public static boolean isPrimitive( Type type )
     {
-        if (type instanceof Class)
+        if( type instanceof Class )
         {
             Class typeClass = (Class) type;
-            if (typeClass.isPrimitive())
+            if( typeClass.isPrimitive() )
+            {
                 return true;
-            else if (typeClass.isEnum())
+            }
+            else if( typeClass.isEnum() )
+            {
                 return true;
+            }
         }
 
         return primitiveClasses.contains( type );

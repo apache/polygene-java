@@ -16,7 +16,6 @@ package org.qi4j.runtime.entity.association;
 
 import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.SetAssociation;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 

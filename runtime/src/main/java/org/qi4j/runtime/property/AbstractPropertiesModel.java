@@ -14,30 +14,24 @@
 
 package org.qi4j.runtime.property;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.api.util.MethodValueMap;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.Resolution;
-import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.runtime.value.ValueModel;
-import org.qi4j.runtime.structure.Binder;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * Base class for properties model
@@ -158,7 +152,8 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
             {
                 newCollection = new ArrayList<Object>();
                 initialValue = isPrototype ? newCollection : Collections.unmodifiableList( (List<Object>) newCollection );
-            } else
+            }
+            else
             {
                 newCollection = new HashSet<Object>();
                 initialValue = isPrototype ? newCollection : Collections.unmodifiableSet( (Set<Object>) newCollection );
@@ -167,7 +162,7 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
             // Copy values, ensuring that values are cloned correctly
             for( Object value : initialCollection )
             {
-                if (value instanceof ValueComposite )
+                if( value instanceof ValueComposite )
                 {
                     value = cloneValue( value, isPrototype );
 
@@ -175,9 +170,10 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
 
                 newCollection.add( value );
             }
-        } else if (initialValue instanceof ValueComposite)
+        }
+        else if( initialValue instanceof ValueComposite )
         {
-            initialValue = cloneValue(initialValue, isPrototype);
+            initialValue = cloneValue( initialValue, isPrototype );
         }
         return initialValue;
     }
@@ -189,11 +185,15 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
 
         ValueModel model = (ValueModel) instance.compositeModel();
         StateHolder state;
-        if (isPrototype)
+        if( isPrototype )
+        {
             state = model.state().newBuilderInstance( instance.state() );
+        }
         else
+        {
             state = model.state().newInstance( instance.state() );
-        ValueInstance newInstance = model.newValueInstance( instance.module(), state);
+        }
+        ValueInstance newInstance = model.newValueInstance( instance.module(), state );
         return newInstance.proxy();
     }
 
@@ -221,7 +221,7 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
         return null;
     }
 
-    public T getPropertyByAccessor(Method accessor)
+    public T getPropertyByAccessor( Method accessor )
     {
         return mapMethodPropertyModel.get( accessor );
     }

@@ -14,18 +14,15 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.concern.Concerns;
 import static org.qi4j.api.util.Classes.genericInterfacesOf;
 import org.qi4j.api.util.MethodKeyMap;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.*;
 
 /**
  * JAVADOC
@@ -33,7 +30,7 @@ import org.qi4j.api.util.MethodKeyMap;
 public final class ConcernsDeclaration
     implements Serializable
 {
-    public static void concernDeclarations(Class type, List<ConcernDeclaration> concerns)
+    public static void concernDeclarations( Class type, List<ConcernDeclaration> concerns )
     {
         // Find concern declarations
         Set<Type> types = ( type.isInterface() ? genericInterfacesOf( type ) : Collections.singleton( (Type) type ) );
@@ -45,7 +42,7 @@ public final class ConcernsDeclaration
 
     }
 
-    public static void concernDeclarations(Iterable<Class<?>> concernclasses, List<ConcernDeclaration> concerns)
+    public static void concernDeclarations( Iterable<Class<?>> concernclasses, List<ConcernDeclaration> concerns )
     {
         // Add concerns from assembly
         for( Class<?> concern : concernclasses )
@@ -74,7 +71,7 @@ public final class ConcernsDeclaration
     private final List<ConcernDeclaration> concerns;
     private final Map<Method, MethodConcernsModel> methodConcernsModels = new MethodKeyMap<MethodConcernsModel>();
 
-    public ConcernsDeclaration( List<ConcernDeclaration> concerns)
+    public ConcernsDeclaration( List<ConcernDeclaration> concerns )
     {
         this.concerns = concerns;
     }

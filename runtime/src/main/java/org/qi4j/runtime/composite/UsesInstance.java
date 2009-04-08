@@ -14,10 +14,11 @@
 
 package org.qi4j.runtime.composite;
 
+import org.qi4j.runtime.object.ObjectBuilderInstance;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import org.qi4j.runtime.object.ObjectBuilderInstance;
 
 /**
  * JAVADOC
@@ -54,7 +55,8 @@ public final class UsesInstance
                 {
                     return builder.newInstance();
                 }
-            } else if( use instanceof ObjectBuilderInstance )
+            }
+            else if( use instanceof ObjectBuilderInstance )
             {
                 ObjectBuilderInstance builder = (ObjectBuilderInstance) use;
                 if( type.isAssignableFrom( builder.objectType() ) )

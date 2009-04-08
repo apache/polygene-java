@@ -14,8 +14,9 @@
 
 package org.qi4j.api.entity.association;
 
-import java.lang.reflect.Type;
 import org.qi4j.api.common.QualifiedName;
+
+import java.lang.reflect.Type;
 
 /**
  * Metadata about an Association.

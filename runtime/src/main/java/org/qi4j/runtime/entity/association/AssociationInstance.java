@@ -14,18 +14,18 @@
 
 package org.qi4j.runtime.entity.association;
 
-import java.lang.reflect.Type;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.Entity;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.unitofwork.AssociationStateChange;
 import org.qi4j.api.unitofwork.StateChangeListener;
 import org.qi4j.api.unitofwork.StateChangeVoter;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
+
+import java.lang.reflect.Type;
 
 /**
  * Implementation of Association to a single Entity.
@@ -72,7 +72,7 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
         AssociationStateChange change = null;
         if( stateChangeVoters != null )
         {
-            change = new AssociationStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), (Entity) newValue);
+            change = new AssociationStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), (Entity) newValue );
 
             for( StateChangeVoter stateChangeVoter : stateChangeVoters )
             {
@@ -91,8 +91,10 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
         Iterable<StateChangeListener> stateChangeListeners = unitOfWork.instance().stateChangeListeners();
         if( stateChangeListeners != null )
         {
-            if (change == null)
-                change = new AssociationStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), (Entity) newValue);
+            if( change == null )
+            {
+                change = new AssociationStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), (Entity) newValue );
+            }
 
             for( StateChangeListener stateChangeListener : stateChangeListeners )
             {
@@ -179,7 +181,7 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
 
     public void refresh( EntityState newState )
     {
-        super.refresh(newState);
+        super.refresh( newState );
         value = (T) NOT_LOADED;
     }
 }

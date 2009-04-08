@@ -16,24 +16,16 @@
  */
 package org.qi4j.spi.entity.helpers;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.value.ValueState;
-import org.qi4j.api.common.QualifiedName;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Standard implementation of EntityState.
@@ -231,9 +223,9 @@ public class DefaultEntityState
         version++;
     }
 
-    public ValueState newValueState( Map<QualifiedName, Object> values)
+    public ValueState newValueState( Map<QualifiedName, Object> values )
     {
-        return new DefaultValueState(values);
+        return new DefaultValueState( values );
     }
 
     protected class ModificationTrackerCollection<T extends Collection<QualifiedIdentity>>

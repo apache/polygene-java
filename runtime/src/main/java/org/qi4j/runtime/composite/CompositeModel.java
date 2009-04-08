@@ -14,9 +14,6 @@
 
 package org.qi4j.runtime.composite;
 
-import java.lang.reflect.InvocationHandler;
-import java.util.List;
-import java.util.ArrayList;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -30,6 +27,10 @@ import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
+
+import java.lang.reflect.InvocationHandler;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Model for Transient Composites
@@ -72,7 +73,7 @@ public class CompositeModel
                               final CompositeMethodsModel compositeMethodsModel
     )
     {
-        super(compositeType, visibility,  metaInfo, mixinsModel, stateModel, compositeMethodsModel);
+        super( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
     }
 
     public void visitModel( ModelVisitor modelVisitor )
@@ -117,10 +118,10 @@ public class CompositeModel
         try
         {
             // Instantiate all mixins
-            ((MixinsModel)mixinsModel).newMixins( compositeInstance,
-                                   uses,
-                                   state,
-                                   mixins );
+            ( (MixinsModel) mixinsModel ).newMixins( compositeInstance,
+                                                     uses,
+                                                     state,
+                                                     mixins );
 
         }
         catch( InvalidCompositeException e )

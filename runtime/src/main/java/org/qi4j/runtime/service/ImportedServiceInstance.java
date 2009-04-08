@@ -26,7 +26,7 @@ public final class ImportedServiceInstance<T>
 
 
     public ImportedServiceInstance( T instance,
-                            ServiceImporter importer )
+                                    ServiceImporter importer )
     {
         this.importer = importer;
         this.instance = instance;
@@ -44,6 +44,6 @@ public final class ImportedServiceInstance<T>
 
     public boolean isActive()
     {
-        return importer.isActive(instance);
+        return importer.isActive( instance );
     }
 }

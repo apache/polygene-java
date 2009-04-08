@@ -24,7 +24,8 @@ public interface Initializable
     /**
      * Initialize the fragment
      *
-     * @throws org.qi4j.api.mixin.InitializationException if something went wrong
+     * @throws org.qi4j.api.mixin.InitializationException
+     *          if something went wrong
      */
     void initialize()
         throws InitializationException;

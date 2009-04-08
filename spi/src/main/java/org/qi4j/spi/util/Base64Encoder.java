@@ -38,7 +38,6 @@ public class Base64Encoder
      * Encodes a String into a base 64 String. The resulting encoding is chunked at 76 bytes.
      *
      * @param s String to encode.
-     *
      * @return encoded string.
      */
     public static String encode( String s )
@@ -53,10 +52,9 @@ public class Base64Encoder
      * Decodes a base 64 String into a String.
      *
      * @param s String to decode.
-     *
      * @return encoded string.
-     *
-     * @throws java.lang.IllegalArgumentException _ If the given byte array was not valid base64 encoding.
+     * @throws java.lang.IllegalArgumentException
+     *          _ If the given byte array was not valid base64 encoding.
      */
     public static String decode( String s )
         throws IllegalArgumentException
@@ -83,7 +81,6 @@ public class Base64Encoder
      * Encodes a byte array into a base 64 byte array.
      *
      * @param dData byte array to encode.
-     *
      * @return encoded byte array.
      */
     public static byte[] encode( byte[] dData )
@@ -157,9 +154,7 @@ public class Base64Encoder
      * <p>
      *
      * @param eData byte array to decode.
-     *
      * @return decoded byte array.
-     *
      * @throws java.lang.IllegalArgumentException
      *          thrown if the given byte array was not valid com.sun.syndication.io.impl.Base64 encoding.
      */
@@ -182,12 +177,12 @@ public class Base64Encoder
         int dLength = ( cleanELength / 4 ) * 3;
         switch( cleanELength % 4 )
         {
-            case 3:
-                dLength += 2;
-                break;
-            case 2:
-                dLength++;
-                break;
+        case 3:
+            dLength += 2;
+            break;
+        case 2:
+            dLength++;
+            break;
         }
 
         byte[] dData = new byte[dLength];

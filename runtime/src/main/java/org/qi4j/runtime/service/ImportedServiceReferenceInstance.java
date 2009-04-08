@@ -14,10 +14,10 @@
 
 package org.qi4j.runtime.service;
 
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.common.MetaInfo;
 
 /**
  * Implementation of ServiceReference. This manages the reference to the imported service

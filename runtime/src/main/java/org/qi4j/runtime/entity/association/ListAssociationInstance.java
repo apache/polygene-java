@@ -14,15 +14,15 @@
 
 package org.qi4j.runtime.entity.association;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.ListIterator;
 import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.ListAssociation;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Implementation of ListAssociation, which delegates to a
@@ -112,10 +112,14 @@ public final class ListAssociationInstance<T>
 
     private List<QualifiedIdentity> associated()
     {
-        if (subList == null)
+        if( subList == null )
+        {
             return (List<QualifiedIdentity>) entityState.getManyAssociation( associationInfo.qualifiedName() );
+        }
         else
+        {
             return subList;
+        }
     }
 
     private class ListAssociationListIterator

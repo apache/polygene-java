@@ -23,52 +23,64 @@ public class StateChangeAdapter
 {
     public void acceptChange( StateChange change ) throws ChangeVetoException
     {
-        if (change instanceof PropertyStateChange)
-            acceptChange((PropertyStateChange)change);
-        else if (change instanceof AssociationStateChange)
-            acceptChange((AssociationStateChange)change);
-        else if (change instanceof ManyAssociationStateChange)
-            acceptChange((ManyAssociationStateChange)change);
+        if( change instanceof PropertyStateChange )
+        {
+            acceptChange( (PropertyStateChange) change );
+        }
+        else if( change instanceof AssociationStateChange )
+        {
+            acceptChange( (AssociationStateChange) change );
+        }
+        else if( change instanceof ManyAssociationStateChange )
+        {
+            acceptChange( (ManyAssociationStateChange) change );
+        }
     }
 
     public void notify( StateChange change )
     {
-        if (change instanceof PropertyStateChange)
-            notify((PropertyStateChange)change);
-        else if (change instanceof AssociationStateChange)
-            notify((AssociationStateChange)change);
-        else if (change instanceof ManyAssociationStateChange)
-            notify((ManyAssociationStateChange)change);
+        if( change instanceof PropertyStateChange )
+        {
+            notify( (PropertyStateChange) change );
+        }
+        else if( change instanceof AssociationStateChange )
+        {
+            notify( (AssociationStateChange) change );
+        }
+        else if( change instanceof ManyAssociationStateChange )
+        {
+            notify( (ManyAssociationStateChange) change );
+        }
     }
 
-    protected void notify(PropertyStateChange change)
+    protected void notify( PropertyStateChange change )
     {
 
     }
 
-    protected void notify(AssociationStateChange change)
+    protected void notify( AssociationStateChange change )
     {
 
     }
 
-    protected void notify(ManyAssociationStateChange change)
+    protected void notify( ManyAssociationStateChange change )
     {
 
     }
 
-    protected void acceptChange(PropertyStateChange change)
+    protected void acceptChange( PropertyStateChange change )
         throws ChangeVetoException
     {
 
     }
 
-    protected void acceptChange(AssociationStateChange change)
+    protected void acceptChange( AssociationStateChange change )
         throws ChangeVetoException
     {
 
     }
 
-    protected void acceptChange(ManyAssociationStateChange change)
+    protected void acceptChange( ManyAssociationStateChange change )
         throws ChangeVetoException
     {
 

@@ -37,7 +37,8 @@ public interface ValueBuilderFactory
      * @param valueType the Value type to instantiate
      * @return a new Value instance
      * @throws NoSuchValueException if no value extending the mixinType has been registered
-     * @throws org.qi4j.api.common.ConstructionException if the value could not be instantiated
+     * @throws org.qi4j.api.common.ConstructionException
+     *                              if the value could not be instantiated
      */
     <T> T newValue( Class<T> valueType )
         throws NoSuchValueException, ConstructionException;
