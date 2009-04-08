@@ -3,7 +3,7 @@
   <groupId>org.qi4j</groupId>
   <artifactId>qi4j-core</artifactId>
   <name>Qi4j Core (Build POM)</name>
-  <version>0.8-SNAPSHOT</version>
+  <version>0.7</version>
   <packaging>pom</packaging>
 
   <!-- This POM is ONLY to initiate the modules to be built. -->
@@ -92,16 +92,6 @@
       </extension>
     </extensions>
     <plugins>
-      <plugin>
-        <artifactId>maven-scm-plugin</artifactId>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.scm</groupId>
-            <artifactId>maven-scm-api</artifactId>
-            <version>1.2</version>
-          </dependency>
-        </dependencies>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
