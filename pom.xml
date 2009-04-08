@@ -187,9 +187,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
-        <configuration>
-          <tagBase>https://scm.ops4j.org/repos/ops4j/qa/qi4j</tagBase>
-        </configuration>
       </plugin>
     </plugins>
   </reporting>
