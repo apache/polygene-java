@@ -1,3 +1,4 @@
+target/
 api/target/
 bootstrap/target/
 qi4j-core.iws
