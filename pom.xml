@@ -34,7 +34,7 @@
 
   <scm>
     <connection>scm:git://dscm.ops4j.org/qi4j-core.git</connection>
-    <developerConnection>scm:git:git@dscm.ops4j.org:qi4j-core.git</developerConnection>
+    <developerConnection>scm:git://git@dscm.ops4j.org:qi4j-core.git</developerConnection>
   </scm>
 
 
@@ -89,7 +89,7 @@
       <extension>
       <groupId>org.apache.maven.wagon</groupId>
       <artifactId>wagon-ssh-external</artifactId>
-        <version>1.0-alpha-6</version>
+        <version>1.0-beta-5</version>
       </extension>
     </extensions>
     <plugins>
