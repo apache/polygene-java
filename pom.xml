@@ -158,15 +158,15 @@
   <distributionManagement>
     <repository>
       <id>ops4j.releases.deploy</id>
-      <url>scp://repository.ops4j.org/var/http/repository.ops4j.org/maven2</url>
+      <url>scpexe://repository.ops4j.org/var/http/repository.ops4j.org/maven2</url>
     </repository>
     <snapshotRepository>
       <id>ops4j.snapshots.deploy</id>
-      <url>scp://repository.ops4j.org/var/http/repository.ops4j.org/mvn-snapshots</url>
+      <url>scpexe://repository.ops4j.org/var/http/repository.ops4j.org/mvn-snapshots</url>
     </snapshotRepository>
     <site>
       <id>ops4j.website.deploy</id>
-      <url>scp://www.ops4j.org/var/http/www.ops4j.org/projects/qi4j</url>
+      <url>scpexe://www.ops4j.org/var/http/www.ops4j.org/projects/qi4j</url>
     </site>
   </distributionManagement>
 
