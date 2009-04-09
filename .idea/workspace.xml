@@ -1,334 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project relativePaths="false" version="4">
   <component name="ChangeListManager">
-    <list default="true" readonly="true" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/Qi4jFilterDispatcher.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/Qi4jFilterDispatcher.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/util/ClassNameFilters.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/util/ClassNameFilters.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jdt_core_3_1_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mortbay_jetty_jsp_2_1_6_1_11.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_easymock_easymock_2_3.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_beanshell_bsh_classpath_2_0b4.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/UnitOfWorkFilter.java" afterPath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/UnitOfWorkFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/uuid/UuidServiceComposite.java" afterPath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/uuid/UuidServiceComposite.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constraints/src/test/java/org/qi4j/library/constraints/TestCaseComposite.java" afterPath="$PROJECT_DIR$/constraints/src/test/java/org/qi4j/library/constraints/TestCaseComposite.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/pom.xml" afterPath="$PROJECT_DIR$/struts2/pom.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_rio_ntriples_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__ant_ant_1_6_5.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_simple_1_4_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constraints/qi4j-lib-constraints.iml" afterPath="$PROJECT_DIR$/constraints/qi4j-lib-constraints.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jruby_jruby_1_1_6.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/UnitOfWorkFilterService.java" afterPath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/UnitOfWorkFilterService.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mortbay_jetty_jetty_util_6_1_11.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http/src/test/java/org/qi4j/library/http/JettyServiceTest.java" afterPath="$PROJECT_DIR$/http/src/test/java/org/qi4j/library/http/JettyServiceTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/Qi4jApplicationBootstrapListener.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/Qi4jApplicationBootstrapListener.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_sail_nativerdf_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spring/pom.xml" afterPath="$PROJECT_DIR$/spring/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/locking/pom.xml" afterPath="$PROJECT_DIR$/locking/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/Email.java" afterPath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/Email.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_prefuse_prefuse_20071021.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http/pom.xml" afterPath="$PROJECT_DIR$/http/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/SimpleLog.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/SimpleLog.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_struts_struts2_core_2_1_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/uid/pom.xml" afterPath="$PROJECT_DIR$/uid/pom.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryalgebra_model_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__info_aduna_commons_aduna_commons_xml_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__info_aduna_commons_aduna_commons_net_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__bouncycastle_bcprov_jdk14_136.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/locking/src/main/java/org/qi4j/library/locking/WriteLockConcern.java" afterPath="$PROJECT_DIR$/locking/src/main/java/org/qi4j/library/locking/WriteLockConcern.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripting/javascript/src/main/java/org/qi4j/scripting/javascript/JavaScriptMixin.java" afterPath="$PROJECT_DIR$/scripting/javascript/src/main/java/org/qi4j/scripting/javascript/JavaScriptMixin.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/Contains.java" afterPath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/Contains.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/qi4j-struts2-plugin.iml" afterPath="$PROJECT_DIR$/struts2/plugin/qi4j-struts2-plugin.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/Interface.java" afterPath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/Interface.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/auth/src/test/java/org/qi4j/library/auth/tests/AuthTest.java" afterPath="$PROJECT_DIR$/auth/src/test/java/org/qi4j/library/auth/tests/AuthTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/records/EntityTraceRecordEntity.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/records/EntityTraceRecordEntity.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/scripting/jruby/qi4j-script-jruby.iml" afterPath="" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_fileupload_commons_fileupload_1_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_dbcp_commons_dbcp_1_2_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/ActionConfiguration.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/ActionConfiguration.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/entity/EntityStateParser.java" afterPath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/entity/EntityStateParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/view/ProvidesViewOf.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/view/ProvidesViewOf.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/service/StandardTraceServiceComposite.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/service/StandardTraceServiceComposite.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_4.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_library_qi4j_lib_swing_visualizer_0_7_SNAPSHOT.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/WelcomeServlet.java" afterPath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/WelcomeServlet.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/edit/ProvidesEditingOf.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/edit/ProvidesEditingOf.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/etc/qi4j-checkstyle.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryresultio_binary_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_sail_memory_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cache/qi4j-lib-cache.iml" afterPath="$PROJECT_DIR$/cache/qi4j-lib-cache.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_sail_api_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/converters/DateConverter.java" afterPath="$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/converters/DateConverter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/serializer/SerializerContext.java" afterPath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/serializer/SerializerContext.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripting/common/pom.xml" afterPath="$PROJECT_DIR$/scripting/common/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripting/common/src/main/java/org/qi4j/scripting/common/ScriptUtil.java" afterPath="$PROJECT_DIR$/scripting/common/src/main/java/org/qi4j/scripting/common/ScriptUtil.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_freemarker_freemarker_2_3_12.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_httpclient_commons_httpclient_3_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/OneOfConstraint.java" afterPath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/OneOfConstraint.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_core_qi4j_core_bootstrap_0_7.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryparser_serql_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/pom.xml" afterPath="$PROJECT_DIR$/logging/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/util/ClassNameFilter.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/util/ClassNameFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/locking/qi4j-lib-locking.iml" afterPath="$PROJECT_DIR$/locking/qi4j-lib-locking.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/ExcludeCompositeFilter.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/ExcludeCompositeFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/listener/ExampleBootstrapListener.java" afterPath="$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/listener/ExampleBootstrapListener.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__bouncycastle_bcmail_jdk14_136.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/records/LogRecord.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/records/LogRecord.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/Trace.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/Trace.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/MinLength.java" afterPath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/MinLength.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/test/java/org/qi4j/library/struts2/util/ParameterizedTypesTest.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/test/java/org/qi4j/library/struts2/util/ParameterizedTypesTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_library_qi4j_lib_framework_0_7_SNAPSHOT.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/sequence/PersistedSequencingMixin.java" afterPath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/sequence/PersistedSequencingMixin.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/serializer/RdfXmlSerializer.java" afterPath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/serializer/RdfXmlSerializer.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__info_aduna_commons_aduna_commons_iteration_2_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http/src/test/java/org/qi4j/library/http/HelloWorldServlet.java" afterPath="$PROJECT_DIR$/http/src/test/java/org/qi4j/library/http/HelloWorldServlet.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/service/LogOnConsoleSideEffect.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/service/LogOnConsoleSideEffect.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryresultio_sparqlxml_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__opensymphony_sitemesh_2_3.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__info_aduna_commons_aduna_commons_text_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/add/ProvidesAddingOf.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/add/ProvidesAddingOf.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/auth/qi4j-lib-auth.iml" afterPath="$PROJECT_DIR$/auth/qi4j-lib-auth.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/repository/NativeRepositoryMixin.java" afterPath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/repository/NativeRepositoryMixin.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_core_qi4j_core_testsupport_0_7_SNAPSHOT.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/test/java/org/qi4j/logging/tracing/TracingTest.java" afterPath="$PROJECT_DIR$/logging/src/test/java/org/qi4j/logging/tracing/TracingTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__mrj_MRJToolkitStubs_1_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/actions/EditItem.java" afterPath="$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/actions/EditItem.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/LogType.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/LogType.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_repository_event_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_codec_commons_codec_1_3.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/serializer/Serializer.java" afterPath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/serializer/Serializer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/TraceOnConsoleSideEffect.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/TraceOnConsoleSideEffect.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jempbox_jempbox_0_2_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/assemblies/TracingAssembler.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/assemblies/TracingAssembler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rdf/src/test/java/org/qi4j/library/rdf/entity/EntityParserTest.java" afterPath="$PROJECT_DIR$/rdf/src/test/java/org/qi4j/library/rdf/entity/EntityParserTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__info_aduna_commons_aduna_commons_collections_2_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/Item.java" afterPath="$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/Item.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/sequence/Sequence.java" afterPath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/sequence/Sequence.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__pdfbox_pdfbox_0_7_3.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rdf/pom.xml" afterPath="$PROJECT_DIR$/rdf/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/service/TraceServiceConfiguration.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/service/TraceServiceConfiguration.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__fest_fest_assert_1_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/debug/Debug.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/debug/Debug.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__info_aduna_commons_aduna_commons_concurrent_2_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cache/src/main/java/org/qi4j/library/cache/ReturnCachedValueConcern.java" afterPath="$PROJECT_DIR$/cache/src/main/java/org/qi4j/library/cache/ReturnCachedValueConcern.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/locking/src/main/java/org/qi4j/library/locking/WriteLock.java" afterPath="$PROJECT_DIR$/locking/src/main/java/org/qi4j/library/locking/WriteLock.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_ant_ant_launcher_1_7_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/GreaterThan.java" afterPath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/GreaterThan.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_core_qi4j_core_api_0_7.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_repository_api_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_core_qi4j_core_runtime_0_7.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__rhino_js_1_6R5.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_sail_inferencer_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripting/jruby/pom.xml" afterPath="$PROJECT_DIR$/scripting/jruby/pom.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_core_qi4j_core_runtime_0_7_SNAPSHOT.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/util/ClassNames.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/util/ClassNames.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/ConstraintViolationInterceptor.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/ConstraintViolationInterceptor.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_beans_2_5_6.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_jcip_jcip_annotations_1_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/CategoryLogConcern.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/CategoryLogConcern.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/locking/src/main/java/org/qi4j/library/locking/LockingAbstractComposite.java" afterPath="$PROJECT_DIR$/locking/src/main/java/org/qi4j/library/locking/LockingAbstractComposite.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/auth/src/main/java/org/qi4j/library/auth/RequiresPermission.java" afterPath="$PROJECT_DIR$/auth/src/main/java/org/qi4j/library/auth/RequiresPermission.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/AbstractTraceConcern.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/AbstractTraceConcern.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_extension_qi4j_indexing_rdf_0_7_SNAPSHOT.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/view/ConsoleViewerMixin.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/view/ConsoleViewerMixin.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/Matches.java" afterPath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/Matches.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/actions/ListItems.java" afterPath="$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/actions/ListItems.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/view/ProvidesViewOfMixin.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/view/ProvidesViewOfMixin.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/list/ProvidesListOf.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/list/ProvidesListOf.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__fest_fest_reflect_1_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryresultio_api_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/InstanceOf.java" afterPath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/InstanceOf.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/LessThan.java" afterPath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/LessThan.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripting/beanshell/src/test/java/org/qi4j/scripting/beanshell/BeanShellMixinTest.java" afterPath="$PROJECT_DIR$/scripting/beanshell/src/test/java/org/qi4j/scripting/beanshell/BeanShellMixinTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/uid/qi4j-lib-uid.iml" afterPath="$PROJECT_DIR$/uid/qi4j-lib-uid.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_ant_ant_1_7_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/debug/DebugConcern.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/debug/DebugConcern.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryalgebra_evaluation_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/sequence/Sequencing.java" afterPath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/sequence/Sequencing.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/excludeFromValidation.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__swinghelper_debug_1_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/projectCodeStyle.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripting/groovy/src/main/java/org/qi4j/scripting/groovy/GroovyMixin.java" afterPath="$PROJECT_DIR$/scripting/groovy/src/main/java/org/qi4j/scripting/groovy/GroovyMixin.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/actions/AddItem.java" afterPath="$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/actions/AddItem.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/codebehind/qi4j-struts2-codebehind-plugin.iml" afterPath="$PROJECT_DIR$/struts2/codebehind/qi4j-struts2-codebehind-plugin.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/Qi4jPropertyAccessor.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/Qi4jPropertyAccessor.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__aopalliance_aopalliance_1_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mortbay_jetty_jsp_api_2_1_6_1_11.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http/src/test/java/org/qi4j/library/http/HelloWorldServletService.java" afterPath="$PROJECT_DIR$/http/src/test/java/org/qi4j/library/http/HelloWorldServletService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/Qi4jObjectFactory.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/Qi4jObjectFactory.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_query_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_opensymphony_xwork_2_1_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/debug/service/DebuggingService.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/debug/service/DebuggingService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/service/TraceService.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/service/TraceService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/util/ParameterizedTypes.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/util/ParameterizedTypes.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_core_2_5_6.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripting/groovy/src/test/java/org/qi4j/scripting/groovy/GroovyComposite.java" afterPath="$PROJECT_DIR$/scripting/groovy/src/test/java/org/qi4j/scripting/groovy/GroovyComposite.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/entity/EntityTypeSerializer.java" afterPath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/entity/EntityTypeSerializer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/serializer/AbstractSerializer.java" afterPath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/serializer/AbstractSerializer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cache/src/main/java/org/qi4j/library/cache/Cached.java" afterPath="$PROJECT_DIR$/cache/src/main/java/org/qi4j/library/cache/Cached.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_core_qi4j_core_testsupport_0_7.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/TraceConcern.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/TraceConcern.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_context_2_5_6.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_repository_manager_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/OneOf.java" afterPath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/OneOf.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_test_2_5_6.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_http_client_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__fest_fest_swing_1_0rc2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripting/beanshell/src/test/java/org/qi4j/scripting/beanshell/BeanShellComposite.java" afterPath="$PROJECT_DIR$/scripting/beanshell/src/test/java/org/qi4j/scripting/beanshell/BeanShellComposite.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http/qi4j-lib-http.iml" afterPath="$PROJECT_DIR$/http/qi4j-lib-http.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__info_aduna_commons_aduna_commons_io_2_3.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/ServletInfo.java" afterPath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/ServletInfo.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryparser_api_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__cglib_cglib_nodep_2_1_3.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constraints/src/test/java/org/qi4j/library/constraints/ConstraintTest.java" afterPath="$PROJECT_DIR$/constraints/src/test/java/org/qi4j/library/constraints/ConstraintTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_model_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rdf/src/test/java/org/qi4j/library/rdf/ApplicationXmlTest.java" afterPath="$PROJECT_DIR$/rdf/src/test/java/org/qi4j/library/rdf/ApplicationXmlTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_rio_trix_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__jline_jline_0_9_94.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spring/qi4j-lib-spring.iml" afterPath="$PROJECT_DIR$/spring/qi4j-lib-spring.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_io_commons_io_1_3_2.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_logging_commons_logging_1_1_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/StandardLogConcern.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/StandardLogConcern.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/list/ProvidesListOfMixin.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/list/ProvidesListOfMixin.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_rio_rdfxml_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/sequence/TransientSequencingService.java" afterPath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/sequence/TransientSequencingService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rdf/qi4j-lib-rdf.iml" afterPath="$PROJECT_DIR$/rdf/qi4j-lib-rdf.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_jgoodies_looks_2_2_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/uid/src/test/java/org/qi4j/library/uid/sequence/TransientSequencingTest.java" afterPath="$PROJECT_DIR$/uid/src/test/java/org/qi4j/library/uid/sequence/TransientSequencingTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/add/ProvidesAddingOfMixin.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/add/ProvidesAddingOfMixin.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cache/src/main/java/org/qi4j/library/cache/CacheInvocationResultSideEffect.java" afterPath="$PROJECT_DIR$/cache/src/main/java/org/qi4j/library/cache/CacheInvocationResultSideEffect.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/NotEmptyCollectionConstraint.java" afterPath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/NotEmptyCollectionConstraint.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_5_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/WelcomeServletService.java" afterPath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/WelcomeServletService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/StrutsAction.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/StrutsAction.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_rio_n3_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/debug/service/DebuggingServiceMixin.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/debug/service/DebuggingServiceMixin.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_struts_struts2_sitemesh_plugin_2_1_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_jcl104_over_slf4j_1_5_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_repository_sail_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/swing/entity-viewer/qi4j-lib-entity-viewer.iml" afterPath="$PROJECT_DIR$/swing/entity-viewer/qi4j-lib-entity-viewer.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/TraceAllConcern.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/TraceAllConcern.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/scripting/beanshell/qi4j-script-beanshell.iml" afterPath="" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__info_aduna_commons_aduna_commons_lang_2_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/JettyMixin.java" afterPath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/JettyMixin.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_beanshell_bsh_core_2_0b4.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/auth/src/main/java/org/qi4j/library/auth/AuthorizationContext.java" afterPath="$PROJECT_DIR$/auth/src/main/java/org/qi4j/library/auth/AuthorizationContext.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/swing/entity-viewer/pom.xml" afterPath="$PROJECT_DIR$/swing/entity-viewer/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/service/LoggingServiceMixin.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/service/LoggingServiceMixin.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/edit/ProvidesEditingOfMixin.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/edit/ProvidesEditingOfMixin.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rdf/src/test/java/org/qi4j/library/rdf/entity/EntityTypeSerializerTest.java" afterPath="$PROJECT_DIR$/rdf/src/test/java/org/qi4j/library/rdf/entity/EntityTypeSerializerTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rdf/src/test/java/org/qi4j/library/rdf/entity/TestValue.java" afterPath="$PROJECT_DIR$/rdf/src/test/java/org/qi4j/library/rdf/entity/TestValue.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/debug/records/DebugRecord.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/debug/records/DebugRecord.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripting/javascript/pom.xml" afterPath="$PROJECT_DIR$/scripting/javascript/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/CategoryLog.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/CategoryLog.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/NotEmpty.java" afterPath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/NotEmpty.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/codebehind/src/main/java/org/qi4j/library/struts2/codebehind/Qi4jCodebehindPackageProvider.java" afterPath="$PROJECT_DIR$/struts2/codebehind/src/main/java/org/qi4j/library/struts2/codebehind/Qi4jCodebehindPackageProvider.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__fest_fest_util_1_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/StandardLog.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/StandardLog.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/sequence/assembly/TransientSequencingAssembler.java" afterPath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/sequence/assembly/TransientSequencingAssembler.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_servlet_servlet_api_2_4.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__fest_fest_swing_junit_1_0rc2.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_4_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/actions/IndexAction.java" afterPath="$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/actions/IndexAction.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_http_protocol_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_rio_turtle_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryparser_sparql_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__opensymphony_ognl_2_6_11.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/debug/service/DebugOnConsoleSideEffect.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/debug/service/DebugOnConsoleSideEffect.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryresultio_text_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_rio_trig_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mortbay_jetty_servlet_api_2_5_6_1_11.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/entity/EntityStateSerializer.java" afterPath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/entity/EntityStateSerializer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/pom.xml" afterPath="$PROJECT_DIR$/struts2/plugin/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/MaxLength.java" afterPath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/MaxLength.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_repository_http_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/Range.java" afterPath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/annotation/Range.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/scripting/common/qi4j-script-common.iml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/locking/src/main/java/org/qi4j/library/locking/ReadLock.java" afterPath="$PROJECT_DIR$/locking/src/main/java/org/qi4j/library/locking/ReadLock.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/uuid/UuidGenerationMixin.java" afterPath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/uuid/UuidGenerationMixin.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_sail_rdbms_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/UnitOfWorkInterceptor.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/UnitOfWorkInterceptor.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/validation.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/FilterInfo.java" afterPath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/FilterInfo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cache/pom.xml" afterPath="$PROJECT_DIR$/cache/pom.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_pool_commons_pool_1_3.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/debug/service/DebuggingServiceComposite.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/debug/service/DebuggingServiceComposite.java" />
+    <list default="true" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/swing/envisage/src/main/java/org/qi4j/library/swing/envisage/detail/SPIPane.java" afterPath="$PROJECT_DIR$/swing/envisage/src/main/java/org/qi4j/library/swing/envisage/detail/SPIPane.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/example/qi4j-struts2-example.iml" afterPath="$PROJECT_DIR$/struts2/example/qi4j-struts2-example.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/uuid/assembly/UuidServiceAssembler.java" afterPath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/uuid/assembly/UuidServiceAssembler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/model/ApplicationSerializer.java" afterPath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/model/ApplicationSerializer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/entity/EntityTypeParser.java" afterPath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/entity/EntityTypeParser.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mortbay_jetty_jetty_6_1_11.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/EntityCompositeConverter.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/EntityCompositeConverter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/templateLanguages.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripting/javascript/src/test/java/org/qi4j/scripting/javascript/JavaScriptMixinTest.java" afterPath="$PROJECT_DIR$/scripting/javascript/src/test/java/org/qi4j/scripting/javascript/JavaScriptMixinTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/sequence/PersistingSequencingService.java" afterPath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/sequence/PersistingSequencingService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/records/TraceRecord.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/records/TraceRecord.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_directwebremoting_dwr_2_0_3.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_beanshell_bsh_classgen_2_0b4.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/locking/src/main/java/org/qi4j/library/locking/ReadLockConcern.java" afterPath="$PROJECT_DIR$/locking/src/main/java/org/qi4j/library/locking/ReadLockConcern.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_fontbox_fontbox_0_1_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/serializer/N3Serializer.java" afterPath="$PROJECT_DIR$/rdf/src/main/java/org/qi4j/library/rdf/serializer/N3Serializer.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_rio_api_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_jgoodies_forms_1_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripting/groovy/pom.xml" afterPath="$PROJECT_DIR$/scripting/groovy/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/MatchesConstraint.java" afterPath="$PROJECT_DIR$/constraints/src/main/java/org/qi4j/library/constraints/MatchesConstraint.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/SimpleLogConcern.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/SimpleLogConcern.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/swing/envisage/pom.xml" afterPath="$PROJECT_DIR$/swing/envisage/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/Nameable.java" afterPath="$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/Nameable.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rdf/src/test/java/org/qi4j/library/rdf/entity/EntitySerializerTest.java" afterPath="$PROJECT_DIR$/rdf/src/test/java/org/qi4j/library/rdf/entity/EntitySerializerTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constraints/pom.xml" afterPath="$PROJECT_DIR$/constraints/pom.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__jgoodies_forms_1_0_5.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/actions/HelloWorldAction.java" afterPath="$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/actions/HelloWorldAction.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cache/src/main/java/org/qi4j/library/cache/ReturnCachedValueOnExceptionConcern.java" afterPath="$PROJECT_DIR$/cache/src/main/java/org/qi4j/library/cache/ReturnCachedValueOnExceptionConcern.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/view/SwingViewer.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/view/SwingViewer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/swing/envisage/qi4j-lib-swing-envisage.iml" afterPath="$PROJECT_DIR$/swing/envisage/qi4j-lib-swing-envisage.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripting/jruby/src/main/java/org/qi4j/scripting/jruby/JRubyMixin.java" afterPath="$PROJECT_DIR$/scripting/jruby/src/main/java/org/qi4j/scripting/jruby/JRubyMixin.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_codehaus_groovy_groovy_all_1_5_6.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/LogTypes.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/LogTypes.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/service/LoggingService.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/service/LoggingService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/HasInput.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/HasInput.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/scripting/javascript/qi4j-script-javascript.iml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripting/beanshell/pom.xml" afterPath="$PROJECT_DIR$/scripting/beanshell/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/sequence/SequencingException.java" afterPath="$PROJECT_DIR$/uid/src/main/java/org/qi4j/library/uid/sequence/SequencingException.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/auth/pom.xml" afterPath="$PROJECT_DIR$/auth/pom.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryresultio_sparqljson_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_repository_contextaware_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/assemblies/LoggingAssembler.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/assemblies/LoggingAssembler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cache/src/main/java/org/qi4j/library/cache/InvalidateCacheOnSettersSideEffect.java" afterPath="$PROJECT_DIR$/cache/src/main/java/org/qi4j/library/cache/InvalidateCacheOnSettersSideEffect.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/qi4j-lib-logging.iml" afterPath="$PROJECT_DIR$/logging/qi4j-lib-logging.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripting/groovy/src/test/java/org/qi4j/scripting/groovy/GroovyMixinTest.java" afterPath="$PROJECT_DIR$/scripting/groovy/src/test/java/org/qi4j/scripting/groovy/GroovyMixinTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripting/beanshell/src/main/java/org/qi4j/scripting/beanshell/BeanShellMixin.java" afterPath="$PROJECT_DIR$/scripting/beanshell/src/main/java/org/qi4j/scripting/beanshell/BeanShellMixin.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_struts_struts2_codebehind_plugin_2_1_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/JettyConfiguration.java" afterPath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/JettyConfiguration.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/scripting/groovy/qi4j-script-groovy.iml" afterPath="" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_beanshell_bsh_reflect_2_0b4.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/service/LoggingServiceComposite.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/log/service/LoggingServiceComposite.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/ProvidesEntityOf.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/support/ProvidesEntityOf.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/uid/src/test/java/org/qi4j/library/uid/uuid/UuidServiceTest.java" afterPath="$PROJECT_DIR$/uid/src/test/java/org/qi4j/library/uid/uuid/UuidServiceTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_core_qi4j_core_spi_0_7.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/JettyServiceAssembler.java" afterPath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/JettyServiceAssembler.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_library_qi4j_lib_beans_0_7_SNAPSHOT.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/uid/src/test/java/org/qi4j/library/uid/sequence/PersistingSequencingTest.java" afterPath="$PROJECT_DIR$/uid/src/test/java/org/qi4j/library/uid/sequence/PersistingSequencingTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_repository_dataset_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/auth/src/main/java/org/qi4j/library/auth/AuthorizationConcern.java" afterPath="$PROJECT_DIR$/auth/src/main/java/org/qi4j/library/auth/AuthorizationConcern.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/Servlets.java" afterPath="$PROJECT_DIR$/http/src/main/java/org/qi4j/library/http/Servlets.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/service/TraceServiceMixin.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/service/TraceServiceMixin.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/records/CompositeTraceRecordEntity.java" afterPath="$PROJECT_DIR$/logging/src/main/java/org/qi4j/logging/trace/records/CompositeTraceRecordEntity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/bootstrap/Struts2PluginAssembler.java" afterPath="$PROJECT_DIR$/struts2/plugin/src/main/java/org/qi4j/library/struts2/bootstrap/Struts2PluginAssembler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripting/jruby/src/test/java/org/qi4j/scripting/jruby/JRubyMixinTest.java" afterPath="$PROJECT_DIR$/scripting/jruby/src/test/java/org/qi4j/scripting/jruby/JRubyMixinTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/qi4j-struts2-plugin.iml" afterPath="$PROJECT_DIR$/struts2/plugin/qi4j-struts2-plugin.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/swing/envisage/src/main/java/org/qi4j/library/swing/envisage/model/util/SPIFinder.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/swing/envisage/src/main/java/org/qi4j/library/swing/envisage/model/util/DescriptorUtilities.java" afterPath="$PROJECT_DIR$/swing/envisage/src/main/java/org/qi4j/library/swing/envisage/model/util/DescriptorUtilities.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/swing/envisage/src/main/resources/org/qi4j/library/swing/envisage/detail/SPIPane.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/swing/envisage/src/main/java/org/qi4j/library/swing/envisage/detail/SPIPane.form" afterPath="$PROJECT_DIR$/swing/envisage/src/main/java/org/qi4j/library/swing/envisage/detail/SPIPane.form" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/codebehind/qi4j-struts2-codebehind-plugin.iml" afterPath="$PROJECT_DIR$/struts2/codebehind/qi4j-struts2-codebehind-plugin.iml" />
     </list>
     <ignored path=".idea/workspace.xml" />
     <ignored path="qi4j-libraries.iws" />
@@ -391,9 +74,7 @@
         <entry file="file://$PROJECT_DIR$/scripting/groovy/src/main/java/org/qi4j/scripting/groovy/GroovyMixin.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="50" column="13" selection-start="1719" selection-end="1719" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -420,9 +101,7 @@
         <entry file="file://$PROJECT_DIR$/scripting/beanshell/src/main/java/org/qi4j/scripting/beanshell/BeanShellMixin.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="49" column="13" selection-start="1926" selection-end="1926" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -436,13 +115,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Main.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Main.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/swing/envisage/src/main/java/org/qi4j/library/swing/envisage/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="25" column="13" selection-start="967" selection-end="967" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state line="42" column="0" selection-start="1632" selection-end="1632" vertical-scroll-proportion="0.39036146">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -460,9 +137,7 @@
         <entry file="file://$PROJECT_DIR$/swing/envisage/src/test/java/org/qi4j/library/swing/envisage/school/SchoolAssembler.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="26" column="13" selection-start="1209" selection-end="1209" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -471,17 +146,15 @@
         <entry file="file://$PROJECT_DIR$/swing/entity-viewer/src/main/java/org/qi4j/library/swing/entityviewer/TreePanel.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="36" column="13" selection-start="1134" selection-end="1134" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ApplicationSample.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="ApplicationSample.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/swing/entity-viewer/src/test/java/org/qi4j/swing/library/swing/entityviewer/sample/ApplicationSample.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="39" column="13" selection-start="1489" selection-end="1489" vertical-scroll-proportion="0.18532819">
+            <state line="39" column="13" selection-start="1489" selection-end="1489" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -2543,7 +2216,7 @@
     </subPane>
   </component>
   <component name="ProjectReloadState">
-    <option name="STATE" value="0" />
+    <option name="STATE" value="2" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="0.5" version="1" splitterProportion="0.5">
@@ -2571,7 +2244,7 @@
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="project.structure.side.proportion" value="0.0" />
-    <property name="options.lastSelected" value="preferences.sourceCode" />
+    <property name="options.lastSelected" value="preferences.sourceCode.General" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
   </component>
   <component name="RunManager">
@@ -2594,7 +2267,7 @@
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
     </configuration>
-    <configuration default="true" type="TestNG" factoryName="TestNG" enabled="false" merge="false">
+    <configuration default="true" type="TestNG" factoryName="TestNG" enabled="false" merge="false" runner="emma">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
@@ -2702,7 +2375,7 @@
     <layout>
       <window_info id="Web Preview" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
       <window_info id="Dataflow to this" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33415234" sideWeight="0.66451615" order="3" side_tool="false" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3384521" sideWeight="0.6656184" order="3" side_tool="false" />
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" />
@@ -2710,7 +2383,7 @@
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="6" side_tool="false" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32795697" sideWeight="0.5" order="8" side_tool="false" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32704404" sideWeight="0.5" order="8" side_tool="false" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" />
@@ -2811,9 +2484,7 @@
     <entry file="file://$PROJECT_DIR$/scripting/groovy/src/main/java/org/qi4j/scripting/groovy/GroovyMixin.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="50" column="13" selection-start="1719" selection-end="1719" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2834,9 +2505,7 @@
     <entry file="file://$PROJECT_DIR$/scripting/beanshell/src/main/java/org/qi4j/scripting/beanshell/BeanShellMixin.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="49" column="13" selection-start="1926" selection-end="1926" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2844,15 +2513,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="20" column="35" selection-start="782" selection-end="782" vertical-scroll-proportion="0.0">
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/swing/envisage/src/main/java/org/qi4j/library/swing/envisage/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="13" selection-start="967" selection-end="967" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2866,27 +2526,30 @@
     <entry file="file://$PROJECT_DIR$/swing/envisage/src/test/java/org/qi4j/library/swing/envisage/school/SchoolAssembler.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="26" column="13" selection-start="1209" selection-end="1209" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/swing/entity-viewer/src/main/java/org/qi4j/library/swing/entityviewer/TreePanel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="36" column="13" selection-start="1134" selection-end="1134" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/swing/entity-viewer/src/test/java/org/qi4j/swing/library/swing/entityviewer/sample/ApplicationSample.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="39" column="13" selection-start="1489" selection-end="1489" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/swing/entity-viewer/src/test/java/org/qi4j/swing/library/swing/entityviewer/sample/ApplicationSample.java">
+    <entry file="file://$PROJECT_DIR$/swing/envisage/src/main/java/org/qi4j/library/swing/envisage/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="13" selection-start="1489" selection-end="1489" vertical-scroll-proportion="0.18532819">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="42" column="0" selection-start="1632" selection-end="1632" vertical-scroll-proportion="0.39036146">
+          <folding />
         </state>
       </provider>
     </entry>

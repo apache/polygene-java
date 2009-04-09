@@ -6,6 +6,18 @@
     </constraints>
     <properties/>
     <border type="none"/>
-    <children/>
+    <children>
+      <scrollpane id="62a5">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="ca0ba" class="javax.swing.JTable" binding="spiTable">
+            <constraints/>
+            <properties/>
+          </component>
+        </children>
+      </scrollpane>
+    </children>
   </grid>
 </form>

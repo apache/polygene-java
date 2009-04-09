@@ -77,13 +77,50 @@ public class DescriptorUtilities
         return new ServiceUsageFinder().findServiceUsage( descriptor );
     }
 
+    /**
+     * Return list of Descriptor Detail for All service interfaces which are visible for the module
+     *
+     * @param descriptor ModuleDetailDescriptor
+     * @return list of ServiceDetailDescriptor (never return null)
+     */
     public static List<ServiceDetailDescriptor> findModuleAPI( ModuleDetailDescriptor descriptor )
     {
         return new APIFinder().findModuleAPI( descriptor );
     }
 
+    /**
+     * Return list of Descriptor Detail for All service interfaces which are visible for the layer
+     *
+     * @param descriptor ModuleDetailDescriptor
+     * @return list of ServiceDetailDescriptor (never return null)
+     */
     public static List<ServiceDetailDescriptor> findLayerAPI( LayerDetailDescriptor descriptor )
     {
         return new APIFinder().findLayerAPI( descriptor );
+    }
+
+
+    /**
+     * Return list of Descriptor Detail for all service dependencies which
+     * are not satisfied from within the module
+     *
+     * @param descriptor ModuleDetailDescriptor
+     * @return list of ServiceDetailDescriptor (never return null)
+     */
+    public static List<ServiceDetailDescriptor> findModuleSPI( ModuleDetailDescriptor descriptor )
+    {
+        return new SPIFinder().findModuleSPI( descriptor );
+    }
+
+    /**
+     * Return list of Descriptor Detail for all service dependencies which
+     * are not satisfied from within the layer
+     *
+     * @param descriptor ModuleDetailDescriptor
+     * @return list of ServiceDetailDescriptor (never return null)
+     */
+    public static List<ServiceDetailDescriptor> findLayerSPI( LayerDetailDescriptor descriptor )
+    {
+        return new SPIFinder().findLayerSPI( descriptor );
     }
 }
