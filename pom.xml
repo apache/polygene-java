@@ -11,8 +11,8 @@
   <url>http://www.qi4j.org/</url>
 
   <scm>
-    <connection>scm:git://dscm.ops4j.org/qi4j-library.git</connection>
-    <developerConnection>scm:git:git@dscm.ops4j.org:qi4j-library.git</developerConnection>
+    <connection>scm:git://dscm.ops4j.org/qi4j-libraries.git</connection>
+    <developerConnection>scm:git:git@dscm.ops4j.org:qi4j-libraries.git</developerConnection>
   </scm>
 
   <properties>
