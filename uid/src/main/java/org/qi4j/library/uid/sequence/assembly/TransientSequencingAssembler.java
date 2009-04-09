@@ -18,8 +18,8 @@
 package org.qi4j.library.uid.sequence.assembly;
 
 import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.uid.sequence.TransientSequencingService;
 
 public class TransientSequencingAssembler

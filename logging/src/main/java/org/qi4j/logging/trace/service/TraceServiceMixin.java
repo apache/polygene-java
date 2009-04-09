@@ -18,24 +18,25 @@
 
 package org.qi4j.logging.trace.service;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
+import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.configuration.Configuration;
-import org.qi4j.logging.trace.records.TraceRecord;
+import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.logging.trace.records.CompositeTraceRecordEntity;
 import org.qi4j.logging.trace.records.EntityTraceRecordEntity;
 import org.qi4j.logging.trace.records.ServiceTraceRecordEntity;
-import org.qi4j.logging.trace.records.CompositeTraceRecordEntity;
+import org.qi4j.logging.trace.records.TraceRecord;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TraceServiceMixin
     implements TraceService

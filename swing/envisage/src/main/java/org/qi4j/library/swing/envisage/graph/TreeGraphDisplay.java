@@ -16,11 +16,6 @@
 */
 package org.qi4j.library.swing.envisage.graph;
 
-import java.awt.Color;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.Iterator;
 import org.qi4j.library.swing.envisage.event.LinkEvent;
 import prefuse.Constants;
 import prefuse.Visualization;
@@ -38,12 +33,7 @@ import prefuse.action.filter.FisheyeTreeFilter;
 import prefuse.action.layout.CollapsedSubtreeLayout;
 import prefuse.action.layout.graph.NodeLinkTreeLayout;
 import prefuse.activity.SlowInSlowOutPacer;
-import prefuse.controls.ControlAdapter;
-import prefuse.controls.FocusControl;
-import prefuse.controls.PanControl;
-import prefuse.controls.WheelZoomControl;
-import prefuse.controls.ZoomControl;
-import prefuse.controls.ZoomToFitControl;
+import prefuse.controls.*;
 import prefuse.data.Graph;
 import prefuse.data.expression.Predicate;
 import prefuse.data.expression.parser.ExpressionParser;
@@ -60,12 +50,18 @@ import prefuse.util.display.DisplayLib;
 import prefuse.visual.VisualItem;
 import prefuse.visual.sort.TreeDepthItemSorter;
 
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.Iterator;
+
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class TreeGraphDisplay extends GraphDisplay
 {
-    
+
     static final String FILTER_ACTION = "filter";
     static final String REPAINT_ACTION = "repaint";
     static final String FULL_PAINT_ACTION = "fullPaint";
@@ -128,7 +124,7 @@ public class TreeGraphDisplay extends GraphDisplay
 
         // animate paint change
         //ActionList animatePaint = new ActionList( 0 );
-        ActionList animatePaint = new ActionList(  );
+        ActionList animatePaint = new ActionList();
         animatePaint.add( new ColorAnimator( GRAPH_NODES ) );
         animatePaint.add( new RepaintAction() );
         m_vis.putAction( ANIMATE_PAINT_ACTION, animatePaint );

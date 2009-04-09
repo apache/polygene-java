@@ -17,16 +17,16 @@
  */
 package org.qi4j.library.uid.uuid;
 
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.uid.uuid.assembly.UuidServiceAssembler;
+import org.qi4j.test.AbstractQi4jTest;
 
 public class UuidServiceTest extends AbstractQi4jTest
 {
@@ -41,14 +41,14 @@ public class UuidServiceTest extends AbstractQi4jTest
         throws Exception
     {
         UnderTest ut = compositeBuilderFactory.newComposite( UnderTest.class );
-        for( int hashLength=1 ; hashLength < 50; hashLength++ )
+        for( int hashLength = 1; hashLength < 50; hashLength++ )
         {
             String uid = ut.generateUuid( hashLength );
-            assertEquals( hashLength*2, uid.length() );
-            for( int i=0 ; i < uid.length(); i++ )
+            assertEquals( hashLength * 2, uid.length() );
+            for( int i = 0; i < uid.length(); i++ )
             {
                 char ch = uid.charAt( i );
-                assertTrue( (ch >= '0' && ch <= '9') || (ch >='A' && ch <='F'));
+                assertTrue( ( ch >= '0' && ch <= '9' ) || ( ch >= 'A' && ch <= 'F' ) );
             }
         }
     }
@@ -60,7 +60,7 @@ public class UuidServiceTest extends AbstractQi4jTest
         UnderTest ut = compositeBuilderFactory.newComposite( UnderTest.class );
         String uid = ut.generateUuid( 0 );
         int dashCounter = 0;
-        for( int i=0; i < uid.length() ; i++ )
+        for( int i = 0; i < uid.length(); i++ )
         {
             char ch = uid.charAt( i );
             if( ch == '-' )
@@ -69,16 +69,17 @@ public class UuidServiceTest extends AbstractQi4jTest
             }
             else
             {
-                assertTrue((ch >= '0' && ch <= '9') || (ch >='A' && ch <='F') );
+                assertTrue( ( ch >= '0' && ch <= '9' ) || ( ch >= 'A' && ch <= 'F' ) );
             }
         }
         assertEquals( 5, dashCounter );
     }
-    
+
     @Mixins( UnderTestMixin.class )
     public interface UnderTestComposite extends UnderTest, Composite
-    {}
-    
+    {
+    }
+
     public interface UnderTest
     {
         String generateUuid( int len );

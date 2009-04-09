@@ -18,8 +18,8 @@
 package org.qi4j.library.uid.uuid.assembly;
 
 import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.uid.uuid.UuidServiceComposite;
 
 public class UuidServiceAssembler

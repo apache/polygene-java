@@ -16,23 +16,23 @@
 */
 package org.qi4j.swing.library.swing.entityviewer.sample;
 
+import org.junit.Test;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.Query;
-import org.qi4j.library.swing.entityviewer.EntityViewer;
-import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.api.query.QueryBuilder;
+import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
+import org.qi4j.library.swing.entityviewer.EntityViewer;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
-import org.junit.Test;
 
 /**
  * @author Tonny Kohar
@@ -50,7 +50,8 @@ public class ApplicationSample extends AbstractQi4jTest
             .instantiateOnStartup();
     }
 
-    public void createTestData() {
+    public void createTestData()
+    {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
@@ -62,8 +63,8 @@ public class ApplicationSample extends AbstractQi4jTest
             createCar( "Ford", "Mustang", 2005 );
 
             createAnimal( "Cat", "Miaow" );
-            createAnimal( "Duck", "Kwek-kwek");
-            createAnimal( "Dog" , "Guk" );
+            createAnimal( "Duck", "Kwek-kwek" );
+            createAnimal( "Dog", "Guk" );
             createAnimal( "Cow", "Moooo" );
 
             uow.complete();
@@ -80,7 +81,8 @@ public class ApplicationSample extends AbstractQi4jTest
         }
     }
 
-    public void testQuery() {
+    public void testQuery()
+    {
         UnitOfWork uow = moduleInstance.unitOfWorkFactory().newUnitOfWork();
         QueryBuilder qb = uow.queryBuilderFactory().newQueryBuilder( CarEntity.class );
         //Object template  = QueryExpressions.templateFor( clazz );
@@ -88,9 +90,9 @@ public class ApplicationSample extends AbstractQi4jTest
 
         for( Object qObj : query )
         {
-            Car car = (Car)qObj;
-            System.out.println(car.model() + " | " + car.manufacturer()+ " | " + car.year());
-            
+            Car car = (Car) qObj;
+            System.out.println( car.model() + " | " + car.manufacturer() + " | " + car.year() );
+
         }
     }
 
@@ -107,8 +109,8 @@ public class ApplicationSample extends AbstractQi4jTest
         setUp();
         createTestData();
         //testQuery();
-        
-        new EntityViewer().show( qi4j, application );        
+
+        new EntityViewer().show( qi4j, application );
     }
 
 
@@ -129,17 +131,19 @@ public class ApplicationSample extends AbstractQi4jTest
         UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
         EntityBuilder<Animal> builder = uow.newEntityBuilder( Animal.class );
         Animal prototype = builder.stateFor( AnimalEntity.class );
-        prototype.name().set( name);
+        prototype.name().set( name );
         prototype.sound().set( sound );
         AnimalEntity entity = (AnimalEntity) builder.newInstance();
         return entity.identity().get();
     }
-    
+
 
     public interface Car
     {
         Property<String> manufacturer();
+
         Property<String> model();
+
         Property<Integer> year();
     }
 
@@ -149,15 +153,17 @@ public class ApplicationSample extends AbstractQi4jTest
     }
 
 
-    public interface Animal {
+    public interface Animal
+    {
         Property<String> name();
+
         Property<String> sound();
     }
 
     public interface AnimalEntity extends Animal, EntityComposite
     {
     }
-   
+
 }
 
 

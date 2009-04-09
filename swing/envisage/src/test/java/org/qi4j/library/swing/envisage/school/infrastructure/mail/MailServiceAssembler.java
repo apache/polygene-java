@@ -16,12 +16,12 @@
 */
 package org.qi4j.library.swing.envisage.school.infrastructure.mail;
 
+import static org.qi4j.api.common.Visibility.application;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.swing.envisage.school.infrastructure.mail.composites.MailComposite;
 import org.qi4j.library.swing.envisage.school.infrastructure.mail.composites.MailServiceComposite;
-import static org.qi4j.api.common.Visibility.application;
 
 /**
  * @author edward.yakop@gmail.com

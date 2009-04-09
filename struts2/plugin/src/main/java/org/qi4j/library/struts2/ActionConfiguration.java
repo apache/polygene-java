@@ -1,15 +1,15 @@
 package org.qi4j.library.struts2;
 
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.common.Visibility;
 
 public class ActionConfiguration implements Assembler, Serializable
 {
@@ -18,7 +18,7 @@ public class ActionConfiguration implements Assembler, Serializable
 
     public void addObjects( Class... objectTypes ) throws AssemblyException
     {
-        for ( Class objectType : objectTypes )
+        for( Class objectType : objectTypes )
         {
             this.objectTypes.add( objectType );
         }
@@ -26,22 +26,22 @@ public class ActionConfiguration implements Assembler, Serializable
 
     public void addComposites( Class<? extends Composite>... compositeTypes ) throws AssemblyException
     {
-        for ( Class<? extends Composite> compositeType : compositeTypes )
+        for( Class<? extends Composite> compositeType : compositeTypes )
         {
             this.compositeTypes.add( compositeType );
         }
     }
-    
+
     public Iterable<Class> getClasses()
     {
         Set<Class> classes = new HashSet<Class>( objectTypes );
         classes.addAll( compositeTypes );
         return Collections.unmodifiableCollection( classes );
     }
-    
+
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addObjects( objectTypes.toArray( new Class[] {} ) ).visibleIn( Visibility.module );
-        module.addComposites( (Class<? extends Composite>[]) compositeTypes.toArray(new Class[] {} ) ).visibleIn( Visibility.module );
+        module.addObjects( objectTypes.toArray( new Class[]{ } ) ).visibleIn( Visibility.module );
+        module.addComposites( (Class<? extends Composite>[]) compositeTypes.toArray( new Class[]{ } ) ).visibleIn( Visibility.module );
     }
 }

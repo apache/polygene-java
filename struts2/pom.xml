@@ -21,9 +21,6 @@
   <modules>
     <module>plugin</module>
     <module>codebehind</module>
-<!--
-    <module>convention</module>
--->
     <module>example</module>
   </modules>
 </project>

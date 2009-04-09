@@ -19,15 +19,8 @@
  */
 package org.qi4j.library.swing.envisage.model.descriptor;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.qi4j.api.service.ImportedServiceDescriptor;
-import org.qi4j.spi.composite.CompositeDescriptor;
-import org.qi4j.spi.composite.CompositeMethodDescriptor;
-import org.qi4j.spi.composite.ConstructorDescriptor;
-import org.qi4j.spi.composite.InjectedFieldDescriptor;
-import org.qi4j.spi.composite.InjectedMethodDescriptor;
-import org.qi4j.spi.composite.InjectedParametersDescriptor;
+import org.qi4j.spi.composite.*;
 import org.qi4j.spi.concern.MethodConcernDescriptor;
 import org.qi4j.spi.concern.MethodConcernsDescriptor;
 import org.qi4j.spi.constraint.ConstraintDescriptor;
@@ -38,14 +31,11 @@ import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.sideeffect.MethodSideEffectDescriptor;
 import org.qi4j.spi.sideeffect.MethodSideEffectsDescriptor;
-import org.qi4j.spi.structure.ApplicationDescriptor;
-import org.qi4j.spi.structure.ApplicationSPI;
-import org.qi4j.spi.structure.DescriptorVisitor;
-import org.qi4j.spi.structure.LayerDescriptor;
-import org.qi4j.spi.structure.ModuleDescriptor;
-import org.qi4j.spi.structure.UsedLayersDescriptor;
-import org.qi4j.spi.structure.ApplicationModelSPI;
+import org.qi4j.spi.structure.*;
 import org.qi4j.spi.value.ValueDescriptor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Sonny Gill

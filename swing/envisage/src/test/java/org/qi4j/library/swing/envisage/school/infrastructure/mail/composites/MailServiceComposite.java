@@ -16,8 +16,8 @@
 */
 package org.qi4j.library.swing.envisage.school.infrastructure.mail.composites;
 
-import org.qi4j.library.swing.envisage.school.infrastructure.mail.MailService;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.library.swing.envisage.school.infrastructure.mail.MailService;
 
 /**
  * @author edward.yakop@gmail.com

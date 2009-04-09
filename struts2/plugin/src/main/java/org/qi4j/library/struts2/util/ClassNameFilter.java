@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.qi4j.library.struts2.util;
 

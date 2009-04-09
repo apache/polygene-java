@@ -16,28 +16,20 @@
 */
 package org.qi4j.library.swing.envisage.detail;
 
-import java.awt.BorderLayout;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumnModel;
-import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ImportedServiceCompositeDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ImportedServiceDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.*;
 import org.qi4j.library.swing.envisage.util.TableRow;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.value.ValueDescriptor;
+
+import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumnModel;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 /**
  * Implementation of General DetailPane

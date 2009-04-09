@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: fest:fest-swing:1.0rc2">
+    <CLASSES>
+      <root url="jar://$M2_REPO$/fest/fest-swing/1.0rc2/fest-swing-1.0rc2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$M2_REPO$/fest/fest-swing/1.0rc2/fest-swing-1.0rc2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$M2_REPO$/fest/fest-swing/1.0rc2/fest-swing-1.0rc2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

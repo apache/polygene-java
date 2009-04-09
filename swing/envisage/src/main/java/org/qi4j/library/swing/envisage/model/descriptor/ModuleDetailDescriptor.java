@@ -16,10 +16,11 @@
  */
 package org.qi4j.library.swing.envisage.model.descriptor;
 
-import java.util.LinkedList;
-import java.util.List;
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.spi.structure.ModuleDescriptor;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author edward.yakop@gmail.com

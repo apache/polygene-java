@@ -16,18 +16,6 @@
 */
 package org.qi4j.library.swing.envisage.graph;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Shape;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
-import java.util.Iterator;
-import javax.swing.JViewport;
-import javax.swing.SwingUtilities;
 import org.qi4j.library.swing.envisage.event.LinkEvent;
 import prefuse.Constants;
 import prefuse.Visualization;
@@ -61,29 +49,39 @@ import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.sort.TreeDepthItemSorter;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
+import java.util.Iterator;
+
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class StackedGraphDisplay extends GraphDisplay
 {
-    public static final Font FONT = FontLib.getFont("Tahoma",12);
+    public static final Font FONT = FontLib.getFont( "Tahoma", 12 );
 
     // create data description of LABELS, setting colors, fonts ahead of time
     static final Schema LABEL_SCHEMA = PrefuseLib.getVisualItemSchema();
-    static {
-        LABEL_SCHEMA.setDefault(VisualItem.INTERACTIVE, false);
-        LABEL_SCHEMA.setDefault(VisualItem.TEXTCOLOR, ColorLib.rgb( 255, 255, 255 ));
-        LABEL_SCHEMA.setDefault(VisualItem.FONT, FONT);
+
+    static
+    {
+        LABEL_SCHEMA.setDefault( VisualItem.INTERACTIVE, false );
+        LABEL_SCHEMA.setDefault( VisualItem.TEXTCOLOR, ColorLib.rgb( 255, 255, 255 ) );
+        LABEL_SCHEMA.setDefault( VisualItem.FONT, FONT );
     }
 
     static final String LABELS = "labels";
-    
+
     static final String LAYOUT_ACTION = "layout";
     static final String COLORS_ACTION = "colors";
     static final String AUTO_PAN_ACTION = "autoPan";
 
-    static int OUTLINE_COLOR = ColorLib.rgb(33,115,170);
-    static int OUTLINE_FOCUS_COLOR = ColorLib.rgb(255,255,255);  // alternative color ColorLib.rgb(150,200,200);
+    static int OUTLINE_COLOR = ColorLib.rgb( 33, 115, 170 );
+    static int OUTLINE_FOCUS_COLOR = ColorLib.rgb( 255, 255, 255 );  // alternative color ColorLib.rgb(150,200,200);
 
     protected StackedLayout stackedLayout;
 
@@ -91,81 +89,81 @@ public class StackedGraphDisplay extends GraphDisplay
 
     public StackedGraphDisplay()
     {
-        super(new Visualization());
+        super( new Visualization() );
 
-        setBackground( ColorLib.getColor( 0, 51, 88 ));
+        setBackground( ColorLib.getColor( 0, 51, 88 ) );
 
         LabelRenderer labelRenderer = new LabelRenderer( NAME_LABEL );
-        labelRenderer.setVerticalAlignment( Constants.BOTTOM);
+        labelRenderer.setVerticalAlignment( Constants.BOTTOM );
         labelRenderer.setHorizontalAlignment( Constants.LEFT );
 
         EdgeRenderer usesRenderer = new EdgeRenderer( Constants.EDGE_TYPE_CURVE, Constants.EDGE_ARROW_FORWARD );
         usesRenderer.setHorizontalAlignment1( Constants.CENTER );
         usesRenderer.setHorizontalAlignment2( Constants.CENTER );
-        usesRenderer.setVerticalAlignment1( Constants.BOTTOM);
-        usesRenderer.setVerticalAlignment2( Constants.TOP);
+        usesRenderer.setVerticalAlignment1( Constants.BOTTOM );
+        usesRenderer.setVerticalAlignment2( Constants.TOP );
 
         Predicate usesPredicate = (Predicate) ExpressionParser.parse( "ingroup('graph.edges') AND [" + USES_EDGES + "]==true", true );
 
         // set up the renderers - one for nodes and one for LABELS
         DefaultRendererFactory rf = new DefaultRendererFactory();
-        rf.add(new InGroupPredicate( GRAPH_NODES ), new NodeRenderer());
-        rf.add(new InGroupPredicate( LABELS ), labelRenderer);
+        rf.add( new InGroupPredicate( GRAPH_NODES ), new NodeRenderer() );
+        rf.add( new InGroupPredicate( LABELS ), labelRenderer );
         rf.add( usesPredicate, usesRenderer );
-        m_vis.setRendererFactory(rf);
+        m_vis.setRendererFactory( rf );
 
         // border colors
         ColorAction borderColor = new BorderColorAction( GRAPH_NODES );
         ColorAction fillColor = new FillColorAction( GRAPH_NODES );
 
         // uses edge colors
-        ItemAction usesColor = new ColorAction( GRAPH_EDGES, usesPredicate, VisualItem.STROKECOLOR, ColorLib.rgb( 50,50,50 ) );
+        ItemAction usesColor = new ColorAction( GRAPH_EDGES, usesPredicate, VisualItem.STROKECOLOR, ColorLib.rgb( 50, 50, 50 ) );
         ItemAction usesArrow = new ColorAction( GRAPH_EDGES, usesPredicate, VisualItem.FILLCOLOR, ColorLib.rgb( 50, 50, 50 ) );
 
         // color settings
         ActionList colors = new ActionList();
-        colors.add(fillColor);
-        colors.add(borderColor);
-        colors.add(usesColor);
-        colors.add(usesArrow);
-        m_vis.putAction(COLORS_ACTION, colors);
+        colors.add( fillColor );
+        colors.add( borderColor );
+        colors.add( usesColor );
+        colors.add( usesArrow );
+        m_vis.putAction( COLORS_ACTION, colors );
 
         ActionList autoPan = new ActionList();
-        autoPan.add(colors);
-        autoPan.add(new AutoPanAction());
-        autoPan.add(new RepaintAction());
-        m_vis.putAction( AUTO_PAN_ACTION, autoPan);
+        autoPan.add( colors );
+        autoPan.add( new AutoPanAction() );
+        autoPan.add( new RepaintAction() );
+        m_vis.putAction( AUTO_PAN_ACTION, autoPan );
 
         // create the layout action list
         stackedLayout = new StackedLayout( GRAPH );
         ActionList layout = new ActionList();
         layout.add( stackedLayout );
-        layout.add(new LabelLayout( LABELS ));
-        layout.add(autoPan);
-        m_vis.putAction(LAYOUT_ACTION, layout);
+        layout.add( new LabelLayout( LABELS ) );
+        layout.add( autoPan );
+        m_vis.putAction( LAYOUT_ACTION, layout );
 
         // initialize our display
-        Dimension size = new Dimension( 400,400);
+        Dimension size = new Dimension( 400, 400 );
         setSize( size );
         setPreferredSize( size );
-        setItemSorter(new ExtendedTreeDepthItemSorter(true));
+        setItemSorter( new ExtendedTreeDepthItemSorter( true ) );
         addControlListener( new HoverControl() );
         addControlListener( new FocusControl( 1, COLORS_ACTION ) );
-        addControlListener( new WheelMouseControl());
-        addControlListener( new PanControl(true) );
+        addControlListener( new WheelMouseControl() );
+        addControlListener( new PanControl( true ) );
         addControlListener( new ItemSelectionControl() );
 
         setDamageRedraw( true );
     }
 
-    public void run (Graph graph)
+    public void run( Graph graph )
     {
         // add the GRAPH to the visualization
-        m_vis.add( GRAPH, graph);
+        m_vis.add( GRAPH, graph );
 
         // hide edges
         Predicate edgesPredicate = (Predicate) ExpressionParser.parse( "ingroup('graph.edges') AND [" + USES_EDGES + "]==false", true );
-        m_vis.setVisible( GRAPH_EDGES, edgesPredicate, false);
+        m_vis.setVisible( GRAPH_EDGES, edgesPredicate, false );
 
         m_vis.setInteractive( GRAPH_EDGES, null, false );
 
@@ -173,22 +171,22 @@ public class StackedGraphDisplay extends GraphDisplay
         m_vis.setInteractive( GRAPH_NODES, null, true );
 
         // add LABELS to the visualization
-        Predicate labelP = (Predicate)ExpressionParser.parse("VISIBLE()");
-        m_vis.addDecorators( LABELS, GRAPH_NODES, labelP, LABEL_SCHEMA);
+        Predicate labelP = (Predicate) ExpressionParser.parse( "VISIBLE()" );
+        m_vis.addDecorators( LABELS, GRAPH_NODES, labelP, LABEL_SCHEMA );
 
         run();
     }
 
     public void run()
     {
-        if (isInProgress())
+        if( isInProgress() )
         {
             return;
         }
 
         // perform layout
         m_vis.invalidate( GRAPH_NODES );
-        activity = m_vis.run(LAYOUT_ACTION);
+        activity = m_vis.run( LAYOUT_ACTION );
     }
 
     public void setSelectedValue( Object object )
@@ -216,15 +214,15 @@ public class StackedGraphDisplay extends GraphDisplay
         {
             int depth = item.getDepth();
             boolean relayout = false;
-            if ( depth > stackedLayout.getZoom() )
+            if( depth > stackedLayout.getZoom() )
             {
-                stackedLayout.zoom(depth);
+                stackedLayout.zoom( depth );
                 relayout = true;
             }
 
             TupleSet ts = m_vis.getFocusGroup( Visualization.FOCUS_ITEMS );
             ts.setTuple( item );
-            if (relayout)
+            if( relayout )
             {
                 run();
             }
@@ -237,7 +235,7 @@ public class StackedGraphDisplay extends GraphDisplay
 
     public void zoomIn()
     {
-        if (isInProgress())
+        if( isInProgress() )
         {
             return;
         }
@@ -248,7 +246,7 @@ public class StackedGraphDisplay extends GraphDisplay
 
     public void zoomOut()
     {
-        if (isInProgress())
+        if( isInProgress() )
         {
             return;
         }
@@ -259,14 +257,14 @@ public class StackedGraphDisplay extends GraphDisplay
 
     protected boolean isInProgress()
     {
-        if (isTranformInProgress())
+        if( isTranformInProgress() )
         {
             return true;
         }
 
-        if (activity != null)
+        if( activity != null )
         {
-            if (activity.isRunning())
+            if( activity.isRunning() )
             {
                 return true;
             }
@@ -278,20 +276,23 @@ public class StackedGraphDisplay extends GraphDisplay
     // ------------------------------------------------------------------------
 
     /**
-     * Set the stroke color for drawing border node outlines. 
+     * Set the stroke color for drawing border node outlines.
      */
-    public class BorderColorAction extends ColorAction {
+    public class BorderColorAction extends ColorAction
+    {
 
-        public BorderColorAction(String group) {
-            super(group, VisualItem.STROKECOLOR);
+        public BorderColorAction( String group )
+        {
+            super( group, VisualItem.STROKECOLOR );
         }
 
-        public int getColor(VisualItem item) {
-            if (!(item instanceof NodeItem))
+        public int getColor( VisualItem item )
+        {
+            if( !( item instanceof NodeItem ) )
             {
                 return 0;
             }
-            NodeItem nItem = (NodeItem)item;
+            NodeItem nItem = (NodeItem) item;
             if( m_vis.isInGroup( nItem, Visualization.FOCUS_ITEMS ) )
             {
                 return OUTLINE_FOCUS_COLOR;
@@ -305,18 +306,20 @@ public class StackedGraphDisplay extends GraphDisplay
      * Set fill colors for treemap nodes. Normal nodes are shaded according to their
      * depth in the tree.
      */
-    public class FillColorAction extends ColorAction {
+    public class FillColorAction extends ColorAction
+    {
         private ColorMap cmap = new ColorMap(
-            new int[] {
-                ColorLib.rgb( 11,117,188),
-                ColorLib.rgb(8,99,160),
-                ColorLib.rgb(5,77,126),
-                ColorLib.rgb(2,61,100),
-                ColorLib.rgb(148,55,87)}       
-                , 0, 4);
+            new int[]{
+                ColorLib.rgb( 11, 117, 188 ),
+                ColorLib.rgb( 8, 99, 160 ),
+                ColorLib.rgb( 5, 77, 126 ),
+                ColorLib.rgb( 2, 61, 100 ),
+                ColorLib.rgb( 148, 55, 87 ) }
+            , 0, 4 );
 
-        public FillColorAction(String group) {
-            super(group, VisualItem.FILLCOLOR);
+        public FillColorAction( String group )
+        {
+            super( group, VisualItem.FILLCOLOR );
         }
 
         public int getColor( VisualItem item )
@@ -362,17 +365,21 @@ public class StackedGraphDisplay extends GraphDisplay
      */
     public class LabelLayout extends Layout
     {
-        public LabelLayout(String group) {
-            super(group);
+        public LabelLayout( String group )
+        {
+            super( group );
         }
-        public void run(double frac) {
-            Iterator iter = m_vis.items(m_group);
-            while ( iter.hasNext() ) {
-                DecoratorItem item = (DecoratorItem)iter.next();
+
+        public void run( double frac )
+        {
+            Iterator iter = m_vis.items( m_group );
+            while( iter.hasNext() )
+            {
+                DecoratorItem item = (DecoratorItem) iter.next();
                 VisualItem node = item.getDecoratedItem();
                 Rectangle2D bounds = node.getBounds();
-                setX(item, node, bounds.getX() + StackedLayout.INSET );
-                setY(item, node, bounds.getY() + StackedLayout.INSET + 12 );
+                setX( item, node, bounds.getX() + StackedLayout.INSET );
+                setY( item, node, bounds.getY() + StackedLayout.INSET + 12 );
             }
         }
     } // end of inner class LabelLayout
@@ -381,14 +388,18 @@ public class StackedGraphDisplay extends GraphDisplay
      * A renderer for treemap nodes. Draws simple rectangles, but defers
      * the bounds management to the layout.
      */
-    public class NodeRenderer extends AbstractShapeRenderer {
+    public class NodeRenderer extends AbstractShapeRenderer
+    {
         private Rectangle2D m_bounds = new Rectangle2D.Double();
 
-        public NodeRenderer() {
+        public NodeRenderer()
+        {
             m_manageBounds = false;
         }
-        protected Shape getRawShape(VisualItem item) {
-            m_bounds.setRect(item.getBounds());
+
+        protected Shape getRawShape( VisualItem item )
+        {
+            m_bounds.setRect( item.getBounds() );
             return m_bounds;
         }
     } // end of inner class NodeRenderer
@@ -397,12 +408,12 @@ public class StackedGraphDisplay extends GraphDisplay
     {
         public void itemWheelMoved( VisualItem item, MouseWheelEvent evt )
         {
-            zoom(evt.getWheelRotation());
+            zoom( evt.getWheelRotation() );
         }
 
         public void mouseWheelMoved( MouseWheelEvent evt )
         {
-            zoom(evt.getWheelRotation());
+            zoom( evt.getWheelRotation() );
         }
 
         private void zoom( final int rotation )
@@ -447,55 +458,55 @@ public class StackedGraphDisplay extends GraphDisplay
         }
     }
 
-   public class AutoPanAction extends Action
-   {
+    public class AutoPanAction extends Action
+    {
         public void run( double frac )
         {
-            Rectangle2D displayBounds = new Rectangle2D.Double(0,0,getWidth(),getHeight());
+            Rectangle2D displayBounds = new Rectangle2D.Double( 0, 0, getWidth(), getHeight() );
 
             Container container = getParent();
-            if (container == null)
+            if( container == null )
             {
                 return;
             }
 
             // HACK check the container size
-            if (container instanceof JViewport)
+            if( container instanceof JViewport )
             {
-                Dimension size = ((JViewport)container).getExtentSize();
-                displayBounds.setRect( 0,0, size.getWidth(), size.getHeight());
+                Dimension size = ( (JViewport) container ).getExtentSize();
+                displayBounds.setRect( 0, 0, size.getWidth(), size.getHeight() );
             }
             else
             {
-                Dimension size = ((Component)container).getSize();
-                displayBounds.setRect( 0,0, size.getWidth(), size.getHeight());
+                Dimension size = ( (Component) container ).getSize();
+                displayBounds.setRect( 0, 0, size.getWidth(), size.getHeight() );
             }
 
             Rectangle2D bounds = stackedLayout.getLayoutRoot().getBounds();
 
             // Pan center
-            double x = (displayBounds.getWidth() - bounds.getWidth()) / 2;
-            double y = (displayBounds.getHeight() - bounds.getHeight()) / 2;
+            double x = ( displayBounds.getWidth() - bounds.getWidth() ) / 2;
+            double y = ( displayBounds.getHeight() - bounds.getHeight() ) / 2;
 
             // reset the transform
             try
             {
-                setTransform( new AffineTransform( ) );
+                setTransform( new AffineTransform() );
             }
-            catch (Exception ex)
+            catch( Exception ex )
             {
                 return;
             }
-            if (x < 0)
+            if( x < 0 )
             {
-                x = 0;   
+                x = 0;
             }
 
-            if (y < 0)
+            if( y < 0 )
             {
                 y = 0;
             }
-            pan (x, y);
+            pan( x, y );
 
             TupleSet ts = m_vis.getFocusGroup( Visualization.FOCUS_ITEMS );
             if( ts.getTupleCount() != 0 )
@@ -504,10 +515,10 @@ public class StackedGraphDisplay extends GraphDisplay
                 VisualItem vi = (VisualItem) ts.tuples().next();
 
                 //update scrollbar position
-                if (container instanceof JViewport)
+                if( container instanceof JViewport )
                 {
                     // TODO there is a bug on Swing scrollRectToVisible
-                    ((JViewport)container).scrollRectToVisible( vi.getBounds().getBounds() );
+                    ( (JViewport) container ).scrollRectToVisible( vi.getBounds().getBounds() );
                 }
             }
         }
@@ -516,18 +527,17 @@ public class StackedGraphDisplay extends GraphDisplay
     /**
      * ExtenedTreeDepthItemSorter to alter the default ordering/sorter,
      * to make sure Edge item is drawn in front. This is for Edge Uses
-     *
-     * */
+     */
     public class ExtendedTreeDepthItemSorter extends TreeDepthItemSorter
     {
         public ExtendedTreeDepthItemSorter()
         {
-            this(false);
+            this( false );
         }
 
-        public ExtendedTreeDepthItemSorter(boolean childrenAbove)
+        public ExtendedTreeDepthItemSorter( boolean childrenAbove )
         {
-            super(childrenAbove);            
+            super( childrenAbove );
         }
 
         public int score( VisualItem item )

@@ -16,14 +16,14 @@
 */
 package org.qi4j.library.swing.envisage.graph;
 
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.geom.Area;
-import java.awt.geom.Rectangle2D;
 import prefuse.Display;
 import prefuse.action.layout.graph.TreeLayout;
 import prefuse.render.Renderer;
 import prefuse.visual.NodeItem;
+
+import java.awt.*;
+import java.awt.geom.Area;
+import java.awt.geom.Rectangle2D;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
@@ -34,21 +34,23 @@ public class StackedLayout extends TreeLayout
 
     private int zoom = 2;
 
-    public StackedLayout(String group) {
-        super(group);
+    public StackedLayout( String group )
+    {
+        super( group );
     }
 
-    public void run(double frac) {
+    public void run( double frac )
+    {
         // setup
         NodeItem root = getLayoutRoot();
-        layout(root,0,0);
+        layout( root, 0, 0 );
 
         Rectangle2D bounds = root.getBounds();
         Display display = this.getVisualization().getDisplay( 0 );
-        Dimension size = new Dimension( (int)bounds.getWidth(), (int)bounds.getHeight() );
+        Dimension size = new Dimension( (int) bounds.getWidth(), (int) bounds.getHeight() );
         display.setSize( size );
 
-        if (!display.isValid())
+        if( !display.isValid() )
         {
             display.validate();
         }
@@ -57,7 +59,7 @@ public class StackedLayout extends TreeLayout
     public void zoomOut()
     {
         zoom--;
-        if (zoom < 1)
+        if( zoom < 1 )
         {
             zoom = 1;
         }
@@ -66,15 +68,15 @@ public class StackedLayout extends TreeLayout
     public void zoomIn()
     {
         zoom++;
-        if (zoom > 4)
+        if( zoom > 4 )
         {
             zoom = 4;
         }
     }
 
-    public void zoom(int zoom)
+    public void zoom( int zoom )
     {
-        this.zoom = zoom;        
+        this.zoom = zoom;
     }
 
     public int getZoom()
@@ -83,62 +85,62 @@ public class StackedLayout extends TreeLayout
     }
 
 
-    protected Dimension getItemMinSize(NodeItem node, Dimension minSize)
+    protected Dimension getItemMinSize( NodeItem node, Dimension minSize )
     {
-        if (minSize == null)
+        if( minSize == null )
         {
-            minSize = new Dimension(0,0);
+            minSize = new Dimension( 0, 0 );
         }
 
         String label = node.getString( "name" );
         FontMetrics fm = Renderer.DEFAULT_GRAPHICS.getFontMetrics( StackedGraphDisplay.FONT );
-        int width = fm.stringWidth( label);
+        int width = fm.stringWidth( label );
         int height = fm.getHeight();
-        minSize.setSize( width + INSET + INSET,height + INSET + INSET );
+        minSize.setSize( width + INSET + INSET, height + INSET + INSET );
 
         //System.out.println(fm.getAscent());
 
-        return minSize; 
+        return minSize;
     }
 
-    protected void layout(NodeItem node, double x, double y)
+    protected void layout( NodeItem node, double x, double y )
     {
         Dimension minSize = getItemMinSize( node, null );
-        node.setBounds( x,y, minSize.width , minSize.height);
+        node.setBounds( x, y, minSize.width, minSize.height );
 
         int depth = node.getDepth();
 
-        if (depth > zoom)
+        if( depth > zoom )
         {
             //System.out.println("depth: " +  depth + "  zoom: " + zoom);
-            node.setBounds( x,y,0,0 );
+            node.setBounds( x, y, 0, 0 );
             node.setVisible( false );
         }
         else
         {
-            node.setVisible( true);            
+            node.setVisible( true );
         }
 
         double cx = x + INSET;
         double cy = y + minSize.height;
 
-        Area area = new Area(node.getBounds());
+        Area area = new Area( node.getBounds() );
 
         boolean hasChild = false;
-        for (int i=0; i<node.getChildCount(); i++)
+        for( int i = 0; i < node.getChildCount(); i++ )
         {
             hasChild = true;
-            NodeItem child = (NodeItem)node.getChild( i );
+            NodeItem child = (NodeItem) node.getChild( i );
 
-            layout(child,cx,cy);
-            area.add( new Area(child.getBounds()) );
+            layout( child, cx, cy );
+            area.add( new Area( child.getBounds() ) );
 
             // shifting location calculation
             Rectangle2D nodeRect = child.getBounds();
             if( depth == 0 )
             {
                 // layer
-                cy = cy + (INSET * 2) + nodeRect.getHeight();
+                cy = cy + ( INSET * 2 ) + nodeRect.getHeight();
             }
             if( depth == 1 )
             {
@@ -153,17 +155,17 @@ public class StackedLayout extends TreeLayout
             else if( depth == 3 )
             {
                 // type
-                cy = cy +  INSET + nodeRect.getHeight();
+                cy = cy + INSET + nodeRect.getHeight();
             }
         }
 
         Rectangle2D bounds = area.getBounds2D();
-        if (hasChild && depth <= zoom)
+        if( hasChild && depth <= zoom )
         {
-            bounds.setRect( x,y, bounds.getWidth() + INSET, bounds.getHeight() + INSET );
+            bounds.setRect( x, y, bounds.getWidth() + INSET, bounds.getHeight() + INSET );
         }
 
-        node.setBounds( x,y, bounds.getWidth(), bounds.getHeight() );
+        node.setBounds( x, y, bounds.getWidth(), bounds.getHeight() );
 
         // relayout the child so it have consistent width or height
         //int depth = parent.getDepth();
@@ -185,37 +187,37 @@ public class StackedLayout extends TreeLayout
         }
     }
 
-    private void arrangeChildVertically(NodeItem parent)
+    private void arrangeChildVertically( NodeItem parent )
     {
         double maxW = 0;
-        for (int i=0; i<parent.getChildCount(); i++)
+        for( int i = 0; i < parent.getChildCount(); i++ )
         {
-            NodeItem node = (NodeItem)parent.getChild( i );
+            NodeItem node = (NodeItem) parent.getChild( i );
             Rectangle2D bounds = node.getBounds();
             maxW = Math.max( maxW, bounds.getWidth() );
         }
 
-        for (int i=0; i<parent.getChildCount(); i++)
+        for( int i = 0; i < parent.getChildCount(); i++ )
         {
-            NodeItem node = (NodeItem)parent.getChild( i );
+            NodeItem node = (NodeItem) parent.getChild( i );
             Rectangle2D bounds = node.getBounds();
-            node.setBounds( bounds.getX(), bounds.getY(), maxW, bounds.getHeight()  );
+            node.setBounds( bounds.getX(), bounds.getY(), maxW, bounds.getHeight() );
         }
     }
 
-    private void arrangeChildHorizontally(NodeItem parent)
+    private void arrangeChildHorizontally( NodeItem parent )
     {
         double maxH = 0;
-        for (int i=0; i<parent.getChildCount(); i++)
+        for( int i = 0; i < parent.getChildCount(); i++ )
         {
-            NodeItem node = (NodeItem)parent.getChild( i );
+            NodeItem node = (NodeItem) parent.getChild( i );
             Rectangle2D bounds = node.getBounds();
             maxH = Math.max( maxH, bounds.getHeight() );
         }
 
-        for (int i=0; i<parent.getChildCount(); i++)
+        for( int i = 0; i < parent.getChildCount(); i++ )
         {
-            NodeItem node = (NodeItem)parent.getChild( i );
+            NodeItem node = (NodeItem) parent.getChild( i );
             Rectangle2D bounds = node.getBounds();
             node.setBounds( bounds.getX(), bounds.getY(), bounds.getWidth(), maxH );
         }

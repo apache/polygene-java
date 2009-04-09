@@ -16,17 +16,6 @@
 */
 package org.qi4j.library.swing.envisage.print;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.lang.annotation.Annotation;
-import java.util.List;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
 import org.pdfbox.pdmodel.PDDocument;
 import org.pdfbox.pdmodel.PDPage;
 import org.pdfbox.pdmodel.common.PDRectangle;
@@ -37,18 +26,7 @@ import org.pdfbox.pdmodel.graphics.xobject.PDJpeg;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.library.swing.envisage.graph.GraphDisplay;
-import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.CompositeMethodDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ImportedServiceDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.InjectedFieldDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.MixinDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
+import org.qi4j.library.swing.envisage.model.descriptor.*;
 import org.qi4j.library.swing.envisage.model.util.DescriptorUtilities;
 import org.qi4j.library.swing.envisage.util.TableRow;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
@@ -57,6 +35,16 @@ import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.value.ValueDescriptor;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.lang.annotation.Annotation;
+import java.util.List;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
@@ -140,9 +128,9 @@ public class PDFWriter
             doc = new PDDocument();
 
 
-            for (GraphDisplay graphDisplay : graphDisplays )
+            for( GraphDisplay graphDisplay : graphDisplays )
             {
-                writeGraphPage( graphDisplay );    
+                writeGraphPage( graphDisplay );
             }
 
             writePage( descriptor );
@@ -173,7 +161,7 @@ public class PDFWriter
     private void writeGraphPage( GraphDisplay graphDisplay ) throws Exception
     {
         BufferedImage img = graphDisplay.getOffscreenBuffer();
-        if (img == null)
+        if( img == null )
         {
             // Should not happend
             return;
@@ -208,8 +196,8 @@ public class PDFWriter
         doc.addPage( page );
 
         PDRectangle pdRect = page.getArtBox();
-        float pW = pdRect.getWidth() - (startX * 2);
-        float pH = pdRect.getHeight() - (startY * 2);
+        float pW = pdRect.getWidth() - ( startX * 2 );
+        float pH = pdRect.getHeight() - ( startY * 2 );
         //System.out.println("pSize: " + pW + "," + pH);
 
         double scale = scaleToFit( img.getWidth(), img.getHeight(), pW, pH );

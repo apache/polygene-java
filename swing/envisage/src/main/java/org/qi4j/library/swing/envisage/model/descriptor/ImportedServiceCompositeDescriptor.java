@@ -16,14 +16,15 @@
 */
 package org.qi4j.library.swing.envisage.model.descriptor;
 
-import java.util.LinkedList;
-import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.util.Classes;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * XXX Workaround for inconsistency in Qi4J core-api/spi

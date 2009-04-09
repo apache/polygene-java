@@ -17,7 +17,8 @@
  */
 package org.qi4j.library.uid.sequence;
 
-/** Sequencing is used to automatically generate a sequence of numbers.
+/**
+ * Sequencing is used to automatically generate a sequence of numbers.
  * The algorithm is that <code>currentSequenceValue</code> is the number that was last returned
  * in a <code>newSequenceValue</code> call, and will initially be zero. Persisting Sequencing
  * services defines "initially" as the first run ever, as subsequent starts may retrieve the

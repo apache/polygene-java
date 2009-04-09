@@ -17,8 +17,8 @@
 package org.qi4j.library.swing.envisage.school.domain.model.school.assembler;
 
 import org.qi4j.api.entity.association.Association;
-import org.qi4j.library.swing.envisage.school.domain.model.school.School;
 import org.qi4j.api.property.Property;
+import org.qi4j.library.swing.envisage.school.domain.model.school.School;
 
 /**
  * @author edward.yakop@gmail.com

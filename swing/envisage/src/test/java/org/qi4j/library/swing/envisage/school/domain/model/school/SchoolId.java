@@ -16,8 +16,9 @@
 */
 package org.qi4j.library.swing.envisage.school.domain.model.school;
 
-import java.io.Serializable;
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
+
+import java.io.Serializable;
 
 /**
  * @author edward.yakop@gmail.com

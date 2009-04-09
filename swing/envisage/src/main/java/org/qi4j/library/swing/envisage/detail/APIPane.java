@@ -63,7 +63,7 @@ public class APIPane extends DetailPane
         this.add( contentPane, BorderLayout.CENTER );
 
         apiTableModel = new APITableModel();
-        apiTable.setModel(apiTableModel);
+        apiTable.setModel( apiTableModel );
         apiTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
 
         TableColumnModel columnModel = apiTable.getColumnModel();
@@ -120,18 +120,18 @@ public class APIPane extends DetailPane
         clear();
 
         List<ServiceDetailDescriptor> list = null;
-        if ( objectDesciptor instanceof LayerDetailDescriptor )
+        if( objectDesciptor instanceof LayerDetailDescriptor )
         {
-            list = DescriptorUtilities.findLayerAPI( (LayerDetailDescriptor)objectDesciptor );
+            list = DescriptorUtilities.findLayerAPI( (LayerDetailDescriptor) objectDesciptor );
         }
-        else if (objectDesciptor instanceof ModuleDetailDescriptor)
+        else if( objectDesciptor instanceof ModuleDetailDescriptor )
         {
-            list = DescriptorUtilities.findModuleAPI( (ModuleDetailDescriptor)objectDesciptor );
+            list = DescriptorUtilities.findModuleAPI( (ModuleDetailDescriptor) objectDesciptor );
         }
 
-        if (list != null)
+        if( list != null )
         {
-            apiTableModel.addRow(list);
+            apiTableModel.addRow( list );
         }
     }
 
@@ -192,9 +192,9 @@ public class APIPane extends DetailPane
             rows = new ArrayList<TableRow>();
         }
 
-        public void addRow(List<ServiceDetailDescriptor> list)
+        public void addRow( List<ServiceDetailDescriptor> list )
         {
-            if ( list.isEmpty() )
+            if( list.isEmpty() )
             {
                 return;
             }
@@ -209,11 +209,11 @@ public class APIPane extends DetailPane
 
             for( ServiceDetailDescriptor descriptor : list )
             {
-                TableRow row = new TableRow(columnNames.length);
-                row.set(0, descriptor);
-                row.set(1, descriptor.module());
-                row.set(2, descriptor.descriptor().visibility().toString() );
-                this.rows.add(row);
+                TableRow row = new TableRow( columnNames.length );
+                row.set( 0, descriptor );
+                row.set( 1, descriptor.module() );
+                row.set( 2, descriptor.descriptor().visibility().toString() );
+                this.rows.add( row );
                 i2++;
             }
 

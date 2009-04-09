@@ -16,26 +16,22 @@
 */
 package org.qi4j.library.swing.entityviewer;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
+import org.qi4j.api.structure.Application;
+import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.library.swing.visualizer.model.descriptor.*;
+import org.qi4j.spi.structure.ApplicationSPI;
+
+import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
-import java.awt.BorderLayout;
-import org.qi4j.api.structure.Application;
-import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.spi.structure.ApplicationSPI;
-import org.qi4j.library.swing.visualizer.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.descriptor.LayerDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.descriptor.ModuleDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.descriptor.ApplicationDetailDescriptorBuilder;
-import org.qi4j.library.swing.visualizer.model.descriptor.EntityDetailDescriptor;
+import java.awt.*;
 
 
 /**
  * Qi4J Application Tree Viewer as Swing Component.
+ *
  * @author Tonny Kohar
  */
 public class TreePanel extends JPanel
@@ -81,8 +77,7 @@ public class TreePanel extends JPanel
 
     /**
      * Helper class to build tree model for up to 3 level depth, which focusing on the entity
-     *
-     * */
+     */
     class TreeModelBuilder
     {
 

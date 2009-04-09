@@ -14,32 +14,27 @@
 
 package org.qi4j.library.rdf.entity;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import org.openrdf.model.BNode;
-import org.openrdf.model.Graph;
-import org.openrdf.model.Literal;
-import org.openrdf.model.Resource;
-import org.openrdf.model.Statement;
-import org.openrdf.model.URI;
-import org.openrdf.model.ValueFactory;
+import org.openrdf.model.*;
 import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.qi4j.api.util.Classes;
 import org.qi4j.library.rdf.Qi4jEntity;
+import org.qi4j.library.rdf.Qi4jEntityType;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.Rdfs;
-import org.qi4j.library.rdf.Qi4jEntityType;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifierQualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.value.PrimitiveType;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * JAVADOC
@@ -72,9 +67,9 @@ public class EntityTypeSerializer
         graph.add( entityTypeUri, Rdfs.TYPE, Rdfs.CLASS );
         graph.add( entityTypeUri, Rdfs.TYPE, OWL.CLASS );
 
-        graph.add(entityTypeUri, Qi4jEntityType.TYPE, values.createLiteral( entityType.type() ));
-        graph.add(entityTypeUri, Qi4jEntityType.QUERYABLE, values.createLiteral( entityType.queryable() ));
-        graph.add(entityTypeUri, Qi4jEntityType.VERSION, values.createLiteral( entityType.version() ));
+        graph.add( entityTypeUri, Qi4jEntityType.TYPE, values.createLiteral( entityType.type() ) );
+        graph.add( entityTypeUri, Qi4jEntityType.QUERYABLE, values.createLiteral( entityType.queryable() ) );
+        graph.add( entityTypeUri, Qi4jEntityType.VERSION, values.createLiteral( entityType.version() ) );
 
         serializeMixinTypes( entityType, graph, entityTypeUri );
 
@@ -96,7 +91,7 @@ public class EntityTypeSerializer
         {
 //            if( !mixinType.equals( entityType.type() ) )
 //            {
-                graph.add( entityTypeUri, Rdfs.SUB_CLASS_OF, values.createURI( Classes.toURI( mixinType ) ) );
+            graph.add( entityTypeUri, Rdfs.SUB_CLASS_OF, values.createURI( Classes.toURI( mixinType ) ) );
 //            }
         }
     }

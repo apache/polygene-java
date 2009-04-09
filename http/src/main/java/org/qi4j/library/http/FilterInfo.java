@@ -20,8 +20,15 @@ package org.qi4j.library.http;
 import java.io.Serializable;
 import java.util.Map;
 
-public class FilterInfo implements Serializable
+public class FilterInfo
+    implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
+    private final String path;
+    private final Map<String, String> initParameters;
+    private final Dispatchers dispatchers;
+
     public FilterInfo( String path, Map<String, String> initParameters, Dispatchers dispatchers )
     {
         this.dispatchers = dispatchers;
@@ -29,12 +36,6 @@ public class FilterInfo implements Serializable
         this.path = path;
     }
 
-    private static final long serialVersionUID = 1L;
-
-    private final String path;
-    private final Map<String, String> initParameters;
-    private final Dispatchers dispatchers;
-    
     public String getPath()
     {
         return path;

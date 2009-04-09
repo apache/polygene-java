@@ -35,15 +35,16 @@ public abstract class GraphDisplay extends Display
     public static final String GRAPH_EDGES = "graph.edges";
     public static final String USES_EDGES = "uses.edges";
 
-    public GraphDisplay( Visualization visualization)
+    public GraphDisplay( Visualization visualization )
     {
-        super(visualization);
+        super( visualization );
     }
 
-    public abstract void run ( Graph graph );
-    public abstract void run ( );
+    public abstract void run( Graph graph );
 
-    public abstract void setSelectedValue( Object object);
+    public abstract void run();
+
+    public abstract void setSelectedValue( Object object );
 
     /**
      * Add a listener that's notified each time a change to the selection occurs.

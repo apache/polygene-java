@@ -16,13 +16,13 @@
 */
 package org.qi4j.library.swing.envisage.school.domain.model.person.assembler;
 
-import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.library.swing.envisage.school.domain.model.person.Role;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.library.swing.envisage.school.domain.model.person.Person;
 import org.qi4j.library.swing.envisage.school.domain.model.person.PersonId;
+import org.qi4j.library.swing.envisage.school.domain.model.person.Role;
 
 /**
  * @author edward.yakop@gmail.com

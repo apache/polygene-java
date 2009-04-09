@@ -19,6 +19,7 @@
 package org.qi4j.logging.debug.service;
 
 import org.qi4j.api.composite.Composite;
+
 import java.io.Serializable;
 
 public interface DebuggingService

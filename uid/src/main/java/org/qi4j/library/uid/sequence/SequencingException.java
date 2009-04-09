@@ -17,7 +17,8 @@
  */
 package org.qi4j.library.uid.sequence;
 
-/** SequencingException happens when the sequence number can not be reliably
+/**
+ * SequencingException happens when the sequence number can not be reliably
  * updated.
  */
 public class SequencingException extends RuntimeException

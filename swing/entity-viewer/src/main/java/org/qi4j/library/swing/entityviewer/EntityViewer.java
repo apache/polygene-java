@@ -16,35 +16,23 @@
 */
 package org.qi4j.library.swing.entityviewer;
 
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JLabel;
-import javax.swing.JSplitPane;
-import javax.swing.ComboBoxModel;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.event.TreeSelectionEvent;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.BorderLayout;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
+import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.query.QueryBuilder;
-import org.qi4j.api.query.Query;
 import org.qi4j.bootstrap.Energy4Java;
+import org.qi4j.library.swing.visualizer.model.descriptor.*;
 import org.qi4j.spi.structure.ApplicationSPI;
-import org.qi4j.library.swing.visualizer.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.descriptor.ApplicationDetailDescriptorBuilder;
-import org.qi4j.library.swing.visualizer.model.descriptor.ModuleDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.descriptor.LayerDetailDescriptor;
-import org.qi4j.library.swing.visualizer.model.descriptor.EntityDetailDescriptor;
+
+import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
+import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 /**
  * The Entity Viewer.
@@ -138,7 +126,7 @@ public class EntityViewer
      * Create simple query (display all properties) based on the supplied class.
      *
      * @param module the module to create the query
-     * @param clazz the class to be queried
+     * @param clazz  the class to be queried
      * @return query
      */
     @SuppressWarnings( "unchecked" )
@@ -160,6 +148,7 @@ public class EntityViewer
 
     /**
      * Event Handler for EntitiesComboBox
+     *
      * @param evt the Event
      */
     private void entitiesComboItemStateChanged( ItemEvent evt )
@@ -179,6 +168,7 @@ public class EntityViewer
 
     /**
      * Event Handler for TreePanel
+     *
      * @param evt the Event
      */
     public void treePanelValueChanged( TreeSelectionEvent evt )

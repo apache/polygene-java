@@ -16,12 +16,13 @@
 */
 package org.qi4j.library.swing.envisage.model.descriptor;
 
-import java.lang.reflect.Method;
-import java.util.LinkedList;
-import java.util.List;
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
+
+import java.lang.reflect.Method;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author edward.yakop@gmail.com

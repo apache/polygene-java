@@ -9,11 +9,11 @@ import org.qi4j.library.struts2.example.Item;
 import org.qi4j.library.struts2.support.add.ProvidesAddingOf;
 import org.qi4j.library.struts2.support.add.ProvidesAddingOfMixin;
 
-@Results({
-    @Result(name="input", value="/jsp/addItem.jsp"),
-    @Result(name="error", value="/jsp/addItem.jsp"),    
-    @Result(name="success", value="listItems", type=ServletActionRedirectResult.class)
-})
+@Results( {
+    @Result( name = "input", value = "/jsp/addItem.jsp" ),
+    @Result( name = "error", value = "/jsp/addItem.jsp" ),
+    @Result( name = "success", value = "listItems", type = ServletActionRedirectResult.class )
+} )
 @Mixins( ProvidesAddingOfMixin.class )
 public interface AddItem extends ProvidesAddingOf<Item>, Composite
 {

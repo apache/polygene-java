@@ -16,23 +16,15 @@
 */
 package org.qi4j.library.swing.envisage.model.util;
 
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.library.swing.envisage.model.descriptor.*;
+import org.qi4j.library.swing.envisage.util.TableRow;
+import org.qi4j.spi.composite.DependencyDescriptor;
+
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.CompositeDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.EntityDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.InjectedFieldDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.LayerDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.MixinDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ModuleDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ObjectDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.library.swing.envisage.model.descriptor.ValueDetailDescriptor;
-import org.qi4j.library.swing.envisage.util.TableRow;
-import org.qi4j.spi.composite.DependencyDescriptor;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)

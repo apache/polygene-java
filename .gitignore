@@ -1,3 +1,7 @@
+scripting/target/
+struts2/target/
+swing/target/
+target/
 auth/target/
 beans/target/
 cache/target/

@@ -17,10 +17,10 @@
 package org.qi4j.library.swing.envisage.school.admin.pages.mixins;
 
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.library.swing.envisage.school.admin.pages.UserDetailPage;
-import org.qi4j.library.swing.envisage.school.domain.model.person.Person;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
+import org.qi4j.library.swing.envisage.school.admin.pages.UserDetailPage;
+import org.qi4j.library.swing.envisage.school.domain.model.person.Person;
 
 /**
  * @author edward.yakop@gmail.com

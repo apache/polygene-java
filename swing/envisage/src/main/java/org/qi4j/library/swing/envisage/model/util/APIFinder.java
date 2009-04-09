@@ -29,29 +29,30 @@ import java.util.List;
  *
  * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
-class APIFinder {
+class APIFinder
+{
 
-    public List<ServiceDetailDescriptor> findModuleAPI (ModuleDetailDescriptor descriptor)
+    public List<ServiceDetailDescriptor> findModuleAPI( ModuleDetailDescriptor descriptor )
     {
         ArrayList<ServiceDetailDescriptor> list = new ArrayList<ServiceDetailDescriptor>();
 
         for( ServiceDetailDescriptor serviceDetailDescriptor : descriptor.services() )
         {
-            list.add(serviceDetailDescriptor);
+            list.add( serviceDetailDescriptor );
         }
 
         return list;
     }
 
-     public List<ServiceDetailDescriptor> findLayerAPI (LayerDetailDescriptor descriptor)
-     {
+    public List<ServiceDetailDescriptor> findLayerAPI( LayerDetailDescriptor descriptor )
+    {
         ArrayList<ServiceDetailDescriptor> list = new ArrayList<ServiceDetailDescriptor>();
 
         for( ModuleDetailDescriptor moduleDetailDescriptor : descriptor.modules() )
         {
-            list.addAll(findModuleAPI(moduleDetailDescriptor));
+            list.addAll( findModuleAPI( moduleDetailDescriptor ) );
         }
 
         return list;
-     }
+    }
 }

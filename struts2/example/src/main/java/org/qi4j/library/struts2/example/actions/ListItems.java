@@ -8,9 +8,10 @@ import org.qi4j.library.struts2.example.Item;
 import org.qi4j.library.struts2.support.list.ProvidesListOf;
 import org.qi4j.library.struts2.support.list.ProvidesListOfMixin;
 
-@Results({
-    @Result(name="success", value="/jsp/listItems.jsp")
-})
-@Mixins(ProvidesListOfMixin.class)
-public interface ListItems extends ProvidesListOf<Item>, Composite {
+@Results( {
+    @Result( name = "success", value = "/jsp/listItems.jsp" )
+} )
+@Mixins( ProvidesListOfMixin.class )
+public interface ListItems extends ProvidesListOf<Item>, Composite
+{
 }

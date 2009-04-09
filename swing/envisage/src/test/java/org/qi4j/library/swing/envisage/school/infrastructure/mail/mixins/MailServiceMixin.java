@@ -16,12 +16,13 @@
 */
 package org.qi4j.library.swing.envisage.school.infrastructure.mail.mixins;
 
-import java.util.Arrays;
-import org.qi4j.library.swing.envisage.school.infrastructure.mail.MailService;
+import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.library.swing.envisage.school.infrastructure.mail.Mail;
 import org.qi4j.library.swing.envisage.school.infrastructure.mail.MailConfiguration;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.configuration.Configuration;
+import org.qi4j.library.swing.envisage.school.infrastructure.mail.MailService;
+
+import java.util.Arrays;
 
 /**
  * @author edward.yakop@gmail.com

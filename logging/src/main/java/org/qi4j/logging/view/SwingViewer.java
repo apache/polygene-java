@@ -17,9 +17,10 @@
  */
 package org.qi4j.logging.view;
 
-import javax.swing.JFrame;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.logging.log.service.LoggingService;
+
+import javax.swing.*;
 
 public class SwingViewer extends JFrame
 {

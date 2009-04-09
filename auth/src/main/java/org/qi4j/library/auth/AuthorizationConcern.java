@@ -18,11 +18,6 @@
  */
 package org.qi4j.library.auth;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.util.Date;
-import javax.security.auth.Subject;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.composite.CompositeBuilder;
 import org.qi4j.api.composite.CompositeBuilderFactory;
@@ -31,6 +26,12 @@ import org.qi4j.api.injection.scope.Invocation;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+
+import javax.security.auth.Subject;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.util.Date;
 
 @AppliesTo( RequiresPermission.class )
 public class AuthorizationConcern extends ConcernOf<InvocationHandler>

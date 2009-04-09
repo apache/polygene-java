@@ -16,8 +16,16 @@
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-bootstrap</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-runtime</artifactId>
-      <version>0.7-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
 
     <!--  Struts 2 -->

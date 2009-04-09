@@ -16,8 +16,8 @@
 */
 package org.qi4j.library.swing.envisage.school.domain.model.school;
 
-import org.qi4j.library.swing.envisage.school.domain.model.person.Person;
 import org.qi4j.api.query.Query;
+import org.qi4j.library.swing.envisage.school.domain.model.person.Person;
 
 /**
  * @author edward.yakop@gmail.com

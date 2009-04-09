@@ -1,27 +1,20 @@
 package org.qi4j.library.struts2;
 
 import static com.opensymphony.xwork2.conversion.impl.XWorkConverter.CONVERSION_PROPERTY_FULLNAME;
+import ognl.*;
 import static ognl.OgnlRuntime.getConvertedType;
 import static ognl.OgnlRuntime.getFieldValue;
-import static org.qi4j.library.struts2.ConstraintViolationInterceptor.CONTEXT_CONSTRAINT_VIOLATIONS;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import ognl.MethodFailedException;
-import ognl.ObjectMethodAccessor;
-import ognl.ObjectPropertyAccessor;
-import ognl.OgnlContext;
-import ognl.OgnlException;
-import ognl.OgnlRuntime;
-
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.library.struts2.ConstraintViolationInterceptor.FieldConstraintViolations;
 import org.qi4j.api.property.Property;
+import static org.qi4j.library.struts2.ConstraintViolationInterceptor.CONTEXT_CONSTRAINT_VIOLATIONS;
+import org.qi4j.library.struts2.ConstraintViolationInterceptor.FieldConstraintViolations;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>An implementation of the ObjectPropertyAccessor that provides conversion for Qi4j properties.  The typical way that
@@ -34,11 +27,11 @@ import org.qi4j.api.property.Property;
  * the ConversionErrorInterceptor</p>
  *
  * <p>When setting Association values, we attempt to convert the value to the association type using the normal XWork
- * converter mechanisms.  If the type is an EntityComposite, we already have a converter registered 
- * {@link EntityCompositeConverter} to handle conversion from a string identity to an object.  If the type is not an 
+ * converter mechanisms.  If the type is an EntityComposite, we already have a converter registered
+ * {@link EntityCompositeConverter} to handle conversion from a string identity to an object.  If the type is not an
  * EntityComposite, but the actual values are EntityComposites, you can register the {@link EntityCompositeConverter}
  * for your type in your xwork-conversion.properties file.</p>
- * 
+ *
  * <p>NOTE: We can't do this as a regular converter because Qi4j composites doesn't (nor should it be) following the
  * JavaBean standard.  We might be able to only override the getProperty() method here and have regular converters for
  * Property, Association and SetAssociation but I haven't tried that yet so it may not work as expected.</>
@@ -50,7 +43,7 @@ public class Qi4jPropertyAccessor extends ObjectPropertyAccessor
     private static final Object[] BLANK_ARGUMENTS = new Object[0];
 
     private final ObjectMethodAccessor methodAccessor = new ObjectMethodAccessor();
-    
+
     @Override
     public final Object getProperty( Map aContext, Object aTarget, Object aPropertyName )
         throws OgnlException
@@ -152,7 +145,7 @@ public class Qi4jPropertyAccessor extends ObjectPropertyAccessor
                     ognlContext, aTarget, null, fieldName, aPropertyValue, associationType );
                 if( convertedValue == OgnlRuntime.NoConversionPossible )
                 {
-                    throw new OgnlException("Could not convert value to association type");
+                    throw new OgnlException( "Could not convert value to association type" );
                 }
                 try
                 {
@@ -174,7 +167,7 @@ public class Qi4jPropertyAccessor extends ObjectPropertyAccessor
 
         super.setProperty( aContext, aTarget, aPropertyName, aPropertyValue );
     }
-    
+
     @SuppressWarnings( "unchecked" )
     protected final void handleConstraintViolation(
         Map aContext, Object aTarget, String aPropertyName, Object aPropertyValue,

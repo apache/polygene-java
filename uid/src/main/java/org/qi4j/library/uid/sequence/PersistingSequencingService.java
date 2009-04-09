@@ -17,8 +17,8 @@
  */
 package org.qi4j.library.uid.sequence;
 
-import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceComposite;
 
 @Mixins( PersistedSequencingMixin.class )
 public interface PersistingSequencingService extends Sequencing, ServiceComposite

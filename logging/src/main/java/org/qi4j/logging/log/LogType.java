@@ -17,12 +17,12 @@
  */
 package org.qi4j.logging.log;
 
-import org.qi4j.api.property.Property;
 import org.qi4j.api.property.Immutable;
+import org.qi4j.api.property.Property;
 import org.qi4j.library.constraints.annotation.OneOf;
 
 @Immutable
-@OneOf({"INFO", "WARNING", "ERROR"})
+@OneOf( { "INFO", "WARNING", "ERROR" } )
 public interface LogType
     extends Property<String>
 {

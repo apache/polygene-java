@@ -17,16 +17,17 @@
  */
 package org.qi4j.logging.debug.service;
 
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.injection.scope.Invocation;
+import org.qi4j.api.sideeffect.SideEffectOf;
+import org.qi4j.logging.debug.Debug;
+import org.qi4j.logging.log.service.LoggingService;
+
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.sideeffect.SideEffectOf;
-import org.qi4j.api.injection.scope.Invocation;
-import org.qi4j.logging.log.service.LoggingService;
-import org.qi4j.logging.debug.Debug;
 
 /**
  * The DebugOnConsoleSideEffect is just a temporary solution for logging output, until a more
@@ -82,9 +83,9 @@ public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, (Serializable) params );
         OUT.println( "DEBUG:" + composite.type().getName() + ": " + formatted );
-        if( params[0] instanceof Throwable )
+        if( params[ 0 ] instanceof Throwable )
         {
-            handleException( (Throwable) params[0] );
+            handleException( (Throwable) params[ 0 ] );
         }
     }
 

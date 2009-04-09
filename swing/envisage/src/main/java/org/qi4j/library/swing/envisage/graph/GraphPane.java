@@ -16,20 +16,18 @@
 */
 package org.qi4j.library.swing.envisage.graph;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import org.qi4j.library.swing.envisage.event.LinkEvent;
+import org.qi4j.library.swing.envisage.event.LinkListener;
+import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
+import prefuse.data.Graph;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import org.qi4j.library.swing.envisage.event.LinkEvent;
-import org.qi4j.library.swing.envisage.event.LinkListener;
-import org.qi4j.library.swing.envisage.model.descriptor.ApplicationDetailDescriptor;
-import prefuse.data.Graph;
 
 /**
  * Just a simple wrapper for ApplicationModel Graph Display
@@ -52,23 +50,23 @@ public class GraphPane extends JPanel
         treeDisplay = new TreeGraphDisplay();
         stackedDisplay = new StackedGraphDisplay();
 
-        List<GraphDisplay> tmpList = new ArrayList<GraphDisplay>(2);
-        tmpList.add(treeDisplay);
-        tmpList.add(stackedDisplay);
+        List<GraphDisplay> tmpList = new ArrayList<GraphDisplay>( 2 );
+        tmpList.add( treeDisplay );
+        tmpList.add( stackedDisplay );
         displays = Collections.unmodifiableList( tmpList );
 
-        scrollPane = new JScrollPane( );
+        scrollPane = new JScrollPane();
         scrollPane.setViewportView( stackedDisplay );
         int unitInc = 50;
-        scrollPane.getVerticalScrollBar().setUnitIncrement(unitInc);
-        scrollPane.getHorizontalScrollBar().setUnitIncrement(unitInc);
+        scrollPane.getVerticalScrollBar().setUnitIncrement( unitInc );
+        scrollPane.getHorizontalScrollBar().setUnitIncrement( unitInc );
 
-        tabPane = new JTabbedPane( );
-        tabPane.add("Tree", treeDisplay );
-        tabPane.add("Stacked", scrollPane);
+        tabPane = new JTabbedPane();
+        tabPane.add( "Tree", treeDisplay );
+        tabPane.add( "Stacked", scrollPane );
 
-        this.setLayout( new BorderLayout( ) );
-        add(tabPane, BorderLayout.CENTER);
+        this.setLayout( new BorderLayout() );
+        add( tabPane, BorderLayout.CENTER );
 
         treeDisplay.addLinkListener( new LinkListener()
         {
@@ -88,28 +86,28 @@ public class GraphPane extends JPanel
 
         this.addComponentListener( new ComponentAdapter()
         {
-            public void componentResized( ComponentEvent evt)
+            public void componentResized( ComponentEvent evt )
             {
                 Dimension size = GraphPane.this.getSize();
                 treeDisplay.setSize( size.width, size.height );
                 tabPane.revalidate();
                 tabPane.repaint();
             }
-        });
+        } );
     }
 
-    public void initQi4J( ApplicationDetailDescriptor descriptor)
+    public void initQi4J( ApplicationDetailDescriptor descriptor )
     {
         this.descriptor = descriptor;
 
         Graph graph = GraphBuilder.buildGraph( descriptor );
         Dimension size = getSize();
         treeDisplay.setSize( size.width, size.height );
-        treeDisplay.run(graph);
+        treeDisplay.run( graph );
 
         graph = GraphBuilder.buildGraph( descriptor );
         stackedDisplay.setSize( size.width, size.height );
-        stackedDisplay.run(graph);
+        stackedDisplay.run( graph );
     }
 
     public void refresh()
@@ -120,7 +118,7 @@ public class GraphPane extends JPanel
 
     public List<GraphDisplay> getGraphDisplays()
     {
-        return displays; 
+        return displays;
     }
 
     public void setSelectedValue( Object obj )
@@ -129,17 +127,17 @@ public class GraphPane extends JPanel
         stackedDisplay.setSelectedValue( obj );
     }
 
-    private void graphItemLinkActivated(LinkEvent evt)
+    private void graphItemLinkActivated( LinkEvent evt )
     {
         //System.out.println("this is called");
         //System.out.println(evt.getSource().getClass());
-        if (evt.getSource().equals( treeDisplay ))
+        if( evt.getSource().equals( treeDisplay ) )
         {
-             stackedDisplay.setSelectedValue( evt.getObject() );
+            stackedDisplay.setSelectedValue( evt.getObject() );
         }
-        else if (evt.getSource().equals( stackedDisplay ))
+        else if( evt.getSource().equals( stackedDisplay ) )
         {
-            treeDisplay.setSelectedValue( evt.getObject() );            
+            treeDisplay.setSelectedValue( evt.getObject() );
         }
     }
 

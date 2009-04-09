@@ -23,6 +23,8 @@ public interface LogTypes
     extends Composite
 {
     LogType info();
+
     LogType warning();
+
     LogType error();
 }

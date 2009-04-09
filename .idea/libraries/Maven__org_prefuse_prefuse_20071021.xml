@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.prefuse:prefuse:20071021">
+    <CLASSES>
+      <root url="jar://$M2_REPO$/org/prefuse/prefuse/20071021/prefuse-20071021.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$M2_REPO$/org/prefuse/prefuse/20071021/prefuse-20071021-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$M2_REPO$/org/prefuse/prefuse/20071021/prefuse-20071021-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

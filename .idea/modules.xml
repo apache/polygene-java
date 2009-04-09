@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project relativePaths="false" version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/auth/qi4j-lib-auth.iml" filepath="$PROJECT_DIR$/auth/qi4j-lib-auth.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cache/qi4j-lib-cache.iml" filepath="$PROJECT_DIR$/cache/qi4j-lib-cache.iml" />
+      <module fileurl="file://$PROJECT_DIR$/constraints/qi4j-lib-constraints.iml" filepath="$PROJECT_DIR$/constraints/qi4j-lib-constraints.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swing/entity-viewer/qi4j-lib-entity-viewer.iml" filepath="$PROJECT_DIR$/swing/entity-viewer/qi4j-lib-entity-viewer.iml" group="qi4j-lib-swing and modules" />
+      <module fileurl="file://$PROJECT_DIR$/http/qi4j-lib-http.iml" filepath="$PROJECT_DIR$/http/qi4j-lib-http.iml" />
+      <module fileurl="file://$PROJECT_DIR$/locking/qi4j-lib-locking.iml" filepath="$PROJECT_DIR$/locking/qi4j-lib-locking.iml" />
+      <module fileurl="file://$PROJECT_DIR$/logging/qi4j-lib-logging.iml" filepath="$PROJECT_DIR$/logging/qi4j-lib-logging.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rdf/qi4j-lib-rdf.iml" filepath="$PROJECT_DIR$/rdf/qi4j-lib-rdf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spring/qi4j-lib-spring.iml" filepath="$PROJECT_DIR$/spring/qi4j-lib-spring.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swing/qi4j-lib-swing.iml" filepath="$PROJECT_DIR$/swing/qi4j-lib-swing.iml" group="qi4j-lib-swing and modules" />
+      <module fileurl="file://$PROJECT_DIR$/swing/envisage/qi4j-lib-swing-envisage.iml" filepath="$PROJECT_DIR$/swing/envisage/qi4j-lib-swing-envisage.iml" group="qi4j-lib-swing and modules" />
+      <module fileurl="file://$PROJECT_DIR$/uid/qi4j-lib-uid.iml" filepath="$PROJECT_DIR$/uid/qi4j-lib-uid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/qi4j-library.iml" filepath="$PROJECT_DIR$/qi4j-library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/scripting/beanshell/qi4j-script-beanshell.iml" filepath="$PROJECT_DIR$/scripting/beanshell/qi4j-script-beanshell.iml" group="qi4j-scripting and modules" />
+      <module fileurl="file://$PROJECT_DIR$/scripting/common/qi4j-script-common.iml" filepath="$PROJECT_DIR$/scripting/common/qi4j-script-common.iml" group="qi4j-scripting and modules" />
+      <module fileurl="file://$PROJECT_DIR$/scripting/groovy/qi4j-script-groovy.iml" filepath="$PROJECT_DIR$/scripting/groovy/qi4j-script-groovy.iml" group="qi4j-scripting and modules" />
+      <module fileurl="file://$PROJECT_DIR$/scripting/javascript/qi4j-script-javascript.iml" filepath="$PROJECT_DIR$/scripting/javascript/qi4j-script-javascript.iml" group="qi4j-scripting and modules" />
+      <module fileurl="file://$PROJECT_DIR$/scripting/jruby/qi4j-script-jruby.iml" filepath="$PROJECT_DIR$/scripting/jruby/qi4j-script-jruby.iml" group="qi4j-scripting and modules" />
+      <module fileurl="file://$PROJECT_DIR$/scripting/qi4j-scripting.iml" filepath="$PROJECT_DIR$/scripting/qi4j-scripting.iml" group="qi4j-scripting and modules" />
+      <module fileurl="file://$PROJECT_DIR$/struts2/qi4j-struts2.iml" filepath="$PROJECT_DIR$/struts2/qi4j-struts2.iml" group="qi4j-struts2 and modules" />
+      <module fileurl="file://$PROJECT_DIR$/struts2/codebehind/qi4j-struts2-codebehind-plugin.iml" filepath="$PROJECT_DIR$/struts2/codebehind/qi4j-struts2-codebehind-plugin.iml" group="qi4j-struts2 and modules" />
+      <module fileurl="file://$PROJECT_DIR$/struts2/example/qi4j-struts2-example.iml" filepath="$PROJECT_DIR$/struts2/example/qi4j-struts2-example.iml" group="qi4j-struts2 and modules" />
+      <module fileurl="file://$PROJECT_DIR$/struts2/plugin/qi4j-struts2-plugin.iml" filepath="$PROJECT_DIR$/struts2/plugin/qi4j-struts2-plugin.iml" group="qi4j-struts2 and modules" />
+    </modules>
+  </component>
+</project>
+

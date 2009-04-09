@@ -16,21 +16,21 @@
 */
 package org.qi4j.library.swing.entityviewer;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.table.TableModel;
-import javax.swing.table.DefaultTableModel;
-import java.awt.BorderLayout;
-import org.qi4j.api.query.Query;
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.query.Query;
+import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.bootstrap.Energy4Java;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import java.awt.*;
 
 /**
  * Entity Properties Viewer as Swing Component.
+ *
  * @author Tonny Kohar
  */
 public class PropertiesPanel extends JPanel
@@ -38,28 +38,35 @@ public class PropertiesPanel extends JPanel
     protected JTable propertiesTable;
     protected Energy4Java qi4j;
 
-    public PropertiesPanel() {
+    public PropertiesPanel()
+    {
         this.setLayout( new BorderLayout() );
         JScrollPane scrollPane = new JScrollPane();
-        this.add(scrollPane, BorderLayout.CENTER);
+        this.add( scrollPane, BorderLayout.CENTER );
 
         propertiesTable = new JTable();
         scrollPane.setViewportView( propertiesTable );
     }
 
-    public void initializeQi4J (Energy4Java qi4j) {
+    public void initializeQi4J( Energy4Java qi4j )
+    {
         this.qi4j = qi4j;
     }
 
-    /** Reload the table data with query based on the supplied query
+    /**
+     * Reload the table data with query based on the supplied query
+     *
      * @param query the query to generate table data
      */
-    public void reload(Query query) {
-        TableModel tableModel = createData(query);
+    public void reload( Query query )
+    {
+        TableModel tableModel = createData( query );
         propertiesTable.setModel( tableModel );
     }
 
-    /** Create table table or properties using the supplied query
+    /**
+     * Create table table or properties using the supplied query
+     *
      * @param query the Query
      * @return TableModel
      */

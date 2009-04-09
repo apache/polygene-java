@@ -17,14 +17,15 @@
  */
 package org.qi4j.library.http;
 
-import java.util.Map;
-import javax.servlet.Filter;
-import javax.servlet.Servlet;
+import static org.qi4j.api.common.Visibility.layer;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.http.Dispatchers.Dispatcher;
-import org.qi4j.api.service.ServiceComposite;
-import static org.qi4j.api.common.Visibility.layer;
+
+import javax.servlet.Filter;
+import javax.servlet.Servlet;
+import java.util.Map;
 
 public final class Servlets
 {

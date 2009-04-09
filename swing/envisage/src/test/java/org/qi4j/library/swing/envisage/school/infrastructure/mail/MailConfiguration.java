@@ -14,9 +14,9 @@
 
 package org.qi4j.library.swing.envisage.school.infrastructure.mail;
 
+import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.common.UseDefaults;
 
 /**
  * JAVADOC
@@ -24,6 +24,5 @@ import org.qi4j.api.common.UseDefaults;
 public interface MailConfiguration
     extends ConfigurationComposite
 {
-    @UseDefaults
-    Property<String> host();
+    @UseDefaults Property<String> host();
 }

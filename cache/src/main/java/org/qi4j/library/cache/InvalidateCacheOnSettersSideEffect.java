@@ -1,11 +1,12 @@
 package org.qi4j.library.cache;
 
-import java.lang.reflect.Method;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
-import org.qi4j.api.sideeffect.GenericSideEffect;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.sideeffect.GenericSideEffect;
 import org.qi4j.library.beans.properties.Setters;
+
+import java.lang.reflect.Method;
 
 /**
  * Invalidate cache on setters.

@@ -42,7 +42,7 @@ public class UuidGenerationMixin
                 for( int i = 0; i < bytes.length; i++ )
                 {
                     int pos = i % hashLength;
-                    result[ pos ] = (byte) ( result[ pos ] * 31 + 19 + bytes[i] );
+                    result[ pos ] = (byte) ( result[ pos ] * 31 + 19 + bytes[ i ] );
                 }
                 StringBuffer buf = new StringBuffer();
                 for( int data : result )

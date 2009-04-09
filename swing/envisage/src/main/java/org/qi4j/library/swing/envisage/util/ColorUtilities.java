@@ -16,7 +16,7 @@
 */
 package org.qi4j.library.swing.envisage.util;
 
-import java.awt.Color;
+import java.awt.*;
 
 /**
  * Collection of Color Utilities

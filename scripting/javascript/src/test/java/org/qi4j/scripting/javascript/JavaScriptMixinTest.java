@@ -11,8 +11,8 @@ package org.qi4j.scripting.javascript;
  * limitations under the License.
 */
 
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;

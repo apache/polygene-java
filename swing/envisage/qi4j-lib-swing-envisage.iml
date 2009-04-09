@@ -21,12 +21,12 @@
     <orderEntry type="library" name="Maven: fest:fest-reflect:1.0" level="project" />
     <orderEntry type="library" name="Maven: net.jcip:jcip-annotations:1.0" level="project" />
     <orderEntry type="library" name="Maven: swinghelper:debug:1.0" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-api:0.7-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-bootstrap:0.7-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-spi:0.7-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-runtime:0.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-api:0.7" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-bootstrap:0.7" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-spi:0.7" level="project" />
+    <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-runtime:0.7" level="project" />
     <orderEntry type="library" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
-    <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-testsupport:0.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-testsupport:0.7" level="project" />
     <orderEntry type="library" name="Maven: org.qi4j.extension:qi4j-indexing-rdf:0.7-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="qi4j-lib-rdf" />
     <orderEntry type="module" module-name="qi4j-lib-constraints" />

@@ -16,7 +16,7 @@
 */
 package org.qi4j.library.swing.envisage.detail;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
 /**
  * Abstract Base class for DetailPane

@@ -17,19 +17,18 @@
 package org.qi4j.library.swing.envisage.school.admin.pages.composites;
 
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.library.swing.envisage.school.admin.pages.ListUserPage;
 import org.qi4j.library.swing.envisage.school.admin.pages.mixins.Page;
-import org.qi4j.library.swing.envisage.school.domain.model.school.SchoolRepository;
 import org.qi4j.library.swing.envisage.school.domain.model.school.School;
+import org.qi4j.library.swing.envisage.school.domain.model.school.SchoolRepository;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.5
  */
-@Mixins( ListSchoolsPageComposite.ListSchoolsPageMixin.class)
+@Mixins( ListSchoolsPageComposite.ListSchoolsPageMixin.class )
 public interface ListSchoolsPageComposite extends Page, Composite
 {
     class ListSchoolsPageMixin
@@ -43,9 +42,9 @@ public interface ListSchoolsPageComposite extends Page, Composite
             String html = "<ul>";
             for( School school : schools.findAll() )
             {
-                html+="<li>"+school.name()+"</li>";
+                html += "<li>" + school.name() + "</li>";
             }
-            html+="</ul>";
+            html += "</ul>";
 
             return html;
         }

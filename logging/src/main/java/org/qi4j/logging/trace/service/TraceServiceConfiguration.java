@@ -19,9 +19,8 @@
 package org.qi4j.logging.trace.service;
 
 import org.qi4j.api.common.UseDefaults;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.property.Property;
 import org.qi4j.api.configuration.ConfigurationComposite;
+import org.qi4j.api.property.Property;
 
 public interface TraceServiceConfiguration extends ConfigurationComposite
 {

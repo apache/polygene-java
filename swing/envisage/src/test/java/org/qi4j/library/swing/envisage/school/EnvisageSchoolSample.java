@@ -18,9 +18,7 @@ package org.qi4j.library.swing.envisage.school;
 
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.library.swing.envisage.Envisage;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.ApplicationModelSPI;
-import java.rmi.MarshalledObject;
 
 /**
  * @author Tonny Kohar (tonny.kohar@gmail.com)
@@ -35,9 +33,9 @@ public class EnvisageSchoolSample
 
     private void runSample() throws Exception
     {
-        Energy4Java energy4Java = new Energy4Java(); 
+        Energy4Java energy4Java = new Energy4Java();
 
-        ApplicationModelSPI application = energy4Java.newApplicationModel( new SchoolAssembler());
+        ApplicationModelSPI application = energy4Java.newApplicationModel( new SchoolAssembler() );
 
         new Envisage().run( application );
     }

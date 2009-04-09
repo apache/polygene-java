@@ -14,17 +14,12 @@
 
 package org.qi4j.library.swing.envisage.school;
 
-import org.qi4j.bootstrap.ApplicationAssembler;
-import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.LayerAssembly;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.library.swing.envisage.school.infrastructure.mail.MailServiceAssembler;
-import org.qi4j.library.swing.envisage.school.infrastructure.persistence.PersistenceAssembler;
+import org.qi4j.bootstrap.*;
+import org.qi4j.library.swing.envisage.school.admin.AdminAssembler;
 import org.qi4j.library.swing.envisage.school.domain.model.person.assembler.PersonModelAssembler;
 import org.qi4j.library.swing.envisage.school.domain.model.school.assembler.SchoolModelAssembler;
-import org.qi4j.library.swing.envisage.school.admin.AdminAssembler;
+import org.qi4j.library.swing.envisage.school.infrastructure.mail.MailServiceAssembler;
+import org.qi4j.library.swing.envisage.school.infrastructure.persistence.PersistenceAssembler;
 
 /**
  * Application assembler for the School sample

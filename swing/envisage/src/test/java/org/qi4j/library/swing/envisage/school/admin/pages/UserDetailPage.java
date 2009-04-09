@@ -19,8 +19,8 @@ package org.qi4j.library.swing.envisage.school.admin.pages;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.library.swing.envisage.school.admin.pages.mixins.AuthenticationConcern;
-import org.qi4j.library.swing.envisage.school.admin.pages.mixins.UserDetailPageMixin;
 import org.qi4j.library.swing.envisage.school.admin.pages.mixins.DetailPage;
+import org.qi4j.library.swing.envisage.school.admin.pages.mixins.UserDetailPageMixin;
 import org.qi4j.library.swing.envisage.school.domain.model.person.Person;
 
 /**

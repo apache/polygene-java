@@ -17,20 +17,20 @@
  */
 package org.qi4j.logging.tracing;
 
-import java.util.Iterator;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.junit.Assert.*;
 import org.junit.Ignore;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
+import org.junit.Test;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryBuilder;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.logging.trace.Trace;
 import org.qi4j.logging.trace.TraceAllConcern;
 import org.qi4j.logging.trace.TraceConcern;
@@ -39,11 +39,10 @@ import org.qi4j.logging.trace.records.CompositeTraceRecordEntity;
 import org.qi4j.logging.trace.records.EntityTraceRecordEntity;
 import org.qi4j.logging.trace.records.ServiceTraceRecordEntity;
 import org.qi4j.logging.trace.records.TraceRecord;
-import org.qi4j.api.query.Query;
-import org.qi4j.api.query.QueryBuilder;
-import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
+
+import java.util.Iterator;
 
 public class TracingTest
     extends AbstractQi4jTest

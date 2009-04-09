@@ -15,9 +15,10 @@
 
 package org.qi4j.library.auth;
 
-import java.util.Date;
-import org.qi4j.api.property.Property;
 import org.qi4j.api.property.Immutable;
+import org.qi4j.api.property.Property;
+
+import java.util.Date;
 
 /**
  *

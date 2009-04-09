@@ -14,10 +14,9 @@
 
 package org.qi4j.library.swing.envisage;
 
-import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.spi.structure.ApplicationSPI;
+import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.spi.structure.ApplicationModelSPI;
 
 /**
@@ -29,7 +28,7 @@ public class Main
     public static void main( String[] args ) throws ClassNotFoundException, IllegalAccessException, InstantiationException, AssemblyException
     {
         String applicationAssemblerName = args[ 0 ];
-        System.out.println("Assembler:"+applicationAssemblerName);
+        System.out.println( "Assembler:" + applicationAssemblerName );
         Class applicationAssemblerClass = Class.forName( applicationAssemblerName );
         ApplicationAssembler assembler = (ApplicationAssembler) applicationAssemblerClass.newInstance();
 

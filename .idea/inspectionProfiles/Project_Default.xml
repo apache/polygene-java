@@ -1,0 +1,33 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0" is_locked="false">
+    <option name="myName" value="Project Default" />
+    <option name="myLocal" value="false" />
+    <inspection_tool class="UNUSED_SYMBOL" level="WARNING" enabled="true">
+      <option name="LOCAL_VARIABLE" value="true" />
+      <option name="FIELD" value="true" />
+      <option name="METHOD" value="true" />
+      <option name="CLASS" value="true" />
+      <option name="PARAMETER" value="true" />
+      <option name="REPORT_PARAMETER_FOR_PUBLIC_METHODS" value="true" />
+      <option name="INJECTION_ANNOS">
+        <value>
+          <list size="13">
+            <item index="0" class="java.lang.String" itemvalue="org.qi4j.api.injection.scope.PropertyField" />
+            <item index="1" class="java.lang.String" itemvalue="org.qi4j.api.injection.scope.Service" />
+            <item index="2" class="java.lang.String" itemvalue="org.qi4j.api.injection.scope.State" />
+            <item index="3" class="java.lang.String" itemvalue="org.qi4j.api.injection.scope.Structure" />
+            <item index="4" class="java.lang.String" itemvalue="org.qi4j.api.injection.scope.This" />
+            <item index="5" class="java.lang.String" itemvalue="org.qi4j.api.injection.scope.Uses" />
+            <item index="6" class="java.lang.String" itemvalue="org.qi4j.injection.scope.AssociationField" />
+            <item index="7" class="java.lang.String" itemvalue="org.qi4j.injection.scope.Invocation" />
+            <item index="8" class="java.lang.String" itemvalue="org.qi4j.injection.scope.Service" />
+            <item index="9" class="java.lang.String" itemvalue="org.qi4j.injection.scope.Structure" />
+            <item index="10" class="java.lang.String" itemvalue="org.qi4j.injection.scope.This" />
+            <item index="11" class="java.lang.String" itemvalue="org.qi4j.injection.scope.Uses" />
+            <item index="12" class="java.lang.String" itemvalue="org.springframework.beans.factory.annotation.Autowired" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

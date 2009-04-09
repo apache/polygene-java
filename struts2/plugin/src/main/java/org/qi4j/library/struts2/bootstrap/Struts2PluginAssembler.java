@@ -16,13 +16,13 @@
  */
 package org.qi4j.library.struts2.bootstrap;
 
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.struts2.ActionConfiguration;
 import org.qi4j.library.struts2.ActionService;
 import org.qi4j.library.struts2.UnitOfWorkInterceptor;
-import org.qi4j.api.common.Visibility;
 
 /**
  * @author edward.yakop@gmail.com
@@ -31,7 +31,7 @@ public class Struts2PluginAssembler
     implements Assembler
 {
     private final ActionConfiguration actionConfiguration;
-    
+
     public Struts2PluginAssembler( ActionConfiguration actionConfiguration )
     {
         this.actionConfiguration = actionConfiguration;

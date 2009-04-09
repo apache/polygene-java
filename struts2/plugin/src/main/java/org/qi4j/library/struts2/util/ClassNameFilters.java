@@ -2,7 +2,9 @@ package org.qi4j.library.struts2.util;
 
 public final class ClassNameFilters
 {
-    private ClassNameFilters() {}
+    private ClassNameFilters()
+    {
+    }
 
     public static ClassNameFilter passThruFilter = new ClassNameFilter()
     {
@@ -29,6 +31,6 @@ public final class ClassNameFilters
             }
         };
     }
-    
-    
+
+
 }

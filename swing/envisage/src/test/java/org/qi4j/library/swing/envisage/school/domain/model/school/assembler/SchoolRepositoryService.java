@@ -16,18 +16,18 @@
 */
 package org.qi4j.library.swing.envisage.school.domain.model.school.assembler;
 
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.library.swing.envisage.school.domain.model.school.School;
-import org.qi4j.library.swing.envisage.school.domain.model.school.SchoolRepository;
-import org.qi4j.library.swing.envisage.school.domain.model.school.SchoolId;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.library.swing.envisage.school.domain.model.school.School;
+import org.qi4j.library.swing.envisage.school.domain.model.school.SchoolId;
+import org.qi4j.library.swing.envisage.school.domain.model.school.SchoolRepository;
 
 /**
  * @author edward.yakop@gmail.com

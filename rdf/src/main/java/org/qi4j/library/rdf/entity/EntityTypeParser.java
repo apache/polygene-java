@@ -14,27 +14,16 @@
 
 package org.qi4j.library.rdf.entity;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Collections;
-import org.openrdf.model.BNode;
-import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.qi4j.api.entity.Identity;
-import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.util.Classes;
-import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.library.rdf.Qi4jEntityType;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
+
+import java.util.ArrayList;
 
 /**
  * Parser for RDF to EntityType.
@@ -45,7 +34,7 @@ public class EntityTypeParser
     {
     }
 
-    public EntityType parse( Iterable<Statement> entityTypeGraph)
+    public EntityType parse( Iterable<Statement> entityTypeGraph )
     {
         String type = null;
         String uri = null;
@@ -62,17 +51,17 @@ public class EntityTypeParser
                 type = Classes.toClassName( statement.getObject().toString() );
                 uri = statement.getSubject().stringValue();
             }
-            else if (statement.getPredicate().equals( Qi4jEntityType.TYPE ))
+            else if( statement.getPredicate().equals( Qi4jEntityType.TYPE ) )
             {
-                queryable = Boolean.parseBoolean( statement.getObject().stringValue());
+                queryable = Boolean.parseBoolean( statement.getObject().stringValue() );
             }
-            else if (statement.getPredicate().equals( Qi4jEntityType.QUERYABLE ))
+            else if( statement.getPredicate().equals( Qi4jEntityType.QUERYABLE ) )
             {
-                queryable = Boolean.parseBoolean( statement.getObject().stringValue());
+                queryable = Boolean.parseBoolean( statement.getObject().stringValue() );
             }
-            else if (statement.getPredicate().equals( Qi4jEntityType.VERSION ))
+            else if( statement.getPredicate().equals( Qi4jEntityType.VERSION ) )
             {
-                queryable = Boolean.parseBoolean( statement.getObject().stringValue());
+                queryable = Boolean.parseBoolean( statement.getObject().stringValue() );
             }
 
 /*
@@ -114,7 +103,7 @@ public class EntityTypeParser
 */
         }
 
-        EntityType entityType = new EntityType(type, uri, queryable, mixinTypes, properties, associations, manyAssociations);
+        EntityType entityType = new EntityType( type, uri, queryable, mixinTypes, properties, associations, manyAssociations );
         return entityType;
     }
 }

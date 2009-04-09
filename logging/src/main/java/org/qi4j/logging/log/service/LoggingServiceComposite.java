@@ -18,8 +18,8 @@
 package org.qi4j.logging.log.service;
 
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.sideeffect.SideEffects;
 
 @SideEffects( { LogOnConsoleSideEffect.class } )
 @Mixins( { LoggingServiceMixin.class } )

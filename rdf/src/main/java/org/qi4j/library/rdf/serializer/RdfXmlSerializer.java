@@ -17,13 +17,7 @@
  */
 package org.qi4j.library.rdf.serializer;
 
-import java.io.Writer;
-import org.openrdf.model.Statement;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.rdfxml.util.RDFXMLPrettyWriterFactory;
-import org.qi4j.library.rdf.Qi4jRdf;
-import org.qi4j.library.rdf.Rdfs;
 
 public final class RdfXmlSerializer extends AbstractSerializer
 {

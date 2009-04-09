@@ -14,14 +14,6 @@
 
 package org.qi4j.library.http;
 
-import java.io.File;
-import java.net.InetAddress;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.security.CodeSource;
-import java.security.ProtectionDomain;
-import javax.servlet.Filter;
-import javax.servlet.Servlet;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
@@ -34,9 +26,18 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.library.http.Dispatchers.Dispatcher;
+import org.qi4j.spi.service.ServiceDescriptor;
+
+import javax.servlet.Filter;
+import javax.servlet.Servlet;
+import java.io.File;
+import java.net.InetAddress;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 
 /**
  * JAVADOC

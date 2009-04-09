@@ -77,13 +77,13 @@ public class DescriptorUtilities
         return new ServiceUsageFinder().findServiceUsage( descriptor );
     }
 
-    public static List<ServiceDetailDescriptor> findModuleAPI (ModuleDetailDescriptor descriptor)
+    public static List<ServiceDetailDescriptor> findModuleAPI( ModuleDetailDescriptor descriptor )
     {
-        return new APIFinder().findModuleAPI(descriptor);
+        return new APIFinder().findModuleAPI( descriptor );
     }
 
-    public static List<ServiceDetailDescriptor> findLayerAPI (LayerDetailDescriptor descriptor)
+    public static List<ServiceDetailDescriptor> findLayerAPI( LayerDetailDescriptor descriptor )
     {
-        return new APIFinder().findLayerAPI(descriptor);
+        return new APIFinder().findLayerAPI( descriptor );
     }
 }
