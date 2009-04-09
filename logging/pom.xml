@@ -26,11 +26,6 @@
     </dependency>
     <dependency>
       <groupId>org.qi4j.library</groupId>
-      <artifactId>qi4j-lib-framework</artifactId>
-      <version>0.7-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.qi4j.library</groupId>
       <artifactId>qi4j-lib-rdf</artifactId>
       <version>0.7-SNAPSHOT</version>
     </dependency>
@@ -39,21 +34,13 @@
       <artifactId>junit</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.qi4j.extension</groupId>
-      <artifactId>qi4j-indexing-rdf</artifactId>
-      <version>0.7-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-testsupport</artifactId>
-      <version>0.7-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-runtime</artifactId>
-      <version>0.7-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

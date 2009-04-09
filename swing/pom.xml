@@ -14,8 +14,6 @@
   <name>Qi4j Library - Swing (Build POM)</name>
 
   <modules>
-    <!--    <module>components</module> -->
-    <module>entity-viewer</module>
     <module>envisage</module>
   </modules>
 

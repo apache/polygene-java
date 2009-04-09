@@ -15,11 +15,6 @@
       <artifactId>qi4j-core-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.qi4j.library</groupId>
-      <artifactId>qi4j-lib-framework</artifactId>
-      <version>0.7-SNAPSHOT</version>
-    </dependency>
-    <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-testsupport</artifactId>
       <scope>test</scope>
