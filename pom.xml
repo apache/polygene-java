@@ -29,7 +29,6 @@
     <module>logging</module>
     <module>rdf</module>
     <module>scripting</module>
-    <module>swing</module>
     <module>uid</module>
     <module>struts2</module>
     <module>spring</module>

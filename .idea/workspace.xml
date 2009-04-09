@@ -2,36 +2,11 @@
 <project relativePaths="false" version="4">
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/ant.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_library_qi4j_lib_beans_0_7_SNAPSHOT.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/swing/envisage/qi4j-lib-swing-envisage.iml" afterPath="$PROJECT_DIR$/swing/envisage/qi4j-lib-swing-envisage.iml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_core_qi4j_core_testsupport_0_7_SNAPSHOT.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/swing/entity-viewer/qi4j-lib-entity-viewer.iml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/swing/entity-viewer/src/test/java/org/qi4j/swing/library/swing/entityviewer/sample/ApplicationSample.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cache/pom.xml" afterPath="$PROJECT_DIR$/cache/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cache/qi4j-lib-cache.iml" afterPath="$PROJECT_DIR$/cache/qi4j-lib-cache.iml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/swing/qi4j-lib-swing.iml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_core_qi4j_core_runtime_0_7_SNAPSHOT.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/auth/pom.xml" afterPath="$PROJECT_DIR$/auth/pom.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/swing/entity-viewer/pom.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/auth/qi4j-lib-auth.iml" afterPath="$PROJECT_DIR$/auth/qi4j-lib-auth.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/example/qi4j-struts2-example.iml" afterPath="$PROJECT_DIR$/struts2/example/qi4j-struts2-example.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cache/src/main/java/org/qi4j/library/cache/InvalidateCacheOnSettersSideEffect.java" afterPath="$PROJECT_DIR$/cache/src/main/java/org/qi4j/library/cache/InvalidateCacheOnSettersSideEffect.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/swing/pom.xml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/swing/entity-viewer/src/main/java/org/qi4j/library/swing/entityviewer/PropertiesPanel.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_library_qi4j_lib_framework_0_7_SNAPSHOT.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/qi4j-lib-logging.iml" afterPath="$PROJECT_DIR$/logging/qi4j-lib-logging.iml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/swing/entity-viewer/src/main/java/org/qi4j/library/swing/entityviewer/TreePanel.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/swing/entity-viewer/src/main/java/org/qi4j/library/swing/entityviewer/EntityViewer.form" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spring/pom.xml" afterPath="$PROJECT_DIR$/spring/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/logging/pom.xml" afterPath="$PROJECT_DIR$/logging/pom.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_jgoodies_forms_1_2_1.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/logging/src/test/java/org/qi4j/logging/tracing/TracingTest.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/swing/pom.xml" afterPath="$PROJECT_DIR$/swing/pom.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/swing/entity-viewer/src/main/java/org/qi4j/library/swing/entityviewer/EntityViewer.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/plugin/qi4j-struts2-plugin.iml" afterPath="$PROJECT_DIR$/struts2/plugin/qi4j-struts2-plugin.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/struts2/codebehind/qi4j-struts2-codebehind-plugin.iml" afterPath="$PROJECT_DIR$/struts2/codebehind/qi4j-struts2-codebehind-plugin.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
     </list>
     <ignored path=".idea/workspace.xml" />
     <ignored path="qi4j-libraries.iws" />
@@ -90,29 +65,82 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Main.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/swing/envisage/src/main/java/org/qi4j/library/swing/envisage/Main.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="0" selection-start="1632" selection-end="1632" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="296" column="159" selection-start="8884" selection-end="8884" vertical-scroll-proportion="0.0">
+            <state line="31" column="157" selection-start="1058" selection-end="1058" vertical-scroll-proportion="-9.931034">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/spring/pom.xml">
+      <file leaf-file-name="Nameable.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/Nameable.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="59" column="0" selection-start="1887" selection-end="1887" vertical-scroll-proportion="-24.413794">
+            <state line="4" column="17" selection-start="100" selection-end="100" vertical-scroll-proportion="0.0">
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Qi4jCodebehindPackageProvider.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/struts2/codebehind/src/main/java/org/qi4j/library/struts2/codebehind/Qi4jCodebehindPackageProvider.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="41" column="42" selection-start="1687" selection-end="1687" vertical-scroll-proportion="0.4631579">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Item.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/Item.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="4" column="17" selection-start="105" selection-end="105" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="JettyLauncher.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/JettyLauncher.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="7" column="13" selection-start="226" selection-end="226" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ExampleBootstrapListener.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/listener/ExampleBootstrapListener.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="37" column="13" selection-start="1507" selection-end="1507" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DateConverter.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/converters/DateConverter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="26" column="13" selection-start="915" selection-end="915" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AddItem.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/actions/AddItem.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="17" column="17" selection-start="736" selection-end="736" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -127,38 +155,9 @@
         </entry>
       </file>
       <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cache/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="17" column="0" selection-start="676" selection-end="676" vertical-scroll-proportion="-7.034483">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="InvalidateCacheOnSettersSideEffect.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cache/src/main/java/org/qi4j/library/cache/InvalidateCacheOnSettersSideEffect.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="36" column="0" selection-start="940" selection-end="940" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/logging/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="32" column="160" selection-start="1161" selection-end="1161" vertical-scroll-proportion="-10.862069">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pom.xml" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/swing/envisage/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="35" column="0" selection-start="1233" selection-end="1233" vertical-scroll-proportion="0.43243244">
+            <state line="30" column="160" selection-start="1113" selection-end="1113" vertical-scroll-proportion="-10.034483">
               <folding />
             </state>
           </provider>
@@ -204,8 +203,18 @@
           <option name="myItemId" value="qi4j-libraries" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
+      </PATH>
+      <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-library" />
+          <option name="myItemId" value="qi4j-libraries" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-struts2 and modules" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-struts2-plugin" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -215,41 +224,15 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-library" />
+          <option name="myItemId" value="qi4j-struts2 and modules" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-struts2-plugin" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-libraries" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-libraries" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-libraries" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-lib-logging" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-libraries" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-lib-logging" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="logging" />
+          <option name="myItemId" value="plugin" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -259,21 +242,19 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-lib-auth" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-libraries" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+          <option name="myItemId" value="qi4j-struts2 and modules" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-lib-auth" />
+          <option name="myItemId" value="qi4j-struts2-plugin" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="auth" />
+          <option name="myItemId" value="plugin" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -283,29 +264,23 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-lib-swing and modules" />
+          <option name="myItemId" value="qi4j-struts2 and modules" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-lib-swing-envisage" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-libraries" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-lib-swing and modules" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-lib-swing-envisage" />
+          <option name="myItemId" value="qi4j-struts2-plugin" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="envisage" />
+          <option name="myItemId" value="plugin" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="main" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -315,40 +290,42 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-lib-swing and modules" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-libraries" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-lib-swing and modules" />
+          <option name="myItemId" value="qi4j-struts2 and modules" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-lib-entity-viewer" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-libraries" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-lib-swing and modules" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-lib-entity-viewer" />
+          <option name="myItemId" value="qi4j-struts2-plugin" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="entity-viewer" />
+          <option name="myItemId" value="plugin" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="main" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="java" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="struts2" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-libraries" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-struts2 and modules" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode" />
         </PATH_ELEMENT>
       </PATH>
     </subPane>
@@ -602,13 +579,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/scripting/groovy/src/test/java/org/qi4j/scripting/groovy/GroovyComposite.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="32" selection-start="773" selection-end="773" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scripting/common/src/main/java/org/qi4j/scripting/common/ScriptException.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="19" column="13" selection-start="687" selection-end="687" vertical-scroll-proportion="0.0">
@@ -626,27 +596,6 @@
     <entry file="file://$PROJECT_DIR$/scripting/beanshell/src/test/java/org/qi4j/scripting/beanshell/BeanShellComposite.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="20" column="35" selection-start="782" selection-end="782" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/swing/envisage/src/test/java/org/qi4j/library/swing/envisage/sample/EnvisageSample.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="13" selection-start="1423" selection-end="1423" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/swing/envisage/src/test/java/org/qi4j/library/swing/envisage/school/SchoolAssembler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="13" selection-start="1209" selection-end="1209" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/swing/envisage/src/main/java/org/qi4j/library/swing/envisage/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="0" selection-start="1632" selection-end="1632" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -681,23 +630,73 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="296" column="159" selection-start="8884" selection-end="8884" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/logging/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="160" selection-start="1161" selection-end="1161" vertical-scroll-proportion="-10.862069">
+        <state line="30" column="160" selection-start="1113" selection-end="1113" vertical-scroll-proportion="-10.034483">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/swing/envisage/pom.xml">
+    <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="0" selection-start="1233" selection-end="1233" vertical-scroll-proportion="0.43243244">
+        <state line="31" column="157" selection-start="1058" selection-end="1058" vertical-scroll-proportion="-9.931034">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/Item.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="17" selection-start="105" selection-end="105" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/listener/ExampleBootstrapListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="13" selection-start="1507" selection-end="1507" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/converters/DateConverter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="13" selection-start="915" selection-end="915" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/actions/AddItem.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="17" selection-start="736" selection-end="736" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/JettyLauncher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="13" selection-start="226" selection-end="226" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/Nameable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="17" selection-start="100" selection-end="100" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/struts2/codebehind/src/main/java/org/qi4j/library/struts2/codebehind/Qi4jCodebehindPackageProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="41" column="42" selection-start="1687" selection-end="1687" vertical-scroll-proportion="0.4631579">
           <folding />
         </state>
       </provider>

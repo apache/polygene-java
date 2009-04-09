@@ -21,6 +21,5 @@
   <modules>
     <module>plugin</module>
     <module>codebehind</module>
-    <module>example</module>
   </modules>
 </project>
