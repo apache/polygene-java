@@ -3,11 +3,11 @@
   <parent>
     <groupId>org.qi4j</groupId>
     <artifactId>qi4j-library</artifactId>
-    <version>0.7</version>
+    <version>0.8-SNAPSHOT</version>
   </parent>
   <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-lib-constraints</artifactId>
-  <version>0.7</version>
+  <version>0.8-SNAPSHOT</version>
   <name>Qi4j Library - Constraints</name>
   <dependencies>
     <dependency>

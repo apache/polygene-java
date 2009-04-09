@@ -3,7 +3,7 @@
   <groupId>org.qi4j</groupId>
   <artifactId>qi4j-library</artifactId>
   <name>Qi4j Library (Build POM)</name>
-  <version>0.7</version>
+  <version>0.8-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <inceptionYear>2007</inceptionYear>
