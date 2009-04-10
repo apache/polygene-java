@@ -16,16 +16,14 @@ package org.qi4j.rest.type;
 import java.io.StringWriter;
 import java.util.Map;
 import org.openrdf.model.Statement;
-import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.structure.Module;
-import org.qi4j.library.rdf.entity.EntityTypeSerializer;
-import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
-import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.library.rdf.DcRdf;
 import org.qi4j.library.rdf.Qi4jEntityType;
+import org.qi4j.library.rdf.Rdfs;
+import org.qi4j.library.rdf.entity.EntityTypeSerializer;
+import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityType;
@@ -34,16 +32,16 @@ import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.value.PrimitiveType;
 import org.restlet.Context;
-import org.restlet.representation.Variant;
-import org.restlet.representation.Representation;
-import org.restlet.representation.StringRepresentation;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
+import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
+import org.restlet.resource.StringRepresentation;
+import org.restlet.resource.Variant;
 
 public class EntityTypeResource extends Resource
 {
@@ -146,7 +144,7 @@ public class EntityTypeResource extends Resource
         for( PropertyType propertyType : entityType.properties() )
         {
             // TODO support more types
-            if (propertyType.type() instanceof PrimitiveType )
+            if( propertyType.type() instanceof PrimitiveType )
             {
                 buf.append( "<tr><td>" +
                             "<label for=\"" + propertyType.qualifiedName() + "\" >" +

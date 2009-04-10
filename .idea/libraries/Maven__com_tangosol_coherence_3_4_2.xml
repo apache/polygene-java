@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.tangosol:coherence:3.4.2">
+    <CLASSES>
+      <root url="jar://$M2_REPO$/com/tangosol/coherence/3.4.2/coherence-3.4.2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$M2_REPO$/com/tangosol/coherence/3.4.2/coherence-3.4.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$M2_REPO$/com/tangosol/coherence/3.4.2/coherence-3.4.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

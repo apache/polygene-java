@@ -16,7 +16,7 @@ package org.qi4j.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.IOException;
-import org.restlet.representation.StringRepresentation;
+import org.restlet.resource.StringRepresentation;
 
 public class ExceptionRepresentation extends StringRepresentation
 {

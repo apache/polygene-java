@@ -16,7 +16,6 @@
  */
 package org.qi4j.entitystore.coherence;
 
-import java.io.File;
 import org.junit.After;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;

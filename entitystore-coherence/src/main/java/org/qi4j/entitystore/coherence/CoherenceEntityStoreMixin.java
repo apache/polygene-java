@@ -27,7 +27,6 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
@@ -37,6 +36,7 @@ import org.qi4j.spi.entity.EntityTypeRegistryMixin;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.UnknownEntityTypeException;
+import org.qi4j.spi.service.ServiceDescriptor;
 
 public class CoherenceEntityStoreMixin extends EntityTypeRegistryMixin
     implements Activatable
@@ -131,11 +131,12 @@ public class CoherenceEntityStoreMixin extends EntityTypeRegistryMixin
                         final CoherenceEntityState value = state.getValue();
                         if( value.status() == EntityStatus.LOADED )
                         {
-                            if (value.isModified())
+                            if( value.isModified() )
                             {
                                 value.increaseVersion();
                             }
-                        } else
+                        }
+                        else
                         {
                             value.markAsLoaded();
                         }

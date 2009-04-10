@@ -53,12 +53,12 @@ import org.restlet.data.Method;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
-import org.restlet.representation.InputRepresentation;
-import org.restlet.representation.OutputRepresentation;
-import org.restlet.representation.Representation;
-import org.restlet.representation.Variant;
+import org.restlet.resource.InputRepresentation;
+import org.restlet.resource.OutputRepresentation;
+import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
+import org.restlet.resource.Variant;
 
 /**
  * JAVADOC

@@ -18,13 +18,13 @@
 package org.qi4j.rest.client;
 
 import org.openrdf.query.QueryLanguage;
+import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.configuration.Configuration;
 import org.qi4j.index.rdf.RdfFactory;
 import org.qi4j.index.rdf.RdfQueryParser;
 import org.qi4j.index.rdf.callback.CollectingQualifiedIdentityResultCallback;
@@ -34,9 +34,9 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.restlet.Uniform;
-import org.restlet.representation.SaxRepresentation;
-import org.restlet.data.Response;
 import org.restlet.data.Reference;
+import org.restlet.data.Response;
+import org.restlet.resource.SaxRepresentation;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLReaderAdapter;
@@ -56,7 +56,7 @@ public class SPARQLEntityFinderMixin
 
     public void activate() throws Exception
     {
-        sparqlQueryRef = new Reference(config.configuration().sparqlUrl().get());
+        sparqlQueryRef = new Reference( config.configuration().sparqlUrl().get() );
     }
 
     public void passivate() throws Exception
@@ -154,8 +154,10 @@ public class SPARQLEntityFinderMixin
             Reference queryReference = sparqlQueryRef.clone();
             queryReference.addQueryParameter( "query", query );
             Response response = client.get( queryReference );
-            if (!response.getStatus().isSuccess())
-                throw new SPARQLEntityFinderException(response.getRequest().getResourceRef(), response.getStatus());
+            if( !response.getStatus().isSuccess() )
+            {
+                throw new SPARQLEntityFinderException( response.getRequest().getResourceRef(), response.getStatus() );
+            }
 
             SaxRepresentation sax = response.getEntityAsSax();
             final EntityResultXMLReaderAdapter xmlReaderAdapter = new EntityResultXMLReaderAdapter( callback );

@@ -18,36 +18,36 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 import org.qi4j.api.entity.Entity;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.UnknownEntityTypeException;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.restlet.Context;
-import org.restlet.ext.atom.Feed;
-import org.restlet.ext.atom.Entry;
-import org.restlet.ext.atom.Text;
-import org.restlet.ext.atom.Link;
-import org.restlet.representation.Variant;
-import org.restlet.representation.Representation;
-import org.restlet.representation.DomRepresentation;
-import org.restlet.representation.WriterRepresentation;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
+import org.restlet.ext.atom.Entry;
+import org.restlet.ext.atom.Feed;
+import org.restlet.ext.atom.Link;
+import org.restlet.ext.atom.Text;
+import org.restlet.resource.DomRepresentation;
+import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
+import org.restlet.resource.Variant;
+import org.restlet.resource.WriterRepresentation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -204,15 +204,15 @@ public class AllEntitiesResource extends Resource
         try
         {
             Feed feed = new Feed();
-            feed.setTitle( new Text(MediaType.TEXT_PLAIN, "All entities") );
+            feed.setTitle( new Text( MediaType.TEXT_PLAIN, "All entities" ) );
             List<Entry> entries = feed.getEntries();
             final Iterable<QualifiedIdentity> query = entityFinder.findEntities( Entity.class.getName(), null, null, null, null );
             for( QualifiedIdentity qualifiedIdentity : query )
             {
                 Entry entry = new Entry();
-                entry.setTitle( new Text(MediaType.TEXT_PLAIN, qualifiedIdentity.toString()) );
+                entry.setTitle( new Text( MediaType.TEXT_PLAIN, qualifiedIdentity.toString() ) );
                 Link link = new Link();
-                link.setHref( getRequest().getResourceRef().clone().addSegment( qualifiedIdentity.type()).addSegment( qualifiedIdentity.identity() ));
+                link.setHref( getRequest().getResourceRef().clone().addSegment( qualifiedIdentity.type() ).addSegment( qualifiedIdentity.identity() ) );
                 entry.getLinks().add( link );
                 entries.add( entry );
             }
@@ -221,7 +221,7 @@ public class AllEntitiesResource extends Resource
         }
         catch( Exception e )
         {
-            throw new ResourceException(e);
+            throw new ResourceException( e );
         }
     }
 
@@ -239,7 +239,7 @@ public class AllEntitiesResource extends Resource
             Set<EntityType> entityTypes = new HashSet<EntityType>();
             for( EntityState entityState : newState )
             {
-                entityTypes.add( entityState.entityType());
+                entityTypes.add( entityState.entityType() );
             }
             for( EntityType entityType : entityTypes )
             {

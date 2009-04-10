@@ -13,13 +13,9 @@
  */
 package org.qi4j.rest.type;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.structure.Application;
@@ -29,20 +25,18 @@ import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.DescriptorVisitor;
 import org.restlet.Context;
-import org.restlet.ext.atom.Feed;
-import org.restlet.ext.atom.Entry;
-import org.restlet.ext.atom.Text;
-import org.restlet.ext.atom.Link;
-import org.restlet.representation.Variant;
-import org.restlet.representation.Representation;
-import org.restlet.representation.WriterRepresentation;
-import static org.restlet.data.CharacterSet.UTF_8;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
+import org.restlet.ext.atom.Entry;
+import org.restlet.ext.atom.Feed;
+import org.restlet.ext.atom.Link;
+import org.restlet.ext.atom.Text;
+import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
+import org.restlet.resource.Variant;
 
 public final class EntityTypesResource extends Resource
 {
@@ -52,7 +46,7 @@ public final class EntityTypesResource extends Resource
 
     public EntityTypesResource( @Uses Context context,
                                 @Uses Request request,
-                                @Uses Response response)
+                                @Uses Response response )
     {
         super( context, request, response );
 
@@ -67,7 +61,7 @@ public final class EntityTypesResource extends Resource
     {
         if( MediaType.APPLICATION_ATOM.equals( variant.getMediaType() ) )
         {
-            return representAtom( );
+            return representAtom();
         }
 
         throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
@@ -86,21 +80,21 @@ public final class EntityTypesResource extends Resource
                 Class<?> entityType = entityDescriptor.type();
                 if( spi.getEntityDescriptor( entityType, module ) != null )
                 {
-                    entityTypes.add( entityDescriptor);
+                    entityTypes.add( entityDescriptor );
                 }
             }
         } );
 
         Feed feed = new Feed();
-        feed.setTitle( new Text(MediaType.TEXT_PLAIN, "Entity types") );
+        feed.setTitle( new Text( MediaType.TEXT_PLAIN, "Entity types" ) );
         List<Entry> entries = feed.getEntries();
 
         for( EntityDescriptor entityType : entityTypes )
         {
             Entry entry = new Entry();
-            entry.setTitle( new Text(MediaType.TEXT_PLAIN, entityType.entityType().type()) );
+            entry.setTitle( new Text( MediaType.TEXT_PLAIN, entityType.entityType().type() ) );
             Link link = new Link();
-            link.setHref( getRequest().getResourceRef().clone().addSegment( entityType.entityType().version() ));
+            link.setHref( getRequest().getResourceRef().clone().addSegment( entityType.entityType().version() ) );
             entry.getLinks().add( link );
             entries.add( entry );
         }

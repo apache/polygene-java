@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <groupId>org.qi4j</groupId>
-    <artifactId>qi4j</artifactId>
+    <artifactId>qi4j-extensions</artifactId>
     <version>0.7-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -12,30 +12,32 @@
   <packaging>bundle</packaging>
 
   <properties>
-    <version.restlet>1.2-SNAPSHOT</version.restlet>
+    <version.restlet>1.2-M1</version.restlet>
     <version.openrdf>2.2.1</version.openrdf>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>
-      <artifactId>qi4j-core-bootstrap</artifactId>
-      <version>0.7-SNAPSHOT</version>
+      <artifactId>qi4j-core-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
-      <artifactId>qi4j-core-api</artifactId>
-      <version>0.7-SNAPSHOT</version>
+      <artifactId>qi4j-core-bootstrap</artifactId>
     </dependency>
     <dependency>
       <groupId>org.qi4j.library</groupId>
       <artifactId>qi4j-lib-rdf</artifactId>
-      <version>0.7-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.qi4j.extension</groupId>
       <artifactId>qi4j-indexing-rdf</artifactId>
       <version>0.7-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.restlet</groupId>
+      <artifactId>org.restlet</artifactId>
+      <version>${version.restlet}</version>
     </dependency>
     <dependency>
       <groupId>org.restlet</groupId>
@@ -55,6 +57,7 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
     </dependency>
     <dependency>
       <groupId>org.openrdf.sesame</groupId>
@@ -74,6 +77,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
+      <version>1.5.6</version>
       <scope>provided</scope>
     </dependency>
 
@@ -81,19 +85,15 @@
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-testsupport</artifactId>
-      <version>0.7-SNAPSHOT</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.qi4j.library</groupId>
       <artifactId>qi4j-lib-http</artifactId>
-      <version>0.7-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-runtime</artifactId>
-      <version>0.7-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>

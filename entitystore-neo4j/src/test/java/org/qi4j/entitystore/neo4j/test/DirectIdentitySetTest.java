@@ -28,12 +28,7 @@ public class DirectIdentitySetTest
 {
     public DirectIdentitySetTest()
     {
-        this( Configuration.DIRECT );
-    }
-
-    public DirectIdentitySetTest( Configuration config )
-    {
-        super( config, config == Configuration.INDIRECT, true );
+        super( Configuration.DIRECT, false, true );
     }
 
     @Test

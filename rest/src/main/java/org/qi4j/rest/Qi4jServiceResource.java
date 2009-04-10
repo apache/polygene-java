@@ -14,23 +14,19 @@
 
 package org.qi4j.rest;
 
-import org.restlet.resource.Resource;
-import org.restlet.resource.ResourceException;
-import org.restlet.representation.Representation;
-import org.restlet.representation.Variant;
-import org.restlet.representation.WriterRepresentation;
-import org.restlet.representation.StringRepresentation;
-import org.restlet.ext.atom.Service;
-import org.restlet.ext.atom.Workspace;
-import org.restlet.ext.atom.Collection;
+import org.qi4j.api.injection.scope.Uses;
 import org.restlet.Context;
-import org.restlet.Uniform;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
 import org.restlet.data.MediaType;
 import org.restlet.data.Reference;
-import org.qi4j.api.injection.scope.Uses;
-import java.io.IOException;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
+import org.restlet.ext.atom.Collection;
+import org.restlet.ext.atom.Service;
+import org.restlet.ext.atom.Workspace;
+import org.restlet.resource.Representation;
+import org.restlet.resource.Resource;
+import org.restlet.resource.ResourceException;
+import org.restlet.resource.Variant;
 
 /**
  * JAVADOC
@@ -48,19 +44,19 @@ public class Qi4jServiceResource extends Resource
 
     @Override public Representation represent( Variant variant ) throws ResourceException
     {
-            Service service = new Service(getContext().getServerDispatcher());
-            Workspace workspace = new Workspace(service, "Qi4j");
-            service.getWorkspaces().add( workspace );
+        Service service = new Service( getContext().getServerDispatcher() );
+        Workspace workspace = new Workspace( service, "Qi4j" );
+        service.getWorkspaces().add( workspace );
 
-            Reference root = getRequest().getResourceRef().getParentRef();
+        Reference root = getRequest().getResourceRef().getParentRef();
 
-            Collection entities = new Collection(workspace, "Entities", root.clone().addSegment( "entity").toString());
-            workspace.getCollections().add( entities );
+        Collection entities = new Collection( workspace, "Entities", root.clone().addSegment( "entity" ).toString() );
+        workspace.getCollections().add( entities );
 
-            Collection entityTypes = new Collection(workspace, "Entity types", root.clone().addSegment( "entitytypes").toString());
-            workspace.getCollections().add( entityTypes );
+        Collection entityTypes = new Collection( workspace, "Entity types", root.clone().addSegment( "entitytypes" ).toString() );
+        workspace.getCollections().add( entityTypes );
 
-            service.setMediaType( MediaType.APPLICATION_ATOMPUB_SERVICE );
-            return service;
+        service.setMediaType( MediaType.APPLICATION_ATOMPUB_SERVICE );
+        return service;
     }
 }

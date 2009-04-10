@@ -1,7 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <groupId>org.qi4j</groupId>
-    <artifactId>qi4j</artifactId>
+    <artifactId>qi4j-extensions</artifactId>
     <version>0.7-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -13,36 +14,31 @@
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>
-      <artifactId>qi4j-core-spi</artifactId>
-      <version>0.7-SNAPSHOT</version>
+      <artifactId>qi4j-core-api</artifactId>
     </dependency>
-      <dependency>
-        <groupId>org.qi4j.core</groupId>
-        <artifactId>qi4j-core-bootstrap</artifactId>
-        <version>0.7-SNAPSHOT</version>
-      </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
-      <artifactId>qi4j-core-testsupport</artifactId>
-      <version>0.7-SNAPSHOT</version>
-      <scope>test</scope>
+      <artifactId>qi4j-core-spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-bootstrap</artifactId>
     </dependency>
     <dependency>
       <groupId>org.qi4j.library</groupId>
       <artifactId>qi4j-lib-locking</artifactId>
-      <version>0.7-SNAPSHOT</version>
+    </dependency>
+
+    <!-- Tests -->
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-testsupport</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-runtime</artifactId>
-      <version>0.7-SNAPSHOT</version>
       <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework.ldap</groupId>
-      <artifactId>spring-ldap</artifactId>
-      <version>1.2.1</version>
     </dependency>
 
   </dependencies>

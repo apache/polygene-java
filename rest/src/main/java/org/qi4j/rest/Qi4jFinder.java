@@ -34,7 +34,7 @@ public class Qi4jFinder extends Finder
         super( context, targetClass );
     }
 
-    protected Handler createTarget( Class<? extends Handler> targetClass, Request request, Response response )
+    public Handler createTarget( Class<? extends Handler> targetClass, Request request, Response response )
     {
         ObjectBuilder<? extends Handler> builder = factory.newObjectBuilder( targetClass );
         builder.use( request );

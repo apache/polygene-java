@@ -17,11 +17,8 @@
  */
 package org.qi4j.entitystore.coherence;
 
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.property.Property;
 import org.qi4j.api.configuration.ConfigurationComposite;
-import sun.security.util.Cache;
+import org.qi4j.api.property.Property;
 
 public interface CoherenceConfiguration
     extends ConfigurationComposite

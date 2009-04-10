@@ -1,4 +1,6 @@
 
+
+
 Export-Package: org.qi4j.index.rdf.*;version="1"
 
 Import-Package: org.apache.commons.logging, \
@@ -39,7 +41,16 @@ Import-Package: org.apache.commons.logging, \
                 org.qi4j.spi.query, \
                 org.qi4j.spi.structure, \
                 org.qi4j.spi.value, \
+                org.qi4j.library.rdf.entity, \
+                org.qi4j.library.rdf.repository, \
                 org.slf4j, \
+                org.openrdf.model, \
+                org.openrdf.model.impl, \
+                org.openrdf.query, \
+                org.openrdf.repository, \
+                org.openrdf.repository.http, \
+                org.openrdf.rio, \
+                org.openrdf.rio.rdfxml.util, \
                 org.w3c.dom, \
                 org.xml.sax, \
                 org.xml.sax.helpers

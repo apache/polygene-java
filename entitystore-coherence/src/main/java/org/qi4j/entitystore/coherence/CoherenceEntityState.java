@@ -24,12 +24,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.helpers.DefaultEntityState;
-import org.qi4j.api.common.QualifiedName;
 
 class CoherenceEntityState extends DefaultEntityState
     implements PortableObject, EntityState
@@ -61,7 +61,7 @@ class CoherenceEntityState extends DefaultEntityState
         for( int i = 0; i < propertyCounter; i++ )
         {
             Object propertyValue = pofReader.readObject( i + counter );
-            properties.put(QualifiedName.fromQN(propertyNames.get(i)), propertyValue);
+            properties.put( QualifiedName.fromQN( propertyNames.get( i ) ), propertyValue );
         }
         pofReader.readRemainder();
         clearModified();

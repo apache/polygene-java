@@ -28,12 +28,7 @@ public class DirectIdentityListTest
 {
     public DirectIdentityListTest()
     {
-        this( Configuration.DIRECT );
-    }
-
-    public DirectIdentityListTest( Configuration config )
-    {
-        super( config, config == Configuration.INDIRECT, true );
+        super( Configuration.DIRECT, false, true );
     }
 
     // Tests...
