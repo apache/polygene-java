@@ -10,7 +10,6 @@
       <module fileurl="file://$PROJECT_DIR$/logging/qi4j-lib-logging.iml" filepath="$PROJECT_DIR$/logging/qi4j-lib-logging.iml" />
       <module fileurl="file://$PROJECT_DIR$/rdf/qi4j-lib-rdf.iml" filepath="$PROJECT_DIR$/rdf/qi4j-lib-rdf.iml" />
       <module fileurl="file://$PROJECT_DIR$/spring/qi4j-lib-spring.iml" filepath="$PROJECT_DIR$/spring/qi4j-lib-spring.iml" />
-      <module fileurl="file://$PROJECT_DIR$/swing/qi4j-lib-swing.iml" filepath="$PROJECT_DIR$/swing/qi4j-lib-swing.iml" group="qi4j-lib-swing and modules" />
       <module fileurl="file://$PROJECT_DIR$/uid/qi4j-lib-uid.iml" filepath="$PROJECT_DIR$/uid/qi4j-lib-uid.iml" />
       <module fileurl="file://$PROJECT_DIR$/qi4j-library.iml" filepath="$PROJECT_DIR$/qi4j-library.iml" />
       <module fileurl="file://$PROJECT_DIR$/scripting/beanshell/qi4j-script-beanshell.iml" filepath="$PROJECT_DIR$/scripting/beanshell/qi4j-script-beanshell.iml" group="qi4j-scripting and modules" />
@@ -21,7 +20,6 @@
       <module fileurl="file://$PROJECT_DIR$/scripting/qi4j-scripting.iml" filepath="$PROJECT_DIR$/scripting/qi4j-scripting.iml" group="qi4j-scripting and modules" />
       <module fileurl="file://$PROJECT_DIR$/struts2/qi4j-struts2.iml" filepath="$PROJECT_DIR$/struts2/qi4j-struts2.iml" group="qi4j-struts2 and modules" />
       <module fileurl="file://$PROJECT_DIR$/struts2/codebehind/qi4j-struts2-codebehind-plugin.iml" filepath="$PROJECT_DIR$/struts2/codebehind/qi4j-struts2-codebehind-plugin.iml" group="qi4j-struts2 and modules" />
-      <module fileurl="file://$PROJECT_DIR$/struts2/example/qi4j-struts2-example.iml" filepath="$PROJECT_DIR$/struts2/example/qi4j-struts2-example.iml" group="qi4j-struts2 and modules" />
       <module fileurl="file://$PROJECT_DIR$/struts2/plugin/qi4j-struts2-plugin.iml" filepath="$PROJECT_DIR$/struts2/plugin/qi4j-struts2-plugin.iml" group="qi4j-struts2 and modules" />
     </modules>
   </component>

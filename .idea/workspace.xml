@@ -2,11 +2,33 @@
 <project relativePaths="false" version="4">
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/swing/qi4j-lib-swing.iml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/swing/pom.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__fest_fest_assert_1_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_jgoodies_looks_2_2_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_struts_struts2_sitemesh_plugin_2_1_2.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_extension_qi4j_indexing_rdf_0_7_SNAPSHOT.xml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__bouncycastle_bcprov_jdk14_136.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_jempbox_jempbox_0_2_0.xml" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__mrj_MRJToolkitStubs_1_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_mortbay_jetty_jsp_api_2_1_6_1_11.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jdt_core_3_1_1.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_library_qi4j_lib_swing_visualizer_0_7_SNAPSHOT.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_fontbox_fontbox_0_1_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__pdfbox_pdfbox_0_7_3.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__bouncycastle_bcmail_jdk14_136.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_jcip_jcip_annotations_1_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__swinghelper_debug_1_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jgoodies_forms_1_0_5.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_prefuse_prefuse_20071021.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_mortbay_jetty_jsp_2_1_6_1_11.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__fest_fest_swing_junit_1_0rc2.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__ant_ant_1_6_5.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__fest_fest_util_1_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__opensymphony_sitemesh_2_3.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__fest_fest_reflect_1_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__fest_fest_swing_1_0rc2.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_directwebremoting_dwr_2_0_3.xml" afterPath="" />
     </list>
     <ignored path=".idea/workspace.xml" />
     <ignored path="qi4j-libraries.iws" />
@@ -68,79 +90,26 @@
       <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="31" column="157" selection-start="1058" selection-end="1058" vertical-scroll-proportion="-9.931034">
+            <state line="31" column="4" selection-start="1058" selection-end="1058" vertical-scroll-proportion="-9.931034">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Nameable.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/Nameable.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="17" selection-start="100" selection-end="100" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Qi4jCodebehindPackageProvider.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Qi4jCodebehindPackageProvider.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/struts2/codebehind/src/main/java/org/qi4j/library/struts2/codebehind/Qi4jCodebehindPackageProvider.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="41" column="42" selection-start="1687" selection-end="1687" vertical-scroll-proportion="0.4631579">
+            <state line="47" column="5" selection-start="1816" selection-end="1816" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Item.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/Item.java">
+      <file leaf-file-name="pom.xml" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/struts2/plugin/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="17" selection-start="105" selection-end="105" vertical-scroll-proportion="0.0">
+            <state line="23" column="53" selection-start="861" selection-end="861" vertical-scroll-proportion="0.47916666">
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="JettyLauncher.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/JettyLauncher.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="13" selection-start="226" selection-end="226" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ExampleBootstrapListener.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/listener/ExampleBootstrapListener.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="37" column="13" selection-start="1507" selection-end="1507" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DateConverter.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/converters/DateConverter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="26" column="13" selection-start="915" selection-end="915" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AddItem.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/actions/AddItem.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="17" column="17" selection-start="736" selection-end="736" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -148,7 +117,7 @@
       <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/auth/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="33" selection-start="512" selection-end="543" vertical-scroll-proportion="0.0">
+            <state line="10" column="33" selection-start="524" selection-end="543" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -157,7 +126,7 @@
       <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/logging/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="30" column="160" selection-start="1113" selection-end="1113" vertical-scroll-proportion="-10.034483">
+            <state line="30" column="17" selection-start="1113" selection-end="1113" vertical-scroll-proportion="-10.034483">
               <folding />
             </state>
           </provider>
@@ -525,16 +494,16 @@
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.6634409" order="0" side_tool="false" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.6655914" order="0" side_tool="false" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="6" side_tool="false" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3268817" sideWeight="0.5" order="8" side_tool="false" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3268817" sideWeight="0.5" order="8" side_tool="false" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32903227" sideWeight="0.5" order="2" side_tool="false" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32903227" sideWeight="0.5" order="2" side_tool="false" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="4" side_tool="false" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
@@ -625,78 +594,35 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/auth/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="33" selection-start="512" selection-end="543" vertical-scroll-proportion="0.0">
+        <state line="10" column="33" selection-start="524" selection-end="543" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/logging/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="160" selection-start="1113" selection-end="1113" vertical-scroll-proportion="-10.034483">
+        <state line="30" column="17" selection-start="1113" selection-end="1113" vertical-scroll-proportion="-10.034483">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="157" selection-start="1058" selection-end="1058" vertical-scroll-proportion="-9.931034">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/Item.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="17" selection-start="105" selection-end="105" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/listener/ExampleBootstrapListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="13" selection-start="1507" selection-end="1507" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/converters/DateConverter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="13" selection-start="915" selection-end="915" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/actions/AddItem.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="17" selection-start="736" selection-end="736" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/JettyLauncher.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="13" selection-start="226" selection-end="226" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/struts2/example/src/main/java/org/qi4j/library/struts2/example/Nameable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="17" selection-start="100" selection-end="100" vertical-scroll-proportion="0.0">
+        <state line="31" column="4" selection-start="1058" selection-end="1058" vertical-scroll-proportion="-9.931034">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/struts2/codebehind/src/main/java/org/qi4j/library/struts2/codebehind/Qi4jCodebehindPackageProvider.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="42" selection-start="1687" selection-end="1687" vertical-scroll-proportion="0.4631579">
+        <state line="47" column="5" selection-start="1816" selection-end="1816" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/struts2/plugin/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="53" selection-start="861" selection-end="861" vertical-scroll-proportion="0.47916666">
           <folding />
         </state>
       </provider>
