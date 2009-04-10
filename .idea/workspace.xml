@@ -2,23 +2,55 @@
 <project relativePaths="false" version="4">
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/indexing-rdf/licenses/commons-logging.license" afterPath="$PROJECT_DIR$/rest/licenses/commons-logging.license" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/entitystore-neo4j/licenses/neo4j-opensource.license" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rest/licenses/restlet-lgpl30.license" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/indexing-rdf/licenses/aduna.license" afterPath="$PROJECT_DIR$/rest/licenses/aduna.license" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/indexing-rdf/licenses/commons-httpclient.license" afterPath="$PROJECT_DIR$/rest/licenses/commons-httpclient.license" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rest/licenses/restlet-epl.license" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/indexing-rdf/licenses/commons-codec.license" afterPath="$PROJECT_DIR$/rest/licenses/commons-codec.license" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rest/licenses/restlet-lgpl21.license" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/indexing-rdf/licenses/openrdf.license" afterPath="$PROJECT_DIR$/rest/licenses/openrdf.license" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/entitystore-neo4j/licenses/neo4j-commercial.license" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/indexing-rdf/licenses/slf4j.license" afterPath="$PROJECT_DIR$/rest/licenses/slf4j.license" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rest/licenses/restlet.licenses" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/indexing-rdf/licenses/asm.license" afterPath="" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rest/licenses/restlet-cddl.license" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/TestConfig.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/java/org/qi4j/entitystore/legacy/TestConfig.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/main/java/org/qi4j/entitystore/legacy/LegacySqlClient.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/main/java/org/qi4j/entitystore/legacy/LegacySqlClient.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/entity/Account.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/java/org/qi4j/entitystore/legacy/entity/Account.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/DerbyDatabaseHandler.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/java/org/qi4j/entitystore/legacy/DerbyDatabaseHandler.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/entity/AccountComposite.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/java/org/qi4j/entitystore/legacy/entity/AccountComposite.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/entity/PersonComposite.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/java/org/qi4j/entitystore/legacy/entity/PersonComposite.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/resources/org/qi4j/entitystore/legacy/AccountComposite.xml" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/resources/org/qi4j/entitystore/legacy/AccountComposite.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/LICENSE" afterPath="$PROJECT_DIR$/entitystore-qrm/LICENSE" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/NOTICE" afterPath="$PROJECT_DIR$/entitystore-qrm/NOTICE" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/main/java/org/qi4j/entitystore/legacy/LegacySqlConfiguration.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/main/java/org/qi4j/entitystore/legacy/LegacySqlConfiguration.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/resources/org/qi4j/entitystore/legacy/test/SqlMapConfig.xml" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/resources/org/qi4j/entitystore/legacy/test/SqlMapConfig.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/dbInitializer/DBInitializerTest.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/java/org/qi4j/entitystore/legacy/dbInitializer/DBInitializerTest.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/resources/org/qi4j/entitystore/legacy/testDbSchema.sql" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/resources/org/qi4j/entitystore/legacy/testDbSchema.sql" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/main/java/org/qi4j/entitystore/legacy/LegacySqlEntityStore.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/main/java/org/qi4j/entitystore/legacy/LegacySqlEntityStore.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/main/java/org/qi4j/entitystore/legacy/internal/LegacyEntityState.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/main/java/org/qi4j/entitystore/legacy/internal/LegacyEntityState.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/dev-status.xml" afterPath="$PROJECT_DIR$/entitystore-qrm/dev-status.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/entitystore-legacy-sql.iml" afterPath="$PROJECT_DIR$/entitystore-qrm/entitystore-legacy-sql.iml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/resources/org/qi4j/entitystore/legacy/PersonComposite.xml" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/resources/org/qi4j/entitystore/legacy/PersonComposite.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/entity/HasLastName.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/java/org/qi4j/entitystore/legacy/entity/HasLastName.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/test/TestProperty.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/java/org/qi4j/entitystore/legacy/test/TestProperty.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/resources/org/qi4j/entitystore/legacy/testDbData.sql" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/resources/org/qi4j/entitystore/legacy/testDbData.sql" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/main/java/org/qi4j/entitystore/legacy/dbInitializer/DBInitializerConfigurationComposite.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/main/java/org/qi4j/entitystore/legacy/dbInitializer/DBInitializerConfigurationComposite.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/entity/HasPrimaryContactPerson.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/java/org/qi4j/entitystore/legacy/entity/HasPrimaryContactPerson.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/main/java/org/qi4j/entitystore/legacy/internal/CapitalizingIdentifierConverter.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/main/java/org/qi4j/entitystore/legacy/internal/CapitalizingIdentifierConverter.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/resources/org/qi4j/entitystore/legacy/SqlMapConfig.xml" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/resources/org/qi4j/entitystore/legacy/SqlMapConfig.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/IBatisClientTest.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/java/org/qi4j/entitystore/legacy/IBatisClientTest.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/qi4j-entitystore-legacy-sql.iml" afterPath="$PROJECT_DIR$/entitystore-qrm/qi4j-entitystore-legacy-sql.iml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/main/java/org/qi4j/entitystore/legacy/LegacySqlEntityStoreService.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/main/java/org/qi4j/entitystore/legacy/LegacySqlEntityStoreService.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/test/AbstractTestCase.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/java/org/qi4j/entitystore/legacy/test/AbstractTestCase.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/DerbyDatabaseHandlerTest.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/java/org/qi4j/entitystore/legacy/DerbyDatabaseHandlerTest.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/main/java/org/qi4j/entitystore/legacy/dbInitializer/DBInitializer.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/main/java/org/qi4j/entitystore/legacy/dbInitializer/DBInitializer.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/main/java/org/qi4j/entitystore/legacy/IdentifierConverter.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/main/java/org/qi4j/entitystore/legacy/IdentifierConverter.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/.gitignore" afterPath="$PROJECT_DIR$/entitystore-qrm/.gitignore" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/entity/HasFirstName.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/java/org/qi4j/entitystore/legacy/entity/HasFirstName.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/indexing-rdf/licenses/log4j.license" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/indexing-rdf/licenses/cglib.license" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/main/java/org/qi4j/entitystore/legacy/dbInitializer/DBInitializerConfiguration.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/main/java/org/qi4j/entitystore/legacy/dbInitializer/DBInitializerConfiguration.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/licenses/ibatis.license" afterPath="$PROJECT_DIR$/entitystore-qrm/licenses/ibatis.license" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/pom.xml" afterPath="$PROJECT_DIR$/entitystore-qrm/pom.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/entity/HasName.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/java/org/qi4j/entitystore/legacy/entity/HasName.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/DefaultIbatisEntityStoreTest.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/java/org/qi4j/entitystore/legacy/DefaultIbatisEntityStoreTest.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/internal/IBatisEntityStateTest.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/java/org/qi4j/entitystore/legacy/internal/IBatisEntityStateTest.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/resources/org/qi4j/entitystore/legacy/test/TestComposite.xml" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/resources/org/qi4j/entitystore/legacy/test/TestComposite.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/resources/derby.properties" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/resources/derby.properties" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/IBatisEntityStoreTest.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/java/org/qi4j/entitystore/legacy/IBatisEntityStoreTest.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/resources/org/qi4j/entitystore/legacy/test/testDbSchema.sql" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/resources/org/qi4j/entitystore/legacy/test/testDbSchema.sql" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/entity/Person.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/java/org/qi4j/entitystore/legacy/entity/Person.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/internal/CapitalizingIdentifierConverterTest.java" afterPath="$PROJECT_DIR$/entitystore-qrm/src/test/java/org/qi4j/entitystore/legacy/internal/CapitalizingIdentifierConverterTest.java" />
     </list>
     <ignored path="qi4j-extensions.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -122,19 +154,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="restlet-lgpl30.license" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="restlet-lgpl30.license" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/rest/licenses/restlet-lgpl30.license">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="32" column="12" selection-start="1354" selection-end="1354" vertical-scroll-proportion="0.67368424">
+            <state line="18" column="154" selection-start="744" selection-end="744" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="commons-logging.license" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/rest/licenses/commons-logging.license">
+      <file leaf-file-name="pom.xml" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+            <state line="33" column="31" selection-start="1175" selection-end="1175" vertical-scroll-proportion="0.4562212">
               <folding />
             </state>
           </provider>
@@ -205,8 +237,14 @@
           <option name="myItemId" value="qi4j-extensions" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
+      </PATH>
+      <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-rest" />
+          <option name="myItemId" value="qi4j-extensions" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-extensions" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -216,225 +254,11 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-rest" />
+          <option name="myItemId" value="qi4j-extensions" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="rest" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
           <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-rest" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="rest" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="licenses" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-indexing-rdf" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-indexing-rdf" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="indexing-rdf" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-neo4j" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-neo4j" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-neo4j" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-neo4j" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-neo4j" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="licenses" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-legacy-sql" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-legacy-sql" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-legacy-sql" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-legacy-sql" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-legacy-sql" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="src" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="test" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-legacy-sql" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-legacy-sql" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="src" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="test" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="java" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="legacy" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-legacy-sql" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-legacy-sql" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="src" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="main" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="java" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="legacy" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-legacy-sql" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-legacy-sql" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="licenses" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -706,7 +530,7 @@
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32903227" sideWeight="0.5" order="1" side_tool="false" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="6" side_tool="false" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32903227" sideWeight="0.5" order="-1" side_tool="false" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32903227" sideWeight="0.5" order="-1" side_tool="false" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" />
@@ -756,13 +580,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/rest/src/test/java/org/qi4j/rest/DomainAssembler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="157" selection-start="1224" selection-end="1224" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/entitystore-jdbm/licenses/jdbm.license">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
@@ -780,13 +597,6 @@
     <entry file="file://$PROJECT_DIR$/entitystore-neo4j/licenses/neo4j-commercial.license">
       <provider selected="true" editor-type-id="text-editor">
         <state line="2" column="54" selection-start="135" selection-end="135" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/entitystore-legacy-sql/licenses/ibatis.license">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="151" column="19" selection-start="0" selection-end="10174" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -863,7 +673,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/rest/licenses/restlet-lgpl30.license">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="12" selection-start="1354" selection-end="1354" vertical-scroll-proportion="0.67368424">
+        <state line="18" column="154" selection-start="744" selection-end="744" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="33" column="31" selection-start="1175" selection-end="1175" vertical-scroll-proportion="0.4562212">
           <folding />
         </state>
       </provider>

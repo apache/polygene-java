@@ -24,8 +24,8 @@
     <module>indexing-rdf</module>
     <module>rest</module>
     <module>entitystore-jdbm</module>
-    <module>entitystore-legacy-sql</module>
     <module>entitystore-neo4j</module>
+    <module>entitystore-qrm</module>
   </modules>
 
   <repositories>

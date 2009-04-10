@@ -6,8 +6,8 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extension</groupId>
-  <artifactId>qi4j-entitystore-legacy-sql</artifactId>
-  <name>Qi4j Extension - IBatis Store</name>
+  <artifactId>qi4j-entitystore-qrm</artifactId>
+  <name>Qi4j Extension - Qi4j-to-Relational Mapping Store</name>
   <version>0.7-SNAPSHOT</version>
 
   <properties>
