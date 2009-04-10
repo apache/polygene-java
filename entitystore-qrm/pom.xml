@@ -43,7 +43,7 @@
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-spi</artifactId>
     </dependency>
-
+                                    
     <dependency>
       <groupId>org.apache.ibatis</groupId>
       <artifactId>ibatis-sqlmap</artifactId>
