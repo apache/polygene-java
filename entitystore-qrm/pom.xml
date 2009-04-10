@@ -2,13 +2,13 @@
   <parent>
     <groupId>org.qi4j</groupId>
     <artifactId>qi4j-extensions</artifactId>
-    <version>0.7</version>
+    <version>0.7-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extension</groupId>
   <artifactId>qi4j-entitystore-qrm</artifactId>
   <name>Qi4j Extension - Qi4j-to-Relational Mapping Store</name>
-  <version>0.7</version>
+  <version>0.7-SNAPSHOT</version>
 
   <properties>
     <dependency.version.derby>10.3.2.1</dependency.version.derby>
