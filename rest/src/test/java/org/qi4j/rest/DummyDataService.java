@@ -53,11 +53,11 @@ public interface DummyDataService
                 builder2.stateOfComposite().manyAssociation().add( testEntity );
                 builder2.stateOfComposite().manyAssociation().add( testEntity );
 
-                EntityBuilder<TestRole> builder3 = unitOfWork.newEntityBuilder(TestRole.class);
+                EntityBuilder<TestRole> builder3 = unitOfWork.newEntityBuilder( TestRole.class );
                 builder3.stateOfComposite().name().set( "A role" );
                 TestRole testRole = builder3.newInstance();
 
-                builder2.stateOfComposite().manyAssociationQualifier().add( qualifier( testEntity, testRole ));
+                builder2.stateOfComposite().manyAssociationQualifier().add( qualifier( testEntity, testRole ) );
 
                 TestEntity testEntity2 = builder2.newInstance();
 

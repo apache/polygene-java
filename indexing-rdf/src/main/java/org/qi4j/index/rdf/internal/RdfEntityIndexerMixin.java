@@ -17,9 +17,6 @@
  */
 package org.qi4j.index.rdf.internal;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
@@ -39,6 +36,10 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStoreListener;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * JAVADOC Add JavaDoc

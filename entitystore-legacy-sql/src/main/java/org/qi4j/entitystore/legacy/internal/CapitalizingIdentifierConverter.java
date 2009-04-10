@@ -14,11 +14,12 @@
 
 package org.qi4j.entitystore.legacy.internal;
 
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.entitystore.legacy.IdentifierConverter;
+
+import static java.lang.String.format;
 import java.util.HashMap;
 import java.util.Map;
-import static java.lang.String.format;
-import org.qi4j.entitystore.legacy.IdentifierConverter;
-import org.qi4j.api.common.QualifiedName;
 
 /**
  * @autor Michael Hunger
@@ -52,8 +53,10 @@ public class CapitalizingIdentifierConverter implements IdentifierConverter
         for( Map.Entry<QualifiedName, Object> entry : rawData.entrySet() )
         {
             final String convertedIdentifier = convertIdentifier( entry.getKey() );
-            if (result.containsKey( convertedIdentifier ))
-                throw new IllegalArgumentException( format("Duplicate Key: %s -> %s",entry.getKey(),convertedIdentifier));
+            if( result.containsKey( convertedIdentifier ) )
+            {
+                throw new IllegalArgumentException( format( "Duplicate Key: %s -> %s", entry.getKey(), convertedIdentifier ) );
+            }
             result.put( convertedIdentifier, entry.getValue() );
         }
         return result;

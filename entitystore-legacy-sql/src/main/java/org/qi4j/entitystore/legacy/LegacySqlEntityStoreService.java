@@ -16,15 +16,14 @@
  */
 package org.qi4j.entitystore.legacy;
 
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.spi.entity.EntityStore;
 
 /**
  * {@code IBatisEntityStoreComposite} provides integration between qi4j and ibatis.
- *
  */
 @Mixins( LegacySqlEntityStore.class )
 public interface LegacySqlEntityStoreService

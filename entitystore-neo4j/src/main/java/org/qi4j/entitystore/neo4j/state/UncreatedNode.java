@@ -16,21 +16,10 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import org.neo4j.api.core.*;
+
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.NeoService;
-import org.neo4j.api.core.Node;
-import org.neo4j.api.core.Relationship;
-import org.neo4j.api.core.RelationshipType;
-import org.neo4j.api.core.ReturnableEvaluator;
-import org.neo4j.api.core.StopEvaluator;
-import org.neo4j.api.core.TraversalPosition;
-import org.neo4j.api.core.Traverser;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -107,10 +96,12 @@ public class UncreatedNode implements Node
 
 
     @Override
-    public boolean equals(Object obj) {
-    	
-    	return obj instanceof Node && ((Node)obj).getId() == getId();
+    public boolean equals( Object obj )
+    {
+
+        return obj instanceof Node && ( (Node) obj ).getId() == getId();
     }
+
     public long getId()
     {
         return node().getId();

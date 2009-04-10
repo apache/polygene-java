@@ -15,8 +15,9 @@
 package org.qi4j.rest;
 
 import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+
 import javax.management.MBeanServer;
 
 /**
@@ -26,7 +27,7 @@ public class JMXAssembler implements Assembler
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.importServices( MBeanServer.class ).importedBy( MBeanServerImporter.class);
+        module.importServices( MBeanServer.class ).importedBy( MBeanServerImporter.class );
         module.addServices( JMXConfigurationService.class ).instantiateOnStartup();
     }
 

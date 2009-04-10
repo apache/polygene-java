@@ -15,27 +15,11 @@
 package org.qi4j.rest.query;
 
 import info.aduna.xml.XMLWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.Collections;
-import java.util.Enumeration;
 import org.openrdf.http.protocol.Protocol;
-import static org.openrdf.http.protocol.Protocol.BINDING_PREFIX;
-import static org.openrdf.http.protocol.Protocol.DEFAULT_GRAPH_PARAM_NAME;
-import static org.openrdf.http.protocol.Protocol.NAMED_GRAPH_PARAM_NAME;
+import static org.openrdf.http.protocol.Protocol.*;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
-import org.openrdf.query.BooleanQuery;
-import org.openrdf.query.GraphQuery;
-import org.openrdf.query.MalformedQueryException;
-import org.openrdf.query.Query;
-import org.openrdf.query.QueryEvaluationException;
-import org.openrdf.query.QueryLanguage;
-import org.openrdf.query.QueryResultUtil;
-import org.openrdf.query.TupleQuery;
-import org.openrdf.query.TupleQueryResult;
-import org.openrdf.query.UnsupportedQueryLanguageException;
+import org.openrdf.query.*;
 import org.openrdf.query.impl.DatasetImpl;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
 import org.openrdf.query.resultio.sparqljson.SPARQLResultsJSONWriterFactory;
@@ -47,18 +31,14 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.rest.RestApplication;
 import org.restlet.Context;
-import org.restlet.data.Form;
-import org.restlet.data.MediaType;
-import org.restlet.data.Method;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.data.Status;
-import org.restlet.resource.InputRepresentation;
-import org.restlet.resource.OutputRepresentation;
-import org.restlet.resource.Representation;
-import org.restlet.resource.Resource;
-import org.restlet.resource.ResourceException;
-import org.restlet.resource.Variant;
+import org.restlet.data.*;
+import org.restlet.resource.*;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.Collections;
+import java.util.Enumeration;
 
 /**
  * JAVADOC

@@ -13,14 +13,6 @@
  */
 package org.qi4j.rest.entity;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.Writer;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.injection.scope.Service;
@@ -40,21 +32,15 @@ import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.value.PrimitiveType;
 import org.restlet.Context;
-import org.restlet.data.CharacterSet;
-import org.restlet.data.Form;
-import org.restlet.data.MediaType;
-import org.restlet.data.Reference;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.data.Status;
-import org.restlet.resource.DomRepresentation;
-import org.restlet.resource.Representation;
-import org.restlet.resource.Resource;
-import org.restlet.resource.ResourceException;
-import org.restlet.resource.Variant;
-import org.restlet.resource.WriterRepresentation;
+import org.restlet.data.*;
+import org.restlet.resource.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import java.io.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * Listing of all Entities.

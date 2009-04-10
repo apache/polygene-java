@@ -16,17 +16,14 @@
  */
 package org.qi4j.entitystore.legacy.dbInitializer;
 
-import static junit.framework.Assert.fail;
-import org.junit.Test;
 import org.junit.After;
+import org.junit.Test;
 import org.qi4j.entitystore.legacy.DerbyDatabaseHandler;
-import org.qi4j.entitystore.legacy.dbInitializer.DBInitializer;
-import org.qi4j.entitystore.legacy.dbInitializer.DBInitializerConfiguration;
+
 import java.util.Properties;
 
 /**
  * {@code DBInitializerTest} test db initializer.
- *
  */
 public final class DBInitializerTest
 {

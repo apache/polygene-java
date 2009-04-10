@@ -14,14 +14,14 @@
 
 package org.qi4j.entitystore.legacy;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 import org.junit.After;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
-import org.qi4j.entitystore.legacy.DerbyDatabaseHandler;
+
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 
 public class DerbyDatabaseHandlerTest
 {
@@ -32,14 +32,16 @@ public class DerbyDatabaseHandlerTest
     {
         final Connection connection = derbyDatabaseHandler.getJDBCConnection();
         final DatabaseMetaData databaseMetaData = connection.getMetaData();
-        assertNotNull( "DataBaseMetaData from initialized DB",databaseMetaData );
+        assertNotNull( "DataBaseMetaData from initialized DB", databaseMetaData );
     }
 
     @After
     public void tearDown() throws Exception
     {
-        if (derbyDatabaseHandler!=null)
+        if( derbyDatabaseHandler != null )
+        {
             derbyDatabaseHandler.shutdown();
+        }
 
     }
 

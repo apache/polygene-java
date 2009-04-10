@@ -17,9 +17,10 @@
  */
 package org.qi4j.index.rdf.callback;
 
+import org.qi4j.spi.entity.QualifiedIdentity;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import org.qi4j.spi.entity.QualifiedIdentity;
 
 public class CollectingQualifiedIdentityResultCallback
     implements QualifiedIdentityResultCallback

@@ -17,23 +17,12 @@
  */
 package org.qi4j.index.rdf.internal;
 
-import static java.lang.String.format;
 import org.openrdf.query.QueryLanguage;
-import org.qi4j.api.query.grammar.AssociationIsNullPredicate;
-import org.qi4j.api.query.grammar.AssociationNullPredicate;
-import org.qi4j.api.query.grammar.BooleanExpression;
-import org.qi4j.api.query.grammar.ComparisonPredicate;
-import org.qi4j.api.query.grammar.Conjunction;
-import org.qi4j.api.query.grammar.Disjunction;
-import org.qi4j.api.query.grammar.MatchesPredicate;
-import org.qi4j.api.query.grammar.Negation;
-import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.query.grammar.PropertyIsNullPredicate;
-import org.qi4j.api.query.grammar.PropertyNullPredicate;
-import org.qi4j.api.query.grammar.SingleValueExpression;
-import org.qi4j.api.query.grammar.ValueExpression;
+import org.qi4j.api.query.grammar.*;
 import org.qi4j.index.rdf.Namespaces;
 import org.qi4j.index.rdf.RdfQueryParser;
+
+import static java.lang.String.format;
 
 /**
  * JAVADOC Add JavaDoc
@@ -181,7 +170,7 @@ public class SparqlRdfQueryParser
             String valueVariable = triples.addTriple( predicate.propertyReference(), false ).getValue();
             final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
             return String.format( "(%s %s \"%s\")", valueVariable, Operators.getOperator( predicate.getClass() ),
-                           singleValueExpression.value() );
+                                  singleValueExpression.value() );
         }
         else
         {

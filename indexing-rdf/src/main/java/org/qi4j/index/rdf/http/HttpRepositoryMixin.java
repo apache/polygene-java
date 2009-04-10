@@ -15,10 +15,10 @@ package org.qi4j.index.rdf.http;
 
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.http.HTTPRepository;
+import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.configuration.Configuration;
 
 public class HttpRepositoryMixin extends HTTPRepository
     implements Repository, Activatable

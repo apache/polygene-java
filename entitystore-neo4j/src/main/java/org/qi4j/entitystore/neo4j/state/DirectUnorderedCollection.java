@@ -16,17 +16,18 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
-import java.util.AbstractCollection;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Set;
 import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.api.common.QualifiedName;
+
+import java.util.AbstractCollection;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -65,7 +66,7 @@ public class DirectUnorderedCollection extends AbstractCollection<QualifiedIdent
                 if( relations.hasNext() )
                 {
                     last = relations.next();
-                    return DirectEntityState.getIdentityFromNode( DirectEntityState.unproxy(last.getEndNode()) );
+                    return DirectEntityState.getIdentityFromNode( DirectEntityState.unproxy( last.getEndNode() ) );
                 }
                 else
                 {
@@ -77,7 +78,7 @@ public class DirectUnorderedCollection extends AbstractCollection<QualifiedIdent
             {
                 if( last != null )
                 {
-                	DirectEntityState.removeProxy(last.getEndNode());
+                    DirectEntityState.removeProxy( last.getEndNode() );
                     last.delete();
                     changeSize( -1 );
                     last = null;
@@ -105,8 +106,9 @@ public class DirectUnorderedCollection extends AbstractCollection<QualifiedIdent
         if( checker.goodToAdd( this, qualifiedIdentity ) )
         {
             Node node = idIndex.getNode( qualifiedIdentity.identity() );
-            if (state.underlyingNode.equals(node)) {
-            	node = DirectEntityState.proxy(state.neo, node);
+            if( state.underlyingNode.equals( node ) )
+            {
+                node = DirectEntityState.proxy( state.neo, node );
             }
             state.underlyingNode.createRelationshipTo( node, associationType );
             changeSize( 1 );

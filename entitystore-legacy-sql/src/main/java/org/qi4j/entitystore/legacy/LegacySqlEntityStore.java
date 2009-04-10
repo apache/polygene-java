@@ -16,34 +16,23 @@
  */
 package org.qi4j.entitystore.legacy;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Module;
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.entitystore.legacy.dbInitializer.DBInitializer;
 import org.qi4j.entitystore.legacy.internal.LegacyEntityState;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.entity.EntityNotFoundException;
-import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.*;
 import static org.qi4j.spi.entity.EntityStatus.LOADED;
 import static org.qi4j.spi.entity.EntityStatus.NEW;
-import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.UnknownEntityTypeException;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * JAVADOC: Figure out how does transaction supposed for all EntityStore methods.
@@ -52,8 +41,8 @@ import org.qi4j.spi.entity.UnknownEntityTypeException;
 public class LegacySqlEntityStore
     implements EntityStore, Activatable
 {
-    private static final QualifiedName VERSION = QualifiedName.fromQN("VERSION");
-    private static final QualifiedName LASTMODIFIED = QualifiedName.fromQN("LASTMODIFIED");
+    private static final QualifiedName VERSION = QualifiedName.fromQN( "VERSION" );
+    private static final QualifiedName LASTMODIFIED = QualifiedName.fromQN( "LASTMODIFIED" );
 
 
     @Structure private Qi4jSPI spi;
@@ -161,7 +150,7 @@ public class LegacySqlEntityStore
         final Map<QualifiedName, Object> compositePropertyValues = new HashMap<QualifiedName, Object>();
         for( Map.Entry<String, Object> stringObjectEntry : rawData.entrySet() )
         {
-            compositePropertyValues.put(QualifiedName.fromQN(stringObjectEntry.getKey()), stringObjectEntry.getValue());
+            compositePropertyValues.put( QualifiedName.fromQN( stringObjectEntry.getKey() ), stringObjectEntry.getValue() );
         }
 
         return compositePropertyValues;
@@ -277,7 +266,7 @@ public class LegacySqlEntityStore
         String schemaUrl = configuration.schemaUrl().get();
         String dataUrl = configuration.dataUrl().get();
         String dbUrl = configuration.dbUrl().get();
-        dbInitializer.initialize(schemaUrl, dataUrl, dbUrl, connectionProperties);
+        dbInitializer.initialize( schemaUrl, dataUrl, dbUrl, connectionProperties );
     }
 
     /**

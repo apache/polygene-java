@@ -16,48 +16,25 @@
  */
 package org.qi4j.entitystore.jdbm;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.locks.ReadWriteLock;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import jdbm.btree.BTree;
-import jdbm.helper.ByteArrayComparator;
-import jdbm.helper.ByteArraySerializer;
-import jdbm.helper.LongSerializer;
-import jdbm.helper.Serializer;
-import jdbm.helper.Tuple;
-import jdbm.helper.TupleBrowser;
+import jdbm.helper.*;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.library.locking.WriteLock;
-import org.qi4j.spi.entity.EntityAlreadyExistsException;
-import org.qi4j.spi.entity.EntityNotFoundException;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.EntityTypeRegistryMixin;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.entity.*;
 import org.qi4j.spi.entity.helpers.DefaultEntityState;
 import org.qi4j.spi.serialization.FastObjectInputStream;
 import org.qi4j.spi.serialization.SerializableState;
+import org.qi4j.spi.service.ServiceDescriptor;
+
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.locks.ReadWriteLock;
 
 /**
  * JDBM implementation of SerializationStore
@@ -115,7 +92,7 @@ public class JdbmEntityStoreMixin extends EntityTypeRegistryMixin
 
         try
         {
-            Long stateIndex = getStateIndex( identity.identity());
+            Long stateIndex = getStateIndex( identity.identity() );
 
             if( stateIndex != null )
             {
@@ -139,8 +116,10 @@ public class JdbmEntityStoreMixin extends EntityTypeRegistryMixin
             try
             {
                 SerializableState serializableState = loadSerializableState( identity.identity() );
-                if (serializableState == null)
+                if( serializableState == null )
+                {
                     throw new EntityNotFoundException( descriptor.identity(), identity );
+                }
 
                 DefaultEntityState state = new DefaultEntityState( serializableState.version(),
                                                                    serializableState.lastModified(),
@@ -243,7 +222,7 @@ public class JdbmEntityStoreMixin extends EntityTypeRegistryMixin
     {
         Long stateIndex = getStateIndex( removedState );
         recordManager.delete( stateIndex );
-        index.remove( removedState.getBytes("UTF-8") );
+        index.remove( removedState.getBytes( "UTF-8" ) );
     }
 
     private void storeLoadedStates( Iterable<EntityState> loadedStates, boolean turbo, long lastModified, ByteArrayOutputStream bout )
@@ -280,7 +259,7 @@ public class JdbmEntityStoreMixin extends EntityTypeRegistryMixin
         {
             DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
             SerializableState state = new SerializableState( entityState.qualifiedIdentity(),
-                                                             entityState.version()+1,
+                                                             entityState.version() + 1,
                                                              lastModified,
                                                              entityStateInstance.getProperties(),
                                                              entityStateInstance.getAssociations(),
@@ -292,7 +271,7 @@ public class JdbmEntityStoreMixin extends EntityTypeRegistryMixin
             long stateIndex = recordManager.insert( stateArray, serializer );
             bout.reset();
             String indexKey = entityState.qualifiedIdentity().identity();
-            index.insert( indexKey.getBytes( "UTF-8"), stateIndex, false );
+            index.insert( indexKey.getBytes( "UTF-8" ), stateIndex, false );
         }
     }
 
@@ -321,10 +300,12 @@ public class JdbmEntityStoreMixin extends EntityTypeRegistryMixin
                 {
                     try
                     {
-                        String id = new String((byte[])tuple.getKey(), "UTF-8");
+                        String id = new String( (byte[]) tuple.getKey(), "UTF-8" );
                         SerializableState serializableState = loadSerializableState( id );
-                        if (serializableState == null)
-                            throw new EntityNotFoundException( descriptor.identity(), new QualifiedIdentity( id, "") );
+                        if( serializableState == null )
+                        {
+                            throw new EntityNotFoundException( descriptor.identity(), new QualifiedIdentity( id, "" ) );
+                        }
 
                         DefaultEntityState state = new DefaultEntityState( serializableState.version(),
                                                                            serializableState.lastModified(),
@@ -381,7 +362,7 @@ public class JdbmEntityStoreMixin extends EntityTypeRegistryMixin
     private Long getStateIndex( String identity )
         throws IOException
     {
-        Long stateIndex = (Long) index.find( identity.getBytes("UTF-8") );
+        Long stateIndex = (Long) index.find( identity.getBytes( "UTF-8" ) );
         return stateIndex;
     }
 
@@ -427,7 +408,7 @@ public class JdbmEntityStoreMixin extends EntityTypeRegistryMixin
     private void saveRegistry()
         throws IOException
     {
-        List<EntityType> registry = new ArrayList(super.entityTypes.values());
+        List<EntityType> registry = new ArrayList( super.entityTypes.values() );
         recordManager.update( registryId, registry );
         recordManager.commit();
     }

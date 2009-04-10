@@ -16,29 +16,23 @@
  */
 package org.qi4j.entitystore.legacy;
 
+import org.apache.derby.drda.NetworkServerControl;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import static org.junit.Assert.*;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.property.Property;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.legacy.dbInitializer.DBInitializerConfiguration;
+import org.qi4j.entitystore.legacy.test.TestProperty;
+
 import java.io.PrintWriter;
 import static java.lang.System.out;
 import static java.lang.Thread.sleep;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
+import java.sql.*;
 import static java.sql.DriverManager.getConnection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Properties;
-import org.apache.derby.drda.NetworkServerControl;
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.legacy.dbInitializer.DBInitializerConfiguration;
-import org.qi4j.entitystore.legacy.test.TestProperty;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.common.QualifiedName;
 
 /**
  * @author edward.yakop@gmail.com
@@ -92,11 +86,11 @@ public class DerbyDatabaseHandler
         final DBInitializerConfiguration configuration = module.on( DBInitializerConfiguration.class ).to();
         configuration.dbUrl().set( JDBC_URL );
         configuration.connectionProperties().set( createConnectionProperties() );
-        if (schemaFile!=null)
+        if( schemaFile != null )
         {
             configuration.schemaUrl().set( getUrlString( schemaFile ) );
         }
-        if (dataFile!=null)
+        if( dataFile != null )
         {
             configuration.dataUrl().set( getUrlString( dataFile ) );
         }
@@ -281,7 +275,7 @@ public class DerbyDatabaseHandler
 
     private <T> Property<T> createProperty( final String name, final T value )
     {
-        return new TestProperty<T>( value, QualifiedName.fromClass(DBInitializerConfiguration.class, name) );
+        return new TestProperty<T>( value, QualifiedName.fromClass( DBInitializerConfiguration.class, name ) );
     }
 
     public int executeStatement( final String sql, final ResultSetCallback callback )

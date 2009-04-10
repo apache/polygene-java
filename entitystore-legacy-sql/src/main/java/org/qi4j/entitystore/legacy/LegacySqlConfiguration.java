@@ -16,11 +16,12 @@
  */
 package org.qi4j.entitystore.legacy;
 
-import java.util.Properties;
-import org.qi4j.entitystore.legacy.dbInitializer.DBInitializerConfiguration;
-import org.qi4j.api.property.Property;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.ConfigurationComposite;
+import org.qi4j.api.property.Property;
+import org.qi4j.entitystore.legacy.dbInitializer.DBInitializerConfiguration;
+
+import java.util.Properties;
 
 /**
  * {@code IBatisEntityStoreServiceInfo} provides service information for {@link LegacySqlEntityStore}.

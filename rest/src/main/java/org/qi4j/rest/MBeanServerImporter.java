@@ -14,26 +14,31 @@
 
 package org.qi4j.rest;
 
-import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ServiceImporterException;
+
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
 import java.util.List;
 
 /**
  * JAVADOC
-*/
+ */
 class MBeanServerImporter
     implements ServiceImporter
 {
     public Object importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
     {
-        List<MBeanServer> mbeanServers = MBeanServerFactory.findMBeanServer(null);
-        if (mbeanServers.size()  > 0)
+        List<MBeanServer> mbeanServers = MBeanServerFactory.findMBeanServer( null );
+        if( mbeanServers.size() > 0 )
+        {
             return mbeanServers.get( 0 );
+        }
         else
+        {
             return MBeanServerFactory.createMBeanServer();
+        }
     }
 
     public boolean isActive( Object instance )

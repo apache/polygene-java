@@ -17,11 +17,6 @@
  */
 package org.qi4j.rest;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.DeleteMethod;
@@ -30,32 +25,34 @@ import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.bootstrap.ApplicationAssemblerAdapter;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.ApplicationAssemblerAdapter;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.NoSuchEntityException;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.property.Property;
+import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.rest.assembly.RestAssembler;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.ApplicationModelSPI;
-import org.qi4j.api.structure.Application;
-import org.qi4j.api.common.Optional;
 import org.qi4j.test.AbstractQi4jTest;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 
 @Ignore( "Need to rebuild tests after larger changes to implementation." )
 public class RestTest extends AbstractQi4jTest
@@ -64,7 +61,7 @@ public class RestTest extends AbstractQi4jTest
     protected ApplicationModelSPI newApplication()
         throws AssemblyException
     {
-        return qi4j.newApplicationModel( new ApplicationAssemblerAdapter(new Assembler[][][]
+        return qi4j.newApplicationModel( new ApplicationAssemblerAdapter( new Assembler[][][]
             {
                 {
                     {
@@ -73,7 +70,9 @@ public class RestTest extends AbstractQi4jTest
                         new RdfMemoryStoreAssembler()
                     }
                 }
-            }){});
+            } )
+        {
+        } );
     }
 
     public void assemble( ModuleAssembly module )
@@ -145,7 +144,7 @@ public class RestTest extends AbstractQi4jTest
         }
     }
 
-    @Test 
+    @Test
     public void givenExistingIdentityWhenExecutingDeleteCommandThenEntityIsRemoved()
         throws Throwable
     {
@@ -261,7 +260,6 @@ public class RestTest extends AbstractQi4jTest
 
         Property<String> lastname();
 
-        @Optional
-        Association<Person> mother();
+        @Optional Association<Person> mother();
     }
 }

@@ -16,13 +16,11 @@
  */
 package org.qi4j.entitystore.neo4j.test;
 
-import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
-import org.qi4j.entitystore.neo4j.test.MakeBelieveEntity;
-import org.qi4j.entitystore.neo4j.test.TestBase;
-import org.qi4j.entitystore.neo4j.test.TestExecutor;
 import org.qi4j.entitystore.neo4j.Configuration;
+
+import java.util.Date;
 
 /**
  * @author Peter Neubauer (peter@neubauer.se)

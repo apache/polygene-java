@@ -32,8 +32,8 @@ import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.rest.Main;
 import org.qi4j.rest.TestEntity;
-import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.spi.structure.ApplicationSPI;
+import org.qi4j.test.AbstractQi4jTest;
 import org.restlet.Client;
 import org.restlet.Uniform;
 import org.restlet.data.Protocol;
@@ -51,16 +51,16 @@ public class SPARQLEntityFinderTest
     {
         module.addEntities( TestEntity.class );
         ModuleAssembly store = module.layerAssembly().newModuleAssembly( "REST Store/Finder" );
-        store.addObjects( EntityStateSerializer.class, EntityStateParser.class, EntityTypeSerializer.class);
+        store.addObjects( EntityStateSerializer.class, EntityStateParser.class, EntityTypeSerializer.class );
         store.addEntities( RESTEntityStoreConfiguration.class, SPARQLEntityFinderConfiguration.class );
-        store.addServices( MemoryEntityStoreService.class);
+        store.addServices( MemoryEntityStoreService.class );
         store.addServices( RESTEntityStoreService.class, SPARQLEntityFinderService.class, RdfFactoryService.class ).visibleIn( Visibility.layer );
         store.importServices( Uniform.class );
     }
 
     @Override protected void initApplication( Application app ) throws Exception
     {
-        Client client = new Client( Protocol.HTTP);
+        Client client = new Client( Protocol.HTTP );
         client.start();
         app.metaInfo().set( client );
     }

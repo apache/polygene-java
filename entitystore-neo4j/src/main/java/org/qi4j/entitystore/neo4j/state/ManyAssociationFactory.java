@@ -16,17 +16,18 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
+import org.neo4j.api.core.NeoService;
+import org.neo4j.api.core.RelationshipType;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
+import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.association.AssociationDescriptor;
+import org.qi4j.spi.entity.association.ManyAssociationType;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.neo4j.api.core.NeoService;
-import org.neo4j.api.core.RelationshipType;
-import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
-import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

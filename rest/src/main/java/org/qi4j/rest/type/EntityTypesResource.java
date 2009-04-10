@@ -13,9 +13,6 @@
  */
 package org.qi4j.rest.type;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.structure.Application;
@@ -37,6 +34,10 @@ import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.Variant;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public final class EntityTypesResource extends Resource
 {

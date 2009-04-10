@@ -16,37 +16,36 @@
  */
 package org.qi4j.entitystore.legacy;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Map;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.junit.Assert.*;
 import org.junit.Ignore;
-import org.qi4j.api.common.Visibility;
+import org.junit.Test;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.legacy.entity.Account;
 import org.qi4j.entitystore.legacy.entity.AccountComposite;
 import org.qi4j.entitystore.legacy.entity.Person;
 import org.qi4j.entitystore.legacy.entity.PersonComposite;
 import org.qi4j.entitystore.legacy.test.AbstractTestCase;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Map;
+
 /**
  * {@code IBatisEntityStoreTest} tests {@code IBatisEntityStore}.
  */
-@Ignore("Needs attention")
+@Ignore( "Needs attention" )
 public final class IBatisEntityStoreTest extends AbstractTestCase
 {
 
@@ -167,8 +166,8 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         final EntityState state = loadEntity( TestConfig.JANE_SMITH_ID );
         assertPersonEntityStateEquals( TestConfig.JANE_SMITH_ID, "Jane", "Smith", state );
         assertEquals( "ACCOUNTS", state.manyAssociationNames().iterator().next() );
-        assertEquals( "no association accounts", null, state.getAssociation(QualifiedName.fromQN("ACCOUNTS")) );
-        final Collection<QualifiedIdentity> manyAssociation = state.getManyAssociation(QualifiedName.fromQN("ACCOUNTS"));
+        assertEquals( "no association accounts", null, state.getAssociation( QualifiedName.fromQN( "ACCOUNTS" ) ) );
+        final Collection<QualifiedIdentity> manyAssociation = state.getManyAssociation( QualifiedName.fromQN( "ACCOUNTS" ) );
         assertEquals( "many association accounts", 2, manyAssociation.size() );
         assertTrue( "account reference 1", manyAssociation.contains( createId( "1", Account.class ) ) );
         assertTrue( "account reference 2", manyAssociation.contains( createId( "2", Account.class ) ) );

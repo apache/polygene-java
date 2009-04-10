@@ -17,6 +17,7 @@
 package org.qi4j.entitystore.legacy.dbInitializer;
 
 import com.ibatis.common.jdbc.ScriptRunner;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,7 +30,6 @@ import java.util.Properties;
 
 /**
  * {@code DBIntializer} initialize the db.
- *
  */
 public final class DBInitializer
     implements Serializable
@@ -40,9 +40,9 @@ public final class DBInitializer
      * Initialize the database.
      * Reads scripts from schemaURL and data scripts from dataUrl
      *
-     * @param schemaUrl The URL to where the DB Schema to be initialized into the DB resides. 
-     * @param dataUrl The URL to where the Data to be initialized into the DB resides.
-     * @param dbUrl The URL to connect to the DB.
+     * @param schemaUrl            The URL to where the DB Schema to be initialized into the DB resides.
+     * @param dataUrl              The URL to where the Data to be initialized into the DB resides.
+     * @param dbUrl                The URL to connect to the DB.
      * @param connectionProperties Properties to be used in the SQL Connection.
      * @throws java.sql.SQLException Thrown if db initialization failed.
      * @throws java.io.IOException   Thrown if reading schema or data sql resources failed.

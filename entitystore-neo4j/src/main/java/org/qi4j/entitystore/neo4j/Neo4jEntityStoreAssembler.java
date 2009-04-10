@@ -17,13 +17,13 @@
  */
 package org.qi4j.entitystore.neo4j;
 
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.neo4j.state.DirectEntityStateFactory;
 import org.qi4j.entitystore.neo4j.state.IndirectEntityStateFactory;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 
 public class Neo4jEntityStoreAssembler

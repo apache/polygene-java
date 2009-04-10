@@ -16,17 +16,18 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
+import org.neo4j.api.core.Node;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.association.AssociationType;
+import org.qi4j.spi.entity.association.ManyAssociationType;
+import org.qi4j.spi.property.PropertyType;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.neo4j.api.core.Node;
-import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.api.common.QualifiedName;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -112,16 +113,16 @@ public class LoadedDescriptor
         String[] manyAssociations = (String[]) descriptionNode.getProperty( ASSOCIATIONS_PROPERTY_KEY );
         for( String association : associations )
         {
-            this.associations.add(QualifiedName.fromQN(association));
+            this.associations.add( QualifiedName.fromQN( association ) );
         }
         for( String property : properties )
         {
-            this.properties.add(QualifiedName.fromQN(property));
+            this.properties.add( QualifiedName.fromQN( property ) );
         }
         for( String association : manyAssociations )
         {
             String typeString = (String) descriptionNode.getProperty( FACTORY_TYPE_PROPERTY_PREFIX + association );
-            this.manyAssociations.add( ManyAssociationFactory.load(QualifiedName.fromQN(association), typeString) );
+            this.manyAssociations.add( ManyAssociationFactory.load( QualifiedName.fromQN( association ), typeString ) );
         }
     }
 
@@ -131,13 +132,13 @@ public class LoadedDescriptor
         int idx = 0;
         for( QualifiedName association : this.associations )
         {
-            associations[idx++] = association.toString();
+            associations[ idx++ ] = association.toString();
         }
         String[] properties = new String[this.properties.size()];
         idx = 0;
         for( QualifiedName property : this.properties )
         {
-            properties[idx++] = property.toString();
+            properties[ idx++ ] = property.toString();
         }
         String[] manyAssociations = new String[this.manyAssociations.size()];
         int index = 0;

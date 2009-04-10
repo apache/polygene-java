@@ -16,9 +16,6 @@
  */
 package org.qi4j.entitystore.legacy.entity;
 
-import org.qi4j.entitystore.legacy.entity.HasName;
-import org.qi4j.entitystore.legacy.entity.HasPrimaryContactPerson;
-
 public interface Account extends HasPrimaryContactPerson, HasName
 {
 }

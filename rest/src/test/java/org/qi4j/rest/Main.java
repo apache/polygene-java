@@ -14,17 +14,7 @@
 
 package org.qi4j.rest;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.structure.Application;
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.ModuleName;
-import org.qi4j.library.http.JettyServiceAssembler;
-import org.qi4j.library.rdf.entity.EntityStateSerializer;
-import org.qi4j.library.rdf.entity.EntityTypeSerializer;
-import org.qi4j.rest.assembly.RestAssembler;
 import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
@@ -43,8 +33,8 @@ public class Main
     public Main() throws Exception
     {
         Energy4Java qi4j = new Energy4Java();
-        qi4j.newApplication( new MainAssembler());
-        application = qi4j.newApplication( new MainAssembler());
+        qi4j.newApplication( new MainAssembler() );
+        application = qi4j.newApplication( new MainAssembler() );
         application.activate();
     }
 

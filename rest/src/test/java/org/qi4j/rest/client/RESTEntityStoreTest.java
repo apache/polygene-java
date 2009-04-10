@@ -17,7 +17,6 @@ package org.qi4j.rest.client;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Ignore;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -28,8 +27,8 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.entity.EntityStateParser;
 import org.qi4j.rest.Main;
 import org.qi4j.rest.TestEntity;
-import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.spi.structure.ApplicationSPI;
+import org.qi4j.test.AbstractQi4jTest;
 import org.restlet.Client;
 import org.restlet.Uniform;
 import org.restlet.data.Protocol;
@@ -50,14 +49,14 @@ public class RESTEntityStoreTest
         ModuleAssembly store = module.layerAssembly().newModuleAssembly( "REST Store" );
         store.addObjects( EntityStateParser.class );
         store.addEntities( RESTEntityStoreConfiguration.class );
-        store.addServices( MemoryEntityStoreService.class);
+        store.addServices( MemoryEntityStoreService.class );
         store.addServices( RESTEntityStoreService.class ).visibleIn( Visibility.layer );
         store.importServices( Uniform.class );
     }
 
     @Override protected void initApplication( Application app ) throws Exception
     {
-        Client client = new Client(Protocol.HTTP);
+        Client client = new Client( Protocol.HTTP );
         client.start();
         app.metaInfo().set( client );
     }
@@ -75,7 +74,7 @@ public class RESTEntityStoreTest
     public void tearDown()
         throws Exception
     {
-        Thread.sleep(1000);
+        Thread.sleep( 1000 );
         super.tearDown();
         Thread.sleep( 1000 );
         server.passivate();
@@ -83,7 +82,7 @@ public class RESTEntityStoreTest
 
     @Test
 //    @Ignore( "I can't get this test to run reliably on the SRV03 release machine. Broken Pipe as a SocketException." )
-    public void testEntityStore()
+public void testEntityStore()
         throws UnitOfWorkCompletionException
     {
         // Load state

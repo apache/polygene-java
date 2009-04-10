@@ -16,23 +16,23 @@
  */
 package org.qi4j.entitystore.legacy.test;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
-import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.property.Property;
 import org.qi4j.entitystore.legacy.DerbyDatabaseHandler;
 import org.qi4j.entitystore.legacy.entity.PersonComposite;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractTestCase extends AbstractQi4jTest
 {
@@ -140,9 +140,9 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
         assertNotNull( "identity", qualifiedIdentity );
         org.junit.Assert.assertEquals( "identity", id, qualifiedIdentity.identity() );
 
-        org.junit.Assert.assertEquals( "identity", id, state.getProperty(QualifiedName.fromQN("identity")) );
-        org.junit.Assert.assertEquals( "firstName", firstName, state.getProperty(QualifiedName.fromQN("firstName")) );
-        org.junit.Assert.assertEquals( "lastName", lastName, state.getProperty(QualifiedName.fromQN("lastName")) );
+        org.junit.Assert.assertEquals( "identity", id, state.getProperty( QualifiedName.fromQN( "identity" ) ) );
+        org.junit.Assert.assertEquals( "firstName", firstName, state.getProperty( QualifiedName.fromQN( "firstName" ) ) );
+        org.junit.Assert.assertEquals( "lastName", lastName, state.getProperty( QualifiedName.fromQN( "lastName" ) ) );
     }
 
     protected void assertPersonEquals( final String id, final String firstName, final String lastName, final PersonComposite person )

@@ -18,11 +18,7 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.RDF;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ListAssociation;
-import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.entity.association.Qualifier;
-import org.qi4j.api.entity.association.SetAssociation;
+import org.qi4j.api.entity.association.*;
 import org.qi4j.api.property.Property;
 import org.qi4j.library.rdf.DcRdf;
 
@@ -34,11 +30,9 @@ public interface TestEntity
 {
     @UseDefaults @RDF( DcRdf.NAMESPACE + "title" ) Property<String> name();
 
-    @UseDefaults
-    Property<Integer> age();
+    @UseDefaults Property<Integer> age();
 
-    @Optional
-    Property<TestValue> value();
+    @Optional Property<TestValue> value();
 
     @Optional Property<String> unsetName();
 
@@ -52,5 +46,5 @@ public interface TestEntity
 
     SetAssociation<TestEntity> setAssociation();
 
-    ManyAssociation<Qualifier<TestEntity,TestRole>> manyAssociationQualifier();
+    ManyAssociation<Qualifier<TestEntity, TestRole>> manyAssociationQualifier();
 }

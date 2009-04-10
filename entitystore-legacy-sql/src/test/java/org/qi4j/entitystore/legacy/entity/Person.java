@@ -16,8 +16,6 @@
  */
 package org.qi4j.entitystore.legacy.entity;
 
-import org.qi4j.entitystore.legacy.entity.HasFirstName;
-import org.qi4j.entitystore.legacy.entity.HasLastName;
 import org.qi4j.api.entity.association.ManyAssociation;
 
 public interface Person extends HasFirstName, HasLastName

@@ -16,13 +16,9 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
-import java.util.AbstractCollection;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
 import org.qi4j.spi.entity.QualifiedIdentity;
+
+import java.util.*;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

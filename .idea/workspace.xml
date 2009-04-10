@@ -2,152 +2,47 @@
 <project relativePaths="false" version="4">
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_core_qi4j_core_api_0_7.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/type/EntityTypesResource.java" afterPath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/type/EntityTypesResource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-coherence/src/test/java/org/qi4j/entitystore/coherence/CoherenceEntityStoreTest.java" afterPath="$PROJECT_DIR$/entitystore-coherence/src/test/java/org/qi4j/entitystore/coherence/CoherenceEntityStoreTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/qi4j-extensions.iml" afterPath="$PROJECT_DIR$/qi4j-extensions.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__info_aduna_commons_aduna_commons_net_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-jndi/pom.xml" afterPath="$PROJECT_DIR$/entitystore-jndi/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/client/SPARQLEntityFinderMixin.java" afterPath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/client/SPARQLEntityFinderMixin.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-jdbm/src/main/java/org/qi4j/entitystore/jdbm/JdbmEntityStoreAssembler.java" afterPath="$PROJECT_DIR$/entitystore-jdbm/src/main/java/org/qi4j/entitystore/jdbm/JdbmEntityStoreAssembler.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/main/java/org/qi4j/entitystore/legacy/IdentifierConverter.java" afterPath="$PROJECT_DIR$/entitystore-legacy-sql/src/main/java/org/qi4j/entitystore/legacy/IdentifierConverter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/indexing-rdf/src/test/java/org/qi4j/index/rdf/RdfEntityFinderTest.java" afterPath="$PROJECT_DIR$/indexing-rdf/src/test/java/org/qi4j/index/rdf/RdfEntityFinderTest.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/indexing-rdf/qi4j-indexing-rdf.iml" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/assembly/RestAssembler.java" afterPath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/assembly/RestAssembler.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-jdbm/src/test/java/org/qi4j/entitystore/jdbm/JdbmEntityStoreTest.java" afterPath="$PROJECT_DIR$/entitystore-jdbm/src/test/java/org/qi4j/entitystore/jdbm/JdbmEntityStoreTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/entity/EntityResource.java" afterPath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/entity/EntityResource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-neo4j/pom.xml" afterPath="$PROJECT_DIR$/entitystore-neo4j/pom.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_library_qi4j_lib_locking_0_7_SNAPSHOT.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_dbcp_commons_dbcp_1_2_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-coherence/pom.xml" afterPath="$PROJECT_DIR$/entitystore-coherence/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-coherence/qi4j-entitystore-coherence.iml" afterPath="$PROJECT_DIR$/entitystore-coherence/qi4j-entitystore-coherence.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__avalon_framework_avalon_framework_4_1_3.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_core_qi4j_core_runtime_0_7.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_restlet_org_restlet_ext_atom_1_2_M1.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/qi4j-entitystore-legacy-sql.iml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-jdbm/qi4j-entitystore-jdbm.iml" afterPath="$PROJECT_DIR$/entitystore-jdbm/qi4j-entitystore-jdbm.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/pom.xml" afterPath="$PROJECT_DIR$/rest/pom.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__info_aduna_commons_aduna_commons_iteration_2_2.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_sail_api_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_5_6.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_httpclient_commons_httpclient_3_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-rmi/qi4j-entitystore-rmi.iml" afterPath="$PROJECT_DIR$/entitystore-rmi/qi4j-entitystore-rmi.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_jcl104_over_slf4j_1_5_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_beans_2_0_6.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_core_2_0_6.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_neo4j_neo_1_0_b7_pre1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_ldap_spring_ldap_1_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryparser_serql_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryresultio_sparqlxml_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_rio_trix_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/indexing-rdf/qi4j-indexing-rdf.iml" afterPath="$PROJECT_DIR$/indexing-rdf/qi4j-indexing-rdf.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_rio_trig_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/query/SPARQLResource.java" afterPath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/query/SPARQLResource.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_repository_manager_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_simple_1_5_6.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__info_aduna_commons_aduna_commons_collections_2_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-coherence/src/main/java/org/qi4j/entitystore/coherence/CoherenceEntityStoreService.java" afterPath="$PROJECT_DIR$/entitystore-coherence/src/main/java/org/qi4j/entitystore/coherence/CoherenceEntityStoreService.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_pool_commons_pool_1_3.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_transaction_jta_1_0_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_sail_inferencer_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_library_qi4j_lib_http_0_7.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_5.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_repository_event_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_core_qi4j_core_runtime_0_7_SNAPSHOT.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_servlet_servlet_api_2_5.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-coherence/src/main/java/org/qi4j/entitystore/coherence/CoherenceConfiguration.java" afterPath="$PROJECT_DIR$/entitystore-coherence/src/main/java/org/qi4j/entitystore/coherence/CoherenceConfiguration.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_restlet_org_restlet_ext_servlet_1_2_M1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__info_aduna_commons_aduna_commons_text_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mortbay_jetty_jetty_util_6_1_11.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_library_qi4j_lib_rdf_0_7.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryalgebra_model_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_repository_api_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_repository_sail_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/client/RESTEntityStoreServiceMixin.java" afterPath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/client/RESTEntityStoreServiceMixin.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__cglib_cglib_nodep_2_1_3.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_5_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_rio_ntriples_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_library_qi4j_lib_rdf_0_7_SNAPSHOT.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-preferences/qi4j-entitystore-preferences.iml" afterPath="$PROJECT_DIR$/entitystore-preferences/qi4j-entitystore-preferences.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-neo4j/src/test/java/org/qi4j/entitystore/neo4j/test/DirectIdentityListTest.java" afterPath="$PROJECT_DIR$/entitystore-neo4j/src/test/java/org/qi4j/entitystore/neo4j/test/DirectIdentityListTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryresultio_binary_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_rio_rdfxml_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-coherence/src/main/java/org/qi4j/entitystore/coherence/CoherenceEntityStoreAssembler.java" afterPath="$PROJECT_DIR$/entitystore-coherence/src/main/java/org/qi4j/entitystore/coherence/CoherenceEntityStoreAssembler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/entity/EntitiesResource.java" afterPath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/entity/EntitiesResource.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_repository_http_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/type/EntityTypeResource.java" afterPath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/type/EntityTypeResource.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_library_qi4j_lib_constraints_0_7.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-jndi/qi4j-entitystore-jndi.iml" afterPath="$PROJECT_DIR$/entitystore-jndi/qi4j-entitystore-jndi.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-rmi/pom.xml" afterPath="$PROJECT_DIR$/entitystore-rmi/pom.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_http_client_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_servlet_servlet_api_2_3.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryalgebra_evaluation_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_rio_turtle_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/Qi4jServiceResource.java" afterPath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/Qi4jServiceResource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/entity/AllEntitiesResource.java" afterPath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/entity/AllEntitiesResource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/indexing-rdf/pom.xml" afterPath="$PROJECT_DIR$/indexing-rdf/pom.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jmock_jmock_2_5_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_derby_derbynet_10_3_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-coherence/src/main/java/org/qi4j/entitystore/coherence/CoherenceEntityState.java" afterPath="$PROJECT_DIR$/entitystore-coherence/src/main/java/org/qi4j/entitystore/coherence/CoherenceEntityState.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-jdbm/pom.xml" afterPath="$PROJECT_DIR$/entitystore-jdbm/pom.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_rio_api_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_core_qi4j_core_api_0_7_SNAPSHOT.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_tangosol_coherence_mock_3_4_2.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_model_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_sail_nativerdf_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_library_qi4j_lib_locking_0_7.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_library_qi4j_lib_framework_0_7_SNAPSHOT.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryparser_sparql_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_http_protocol_2_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-s3/qi4j-entitystore-s3.iml" afterPath="$PROJECT_DIR$/entitystore-s3/qi4j-entitystore-s3.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_simple_1_4_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/Qi4jFinder.java" afterPath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/Qi4jFinder.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_core_qi4j_core_bootstrap_0_7.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_library_qi4j_lib_constraints_0_7_SNAPSHOT.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_query_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_neo4j_shell_1_0_b7_pre1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_codec_commons_codec_1_3.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_core_qi4j_core_spi_0_7.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-neo4j/src/test/java/org/qi4j/entitystore/neo4j/test/DirectIdentitySetTest.java" afterPath="$PROJECT_DIR$/entitystore-neo4j/src/test/java/org/qi4j/entitystore/neo4j/test/DirectIdentitySetTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-preferences/pom.xml" afterPath="$PROJECT_DIR$/entitystore-preferences/pom.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryresultio_text_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_repository_dataset_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_dev_jets3t_jets3t_0_6_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_derby_derby_10_3_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_core_qi4j_core_testsupport_0_7_SNAPSHOT.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__info_aduna_commons_aduna_commons_io_2_3.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__log4j_log4j_1_2_12.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryresultio_sparqljson_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__info_aduna_commons_aduna_commons_xml_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_neo4j_index_util_0_5.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__info_aduna_commons_aduna_commons_lang_2_2.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_repository_contextaware_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_lang_commons_lang_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__info_aduna_commons_aduna_commons_concurrent_2_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-coherence/src/main/java/org/qi4j/entitystore/coherence/CoherenceEntityStoreMixin.java" afterPath="$PROJECT_DIR$/entitystore-coherence/src/main/java/org/qi4j/entitystore/coherence/CoherenceEntityStoreMixin.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_tangosol_coherence_3_4_2.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__jdbm_jdbm_1_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__logkit_logkit_1_0_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_sail_rdbms_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_logging_commons_logging_1_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_core_qi4j_core_bootstrap_0_7_SNAPSHOT.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/rest/qi4j-ext-rest.iml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/indexing-rdf/osgi.bundle" afterPath="$PROJECT_DIR$/indexing-rdf/osgi.bundle" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_lucene_lucene_core_2_3_2.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_ibatis_ibatis_sqlmap_2_3_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_library_1_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_sail_memory_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_core_qi4j_core_spi_0_7_SNAPSHOT.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/ExceptionRepresentation.java" afterPath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/ExceptionRepresentation.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mortbay_jetty_jetty_6_1_11.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/entitystore-neo4j/qi4j-entitystore-neo4j.iml" afterPath="" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryresultio_api_2_2_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_rio_n3_2_2_1.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-neo4j/src/main/java/org/qi4j/entitystore/neo4j/state/IndirectEntityStateFactoryMixin.java" afterPath="$PROJECT_DIR$/entitystore-neo4j/src/main/java/org/qi4j/entitystore/neo4j/state/IndirectEntityStateFactoryMixin.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/test/AbstractTestCase.java" afterPath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/test/AbstractTestCase.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-neo4j/src/main/java/org/qi4j/entitystore/neo4j/state/CollectionFactory.java" afterPath="$PROJECT_DIR$/entitystore-neo4j/src/main/java/org/qi4j/entitystore/neo4j/state/CollectionFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/test/java/org/qi4j/rest/RestTest.java" afterPath="$PROJECT_DIR$/rest/src/test/java/org/qi4j/rest/RestTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/indexing-rdf/src/main/java/org/qi4j/index/rdf/callback/CollectingQualifiedIdentityResultCallback.java" afterPath="$PROJECT_DIR$/indexing-rdf/src/main/java/org/qi4j/index/rdf/callback/CollectingQualifiedIdentityResultCallback.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/main/java/org/qi4j/entitystore/legacy/LegacySqlConfiguration.java" afterPath="$PROJECT_DIR$/entitystore-legacy-sql/src/main/java/org/qi4j/entitystore/legacy/LegacySqlConfiguration.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/client/SPARQLEntityFinderService.java" afterPath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/client/SPARQLEntityFinderService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/dbInitializer/DBInitializerTest.java" afterPath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/dbInitializer/DBInitializerTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-neo4j/src/main/java/org/qi4j/entitystore/neo4j/state/UncreatedNode.java" afterPath="$PROJECT_DIR$/entitystore-neo4j/src/main/java/org/qi4j/entitystore/neo4j/state/UncreatedNode.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-neo4j/src/main/java/org/qi4j/entitystore/neo4j/state/LinkType.java" afterPath="$PROJECT_DIR$/entitystore-neo4j/src/main/java/org/qi4j/entitystore/neo4j/state/LinkType.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/RestApplication.java" afterPath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/RestApplication.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/entity/Account.java" afterPath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/entity/Account.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-neo4j/src/main/java/org/qi4j/entitystore/neo4j/state/ManyAssociationFactory.java" afterPath="$PROJECT_DIR$/entitystore-neo4j/src/main/java/org/qi4j/entitystore/neo4j/state/ManyAssociationFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/indexing-rdf/src/main/java/org/qi4j/index/rdf/QueryLanguage.java" afterPath="$PROJECT_DIR$/indexing-rdf/src/main/java/org/qi4j/index/rdf/QueryLanguage.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/indexing-rdf/src/main/java/org/qi4j/index/rdf/http/HttpRepositoryMixin.java" afterPath="$PROJECT_DIR$/indexing-rdf/src/main/java/org/qi4j/index/rdf/http/HttpRepositoryMixin.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/test/java/org/qi4j/rest/TestValue2.java" afterPath="$PROJECT_DIR$/rest/src/test/java/org/qi4j/rest/TestValue2.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/entitystore-jdbm/qi4j-entitystore-jdbm.iml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/query/IndexResource.java" afterPath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/query/IndexResource.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mortbay_jetty_servlet_api_2_5_6_1_11.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_restlet_org_restlet_1_2_M1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_qi4j_core_qi4j_core_testsupport_0_7.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/pom.xml" afterPath="$PROJECT_DIR$/entitystore-legacy-sql/pom.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_derby_derbyclient_10_3_2_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-s3/pom.xml" afterPath="$PROJECT_DIR$/entitystore-s3/pom.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_logging_commons_logging_1_0_4.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openrdf_sesame_sesame_queryparser_api_2_2_1.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/Qi4jServerServletService.java" afterPath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/Qi4jServerServletService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/indexing-rdf/src/main/java/org/qi4j/index/rdf/internal/RdfFactoryMixin.java" afterPath="$PROJECT_DIR$/indexing-rdf/src/main/java/org/qi4j/index/rdf/internal/RdfFactoryMixin.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/ExtensionMediaTypeFilter.java" afterPath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/ExtensionMediaTypeFilter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/internal/CapitalizingIdentifierConverterTest.java" afterPath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/internal/CapitalizingIdentifierConverterTest.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/qi4j-extensions.iml" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/test/java/org/qi4j/rest/MainAssembler.java" afterPath="$PROJECT_DIR$/rest/src/test/java/org/qi4j/rest/MainAssembler.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/indexing-rdf/src/main/java/org/qi4j/index/rdf/internal/Triples.java" afterPath="$PROJECT_DIR$/indexing-rdf/src/main/java/org/qi4j/index/rdf/internal/Triples.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-neo4j/src/test/java/org/qi4j/entitystore/neo4j/test/DirectIdentityListTest.java" afterPath="$PROJECT_DIR$/entitystore-neo4j/src/test/java/org/qi4j/entitystore/neo4j/test/DirectIdentityListTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-jdbm/src/main/java/org/qi4j/entitystore/jdbm/JdbmEntityStoreMixin.java" afterPath="$PROJECT_DIR$/entitystore-jdbm/src/main/java/org/qi4j/entitystore/jdbm/JdbmEntityStoreMixin.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-neo4j/src/test/java/org/qi4j/entitystore/neo4j/test/CollectionBuilder.java" afterPath="$PROJECT_DIR$/entitystore-neo4j/src/test/java/org/qi4j/entitystore/neo4j/test/CollectionBuilder.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/DerbyDatabaseHandler.java" afterPath="$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/DerbyDatabaseHandler.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/entity/EntitiesResource.java" afterPath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/entity/EntitiesResource.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/type/EntityTypeResource.java" afterPath="$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/type/EntityTypeResource.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rest/src/test/java/org/qi4j/rest/DummyDataService.java" afterPath="$PROJECT_DIR$/rest/src/test/java/org/qi4j/rest/DummyDataService.java" />
     </list>
     <ignored path="qi4j-extensions.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -206,73 +101,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="SPARQLEntityFinderMixin.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/client/SPARQLEntityFinderMixin.java">
+      <file leaf-file-name="JdbmConfiguration.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/entitystore-jdbm/src/main/java/org/qi4j/entitystore/jdbm/JdbmConfiguration.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="33" column="155" selection-start="1407" selection-end="1407" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/rest/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="97" column="157" selection-start="3206" selection-end="3206" vertical-scroll-proportion="-10.344828">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pom.xml" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/entitystore-coherence/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="27" selection-start="1069" selection-end="1069" vertical-scroll-proportion="0.5120148">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DirectIdentityListTest.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/entitystore-neo4j/src/test/java/org/qi4j/entitystore/neo4j/test/DirectIdentityListTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="0" selection-start="892" selection-end="892" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DirectIdentitySetTest.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/entitystore-neo4j/src/test/java/org/qi4j/entitystore/neo4j/test/DirectIdentitySetTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="44" column="155" selection-start="1247" selection-end="1247" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="IndirectIdentityListTest.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/entitystore-neo4j/src/test/java/org/qi4j/entitystore/neo4j/test/IndirectIdentityListTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="31" column="0" selection-start="832" selection-end="929" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ExceptionRepresentation.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/ExceptionRepresentation.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="18" column="27" selection-start="760" selection-end="760" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Qi4jFinder.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/Qi4jFinder.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="36" column="10" selection-start="1299" selection-end="1299" vertical-scroll-proportion="0.0">
+            <state line="11" column="17" selection-start="268" selection-end="268" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -280,19 +112,84 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="EntitiesResource.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/entity/EntitiesResource.java">
+      <file leaf-file-name="DefaultIbatisEntityStoreTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/DefaultIbatisEntityStoreTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="52" column="26" selection-start="2074" selection-end="2074" vertical-scroll-proportion="0.0">
+            <state line="31" column="13" selection-start="1098" selection-end="1098" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="IndexResource.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/query/IndexResource.java">
+      <file leaf-file-name="Configuration.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/entitystore-neo4j/src/main/java/org/qi4j/entitystore/neo4j/Configuration.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="33" column="15" selection-start="1198" selection-end="1198" vertical-scroll-proportion="0.0">
+            <state line="11" column="12" selection-start="334" selection-end="334" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="EmbeddedNeoMixin.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/entitystore-neo4j/src/main/java/org/qi4j/entitystore/neo4j/EmbeddedNeoMixin.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="36" column="13" selection-start="1217" selection-end="1217" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Case.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/entitystore-neo4j/src/test/java/org/qi4j/entitystore/neo4j/test/Case.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="21" column="17" selection-start="754" selection-end="754" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Namespaces.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/indexing-rdf/src/main/java/org/qi4j/index/rdf/Namespaces.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="23" column="13" selection-start="746" selection-end="746" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Google.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/indexing-rdf/src/test/java/org/qi4j/index/rdf/Google.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="27" column="17" selection-start="788" selection-end="788" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="EntityMBean.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/EntityMBean.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="24" column="13" selection-start="783" selection-end="783" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DomainAssembler.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/rest/src/test/java/org/qi4j/rest/DomainAssembler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="39" column="25" selection-start="1512" selection-end="1512" vertical-scroll-proportion="0.37894738">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="IdentifierConverter.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/entitystore-legacy-sql/src/main/java/org/qi4j/entitystore/legacy/IdentifierConverter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="19" column="17" selection-start="736" selection-end="736" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -339,7 +236,7 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="rest" />
+          <option name="myItemId" value="qi4j-rest" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -349,7 +246,7 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="rest" />
+          <option name="myItemId" value="qi4j-rest" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -363,41 +260,21 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-indexing-rdf" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-indexing-rdf" />
+          <option name="myItemId" value="qi4j-rest" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="indexing-rdf" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-indexing-rdf" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="indexing-rdf" />
+          <option name="myItemId" value="rest" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
           <option name="myItemId" value="src" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="test" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
       </PATH>
       <PATH>
         <PATH_ELEMENT>
@@ -405,11 +282,41 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-indexing-rdf" />
+          <option name="myItemId" value="qi4j-rest" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="indexing-rdf" />
+          <option name="myItemId" value="rest" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="test" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="java" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="rest" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-extensions" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-rest" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="rest" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -418,6 +325,108 @@
         </PATH_ELEMENT>
         <PATH_ELEMENT>
           <option name="myItemId" value="main" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-extensions" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-rest" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="rest" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="main" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="java" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="rest" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-extensions" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-indexing-rdf" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-extensions" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-indexing-rdf" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="indexing-rdf" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-extensions" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-indexing-rdf" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="indexing-rdf" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="test" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="java" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-extensions" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-indexing-rdf" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="indexing-rdf" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="test" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -458,8 +467,34 @@
           <option name="myItemId" value="rdf" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
+      </PATH>
+      <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="internal" />
+          <option name="myItemId" value="qi4j-extensions" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-extensions" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-entitystore-neo4j" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-extensions" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-entitystore-neo4j" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="entitystore-neo4j" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -469,137 +504,29 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
+          <option name="myItemId" value="qi4j-entitystore-neo4j" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-s3" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-s3" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-s3" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-rmi" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-rmi" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-rmi" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-preferences" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-preferences" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-preferences" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-jndi" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-jndi" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-jndi" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-jndi" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-jndi" />
+          <option name="myItemId" value="entitystore-neo4j" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
           <option name="myItemId" value="src" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="test" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="java" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="test" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
       </PATH>
       <PATH>
         <PATH_ELEMENT>
@@ -607,11 +534,11 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-jndi" />
+          <option name="myItemId" value="qi4j-entitystore-neo4j" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-jndi" />
+          <option name="myItemId" value="entitystore-neo4j" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -627,7 +554,113 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="jndi" />
+          <option name="myItemId" value="neo4j" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-extensions" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-entitystore-legacy-sql" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-extensions" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-entitystore-legacy-sql" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="entitystore-legacy-sql" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-extensions" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-entitystore-legacy-sql" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="entitystore-legacy-sql" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="test" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-extensions" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-entitystore-legacy-sql" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="entitystore-legacy-sql" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="test" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="java" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="legacy" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-extensions" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="qi4j-entitystore-legacy-sql" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="entitystore-legacy-sql" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="main" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="java" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="legacy" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -661,21 +694,19 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-coherence" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-entitystore-coherence" />
+          <option name="myItemId" value="qi4j-entitystore-jdbm" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-coherence" />
+          <option name="myItemId" value="entitystore-jdbm" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="test" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -685,35 +716,11 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-neo4j" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-neo4j" />
+          <option name="myItemId" value="qi4j-entitystore-jdbm" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-neo4j" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-neo4j" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-neo4j" />
+          <option name="myItemId" value="entitystore-jdbm" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -729,7 +736,7 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="test" />
+          <option name="myItemId" value="jdbm" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -739,39 +746,27 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-neo4j" />
+          <option name="myItemId" value="qi4j-entitystore-jdbm" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-neo4j" />
+          <option name="myItemId" value="entitystore-jdbm" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
           <option name="myItemId" value="src" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
-      </PATH>
-      <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+          <option name="myItemId" value="main" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-legacy-sql" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="qi4j-extensions" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+          <option name="myItemId" value="java" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-legacy-sql" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="entitystore-legacy-sql" />
+          <option name="myItemId" value="jdbm" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -806,7 +801,7 @@
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="options.lastSelected" value="org.jetbrains.idea.maven.project.MavenImportingConfigurable" />
+    <property name="options.lastSelected" value="preferences.sourceCode" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
   </component>
   <component name="RunManager">
@@ -916,10 +911,10 @@
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.6634409" order="0" side_tool="false" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32903227" sideWeight="0.5" order="1" side_tool="false" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32903227" sideWeight="0.5" order="1" side_tool="false" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="6" side_tool="false" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32903227" sideWeight="0.5" order="-1" side_tool="false" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32903227" sideWeight="0.5" order="-1" side_tool="false" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" />
@@ -969,118 +964,193 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/type/EntityTypeResource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="40" column="9" selection-start="1647" selection-end="1647" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/type/EntityTypesResource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="6" selection-start="1403" selection-end="1403" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/client/RESTEntityStoreServiceMixin.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="52" column="4" selection-start="2112" selection-end="2112" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/entity/AllEntitiesResource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="17" selection-start="1680" selection-end="1680" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/entity/EntityResource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="48" column="17" selection-start="1829" selection-end="1829" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/ExceptionRepresentation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="27" selection-start="760" selection-end="760" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/Qi4jFinder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="10" selection-start="1299" selection-end="1299" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/entity/EntitiesResource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="52" column="26" selection-start="2074" selection-end="2074" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/query/IndexResource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="15" selection-start="1198" selection-end="1198" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/indexing-rdf/src/main/java/org/qi4j/index/rdf/RdfFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/client/SPARQLEntityFinderMixin.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="33" column="155" selection-start="1407" selection-end="1407" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rest/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="97" column="157" selection-start="3206" selection-end="3206" vertical-scroll-proportion="-10.344828">
-          <folding />
+          <folding>
+            <marker date="1239333955000" expanded="false" signature="0:614" placeholder="/.../" />
+            <marker date="1239333955000" expanded="true" signature="653:1709" placeholder="..." />
+            <marker date="1239333955000" expanded="true" signature="1711:1741" placeholder="/**...*/" />
+            <marker date="1239333955000" expanded="true" signature="2044:2135" placeholder="{...}" />
+            <marker date="1239333955000" expanded="true" signature="2186:2193" placeholder="{...}" />
+            <marker date="1239333955000" expanded="true" signature="2461:2718" placeholder="{...}" />
+            <marker date="1239333955000" expanded="true" signature="2853:3093" placeholder="{...}" />
+            <marker date="1239333955000" expanded="true" signature="3218:3305" placeholder="{...}" />
+            <marker date="1239333955000" expanded="true" signature="3390:5133" placeholder="{...}" />
+            <marker date="1239333955000" expanded="true" signature="3740:3789" placeholder="{...}" />
+            <marker date="1239333955000" expanded="true" signature="3925:3969" placeholder="{...}" />
+            <marker date="1239333955000" expanded="true" signature="4076:4434" placeholder="{...}" />
+            <marker date="1239333955000" expanded="true" signature="4551:5053" placeholder="{...}" />
+            <marker date="1239333955000" expanded="true" signature="5092:5127" placeholder="{...}" />
+            <marker date="1239333955000" expanded="true" signature="5366:6525" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/entitystore-neo4j/src/test/java/org/qi4j/entitystore/neo4j/test/IndirectIdentityListTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="31" column="0" selection-start="832" selection-end="929" vertical-scroll-proportion="0.0">
-          <folding />
+          <folding>
+            <marker date="1238419974000" expanded="false" signature="0:623" placeholder="/.../" />
+            <marker date="1238419974000" expanded="true" signature="690:760" placeholder="/**...*/" />
+            <marker date="1238419974000" expanded="true" signature="981:1072" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/entitystore-neo4j/src/test/java/org/qi4j/entitystore/neo4j/test/DirectIdentityListTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="28" column="0" selection-start="892" selection-end="892" vertical-scroll-proportion="0.0">
-          <folding />
+          <folding>
+            <marker date="1239339166000" expanded="false" signature="0:623" placeholder="/.../" />
+            <marker date="1239339166000" expanded="false" signature="673:761" placeholder="..." />
+            <marker date="1239339166000" expanded="true" signature="763:833" placeholder="/**...*/" />
+            <marker date="1239339166000" expanded="true" signature="933:992" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="1074:1261" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="1149:1252" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="1227:1242" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="1327:1649" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="1411:1640" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="1489:1630" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="1711:2075" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="1792:2066" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="1870:2056" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="2134:2501" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="2218:2492" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="2296:2482" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="2560:2930" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="2647:2921" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="2725:2911" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="2999:3617" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="3083:3312" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="3161:3302" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="3379:3608" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="3457:3598" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="3692:4059" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="3779:4050" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="3857:4040" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="4130:4497" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="4217:4488" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="4295:4478" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="4568:4966" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="4652:4957" placeholder="{...}" />
+            <marker date="1239339166000" expanded="true" signature="4730:4947" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/entitystore-neo4j/src/test/java/org/qi4j/entitystore/neo4j/test/DirectIdentitySetTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="44" column="155" selection-start="1247" selection-end="1247" vertical-scroll-proportion="0.0">
+          <folding>
+            <marker date="1239339167000" expanded="false" signature="0:623" placeholder="/.../" />
+            <marker date="1239339167000" expanded="false" signature="673:760" placeholder="..." />
+            <marker date="1239339167000" expanded="true" signature="762:832" placeholder="/**...*/" />
+            <marker date="1239339167000" expanded="true" signature="930:989" placeholder="{...}" />
+            <marker date="1239339167000" expanded="true" signature="1053:1237" placeholder="{...}" />
+            <marker date="1239339167000" expanded="true" signature="1127:1228" placeholder="{...}" />
+            <marker date="1239339167000" expanded="true" signature="1203:1218" placeholder="{...}" />
+            <marker date="1239339167000" expanded="true" signature="1302:1618" placeholder="{...}" />
+            <marker date="1239339167000" expanded="true" signature="1385:1609" placeholder="{...}" />
+            <marker date="1239339167000" expanded="true" signature="1461:1599" placeholder="{...}" />
+            <marker date="1239339167000" expanded="true" signature="1684:2082" placeholder="{...}" />
+            <marker date="1239339167000" expanded="true" signature="1767:2073" placeholder="{...}" />
+            <marker date="1239339167000" expanded="true" signature="1843:2063" placeholder="{...}" />
+            <marker date="1239339167000" expanded="true" signature="2144:2545" placeholder="{...}" />
+            <marker date="1239339167000" expanded="true" signature="2227:2536" placeholder="{...}" />
+            <marker date="1239339167000" expanded="true" signature="2303:2526" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rest/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="83" column="52" selection-start="2782" selection-end="2782" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/entitystore-coherence/pom.xml">
+    <entry file="file://$PROJECT_DIR$/entitystore-jdbm/src/test/java/org/qi4j/entitystore/jdbm/JdbmEntityStoreTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="27" selection-start="1069" selection-end="1069" vertical-scroll-proportion="0.5120148">
+        <state line="31" column="13" selection-start="1018" selection-end="1018" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/entitystore-legacy-sql/src/main/java/org/qi4j/entitystore/legacy/IdentifierConverter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="17" selection-start="736" selection-end="736" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/entitystore-jdbm/src/main/java/org/qi4j/entitystore/jdbm/JdbmConfiguration.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="17" selection-start="268" selection-end="268" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/entitystore-legacy-sql/src/test/java/org/qi4j/entitystore/legacy/DefaultIbatisEntityStoreTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="31" column="13" selection-start="1098" selection-end="1098" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/entitystore-neo4j/src/main/java/org/qi4j/entitystore/neo4j/Configuration.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="12" selection-start="334" selection-end="334" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/entitystore-neo4j/src/main/java/org/qi4j/entitystore/neo4j/EmbeddedNeoMixin.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="13" selection-start="1217" selection-end="1217" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/entitystore-neo4j/src/test/java/org/qi4j/entitystore/neo4j/test/Case.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="17" selection-start="754" selection-end="754" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/indexing-rdf/src/main/java/org/qi4j/index/rdf/Namespaces.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="13" selection-start="746" selection-end="746" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/indexing-rdf/src/test/java/org/qi4j/index/rdf/Google.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="17" selection-start="788" selection-end="788" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rest/src/main/java/org/qi4j/rest/EntityMBean.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="13" selection-start="783" selection-end="783" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rest/src/test/java/org/qi4j/rest/DomainAssembler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="39" column="25" selection-start="1512" selection-end="1512" vertical-scroll-proportion="0.37894738">
           <folding />
         </state>
       </provider>

@@ -17,7 +17,6 @@
  */
 package org.qi4j.index.rdf;
 
-import org.qi4j.index.rdf.RdfQueryParser;
 import org.openrdf.query.QueryLanguage;
 
 public interface RdfFactory

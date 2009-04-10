@@ -17,15 +17,11 @@
  */
 package org.qi4j.rest;
 
-import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkException;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.unitofwork.*;
 import org.qi4j.rest.entity.AllEntitiesResource;
 import org.qi4j.rest.entity.EntitiesResource;
 import org.qi4j.rest.entity.EntityResource;
@@ -33,11 +29,7 @@ import org.qi4j.rest.query.IndexResource;
 import org.qi4j.rest.query.SPARQLResource;
 import org.qi4j.rest.type.EntityTypeResource;
 import org.qi4j.rest.type.EntityTypesResource;
-import org.restlet.Application;
-import org.restlet.Context;
-import org.restlet.Finder;
-import org.restlet.Restlet;
-import org.restlet.Router;
+import org.restlet.*;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
@@ -97,7 +89,7 @@ public class RestApplication extends Application
     {
         Router router = new Router( getContext() );
 
-        router.attach("/service", Qi4jServiceResource.class);
+        router.attach( "/service", Qi4jServiceResource.class );
 
         router.attach( "/entitytype", createFinder( EntityTypesResource.class ) );
         router.attach( "/entitytype/{type}", createFinder( EntityTypeResource.class ) );

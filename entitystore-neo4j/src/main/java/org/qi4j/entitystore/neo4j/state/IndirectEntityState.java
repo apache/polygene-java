@@ -16,16 +16,17 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.helpers.DefaultValueState;
 import org.qi4j.spi.value.ValueState;
-import org.qi4j.api.common.QualifiedName;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -209,7 +210,7 @@ public class IndirectEntityState implements CommittableEntityState
 
     public ValueState newValueState( Map<QualifiedName, Object> values )
     {
-        return new DefaultValueState(values);
+        return new DefaultValueState( values );
     }
 
     // Implementation internals

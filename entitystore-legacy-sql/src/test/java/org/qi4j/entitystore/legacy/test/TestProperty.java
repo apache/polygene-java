@@ -14,9 +14,10 @@
 
 package org.qi4j.entitystore.legacy.test;
 
-import java.lang.reflect.Type;
-import org.qi4j.api.property.Property;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.property.Property;
+
+import java.lang.reflect.Type;
 
 public class TestProperty<T> implements Property<T>
 {
@@ -36,7 +37,7 @@ public class TestProperty<T> implements Property<T>
 
     public void set( T newValue ) throws IllegalArgumentException
     {
-        set(newValue);
+        set( newValue );
     }
 
     public T _()

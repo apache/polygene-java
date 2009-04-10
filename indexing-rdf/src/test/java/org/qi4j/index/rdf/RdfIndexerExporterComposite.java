@@ -17,8 +17,9 @@
  */
 package org.qi4j.index.rdf;
 
-import java.io.OutputStream;
 import org.qi4j.api.mixin.Mixins;
+
+import java.io.OutputStream;
 
 /**
  * JAVADOC Add JavaDoc

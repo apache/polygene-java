@@ -16,23 +16,11 @@
  */
 package org.qi4j.entitystore.legacy.internal;
 
-import java.io.Serializable;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.api.common.QualifiedName;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.entitystore.legacy.IdentifierConverter;
-import org.qi4j.spi.entity.EntityNotFoundException;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.*;
 import static org.qi4j.spi.entity.EntityStatus.REMOVED;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
@@ -40,6 +28,10 @@ import org.qi4j.spi.entity.helpers.DefaultValueState;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.value.ValueState;
+
+import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.util.*;
 
 /**
  * {@code IBatisEntityState} represents {@code IBatis} version of {@link org.qi4j.spi.entity.EntityState}.
@@ -320,6 +312,6 @@ public final class LegacyEntityState
 
     public ValueState newValueState( Map<QualifiedName, Object> values )
     {
-        return new DefaultValueState(values);
+        return new DefaultValueState( values );
     }
 }

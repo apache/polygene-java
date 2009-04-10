@@ -16,12 +16,10 @@
  */
 package org.qi4j.entitystore.legacy.dbInitializer;
 
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.configuration.ConfigurationComposite;
 
 /**
  * {@code DBInitializerInfo} represents information on the sql resources to initialize the database.
- *
  */
 public interface DBInitializerConfigurationComposite extends DBInitializerConfiguration, ConfigurationComposite
 {

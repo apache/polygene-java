@@ -15,9 +15,8 @@
 package org.qi4j.rest.client;
 
 import org.qi4j.spi.query.EntityFinderException;
-import org.restlet.data.Status;
 import org.restlet.data.Reference;
-import org.restlet.resource.Resource;
+import org.restlet.data.Status;
 
 /**
  * JAVADOC
@@ -28,9 +27,9 @@ public class SPARQLEntityFinderException
     private Reference ref;
     private Status status;
 
-    public SPARQLEntityFinderException( Reference reference, Status status)
+    public SPARQLEntityFinderException( Reference reference, Status status )
     {
-        super( "Could not perform query to "+reference+": "+status.getDescription()+"("+status.getName()+")" );
+        super( "Could not perform query to " + reference + ": " + status.getDescription() + "(" + status.getName() + ")" );
         this.ref = reference;
         this.status = status;
     }

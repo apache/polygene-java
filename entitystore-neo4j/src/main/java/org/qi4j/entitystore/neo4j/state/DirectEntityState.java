@@ -16,21 +16,18 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.NeoService;
-import org.neo4j.api.core.Node;
-import org.neo4j.api.core.Relationship;
-import org.neo4j.api.core.RelationshipType;
+import org.neo4j.api.core.*;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.helpers.DefaultValueState;
 import org.qi4j.spi.value.ValueState;
-import org.qi4j.api.common.QualifiedName;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -254,7 +251,7 @@ public class DirectEntityState implements CommittableEntityState
         Relationship relation = underlyingNode.getSingleRelationship( associationType, Direction.OUTGOING );
         if( relation != null )
         {
-            removeProxy(relation.getEndNode());
+            removeProxy( relation.getEndNode() );
             relation.delete();
         }
         if( newEntity != null )
@@ -281,7 +278,7 @@ public class DirectEntityState implements CommittableEntityState
     public ValueState newValueState( Map<QualifiedName, Object> values )
     {
         // TODO Replace with something Neo4j specific!
-        return new DefaultValueState(values);
+        return new DefaultValueState( values );
     }
 
     // Implementation internals
@@ -333,16 +330,17 @@ public class DirectEntityState implements CommittableEntityState
         }
     }
 
-	static void removeProxy(Node listed) {
-		if (listed == null)
-		{
-			return;
-		}
+    static void removeProxy( Node listed )
+    {
+        if( listed == null )
+        {
+            return;
+        }
         Relationship proxyRelation = listed.getSingleRelationship( DirectEntityState.PROXY_FOR, Direction.OUTGOING );
         if( proxyRelation != null )
         {
-        	proxyRelation.delete();
-        	listed.delete();
-        }		
-	}
+            proxyRelation.delete();
+            listed.delete();
+        }
+    }
 }

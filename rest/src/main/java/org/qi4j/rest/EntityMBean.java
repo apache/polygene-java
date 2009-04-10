@@ -14,19 +14,10 @@
 
 package org.qi4j.rest;
 
-import javax.management.DynamicMBean;
-import javax.management.AttributeNotFoundException;
-import javax.management.MBeanException;
-import javax.management.ReflectionException;
-import javax.management.Attribute;
-import javax.management.InvalidAttributeValueException;
-import javax.management.AttributeList;
-import javax.management.MBeanInfo;
-import javax.management.MBeanConstructorInfo;
-import javax.management.MBeanNotificationInfo;
-import javax.management.MBeanAttributeInfo;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
+
+import javax.management.*;
 
 /**
  * JAVADOC
@@ -47,12 +38,12 @@ public class EntityMBean
     {
         try
         {
-            Property property = (Property) entity.getClass().getMethod( s, new Class[0]).invoke( entity );
+            Property property = (Property) entity.getClass().getMethod( s, new Class[0] ).invoke( entity );
             return property.get();
         }
         catch( Exception e )
         {
-            throw new AttributeNotFoundException( s);
+            throw new AttributeNotFoundException( s );
         }
     }
 
@@ -60,23 +51,23 @@ public class EntityMBean
     {
         try
         {
-            Property property = (Property) entity.getClass().getMethod( attribute.getName(), new Class[0]).invoke( entity );
-            property.set(attribute.getValue());
+            Property property = (Property) entity.getClass().getMethod( attribute.getName(), new Class[0] ).invoke( entity );
+            property.set( attribute.getValue() );
         }
         catch( Exception e )
         {
-            throw new AttributeNotFoundException( attribute.getName());
+            throw new AttributeNotFoundException( attribute.getName() );
         }
     }
 
     public AttributeList getAttributes( String[] strings )
     {
-        AttributeList attributes = new AttributeList( );
+        AttributeList attributes = new AttributeList();
         for( String string : strings )
         {
             try
             {
-                attributes.add( new Attribute(string, getAttribute( string )) );
+                attributes.add( new Attribute( string, getAttribute( string ) ) );
             }
             catch( Exception e )
             {
@@ -90,7 +81,7 @@ public class EntityMBean
     {
         for( Object attribute : attributeList )
         {
-            Attribute attr = (Attribute)attribute;
+            Attribute attr = (Attribute) attribute;
             try
             {
                 setAttribute( attr );

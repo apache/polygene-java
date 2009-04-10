@@ -14,14 +14,15 @@
 
 package org.qi4j.index.rdf;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.rdfxml.util.RDFXMLPrettyWriter;
 import org.qi4j.api.injection.scope.Service;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * JAVADOC

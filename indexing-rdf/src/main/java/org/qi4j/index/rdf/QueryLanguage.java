@@ -17,12 +17,11 @@
  */
 package org.qi4j.index.rdf;
 
-import org.qi4j.api.property.Property;
-import org.qi4j.api.property.Immutable;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.property.Immutable;
+import org.qi4j.api.property.Property;
 
 public interface QueryLanguage extends Composite
 {
-    @Immutable
-    Property<String> name();
+    @Immutable Property<String> name();
 }
