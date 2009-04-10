@@ -2,8 +2,6 @@
 <project relativePaths="false" version="4">
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/entitystore-qrm/pom.xml" afterPath="$PROJECT_DIR$/entitystore-qrm/pom.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/entitystore-qrm/entitystore-legacy-sql.iml" afterPath="$PROJECT_DIR$/entitystore-qrm/qi4j-entitystore-qrm.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="qi4j-extensions.iws" />
@@ -66,7 +64,7 @@
       <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/rest/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="83" column="52" selection-start="2782" selection-end="2782" vertical-scroll-proportion="0.0">
+            <state line="83" column="23" selection-start="2782" selection-end="2782" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -117,10 +115,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="pom.xml" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="23" column="154" selection-start="923" selection-end="923" vertical-scroll-proportion="0.0">
+            <state line="30" column="158" selection-start="1094" selection-end="1094" vertical-scroll-proportion="0.68441063">
               <folding />
             </state>
           </provider>
@@ -135,10 +133,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pom.xml" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/entitystore-qrm/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="36" selection-start="1453" selection-end="1453" vertical-scroll-proportion="0.972973">
+            <state line="29" column="22" selection-start="1071" selection-end="1071" vertical-scroll-proportion="-12.0">
               <folding />
             </state>
           </provider>
@@ -147,7 +145,7 @@
       <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/indexing-rdf/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="52" selection-start="1273" selection-end="1273" vertical-scroll-proportion="0.0">
+            <state line="42" column="38" selection-start="1273" selection-end="1273" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -668,14 +666,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/indexing-rdf/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="52" selection-start="1273" selection-end="1273" vertical-scroll-proportion="0.0">
+        <state line="42" column="38" selection-start="1273" selection-end="1273" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/rest/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="83" column="52" selection-start="2782" selection-end="2782" vertical-scroll-proportion="0.0">
+        <state line="83" column="23" selection-start="2782" selection-end="2782" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -715,13 +713,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="154" selection-start="923" selection-end="923" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/entitystore-jdbm/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
@@ -731,7 +722,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/entitystore-qrm/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="36" selection-start="1453" selection-end="1453" vertical-scroll-proportion="0.972973">
+        <state line="29" column="22" selection-start="1071" selection-end="1071" vertical-scroll-proportion="-12.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="30" column="158" selection-start="1094" selection-end="1094" vertical-scroll-proportion="0.68441063">
           <folding />
         </state>
       </provider>
