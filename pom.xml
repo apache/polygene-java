@@ -162,8 +162,8 @@
     </developer>
   </developers>
 
- <build>
-    <extensions>
+  <build>
+  <extensions>
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-ssh-external</artifactId>
