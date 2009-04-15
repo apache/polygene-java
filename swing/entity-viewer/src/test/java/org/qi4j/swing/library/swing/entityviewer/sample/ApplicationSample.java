@@ -116,7 +116,7 @@ public class ApplicationSample extends AbstractQi4jTest
     {
         UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
         EntityBuilder<Car> builder = uow.newEntityBuilder( Car.class );
-        Car prototype = builder.stateFor( CarEntity.class );
+        Car prototype = builder.prototypeFor( CarEntity.class );
         prototype.manufacturer().set( manufacturer );
         prototype.model().set( model );
         prototype.year().set( year );
@@ -128,7 +128,7 @@ public class ApplicationSample extends AbstractQi4jTest
     {
         UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
         EntityBuilder<Animal> builder = uow.newEntityBuilder( Animal.class );
-        Animal prototype = builder.stateFor( AnimalEntity.class );
+        Animal prototype = builder.prototypeFor( AnimalEntity.class );
         prototype.name().set( name);
         prototype.sound().set( sound );
         AnimalEntity entity = (AnimalEntity) builder.newInstance();

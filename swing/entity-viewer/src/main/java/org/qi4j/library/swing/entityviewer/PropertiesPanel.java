@@ -26,7 +26,10 @@ import org.qi4j.api.query.Query;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.property.PropertyDescriptor;
+import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.bootstrap.Energy4Java;
 
 /**
@@ -72,22 +75,21 @@ public class PropertiesPanel extends JPanel
         for( Object qObj : query )
         {
             EntityState state = spi.getEntityState( (EntityComposite) qObj );
-            Iterable<QualifiedName> names = state.propertyNames();
-
+            EntityDescriptor descriptor = spi.getEntityDescriptor((EntityComposite) qObj);
             // genereate column, first time only
             if( model.getColumnCount() < 1 )
             {
-                for( QualifiedName name : names )
+                for (PropertyTypeDescriptor propertyDescriptor : descriptor.state().<PropertyTypeDescriptor>properties())
                 {
-                    model.addColumn( name.name() );
+                    model.addColumn( propertyDescriptor.qualifiedName().name() );
                 }
             }
 
             Object[] rowData = new Object[model.getColumnCount()];
             int i = 0;
-            for( QualifiedName name : names )
+            for (PropertyTypeDescriptor propertyDescriptor : descriptor.state().<PropertyTypeDescriptor>properties())
             {
-                rowData[ i++ ] = state.getProperty( name );
+                rowData[ i++ ] = state.getProperty( propertyDescriptor.propertyType().stateName());
             }
             model.addRow( rowData );
         }

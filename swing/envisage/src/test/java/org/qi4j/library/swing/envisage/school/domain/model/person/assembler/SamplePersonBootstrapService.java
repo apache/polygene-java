@@ -66,9 +66,9 @@ public interface SamplePersonBootstrapService extends Activatable, ServiceCompos
 
         private void createPerson( UnitOfWork uow, String personId, String firstName, String lastName )
         {
-            EntityBuilder<Person> person = uow.newEntityBuilder( personId, Person.class );
+            EntityBuilder<Person> person = uow.newEntityBuilder(Person.class, personId);
 
-            PersonState state = person.stateFor( PersonState.class );
+            PersonState state = person.prototypeFor( PersonState.class );
             state.firstName().set( firstName );
             state.lastName().set( lastName );
 

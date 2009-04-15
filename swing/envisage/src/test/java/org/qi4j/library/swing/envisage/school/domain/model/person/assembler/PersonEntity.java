@@ -65,7 +65,7 @@ interface PersonEntity extends Person, EntityComposite
 
         public final void addRole( Role role )
         {
-            state.roles().add( role );
+            state.roles().add( 0, role );
         }
     }
 }

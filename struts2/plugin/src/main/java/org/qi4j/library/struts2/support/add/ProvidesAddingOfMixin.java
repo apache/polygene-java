@@ -22,7 +22,7 @@ public abstract class ProvidesAddingOfMixin<T> extends ActionSupport implements 
     T entity;
     
     public T getState() {
-        return builder.stateOfComposite();
+        return builder.prototype();
     }
 
     public void prepare() throws Exception {

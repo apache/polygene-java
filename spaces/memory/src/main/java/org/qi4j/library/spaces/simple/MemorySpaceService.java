@@ -17,9 +17,9 @@
  */
 package org.qi4j.library.spaces.simple;
 
-import org.qi4j.composite.Mixins;
 import org.qi4j.library.spaces.Space;
-import org.qi4j.service.ServiceComposite;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceComposite;
 
 @Mixins( { MemorySpaceMixin.class } )
 public interface MemorySpaceService extends Space, ServiceComposite

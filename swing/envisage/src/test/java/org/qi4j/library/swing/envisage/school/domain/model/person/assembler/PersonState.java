@@ -16,9 +16,9 @@
 */
 package org.qi4j.library.swing.envisage.school.domain.model.person.assembler;
 
-import org.qi4j.api.entity.association.SetAssociation;
-import org.qi4j.library.swing.envisage.school.domain.model.person.Role;
+import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
+import org.qi4j.library.swing.envisage.school.domain.model.person.Role;
 
 /**
  * @author edward.yakop@gmail.com
@@ -30,5 +30,5 @@ interface PersonState
 
     Property<String> lastName();
 
-    SetAssociation<Role> roles();
+    ManyAssociation<Role> roles();
 }

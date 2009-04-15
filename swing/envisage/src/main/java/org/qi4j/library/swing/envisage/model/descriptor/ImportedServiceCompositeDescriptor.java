@@ -71,9 +71,4 @@ public class ImportedServiceCompositeDescriptor implements AbstractCompositeDesc
     {
         return importedService.serviceImporter();
     }
-
-    public String toURI()
-    {
-        return Classes.toURI( type() );
-    }
 }

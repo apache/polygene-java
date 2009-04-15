@@ -12,21 +12,19 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="qi4j-lib-general" exported="" />
-    <orderEntry type="module" module-name="qi4j-lib-framework" />
     <orderEntry type="module" module-name="qi4j-core-api" exported="" />
     <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
     <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
-    <orderEntry type="module" module-name="qi4j-lib-spaces-api" exported="" />
+    <orderEntry type="module" module-name="qi4j-lib-spaces-api (org.qi4j.library.spaces) (1)" exported="" />
     <orderEntry type="module" module-name="qi4j-core-runtime" />
     <orderEntry type="library" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
-    <orderEntry type="module" module-name="qi4j-lib-spaces-tests" exported="" />
+    <orderEntry type="module" module-name="qi4j-lib-spaces-tests (org.qi4j.library.spaces) (1)" exported="" />
     <orderEntry type="module" module-name="qi4j-core-testsupport" exported="" />
     <orderEntry type="library" name="Maven: junit:junit:4.4" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.qi4j.library:qi4j-lib-general:0.7-SNAPSHOT" level="project" />
-    <orderEntry type="module" module-name="qi4j-lib-validation" exported="" />
+    <orderEntry type="module" module-name="qi4j-lib-validation (org.qi4j.library) (1)" exported="" />
     <orderEntry type="module" module-name="qi4j-lib-constraints" exported="" />
-    <orderEntry type="module" module-name="qi4j-lib-jini-lookup" />
+    <orderEntry type="module" module-name="qi4j-lib-jini-lookup (org.qi4j.library.jini) (1)" />
     <orderEntry type="module" module-name="qi4j-lib-http" />
     <orderEntry type="library" name="Maven: org.mortbay.jetty:jetty:6.1.11" level="project" />
     <orderEntry type="library" name="Maven: org.mortbay.jetty:jetty-util:6.1.11" level="project" />
@@ -39,9 +37,9 @@
     <orderEntry type="library" name="Maven: org.apache.river:reggie:2.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.river:start:2.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.river:jsk-lib:2.1.1" level="project" />
-    <orderEntry type="module" module-name="qi4j-lib-jini-transaction" />
+    <orderEntry type="module" module-name="qi4j-lib-jini-transaction (org.qi4j.library.jini) (1)" />
     <orderEntry type="library" name="Maven: org.apache.river:mahalo:2.1.1" level="project" />
-    <orderEntry type="module" module-name="qi4j-lib-jini-javaspaces" />
+    <orderEntry type="module" module-name="qi4j-lib-jini-javaspaces (org.qi4j.library.jini) (1)" />
     <orderEntry type="library" name="Maven: org.apache.river:outrigger:2.1.1" level="project" />
   </component>
 </module>

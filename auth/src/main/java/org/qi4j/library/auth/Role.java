@@ -19,9 +19,9 @@
 package org.qi4j.library.auth;
 
 import org.qi4j.api.entity.Entity;
-import org.qi4j.api.entity.association.ListAssociation;
+import org.qi4j.api.entity.association.ManyAssociation;
 
 public interface Role extends Entity
 {
-    ListAssociation<Permission> permissions();
+    ManyAssociation<Permission> permissions();
 }

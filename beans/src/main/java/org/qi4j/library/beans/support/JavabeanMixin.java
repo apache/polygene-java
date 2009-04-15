@@ -18,22 +18,21 @@
 
 package org.qi4j.library.beans.support;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.HashMap;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ListAssociation;
 import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.entity.association.SetAssociation;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.util.MethodKeyMap;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 
 @AppliesTo( { JavabeanMixin.JavabeanSupportFilter.class } )
 public class JavabeanMixin
@@ -59,15 +58,7 @@ public class JavabeanMixin
                 prop.setPojoMethod( pojoMethod );
                 handlers.put( method, prop );
             }
-            else if( SetAssociation.class.isAssignableFrom( returnType ) )
-            {
-                JavabeanSetAssociation association = new JavabeanSetAssociation( this, method );
-                Method pojoMethod = findMethod( pojo, association.qualifiedName().name() );
-                association.setPojoMethod( pojoMethod );
-                handlers.put( method, association );
-            }
-            else if( ListAssociation.class.isAssignableFrom( returnType ) ||
-                     ManyAssociation.class.isAssignableFrom( returnType ) )
+            else if( ManyAssociation.class.isAssignableFrom( returnType ) )
             {
                 JavabeanListAssociation association = new JavabeanListAssociation( this, method );
                 Method pojoMethod = findMethod( pojo, association.qualifiedName().name() );
@@ -135,8 +126,6 @@ public class JavabeanMixin
             Class<?> retType = method.getReturnType();
             return Property.class.isAssignableFrom( retType ) ||
                    Association.class.isAssignableFrom( retType ) ||
-                   SetAssociation.class.isAssignableFrom( retType ) ||
-                   ListAssociation.class.isAssignableFrom( retType ) ||
                    ManyAssociation.class.isAssignableFrom( retType ) ||
                    "getJavabean".equals( methodName ) || "setJavabean".equals( methodName );
         }

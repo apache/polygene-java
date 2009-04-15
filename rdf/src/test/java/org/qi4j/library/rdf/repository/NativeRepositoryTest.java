@@ -25,6 +25,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.spi.entity.helpers.EntityTypeRegistryService;
 
 /**
  * JAVADOC
@@ -37,7 +38,7 @@ public class NativeRepositoryTest
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class );
+        module.addServices( MemoryEntityStoreService.class, EntityTypeRegistryService.class );
         module.addServices( NativeRepositoryService.class ).instantiateOnStartup();
         module.addEntities( NativeConfiguration.class );
         module.addObjects( getClass() );

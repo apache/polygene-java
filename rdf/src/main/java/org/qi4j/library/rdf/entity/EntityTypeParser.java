@@ -15,22 +15,15 @@
 package org.qi4j.library.rdf.entity;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Collections;
-import org.openrdf.model.BNode;
-import org.openrdf.model.Resource;
+import java.util.Set;
+import java.util.HashSet;
+
 import org.openrdf.model.Statement;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.qi4j.api.entity.Identity;
-import org.qi4j.api.property.GenericPropertyInfo;
+import org.openrdf.model.vocabulary.OWL;
 import org.qi4j.api.util.Classes;
+import org.qi4j.api.common.TypeName;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.library.rdf.Qi4jEntityType;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
@@ -47,30 +40,30 @@ public class EntityTypeParser
 
     public EntityType parse( Iterable<Statement> entityTypeGraph)
     {
-        String type = null;
+        TypeName type = null;
         String uri = null;
+        String rdf = null;
         boolean queryable = true;
-        Iterable<String> mixinTypes = new ArrayList<String>();
-        Iterable<PropertyType> properties = new ArrayList<PropertyType>();
-        Iterable<AssociationType> associations = new ArrayList<AssociationType>();
-        Iterable<ManyAssociationType> manyAssociations = new ArrayList<ManyAssociationType>();
+        Set<String> mixinTypes = new HashSet<String>();
+        Set<PropertyType> properties = new HashSet<PropertyType>();
+        Set<AssociationType> associations = new HashSet<AssociationType>();
+        Set<ManyAssociationType> manyAssociations = new HashSet<ManyAssociationType>();
 
         for( Statement statement : entityTypeGraph )
         {
             if( statement.getPredicate().equals( Rdfs.TYPE ) )
             {
-                type = Classes.toClassName( statement.getObject().toString() );
+
+                String str = statement.getObject().toString();
+                if (!str.equals(Rdfs.CLASS.toString()) && !str.equals(OWL.CLASS.toString()))
+                    rdf = str;
                 uri = statement.getSubject().stringValue();
             }
             else if (statement.getPredicate().equals( Qi4jEntityType.TYPE ))
             {
-                queryable = Boolean.parseBoolean( statement.getObject().stringValue());
+                type = TypeName.nameOf(Classes.toClassName(statement.getObject().stringValue()));
             }
             else if (statement.getPredicate().equals( Qi4jEntityType.QUERYABLE ))
-            {
-                queryable = Boolean.parseBoolean( statement.getObject().stringValue());
-            }
-            else if (statement.getPredicate().equals( Qi4jEntityType.VERSION ))
             {
                 queryable = Boolean.parseBoolean( statement.getObject().stringValue());
             }
@@ -87,14 +80,14 @@ public class EntityTypeParser
                     String uri = predicate.toString();
 
                     BNode key = (BNode) subject;
-                    Collection<QualifiedIdentity> manyAssociation = manyAssociationValues.get( key );
-                    manyAssociation.add( QualifiedIdentity.parseURI( object.stringValue() ) );
+                    Collection<EntityReference> manyAssociation = manyAssociationValues.get( key );
+                    manyAssociation.add( EntityReference.parseURI( object.stringValue() ) );
                 }
                 else if( object instanceof URI )
                 {
                     // Association
                     String uri = predicate.toString();
-                    QualifiedIdentity qid = QualifiedIdentity.parseURI( object.stringValue() );
+                    EntityReference qid = EntityReference.parseURI( object.stringValue() );
                     associationValues.put( uri, qid );
                 }
                 else if( object instanceof BNode )
@@ -102,7 +95,7 @@ public class EntityTypeParser
                     // ManyAssociation
                     String uri = predicate.toString();
                     manyAssociationResources.put( uri, (BNode) object );
-                    manyAssociationValues.put( (BNode) object, new ArrayList<QualifiedIdentity>() );
+                    manyAssociationValues.put( (BNode) object, new ArrayList<EntityReference>() );
                 }
                 else
                 {
@@ -114,7 +107,7 @@ public class EntityTypeParser
 */
         }
 
-        EntityType entityType = new EntityType(type, uri, queryable, mixinTypes, properties, associations, manyAssociations);
+        EntityType entityType = new EntityType(type, rdf, queryable, mixinTypes, properties, associations, manyAssociations);
         return entityType;
     }
 }

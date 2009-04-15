@@ -97,9 +97,9 @@ public class TraceServiceMixin
         {
             EntityComposite entity = (EntityComposite) object;
             String identity = entity.identity().get();
-            EntityComposite source = (EntityComposite) uow.getReference( identity, entity.type() );
+            EntityComposite source = (EntityComposite) uow.get(entity.type(), identity);
             EntityBuilder<EntityTraceRecordEntity> builder = uow.newEntityBuilder( EntityTraceRecordEntity.class );
-            EntityTraceRecordEntity state = builder.stateOfComposite();
+            EntityTraceRecordEntity state = builder.prototype();
             setStandardStuff( compositeType, method, args, entryTime, durationNano, state, exception );
             state.source().set( source );
             EntityTraceRecordEntity etr = builder.newInstance();  // Record is created.
@@ -108,7 +108,7 @@ public class TraceServiceMixin
         {
             ServiceComposite service = (ServiceComposite) object;
             EntityBuilder<ServiceTraceRecordEntity> builder = uow.newEntityBuilder( ServiceTraceRecordEntity.class );
-            ServiceTraceRecordEntity state = builder.stateOfComposite();
+            ServiceTraceRecordEntity state = builder.prototype();
             setStandardStuff( compositeType, method, args, entryTime, durationNano, state, exception );
             state.source().set( service.toString() );
             ServiceTraceRecordEntity str = builder.newInstance();  // Record is created.
@@ -116,7 +116,7 @@ public class TraceServiceMixin
         else
         {
             EntityBuilder<CompositeTraceRecordEntity> builder = uow.newEntityBuilder( CompositeTraceRecordEntity.class );
-            CompositeTraceRecordEntity state = builder.stateOfComposite();
+            CompositeTraceRecordEntity state = builder.prototype();
             state.source().set( object );
             setStandardStuff( compositeType, method, args, entryTime, durationNano, state, exception );
             CompositeTraceRecordEntity ctr = builder.newInstance();  // Record is created.

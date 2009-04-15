@@ -18,7 +18,6 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.RDF;
 import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ListAssociation;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
 import org.qi4j.library.constraints.annotation.NotEmpty;
@@ -42,5 +41,5 @@ interface TestEntity
 
     ManyAssociation<TestEntity> manyAssoc();
 
-    @RDF( "http://www.w3.org/2001/vcard-rdf/3.0#GROUP" ) ListAssociation<TestEntity> group();
+    @RDF( "http://www.w3.org/2001/vcard-rdf/3.0#GROUP" ) ManyAssociation<TestEntity> group();
 }

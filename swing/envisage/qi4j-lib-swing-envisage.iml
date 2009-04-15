@@ -7,7 +7,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -86,6 +85,5 @@
     <orderEntry type="library" exported="" name="Maven: bouncycastle:bcmail-jdk14:136" level="project" />
     <orderEntry type="library" exported="" name="Maven: bouncycastle:bcprov-jdk14:136" level="project" />
   </component>
-  <component name="copyright" />
 </module>
 

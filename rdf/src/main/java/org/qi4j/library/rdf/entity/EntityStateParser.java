@@ -24,12 +24,13 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.qi4j.api.entity.Identity;
-import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.library.rdf.Rdfs;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.library.rdf.Qi4jEntity;
+import org.qi4j.spi.entity.*;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
@@ -41,6 +42,8 @@ public class EntityStateParser
 {
     private String identityUri;
 
+    private @Service EntityTypeRegistry typeRegistry;
+
     public EntityStateParser()
     {
         identityUri = QualifiedName.fromClass(Identity.class, "identity" ).toURI();
@@ -49,16 +52,16 @@ public class EntityStateParser
     public void parse( Iterable<Statement> entityGraph, EntityState entityState )
     {
         Map<String, String> propertyValues = new HashMap<String, String>();
-        Map<String, QualifiedIdentity> associationValues = new HashMap<String, QualifiedIdentity>();
+        Map<String, EntityReference> associationValues = new HashMap<String, EntityReference>();
         Map<String, BNode> manyAssociationResources = new HashMap<String, BNode>();
-        Map<BNode, Collection<QualifiedIdentity>> manyAssociationValues = new HashMap<BNode, Collection<QualifiedIdentity>>();
+        Map<BNode, Collection<EntityReference>> manyAssociationValues = new HashMap<BNode, Collection<EntityReference>>();
 
-        String className = null;
+        String entityTypeReference = null;
         for( Statement statement : entityGraph )
         {
-            if( statement.getPredicate().equals( Rdfs.TYPE ) )
+            if( statement.getPredicate().equals( Qi4jEntity.ENTITYTYPEREFERENCE) )
             {
-                className = Classes.toClassName( statement.getObject().toString() );
+                entityTypeReference = statement.getObject().toString();
             }
             else
             {
@@ -72,14 +75,14 @@ public class EntityStateParser
                     String uri = predicate.toString();
 
                     BNode key = (BNode) subject;
-                    Collection<QualifiedIdentity> manyAssociation = manyAssociationValues.get( key );
-                    manyAssociation.add( QualifiedIdentity.parseURI( object.stringValue() ) );
+                    Collection<EntityReference> manyAssociation = manyAssociationValues.get( key );
+                    manyAssociation.add( EntityReference.parseURI( object.stringValue() ) );
                 }
                 else if( object instanceof URI )
                 {
                     // Association
                     String uri = predicate.toString();
-                    QualifiedIdentity qid = QualifiedIdentity.parseURI( object.stringValue() );
+                    EntityReference qid = EntityReference.parseURI( object.stringValue() );
                     associationValues.put( uri, qid );
                 }
                 else if( object instanceof BNode )
@@ -87,7 +90,7 @@ public class EntityStateParser
                     // ManyAssociation
                     String uri = predicate.toString();
                     manyAssociationResources.put( uri, (BNode) object );
-                    manyAssociationValues.put( (BNode) object, new ArrayList<QualifiedIdentity>() );
+                    manyAssociationValues.put( (BNode) object, new ArrayList<EntityReference>() );
                 }
                 else
                 {
@@ -100,33 +103,42 @@ public class EntityStateParser
 
         String id = propertyValues.get( identityUri );
 
-        if( className == null || id == null )
+        if( entityTypeReference == null || id == null )
         {
             return;
         }
 
-        for( PropertyType propertyType : entityState.entityType().properties() )
+        EntityTypeReference entityTypeReference1 = new EntityTypeReference(entityTypeReference);
+        EntityType entityType = typeRegistry.getEntityType(entityTypeReference1);
+
+        for( PropertyType propertyType : entityType.properties() )
         {
-            entityState.setProperty( propertyType.qualifiedName(), propertyValues.get( propertyType.qualifiedName().toURI() ) );
+            entityState.setProperty( propertyType.stateName(), propertyValues.get( propertyType.qualifiedName().toURI() ) );
         }
 
-        for( AssociationType associationType : entityState.entityType().associations() )
+        for( AssociationType associationType : entityType.associations() )
         {
-            QualifiedIdentity entity = associationValues.get( associationType.qualifiedName().toURI() );
+            EntityReference entity = associationValues.get( associationType.qualifiedName().toURI() );
             if( entity != null )
             {
-                entityState.setAssociation( associationType.qualifiedName(), entity );
+                entityState.setAssociation( associationType.stateName(), entity );
             }
         }
 
-        for( ManyAssociationType manyAssociationType : entityState.entityType().manyAssociations() )
+        for( ManyAssociationType manyAssociationType : entityType.manyAssociations() )
         {
-            Collection<QualifiedIdentity> entities = manyAssociationValues.get( manyAssociationResources.get( manyAssociationType.qualifiedName().toURI() ) );
+            Collection<EntityReference> entities = manyAssociationValues.get( manyAssociationResources.get( manyAssociationType.qualifiedName().toURI() ) );
             if( entities != null )
             {
-                Collection<QualifiedIdentity> stateEntities = entityState.getManyAssociation( manyAssociationType.qualifiedName() );
-                stateEntities.clear();
-                stateEntities.addAll( entities );
+                ManyAssociationState stateEntities = entityState.getManyAssociation( manyAssociationType.stateName() );
+                while (stateEntities.count() > 0)
+                    stateEntities.remove(stateEntities.get(0));
+
+                int idx = 0;
+                for (EntityReference entity : entities)
+                {
+                    stateEntities.add(idx++, entity);
+                }
             }
         }
     }

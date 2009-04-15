@@ -21,7 +21,7 @@ import org.qi4j.library.spaces.Space;
 import org.qi4j.library.spaces.simple.MemorySpaceAssembler;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.injection.scope.Service;
+import org.qi4j.api.injection.scope.Service;
 
 public class MemorySpaceTest extends SpacesTestRig
 {
@@ -45,7 +45,8 @@ public class MemorySpaceTest extends SpacesTestRig
     
     public static class SpaceHolder
     {
-        @Service Space space;
+        @Service
+        Space space;
 
         public Space getSpace()
         {

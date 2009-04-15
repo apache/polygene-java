@@ -17,17 +17,17 @@
 package org.qi4j.library.swing.envisage.school.domain.model.school.assembler;
 
 import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.SetAssociation;
-import org.qi4j.library.swing.envisage.school.domain.model.school.Subject;
-import org.qi4j.library.swing.envisage.school.domain.model.school.School;
+import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
+import org.qi4j.library.swing.envisage.school.domain.model.school.School;
+import org.qi4j.library.swing.envisage.school.domain.model.school.Subject;
 
 /**
  * @author edward.yakop@gmail.com
  */
 interface StudentState
 {
-    SetAssociation<Subject> subjects();
+    ManyAssociation<Subject> subjects();
 
     Association<School> school();
 

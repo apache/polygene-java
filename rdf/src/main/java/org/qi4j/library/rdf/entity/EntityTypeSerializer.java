@@ -14,32 +14,25 @@
 
 package org.qi4j.library.rdf.entity;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import org.openrdf.model.BNode;
 import org.openrdf.model.Graph;
-import org.openrdf.model.Literal;
-import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.model.vocabulary.OWL;
-import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.qi4j.api.util.Classes;
-import org.qi4j.library.rdf.Qi4jEntity;
-import org.qi4j.library.rdf.Qi4jRdf;
-import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.library.rdf.Qi4jEntityType;
+import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.QualifierQualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.value.PrimitiveType;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * JAVADOC
@@ -67,12 +60,15 @@ public class EntityTypeSerializer
     {
         Graph graph = new GraphImpl();
         ValueFactory values = graph.getValueFactory();
-        URI entityTypeUri = values.createURI( entityType.toURI() );
+        URI entityTypeUri = values.createURI( entityType.uri() );
 
         graph.add( entityTypeUri, Rdfs.TYPE, Rdfs.CLASS );
         graph.add( entityTypeUri, Rdfs.TYPE, OWL.CLASS );
 
-        graph.add(entityTypeUri, Qi4jEntityType.TYPE, values.createLiteral( entityType.type() ));
+        if (entityType.rdf() != null)
+            graph.add(entityTypeUri, Rdfs.SUB_CLASS_OF, values.createURI(entityType.rdf()));
+
+        graph.add(entityTypeUri, Qi4jEntityType.TYPE, values.createLiteral( entityType.type().toString() ));
         graph.add(entityTypeUri, Qi4jEntityType.QUERYABLE, values.createLiteral( entityType.queryable() ));
         graph.add(entityTypeUri, Qi4jEntityType.VERSION, values.createLiteral( entityType.version() ));
 
@@ -112,18 +108,7 @@ public class EntityTypeSerializer
             URI associationURI = values.createURI( manyAssociationType.qualifiedName().toURI() );
             graph.add( associationURI, Rdfs.DOMAIN, entityTypeUri );
 
-            if( manyAssociationType.associationType() == ManyAssociationType.ManyAssociationTypeEnum.LIST )
-            {
-                graph.add( associationURI, Rdfs.TYPE, Rdfs.SEQ );
-            }
-            else if( manyAssociationType.associationType() == ManyAssociationType.ManyAssociationTypeEnum.SET )
-            {
-                graph.add( associationURI, Rdfs.TYPE, Rdfs.BAG );
-            }
-            else
-            {
-                graph.add( associationURI, Rdfs.TYPE, Rdfs.CONTAINER );
-            }
+            graph.add( associationURI, Rdfs.TYPE, Rdfs.SEQ );
             if( manyAssociationType.rdf() != null )
             {
                 graph.add( associationURI, Rdfs.SUB_PROPERTY_OF, values.createURI( manyAssociationType.rdf() ) );
@@ -151,7 +136,7 @@ public class EntityTypeSerializer
                 graph.add( associationURI, Rdfs.SUB_PROPERTY_OF, values.createURI( associationType.rdf() ) );
             }
 
-            URI associatedURI = values.createURI( Classes.toURI( associationType.type() ) );
+            URI associatedURI = values.createURI( associationType.type().toURI() );
             graph.add( associationURI, Rdfs.RANGE, associatedURI );
             graph.add( associationURI, Rdfs.RANGE, XMLSchema.ANYURI );
         }
@@ -175,31 +160,11 @@ public class EntityTypeSerializer
             }
 
             // TODO Support more types
-            if( propertyType.type() instanceof PrimitiveType )
+            URI type = dataTypes.get( propertyType.type().type().name() );
+            if( type != null )
             {
-                final PrimitiveType primitiveType = (PrimitiveType) propertyType.type();
-                URI type = dataTypes.get( primitiveType.type().name() );
-                if( type != null )
-                {
-                    graph.add( propertyURI, Rdfs.RANGE, type );
-                }
+                graph.add( propertyURI, Rdfs.RANGE, type );
             }
         }
-    }
-
-    private void serializeQualifier( final Graph graph,
-                                     final QualifierQualifiedIdentity arqi,
-                                     final URI type,
-                                     final Resource collection )
-    {
-        ValueFactory values = graph.getValueFactory();
-        final BNode qualifier = values.createBNode();
-        graph.add( collection, type, qualifier );
-        graph.add( qualifier, RDF.TYPE, Qi4jRdf.TYPE_QUALIFIER );
-
-        final URI assocEntityURI = values.createURI( arqi.toURI() );
-        graph.add( qualifier, Qi4jEntity.ENTITY, assocEntityURI );
-        final URI assocRoleURI = values.createURI( arqi.role().toURI() );
-        graph.add( qualifier, Qi4jEntity.QUALIFIER, assocRoleURI );
     }
 }

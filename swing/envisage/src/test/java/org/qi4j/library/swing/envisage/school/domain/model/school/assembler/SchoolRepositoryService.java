@@ -60,7 +60,7 @@ interface SchoolRepositoryService extends SchoolRepository, ServiceComposite
             UnitOfWork uow = uowf.nestedUnitOfWork();
             try
             {
-                School school = uow.find( schoolId.idString(), School.class );
+                School school = uow.get(School.class, schoolId.idString());
                 uow.apply();
                 return school;
             }

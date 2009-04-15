@@ -125,7 +125,7 @@ public abstract class LoggingServiceMixin
         if( composite instanceof ServiceComposite )
         {
             EntityBuilder<ServiceLogRecord> builder = uow.newEntityBuilder( ServiceLogRecord.class );
-            ServiceLogRecord state = builder.stateOfComposite();
+            ServiceLogRecord state = builder.prototype();
             setStandardStuff( type, composite, category, message, state, params );
             state.source().set( ( (ServiceComposite) composite ).identity().get() );
             ServiceLogRecord slr = builder.newInstance();
@@ -133,7 +133,7 @@ public abstract class LoggingServiceMixin
         else if( composite instanceof EntityComposite )
         {
             EntityBuilder<EntityLogRecord> builder = uow.newEntityBuilder( EntityLogRecord.class );
-            EntityLogRecord state = builder.stateOfComposite();
+            EntityLogRecord state = builder.prototype();
             setStandardStuff( type, composite, category, message, state, params );
             state.source().set( (EntityComposite) composite );
             EntityLogRecord elr = builder.newInstance();
@@ -141,7 +141,7 @@ public abstract class LoggingServiceMixin
         else
         {
             EntityBuilder<CompositeLogRecord> builder = uow.newEntityBuilder( CompositeLogRecord.class );
-            CompositeLogRecord state = builder.stateOfComposite();
+            CompositeLogRecord state = builder.prototype();
             setStandardStuff( type, composite, category, message, state, params );
             state.source().set( composite );
             CompositeLogRecord clr = builder.newInstance();

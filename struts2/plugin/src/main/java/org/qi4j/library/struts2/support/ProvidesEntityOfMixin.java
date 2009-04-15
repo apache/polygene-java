@@ -38,7 +38,7 @@ public abstract class ProvidesEntityOfMixin<T> implements ProvidesEntityOf<T>, S
         uow = uowf.currentUnitOfWork();
         try
         {
-            entity = uow.find( entityProvider.getId(), typeToLoad() );
+            entity = uow.get(typeToLoad(), entityProvider.getId());
         }
         catch( NoSuchEntityException e )
         {

@@ -15,12 +15,12 @@
 
 package org.qi4j.library.auth;
 
-import org.qi4j.api.entity.association.ListAssociation;
+import org.qi4j.api.entity.association.ManyAssociation;
 
 /**
  * JAVADOC
  */
 public interface ProtectedResource
 {
-    ListAssociation<RoleAssignment> roleAssignments();
+    ManyAssociation<RoleAssignment> roleAssignments();
 }

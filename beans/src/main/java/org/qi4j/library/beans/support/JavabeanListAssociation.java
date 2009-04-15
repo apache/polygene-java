@@ -17,23 +17,19 @@
  */
 package org.qi4j.library.beans.support;
 
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.association.GenericAssociationInfo;
+import org.qi4j.api.entity.association.ManyAssociation;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.association.GenericAssociationInfo;
-import org.qi4j.api.entity.association.ListAssociation;
+import java.util.*;
 
-public class JavabeanListAssociation
-    implements ListAssociation
+public class JavabeanListAssociation<T>
+    implements ManyAssociation<T>
 {
     private Method pojoMethod;
     private final GenericAssociationInfo delegate;
@@ -75,17 +71,22 @@ public class JavabeanListAssociation
         return delegate.isImmutable();
     }
 
-    public int size()
+    public int count()
     {
         return delegate().size();
     }
 
-    public boolean isEmpty()
+    public List toList()
     {
-        return delegate().isEmpty();
+        return delegate();
     }
 
-    public boolean contains( Object object )
+    public Set toSet()
+    {
+        return new HashSet(toList());
+    }
+
+    public boolean contains( T object )
     {
         return delegate().contains( Wrapper.unwrap( object ) );
     }
@@ -95,123 +96,19 @@ public class JavabeanListAssociation
         return new DelegatingIterator( delegate().iterator(), this, javabeanMixin.cbf );
     }
 
-    public Object[] toArray()
-    {
-        Object[] objects = delegate().toArray();
-        Object[] wrapped = new Object[objects.length];
-        for( int i = 0; i < objects.length; i++ )
-        {
-            wrapped[ i ] = Wrapper.wrap( objects[ i ], this, javabeanMixin.cbf );
-        }
-        return wrapped;
-    }
-
-    public boolean add( Object object )
+    public boolean remove( T object )
     {
         throw new UnsupportedOperationException( "Read/only." );
     }
 
-    public boolean remove( Object object )
+    public T get( int index )
+    {
+        return (T) Wrapper.wrap( delegate().get( index ), this, javabeanMixin.cbf );
+    }
+
+    public boolean add( int index, Object element )
     {
         throw new UnsupportedOperationException( "Read/only." );
-    }
-
-    public boolean addAll( Collection collection )
-    {
-        throw new UnsupportedOperationException( "Read/only." );
-    }
-
-    public boolean addAll( int index, Collection collection )
-    {
-        throw new UnsupportedOperationException( "Read/only." );
-    }
-
-    public void clear()
-    {
-        throw new UnsupportedOperationException( "Read/only." );
-    }
-
-    public Object get( int index )
-    {
-        return Wrapper.wrap( delegate().get( index ), this, javabeanMixin.cbf );
-    }
-
-    public Object set( int index, Object element )
-    {
-        throw new UnsupportedOperationException( "Read/only." );
-    }
-
-    public void add( int index, Object element )
-    {
-        throw new UnsupportedOperationException( "Read/only." );
-    }
-
-    public Object remove( int index )
-    {
-        throw new UnsupportedOperationException( "Read/only." );
-    }
-
-    public int indexOf( Object object )
-    {
-        return delegate().indexOf( Wrapper.unwrap( object ) );
-    }
-
-    public int lastIndexOf( Object object )
-    {
-        return delegate().lastIndexOf( Wrapper.unwrap( object ) );
-    }
-
-    public ListIterator listIterator()
-    {
-        return new DelegatingListIterator( delegate().listIterator(), this, javabeanMixin.cbf );
-    }
-
-    public ListIterator listIterator( int index )
-    {
-        return new DelegatingListIterator( delegate().listIterator( index ), this, javabeanMixin.cbf );
-    }
-
-    public List subList( int fromIndex, int toIndex )
-    {
-        ArrayList list = new ArrayList();
-        List source = delegate().subList( fromIndex, toIndex );
-        for( Object obj : source )
-        {
-            list.add( Wrapper.wrap( obj, this, javabeanMixin.cbf ) );
-        }
-        return list;
-    }
-
-    public boolean retainAll( Collection collection )
-    {
-        throw new UnsupportedOperationException( "Read/only." );
-    }
-
-    public boolean removeAll( Collection collection )
-    {
-        throw new UnsupportedOperationException( "Read/only." );
-    }
-
-    public boolean containsAll( Collection collection )
-    {
-        for( Object obj : collection )
-        {
-            if( !contains( Wrapper.unwrap( obj ) ) )
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public Object[] toArray( Object[] objects )
-    {
-        Object[] array = delegate().toArray( objects );
-        for( int i = 0; i < array.length; i++ )
-        {
-            array[ i ] = Wrapper.wrap( array[ i ], this, javabeanMixin.cbf );
-        }
-        return array;
     }
 
     private List delegate()

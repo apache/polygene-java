@@ -78,14 +78,14 @@ public class AuthTest
 
             // Create permission
             EntityBuilder<NamedPermission> entityBuilder = unit.newEntityBuilder( NamedPermission.class );
-            NamedPermission permission = entityBuilder.stateOfComposite();
+            NamedPermission permission = entityBuilder.prototype();
             permission.name().set( "Enter room" );
             permission = entityBuilder.newInstance();
 
             // Create role
             Role role = unit.newEntityBuilder( Role.class ).newInstance();
 
-            role.permissions().add( permission );
+            role.permissions().add( 0, permission );
 
             // Find authorization service
             Authorization authorization = serviceLocator.<Authorization>findService( Authorization.class ).get();
@@ -103,32 +103,32 @@ public class AuthTest
 
             // Create role assignment
             EntityBuilder<RoleAssignment> roleAssignmentEntityBuilder = unit.newEntityBuilder( RoleAssignment.class );
-            RoleAssignment roleAssignment = roleAssignmentEntityBuilder.stateOfComposite();
+            RoleAssignment roleAssignment = roleAssignmentEntityBuilder.prototype();
             roleAssignment.assignee().set( user );
             roleAssignment.role().set( role );
             roleAssignment.roleType().set( RoleAssignment.RoleType.ALLOW );
             roleAssignment = roleAssignmentEntityBuilder.newInstance();
-            room.roleAssignments().add( roleAssignment );
+            room.roleAssignments().add( 0, roleAssignment );
 
             // Check permission
             assertTrue( authorization.hasPermission( permission, room, context ) );
 
             // Create group
             Group group = unit.newEntityBuilder( Group.class ).newInstance();
-            group.members().add( user );
-            user.groups().add( group );
+            group.members().add( 0, user );
+            user.groups().add( 0, group );
 
             // Create role assignment
             EntityBuilder<RoleAssignment> assignmentEntityBuilder = unit.newEntityBuilder( RoleAssignment.class );
-            RoleAssignment groupRoleAssignment = assignmentEntityBuilder.stateOfComposite();
+            RoleAssignment groupRoleAssignment = assignmentEntityBuilder.prototype();
             groupRoleAssignment.assignee().set( group );
             groupRoleAssignment.role().set( role );
             groupRoleAssignment.roleType().set( RoleAssignment.RoleType.ALLOW );
             groupRoleAssignment = assignmentEntityBuilder.newInstance();
 
-            room.roleAssignments().add( groupRoleAssignment );
+            room.roleAssignments().add( 0, groupRoleAssignment );
 
-            room.roleAssignments().add( groupRoleAssignment );
+            room.roleAssignments().add( 0, groupRoleAssignment );
             room.roleAssignments().remove( roleAssignment );
 
             // Check permission - user should still be allowed
