@@ -29,6 +29,8 @@ import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
 
+import java.util.ArrayList;
+
 /**
  * Parser for RDF to EntityType.
  */
@@ -38,7 +40,7 @@ public class EntityTypeParser
     {
     }
 
-    public EntityType parse( Iterable<Statement> entityTypeGraph)
+    public EntityType parse( Iterable<Statement> entityTypeGraph )
     {
         TypeName type = null;
         String uri = null;
@@ -59,13 +61,13 @@ public class EntityTypeParser
                     rdf = str;
                 uri = statement.getSubject().stringValue();
             }
-            else if (statement.getPredicate().equals( Qi4jEntityType.TYPE ))
+            else if( statement.getPredicate().equals( Qi4jEntityType.TYPE ) )
             {
                 type = TypeName.nameOf(Classes.toClassName(statement.getObject().stringValue()));
             }
-            else if (statement.getPredicate().equals( Qi4jEntityType.QUERYABLE ))
+            else if( statement.getPredicate().equals( Qi4jEntityType.QUERYABLE ) )
             {
-                queryable = Boolean.parseBoolean( statement.getObject().stringValue());
+                queryable = Boolean.parseBoolean( statement.getObject().stringValue() );
             }
 
 /*

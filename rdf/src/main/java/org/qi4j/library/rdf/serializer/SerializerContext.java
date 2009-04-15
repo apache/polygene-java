@@ -17,15 +17,11 @@
  */
 package org.qi4j.library.rdf.serializer;
 
-import java.lang.reflect.Method;
-import org.openrdf.model.Graph;
-import org.openrdf.model.Literal;
-import org.openrdf.model.Statement;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.openrdf.model.ValueFactory;
+import org.openrdf.model.*;
 import org.qi4j.api.util.Classes;
 import org.qi4j.library.rdf.Rdfs;
+
+import java.lang.reflect.Method;
 
 public final class SerializerContext
 {

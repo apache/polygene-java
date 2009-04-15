@@ -1,43 +1,47 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.qi4j</groupId>
-    <artifactId>qi4j</artifactId>
-    <version>0.7-SNAPSHOT</version>
-  </parent>
   <groupId>org.qi4j</groupId>
   <artifactId>qi4j-library</artifactId>
   <name>Qi4j Library (Build POM)</name>
-  <version>0.7-SNAPSHOT</version>
+  <version>0.8-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <!-- This POM is ONLY to initiate the modules to be built. -->
+
+  <inceptionYear>2007</inceptionYear>
+  <url>http://www.qi4j.org/</url>
+
+  <scm>
+    <connection>scm:git://dscm.ops4j.org/qi4j-libraries.git</connection>
+    <developerConnection>scm:git:git@dscm.ops4j.org:qi4j-libraries.git</developerConnection>
+  </scm>
+
+  <properties>
+    <version.qi4j-core>0.8-SNAPSHOT</version.qi4j-core>
+    <version.jetty>6.1.11</version.jetty>
+  </properties>
+
   <modules>
     <module>auth</module>
-    <module>beans</module>
     <module>cache</module>
     <module>constraints</module>
-    <module>executor</module>
     <module>http</module>
-    <module>jini</module>
-    <module>ldap</module>
     <module>locking</module>
     <module>logging</module>
-    <module>observations</module>
     <module>rdf</module>
-    <module>registry</module>
-    <module>rmi</module>
     <module>scripting</module>
-    <module>spaces</module>
-    <module>swing</module>
-    <module>transaction</module>
-    <module>thread</module>
     <module>uid</module>
-    <module>validation</module>
     <module>struts2</module>
     <module>spring</module>
   </modules>
 
-    <developers>
+  <repositories>
+    <repository>
+      <id>ops4j-repository</id>
+      <url>http://repository.ops4j.org/maven2</url>
+    </repository>
+  </repositories>
+
+
+  <developers>
     <developer>
       <id>niclas@hedhman.org</id>
       <name>Niclas Hedhman</name>
@@ -86,75 +90,252 @@
       </roles>
       <timezone>UTC+2</timezone>
     </developer>
-      <developer>
-        <id>boon</id>
-        <name>Lan Boon Ping</name>
-        <organization>CodeDragons</organization>
-        <email>boonping81@gmail.com</email>
-        <timezone>UTC+8</timezone>
-      </developer>
-      <developer>
-        <id>mesirii</id>
-        <name>Michael Hunger</name>
-        <organization />
-        <email>qi4j@jexp.de</email>
-        <timezone>CET</timezone>
-      </developer>
-      <developer>
-        <id>muhdkamil</id>
-        <name>Muhd Kamil bin Mohd Baki</name>
-        <organization>CodeDragons</organization>
-        <email>kamil@codedragons.com</email>
-        <timezone>UTC+8</timezone>
-      </developer>
-      <developer>
-        <id>ops4j@leangen.net</id>
-        <name>David Leangen</name>
-        <organization>Bioscene</organization>
-        <email>ops4j@leangen.net</email>
-        <timezone>UTC+9</timezone>
-      </developer>
-      <developer>
-        <id>peter@neubauer.se</id>
-        <name>Peter Neubauer</name>
-        <organization>CodeDragons</organization>
-        <email>peter@neubauer.se</email>
-        <timezone>CET</timezone>
-      </developer>
-      <developer>
-        <id>ragaller</id>
-        <name>Georg Ragaller</name>
-        <organization />
-        <email>qi4j@dev.ragaller.org</email>
-        <timezone>CET</timezone>
-      </developer>
-      <developer>
-        <id>rwallace</id>
-        <name>Richard Wallace</name>
-        <organization />
-        <email>rwallace@thewallacepack.net</email>
-        <timezone>UTC-7</timezone>
-      </developer>
-      <developer>
-        <id>siannyhalim@gmail.com</id>
-        <name>Sianny Halim</name>
-        <organization>CodeDragons</organization>
-        <email>siannyhalim@gmail.com</email>
-        <timezone>UTC+8</timezone>
-      </developer>
-      <developer>
-        <id>sonny.gill@jayway.net</id>
-        <name>Sonny Gill</name>
-        <organization>CodeDragons</organization>
-        <email>sonny.public@gmail.com</email>
-        <timezone>UTC+8</timezone>
-      </developer>
-      <developer>
-        <id>taowen</id>
-        <name>Tao Wen</name>
-        <organization />
-        <email>taowen@gmail.com</email>
-        <timezone>UTC+8</timezone>
-      </developer>
+    <developer>
+      <id>boon</id>
+      <name>Lan Boon Ping</name>
+      <organization>CodeDragons</organization>
+      <email>boonping81@gmail.com</email>
+      <timezone>UTC+8</timezone>
+    </developer>
+    <developer>
+      <id>mesirii</id>
+      <name>Michael Hunger</name>
+      <organization />
+      <email>qi4j@jexp.de</email>
+      <timezone>CET</timezone>
+    </developer>
+    <developer>
+      <id>muhdkamil</id>
+      <name>Muhd Kamil bin Mohd Baki</name>
+      <organization>CodeDragons</organization>
+      <email>kamil@codedragons.com</email>
+      <timezone>UTC+8</timezone>
+    </developer>
+    <developer>
+      <id>ops4j@leangen.net</id>
+      <name>David Leangen</name>
+      <organization>Bioscene</organization>
+      <email>ops4j@leangen.net</email>
+      <timezone>UTC+9</timezone>
+    </developer>
+    <developer>
+      <id>peter@neubauer.se</id>
+      <name>Peter Neubauer</name>
+      <organization>CodeDragons</organization>
+      <email>peter@neubauer.se</email>
+      <timezone>CET</timezone>
+    </developer>
+    <developer>
+      <id>ragaller</id>
+      <name>Georg Ragaller</name>
+      <organization />
+      <email>qi4j@dev.ragaller.org</email>
+      <timezone>CET</timezone>
+    </developer>
+    <developer>
+      <id>rwallace</id>
+      <name>Richard Wallace</name>
+      <organization />
+      <email>rwallace@thewallacepack.net</email>
+      <timezone>UTC-7</timezone>
+    </developer>
+    <developer>
+      <id>siannyhalim@gmail.com</id>
+      <name>Sianny Halim</name>
+      <organization>CodeDragons</organization>
+      <email>siannyhalim@gmail.com</email>
+      <timezone>UTC+8</timezone>
+    </developer>
+    <developer>
+      <id>sonny.gill@jayway.net</id>
+      <name>Sonny Gill</name>
+      <organization>CodeDragons</organization>
+      <email>sonny.public@gmail.com</email>
+      <timezone>UTC+8</timezone>
+    </developer>
+    <developer>
+      <id>taowen</id>
+      <name>Tao Wen</name>
+      <organization />
+      <email>taowen@gmail.com</email>
+      <timezone>UTC+8</timezone>
+    </developer>
   </developers>
+
+  <build>
+  <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-external</artifactId>
+        <version>1.0-alpha-6</version>
+      </extension>
+    </extensions>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.0.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-DocURL>${pom.url}</Bundle-DocURL>
+            <_include>-osgi.bundle</_include>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.scm</groupId>
+            <artifactId>maven-scm-provider-gitexe</artifactId>
+            <version>1.2</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkMode>once</forkMode>
+          <includes>
+            <include>**/*Test.java</include>
+            <include>**/*TestCase.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.atlassian.maven.plugins</groupId>
+        <artifactId>maven-clover2-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <distributionManagement>
+    <repository>
+      <id>ops4j.releases.deploy</id>
+      <url>scpexe://repository.ops4j.org/var/http/repository.ops4j.org/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <id>ops4j.snapshots.deploy</id>
+      <url>scpexe://repository.ops4j.org/var/http/repository.ops4j.org/mvn-snapshots</url>
+    </snapshotRepository>
+    <site>
+      <id>ops4j.website.deploy</id>
+      <url>scpexe://www.ops4j.org/var/http/www.ops4j.org/projects/qi4j</url>
+    </site>
+  </distributionManagement>
+
+  <licenses>
+    <license>
+      <name>Apache License v2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+      <comments>Copyrights retained by each developer.</comments>
+    </license>
+  </licenses>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <configLocation>etc/qi4j-checkstyle.xml</configLocation>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <configuration>
+          <targetJdk>1.5</targetJdk>
+          <sourceEncoding>utf-8</sourceEncoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+      </plugin>
+
+    </plugins>
+  </reporting>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.qi4j.core</groupId>
+        <artifactId>qi4j-core-api</artifactId>
+        <version>${version.qi4j-core}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.qi4j.core</groupId>
+        <artifactId>qi4j-core-bootstrap</artifactId>
+        <version>${version.qi4j-core}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.qi4j.core</groupId>
+        <artifactId>qi4j-core-spi</artifactId>
+        <version>${version.qi4j-core}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.qi4j.core</groupId>
+        <artifactId>qi4j-core-runtime</artifactId>
+        <version>${version.qi4j-core}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.qi4j.core</groupId>
+        <artifactId>qi4j-core-testsupport</artifactId>
+        <version>${version.qi4j-core}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.4</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>2.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty</artifactId>
+        <version>6.1.11</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty-util</artifactId>
+        <version>6.1.11</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>1.4.2</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 </project>

@@ -19,13 +19,12 @@ import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.library.rdf.Qi4jEntity;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.spi.entity.*;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.value.*;
+import org.qi4j.spi.value.ValueType;
 
 import java.math.BigDecimal;
 import java.util.Date;

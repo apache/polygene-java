@@ -34,6 +34,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * JAVADOC
  */
@@ -92,7 +97,7 @@ public class EntityTypeSerializer
         {
 //            if( !mixinType.equals( entityType.type() ) )
 //            {
-                graph.add( entityTypeUri, Rdfs.SUB_CLASS_OF, values.createURI( Classes.toURI( mixinType ) ) );
+            graph.add( entityTypeUri, Rdfs.SUB_CLASS_OF, values.createURI( Classes.toURI( mixinType ) ) );
 //            }
         }
     }

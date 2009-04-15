@@ -20,11 +20,13 @@ package org.qi4j.library.http;
 public interface Interface
 {
     String hostName();
+
     int port();
+
     Protocol protocol();
 
     public enum Protocol
     {
-        http, https;
+        http, https
     }
 }

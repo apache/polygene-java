@@ -14,7 +14,6 @@
 
 package org.qi4j.library.rdf.entity;
 
-import java.io.PrintWriter;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Statement;
@@ -29,14 +28,16 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.DcRdf;
-import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.library.rdf.Qi4jEntityType;
+import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.helpers.EntityTypeRegistryService;
 import org.qi4j.test.AbstractQi4jTest;
+
+import java.io.PrintWriter;
 
 
 /**
@@ -73,7 +74,7 @@ public class EntityTypeSerializerTest
         EntityDescriptor entityDescriptor = spi.getEntityDescriptor( TestEntity.class, moduleInstance );
 
         EntityType entityType = entityDescriptor.entityType();
-        System.out.println(entityType.version());
+        System.out.println( entityType.version() );
         Iterable<Statement> graph = serializer.serialize( entityType );
 
         String[] prefixes = new String[]{ "rdf", "dc", " vc", "qi4j" };

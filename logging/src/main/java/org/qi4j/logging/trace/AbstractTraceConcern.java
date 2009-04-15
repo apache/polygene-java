@@ -17,8 +17,6 @@
  */
 package org.qi4j.logging.trace;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.Composite;
@@ -26,6 +24,9 @@ import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.logging.trace.service.TraceService;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
 
 public abstract class AbstractTraceConcern extends ConcernOf<InvocationHandler>

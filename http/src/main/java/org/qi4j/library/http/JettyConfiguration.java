@@ -28,8 +28,7 @@ public interface JettyConfiguration
 {
     @Range( min = 0, max = 65535 ) Property<Integer> port();
 
-    @Optional
-    Property<String> hostName();
+    @Optional Property<String> hostName();
 
     @NotEmpty Property<String> rootContextPath();
 

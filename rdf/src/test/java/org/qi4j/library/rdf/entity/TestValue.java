@@ -25,5 +25,6 @@ public interface TestValue
     extends ValueComposite
 {
     Property<Long> test1();
+
     @Optional Property<String> test2();
 }

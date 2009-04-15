@@ -18,7 +18,6 @@ import org.qi4j.api.mixin.Mixins;
  * JAVADOC
  */
 @Mixins( GroovyMixin.class )
-public interface GroovyComposite
-    extends Mixin1, Composite
+public interface GroovyComposite extends Mixin1, Composite
 {
 }

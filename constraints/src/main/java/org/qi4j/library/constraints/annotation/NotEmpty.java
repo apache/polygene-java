@@ -19,13 +19,14 @@
  */
 package org.qi4j.library.constraints.annotation;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.util.Collection;
 import org.qi4j.api.constraint.ConstraintDeclaration;
 import org.qi4j.api.constraint.Constraints;
 import org.qi4j.library.constraints.NotEmptyCollectionConstraint;
 import org.qi4j.library.constraints.NotEmptyStringConstraint;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.util.Collection;
 
 /**
  * Marks a property as being a string, non null, non empty.
@@ -37,7 +38,7 @@ import org.qi4j.library.constraints.NotEmptyStringConstraint;
  */
 @ConstraintDeclaration
 @Retention( RetentionPolicy.RUNTIME )
-@InstanceOf( {String.class, Collection.class} )
+@InstanceOf( { String.class, Collection.class } )
 @Constraints( { NotEmptyStringConstraint.class, NotEmptyCollectionConstraint.class } )
 public @interface NotEmpty
 {

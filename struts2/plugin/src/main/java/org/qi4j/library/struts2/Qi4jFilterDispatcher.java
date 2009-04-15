@@ -1,17 +1,5 @@
 package org.qi4j.library.struts2;
 
-import static org.qi4j.library.struts2.Constants.SERVLET_ATTRIBUTE;
-
-import javax.servlet.FilterConfig;
-
-import org.apache.struts2.config.BeanSelectionProvider;
-import org.apache.struts2.dispatcher.Dispatcher;
-import org.apache.struts2.dispatcher.FilterDispatcher;
-import org.qi4j.api.composite.CompositeBuilderFactory;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.api.object.ObjectBuilderFactory;
-import org.qi4j.api.structure.Module;
-
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationManager;
@@ -20,6 +8,16 @@ import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.inject.Context;
 import com.opensymphony.xwork2.inject.Factory;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
+import org.apache.struts2.config.BeanSelectionProvider;
+import org.apache.struts2.dispatcher.Dispatcher;
+import org.apache.struts2.dispatcher.FilterDispatcher;
+import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import static org.qi4j.library.struts2.Constants.SERVLET_ATTRIBUTE;
+
+import javax.servlet.FilterConfig;
 
 public class Qi4jFilterDispatcher extends FilterDispatcher
 {
@@ -32,7 +30,7 @@ public class Qi4jFilterDispatcher extends FilterDispatcher
         return dispatcher;
     }
 
-    protected ConfigurationManager createConfigurationManager(FilterConfig filterConfig )
+    protected ConfigurationManager createConfigurationManager( FilterConfig filterConfig )
     {
         ConfigurationManager configurationManager = new ConfigurationManager( BeanSelectionProvider.DEFAULT_BEAN_NAME );
         configurationManager.addContainerProvider( new Qi4jContainerProvider( module( filterConfig ) ) );
@@ -68,9 +66,14 @@ public class Qi4jFilterDispatcher extends FilterDispatcher
             return !registered;
         }
 
-        public void init(Configuration configuration ) throws ConfigurationException {}
-        public void destroy() {}
-        
+        public void init( Configuration configuration ) throws ConfigurationException
+        {
+        }
+
+        public void destroy()
+        {
+        }
+
         private <T> void factory( ContainerBuilder builder, Class<T> type, final T value )
         {
             builder.factory( type, new Factory<T>()
@@ -79,9 +82,9 @@ public class Qi4jFilterDispatcher extends FilterDispatcher
                 {
                     return value;
                 }
-            });
+            } );
         }
-        
+
         private ActionConfiguration actionConfiguration()
         {
             return module.serviceFinder().findService( ActionService.class ).metaInfo().get( ActionConfiguration.class );

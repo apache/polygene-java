@@ -16,23 +16,19 @@
  */
 package org.qi4j.library.struts2;
 
-import static org.qi4j.library.struts2.Qi4jObjectFactory.ClassType.object;
-import static org.qi4j.library.struts2.Qi4jObjectFactory.ClassType.qi4jComposite;
-import static org.qi4j.library.struts2.Qi4jObjectFactory.ClassType.qi4jObject;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.struts2.util.ObjectFactoryDestroyable;
-import org.qi4j.api.composite.CompositeBuilderFactory;
-import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.composite.NoSuchCompositeException;
-import org.qi4j.api.object.NoSuchObjectException;
-import org.qi4j.api.object.ObjectBuilderFactory;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.inject.Inject;
+import org.apache.struts2.util.ObjectFactoryDestroyable;
+import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.composite.NoSuchCompositeException;
+import org.qi4j.api.object.NoSuchObjectException;
+import org.qi4j.api.object.ObjectBuilderFactory;
+import static org.qi4j.library.struts2.Qi4jObjectFactory.ClassType.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Qi4j implementation of struts object factory.
@@ -50,12 +46,12 @@ public class Qi4jObjectFactory extends ObjectFactory
         qi4jObject,
         object
     }
-    
+
     private final Map<Class, ClassType> types;
 
     private ObjectBuilderFactory objectBuilderFactory;
     private CompositeBuilderFactory compositeBuilderFactory;
-    
+
     public Qi4jObjectFactory()
     {
         types = new HashMap<Class, ClassType>();
@@ -66,7 +62,7 @@ public class Qi4jObjectFactory extends ObjectFactory
     {
         this.objectBuilderFactory = objectBuilderFactory;
     }
-    
+
     @Inject
     public void setCompositeBuilderFactory( CompositeBuilderFactory compositeBuilderFactory )
     {
@@ -156,7 +152,7 @@ public class Qi4jObjectFactory extends ObjectFactory
 
         ConstructionException exception = null;
         Object obj = null;
-        
+
         try
         {
             obj = objectBuilderFactory.newObject( aClass );
@@ -193,7 +189,7 @@ public class Qi4jObjectFactory extends ObjectFactory
 
         Object obj = null;
         ConstructionException exception = null;
-        
+
         try
         {
             obj = compositeBuilderFactory.newComposite( aClass );
@@ -227,7 +223,7 @@ public class Qi4jObjectFactory extends ObjectFactory
             types.put( aClass, aClassType );
         }
     }
-    
+
     /**
      * Allows for ObjectFactory implementations that support Actions without no-arg constructors.
      *

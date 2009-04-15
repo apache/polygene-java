@@ -18,13 +18,13 @@
 
 package org.qi4j.logging.trace.assemblies;
 
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.logging.trace.service.TraceServiceConfiguration;
-import org.qi4j.logging.trace.service.StandardTraceServiceComposite;
 import org.qi4j.logging.log.LogTypes;
-import org.qi4j.api.common.Visibility;
+import org.qi4j.logging.trace.service.StandardTraceServiceComposite;
+import org.qi4j.logging.trace.service.TraceServiceConfiguration;
 
 public class TracingAssembler
     implements Assembler

@@ -4,10 +4,11 @@ import static java.lang.Character.isLowerCase;
 import static java.lang.Character.toLowerCase;
 
 
-
 public final class ClassNames
 {
-    private ClassNames() {}
+    private ClassNames()
+    {
+    }
 
     public static String classNameInDotNotation( Class<?> type )
     {

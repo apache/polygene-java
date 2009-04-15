@@ -17,14 +17,14 @@
  */
 package org.qi4j.library.uid.sequence;
 
+import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.configuration.Configuration;
 
 public class PersistedSequencingMixin
     implements Sequencing
@@ -41,7 +41,7 @@ public class PersistedSequencingMixin
             UnitOfWork uow = uowf.newUnitOfWork();
             try
             {
-                for( int i=0 ; i < 3 ; i++ )
+                for( int i = 0; i < 3; i++ )
                 {
                     try
                     {

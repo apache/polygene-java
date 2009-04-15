@@ -1,23 +1,21 @@
 package org.qi4j.library.struts2;
 
-import static java.util.Collections.emptyMap;
-import static org.qi4j.library.struts2.util.ClassNameFilters.removeSuffixes;
-import static org.qi4j.library.struts2.util.ClassNames.classNameInDotNotation;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.constraint.ConstraintViolation;
-import org.qi4j.library.struts2.util.ClassNameFilter;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ValidationAware;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
 import com.opensymphony.xwork2.util.ValueStack;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.constraint.ConstraintViolation;
+import org.qi4j.library.struts2.util.ClassNameFilter;
+import static org.qi4j.library.struts2.util.ClassNameFilters.removeSuffixes;
+import static org.qi4j.library.struts2.util.ClassNames.classNameInDotNotation;
+
+import java.util.Collection;
+import static java.util.Collections.emptyMap;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>ConstrqaintViolationInterceptor adds constraint violations from the ActionContext to the Action's field errors.</p>

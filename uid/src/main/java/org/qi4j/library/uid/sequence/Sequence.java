@@ -27,6 +27,5 @@ import org.qi4j.api.property.Property;
 @Queryable( false )
 public interface Sequence
 {
-    @UseDefaults
-    Property<Long> currentValue();
+    @UseDefaults Property<Long> currentValue();
 }

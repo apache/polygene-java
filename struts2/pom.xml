@@ -2,15 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <groupId>org.qi4j</groupId>
-    <artifactId>qi4j</artifactId>
-    <version>0.7-SNAPSHOT</version>
+    <artifactId>qi4j-library</artifactId>
+    <version>0.8-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.qi4j.library.struts2</groupId>
   <artifactId>qi4j-struts2</artifactId>
-  <version>0.7-SNAPSHOT</version>
+  <version>0.8-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Qi4j Library - Struts Support</name>
 
@@ -21,9 +21,5 @@
   <modules>
     <module>plugin</module>
     <module>codebehind</module>
-<!--
-    <module>convention</module>
--->
-    <module>example</module>
   </modules>
 </project>

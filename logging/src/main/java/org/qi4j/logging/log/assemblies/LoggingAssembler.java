@@ -21,8 +21,6 @@ package org.qi4j.logging.log.assemblies;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.logging.trace.service.TraceServiceConfiguration;
-import org.qi4j.logging.trace.service.StandardTraceServiceComposite;
 import org.qi4j.logging.log.LogTypes;
 import org.qi4j.logging.log.service.LoggingServiceComposite;
 

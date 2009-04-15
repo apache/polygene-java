@@ -19,11 +19,11 @@ package org.qi4j.library.uid.sequence;
 
 import static junit.framework.Assert.assertEquals;
 import org.junit.Test;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.injection.scope.Service;
 import org.qi4j.library.uid.sequence.assembly.TransientSequencingAssembler;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -57,7 +57,7 @@ public class TransientSequencingTest extends AbstractQi4jTest
         throws Exception
     {
         UnderTest underTest = compositeBuilderFactory.newComposite( UnderTest.class );
-        for( int i=1; i <= 100; i++ )
+        for( int i = 1; i <= 100; i++ )
         {
             assertEquals( i, underTest.nextValue() );
             assertEquals( i, underTest.currentValue() );

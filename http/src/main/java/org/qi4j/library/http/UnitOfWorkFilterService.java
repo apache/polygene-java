@@ -14,9 +14,10 @@
 
 package org.qi4j.library.http;
 
-import javax.servlet.Filter;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
+
+import javax.servlet.Filter;
 
 /**
  * JAVADOC

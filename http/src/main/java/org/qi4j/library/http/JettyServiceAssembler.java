@@ -16,10 +16,10 @@
  */
 package org.qi4j.library.http;
 
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.api.common.Visibility;
 
 /**
  * @author edward.yakop@gmail.com
