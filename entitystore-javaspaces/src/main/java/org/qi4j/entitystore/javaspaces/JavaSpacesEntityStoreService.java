@@ -19,11 +19,12 @@ package org.qi4j.entitystore.javaspaces;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.helpers.MapEntityStoreMixin;
 
 /**
  * EntityStore service backed by a Java Space
  */
-@Mixins(JavaSpacesEntityStoreMixin.class)
+@Mixins({MapEntityStoreMixin.class, JavaSpacesEntityStoreMixin.class})
 public interface JavaSpacesEntityStoreService extends EntityStore, ServiceComposite
 {
 

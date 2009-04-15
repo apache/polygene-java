@@ -17,20 +17,20 @@
  */
 package org.qi4j.entitystore.jndi;
 
+import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.sideeffect.SideEffects;
+import org.qi4j.library.locking.LockingAbstractComposite;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreListenerNotificationSideEffect;
-import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.configuration.Configuration;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.concern.Concerns;
-import org.qi4j.api.sideeffect.SideEffects;
-import org.qi4j.entitystore.memory.ConcurrentModificationCheckConcern;
-import org.qi4j.library.locking.LockingAbstractComposite;
+import org.qi4j.spi.entity.helpers.ConcurrentModificationCheckConcern;
 
-@Concerns( ConcurrentModificationCheckConcern.class )
-@SideEffects( EntityStoreListenerNotificationSideEffect.class )
-@Mixins( JndiEntityStoreMixin.class )
-public interface JndiEntityStoreService extends Activatable,EntityStore, ServiceComposite, LockingAbstractComposite, Configuration
+@Concerns(ConcurrentModificationCheckConcern.class)
+@SideEffects(EntityStoreListenerNotificationSideEffect.class)
+@Mixins(JndiEntityStoreMixin.class)
+public interface JndiEntityStoreService extends Activatable, EntityStore, ServiceComposite, LockingAbstractComposite, Configuration
 {
 }

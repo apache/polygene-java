@@ -16,42 +16,72 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
-import java.util.AbstractCollection;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Set;
 import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.api.common.QualifiedName;
+import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.StateName;
+
+import java.util.AbstractCollection;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
-public class DirectUnorderedCollection extends AbstractCollection<QualifiedIdentity> implements Set<QualifiedIdentity>
+public class DirectUnorderedCollection extends AbstractCollection<EntityReference> implements ManyAssociationState
 {
     private final DirectEntityState state;
     private final RelationshipType associationType;
     private final DuplicationChecker checker;
-    private final QualifiedName qualifiedName;
+    private final StateName stateName;
     private final NeoIdentityIndex idIndex;
 
-    public DirectUnorderedCollection( NeoIdentityIndex idIndex, DuplicationChecker checker, final DirectEntityState state, final QualifiedName qualifiedName )
+    public DirectUnorderedCollection(NeoIdentityIndex idIndex, DuplicationChecker checker, final DirectEntityState state, final StateName stateName)
     {
         this.idIndex = idIndex;
         this.state = state;
-        this.associationType = LinkType.UNQUALIFIED.getRelationshipType( qualifiedName.name() );
-        this.qualifiedName = qualifiedName;
+        this.associationType = LinkType.UNQUALIFIED.getRelationshipType(stateName.qualifiedName().name());
+        this.stateName = stateName;
         this.checker = checker;
     }
 
-    public Iterator<QualifiedIdentity> iterator()
+    public int count()
     {
-        final Iterator<Relationship> relations = state.underlyingNode.getRelationships( associationType, Direction.OUTGOING ).iterator();
-        return new Iterator<QualifiedIdentity>()
+        return state.getSizeOfCollection(stateName);
+    }
+
+    public boolean contains(EntityReference entityReference)
+    {
+        // TODO NYI
+        return false;
+    }
+
+    public boolean add(int index, EntityReference entityReference)
+    {
+        // TODO NYI
+        return false;
+    }
+
+    public boolean remove(EntityReference entityReference)
+    {
+        // TODO NYI
+        return false;
+    }
+
+    public EntityReference get(int index)
+    {
+        // TODO NYI
+        return null;
+    }
+
+    public Iterator<EntityReference> iterator()
+    {
+        final Iterator<Relationship> relations = state.underlyingNode.getRelationships(associationType, Direction.OUTGOING).iterator();
+        return new Iterator<EntityReference>()
         {
             Relationship last = null;
 
@@ -60,14 +90,13 @@ public class DirectUnorderedCollection extends AbstractCollection<QualifiedIdent
                 return relations.hasNext();
             }
 
-            public QualifiedIdentity next()
+            public EntityReference next()
             {
-                if( relations.hasNext() )
+                if (relations.hasNext())
                 {
                     last = relations.next();
-                    return DirectEntityState.getIdentityFromNode( DirectEntityState.unproxy(last.getEndNode()) );
-                }
-                else
+                    return DirectEntityState.getIdentityFromNode(DirectEntityState.unproxy(last.getEndNode()));
+                } else
                 {
                     throw new NoSuchElementException();
                 }
@@ -75,14 +104,13 @@ public class DirectUnorderedCollection extends AbstractCollection<QualifiedIdent
 
             public void remove()
             {
-                if( last != null )
+                if (last != null)
                 {
-                	DirectEntityState.removeProxy(last.getEndNode());
+                    DirectEntityState.removeProxy(last.getEndNode());
                     last.delete();
-                    changeSize( -1 );
+                    changeSize(-1);
                     last = null;
-                }
-                else
+                } else
                 {
                     throw new IllegalStateException();
                 }
@@ -92,27 +120,27 @@ public class DirectUnorderedCollection extends AbstractCollection<QualifiedIdent
 
     public int size()
     {
-        return state.getSizeOfCollection( qualifiedName );
+        return state.getSizeOfCollection(stateName);
     }
 
-    private void changeSize( int delta )
+    private void changeSize(int delta)
     {
-        state.setSizeOfCollection( qualifiedName, size() + delta );
+        state.setSizeOfCollection(stateName.qualifiedName(), size() + delta);
     }
 
-    public boolean add( QualifiedIdentity qualifiedIdentity )
+    public boolean add(EntityReference entityReference)
     {
-        if( checker.goodToAdd( this, qualifiedIdentity ) )
+        if (checker.goodToAdd(this, entityReference))
         {
-            Node node = idIndex.getNode( qualifiedIdentity.identity() );
-            if (state.underlyingNode.equals(node)) {
-            	node = DirectEntityState.proxy(state.neo, node);
+            Node node = idIndex.getNode(entityReference.identity());
+            if (state.underlyingNode.equals(node))
+            {
+                node = DirectEntityState.proxy(state.neo, node);
             }
-            state.underlyingNode.createRelationshipTo( node, associationType );
-            changeSize( 1 );
+            state.underlyingNode.createRelationshipTo(node, associationType);
+            changeSize(1);
             return true;
-        }
-        else
+        } else
         {
             return false;
         }

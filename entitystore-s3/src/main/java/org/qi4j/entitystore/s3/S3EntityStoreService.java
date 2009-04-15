@@ -17,18 +17,19 @@
 package org.qi4j.entitystore.s3;
 
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.library.locking.LockingAbstractComposite;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.library.locking.LockingAbstractComposite;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.helpers.MapEntityStoreMixin;
 
 /**
  * EntityStore service backed by Amazon S3 store.
  */
 
-@Mixins( { S3SerializationStoreMixin.class } )
+@Mixins({MapEntityStoreMixin.class, S3SerializationStoreMixin.class})
 public interface S3EntityStoreService
-    extends EntityStore, ServiceComposite, Activatable, LockingAbstractComposite
+        extends EntityStore, ServiceComposite, Activatable, LockingAbstractComposite
 
 {
 }

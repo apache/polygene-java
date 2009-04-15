@@ -15,7 +15,6 @@
 package org.qi4j.rest;
 
 import org.qi4j.api.entity.EntityBuilder;
-import static org.qi4j.api.entity.association.Qualifier.qualifier;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
@@ -26,44 +25,43 @@ import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 /**
  * JAVADOC
  */
-@Mixins( DummyDataService.DummyDataMixin.class )
+@Mixins(DummyDataService.DummyDataMixin.class)
 public interface DummyDataService
-    extends ServiceComposite, Activatable
+        extends ServiceComposite, Activatable
 {
 
     class DummyDataMixin
-        implements Activatable
+            implements Activatable
     {
-        @Structure UnitOfWorkFactory uowf;
+        @Structure
+        UnitOfWorkFactory uowf;
 
         public void activate() throws Exception
         {
             UnitOfWork unitOfWork = uowf.newUnitOfWork();
             try
             {
-                EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( "test1", TestEntity.class );
-                builder.stateOfComposite().name().set( "Foo bar" );
-                builder.stateOfComposite().age().set( 42 );
+                EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class, "test1");
+                builder.prototype().name().set("Foo bar");
+                builder.prototype().age().set(42);
                 TestEntity testEntity = builder.newInstance();
 
-                EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( "test2", TestEntity.class );
-                builder2.stateOfComposite().name().set( "Xyzzy" );
-                builder2.stateOfComposite().age().set( 12 );
-                builder2.stateOfComposite().association().set( testEntity );
-                builder2.stateOfComposite().manyAssociation().add( testEntity );
-                builder2.stateOfComposite().manyAssociation().add( testEntity );
+                EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder(TestEntity.class, "test2");
+                builder2.prototype().name().set("Xyzzy");
+                builder2.prototype().age().set(12);
+                builder2.prototype().association().set(testEntity);
+                builder2.prototype().manyAssociation().add(0, testEntity);
+                builder2.prototype().manyAssociation().add(0, testEntity);
 
                 EntityBuilder<TestRole> builder3 = unitOfWork.newEntityBuilder(TestRole.class);
-                builder3.stateOfComposite().name().set( "A role" );
+                builder3.prototype().name().set("A role");
                 TestRole testRole = builder3.newInstance();
-
-                builder2.stateOfComposite().manyAssociationQualifier().add( qualifier( testEntity, testRole ));
 
                 TestEntity testEntity2 = builder2.newInstance();
 
                 unitOfWork.complete();
             }
-            catch( Exception e )
+            catch (Exception e)
             {
                 unitOfWork.discard();
                 throw e;

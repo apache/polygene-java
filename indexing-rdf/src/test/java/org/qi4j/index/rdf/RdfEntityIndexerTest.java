@@ -24,21 +24,12 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import static org.qi4j.index.rdf.Network.populate;
-import org.qi4j.index.rdf.model.File;
-import org.qi4j.index.rdf.model.Host;
-import org.qi4j.index.rdf.model.Port;
-import org.qi4j.index.rdf.model.Protocol;
-import org.qi4j.index.rdf.model.URL;
-import org.qi4j.index.rdf.model.QueryParam;
-import org.qi4j.index.rdf.model.entities.AccountEntity;
-import org.qi4j.index.rdf.model.entities.CatEntity;
-import org.qi4j.index.rdf.model.entities.CityEntity;
-import org.qi4j.index.rdf.model.entities.DomainEntity;
-import org.qi4j.index.rdf.model.entities.FemaleEntity;
-import org.qi4j.index.rdf.model.entities.MaleEntity;
+import org.qi4j.index.rdf.model.*;
+import org.qi4j.index.rdf.model.entities.*;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
+import org.qi4j.spi.entity.helpers.EntityTypeRegistryService;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 
 public class RdfEntityIndexerTest
@@ -48,35 +39,36 @@ public class RdfEntityIndexerTest
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble(ModuleAssembly module) throws AssemblyException
             {
-                module.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
+                module.addObjects(EntityStateSerializer.class, EntityTypeSerializer.class);
                 module.addEntities(
-                    MaleEntity.class,
-                    FemaleEntity.class,
-                    CityEntity.class,
-                    DomainEntity.class,
-                    AccountEntity.class,
-                    CatEntity.class
+                        MaleEntity.class,
+                        FemaleEntity.class,
+                        CityEntity.class,
+                        DomainEntity.class,
+                        AccountEntity.class,
+                        CatEntity.class
                 );
                 module.addValues(
-                    URL.class,
-                    Protocol.class,
-                    Host.class,
-                    Port.class,
-                    File.class,
-                    QueryParam.class
+                        URL.class,
+                        Protocol.class,
+                        Host.class,
+                        Port.class,
+                        File.class,
+                        QueryParam.class
                 );
                 module.addServices(
-                    MemoryEntityStoreService.class,
-                    UuidIdentityGeneratorService.class,
-                    RdfIndexerExporterComposite.class,
-                    RdfFactoryService.class,
-                    MemoryRepositoryService.class
+                        MemoryEntityStoreService.class,
+                        UuidIdentityGeneratorService.class,
+                        RdfIndexerExporterComposite.class,
+                        RdfFactoryService.class,
+                        MemoryRepositoryService.class,
+                        EntityTypeRegistryService.class
                 );
             }
         };
-        populate( assembler );
-        assembler.serviceFinder().<RdfIndexerExporterComposite>findService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
+        populate(assembler);
+        assembler.serviceFinder().<RdfIndexerExporterComposite>findService(RdfIndexerExporterComposite.class).get().toRDF(System.out);
     }
 }

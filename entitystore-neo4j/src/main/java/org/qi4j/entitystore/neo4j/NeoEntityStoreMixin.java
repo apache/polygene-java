@@ -16,105 +16,100 @@
  */
 package org.qi4j.entitystore.neo4j;
 
+import org.neo4j.api.core.Transaction;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.entitystore.neo4j.state.*;
+import org.qi4j.spi.entity.*;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.neo4j.api.core.Transaction;
-import org.qi4j.api.common.Optional;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.entitystore.neo4j.state.CommittableEntityState;
-import org.qi4j.entitystore.neo4j.state.DirectEntityStateFactory;
-import org.qi4j.entitystore.neo4j.state.IndirectEntityStateFactory;
-import org.qi4j.entitystore.neo4j.state.LoadedDescriptor;
-import org.qi4j.entitystore.neo4j.state.NeoEntityStateFactory;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.EntityTypeRegistryMixin;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.StateCommitter;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
 public class NeoEntityStoreMixin
-    extends EntityTypeRegistryMixin
+        implements EntityStore
 {
     // Dependancies
-    private @Service NeoIdentityIndexService idService;
-    private @Service DirectEntityStateFactory directFactory;
-    private @Optional @Service IndirectEntityStateFactory indirectFactory;
-    private @Service NeoCoreService neo;
+    private
+    @Service
+    NeoIdentityIndexService idService;
+    private
+    @Service
+    DirectEntityStateFactory directFactory;
+    private
+    @Optional
+    @Service
+    IndirectEntityStateFactory indirectFactory;
+    private
+    @Service
+    NeoCoreService neo;
 
     // EntityStore implementation
 
-    public EntityState newEntityState( QualifiedIdentity identity ) throws EntityStoreException
+    public EntityState newEntityState(EntityReference reference) throws EntityStoreException
     {
-        EntityType type = getEntityType( identity.type() );
-        CommittableEntityState state = factory().createEntityState( idService, load( type, identity ), identity, EntityStatus.NEW );
+/*
+        EntityType type = getEntityType( reference.type() );
+        CommittableEntityState state = factory().createEntityState( idService, load( type, reference), reference, EntityStatus.NEW );
         state.preloadState();
         return state;
+*/
+        return null;
     }
 
-    public EntityState getEntityState( QualifiedIdentity identity ) throws EntityStoreException
+    public EntityState getEntityState(EntityReference reference) throws EntityStoreException
     {
-        EntityType type = getEntityType( identity.type() );
-        CommittableEntityState state = factory().createEntityState( idService, load( type, identity ), identity, EntityStatus.LOADED );
+/*
+        EntityType type = getEntityType( reference.type() );
+        CommittableEntityState state = factory().createEntityState( idService, load( type, reference), reference, EntityStatus.LOADED );
         state.preloadState();
         return state;
+*/
+        return null;
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException
+    public StateCommitter prepare(Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityReference> removedStates) throws EntityStoreException
     {
         List<CommittableEntityState> updated = new ArrayList<CommittableEntityState>();
-        for( EntityState state : newStates )
+        for (EntityState state : newStates)
         {
-            updated.add( (CommittableEntityState) state );
+            updated.add((CommittableEntityState) state);
         }
-        for( EntityState state : loadedStates )
+        for (EntityState state : loadedStates)
         {
             CommittableEntityState neoState = (CommittableEntityState) state;
-            if( neoState.isUpdated() )
+            if (neoState.isUpdated())
             {
-                updated.add( neoState );
+                updated.add(neoState);
             }
         }
-        return factory().prepareCommit( idService, updated, removedStates );
+        return factory().prepareCommit(idService, updated, removedStates);
     }
 
-    public Iterator<EntityState> iterator()
+    public void visitEntityStates(EntityStateVisitor visitor)
     {
-        final Iterator<CommittableEntityState> iter = factory().iterator( idService );
-        return new Iterator<EntityState>()
+        final Iterator<CommittableEntityState> iter = factory().iterator(idService);
+        while (iter.hasNext())
         {
-            public boolean hasNext()
-            {
-                return iter.hasNext();
-            }
-
-            public EntityState next()
-            {
-                return iter.next();
-            }
-
-            public void remove()
-            {
-                iter.remove();
-            }
-        };
+            CommittableEntityState state = iter.next();
+            visitor.visitEntityState(state);
+        }
     }
 
     // Implementation details
 
-    private LoadedDescriptor load( EntityType entityType, QualifiedIdentity identity )
+    private LoadedDescriptor load(EntityType entityType, EntityReference reference)
     {
         Transaction tx = neo.beginTx();
         try
         {
-            LoadedDescriptor descriptor = LoadedDescriptor.loadDescriptor( entityType, idService.getTypeNode( identity.type() ) );
+// TODO           LoadedDescriptor descriptor = LoadedDescriptor.loadDescriptor( entityType, idService.getTypeNode( reference.type() ) );
             tx.success();
-            return descriptor;
+            return null;
         }
         finally
         {
@@ -124,15 +119,13 @@ public class NeoEntityStoreMixin
 
     private NeoEntityStateFactory factory()
     {
-        if( neo.inTransaction() )
+        if (neo.inTransaction())
         {
             return directFactory;
-        }
-        else if( indirectFactory != null )
+        } else if (indirectFactory != null)
         {
             return indirectFactory;
-        }
-        else
+        } else
         {
             return directFactory;
         }

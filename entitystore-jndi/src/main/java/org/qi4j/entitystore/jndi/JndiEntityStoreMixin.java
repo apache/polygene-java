@@ -17,45 +17,10 @@
  */
 package org.qi4j.entitystore.jndi;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.locks.ReadWriteLock;
-import javax.naming.Context;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.InitialDirContext;
-import javax.naming.directory.SearchResult;
-import javax.naming.ldap.LdapName;
-import org.qi4j.api.configuration.Configuration;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.EntityTypeRegistryMixin;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.ReadOnlyEntityStoreException;
-import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.EntityAlreadyExistsException;
-import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.spi.entity.helpers.DefaultEntityState;
-import org.qi4j.spi.property.PropertyType;
-
-public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
-    implements Activatable
+public class JndiEntityStoreMixin
+//        implements MapEntityStore, Activatable
 {
+/* TODO
     private static final ArrayList<String> RESTRICTED_PROPERTIES = new ArrayList<String>( );
 
     static
@@ -145,7 +110,7 @@ public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
         context.close();
     }
 
-    public EntityState newEntityState( QualifiedIdentity identity )
+    public EntityState newEntityState( EntityReference reference)
         throws EntityStoreException
     {
         if( isReadOnly )
@@ -153,44 +118,44 @@ public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
             throw new ReadOnlyEntityStoreException( "JndiEntityStore is read-only." );
         }
 
-        EntityType entityType = getEntityType( identity.type() );
+        EntityType entityType = getEntityType( reference.type() );
         try
         {
-            Attributes attrs = lookup( identity.identity() );
+            Attributes attrs = lookup( reference.identity() );
             if( attrs != null && attrs.size() > 1 )
             {
-                throw new EntityAlreadyExistsException( descriptor.identity(), identity );
+                throw new EntityAlreadyExistsException(reference);
             }
         }
         catch( NamingException e )
         {
             throw new EntityStoreException( e );
         }
-        return new DefaultEntityState( identity, entityType );
+        return new DefaultEntityState(reference, entityType );
     }
 
-    public EntityState getEntityState( QualifiedIdentity identity )
+    public EntityState getEntityState( EntityReference reference)
         throws EntityStoreException
     {
-        EntityType entityType = getEntityType( identity.type() );
+        EntityType entityType = getEntityType( reference.type() );
         try
         {
-            String id = identity.identity();
+            String id = reference.identity();
             Attributes attrs = lookup( id );
 
             long version = getVersion( attrs );
             long lastModified = getLastModified( attrs );
             Map<QualifiedName, Object> properties = getProperties( attrs, entityType );
-//            properties.put( "identity", id);
-            Map<QualifiedName, QualifiedIdentity> associations = getAssociations( attrs, entityType );
-            Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations = getManyAssociations( attrs, entityType );
+//            properties.put( "reference", id);
+            Map<QualifiedName, EntityReference> manyAssociations = getAssociations( attrs, entityType );
+            Map<QualifiedName, Collection<EntityReference>> manyAssociations = getManyAssociations( attrs, entityType );
             return new DefaultEntityState( version,
                                            lastModified,
-                                           identity,
+                    reference,
                                            EntityStatus.LOADED,
                                            entityType,
                                            properties,
-                                           associations,
+                                           manyAssociations,
                                            manyAssociations );
         }
         catch( Exception e )
@@ -255,27 +220,27 @@ public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
         return result;
     }
 
-    private Map<QualifiedName, QualifiedIdentity> getAssociations( Attributes attrs, EntityType entityType )
+    private Map<QualifiedName, EntityReference> getAssociations( Attributes attrs, EntityType entityType )
         throws NamingException
     {
-        Map<QualifiedName, QualifiedIdentity> result = new HashMap<QualifiedName, QualifiedIdentity>();
-        Iterable<AssociationType> assocs = entityType.associations();
+        Map<QualifiedName, EntityReference> result = new HashMap<QualifiedName, EntityReference>();
+        Iterable<AssociationType> assocs = entityType.manyAssociations();
         for( AssociationType associationType : assocs )
         {
             QualifiedName qualifiedName = associationType.qualifiedName();
             String associationName = qualifiedName.name();
             Attribute attribute = attrs.get( associationName );
             String identity = (String) attribute.get();
-            QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( identity, associationType.type() );
-            result.put( qualifiedName, qualifiedIdentity );
+            EntityReference entityReference = new EntityReference( identity, associationType.type() );
+            result.put( qualifiedName, entityReference);
         }
         return result;
     }
 
-    private Map<QualifiedName, Collection<QualifiedIdentity>> getManyAssociations( Attributes attrs, EntityType entityType )
+    private Map<QualifiedName, Collection<EntityReference>> getManyAssociations( Attributes attrs, EntityType entityType )
         throws NamingException
     {
-        Map<QualifiedName, Collection<QualifiedIdentity>> result = new HashMap<QualifiedName, Collection<QualifiedIdentity>>();
+        Map<QualifiedName, Collection<EntityReference>> result = new HashMap<QualifiedName, Collection<EntityReference>>();
         Iterable<ManyAssociationType> assocs = entityType.manyAssociations();
         for( ManyAssociationType associationType : assocs )
         {
@@ -283,15 +248,15 @@ public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
             String associationName = qualifiedName.name();
             Attribute attribute = attrs.get( associationName );
             String identity = (String) attribute.get();
-            QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( identity, associationType.type() );
+            EntityReference entityReference = new EntityReference( identity, associationType.type() );
             String assocName = attribute.getID();
-            Collection<QualifiedIdentity> entry = result.get( assocName );
+            Collection<EntityReference> entry = result.get( assocName );
             if( entry == null )
             {
-                entry = new ArrayList<QualifiedIdentity>();
+                entry = new ArrayList<EntityReference>();
                 result.put( qualifiedName, entry );
             }
-            entry.add( qualifiedIdentity );
+            entry.add(entityReference);
         }
         return result;
     }
@@ -310,44 +275,44 @@ public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
         }
     }
 
-    private void putAssociations( Attributes attrs, EntityType entityType, Map<String, QualifiedIdentity> associations )
+    private void putAssociations( Attributes attrs, EntityType entityType, Map<String, EntityReference> manyAssociations )
     {
-//        Iterable<AssociationType> assocs = entityType.associations();
+//        Iterable<AssociationType> assocs = entityType.manyAssociations();
 //        for( AssociationType associationType : assocs )
 //        {
-//            String qualifiedName = associationType.qualifiedName();
-//            int pos = qualifiedName.lastIndexOf( ':' );
-//            String associationName = qualifiedName.substring( pos );
+//            String stateName = associationType.stateName();
+//            int pos = stateName.lastIndexOf( ':' );
+//            String associationName = stateName.substring( pos );
 //            Attribute attribute = attrs.get( associationName );
 //            String identity = (String) attribute.get();
-//            QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( identity, associationType.type() );
+//            EntityReference qualifiedIdentity = new EntityReference( identity, associationType.type() );
 //            result.put( attribute.getID(), qualifiedIdentity );
 //        }
     }
 
-    private void putManyAssociations( Attributes attrs, EntityType entityType, Map<String, Collection<QualifiedIdentity>> manyAssociations )
+    private void putManyAssociations( Attributes attrs, EntityType entityType, Map<String, Collection<EntityReference>> manyAssociations )
     {
 //        Iterable<ManyAssociationType> assocs = entityType.manyAssociations();
 //        for( ManyAssociationType associationType : assocs )
 //        {
-//            String qualifiedName = associationType.qualifiedName();
-//            int pos = qualifiedName.lastIndexOf( ':' );
-//            String associationName = qualifiedName.substring( pos );
+//            String stateName = associationType.stateName();
+//            int pos = stateName.lastIndexOf( ':' );
+//            String associationName = stateName.substring( pos );
 //            Attribute attribute = attrs.get( associationName );
 //            String identity = (String) attribute.get();
-//            QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( identity, associationType.type() );
+//            EntityReference qualifiedIdentity = new EntityReference( identity, associationType.type() );
 //            String assocName = attribute.getID();
-//            Collection<QualifiedIdentity> entry = result.get( assocName );
+//            Collection<EntityReference> entry = result.get( assocName );
 //            if( entry == null )
 //            {
-//                entry = new ArrayList<QualifiedIdentity>();
+//                entry = new ArrayList<EntityReference>();
 //                result.put( assocName, entry );
 //            }
 //            entry.add( qualifiedIdentity );
 //        }
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> updatedStates, Iterable<QualifiedIdentity> removedStates )
+    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> updatedStates, Iterable<EntityReference> removedStates )
         throws EntityStoreException
     {
 //        if( isReadOnly )
@@ -461,21 +426,21 @@ public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
                         Attributes attributes = result.next().getAttributes();
                         String qualifiedType = (String) attributes.get( qualifiedTypeAttribute ).get();
                         String id = (String) attributes.get( identityAttribute ).get();
-                        QualifiedIdentity identity = new QualifiedIdentity( id, qualifiedType );
-                        EntityType entityType = getEntityType( identity.type() );
+                        EntityReference reference = new EntityReference( id, qualifiedType );
+                        EntityType entityType = getEntityType( reference.type() );
 
                         long version = Long.parseLong( (String) attributes.get( instanceVersionAttribute ).get() );
                         long lastModified = Long.parseLong( (String) attributes.get( lastModifiedDateAttribute ).get() );
                         Map<QualifiedName, Object> properties = getProperties( attributes, entityType );
-                        Map<QualifiedName, QualifiedIdentity> associations = getAssociations( attributes, entityType );
-                        Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations = getManyAssociations( attributes, entityType );
+                        Map<QualifiedName, EntityReference> manyAssociations = getAssociations( attributes, entityType );
+                        Map<QualifiedName, Collection<EntityReference>> manyAssociations = getManyAssociations( attributes, entityType );
                         return new DefaultEntityState( version,
                                                        lastModified,
-                                                       identity,
+                                reference,
                                                        EntityStatus.LOADED,
                                                        entityType,
                                                        properties,
-                                                       associations,
+                                                       manyAssociations,
                                                        manyAssociations );
                     }
                     catch( Exception e )
@@ -512,4 +477,5 @@ public class JndiEntityStoreMixin extends EntityTypeRegistryMixin
         {
         }
     }
+*/
 }

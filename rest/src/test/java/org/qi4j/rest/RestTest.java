@@ -17,11 +17,6 @@
  */
 package org.qi4j.rest;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.DeleteMethod;
@@ -30,85 +25,90 @@ import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.bootstrap.ApplicationAssemblerAdapter;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.ApplicationAssemblerAdapter;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.NoSuchEntityException;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.property.Property;
+import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.rest.assembly.RestAssembler;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.ApplicationModelSPI;
-import org.qi4j.api.structure.Application;
-import org.qi4j.api.common.Optional;
 import org.qi4j.test.AbstractQi4jTest;
 
-@Ignore( "Need to rebuild tests after larger changes to implementation." )
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+
+@Ignore("Need to rebuild tests after larger changes to implementation.")
 public class RestTest extends AbstractQi4jTest
 {
 
     protected ApplicationModelSPI newApplication()
-        throws AssemblyException
+            throws AssemblyException
     {
-        return qi4j.newApplicationModel( new ApplicationAssemblerAdapter(new Assembler[][][]
-            {
+        return qi4j.newApplicationModel(new ApplicationAssemblerAdapter(new Assembler[][][]
                 {
-                    {
-                        RestTest.this,
-                        new RestAssembler(),
-                        new RdfMemoryStoreAssembler()
-                    }
-                }
-            }){});
+                        {
+                                {
+                                        RestTest.this,
+                                        new RestAssembler(),
+                                        new RdfMemoryStoreAssembler()
+                                }
+                        }
+                })
+        {
+        });
     }
 
-    public void assemble( ModuleAssembly module )
-        throws AssemblyException
+    public void assemble(ModuleAssembly module)
+            throws AssemblyException
     {
-        module.addObjects( RestTester.class );
-        module.addEntities( PersonEntity.class );
-        module.addServices( RestServerComposite.class ).instantiateOnStartup();
-        module.addServices( MemoryEntityStoreService.class ).identifiedBy( "store" );
-        module.addServices( UuidIdentityGeneratorService.class );
+        module.addObjects(RestTester.class);
+        module.addEntities(PersonEntity.class);
+        module.addServices(RestServerComposite.class).instantiateOnStartup();
+        module.addServices(MemoryEntityStoreService.class).identifiedBy("store");
+        module.addServices(UuidIdentityGeneratorService.class);
     }
 
     @Override
-    @Before public void setUp() throws Exception
+    @Before
+    public void setUp() throws Exception
     {
         super.setUp();
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            EntityBuilder<PersonEntity> builder1 = uow.newEntityBuilder( "P2", PersonEntity.class );
-            PersonEntity maryDoe = builder1.stateOfComposite();
-            maryDoe.firstname().set( "Mary" );
-            maryDoe.lastname().set( "Doe" );
+            EntityBuilder<PersonEntity> builder1 = uow.newEntityBuilder(PersonEntity.class, "P2");
+            PersonEntity maryDoe = builder1.prototype();
+            maryDoe.firstname().set("Mary");
+            maryDoe.lastname().set("Doe");
             maryDoe = builder1.newInstance();
 
-            EntityBuilder<PersonEntity> builder2 = uow.newEntityBuilder( "P1", PersonEntity.class );
-            PersonEntity joeDoe = builder2.stateOfComposite();
-            joeDoe.firstname().set( "Joe" );
-            joeDoe.lastname().set( "Doe" );
-            joeDoe.mother().set( maryDoe );
+            EntityBuilder<PersonEntity> builder2 = uow.newEntityBuilder(PersonEntity.class, "P1");
+            PersonEntity joeDoe = builder2.prototype();
+            joeDoe.firstname().set("Joe");
+            joeDoe.lastname().set("Doe");
+            joeDoe.mother().set(maryDoe);
             builder2.newInstance();
 
             uow.complete();
         }
-        catch( Exception e )
+        catch (Exception e)
         {
             uow.discard();
             throw e;
@@ -117,56 +117,56 @@ public class RestTest extends AbstractQi4jTest
 
     @Test
     public void givenAnIdentityWhenExecutingGetCommandThenExpectTheCorrectXml()
-        throws Exception
+            throws Exception
     {
-        RestTester restTester = objectBuilderFactory.newObject( RestTester.class );
-        String xml = restTester.getEntity( "P1" );
-        assertEquals( "Incorrect XML produced", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entity><type>org.qi4j.rest.RestTest$PersonEntity</type><identity>P1</identity><properties><identity>P1</identity><firstname>Joe</firstname><lastname>Doe</lastname></properties><associations><mother href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P2\">P2</mother></associations></entity>", xml );
+        RestTester restTester = objectBuilderFactory.newObject(RestTester.class);
+        String xml = restTester.getEntity("P1");
+        assertEquals("Incorrect XML produced", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entity><type>org.qi4j.rest.RestTest$PersonEntity</type><identity>P1</identity><properties><identity>P1</identity><firstname>Joe</firstname><lastname>Doe</lastname></properties><manyAssociations><mother href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P2\">P2</mother></manyAssociations></entity>", xml);
     }
 
     @Test
     public void givenExistingIdentityWhenExecutingPutCommandThenNewValuesInEntity()
-        throws Throwable
+            throws Throwable
     {
-        RestTester restTester = objectBuilderFactory.newObject( RestTester.class );
-        restTester.putEntity( "P1", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entity><identity>P1</identity><properties><identity>P1</identity><firstname>Jack</firstname><lastname>Doe</lastname></properties></entity>" );
+        RestTester restTester = objectBuilderFactory.newObject(RestTester.class);
+        restTester.putEntity("P1", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entity><identity>P1</identity><properties><identity>P1</identity><firstname>Jack</firstname><lastname>Doe</lastname></properties></entity>");
         UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            PersonEntity entity = work.find( "P1", PersonEntity.class );
-            assertEquals( "FirstName not changed.", "Jack", entity.firstname().get() );
-            assertEquals( "LastName not changed.", "Doe", entity.lastname().get() );
+            PersonEntity entity = work.get(PersonEntity.class, "P1");
+            assertEquals("FirstName not changed.", "Jack", entity.firstname().get());
+            assertEquals("LastName not changed.", "Doe", entity.lastname().get());
             work.complete();
         }
-        catch( Throwable e )
+        catch (Throwable e)
         {
             work.discard();
             throw e;
         }
     }
 
-    @Test 
+    @Test
     public void givenExistingIdentityWhenExecutingDeleteCommandThenEntityIsRemoved()
-        throws Throwable
+            throws Throwable
     {
-        RestTester restTester = objectBuilderFactory.newObject( RestTester.class );
-        restTester.deleteEntity( "P1" );
+        RestTester restTester = objectBuilderFactory.newObject(RestTester.class);
+        restTester.deleteEntity("P1");
         UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
         try
         {
             PersonEntity entity = null;
             try
             {
-                entity = work.find( "P1", PersonEntity.class );
+                entity = work.get(PersonEntity.class, "P1");
             }
-            catch( NoSuchEntityException expected )
+            catch (NoSuchEntityException expected)
             {
                 // expected
             }
-            assertNull( "Entity not removed.", entity );
+            assertNull("Entity not removed.", entity);
             work.complete();
         }
-        catch( Throwable e )
+        catch (Throwable e)
         {
             work.discard();
             throw e;
@@ -175,77 +175,78 @@ public class RestTest extends AbstractQi4jTest
 
     @Test
     public void givenAnTypeWhenExecutingGetCommandThenExpectTheCorrectXml()
-        throws Exception
+            throws Exception
     {
-        final RestTester restTester = objectBuilderFactory.newObject( RestTester.class );
-        final String result = restTester.getEntities( PersonEntity.class );
+        final RestTester restTester = objectBuilderFactory.newObject(RestTester.class);
+        final String result = restTester.getEntities(PersonEntity.class);
         assertThat(
-            "Returned XML", result,
-            anyOf(
-                equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entities><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P1\">P1</entity><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P2\">P2</entity></entities>" ),
-                equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><entities><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P1\">P1</entity><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P2\">P2</entity></entities>" ) )
+                "Returned XML", result,
+                anyOf(
+                        equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\"?><entities><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P1\">P1</entity><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P2\">P2</entity></entities>"),
+                        equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><entities><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P1\">P1</entity><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P2\">P2</entity></entities>"))
         );
     }
 
     public static class RestTester
     {
-        @Service RestServer server;
+        @Service
+        RestServer server;
 
-        public String getEntity( String id )
-            throws IOException
+        public String getEntity(String id)
+                throws IOException
         {
-            URL url = new URL( "http://localhost:8182/entity/" + PersonEntity.class.getName() + "/" + id );
+            URL url = new URL("http://localhost:8182/entity/" + PersonEntity.class.getName() + "/" + id);
             InputStream in = (InputStream) url.getContent();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            copyStream( in, baos );
+            copyStream(in, baos);
             in.close();
             baos.close();
             return baos.toString();
         }
 
-        public void putEntity( String identity, String xml )
-            throws IOException
+        public void putEntity(String identity, String xml)
+                throws IOException
         {
             HttpClient client = new HttpClient();
             PutMethod method = new PutMethod();
             HostConfiguration host = new HostConfiguration();
-            host.setHost( "localhost", 8182, "http" );
-            RequestEntity entity = new StringRequestEntity( xml, "text/xml", "UTF-8" );
-            method.setRequestEntity( entity );
-            method.setPath( "/entity/" + PersonEntity.class.getName() + "/" + identity );
-            client.executeMethod( host, method );
+            host.setHost("localhost", 8182, "http");
+            RequestEntity entity = new StringRequestEntity(xml, "text/xml", "UTF-8");
+            method.setRequestEntity(entity);
+            method.setPath("/entity/" + PersonEntity.class.getName() + "/" + identity);
+            client.executeMethod(host, method);
         }
 
-        public void deleteEntity( String identity )
-            throws IOException
+        public void deleteEntity(String identity)
+                throws IOException
         {
             HttpClient client = new HttpClient();
             DeleteMethod method = new DeleteMethod();
             HostConfiguration host = new HostConfiguration();
-            host.setHost( "localhost", 8182, "http" );
-            method.setPath( "/entity/" + PersonEntity.class.getName() + "/" + identity );
-            client.executeMethod( host, method );
+            host.setHost("localhost", 8182, "http");
+            method.setPath("/entity/" + PersonEntity.class.getName() + "/" + identity);
+            client.executeMethod(host, method);
         }
 
-        public String getEntities( Class type )
-            throws IOException
+        public String getEntities(Class type)
+                throws IOException
         {
-            URL url = new URL( "http://localhost:8182/entity/" + type.getName() );
+            URL url = new URL("http://localhost:8182/entity/" + type.getName());
             InputStream in = (InputStream) url.getContent();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            copyStream( in, baos );
+            copyStream(in, baos);
             in.close();
             baos.close();
             return baos.toString();
         }
 
-        private void copyStream( InputStream in, OutputStream baos )
-            throws IOException
+        private void copyStream(InputStream in, OutputStream baos)
+                throws IOException
         {
             int data = in.read();
-            while( data != -1 )
+            while (data != -1)
             {
-                baos.write( data );
+                baos.write(data);
                 data = in.read();
             }
         }

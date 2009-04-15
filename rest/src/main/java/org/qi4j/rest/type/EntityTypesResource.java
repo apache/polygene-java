@@ -13,96 +13,67 @@
  */
 package org.qi4j.rest.type;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.structure.Application;
-import org.qi4j.api.structure.Module;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.structure.ApplicationSPI;
-import org.qi4j.spi.structure.DescriptorVisitor;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.EntityTypeRegistry;
 import org.restlet.Context;
-import org.restlet.ext.atom.Feed;
-import org.restlet.ext.atom.Entry;
-import org.restlet.ext.atom.Text;
-import org.restlet.ext.atom.Link;
-import org.restlet.representation.Variant;
-import org.restlet.representation.Representation;
-import org.restlet.representation.WriterRepresentation;
-import static org.restlet.data.CharacterSet.UTF_8;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
+import org.restlet.ext.atom.Entry;
+import org.restlet.ext.atom.Feed;
+import org.restlet.ext.atom.Link;
+import org.restlet.ext.atom.Text;
+import org.restlet.representation.Representation;
+import org.restlet.representation.Variant;
 import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
 
+import java.util.List;
+
 public final class EntityTypesResource extends Resource
 {
-    @Structure Application application;
-    @Structure Qi4jSPI spi;
-    @Structure Module module;
+    @Service
+    EntityTypeRegistry registry;
 
-    public EntityTypesResource( @Uses Context context,
-                                @Uses Request request,
-                                @Uses Response response)
+    public EntityTypesResource(@Uses Context context,
+                               @Uses Request request,
+                               @Uses Response response)
     {
-        super( context, request, response );
+        super(context, request, response);
 
         List<Variant> variants = getVariants();
-        variants.add( new Variant( MediaType.APPLICATION_ATOM ) );
-
+        variants.add(new Variant(MediaType.APPLICATION_ATOM));
     }
 
     @Override
-    public Representation represent( Variant variant )
-        throws ResourceException
+    public Representation represent(Variant variant)
+            throws ResourceException
     {
-        if( MediaType.APPLICATION_ATOM.equals( variant.getMediaType() ) )
+        if (MediaType.APPLICATION_ATOM.equals(variant.getMediaType()))
         {
-            return representAtom( );
+            return representAtom();
         }
 
-        throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+        throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND);
     }
 
     private Representation representAtom() throws ResourceException
     {
-        final Set<EntityDescriptor> entityTypes = new HashSet<EntityDescriptor>();
-
-        // Get all entity types
-        ApplicationSPI applicationSPI = (ApplicationSPI) application;
-        applicationSPI.visitDescriptor( new DescriptorVisitor()
-        {
-            @Override public void visit( EntityDescriptor entityDescriptor )
-            {
-                Class<?> entityType = entityDescriptor.type();
-                if( spi.getEntityDescriptor( entityType, module ) != null )
-                {
-                    entityTypes.add( entityDescriptor);
-                }
-            }
-        } );
-
         Feed feed = new Feed();
-        feed.setTitle( new Text(MediaType.TEXT_PLAIN, "Entity types") );
+        feed.setTitle(new Text(MediaType.TEXT_PLAIN, "Entity types"));
         List<Entry> entries = feed.getEntries();
 
-        for( EntityDescriptor entityType : entityTypes )
+        for (EntityType entityType : registry)
         {
             Entry entry = new Entry();
-            entry.setTitle( new Text(MediaType.TEXT_PLAIN, entityType.entityType().type()) );
+            entry.setTitle(new Text(MediaType.TEXT_PLAIN, entityType.type().name()));
             Link link = new Link();
-            link.setHref( getRequest().getResourceRef().clone().addSegment( entityType.entityType().version() ));
-            entry.getLinks().add( link );
-            entries.add( entry );
+            link.setHref(getRequest().getResourceRef().clone().addSegment(entityType.version()));
+            entry.getLinks().add(link);
+            entries.add(entry);
         }
 
         return feed;

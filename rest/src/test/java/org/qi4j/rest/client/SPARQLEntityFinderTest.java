@@ -32,8 +32,8 @@ import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.rest.Main;
 import org.qi4j.rest.TestEntity;
-import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.spi.structure.ApplicationSPI;
+import org.qi4j.test.AbstractQi4jTest;
 import org.restlet.Client;
 import org.restlet.Uniform;
 import org.restlet.data.Protocol;
@@ -42,37 +42,42 @@ import org.restlet.data.Protocol;
  * JAVADOC
  */
 public class SPARQLEntityFinderTest
-    extends AbstractQi4jTest
+        extends AbstractQi4jTest
 {
     ApplicationSPI server;
 
-    public void assemble( ModuleAssembly module )
-        throws AssemblyException
+    public void assemble(ModuleAssembly module)
+            throws AssemblyException
     {
-        module.addEntities( TestEntity.class );
-        ModuleAssembly store = module.layerAssembly().newModuleAssembly( "REST Store/Finder" );
-        store.addObjects( EntityStateSerializer.class, EntityStateParser.class, EntityTypeSerializer.class);
-        store.addEntities( RESTEntityStoreConfiguration.class, SPARQLEntityFinderConfiguration.class );
-        store.addServices( MemoryEntityStoreService.class);
-        store.addServices( RESTEntityStoreService.class, SPARQLEntityFinderService.class, RdfFactoryService.class ).visibleIn( Visibility.layer );
-        store.importServices( Uniform.class );
+        module.addEntities(TestEntity.class);
+        ModuleAssembly store = module.layerAssembly().newModuleAssembly("REST Store/Finder/Registry");
+        store.addObjects(EntityStateSerializer.class, EntityStateParser.class, EntityTypeSerializer.class);
+        store.addEntities(RESTEntityStoreConfiguration.class, SPARQLEntityFinderConfiguration.class, RESTEntityTypeRegistryConfiguration.class);
+        store.addServices(MemoryEntityStoreService.class);
+        store.addServices(RESTEntityStoreService.class, SPARQLEntityFinderService.class, RESTEntityTypeRegistryService.class, RdfFactoryService.class).visibleIn(Visibility.layer);
+        store.importServices(Uniform.class);
     }
 
-    @Override protected void initApplication( Application app ) throws Exception
+    @Override
+    protected void initApplication(Application app) throws Exception
     {
-        Client client = new Client( Protocol.HTTP);
+        Client client = new Client(Protocol.HTTP);
         client.start();
-        app.metaInfo().set( client );
+        app.metaInfo().set(client);
     }
 
-    @Override @Before public void setUp() throws Exception
+    @Override
+    @Before
+    public void setUp() throws Exception
     {
         server = new Main().application();
 
         super.setUp();
     }
 
-    @Override @After public void tearDown() throws Exception
+    @Override
+    @After
+    public void tearDown() throws Exception
     {
         super.tearDown();
 
@@ -86,12 +91,12 @@ public class SPARQLEntityFinderTest
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             try
             {
-                Query<TestEntity> query = unitOfWork.queryBuilderFactory().newQueryBuilder( TestEntity.class ).newQuery();
-                for( TestEntity testEntity : query )
+                Query<TestEntity> query = unitOfWork.queryBuilderFactory().newQueryBuilder(TestEntity.class).newQuery();
+                for (TestEntity testEntity : query)
                 {
-                    System.out.println( testEntity.name().get() );
+                    System.out.println(testEntity.name().get());
                 }
-                Assert.assertThat( "result size is correct", query.count(), equalTo( 2L ) );
+                Assert.assertThat("result size is correct", query.count(), equalTo(2L));
             }
             finally
             {

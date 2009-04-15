@@ -17,26 +17,19 @@
  */
 package org.qi4j.index.rdf;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.index.rdf.model.Account;
-import org.qi4j.index.rdf.model.Cat;
-import org.qi4j.index.rdf.model.City;
-import org.qi4j.index.rdf.model.Domain;
-import org.qi4j.index.rdf.model.Female;
-import org.qi4j.index.rdf.model.Male;
-import org.qi4j.index.rdf.model.Protocol;
-import org.qi4j.index.rdf.model.QueryParam;
-import org.qi4j.index.rdf.model.URL;
+import org.qi4j.index.rdf.model.*;
 import org.qi4j.index.rdf.model.entities.CatEntity;
 import org.qi4j.index.rdf.model.entities.FemaleEntity;
 import org.qi4j.index.rdf.model.entities.MaleEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * JAVADOC Add JavaDoc
@@ -46,8 +39,8 @@ import org.qi4j.index.rdf.model.entities.MaleEntity;
  */
 class Network
 {
-    static void populate( SingletonAssembler assembler )
-        throws UnitOfWorkCompletionException
+    static void populate(SingletonAssembler assembler)
+            throws UnitOfWorkCompletionException
     {
         UnitOfWork unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
         ValueBuilderFactory valueBuilderFactory = assembler.valueBuilderFactory();
@@ -55,12 +48,12 @@ class Network
         NameableAssert.clear();
         Domain gaming;
         {
-            EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class );
-            gaming = domainBuilder.stateOfComposite();
-            gaming.name().set( "Gaming" );
-            gaming.description().set( "Gaming domain" );
+            EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder(Domain.class);
+            gaming = domainBuilder.prototype();
+            gaming.name().set("Gaming");
+            gaming.description().set("Gaming domain");
             gaming = domainBuilder.newInstance();
-            NameableAssert.trace( gaming );
+            NameableAssert.trace(gaming);
         }
 
         unitOfWork.complete();
@@ -68,12 +61,12 @@ class Network
 
         Domain programming;
         {
-            EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class );
-            programming = domainBuilder.stateOfComposite();
-            programming.name().set( "Programming" );
-            programming.description().set( "Programing domain" );
+            EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder(Domain.class);
+            programming = domainBuilder.prototype();
+            programming.name().set("Programming");
+            programming.description().set("Programing domain");
             programming = domainBuilder.newInstance();
-            NameableAssert.trace( programming );
+            NameableAssert.trace(programming);
         }
 
         unitOfWork.complete();
@@ -81,12 +74,12 @@ class Network
 
         Domain cooking;
         {
-            EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class );
-            cooking = domainBuilder.stateOfComposite();
-            cooking.name().set( "Cooking" );
-            cooking.description().set( "Cooking domain" );
+            EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder(Domain.class);
+            cooking = domainBuilder.prototype();
+            cooking.name().set("Cooking");
+            cooking.description().set("Cooking domain");
             cooking = domainBuilder.newInstance();
-            NameableAssert.trace( cooking );
+            NameableAssert.trace(cooking);
         }
 
         unitOfWork.complete();
@@ -94,12 +87,12 @@ class Network
 
         Domain cars;
         {
-            EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class );
-            cars = domainBuilder.stateOfComposite();
-            cars.name().set( "Cars" );
-            cars.description().set( "Cars" );
+            EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder(Domain.class);
+            cars = domainBuilder.prototype();
+            cars.name().set("Cars");
+            cars.description().set("Cars");
             cars = domainBuilder.newInstance();
-            NameableAssert.trace( cars );
+            NameableAssert.trace(cars);
         }
 
         unitOfWork.complete();
@@ -107,13 +100,13 @@ class Network
 
         City kualaLumpur;
         {
-            EntityBuilder<City> cityBuilder = unitOfWork.newEntityBuilder( City.class );
-            kualaLumpur = cityBuilder.stateOfComposite();
-            kualaLumpur.name().set( "Kuala Lumpur" );
-            kualaLumpur.country().set( "Malaysia" );
-            kualaLumpur.county().set( "Some Jaya" );
+            EntityBuilder<City> cityBuilder = unitOfWork.newEntityBuilder(City.class);
+            kualaLumpur = cityBuilder.prototype();
+            kualaLumpur.name().set("Kuala Lumpur");
+            kualaLumpur.country().set("Malaysia");
+            kualaLumpur.county().set("Some Jaya");
             kualaLumpur = cityBuilder.newInstance();
-            NameableAssert.trace( kualaLumpur );
+            NameableAssert.trace(kualaLumpur);
         }
 
         unitOfWork.complete();
@@ -121,13 +114,13 @@ class Network
 
         City penang;
         {
-            EntityBuilder<City> cityBuilder = unitOfWork.newEntityBuilder( City.class );
-            penang = cityBuilder.stateOfComposite();
-            penang.name().set( "Penang" );
-            penang.country().set( "Malaysia" );
-            penang.county().set( "Some Other Jaya" );
+            EntityBuilder<City> cityBuilder = unitOfWork.newEntityBuilder(City.class);
+            penang = cityBuilder.prototype();
+            penang.name().set("Penang");
+            penang.country().set("Malaysia");
+            penang.county().set("Some Other Jaya");
             penang = cityBuilder.newInstance();
-            NameableAssert.trace( penang );
+            NameableAssert.trace(penang);
         }
 
         unitOfWork.complete();
@@ -135,9 +128,9 @@ class Network
 
         Account annsAccount;
         {
-            EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class );
-            annsAccount = accountBuilder.stateOfComposite();
-            annsAccount.number().set( "accountOfAnnDoe" );
+            EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder(Account.class);
+            annsAccount = accountBuilder.prototype();
+            annsAccount.number().set("accountOfAnnDoe");
             annsAccount = accountBuilder.newInstance();
         }
 
@@ -146,9 +139,9 @@ class Network
 
         Account jacksAccount;
         {
-            EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class );
-            jacksAccount = accountBuilder.stateOfComposite();
-            jacksAccount.number().set( "accountOfJackDoe" );
+            EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder(Account.class);
+            jacksAccount = accountBuilder.prototype();
+            jacksAccount.number().set("accountOfJackDoe");
             jacksAccount = accountBuilder.newInstance();
         }
 
@@ -157,87 +150,87 @@ class Network
 
         Female annDoe;
         {
-            EntityBuilder<FemaleEntity> femaleBuilder = unitOfWork.newEntityBuilder( FemaleEntity.class );
-            annDoe = femaleBuilder.stateOfComposite();
-            annDoe.name().set( "Ann Doe" );
-            annDoe.placeOfBirth().set( kualaLumpur );
-            annDoe.yearOfBirth().set( 1975 );
-            annDoe.interests().add( cooking );
-            annDoe.password().set( "passwordOfAnnDoe" );
-            annDoe.mainAccount().set( annsAccount );
-            annDoe.accounts().add( annsAccount );
-            annDoe.accounts().add( jacksAccount );
+            EntityBuilder<FemaleEntity> femaleBuilder = unitOfWork.newEntityBuilder(FemaleEntity.class);
+            annDoe = femaleBuilder.prototype();
+            annDoe.name().set("Ann Doe");
+            annDoe.placeOfBirth().set(kualaLumpur);
+            annDoe.yearOfBirth().set(1975);
+            annDoe.interests().add(0, cooking);
+            annDoe.password().set("passwordOfAnnDoe");
+            annDoe.mainAccount().set(annsAccount);
+            annDoe.accounts().add(0, annsAccount);
+            annDoe.accounts().add(0, jacksAccount);
             annDoe = femaleBuilder.newInstance();
-            NameableAssert.trace( annDoe );
+            NameableAssert.trace(annDoe);
         }
 
         unitOfWork.complete();
         unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         {
-            EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder( MaleEntity.class );
-            Male joeDoe = maleBuilder.stateOfComposite();
-            joeDoe.name().set( "Joe Doe" );
-            joeDoe.placeOfBirth().set( kualaLumpur );
-            joeDoe.yearOfBirth().set( 1990 );
-            joeDoe.mother().set( annDoe );
-            joeDoe.interests().add( programming );
-            joeDoe.interests().add( gaming );
-            joeDoe.email().set( "joe@thedoes.net" );
-            joeDoe.password().set( "passwordOfJoeDoe" );
+            EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder(MaleEntity.class);
+            Male joeDoe = maleBuilder.prototype();
+            joeDoe.name().set("Joe Doe");
+            joeDoe.placeOfBirth().set(kualaLumpur);
+            joeDoe.yearOfBirth().set(1990);
+            joeDoe.mother().set(annDoe);
+            joeDoe.interests().add(0, programming);
+            joeDoe.interests().add(0, gaming);
+            joeDoe.email().set("joe@thedoes.net");
+            joeDoe.password().set("passwordOfJoeDoe");
             joeDoe = maleBuilder.newInstance();
-            NameableAssert.trace( joeDoe );
+            NameableAssert.trace(joeDoe);
         }
 
         unitOfWork.complete();
         unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         {
-            EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder( MaleEntity.class );
-            Male jackDoe = maleBuilder.stateOfComposite();
-            jackDoe.name().set( "Jack Doe" );
-            jackDoe.placeOfBirth().set( penang );
-            jackDoe.yearOfBirth().set( 1970 );
-            jackDoe.interests().add( cars );
-            jackDoe.wife().set( annDoe );
-            jackDoe.password().set( "passwordOfJohnDoe" );
-            jackDoe.mainAccount().set( jacksAccount );
-            jackDoe.accounts().add( annsAccount );
-            jackDoe.accounts().add( jacksAccount );
+            EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder(MaleEntity.class);
+            Male jackDoe = maleBuilder.prototype();
+            jackDoe.name().set("Jack Doe");
+            jackDoe.placeOfBirth().set(penang);
+            jackDoe.yearOfBirth().set(1970);
+            jackDoe.interests().add(0, cars);
+            jackDoe.wife().set(annDoe);
+            jackDoe.password().set("passwordOfJohnDoe");
+            jackDoe.mainAccount().set(jacksAccount);
+            jackDoe.accounts().add(0, annsAccount);
+            jackDoe.accounts().add(0, jacksAccount);
 
-            ValueBuilder<URL> urlBuilder = valueBuilderFactory.newValueBuilder( URL.class );
-            ValueBuilder<Protocol> protocolBuilder = valueBuilderFactory.newValueBuilder( Protocol.class );
-            ValueBuilder<QueryParam> queryParamBuilder = valueBuilderFactory.newValueBuilder( QueryParam.class );
+            ValueBuilder<URL> urlBuilder = valueBuilderFactory.newValueBuilder(URL.class);
+            ValueBuilder<Protocol> protocolBuilder = valueBuilderFactory.newValueBuilder(Protocol.class);
+            ValueBuilder<QueryParam> queryParamBuilder = valueBuilderFactory.newValueBuilder(QueryParam.class);
 
             Protocol protocol = protocolBuilder.prototype();
-            protocol.value().set( "http" );
+            protocol.value().set("http");
 
             List<QueryParam> queryParams = new ArrayList<QueryParam>();
             QueryParam param = queryParamBuilder.prototype();
-            param.name().set( "user" );
-            param.value().set( "jackdoe" );
-            queryParams.add( queryParamBuilder.newInstance() );
-            param.name().set( "password" );
-            param.value().set( "somepassword" );
-            queryParams.add( queryParamBuilder.newInstance() );
+            param.name().set("user");
+            param.value().set("jackdoe");
+            queryParams.add(queryParamBuilder.newInstance());
+            param.name().set("password");
+            param.value().set("somepassword");
+            queryParams.add(queryParamBuilder.newInstance());
 
             URL url = urlBuilder.prototype();
-            url.protocol().set( protocolBuilder.newInstance() );
-            url.queryParams().set( queryParams );
+            url.protocol().set(protocolBuilder.newInstance());
+            url.queryParams().set(queryParams);
 
-            jackDoe.personalWebsite().set( urlBuilder.newInstance() );
+            jackDoe.personalWebsite().set(urlBuilder.newInstance());
 
             jackDoe = maleBuilder.newInstance();
-            NameableAssert.trace( jackDoe );
+            NameableAssert.trace(jackDoe);
         }
 
         unitOfWork.complete();
         unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         {
-            EntityBuilder<CatEntity> catBuilder = unitOfWork.newEntityBuilder( CatEntity.class );
-            Cat felix = catBuilder.stateOfComposite();
-            felix.name().set( "Felix" );
+            EntityBuilder<CatEntity> catBuilder = unitOfWork.newEntityBuilder(CatEntity.class);
+            Cat felix = catBuilder.prototype();
+            felix.name().set("Felix");
             felix = catBuilder.newInstance();
         }
 

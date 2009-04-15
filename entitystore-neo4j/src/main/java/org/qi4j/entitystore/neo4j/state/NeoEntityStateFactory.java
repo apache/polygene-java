@@ -16,21 +16,22 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
-import java.util.Iterator;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
+
+import java.util.Iterator;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
 public interface NeoEntityStateFactory
 {
-    CommittableEntityState createEntityState( NeoIdentityIndex idIndex, LoadedDescriptor descriptor, QualifiedIdentity identity, EntityStatus status );
+    CommittableEntityState createEntityState(NeoIdentityIndex idIndex, LoadedDescriptor descriptor, EntityReference reference, EntityStatus status);
 
-    StateCommitter prepareCommit( NeoIdentityIndex idIndex, Iterable<CommittableEntityState> updated, Iterable<QualifiedIdentity> removed ) throws EntityStoreException;
+    StateCommitter prepareCommit(NeoIdentityIndex idIndex, Iterable<CommittableEntityState> updated, Iterable<EntityReference> removed) throws EntityStoreException;
 
-    Iterator<CommittableEntityState> iterator( NeoIdentityIndex idIndex );
+    Iterator<CommittableEntityState> iterator(NeoIdentityIndex idIndex);
 }

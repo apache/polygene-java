@@ -13,40 +13,21 @@
  */
 package org.qi4j.rest.entity;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.Writer;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import org.qi4j.api.entity.Identity;
-import org.qi4j.api.entity.IdentityGenerator;
+import org.qi4j.api.entity.Entity;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.structure.Module;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
-import org.qi4j.spi.value.PrimitiveType;
 import org.restlet.Context;
-import org.restlet.data.CharacterSet;
-import org.restlet.data.Form;
-import org.restlet.data.MediaType;
-import org.restlet.data.Reference;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.data.Status;
+import org.restlet.data.*;
+import org.restlet.ext.atom.Entry;
+import org.restlet.ext.atom.Feed;
+import org.restlet.ext.atom.Link;
+import org.restlet.ext.atom.Text;
 import org.restlet.representation.DomRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
@@ -56,307 +37,205 @@ import org.restlet.resource.ResourceException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.io.*;
+import java.util.List;
+
 /**
  * Listing of all Entities.
- *
- * Mapped to /entity/{type}
+ * <p/>
+ * Mapped to /entity
  */
 public class EntitiesResource extends Resource
 {
-    @Service private EntityFinder entityFinder;
-    @Service private IdentityGenerator identityGenerator;
-    @Service private EntityStore entityStore;
-    @Structure UnitOfWorkFactory uowf;
-    @Structure Qi4jSPI spi;
-    @Structure Module module;
+    @Service
+    private EntityFinder entityFinder;
+    @Service
+    private EntityStore entityStore;
 
-    private String type;
-
-    public EntitiesResource( @Uses Context context,
-                             @Uses Request request,
-                             @Uses Response response )
-        throws ClassNotFoundException
+    public EntitiesResource(@Uses Context context,
+                            @Uses Request request,
+                            @Uses Response response)
+            throws ClassNotFoundException
     {
-        super( context, request, response );
+        super(context, request, response);
 
         // Define the supported variant.
-        getVariants().add( new Variant( MediaType.TEXT_HTML ) );
-        getVariants().add( new Variant( MediaType.APPLICATION_RDF_XML ) );
-        getVariants().add( new Variant( MediaType.TEXT_XML ) );
-
-        final Map<String, Object> attributes = getRequest().getAttributes();
-        type = (String) attributes.get( "type" );
-
-        setModifiable( true );
+        getVariants().add(new Variant(MediaType.TEXT_HTML));
+        getVariants().add(new Variant(MediaType.APPLICATION_RDF_XML));
+        getVariants().add(new Variant(MediaType.TEXT_XML));
+        getVariants().add(new Variant(MediaType.APPLICATION_JAVA_OBJECT));
+        getVariants().add(new Variant(MediaType.APPLICATION_ATOM));
+        setModifiable(true);
     }
 
-    @Override public Representation represent( final Variant variant )
-        throws ResourceException
+    @Override
+    public Representation represent(final Variant variant)
+            throws ResourceException
     {
         // Generate the right representation according to its media type.
-        if( MediaType.TEXT_XML.equals( variant.getMediaType() ) )
+        if (MediaType.TEXT_XML.equals(variant.getMediaType()))
         {
             return representXml();
-        }
-        else if( MediaType.APPLICATION_RDF_XML.equals( variant.getMediaType() ) )
+        } else if (MediaType.APPLICATION_RDF_XML.equals(variant.getMediaType()))
         {
             return representRdf();
-        }
-        else if( MediaType.TEXT_HTML.equals( variant.getMediaType() ) )
+        } else if (MediaType.TEXT_HTML.equals(variant.getMediaType()))
         {
             return representHtml();
+        } else if (MediaType.APPLICATION_ATOM.equals(variant.getMediaType()))
+        {
+            return representAtom();
         }
 
-        throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+        throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND);
     }
 
     private Representation representXml()
-        throws ResourceException
+            throws ResourceException
     {
         try
         {
-            final Iterable<QualifiedIdentity> query = entityFinder.findEntities( type, null, null, null, null );
+            final Iterable<EntityReference> query = entityFinder.findEntities(Entity.class.getName(), null, null, null, null);
 
-            DomRepresentation representation = new DomRepresentation( MediaType.TEXT_XML );
+            DomRepresentation representation = new DomRepresentation(MediaType.TEXT_XML);
             // Generate a DOM document representing the item.
             Document d = representation.getDocument();
 
-            Element entitiesElement = d.createElement( "entities" );
-            d.appendChild( entitiesElement );
-            for( QualifiedIdentity entity : query )
+            Element entitiesElement = d.createElement("entities");
+            d.appendChild(entitiesElement);
+            for (EntityReference entity : query)
             {
-                Element entityElement = d.createElement( "entity" );
-                entitiesElement.appendChild( entityElement );
-                entityElement.setAttribute( "href", getRequest().getResourceRef().getPath() + "/" + entity.identity() );
-                entityElement.appendChild( d.createTextNode( entity.identity() ) );
+                Element entityElement = d.createElement("entity");
+                entitiesElement.appendChild(entityElement);
+                entityElement.setAttribute("href", getRequest().getResourceRef().getPath() + "/" + entity.identity());
+                entityElement.appendChild(d.createTextNode(entity.identity()));
             }
             d.normalizeDocument();
 
             // Returns the XML representation of this document.
             return representation;
         }
-        catch( Exception e )
+        catch (Exception e)
         {
-            throw new ResourceException( e );
+            throw new ResourceException(e);
         }
     }
 
     private Representation representRdf()
-        throws ResourceException
+            throws ResourceException
     {
         try
         {
-            final Iterable<QualifiedIdentity> query = entityFinder.findEntities( type, null, null, null, null );
+            final Iterable<EntityReference> query = entityFinder.findEntities(Entity.class.getName(), null, null, null, null);
 
-            Representation representation = new WriterRepresentation( MediaType.APPLICATION_RDF_XML )
+            WriterRepresentation representation = new WriterRepresentation(MediaType.APPLICATION_RDF_XML)
             {
-                public void write( Writer writer ) throws IOException
+                public void write(Writer writer) throws IOException
                 {
-                    PrintWriter out = new PrintWriter( writer );
-                    out.println( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                                 "<rdf:RDF\n" +
-                                 "\txmlns=\"urn:qi4j:\"\n" +
-                                 "\txmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n" +
-                                 "\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n" +
-                                 "\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">" );
-                    for( QualifiedIdentity qualifiedIdentity : query )
+                    PrintWriter out = new PrintWriter(writer);
+                    out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                            "<rdf:RDF\n" +
+                            "\txmlns=\"urn:qi4j:\"\n" +
+                            "\txmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n" +
+                            "\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n" +
+                            "\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">");
+                    for (EntityReference qualifiedIdentity : query)
                     {
-                        out.println( "<" + qualifiedIdentity.type() + " rdf:about=\"urn:qi4j:" + qualifiedIdentity.identity() + "\"/>" );
+                        out.println("<qi4j:entity rdf:about=\"" + getRequest().getResourceRef().getPath() + "/" + qualifiedIdentity.identity() + ".rdf\"/>");
                     }
 
-                    out.println( "</rdf:RDF>" );
+                    out.println("</rdf:RDF>");
                     out.close();
                 }
             };
-            representation.setCharacterSet( CharacterSet.UTF_8 );
+            representation.setCharacterSet(CharacterSet.UTF_8);
+
             return representation;
         }
-        catch( EntityFinderException e )
+        catch (EntityFinderException e)
         {
-            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, e );
-        }
-    }
-
-    @Override @SuppressWarnings( "unused" )
-    public void acceptRepresentation( Representation entity ) throws ResourceException
-    {
-        try
-        {
-            Form form = new Form( entity );
-
-            String identity = form.getFirstValue( "org.qi4j.api.entity.Identity:identity" );
-            if( identity == null || identity.equals( "" ) )
-            {
-                identity = identityGenerator.generate( (Class<? extends Identity>) module.classLoader().loadClass( type ) );
-            }
-
-            QualifiedIdentity qid = new QualifiedIdentity( identity, type );
-            EntityState entityState = entityStore.newEntityState( qid );
-
-
-            EntityType entityType = entityState.entityType();
-            for( PropertyType propertyType : entityType.properties() )
-            {
-                if( propertyType.propertyType() != PropertyType.PropertyTypeEnum.COMPUTED && propertyType.type() instanceof PrimitiveType )
-                {
-                    String newStringValue = form.getFirstValue( propertyType.qualifiedName().toString() );
-                    PrimitiveType primitiveType = (PrimitiveType) propertyType.type();
-                    Object newValue = EntityResource.toValue( newStringValue, propertyType.qualifiedName(), primitiveType.type() );
-                    entityState.setProperty( propertyType.qualifiedName(), newValue );
-                }
-            }
-            for( AssociationType associationType : entityType.associations() )
-            {
-                String newStringAssociation = form.getFirstValue( associationType.qualifiedName().toString() );
-                if( newStringAssociation == null || newStringAssociation.equals( "" ) )
-                {
-                    entityState.setAssociation( associationType.qualifiedName(), null );
-                }
-                else
-                {
-                    entityState.setAssociation( associationType.qualifiedName(), QualifiedIdentity.parseQualifiedIdentity( newStringAssociation ) );
-                }
-            }
-            for( ManyAssociationType associationType : entityType.manyAssociations() )
-            {
-                String newStringAssociation = form.getFirstValue( associationType.qualifiedName().toString() );
-                Collection<QualifiedIdentity> manyAssociation = entityState.getManyAssociation( associationType.qualifiedName() );
-                if( newStringAssociation == null )
-                {
-                    continue;
-                }
-
-                manyAssociation.clear();
-                BufferedReader bufferedReader = new BufferedReader( new StringReader( newStringAssociation ) );
-                String qualifiedIdentity;
-                try
-                {
-                    while( ( qualifiedIdentity = bufferedReader.readLine() ) != null )
-                    {
-                        manyAssociation.add( QualifiedIdentity.parseQualifiedIdentity( qualifiedIdentity ) );
-                    }
-                }
-                catch( IOException e )
-                {
-                    // Ignore
-                }
-            }
-
-            entityStore.prepare( Collections.singleton( entityState ), Collections.EMPTY_LIST, Collections.EMPTY_LIST ).commit();
-
-            getResponse().setStatus( Status.REDIRECTION_PERMANENT );
-            Reference ref = getRequest().getResourceRef().addSegment( qid.identity() + ".html" );
-            getResponse().setLocationRef( ref );
-        }
-        catch( Exception e )
-        {
-            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, e.getMessage() );
+            throw new ResourceException(Status.SERVER_ERROR_INTERNAL, e);
         }
     }
 
     private Representation representHtml()
-        throws ResourceException
-    {
-        Representation representation = new WriterRepresentation( MediaType.TEXT_HTML )
-        {
-            public void write( Writer writer ) throws IOException
-            {
-                PrintWriter out = new PrintWriter( writer );
-
-                out.println( "<html><head><title>Entities of type " + type + "</title></head><body>" );
-
-                listEntitiesHtml( out );
-
-                // Form for new entity
-                newEntityForm( out );
-
-                out.append( "</body></html>" );
-                out.close();
-            }
-        };
-        representation.setCharacterSet( CharacterSet.UTF_8 );
-        return representation;
-    }
-
-    private void listEntitiesHtml( PrintWriter out )
-        throws IOException
+            throws ResourceException
     {
         try
         {
-            final Iterable<QualifiedIdentity> query = entityFinder.findEntities( type, null, null, null, null );
-
-            out.println( "<h1>Entities of type " + type + "</h1><ul>" );
-            for( QualifiedIdentity entity : query )
+            final Iterable<EntityReference> query = entityFinder.findEntities(Entity.class.getName(), null, null, null, null);
+            Representation representation = new WriterRepresentation(MediaType.TEXT_HTML)
             {
-                out.println( "<li><a href=\"" + getRequest().getResourceRef().getPath() + "/" + entity.identity() + ".html\">" + entity.identity() + "</a></li>" );
-            }
-            out.println( "</ul>" );
+                public void write(Writer buf) throws IOException
+                {
+                    PrintWriter out = new PrintWriter(buf);
+                    out.println("<html><head><title>All entities</title</head><body><h1>All entities</h1><ul>");
+
+                    for (EntityReference entity : query)
+                    {
+                        out.println("<li><a href=\"" + getRequest().getResourceRef().clone().addSegment("/" + entity.identity() + ".html") + "\">" + entity.identity() + "</a></li>");
+                    }
+                    out.println("</ul></body></html>");
+                }
+            };
+            representation.setCharacterSet(CharacterSet.UTF_8);
+            return representation;
         }
-        catch( EntityFinderException e )
+        catch (EntityFinderException e)
         {
-            throw new IOException( e.getMessage() );
+            throw new ResourceException(e);
         }
     }
 
-    private void newEntityForm( PrintWriter out ) throws IOException
+    private Representation representAtom() throws ResourceException
     {
-        EntityType entityType = null;
         try
         {
-            entityType = spi.getEntityDescriptor( module.classLoader().loadClass( type ), module ).entityType();
-        }
-        catch( ClassNotFoundException e )
-        {
-            throw (IOException) new IOException().initCause( e );
-        }
+            Feed feed = new Feed();
+            feed.setTitle(new Text(MediaType.TEXT_PLAIN, "All entities"));
+            List<Entry> entries = feed.getEntries();
+            final Iterable<EntityReference> query = entityFinder.findEntities(Entity.class.getName(), null, null, null, null);
+            for (EntityReference entityReference : query)
+            {
+                Entry entry = new Entry();
+                entry.setTitle(new Text(MediaType.TEXT_PLAIN, entityReference.toString()));
+                Link link = new Link();
+                link.setHref(getRequest().getResourceRef().clone().addSegment(entityReference.identity()));
+                entry.getLinks().add(link);
+                entries.add(entry);
+            }
 
-        out.println( "<h2>Create entity</h2>" );
-        out.append( "<form method=\"post\" action=\"" + getRequest().getResourceRef().getPath() + "\">\n" );
-        out.append( "<fieldset><legend>Properties</legend>\n<table>" );
-        for( PropertyType propertyType : entityType.properties() )
-        {
-            PropertyType.PropertyTypeEnum propertyTypeEnum = propertyType.propertyType();
-            out.append( "<tr><td>" +
-                        "<label for=\"" + propertyType.qualifiedName() + "\" >" +
-                        propertyType.qualifiedName().name() +
-                        "</label></td>\n" +
-                        "<td><input " +
-                        "type=\"text\" " +
-                        ( propertyTypeEnum == PropertyType.PropertyTypeEnum.COMPUTED ? "readonly=\"true\" " : "" ) +
-                        "name=\"" + propertyType.qualifiedName() + "\" " +
-                        "value=\"" + "" + "\"></td></tr>" ); // TODO Show default value for property?
+            return feed;
         }
-        out.append( "</table></fieldset>\n" );
+        catch (Exception e)
+        {
+            throw new ResourceException(e);
+        }
+    }
 
-        out.append( "<fieldset><legend>Associations</legend>\n<table>" );
-        for( AssociationType associationType : entityType.associations() )
+    public void acceptRepresentation(Representation entity) throws ResourceException
+    {
+        try
         {
-            out.append( "<tr><td>" +
-                        "<label for=\"" + associationType.qualifiedName() + "\" >" +
-                        associationType.qualifiedName().name() +
-                        "</label></td>\n" +
-                        "<td><input " +
-                        "type=\"text\" " +
-                        "size=\"40\" " +
-                        "name=\"" + associationType.qualifiedName() + "\" " +
-                        "></td></tr>" );
-        }
-        out.append( "</table></fieldset>\n" );
+            InputStream in = entity.getStream();
+            ObjectInputStream oin = new ObjectInputStream(in);
+            Iterable<EntityState> newState = (Iterable<EntityState>) oin.readObject();
+            Iterable<EntityState> loadedState = (Iterable<EntityState>) oin.readObject();
+            Iterable<EntityReference> removedState = (Iterable<EntityReference>) oin.readObject();
 
-        out.append( "<fieldset><legend>Many associations</legend>\n<table>" );
-        for( ManyAssociationType associationType : entityType.manyAssociations() )
-        {
-            out.append( "<tr><td>" +
-                        "<label for=\"" + associationType.qualifiedName() + "\" >" +
-                        associationType.qualifiedName().name() +
-                        "</label></td>\n" +
-                        "<td><textarea " +
-                        "rows=\"10\" " +
-                        "cols=\"40\" " +
-                        "name=\"" + associationType.qualifiedName() + "\" >" +
-                        "</textarea></td></tr>" );
+            // Store state
+            try
+            {
+                entityStore.prepare(newState, loadedState, removedState).commit();
+            }
+            catch (ConcurrentEntityStateModificationException e)
+            {
+                throw new ResourceException(Status.CLIENT_ERROR_CONFLICT);
+            }
         }
-        out.append( "</table></fieldset>\n" );
-        out.append( "<input type=\"submit\" value=\"Create\"/></form>\n" );
+        catch (Exception e)
+        {
+            throw new ResourceException(e);
+        }
     }
 }

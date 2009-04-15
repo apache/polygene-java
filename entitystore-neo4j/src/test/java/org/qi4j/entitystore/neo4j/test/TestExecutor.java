@@ -29,7 +29,7 @@ public abstract class TestExecutor
 
     protected abstract void verify() throws Exception;
 
-    static protected void setup( UnitOfWork uow, TestExecutor executor ) throws Exception
+    static protected void setup(UnitOfWork uow, TestExecutor executor) throws Exception
     {
         executor.uow = uow;
         try
@@ -42,7 +42,7 @@ public abstract class TestExecutor
         }
     }
 
-    static protected void verify( UnitOfWork uow, TestExecutor executor ) throws Exception
+    static protected void verify(UnitOfWork uow, TestExecutor executor) throws Exception
     {
         executor.uow = uow;
         try
@@ -61,28 +61,28 @@ public abstract class TestExecutor
     {
     }
 
-    protected <T extends EntityComposite> T getReference( String identity, Class<T> compositeType )
+    protected <T extends EntityComposite> T find(String identity, Class<T> compositeType)
     {
-        return uow.getReference( identity, compositeType );
+        return uow.get(compositeType, identity);
     }
 
-    protected <T extends EntityComposite> T newEntity( Class<T> compositeType )
+    protected <T extends EntityComposite> T newEntity(Class<T> compositeType)
     {
-        return uow.newEntity( compositeType );
+        return uow.newEntity(compositeType);
     }
 
-    protected <T extends EntityComposite> T newEntity( String identity, Class<T> compositeType )
+    protected <T extends EntityComposite> T newEntity(String identity, Class<T> compositeType)
     {
-        return uow.newEntity( identity, compositeType );
+        return uow.newEntity(compositeType, identity);
     }
 
-    protected <T extends EntityComposite> EntityBuilder<T> newEntityBuilder( Class<T> compositeType )
+    protected <T extends EntityComposite> EntityBuilder<T> newEntityBuilder(Class<T> compositeType)
     {
-        return uow.newEntityBuilder( compositeType );
+        return uow.newEntityBuilder(compositeType);
     }
 
-    protected <T extends EntityComposite> EntityBuilder<T> newEntityBuilder( String identity, Class<T> compositeType )
+    protected <T extends EntityComposite> EntityBuilder<T> newEntityBuilder(String identity, Class<T> compositeType)
     {
-        return uow.newEntityBuilder( identity, compositeType );
+        return uow.newEntityBuilder(compositeType, identity);
     }
 }

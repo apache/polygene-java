@@ -16,45 +16,38 @@
  */
 package org.qi4j.entitystore.legacy.internal;
 
-import java.io.Serializable;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.EntityReference;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.entitystore.legacy.IdentifierConverter;
-import org.qi4j.spi.entity.EntityNotFoundException;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.*;
 import static org.qi4j.spi.entity.EntityStatus.REMOVED;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.spi.entity.helpers.DefaultValueState;
+import org.qi4j.spi.entity.helpers.DefaultManyAssociationState;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.value.ValueState;
+
+import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * {@code IBatisEntityState} represents {@code IBatis} version of {@link org.qi4j.spi.entity.EntityState}.
  */
 public final class LegacyEntityState
-    implements EntityState, Serializable
+        implements EntityState, Serializable
 {
     private static final long serialVersionUID = 1L;
 
-    private final EntityType entityType;
-    private final QualifiedIdentity identity;
+    private final Set<EntityTypeReference> entityTypes;
+    private final EntityReference reference;
 
-    private final Map<QualifiedName, Object> propertyValues = new HashMap<QualifiedName, Object>();
-    private final Map<QualifiedName, QualifiedIdentity> associations = new HashMap<QualifiedName, QualifiedIdentity>();
-    private final Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations = new HashMap<QualifiedName, Collection<QualifiedIdentity>>();
+    private final Map<StateName, String> propertyValues = new HashMap<StateName, String>();
+    private final Map<StateName, EntityReference> associations = new HashMap<StateName, EntityReference>();
+    private final Map<StateName, ManyAssociationState> manyAssociations = new HashMap<StateName, ManyAssociationState>();
     private long version;
     private long lastModified;
     private EntityStatus status;
@@ -63,108 +56,97 @@ public final class LegacyEntityState
     /**
      * Construct an instance of {@code IBatisEntityState}.
      *
-     * @param entityType
-     * @param identity
-     * @param rawData    The field values of this entity state. This argument must not be {@code null}.
+     * @param reference
+     * @param rawData   The field values of this entity state. This argument must not be {@code null}.
      * @param version
      * @param status
      */
     public LegacyEntityState(
-        final EntityType entityType, final QualifiedIdentity identity,
-        final Map<QualifiedName, Object> rawData,
-        final long version, final long lastModified,
-        final EntityStatus status )
-        throws IllegalArgumentException
+            final Set<EntityTypeReference> entityTypes, final EntityReference reference,
+            final Map<QualifiedName, Object> rawData,
+            final long version, final long lastModified,
+            final EntityStatus status)
+            throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", entityType );
-        validateNotNull( "anIdentity", identity );
-        validateNotNull( "propertyValuez", rawData );
-        validateNotNull( "aStatus", status );
+        validateNotNull("anIdentity", reference);
+        validateNotNull("propertyValuez", rawData);
+        validateNotNull("aStatus", status);
         // TODO validateNotNull( "aVersion", aVersion );
 
-        this.entityType = entityType;
-        this.identity = identity;
+        this.entityTypes = entityTypes;
+        this.reference = reference;
         this.status = status;
-        mapData( entityType, rawData );
+        mapData(entityTypes, rawData);
         this.version = version;
         this.lastModified = lastModified;
     }
 
-    private void mapData( final EntityType entityType, final Map<QualifiedName, Object> rawData )
+    private void mapData(final Set<EntityTypeReference> entityTypes, final Map<QualifiedName, Object> rawData)
     {
-        Map<String, Object> convertedData = identifierConverter.convertKeys( rawData );
-        System.err.println( rawData );
-        System.err.println( convertedData );
-        mapProperties( convertedData, entityType );
-        mapAssociations( convertedData, entityType );
+        Map<String, Object> convertedData = identifierConverter.convertKeys(rawData);
+        System.err.println(rawData);
+        System.err.println(convertedData);
+        mapProperties(convertedData);
+        mapAssociations(convertedData);
     }
 
-    private void mapAssociations( final Map<String, Object> rawData, final EntityType stateDescriptor )
+    private void mapAssociations(final Map<String, Object> rawData)
     {
-        for( final AssociationType associationDescriptor : stateDescriptor.associations() )
+/* TODO
+        for( final AssociationType associationDescriptor : associationTypes() )
         {
             final QualifiedName qualifiedName = associationDescriptor.qualifiedName();
-            final String typeName = associationDescriptor.type();
+            final TypeName typeName = associationDescriptor.type();
             final String associationId = (String) identifierConverter.getValueFromData( rawData, qualifiedName );
             if( associationId != null )
             {
-                setAssociation( qualifiedName, new QualifiedIdentity( associationId, typeName ) );
+                setAssociation( qualifiedName, new EntityReference( associationId ) );
             }
         }
 
-        for( final ManyAssociationType associationDescriptor : stateDescriptor.manyAssociations() )
+        for( final ManyAssociationType associationDescriptor : manyAssociationTypes() )
         {
             final QualifiedName qualifiedName = associationDescriptor.qualifiedName();
             final String typeName = associationDescriptor.type();
             Collection<String> identifiers = (Collection<String>) identifierConverter.getValueFromData( rawData, qualifiedName );
             if( identifiers != null && !identifiers.isEmpty() )
             {
-                setManyAssociation( qualifiedName, createQualifiedIdentities( identifiers, typeName, associationDescriptor ) );
+                setManyAssociation( qualifiedName, createQualifiedIdentities( identifiers) );
             }
         }
+*/
     }
 
-    private Collection<QualifiedIdentity> createQualifiedIdentities( final Collection<String> identifiers, final String typeName, ManyAssociationType associationType )
+    private ManyAssociationState createQualifiedIdentities(final Collection<String> identifiers)
     {
-        final int size = identifiers.size();
-        final Collection<QualifiedIdentity> qualifiedIdentities = createManyAssociationCollection( size, associationType );
-        for( String identifier : identifiers )
+        final ManyAssociationState entityReferences = new DefaultManyAssociationState();
+        for (String identifier : identifiers)
         {
-            qualifiedIdentities.add( new QualifiedIdentity( identifier, typeName ) );
+            entityReferences.add(entityReferences.count(), EntityReference.parseEntityReference(identifier));
         }
-        return qualifiedIdentities;
+        return entityReferences;
     }
 
-    private Collection<QualifiedIdentity> createManyAssociationCollection( int size, ManyAssociationType associationType )
+    private void mapProperties(final Map<String, Object> rawData)
     {
-        if( associationType.associationType() == ManyAssociationType.ManyAssociationTypeEnum.SET )
-        {
-            return new HashSet<QualifiedIdentity>( size );
-        }
-        else
-        {
-            return new ArrayList<QualifiedIdentity>( size );
-        }
-    }
-
-    private void mapProperties( final Map<String, Object> rawData, final EntityType compositeModel )
-    {
-        for( final PropertyType propertyDescriptor : compositeModel.properties() )
+/* TODO
+        for( final PropertyType propertyDescriptor : propertyTypes() )
         {
             final QualifiedName qualifiedName = propertyDescriptor.qualifiedName();
             final Object value = identifierConverter.getValueFromData( rawData, qualifiedName );
             setProperty( qualifiedName, convertValue( propertyDescriptor, value ) );
         }
+*/
     }
 
-    private Object convertValue( final PropertyType propertyDescriptor, final Object value )
+    private Object convertValue(final PropertyType propertyDescriptor, final Object value)
     {
         return value; // TODO Implement value conversion
     }
 
-    private Class getPropertyTypeClass( final PropertyDescriptor propertyModel )
+    private Class getPropertyTypeClass(final PropertyDescriptor propertyModel)
     {
-        if( propertyModel.type() instanceof Class )
+        if (propertyModel.type() instanceof Class)
         {
             return (Class) propertyModel.type();
 
@@ -172,10 +154,10 @@ public final class LegacyEntityState
         return null;
     }
 
-    private String getTypeName( final AssociationDescriptor associationModel )
+    private String getTypeName(final AssociationDescriptor associationModel)
     {
         final Type associationType = associationModel.type();
-        if( associationType instanceof Class )
+        if (associationType instanceof Class)
         {
             final Class type = (Class) associationType;
             return type.getName();
@@ -189,9 +171,9 @@ public final class LegacyEntityState
      * @return the identity of the entity that this EntityState represents.
      * @since 0.2.0
      */
-    public QualifiedIdentity qualifiedIdentity()
+    public EntityReference identity()
     {
-        return identity;
+        return reference;
     }
 
     public long version()
@@ -220,9 +202,24 @@ public final class LegacyEntityState
         return status;
     }
 
-    public EntityType entityType()
+    public void addEntityTypeReference(EntityTypeReference type)
     {
-        return entityType;
+        entityTypes.add(type);
+    }
+
+    public void removeEntityTypeReference(EntityTypeReference type)
+    {
+        // TODO ?
+    }
+
+    public boolean hasEntityTypeReference(EntityTypeReference type)
+    {
+        return entityTypes.add(type);
+    }
+
+    public Set<EntityTypeReference> entityTypeReferences()
+    {
+        return entityTypes;
     }
 
     /**
@@ -232,82 +229,67 @@ public final class LegacyEntityState
      * @return The property value given qualified name.
      * @since 0.2.0
      */
-    public final Object getProperty( final QualifiedName qualifiedName )
+    public final String getProperty(final StateName qualifiedName)
     {
-        return propertyValues.get( qualifiedName );
+        return propertyValues.get(qualifiedName);
     }
 
-    public void setProperty( final QualifiedName qualifiedName, final Object newValue )
+    public void setProperty(final StateName qualifiedName, final String newValue)
     {
-        propertyValues.put( qualifiedName, newValue );
+        propertyValues.put(qualifiedName, newValue);
     }
 
-    public QualifiedIdentity getAssociation( final QualifiedName qualifiedName )
+    public EntityReference getAssociation(final StateName qualifiedName)
     {
-        if( status == REMOVED )
+        if (status == REMOVED)
         {
             return null;
         }
 
-        if( !associations.containsKey( qualifiedName ) )
+        if (!associations.containsKey(qualifiedName))
         {
             return null;
         }
-        final QualifiedIdentity qualifiedIdentity = associations.get( qualifiedName );
-        return qualifiedIdentity == null ? QualifiedIdentity.NULL : qualifiedIdentity;
+        final EntityReference entityReference = associations.get(qualifiedName);
+        return entityReference == null ? EntityReference.NULL : entityReference;
     }
 
-    public void setAssociation( final QualifiedName qualifiedName, final QualifiedIdentity qualifiedIdentity )
+    public void setAssociation(final StateName qualifiedName, final EntityReference entityReference)
     {
-        if( status == REMOVED )
+        if (status == REMOVED)
         {
-            throw new EntityNotFoundException( "IbatisEntityStore", qualifiedIdentity() );
+            throw new EntityNotFoundException(identity());
         }
-        associations.put( qualifiedName, qualifiedIdentity != null ? qualifiedIdentity : QualifiedIdentity.NULL );
+        associations.put(qualifiedName, entityReference != null ? entityReference : EntityReference.NULL);
     }
 
-    public Collection<QualifiedIdentity> getManyAssociation( final QualifiedName qualifiedName )
+    public ManyAssociationState getManyAssociation(final StateName qualifiedName)
     {
-        if( status == REMOVED )
+        if (status == REMOVED)
         {
             return null;
         }
 
-        return manyAssociations.get( qualifiedName );
+        return manyAssociations.get(qualifiedName);
     }
 
-    public Collection<QualifiedIdentity> setManyAssociation(
-        final QualifiedName qualifiedName, final Collection<QualifiedIdentity> newManyAssociations )
+    public ManyAssociationState setManyAssociation(
+            final StateName qualifiedName, final ManyAssociationState newManyAssociations)
     {
-        validateNotNull( "qualifiedName", qualifiedName );
-        if( status == REMOVED )
+        validateNotNull("stateName", qualifiedName);
+        if (status == REMOVED)
         {
-            throw new EntityNotFoundException( "IbatisEntityStore", qualifiedIdentity() );
+            throw new EntityNotFoundException(identity());
         }
-        return manyAssociations.put( qualifiedName, newManyAssociations );
+        return manyAssociations.put(qualifiedName, newManyAssociations);
     }
 
-    public String convertIdentifier( final QualifiedName qualifiedIdentifier )
+    public String convertIdentifier(final QualifiedName qualifiedIdentifier)
     {
-        return identifierConverter.convertIdentifier( qualifiedIdentifier );
+        return identifierConverter.convertIdentifier(qualifiedIdentifier);
     }
 
-    public final Iterable<QualifiedName> propertyNames()
-    {
-        return Collections.unmodifiableSet( propertyValues.keySet() );
-    }
-
-    public final Iterable<QualifiedName> associationNames()
-    {
-        return Collections.unmodifiableSet( associations.keySet() );
-    }
-
-    public final Iterable<QualifiedName> manyAssociationNames()
-    {
-        return Collections.unmodifiableSet( manyAssociations.keySet() );
-    }
-
-    public Map<QualifiedName, Object> getPropertyValues()
+    public Map<StateName, String> getPropertyValues()
     {
         return propertyValues;
     }
@@ -316,10 +298,5 @@ public final class LegacyEntityState
     {
         status = EntityStatus.LOADED;
         version++;
-    }
-
-    public ValueState newValueState( Map<QualifiedName, Object> values )
-    {
-        return new DefaultValueState(values);
     }
 }

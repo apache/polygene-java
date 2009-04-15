@@ -14,14 +14,14 @@
 
 package org.qi4j.rest.client;
 
-import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
 
 /**
  * JAVADOC
  */
 public interface SPARQLEntityFinderConfiguration
-    extends EntityComposite
+        extends ConfigurationComposite
 {
     Property<String> sparqlUrl();
 }

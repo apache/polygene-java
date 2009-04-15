@@ -18,8 +18,6 @@
 
 package org.qi4j.entitystore.jgroups;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -31,9 +29,7 @@ import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ListAssociation;
 import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.entity.association.SetAssociation;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -47,6 +43,9 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Test of JGroups EntityStore backend.
@@ -90,7 +89,7 @@ public class JGroupsEntityStoreTest
         System.out.println( "Create entity" );
         UnitOfWork app1Unit = app1.unitOfWorkFactory().newUnitOfWork();
         EntityBuilder<TestEntity> builder = app1Unit.newEntityBuilder( TestEntity.class );
-        TestEntity instance = builder.stateOfComposite();
+        TestEntity instance = builder.prototype();
         instance.name().set( "Foo" );
         instance = builder.newInstance();
         app1Unit.complete();
@@ -100,7 +99,7 @@ public class JGroupsEntityStoreTest
         // Find entity in app 2
         System.out.println( "Find entity" );
         UnitOfWork app2Unit = app2.unitOfWorkFactory().newUnitOfWork();
-        instance = app2Unit.dereference( instance );
+        instance = app2Unit.get( instance );
 
         System.out.println( instance.name() );
         app2Unit.discard();
@@ -121,17 +120,13 @@ public class JGroupsEntityStoreTest
 
                 // Find entity
                 unitOfWork = unitOfWorkFactory.newUnitOfWork();
-                instance = unitOfWork.dereference( instance );
+                instance = unitOfWork.get( instance );
 
                 // Check state
                 assertThat( "property has correct value", instance.name().get(), equalTo( "Test" ) );
                 assertThat( "property has correct value", instance.unsetName().get(), equalTo( null ) );
                 assertThat( "association has correct value", instance.association().get(), equalTo( instance ) );
                 assertThat( "manyAssociation has correct value", instance.manyAssociation().iterator().next(), equalTo( instance ) );
-                assertThat( "listAssociation has correct value", instance.listAssociation().iterator().next(), equalTo( instance ) );
-                assertThat( "setAssociation has correct value", instance.setAssociation().iterator().next(), equalTo( instance ) );
-                assertThat( "setAssociation has correct size", instance.setAssociation().size(), equalTo( 1 ) );
-                assertThat( "listAssociation has correct size", instance.listAssociation().size(), equalTo( 3 ) );
                 unitOfWork.discard();
             }
             catch( UnitOfWorkCompletionException e )
@@ -170,7 +165,7 @@ public class JGroupsEntityStoreTest
 
             // Remove entity
             unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            TestEntity instance = unitOfWork.dereference( newInstance );
+            TestEntity instance = unitOfWork.get( newInstance );
             unitOfWork.remove( instance );
             unitOfWork.complete();
 
@@ -178,7 +173,7 @@ public class JGroupsEntityStoreTest
             unitOfWork = unitOfWorkFactory.newUnitOfWork();
             try
             {
-                instance = unitOfWork.find( identity, TestEntity.class );
+                instance = unitOfWork.get(TestEntity.class, identity);
                 fail( "Should not be able to find entity" );
             }
             catch( NoSuchEntityException e )
@@ -224,14 +219,7 @@ public class JGroupsEntityStoreTest
         //instance.valueProperty().set( value );
         value.mutate();
 
-        instance.manyAssociation().add( instance );
-
-        instance.listAssociation().add( instance );
-        instance.listAssociation().add( instance );
-        instance.listAssociation().add( instance );
-
-        instance.setAssociation().add( instance );
-        instance.setAssociation().add( instance );
+        instance.manyAssociation().add( 0, instance );
         return instance;
     }
 
@@ -249,10 +237,6 @@ public class JGroupsEntityStoreTest
         @Optional Association<TestEntity> unsetAssociation();
 
         ManyAssociation<TestEntity> manyAssociation();
-
-        ListAssociation<TestEntity> listAssociation();
-
-        SetAssociation<TestEntity> setAssociation();
     }
 
     public interface TestValue

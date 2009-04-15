@@ -17,9 +17,9 @@
  */
 package org.qi4j.index.rdf.callback;
 
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.api.entity.EntityReference;
 
 public interface QualifiedIdentityResultCallback
 {
-    boolean processRow( int row, QualifiedIdentity qualifiedIdentity );
+    boolean processRow(int row, EntityReference entityReference);
 }

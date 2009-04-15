@@ -16,21 +16,15 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
-import java.util.Collection;
+import org.neo4j.api.core.*;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
+import org.qi4j.spi.entity.*;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.NeoService;
-import org.neo4j.api.core.Node;
-import org.neo4j.api.core.Relationship;
-import org.neo4j.api.core.RelationshipType;
-import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.helpers.DefaultValueState;
-import org.qi4j.spi.value.ValueState;
-import org.qi4j.api.common.QualifiedName;
+import java.util.Set;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -38,43 +32,43 @@ import org.qi4j.api.common.QualifiedName;
 public class DirectEntityState implements CommittableEntityState
 {
     // Constants
-    public static final String IDENTITY_PROPERTY_KEY = "<entity identity>";
+    public static final String IDENTITY_PROPERTY_KEY = "<entity reference>";
     public static final String TYPE_PROPERTY_KEY = "<entity type>";
     public static final String ASSOCIATION_OF_PROPERTY_KEY = "<association of>";
-    public static final RelationshipType PROXY_FOR = LinkType.UNQUALIFIED.getRelationshipType( "<PROXY FOR>" );
+    public static final RelationshipType PROXY_FOR = LinkType.UNQUALIFIED.getRelationshipType("<PROXY FOR>");
     private static final String VERSION_PROPERTY_KEY = "<entity version>";
     private static final String LASTMODIFIED_PROPERTY_KEY = "<last modified>";
     private static String COLLECTION_SIZE_PROPERTY_PREFIX = "size of::";
-    private static final RelationshipType ENTITY_TYPE_RELATIONSHIP_TYPE = LinkType.UNQUALIFIED.getRelationshipType( "<ENTITY TYPE>" );
+    private static final RelationshipType ENTITY_TYPE_RELATIONSHIP_TYPE = LinkType.UNQUALIFIED.getRelationshipType("<ENTITY TYPE>");
 
     // Internal state
     public final Node underlyingNode;
     private final NeoIdentityIndex idIndex;
-    private final QualifiedIdentity identity;
+    private final EntityReference reference;
     private EntityStatus status;
     private EntityType entityType;
     private final LoadedDescriptor descriptor;
-    private final Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations = new HashMap<QualifiedName, Collection<QualifiedIdentity>>();
+    private final Map<StateName, ManyAssociationState> manyAssociations = new HashMap<StateName, ManyAssociationState>();
     private boolean loaded = false;
     final NeoService neo;
 
-    public DirectEntityState( NeoService neo, NeoIdentityIndex idIndex, Node underlyingNode, QualifiedIdentity identity, EntityStatus status, LoadedDescriptor descriptor )
+    public DirectEntityState(NeoService neo, NeoIdentityIndex idIndex, Node underlyingNode, EntityReference reference, EntityStatus status, LoadedDescriptor descriptor)
     {
         this.neo = neo;
         this.idIndex = idIndex;
         this.underlyingNode = underlyingNode;
-        this.identity = identity;
+        this.reference = reference;
         this.status = status;
         this.entityType = null; // TODO Generate from descriptor?
         this.descriptor = descriptor;
-        populateManyAssociations( neo );
+        populateManyAssociations(neo);
     }
 
-    private void populateManyAssociations( NeoService neo )
+    private void populateManyAssociations(NeoService neo)
     {
-        for( ManyAssociationFactory factory : getManyAssociationFactories() )
+        for (ManyAssociationFactory factory : getManyAssociationFactories())
         {
-            manyAssociations.put( factory.getQualifiedName(), factory.createNodeCollection( this, neo, idIndex ) );
+            manyAssociations.put(factory.getStateName(), factory.createNodeCollection(this, neo, idIndex));
         }
     }
 
@@ -82,14 +76,13 @@ public class DirectEntityState implements CommittableEntityState
 
     public void preloadState()
     {
-        if( !loaded )
+        if (!loaded)
         {
             loaded = true;
-            if( status == EntityStatus.NEW )
+            if (status == EntityStatus.NEW)
             {
                 storeIdentity();
-            }
-            else
+            } else
             {
                 verifyIdentity();
             }
@@ -103,23 +96,25 @@ public class DirectEntityState implements CommittableEntityState
 
     public void prepareCommit()
     {
-        underlyingNode.setProperty( VERSION_PROPERTY_KEY, version() + 1 );
-        underlyingNode.setProperty( LASTMODIFIED_PROPERTY_KEY, System.currentTimeMillis() );
+        underlyingNode.setProperty(VERSION_PROPERTY_KEY, version() + 1);
+        underlyingNode.setProperty(LASTMODIFIED_PROPERTY_KEY, System.currentTimeMillis());
     }
 
     private void storeIdentity()
     {
-        Node typeNode = idIndex.getTypeNode( identity.type() );
-        underlyingNode.setProperty( IDENTITY_PROPERTY_KEY, identity.identity() );
+/* TODO Fix this
+        Node typeNode = idIndex.getTypeNode( reference.type() );
+        underlyingNode.setProperty( IDENTITY_PROPERTY_KEY, reference.identity() );
         underlyingNode.createRelationshipTo( typeNode, ENTITY_TYPE_RELATIONSHIP_TYPE );
-        idIndex.putNode( identity.identity(), underlyingNode );
+        idIndex.putNode( reference.identity(), underlyingNode ); */
     }
 
     private void verifyIdentity()
     {
-        String errorMessage = "Stored identity does not match expected identity. ";
+/* TODO Fix this
+        String errorMessage = "Stored reference does not match expected reference. ";
         Relationship typeRelation = underlyingNode.getSingleRelationship( ENTITY_TYPE_RELATIONSHIP_TYPE, Direction.OUTGOING );
-        Node expectedTypeNode = idIndex.getTypeNode( identity.type() );
+        Node expectedTypeNode = idIndex.getTypeNode( reference.type() );
         if( typeRelation == null )
         {
             throw new IllegalStateException( errorMessage + "Not related to a type." );
@@ -128,11 +123,12 @@ public class DirectEntityState implements CommittableEntityState
         {
             throw new IllegalStateException( errorMessage + "Related to wrong type." );
         }
-        else if( !identity.identity().equals( underlyingNode.getProperty( IDENTITY_PROPERTY_KEY, null ) ) )
+        else if( !reference.identity().equals( underlyingNode.getProperty( IDENTITY_PROPERTY_KEY, null ) ) )
         {
-            throw new IllegalStateException( errorMessage + "Expected id \"" + identity.identity() +
+            throw new IllegalStateException( errorMessage + "Expected id \"" + reference.identity() +
                                              "\", was \"" + underlyingNode.getProperty( IDENTITY_PROPERTY_KEY, "null" ) + "\"." );
         }
+*/
     }
 
     public Iterable<ManyAssociationFactory> getManyAssociationFactories()
@@ -147,13 +143,16 @@ public class DirectEntityState implements CommittableEntityState
 
     public void prepareRemove()
     {
-        for( Collection<QualifiedIdentity> manyAssociation : manyAssociations.values() )
+        for (ManyAssociationState manyAssociation : manyAssociations.values())
         {
-            manyAssociation.clear();
+            int count = manyAssociation.count();
+            for (int i = 0; i < count; i++)
+                manyAssociation.remove(manyAssociation.get(0));
         }
-        for( Relationship relation : underlyingNode.getRelationships() )
+
+        for (Relationship relation : underlyingNode.getRelationships())
         {
-            if( relation.getStartNode().equals( underlyingNode ) || LinkType.END.isInstance( relation ) )
+            if (relation.getStartNode().equals(underlyingNode) || LinkType.END.isInstance(relation))
             {
                 relation.delete();
             }
@@ -164,12 +163,12 @@ public class DirectEntityState implements CommittableEntityState
 
     public void remove()
     {
-        for( Relationship relation : underlyingNode.getRelationships( Direction.INCOMING ) )
+        for (Relationship relation : underlyingNode.getRelationships(Direction.INCOMING))
         {
-            if( !LinkType.END.isInstance( relation ) )
+            if (!LinkType.END.isInstance(relation))
             {
-                throw new IllegalStateException( "Cannot remove entity with identity: " + identity
-                                                 + ". It has incoming associtaions." );
+                throw new IllegalStateException("Cannot remove entity with reference: " + reference
+                        + ". It has incoming associtaions.");
             }
         }
         prepareRemove();
@@ -177,19 +176,19 @@ public class DirectEntityState implements CommittableEntityState
         status = EntityStatus.REMOVED;
     }
 
-    public QualifiedIdentity qualifiedIdentity()
+    public EntityReference identity()
     {
-        return identity;
+        return reference;
     }
 
     public long version()
     {
-        return (Long) underlyingNode.getProperty( VERSION_PROPERTY_KEY, 0L );
+        return (Long) underlyingNode.getProperty(VERSION_PROPERTY_KEY, 0L);
     }
 
     public long lastModified()
     {
-        return (Long) underlyingNode.getProperty( LASTMODIFIED_PROPERTY_KEY, System.currentTimeMillis() );
+        return (Long) underlyingNode.getProperty(LASTMODIFIED_PROPERTY_KEY, System.currentTimeMillis());
     }
 
     public EntityStatus status()
@@ -197,80 +196,89 @@ public class DirectEntityState implements CommittableEntityState
         return status;
     }
 
-    public EntityType entityType()
+    public void addEntityTypeReference(EntityTypeReference type)
     {
-        return entityType;
+        // TODO
+        Node typeNode = idIndex.getTypeNode(type.type().toString());
+        underlyingNode.setProperty(IDENTITY_PROPERTY_KEY, reference.identity());
+        underlyingNode.createRelationshipTo(typeNode, ENTITY_TYPE_RELATIONSHIP_TYPE);
+        idIndex.putNode(reference.identity(), underlyingNode);
     }
 
-    public Iterable<QualifiedName> propertyNames()
+    public void removeEntityTypeReference(EntityTypeReference type)
     {
-        return descriptor.getPropertyNames();
+        // TODO
+        Node typeNode = idIndex.getTypeNode(type.type().toString());
+        underlyingNode.setProperty(IDENTITY_PROPERTY_KEY, reference.identity());
+        underlyingNode.createRelationshipTo(typeNode, ENTITY_TYPE_RELATIONSHIP_TYPE);
+        Relationship relationship = underlyingNode.getSingleRelationship(ENTITY_TYPE_RELATIONSHIP_TYPE, Direction.OUTGOING);
+        relationship.delete();
     }
 
-    public Iterable<QualifiedName> associationNames()
+    public boolean hasEntityTypeReference(EntityTypeReference type)
     {
-        return descriptor.getAssociationNames();
+        // TODO
+        return false;
     }
 
-    public Iterable<QualifiedName> manyAssociationNames()
+    public Set<EntityTypeReference> entityTypeReferences()
     {
-        return descriptor.getManyAssociationNames();
+        // TODO
+        return null;
     }
 
-    public Object getProperty( QualifiedName qualifiedName )
+    public String getProperty(StateName stateName)
     {
-        return underlyingNode.getProperty( qualifiedName.toString(), null );
+        return underlyingNode.getProperty(stateName.toString()).toString();
     }
 
-    public void setProperty( QualifiedName qualifiedName, Object newValue )
+    public void setProperty(StateName stateName, String newValue)
     {
-        if( newValue != null )
+        if (newValue != null)
         {
-            underlyingNode.setProperty( qualifiedName.toString(), newValue );
-        }
-        else if( underlyingNode.hasProperty( qualifiedName.toString() ) )
+            underlyingNode.setProperty(stateName.toString(), newValue);
+        } else if (underlyingNode.hasProperty(stateName.toString()))
         {
-            underlyingNode.removeProperty( qualifiedName.toString() );
+            underlyingNode.removeProperty(stateName.toString());
         }
     }
 
-    public QualifiedIdentity getAssociation( QualifiedName qualifiedName )
+    public EntityReference getAssociation(StateName stateName)
     {
-        RelationshipType associationType = getAssociationType( qualifiedName.name() );
-        Relationship relation = underlyingNode.getSingleRelationship( associationType, Direction.OUTGOING );
-        if( relation != null )
+        RelationshipType associationType = getAssociationType(stateName.qualifiedName().name());
+        Relationship relation = underlyingNode.getSingleRelationship(associationType, Direction.OUTGOING);
+        if (relation != null)
         {
-            return getIdentityFromNode( unproxy( relation.getEndNode() ) );
-        }
-        else
+            return getIdentityFromNode(unproxy(relation.getEndNode()));
+        } else
         {
             return null;
         }
     }
 
-    public void setAssociation( QualifiedName qualifiedName, QualifiedIdentity newEntity )
+    public void setAssociation(StateName stateName, EntityReference newEntity)
     {
-        RelationshipType associationType = getAssociationType( qualifiedName.name() );
-        Relationship relation = underlyingNode.getSingleRelationship( associationType, Direction.OUTGOING );
-        if( relation != null )
+        RelationshipType associationType = getAssociationType(stateName.qualifiedName().name());
+        Relationship relation = underlyingNode.getSingleRelationship(associationType, Direction.OUTGOING);
+        if (relation != null)
         {
             removeProxy(relation.getEndNode());
             relation.delete();
         }
-        if( newEntity != null )
+        if (newEntity != null)
         {
-            Node otherNode = idIndex.getNode( newEntity.identity() );
-            if( underlyingNode.equals( otherNode ) )
+            Node otherNode = idIndex.getNode(newEntity.identity());
+            if (underlyingNode.equals(otherNode))
             {
-                otherNode = proxy( neo, otherNode );
+                otherNode = proxy(neo, otherNode);
             }
-            underlyingNode.createRelationshipTo( otherNode, associationType );
+            underlyingNode.createRelationshipTo(otherNode, associationType);
         }
     }
 
-    public Collection<QualifiedIdentity> getManyAssociation( QualifiedName qualifiedName )
+    public ManyAssociationState getManyAssociation(StateName stateName)
     {
-        return manyAssociations.get( qualifiedName );
+        return manyAssociations.get(stateName);
     }
 
     public void hasBeenApplied()
@@ -278,71 +286,64 @@ public class DirectEntityState implements CommittableEntityState
         status = EntityStatus.LOADED;
     }
 
-    public ValueState newValueState( Map<QualifiedName, Object> values )
-    {
-        // TODO Replace with something Neo4j specific!
-        return new DefaultValueState(values);
-    }
-
     // Implementation internals
 
-    private RelationshipType getAssociationType( String qualifiedName )
+    private RelationshipType getAssociationType(String qualifiedName)
     {
-        return LinkType.UNQUALIFIED.getRelationshipType( qualifiedName );
+        return LinkType.UNQUALIFIED.getRelationshipType(qualifiedName);
     }
 
-    static QualifiedIdentity getIdentityFromNode( Node node )
+    static EntityReference getIdentityFromNode(Node node)
     {
-        String id = (String) node.getProperty( IDENTITY_PROPERTY_KEY );
-        Node typeNode = node.getSingleRelationship( ENTITY_TYPE_RELATIONSHIP_TYPE, Direction.OUTGOING ).getEndNode();
-        String clazz = (String) typeNode.getProperty( TYPE_PROPERTY_KEY );
-        return new QualifiedIdentity( id, clazz );
+        String id = (String) node.getProperty(IDENTITY_PROPERTY_KEY);
+        Node typeNode = node.getSingleRelationship(ENTITY_TYPE_RELATIONSHIP_TYPE, Direction.OUTGOING).getEndNode();
+        return new EntityReference(id);
     }
 
-    public int getSizeOfCollection( QualifiedName qualifiedName )
+    public int getSizeOfCollection(StateName qualifiedName)
     {
-        return (Integer) underlyingNode.getProperty( COLLECTION_SIZE_PROPERTY_PREFIX + qualifiedName, 0 );
+        return (Integer) underlyingNode.getProperty(COLLECTION_SIZE_PROPERTY_PREFIX + qualifiedName.qualifiedName(), 0);
     }
 
-    public void setSizeOfCollection( QualifiedName qualifiedName, int size )
+    public void setSizeOfCollection(QualifiedName qualifiedName, int size)
     {
-        underlyingNode.setProperty( COLLECTION_SIZE_PROPERTY_PREFIX + qualifiedName, size );
+        underlyingNode.setProperty(COLLECTION_SIZE_PROPERTY_PREFIX + qualifiedName, size);
     }
 
-    public static Node proxy( NeoService neo, Node original )
+    public static Node proxy(NeoService neo, Node original)
     {
         Node proxy = neo.createNode();
-        proxy.createRelationshipTo( original, DirectEntityState.PROXY_FOR );
+        proxy.createRelationshipTo(original, DirectEntityState.PROXY_FOR);
         return proxy;
     }
 
-    public static Node unproxy( Node listed )
+    public static Node unproxy(Node listed)
     {
-        if( listed == null )
+        if (listed == null)
         {
             return null;
         }
-        Relationship proxyRelation = listed.getSingleRelationship( DirectEntityState.PROXY_FOR, Direction.OUTGOING );
-        if( proxyRelation != null )
+        Relationship proxyRelation = listed.getSingleRelationship(DirectEntityState.PROXY_FOR, Direction.OUTGOING);
+        if (proxyRelation != null)
         {
             return proxyRelation.getEndNode();
-        }
-        else
+        } else
         {
             return listed;
         }
     }
 
-	static void removeProxy(Node listed) {
-		if (listed == null)
-		{
-			return;
-		}
-        Relationship proxyRelation = listed.getSingleRelationship( DirectEntityState.PROXY_FOR, Direction.OUTGOING );
-        if( proxyRelation != null )
+    static void removeProxy(Node listed)
+    {
+        if (listed == null)
         {
-        	proxyRelation.delete();
-        	listed.delete();
-        }		
-	}
+            return;
+        }
+        Relationship proxyRelation = listed.getSingleRelationship(DirectEntityState.PROXY_FOR, Direction.OUTGOING);
+        if (proxyRelation != null)
+        {
+            proxyRelation.delete();
+            listed.delete();
+        }
+    }
 }

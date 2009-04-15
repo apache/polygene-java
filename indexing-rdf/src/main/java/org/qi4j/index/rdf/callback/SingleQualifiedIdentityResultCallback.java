@@ -17,21 +17,21 @@
  */
 package org.qi4j.index.rdf.callback;
 
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.api.entity.EntityReference;
 
 public class SingleQualifiedIdentityResultCallback
-    implements QualifiedIdentityResultCallback
+        implements QualifiedIdentityResultCallback
 {
-    private QualifiedIdentity qualifiedIdentity;
+    private EntityReference entityReference;
 
-    public boolean processRow( int row, QualifiedIdentity qualifiedIdentity )
+    public boolean processRow(int row, EntityReference entityReference)
     {
-        this.qualifiedIdentity = qualifiedIdentity;
+        this.entityReference = entityReference;
         return false;
     }
 
-    public QualifiedIdentity getQualifiedIdentity()
+    public EntityReference getQualifiedIdentity()
     {
-        return qualifiedIdentity;
+        return entityReference;
     }
 }

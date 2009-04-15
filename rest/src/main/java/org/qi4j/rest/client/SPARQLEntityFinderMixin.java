@@ -18,25 +18,24 @@
 package org.qi4j.rest.client;
 
 import org.openrdf.query.QueryLanguage;
-import org.qi4j.api.entity.association.GenericAssociationInfo;
+import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.configuration.Configuration;
 import org.qi4j.index.rdf.RdfFactory;
 import org.qi4j.index.rdf.RdfQueryParser;
 import org.qi4j.index.rdf.callback.CollectingQualifiedIdentityResultCallback;
 import org.qi4j.index.rdf.callback.QualifiedIdentityResultCallback;
 import org.qi4j.index.rdf.callback.SingleQualifiedIdentityResultCallback;
-import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.restlet.Uniform;
-import org.restlet.representation.SaxRepresentation;
-import org.restlet.data.Response;
 import org.restlet.data.Reference;
+import org.restlet.data.Response;
+import org.restlet.representation.SaxRepresentation;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLReaderAdapter;
@@ -45,13 +44,15 @@ import org.xml.sax.helpers.XMLReaderAdapter;
  * JAVADOC Add JavaDoc
  */
 public class SPARQLEntityFinderMixin
-    implements EntityFinder, Activatable
+        implements EntityFinder, Activatable
 {
     @This
     Configuration<SPARQLEntityFinderConfiguration> config;
 
-    @Service Uniform client;
-    @Service RdfFactory rdfFactory;
+    @Service
+    Uniform client;
+    @Service
+    RdfFactory rdfFactory;
     private Reference sparqlQueryRef;
 
     public void activate() throws Exception
@@ -63,74 +64,71 @@ public class SPARQLEntityFinderMixin
     {
     }
 
-    public Iterable<QualifiedIdentity> findEntities( String resultType, BooleanExpression whereClause,
-                                                     OrderBy[] orderBySegments, Integer firstResult, Integer maxResults )
-        throws EntityFinderException
+    public Iterable<EntityReference> findEntities(String resultType, BooleanExpression whereClause,
+                                                  OrderBy[] orderBySegments, Integer firstResult, Integer maxResults)
+            throws EntityFinderException
     {
         CollectingQualifiedIdentityResultCallback callback = new CollectingQualifiedIdentityResultCallback();
-        performQuery( resultType, whereClause, orderBySegments, firstResult, maxResults, callback );
+        performQuery(resultType, whereClause, orderBySegments, firstResult, maxResults, callback);
         return callback.getEntities();
     }
 
-    public QualifiedIdentity findEntity( String resultType, BooleanExpression whereClause )
-        throws EntityFinderException
+    public EntityReference findEntity(String resultType, BooleanExpression whereClause)
+            throws EntityFinderException
     {
         final SingleQualifiedIdentityResultCallback callback = new SingleQualifiedIdentityResultCallback();
-        performQuery( resultType, whereClause, null, null, null, callback );
+        performQuery(resultType, whereClause, null, null, null, callback);
         return callback.getQualifiedIdentity();
     }
 
-    public long countEntities( String resultType, BooleanExpression whereClause )
-        throws EntityFinderException
+    public long countEntities(String resultType, BooleanExpression whereClause)
+            throws EntityFinderException
     {
-        return performQuery( resultType, whereClause, null, null, null, null );
+        return performQuery(resultType, whereClause, null, null, null, null);
     }
 
     private static class EntityResultXMLReaderAdapter extends XMLReaderAdapter
     {
         private String element;
         private String id;
-        private String type;
         private final QualifiedIdentityResultCallback callback;
         private int row = 0;
         private boolean done = false;
 
-        public EntityResultXMLReaderAdapter( QualifiedIdentityResultCallback callback )
-            throws SAXException
+        public EntityResultXMLReaderAdapter(QualifiedIdentityResultCallback callback)
+                throws SAXException
         {
             this.callback = callback;
         }
 
-        @Override public void startElement( String uri, String localName, String qName, Attributes atts ) throws SAXException
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException
         {
             element = localName;
         }
 
-        @Override public void characters( char ch[], int start, int length ) throws SAXException
+        @Override
+        public void characters(char ch[], int start, int length) throws SAXException
         {
-            if( "uri".equals( element ) )
+            if ("literal".equals(element))
             {
-                String value = String.valueOf( ch, start, length );
-                type = GenericAssociationInfo.toQualifiedName( value );
-            }
-            else if( "literal".equals( element ) )
-            {
-                id = String.valueOf( ch, start, length );
+                id = String.valueOf(ch, start, length);
             }
         }
 
-        @Override public void endElement( String uri, String localName, String qName ) throws SAXException
+        @Override
+        public void endElement(String uri, String localName, String qName) throws SAXException
         {
             element = null;
 
-            if( localName.equals( "result" ) )
+            if (localName.equals("result"))
             {
-                if( !done && callback != null )
+                if (!done && callback != null)
                 {
-                    final QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( id, type );
+                    final EntityReference entityReference = new EntityReference(id);
                     // todo could also throw flow control exception
-                    done = !callback.processRow( row, qualifiedIdentity );
-                    id = type = null;
+                    done = !callback.processRow(row, entityReference);
+                    id = null;
                 }
                 row++;
             }
@@ -142,33 +140,33 @@ public class SPARQLEntityFinderMixin
         }
     }
 
-    public int performQuery( String resultType, BooleanExpression whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, QualifiedIdentityResultCallback callback )
-        throws EntityFinderException
+    public int performQuery(String resultType, BooleanExpression whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, QualifiedIdentityResultCallback callback)
+            throws EntityFinderException
     {
         try
         {
             // TODO shall we support different implementation as SERQL?
-            final RdfQueryParser parser = rdfFactory.newQueryParser( QueryLanguage.SPARQL );
-            String query = parser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults );
+            final RdfQueryParser parser = rdfFactory.newQueryParser(QueryLanguage.SPARQL);
+            String query = parser.getQuery(resultType, whereClause, orderBySegments, firstResult, maxResults);
 
             Reference queryReference = sparqlQueryRef.clone();
-            queryReference.addQueryParameter( "query", query );
-            Response response = client.get( queryReference );
+            queryReference.addQueryParameter("query", query);
+            Response response = client.get(queryReference);
             if (!response.getStatus().isSuccess())
                 throw new SPARQLEntityFinderException(response.getRequest().getResourceRef(), response.getStatus());
 
             SaxRepresentation sax = response.getEntityAsSax();
-            final EntityResultXMLReaderAdapter xmlReaderAdapter = new EntityResultXMLReaderAdapter( callback );
-            sax.parse( xmlReaderAdapter );
+            final EntityResultXMLReaderAdapter xmlReaderAdapter = new EntityResultXMLReaderAdapter(callback);
+            sax.parse(xmlReaderAdapter);
             return xmlReaderAdapter.getRows();
         }
-        catch( SPARQLEntityFinderException e )
+        catch (SPARQLEntityFinderException e)
         {
             throw e;
         }
-        catch( Exception e )
+        catch (Exception e)
         {
-            throw new EntityFinderException( e );
+            throw new EntityFinderException(e);
         }
     }
 

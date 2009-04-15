@@ -25,30 +25,30 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.concurrent.locks.ReadWriteLock;
+
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.entity.helpers.DefaultEntityState;
-import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.EntityNotFoundException;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.EntityTypeRegistryMixin;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.helpers.EntityTypeRegistryMixin;
+import org.qi4j.spi.entity.*;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.serialization.FastObjectInputStream;
 import org.qi4j.spi.serialization.FastObjectOutputStream;
 
-public class QuickEntityStoreMixin extends EntityTypeRegistryMixin
-    implements Activatable
+public class QuickEntityStoreMixin
+        implements EntityStore, Activatable
 {
-    private @This ReadWriteLock lock;
-    @Uses private ServiceDescriptor descriptor;
-    @This private Configuration<QuickConfiguration> configuration;
+    private
+    @This
+    ReadWriteLock lock;
+    @Uses
+    private ServiceDescriptor descriptor;
+    @This
+    private Configuration<QuickConfiguration> configuration;
     private RecordManager recordManager;
 
     public QuickEntityStoreMixin()
@@ -56,69 +56,66 @@ public class QuickEntityStoreMixin extends EntityTypeRegistryMixin
     }
 
     public void activate()
-        throws Exception
+            throws Exception
     {
         QuickConfiguration conf = configuration.configuration();
         String storage = conf.storageDirectory().get();
         File storageDir;
-        storageDir = new File( storage );
+        storageDir = new File(storage);
         Boolean recover = conf.recover().get();
-        if( recover == null )
+        if (recover == null)
         {
             recover = Boolean.TRUE;
         }
-        recordManager = new RecordManager( storageDir, recover );
+        recordManager = new RecordManager(storageDir, recover);
     }
 
     public void passivate()
-        throws Exception
+            throws Exception
     {
         recordManager.close();
     }
 
-    public EntityState newEntityState( QualifiedIdentity identity ) throws EntityStoreException
+    public EntityState newEntityState(EntityReference reference) throws EntityStoreException
     {
-        EntityType entityType = getEntityType( identity.type() );
-        return new DefaultEntityState( identity, entityType );
+        return new DefaultEntityState(reference);
     }
 
-    public EntityState getEntityState( QualifiedIdentity identity ) throws EntityStoreException
+    public EntityState getEntityState(EntityReference reference) throws EntityStoreException
     {
-        EntityType entityType = getEntityType( identity.type() );
-
         try
         {
 
             try
             {
-                SerializableState serializableState = loadSerializableState( identity );
-                if( serializableState == null )
+                SerializableState serializableState = loadSerializableState(reference);
+                if (serializableState == null)
                 {
-                    throw new EntityNotFoundException( descriptor.identity(), identity );
+                    throw new EntityNotFoundException(reference);
                 }
 
-                return new DefaultEntityState( serializableState.version(),
-                                               serializableState.lastModified(),
-                                               identity,
-                                               EntityStatus.LOADED,
-                                               entityType,
-                                               serializableState.properties(),
-                                               serializableState.associations(),
-                                               serializableState.manyAssociations() );
+                return new DefaultEntityState(serializableState.version(),
+                        serializableState.lastModified(),
+                        reference,
+                        EntityStatus.LOADED,
+                        serializableState.entityTypeReferences(),
+                        serializableState.properties(),
+                        serializableState.associations(),
+                        serializableState.manyAssociations());
             }
-            catch( ClassNotFoundException e )
+            catch (ClassNotFoundException e)
             {
-                throw new EntityStoreException( e );
+                throw new EntityStoreException(e);
             }
         }
-        catch( IOException e )
+        catch (IOException e)
         {
-            throw new EntityStoreException( e );
+            throw new EntityStoreException(e);
         }
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> updatedStates, Iterable<QualifiedIdentity> removedStates )
-        throws EntityStoreException
+    public StateCommitter prepare(Iterable<EntityState> newStates, Iterable<EntityState> updatedStates, Iterable<EntityReference> removedStates)
+            throws EntityStoreException
     {
         boolean turbo = configuration.configuration().turboMode().get();
         lock.writeLock().lock();
@@ -127,28 +124,27 @@ public class QuickEntityStoreMixin extends EntityTypeRegistryMixin
         try
         {
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            storeNewStates( newStates, turbo, lastModified, bout );
-            storeLoadedStates( updatedStates, turbo, lastModified, bout );
-            removeStates( removedStates );
+            storeNewStates(newStates, turbo, lastModified, bout);
+            storeLoadedStates(updatedStates, turbo, lastModified, bout);
+            removeStates(removedStates);
         }
-        catch( Throwable e )
+        catch (Throwable e)
         {
             try
             {
                 recordManager.discard();
             }
-            catch( IOException e1 )
+            catch (IOException e1)
             {
-                throw new EntityStoreException( "Problem with underlying storage system." );
+                throw new EntityStoreException("Problem with underlying storage system.");
             }
             lock.writeLock().unlock();
-            if( e instanceof EntityStoreException )
+            if (e instanceof EntityStoreException)
             {
                 throw (EntityStoreException) e;
-            }
-            else
+            } else
             {
-                throw new EntityStoreException( e );
+                throw new EntityStoreException(e);
             }
         }
 
@@ -160,9 +156,9 @@ public class QuickEntityStoreMixin extends EntityTypeRegistryMixin
                 {
                     recordManager.commit();
                 }
-                catch( IOException e1 )
+                catch (IOException e1)
                 {
-                    throw new EntityStoreException( "Problem with underlying storage system." );
+                    throw new EntityStoreException("Problem with underlying storage system.");
                 }
                 finally
                 {
@@ -176,9 +172,9 @@ public class QuickEntityStoreMixin extends EntityTypeRegistryMixin
                 {
                     recordManager.discard();
                 }
-                catch( IOException e1 )
+                catch (IOException e1)
                 {
-                    throw new EntityStoreException( "Problem with underlying storage system." );
+                    throw new EntityStoreException("Problem with underlying storage system.");
                 }
                 finally
                 {
@@ -188,121 +184,111 @@ public class QuickEntityStoreMixin extends EntityTypeRegistryMixin
         };
     }
 
-    public Iterator<EntityState> iterator()
+    public void visitEntityStates(EntityStateVisitor visitor)
     {
-        final Iterator<QualifiedIdentity> iterator = recordManager.iterator();
+        final Iterator<EntityReference> iterator = recordManager.iterator();
 
-        return new Iterator<EntityState>()
+        while (iterator.hasNext())
         {
-            public boolean hasNext()
+            try
             {
-                return iterator.hasNext();
-            }
-
-            public EntityState next()
-            {
-                try
+                EntityReference reference = iterator.next();
+                SerializableState serializableState = loadSerializableState(reference);
+                if (serializableState == null)
                 {
-                    QualifiedIdentity identity = iterator.next();
-                    SerializableState serializableState = loadSerializableState( identity );
-                    if( serializableState == null )
-                    {
-                        throw new EntityNotFoundException( descriptor.identity(), identity );
-                    }
+                    throw new EntityNotFoundException(reference);
+                }
 
-                    return new DefaultEntityState( serializableState.version(),
-                                                   serializableState.lastModified(),
-                                                   serializableState.qualifiedIdentity(),
-                                                   EntityStatus.LOADED,
-                                                   getEntityType( serializableState.qualifiedIdentity().type() ),
-                                                   serializableState.properties(),
-                                                   serializableState.associations(),
-                                                   serializableState.manyAssociations() );
-                }
-                catch( Exception e )
-                {
-                    throw new EntityStoreException( e );
-                }
+                visitor.visitEntityState(new DefaultEntityState(serializableState.version(),
+                        serializableState.lastModified(),
+                        serializableState.identity(),
+                        EntityStatus.LOADED,
+                        serializableState.entityTypeReferences(),
+                        serializableState.properties(),
+                        serializableState.associations(),
+                        serializableState.manyAssociations()));
             }
-
-            public void remove()
+            catch (Exception e)
             {
+                throw new EntityStoreException(e);
             }
-        };
+        }
     }
 
 
-    private SerializableState loadSerializableState( QualifiedIdentity identity )
-        throws IOException, ClassNotFoundException
+    private SerializableState loadSerializableState(EntityReference reference)
+            throws IOException, ClassNotFoundException
     {
-        DataBlock data = recordManager.readData( identity );
+        DataBlock data = recordManager.readData(reference);
 
-        if( data == null )
+        if (data == null)
         {
             return null;
         }
         byte[] serializedState = data.data;
 
-        ByteArrayInputStream bin = new ByteArrayInputStream( serializedState );
-        ObjectInputStream oin = new FastObjectInputStream( bin, configuration.configuration().turboMode().get() );
+        ByteArrayInputStream bin = new ByteArrayInputStream(serializedState);
+        ObjectInputStream oin = new FastObjectInputStream(bin, configuration.configuration().turboMode().get());
         return (SerializableState) oin.readObject();
     }
 
-    private void storeNewStates( Iterable<EntityState> newStates, boolean turbo, long lastModified, ByteArrayOutputStream bout )
-        throws IOException
+    private void storeNewStates(Iterable<EntityState> newStates, boolean turbo, long lastModified, ByteArrayOutputStream bout)
+            throws IOException
     {
-        for( EntityState entityState : newStates )
+        for (EntityState entityState : newStates)
         {
             DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
-            SerializableState state = new SerializableState( entityState.qualifiedIdentity(),
-                                                             entityState.version(),
-                                                             lastModified,
-                                                             entityStateInstance.getProperties(),
-                                                             entityStateInstance.getAssociations(),
-                                                             entityStateInstance.getManyAssociations() );
-            ObjectOutputStream out = new FastObjectOutputStream( bout, turbo );
-            out.writeObject( state );
+            SerializableState state = new SerializableState(entityState.identity(),
+                    entityState.version(),
+                    lastModified,
+                    entityStateInstance.entityTypeReferences(),
+                    entityStateInstance.getProperties(),
+                    entityStateInstance.getAssociations(),
+                    entityStateInstance.getManyAssociations());
+            ObjectOutputStream out = new FastObjectOutputStream(bout, turbo);
+            out.writeObject(state);
             out.close();
             byte[] stateArray = bout.toByteArray();
-            DataBlock data = new DataBlock( entityState.qualifiedIdentity(), stateArray, entityState.version(), 1 );
-            recordManager.putData( data );
+            DataBlock data = new DataBlock(entityState.identity(), stateArray, entityState.version(), 1);
+            recordManager.putData(data);
             bout.reset();
         }
     }
 
-    private void storeLoadedStates( Iterable<EntityState> loadedStates, boolean turbo, long lastModified, ByteArrayOutputStream bout )
-        throws IOException
+    private void storeLoadedStates(Iterable<EntityState> loadedStates, boolean turbo, long lastModified, ByteArrayOutputStream bout)
+            throws IOException
     {
-        for( EntityState entityState : loadedStates )
+        for (EntityState entityState : loadedStates)
         {
             DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
 
-            if( entityStateInstance.isModified() )
+            if (entityStateInstance.isModified())
             {
                 long newVersion = entityState.version() + 1;
-                SerializableState state = new SerializableState( entityState.qualifiedIdentity(),
-                                                                 newVersion,
-                                                                 lastModified,
-                                                                 entityStateInstance.getProperties(),
-                                                                 entityStateInstance.getAssociations(),
-                                                                 entityStateInstance.getManyAssociations() );
-                ObjectOutputStream out = new FastObjectOutputStream( bout, turbo );
-                out.writeObject( state );
+                SerializableState state = new SerializableState(entityState.identity(),
+                        newVersion,
+                        lastModified,
+                        entityStateInstance.entityTypeReferences(),
+                        entityStateInstance.getProperties(),
+                        entityStateInstance.getAssociations(),
+                        entityStateInstance.getManyAssociations());
+                ObjectOutputStream out = new FastObjectOutputStream(bout, turbo);
+                out.writeObject(state);
                 out.close();
                 byte[] stateArray = bout.toByteArray();
                 bout.reset();
-                DataBlock data = new DataBlock( entityState.qualifiedIdentity(), stateArray, newVersion, 1 );
-                recordManager.putData( data );
+                DataBlock data = new DataBlock(entityState.identity(), stateArray, newVersion, 1);
+                recordManager.putData(data);
             }
         }
     }
 
-    private void removeStates( Iterable<QualifiedIdentity> removedStates )
-        throws IOException
+    private void removeStates(Iterable<EntityReference> removedStates)
+            throws IOException
     {
-        for( QualifiedIdentity removedState : removedStates )
+        for (EntityReference removedState : removedStates)
         {
-            recordManager.deleteData( removedState );
+            recordManager.deleteData(removedState);
         }
     }
 }

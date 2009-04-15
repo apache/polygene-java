@@ -17,16 +17,16 @@
 package org.qi4j.entitystore.neo4j.state;
 
 import org.neo4j.api.core.Node;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
 public interface NodeEntityStateFactory extends NeoEntityStateFactory
 {
-    CommittableEntityState createEntityState( NeoIdentityIndex idIndex, Node node, LoadedDescriptor descriptor, QualifiedIdentity identity, EntityStatus status );
+    CommittableEntityState createEntityState(NeoIdentityIndex idIndex, Node node, LoadedDescriptor descriptor, EntityReference reference, EntityStatus status);
 
-    CommittableEntityState loadEntityStateFromNode( NeoIdentityIndex idIndex, Node node );
+    CommittableEntityState loadEntityStateFromNode(NeoIdentityIndex idIndex, Node node);
 }

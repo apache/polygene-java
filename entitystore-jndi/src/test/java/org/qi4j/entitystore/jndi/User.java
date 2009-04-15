@@ -18,11 +18,10 @@
 package org.qi4j.entitystore.jndi;
 
 import org.qi4j.api.property.Property;
-import org.qi4j.api.entity.association.SetAssociation;
-import org.qi4j.api.entity.association.ListAssociation;
 
 public interface User
 {
     Property<String> sn();
+
     Property<String> givenName();
 }

@@ -16,24 +16,23 @@
  */
 package org.qi4j.entitystore.legacy.internal;
 
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.Map;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import org.junit.Test;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.legacy.entity.HasFirstName;
 import org.qi4j.entitystore.legacy.entity.HasLastName;
 import org.qi4j.entitystore.legacy.entity.PersonComposite;
-import org.qi4j.api.property.GenericPropertyInfo;
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.entitystore.legacy.internal.LegacyEntityState;
+
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.Map;
 
 public final class IBatisEntityStateTest extends AbstractQi4jTest
 {
@@ -41,40 +40,41 @@ public final class IBatisEntityStateTest extends AbstractQi4jTest
     private static final String DEFAULT_LAST_NAME = "Yakop";
 
 
-    @Test public void usesGivenFirstNameProperty()
-        throws NoSuchMethodException
+    @Test
+    public void usesGivenFirstNameProperty()
+            throws NoSuchMethodException
     {
         final Map<QualifiedName, Object> janeValues = Collections.<QualifiedName, Object>singletonMap(QualifiedName.fromQN("person:firstName"), "Jane");
-        final EntityState jane = newPersonEntityState( janeValues );
-        final String firstNameProperty = getPropertyValue( jane, HasFirstName.class, "firstName" );
-        assertNotNull( firstNameProperty );
+        final EntityState jane = newPersonEntityState(janeValues);
+        final String firstNameProperty = getPropertyValue(jane, HasFirstName.class, "firstName");
+        assertNotNull(firstNameProperty);
 
-        assertEquals( janeValues.get(QualifiedName.fromQN("person:firstName")), firstNameProperty );
+        assertEquals(janeValues.get(QualifiedName.fromQN("person:firstName")), firstNameProperty);
     }
 
-    private String getPropertyValue( final EntityState person, final Class<?> type, final String propertyName )
-        throws NoSuchMethodException
+    private String getPropertyValue(final EntityState person, final Class<?> type, final String propertyName)
+            throws NoSuchMethodException
     {
-        final Method method = type.getMethod( propertyName );
-        return (String) person.getProperty(QualifiedName.fromMethod(method));
+        final Method method = type.getMethod(propertyName);
+        return null; // TODO (String) person.getProperty(QualifiedName.fromMethod(method));
     }
 
-    public final void assemble( final ModuleAssembly module ) throws AssemblyException
+    public final void assemble(final ModuleAssembly module) throws AssemblyException
     {
-        module.addEntities( PersonComposite.class );
+        module.addEntities(PersonComposite.class);
 
-        module.on( HasFirstName.class ).to().firstName().set( DEFAULT_FIRST_NAME );
-        module.on( HasLastName.class ).to().lastName().set( DEFAULT_LAST_NAME );
+        module.on(HasFirstName.class).to().firstName().set(DEFAULT_FIRST_NAME);
+        module.on(HasLastName.class).to().lastName().set(DEFAULT_LAST_NAME);
     }
 
-    protected LegacyEntityState newPersonEntityState( final Map<QualifiedName, Object> initialValues )
+    protected LegacyEntityState newPersonEntityState(final Map<QualifiedName, Object> initialValues)
     {
 
-        return new LegacyEntityState( spi.getEntityDescriptor( PersonComposite.class, moduleInstance ).entityType(),
-                                      new QualifiedIdentity( "1", PersonComposite.class ),
-                                      initialValues,
-                                      0L,
-                                      System.currentTimeMillis(),
-                                      EntityStatus.NEW );
+        return new LegacyEntityState(null,
+                new EntityReference("1"),
+                initialValues,
+                0L,
+                System.currentTimeMillis(),
+                EntityStatus.NEW);
     }
 }

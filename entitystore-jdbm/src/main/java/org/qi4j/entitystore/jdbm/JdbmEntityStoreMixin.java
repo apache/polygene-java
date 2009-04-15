@@ -16,360 +16,227 @@
  */
 package org.qi4j.entitystore.jdbm;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.locks.ReadWriteLock;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import jdbm.btree.BTree;
-import jdbm.helper.ByteArrayComparator;
-import jdbm.helper.ByteArraySerializer;
-import jdbm.helper.LongSerializer;
-import jdbm.helper.Serializer;
-import jdbm.helper.Tuple;
-import jdbm.helper.TupleBrowser;
-import org.qi4j.api.common.Optional;
+import jdbm.helper.*;
 import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.library.locking.WriteLock;
-import org.qi4j.spi.entity.EntityAlreadyExistsException;
+import org.qi4j.api.util.Streams;
 import org.qi4j.spi.entity.EntityNotFoundException;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.EntityTypeRegistryMixin;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.helpers.DefaultEntityState;
+import org.qi4j.spi.entity.helpers.MapEntityStore;
 import org.qi4j.spi.serialization.FastObjectInputStream;
 import org.qi4j.spi.serialization.SerializableState;
+import org.qi4j.spi.service.ServiceDescriptor;
+
+import java.io.*;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.locks.ReadWriteLock;
 
 /**
  * JDBM implementation of SerializationStore
  */
-public class JdbmEntityStoreMixin extends EntityTypeRegistryMixin
-    implements Activatable
+public class JdbmEntityStoreMixin
+        implements Activatable, MapEntityStore
 {
-    private @This ReadWriteLock lock;
-    private @This Configuration<JdbmConfiguration> config;
-    private @Uses ServiceDescriptor descriptor;
+    private
+    @This
+    ReadWriteLock lock;
+    private
+    @This
+    Configuration<JdbmConfiguration> config;
+    private
+    @Uses
+    ServiceDescriptor descriptor;
 
     private RecordManager recordManager;
     private BTree index;
-    private @Optional @Uses Serializer serializer;
+    private Serializer serializer;
     private long registryId;
 
     // Activatable implementation
     public void activate()
-        throws Exception
+            throws Exception
     {
-        File dataFile = new File( config.configuration().file().get() );
-        System.out.println( "JDBM store:" + dataFile.getAbsolutePath() );
+        File dataFile = new File(config.configuration().file().get());
+        System.out.println("JDBM store:" + dataFile.getAbsolutePath());
         File directory = dataFile.getAbsoluteFile().getParentFile();
         directory.mkdirs();
         String name = dataFile.getAbsolutePath();
         Properties properties;
         try
         {
-            properties = getProperties( directory );
+            properties = getProperties(directory);
         }
-        catch( IOException e )
+        catch (IOException e)
         {
-            throw new EntityStoreException( "Unable to read properties from " + directory + "/qi4j.properties", e );
+            throw new EntityStoreException("Unable to read properties from " + directory + "/qi4j.properties", e);
         }
-        recordManager = RecordManagerFactory.createRecordManager( name, properties );
+        recordManager = RecordManagerFactory.createRecordManager(name, properties);
         serializer = new ByteArraySerializer();
 
         initializeIndex();
-        initializeRegistry();
     }
 
     public void passivate()
-        throws Exception
+            throws Exception
     {
-        saveRegistry();
         recordManager.close();
     }
 
-    // EntityStore implementation
-    @WriteLock
-    public EntityState newEntityState( QualifiedIdentity identity )
-        throws EntityStoreException
+    public boolean contains(EntityReference entityReference) throws EntityStoreException
     {
-        EntityType entityType = getEntityType( identity.type() );
-
         try
         {
-            Long stateIndex = getStateIndex( identity.identity());
-
-            if( stateIndex != null )
-            {
-                throw new EntityAlreadyExistsException( descriptor.identity(), identity );
-            }
-        }
-        catch( IOException e )
+            Long stateIndex = getStateIndex(entityReference.toString());
+            return stateIndex != null;
+        } catch (IOException e)
         {
-            throw new EntityStoreException( e );
+            throw new EntityStoreException(e);
         }
-
-        return new DefaultEntityState( identity, entityType );
     }
 
-    @WriteLock
-    public EntityState getEntityState( QualifiedIdentity identity ) throws EntityStoreException
+
+    public void get(EntityReference entityReference, OutputStream out) throws EntityStoreException
     {
-        EntityType entityType = getEntityType( identity.type() );
         try
+        {
+            Long stateIndex = getStateIndex(entityReference.identity());
+
+            if (stateIndex == null)
+            {
+                throw new EntityNotFoundException(entityReference);
+            }
+
+            byte[] serializedState = (byte[]) recordManager.fetch(stateIndex, serializer);
+
+            if (serializedState == null)
+            {
+                throw new EntityNotFoundException(entityReference);
+            }
+
+            out.write(serializedState);
+        } catch (IOException e)
+        {
+            throw new EntityStoreException(e);
+        }
+    }
+
+    public void update(Map<EntityReference, InputStream> newEntities, Map<EntityReference, InputStream> updatedEntities, Iterable<EntityReference> removedEntities)
+    {
+        try
+        {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            // New entities
+            for (Map.Entry<EntityReference, InputStream> entityReferenceInputStreamEntry : newEntities.entrySet())
+            {
+                try
+                {
+                    Streams.copyStream(entityReferenceInputStreamEntry.getValue(), out, true);
+
+                    byte[] stateArray = out.toByteArray();
+                    long stateIndex = recordManager.insert(stateArray, serializer);
+                    out.reset();
+                    String indexKey = entityReferenceInputStreamEntry.getKey().toString();
+                    index.insert(indexKey.getBytes("UTF-8"), stateIndex, false);
+                } catch (IOException e)
+                {
+                    throw new EntityStoreException(e);
+                }
+            }
+
+            // Updated entities
+            for (Map.Entry<EntityReference, InputStream> entityReferenceInputStreamEntry : updatedEntities.entrySet())
+            {
+                try
+                {
+                    Streams.copyStream(entityReferenceInputStreamEntry.getValue(), out, true);
+
+
+                    Long stateIndex = getStateIndex(entityReferenceInputStreamEntry.getKey().toString());
+                    byte[] stateArray = out.toByteArray();
+                    out.reset();
+                    recordManager.update(stateIndex, stateArray, serializer);
+                } catch (IOException e)
+                {
+                    throw new EntityStoreException(e);
+                }
+            }
+
+            // Removed entities
+            for (EntityReference removedEntity : removedEntities)
+            {
+                Long stateIndex = getStateIndex(removedEntity.toString());
+                recordManager.delete(stateIndex);
+                index.remove(removedEntity.toString().getBytes("UTF-8"));
+            }
+
+            recordManager.commit();
+        } catch (IOException e)
         {
             try
             {
-                SerializableState serializableState = loadSerializableState( identity.identity() );
-                if (serializableState == null)
-                    throw new EntityNotFoundException( descriptor.identity(), identity );
-
-                DefaultEntityState state = new DefaultEntityState( serializableState.version(),
-                                                                   serializableState.lastModified(),
-                                                                   identity,
-                                                                   EntityStatus.LOADED,
-                                                                   entityType,
-                                                                   serializableState.properties(),
-                                                                   serializableState.associations(),
-                                                                   serializableState.manyAssociations() );
-                return state;
-            }
-            catch( ClassNotFoundException e )
+                recordManager.rollback();
+            } catch (IOException e1)
             {
-                throw new EntityStoreException( e );
+                // Ignore
             }
-        }
-        catch( IOException e )
-        {
-            throw new EntityStoreException( e );
+
+            throw new EntityStoreException("Could not update state", e);
         }
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, final Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException
-    {
-        boolean turbo = config.configuration().turboMode().get();
-        lock.writeLock().lock();
-
-        long lastModified = System.currentTimeMillis();
-        try
-        {
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            storeNewStates( newStates, turbo, lastModified, bout );
-
-            storeLoadedStates( loadedStates, turbo, lastModified, bout );
-
-            removeStates( removedStates );
-        }
-        catch( Throwable e )
-        {
-            lock.writeLock().unlock();
-            if( e instanceof EntityStoreException )
-            {
-                throw (EntityStoreException) e;
-            }
-            else
-            {
-                throw new EntityStoreException( e );
-            }
-        }
-
-        return new StateCommitter()
-        {
-            public void commit()
-            {
-                try
-                {
-                    recordManager.commit();
-                }
-                catch( IOException e )
-                {
-                    e.printStackTrace();
-                }
-                finally
-                {
-                    lock.writeLock().unlock();
-                }
-            }
-
-            public void cancel()
-            {
-
-                try
-                {
-                    recordManager.rollback();
-                    initializeIndex(); // HTree indices are invalid after rollbacks according to the JDBM docs
-                }
-                catch( IOException e )
-                {
-                    e.printStackTrace();
-                }
-                finally
-                {
-                    lock.writeLock().unlock();
-                }
-            }
-        };
-    }
-
-    private void removeStates( Iterable<QualifiedIdentity> removedStates )
-        throws IOException
-    {
-        for( QualifiedIdentity removedState : removedStates )
-        {
-            removeState( removedState.identity() );
-        }
-    }
-
-    private void removeState( String removedState )
-        throws IOException
-    {
-        Long stateIndex = getStateIndex( removedState );
-        recordManager.delete( stateIndex );
-        index.remove( removedState.getBytes("UTF-8") );
-    }
-
-    private void storeLoadedStates( Iterable<EntityState> loadedStates, boolean turbo, long lastModified, ByteArrayOutputStream bout )
-        throws IOException
-    {
-        for( EntityState entityState : loadedStates )
-        {
-            DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
-
-            if( entityStateInstance.isModified() )
-            {
-                long newVersion = entityState.version() + 1;
-                SerializableState state = new SerializableState( entityState.qualifiedIdentity(),
-                                                                 newVersion,
-                                                                 lastModified,
-                                                                 entityStateInstance.getProperties(),
-                                                                 entityStateInstance.getAssociations(),
-                                                                 entityStateInstance.getManyAssociations() );
-                ObjectOutputStream out = new org.qi4j.spi.serialization.FastObjectOutputStream( bout, turbo );
-                out.writeObject( state );
-                out.close();
-                Long stateIndex = getStateIndex( entityState.qualifiedIdentity().identity() );
-                byte[] stateArray = bout.toByteArray();
-                bout.reset();
-                recordManager.update( stateIndex, stateArray, serializer );
-            }
-        }
-    }
-
-    private void storeNewStates( Iterable<EntityState> newStates, boolean turbo, long lastModified, ByteArrayOutputStream bout )
-        throws IOException
-    {
-        for( EntityState entityState : newStates )
-        {
-            DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
-            SerializableState state = new SerializableState( entityState.qualifiedIdentity(),
-                                                             entityState.version()+1,
-                                                             lastModified,
-                                                             entityStateInstance.getProperties(),
-                                                             entityStateInstance.getAssociations(),
-                                                             entityStateInstance.getManyAssociations() );
-            ObjectOutputStream out = new org.qi4j.spi.serialization.FastObjectOutputStream( bout, turbo );
-            out.writeObject( state );
-            out.close();
-            byte[] stateArray = bout.toByteArray();
-            long stateIndex = recordManager.insert( stateArray, serializer );
-            bout.reset();
-            String indexKey = entityState.qualifiedIdentity().identity();
-            index.insert( indexKey.getBytes( "UTF-8"), stateIndex, false );
-        }
-    }
-
-    public Iterator<EntityState> iterator()
+    public void visitMap(MapEntityStoreVisitor visitor)
     {
         try
         {
             final TupleBrowser browser = index.browse();
             final Tuple tuple = new Tuple();
 
-            return new Iterator<EntityState>()
+            while (browser.getNext(tuple))
             {
-                public boolean hasNext()
+                String id = new String((byte[]) tuple.getKey(), "UTF-8");
+
+                Long stateIndex = getStateIndex(id);
+
+                if (stateIndex == null)
                 {
-                    try
-                    {
-                        return browser.getNext( tuple );
-                    }
-                    catch( IOException e )
-                    {
-                        return false;
-                    }
+                    throw new EntityNotFoundException(new EntityReference(id));
                 }
 
-                public EntityState next()
-                {
-                    try
-                    {
-                        String id = new String((byte[])tuple.getKey(), "UTF-8");
-                        SerializableState serializableState = loadSerializableState( id );
-                        if (serializableState == null)
-                            throw new EntityNotFoundException( descriptor.identity(), new QualifiedIdentity( id, "") );
+                byte[] serializedState = (byte[]) recordManager.fetch(stateIndex, serializer);
 
-                        DefaultEntityState state = new DefaultEntityState( serializableState.version(),
-                                                                           serializableState.lastModified(),
-                                                                           serializableState.qualifiedIdentity(),
-                                                                           EntityStatus.LOADED,
-                                                                           getEntityType( serializableState.qualifiedIdentity().type() ),
-                                                                           serializableState.properties(),
-                                                                           serializableState.associations(),
-                                                                           serializableState.manyAssociations() );
-                        return state;
-                    }
-                    catch( Exception e )
-                    {
-                        throw new EntityStoreException( e );
-                    }
-                }
-
-                public void remove()
-                {
-                }
-            };
+                visitor.visitEntity(new ByteArrayInputStream(serializedState));
+            }
         }
-        catch( IOException e )
+        catch (IOException e)
         {
-            return Collections.EMPTY_LIST.iterator();
+            throw new EntityStoreException(e);
         }
     }
 
-    private Properties getProperties( File directory )
-        throws IOException
+    private Properties getProperties(File directory)
+            throws IOException
     {
         Properties properties = new Properties();
-        File propertiesFile = new File( directory, "qi4j.properties" );
-        if( propertiesFile.exists() )
+        File propertiesFile = new File(directory, "qi4j.properties");
+        if (propertiesFile.exists())
         {
             FileInputStream fis = null;
             try
             {
-                fis = new FileInputStream( propertiesFile );
-                BufferedInputStream bis = new BufferedInputStream( fis );
-                properties.load( bis );
+                fis = new FileInputStream(propertiesFile);
+                BufferedInputStream bis = new BufferedInputStream(fis);
+                properties.load(bis);
             }
             finally
             {
-                if( fis != null )
+                if (fis != null)
                 {
                     fis.close();
                 }
@@ -378,79 +245,48 @@ public class JdbmEntityStoreMixin extends EntityTypeRegistryMixin
         return properties;
     }
 
-    private Long getStateIndex( String identity )
-        throws IOException
+    private Long getStateIndex(String identity)
+            throws IOException
     {
-        Long stateIndex = (Long) index.find( identity.getBytes("UTF-8") );
+        Long stateIndex = (Long) index.find(identity.getBytes("UTF-8"));
         return stateIndex;
     }
 
     private void initializeIndex()
-        throws IOException
+            throws IOException
     {
-        long recid = recordManager.getNamedObject( "index" );
-        if( recid != 0 )
+        long recid = recordManager.getNamedObject("index");
+        if (recid != 0)
         {
-            System.out.println( "Using existing index" );
-            index = BTree.load( recordManager, recid );
-        }
-        else
+            System.out.println("Using existing index");
+            index = BTree.load(recordManager, recid);
+        } else
         {
-            System.out.println( "Creating new index" );
-            index = BTree.createInstance( recordManager, new ByteArrayComparator(), new ByteArraySerializer(), new LongSerializer(), 16 );
-            recordManager.setNamedObject( "index", index.getRecid() );
-        }
-    }
-
-    private void initializeRegistry()
-        throws IOException
-    {
-        registryId = recordManager.getNamedObject( "registry" );
-        if( registryId != 0 )
-        {
-            System.out.println( "Using existing registry" );
-            List<EntityType> registry = (List) recordManager.fetch( registryId );
-            for( EntityType entityType : registry )
-            {
-
-                registerEntityType( entityType );
-            }
-        }
-        else
-        {
-            System.out.println( "Creating new registry" );
-            registryId = recordManager.insert( new ArrayList() );
-            recordManager.setNamedObject( "registry", registryId );
+            System.out.println("Creating new index");
+            index = BTree.createInstance(recordManager, new ByteArrayComparator(), new ByteArraySerializer(), new LongSerializer(), 16);
+            recordManager.setNamedObject("index", index.getRecid());
         }
     }
 
-    private void saveRegistry()
-        throws IOException
+    private SerializableState loadSerializableState(String identity)
+            throws IOException, ClassNotFoundException
     {
-        List<EntityType> registry = new ArrayList(super.entityTypes.values());
-        recordManager.update( registryId, registry );
-        recordManager.commit();
-    }
+        Long stateIndex = getStateIndex(identity);
 
-    private SerializableState loadSerializableState( String identity )
-        throws IOException, ClassNotFoundException
-    {
-        Long stateIndex = getStateIndex( identity );
-
-        if( stateIndex == null )
+        if (stateIndex == null)
         {
             return null;
         }
 
-        byte[] serializedState = (byte[]) recordManager.fetch( stateIndex, serializer );
+        byte[] serializedState = (byte[]) recordManager.fetch(stateIndex, serializer);
 
-        if( serializedState == null )
+        if (serializedState == null)
         {
             return null;
         }
 
-        ByteArrayInputStream bin = new ByteArrayInputStream( serializedState );
-        ObjectInputStream oin = new FastObjectInputStream( bin, config.configuration().turboMode().get() );
+        ByteArrayInputStream bin = new ByteArrayInputStream(serializedState);
+        ObjectInputStream oin = new FastObjectInputStream(bin, config.configuration().turboMode().get());
         return (SerializableState) oin.readObject();
     }
 }

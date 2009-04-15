@@ -16,42 +16,48 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
-import java.util.Iterator;
 import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.Node;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.entitystore.neo4j.NeoCoreService;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
-import org.qi4j.api.injection.scope.Service;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
+
+import java.util.Iterator;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
 public class DirectEntityStateFactoryMixin implements NodeEntityStateFactory
 {
-    private @Service NeoCoreService neo;
+    private
+    @Service
+    NeoCoreService neo;
 
-    public CommittableEntityState createEntityState( NeoIdentityIndex idIndex, LoadedDescriptor descriptor, QualifiedIdentity identity, EntityStatus status )
+    public CommittableEntityState createEntityState(NeoIdentityIndex idIndex, LoadedDescriptor descriptor, EntityReference reference, EntityStatus status)
     {
-        Node node = idIndex.getOrCreateNode( identity.identity() );
-        return createEntityState( idIndex, node, descriptor, identity, status );
+        Node node = idIndex.getOrCreateNode(reference.identity());
+        return createEntityState(idIndex, node, descriptor, reference, status);
     }
 
-    public CommittableEntityState createEntityState( NeoIdentityIndex idIndex, Node node, LoadedDescriptor descriptor, QualifiedIdentity identity, EntityStatus status )
+    public CommittableEntityState createEntityState(NeoIdentityIndex idIndex, Node node, LoadedDescriptor descriptor, EntityReference reference, EntityStatus status)
     {
-        return new DirectEntityState( neo, idIndex, node, identity, status, descriptor );
+        return new DirectEntityState(neo, idIndex, node, reference, status, descriptor);
     }
 
-    public CommittableEntityState loadEntityStateFromNode( NeoIdentityIndex idIndex, Node node )
+    public CommittableEntityState loadEntityStateFromNode(NeoIdentityIndex idIndex, Node node)
     {
-        QualifiedIdentity identity = DirectEntityState.getIdentityFromNode( node );
-        LoadedDescriptor descriptor = LoadedDescriptor.loadDescriptor( idIndex.getTypeNode( identity.type() ) );
-        return createEntityState( idIndex, node, descriptor, identity, EntityStatus.LOADED );
+        EntityReference reference = DirectEntityState.getIdentityFromNode(node);
+/* TODO
+        LoadedDescriptor descriptor = LoadedDescriptor.loadDescriptor( idIndex.getTypeNode( reference.type() ) );
+        return createEntityState( idIndex, node, descriptor, reference, EntityStatus.LOADED );
+*/
+        return null;
     }
 
-    public StateCommitter prepareCommit( NeoIdentityIndex idIndex, Iterable<CommittableEntityState> updated, Iterable<QualifiedIdentity> removed )
+    public StateCommitter prepareCommit(NeoIdentityIndex idIndex, Iterable<CommittableEntityState> updated, Iterable<EntityReference> removed)
     {
         return new StateCommitter()
         {
@@ -65,7 +71,7 @@ public class DirectEntityStateFactoryMixin implements NodeEntityStateFactory
         };
     }
 
-    public Iterator<CommittableEntityState> iterator( final NeoIdentityIndex idIndex )
+    public Iterator<CommittableEntityState> iterator(final NeoIdentityIndex idIndex)
     {
         final Iterator<Node> nodes = null; // TODO: get all nodes from Neo
         return new Iterator<CommittableEntityState>()
@@ -75,14 +81,14 @@ public class DirectEntityStateFactoryMixin implements NodeEntityStateFactory
 
             public boolean hasNext()
             {
-                if( next != null )
+                if (next != null)
                 {
                     return true;
                 }
-                while( nodes.hasNext() )
+                while (nodes.hasNext())
                 {
                     Node node = nodes.next();
-                    if( node.hasRelationship( DirectEntityState.PROXY_FOR, Direction.OUTGOING ) )
+                    if (node.hasRelationship(DirectEntityState.PROXY_FOR, Direction.OUTGOING))
                     {
                         next = node;
                         return true;
@@ -93,20 +99,19 @@ public class DirectEntityStateFactoryMixin implements NodeEntityStateFactory
 
             public CommittableEntityState next()
             {
-                if( hasNext() )
+                if (hasNext())
                 {
-                    previous = loadEntityStateFromNode( idIndex, next );
+                    previous = loadEntityStateFromNode(idIndex, next);
                 }
                 return previous;
             }
 
             public void remove()
             {
-                if( previous != null )
+                if (previous != null)
                 {
                     previous.remove();
-                }
-                else
+                } else
                 {
                     throw new IllegalStateException();
                 }

@@ -16,23 +16,21 @@
  */
 package org.qi4j.entitystore.legacy.test;
 
+import static org.junit.Assert.assertNotNull;
+import org.junit.Before;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.entitystore.legacy.DerbyDatabaseHandler;
+import org.qi4j.entitystore.legacy.entity.PersonComposite;
+import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.property.PropertyTypeDescriptor;
+import org.qi4j.test.AbstractQi4jTest;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import static org.junit.Assert.assertNotNull;
-import org.junit.Before;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.entitystore.legacy.DerbyDatabaseHandler;
-import org.qi4j.entitystore.legacy.entity.PersonComposite;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.spi.composite.CompositeDescriptor;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.test.AbstractQi4jTest;
 
 public abstract class AbstractTestCase extends AbstractQi4jTest
 {
@@ -47,19 +45,20 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
      * @since 0.1.0
      */
     final Connection getJDBCConnection()
-        throws SQLException
+            throws SQLException
     {
         return derbyDatabaseHandler.getJDBCConnection();
     }
 
-    @Override public void tearDown() throws Exception
+    @Override
+    public void tearDown() throws Exception
     {
-        if( derbyDatabaseHandler != null )
+        if (derbyDatabaseHandler != null)
         {
             derbyDatabaseHandler.shutdown();
         }
 
-        if( unitOfWorkFactory != null && unitOfWorkFactory.currentUnitOfWork() != null )
+        if (unitOfWorkFactory != null && unitOfWorkFactory.currentUnitOfWork() != null)
         {
             unitOfWorkFactory.currentUnitOfWork().discard();
         }
@@ -68,92 +67,95 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
     }
 
 
-    @Before public void setUp() throws Exception
+    @Before
+    public void setUp() throws Exception
     {
         derbyDatabaseHandler = new DerbyDatabaseHandler();
         super.setUp();
     }
 
-    protected Map<String, String> createTestData( final String firstName, final String lastName )
+    protected Map<String, String> createTestData(final String firstName, final String lastName)
     {
         final Map<String, String> data = new HashMap<String, String>();
-        data.put( "FIRST_NAME", firstName );
-        data.put( "LAST_NAME", lastName );
+        data.put("FIRST_NAME", firstName);
+        data.put("LAST_NAME", lastName);
         return data;
     }
 
-    protected void assertPersonEqualsInDatabase( final String identity, final Map<String, ?> values )
+    protected void assertPersonEqualsInDatabase(final String identity, final Map<String, ?> values)
     {
-        final int count = derbyDatabaseHandler.executeStatement( "select * from person where id = '" + identity + "'", new DerbyDatabaseHandler.ResultSetCallback()
+        final int count = derbyDatabaseHandler.executeStatement("select * from person where id = '" + identity + "'", new DerbyDatabaseHandler.ResultSetCallback()
         {
-            public void row( final ResultSet rs ) throws SQLException
+            public void row(final ResultSet rs) throws SQLException
             {
-                org.junit.Assert.assertEquals( "id", identity, rs.getString( "id" ) );
-                assertContainsValues( rs, values );
+                org.junit.Assert.assertEquals("id", identity, rs.getString("id"));
+                assertContainsValues(rs, values);
             }
-        } );
-        org.junit.Assert.assertEquals( "Person with Id " + identity, 1, count );
+        });
+        org.junit.Assert.assertEquals("Person with Id " + identity, 1, count);
     }
 
-    private void assertContainsValues( final ResultSet rs, final Map<String, ?> values )
-        throws SQLException
+    private void assertContainsValues(final ResultSet rs, final Map<String, ?> values)
+            throws SQLException
     {
-        if( values == null )
+        if (values == null)
         {
             return;
         }
 
-        for( final Map.Entry<String, ?> entry : values.entrySet() )
+        for (final Map.Entry<String, ?> entry : values.entrySet())
         {
             final String name = entry.getKey();
-            org.junit.Assert.assertEquals( name, entry.getValue(), rs.getString( name ) );
+            org.junit.Assert.assertEquals(name, entry.getValue(), rs.getString(name));
         }
     }
 
-    protected static void checkEntityStateProperties( final CompositeDescriptor compositeBinding, final EntityState state, final boolean checkAll )
+    protected static void checkEntityStateProperties(final CompositeDescriptor compositeBinding, final EntityState state, final boolean checkAll)
     {
-        assertNotNull( "identity", state.qualifiedIdentity() );
-        assertNotNull( "identity", state.qualifiedIdentity().identity() );
-        if( !checkAll )
+        assertNotNull("identity", state.identity());
+        assertNotNull("identity", state.identity().identity());
+        if (!checkAll)
         {
             return;
         }
 
-        for( final PropertyDescriptor propertyDescriptor : compositeBinding.state().properties() )
+        for (final PropertyTypeDescriptor propertyDescriptor : compositeBinding.state().<PropertyTypeDescriptor>properties())
         {
             final String propertyName = propertyDescriptor.qualifiedName().name();
-            if( "identity".equals( propertyName ) )
+            if ("identity".equals(propertyName))
             {
                 continue;
             }
-            final Property property = (Property) state.getProperty( propertyDescriptor.qualifiedName() );
+            final String property = state.getProperty(propertyDescriptor.propertyType().stateName());
 
-            assertNotNull( "Property [" + propertyName + ": " + propertyDescriptor.type() + "] is not found.", property );
+            assertNotNull("Property [" + propertyName + ": " + propertyDescriptor.type() + "] is not found.", property);
         }
     }
 
-    protected void assertPersonEntityStateEquals( final String id, final String firstName, final String lastName, final EntityState state )
+    protected void assertPersonEntityStateEquals(final String id, final String firstName, final String lastName, final EntityState state)
     {
-        assertNotNull( state );
-        final QualifiedIdentity qualifiedIdentity = state.qualifiedIdentity();
+        assertNotNull(state);
+        final EntityReference entityReference = state.identity();
 
-        assertNotNull( "identity", qualifiedIdentity );
-        org.junit.Assert.assertEquals( "identity", id, qualifiedIdentity.identity() );
+        assertNotNull("identity", entityReference);
+        org.junit.Assert.assertEquals("identity", id, entityReference.identity());
 
-        org.junit.Assert.assertEquals( "identity", id, state.getProperty(QualifiedName.fromQN("identity")) );
+/*
+        org.junit.Assert.assertEquals( "identity", id, state.getProperty(new StateName().fromQN("identity")) );
         org.junit.Assert.assertEquals( "firstName", firstName, state.getProperty(QualifiedName.fromQN("firstName")) );
         org.junit.Assert.assertEquals( "lastName", lastName, state.getProperty(QualifiedName.fromQN("lastName")) );
+*/
     }
 
-    protected void assertPersonEquals( final String id, final String firstName, final String lastName, final PersonComposite person )
+    protected void assertPersonEquals(final String id, final String firstName, final String lastName, final PersonComposite person)
     {
-        org.junit.Assert.assertEquals( "identity", id, person.identity().get() );
-        org.junit.Assert.assertEquals( "firstName", firstName, person.firstName().get() );
-        org.junit.Assert.assertEquals( "lastName", lastName, person.lastName().get() );
+        org.junit.Assert.assertEquals("identity", id, person.identity().get());
+        org.junit.Assert.assertEquals("firstName", firstName, person.firstName().get());
+        org.junit.Assert.assertEquals("lastName", lastName, person.lastName().get());
     }
 
-    protected QualifiedIdentity id( final String id )
+    protected EntityReference id(final String id)
     {
-        return new QualifiedIdentity( id, PersonComposite.class );
+        return new EntityReference(id);
     }
 }

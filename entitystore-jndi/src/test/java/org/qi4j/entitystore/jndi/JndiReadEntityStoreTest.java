@@ -17,7 +17,6 @@
  */
 package org.qi4j.entitystore.jndi;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -26,46 +25,47 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
+
+import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
-import javax.naming.directory.Attributes;
 
 public class JndiReadEntityStoreTest extends AbstractQi4jTest
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble(ModuleAssembly module) throws AssemblyException
     {
-        module.addServices( JndiEntityStoreService.class, UuidIdentityGeneratorService.class );
+        module.addServices(JndiEntityStoreService.class, UuidIdentityGeneratorService.class);
 
-        ModuleAssembly config = module.layerAssembly().newModuleAssembly( "config" );
-        config.addEntities( JndiConfiguration.class ).visibleIn( Visibility.layer );
-        config.addServices( MemoryEntityStoreService.class );
+        ModuleAssembly config = module.layerAssembly().newModuleAssembly("config");
+        config.addEntities(JndiConfiguration.class).visibleIn(Visibility.layer);
+        config.addServices(MemoryEntityStoreService.class);
 
-        module.addEntities( UserEntity.class, GroupEntity.class );
+        module.addEntities(UserEntity.class, GroupEntity.class);
     }
 
     @Test
     public void findSaslSupportTypes()
-        throws Exception
+            throws Exception
     {
         // Create initial context
         DirContext ctx = new InitialDirContext();
 
         // Read supportedSASLMechanisms from root DSE
         Attributes attrs = ctx.getAttributes(
-            "ldap://srv07.ops4j.org:389", new String[]{"supportedSASLMechanisms"});
+                "ldap://srv07.ops4j.org:389", new String[]{"supportedSASLMechanisms"});
 
-        System.out.println( attrs );
+        System.out.println(attrs);
     }
 
     @Test
     public void testReadNiclasFromLdap()
-        throws Exception
+            throws Exception
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            User user = uow.find( "niclas.hedhman", User.class );
-            System.out.println( user.givenName().get() + " " + user.sn().get() );
+            User user = uow.get(User.class, "niclas.hedhman");
+            System.out.println(user.givenName().get() + " " + user.sn().get());
 //            Assert.assertEquals( "Niclas", user.givenName().get() );
         }
         finally

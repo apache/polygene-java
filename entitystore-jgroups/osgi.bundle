@@ -23,10 +23,12 @@ Import-Package: javax.crypto, \
                 org.jgroups.blocks, \
                 org.qi4j.api, \
                 org.qi4j.api.composite, \
+                org.qi4j.api.entity, \
                 org.qi4j.api.injection.scope, \
                 org.qi4j.api.mixin, \
                 org.qi4j.api.service, \
                 org.qi4j.api.structure,\
+                org.qi4j.api.util, \
                 org.qi4j.library.locking, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.entity, \

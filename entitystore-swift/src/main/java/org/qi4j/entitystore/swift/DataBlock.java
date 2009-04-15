@@ -18,18 +18,18 @@
 package org.qi4j.entitystore.swift;
 
 import java.util.Arrays;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.api.entity.EntityReference;
 
 class DataBlock
 {
-    QualifiedIdentity identity;
+    EntityReference reference;
     byte[] data;
     long instanceVersion;
     int schemaVersion;
 
-    public DataBlock( QualifiedIdentity identity, byte[] data, long instanceVersion, int schemaVersion )
+    public DataBlock( EntityReference reference, byte[] data, long instanceVersion, int schemaVersion )
     {
-        this.identity = identity;
+        this.reference = reference;
         this.data = data;
         this.instanceVersion = instanceVersion;
         this.schemaVersion = schemaVersion;
@@ -60,7 +60,7 @@ class DataBlock
         {
             return false;
         }
-        if( !identity.equals( dataBlock.identity ) )
+        if( !reference.equals( dataBlock.reference) )
         {
             return false;
         }
@@ -71,7 +71,7 @@ class DataBlock
     public int hashCode()
     {
         int result;
-        result = identity.hashCode();
+        result = reference.hashCode();
         result = 31 * result + Arrays.hashCode( data );
         result = 31 * result + (int) ( instanceVersion ^ ( instanceVersion >>> 32 ) );
         result = 31 * result + schemaVersion;
@@ -83,7 +83,7 @@ class DataBlock
         StringBuffer buf = new StringBuffer();
         buf.append( schemaVersion );
         buf.append( '[' );
-        buf.append( identity );
+        buf.append(reference);
         buf.append( ':' );
         buf.append( instanceVersion );
         buf.append( '{' );

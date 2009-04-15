@@ -17,16 +17,13 @@
  */
 package org.qi4j.index.rdf;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.index.rdf.model.Nameable;
-import org.qi4j.spi.entity.QualifiedIdentity;
+
+import java.util.*;
 
 public class NameableAssert
 {
@@ -38,65 +35,65 @@ public class NameableAssert
         world.clear();
     }
 
-    public static void assertNames( Iterable<QualifiedIdentity> identitiesIterable, String... expectedNames )
+    public static void assertNames(Iterable<EntityReference> identitiesIterable, String... expectedNames)
     {
-        assertNames( true, identitiesIterable, expectedNames );
+        assertNames(true, identitiesIterable, expectedNames);
     }
 
-    public static void assertNames( boolean sort, Iterable<QualifiedIdentity> identitiesIterable, String... expectedNames )
+    public static void assertNames(boolean sort, Iterable<EntityReference> identitiesIterable, String... expectedNames)
     {
-        final List<QualifiedIdentity> identities = toList( identitiesIterable );
-        assertEquals( expectedNames.length + " entries", expectedNames.length, identities.size() );
-        List<String> sortedNames = getNames( identities );
-        final List<String> expectedSorted = java.util.Arrays.asList( expectedNames );
-        if( sort )
+        final List<EntityReference> references = toList(identitiesIterable);
+        assertEquals(expectedNames.length + " entries", expectedNames.length, references.size());
+        List<String> sortedNames = getNames(references);
+        final List<String> expectedSorted = java.util.Arrays.asList(expectedNames);
+        if (sort)
         {
-            Collections.sort( sortedNames );
-            Collections.sort( expectedSorted );
+            Collections.sort(sortedNames);
+            Collections.sort(expectedSorted);
         }
-        assertEquals( "names", expectedSorted, sortedNames );
+        assertEquals("names", expectedSorted, sortedNames);
     }
 
-    public static <T> List<T> toList( final Iterable<T> iterable )
+    public static <T> List<T> toList(final Iterable<T> iterable)
     {
         final List<T> result = new ArrayList<T>();
-        for( final T element : iterable )
+        for (final T element : iterable)
         {
-            result.add( element );
+            result.add(element);
         }
         return result;
     }
 
-    public static void trace( Nameable nameable )
+    public static void trace(Nameable nameable)
     {
-        world.put( ( (Identity) nameable ).identity().get(), nameable.name().get() );
+        world.put(((Identity) nameable).identity().get(), nameable.name().get());
     }
 
-    public static void assertName( String expectedName, QualifiedIdentity identity )
+    public static void assertName(String expectedName, EntityReference reference)
     {
-        final String existingName = getName( identity );
-        assertEquals( "Name of " + identity, expectedName, existingName );
+        final String existingName = getName(reference);
+        assertEquals("Name of " + reference, expectedName, existingName);
     }
 
-    public static String getName( QualifiedIdentity identity )
+    public static String getName(EntityReference reference)
     {
-        return world.get( identity.identity() );
+        return world.get(reference.identity());
     }
 
-    public static List<String> getNames( List<QualifiedIdentity> identities )
+    public static List<String> getNames(List<EntityReference> references)
     {
-        List<String> result = new ArrayList<String>( identities.size() );
-        for( QualifiedIdentity identity : identities )
+        List<String> result = new ArrayList<String>(references.size());
+        for (EntityReference reference : references)
         {
-            final String name = getName( identity );
-            assertNotNull( "Name of " + identity, name );
-            result.add( name );
+            final String name = getName(reference);
+            assertNotNull("Name of " + reference, name);
+            result.add(name);
         }
         return result;
     }
 
     public static String[] allNames()
     {
-        return world.values().toArray( new String[world.size()] );
+        return world.values().toArray(new String[world.size()]);
     }
 }

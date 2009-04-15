@@ -17,22 +17,23 @@
  */
 package org.qi4j.index.rdf.callback;
 
+import org.qi4j.api.entity.EntityReference;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import org.qi4j.spi.entity.QualifiedIdentity;
 
 public class CollectingQualifiedIdentityResultCallback
-    implements QualifiedIdentityResultCallback
+        implements QualifiedIdentityResultCallback
 {
-    private final Collection<QualifiedIdentity> entities = new ArrayList<QualifiedIdentity>();
+    private final Collection<EntityReference> entities = new ArrayList<EntityReference>();
 
-    public boolean processRow( int row, QualifiedIdentity qualifiedIdentity )
+    public boolean processRow(int row, EntityReference entityReference)
     {
-        entities.add( qualifiedIdentity );
+        entities.add(entityReference);
         return true;
     }
 
-    public Collection<QualifiedIdentity> getEntities()
+    public Collection<EntityReference> getEntities()
     {
         return entities;
     }

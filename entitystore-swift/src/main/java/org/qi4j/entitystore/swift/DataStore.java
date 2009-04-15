@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Iterator;
 import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.api.entity.EntityReference;
 
 /**
  * This class handles the Heap Data file.
@@ -139,9 +139,9 @@ public class DataStore
         return identityFile;
     }
 
-    DataBlock readData( QualifiedIdentity identity ) throws IOException
+    DataBlock readData( EntityReference reference) throws IOException
     {
-        long pos = identityFile.find( identity );
+        long pos = identityFile.find(reference);
         if( pos < 0 )
         {
             return null;
@@ -151,8 +151,8 @@ public class DataStore
         byte usage = dataFile.readByte();
         long instanceVersion = dataFile.readLong();
         int schemaVersion = dataFile.readInt();
-        QualifiedIdentity existingIdentity = readIdentity();
-        if( !existingIdentity.equals( identity ) )
+        EntityReference existingReference = readIdentity();
+        if( !existingReference.equals(reference) )
         {
             throw new EntityStoreException( "Inconsistent Data Heap." );
         }
@@ -168,19 +168,19 @@ public class DataStore
         int dataSize = dataFile.readInt();
         byte[] data = new byte[dataSize];
         dataFile.read( data );
-        return new DataBlock( identity, data, instanceVersion, schemaVersion );
+        return new DataBlock(reference, data, instanceVersion, schemaVersion );
     }
 
     void putData( DataBlock data )
         throws IOException
     {
-        long pos = identityFile.find( data.identity );
+        long pos = identityFile.find( data.reference);
         if( pos < 0 )
         {
             pos = addData( data );
-            UndoNewIdentityCommand undoNewIdentityCommand = new UndoNewIdentityCommand( data.identity );
+            UndoNewIdentityCommand undoNewIdentityCommand = new UndoNewIdentityCommand( data.reference);
             undoManager.saveUndoCommand( undoNewIdentityCommand );
-            identityFile.remember( data.identity, pos );
+            identityFile.remember( data.reference, pos );
         }
         else
         {
@@ -196,17 +196,17 @@ public class DataStore
                 undoManager.saveUndoCommand( undoModifyCommand );
                 dataFile.seek( usagePointer );
                 dataFile.writeByte(0);
-                UndoDropIdentityCommand undoDropIdentityCommand = new UndoDropIdentityCommand( data.identity, pos );
+                UndoDropIdentityCommand undoDropIdentityCommand = new UndoDropIdentityCommand( data.reference, pos );
                 undoManager.saveUndoCommand( undoDropIdentityCommand );
-                identityFile.remember( data.identity, newPosition );
+                identityFile.remember( data.reference, newPosition );
             }
             else
             {
                 dataFile.skipBytes( 12 ); // Skip instanceVersion and schemaVersion
-                QualifiedIdentity existingIdentity = readIdentity();
-                if( !existingIdentity.equals( data.identity ) )
+                EntityReference existingReference = readIdentity();
+                if( !existingReference.equals( data.reference) )
                 {
-                    throw new EntityStoreException( "Inconsistent Data Heap: was " + existingIdentity + ", expected " + data.identity );
+                    throw new EntityStoreException( "Inconsistent Data Heap: was " + existingReference + ", expected " + data.reference);
                 }
                 long mirror = dataFile.readLong();
                 if( usage == 1 )
@@ -224,10 +224,10 @@ public class DataStore
         }
     }
 
-    public void delete( QualifiedIdentity identity )
+    public void delete( EntityReference reference)
         throws IOException
     {
-        long pos = identityFile.find( identity );
+        long pos = identityFile.find(reference);
         if( pos < 0 )
         {
             // Doesn't exist.
@@ -240,16 +240,16 @@ public class DataStore
         {
             // Not used?? Why is the IdentityFile pointing to it then?? Should the following line actually be
             // executed here.
-            //    identityFile.drop( identity );
+            //    identityFile.drop( reference );
             return;
         }
-        UndoDropIdentityCommand undoDropIdentityCommand = new UndoDropIdentityCommand( identity, pos );
+        UndoDropIdentityCommand undoDropIdentityCommand = new UndoDropIdentityCommand(reference, pos );
         undoManager.saveUndoCommand( undoDropIdentityCommand );
 
         UndoDeleteCommand undoDeleteCommand = new UndoDeleteCommand( pos, usage );
         undoManager.saveUndoCommand( undoDeleteCommand );
 
-        identityFile.drop( identity );
+        identityFile.drop(reference);
         dataFile.skipBytes( -1 );
         dataFile.writeByte( 0 );
     }
@@ -276,7 +276,7 @@ public class DataStore
         dataFile.writeByte( 3 ); // In-progress
         dataFile.writeLong( data.instanceVersion );
         dataFile.writeInt( data.schemaVersion );
-        writeIdentity( data.identity );
+        writeIdentity( data.reference);
 
         long mirrorPosition = blockStart + dataAreaSize / 2;
         dataFile.writeLong( mirrorPosition );
@@ -329,18 +329,18 @@ public class DataStore
             int blockSize = dataFile.readInt();
             byte usage = dataFile.readByte();
             dataFile.skipBytes( 12 ); // Skip instanceVersion and schemaVersion
-            QualifiedIdentity identity = readIdentity();
+            EntityReference reference = readIdentity();
             if( usage != 0 )
             {
-                identityFile.remember( identity, blockStart );
+                identityFile.remember(reference, blockStart );
             }
             dataFile.seek( blockStart + blockSize );
         }
     }
 
-    private void writeIdentity( QualifiedIdentity identity ) throws IOException
+    private void writeIdentity( EntityReference reference) throws IOException
     {
-        byte[] idBytes = identity.toString().getBytes();
+        byte[] idBytes = reference.toString().getBytes();
         if( idBytes.length > identityMaxLength )
         {
             throw new EntityStoreException( "Identity is too long. Only " + identityMaxLength + " characters are allowed in this EntityStore." );
@@ -351,7 +351,7 @@ public class DataStore
         dataFile.write( id );
     }
 
-    private QualifiedIdentity readIdentity()
+    private EntityReference readIdentity()
         throws IOException
     {
         int idSize = dataFile.readByte();
@@ -362,10 +362,10 @@ public class DataStore
         byte[] idData = new byte[idSize];
         dataFile.read( idData );
         dataFile.skipBytes( identityMaxLength - idSize );
-        return QualifiedIdentity.parseQualifiedIdentity( new String( idData ) );
+        return EntityReference.parseEntityReference( new String( idData ) );
     }
 
-    public Iterator<QualifiedIdentity> iterator()
+    public Iterator<EntityReference> iterator()
     {
         File file = new File( dataDir, HEAP_DATA_FILENAME );
         try
@@ -380,14 +380,14 @@ public class DataStore
     }
 
     private static class NullIterator
-        implements Iterator<QualifiedIdentity>
+        implements Iterator<EntityReference>
     {
         public boolean hasNext()
         {
             return false;
         }
 
-        public QualifiedIdentity next()
+        public EntityReference next()
         {
             return null;
         }

@@ -16,81 +16,61 @@
  */
 package org.qi4j.entitystore.legacy;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Module;
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.entitystore.legacy.dbInitializer.DBInitializer;
 import org.qi4j.entitystore.legacy.internal.LegacyEntityState;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.entity.EntityNotFoundException;
-import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.*;
 import static org.qi4j.spi.entity.EntityStatus.LOADED;
 import static org.qi4j.spi.entity.EntityStatus.NEW;
-import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.UnknownEntityTypeException;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * JAVADOC: Figure out how does transaction supposed for all EntityStore methods.
  * JAVADOC: identity is a keyword in SQL. We need to have an alias for this identity property for query purposes.
  */
 public class LegacySqlEntityStore
-    implements EntityStore, Activatable
+        implements EntityStore, Activatable
 {
     private static final QualifiedName VERSION = QualifiedName.fromQN("VERSION");
     private static final QualifiedName LASTMODIFIED = QualifiedName.fromQN("LASTMODIFIED");
 
 
-    @Structure private Qi4jSPI spi;
-    @Structure private Module module;
+    @Structure
+    private Qi4jSPI spi;
+    @Structure
+    private Module module;
 
-    @This private Configuration<LegacySqlConfiguration> iBatisConfiguration;
+    @This
+    private Configuration<LegacySqlConfiguration> iBatisConfiguration;
     private LegacySqlClient config;
-
-    private Map<String, EntityType> entityTypes = new HashMap<String, EntityType>();
-
-    public void registerEntityType( EntityType entityType )
-    {
-        entityTypes.put( entityType.type(), entityType );
-    }
-
-    public EntityType getEntityType( String aEntityType )
-    {
-        return entityTypes.get( aEntityType );
-    }
 
     /**
      * Construct a new instance of entity state.
      *
-     * @param identity The identity. This argument must not be {@code null}.
+     * @param reference The identity. This argument must not be {@code null}.
      * @return The new entity state given the arguments.
      * @throws EntityStoreException Thrown if this service is not active.
      * @since 0.2.0
      */
-    public final EntityState newEntityState( final QualifiedIdentity identity )
-        throws EntityStoreException
+    public final EntityState newEntityState(final EntityReference reference)
+            throws EntityStoreException
     {
-        validateNotNull( "anIdentity", identity );
+        validateNotNull("anIdentity", reference);
 
         checkActivation();
 
-        EntityType type = getEntityType( identity );
-        return new LegacyEntityState( type, identity, new HashMap<QualifiedName, Object>(), 0L, System.currentTimeMillis(), NEW );
+        return new LegacyEntityState(null, reference, new HashMap<QualifiedName, Object>(), 0L, System.currentTimeMillis(), NEW);
     }
 
     /**
@@ -100,11 +80,11 @@ public class LegacySqlEntityStore
      * @since 0.1.0
      */
     private void checkActivation()
-        throws EntityStoreException
+            throws EntityStoreException
     {
-        if( config == null )
+        if (config == null)
         {
-            throw new EntityStoreException( "LegacySqlEntityStore not activated." );
+            throw new EntityStoreException("LegacySqlEntityStore not activated.");
         }
         config.checkActive();
     }
@@ -112,54 +92,54 @@ public class LegacySqlEntityStore
     /**
      * Get the entity state given the composite descriptor and identity.
      *
-     * @param anIdentity The entity identity. This argument must not be {@code null}.
+     * @param anReference The entity identity. This argument must not be {@code null}.
      * @return The entity state given the descriptor and identity.
      * @throws EntityStoreException    Thrown if retrieval failed.
      * @throws EntityNotFoundException Thrown if the entity does not exists.
      * @since 0.2.0
      */
-    public final EntityState getEntityState( final QualifiedIdentity anIdentity )
-        throws EntityStoreException
+    public final EntityState getEntityState(final EntityReference anReference)
+            throws EntityStoreException
     {
         checkActivation();
-        final Map<QualifiedName, Object> rawData = getRawData( anIdentity );
-        Long version = (Long) rawData.get( VERSION );
-        if( version == null )
+        final Map<QualifiedName, Object> rawData = getRawData(anReference);
+        Long version = (Long) rawData.get(VERSION);
+        if (version == null)
         {
-            version = new Long( 0 );
+            version = new Long(0);
         }
 
-        Long lastModified = (Long) rawData.get( LASTMODIFIED );
-        if( lastModified == null )
+        Long lastModified = (Long) rawData.get(LASTMODIFIED);
+        if (lastModified == null)
         {
             lastModified = System.currentTimeMillis();
         }
 
-        return new LegacyEntityState( getEntityType( anIdentity ), anIdentity, rawData, version, lastModified, LOADED );
+        return new LegacyEntityState(null, anReference, rawData, version, lastModified, LOADED);
     }
 
 
     /**
      * Returns raw data given the composite class.
      *
-     * @param anIdentity The identity. This argument must not be {@code null}.
+     * @param anReference The identity. This argument must not be {@code null}.
      * @return The raw data given input.
      * @throws EntityStoreException Thrown if retrieval failed.
      * @since 0.1.0
      */
-    private Map<QualifiedName, Object> getRawData( final QualifiedIdentity anIdentity )
-        throws EntityStoreException
+    private Map<QualifiedName, Object> getRawData(final EntityReference anReference)
+            throws EntityStoreException
     {
-        validateNotNull( "anIdentity", anIdentity );
+        validateNotNull("anReference", anReference);
         checkActivation();
-        final Map<String, Object> rawData = config.executeLoad( anIdentity );
-        if( rawData == null )
+        final Map<String, Object> rawData = config.executeLoad(anReference);
+        if (rawData == null)
         {
-            throw new EntityNotFoundException( this.toString(), anIdentity );
+            throw new EntityNotFoundException(anReference);
         }
 
         final Map<QualifiedName, Object> compositePropertyValues = new HashMap<QualifiedName, Object>();
-        for( Map.Entry<String, Object> stringObjectEntry : rawData.entrySet() )
+        for (Map.Entry<String, Object> stringObjectEntry : rawData.entrySet())
         {
             compositePropertyValues.put(QualifiedName.fromQN(stringObjectEntry.getKey()), stringObjectEntry.getValue());
         }
@@ -167,88 +147,74 @@ public class LegacySqlEntityStore
         return compositePropertyValues;
     }
 
-    private EntityType getEntityType( QualifiedIdentity identity )
-        throws UnknownEntityTypeException
-    {
-        EntityType type = entityTypes.get( identity.type() );
-        if( type == null )
-        {
-            throw new UnknownEntityTypeException( identity.type() );
-        }
-        return type;
-    }
-
-
     public final StateCommitter prepare(
-        final Iterable<EntityState> newStates,
-        final Iterable<EntityState> loadedStates,
-        final Iterable<QualifiedIdentity> removedStates )
-        throws EntityStoreException
+            final Iterable<EntityState> newStates,
+            final Iterable<EntityState> loadedStates,
+            final Iterable<EntityReference> removedStates)
+            throws EntityStoreException
     {
         checkActivation();
 
         config.startTransaction();
 
+/*
         for( final EntityState state : newStates )
         {
             Map<QualifiedName, Object> properties = getProperties( state );
             properties.put( VERSION, 1 );
             properties.put( LASTMODIFIED, System.currentTimeMillis() );
-            config.executeUpdate( "insert", state.qualifiedIdentity(), properties );
+            config.executeUpdate( "insert", state.identity(), properties );
         }
         for( final EntityState state : loadedStates )
         {
             Map<QualifiedName, Object> properties = getProperties( state );
             properties.put( VERSION, state.version() + 1 );
             properties.put( LASTMODIFIED, System.currentTimeMillis() );
-            config.executeUpdate( "update", state.qualifiedIdentity(), properties );
+            config.executeUpdate( "update", state.identity(), properties );
         }
-        for( final QualifiedIdentity identity : removedStates )
+        for( final EntityReference reference : removedStates )
         {
-            config.executeUpdate( "delete", identity, identity.identity() );
+            config.executeUpdate( "delete", reference, reference.identity() );
         }
+*/
 
         return config;
     }
 
 
-    private Map<QualifiedName, Object> getProperties( final EntityState state )
+    private Map<StateName, Object> getProperties(final EntityState state)
     {
-        final Map<QualifiedName, Object> result = new HashMap<QualifiedName, Object>();
-        for( final QualifiedName propertyName : state.propertyNames() )
+/*
+        final Map<StateName, Object> result = new HashMap<StateName, Object>();
+        for( final PropertyType propertyName : state.propertyTypes() )
         {
-            result.put( propertyName, state.getProperty( propertyName ) );
+            result.put( propertyName.qualifiedName(), state.getProperty( propertyName.qualifiedName() ) );
         }
-        for( final QualifiedName assocName : state.associationNames() )
+        for( final AssociationType assocName : state.associationTypes() )
         {
-            result.put( assocName, state.getAssociation( assocName ).identity() );
+            result.put( assocName.qualifiedName(), state.getAssociation( assocName.qualifiedName() ).identity() );
         }
-        for( final QualifiedName manyAssocName : state.manyAssociationNames() )
+        for( final ManyAssociationType manyAssocName : state.manyAssociationTypes() )
         {
-            final Collection<QualifiedIdentity> manyAssociation = state.getManyAssociation( manyAssocName );
-            result.put( manyAssocName, stringIdentifiersOf( manyAssociation ) );
+            final ManyAssociationState manyAssociation = state.getManyAssociation( manyAssocName.qualifiedName() );
+            result.put( manyAssocName.qualifiedName(), stringIdentifiersOf( manyAssociation ) );
         }
-        return result;
+*/
+        return null;
     }
 
-    private Collection<String> stringIdentifiersOf( final Collection<QualifiedIdentity> qualifiedIdentities )
+    private Collection<String> stringIdentifiersOf(final ManyAssociationState entityReferences)
     {
-        final Collection<String> identifiers = new ArrayList<String>( qualifiedIdentities.size() );
-        for( final QualifiedIdentity identity : qualifiedIdentities )
+        final Collection<String> identifiers = new ArrayList<String>(entityReferences.count());
+        for (final EntityReference reference : entityReferences)
         {
-            identifiers.add( identity.identity() );
+            identifiers.add(reference.identity());
         }
         return identifiers;
     }
 
-    /**
-     * Not supported.
-     *
-     * @return {@code null}.
-     */
-    public final Iterator<EntityState> iterator()
+    public void visitEntityStates(EntityStateVisitor visitor)
     {
-        return null;
     }
 
     /**
@@ -259,17 +225,17 @@ public class LegacySqlEntityStore
      * @since 0.1.0
      */
     public final void activate()
-        throws Exception
+            throws Exception
     {
         iBatisConfiguration.refresh();
         initializeDatabase();
         LegacySqlConfiguration configuration = iBatisConfiguration.configuration();
-        config = new LegacySqlClient( configuration.sqlMapConfigURL().get(), configuration.configProperties().get() );
+        config = new LegacySqlClient(configuration.sqlMapConfigURL().get(), configuration.configProperties().get());
         config.activate();
     }
 
     private void initializeDatabase()
-        throws SQLException, IOException
+            throws SQLException, IOException
     {
         final DBInitializer dbInitializer = new DBInitializer();
         LegacySqlConfiguration configuration = iBatisConfiguration.configuration();
@@ -287,9 +253,9 @@ public class LegacySqlEntityStore
      * @since 0.1.0
      */
     public final void passivate()
-        throws Exception
+            throws Exception
     {
-        if( config != null )
+        if (config != null)
         {
             config.passivate();
         }

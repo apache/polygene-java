@@ -16,126 +16,78 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import org.neo4j.api.core.NeoService;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
-import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.ManyAssociationState;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
 enum CollectionFactory implements BackendFactory
 {
-    SET( ManyAssociationType.ManyAssociationTypeEnum.SET, Duplicates.NOT_ALLOWED )
-        {
-            public <E> Collection<E> createBackend( Class<E> elementType )
+    LIST(Duplicates.NOT_ALLOWED)
             {
-                return new HashSet<E>();
-            }
-        },
-    LIST( ManyAssociationType.ManyAssociationTypeEnum.LIST )
-        {
-            @Override Collection<QualifiedIdentity> createNodeCollection( ManyAssociationFactory factory, DirectEntityState state, NeoService neo, NeoIdentityIndex idIndex )
-            {
-                return new DirectIdentityList( neo, idIndex, state, factory.getQualifiedName() );
-            }
+                @Override
+                ManyAssociationState createNodeCollection(ManyAssociationFactory factory, DirectEntityState state, NeoService neo, NeoIdentityIndex idIndex)
+                {
+                    return new DirectIdentityList(neo, idIndex, state, factory.getStateName());
+                }
 
-            @Override IndirectCollection createPreloadedCollection( Collection<QualifiedIdentity> manyAssociation )
-            {
-                return new IndirectIdentityList( (List<QualifiedIdentity>) manyAssociation );
-            }
+                IndirectCollection createPreloadedCollection(Collection<EntityReference> manyAssociation)
+                {
+                    return new IndirectIdentityList((List<EntityReference>) manyAssociation);
+                }
 
-            public <E> Collection<E> createBackend( Class<E> elementType )
-            {
-                return new ArrayList<E>();
-            }
-        },
-    GENERIC( ManyAssociationType.ManyAssociationTypeEnum.MANY, Duplicates.ALLOWED )
-        {
-            public <E> Collection<E> createBackend( Class<E> elementType )
-            {
-                return new LinkedList<E>();
-            }
-        };
+                public <E> Collection<E> createBackend(Class<E> elementType)
+                {
+                    return null;
+                }
+            };
 
     private static enum Duplicates implements DuplicationChecker
     {
         ALLOWED
-            {
-                public boolean goodToAdd( Iterable<QualifiedIdentity> iterable, QualifiedIdentity qualifiedIdentity )
                 {
-                    return true;
-                }
-            },
-        NOT_ALLOWED
-            {
-                public boolean goodToAdd( Iterable<QualifiedIdentity> iterable, QualifiedIdentity qualifiedIdentity )
-                {
-                    for( QualifiedIdentity identity : iterable )
+                    public boolean goodToAdd(Iterable<EntityReference> iterable, EntityReference entityReference)
                     {
-                        if( identity.equals( qualifiedIdentity ) )
-                        {
-                            return false;
-                        }
+                        return true;
                     }
-                    return true;
+                },
+        NOT_ALLOWED
+                {
+                    public boolean goodToAdd(Iterable<EntityReference> iterable, EntityReference entityReference)
+                    {
+                        for (EntityReference reference : iterable)
+                        {
+                            if (reference.equals(entityReference))
+                            {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
                 }
-            }
     }
 
-    private final ManyAssociationType.ManyAssociationTypeEnum type;
     private final DuplicationChecker checker;
 
-    private CollectionFactory( ManyAssociationType.ManyAssociationTypeEnum type )
+    CollectionFactory(DuplicationChecker checker)
     {
-        this( type, null );
-    }
-
-    CollectionFactory( ManyAssociationType.ManyAssociationTypeEnum type, DuplicationChecker checker )
-    {
-        this.type = type;
         this.checker = checker;
     }
 
-    String typeString()
+    static CollectionFactory getFactoryFor()
     {
-        return type.name();
+        return LIST;
     }
 
-    static CollectionFactory getFactoryFor( ManyAssociationType model )
+    ManyAssociationState createNodeCollection(ManyAssociationFactory factory, DirectEntityState state, NeoService neo, NeoIdentityIndex idIndex)
     {
-        return getFactoryFor( model.associationType() );
+        return new DirectUnorderedCollection(idIndex, checker, state, factory.getStateName());
     }
 
-    static CollectionFactory getFactoryFor( String typeString )
-    {
-        return getFactoryFor( ManyAssociationType.ManyAssociationTypeEnum.valueOf( typeString ) );
-    }
-
-    private static CollectionFactory getFactoryFor( ManyAssociationType.ManyAssociationTypeEnum targetType )
-    {
-        for( CollectionFactory factory : values() )
-        {
-            if( factory.type == targetType )
-            {
-                return factory;
-            }
-        }
-        throw new IllegalArgumentException( "Unknown Association type." );
-    }
-
-    Collection<QualifiedIdentity> createNodeCollection( ManyAssociationFactory factory, DirectEntityState state, NeoService neo, NeoIdentityIndex idIndex )
-    {
-        return new DirectUnorderedCollection( idIndex, checker, state, factory.getQualifiedName() );
-    }
-
-    IndirectCollection createPreloadedCollection( Collection<QualifiedIdentity> manyAssociation )
-    {
-        return new IndirectUnorderedCollection( this, manyAssociation );
-    }
 }

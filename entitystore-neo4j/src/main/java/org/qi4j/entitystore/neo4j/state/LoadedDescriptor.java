@@ -16,17 +16,18 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
+import org.neo4j.api.core.Node;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.StateName;
+import org.qi4j.spi.entity.association.AssociationType;
+import org.qi4j.spi.entity.association.ManyAssociationType;
+import org.qi4j.spi.property.PropertyType;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.neo4j.api.core.Node;
-import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.api.common.QualifiedName;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -39,37 +40,37 @@ public class LoadedDescriptor
     private static final String PROPERTIES_PROPERTY_KEY = "<qualified property names>";
     private static final String MANY_ASSOCIATIONS_PROPERTY_KEY = "<qualified many association names>";
 
-    public static LoadedDescriptor loadDescriptor( EntityType entityType, Node descriptionNode )
+    public static LoadedDescriptor loadDescriptor(EntityType entityType, Node descriptionNode)
     {
-        LoadedDescriptor result = cache.get( descriptionNode );
-        if( result == null )
+        LoadedDescriptor result = cache.get(descriptionNode);
+        if (result == null)
         {
-            synchronized( cache )
+            synchronized (cache)
             {
-                result = cache.get( descriptionNode );
-                if( result == null )
+                result = cache.get(descriptionNode);
+                if (result == null)
                 {
-                    result = new LoadedDescriptor( entityType, descriptionNode );
-                    cache.put( descriptionNode, result );
+                    result = new LoadedDescriptor(entityType, descriptionNode);
+                    cache.put(descriptionNode, result);
                 }
             }
         }
-        result.verify( entityType );
+        result.verify(entityType);
         return result;
     }
 
-    public static LoadedDescriptor loadDescriptor( Node descriptionNode )
+    public static LoadedDescriptor loadDescriptor(Node descriptionNode)
     {
-        LoadedDescriptor result = cache.get( descriptionNode );
-        if( result == null )
+        LoadedDescriptor result = cache.get(descriptionNode);
+        if (result == null)
         {
-            synchronized( cache )
+            synchronized (cache)
             {
-                result = cache.get( descriptionNode );
-                if( result == null )
+                result = cache.get(descriptionNode);
+                if (result == null)
                 {
-                    result = new LoadedDescriptor( descriptionNode );
-                    cache.put( descriptionNode, result );
+                    result = new LoadedDescriptor(descriptionNode);
+                    cache.put(descriptionNode, result);
                 }
             }
         }
@@ -78,28 +79,28 @@ public class LoadedDescriptor
 
     private final Node descriptionNode;
     private final List<ManyAssociationFactory> manyAssociations = new LinkedList<ManyAssociationFactory>();
-    private final List<QualifiedName> associations = new LinkedList<QualifiedName>();
-    private final List<QualifiedName> properties = new LinkedList<QualifiedName>();
+    private final List<StateName> associations = new LinkedList<StateName>();
+    private final List<StateName> properties = new LinkedList<StateName>();
 
-    private LoadedDescriptor( EntityType descriptor, Node descriptionNode )
+    private LoadedDescriptor(EntityType descriptor, Node descriptionNode)
     {
         this.descriptionNode = descriptionNode;
-        for( AssociationType model : descriptor.associations() )
+        for (AssociationType model : descriptor.associations())
         {
-            associations.add( model.qualifiedName() );
+            associations.add(model.stateName());
         }
-        for( ManyAssociationType model : descriptor.manyAssociations() )
+        for (ManyAssociationType model : descriptor.manyAssociations())
         {
-            manyAssociations.add( ManyAssociationFactory.getFactory( model ) );
+            manyAssociations.add(ManyAssociationFactory.getFactory(model));
         }
-        for( PropertyType model : descriptor.properties() )
+        for (PropertyType model : descriptor.properties())
         {
-            properties.add( model.qualifiedName() );
+            properties.add(model.stateName());
         }
         store();
     }
 
-    public LoadedDescriptor( Node descriptionNode )
+    public LoadedDescriptor(Node descriptionNode)
     {
         this.descriptionNode = descriptionNode;
         load();
@@ -107,21 +108,21 @@ public class LoadedDescriptor
 
     private void load()
     {
-        String[] associations = (String[]) descriptionNode.getProperty( ASSOCIATIONS_PROPERTY_KEY );
-        String[] properties = (String[]) descriptionNode.getProperty( ASSOCIATIONS_PROPERTY_KEY );
-        String[] manyAssociations = (String[]) descriptionNode.getProperty( ASSOCIATIONS_PROPERTY_KEY );
-        for( String association : associations )
+        String[] associations = (String[]) descriptionNode.getProperty(ASSOCIATIONS_PROPERTY_KEY);
+        String[] properties = (String[]) descriptionNode.getProperty(ASSOCIATIONS_PROPERTY_KEY);
+        String[] manyAssociations = (String[]) descriptionNode.getProperty(ASSOCIATIONS_PROPERTY_KEY);
+        for (String association : associations)
         {
-            this.associations.add(QualifiedName.fromQN(association));
+            this.associations.add(new StateName(association));
         }
-        for( String property : properties )
+        for (String property : properties)
         {
-            this.properties.add(QualifiedName.fromQN(property));
+            this.properties.add(new StateName(property));
         }
-        for( String association : manyAssociations )
+        for (String association : manyAssociations)
         {
-            String typeString = (String) descriptionNode.getProperty( FACTORY_TYPE_PROPERTY_PREFIX + association );
-            this.manyAssociations.add( ManyAssociationFactory.load(QualifiedName.fromQN(association), typeString) );
+            String typeString = (String) descriptionNode.getProperty(FACTORY_TYPE_PROPERTY_PREFIX + association);
+            this.manyAssociations.add(ManyAssociationFactory.load(new StateName(association), typeString));
         }
     }
 
@@ -129,66 +130,66 @@ public class LoadedDescriptor
     {
         String[] associations = new String[this.associations.size()];
         int idx = 0;
-        for( QualifiedName association : this.associations )
+        for (StateName association : this.associations)
         {
             associations[idx++] = association.toString();
         }
         String[] properties = new String[this.properties.size()];
         idx = 0;
-        for( QualifiedName property : this.properties )
+        for (StateName property : this.properties)
         {
             properties[idx++] = property.toString();
         }
         String[] manyAssociations = new String[this.manyAssociations.size()];
         int index = 0;
-        for( ManyAssociationFactory factory : this.manyAssociations )
+        for (ManyAssociationFactory factory : this.manyAssociations)
         {
-            QualifiedName qName = factory.getQualifiedName();
-            manyAssociations[ index++ ] = qName.toString();
-            descriptionNode.setProperty( FACTORY_TYPE_PROPERTY_PREFIX + qName, factory.typeString() );
+            StateName qName = factory.getStateName();
+            manyAssociations[index++] = qName.toString();
+            descriptionNode.setProperty(FACTORY_TYPE_PROPERTY_PREFIX + qName, factory.typeString());
         }
-        descriptionNode.setProperty( ASSOCIATIONS_PROPERTY_KEY, associations );
-        descriptionNode.setProperty( PROPERTIES_PROPERTY_KEY, properties );
-        descriptionNode.setProperty( MANY_ASSOCIATIONS_PROPERTY_KEY, manyAssociations );
+        descriptionNode.setProperty(ASSOCIATIONS_PROPERTY_KEY, associations);
+        descriptionNode.setProperty(PROPERTIES_PROPERTY_KEY, properties);
+        descriptionNode.setProperty(MANY_ASSOCIATIONS_PROPERTY_KEY, manyAssociations);
     }
 
-    private void verify( EntityType descriptor )
+    private void verify(EntityType descriptor)
     {
         // TODO: implement means of verifying that the loaded descriprot matches the entity type
     }
 
     Iterable<ManyAssociationFactory> getManyAssociationFactories()
     {
-        return new ImmutableIterable<ManyAssociationFactory>( manyAssociations );
+        return new ImmutableIterable<ManyAssociationFactory>(manyAssociations);
     }
 
-    Iterable<QualifiedName> getPropertyNames()
+    Iterable<StateName> getPropertyNames()
     {
-        return new ImmutableIterable<QualifiedName>( properties );
+        return new ImmutableIterable<StateName>(properties);
     }
 
-    Iterable<QualifiedName> getAssociationNames()
+    Iterable<StateName> getAssociationNames()
     {
-        return new ImmutableIterable<QualifiedName>( associations );
+        return new ImmutableIterable<StateName>(associations);
     }
 
-    Iterable<QualifiedName> getManyAssociationNames()
+    Iterable<StateName> getManyAssociationNames()
     {
-        return new Iterable<QualifiedName>()
+        return new Iterable<StateName>()
         {
-            public Iterator<QualifiedName> iterator()
+            public Iterator<StateName> iterator()
             {
                 final Iterator<ManyAssociationFactory> iter = manyAssociations.iterator();
-                return new Iterator<QualifiedName>()
+                return new Iterator<StateName>()
                 {
                     public boolean hasNext()
                     {
                         return iter.hasNext();
                     }
 
-                    public QualifiedName next()
+                    public StateName next()
                     {
-                        return iter.next().getQualifiedName();
+                        return iter.next().getStateName();
                     }
 
                     public void remove()
@@ -204,7 +205,7 @@ public class LoadedDescriptor
     {
         private final Iterable<T> original;
 
-        public ImmutableIterable( Iterable<T> original )
+        public ImmutableIterable(Iterable<T> original)
         {
             this.original = original;
         }

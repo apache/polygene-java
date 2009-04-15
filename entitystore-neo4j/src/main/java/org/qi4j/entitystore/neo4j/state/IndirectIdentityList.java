@@ -16,55 +16,77 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
-import java.util.AbstractList;
+import org.qi4j.api.entity.EntityReference;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
-public class IndirectIdentityList extends AbstractList<QualifiedIdentity> implements IndirectCollection
+public class IndirectIdentityList implements IndirectCollection
 {
     private final List<ListElement> backend;
-    private List<QualifiedIdentity> underlyingList;
+    private List<EntityReference> underlyingList;
 
-    public IndirectIdentityList( List<QualifiedIdentity> underlyingList )
+    public IndirectIdentityList(List<EntityReference> underlyingList)
     {
         this.underlyingList = underlyingList;
-        backend = new ArrayList<ListElement>( underlyingList.size() );
-        Iterator<QualifiedIdentity> iter = underlyingList.iterator();
-        for( int i = 0; iter.hasNext(); i++ )
+        backend = new ArrayList<ListElement>(underlyingList.size());
+        Iterator<EntityReference> iter = underlyingList.iterator();
+        for (int i = 0; iter.hasNext(); i++)
         {
-            backend.add( new ListElement( iter.next(), i ) );
+            backend.add(new ListElement(iter.next(), i));
         }
     }
 
-    public QualifiedIdentity get( int i )
+    public int count()
     {
-        return backend.get( i ).value;
+        return backend.size();
     }
 
-    public QualifiedIdentity set( int i, QualifiedIdentity qualifiedIdentity )
+    public boolean contains(EntityReference entityReference)
     {
-        ListElement old = backend.get( i );
-        if( old.value.equals( qualifiedIdentity ) )
+        return backend.contains(entityReference);
+    }
+
+    public boolean remove(EntityReference entityReference)
+    {
+        return backend.remove(entityReference);
+    }
+
+    public Iterator<EntityReference> iterator()
+    {
+        return underlyingList.iterator();
+    }
+
+    public EntityReference get(int i)
+    {
+        return backend.get(i).value;
+    }
+
+
+    public EntityReference set(int i, EntityReference entityReference)
+    {
+        ListElement old = backend.get(i);
+        if (old.value.equals(entityReference))
         {
-            return qualifiedIdentity;
+            return entityReference;
         }
-        return backend.set( i, new ListElement( qualifiedIdentity ) ).value;
+        return backend.set(i, new ListElement(entityReference)).value;
     }
 
-    public void add( int i, QualifiedIdentity qualifiedIdentity )
+    public boolean add(int i, EntityReference entityReference)
     {
-        backend.add( i, new ListElement( qualifiedIdentity ) );
+        backend.add(i, new ListElement(entityReference));
+        return true;
     }
 
-    public QualifiedIdentity remove( int i )
+    public EntityReference remove(int i)
     {
-        return backend.remove( i ).value;
+        return backend.remove(i).value;
     }
 
     public int size()
@@ -75,17 +97,16 @@ public class IndirectIdentityList extends AbstractList<QualifiedIdentity> implem
     public void prepareCommit()
     {
         int next = 0;
-        ListIterator<QualifiedIdentity> iter = underlyingList.listIterator();
-        for( ListElement element : backend )
+        ListIterator<EntityReference> iter = underlyingList.listIterator();
+        for (ListElement element : backend)
         {
-            if( element.index < 0 )
+            if (element.index < 0)
             {
-                iter.add( element.value );
-            }
-            else
+                iter.add(element.value);
+            } else
             {
                 iter.next();
-                while( element.index > next )
+                while (element.index > next)
                 {
                     iter.remove();
                     iter.next();
@@ -94,7 +115,7 @@ public class IndirectIdentityList extends AbstractList<QualifiedIdentity> implem
                 next++;
             }
         }
-        while( iter.hasNext() )
+        while (iter.hasNext())
         {
             iter.next();
             iter.remove();
@@ -103,18 +124,18 @@ public class IndirectIdentityList extends AbstractList<QualifiedIdentity> implem
 
     private static class ListElement
     {
-        private final QualifiedIdentity value;
+        private final EntityReference value;
         private final int index;
 
-        ListElement( QualifiedIdentity id, int index )
+        ListElement(EntityReference id, int index)
         {
             this.value = id;
             this.index = index;
         }
 
-        ListElement( QualifiedIdentity id )
+        ListElement(EntityReference id)
         {
-            this( id, -1 );
+            this(id, -1);
         }
     }
 

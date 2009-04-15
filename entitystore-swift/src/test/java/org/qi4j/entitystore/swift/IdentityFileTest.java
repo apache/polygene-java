@@ -22,7 +22,7 @@ import java.io.IOException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.entitystore.swift.IdentityFile;
 import org.qi4j.entitystore.swift.IdentityTooLongException;
 
@@ -48,9 +48,9 @@ public class IdentityFileTest
         idFile.mkdirs();
         file = IdentityFile.create( idFile, 64, 1000 );
         long value = 9783249823L;
-        QualifiedIdentity identity = createIdentity( "SomeIdentity" );
-        file.remember( identity, value );
-        long recalled = file.find( identity );
+        EntityReference reference = createIdentity( "SomeIdentity" );
+        file.remember(reference, value );
+        long recalled = file.find(reference);
         Assert.assertEquals( "Wrong position retrieved for item.", value, recalled );
     }
 
@@ -66,14 +66,14 @@ public class IdentityFileTest
         for( int i = 0; i < 50; i++ )
         {
             pos[ i ] = (long) ( Math.random() * Long.MAX_VALUE );
-            QualifiedIdentity identity = createIdentity( "Identity-" + i );
-            file.remember( identity, pos[ i ] );
+            EntityReference reference = createIdentity( "Identity-" + i );
+            file.remember(reference, pos[ i ] );
         }
 
         for( int i = 0; i < 50; i++ )
         {
-            QualifiedIdentity identity = createIdentity( "Identity-" + i );
-            long recalled = file.find( identity );
+            EntityReference reference = createIdentity( "Identity-" + i );
+            long recalled = file.find(reference);
             Assert.assertEquals( "Wrong position retrieved for item " + i + ".", pos[ i ], recalled );
         }
     }
@@ -87,9 +87,9 @@ public class IdentityFileTest
         file = IdentityFile.create( idFile, 24, 1000 );
         try
         {
-            QualifiedIdentity identity = createIdentity( "12345678901" );
-            file.remember( identity, 827349813743908274L );
-            Assert.fail( "Should not allow this long identity." );
+            EntityReference reference = createIdentity( "12345678901" );
+            file.remember(reference, 827349813743908274L );
+            Assert.fail( "Should not allow this long reference." );
         }
         catch( IdentityTooLongException e )
         {
@@ -108,14 +108,14 @@ public class IdentityFileTest
         for( int i = 0; i < 150; i++ )
         {
             pos[ i ] = (long) ( Math.random() * Long.MAX_VALUE );
-            QualifiedIdentity identity = createIdentity( "Identity-" + i );
-            file.remember( identity, pos[ i ] );
+            EntityReference reference = createIdentity( "Identity-" + i );
+            file.remember(reference, pos[ i ] );
         }
 
         for( int i = 0; i < 150; i++ )
         {
-            QualifiedIdentity identity = createIdentity( "Identity-" + i );
-            long recalled = file.find( identity );
+            EntityReference reference = createIdentity( "Identity-" + i );
+            long recalled = file.find(reference);
             Assert.assertEquals( "Wrong position retrieved for item " + i + ".", pos[ i ], recalled );
         }
     }
@@ -131,20 +131,20 @@ public class IdentityFileTest
         for( int i = 0; i < 150; i++ )
         {
             pos[ i ] = (long) ( Math.random() * Long.MAX_VALUE );
-            QualifiedIdentity identity = createIdentity( "Identity-" + i );
-            file.remember( identity, pos[ i ] );
+            EntityReference reference = createIdentity( "Identity-" + i );
+            file.remember(reference, pos[ i ] );
         }
 
         for( int i = 0; i < 150; i++ )
         {
-            QualifiedIdentity identity = createIdentity( "Identity-" + i );
-            file.drop( identity );
+            EntityReference reference = createIdentity( "Identity-" + i );
+            file.drop(reference);
         }
 
         for( int i = 0; i < 150; i++ )
         {
-            QualifiedIdentity identity = createIdentity( "Identity-" + i );
-            Assert.assertEquals( "Identity entry not gone.", -1, file.find( identity ) );
+            EntityReference reference = createIdentity( "Identity-" + i );
+            Assert.assertEquals( "Identity entry not gone.", -1, file.find(reference) );
         }
     }
 
@@ -174,8 +174,8 @@ public class IdentityFileTest
         file.delete();
     }
 
-    private QualifiedIdentity createIdentity( String identity )
+    private EntityReference createIdentity( String identity )
     {
-        return QualifiedIdentity.parseQualifiedIdentity( "org.qi4j.entity.test.Data:" + identity );
+        return EntityReference.parseEntityReference( "org.qi4j.entity.test.Data:" + identity );
     }
 }

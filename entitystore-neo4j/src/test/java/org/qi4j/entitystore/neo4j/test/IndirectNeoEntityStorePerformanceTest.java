@@ -16,13 +16,11 @@
  */
 package org.qi4j.entitystore.neo4j.test;
 
-import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
-import org.qi4j.entitystore.neo4j.test.MakeBelieveEntity;
-import org.qi4j.entitystore.neo4j.test.TestBase;
-import org.qi4j.entitystore.neo4j.test.TestExecutor;
 import org.qi4j.entitystore.neo4j.Configuration;
+
+import java.util.Date;
 
 /**
  * @author Peter Neubauer (peter@neubauer.se)
@@ -35,13 +33,13 @@ public class IndirectNeoEntityStorePerformanceTest extends TestBase
 
     public IndirectNeoEntityStorePerformanceTest()
     {
-        this( Configuration.INDIRECT );
+        this(Configuration.INDIRECT);
     }
 
-    protected IndirectNeoEntityStorePerformanceTest( Configuration config )
+    protected IndirectNeoEntityStorePerformanceTest(Configuration config)
     {
-        super( config, config == Configuration.INDIRECT, true,
-               MakeBelieveEntity.class );
+        super(config, config == Configuration.INDIRECT, true,
+                MakeBelieveEntity.class);
     }
 
     @Test
@@ -50,47 +48,47 @@ public class IndirectNeoEntityStorePerformanceTest extends TestBase
         final int number = 5000;
         final String[] identities = new String[number];
         //first, insert
-        perform( new TestExecutor()
+        perform(new TestExecutor()
         {
 
             protected void setup() throws Exception
             {
                 before = new Date();
-                for( int i = 0; i < number; i++ )
+                for (int i = 0; i < number; i++)
                 {
                     // Create entity
-                    MakeBelieveEntity believe = newEntity( MakeBelieveEntity.class );
-                    identities[ i ] = believe.identity().get();
+                    MakeBelieveEntity believe = newEntity(MakeBelieveEntity.class);
+                    identities[i] = believe.identity().get();
                     // Set up
-                    believe.imaginaryName().set( NAME1 );
-                    believe.imaginaryNumber().set( number );
-                    believe.realNumber().set( 42.0 );
+                    believe.imaginaryName().set(NAME1);
+                    believe.imaginaryNumber().set(number);
+                    believe.realNumber().set(42.0);
                 }
-                printResult( "Populating UoW with " + number
-                             + " entities in Qi4j't\t", before, new Date() );
+                printResult("Populating UoW with " + number
+                        + " entities in Qi4j't\t", before, new Date());
                 before = new Date();
             }
 
             protected void verify() throws Exception
             {
                 after = new Date();
-                printResult( "Neo4j persisting a UoW with " + number
-                             + " entities\t", before, after );
+                printResult("Neo4j persisting a UoW with " + number
+                        + " entities\t", before, after);
                 before = new Date();
-                for( String identity : identities )
+                for (String identity : identities)
                 {
-                    MakeBelieveEntity entity = getReference( identity, MakeBelieveEntity.class );
-                    Assert.assertNotNull( entity );
+                    MakeBelieveEntity entity = find(identity, MakeBelieveEntity.class);
+                    Assert.assertNotNull(entity);
                     entity.imaginaryName().get();
                     entity.imaginaryNumber().get();
                     entity.realNumber().get();
                     //System.out.println(identity);
                 }
                 after = new Date();
-                printResult( "Reading in " + number + " entities from Neo4j:\t\t", before, after );
+                printResult("Reading in " + number + " entities from Neo4j:\t\t", before, after);
             }
 
-        } );
+        });
 
     }
 
@@ -100,41 +98,41 @@ public class IndirectNeoEntityStorePerformanceTest extends TestBase
         final int number = 5000;
         final String[] identities = new String[number];
         //first, insert
-        perform( new TestExecutor()
+        perform(new TestExecutor()
         {
 
             protected void setup() throws Exception
             {
                 before = new Date();
-                MakeBelieveEntity believe = newEntity( MakeBelieveEntity.class );
+                MakeBelieveEntity believe = newEntity(MakeBelieveEntity.class);
                 int i = 0;
-                identities[ i++ ] = believe.identity().get();
-                for( ; i < number; i++ )
+                identities[i++] = believe.identity().get();
+                for (; i < number; i++)
                 {
                     // Create entity
-                    believe = newEntity( MakeBelieveEntity.class );
-                    identities[ i ] = believe.identity().get();
+                    believe = newEntity(MakeBelieveEntity.class);
+                    identities[i] = believe.identity().get();
                     // Set up
-                    believe.imaginaryName().set( NAME1 );
-                    believe.imaginaryNumber().set( number );
-                    believe.realNumber().set( 42.0 );
-                    believe.archNemesis().set( getReference( identities[ i - 1 ], MakeBelieveEntity.class ) );
+                    believe.imaginaryName().set(NAME1);
+                    believe.imaginaryNumber().set(number);
+                    believe.realNumber().set(42.0);
+                    believe.archNemesis().set(find(identities[i - 1], MakeBelieveEntity.class));
                 }
-                printResult( "Populating UoW with " + number
-                             + " entities in Qi4j't\t", before, new Date() );
+                printResult("Populating UoW with " + number
+                        + " entities in Qi4j't\t", before, new Date());
                 before = new Date();
             }
 
             protected void verify() throws Exception
             {
                 after = new Date();
-                printResult( "Neo4j persisting a UoW with " + number
-                             + " entities\t", before, after );
+                printResult("Neo4j persisting a UoW with " + number
+                        + " entities\t", before, after);
                 before = new Date();
-                for( String identity : identities )
+                for (String identity : identities)
                 {
-                    MakeBelieveEntity entity = getReference( identity, MakeBelieveEntity.class );
-                    Assert.assertNotNull( entity );
+                    MakeBelieveEntity entity = find(identity, MakeBelieveEntity.class);
+                    Assert.assertNotNull(entity);
                     entity.imaginaryName().get();
                     entity.imaginaryNumber().get();
                     entity.realNumber().get();
@@ -142,16 +140,16 @@ public class IndirectNeoEntityStorePerformanceTest extends TestBase
                     //System.out.println(identity);
                 }
                 after = new Date();
-                printResult( "Reading in " + number + " entities from Neo4j:\t\t", before, after );
+                printResult("Reading in " + number + " entities from Neo4j:\t\t", before, after);
             }
 
-        } );
+        });
 
     }
 
-    private static void printResult( String name, Date before, Date after )
+    private static void printResult(String name, Date before, Date after)
     {
-        System.out.println( name
-                            + ( after.getTime() - before.getTime() ) + "ms" );
+        System.out.println(name
+                + (after.getTime() - before.getTime()) + "ms");
     }
 }

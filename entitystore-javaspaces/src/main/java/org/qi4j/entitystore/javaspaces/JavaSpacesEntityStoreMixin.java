@@ -16,267 +16,121 @@
  */
 package org.qi4j.entitystore.javaspaces;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.Iterator;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.library.locking.WriteLock;
+import org.qi4j.api.util.Streams;
 import org.qi4j.library.spaces.Space;
 import org.qi4j.library.spaces.SpaceException;
-import org.qi4j.library.spaces.SpaceTransaction;
-import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
-import org.qi4j.spi.entity.helpers.DefaultEntityState;
-import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.EntityTypeRegistryMixin;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.serialization.SerializableState;
+import org.qi4j.spi.entity.helpers.MapEntityStore;
+import org.qi4j.spi.service.ServiceDescriptor;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Java Spaces implementation of EntityStore.
  */
-public class JavaSpacesEntityStoreMixin extends EntityTypeRegistryMixin
-    implements EntityStore
+public class JavaSpacesEntityStoreMixin
+        implements MapEntityStore
 {
-    @Uses private ServiceDescriptor descriptor;
-    @Service private Space space;
+    @Uses
+    private ServiceDescriptor descriptor;
+    @Service
+    private Space space;
 
-    @WriteLock
-    public EntityState newEntityState( QualifiedIdentity identity ) throws EntityStoreException
+    public boolean contains(EntityReference entityReference) throws EntityStoreException
     {
-        EntityType entityType = getEntityType( identity.type() );
-
-        try
-        {
-            StorageEntry entry = (StorageEntry) space.readIfExists( identity.toString() );
-            if( entry != null )
-            {
-                throw new EntityAlreadyExistsException( descriptor.identity(), identity );
-            }
-        }
-        catch( SpaceException e )
-        {
-            throw new EntityStoreException( e );
-        }
-        return new DefaultEntityState( identity, entityType );
+        StorageEntry entry = (StorageEntry) space.readIfExists(entityReference.toString());
+        return entry != null;
     }
 
-    @WriteLock
-    public EntityState getEntityState( QualifiedIdentity identity ) throws EntityStoreException
-    {
-        EntityType entityType = getEntityType( identity.type() );
-
-        try
-        {
-
-            try
-            {
-                SerializableState serializableState = loadSerializableState( identity );
-                DefaultEntityState state = new DefaultEntityState( serializableState.version(),
-                                                                   serializableState.lastModified(),
-                                                                   identity,
-                                                                   EntityStatus.LOADED,
-                                                                   entityType,
-                                                                   serializableState.properties(),
-                                                                   serializableState.associations(),
-                                                                   serializableState.manyAssociations() );
-                return state;
-            }
-            catch( ClassNotFoundException e )
-            {
-                throw new EntityStoreException( e );
-            }
-        }
-        catch( IOException e )
-        {
-            throw new EntityStoreException( e );
-        }
-    }
-
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException, ConcurrentEntityStateModificationException
-    {
-        final SpaceTransaction tx = space.newTransaction();
-        long lastModified = System.currentTimeMillis();
-        try
-        {
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            storeNewStates( newStates, lastModified, bout );
-            storeLoadedStates( loadedStates, lastModified, bout );
-            removeStates( removedStates );
-        }
-        catch( Throwable e )
-        {
-            if( e instanceof EntityStoreException )
-            {
-                throw (EntityStoreException) e;
-            }
-            else
-            {
-                throw new EntityStoreException( e );
-            }
-        }
-
-        return new StateCommitter()
-        {
-            public void commit()
-            {
-                tx.commit();
-            }
-
-            public void cancel()
-            {
-                tx.abort();
-            }
-        };
-    }
-
-    public Iterator<EntityState> iterator()
-    {
-        return new Iterator<EntityState>()
-        {
-            public boolean hasNext()
-            {
-                return false;
-            }
-
-            public EntityState next()
-            {
-                return null;
-            }
-
-            public void remove()
-            {
-            }
-        };
-    }
-
-    private SerializableState loadSerializableState( QualifiedIdentity identity )
-        throws IOException, ClassNotFoundException
+    public void get(EntityReference entityReference, OutputStream out) throws EntityStoreException
     {
         try
         {
-            StorageEntry entry = (StorageEntry) space.readIfExists( identity.toString() );
+            StorageEntry entry = (StorageEntry) space.readIfExists(entityReference.toString());
             byte[] serializedState = entry.getData();
-            if( serializedState == null )
+            if (serializedState == null)
             {
-                throw new EntityNotFoundException( descriptor.identity(), identity );
+                throw new EntityNotFoundException(entityReference);
             }
-            ByteArrayInputStream bin = new ByteArrayInputStream( serializedState );
-            ObjectInputStream oin = new ObjectInputStream( bin );
-            return (SerializableState) oin.readObject();
+            out.write(serializedState);
         }
-        catch( SpaceException e )
+        catch (Exception e)
         {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private void removeStates( Iterable<QualifiedIdentity> removedStates )
-        throws IOException
-    {
-        for( QualifiedIdentity removedState : removedStates )
-        {
-            try
-            {
-                space.takeIfExists( removedState.toString() );
-            }
-            catch( SpaceException e )
-            {
-                e.printStackTrace();
-            }
+            throw new EntityStoreException(e);
         }
     }
 
-    private void storeLoadedStates( Iterable<EntityState> loadedStates, long lastModified, ByteArrayOutputStream bout )
-        throws IOException
+    public void update(Map<EntityReference, InputStream> newEntities, Map<EntityReference, InputStream> updatedEntities, Iterable<EntityReference> removedEntities)
     {
-        for( EntityState entityState : loadedStates )
+        for (Map.Entry<EntityReference, InputStream> entityReferenceInputStreamEntry : newEntities.entrySet())
         {
-            DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
+            put(entityReferenceInputStreamEntry.getKey(), entityReferenceInputStreamEntry.getValue());
+        }
 
-            if( entityStateInstance.isModified() )
-            {
-                long newVersion = entityState.version() + 1;
-                SerializableState state = new SerializableState( entityState.qualifiedIdentity(),
-                                                                 newVersion,
-                                                                 lastModified,
-                                                                 entityStateInstance.getProperties(),
-                                                                 entityStateInstance.getAssociations(),
-                                                                 entityStateInstance.getManyAssociations() );
-                ObjectOutputStream out = new ObjectOutputStream( bout );
-                out.writeObject( state );
-                out.close();
+        for (Map.Entry<EntityReference, InputStream> entityReferenceInputStreamEntry : updatedEntities.entrySet())
+        {
+            put(entityReferenceInputStreamEntry.getKey(), entityReferenceInputStreamEntry.getValue());
+        }
 
-                QualifiedIdentity identity = entityState.qualifiedIdentity();
-                byte[] stateArray = bout.toByteArray();
-                try
-                {
-                    StorageEntry data = (StorageEntry) space.readIfExists( identity.toString() );
-                    data.setData( stateArray );
-                    space.write( identity.toString(), data );
-                }
-                catch( SpaceException e )
-                {
-                    e.printStackTrace();
-                }
-                bout.reset();
-            }
+        for (EntityReference removedEntity : removedEntities)
+        {
+            remove(removedEntity);
         }
     }
 
-    private void storeNewStates( Iterable<EntityState> newStates, long lastModified, ByteArrayOutputStream bout )
-        throws IOException
+    public void put(EntityReference entityReference, InputStream in) throws EntityStoreException
     {
-        for( EntityState entityState : newStates )
+        try
         {
-            DefaultEntityState entityStateInstance = (DefaultEntityState) entityState;
-            SerializableState state = new SerializableState( entityState.qualifiedIdentity(),
-                                                             entityState.version(),
-                                                             lastModified,
-                                                             entityStateInstance.getProperties(),
-                                                             entityStateInstance.getAssociations(),
-                                                             entityStateInstance.getManyAssociations() );
-            ObjectOutputStream out = new ObjectOutputStream( bout );
-            out.writeObject( state );
-            out.close();
-            byte[] stateArray = bout.toByteArray();
-            QualifiedIdentity identity = entityState.qualifiedIdentity();
-            StorageEntry data = new StorageEntry( identity );
-            data.setData( stateArray );
-            try
-            {
-                space.write( identity.toString(), data );
-            }
-            catch( SpaceException e )
-            {
-                throw new EntityStoreException( "Unable to write state to " );
-            }
-            bout.reset();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            Streams.copyStream(in, out, true);
+            byte[] stateArray = out.toByteArray();
+            StorageEntry data = new StorageEntry(entityReference);
+            data.setData(stateArray);
+            space.write(entityReference.toString(), data);
         }
+        catch (Exception e)
+        {
+            throw new EntityStoreException("Unable to write state");
+        }
+    }
+
+    public void remove(EntityReference removedEntity) throws EntityStoreException
+    {
+        try
+        {
+            space.takeIfExists(removedEntity.toString());
+        }
+        catch (SpaceException e)
+        {
+            throw new EntityStoreException(e);
+        }
+    }
+
+    public void visitMap(MapEntityStoreVisitor visitor)
+    {
+        // TODO 
     }
 
     private class StorageEntry
-        implements Serializable
+            implements Serializable
     {
-        public QualifiedIdentity identity;
+        public EntityReference reference;
         private byte[] data;
 
-        public StorageEntry( QualifiedIdentity identity )
+        public StorageEntry(EntityReference reference)
         {
-            this.identity = identity;
+            this.reference = reference;
         }
 
         public byte[] getData()
@@ -284,7 +138,7 @@ public class JavaSpacesEntityStoreMixin extends EntityTypeRegistryMixin
             return data;
         }
 
-        public void setData( byte[] data )
+        public void setData(byte[] data)
         {
             this.data = data;
         }

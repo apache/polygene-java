@@ -25,34 +25,34 @@ import org.qi4j.entitystore.neo4j.Configuration;
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
 public class DirectNeoEntityStoreTest
-    extends TestBase
+        extends TestBase
 {
     public DirectNeoEntityStoreTest()
     {
-        this( Configuration.DIRECT );
+        this(Configuration.DIRECT);
     }
 
-    protected DirectNeoEntityStoreTest( Configuration config )
+    protected DirectNeoEntityStoreTest(Configuration config)
     {
-        super( config, config == Configuration.INDIRECT, true, MakeBelieveEntity.class );
+        super(config, config == Configuration.INDIRECT, true, MakeBelieveEntity.class);
     }
 
     @Test
     public void testProperties() throws Exception
     {
-        perform( new TestExecutor()
+        perform(new TestExecutor()
         {
             String identity;
 
             protected void setup() throws Exception
             {
                 // Create entity
-                EntityBuilder<MakeBelieveEntity> builder = newEntityBuilder( MakeBelieveEntity.class );
-                MakeBelieveEntity believe = builder.stateOfComposite();
+                EntityBuilder<MakeBelieveEntity> builder = newEntityBuilder(MakeBelieveEntity.class);
+                MakeBelieveEntity believe = builder.prototype();
                 // Set up
-                believe.imaginaryName().set( "George Lucas" );
-                believe.imaginaryNumber().set( 17 );
-                believe.realNumber().set( 42.0 );
+                believe.imaginaryName().set("George Lucas");
+                believe.imaginaryNumber().set(17);
+                believe.realNumber().set(42.0);
                 believe = builder.newInstance();
                 identity = believe.identity().get();
             }
@@ -60,19 +60,19 @@ public class DirectNeoEntityStoreTest
             protected void verify() throws Exception
             {
                 // Retreive entity
-                MakeBelieveEntity believe = getReference( identity, MakeBelieveEntity.class );
+                MakeBelieveEntity believe = find(identity, MakeBelieveEntity.class);
                 // Verify
-                Assert.assertEquals( "George Lucas", believe.imaginaryName().get() );
-                Assert.assertEquals( (Object) 17, believe.imaginaryNumber().get() );
-                Assert.assertEquals( (Object) 42.0, believe.realNumber().get() );
+                Assert.assertEquals("George Lucas", believe.imaginaryName().get());
+                Assert.assertEquals((Object) 17, believe.imaginaryNumber().get());
+                Assert.assertEquals((Object) 42.0, believe.realNumber().get());
             }
-        } );
+        });
     }
 
     @Test
     public void testAssociations() throws Exception
     {
-        perform( new TestExecutor()
+        perform(new TestExecutor()
         {
             String one;
             String two;
@@ -81,49 +81,49 @@ public class DirectNeoEntityStoreTest
             protected void setup() throws Exception
             {
                 // Create entities
-                MakeBelieveEntity believeOne = newEntity( MakeBelieveEntity.class );
+                MakeBelieveEntity believeOne = newEntity(MakeBelieveEntity.class);
                 one = believeOne.identity().get();
-                MakeBelieveEntity believeTwo = newEntity( MakeBelieveEntity.class );
+                MakeBelieveEntity believeTwo = newEntity(MakeBelieveEntity.class);
                 two = believeTwo.identity().get();
-                MakeBelieveEntity believeThree = newEntity( MakeBelieveEntity.class );
+                MakeBelieveEntity believeThree = newEntity(MakeBelieveEntity.class);
                 three = believeThree.identity().get();
                 // Set up
-                believeOne.bff().set( believeTwo );
-                believeOne.archNemesis().set( believeThree );
-                believeTwo.bff().set( believeOne );
-                believeTwo.archNemesis().set( believeOne );
+                believeOne.bff().set(believeTwo);
+                believeOne.archNemesis().set(believeThree);
+                believeTwo.bff().set(believeOne);
+                believeTwo.archNemesis().set(believeOne);
                 try
                 {
-                    believeThree.bff().set( null );
+                    believeThree.bff().set(null);
                 }
-                catch( IllegalArgumentException iae )
+                catch (IllegalArgumentException iae)
                 {
-                    System.out.println( "Notice: Qi4j association does not support nulling." );
+                    System.out.println("Notice: Qi4j association does not support nulling.");
                 }
-                believeThree.archNemesis().set( believeOne );
+                believeThree.archNemesis().set(believeOne);
             }
 
             protected void verify() throws Exception
             {
                 // Retreive entities
-                MakeBelieveEntity believeOne = getReference( one, MakeBelieveEntity.class );
-                MakeBelieveEntity believeTwo = getReference( two, MakeBelieveEntity.class );
-                MakeBelieveEntity believeThree = getReference( three, MakeBelieveEntity.class );
+                MakeBelieveEntity believeOne = find(one, MakeBelieveEntity.class);
+                MakeBelieveEntity believeTwo = find(two, MakeBelieveEntity.class);
+                MakeBelieveEntity believeThree = find(three, MakeBelieveEntity.class);
                 // Verify
-                Assert.assertEquals( believeTwo, believeOne.bff().get() );
-                Assert.assertEquals( believeThree, believeOne.archNemesis().get() );
-                Assert.assertEquals( believeOne, believeTwo.bff().get() );
-                Assert.assertEquals( believeOne, believeTwo.archNemesis().get() );
-                Assert.assertNull( believeThree.bff().get() );
-                Assert.assertEquals( believeOne, believeThree.archNemesis().get() );
+                Assert.assertEquals(believeTwo, believeOne.bff().get());
+                Assert.assertEquals(believeThree, believeOne.archNemesis().get());
+                Assert.assertEquals(believeOne, believeTwo.bff().get());
+                Assert.assertEquals(believeOne, believeTwo.archNemesis().get());
+                Assert.assertNull(believeThree.bff().get());
+                Assert.assertEquals(believeOne, believeThree.archNemesis().get());
             }
-        } );
+        });
     }
 
     @Test
     public void testBuildEntity() throws Exception
     {
-        perform( new TestExecutor()
+        perform(new TestExecutor()
         {
             String identity;
             String friend;
@@ -131,38 +131,38 @@ public class DirectNeoEntityStoreTest
             protected void setup() throws Exception
             {
                 // Create entity
-                EntityBuilder<MakeBelieveEntity> builder = newEntityBuilder( MakeBelieveEntity.class );
+                EntityBuilder<MakeBelieveEntity> builder = newEntityBuilder(MakeBelieveEntity.class);
                 {
-                    MakeBelieveEntity prototype = builder.stateOfComposite();
-                    prototype.imaginaryName().set( "Arne banan" );
-                    prototype.imaginaryNumber().set( 17 );
-                    prototype.realNumber().set( 42.0 );
+                    MakeBelieveEntity prototype = builder.prototype();
+                    prototype.imaginaryName().set("Arne banan");
+                    prototype.imaginaryNumber().set(17);
+                    prototype.realNumber().set(42.0);
                 }
                 MakeBelieveEntity believe = builder.newInstance();
                 identity = believe.identity().get();
                 MakeBelieveEntity other = builder.newInstance();
                 friend = other.identity().get();
                 // Set up
-                believe.bff().set( other );
+                believe.bff().set(other);
             }
 
             protected void verify() throws Exception
             {
                 // Retreive entities
-                MakeBelieveEntity believe = getReference( identity, MakeBelieveEntity.class );
-                MakeBelieveEntity other = getReference( friend, MakeBelieveEntity.class );
+                MakeBelieveEntity believe = find(identity, MakeBelieveEntity.class);
+                MakeBelieveEntity other = find(friend, MakeBelieveEntity.class);
                 // Verify
-                Assert.assertEquals( "Arne banan", believe.imaginaryName().get() );
-                Assert.assertEquals( "Arne banan", other.imaginaryName().get() );
-                Assert.assertEquals( (Object) 17, believe.imaginaryNumber().get() );
-                Assert.assertEquals( (Object) 17, other.imaginaryNumber().get() );
-                Assert.assertEquals( (Object) 42.0, believe.realNumber().get() );
-                Assert.assertEquals( (Object) 42.0, other.realNumber().get() );
-                Assert.assertEquals( other, believe.bff().get() );
-                Assert.assertNull( other.bff().get() );
-                Assert.assertNull( believe.archNemesis().get() );
-                Assert.assertNull( other.archNemesis().get() );
+                Assert.assertEquals("Arne banan", believe.imaginaryName().get());
+                Assert.assertEquals("Arne banan", other.imaginaryName().get());
+                Assert.assertEquals((Object) 17, believe.imaginaryNumber().get());
+                Assert.assertEquals((Object) 17, other.imaginaryNumber().get());
+                Assert.assertEquals((Object) 42.0, believe.realNumber().get());
+                Assert.assertEquals((Object) 42.0, other.realNumber().get());
+                Assert.assertEquals(other, believe.bff().get());
+                Assert.assertNull(other.bff().get());
+                Assert.assertNull(believe.archNemesis().get());
+                Assert.assertNull(other.archNemesis().get());
             }
-        } );
+        });
     }
 }

@@ -17,16 +17,11 @@
  */
 package org.qi4j.rest;
 
-import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkException;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
-import org.qi4j.rest.entity.AllEntitiesResource;
+import org.qi4j.api.unitofwork.*;
 import org.qi4j.rest.entity.EntitiesResource;
 import org.qi4j.rest.entity.EntityResource;
 import org.qi4j.rest.query.IndexResource;
@@ -35,57 +30,59 @@ import org.qi4j.rest.type.EntityTypeResource;
 import org.qi4j.rest.type.EntityTypesResource;
 import org.restlet.Application;
 import org.restlet.Context;
-import org.restlet.Finder;
 import org.restlet.Restlet;
-import org.restlet.Router;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
+import org.restlet.resource.Finder;
 import org.restlet.resource.Resource;
+import org.restlet.routing.Router;
 
 public class RestApplication extends Application
 {
-    public static final MediaType APPLICATION_SPARQL_JSON = new MediaType( "application/sparql-results+json", "SPARQL JSON" );
+    public static final MediaType APPLICATION_SPARQL_JSON = new MediaType("application/sparql-results+json", "SPARQL JSON");
 
-    @Structure ObjectBuilderFactory factory;
-    @Structure UnitOfWorkFactory unitOfWorkFactory;
+    @Structure
+    ObjectBuilderFactory factory;
+    @Structure
+    UnitOfWorkFactory unitOfWorkFactory;
 
-    public RestApplication( @Uses Context parentContext )
+    public RestApplication(@Uses Context parentContext)
     {
-        super( parentContext );
+        super(parentContext);
 
-        getMetadataService().addExtension( "srj", APPLICATION_SPARQL_JSON );
+        getMetadataService().addExtension("srj", APPLICATION_SPARQL_JSON);
     }
 
     @Override
-    public void handle( Request request, Response response )
+    public void handle(Request request, Response response)
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            super.handle( request, response );
+            super.handle(request, response);
             uow.complete();
         }
-        catch( UnitOfWorkException e )
+        catch (UnitOfWorkException e)
         {
             uow.discard();
-            response.setStatus( Status.CLIENT_ERROR_NOT_ACCEPTABLE );
-            response.setEntity( new ExceptionRepresentation( e ) );
+            response.setStatus(Status.CLIENT_ERROR_NOT_ACCEPTABLE);
+            response.setEntity(new ExceptionRepresentation(e));
             // More info to send...
         }
-        catch( ConcurrentEntityModificationException e )
+        catch (ConcurrentEntityModificationException e)
         {
             uow.discard();
-            response.setStatus( Status.CLIENT_ERROR_LOCKED );
-            response.setEntity( new ExceptionRepresentation( e ) );
+            response.setStatus(Status.CLIENT_ERROR_LOCKED);
+            response.setEntity(new ExceptionRepresentation(e));
             // Info to try again...
         }
-        catch( UnitOfWorkCompletionException e )
+        catch (UnitOfWorkCompletionException e)
         {
             uow.discard();
-            response.setStatus( Status.CLIENT_ERROR_NOT_ACCEPTABLE );
-            response.setEntity( new ExceptionRepresentation( e ) );
+            response.setStatus(Status.CLIENT_ERROR_NOT_ACCEPTABLE);
+            response.setEntity(new ExceptionRepresentation(e));
         }
     }
 
@@ -95,29 +92,28 @@ public class RestApplication extends Application
     @Override
     public synchronized Restlet createRoot()
     {
-        Router router = new Router( getContext() );
+        Router router = new Router(getContext());
 
         router.attach("/service", Qi4jServiceResource.class);
 
-        router.attach( "/entitytype", createFinder( EntityTypesResource.class ) );
-        router.attach( "/entitytype/{type}", createFinder( EntityTypeResource.class ) );
+        router.attach("/type", createFinder(EntityTypesResource.class));
+        router.attach("/type/{version}", createFinder(EntityTypeResource.class));
 
-        router.attach( "/entity", createFinder( AllEntitiesResource.class ) );
-        router.attach( "/entity/{type}", createFinder( EntitiesResource.class ) );
-        router.attach( "/entity/{type}/{identity}", createFinder( EntityResource.class ) );
+        router.attach("/entity", createFinder(EntitiesResource.class));
+        router.attach("/entity/{identity}", createFinder(EntityResource.class));
 
-        router.attach( "/query", createFinder( SPARQLResource.class ) );
-        router.attach( "/query/index", createFinder( IndexResource.class ) );
+        router.attach("/query", createFinder(SPARQLResource.class));
+        router.attach("/query/index", createFinder(IndexResource.class));
 
         // Add filters
-        return new ExtensionMediaTypeFilter( getContext(), router );
+        return new ExtensionMediaTypeFilter(getContext(), router);
     }
 
-    private Finder createFinder( Class<? extends Resource> resource )
+    private Finder createFinder(Class<? extends Resource> resource)
     {
-        ObjectBuilder<Finder> builder = factory.newObjectBuilder( Finder.class );
-        builder.use( getContext().createChildContext() );
-        builder.use( resource );
+        ObjectBuilder<Finder> builder = factory.newObjectBuilder(Finder.class);
+        builder.use(getContext().createChildContext());
+        builder.use(resource);
         return builder.newInstance();
     }
 }

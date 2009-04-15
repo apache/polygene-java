@@ -17,9 +17,6 @@
  */
 package org.qi4j.index.rdf.internal;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
@@ -29,26 +26,34 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.common.TypeName;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStoreListener;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.*;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * JAVADOC Add JavaDoc
  */
 public class RdfEntityIndexerMixin
-    implements EntityStoreListener, Initializable
+        implements EntityStoreListener, Initializable
 {
-    @Service private Repository repository;
-    @Uses private EntityStateSerializer stateSerializer;
-    @Uses private EntityTypeSerializer typeSerializer;
+    @Service
+    private EntityTypeRegistry entityTypeRegistry;
+    @Service
+    private Repository repository;
+    @Uses
+    private EntityStateSerializer stateSerializer;
+    @Uses
+    private EntityTypeSerializer typeSerializer;
 
     private Set<EntityType> indexedEntityTypes;
     private ValueFactory valueFactory;
@@ -59,105 +64,112 @@ public class RdfEntityIndexerMixin
     }
 
     public void initialize()
-        throws ConstructionException
+            throws ConstructionException
     {
     }
 
-    public synchronized void notifyChanges( Iterable<EntityState> newStates, Iterable<EntityState> changedStates, Iterable<QualifiedIdentity> removedStates )
+    public synchronized void notifyChanges(Iterable<EntityState> newStates, Iterable<EntityState> changedStates, Iterable<EntityReference> removedStates)
     {
         try
         {
-            boolean abort = abortIfInternalConfigurationEntity( newStates );
-            if( abort )
+            boolean abort = abortIfInternalConfigurationEntity(newStates);
+            if (abort)
             {
                 return;
             }
             final RepositoryConnection connection = repository.getConnection();
-            connection.setAutoCommit( false );
+            connection.setAutoCommit(false);
             try
             {
                 // Update index
                 final Set<EntityType> entityTypes = new HashSet<EntityType>();
-                for( EntityState entityState : newStates )
+                for (EntityState entityState : newStates)
                 {
-                    if( entityState.entityType().queryable() )
+                    for (EntityTypeReference entityTypeReference : entityState.entityTypeReferences())
                     {
-                        entityTypes.add( entityState.entityType() );
-                        indexEntityState( entityState, connection );
+                        try
+                        {
+                            EntityType entityType = entityTypeRegistry.getEntityType(entityTypeReference);
+
+                            if (entityType.queryable())
+                            {
+                                entityTypes.add(entityType);
+                                indexEntityState(entityState, connection);
+                            }
+                        } catch (UnknownEntityTypeException e)
+                        {
+                            // No EntityType registered - ignore
+                            Logger.getLogger(getClass().getName()).warning("Could not get EntityType for " + entityTypeReference.toString());
+                        }
                     }
                 }
 
-                for( EntityState entityState : changedStates )
+                for (EntityState entityState : changedStates)
                 {
-                    removeEntityState( entityState.qualifiedIdentity(), connection );
-                    if( entityState.entityType().queryable() )
-                    {
-                        indexEntityState( entityState, connection );
-                    }
+                    removeEntityState(entityState.identity(), connection);
+                    indexEntityState(entityState, connection);
                 }
 
-                for( QualifiedIdentity entityId : removedStates )
+                for (EntityReference entityId : removedStates)
                 {
-                    removeEntityState( entityId, connection );
+                    removeEntityState(entityId, connection);
                 }
 
                 // Index new types
-                for( EntityType entityType : entityTypes )
+                for (EntityType entityType : entityTypes)
                 {
-                    if( !indexedEntityTypes.contains( entityType ) )
+                    if (!indexedEntityTypes.contains(entityType))
                     {
-                        indexEntityType( entityType, connection );
-                        indexedEntityTypes.add( entityType );
+                        indexEntityType(entityType, connection);
+                        indexedEntityTypes.add(entityType);
                     }
                 }
             }
             finally
             {
-                if( connection != null )
+                if (connection != null)
                 {
                     connection.commit();
                     connection.close();
                 }
             }
         }
-        catch( Throwable e )
+        catch (Throwable e)
         {
             e.printStackTrace();
             //TODO What shall we do with the exception?
         }
     }
 
-    private void indexEntityState( final EntityState entityState,
-                                   final RepositoryConnection connection )
-        throws RepositoryException
+    private void indexEntityState(final EntityState entityState,
+                                  final RepositoryConnection connection)
+            throws RepositoryException
     {
-        final QualifiedIdentity qualifiedIdentity = entityState.qualifiedIdentity();
-        final URI entityURI = getValueFactory().createURI( qualifiedIdentity.toURI() );
+        final URI entityURI = stateSerializer.createEntityURI(getValueFactory(), entityState.identity());
 
         Graph graph = new GraphImpl();
-        stateSerializer.serialize( entityState, false, graph );
+        stateSerializer.serialize(entityState, false, graph);
 
-        connection.add( graph, entityURI );
+        connection.add(graph, entityURI);
     }
 
-    private void removeEntityState( final QualifiedIdentity qualifiedIdentity,
-                                    final RepositoryConnection connection )
-        throws RepositoryException
+    private void removeEntityState(final EntityReference identity,
+                                   final RepositoryConnection connection)
+            throws RepositoryException
     {
-        final URI entityURI = getValueFactory().createURI( qualifiedIdentity.toURI() );
-        connection.clear( entityURI );
+        connection.clear(stateSerializer.createEntityURI(getValueFactory(), identity));
     }
 
-    private void indexEntityType( final EntityType entityType,
-                                  final RepositoryConnection connection )
-        throws RepositoryException
+    private void indexEntityType(final EntityType entityType,
+                                 final RepositoryConnection connection)
+            throws RepositoryException
     {
-        final URI compositeURI = getValueFactory().createURI( entityType.toURI() );
+        final URI compositeURI = getValueFactory().createURI(entityType.uri());
         // remove composite type if already present
-        connection.clear( compositeURI );
+        connection.clear(compositeURI);
 
-        Iterable<Statement> statements = typeSerializer.serialize( entityType );
-        connection.add( statements, compositeURI );
+        Iterable<Statement> statements = typeSerializer.serialize(entityType);
+        connection.add(statements, compositeURI);
 
 /*
         // first add the composite type as rdfs:Class
@@ -173,23 +185,23 @@ public class RdfEntityIndexerMixin
 */
     }
 
-    private boolean abortIfInternalConfigurationEntity( Iterable<EntityState> newStates )
+    private boolean abortIfInternalConfigurationEntity(Iterable<EntityState> newStates)
     {
-        Iterator<EntityState> entityStateIterator = newStates.iterator();
-        if( entityStateIterator.hasNext() )
+        for (EntityState newState : newStates)
         {
-            String compositeTypeName = entityStateIterator.next().qualifiedIdentity().type();
-            if( NativeConfiguration.class.getName().equals( compositeTypeName ) )
+            for (EntityTypeReference type : newState.entityTypeReferences())
             {
-                return true;
+                if (type.type().equals(TypeName.nameOf(NativeConfiguration.class)))
+                    return true;
             }
         }
+
         return false;
     }
 
     private ValueFactory getValueFactory()
     {
-        if( valueFactory == null )
+        if (valueFactory == null)
         {
             valueFactory = repository.getValueFactory();
         }

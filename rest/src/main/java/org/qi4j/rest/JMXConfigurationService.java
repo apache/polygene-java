@@ -14,52 +14,52 @@
 
 package org.qi4j.rest;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.management.MBeanAttributeInfo;
-import javax.management.MBeanConstructorInfo;
-import javax.management.MBeanInfo;
-import javax.management.MBeanNotificationInfo;
-import javax.management.MBeanOperationInfo;
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.DescriptorVisitor;
+
+import javax.management.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * JAVADOC
  */
-@Mixins( JMXConfigurationService.JMXConfigurationMixin.class)
+@Mixins(JMXConfigurationService.JMXConfigurationMixin.class)
 public interface JMXConfigurationService
-    extends ServiceComposite, Activatable
+        extends ServiceComposite, Activatable
 {
     class JMXConfigurationMixin
-        implements Activatable
+            implements Activatable
     {
-        @Service MBeanServer mbeanServer;
-        @Structure ApplicationSPI app;
-        @Structure UnitOfWorkFactory uowf;
-        @Structure Qi4jSPI spi;
+        @Service
+        MBeanServer mbeanServer;
+        @Structure
+        ApplicationSPI app;
+        @Structure
+        UnitOfWorkFactory uowf;
+        @Structure
+        Qi4jSPI spi;
 
         public void activate() throws Exception
         {
             final UnitOfWork uow = uowf.newUnitOfWork();
 
-            app.visitDescriptor( new DescriptorVisitor()
+            app.visitDescriptor(new DescriptorVisitor()
             {
-                @Override public void visit( ServiceDescriptor serviceDescriptor )
+                @Override
+                public void visit(ServiceDescriptor serviceDescriptor)
                 {
                     String identity = serviceDescriptor.identity();
                     Class config = serviceDescriptor.configurationType();
@@ -68,11 +68,11 @@ public interface JMXConfigurationService
                         // Register MBean for Service Configuration
                         try
                         {
-                            ConfigurationComposite configuration = (ConfigurationComposite) uow.find( identity, config );
-                            MBeanInfo mbeanInfo = new MBeanInfo(serviceDescriptor.type().toString(), "", attributes( configuration ), new MBeanConstructorInfo[0], new MBeanOperationInfo[0], new MBeanNotificationInfo[0]);
-                            mbeanServer.registerMBean( new EntityMBean(configuration, mbeanInfo), new ObjectName("Configuration:service="+configuration.identity()) );
+                            ConfigurationComposite configuration = (ConfigurationComposite) uow.get(config, identity);
+                            MBeanInfo mbeanInfo = new MBeanInfo(serviceDescriptor.type().toString(), "", attributes(configuration), new MBeanConstructorInfo[0], new MBeanOperationInfo[0], new MBeanNotificationInfo[0]);
+                            mbeanServer.registerMBean(new EntityMBean(configuration, mbeanInfo), new ObjectName("Configuration:service=" + configuration.identity()));
                         }
-                        catch( Exception e )
+                        catch (Exception e)
                         {
                             e.printStackTrace();
                         }
@@ -87,17 +87,17 @@ public interface JMXConfigurationService
         {
         }
 
-        private MBeanAttributeInfo[] attributes( ConfigurationComposite configuration )
+        private MBeanAttributeInfo[] attributes(ConfigurationComposite configuration)
         {
-            EntityDescriptor descriptor = spi.getEntityDescriptor( configuration );
-            List<MBeanAttributeInfo> infoList = new ArrayList<MBeanAttributeInfo>( );
-            for( PropertyDescriptor propertyType : descriptor.state().properties() )
+            EntityDescriptor descriptor = spi.getEntityDescriptor(configuration);
+            List<MBeanAttributeInfo> infoList = new ArrayList<MBeanAttributeInfo>();
+            for (PropertyDescriptor propertyType : descriptor.state().properties())
             {
                 MBeanAttributeInfo info = new MBeanAttributeInfo(propertyType.qualifiedName().name(), propertyType.type().toString(), null, true, !propertyType.isImmutable(), false);
-                infoList.add( info );
+                infoList.add(info);
             }
 
-            return infoList.toArray( new MBeanAttributeInfo[infoList.size()] );
+            return infoList.toArray(new MBeanAttributeInfo[infoList.size()]);
         }
 
     }

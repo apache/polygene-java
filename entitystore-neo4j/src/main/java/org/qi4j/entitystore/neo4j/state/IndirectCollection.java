@@ -16,13 +16,12 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
-import java.util.Collection;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.ManyAssociationState;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
-public interface IndirectCollection extends Collection<QualifiedIdentity>
+public interface IndirectCollection extends ManyAssociationState
 {
     void prepareCommit();
 }

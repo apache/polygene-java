@@ -13,36 +13,34 @@
  */
 package org.qi4j.rest.assembly;
 
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.rest.Qi4jFinder;
-import org.qi4j.rest.RestApplication;
 import org.qi4j.rest.Qi4jServiceResource;
-import org.qi4j.rest.entity.AllEntitiesResource;
+import org.qi4j.rest.RestApplication;
 import org.qi4j.rest.entity.EntitiesResource;
 import org.qi4j.rest.entity.EntityResource;
 import org.qi4j.rest.query.IndexResource;
 import org.qi4j.rest.query.SPARQLResource;
 import org.qi4j.rest.type.EntityTypeResource;
 import org.qi4j.rest.type.EntityTypesResource;
-import org.qi4j.api.common.Visibility;
 
 public class RestAssembler
-    implements Assembler
+        implements Assembler
 {
-    public void assemble( ModuleAssembly module )
-        throws AssemblyException
+    public void assemble(ModuleAssembly module)
+            throws AssemblyException
     {
-        module.addObjects( RestApplication.class ).visibleIn( Visibility.application );
-        module.addObjects( Qi4jFinder.class,
-                           Qi4jServiceResource.class,
-                           AllEntitiesResource.class,
-                           EntitiesResource.class,
-                           EntityResource.class,
-                           EntityTypesResource.class,
-                           EntityTypeResource.class,
-                           IndexResource.class,
-                           SPARQLResource.class );
+        module.addObjects(RestApplication.class).visibleIn(Visibility.application);
+        module.addObjects(Qi4jFinder.class,
+                Qi4jServiceResource.class,
+                EntitiesResource.class,
+                EntityResource.class,
+                EntityTypesResource.class,
+                EntityTypeResource.class,
+                IndexResource.class,
+                SPARQLResource.class);
     }
 }

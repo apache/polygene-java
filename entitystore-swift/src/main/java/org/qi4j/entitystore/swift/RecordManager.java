@@ -23,7 +23,7 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.api.entity.EntityReference;
 
 public class RecordManager
     implements UndoManager
@@ -66,19 +66,19 @@ public class RecordManager
         dataStore.putData( data );
     }
 
-    public void deleteData( QualifiedIdentity identity )
+    public void deleteData( EntityReference reference)
         throws IOException
     {
-        dataStore.delete( identity );
+        dataStore.delete(reference);
     }
 
-    public DataBlock readData( QualifiedIdentity identity )
+    public DataBlock readData( EntityReference reference)
         throws IOException
     {
-        return dataStore.readData( identity );
+        return dataStore.readData(reference);
     }
 
-    public Iterator<QualifiedIdentity> iterator()
+    public Iterator<EntityReference> iterator()
     {
         return dataStore.iterator();
     }

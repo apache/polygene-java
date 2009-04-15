@@ -20,7 +20,7 @@ package org.qi4j.entitystore.swift;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.api.entity.EntityReference;
 
 /**
  * For Slot 0
@@ -58,18 +58,18 @@ public class IdentityFile
         return entries;
     }
 
-    long find( QualifiedIdentity identity )
+    long find( EntityReference reference)
         throws IOException
     {
         if( closed )
         {
             throw new IdentityFileClosedException();
         }
-        if( identity.toString().length() > slotSize - 16 )
+        if( reference.toString().length() > slotSize - 16 )
         {
-            throw new IdentityTooLongException( identity );
+            throw new IdentityTooLongException(reference);
         }
-        final int slot = getSlot( identity );
+        final int slot = getSlot(reference);
         identityStore.seek( slot * slotSize );
         boolean isExtended = identityStore.readBoolean();
         if( !isExtended )
@@ -80,8 +80,8 @@ public class IdentityFile
             {
                 return -1;
             }
-            QualifiedIdentity id = QualifiedIdentity.parseQualifiedIdentity( idString );
-            if( id.equals( identity ) )
+            EntityReference id = EntityReference.parseEntityReference( idString );
+            if( id.equals(reference) )
             {
                 return pos;
             }
@@ -94,8 +94,8 @@ public class IdentityFile
             buckets.seek( next * slotSize );
             boolean isUsed = buckets.readBoolean();
             long pos = buckets.readLong();
-            QualifiedIdentity id = QualifiedIdentity.parseQualifiedIdentity( buckets.readUTF() );
-            if( isUsed && id.equals( identity ) )
+            EntityReference id = EntityReference.parseEntityReference( buckets.readUTF() );
+            if( isUsed && id.equals(reference) )
             {
                 return pos;
             }
@@ -104,18 +104,18 @@ public class IdentityFile
         return -1;
     }
 
-    void remember( QualifiedIdentity identity, long pos )
+    void remember( EntityReference reference, long pos )
         throws IOException
     {
         if( closed )
         {
             throw new IdentityFileClosedException();
         }
-        if( identity.toString().length() > slotSize - 16 )
+        if( reference.toString().length() > slotSize - 16 )
         {
-            throw new IdentityTooLongException( identity );
+            throw new IdentityTooLongException(reference);
         }
-        final int slot = getSlot( identity );
+        final int slot = getSlot(reference);
         identityStore.seek( slot * slotSize );
         boolean isExtended = identityStore.readBoolean();
         if( isExtended )
@@ -136,7 +136,7 @@ public class IdentityFile
             bucket.seek( next * slotSize );
             bucket.writeBoolean( true );
             bucket.writeLong( pos );
-            bucket.writeUTF( identity.toString() );
+            bucket.writeUTF( reference.toString() );
             fillExtras( bucket, next, slotSize );
         }
         else
@@ -148,7 +148,7 @@ public class IdentityFile
                 identityStore.seek( slot * slotSize );
                 identityStore.writeBoolean( false );
                 identityStore.writeLong( pos );
-                identityStore.writeUTF( identity.toString() );
+                identityStore.writeUTF( reference.toString() );
             }
             else
             {
@@ -162,7 +162,7 @@ public class IdentityFile
                 bucket.seek( slotSize );
                 bucket.writeBoolean( true );
                 bucket.writeLong( pos );
-                bucket.writeUTF( identity.toString() );
+                bucket.writeUTF( reference.toString() );
                 fillExtras( bucket, 1, slotSize );
                 identityStore.seek( slot * slotSize );
                 identityStore.writeBoolean( true );
@@ -173,18 +173,18 @@ public class IdentityFile
         }
     }
 
-    void drop( QualifiedIdentity identity )
+    void drop( EntityReference reference)
         throws IOException
     {
         if( closed )
         {
             throw new IdentityFileClosedException();
         }
-        if( identity.toString().length() > slotSize - 16 )
+        if( reference.toString().length() > slotSize - 16 )
         {
-            throw new IdentityTooLongException( identity );
+            throw new IdentityTooLongException(reference);
         }
-        final int slot = getSlot( identity );
+        final int slot = getSlot(reference);
         identityStore.seek( slot * slotSize );
         boolean isExtended = identityStore.readBoolean();
         if( isExtended )
@@ -196,8 +196,8 @@ public class IdentityFile
                 buckets.seek( next * slotSize );
                 boolean isUsed = buckets.readBoolean();
                 buckets.readLong();  //ignore, should probably be changed to skip(8);
-                QualifiedIdentity id = QualifiedIdentity.parseQualifiedIdentity( buckets.readUTF() );
-                if( isUsed && id.equals( identity ) )
+                EntityReference id = EntityReference.parseEntityReference( buckets.readUTF() );
+                if( isUsed && id.equals(reference) )
                 {
                     buckets.seek( next * slotSize );
                     buckets.writeBoolean( false );
@@ -209,8 +209,8 @@ public class IdentityFile
         else
         {
             identityStore.readLong(); // ignore the pos
-            QualifiedIdentity storedId = QualifiedIdentity.parseQualifiedIdentity( identityStore.readUTF() );
-            if( identity.equals( storedId ) )
+            EntityReference storedId = EntityReference.parseEntityReference( identityStore.readUTF() );
+            if( reference.equals( storedId ) )
             {
                 // found, no erase.
                 identityStore.seek( slot * slotSize );
@@ -222,9 +222,9 @@ public class IdentityFile
         }
     }
 
-    private int getSlot( QualifiedIdentity identity )
+    private int getSlot( EntityReference reference)
     {
-        int hashCode = identity.hashCode();
+        int hashCode = reference.hashCode();
         hashCode = hashCode < 0 ? -hashCode : hashCode;
         int slot = ( hashCode % entries ) + 1;
         return slot;

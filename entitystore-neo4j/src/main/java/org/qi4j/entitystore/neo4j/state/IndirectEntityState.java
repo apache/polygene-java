@@ -16,16 +16,15 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
-import java.util.Collection;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.StateName;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.helpers.DefaultValueState;
-import org.qi4j.spi.value.ValueState;
-import org.qi4j.api.common.QualifiedName;
+import java.util.Set;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -38,13 +37,13 @@ public class IndirectEntityState implements CommittableEntityState
     private final long lastModified;
     private EntityStatus status;
 
-    // Properties and associations
-    private final Map<QualifiedName, Holder<Object>> properties = new HashMap<QualifiedName, Holder<Object>>();
-    private final Map<QualifiedName, Holder<QualifiedIdentity>> associations = new HashMap<QualifiedName, Holder<QualifiedIdentity>>();
-    private final Map<QualifiedName, IndirectCollection> manyAssociations = new HashMap<QualifiedName, IndirectCollection>();
+    // Properties and manyAssociations
+    private final Map<StateName, Holder<String>> properties = new HashMap<StateName, Holder<String>>();
+    private final Map<StateName, Holder<EntityReference>> associations = new HashMap<StateName, Holder<EntityReference>>();
+    private final Map<StateName, IndirectCollection> manyAssociations = new HashMap<StateName, IndirectCollection>();
     private boolean loaded = false;
 
-    public IndirectEntityState( DirectEntityState state )
+    public IndirectEntityState(DirectEntityState state)
     {
         this.state = state;
         this.version = state.version();
@@ -56,23 +55,25 @@ public class IndirectEntityState implements CommittableEntityState
 
     public void preloadState()
     {
+/* TODO
         if( !loaded )
         {
             loaded = true;
-            for( QualifiedName qName : propertyNames() )
+            for( QualifiedName qName : propertyTypes() )
             {
                 properties.put( qName, new Holder<Object>( state.getProperty( qName ) ) );
             }
-            for( QualifiedName qName : associationNames() )
+            for( QualifiedName qName : associationTypes() )
             {
-                associations.put( qName, new Holder<QualifiedIdentity>( state.getAssociation( qName ) ) );
+                manyAssociations.put( qName, new Holder<EntityReference>( state.getAssociation( qName ) ) );
             }
             for( ManyAssociationFactory factory : getManyAssociationFactories() )
             {
-                QualifiedName qName = factory.getQualifiedName();
+                StateName qName = factory.getStateName();
                 manyAssociations.put( qName, factory.createPreloadedCollection( state.getManyAssociation( qName ) ) );
             }
         }
+*/
     }
 
     public void prepareState()
@@ -82,6 +83,7 @@ public class IndirectEntityState implements CommittableEntityState
 
     public void prepareCommit()
     {
+/* TODO
         if( status == EntityStatus.REMOVED )
         {
             state.remove();
@@ -89,7 +91,7 @@ public class IndirectEntityState implements CommittableEntityState
         }
         if( version != state.version() )
         {
-            throw new EntityStoreException( "Conflicting versions, the underlying representation has been modified. For :" + qualifiedIdentity() );
+            throw new EntityStoreException( "Conflicting versions, the underlying representation has been modified. For :" + identity() );
         }
         for( Map.Entry<QualifiedName, Holder<Object>> property : properties.entrySet() )
         {
@@ -99,9 +101,9 @@ public class IndirectEntityState implements CommittableEntityState
                 state.setProperty( property.getKey(), holder.value );
             }
         }
-        for( Map.Entry<QualifiedName, Holder<QualifiedIdentity>> association : associations.entrySet() )
+        for( Map.Entry<QualifiedName, Holder<EntityReference>> association : manyAssociations.entrySet() )
         {
-            Holder<QualifiedIdentity> holder = association.getValue();
+            Holder<EntityReference> holder = association.getValue();
             if( holder.updated )
             {
                 state.setAssociation( association.getKey(), holder.value );
@@ -112,6 +114,7 @@ public class IndirectEntityState implements CommittableEntityState
             assoc.prepareCommit();
         }
         state.prepareCommit();
+*/
     }
 
     public void prepareRemove()
@@ -131,9 +134,9 @@ public class IndirectEntityState implements CommittableEntityState
 
     // EntityState implementation
 
-    public QualifiedIdentity qualifiedIdentity()
+    public EntityReference identity()
     {
-        return state.qualifiedIdentity();
+        return state.identity();
     }
 
     public long version()
@@ -156,60 +159,53 @@ public class IndirectEntityState implements CommittableEntityState
         return status;
     }
 
-    public EntityType entityType()
+    public void addEntityTypeReference(EntityTypeReference type)
+    {
+    }
+
+    public void removeEntityTypeReference(EntityTypeReference type)
+    {
+    }
+
+    public boolean hasEntityTypeReference(EntityTypeReference type)
+    {
+        return false;
+    }
+
+    public Set<EntityTypeReference> entityTypeReferences()
     {
         return null;
     }
 
-    public Iterable<QualifiedName> propertyNames()
+    public String getProperty(StateName qualifiedName)
     {
-        return state.propertyNames();
+        return properties.get(qualifiedName).value;
     }
 
-    public Iterable<QualifiedName> associationNames()
+    public void setProperty(StateName qualifiedName, String newValue)
     {
-        return state.associationNames();
+        properties.get(qualifiedName).set(newValue);
     }
 
-    public Iterable<QualifiedName> manyAssociationNames()
+    public EntityReference getAssociation(StateName qualifiedName)
     {
-        return state.manyAssociationNames();
+        return associations.get(qualifiedName).value;
     }
 
-    public Object getProperty( QualifiedName qualifiedName )
+    public void setAssociation(StateName qualifiedName, EntityReference newEntity)
     {
-        return properties.get( qualifiedName ).value;
+        associations.get(qualifiedName).set(newEntity);
     }
 
-    public void setProperty( QualifiedName qualifiedName, Object newValue )
+    public ManyAssociationState getManyAssociation(StateName qualifiedName)
     {
-        properties.get( qualifiedName ).set( newValue );
-    }
-
-    public QualifiedIdentity getAssociation( QualifiedName qualifiedName )
-    {
-        return associations.get( qualifiedName ).value;
-    }
-
-    public void setAssociation( QualifiedName qualifiedName, QualifiedIdentity newEntity )
-    {
-        associations.get( qualifiedName ).set( newEntity );
-    }
-
-    public Collection<QualifiedIdentity> getManyAssociation( QualifiedName qualifiedName )
-    {
-        return manyAssociations.get( qualifiedName );
+        return manyAssociations.get(qualifiedName);
     }
 
     public void hasBeenApplied()
     {
         status = EntityStatus.LOADED;
         version++;
-    }
-
-    public ValueState newValueState( Map<QualifiedName, Object> values )
-    {
-        return new DefaultValueState(values);
     }
 
     // Implementation internals
@@ -219,12 +215,12 @@ public class IndirectEntityState implements CommittableEntityState
         T value;
         boolean updated = false;
 
-        public Holder( T initialValue )
+        public Holder(T initialValue)
         {
             this.value = initialValue;
         }
 
-        void set( T newValue )
+        void set(T newValue)
         {
             value = newValue;
             updated = true;

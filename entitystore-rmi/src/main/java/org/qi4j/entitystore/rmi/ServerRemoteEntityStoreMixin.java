@@ -16,154 +16,158 @@
  */
 package org.qi4j.entitystore.rmi;
 
-import java.io.IOException;
-import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.locks.ReadWriteLock;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.library.locking.WriteLock;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.entity.helpers.DefaultEntityState;
-import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.UnknownEntityTypeException;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.common.QualifiedName;
+import org.qi4j.library.locking.WriteLock;
+import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.entity.*;
+import org.qi4j.spi.entity.helpers.DefaultEntityState;
+import org.qi4j.spi.service.ServiceDescriptor;
+
+import java.io.IOException;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.locks.ReadWriteLock;
 
 /**
  * RMI server implementation of EntityStore
  */
 public class ServerRemoteEntityStoreMixin
-    implements RemoteEntityStore, Activatable
+        implements RemoteEntityStore, Activatable
 {
-    private @Uses ServiceDescriptor descriptor;
-    private @This RemoteEntityStore remote;
-    private @This ReadWriteLock lock;
-    private @Structure Module module;
-    private @Structure Qi4jSPI spi;
-    private @Service EntityStore entityStore;
-    private @Service ServiceReference<Registry> registry;
+    private
+    @Uses
+    ServiceDescriptor descriptor;
+    private
+    @This
+    RemoteEntityStore remote;
+    private
+    @This
+    ReadWriteLock lock;
+    private
+    @Structure
+    Module module;
+    private
+    @Structure
+    Qi4jSPI spi;
+    private
+    @Service
+    EntityStore entityStore;
+    private
+    @Service
+    ServiceReference<Registry> registry;
 
     // Activatable implementation
     public void activate() throws Exception
     {
-        RemoteEntityStore stub = (RemoteEntityStore) UnicastRemoteObject.exportObject( remote, 0 );
-        registry.get().bind( descriptor.identity(), stub );
+        RemoteEntityStore stub = (RemoteEntityStore) UnicastRemoteObject.exportObject(remote, 0);
+        registry.get().bind(descriptor.identity(), stub);
     }
 
     public void passivate() throws Exception
     {
-        if( registry.isActive() )
+        if (registry.isActive())
         {
-            registry.get().unbind( descriptor.identity() );
+            registry.get().unbind(descriptor.identity());
         }
-        UnicastRemoteObject.unexportObject( remote, true );
+        UnicastRemoteObject.unexportObject(remote, true);
     }
 
     // EntityStore implementation
     @WriteLock
-    public EntityState getEntityState( QualifiedIdentity identity )
-        throws IOException
+    public EntityState getEntityState(EntityReference reference)
+            throws IOException
     {
-        EntityState state = getEntityState( entityStore, identity );
+        EntityState state = entityStore.getEntityState(reference);
 
-        Map<QualifiedName, Object> properties = copyProperties( state );
-        Map<QualifiedName, QualifiedIdentity> associations = copyAssociations( state );
-        Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations = copyManyAssociations( state );
+        Set<EntityTypeReference> entityTypeReferences = copyTypes(state);
+        Map<StateName, String> properties = copyProperties(state);
+        Map<StateName, EntityReference> associations = copyAssociations(state);
+        Map<StateName, ManyAssociationState> manyAssociations = copyManyAssociations(state);
 
-        return new DefaultEntityState( state.version(),
-                                       state.lastModified(),
-                                       identity,
-                                       state.status(),
-                                       getEntityType( identity ),
-                                       properties,
-                                       associations,
-                                       manyAssociations );
+        return new DefaultEntityState(state.version(),
+                state.lastModified(),
+                reference,
+                state.status(),
+                new HashSet<EntityTypeReference>(),
+                properties,
+                associations,
+                manyAssociations);
     }
 
-    private Map<QualifiedName, Collection<QualifiedIdentity>> copyManyAssociations( EntityState state )
+    private Set<EntityTypeReference> copyTypes(EntityState state)
     {
-        Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations = new HashMap<QualifiedName, Collection<QualifiedIdentity>>();
-        for( QualifiedName associationName : state.manyAssociationNames() )
+        return null;
+    }
+
+    private Map<StateName, ManyAssociationState> copyManyAssociations(EntityState state)
+    {
+        Map<StateName, ManyAssociationState> manyAssociations = new HashMap<StateName, ManyAssociationState>();
+/*
+        for (QualifiedName associationName : state.manyAssociationTypes())
         {
-            Collection<QualifiedIdentity> idCollection = state.getManyAssociation( associationName );
-            if( idCollection instanceof Set )
+            Collection<EntityReference> idCollection = state.getManyAssociation(associationName);
+            if (idCollection instanceof Set)
             {
-                Set<QualifiedIdentity> collectionCopy = new HashSet<QualifiedIdentity>( idCollection );
-                manyAssociations.put( associationName, collectionCopy );
-            }
-            else if( idCollection instanceof List )
+                Set<EntityReference> collectionCopy = new HashSet<EntityReference>(idCollection);
+                manyAssociations.put(associationName, collectionCopy);
+            } else if (idCollection instanceof List)
             {
-                List<QualifiedIdentity> collectionCopy = new ArrayList<QualifiedIdentity>( idCollection );
-                manyAssociations.put( associationName, collectionCopy );
+                List<EntityReference> collectionCopy = new ArrayList<EntityReference>(idCollection);
+                manyAssociations.put(associationName, collectionCopy);
             }
         }
+*/
         return manyAssociations;
     }
 
-    private Map<QualifiedName, QualifiedIdentity> copyAssociations( EntityState state )
+    private Map<StateName, EntityReference> copyAssociations(EntityState state)
     {
-        Map<QualifiedName, QualifiedIdentity> associations = new HashMap<QualifiedName, QualifiedIdentity>();
-        for( QualifiedName associationName : state.associationNames() )
+        Map<StateName, EntityReference> associations = new HashMap<StateName, EntityReference>();
+/*
+        for (QualifiedName associationName : state.associationTypes())
         {
-            QualifiedIdentity id = state.getAssociation( associationName );
-            associations.put( associationName, id );
+            EntityReference id = state.getAssociation(associationName);
+            manyAssociations.put(associationName, id);
         }
+*/
         return associations;
     }
 
-    private Map<QualifiedName, Object> copyProperties( EntityState state )
+    private Map<StateName, String> copyProperties(EntityState state)
     {
-        Map<QualifiedName, Object> properties = new HashMap<QualifiedName, Object>();
-        for( QualifiedName propertyName : state.propertyNames() )
+        Map<StateName, String> properties = new HashMap<StateName, String>();
+/*
+        for (QualifiedName propertyName : state.propertyTypes())
         {
-            Object value = state.getProperty( propertyName );
-            properties.put( propertyName, value );
+            Object value = state.getProperty(propertyName, propertyType());
+            properties.put(propertyName, value);
         }
+*/
         return properties;
     }
 
-    private EntityType getEntityType( QualifiedIdentity identity )
-    {
-        final String typeName = identity.type();
-        try
-        {
-            return spi.getEntityDescriptor( module.classLoader().loadClass( typeName ), module ).entityType();
-        }
-        catch( ClassNotFoundException e )
-        {
-            throw new EntityStoreException( "Error accessing CompositeType for type " + typeName, e );
-        }
-    }
-
-    public void prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates )
+    public void prepare(Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityReference> removedStates)
     {
         lock.writeLock().lock();
         try
         {
-            final StateCommitter committer = entityStore.prepare( newStates, loadedStates, removedStates );
+            final StateCommitter committer = entityStore.prepare(newStates, loadedStates, removedStates);
             try
             {
                 committer.commit();
             }
-            catch( EntityStoreException e )
+            catch (EntityStoreException e)
             {
                 committer.cancel();
                 throw e;
@@ -175,35 +179,5 @@ public class ServerRemoteEntityStoreMixin
         {
             lock.writeLock().unlock();
         }
-    }
-
-    public EntityState getEntityState( EntityStore entityStore, QualifiedIdentity qid )
-        throws EntityStoreException
-    {
-        EntityState entityState = null;
-        do
-        {
-            try
-            {
-                entityState = entityStore.getEntityState( qid );
-            }
-            catch( UnknownEntityTypeException e )
-            {
-                // Check if it is this type that the store doesn't understand
-                EntityType entityType = getEntityType( qid );
-                if( e.getMessage().equals( entityType.type() ) )
-                {
-                    entityStore.registerEntityType( entityType );
-                    // Try again
-                }
-                else
-                {
-                    throw e; // ???
-                }
-            }
-        }
-        while( entityState == null );
-
-        return entityState;
     }
 }

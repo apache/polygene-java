@@ -17,17 +17,18 @@
  */
 package org.qi4j.entitystore.swift;
 
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.api.entity.EntityReference;
+
 import java.util.Iterator;
 import java.io.RandomAccessFile;
 import java.io.IOException;
 
 class StoreIterator
-    implements Iterator<QualifiedIdentity>
+    implements Iterator<EntityReference>
 {
     private boolean isAvailable;
     private RandomAccessFile store;
-    private QualifiedIdentity identity;
+    private EntityReference reference;
     private long position;
     private int identityMaxLength;
 
@@ -44,9 +45,9 @@ class StoreIterator
         return isAvailable;
     }
 
-    public QualifiedIdentity next()
+    public EntityReference next()
     {
-        QualifiedIdentity result = identity;
+        EntityReference result = reference;
         getNext();
         return result;
     }
@@ -70,7 +71,7 @@ class StoreIterator
                 if( usage == 1 || usage == 2 )
                 {
                     store.skipBytes( 12 );
-                    identity = readIdentity();
+                    reference = readIdentity();
                     isAvailable = true;
                     return;
                 }
@@ -79,7 +80,7 @@ class StoreIterator
         }
         catch( IOException e )
         {
-            identity = null;
+            reference = null;
             isAvailable = false;
         }
     }
@@ -89,7 +90,7 @@ class StoreIterator
         throw new UnsupportedOperationException();
     }
 
-    private QualifiedIdentity readIdentity()
+    private EntityReference readIdentity()
         throws IOException
     {
         int idSize = store.readByte();
@@ -100,6 +101,6 @@ class StoreIterator
         byte[] idData = new byte[idSize];
         store.read( idData );
         store.skipBytes( identityMaxLength - idSize );
-        return QualifiedIdentity.parseQualifiedIdentity( new String( idData ) );
+        return EntityReference.parseEntityReference( new String( idData ) );
     }
 }

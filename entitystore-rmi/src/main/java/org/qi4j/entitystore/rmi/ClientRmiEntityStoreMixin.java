@@ -16,35 +16,33 @@
  */
 package org.qi4j.entitystore.rmi;
 
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.library.locking.WriteLock;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.entity.helpers.DefaultEntityState;
+import org.qi4j.spi.entity.helpers.NoopStateCommitter;
+
 import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Iterator;
-import java.util.Collections;
-import org.qi4j.library.locking.WriteLock;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.spi.entity.EntityTypeRegistryMixin;
-import org.qi4j.spi.entity.helpers.DefaultEntityState;
-import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.helpers.NoopStateCommitter;
 
 /**
  * RMI client implementation of Entity
  */
 public class ClientRmiEntityStoreMixin
-    extends EntityTypeRegistryMixin
-    implements Activatable
+        implements EntityStore, Activatable
 {
     private RemoteEntityStore remote;
 
     // Activatable implementation
     public void activate() throws Exception
     {
-        Registry registry = LocateRegistry.getRegistry( "localhost" );
-        remote = (RemoteEntityStore) registry.lookup( ServerRmiEntityStoreService.class.getSimpleName() );
+        Registry registry = LocateRegistry.getRegistry("localhost");
+        remote = (RemoteEntityStore) registry.lookup(ServerRmiEntityStoreService.class.getSimpleName());
     }
 
     public void passivate() throws Exception
@@ -53,51 +51,49 @@ public class ClientRmiEntityStoreMixin
     }
 
     // EntityStore implementation
-    public EntityState newEntityState( QualifiedIdentity identity ) throws EntityStoreException
+    public EntityState newEntityState(EntityReference reference) throws EntityStoreException
     {
-        return new DefaultEntityState( identity, getEntityType( identity.type() ) );
+        return new DefaultEntityState(reference);
     }
 
     @WriteLock
-    public EntityState getEntityState( QualifiedIdentity identity ) throws EntityStoreException
+    public EntityState getEntityState(EntityReference reference) throws EntityStoreException
     {
         try
         {
-            EntityState state = remote.getEntityState( identity );
+            EntityState state = remote.getEntityState(reference);
 
             return state;
         }
-        catch( IOException e )
+        catch (IOException e)
         {
             Throwable cause = e.getCause();
-            if( cause != null && cause instanceof EntityStoreException )
+            if (cause != null && cause instanceof EntityStoreException)
             {
                 throw (EntityStoreException) cause;
-            }
-            else
+            } else
             {
-                throw new EntityStoreException( e );
+                throw new EntityStoreException(e);
             }
         }
     }
 
     @WriteLock
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException
+    public StateCommitter prepare(Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityReference> removedStates) throws EntityStoreException
     {
         try
         {
-            remote.prepare( newStates, loadedStates, removedStates );
+            remote.prepare(newStates, loadedStates, removedStates);
         }
-        catch( IOException e )
+        catch (IOException e)
         {
-            throw new EntityStoreException( e );
+            throw new EntityStoreException(e);
         }
 
         return new NoopStateCommitter();
     }
 
-    public Iterator<EntityState> iterator()
+    public void visitEntityStates(EntityStateVisitor visitor)
     {
-        return Collections.EMPTY_LIST.iterator();
     }
 }

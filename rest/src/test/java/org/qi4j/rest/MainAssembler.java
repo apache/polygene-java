@@ -14,12 +14,7 @@
 
 package org.qi4j.rest;
 
-import org.qi4j.bootstrap.ApplicationAssembler;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.ModuleName;
-import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.*;
 import org.qi4j.library.http.JettyServiceAssembler;
 import org.qi4j.rest.assembly.RestAssembler;
 
@@ -27,53 +22,53 @@ import org.qi4j.rest.assembly.RestAssembler;
  * JAVADOC
  */
 public class MainAssembler
-    implements ApplicationAssembler
+        implements ApplicationAssembler
 {
-    public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
+    public ApplicationAssembly assemble(ApplicationAssemblyFactory applicationFactory) throws AssemblyException
     {
-        return applicationFactory.newApplicationAssembly( new Assembler[][][]
-            {
-                // UI
+        return applicationFactory.newApplicationAssembly(new Assembler[][][]
                 {
-                    {
-                        new ModuleName( "Configuration store" ),
-                        new MemoryEntityStoreServiceAssembler(),
-                    },
-                    {
-                        new ModuleName( "Restlet servlet" ),
-                        new RestletServletAssembler(),
-                    },
-                    {
-                        new ModuleName( "Jetty" ),
-                        new JettyServiceAssembler()
-                    },
-                    {
-                        new ModuleName("JMX Configuration"),
-                        new JMXAssembler()
-                    }
-                },
-                // Domain
-                {
-                    {
-                        new ModuleName( "Restlet application" ),
-                        new RestAssembler(),
-                    },
-                    {
-                        new ModuleName( "RDF" ),
-                        new RDFAssembler(),
-                    },
-                    {
-                        new ModuleName( "Domain" ),
-                        new DomainAssembler(),
-                    }
-                },
-                // Infrastructure
-                {
-                    {
-                        new ModuleName( "Configuration store" ),
-                        new MemoryEntityStoreServiceAssembler()
-                    }
-                }
-            }  );
+                        // UI
+                        {
+                                {
+                                        new ModuleName("Configuration store"),
+                                        new MemoryEntityStoreServiceAssembler(),
+                                },
+                                {
+                                        new ModuleName("Restlet servlet"),
+                                        new RestletServletAssembler(),
+                                },
+                                {
+                                        new ModuleName("Jetty"),
+                                        new JettyServiceAssembler()
+                                },
+                                {
+                                        new ModuleName("JMX Configuration"),
+//                        new JMXAssembler()
+                                }
+                        },
+                        // Domain
+                        {
+                                {
+                                        new ModuleName("Restlet application"),
+                                        new RestAssembler(),
+                                },
+                                {
+                                        new ModuleName("RDF"),
+                                        new RDFAssembler(),
+                                },
+                                {
+                                        new ModuleName("Domain"),
+                                        new DomainAssembler(),
+                                }
+                        },
+                        // Infrastructure
+                        {
+                                {
+                                        new ModuleName("Domain store"),
+                                        new MemoryEntityStoreServiceAssembler()
+                                }
+                        }
+                });
     }
 }

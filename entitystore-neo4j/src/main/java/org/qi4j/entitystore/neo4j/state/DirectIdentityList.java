@@ -16,101 +16,116 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
-import java.util.AbstractSequentialList;
+import org.neo4j.api.core.*;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
+import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.StateName;
+
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
-import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.NeoService;
-import org.neo4j.api.core.Node;
-import org.neo4j.api.core.Relationship;
-import org.neo4j.api.core.RelationshipType;
-import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.api.common.QualifiedName;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
-public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity>
+public class DirectIdentityList implements ManyAssociationState
 {
     private final DirectEntityState state;
     private final NeoService neo;
     private final RelationshipType internalType;
     private final RelationshipType startType;
     private final RelationshipType endType;
-    private final QualifiedName qualifiedName;
+    private final StateName stateName;
     private final NeoIdentityIndex idIndex;
 
-    public DirectIdentityList( NeoService neo, NeoIdentityIndex idIndex, DirectEntityState state, QualifiedName qualifiedName )
+    public DirectIdentityList(NeoService neo, NeoIdentityIndex idIndex, DirectEntityState state, StateName stateName)
     {
         this.neo = neo;
         this.state = state;
-        this.internalType = LinkType.INTERNAL.getRelationshipType( qualifiedName.name() );
-        this.startType = LinkType.START.getRelationshipType( qualifiedName.name() );
-        this.endType = LinkType.END.getRelationshipType( qualifiedName.name() );
-        this.qualifiedName = qualifiedName;
+        this.stateName = stateName;
+        this.internalType = LinkType.INTERNAL.getRelationshipType(stateName.qualifiedName().name());
+        this.startType = LinkType.START.getRelationshipType(this.stateName.qualifiedName().name());
+        this.endType = LinkType.END.getRelationshipType(this.stateName.qualifiedName().name());
         this.idIndex = idIndex;
     }
 
-    public ListIterator<QualifiedIdentity> listIterator( int i )
+    // TODO Implement the below methods
+    public int count()
     {
-        return new NodeChainIterator( i );
+        return state.getSizeOfCollection(stateName);
     }
 
-    public int size()
+    public boolean contains(EntityReference entityReference)
     {
-        return state.getSizeOfCollection( qualifiedName );
+        return false;
     }
 
-    private class NodeChainIterator implements ListIterator<QualifiedIdentity>
+    public boolean add(int index, EntityReference entityReference)
+    {
+        return false;
+    }
+
+    public boolean remove(EntityReference entityReference)
+    {
+        return false;
+    }
+
+    public EntityReference get(int index)
+    {
+        return null;
+    }
+
+    public Iterator<EntityReference> iterator()
+    {
+        return null;
+    }
+
+    private class NodeChainIterator implements ListIterator<EntityReference>
     {
         private int index;
         private Relationship currentRelation;
         private Direction lastDirection = null;
 
-        public NodeChainIterator( int startIndex )
+        public NodeChainIterator(int startIndex)
         {
-            index = size();
-            if( startIndex < 0 || index < startIndex )
+            index = count();
+            if (startIndex < 0 || index < startIndex)
             {
                 throw new IndexOutOfBoundsException();
-            }
-            else if( index - startIndex < startIndex )
+            } else if (index - startIndex < startIndex)
             {
                 // backwards is nearer
-                currentRelation = state.underlyingNode.getSingleRelationship( endType, Direction.INCOMING );
-                for( ; index > startIndex; index-- )
+                currentRelation = state.underlyingNode.getSingleRelationship(endType, Direction.INCOMING);
+                for (; index > startIndex; index--)
                 {
-                    currentRelation = previousRelation( currentRelation.getStartNode() );
+                    currentRelation = previousRelation(currentRelation.getStartNode());
                 }
-            }
-            else
+            } else
             {
                 // forwards is nearer
-                currentRelation = state.underlyingNode.getSingleRelationship( startType, Direction.OUTGOING );
-                for( index = 0; index < startIndex; index++ )
+                currentRelation = state.underlyingNode.getSingleRelationship(startType, Direction.OUTGOING);
+                for (index = 0; index < startIndex; index++)
                 {
-                    currentRelation = nextRelation( currentRelation.getEndNode() );
+                    currentRelation = nextRelation(currentRelation.getEndNode());
                 }
             }
         }
 
         public boolean hasNext()
         {
-            return currentRelation != null && !currentRelation.isType( endType );
+            return currentRelation != null && !currentRelation.isType(endType);
         }
 
-        public QualifiedIdentity next()
+        public EntityReference next()
         {
-            if( hasNext() )
+            if (hasNext())
             {
                 index++;
-                currentRelation = nextRelation( currentRelation.getEndNode() );
+                currentRelation = nextRelation(currentRelation.getEndNode());
                 lastDirection = Direction.OUTGOING;
-                return DirectEntityState.getIdentityFromNode( unproxy( currentRelation.getStartNode() ) );
-            }
-            else
+                return DirectEntityState.getIdentityFromNode(unproxy(currentRelation.getStartNode()));
+            } else
             {
                 throw new NoSuchElementException();
             }
@@ -118,19 +133,18 @@ public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity
 
         public boolean hasPrevious()
         {
-            return currentRelation != null && !currentRelation.isType( startType );
+            return currentRelation != null && !currentRelation.isType(startType);
         }
 
-        public QualifiedIdentity previous()
+        public EntityReference previous()
         {
-            if( hasPrevious() )
+            if (hasPrevious())
             {
                 index--;
-                currentRelation = previousRelation( currentRelation.getStartNode() );
+                currentRelation = previousRelation(currentRelation.getStartNode());
                 lastDirection = Direction.INCOMING;
-                return DirectEntityState.getIdentityFromNode( unproxy( currentRelation.getEndNode() ) );
-            }
-            else
+                return DirectEntityState.getIdentityFromNode(unproxy(currentRelation.getEndNode()));
+            } else
             {
                 throw new NoSuchElementException();
             }
@@ -158,22 +172,22 @@ public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity
 
             RelationshipModifier()
             {
-                switch( lastDirection )
+                switch (lastDirection)
                 {
-                case OUTGOING: // remove node returned by next()
-                    after = currentRelation.getEndNode();
-                    removed = currentRelation.getStartNode();
-                    last = previousRelation( removed );
-                    before = last.getStartNode();
-                    break;
-                case INCOMING: // remove node returned by previous()
-                    before = currentRelation.getStartNode();
-                    removed = currentRelation.getEndNode();
-                    last = nextRelation( removed );
-                    after = last.getEndNode();
-                    break;
-                default:
-                    throw new IllegalStateException( "Illegal value of lastDirection" );
+                    case OUTGOING: // remove node returned by next()
+                        after = currentRelation.getEndNode();
+                        removed = currentRelation.getStartNode();
+                        last = previousRelation(removed);
+                        before = last.getStartNode();
+                        break;
+                    case INCOMING: // remove node returned by previous()
+                        before = currentRelation.getStartNode();
+                        removed = currentRelation.getEndNode();
+                        last = nextRelation(removed);
+                        after = last.getEndNode();
+                        break;
+                    default:
+                        throw new IllegalStateException("Illegal value of lastDirection");
                 }
             }
 
@@ -182,46 +196,45 @@ public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity
                 RelationshipType type = last.getType();
                 last.delete();
                 currentRelation.delete();
-                if( unproxy( removed ) != removed )
+                if (unproxy(removed) != removed)
                 {
                     removed.delete();
                 }
-                if( lastDirection == Direction.OUTGOING )
+                if (lastDirection == Direction.OUTGOING)
                 {
                     index--;
                 }
-                changeSizeBy( -1 );
-                return createRelation( before, type, after );
+                changeSizeBy(-1);
+                return createRelation(before, type, after);
             }
 
-            Relationship set( Node added )
+            Relationship set(Node added)
             {
                 RelationshipType beforeType = internalType, afterType = internalType;
-                if( before.equals( state.underlyingNode ) )
+                if (before.equals(state.underlyingNode))
                 {
                     beforeType = startType;
                 }
-                if( after.equals( state.underlyingNode ) )
+                if (after.equals(state.underlyingNode))
                 {
                     afterType = endType;
                 }
                 last.delete();
                 currentRelation.delete();
-                if( unproxy( removed ) != removed )
+                if (unproxy(removed) != removed)
                 {
                     removed.delete();
                 }
-                if( inList( added ) )
+                if (inList(added))
                 {
-                    added = proxy( added );
+                    added = proxy(added);
                 }
-                Relationship to = createRelation( before, beforeType, added );
-                Relationship from = createRelation( added, afterType, after );
-                if( lastDirection == Direction.OUTGOING )
+                Relationship to = createRelation(before, beforeType, added);
+                Relationship from = createRelation(added, afterType, after);
+                if (lastDirection == Direction.OUTGOING)
                 { // last was next()
                     return from;
-                }
-                else
+                } else
                 { // last was previous()
                     return to;
                 }
@@ -230,7 +243,7 @@ public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity
 
         public void remove()
         {
-            if( null == lastDirection )
+            if (null == lastDirection)
             {
                 throw new IllegalStateException();
             }
@@ -239,125 +252,121 @@ public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity
             lastDirection = null;
         }
 
-        public void set( QualifiedIdentity qualifiedIdentity )
+        public void set(EntityReference entityReference)
         {
-            if( null == lastDirection )
+            if (null == lastDirection)
             {
                 throw new IllegalStateException();
             }
-            Node added = idIndex.getNode( qualifiedIdentity.identity() );
+            Node added = idIndex.getNode(entityReference.identity());
             RelationshipModifier modifier = new RelationshipModifier();
-            currentRelation = modifier.set( added );
+            currentRelation = modifier.set(added);
             lastDirection = null;
         }
 
-        public void add( QualifiedIdentity qualifiedIdentity )
+        public void add(EntityReference entityReference)
         {
             Node before, after;
             RelationshipType beforeType = internalType, afterType = internalType;
-            if( null == currentRelation )
+            if (null == currentRelation)
             {
                 before = after = state.underlyingNode;
                 beforeType = startType;
                 afterType = endType;
-            }
-            else
+            } else
             {
                 before = currentRelation.getStartNode();
                 after = currentRelation.getEndNode();
                 currentRelation.delete();
-                if( before.equals( state.underlyingNode ) )
+                if (before.equals(state.underlyingNode))
                 {
                     beforeType = startType;
-                }
-                else if( after.equals( state.underlyingNode ) )
+                } else if (after.equals(state.underlyingNode))
                 {
                     afterType = endType;
                 }
             }
-            Node added = idIndex.getNode( qualifiedIdentity.identity() );
-            if( inList( added ) )
+            Node added = idIndex.getNode(entityReference.identity());
+            if (inList(added))
             {
-                added = proxy( added );
+                added = proxy(added);
             }
-            createRelation( before, beforeType, added );
-            currentRelation = createRelation( added, afterType, after );
-            changeSizeBy( 1 );
+            createRelation(before, beforeType, added);
+            currentRelation = createRelation(added, afterType, after);
+            changeSizeBy(1);
             index++;
             lastDirection = null;
         }
 
         // Traversal direction details
 
-        private Relationship nextRelation( Node node )
+        private Relationship nextRelation(Node node)
         {
-            return getRelation( node, endType, Direction.OUTGOING );
+            return getRelation(node, endType, Direction.OUTGOING);
         }
 
-        private Relationship previousRelation( Node node )
+        private Relationship previousRelation(Node node)
         {
-            return getRelation( node, startType, Direction.INCOMING );
+            return getRelation(node, startType, Direction.INCOMING);
         }
 
-        private Relationship createRelation( Node before, RelationshipType type, Node after )
+        private Relationship createRelation(Node before, RelationshipType type, Node after)
         {
-            Relationship relation = before.createRelationshipTo( after, type );
-            relation.setProperty( DirectEntityState.ASSOCIATION_OF_PROPERTY_KEY, state.underlyingNode.getId() );
+            Relationship relation = before.createRelationshipTo(after, type);
+            relation.setProperty(DirectEntityState.ASSOCIATION_OF_PROPERTY_KEY, state.underlyingNode.getId());
             return relation;
         }
 
-        private boolean inList( Node node )
+        private boolean inList(Node node)
         {
-            if( getRelation( node, startType, Direction.INCOMING ) != null )
+            if (getRelation(node, startType, Direction.INCOMING) != null)
             {
                 return true;
-            }
-            else if( getRelation( node, endType, Direction.OUTGOING ) != null )
+            } else if (getRelation(node, endType, Direction.OUTGOING) != null)
             {
                 return true;
-            }
-            else if( state.underlyingNode.equals(node) )
+            } else if (state.underlyingNode.equals(node))
             {
-            	return true;
+                return true;
             }
             return false;
         }
 
-        private Node proxy( Node original )
+        private Node proxy(Node original)
         {
             return DirectEntityState.proxy(neo, original);
         }
 
-        private Node unproxy( Node listed )
+        private Node unproxy(Node listed)
         {
             return DirectEntityState.unproxy(listed);
         }
 
-        private Relationship getRelation( Node node, RelationshipType edgeType, Direction direction )
+        private Relationship getRelation(Node node, RelationshipType edgeType, Direction direction)
         {
-            Relationship relation = getRelationFrom( node.getRelationships( edgeType, direction ) );
-            if( null == relation )
+            Relationship relation = getRelationFrom(node.getRelationships(edgeType, direction));
+            if (null == relation)
             {
-                relation = getRelationFrom( node.getRelationships( internalType, direction ) );
+                relation = getRelationFrom(node.getRelationships(internalType, direction));
             }
             return relation;
         }
 
-        private Relationship getRelationFrom( Iterable<Relationship> relationships )
+        private Relationship getRelationFrom(Iterable<Relationship> relationships)
         {
             Iterator<Relationship> iterator = relationships.iterator();
-            if( !iterator.hasNext() )
+            if (!iterator.hasNext())
             {
                 return null;
             }
             Relationship relation = iterator.next();
-            if( !iterator.hasNext() )
+            if (!iterator.hasNext())
             {
                 return relation;
             }
-            while( iterator.hasNext() )
+            while (iterator.hasNext())
             {
-                if( applicable( relation ) )
+                if (applicable(relation))
                 {
                     return relation;
                 }
@@ -366,15 +375,15 @@ public class DirectIdentityList extends AbstractSequentialList<QualifiedIdentity
             return null;
         }
 
-        private boolean applicable( Relationship relation )
+        private boolean applicable(Relationship relation)
         {
-            final long relatedTo = (Long) relation.getProperty( DirectEntityState.ASSOCIATION_OF_PROPERTY_KEY );
+            final long relatedTo = (Long) relation.getProperty(DirectEntityState.ASSOCIATION_OF_PROPERTY_KEY);
             return relatedTo == state.underlyingNode.getId();
         }
     }
 
-    private void changeSizeBy( int delta )
+    private void changeSizeBy(int delta)
     {
-        state.setSizeOfCollection( qualifiedName, size() + delta );
+        state.setSizeOfCollection(stateName.qualifiedName(), count() + delta);
     }
 }

@@ -16,25 +16,25 @@ package org.qi4j.entitystore.legacy;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import static com.ibatis.sqlmap.client.SqlMapClientBuilder.buildSqlMapClient;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.StateCommitter;
+
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.api.common.QualifiedName;
 
 public class LegacySqlClient
-    implements Serializable, StateCommitter
+        implements Serializable, StateCommitter
 {
     private transient SqlMapClient client;
     private final String sqlMapConfigUrl;
     private Properties configProperties;
 
-    public LegacySqlClient( final String sqlMapConfigURL, final Properties configProperties )
+    public LegacySqlClient(final String sqlMapConfigURL, final Properties configProperties)
     {
         this.sqlMapConfigUrl = sqlMapConfigURL;
         this.configProperties = configProperties;
@@ -42,30 +42,31 @@ public class LegacySqlClient
 
     public void checkActive()
     {
-        if( client == null )
+        if (client == null)
         {
-            throw new EntityStoreException( "IBatis Client for " + sqlMapConfigUrl + " was not activated." );
+            throw new EntityStoreException("IBatis Client for " + sqlMapConfigUrl + " was not activated.");
         }
     }
 
-    public Map<String, Object> executeLoad( final QualifiedIdentity qualifiedIdentity )
+    public Map<String, Object> executeLoad(final EntityReference entityReference)
     {
         checkActive();
-        final String statementId = getStatementId( qualifiedIdentity, "load" );
+        final String statementId = getStatementId(entityReference, "load");
         try
         {
             //noinspection unchecked
-            return (Map<String, Object>) client.queryForObject( statementId, qualifiedIdentity.identity() );
+            return (Map<String, Object>) client.queryForObject(statementId, entityReference.identity());
         }
-        catch( SQLException e )
+        catch (SQLException e)
         {
-            throw new EntityStoreException( "Error executing Operation " + statementId + " for identity " + qualifiedIdentity, e );
+            throw new EntityStoreException("Error executing Operation " + statementId + " for identity " + entityReference, e);
         }
     }
 
-    private String getStatementId( final QualifiedIdentity qualifiedIdentity, final String suffix )
+    private String getStatementId(final EntityReference entityReference, final String suffix)
     {
-        return qualifiedIdentity.type() + "." + suffix;
+        // TODO How should this be?
+        return suffix;
     }
 
     public void startTransaction()
@@ -76,24 +77,24 @@ public class LegacySqlClient
         {
             client.startTransaction();
         }
-        catch( SQLException e )
+        catch (SQLException e)
         {
-            throw new EntityStoreException( "Error starting transaction", e );
+            throw new EntityStoreException("Error starting transaction", e);
         }
     }
 
-    public int executeUpdate( final String operation, final QualifiedIdentity identity, final Object params )
+    public int executeUpdate(final String operation, final EntityReference reference, final Object params)
     {
         checkActive();
 
-        final String statementId = getStatementId( identity, operation );
+        final String statementId = getStatementId(reference, operation);
         try
         {
-            return client.update( statementId, params );
+            return client.update(statementId, params);
         }
-        catch( SQLException e )
+        catch (SQLException e)
         {
-            throw new EntityStoreException( "Error executing Operation " + statementId + " for identity " + identity + " params " + params, e );
+            throw new EntityStoreException("Error executing Operation " + statementId + " for reference " + reference + " params " + params, e);
         }
     }
 
@@ -104,9 +105,9 @@ public class LegacySqlClient
         {
             client.commitTransaction();
         }
-        catch( SQLException e )
+        catch (SQLException e)
         {
-            throw new EntityStoreException( "Error commiting transaction", e );
+            throw new EntityStoreException("Error commiting transaction", e);
         }
     }
 
@@ -117,9 +118,9 @@ public class LegacySqlClient
         {
             client.endTransaction();
         }
-        catch( SQLException e )
+        catch (SQLException e)
         {
-            throw new EntityStoreException( "Error canceling transaction", e );
+            throw new EntityStoreException("Error canceling transaction", e);
         }
     }
 
@@ -130,8 +131,8 @@ public class LegacySqlClient
 
     public void activate() throws Exception
     {
-        final InputStream configInputStream = new URL( sqlMapConfigUrl ).openStream();
-        client = buildSqlMapClient( configInputStream, configProperties );
+        final InputStream configInputStream = new URL(sqlMapConfigUrl).openStream();
+        client = buildSqlMapClient(configInputStream, configProperties);
     }
 
 }

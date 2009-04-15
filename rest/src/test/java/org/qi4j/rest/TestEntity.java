@@ -19,10 +19,7 @@ import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.RDF;
 import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ListAssociation;
 import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.entity.association.Qualifier;
-import org.qi4j.api.entity.association.SetAssociation;
 import org.qi4j.api.property.Property;
 import org.qi4j.library.rdf.DcRdf;
 
@@ -30,9 +27,11 @@ import org.qi4j.library.rdf.DcRdf;
  * JAVADOC
  */
 public interface TestEntity
-    extends EntityComposite
+        extends EntityComposite
 {
-    @UseDefaults @RDF( DcRdf.NAMESPACE + "title" ) Property<String> name();
+    @UseDefaults
+    @RDF(DcRdf.NAMESPACE + "title")
+    Property<String> name();
 
     @UseDefaults
     Property<Integer> age();
@@ -40,17 +39,17 @@ public interface TestEntity
     @Optional
     Property<TestValue> value();
 
-    @Optional Property<String> unsetName();
+    @Optional
+    Property<String> unsetName();
 
-    @Optional Association<TestEntity> association();
+    @Optional
+    Association<TestEntity> association();
 
-    @Optional Association<TestEntity> unsetAssociation();
+    @Optional
+    Association<TestEntity> unsetAssociation();
 
     ManyAssociation<TestEntity> manyAssociation();
 
-    @RDF( "http://www.w3.org/2001/vcard-rdf/3.0#GROUP" ) ListAssociation<TestEntity> listAssociation();
-
-    SetAssociation<TestEntity> setAssociation();
-
-    ManyAssociation<Qualifier<TestEntity,TestRole>> manyAssociationQualifier();
+    @RDF("http://www.w3.org/2001/vcard-rdf/3.0#GROUP")
+    ManyAssociation<TestEntity> rdfAssociation();
 }

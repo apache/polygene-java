@@ -19,30 +19,31 @@ import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.restlet.Context;
-import org.restlet.Finder;
-import org.restlet.Handler;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
+import org.restlet.resource.Finder;
+import org.restlet.resource.Handler;
 
 public class Qi4jFinder extends Finder
 {
-    @Structure private ObjectBuilderFactory factory;
+    @Structure
+    private ObjectBuilderFactory factory;
 
-    public Qi4jFinder( @Uses Context context,
-                       @Uses Class<? extends Handler> targetClass )
+    public Qi4jFinder(@Uses Context context,
+                      @Uses Class<? extends Handler> targetClass)
     {
-        super( context, targetClass );
+        super(context, targetClass);
     }
 
-    protected Handler createTarget( Class<? extends Handler> targetClass, Request request, Response response )
+    protected Handler createTarget(Class<? extends Handler> targetClass, Request request, Response response)
     {
-        ObjectBuilder<? extends Handler> builder = factory.newObjectBuilder( targetClass );
-        builder.use( request );
-        builder.use( response );
-        builder.use( getContext().createChildContext() );
+        ObjectBuilder<? extends Handler> builder = factory.newObjectBuilder(targetClass);
+        builder.use(request);
+        builder.use(response);
+        builder.use(getContext().createChildContext());
 
-        EntityStateSerializer serializer = factory.newObject( EntityStateSerializer.class );
-        builder.use( serializer );
+        EntityStateSerializer serializer = factory.newObject(EntityStateSerializer.class);
+        builder.use(serializer);
         return builder.newInstance();
     }
 }

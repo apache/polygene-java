@@ -18,13 +18,13 @@
 package org.qi4j.entitystore.swift;
 
 import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.api.entity.EntityReference;
 
 public class IdentityTooLongException extends EntityStoreException
 {
-    public IdentityTooLongException( QualifiedIdentity identity )
+    public IdentityTooLongException( EntityReference reference)
     {
-        super( "The identity is too long for the configured store: " + identity.toString().length() + ", " + identity  );
+        super( "The reference is too long for the configured store: " + reference.toString().length() + ", " + reference);
 
     }
 }
