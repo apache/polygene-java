@@ -3,10 +3,16 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/qi4j-core.iml" filepath="$PROJECT_DIR$/qi4j-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/qi4j-core.iml" filepath="$PROJECT_DIR$/qi4j-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/api/qi4j-core-api.iml" filepath="$PROJECT_DIR$/api/qi4j-core-api.iml" />
       <module fileurl="file://$PROJECT_DIR$/api/qi4j-core-api.iml" filepath="$PROJECT_DIR$/api/qi4j-core-api.iml" />
       <module fileurl="file://$PROJECT_DIR$/bootstrap/qi4j-core-bootstrap.iml" filepath="$PROJECT_DIR$/bootstrap/qi4j-core-bootstrap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bootstrap/qi4j-core-bootstrap.iml" filepath="$PROJECT_DIR$/bootstrap/qi4j-core-bootstrap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/runtime/qi4j-core-runtime.iml" filepath="$PROJECT_DIR$/runtime/qi4j-core-runtime.iml" />
       <module fileurl="file://$PROJECT_DIR$/runtime/qi4j-core-runtime.iml" filepath="$PROJECT_DIR$/runtime/qi4j-core-runtime.iml" />
       <module fileurl="file://$PROJECT_DIR$/spi/qi4j-core-spi.iml" filepath="$PROJECT_DIR$/spi/qi4j-core-spi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spi/qi4j-core-spi.iml" filepath="$PROJECT_DIR$/spi/qi4j-core-spi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/testsupport/qi4j-core-testsupport.iml" filepath="$PROJECT_DIR$/testsupport/qi4j-core-testsupport.iml" />
       <module fileurl="file://$PROJECT_DIR$/testsupport/qi4j-core-testsupport.iml" filepath="$PROJECT_DIR$/testsupport/qi4j-core-testsupport.iml" />
     </modules>
   </component>
