@@ -17,52 +17,16 @@
  */
 package org.qi4j.runtime.query;
 
-import static java.lang.reflect.Proxy.getInvocationHandler;
-import static java.lang.reflect.Proxy.isProxyClass;
-import static java.lang.reflect.Proxy.newProxyInstance;
-import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.query.QueryExpressionsProvider;
-import org.qi4j.api.query.grammar.AssociationIsNotNullPredicate;
-import org.qi4j.api.query.grammar.AssociationIsNullPredicate;
-import org.qi4j.api.query.grammar.AssociationReference;
-import org.qi4j.api.query.grammar.BooleanExpression;
-import org.qi4j.api.query.grammar.Conjunction;
-import org.qi4j.api.query.grammar.Disjunction;
-import org.qi4j.api.query.grammar.EqualsPredicate;
-import org.qi4j.api.query.grammar.GreaterOrEqualPredicate;
-import org.qi4j.api.query.grammar.GreaterThanPredicate;
-import org.qi4j.api.query.grammar.LessOrEqualPredicate;
-import org.qi4j.api.query.grammar.LessThanPredicate;
-import org.qi4j.api.query.grammar.MatchesPredicate;
-import org.qi4j.api.query.grammar.Negation;
-import org.qi4j.api.query.grammar.NotEqualsPredicate;
-import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.query.grammar.PropertyIsNotNullPredicate;
-import org.qi4j.api.query.grammar.PropertyIsNullPredicate;
-import org.qi4j.api.query.grammar.PropertyReference;
-import org.qi4j.api.query.grammar.SingleValueExpression;
-import org.qi4j.api.query.grammar.VariableValueExpression;
-import org.qi4j.runtime.query.grammar.impl.AssociationIsNotNullPredicateImpl;
-import org.qi4j.runtime.query.grammar.impl.AssociationIsNullPredicateImpl;
-import org.qi4j.runtime.query.grammar.impl.ConjunctionImpl;
-import org.qi4j.runtime.query.grammar.impl.DisjunctionImpl;
-import org.qi4j.runtime.query.grammar.impl.EqualsPredicateImpl;
-import org.qi4j.runtime.query.grammar.impl.GreaterOrEqualPredicateImpl;
-import org.qi4j.runtime.query.grammar.impl.GreaterThanPredicateImpl;
-import org.qi4j.runtime.query.grammar.impl.LessOrEqualPredicateImpl;
-import org.qi4j.runtime.query.grammar.impl.LessThanPredicateImpl;
-import org.qi4j.runtime.query.grammar.impl.MatchesPredicateImpl;
-import org.qi4j.runtime.query.grammar.impl.NegationImpl;
-import org.qi4j.runtime.query.grammar.impl.NotEqualsPredicateImpl;
-import org.qi4j.runtime.query.grammar.impl.OrderByImpl;
-import org.qi4j.runtime.query.grammar.impl.PropertyIsNotNullPredicateImpl;
-import org.qi4j.runtime.query.grammar.impl.PropertyIsNullPredicateImpl;
-import org.qi4j.runtime.query.grammar.impl.SingleValueExpressionImpl;
-import org.qi4j.runtime.query.grammar.impl.VariableValueExpressionImpl;
+import org.qi4j.api.query.grammar.*;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
+import org.qi4j.runtime.query.grammar.impl.*;
 import org.qi4j.runtime.query.proxy.ManyAssociationReferenceProxy;
 import org.qi4j.runtime.query.proxy.MixinTypeProxy;
+
+import static java.lang.reflect.Proxy.*;
 
 public class QueryExpressionsProviderImpl
     implements QueryExpressionsProvider

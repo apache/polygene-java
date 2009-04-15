@@ -14,10 +14,10 @@
 
 package org.qi4j.bootstrap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.io.Serializable;
 
 /**
  * Assembler that delegates to a collection of Assemblies.

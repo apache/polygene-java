@@ -15,8 +15,6 @@
 package org.qi4j.api.service;
 
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.entity.Identity;
 
 /**

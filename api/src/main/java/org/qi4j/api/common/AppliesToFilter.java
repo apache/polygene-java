@@ -14,8 +14,8 @@
 
 package org.qi4j.api.common;
 
-import java.lang.reflect.Method;
 import java.io.Serializable;
+import java.lang.reflect.Method;
 
 /**
  * Implementations of this interface can be specified in the AppliesTo.

@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.qi4j.api.property.Property;
+import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
@@ -65,8 +65,8 @@ public final class EntityAssociationsInstance
         {
             for (Association<?> property : associations.values())
             {
-                AssociationInstance association = (AssociationInstance) property;
-                association.refresh( entityState );
+                AssociationInstance entityProperty = (AssociationInstance) property;
+                entityProperty.refresh( entityState );
             }
         }
 
@@ -82,7 +82,7 @@ public final class EntityAssociationsInstance
     {
         for (Association<?> association : associations.values())
         {
-            visitor.visitAssociation(association.qualifiedName(), association.get());
+            visitor.visitAssociation(association.qualifiedName(), association);
         }
     }
 }

@@ -14,11 +14,9 @@
 
 package org.qi4j.runtime.structure;
 
-import java.lang.reflect.Type;
-import java.util.List;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.AmbiguousTypeException;
-import org.qi4j.api.service.ServiceReference;
+
+import java.util.List;
 
 /**
  * JAVADOC
@@ -36,8 +34,10 @@ public final class UsedLayersInstance
     {
         for( LayerInstance usedLayerInstance : usedLayerInstances )
         {
-            if (!usedLayerInstance.visitModules( visitor, Visibility.application ))
+            if( !usedLayerInstance.visitModules( visitor, Visibility.application ) )
+            {
                 return false;
+            }
         }
         return true;
     }

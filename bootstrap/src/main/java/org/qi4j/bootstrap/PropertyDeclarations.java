@@ -14,12 +14,13 @@
 
 package org.qi4j.bootstrap;
 
-import java.lang.reflect.Method;
 import org.qi4j.api.common.MetaInfo;
+
+import java.lang.reflect.Method;
 
 /**
  * This provides declared property information that
- * the runtime can use. 
+ * the runtime can use.
  */
 public interface PropertyDeclarations
 {

@@ -30,5 +30,6 @@
     <orderEntry type="library" name="Maven: org.ops4j.base:ops4j-base-monitors:0.5.3" level="project" />
     <orderEntry type="library" name="Maven: org.ops4j.pax.runner:pax-runner-no-jcl:0.17.2" level="project" />
   </component>
+  <component name="copyright" />
 </module>
 

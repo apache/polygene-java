@@ -15,7 +15,6 @@
 package org.qi4j.spi.value;
 
 import org.qi4j.spi.composite.CompositeDescriptor;
-import org.qi4j.spi.composite.StateDescriptor;
 
 /**
  * JAVADOC

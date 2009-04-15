@@ -34,7 +34,7 @@ public class PropertyInstance<T> extends AbstractPropertyInstance<T>
      *
      * @param aPropertyInfo The property info. This argument must not be {@code null}.
      * @param aValue        The property value.
-     * @param constraints constraint checker for this property
+     * @param constraints   constraint checker for this property
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
      * @since 0.1.0
      */
@@ -64,10 +64,12 @@ public class PropertyInstance<T> extends AbstractPropertyInstance<T>
      */
     public void set( T aNewValue )
     {
-        if( isImmutable())
+        if( isImmutable() )
+        {
             throw new IllegalStateException( "Property [" + qualifiedName() + "] is immutable." );
+        }
 
-        if( constraints != null)
+        if( constraints != null )
         {
             constraints.checkConstraints( aNewValue);
         }

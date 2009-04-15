@@ -18,5 +18,6 @@
     <orderEntry type="library" exported="" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
     <orderEntry type="library" name="Maven: org.easymock:easymock:2.3" level="project" />
   </component>
+  <component name="copyright" />
 </module>
 

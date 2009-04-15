@@ -15,33 +15,22 @@
 package org.qi4j.runtime.property;
 
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.TypeName;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.GenericPropertyInfo;
-import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
-import org.qi4j.api.value.NoSuchValueException;
-import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.ModuleVisitor;
-import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.runtime.value.ValueModel;
-import org.qi4j.spi.entity.helpers.DefaultValueState;
+import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
-import org.qi4j.spi.value.*;
-import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.util.PeekableStringTokenizer;
-import org.xml.sax.*;
-import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.helpers.DefaultHandler;
+import org.qi4j.spi.value.ValueType;
 
-import java.io.*;
 import java.lang.reflect.Method;
-import java.util.*;
 
 /**
  * JAVADOC

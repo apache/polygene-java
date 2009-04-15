@@ -17,13 +17,14 @@
  */
 package org.qi4j.api.entity.association;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.Aggregated;
 import org.qi4j.api.property.Immutable;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 public class GenericAssociationInfo
     implements AssociationInfo
@@ -75,7 +76,7 @@ public class GenericAssociationInfo
 
     public GenericAssociationInfo( Method accessor, MetaInfo metainfo )
     {
-        this.qualifiedName = QualifiedName.fromMethod(accessor);
+        this.qualifiedName = QualifiedName.fromMethod( accessor );
         this.metainfo = metainfo;
         immutable = metainfo.get( Immutable.class ) != null;
         aggregated = metainfo.get( Aggregated.class ) != null;

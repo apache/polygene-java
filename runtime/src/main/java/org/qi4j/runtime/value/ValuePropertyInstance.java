@@ -32,7 +32,7 @@ public class ValuePropertyInstance<T> extends AbstractPropertyInstance<T>
      * @param aValue        The property value.
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
      */
-    public ValuePropertyInstance( PropertyInfo aPropertyInfo, T aValue)
+    public ValuePropertyInstance( PropertyInfo aPropertyInfo, T aValue )
         throws IllegalArgumentException
     {
         super( aPropertyInfo );

@@ -26,7 +26,7 @@ public abstract class ApplicationAssemblerAdapter
 
     protected ApplicationAssemblerAdapter( Assembler assembler )
     {
-        this.assemblers = new Assembler[][][] { { { assembler } } };
+        this.assemblers = new Assembler[][][]{ { { assembler } } };
     }
 
     protected ApplicationAssemblerAdapter( Assembler[][][] assemblers )

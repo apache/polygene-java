@@ -16,8 +16,8 @@ package org.qi4j.entitystore.memory;
 
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreListenerNotificationSideEffect;
 import org.qi4j.spi.entity.helpers.MapEntityStoreMixin;

@@ -16,13 +16,14 @@
 
 package org.qi4j.runtime.value;
 
-import java.lang.reflect.Proxy;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.composite.DefaultCompositeInstance;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
+
+import java.lang.reflect.Proxy;
 
 /**
  * ValueComposite instance
@@ -47,7 +48,7 @@ public final class ValueInstance extends DefaultCompositeInstance
         {
             return true;
         }
-        if( o == null || ! Proxy.isProxyClass( o.getClass() ))
+        if( o == null || !Proxy.isProxyClass( o.getClass() ) )
         {
             return false;
         }

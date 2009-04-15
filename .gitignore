@@ -1,0 +1,8 @@
+target/
+api/target/
+bootstrap/target/
+qi4j-core.iws
+runtime/target/
+spi/target/
+testsupport/target/
+.idea/workspace.xml

@@ -22,7 +22,7 @@ import org.qi4j.api.common.MetaInfo;
  */
 public class Usecase
 {
-    public static final Usecase DEFAULT = new Usecase( "Default", new MetaInfo());
+    public static final Usecase DEFAULT = new Usecase( "Default", new MetaInfo() );
 
     private String name;
     private MetaInfo metaInfo = new MetaInfo();

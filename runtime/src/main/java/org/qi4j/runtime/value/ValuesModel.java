@@ -14,15 +14,14 @@
 
 package org.qi4j.runtime.value;
 
-import java.util.List;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.common.TypeName;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
-import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
+
+import java.util.List;
 
 /**
  * JAVADOC

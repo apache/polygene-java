@@ -14,25 +14,25 @@
 
 package org.qi4j.spi.service.importer;
 
-import org.qi4j.api.service.ServiceImporter;
-import org.qi4j.api.service.ImportedServiceDescriptor;
-import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.service.ServiceImporterException;
 
 /**
  * JAVADOC
  */
 public class NewObjectImporter
-   implements ServiceImporter
+    implements ServiceImporter
 {
-   @Structure
-   ObjectBuilderFactory obf;
+    @Structure
+    ObjectBuilderFactory obf;
 
-   public Object importService( ImportedServiceDescriptor serviceDescriptor) throws ServiceImporterException
-   {
-      return obf.newObject(serviceDescriptor.type());
-   }
+    public Object importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
+    {
+        return obf.newObject( serviceDescriptor.type() );
+    }
 
     public boolean isActive( Object instance )
     {

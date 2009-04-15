@@ -1,8 +1,9 @@
 package org.qi4j.test.mock;
 
+import org.qi4j.api.concern.ConcernOf;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.api.concern.ConcernOf;
 
 /**
  * JAVADOC Add JavaDoc.

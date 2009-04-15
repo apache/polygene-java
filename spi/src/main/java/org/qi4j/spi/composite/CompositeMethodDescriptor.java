@@ -14,8 +14,9 @@
 
 package org.qi4j.spi.composite;
 
-import java.lang.reflect.Method;
 import org.qi4j.spi.mixin.MixinDescriptor;
+
+import java.lang.reflect.Method;
 
 /**
  * JAVADOC

@@ -13,5 +13,6 @@
     <orderEntry type="library" name="Maven: junit:junit:4.4" level="project" />
     <orderEntry type="library" name="Maven: org.easymock:easymock:2.3" level="project" />
   </component>
+  <component name="copyright" />
 </module>
 

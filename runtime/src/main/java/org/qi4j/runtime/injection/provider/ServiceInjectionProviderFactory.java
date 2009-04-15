@@ -14,29 +14,23 @@
 
 package org.qi4j.runtime.injection.provider;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Collection;
-import java.io.Serializable;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
-import org.qi4j.runtime.structure.ModuleVisitor;
+import org.qi4j.runtime.service.ImportedServiceModel;
+import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleModel;
-import org.qi4j.runtime.service.ServiceModel;
-import org.qi4j.runtime.service.ImportedServiceModel;
-import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.structure.Module;
-import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.runtime.structure.ModuleVisitor;
+
+import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
 
 public final class ServiceInjectionProviderFactory
     implements InjectionProviderFactory, Serializable
@@ -81,8 +75,10 @@ public final class ServiceInjectionProviderFactory
             serviceFinder.serviceType = serviceType;
             resolution.module().visitModules( serviceFinder );
 
-            if (serviceFinder.identity == null)
+            if( serviceFinder.identity == null )
+            {
                 return null;
+            }
 
             return new ServiceReferenceProvider( serviceFinder );
         }
@@ -94,8 +90,10 @@ public final class ServiceInjectionProviderFactory
             serviceFinder.serviceType = serviceType;
             resolution.module().visitModules( serviceFinder );
 
-            if (serviceFinder.identity == null)
+            if( serviceFinder.identity == null )
+            {
                 return null;
+            }
 
             return new ServiceProvider( serviceFinder );
         }
@@ -150,12 +148,12 @@ public final class ServiceInjectionProviderFactory
             Collection<List<String>> stringLists = servicesFinder.serviceIdentities.values();
             for( List<String> stringList : stringLists )
             {
-                services.addAll(stringList );
+                services.addAll( stringList );
             }
             stringLists = servicesFinder.importedServiceIdentities.values();
             for( List<String> stringList : stringLists )
             {
-                services.addAll(stringList );
+                services.addAll( stringList );
             }
             return services;
         }
@@ -205,12 +203,12 @@ public final class ServiceInjectionProviderFactory
             Collection<List<String>> stringLists = servicesFinder.serviceIdentities.values();
             for( List<String> stringList : stringLists )
             {
-                services.addAll(stringList );
+                services.addAll( stringList );
             }
             stringLists = servicesFinder.importedServiceIdentities.values();
             for( List<String> stringList : stringLists )
             {
-                services.addAll(stringList );
+                services.addAll( stringList );
             }
             return services;
         }
@@ -251,8 +249,10 @@ public final class ServiceInjectionProviderFactory
         public List<String> injectedServices()
         {
             List<String> services = new ArrayList<String>();
-            if (serviceFinder.identity != null)
-                services.add(serviceFinder.identity);
+            if( serviceFinder.identity != null )
+            {
+                services.add( serviceFinder.identity );
+            }
             return services;
         }
     }
@@ -292,8 +292,10 @@ public final class ServiceInjectionProviderFactory
         public List<String> injectedServices()
         {
             List<String> services = new ArrayList<String>();
-            if (serviceFinder.identity != null)
-                services.add(serviceFinder.identity);
+            if( serviceFinder.identity != null )
+            {
+                services.add( serviceFinder.identity );
+            }
             return services;
         }
     }

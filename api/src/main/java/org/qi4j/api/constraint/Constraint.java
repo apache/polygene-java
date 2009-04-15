@@ -14,8 +14,8 @@
 
 package org.qi4j.api.constraint;
 
-import java.lang.annotation.Annotation;
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 
 /**
  * All Constraints must implement this interface, which is used for each

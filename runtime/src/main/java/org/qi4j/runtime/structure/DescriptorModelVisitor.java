@@ -14,17 +14,7 @@
 
 package org.qi4j.runtime.structure;
 
-import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.runtime.composite.AbstractConstraintModel;
-import org.qi4j.runtime.composite.CompositeMethodModel;
-import org.qi4j.runtime.composite.CompositeModel;
-import org.qi4j.runtime.composite.ConstructorModel;
-import org.qi4j.runtime.composite.MethodConcernModel;
-import org.qi4j.runtime.composite.MethodConcernsModel;
-import org.qi4j.runtime.composite.MethodConstraintsModel;
-import org.qi4j.runtime.composite.MethodSideEffectModel;
-import org.qi4j.runtime.composite.MethodSideEffectsModel;
-import org.qi4j.runtime.composite.MixinModel;
+import org.qi4j.runtime.composite.*;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;
 import org.qi4j.runtime.injection.InjectedMethodModel;
@@ -33,6 +23,7 @@ import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.service.ImportedServiceModel;
 import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.value.ValueModel;
+import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.structure.DescriptorVisitor;
 
 /**

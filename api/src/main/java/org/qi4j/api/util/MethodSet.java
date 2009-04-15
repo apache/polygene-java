@@ -17,12 +17,12 @@
  */
 package org.qi4j.api.util;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.HashSet;
-import java.io.IOException;
-import java.io.Externalizable;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
 
 public class MethodSet extends HashSet<Method>
     implements Externalizable
@@ -43,7 +43,7 @@ public class MethodSet extends HashSet<Method>
         throws IOException, ClassNotFoundException
     {
         int size = in.readInt();
-        for( int i = 0 ; i < size ; i++ )
+        for( int i = 0; i < size; i++ )
         {
             Method method = SerializationUtil.readMethod( in );
             add( method );

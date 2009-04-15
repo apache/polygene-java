@@ -21,9 +21,9 @@ import org.qi4j.api.common.MetaInfo;
  */
 public class UsecaseBuilder
 {
-    public static UsecaseBuilder buildUsecase(String aName)
+    public static UsecaseBuilder buildUsecase( String aName )
     {
-        return new UsecaseBuilder(aName);
+        return new UsecaseBuilder( aName );
     }
 
     public static Usecase newUsecase(String aName)
@@ -34,12 +34,12 @@ public class UsecaseBuilder
     private MetaInfo metaInfo = new MetaInfo();
     private String name;
 
-    private UsecaseBuilder(String name)
+    private UsecaseBuilder( String name )
     {
         this.name = name;
     }
 
-    public UsecaseBuilder with( Object metaInfo)
+    public UsecaseBuilder with( Object metaInfo )
     {
         this.metaInfo.set( metaInfo );
         return this;

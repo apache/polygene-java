@@ -16,9 +16,10 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import java.lang.reflect.Method;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.ManyAssociationReference;
+
+import java.lang.reflect.Method;
 
 /**
  * @author edward.yakop@gmail.com

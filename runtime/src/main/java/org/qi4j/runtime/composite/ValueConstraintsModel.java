@@ -14,9 +14,10 @@
 
 package org.qi4j.runtime.composite;
 
+import org.qi4j.runtime.structure.ModelVisitor;
+
 import java.io.Serializable;
 import java.util.List;
-import org.qi4j.runtime.structure.ModelVisitor;
 
 /**
  * JAVADOC
@@ -42,8 +43,10 @@ public final class ValueConstraintsModel
 
     public boolean isConstrained()
     {
-        if (!constraintModels.isEmpty())
+        if( !constraintModels.isEmpty() )
+        {
             return true;
+        }
 
         return !optional;
     }

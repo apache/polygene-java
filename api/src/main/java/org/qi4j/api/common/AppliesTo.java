@@ -16,11 +16,7 @@
 
 package org.qi4j.api.common;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Modifiers that implement InvocationHandler and which should only
@@ -35,7 +31,7 @@ import java.lang.annotation.Target;
  * implements InvocationHandler
  * {
  *     public Object invoke( Object proxy,
- *                           Method method, 
+ *                           Method method,
  *                           Object[] args )
  *         throws Throwable
  *     {
@@ -98,10 +94,12 @@ import java.lang.annotation.Target;
 @Documented
 public @interface AppliesTo
 {
-    /** List of interfaces, annotations or AppliesToFilter
-     *implementation classes.
+    /**
+     * List of interfaces, annotations or AppliesToFilter
+     * implementation classes.
      * If one of them matches the current element it will be
      * accepted, so this list can be considered an "or".
+     *
      * @return array of classes or interfaces to be used by the filter
      */
     Class<?>[] value();

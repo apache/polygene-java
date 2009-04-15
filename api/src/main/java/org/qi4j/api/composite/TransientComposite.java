@@ -17,16 +17,16 @@
  */
 package org.qi4j.api.composite;
 
-/** TransientComposites have the following criteria;
+/**
+ * TransientComposites have the following criteria;
  *
  * <ul>
- *  <li>Does not persist its state, and is not serializable</li>
- *  <li>Can not be referenced from Properties, Associations, ValueComposites nor Entities</li>
- *  <li>Can reference all types</li>
- *  <li>No lifecycle</li>
- *  <li>equals/hashCode is delegated to a single Mixin implementing the methods, like any other method</li>
+ * <li>Does not persist its state, and is not serializable</li>
+ * <li>Can not be referenced from Properties, Associations, ValueComposites nor Entities</li>
+ * <li>Can reference all types</li>
+ * <li>No lifecycle</li>
+ * <li>equals/hashCode is delegated to a single Mixin implementing the methods, like any other method</li>
  * </ul>
- *
  */
 public interface TransientComposite extends Composite
 {

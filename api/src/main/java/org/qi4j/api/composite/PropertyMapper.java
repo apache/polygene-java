@@ -1,5 +1,8 @@
 package org.qi4j.api.composite;
 
+import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.property.Property;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -7,8 +10,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Properties;
-import org.qi4j.api.property.GenericPropertyInfo;
-import org.qi4j.api.property.Property;
 
 /**
  * Transfer properties to Composite properties
@@ -18,7 +19,7 @@ public class PropertyMapper
     /**
      * Populate the Composite with properties from the given properties object.
      *
-     * @param props properties object
+     * @param props     properties object
      * @param composite the composite instance
      * @throws IllegalArgumentException if properties could not be transferred to composite
      */
@@ -87,7 +88,7 @@ public class PropertyMapper
      * the Composite with the properties.
      *
      * @param propertyInputStream properties input stream
-     * @param composite the instance
+     * @param composite           the instance
      * @throws IOException if the stream could not be read
      */
     public static void map( InputStream propertyInputStream, Composite composite )

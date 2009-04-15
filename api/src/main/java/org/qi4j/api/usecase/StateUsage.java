@@ -14,12 +14,13 @@
 
 package org.qi4j.api.usecase;
 
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.property.Property;
+
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.common.QualifiedName;
 
 /**
  * JAVADOC
@@ -71,7 +72,7 @@ public final class StateUsage
         {
             if( Property.class.isAssignableFrom( mixinMethod.getReturnType() ) )
             {
-                QualifiedName qualifiedName = QualifiedName.fromMethod(mixinMethod);
+                QualifiedName qualifiedName = QualifiedName.fromMethod( mixinMethod );
                 usedProperties.add( qualifiedName );
                 usedMixinTypes.add( qualifiedName.type() );
             }

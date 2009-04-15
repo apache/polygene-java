@@ -24,16 +24,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.LinkedList;
 import java.util.Iterator;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import java.util.LinkedList;
 
 /**
  * Implementation of ServiceLoader mechanism in Java.
  */
 public final class ServiceLoader
 {
-    private final static LinkedList<ClassLoader> loaders = new LinkedList<ClassLoader>(); 
+    private final static LinkedList<ClassLoader> loaders = new LinkedList<ClassLoader>();
+
     static
     {
         addClassloader( ServiceLoader.class.getClassLoader() );
@@ -49,7 +49,7 @@ public final class ServiceLoader
         loaders.remove( loader );
     }
 
-    public <T> Iterable<T> providers(Class<T> neededType)
+    public <T> Iterable<T> providers( Class<T> neededType )
         throws IOException
     {
         LinkedList<T> result = new LinkedList<T>();
@@ -59,19 +59,23 @@ public final class ServiceLoader
             while( cfg.hasMoreElements() )
             {
                 URL rc = (URL) cfg.nextElement();
-                processResource( loader, result, rc , neededType);
+                processResource( loader, result, rc, neededType );
             }
         }
         return result;
     }
-    public <T> T firstProvider(Class<T> neededType) throws IOException
+
+    public <T> T firstProvider( Class<T> neededType ) throws IOException
     {
         final Iterator<T> allProviders = providers( neededType ).iterator();
-        if (allProviders.hasNext()) return allProviders.next();
-        System.err.println(  "No provider found for " + neededType + "." );
+        if( allProviders.hasNext() )
+        {
+            return allProviders.next();
+        }
+        System.err.println( "No provider found for " + neededType + "." );
         return null;
     }
-    
+
     private <T> void processResource(
         ClassLoader classLoader, LinkedList<T> result,
         URL rc, Class<T> neededType )
@@ -88,9 +92,9 @@ public final class ServiceLoader
             while( null != line )
             {
                 String providerClassName = trimLine( line );
-                if (line.length()>0)
+                if( line.length() > 0 )
                 {
-                    processProvider( result, classLoader, providerClassName , neededType);
+                    processProvider( result, classLoader, providerClassName, neededType );
                 }
                 line = rd.readLine();
             }

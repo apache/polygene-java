@@ -14,5 +14,6 @@
     <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
     <orderEntry type="library" exported="" name="Maven: junit:junit:4.4" level="project" />
   </component>
+  <component name="copyright" />
 </module>
 

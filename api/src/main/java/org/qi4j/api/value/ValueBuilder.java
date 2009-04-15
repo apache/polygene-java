@@ -29,7 +29,7 @@ public interface ValueBuilder<T>
      * @param value whose state should be copied to this builder
      * @return the builder itself
      */
-    ValueBuilder<T> withPrototype(T value);
+    ValueBuilder<T> withPrototype( T value );
 
     ValueBuilder<T> withState(StateHolder state);
 
@@ -46,7 +46,8 @@ public interface ValueBuilder<T>
      * Create a new Composite instance.
      *
      * @return a new Composite instance
-     * @throws org.qi4j.api.common.ConstructionException thrown if it was not possible to instantiate the Composite
+     * @throws org.qi4j.api.common.ConstructionException
+     *          thrown if it was not possible to instantiate the Composite
      */
     T newInstance()
         throws ConstructionException;

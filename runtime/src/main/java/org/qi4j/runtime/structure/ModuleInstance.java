@@ -14,19 +14,13 @@
 
 package org.qi4j.runtime.structure;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.composite.CompositeBuilder;
 import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.api.composite.NoSuchCompositeException;
-import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
@@ -41,25 +35,28 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.runtime.composite.CompositeModel;
-import org.qi4j.runtime.composite.UsesInstance;
-import org.qi4j.runtime.composite.CompositeBuilderInstance;
-import org.qi4j.runtime.composite.CompositesInstance;
-import org.qi4j.runtime.composite.CompositesModel;
-import org.qi4j.runtime.object.ObjectModel;
+import org.qi4j.runtime.composite.*;
 import org.qi4j.runtime.object.ObjectBuilderInstance;
+import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.object.ObjectsInstance;
 import org.qi4j.runtime.object.ObjectsModel;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.runtime.unitofwork.UnitOfWorkStore;
-import org.qi4j.runtime.value.ValueModel;
-import org.qi4j.runtime.value.ValueBuilderInstance;
-import org.qi4j.runtime.value.ValuesInstance;
-import org.qi4j.runtime.value.ValuesModel;
-import org.qi4j.runtime.service.ServicesInstance;
-import org.qi4j.runtime.service.ServicesModel;
 import org.qi4j.runtime.service.ImportedServicesInstance;
 import org.qi4j.runtime.service.ImportedServicesModel;
+import org.qi4j.runtime.service.ServicesInstance;
+import org.qi4j.runtime.service.ServicesModel;
+import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.runtime.unitofwork.UnitOfWorkStore;
+import org.qi4j.runtime.value.ValueBuilderInstance;
+import org.qi4j.runtime.value.ValueModel;
+import org.qi4j.runtime.value.ValuesInstance;
+import org.qi4j.runtime.value.ValuesModel;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * JAVADOC
@@ -249,22 +246,26 @@ public class ModuleInstance
             finder = new EntityFinder();
             finder.mixinType = type;
             visitModules( finder );
-            if (finder.model != null)
+            if( finder.model != null )
+            {
                 entityFinders.put( type, finder );
+            }
         }
         return finder;
     }
 
     public CompositeFinder findCompositeModel( Class mixinType )
     {
-        CompositeFinder finder = compositeFinders.get(mixinType);
-        if (finder == null)
+        CompositeFinder finder = compositeFinders.get( mixinType );
+        if( finder == null )
         {
             finder = new CompositeFinder();
             finder.type = mixinType;
             visitModules( finder );
-            if (finder.model != null)
-                compositeFinders.put(mixinType, finder);
+            if( finder.model != null )
+            {
+                compositeFinders.put( mixinType, finder );
+            }
         }
 
         return finder;
@@ -272,14 +273,16 @@ public class ModuleInstance
 
     public ObjectFinder findObjectModel( Class type )
     {
-        ObjectFinder finder = objectFinders.get(type);
-        if (finder == null)
+        ObjectFinder finder = objectFinders.get( type );
+        if( finder == null )
         {
             finder = new ObjectFinder();
             finder.type = type;
             visitModules( finder );
-            if (finder.model != null)
-                objectFinders.put(type, finder);
+            if( finder.model != null )
+            {
+                objectFinders.put( type, finder );
+            }
         }
 
         return finder;
@@ -287,14 +290,16 @@ public class ModuleInstance
 
     private ValueFinder findValueModel( Class type )
     {
-        ValueFinder finder = valueFinders.get(type);
-        if (finder == null)
+        ValueFinder finder = valueFinders.get( type );
+        if( finder == null )
         {
             finder = new ValueFinder();
             finder.type = type;
             visitModules( finder );
-            if (finder.model != null)
-                valueFinders.put(type, finder);
+            if( finder.model != null )
+            {
+                valueFinders.put( type, finder );
+            }
         }
 
         return finder;
@@ -359,7 +364,7 @@ public class ModuleInstance
         public <T> T newComposite( final Class<T> mixinType )
             throws NoSuchCompositeException, ConstructionException
         {
-            CompositeFinder finder = findCompositeModel(mixinType);
+            CompositeFinder finder = findCompositeModel( mixinType );
 
             if( finder.model == null )
             {
@@ -385,7 +390,7 @@ public class ModuleInstance
         public <T> ObjectBuilder<T> newObjectBuilder( Class<T> type )
             throws NoSuchObjectException
         {
-            ObjectFinder finder = findObjectModel(type);
+            ObjectFinder finder = findObjectModel( type );
 
             if( finder.model == null )
             {
@@ -398,7 +403,7 @@ public class ModuleInstance
         public <T> T newObject( Class<T> type )
             throws NoSuchObjectException
         {
-            ObjectFinder finder = findObjectModel(type);
+            ObjectFinder finder = findObjectModel( type );
 
             if( finder.model == null )
             {
@@ -424,7 +429,7 @@ public class ModuleInstance
     {
         public <T> ValueBuilder<T> newValueBuilder( Class<T> valueType ) throws NoSuchValueException
         {
-            ValueFinder finder = findValueModel(valueType);
+            ValueFinder finder = findValueModel( valueType );
 
             if( finder.model == null )
             {
@@ -436,7 +441,7 @@ public class ModuleInstance
 
         public <T> T newValue( Class<T> valueType ) throws NoSuchValueException, ConstructionException
         {
-            ValueFinder finder = findValueModel(valueType);
+            ValueFinder finder = findValueModel( valueType );
 
             if( finder.model == null )
             {
@@ -514,15 +519,17 @@ public class ModuleInstance
         public <T> ServiceReference<T> findService( Type serviceType )
         {
             ServiceReference serviceReference = service.get( serviceType );
-            if (serviceReference == null)
+            if( serviceReference == null )
             {
                 ServiceReferenceFinder<T> finder = new ServiceReferenceFinder<T>();
                 finder.type = serviceType;
 
                 visitModules( finder );
                 serviceReference = finder.service;
-                if (serviceReference != null)
-                    service.put(serviceType, serviceReference);
+                if( serviceReference != null )
+                {
+                    service.put( serviceType, serviceReference );
+                }
             }
 
             return serviceReference;
@@ -530,15 +537,15 @@ public class ModuleInstance
 
         public <T> Iterable<ServiceReference<T>> findServices( Type serviceType )
         {
-            Iterable iterable = services.get(serviceType);
-            if (iterable == null)
+            Iterable iterable = services.get( serviceType );
+            if( iterable == null )
             {
                 ServiceReferencesFinder<T> finder = new ServiceReferencesFinder<T>();
                 finder.type = serviceType;
 
                 visitModules( finder );
                 iterable = finder.services;
-                services.put(serviceType, iterable);
+                services.put( serviceType, iterable );
             }
 
             return iterable;

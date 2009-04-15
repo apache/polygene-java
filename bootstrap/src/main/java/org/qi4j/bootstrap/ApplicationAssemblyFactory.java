@@ -18,9 +18,6 @@
 
 package org.qi4j.bootstrap;
 
-import org.qi4j.api.structure.Application;
-import org.qi4j.spi.Qi4jSPI;
-
 /**
  * Factory for creating new Qi4j application assemblies. Typically
  * you will implement one or more Assemblers, wrap them in an ApplicationAssembler,

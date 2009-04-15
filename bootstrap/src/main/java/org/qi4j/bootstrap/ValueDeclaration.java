@@ -29,9 +29,9 @@ public interface ValueDeclaration
 
     ValueDeclaration visibleIn( Visibility visibility );
 
-    ValueDeclaration withConcerns(Class<?>... concerns);
+    ValueDeclaration withConcerns( Class<?>... concerns );
 
-    ValueDeclaration withSideEffects(Class<?>... sideEffects);
+    ValueDeclaration withSideEffects( Class<?>... sideEffects );
 
-    ValueDeclaration withMixins(Class<?>... mixins);
+    ValueDeclaration withMixins( Class<?>... mixins );
 }

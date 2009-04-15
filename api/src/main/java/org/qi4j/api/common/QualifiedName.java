@@ -14,9 +14,10 @@
 
 package org.qi4j.api.common;
 
-import java.lang.reflect.Method;
-import java.io.Serializable;
 import org.qi4j.api.util.NullArgumentException;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
 
 /**
  * A QualifiedName is created by combining the name of a method and the
@@ -28,38 +29,41 @@ public class QualifiedName
     private final TypeName typeName;
     private final String name;
 
-    public static QualifiedName fromMethod(Method method)
+    public static QualifiedName fromMethod( Method method )
     {
-        NullArgumentException.validateNotNull( "method",method );
-        return fromClass(method.getDeclaringClass(),method.getName());
+        NullArgumentException.validateNotNull( "method", method );
+        return fromClass( method.getDeclaringClass(), method.getName() );
     }
 
-    public static QualifiedName fromClass(Class type, String name)
+    public static QualifiedName fromClass( Class type, String name )
     {
-        return new QualifiedName(TypeName.nameOf(type), name);
+        return new QualifiedName( TypeName.nameOf( type ), name );
     }
 
-    public static QualifiedName fromName(String type, String name) {
-        return new QualifiedName(TypeName.nameOf(type),name);        
+    public static QualifiedName fromName( String type, String name )
+    {
+        return new QualifiedName( TypeName.nameOf( type ), name );
     }
+
     public QualifiedName( TypeName typeName, String name )
     {
-        NullArgumentException.validateNotNull( "typeName",typeName );
-        NullArgumentException.validateNotEmpty( "name",name );
+        NullArgumentException.validateNotNull( "typeName", typeName );
+        NullArgumentException.validateNotEmpty( "name", name );
         this.typeName = typeName;
         this.name = name;
     }
 
-    public static QualifiedName fromQN(String qualifiedName) {
-        NullArgumentException.validateNotEmpty( "qualifiedName",qualifiedName );
+    public static QualifiedName fromQN( String qualifiedName )
+    {
+        NullArgumentException.validateNotEmpty( "qualifiedName", qualifiedName );
         int idx = qualifiedName.lastIndexOf( ":" );
-        if (idx == -1)
+        if( idx == -1 )
         {
-            throw new IllegalArgumentException("Name '"+qualifiedName+"' is not a qualified name");
+            throw new IllegalArgumentException( "Name '" + qualifiedName + "' is not a qualified name" );
         }
-        final String type = qualifiedName.substring(0, idx);
-        final String name = qualifiedName.substring(idx + 1);
-        return new QualifiedName(TypeName.nameOf(type), name);
+        final String type = qualifiedName.substring( 0, idx );
+        final String name = qualifiedName.substring( idx + 1 );
+        return new QualifiedName( TypeName.nameOf( type ), name );
     }
 
     public String type()
@@ -71,7 +75,7 @@ public class QualifiedName
     {
         return typeName;
     }
-    
+
     public String name()
     {
         return name;
@@ -89,7 +93,7 @@ public class QualifiedName
 
     @Override public String toString()
     {
-        return typeName +":"+name;
+        return typeName + ":" + name;
     }
 
     @Override
@@ -106,7 +110,7 @@ public class QualifiedName
 
         QualifiedName that = (QualifiedName) o;
 
-        return name.equals( that.name ) && typeName.equals( that.typeName);
+        return name.equals( that.name ) && typeName.equals( that.typeName );
 
     }
 
@@ -119,7 +123,10 @@ public class QualifiedName
     public int compareTo( QualifiedName other )
     {
         final int result = typeName.compareTo( other.typeName );
-        if (result!=0) return result;
+        if( result != 0 )
+        {
+            return result;
+        }
         return name.compareTo( other.name );
     }
 }

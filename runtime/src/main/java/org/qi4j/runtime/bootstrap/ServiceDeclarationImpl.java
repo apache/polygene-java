@@ -14,16 +14,17 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.runtime.service.ServiceModel;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Declaration of a Service. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#addServices(Class[])}.
@@ -32,9 +33,9 @@ public final class ServiceDeclarationImpl
     implements ServiceDeclaration, Serializable
 {
     private Iterable<Class<? extends ServiceComposite>> serviceTypes;
-    private List<Class<?>> concerns = new ArrayList<Class<?>>( );
-    private List<Class<?>> sideEffects = new ArrayList<Class<?>>( );
-    private List<Class<?>> mixins = new ArrayList<Class<?>>( );
+    private List<Class<?>> concerns = new ArrayList<Class<?>>();
+    private List<Class<?>> sideEffects = new ArrayList<Class<?>>();
+    private List<Class<?>> mixins = new ArrayList<Class<?>>();
     private ModuleAssemblyImpl moduleAssembly;
     private String identity;
     private boolean instantiateOnStartup = false;
@@ -73,19 +74,19 @@ public final class ServiceDeclarationImpl
 
     public ServiceDeclaration withConcerns( Class<?>... concerns )
     {
-        this.concerns.addAll( Arrays.asList(concerns ));
+        this.concerns.addAll( Arrays.asList( concerns ) );
         return this;
     }
 
     public ServiceDeclaration withSideEffects( Class<?>... sideEffects )
     {
-        this.sideEffects.addAll( Arrays.asList(sideEffects ));
+        this.sideEffects.addAll( Arrays.asList( sideEffects ) );
         return this;
     }
 
     public ServiceDeclaration withMixins( Class<?>... mixins )
     {
-        this.mixins.addAll( Arrays.asList(mixins ));
+        this.mixins.addAll( Arrays.asList( mixins ) );
         return this;
     }
 
@@ -99,7 +100,7 @@ public final class ServiceDeclarationImpl
                 id = generateId( serviceModels, serviceType );
             }
 
-            ServiceModel serviceModel = ServiceModel.newModel( serviceType, 
+            ServiceModel serviceModel = ServiceModel.newModel( serviceType,
                                                                visibility,
                                                                metaInfo,
                                                                concerns,
@@ -107,7 +108,7 @@ public final class ServiceDeclarationImpl
                                                                mixins,
                                                                moduleAssembly.name(),
                                                                id,
-                                                               instantiateOnStartup);
+                                                               instantiateOnStartup );
             serviceModels.add( serviceModel );
         }
     }

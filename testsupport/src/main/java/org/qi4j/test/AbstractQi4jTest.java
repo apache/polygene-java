@@ -25,15 +25,10 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.bootstrap.ApplicationAssembler;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
-import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.*;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.ApplicationModelSPI;
+import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * Base class for Composite tests.
@@ -81,12 +76,12 @@ public abstract class AbstractQi4jTest
         {
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
             {
-                return applicationFactory.newApplicationAssembly( AbstractQi4jTest.this);
+                return applicationFactory.newApplicationAssembly( AbstractQi4jTest.this );
             }
-        });
+        } );
     }
 
-    protected void initApplication(Application app) throws Exception
+    protected void initApplication( Application app ) throws Exception
     {
     }
 

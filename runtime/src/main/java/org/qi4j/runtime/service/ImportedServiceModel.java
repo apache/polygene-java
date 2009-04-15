@@ -14,12 +14,6 @@
 
 package org.qi4j.runtime.service;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
-import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
@@ -29,6 +23,13 @@ import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.structure.ModelVisitor;
+
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
+import java.util.Set;
 
 /**
  * JAVADOC
@@ -44,10 +45,10 @@ public final class ImportedServiceModel
     private String moduleName;
 
     public ImportedServiceModel( Class serviceType,
-                         Visibility visibility,
-                         Class<? extends ServiceImporter> serviceImporter,
-                         String identity,
-                         MetaInfo metaInfo, String moduleName )
+                                 Visibility visibility,
+                                 Class<? extends ServiceImporter> serviceImporter,
+                                 String identity,
+                                 MetaInfo metaInfo, String moduleName )
     {
         type = serviceType;
         this.visibility = visibility;
@@ -154,9 +155,10 @@ public final class ImportedServiceModel
         catch( ServiceImporterException e )
         {
             throw e;
-        } catch (Exception e)
+        }
+        catch( Exception e )
         {
-            throw new ServiceImporterException( "Could not import service "+identity, e);
+            throw new ServiceImporterException( "Could not import service " + identity, e );
         }
     }
 

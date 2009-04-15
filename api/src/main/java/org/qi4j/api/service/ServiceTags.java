@@ -25,9 +25,9 @@ import java.io.Serializable;
 public class ServiceTags
     implements Serializable
 {
-    public static ServiceTags tags(String... tags)
+    public static ServiceTags tags( String... tags )
     {
-        return new ServiceTags(tags);
+        return new ServiceTags( tags );
     }
 
     private String[] tags;

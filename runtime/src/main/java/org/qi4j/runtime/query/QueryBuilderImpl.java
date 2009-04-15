@@ -59,9 +59,9 @@ final class QueryBuilderImpl<T>
     /**
      * Constructor.
      *
-     * @param unitOfWork parent unit of work; cannot be null
-     * @param entityFinder       entity finder to be used to locate entities; canot be null
-     * @param resultType         type of queried entities; cannot be null
+     * @param unitOfWork   parent unit of work; cannot be null
+     * @param entityFinder entity finder to be used to locate entities; canot be null
+     * @param resultType   type of queried entities; cannot be null
      */
     public QueryBuilderImpl( final UnitOfWork unitOfWork,
                              final EntityFinder entityFinder,

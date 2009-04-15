@@ -17,10 +17,11 @@
  */
 package org.qi4j.api.property;
 
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.util.NullArgumentException;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import org.qi4j.api.util.NullArgumentException;
-import org.qi4j.api.common.QualifiedName;
 
 /**
  * Use the ImmutableFacade if you have a Property that you want to
@@ -55,20 +56,22 @@ public class ImmutableFacade<T>
 
     public void _( T newValue ) throws IllegalArgumentException, IllegalStateException
     {
-        set(newValue);
+        set( newValue );
     }
 
     // I think that using T again here is a mistake...
     public <V> V metaInfo( Class<V> infoType )
     {
-        if (infoType.equals( Immutable.class))
-            return infoType.cast(new Immutable()
+        if( infoType.equals( Immutable.class ) )
+        {
+            return infoType.cast( new Immutable()
             {
                 public Class<? extends Annotation> annotationType()
                 {
                     return Immutable.class;
                 }
-            });
+            } );
+        }
 
         return target.metaInfo( infoType );
     }

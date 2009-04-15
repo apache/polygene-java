@@ -14,7 +14,6 @@
 
 package org.qi4j.bootstrap;
 
-import org.qi4j.api.structure.Application;
 import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
@@ -23,7 +22,7 @@ import org.qi4j.spi.structure.ApplicationSPI;
  * concept. This essentially means that you have to create a text file named:
  * "META-INF/services/org.qi4j.bootstrap.ApplicationAssembler"
  * and in it place on one line the class name of your assembler. This will allow this class
- * to find it, instantiate it, and use it as the assembler of the application. 
+ * to find it, instantiate it, and use it as the assembler of the application.
  */
 public class Main
 {

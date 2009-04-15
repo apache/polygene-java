@@ -42,12 +42,12 @@ public final class MethodSideEffectsInstance
         try
         {
             Object result = invoker.invoke( proxy, method, args );
-            invokeSideEffects(proxy, method, args, result, null);
+            invokeSideEffects( proxy, method, args, result, null );
             return result;
         }
         catch( Throwable throwable )
         {
-            invokeSideEffects(proxy, method, args, null, throwable);
+            invokeSideEffects( proxy, method, args, null, throwable );
             throw throwable;
         }
     }
