@@ -19,96 +19,88 @@ package org.qi4j.entitystore.coherence;
 
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.locks.ReadWriteLock;
 import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.spi.entity.*;
 import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.spi.entity.EntityNotFoundException;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.EntityTypeRegistryMixin;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.UnknownEntityTypeException;
 
-public class CoherenceEntityStoreMixin extends EntityTypeRegistryMixin
-    implements Activatable
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+
+public class CoherenceEntityStoreMixin
+        implements Activatable, EntityStore
 {
-    private @This ReadWriteLock lock;
-    private @This Configuration<CoherenceConfiguration> config;
-    private @Uses ServiceDescriptor descriptor;
+    private
+    @This
+    ReadWriteLock lock;
+    private
+    @This
+    Configuration<CoherenceConfiguration> config;
+    private
+    @Uses
+    ServiceDescriptor descriptor;
     private NamedCache cache;
 
     // Activatable implementation
     public void activate()
-        throws Exception
+            throws Exception
     {
         String cacheName = config.configuration().cacheName().get();
-        cache = CacheFactory.getCache( cacheName );
+        cache = CacheFactory.getCache(cacheName);
     }
 
     public void passivate()
-        throws Exception
+            throws Exception
     {
         cache.destroy();
     }
 
-    public EntityState newEntityState( QualifiedIdentity identity )
-        throws EntityStoreException
+    public EntityState newEntityState(EntityReference reference)
+            throws EntityStoreException
     {
-        EntityType entityType = getEntityType( identity.type() );
-        return new CoherenceEntityState( identity, entityType );
+        return new CoherenceEntityState(reference);
     }
 
-    public EntityState getEntityState( QualifiedIdentity identity )
-        throws EntityStoreException
+    public EntityState getEntityState(EntityReference reference)
+            throws EntityStoreException
     {
-        EntityType entityType = getEntityType( identity.type() );
-        if( entityType == null )
-        {
-            throw new UnknownEntityTypeException( identity.type() );
-        }
-
         // Synchronization on non-final is valid semantics here. Only set in activate()/deactivate() pair of methods.
         //noinspection SynchronizeOnNonFinalField
-        synchronized( cache )
+        synchronized (cache)
         {
-            CoherenceEntityState state = (CoherenceEntityState) cache.get( identity );
-            if( state == null )
+            CoherenceEntityState state = (CoherenceEntityState) cache.get(reference);
+            if (state == null)
             {
-                throw new EntityNotFoundException( descriptor.identity(), identity );
+                throw new EntityNotFoundException(reference);
             }
             return state;
         }
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates,
-                                   Iterable<EntityState> loadedStates,
-                                   final Iterable<QualifiedIdentity> removedStates )
-        throws EntityStoreException
+    public StateCommitter prepare(Iterable<EntityState> newStates,
+                                  Iterable<EntityState> loadedStates,
+                                  final Iterable<EntityReference> removedStates)
+            throws EntityStoreException
     {
-        final Map<QualifiedIdentity, CoherenceEntityState> updatedState =
-            new HashMap<QualifiedIdentity, CoherenceEntityState>();
+        final Map<EntityReference, CoherenceEntityState> updatedState =
+                new HashMap<EntityReference, CoherenceEntityState>();
 
-        for( EntityState entityState : newStates )
+        for (EntityState entityState : newStates)
         {
             CoherenceEntityState entityStateInstance = (CoherenceEntityState) entityState;
-            updatedState.put( entityState.qualifiedIdentity(), entityStateInstance );
+            updatedState.put(entityState.identity(), entityStateInstance);
         }
 
-        for( EntityState entityState : loadedStates )
+        for (EntityState entityState : loadedStates)
         {
             CoherenceEntityState entityStateInstance = (CoherenceEntityState) entityState;
-            if( entityStateInstance.isModified() )
+            if (entityStateInstance.isModified())
             {
-                updatedState.put( entityState.qualifiedIdentity(), entityStateInstance );
+                updatedState.put(entityState.identity(), entityStateInstance);
             }
         }
         return new StateCommitter()
@@ -117,19 +109,19 @@ public class CoherenceEntityStoreMixin extends EntityTypeRegistryMixin
             {
                 // Synchronization on non-final is valid semantics here. Only set in activate()/deactivate() pair of methods.
                 //noinspection SynchronizeOnNonFinalField
-                synchronized( cache )
+                synchronized (cache)
                 {
                     // Remove state
-                    for( QualifiedIdentity removedEntityId : removedStates )
+                    for (EntityReference removedEntityId : removedStates)
                     {
-                        cache.remove( removedEntityId );
+                        cache.remove(removedEntityId);
                     }
 
                     // Update state
-                    for( Map.Entry<QualifiedIdentity, CoherenceEntityState> state : updatedState.entrySet() )
+                    for (Map.Entry<EntityReference, CoherenceEntityState> state : updatedState.entrySet())
                     {
                         final CoherenceEntityState value = state.getValue();
-                        if( value.status() == EntityStatus.LOADED )
+                        if (value.status() == EntityStatus.LOADED)
                         {
                             if (value.isModified())
                             {
@@ -140,7 +132,7 @@ public class CoherenceEntityStoreMixin extends EntityTypeRegistryMixin
                             value.markAsLoaded();
                         }
                         value.clearModified();
-                        cache.put( state.getKey(), value );
+                        cache.put(state.getKey(), value);
                     }
                 }
             }
@@ -152,26 +144,11 @@ public class CoherenceEntityStoreMixin extends EntityTypeRegistryMixin
         };
     }
 
-    public Iterator<EntityState> iterator()
+    public void visitEntityStates(EntityStateVisitor visitor)
     {
-        final Iterator iterator = cache.keySet().iterator();
-        return new Iterator<EntityState>()
+        for (Object entityState : cache.values())
         {
-            public boolean hasNext()
-            {
-                return iterator.hasNext();
-            }
-
-            public EntityState next()
-            {
-                return getEntityState( (QualifiedIdentity) iterator.next() );
-            }
-
-            public void remove()
-            {
-                throw new UnsupportedOperationException();
-            }
-        };
+            visitor.visitEntityState((EntityState) entityState);
+        }
     }
-
 }

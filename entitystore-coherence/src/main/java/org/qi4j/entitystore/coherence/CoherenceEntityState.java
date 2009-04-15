@@ -20,74 +20,72 @@ package org.qi4j.entitystore.coherence;
 import com.tangosol.io.pof.PofReader;
 import com.tangosol.io.pof.PofWriter;
 import com.tangosol.io.pof.PortableObject;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.*;
+import org.qi4j.spi.entity.helpers.DefaultEntityState;
+
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Map;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.helpers.DefaultEntityState;
-import org.qi4j.api.common.QualifiedName;
+import java.util.Set;
 
 class CoherenceEntityState extends DefaultEntityState
-    implements PortableObject, EntityState
+        implements PortableObject, EntityState
 {
-    public CoherenceEntityState( QualifiedIdentity identity, EntityType entityType )
+    public CoherenceEntityState(EntityReference reference)
     {
-        super( identity, entityType );
+        super(reference);
     }
 
-    public CoherenceEntityState( long version, long lastModified, QualifiedIdentity identity, EntityStatus status, EntityType entityType, Map<QualifiedName, Object> properties, Map<QualifiedName, QualifiedIdentity> associations, Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations )
+    public CoherenceEntityState(long version, long lastModified, EntityReference reference, EntityStatus status, Set<EntityTypeReference> entityTypeReferences, Map<StateName, String> properties, Map<StateName, EntityReference> associations, Map<StateName, ManyAssociationState> manyAssociations)
     {
-        super( version, lastModified, identity, status, entityType, properties, associations, manyAssociations );
+        super(version, lastModified, reference, status, entityTypeReferences, properties, associations, manyAssociations);
     }
 
-    public void readExternal( PofReader pofReader )
-        throws IOException
+    public void readExternal(PofReader pofReader)
+            throws IOException
     {
         int counter = 0;
-        version = pofReader.readLong( counter++ );
-        lastModified = pofReader.readLong( counter++ );
+        version = pofReader.readLong(counter++);
+        lastModified = pofReader.readLong(counter++);
         ArrayList<String> propertyNames = new ArrayList<String>();
-        String propName = pofReader.readString( counter++ );
-        while( propName.length() > 0 )
+        String propName = pofReader.readString(counter++);
+        while (propName.length() > 0)
         {
-            propertyNames.add( propName );
-            propName = pofReader.readString( counter++ );
+            propertyNames.add(propName);
+            propName = pofReader.readString(counter++);
         }
-        int propertyCounter = pofReader.readInt( counter++ );
-        for( int i = 0; i < propertyCounter; i++ )
+        int propertyCounter = pofReader.readInt(counter++);
+        for (int i = 0; i < propertyCounter; i++)
         {
-            Object propertyValue = pofReader.readObject( i + counter );
-            properties.put(QualifiedName.fromQN(propertyNames.get(i)), propertyValue);
+            String propertyValue = pofReader.readString(i + counter);
+            properties.put(new StateName(propertyNames.get(i)), propertyValue);
         }
         pofReader.readRemainder();
         clearModified();
     }
 
-    public void writeExternal( PofWriter pofWriter )
-        throws IOException
+    public void writeExternal(PofWriter pofWriter)
+            throws IOException
     {
         int counter = 0;
-        if( lastModified == 0 )
+        if (lastModified == 0)
         {
             lastModified = System.currentTimeMillis();
         }
-        pofWriter.writeLong( counter++, version );
-        pofWriter.writeLong( counter++, lastModified );
-        for( QualifiedName propName : properties.keySet() )
+        pofWriter.writeLong(counter++, version);
+        pofWriter.writeLong(counter++, lastModified);
+        for (StateName propName : properties.keySet())
         {
-            pofWriter.writeString( counter++, propName.toString() );
+            pofWriter.writeString(counter++, propName.toString());
         }
-        pofWriter.writeString( counter++, "" );
-        pofWriter.writeInt( counter, counter - 1 );
+        pofWriter.writeString(counter++, "");
+        pofWriter.writeInt(counter, counter - 1);
         counter++;
-        for( QualifiedName propName : properties.keySet() )
+        for (StateName propName : properties.keySet())
         {
-            Object propertyValue = getProperty( propName );
-            pofWriter.writeObject( counter++, propertyValue );
+            Object propertyValue = properties.get(propName);
+            pofWriter.writeObject(counter++, propertyValue);
 
 // IFF the writeObject() above works, then we can toss away the stuff below.
 //            if( propertyValue instanceof String )
