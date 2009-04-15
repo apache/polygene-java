@@ -15,6 +15,8 @@
 package org.qi4j.spi.composite;
 
 import java.util.List;
+import java.util.Set;
+
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.api.common.QualifiedName;
 
@@ -23,9 +25,9 @@ import org.qi4j.api.common.QualifiedName;
  */
 public interface StateDescriptor
 {
-    PropertyDescriptor getPropertyByName( String name );
+    <T extends PropertyDescriptor> T getPropertyByName( String name );
 
-    PropertyDescriptor getPropertyByQualifiedName( QualifiedName name );
+    <T extends PropertyDescriptor> T getPropertyByQualifiedName( QualifiedName name );
 
-    List<? extends PropertyDescriptor> properties();
+    <T extends PropertyDescriptor> Set<T> properties();
 }

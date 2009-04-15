@@ -17,6 +17,8 @@
  */
 package org.qi4j.api.unitofwork;
 
+import org.qi4j.api.entity.EntityReference;
+
 /**
  * If you try to create an EntityComposite whose identity already exists,
  * then this exception will be thrown.
@@ -26,23 +28,16 @@ public class EntityCompositeAlreadyExistsException
 {
     private static final long serialVersionUID = -7297710939536508481L;
 
-    private final String identity;
-    private final String type;
+    private final EntityReference identity;
 
-    public EntityCompositeAlreadyExistsException( String identity, String type )
+    public EntityCompositeAlreadyExistsException( EntityReference identity )
     {
-        super( "EntityComposite (" + identity + " of type " + type + ") already exists." );
+        super( "EntityComposite (" + identity +") already exists." );
         this.identity = identity;
-        this.type = type;
     }
 
-    public String identity()
+    public EntityReference identity()
     {
         return identity;
-    }
-
-    public String type()
-    {
-        return type;
     }
 }

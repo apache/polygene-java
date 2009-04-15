@@ -14,28 +14,20 @@
 
 package org.qi4j.runtime.unitofwork;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.Iterator;
-import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.Identity;
-import org.qi4j.api.entity.IdentityGenerator;
-import org.qi4j.api.entity.Lifecycle;
-import org.qi4j.api.entity.LifecycleException;
-import org.qi4j.api.entity.association.AbstractAssociation;
-import org.qi4j.api.entity.association.EntityStateHolder;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.unitofwork.UnitOfWorkException;
+
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.*;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.StateName;
+import org.qi4j.spi.property.PropertyTypeDescriptor;
+import org.qi4j.api.entity.EntityReference;
 
 /**
  * JAVADOC
@@ -43,12 +35,9 @@ import org.qi4j.spi.entity.EntityStore;
 public final class EntityBuilderInstance<T>
     implements EntityBuilder<T>
 {
-    private static final String NO_IDENTITY = "NO_IDENTITY";
-
     private static final Method IDENTITY_METHOD;
-    private static final Method TYPE_METHOD;
-    private static final Method METAINFO_METHOD;
     private static final Method CREATE_METHOD;
+    private static StateName identityStateName;
 
     private final ModuleInstance moduleInstance;
     private final EntityModel entityModel;
@@ -56,16 +45,14 @@ public final class EntityBuilderInstance<T>
     private final EntityStore store;
     private final IdentityGenerator identityGenerator;
 
-    private T stateProxy;
-    private EntityStateHolder state;
+    private final DefaultDiffEntityState entityState;
+    private final EntityInstance prototypeInstance;
 
     static
     {
         try
         {
             IDENTITY_METHOD = Identity.class.getMethod( "identity" );
-            TYPE_METHOD = Composite.class.getMethod( "type" );
-            METAINFO_METHOD = Composite.class.getMethod( "metaInfo", Class.class );
             CREATE_METHOD = Lifecycle.class.getMethod( "create" );
         }
         catch( NoSuchMethodException e )
@@ -83,79 +70,62 @@ public final class EntityBuilderInstance<T>
         this.uow = uow;
         this.store = store;
         this.identityGenerator = identityGenerator;
+
+        if (identityStateName == null)
+            identityStateName = entityModel.state().<PropertyTypeDescriptor>getPropertyByQualifiedName(QualifiedName.fromMethod(IDENTITY_METHOD)).propertyType().stateName();
+
+        entityState = new DefaultDiffEntityState();
+        entityState.addEntityTypeReference(entityModel.entityType().reference());
+        prototypeInstance = entityModel.newInstance(uow, moduleInstance, EntityReference.NULL, entityState);
     }
 
     public EntityBuilderInstance( ModuleInstance moduleInstance, EntityModel model, ModuleUnitOfWork uow, EntityStore store, String identity )
     {
         this(moduleInstance, model, uow, store, (IdentityGenerator) null);
-        stateFor( Identity.class ).identity().set( identity );
+        entityState.setProperty(identityStateName, '\"'+identity+'\"');
     }
 
     @SuppressWarnings( "unchecked" )
-    public T stateOfComposite()
+    public T prototype()
     {
-        // Instantiate proxy for given composite interface
-        if( stateProxy == null )
-        {
-            try
-            {
-                StateInvocationHandler handler = new StateInvocationHandler();
-                ClassLoader proxyClassloader = entityModel.type().getClassLoader();
-                Class[] interfaces = new Class[]{ entityModel.type() };
-                stateProxy = (T) ( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ) );
-            }
-            catch( Exception e )
-            {
-                throw new ConstructionException( e );
-            }
-        }
-
-        return stateProxy;
+        return prototypeInstance.<T>proxy();
     }
 
-    public <K> K stateFor( Class<K> mixinType )
+    public <K> K prototypeFor( Class<K> mixinType )
     {
-        // Instantiate proxy for given interface
-        try
-        {
-            StateInvocationHandler handler = new StateInvocationHandler();
-            ClassLoader proxyClassloader = mixinType.getClassLoader();
-            Class[] interfaces = new Class[]{ mixinType };
-            return mixinType.cast( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ) );
-        }
-        catch( Exception e )
-        {
-            throw new ConstructionException( e );
-        }
+        return prototypeInstance.newProxy(mixinType);
     }
 
     public T newInstance()
         throws LifecycleException
     {
+        String identity;
+        String identityJson;
 
         // Figure out whether to use given or generated identity
-        boolean prototypePattern = false;
-        Property identityProperty = getState().getProperty( IDENTITY_METHOD );
-        Object identity = identityProperty.get();
-        if( identity == null || identity == NO_IDENTITY )
+        EntityState newEntityState;
+        if( identityGenerator != null )
         {
             Class compositeType = entityModel.type();
-            if( identityGenerator == null )
-            {
-                throw new UnitOfWorkException( "No identity generator found for type " + compositeType.getName() );
-            }
             identity = identityGenerator.generate( compositeType );
-            identityProperty.set( identity );
-            prototypePattern = true;
+            identityJson = '\"'+identity+'\"';
+            newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference(identity), moduleInstance.layerInstance().applicationInstance().runtime());
+        } else
+        {
+            identityJson = entityState.getProperty(identityStateName);
+            identity = identityJson.substring(1, identityJson.length()-2);
+            newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference(identity), moduleInstance.layerInstance().applicationInstance().runtime());
         }
 
-        // Transfer state
-        EntityState entityState = entityModel.newEntityState( store, identity.toString(), state );
+        // Transfer state from prototype
+        entityState.applyTo(newEntityState);
 
-        EntityInstance instance = entityModel.newInstance( uow, moduleInstance, entityState.qualifiedIdentity(), entityState );
+        // Set identity property
+        newEntityState.setProperty(identityStateName, identityJson);
+
+        EntityInstance instance = entityModel.newInstance( uow, moduleInstance, newEntityState.identity(), newEntityState );
 
         Object proxy = instance.proxy();
-        uow.instance().createEntity( instance, store );
 
         // Invoke lifecycle create() method
         if( instance.entityModel().hasMixinType( Lifecycle.class ) )
@@ -174,10 +144,12 @@ public final class EntityBuilderInstance<T>
             }
         }
 
-        if( prototypePattern )
-        {
-            identityProperty.set( NO_IDENTITY );
-        }
+        // Check constraints
+        instance.checkConstraints();
+
+        // Register entity in UOW
+        uow.instance().createEntity( instance, store );
+
         return (T) proxy;
     }
 
@@ -193,7 +165,6 @@ public final class EntityBuilderInstance<T>
             public T next()
             {
                 T instance = newInstance();
-                uow.instance().createEntity( EntityInstance.getEntityInstance((EntityComposite) instance), store );
                 return instance;
             }
 
@@ -202,44 +173,5 @@ public final class EntityBuilderInstance<T>
                 throw new UnsupportedOperationException();
             }
         };
-    }
-
-    private EntityStateHolder getState()
-    {
-        if( state == null )
-        {
-            state = entityModel.newBuilderState();
-        }
-
-        return state;
-    }
-
-    protected class StateInvocationHandler
-        implements InvocationHandler
-    {
-
-        public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
-        {
-            if( Property.class.isAssignableFrom( method.getReturnType() ) )
-            {
-                return getState().getProperty( method );
-            }
-            else if( AbstractAssociation.class.isAssignableFrom( method.getReturnType() ) )
-            {
-                return getState().getAssociation( method );
-            }
-            else if( method.equals( TYPE_METHOD ) )
-            {
-                return entityModel.type();
-            }
-            else if( method.equals( METAINFO_METHOD ) )
-            {
-                return entityModel.metaInfo().get( (Class<? extends Object>) objects[ 0 ] );
-            }
-            else
-            {
-                throw new IllegalArgumentException( "Method does not represent state: " + method );
-            }
-        }
     }
 }

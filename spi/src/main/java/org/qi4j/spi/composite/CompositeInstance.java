@@ -31,6 +31,4 @@ public interface CompositeInstance extends InvocationHandler
     MetaInfo metaInfo();
 
     Class<? extends Composite> type();
-
-    Object[] mixins();
 }

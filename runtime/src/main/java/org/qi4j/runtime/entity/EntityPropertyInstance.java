@@ -14,33 +14,15 @@
  */
 package org.qi4j.runtime.entity;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.qi4j.api.property.AbstractPropertyInstance;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.unitofwork.PropertyStateChange;
-import org.qi4j.api.unitofwork.StateChangeListener;
-import org.qi4j.api.unitofwork.StateChangeVoter;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.value.ValueComposite;
+import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.runtime.composite.ConstraintsCheck;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.property.PropertyTypeDescriptor;
-import org.qi4j.spi.value.ValueCompositeType;
-import org.qi4j.spi.value.SerializableType;
-import org.qi4j.spi.value.ValueType;
+import org.qi4j.spi.Qi4jSPI;
 
 /**
- * {@code EntityPropertyInstance} represents a property whose value should be backed by an EntityState.
+ * {@code EntityPropertyInstance} represents a property whose value must be backed by an EntityState.
  *
  * @author Rickard Öberg
  * @since 0.1.0
@@ -68,6 +50,9 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
         throws IllegalArgumentException
     {
         super( aPropertyInfo );
+
+        validateNotNull("entitystate", entityState);
+
         this.constraints = constraints;
         this.value = (T) NOT_LOADED;
         this.entityState = entityState;
@@ -104,41 +89,14 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
 
         if( constraints != null )
         {
-            constraints.checkConstraints( aNewValue, false );
-        }
-
-        // Allow voters to vote on change
-        Iterable<StateChangeVoter> stateChangeVoters = uow.instance().stateChangeVoters();
-        PropertyStateChange change = null;
-        if( stateChangeVoters != null )
-        {
-            change = new PropertyStateChange( entityState.qualifiedIdentity().identity(), qualifiedName() );
-
-            for( StateChangeVoter stateChangeVoter : stateChangeVoters )
-            {
-                stateChangeVoter.acceptChange( change );
-            }
-        }
-
-        Iterable<StateChangeListener> stateChangeListeners = uow.instance().stateChangeListeners();
-        if( stateChangeListeners != null )
-        {
-            // Have to create this here in order to get old value
-            change = new PropertyStateChange( entityState.qualifiedIdentity().identity(), qualifiedName() );
+            constraints.checkConstraints( aNewValue );
         }
 
         // Change property
-        entityState.setProperty( qualifiedName(), ((EntityPropertyModel)propertyInfo).toValue( aNewValue, entityState ) );
+        Qi4jSPI spi = uow.module().layerInstance().applicationInstance().runtime();
+        String json = ((EntityPropertyModel) propertyInfo).toJSON(aNewValue, spi);
+        entityState.setProperty( ((EntityPropertyModel) propertyInfo ).propertyType().stateName(), json);
         value = aNewValue;
-
-        // Notify listeners
-        if( stateChangeListeners != null )
-        {
-            for( StateChangeListener stateChangeListener : stateChangeListeners )
-            {
-                stateChangeListener.notify( change );
-            }
-        }
     }
 
     /**
@@ -158,45 +116,5 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
     {
         value = (T) NOT_LOADED;
         entityState = newState;
-    }
-
-    private Object storableValue( ValueType type, Object value )
-    {
-        if( type instanceof ValueCompositeType )
-        {
-            Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
-
-            ValueComposite valueComposite = (ValueComposite) value;
-            ValueInstance instance = ValueInstance.getValueInstance( valueComposite );
-            List<PropertyDescriptor> properties = instance.compositeModel().state().properties();
-            for( PropertyDescriptor property : properties )
-            {
-
-                PropertyTypeDescriptor propertyDescriptor = (PropertyTypeDescriptor) property;
-                Property valueProperty = instance.state().getProperty( property.accessor() );
-                ValueType compoundPropertyType = propertyDescriptor.propertyType().type();
-                Object propertyValue = storableValue( compoundPropertyType, valueProperty.get() );
-                values.put( propertyDescriptor.qualifiedName(), propertyValue );
-            }
-            value = entityState.newValueState( values );
-        }
-        else if( type instanceof SerializableType )
-        {
-            // Serialize value
-            try
-            {
-                ByteArrayOutputStream bout = new ByteArrayOutputStream();
-                ObjectOutputStream out = new ObjectOutputStream( bout );
-                out.writeObject( value );
-                out.close();
-                value = bout.toByteArray();
-            }
-            catch( IOException e )
-            {
-                throw new IllegalArgumentException( "Could not serialize value", e );
-            }
-        }
-
-        return value;
     }
 }

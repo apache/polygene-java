@@ -60,7 +60,7 @@ public final class ValueConstraintsInstance
         }
     }
 
-    public List<ConstraintViolation> checkConstraints( Object value, boolean allowNull )
+    public List<ConstraintViolation> checkConstraints( Object value )
     {
         List<ConstraintViolation> violations = null;
 
@@ -71,7 +71,7 @@ public final class ValueConstraintsInstance
                 violations = Collections.emptyList();
         } else
         {
-            if (value == null && !allowNull)
+            if (value == null)
             {
                 violations = new ArrayList<ConstraintViolation>();
                 violations.add( new ConstraintViolation( name, OPTIONAL, null) );

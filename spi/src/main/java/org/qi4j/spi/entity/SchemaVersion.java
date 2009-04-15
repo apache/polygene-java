@@ -19,7 +19,7 @@ public class SchemaVersion
         }
         catch( NoSuchAlgorithmException e )
         {
-            throw new RuntimeException( "Error creating MD5 Schema version", e );
+            throw new RuntimeException( "Error creating SHA Schema version", e );
         }
     }
 
@@ -35,7 +35,13 @@ public class SchemaVersion
 
     public String base64()
     {
-        return new String( Base64Encoder.encode( calculate() ) );
+        try
+        {
+            return new String( Base64Encoder.encode( calculate(), false ), "UTF-8");
+        } catch (UnsupportedEncodingException e)
+        {
+            throw new IllegalStateException(e);
+        }
     }
 
     public byte[] calculate()

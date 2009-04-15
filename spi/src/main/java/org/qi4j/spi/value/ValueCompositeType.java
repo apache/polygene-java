@@ -15,31 +15,39 @@
 package org.qi4j.spi.value;
 
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.List;
+import java.lang.reflect.Method;
+import java.util.*;
+
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.common.TypeName;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.property.Property;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.entity.SchemaVersion;
+import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.util.PeekableStringTokenizer;
 
 /**
  * JAVADOC
  */
 public class ValueCompositeType
-    implements ValueType
+        implements ValueType
 {
-    public static boolean isValueComposite( Type type )
+    public static boolean isValueComposite(Type type)
     {
-        return type instanceof Class && ((Class)type).isInterface();
+        return type instanceof Class && ((Class) type).isInterface();
     }
 
     private final TypeName type;
     private List<PropertyType> types;
 
-    public ValueCompositeType( TypeName type, List<PropertyType> types )
+    public ValueCompositeType(TypeName type, List<PropertyType> types)
     {
         this.type = type;
-        Collections.sort( types ); // Sort by property name
+        Collections.sort(types); // Sort by property name
         this.types = types;
     }
 
@@ -53,17 +61,105 @@ public class ValueCompositeType
         return types;
     }
 
-    public void versionize( SchemaVersion schemaVersion )
+    public PropertyType propertyWithVersion(String version)
     {
-        schemaVersion.versionize( type );
-        for( PropertyType propertyType : types )
+        for (PropertyType propertyType : types)
         {
-            propertyType.versionize( schemaVersion );
+            if (propertyType.stateName().version().equals(version))
+                return propertyType;
+        }
+
+        return null;
+    }
+
+    public void versionize(SchemaVersion schemaVersion)
+    {
+        schemaVersion.versionize(type);
+        for (PropertyType propertyType : types)
+        {
+            propertyType.versionize(schemaVersion);
         }
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return type.toString();
+    }
+
+    public void toJSON(Object value, StringBuilder json, Qi4jSPI spi)
+    {
+        if (value == null)
+            json.append("null");
+
+        json.append('{');
+        ValueComposite valueComposite = (ValueComposite) value;
+        StateHolder state = spi.getState(valueComposite);
+        final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
+        state.visitProperties(new StateHolder.StateVisitor()
+        {
+            public void visitProperty(QualifiedName name, Object value)
+            {
+                values.put(name, value);
+            }
+        });
+
+        String comma = "";
+        for (PropertyType propertyType : types)
+        {
+            json.append(comma);
+            json.append(propertyType.qualifiedName().name()).append(':');
+            propertyType.type().toJSON(values.get(propertyType.qualifiedName()), json, spi);
+            comma = ",";
+        }
+        json.append('}');
+    }
+
+    public Object fromJSON(PeekableStringTokenizer json, Module module)
+    {
+        String token = json.nextToken("{");
+
+        if (token.equals("null"))
+            return null;
+
+        final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
+        for (PropertyType propertyType : types)
+        {
+            String name = json.nextToken(":");
+            token = json.nextToken(",:");
+
+            Object value = propertyType.type().fromJSON(json, module);
+
+            if (!name.equals(propertyType.qualifiedName().name()))
+                throw new IllegalStateException("Could not deserialize value. Expected '"+propertyType.qualifiedName()+"' but got '"+name);
+
+            values.put(propertyType.qualifiedName(), value);
+            token = json.nextToken(",}");
+        }
+
+        try
+        {
+            ValueBuilder valueBuilder = module.valueBuilderFactory().newValueBuilder(module.classLoader().loadClass(type.name()));
+            valueBuilder.withState(new StateHolder()
+            {
+                public <T> Property<T> getProperty(Method propertyMethod)
+                {
+                    return null;
+                }
+
+                public void visitProperties(StateVisitor visitor)
+                {
+                    for (Map.Entry<QualifiedName, Object> qualifiedNameObjectEntry : values.entrySet())
+                    {
+                        visitor.visitProperty(qualifiedNameObjectEntry.getKey(), qualifiedNameObjectEntry.getValue());
+                    }
+                }
+            });
+
+            return valueBuilder.newInstance();
+        } catch (ClassNotFoundException e)
+        {
+            throw new IllegalStateException("Could not deserialize value", e);
+        }
     }
 }

@@ -34,6 +34,6 @@ public final class ValueStateModel
     public StateHolder newInstance( ModuleInstance moduleInstance, ValueState state )
     {
         PropertiesInstance properties = propertiesModel.newInstance( moduleInstance, state );
-        return new StateInstance(properties);
+        return properties;
     }
 }

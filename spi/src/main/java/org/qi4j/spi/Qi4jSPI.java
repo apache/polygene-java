@@ -15,6 +15,7 @@
 package org.qi4j.spi;
 
 import org.qi4j.api.Qi4j;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.entity.EntityComposite;
@@ -45,6 +46,8 @@ public interface Qi4jSPI
     EntityState getEntityState( EntityComposite composite );
 
     EntityStateHolder getState( EntityComposite composite );
+
+    StateHolder getState(ValueComposite composite);
 
     ObjectDescriptor getObjectDescriptor( Class mixinType, Module module );
 

@@ -59,6 +59,7 @@ import org.qi4j.runtime.query.model.entities.DomainEntity;
 import org.qi4j.runtime.query.model.entities.FemaleEntity;
 import org.qi4j.runtime.query.model.entities.MaleEntity;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
+import org.qi4j.spi.entity.helpers.EntityTypeRegistryService;
 import org.qi4j.spi.query.EntityFinderException;
 
 public class IterableQueryTest
@@ -82,7 +83,9 @@ public class IterableQueryTest
                 );
                 module.addServices(
                     MemoryEntityStoreService.class,
-                    UuidIdentityGeneratorService.class
+                    UuidIdentityGeneratorService.class,
+                    EntityTypeRegistryService.class
+
                 );
             }
         };

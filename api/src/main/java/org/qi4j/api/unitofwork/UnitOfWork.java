@@ -74,6 +74,7 @@ public interface UnitOfWork
      * @return a new Entity
      * @throws NoSuchEntityException if no EntityComposite type of the given mixin type has been registered
      * @throws org.qi4j.api.entity.LifecycleException if the entity cannot be created
+     * @throws EntityTypeNotFoundException
      */
     <T> T newEntity( Class<T> type )
         throws EntityTypeNotFoundException, LifecycleException;
@@ -84,13 +85,14 @@ public interface UnitOfWork
      * for Modules and Layers will be considered. If several
      * mixins implement the type then an AmbiguousTypeException will be thrown.
      *
-     * @param identity the identity of the new Entity
      * @param type     the mixin type that the EntityComposite must implement
+     * @param identity the identity of the new Entity
      * @return a new Entity
      * @throws NoSuchEntityException if no EntityComposite type of the given mixin type has been registered
      * @throws LifecycleException if the entity cannot be created
+     * @throws EntityTypeNotFoundException
      */
-    <T> T newEntity( String identity, Class<T> type )
+    <T> T newEntity(Class<T> type, String identity)
         throws EntityTypeNotFoundException, LifecycleException;
 
     /**
@@ -103,6 +105,7 @@ public interface UnitOfWork
      * @return a new Entity
      * @throws NoSuchEntityException if no EntityComposite type of the given mixin type has been registered
      * @throws LifecycleException
+     * @throws EntityTypeNotFoundException
      */
     <T> EntityBuilder<T> newEntityBuilder( Class<T> type )
         throws EntityTypeNotFoundException;
@@ -113,40 +116,29 @@ public interface UnitOfWork
      * for Modules and Layers will be considered. If several
      * mixins implement the type then an AmbiguousTypeException will be thrown.
      *
-     * @param identity the identity of the new Entity
      * @param type     the mixin type that the EntityComposite must implement
+     * @param identity the identity of the new Entity
      * @return a new Entity
      * @throws NoSuchEntityException if no EntityComposite type of the given mixin type has been registered
      * @throws LifecycleException
+     * @throws EntityTypeNotFoundException
      */
-    <T> EntityBuilder<T> newEntityBuilder( String identity, Class<T> type )
+    <T> EntityBuilder<T> newEntityBuilder(Class<T> type, String identity)
         throws EntityTypeNotFoundException;
 
     /**
      * Find an Entity of the given mixin type with the give identity. This
      * method verifies that it exists by asking the underlying EntityStore.
      *
-     * @param identity of the entity
      * @param type of the entity
+     * @param identity of the entity
      * @return the entity
      * @throws EntityTypeNotFoundException if no entity type could be found
      *
+     * @throws NoSuchEntityException
      */
-    <T> T find( String identity, Class<T> type )
+    <T> T get(Class<T> type, String identity)
         throws EntityTypeNotFoundException, NoSuchEntityException;
-
-    /**
-     * Get a reference to an Entity of the given mixin type with the given identity.
-     * This method does not guarantee that the returned Entity actually exists.
-     *
-     * @param identity of the entity
-     * @param type of the entity
-     * @return the entity
-     * @throws EntityTypeNotFoundException if no entity type could be found
-     *
-     */
-    <T> T getReference( String identity, Class<T> type )
-        throws EntityTypeNotFoundException;
 
     /**
      * If you have a reference to an Entity from another
@@ -158,7 +150,7 @@ public interface UnitOfWork
      * @throws EntityTypeNotFoundException if no entity type could be found
      *
      */
-    <T> T dereference( T entity )
+    <T> T get( T entity )
         throws EntityTypeNotFoundException;
 
     /**
@@ -184,20 +176,6 @@ public interface UnitOfWork
      * in the UnitOfWork will continue to be valid.
      */
     void refresh();
-
-    /**
-     * Check if the given Entity comes from this UnitOfWork.
-     *
-     * @param entity the Entity to be checked
-     * @return true if the Entity comes from this UnitOfWork
-     */
-    boolean contains( Object entity );
-
-    /**
-     * Clear this UnitOfWork. All Entities are removed, and all existing
-     * references to Entities in this UnitOfWork must be dropped.
-     */
-    void reset();
 
     /**
      * Remove the given Entity.
@@ -287,10 +265,4 @@ public interface UnitOfWork
      */
     void addUnitOfWorkCallback( UnitOfWorkCallback callback );
     void removeUnitOfWorkCallback( UnitOfWorkCallback callback );
-
-    void addStateChangeVoter( StateChangeVoter voter);
-    void removeStateChangeVoter( StateChangeVoter voter);
-
-    void addStateChangeListener( StateChangeListener listener);
-    void removeStateChangeListener( StateChangeListener listener);
 }

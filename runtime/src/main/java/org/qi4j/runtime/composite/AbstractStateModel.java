@@ -18,12 +18,16 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.runtime.property.AbstractPropertiesModel;
 import org.qi4j.runtime.property.PropertiesInstance;
+import org.qi4j.runtime.property.AbstractPropertyModel;
+import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
@@ -44,26 +48,22 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
 
     public StateHolder newInitialInstance()
     {
-        PropertiesInstance properties = propertiesModel.newInitialInstance();
-        return new StateInstance( properties );
+        return propertiesModel.newInitialInstance();
     }
 
     public StateHolder newBuilderInstance()
     {
-        PropertiesInstance properties = propertiesModel.newBuilderInstance();
-        return new StateInstance(properties);
+        return propertiesModel.newBuilderInstance();
     }
 
     public StateHolder newBuilderInstance(StateHolder state)
     {
-        PropertiesInstance properties = propertiesModel.newBuilderInstance(state);
-        return new StateInstance(properties);
+        return propertiesModel.newBuilderInstance(state);
     }
 
     public StateHolder newInstance( StateHolder state )
     {
-        PropertiesInstance properties = propertiesModel.newInstance( state );
-        return new StateInstance(properties);
+        return propertiesModel.newInstance( state );
     }
 
     public void addStateFor( Iterable<Method> methods )
@@ -74,17 +74,17 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
         }
     }
 
-    public PropertyDescriptor getPropertyByName( String name )
+    public <T extends PropertyDescriptor> T getPropertyByName( String name )
     {
-        return propertiesModel.getPropertyByName( name );
+        return (T) propertiesModel.getPropertyByName( name );
     }
 
-    public PropertyDescriptor getPropertyByQualifiedName( QualifiedName name )
+    public <T extends PropertyDescriptor> T getPropertyByQualifiedName( QualifiedName name )
     {
-        return propertiesModel.getPropertyByQualifiedName( name );
+        return (T) propertiesModel.getPropertyByQualifiedName( name );
     }
 
-    public List<? extends PropertyDescriptor> properties()
+    public <T extends PropertyDescriptor> Set<T> properties()
     {
         return propertiesModel.properties();
     }
@@ -94,65 +94,16 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
         propertiesModel.bind( resolution );
     }
 
-    public List<AssociationDescriptor> associations()
-    {
-        return Collections.EMPTY_LIST;
-    }
-
-    public void checkConstraints( StateHolder state, boolean allowNull )
+    public void checkConstraints( StateHolder state)
         throws ConstraintViolationException
     {
-        StateInstance stateInstance = (AbstractStateModel.StateInstance) state;
-        stateInstance.checkConstraints(allowNull);
+        PropertiesInstance stateInstance = (PropertiesInstance) state;
+        propertiesModel.checkConstraints(stateInstance);
     }
 
-    public final class StateInstance
-        implements StateHolder
+    public void setProperty(QualifiedName name, Object value, StateHolder valueState)
     {
-        private final PropertiesInstance properties;
-
-        public StateInstance( PropertiesInstance properties )
-        {
-            this.properties = properties;
-        }
-
-        public Property<?> getProperty( Method propertyMethod )
-        {
-            return properties.propertyFor( propertyMethod );
-        }
-
-        public void checkConstraints( boolean allowNull )
-            throws ConstraintViolationException
-        {
-            propertiesModel.checkConstraints( properties, allowNull );
-        }
-
-        @Override
-        public boolean equals( Object o )
-        {
-            if( this == o )
-            {
-                return true;
-            }
-            if( o == null || getClass() != o.getClass() )
-            {
-                return false;
-            }
-
-            StateInstance that = (StateInstance) o;
-
-            if( !properties.equals( that.properties ) )
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        @Override
-        public int hashCode()
-        {
-            return properties.hashCode();
-        }
+        AbstractPropertyModel model = propertiesModel.getPropertyByQualifiedName(name);
+        valueState.getProperty(model.accessor()).set(value);
     }
 }

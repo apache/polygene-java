@@ -16,14 +16,8 @@ package org.qi4j.runtime.property;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
@@ -38,6 +32,8 @@ import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
+import org.qi4j.spi.entity.EntityState;
 
 /**
  * Base class for properties model
@@ -45,7 +41,7 @@ import org.qi4j.runtime.structure.Binder;
 public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
     implements Serializable, Binder
 {
-    protected final List<T> propertyModels = new ArrayList<T>();
+    protected final Set<T> propertyModels = new LinkedHashSet<T>();
     private final Map<QualifiedName, Method> accessors = new MethodValueMap<QualifiedName>();
     protected final Map<Method, T> mapMethodPropertyModel = new MethodKeyMap<T>();
     protected final ConstraintsModel constraints;
@@ -78,9 +74,9 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
         }
     }
 
-    public List<T> properties()
+    public Set<T> properties()
     {
-        return new ArrayList<T>( propertyModels );
+        return propertyModels;
     }
 
     public PropertiesInstance newBuilderInstance()
@@ -226,15 +222,14 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
         return mapMethodPropertyModel.get( accessor );
     }
 
-    public void checkConstraints( PropertiesInstance properties, boolean allowNull )
+    public void checkConstraints( PropertiesInstance properties)
         throws ConstraintViolationException
     {
         for( AbstractPropertyModel propertyModel : propertyModels )
         {
-            Property property = properties.propertyFor( propertyModel.accessor() );
             if( !propertyModel.isComputed() )
             {
-                propertyModel.checkConstraints( property.get(), allowNull );
+                propertyModel.checkConstraints( properties );
             }
         }
     }

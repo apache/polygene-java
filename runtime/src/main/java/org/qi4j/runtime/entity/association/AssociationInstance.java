@@ -15,17 +15,14 @@
 package org.qi4j.runtime.entity.association;
 
 import java.lang.reflect.Type;
-import org.qi4j.api.entity.Entity;
+
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.AssociationInfo;
-import org.qi4j.api.unitofwork.AssociationStateChange;
-import org.qi4j.api.unitofwork.StateChangeListener;
-import org.qi4j.api.unitofwork.StateChangeVoter;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.StateName;
 
 /**
  * Implementation of Association to a single Entity.
@@ -40,11 +37,6 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
     public AssociationInstance( AssociationInfo associationInfo, ModuleUnitOfWork unitOfWork, EntityState entityState )
     {
         super( associationInfo, unitOfWork, entityState );
-
-        if( entityState == null )
-        {
-            value = null;
-        }
     }
 
     // Association implementation
@@ -52,7 +44,7 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
     {
         if( !isSet() )
         {
-            QualifiedIdentity entityId = entityState.getAssociation( qualifiedName() );
+            EntityReference entityId = entityState.getAssociation( stateName() );
             value = getEntity( entityId );
         }
         return value;
@@ -67,38 +59,12 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
         AssociationModel associationModel = (AssociationModel) associationInfo;
         associationModel.checkConstraints( newValue );
 
-        // Allow voters to vote on change
-        Iterable<StateChangeVoter> stateChangeVoters = unitOfWork.instance().stateChangeVoters();
-        AssociationStateChange change = null;
-        if( stateChangeVoters != null )
-        {
-            change = new AssociationStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), (Entity) newValue);
-
-            for( StateChangeVoter stateChangeVoter : stateChangeVoters )
-            {
-                stateChangeVoter.acceptChange( change );
-            }
-        }
-
         // Change association
         if( entityState != null )
         {
-            entityState.setAssociation( qualifiedName(), getEntityId( newValue ) );
+            entityState.setAssociation( stateName(), getEntityReference( newValue ) );
         }
         this.value = newValue;
-
-        // Notify listeners
-        Iterable<StateChangeListener> stateChangeListeners = unitOfWork.instance().stateChangeListeners();
-        if( stateChangeListeners != null )
-        {
-            if (change == null)
-                change = new AssociationStateChange( entityState.qualifiedIdentity().identity(), qualifiedName(), (Entity) newValue);
-
-            for( StateChangeListener stateChangeListener : stateChangeListeners )
-            {
-                stateChangeListener.notify( change );
-            }
-        }
     }
 
     protected boolean isSet()
@@ -181,5 +147,11 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
     {
         super.refresh(newState);
         value = (T) NOT_LOADED;
+    }
+
+
+    protected StateName stateName()
+    {
+        return ((AssociationModel)associationInfo).associationType().stateName();
     }
 }

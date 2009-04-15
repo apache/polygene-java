@@ -35,6 +35,7 @@ import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.composite.DefaultCompositeInstance;
 import static org.qi4j.runtime.composite.DefaultCompositeInstance.getCompositeInstance;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
@@ -51,6 +52,7 @@ import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.runtime.bootstrap.ApplicationAssemblyFactoryImpl;
 import org.qi4j.runtime.bootstrap.ApplicationModelFactoryImpl;
 import org.qi4j.runtime.object.ObjectModel;
+import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
@@ -133,12 +135,12 @@ public final class Qi4jRuntimeImpl
         T configuration;
         try
         {
-            configuration = uow.find( identity, serviceModel.<T>configurationType() );
+            configuration = uow.get(serviceModel.<T>configurationType(), identity);
         }
         catch( NoSuchEntityException e )
         {
 
-            EntityBuilder<T> configBuilder = uow.newEntityBuilder( identity, serviceModel.<T>configurationType() );
+            EntityBuilder<T> configBuilder = uow.newEntityBuilder(serviceModel.<T>configurationType(), identity);
             // Check for defaults
             String s = identity + ".properties";
             InputStream asStream = serviceComposite.type().getResourceAsStream( s );
@@ -146,7 +148,7 @@ public final class Qi4jRuntimeImpl
             {
                 try
                 {
-                    PropertyMapper.map( asStream, (Composite) configBuilder.stateOfComposite() );
+                    PropertyMapper.map( asStream, (Composite) configBuilder.prototype() );
                 }
                 catch( IOException e1 )
                 {
@@ -303,6 +305,11 @@ public final class Qi4jRuntimeImpl
         return finder.model;
     }
 
+    public StateHolder getState(ValueComposite composite)
+    {
+        return ValueInstance.getValueInstance(composite).state();
+    }
+
     class EntityFinder
         implements ModuleVisitor
     {
@@ -318,7 +325,7 @@ public final class Qi4jRuntimeImpl
 
     public EntityState getEntityState( EntityComposite composite )
     {
-        return EntityInstance.getEntityInstance( composite ).load();
+        return EntityInstance.getEntityInstance( composite ).entityState();
     }
 
     public EntityStateHolder getState( EntityComposite composite )

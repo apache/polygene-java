@@ -15,6 +15,7 @@
 package org.qi4j.api.value;
 
 import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.property.StateHolder;
 
 /**
  * JAVADOC
@@ -29,6 +30,8 @@ public interface ValueBuilder<T>
      * @return the builder itself
      */
     ValueBuilder<T> withPrototype(T value);
+
+    ValueBuilder<T> withState(StateHolder state);
 
     /**
      * Get a representation of the state for the new Value.

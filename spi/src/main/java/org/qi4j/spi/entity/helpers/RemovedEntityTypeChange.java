@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,30 +12,27 @@
  *
  */
 
-package org.qi4j.runtime.unitofwork;
+package org.qi4j.spi.entity.helpers;
 
-import org.qi4j.api.usecase.StateUsage;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.runtime.entity.EntityStateAdapter;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityTypeReference;
 
 /**
  * JAVADOC
  */
-public class RecordingEntityState
-    extends EntityStateAdapter
+public class RemovedEntityTypeChange
+    extends EntityStateChange
 {
-    private StateUsage stateUsage;
+    private EntityTypeReference entityTypeReference;
 
-    public RecordingEntityState( EntityState entityState, StateUsage stateUsage )
+    public RemovedEntityTypeChange(EntityTypeReference entityTypeReference)
     {
-        super(entityState);
-        this.stateUsage = stateUsage;
+        super(null);
+        this.entityTypeReference = entityTypeReference;
     }
 
-    public Object getProperty( QualifiedName qualifiedName )
+    public void applyTo(EntityState state)
     {
-        stateUsage.usesProperty( qualifiedName );
-        return super.getProperty( qualifiedName );
+        state.removeEntityTypeReference(entityTypeReference);
     }
 }

@@ -14,14 +14,16 @@
 
 package org.qi4j.runtime.unitofwork;
 
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.*;
+import org.qi4j.spi.entity.helpers.DefaultDiffManyAssociationState;
 import org.qi4j.spi.entity.helpers.DefaultEntityState;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.api.common.QualifiedName;
+import org.qi4j.spi.entity.helpers.EntityStateChanges;
+import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.value.ValueType;
+
 import java.util.Map;
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * JAVADOC
@@ -30,49 +32,72 @@ class UnitOfWorkEntityState
     extends DefaultEntityState
 {
     private final EntityState parentState;
+    private final EntityStateChanges changes;
 
     UnitOfWorkEntityState( long entityVersion, long lastModified,
-                                   QualifiedIdentity identity,
+                                   EntityReference identity,
                                    EntityStatus status,
-                                   EntityType entityType,
-                                   Map<QualifiedName, Object> properties,
-                                   Map<QualifiedName, QualifiedIdentity> associations,
-                                   Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations,
+                                   Set<EntityTypeReference> entityTypes,
+                                   Map<StateName, String> properties,
+                                   Map<StateName, EntityReference> associations,
+                                   Map<StateName, ManyAssociationState> manyAssociations,
                                    EntityState parentState )
     {
-        super( entityVersion, lastModified, identity, status, entityType, properties, associations, manyAssociations );
+        super( entityVersion, lastModified, identity, status, entityTypes, properties, associations, manyAssociations );
         this.parentState = parentState;
+        this.changes = new EntityStateChanges();
     }
 
-    public Object getProperty( QualifiedName qualifiedName )
+    public String getProperty(StateName stateName)
     {
-        if( properties.containsKey( qualifiedName ) )
+        if( properties.containsKey( stateName ) )
         {
-            return properties.get( qualifiedName );
+            return properties.get( stateName );
         }
 
         // Get from parent state
-        return parentState == null ? null : parentState.getProperty( qualifiedName );
+        return parentState == null ? null : parentState.getProperty( stateName);
     }
 
-    public QualifiedIdentity getAssociation( QualifiedName qualifiedName )
+    @Override
+    public void setProperty(StateName stateName, String newValue)
     {
-        if( associations.containsKey( qualifiedName ) )
-        {
-            return associations.get( qualifiedName );
-        }
-
-        return parentState == null ? null : parentState.getAssociation( qualifiedName );
+        super.setProperty(stateName, newValue);
+        changes.setProperty(stateName, newValue);
     }
 
-    public Collection<QualifiedIdentity> getManyAssociation( QualifiedName qualifiedName )
+    public EntityReference getAssociation( StateName stateName )
     {
-        if( manyAssociations.containsKey( qualifiedName ) )
+        if( associations.containsKey( stateName ) )
         {
-            return manyAssociations.get( qualifiedName );
+            return associations.get( stateName );
         }
 
-        return parentState == null ? null : parentState.getManyAssociation( qualifiedName );
+        return parentState == null ? null : parentState.getAssociation( stateName );
+    }
+
+    @Override
+    public void setAssociation(StateName stateName, EntityReference newEntity)
+    {
+        super.setAssociation(stateName, newEntity);
+        changes.setAssociation(stateName, newEntity);
+    }
+
+    public ManyAssociationState getManyAssociation( StateName stateName )
+    {
+        if( manyAssociations.containsKey( stateName ) )
+        {
+            return manyAssociations.get( stateName );
+        }
+
+        if (parentState == null)
+            return null;
+
+        // Copy parent
+        ManyAssociationState parentManyAssociation = parentState.getManyAssociation( stateName );
+        ManyAssociationState unitManyAssociation = new DefaultDiffManyAssociationState(stateName, parentManyAssociation, changes);
+        manyAssociations.put(stateName, unitManyAssociation);
+        return unitManyAssociation;
     }
 
     public EntityState getParentState()
@@ -80,32 +105,8 @@ class UnitOfWorkEntityState
         return parentState;
     }
 
-    public boolean isChanged()
-    {
-        return properties.size() > 0 || associations.size() > 0 || manyAssociations.size() > 0;
-    }
-
     public void mergeTo( EntityState state )
     {
-        // Merge Properties
-        for( Map.Entry<QualifiedName, Object> entry : properties.entrySet() )
-        {
-            state.setProperty( entry.getKey(), entry.getValue() );
-        }
-
-        // Merge Associations
-        for( Map.Entry<QualifiedName, QualifiedIdentity> entry : associations.entrySet() )
-        {
-            state.setAssociation( entry.getKey(), entry.getValue() );
-        }
-
-        // Merge ManyAssociations
-        for( Map.Entry<QualifiedName, Collection<QualifiedIdentity>> entry : manyAssociations.entrySet() )
-        {
-            // TODO More intelligent merging
-            Collection<QualifiedIdentity> entities = state.getManyAssociation( entry.getKey() );
-            entities.clear();
-            entities.addAll( entry.getValue() );
-        }
+        changes.applyTo(state);
     }
 }

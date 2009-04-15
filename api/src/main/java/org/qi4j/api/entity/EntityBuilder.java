@@ -36,7 +36,7 @@ public interface EntityBuilder<T>
      *
      * @return a proxy implementing the Composite type
      */
-    T stateOfComposite();
+    T prototype();
 
     /**
      * Get a representation of the state of the given type for the new Composite.
@@ -45,7 +45,7 @@ public interface EntityBuilder<T>
      * @param mixinType the mixin which you want to provide state for
      * @return a proxy implementing the given mixin type
      */
-    <K> K stateFor( Class<K> mixinType );
+    <K> K prototypeFor( Class<K> mixinType );
 
     /**
      * Create a new Entity instance.

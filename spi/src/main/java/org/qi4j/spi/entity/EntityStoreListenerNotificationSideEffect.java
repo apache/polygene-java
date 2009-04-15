@@ -19,6 +19,7 @@ package org.qi4j.spi.entity;
 
 import org.qi4j.api.sideeffect.SideEffectOf;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.EntityState;
 
@@ -35,7 +36,7 @@ public abstract class EntityStoreListenerNotificationSideEffect extends SideEffe
 
     public StateCommitter prepare( Iterable<EntityState> newStates,
                                    Iterable<EntityState> updatedStates,
-                                   Iterable<QualifiedIdentity> removedStates
+                                   Iterable<EntityReference> removedStates
     )
         throws EntityStoreException
     {

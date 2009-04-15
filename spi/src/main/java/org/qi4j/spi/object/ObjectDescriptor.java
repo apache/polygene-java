@@ -25,8 +25,6 @@ public interface ObjectDescriptor
 {
     Class<?> type();
 
-    String toURI();
-
     MetaInfo metaInfo();
 
     Visibility visibility();

@@ -17,22 +17,32 @@ package org.qi4j.runtime.property;
 import java.lang.reflect.Method;
 import java.util.Map;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.property.StateHolder;
 
 /**
  * Collection of Property instances.
  */
-public final class PropertiesInstance
+public class PropertiesInstance
+    implements StateHolder
 {
-    protected final Map<Method, Property<?>> properties;
+    protected Map<Method, Property<?>> properties;
 
     public PropertiesInstance( Map<Method, Property<?>> properties )
     {
         this.properties = properties;
     }
 
-    public Property<?> propertyFor( Method accessor )
+    public <T> Property<T> getProperty(Method propertyMethod)
     {
-        return properties.get( accessor );
+        return (Property<T>) properties.get( propertyMethod );
+    }
+
+    public void visitProperties(StateVisitor visitor)
+    {
+        for (Property<?> property : properties.values())
+        {
+            visitor.visitProperty(property.qualifiedName(), property.get());
+        }
     }
 
     @Override

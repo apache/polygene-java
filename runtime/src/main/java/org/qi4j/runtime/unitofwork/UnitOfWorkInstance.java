@@ -26,17 +26,15 @@ import java.util.Stack;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
-import org.qi4j.api.unitofwork.StateChangeListener;
-import org.qi4j.api.unitofwork.StateChangeVoter;
 import org.qi4j.api.unitofwork.UnitOfWorkCallback;
 import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.COMPLETED;
 import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.DISCARDED;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.StateUsage;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.runtime.entity.EntityInstance;
@@ -51,14 +49,13 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
 
 public final class UnitOfWorkInstance
 {
     public static final ThreadLocal<Stack<UnitOfWorkInstance>> current;
 
-    final HashMap<QualifiedIdentity, EntityStateStore> stateCache;
+    final HashMap<String, EntityStateStore> stateCache;
 
     private boolean open;
 
@@ -71,8 +68,6 @@ public final class UnitOfWorkInstance
 
     private List<UnitOfWorkCallback> callbacks;
     private UnitOfWorkStore unitOfWorkStore;
-    private List<StateChangeListener> stateChangeListeners;
-    private List<StateChangeVoter> stateChangeVoters;
     private MetaInfo metaInfo;
 
     static
@@ -90,7 +85,7 @@ public final class UnitOfWorkInstance
     public UnitOfWorkInstance( Usecase usecase )
     {
         this.open = true;
-        stateCache = new HashMap<QualifiedIdentity, EntityStateStore>();
+        stateCache = new HashMap<String, EntityStateStore>();
         current.get().push( this );
         paused = false;
         this.usecase = usecase;
@@ -121,18 +116,17 @@ public final class UnitOfWorkInstance
         return builder;
     }
 
-    public EntityInstance getReference( String identity, ModuleUnitOfWork uow, EntityModel model, ModuleInstance module)
+    public EntityInstance get( EntityReference identity, ModuleUnitOfWork uow, EntityModel model, ModuleInstance module)
         throws EntityTypeNotFoundException, NoSuchEntityException
     {
         checkOpen();
 
-        QualifiedIdentity qid = new QualifiedIdentity( identity, model.type().getName() );
-        EntityStateStore entityStateStore = stateCache.get( qid );
+        EntityStateStore entityStateStore = stateCache.get( identity.toString() );
         EntityInstance entityInstance;
         if( entityStateStore == null )
         {   // Not yet in cache
 
-            entityStateStore = getEffectiveEntityStateStore( qid, model.entityType() );
+            entityStateStore = getEffectiveEntityStateStore( identity, model.entityType() );
             EntityStore entityStore;
 
             // Check if this is a root UoW, or if no parent UoW knows about this entity
@@ -143,8 +137,15 @@ public final class UnitOfWorkInstance
                 entityStore = unitOfWorkStore;
             }
 
-
-            entityInstance = model.getInstance( uow, module, qid );
+            EntityState entityState = null;
+            try
+            {
+                entityState = entityStore.getEntityState(identity);
+            } catch (EntityNotFoundException e)
+            {
+                throw new NoSuchEntityException(e.identity());
+            }
+            entityInstance = new EntityInstance( uow, module, model, identity, entityState );
 
             if( entityStateStore == null )
             {
@@ -155,7 +156,7 @@ public final class UnitOfWorkInstance
 
             entityStateStore.instance = entityInstance;
 
-            stateCache.put( qid, entityStateStore );
+            stateCache.put( identity.toString(), entityStateStore );
         }
         else
         {
@@ -163,7 +164,7 @@ public final class UnitOfWorkInstance
             // Check if it has been removed
             if( entityInstance.status() == EntityStatus.REMOVED )
             {
-                throw new NoSuchEntityException( identity, model.type().getName() );
+                throw new NoSuchEntityException( identity);
             }
         }
 
@@ -177,32 +178,30 @@ public final class UnitOfWorkInstance
 
         EntityComposite entityComposite = (EntityComposite) entity;
         EntityInstance entityInstance = EntityInstance.getEntityInstance( entityComposite );
-        if( !entityInstance.isReference() )
+
+        EntityStatus entityStatus = entityInstance.status();
+        if( entityStatus == EntityStatus.REMOVED )
         {
-            EntityStatus entityStatus = entityInstance.status();
-            if( entityStatus == EntityStatus.REMOVED )
-            {
-                throw new NoSuchEntityException( entityInstance.qualifiedIdentity().identity(), entityInstance.type().getName() );
-            }
-            else if( entityStatus == EntityStatus.NEW )
-            {
-                return; // Don't try to refresh newly created state
-            }
+            throw new NoSuchEntityException( entityInstance.identity());
+        }
+        else if( entityStatus == EntityStatus.NEW )
+        {
+            return; // Don't try to refresh newly created state
+        }
 
-            // Refresh the state
-            try
-            {
+        // Refresh the state
+        try
+        {
 
-                entityInstance.refresh();
-            }
-            catch( EntityNotFoundException e )
-            {
-                throw new NoSuchEntityException( entityInstance.qualifiedIdentity().identity(), entityInstance.type().getName() );
-            }
-            catch( EntityStoreException e )
-            {
-                throw new UnitOfWorkException( e );
-            }
+            entityInstance.refresh();
+        }
+        catch( EntityNotFoundException e )
+        {
+            throw new NoSuchEntityException( entityInstance.identity());
+        }
+        catch( EntityStoreException e )
+        {
+            throw new UnitOfWorkException( e );
         }
     }
 
@@ -224,23 +223,6 @@ public final class UnitOfWorkInstance
                 // Ignore
             }
         }
-    }
-
-    public void reset()
-    {
-        checkOpen();
-
-        stateCache.clear();
-    }
-
-    public boolean contains( Object entity )
-    {
-        checkOpen();
-
-        EntityComposite entityComposite = (EntityComposite) entity;
-        EntityInstance instance = EntityInstance.getEntityInstance( entityComposite );
-        EntityStateStore ess = stateCache.get( instance.qualifiedIdentity() );
-        return ess != null && ess.instance == instance;
     }
 
     public Usecase usecase()
@@ -293,18 +275,18 @@ public final class UnitOfWorkInstance
         complete( true );
     }
 
-    public EntityState refresh(QualifiedIdentity qid)
+    public EntityState refresh(String identity)
     {
         if (unitOfWorkStore != null)
         {
-            unitOfWorkStore.refresh(qid);
+            unitOfWorkStore.refresh(identity);
         }
 
-        EntityStateStore ess = stateCache.get( qid );
+        EntityStateStore ess = stateCache.get( identity );
         if (ess != null)
         {
             // Refresh state
-            return ess.state = ess.store.getEntityState( qid );
+            return ess.state = ess.store.getEntityState( new EntityReference(identity) );
         } else
         {
             return null; // TODO Can this happen?
@@ -411,48 +393,9 @@ public final class UnitOfWorkInstance
         }
     }
 
-    public void addStateChangeVoter( StateChangeVoter voter )
-    {
-        if( stateChangeVoters == null )
-        {
-            stateChangeVoters = new ArrayList();
-        }
-        stateChangeVoters.add( voter );
-    }
-
-    public void removeStateChangeVoter( StateChangeVoter voter )
-    {
-        if( stateChangeVoters != null )
-        {
-            stateChangeVoters.remove( voter );
-        }
-    }
-
-    public Iterable<StateChangeVoter> stateChangeVoters()
-    {
-        return stateChangeVoters;
-    }
-
-    public void addStateChangeListener( StateChangeListener listener )
-    {
-        if( stateChangeListeners == null )
-        {
-            stateChangeListeners = new ArrayList();
-        }
-        stateChangeListeners.add( listener );
-    }
-
-    public void removeStateChangeListener( StateChangeListener listener )
-    {
-        if( stateChangeListeners != null )
-        {
-            stateChangeListeners.remove( listener );
-        }
-    }
-
     public void createEntity( EntityInstance instance, EntityStore entityStore )
     {
-        QualifiedIdentity qid = instance.qualifiedIdentity();
+        String qid = instance.identity().toString();
         EntityStateStore entityStateStore = new EntityStateStore();
         entityStateStore.instance = instance;
         entityStateStore.state = instance.entityState();
@@ -485,11 +428,11 @@ public final class UnitOfWorkInstance
                 {
                     // If we cancelled due to concurrent modification, then create the proper exception for it!
                     ConcurrentEntityStateModificationException mee = (ConcurrentEntityStateModificationException) e;
-                    Collection<QualifiedIdentity> modifiedEntityIdentities = mee.modifiedEntities();
+                    Collection<EntityReference> modifiedEntityIdentities = mee.modifiedEntities();
                     Collection<EntityComposite> modifiedEntities = new ArrayList<EntityComposite>();
-                    for( QualifiedIdentity modifiedEntityIdentity : modifiedEntityIdentities )
+                    for( EntityReference modifiedEntityIdentity : modifiedEntityIdentities )
                     {
-                        EntityStateStore entityStateStore = stateCache.get( modifiedEntityIdentity );
+                        EntityStateStore entityStateStore = stateCache.get( modifiedEntityIdentity.toString() );
                         modifiedEntities.add( entityStateStore.instance.<EntityComposite>proxy() );
                     }
                     throw new ConcurrentEntityModificationException( modifiedEntities );
@@ -528,7 +471,7 @@ public final class UnitOfWorkInstance
                 }
                 else
                 {
-                    storeCompletionList.getRemovedState().add( entityState.qualifiedIdentity() );
+                    storeCompletionList.getRemovedState().add( entityState.identity() );
                 }
             }
         }
@@ -632,7 +575,7 @@ public final class UnitOfWorkInstance
 
     }
 
-    EntityState getCachedState( QualifiedIdentity entityId )
+    EntityState getCachedState( String entityId )
     {
         EntityComposite composite = getCachedEntity( entityId );
         if( composite != null )
@@ -645,15 +588,15 @@ public final class UnitOfWorkInstance
         }
     }
 
-    private EntityComposite getCachedEntity( QualifiedIdentity entityId )
+    private EntityComposite getCachedEntity( String entityId )
     {
         EntityStateStore entityStateStore = stateCache.get( entityId );
         return entityStateStore == null ? null : entityStateStore.instance.<EntityComposite>proxy();
     }
 
-    EntityStateStore getEffectiveEntityStateStore( QualifiedIdentity qi, EntityType entityType )
+    EntityStateStore getEffectiveEntityStateStore( EntityReference identity, EntityType entityType )
     {
-        EntityStateStore entityStateStore = stateCache.get( qi );
+        EntityStateStore entityStateStore = stateCache.get( identity.toString() );
         if( entityStateStore != null )
         {
             return entityStateStore;
@@ -661,7 +604,7 @@ public final class UnitOfWorkInstance
 
         if( unitOfWorkStore != null )
         {
-            return unitOfWorkStore.getEffectiveEntityStateStore( qi, entityType );
+            return unitOfWorkStore.getEffectiveEntityStateStore( identity, entityType );
         }
         else
         {
@@ -677,20 +620,18 @@ public final class UnitOfWorkInstance
         }
     }
 
-    public Iterable<StateChangeListener> stateChangeListeners()
-    {
-        return stateChangeListeners;
-    }
-
-    public EntityState getEntityState( QualifiedIdentity qualifiedIdentity, EntityModel entity )
+    public EntityState getEntityState( EntityReference identity, EntityModel entity )
         throws EntityStoreException
     {
         checkOpen();
 
-        EntityStateStore ess = stateCache.get( qualifiedIdentity );
+        EntityStateStore ess = stateCache.get( identity.toString() );
         if (ess == null || ess.state == null)
         {
-            ess.state = entity.getEntityState( ess.store, qualifiedIdentity );
+            ess.state = ess.store.getEntityState(identity);
+            if (!ess.state.hasEntityTypeReference(entity.entityType().reference()))
+                ess.state.addEntityTypeReference(entity.entityType().reference());
+
         }
         return ess.state;
     }
@@ -703,6 +644,11 @@ public final class UnitOfWorkInstance
     @Override public String toString()
     {
         return "UnitOfWork "+hashCode()+"("+usecase+"): entities:"+stateCache.size();
+    }
+
+    public void remove(EntityReference entityReference)
+    {
+        stateCache.remove(entityReference.identity());
     }
 
     abstract class ForEachEntity
@@ -722,13 +668,13 @@ public final class UnitOfWorkInstance
     {
         final List<EntityState> newState;
         final List<EntityState> updatedState;
-        final List<QualifiedIdentity> removedState;
+        final List<EntityReference> removedState;
 
         private StoreCompletion()
         {
             this.newState = new ArrayList<EntityState>();
             this.updatedState = new ArrayList<EntityState>();
-            this.removedState = new ArrayList<QualifiedIdentity>();
+            this.removedState = new ArrayList<EntityReference>();
         }
 
         public List<EntityState> getNewState()
@@ -741,7 +687,7 @@ public final class UnitOfWorkInstance
             return updatedState;
         }
 
-        public List<QualifiedIdentity> getRemovedState()
+        public List<EntityReference> getRemovedState()
         {
             return removedState;
         }

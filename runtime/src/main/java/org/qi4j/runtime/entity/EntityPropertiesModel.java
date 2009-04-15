@@ -16,9 +16,8 @@ package org.qi4j.runtime.entity;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.ConstraintViolationException;
@@ -32,6 +31,7 @@ import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.property.AbstractPropertiesModel;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.runtime.util.Annotations;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.PropertyType;
 
@@ -46,27 +46,19 @@ public final class EntityPropertiesModel
         super(constraints, propertyDeclarations,  immutable);
     }
 
-    public void setState( PropertiesInstance properties, EntityState entityState )
-        throws ConstraintViolationException
+    public Set<PropertyType> propertyTypes()
     {
-        for( Map.Entry<Method, EntityPropertyModel> methodEntityPropertyModelEntry : mapMethodPropertyModel.entrySet() )
-        {
-            Property property = properties.propertyFor( methodEntityPropertyModelEntry.getKey() );
-            if( !methodEntityPropertyModelEntry.getValue().isComputed() )
-            {
-                methodEntityPropertyModelEntry.getValue().setState( property, entityState );
-            }
-        }
-    }
-
-    public Iterable<PropertyType> propertyTypes()
-    {
-        List<PropertyType> propertyTypes = new ArrayList<PropertyType>();
+        Set<PropertyType> propertyTypes = new LinkedHashSet<PropertyType>();
         for( EntityPropertyModel propertyModel : properties() )
         {
             propertyTypes.add( propertyModel.propertyType() );
         }
         return propertyTypes;
+    }
+
+    public <T> Property<T> newInstance( Method accessor, EntityState entityState, ModuleUnitOfWork uow )
+    {
+        return mapMethodPropertyModel.get( accessor ).newInstance( entityState, uow);
     }
 
     protected EntityPropertyModel newPropertyModel( Method method )
@@ -84,5 +76,10 @@ public final class EntityPropertiesModel
         boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
         EntityPropertyModel propertyModel = new EntityPropertyModel( method, immutable, valueConstraintsInstance, metaInfo, defaultValue );
         return propertyModel;
+    }
+
+    public EntityPropertiesInstance newInstance(EntityState entityState, ModuleUnitOfWork uow)
+    {
+        return new EntityPropertiesInstance(this, entityState, uow);
     }
 }

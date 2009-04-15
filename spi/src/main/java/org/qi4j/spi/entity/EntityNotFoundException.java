@@ -16,29 +16,24 @@
  */
 package org.qi4j.spi.entity;
 
+import org.qi4j.api.entity.EntityReference;
+
 public class EntityNotFoundException extends EntityStoreException
 {
-    private String storeId;
-    private QualifiedIdentity identity;
+    private EntityReference identity;
 
-    public EntityNotFoundException( String storeId, QualifiedIdentity identity )
+    public EntityNotFoundException( EntityReference identity )
     {
-        this.storeId = storeId;
         this.identity = identity;
     }
 
-    public String storeId()
-    {
-        return storeId;
-    }
-
-    public QualifiedIdentity qualifiedIdentity()
+    public EntityReference identity()
     {
         return identity;
     }
 
     public String getMessage()
     {
-        return "Entity " + identity + " not found in the '" + storeId + "' store.";
+        return "Entity " + identity + " not found";
     }
 }

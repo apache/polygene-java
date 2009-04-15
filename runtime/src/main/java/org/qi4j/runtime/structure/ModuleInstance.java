@@ -444,7 +444,7 @@ public class ModuleInstance
             }
 
             StateHolder initialState = finder.model.newInitialState();
-            finder.model.checkConstraints( initialState, false );
+            finder.model.checkConstraints( initialState);
             return valueType.cast( finder.model.newValueInstance( finder.module, initialState ).proxy() );
 
         }

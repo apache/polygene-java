@@ -19,16 +19,17 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
+import org.qi4j.spi.entity.helpers.EntityTypeRegistryService;
 import org.qi4j.api.common.Visibility;
 
 /**
- * Helper assembler that adds an in-memory EntityStore and a UUID generator to the module
+ * Helper assembler that adds an in-memory EntityStore, a UUID generator, and an Entity type registry to the module
  */
-public class EntityStoreTestAssembler
+public class EntityTestAssembler
     implements Assembler
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( UuidIdentityGeneratorService.class, MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
+        module.addServices( UuidIdentityGeneratorService.class, MemoryEntityStoreService.class, EntityTypeRegistryService.class ).visibleIn( Visibility.layer );
     }
 }

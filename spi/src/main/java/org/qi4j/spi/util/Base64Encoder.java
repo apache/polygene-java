@@ -41,10 +41,10 @@ public class Base64Encoder
      *
      * @return encoded string.
      */
-    public static String encode( String s )
+    public static String encode( String s, boolean includePadding )
     {
         byte[] sBytes = s.getBytes();
-        sBytes = encode( sBytes );
+        sBytes = encode( sBytes, includePadding );
         s = new String( sBytes );
         return s;
     }
@@ -70,7 +70,7 @@ public class Base64Encoder
     }
 
     private static final byte[] ALPHASET =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".getBytes();
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_".getBytes();
 
     private static final int I6O2 = 255 - 3;
     private static final int O6I2 = 3;
@@ -86,7 +86,7 @@ public class Base64Encoder
      *
      * @return encoded byte array.
      */
-    public static byte[] encode( byte[] dData )
+    public static byte[] encode( byte[] dData, boolean includePadding )
     {
         if( dData == null )
         {
@@ -134,7 +134,15 @@ public class Base64Encoder
             eData[ eIndex++ ] = ( pad < 2 ) ? (byte) e3 : (byte) '=';
             eData[ eIndex++ ] = ( pad < 1 ) ? (byte) e4 : (byte) '=';
 
+
+            if (pad > 0 && !includePadding)
+            {
+                byte[] neweData = new byte[eData.length-pad];
+                System.arraycopy(eData, 0, neweData, 0, eIndex-pad);
+                eData = neweData;
+            }
         }
+
         return eData;
     }
 

@@ -151,11 +151,6 @@ public abstract class AbstractCompositeModel
         return stateModel.newInstance( state );
     }
 
-    public String toURI()
-    {
-        return Classes.toURI( compositeType );
-    }
-
     @Override public String toString()
     {
         return compositeType.getName();

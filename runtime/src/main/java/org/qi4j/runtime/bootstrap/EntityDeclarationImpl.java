@@ -24,6 +24,7 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.EntityDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.bootstrap.ManyAssociationDeclarations;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.composite.ConcernsDeclaration;
 import org.qi4j.runtime.composite.ConcernDeclaration;
@@ -76,7 +77,7 @@ public final class EntityDeclarationImpl
         return this;
     }
 
-    void addEntities( List<EntityModel> entities, PropertyDeclarations propertyDecs, AssociationDeclarations associationDecs )
+    void addEntities( List<EntityModel> entities, PropertyDeclarations propertyDecs, AssociationDeclarations associationDecs , ManyAssociationDeclarations manyAssociationDecs )
     {
         for( Class<? extends EntityComposite> compositeType : compositeTypes )
         {
@@ -90,6 +91,7 @@ public final class EntityDeclarationImpl
                                                                new MetaInfo( metaInfo ).withAnnotations( compositeType ),
                                                                propertyDecs,
                                                                associationDecs,
+                                                               manyAssociationDecs,
                                                                concernsDeclaration,
                                                                sideEffects,
                                                                mixins);

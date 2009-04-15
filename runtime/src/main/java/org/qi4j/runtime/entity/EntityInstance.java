@@ -17,18 +17,13 @@ package org.qi4j.runtime.entity;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.Identity;
-import org.qi4j.api.entity.Lifecycle;
-import org.qi4j.api.entity.LifecycleException;
+import org.qi4j.api.entity.*;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.runtime.composite.CompositeMethodInstance;
@@ -36,13 +31,9 @@ import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.composite.CompositeInstance;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStateDescriptor;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityNotFoundException;
+import org.qi4j.spi.entity.*;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
+import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 
 /**
  * JAVADOC
@@ -74,35 +65,37 @@ public final class EntityInstance
     private final EntityComposite proxy;
     private final ModuleUnitOfWork uow;
     private ModuleInstance moduleInstance;
-    private final EntityModel entity;
-    private final QualifiedIdentity qualifiedIdentity;
+    private final EntityModel entityModel;
+    private final EntityReference identity;
 
     private Object[] mixins;
     private EntityState entityState;
-    private EntityStatus status;
     private EntityStateModel.EntityStateInstance state;
 
-    public EntityInstance( ModuleUnitOfWork uow, ModuleInstance moduleInstance, EntityModel entity, QualifiedIdentity qualifiedIdentity, EntityStatus status, EntityState entityState )
+    public EntityInstance( ModuleUnitOfWork uow, 
+                           ModuleInstance moduleInstance,
+                           EntityModel entityModel,
+                           EntityReference identity,
+                           EntityState entityState )
     {
         this.uow = uow;
         this.moduleInstance = moduleInstance;
-        this.entity = entity;
-        this.qualifiedIdentity = qualifiedIdentity;
-        this.status = status;
+        this.entityModel = entityModel;
+        this.identity = identity;
         this.entityState = entityState;
 
-        proxy = entity.newProxy( this );
+        proxy = entityModel.newProxy( this );
     }
 
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
-        return entity.invoke( this, this.proxy, method, args, uow.module() );
+        return entityModel.invoke( this, this.proxy, method, args, uow.module() );
     }
 
-    public QualifiedIdentity qualifiedIdentity()
+    public EntityReference identity()
     {
-        return qualifiedIdentity;
+        return identity;
     }
 
     public <T> T proxy()
@@ -110,24 +103,24 @@ public final class EntityInstance
         return (T) proxy;
     }
 
+    public <T> T newProxy(Class<T> mixinType)
+    {
+        return entityModel.newProxy(this, mixinType);
+    }
+
     public MetaInfo metaInfo()
     {
-        return entity.metaInfo();
+        return entityModel.metaInfo();
+    }
+
+    public EntityModel entityModel()
+    {
+        return entityModel;
     }
 
     public Class<? extends EntityComposite> type()
     {
-        return entity.type();
-    }
-
-    public Object[] mixins()
-    {
-        return mixins;
-    }
-
-    public void setMixins( Object[] mixins )
-    {
-        this.mixins = mixins;
+        return entityModel.type();
     }
 
     public ModuleInstance module()
@@ -142,11 +135,7 @@ public final class EntityInstance
 
     public EntityState entityState()
     {
-        EntityState unwrappedState = entityState;
-        while (unwrappedState instanceof EntityStateAdapter)
-            unwrappedState = (( EntityStateAdapter) unwrappedState).wrappedEntityState();
-
-        return unwrappedState;
+        return entityState;
     }
 
     public EntityStateModel.EntityStateInstance state()
@@ -159,14 +148,9 @@ public final class EntityInstance
         return state;
     }
 
-    public void setEntityState( EntityStateModel.EntityStateInstance state )
-    {
-        this.state = state;
-    }
-
     public EntityStatus status()
     {
-        return entityState() != null ? entityState.status() : status;
+        return entityState.status();
     }
 
     public Object invoke( Object composite, Object[] params, CompositeMethodInstance methodInstance ) throws Throwable
@@ -180,7 +164,7 @@ public final class EntityInstance
 
         if (mixin == null)
         {
-            mixin = entity.newMixin( mixins, state, this, methodInstance.method() );
+            mixin = entityModel.newMixin( mixins, state, this, methodInstance.method() );
         }
 
         return methodInstance.invoke( composite, params, mixin );
@@ -195,7 +179,7 @@ public final class EntityInstance
     {
         if( status() == EntityStatus.LOADED && entityState != null )
         {
-            EntityState newEntityState = uow.instance().refresh( qualifiedIdentity );
+            EntityState newEntityState = uow.instance().refresh(identity.toString());
             
             if( newEntityState.version() != entityState.version() )
             {
@@ -215,19 +199,17 @@ public final class EntityInstance
     {
         if( status() == EntityStatus.REMOVED )
         {
-            throw new EntityTypeNotFoundException( entity.type().getName() );
+            throw new NoSuchEntityException( identity );
         }
-        if( entityState() == null )
-        {
-            entityState = uow.instance().getEntityState( qualifiedIdentity, entity );
-        }
-        mixins = entity.initialize( uow, entityState, this );
+
+        mixins = entityModel.newMixinHolder();
+        state = entityModel.newStateHolder(uow, entityState);
     }
 
 
     @Override public int hashCode()
     {
-        return qualifiedIdentity.hashCode();
+        return identity.hashCode();
     }
 
     @Override public boolean equals( Object o )
@@ -235,7 +217,7 @@ public final class EntityInstance
         try
         {
             Identity other = ( (Identity) o );
-            return other != null && other.identity().get().equals( qualifiedIdentity.identity() );
+            return other != null && other.identity().get().equals( identity.identity() );
         }
         catch( ClassCastException e )
         {
@@ -245,50 +227,7 @@ public final class EntityInstance
 
     @Override public String toString()
     {
-        return qualifiedIdentity.toString();
-    }
-
-    public void cast( EntityInstance newEntityInstance )
-    {
-        Object[] newMixins = newEntityInstance.mixins;
-
-        // Use any mixins that match the ones we already have
-        for( int i = 0; i < mixins.length; i++ )
-        {
-            Object oldMixin = mixins[ i ];
-            for( Object newMixin : newMixins )
-            {
-                if( oldMixin.getClass().equals( newMixin.getClass() ) )
-                {
-                    newMixins[ i ] = oldMixin;
-                    break;
-                }
-            }
-        }
-
-    }
-
-    public boolean isReference()
-    {
-        return mixins == null;
-    }
-
-    public EntityState load()
-        throws NoSuchEntityException
-    {
-        if( entityState == null && status() == EntityStatus.LOADED )
-        {
-            try
-            {
-                entityState = uow.instance().getEntityState(qualifiedIdentity, entity );
-            }
-            catch( EntityNotFoundException e )
-            {
-                throw new NoSuchEntityException(qualifiedIdentity.identity(), type().toString());
-            }
-        }
-
-        return entityState;
+        return identity.toString();
     }
 
     public void remove( UnitOfWork unitOfWork )
@@ -298,16 +237,14 @@ public final class EntityInstance
 
         removeAggregatedEntities(unitOfWork);
 
-        if (entityState != null)
-            entityState.remove();
-        status = EntityStatus.REMOVED;
+        entityState.remove();
         entityState = null;
         mixins = null;
     }
 
     private void invokeRemove()
     {
-        if( entity.hasMixinType( Lifecycle.class ) )
+        if( entityModel.hasMixinType( Lifecycle.class ) )
         {
             try
             {
@@ -327,25 +264,30 @@ public final class EntityInstance
     private void removeAggregatedEntities( UnitOfWork unitOfWork )
     {
         // Calculate aggregated Entities
-        EntityStateDescriptor stateDescriptor = entity.state();
-        List<AssociationDescriptor> associations = stateDescriptor.associations();
+        EntityStateDescriptor stateDescriptor = entityModel.state();
         Set<Object> aggregatedEntities = new HashSet<Object>();
+        Set<AssociationDescriptor> associations = stateDescriptor.associations();
         for( AssociationDescriptor association : associations )
         {
             if (association.isAggregated())
             {
-                AbstractAssociation assoc = state.getAssociation( association.accessor() );
-                if (assoc instanceof Association )
+                Association assoc = state.getAssociation( association.accessor() );
+                Object aggregatedEntity = ((Association)assoc).get();
+                if (aggregatedEntity != null)
                 {
-                    Object aggregatedEntity = ((Association)assoc).get();
-                    if (aggregatedEntity != null)
-                    {
-                        aggregatedEntities.add(aggregatedEntity);
-                    }
-                } else
+                    aggregatedEntities.add(aggregatedEntity);
+                }
+            }
+        }
+        Set<ManyAssociationDescriptor> manyAssociations = stateDescriptor.manyAssociations();
+        for( ManyAssociationDescriptor association : manyAssociations )
+        {
+            if (association.isAggregated())
+            {
+                ManyAssociation manyAssoc = state.getManyAssociation( association.accessor() );
+                for (Object entity : manyAssoc)
                 {
-                    ManyAssociation manyAssoc = (ManyAssociation) assoc;
-                    aggregatedEntities.addAll( manyAssoc );
+                    aggregatedEntities.add( entity );
                 }
             }
         }
@@ -357,8 +299,8 @@ public final class EntityInstance
         }
     }
 
-    public EntityModel entityModel()
+    public void checkConstraints()
     {
-        return entity;
+        state.checkConstraints();
     }
 }

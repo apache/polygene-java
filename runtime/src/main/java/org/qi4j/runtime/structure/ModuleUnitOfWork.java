@@ -14,33 +14,25 @@
 
 package org.qi4j.runtime.structure;
 
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.api.unitofwork.NoSuchEntityException;
-import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
-import org.qi4j.api.unitofwork.UnitOfWorkException;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
-import org.qi4j.api.unitofwork.UnitOfWorkCallback;
-import org.qi4j.api.unitofwork.StateChangeVoter;
-import org.qi4j.api.unitofwork.StateChangeListener;
+import org.qi4j.api.unitofwork.*;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.entity.LifecycleException;
-import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.Lifecycle;
-import org.qi4j.api.entity.Identity;
-import org.qi4j.api.composite.Composite;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.*;
+import static org.qi4j.api.entity.EntityReference.parseEntityReference;
 import org.qi4j.api.service.ServiceFinder;
-import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.StateName;
+import org.qi4j.spi.property.PropertyTypeDescriptor;
+
 import java.lang.reflect.Method;
 
 /**
@@ -51,6 +43,8 @@ public class ModuleUnitOfWork
 {
     private static final Method IDENTITY_METHOD;
     private static final Method CREATE_METHOD;
+    private static StateName identityStateName;
+
     static
     {
         try
@@ -103,11 +97,10 @@ public class ModuleUnitOfWork
 
     public <T> T newEntity( Class<T> type ) throws EntityTypeNotFoundException, LifecycleException
     {
-
-        return newEntity(null, type);
+        return newEntity(type, null);
     }
 
-    public <T> T newEntity( String identity, Class<T> type ) throws EntityTypeNotFoundException, LifecycleException
+    public <T> T newEntity(Class<T> type, String identity) throws EntityTypeNotFoundException, LifecycleException
     {
         EntityFinder finder = moduleInstance.findEntityModel(type);
 
@@ -115,6 +108,10 @@ public class ModuleUnitOfWork
         {
             throw new EntityTypeNotFoundException( type.getName() );
         }
+
+        // Register type
+        if (!ConfigurationComposite.class.isAssignableFrom(finder.model.type()))
+            finder.module.entities().entityTypeRegistry().registerEntityType(finder.model.entityType());
 
         // Transfer state
         EntityModel entityModel = finder.model;
@@ -125,12 +122,14 @@ public class ModuleUnitOfWork
             identity = finder.module.entities().identityGenerator().generate( entityModel.type() );
         }
 
-        StateHolder state = entityModel.newBuilderState();
-        state.<String>getProperty( IDENTITY_METHOD ).set( identity );
         EntityStore entityStore = finder.module.entities().entityStore();
-        EntityState entityState = entityModel.newEntityState( entityStore, identity, state );
+        EntityState entityState = entityModel.newEntityState( entityStore, parseEntityReference(identity) , moduleInstance.layerInstance().applicationInstance().runtime());
 
-        EntityInstance instance = entityModel.newInstance( this, moduleInstance, entityState.qualifiedIdentity(), entityState );
+        if (identityStateName == null)
+            identityStateName = entityModel.state().<PropertyTypeDescriptor>getPropertyByQualifiedName(QualifiedName.fromMethod(IDENTITY_METHOD)).propertyType().stateName();
+        entityState.setProperty(identityStateName, '\"'+identity+'\"');
+
+        EntityInstance instance = new EntityInstance( this, moduleInstance, entityModel, entityState.identity(), entityState );
 
         instance().createEntity( instance, entityStore );
 
@@ -156,10 +155,10 @@ public class ModuleUnitOfWork
 
     public <T> EntityBuilder<T> newEntityBuilder( Class<T> type ) throws EntityTypeNotFoundException
     {
-        return newEntityBuilder(null, type);
+        return newEntityBuilder(type, null);
     }
 
-    public <T> EntityBuilder<T> newEntityBuilder( String identity, Class<T> type )
+    public <T> EntityBuilder<T> newEntityBuilder(Class<T> type, String identity)
         throws EntityTypeNotFoundException
     {
         EntityFinder finder = moduleInstance.findEntityModel( type );
@@ -168,20 +167,16 @@ public class ModuleUnitOfWork
         {
             throw new EntityTypeNotFoundException( type.getName() );
         }
+
+        // Register type if not a configuration
+        if (!ConfigurationComposite.class.isAssignableFrom(finder.model.type()))
+            finder.module.entities().entityTypeRegistry().registerEntityType(finder.model.entityType());
 
         return uow.newEntityBuilder( identity, finder.model, finder.module.entities().entityStore(), finder.module, this );
     }
 
-    public <T> T find( String identity, Class<T> type )
+    public <T> T get(Class<T> type, String identity)
         throws EntityTypeNotFoundException, NoSuchEntityException
-    {
-        T instance = getReference( identity, type );
-        EntityInstance.getEntityInstance( (Composite) instance ).load();
-        return instance;
-    }
-
-    public <T> T getReference( String identity, Class<T> type )
-        throws EntityTypeNotFoundException
     {
         EntityFinder finder = moduleInstance.findEntityModel( type );
 
@@ -190,14 +185,14 @@ public class ModuleUnitOfWork
             throw new EntityTypeNotFoundException( type.getName() );
         }
 
-        return uow.getReference( identity, this, finder.model, finder.module ).<T>proxy();
+        return uow.get( parseEntityReference(identity), this, finder.model, finder.module ).<T>proxy();
     }
 
-    public <T> T dereference( T entity ) throws EntityTypeNotFoundException
+    public <T> T get( T entity ) throws EntityTypeNotFoundException
     {
         EntityComposite entityComposite = (EntityComposite) entity;
         EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
-        return uow.getReference( compositeInstance.qualifiedIdentity().identity(), this, compositeInstance.entityModel(), compositeInstance.module() ).<T>proxy();
+        return uow.get( compositeInstance.identity(), this, compositeInstance.entityModel(), compositeInstance.module() ).<T>proxy();
     }
 
     public void refresh( Object entity ) throws UnitOfWorkException
@@ -210,16 +205,6 @@ public class ModuleUnitOfWork
         uow.refresh();
     }
 
-    public boolean contains( Object entity )
-    {
-        return uow.contains( entity );
-    }
-
-    public void reset()
-    {
-        uow.reset();
-    }
-
     public void remove( Object entity ) throws LifecycleException
     {
         uow.checkOpen();
@@ -228,7 +213,18 @@ public class ModuleUnitOfWork
 
         EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
 
-        compositeInstance.remove(this);
+        if (compositeInstance.status() == EntityStatus.NEW)
+        {
+            compositeInstance.remove(this);
+            uow.remove(compositeInstance.identity());
+        } else if (compositeInstance.status() == EntityStatus.LOADED)
+        {
+            compositeInstance.remove(this);
+        } else
+        {
+            throw new NoSuchEntityException(compositeInstance.identity());
+        }
+
     }
 
     public void complete() throws UnitOfWorkCompletionException, ConcurrentEntityModificationException
@@ -286,26 +282,6 @@ public class ModuleUnitOfWork
         uow.removeUnitOfWorkCallback( callback );
     }
 
-    public void addStateChangeVoter( StateChangeVoter voter )
-    {
-        uow.addStateChangeVoter( voter );
-    }
-
-    public void removeStateChangeVoter( StateChangeVoter voter )
-    {
-        uow.removeStateChangeVoter( voter );
-    }
-
-    public void addStateChangeListener( StateChangeListener listener )
-    {
-        uow.addStateChangeListener( listener );
-    }
-
-    public void removeStateChangeListener( StateChangeListener listener )
-    {
-        uow.removeStateChangeListener( listener );
-    }
-
     @Override
     public boolean equals( Object o )
     {
@@ -338,4 +314,5 @@ public class ModuleUnitOfWork
     {
         return uow.toString();
     }
+
 }

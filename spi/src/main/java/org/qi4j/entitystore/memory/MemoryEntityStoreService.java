@@ -20,6 +20,8 @@ import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreListenerNotificationSideEffect;
+import org.qi4j.spi.entity.helpers.MapEntityStoreMixin;
+import org.qi4j.spi.entity.helpers.ConcurrentModificationCheckConcern;
 
 /**
  * In-memory EntityStore service. Useful for testing
@@ -27,7 +29,7 @@ import org.qi4j.spi.entity.EntityStoreListenerNotificationSideEffect;
  */
 @Concerns( ConcurrentModificationCheckConcern.class )
 @SideEffects( EntityStoreListenerNotificationSideEffect.class )
-@Mixins( { MemoryEntityStoreMixin.class } )
+@Mixins( { MapEntityStoreMixin.class, MemoryMapEntityStoreMixin.class } )
 public interface MemoryEntityStoreService extends EntityStore, ServiceComposite
 {
 }

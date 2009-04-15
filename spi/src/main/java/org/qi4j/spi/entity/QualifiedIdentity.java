@@ -14,10 +14,10 @@
 
 package org.qi4j.spi.entity;
 
-import java.io.Serializable;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.Qualifier;
 import org.qi4j.api.util.Classes;
+
+import java.io.Serializable;
 
 /**
  * A Qualified Identity is the combination of the Composite type name and the identity of a specific
@@ -41,28 +41,12 @@ public class QualifiedIdentity
 
     public static QualifiedIdentity parseQualifiedIdentity( String id )
     {
-        // Check if it's a Qualifier
-        int idx = id.indexOf( '/' );
-        if( idx == -1 )
-        {
-            return new QualifiedIdentity( id );
-        }
-        else
-        {
-            return new QualifierQualifiedIdentity( parseQualifiedIdentity( id.substring( 0, idx ) ), id.substring( idx + 1 ) );
-        }
+        return new QualifiedIdentity( id );
     }
 
     public static QualifiedIdentity getQualifiedIdentity( Object o )
     {
-        if( o instanceof Qualifier )
-        {
-            return new QualifierQualifiedIdentity( (Qualifier) o );
-        }
-        else
-        {
-            return new QualifiedIdentity( (EntityComposite) o );
-        }
+        return new QualifiedIdentity( (EntityComposite) o );
     }
 
     private static final long serialVersionUID = 1L;

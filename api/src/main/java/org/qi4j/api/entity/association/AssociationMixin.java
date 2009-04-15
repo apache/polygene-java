@@ -39,7 +39,7 @@ public class AssociationMixin
     {
         public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> modifierClass )
         {
-            return AbstractAssociation.class.isAssignableFrom( method.getReturnType() );
+            return Association.class.isAssignableFrom( method.getReturnType() );
         }
     }
 }

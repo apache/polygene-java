@@ -14,47 +14,29 @@
 
 package org.qi4j.runtime.property;
 
-import java.io.Serializable;
-import java.io.ObjectOutputStream;
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.QualifiedName;
+import static org.qi4j.api.common.TypeName.nameOf;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.RDF;
-import org.qi4j.api.property.Computed;
-import org.qi4j.api.property.ComputedPropertyInstance;
-import org.qi4j.api.property.GenericPropertyInfo;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.property.PropertyInfo;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.runtime.composite.ConstraintsCheck;
-import org.qi4j.runtime.composite.ValueConstraintsInstance;
-import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.api.property.*;
+import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.composite.ConstraintsCheck;
+import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.value.CollectionType;
-import org.qi4j.spi.value.ValueCompositeType;
-import org.qi4j.spi.value.PrimitiveType;
-import org.qi4j.spi.value.SerializableType;
-import org.qi4j.spi.value.ValueState;
-import org.qi4j.spi.value.ValueType;
-import static org.qi4j.api.common.TypeName.nameOf;
-import org.qi4j.api.util.SerializationUtil;
+import org.qi4j.spi.value.*;
+
+import java.io.*;
+import java.lang.reflect.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * JAVADOC
@@ -86,7 +68,7 @@ public abstract class AbstractPropertyModel
 
     private final boolean needsWrapper;
 
-    private PropertyInfo builderInfo;
+    private final PropertyInfo builderInfo;
 
     public AbstractPropertyModel( Method accessor, boolean immutable, ValueConstraintsInstance constraints,
                                   MetaInfo metaInfo, Object initialValue )
@@ -148,9 +130,17 @@ public abstract class AbstractPropertyModel
             }
             valueType = new ValueCompositeType( nameOf(valueTypeClass), types );
         }
-        else if( PrimitiveType.isPrimitive( type ) )
+        else if( StringType.isString( type ) )
         {
-            valueType = new PrimitiveType( nameOf(type ) );
+            valueType = new StringType( nameOf(type ) );
+        }
+        else if( NumberType.isNumber( type ) )
+        {
+            valueType = new NumberType( nameOf(type ) );
+        }
+        else if( BooleanType.isBoolean(type ) )
+        {
+            valueType = new BooleanType( nameOf(type ) );
         }
         else
         {
@@ -260,14 +250,13 @@ public abstract class AbstractPropertyModel
         return newInstance( initialValue() );
     }
 
-    public abstract Property<?> newInstance( Object value );
+    public abstract <T> Property<T> newInstance( Object value );
 
-    public void checkConstraints( Object value, boolean allowNull )
-        throws ConstraintViolationException
+    public void checkConstraints(Object value) throws ConstraintViolationException
     {
         if( constraints != null )
         {
-            List<ConstraintViolation> violations = constraints.checkConstraints( value, allowNull );
+            List<ConstraintViolation> violations = constraints.checkConstraints( value );
             if( !violations.isEmpty() )
             {
                 throw new ConstraintViolationException( accessor, violations );
@@ -275,9 +264,15 @@ public abstract class AbstractPropertyModel
         }
     }
 
-    public <T> T fromValue( ModuleInstance moduleInstance, ValueState valueState )
+    public void checkConstraints( PropertiesInstance properties)
+        throws ConstraintViolationException
     {
-        return null;
+        if( constraints != null )
+        {
+            Object value = properties.getProperty(accessor).get();
+
+            checkConstraints(value);
+        }
     }
 
     @Override
@@ -314,14 +309,14 @@ public abstract class AbstractPropertyModel
         return accessor.toGenericString();
     }
 
-    protected Property<?> wrapProperty( Property<?> property )
+    protected <T> Property<T> wrapProperty( Property<T> property )
     {
         if( needsWrapper && !accessor.getReturnType().isInstance( property ) )
         {
             // Create proxy
             final ClassLoader loader = accessor.getReturnType().getClassLoader();
             final Class[] type = { accessor.getReturnType() };
-            property = (Property<?>) Proxy.newProxyInstance( loader, type, new PropertyHandler( property ) );
+            property = (Property<T>) Proxy.newProxyInstance( loader, type, new PropertyHandler( property ) );
         }
         return property;
     }

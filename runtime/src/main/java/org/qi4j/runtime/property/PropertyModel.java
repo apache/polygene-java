@@ -37,7 +37,7 @@ public class PropertyModel
     }
 
     @SuppressWarnings( "unchecked" )
-    public Property<?> newInstance( Object value )
+    public <T> Property<T> newInstance( Object value )
     {
         // Property was constructed using a builder
 

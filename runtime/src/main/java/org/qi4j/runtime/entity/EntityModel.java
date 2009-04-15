@@ -14,51 +14,44 @@
 
 package org.qi4j.runtime.entity;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.Composite;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import org.qi4j.api.common.*;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.property.Immutable;
-import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.unitofwork.EntityCompositeAlreadyExistsException;
-import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.bootstrap.ManyAssociationDeclarations;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.CompositeMethodsModel;
 import org.qi4j.runtime.composite.ConcernsDeclaration;
 import org.qi4j.runtime.composite.ConstraintsModel;
-import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.SideEffectsDeclaration;
 import org.qi4j.runtime.composite.AbstractCompositeModel;
-import org.qi4j.runtime.composite.AbstractStateModel;
 import org.qi4j.runtime.entity.association.EntityAssociationsModel;
-import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.entity.association.EntityManyAssociationsModel;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.runtime.property.PersistentPropertyModel;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStateDescriptor;
-import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.UnknownEntityTypeException;
+import org.qi4j.spi.entity.association.AssociationDescriptor;
+import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
+import org.qi4j.spi.property.PropertyTypeDescriptor;
+import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.api.entity.*;
 
 /**
  * JAVADOC
@@ -67,20 +60,37 @@ public final class EntityModel
     extends AbstractCompositeModel
     implements EntityDescriptor
 {
-    public static EntityModel newModel( Class<? extends EntityComposite> type,
-                                        Visibility visibility,
-                                        MetaInfo metaInfo,
-                                        PropertyDeclarations propertyDecs,
-                                        AssociationDeclarations associationDecs,
-                                        ConcernsDeclaration concernsDeclaration,
-                                        Iterable<Class<?>> sideEffects,
-                                        List<Class<?>> mixins )
+    private static final Method IDENTITY_METHOD;
+    private String rdf;
+
+    static
+    {
+        try
+        {
+            IDENTITY_METHOD = Identity.class.getMethod( "identity" );
+        }
+        catch( NoSuchMethodException e )
+        {
+            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: ModuleUnitOfWork" );
+        }
+    }
+
+    public static EntityModel newModel(Class<? extends EntityComposite> type,
+                                       Visibility visibility,
+                                       MetaInfo metaInfo,
+                                       PropertyDeclarations propertyDecs,
+                                       AssociationDeclarations associationDecs,
+                                       ManyAssociationDeclarations manyAssociationDecs,
+                                       ConcernsDeclaration concernsDeclaration,
+                                       Iterable<Class<?>> sideEffects,
+                                       List<Class<?>> mixins)
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( type );
         boolean immutable = metaInfo.get( Immutable.class ) != null;
         EntityPropertiesModel entityPropertiesModel = new EntityPropertiesModel( constraintsModel, propertyDecs, immutable );
         EntityAssociationsModel associationsModel = new EntityAssociationsModel( constraintsModel, associationDecs );
-        EntityStateModel stateModel = new EntityStateModel( entityPropertiesModel, associationsModel );
+        EntityManyAssociationsModel manyAssociationsModel = new EntityManyAssociationsModel( constraintsModel, manyAssociationDecs );
+        EntityStateModel stateModel = new EntityStateModel( entityPropertiesModel, associationsModel, manyAssociationsModel );
         EntityMixinsModel mixinsModel = new EntityMixinsModel( type, mixins );
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( type, sideEffects );
         CompositeMethodsModel compositeMethodsModel = new CompositeMethodsModel( type,
@@ -98,7 +108,6 @@ public final class EntityModel
                                 compositeMethodsModel );
     }
 
-    private final String uri;
     private final boolean queryable;
     private EntityType entityType;
 
@@ -112,7 +121,8 @@ public final class EntityModel
     {
         super(type, visibility, info, mixinsModel, stateModel, compositeMethodsModel);
 
-        this.uri = Classes.toURI(type);
+        RDF rdfAnnotation = type.getAnnotation(RDF.class);
+        this.rdf = rdfAnnotation == null ? null : rdfAnnotation.value();
 
         final Queryable queryable = type.getAnnotation( Queryable.class );
         this.queryable = queryable == null || queryable.value();
@@ -148,7 +158,7 @@ public final class EntityModel
 
     public void bind( Resolution resolution ) throws BindingException
     {
-        List<String> mixinTypes = new ArrayList<String>();
+        Set<String> mixinTypes = new LinkedHashSet<String>();
         for( Class mixinType : mixinsModel.mixinTypes() )
         {
             mixinTypes.add( mixinType.getName() );
@@ -156,7 +166,7 @@ public final class EntityModel
 
         EntityStateModel entityStateModel = (EntityStateModel) stateModel;
         entityType = new EntityType(
-            type().getName(), toURI(), queryable,
+            TypeName.nameOf(type()), rdf, queryable,
             mixinTypes, entityStateModel.propertyTypes(), entityStateModel.associationTypes(), entityStateModel.manyAssociationTypes()
         );
 
@@ -166,29 +176,20 @@ public final class EntityModel
         stateModel.bind( resolution );
     }
 
-    public QualifiedIdentity newQualifiedIdentity( String identity )
+    public EntityInstance newInstance( ModuleUnitOfWork uow, ModuleInstance moduleInstance, EntityReference identity, EntityState state )
     {
-        return new QualifiedIdentity( identity, type() );
-    }
-
-    public EntityInstance getInstance( ModuleUnitOfWork uow, ModuleInstance moduleInstance, QualifiedIdentity qid)
-    {
-        return new EntityInstance( uow, moduleInstance, this, qid, EntityStatus.LOADED, null );
-    }
-
-    public EntityInstance newInstance( ModuleUnitOfWork uow, ModuleInstance moduleInstance, QualifiedIdentity identity, EntityState state )
-    {
-        EntityInstance instance = new EntityInstance( uow, moduleInstance, this, identity, EntityStatus.NEW, state );
+        EntityInstance instance = new EntityInstance( uow, moduleInstance, this, identity, state );
         return instance;
     }
 
-    public Object[] initialize( ModuleUnitOfWork uow, EntityState entityState, EntityInstance entityInstance )
+    public Object[] newMixinHolder()
     {
-        Object[] mixins = mixinsModel.newMixinHolder();
-        entityInstance.setMixins( mixins );
-        EntityStateModel.EntityStateInstance state = ((EntityStateModel)stateModel).newInstance( uow, entityState );
-        entityInstance.setEntityState( state );
-        return mixins;
+        return mixinsModel.newMixinHolder();
+    }
+
+    public EntityStateModel.EntityStateInstance newStateHolder( ModuleUnitOfWork uow, EntityState entityState)
+    {
+        return ((EntityStateModel)stateModel).newInstance( uow, entityState );
     }
 
 
@@ -210,47 +211,32 @@ public final class EntityModel
         }
     }
 
-    public EntityStateHolder newBuilderState()
+    public <T> T newProxy( EntityInstance entityInstance, Class<T> mixinType )
     {
-        return ((EntityStateModel)stateModel).newBuilderInstance();
+        // Instantiate proxy for given mixin interface
+        return mixinType.cast(Proxy.newProxyInstance(mixinType.getClassLoader(), new Class[]{mixinType}, entityInstance ));
     }
 
-    public EntityState newEntityState( EntityStore store, String identity, StateHolder state )
+    public EntityState newEntityState(EntityStore store, EntityReference identity, Qi4jSPI qi4jSPI)
         throws ConstraintViolationException, EntityStoreException
     {
-        QualifiedIdentity qid = newQualifiedIdentity( identity );
         try
         {
-            EntityState entityState = null;
-            do
-            {
-                try
-                {
-                    entityState = store.newEntityState( qid );
-                }
-                catch( UnknownEntityTypeException e )
-                {
-                    // Check if it is this type that the store doesn't understand
-                    EntityType entityType = entityType();
-                    if( e.getMessage().equals( entityType.type() ) )
-                    {
-                        store.registerEntityType( entityType );
-                        // Try again
-                    }
-                    else
-                    {
-                        throw e; // ???
-                    }
-                }
-            }
-            while( entityState == null );
+            // New EntityState
+            EntityState entityState = store.newEntityState( identity );
 
-            ((EntityStateModel)stateModel).setState( state, entityState );
+            // Set identity property
+            PropertyTypeDescriptor propertyDescriptor = state().getPropertyByQualifiedName(QualifiedName.fromMethod(IDENTITY_METHOD));
+            entityState.setProperty(propertyDescriptor.propertyType().stateName(), '\"'+identity.identity()+'\"');
+
+            // Add EntityType
+            addEntityType(entityState, qi4jSPI);
+
             return entityState;
         }
         catch( EntityAlreadyExistsException e )
         {
-            throw new EntityCompositeAlreadyExistsException( identity, qid.type() );
+            throw new EntityCompositeAlreadyExistsException( identity );
         }
         catch( EntityStoreException e )
         {
@@ -258,43 +244,52 @@ public final class EntityModel
         }
     }
 
-    public EntityState getEntityState( EntityStore entityStore, QualifiedIdentity qid )
-        throws EntityStoreException
-    {
-        EntityState entityState = null;
-        do
-        {
-            try
-            {
-                entityState = entityStore.getEntityState( qid );
-            }
-            catch( UnknownEntityTypeException e )
-            {
-                // Check if it is this type that the store doesn't understand
-                EntityType entityType = entityType();
-                if( e.getMessage().equals( entityType.type() ) )
-                {
-                    entityStore.registerEntityType( entityType );
-                    // Try again
-                }
-                else
-                {
-                    throw e; // ???
-                }
-            }
-        }
-        while( entityState == null );
-
-        return entityState;
-    }
-
-    public String toURI()
-    {
-        return uri;
-    }
-
     @Override public String toString()
     {
         return type().getName();
+    }
+
+    public void addEntityType(EntityState entityState, Qi4jSPI qi4jSPI)
+    {
+        {
+            // Set new properties to default value
+            Set<PersistentPropertyModel> entityProperties = state().properties();
+            for (PersistentPropertyModel propertyDescriptor : entityProperties)
+            {
+                String stringValue = propertyDescriptor.toJSON(propertyDescriptor.initialValue(), qi4jSPI);
+                entityState.setProperty(propertyDescriptor.propertyType().stateName(), stringValue);
+            }
+        }
+
+        {
+            // Set new manyAssociations to null
+            Set<AssociationDescriptor> entityAssociations = state().associations();
+            for (AssociationDescriptor associationDescriptor : entityAssociations)
+            {
+                entityState.setAssociation(associationDescriptor.associationType().stateName(), null);
+            }
+        }
+
+        {
+            // Set new many-manyAssociations to empty
+            Set<ManyAssociationDescriptor> entityAssociations = state().manyAssociations();
+            for (ManyAssociationDescriptor associationDescriptor : entityAssociations)
+            {
+                entityState.getManyAssociation(associationDescriptor.manyAssociationType().stateName());
+            }
+        }
+
+        entityState.addEntityTypeReference(entityType().reference());
+    }
+
+    void removeEntityType(EntityModel entityModel, EntityState entityState)
+    {
+        // Remove type but keep data
+        entityState.removeEntityTypeReference(entityModel.entityType().reference());
+    }
+
+    boolean hasEntityType(EntityModel entityModel, EntityState entityState)
+    {
+        return entityState.hasEntityTypeReference(entityModel.entityType().reference());
     }
 }

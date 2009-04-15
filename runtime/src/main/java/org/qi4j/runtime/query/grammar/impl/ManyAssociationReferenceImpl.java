@@ -27,10 +27,10 @@ public class ManyAssociationReferenceImpl
     extends AssociationReferenceImpl
     implements ManyAssociationReference
 {
-    public ManyAssociationReferenceImpl( final Method accessor,
-                                         final AssociationReference traversed,
-                                         final ReferenceType referenceType )
+    public ManyAssociationReferenceImpl(final Method accessor,
+                                        final AssociationReference traversed
+    )
     {
-        super( accessor, traversed, referenceType );
+        super( accessor, traversed);
     }
 }

@@ -14,12 +14,12 @@
 
 package org.qi4j.spi.value;
 
-import org.qi4j.api.common.QualifiedName;
+import org.qi4j.spi.entity.StateName;
 
 /**
  * JAVADOC
  */
 public interface ValueState
 {
-    Object getProperty( QualifiedName qualifiedName );
+    String getProperty( StateName stateName );
 }

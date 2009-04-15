@@ -15,13 +15,15 @@
 package org.qi4j.spi.value;
 
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.common.TypeName;
 import static org.qi4j.api.common.TypeName.nameOf;
+import org.qi4j.api.structure.Module;
 import org.qi4j.spi.entity.SchemaVersion;
+import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.util.PeekableStringTokenizer;
 
 /**
  * JAVADOC
@@ -63,5 +65,41 @@ public class CollectionType
     @Override public String toString()
     {
         return type +"<"+ collectedType +">";
+    }
+
+    public void toJSON(Object value, StringBuilder json, Qi4jSPI spi)
+    {
+        json.append('[');
+
+        Collection collection = (Collection) value;
+        String comma = "";
+        for (Object collectionValue : collection)
+        {
+            json.append(comma);
+            collectedType.toJSON(collectionValue, json, spi);
+            comma=",";
+        }
+
+        json.append("]");
+    }
+
+    public Object fromJSON(PeekableStringTokenizer json, Module module)
+    {
+        String token = json.nextToken("[");
+
+        Collection coll;
+        if (type.isClass(List.class))
+            coll = new ArrayList();
+        else
+            coll = new LinkedHashSet();
+
+        token = json.peekNextToken("]{\"");
+        while (!token.equals("]"))
+        {
+            coll.add(collectedType.fromJSON(json, module));
+            token = json.nextToken(",]");
+        }
+
+        return coll;
     }
 }

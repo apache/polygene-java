@@ -15,9 +15,14 @@
 package org.qi4j.spi.value;
 
 import java.io.Serializable;
+import java.text.StringCharacterIterator;
+import java.util.StringTokenizer;
 
 import org.qi4j.api.common.TypeName;
+import org.qi4j.api.structure.Module;
 import org.qi4j.spi.entity.SchemaVersion;
+import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.util.PeekableStringTokenizer;
 
 /**
  * JAVADOC
@@ -28,4 +33,7 @@ public interface ValueType
     public TypeName type();
 
     void versionize( SchemaVersion schemaVersion );
+
+    public void toJSON(Object value, StringBuilder json, Qi4jSPI spi);
+    public Object fromJSON(PeekableStringTokenizer json, Module module);
 }

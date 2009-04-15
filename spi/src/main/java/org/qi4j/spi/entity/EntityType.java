@@ -15,10 +15,14 @@
 package org.qi4j.spi.entity;
 
 import java.io.Serializable;
+import java.util.Set;
+
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import static org.qi4j.api.common.TypeName.nameOf;
+import org.qi4j.api.common.TypeName;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.value.ValueType;
 
 /**
  * SPI-level description of an Entity type. This contains
@@ -30,40 +34,43 @@ import org.qi4j.spi.property.PropertyType;
 public final class EntityType
     implements Serializable
 {
-    private final String type;
+    private final TypeName type;
     private final String version;
     private final String uri;
     private final boolean queryable;
-    private final Iterable<PropertyType> properties;
-    private final Iterable<AssociationType> associations;
-    private final Iterable<ManyAssociationType> manyAssociations;
-    private final Iterable<String> mixinTypes;
+    private final Set<PropertyType> properties;
+    private final Set<AssociationType> associations;
+    private final Set<ManyAssociationType> manyAssociations;
+    private final Set<String> mixinTypes;
+    private final EntityTypeReference reference;
+    private final String rdf;
 
-    public EntityType( final String entityType,
-                       final String uri,
+    public EntityType( final TypeName entityType,
+                       final String rdf,
                        final boolean queryable,
-                       final Iterable<String> mixinTypes,
-                       final Iterable<PropertyType> properties,
-                       final Iterable<AssociationType> associations,
-                       final Iterable<ManyAssociationType> manyAssociations )
+                       final Set<String> mixinTypes,
+                       final Set<PropertyType> properties,
+                       final Set<AssociationType> associations,
+                       final Set<ManyAssociationType> manyAssociations )
     {
         this.type = entityType;
-        this.uri = uri;
+        this.rdf = rdf;
         this.queryable = queryable;
         this.mixinTypes = mixinTypes;
         this.properties = properties;
         this.associations = associations;
         this.manyAssociations = manyAssociations;
         this.version = calculateSchemaVersion();
-
+        this.uri = "urn:qi4j:type:"+version+":"+entityType.normalized();
+        this.reference = new EntityTypeReference(type, rdf, version);
     }
 
-    public String type()
+    public TypeName type()
     {
         return type;
     }
 
-    public Iterable<String> mixinTypes()
+    public Set<String> mixinTypes()
     {
         return mixinTypes;
     }
@@ -78,9 +85,14 @@ public final class EntityType
         return version.equals( type.version );
     }
 
-    public String toURI()
+    public String uri()
     {
         return uri;
+    }
+
+    public String rdf()
+    {
+        return rdf;
     }
 
     public boolean queryable()
@@ -88,17 +100,17 @@ public final class EntityType
         return queryable;
     }
 
-    public Iterable<PropertyType> properties()
+    public Set<PropertyType> properties()
     {
         return properties;
     }
 
-    public Iterable<AssociationType> associations()
+    public Set<AssociationType> associations()
     {
         return associations;
     }
 
-    public Iterable<ManyAssociationType> manyAssociations()
+    public Set<ManyAssociationType> manyAssociations()
     {
         return manyAssociations;
     }
@@ -136,7 +148,7 @@ public final class EntityType
             final SchemaVersion schemaVersion = new SchemaVersion();
 
             // Entity type
-            schemaVersion.versionize(nameOf( type ));
+            schemaVersion.versionize(type);
 
             // Properties
             for( PropertyType property : properties )
@@ -166,4 +178,8 @@ public final class EntityType
         }
     }
 
+    public EntityTypeReference reference()
+    {
+        return reference;
+    }
 }

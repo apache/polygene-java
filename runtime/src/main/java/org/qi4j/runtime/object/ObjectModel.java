@@ -73,13 +73,6 @@ public final class ObjectModel
         return metaInfo;
     }
 
-    public String toURI()
-    {
-        String className = objectType.getName();
-        className = className.replace( '$', '&' );
-        return "urn:qi4j:" + className;
-    }
-
     public void visitModel( ModelVisitor modelVisitor )
     {
         modelVisitor.visit( this );

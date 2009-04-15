@@ -59,7 +59,7 @@ public final class CompositeConstraintModel extends AbstractConstraintModel
 
         public boolean isValid( Annotation annotation, Object value ) throws NullPointerException
         {
-            return valueConstraintsInstance.checkConstraints( value, false ).size() == 0;
+            return valueConstraintsInstance.checkConstraints( value ).size() == 0;
         }
     }
 }

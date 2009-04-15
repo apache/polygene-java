@@ -13,33 +13,28 @@
  */
 package org.qi4j.api.unitofwork;
 
+import org.qi4j.api.entity.EntityReference;
+
 /**
  * This exception indicates that the requested Entity with the given
  * identity does not exist.
  */
 public class NoSuchEntityException extends UnitOfWorkException
 {
-    private final String identity;
-    private final String compositeType;
+    private final EntityReference identity;
 
-    public NoSuchEntityException( String identity, String compositeType )
+    public NoSuchEntityException(EntityReference identity)
     {
         this.identity = identity;
-        this.compositeType = compositeType;
     }
 
-    public String identity()
+    public EntityReference identity()
     {
         return identity;
     }
 
-    public String compositeType()
-    {
-        return compositeType;
-    }
-
     @Override public String getMessage()
     {
-        return "Could not find entity (" + identity() + " of type " + compositeType + ")";
+        return "Could not find entity (" + identity() + ")";
     }
 }

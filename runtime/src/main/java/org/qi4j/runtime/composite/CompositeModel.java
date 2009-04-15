@@ -109,7 +109,7 @@ public class CompositeModel
                                                    UsesInstance uses,
                                                    StateHolder state )
     {
-        stateModel.checkConstraints( state, false );
+        stateModel.checkConstraints( state );
 
         Object[] mixins = mixinsModel.newMixinHolder();
         CompositeInstance compositeInstance = new DefaultCompositeInstance( this, moduleInstance, mixins, state );
@@ -141,11 +141,6 @@ public class CompositeModel
     public StateHolder newState( StateHolder state )
     {
         return stateModel.newInstance( state );
-    }
-
-    public String toURI()
-    {
-        return Classes.toURI( type() );
     }
 
     @Override public String toString()

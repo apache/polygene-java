@@ -12,23 +12,15 @@
  *
  */
 
-package org.qi4j.api.unitofwork;
+package org.qi4j.bootstrap;
+
+import java.lang.reflect.Method;
+import org.qi4j.api.common.MetaInfo;
 
 /**
- * Implement this interface to vote on state changes
- * in Entities in a UnitOfWork. Register your voter
- * by calling {@link UnitOfWork#addStateChangeVoter(StateChangeVoter)}.
+ * JAVADOC
  */
-public interface StateChangeVoter
+public interface ManyAssociationDeclarations
 {
-    /**
-     * Vote on a state change. Do nothing to accept it,
-     * and throw ChangeVetoException, with a possible explanation,
-     * to reject it.
-     *
-     * @param change the state change event
-     * @throws ChangeVetoException thrown if this voter rejects the change
-     */
-    void acceptChange(StateChange change)
-        throws ChangeVetoException;
+    MetaInfo getMetaInfo( Method accessor );
 }

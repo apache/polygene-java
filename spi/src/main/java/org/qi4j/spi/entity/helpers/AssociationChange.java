@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,41 +12,29 @@
  *
  */
 
-package org.qi4j.runtime.entity.association;
+package org.qi4j.spi.entity.helpers;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import org.qi4j.api.entity.association.ListAssociation;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.StateName;
 
 /**
  * JAVADOC
  */
-public final class EntityBuilderListAssociation<T> extends ArrayList<T>
-    implements ListAssociation<T>
+public class AssociationChange
+    extends EntityStateChange
 {
-    public <T> T metaInfo( Class<T> infoType )
+    private EntityReference reference;
+
+    public AssociationChange(StateName stateName, EntityReference reference)
     {
-        return null;
+        super(stateName);
+        this.reference = reference;
     }
 
-    public QualifiedName qualifiedName()
+    public void applyTo(EntityState state)
     {
-        return null;
-    }
-
-    public Type type()
-    {
-        return null;
-    }
-
-    public boolean isImmutable()
-    {
-        return false;
-    }
-
-    public boolean isAggregated()
-    {
-        return false;
+        state.setAssociation(stateName, reference);
     }
 }

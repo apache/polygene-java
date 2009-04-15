@@ -16,30 +16,25 @@
  */
 package org.qi4j.spi.entity;
 
+import org.qi4j.api.entity.EntityReference;
+
 public class EntityAlreadyExistsException extends EntityStoreException
 {
-    private String storeName;
-    private QualifiedIdentity qualifiedIdentity;
+    private EntityReference identity;
 
-    public EntityAlreadyExistsException( String storeName, QualifiedIdentity qualifiedIdentity )
+    public EntityAlreadyExistsException(EntityReference identity)
     {
-        this.storeName = storeName;
-        this.qualifiedIdentity = qualifiedIdentity;
+        this.identity = identity;
     }
 
-    public String storeId()
+    public EntityReference identity()
     {
-        return storeName;
-    }
-
-    public QualifiedIdentity qualifiedIdentity()
-    {
-        return qualifiedIdentity;
+        return identity;
     }
 
 
     public String getMessage()
     {
-        return "Entity " + qualifiedIdentity + " already existed in the '" + storeName + "' store.";
+        return "Entity " + identity + " already existed";
     }
 }

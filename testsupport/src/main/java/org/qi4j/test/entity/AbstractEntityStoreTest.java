@@ -1,10 +1,5 @@
 package org.qi4j.test.entity;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import static org.hamcrest.CoreMatchers.equalTo;
 import org.junit.After;
 import static org.junit.Assert.assertThat;
@@ -14,11 +9,9 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ListAssociation;
 import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.entity.association.Qualifier;
-import org.qi4j.api.entity.association.SetAssociation;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
@@ -31,9 +24,10 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
+
+import java.util.*;
 
 /**
  * Abstract test with tests for the EntityStore interface.
@@ -60,11 +54,14 @@ public abstract class AbstractEntityStoreTest
             // Remove all state that was created
             objectBuilderFactory.newObjectBuilder( AbstractEntityStoreTest.class ).injectTo( this );
 
-            List<QualifiedIdentity> stateToRemove = new ArrayList<QualifiedIdentity>();
-            for( EntityState entityState : store )
+            final List<EntityReference> stateToRemove = new ArrayList<EntityReference>();
+            store.visitEntityStates(new EntityStore.EntityStateVisitor()
             {
-                stateToRemove.add( entityState.qualifiedIdentity() );
-            }
+                public void visitEntityState(EntityState entityState)
+                {
+                    stateToRemove.add(entityState.identity());
+                }
+            });
             store.prepare( Collections.EMPTY_LIST, Collections.EMPTY_LIST, stateToRemove ).commit();
 
             super.tearDown();
@@ -111,14 +108,8 @@ public abstract class AbstractEntityStoreTest
 
 
 
-        instance.manyAssociation().add( instance );
+        instance.manyAssociation().add( 0, instance );
 
-        instance.listAssociation().add( instance );
-        instance.listAssociation().add( instance );
-        instance.listAssociation().add( instance );
-
-        instance.setAssociation().add( instance );
-        instance.setAssociation().add( instance );
         return instance;
     }
 
@@ -135,7 +126,7 @@ public abstract class AbstractEntityStoreTest
 
             // Find entity
             unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            instance = unitOfWork.dereference( instance );
+            instance = unitOfWork.get( instance );
 
             // Check state
             assertThat( "property has correct value", instance.name().get(), equalTo( "Test" ) );
@@ -170,7 +161,7 @@ public abstract class AbstractEntityStoreTest
 
         // Remove entity
         unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        TestEntity instance = unitOfWork.dereference( newInstance );
+        TestEntity instance = unitOfWork.get( newInstance );
         unitOfWork.remove( instance );
         unitOfWork.complete();
 
@@ -178,7 +169,7 @@ public abstract class AbstractEntityStoreTest
         unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            unitOfWork.find( identity, TestEntity.class );
+            unitOfWork.get(TestEntity.class, identity);
             fail( "Should not be able to find entity" );
         }
         catch( NoSuchEntityException e )
@@ -208,7 +199,7 @@ public abstract class AbstractEntityStoreTest
 
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            testEntity = unitOfWork.dereference( testEntity );
+            testEntity = unitOfWork.get( testEntity );
             version = spi.getEntityState( testEntity ).version();
 
             unitOfWork.complete();
@@ -217,7 +208,7 @@ public abstract class AbstractEntityStoreTest
 
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            testEntity = unitOfWork.dereference( testEntity );
+            testEntity = unitOfWork.get( testEntity );
             long newVersion = spi.getEntityState( testEntity ).version();
             assertThat( "version has not changed", newVersion, equalTo( version ) );
 
@@ -242,7 +233,7 @@ public abstract class AbstractEntityStoreTest
 
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            testEntity = unitOfWork.dereference( testEntity );
+            testEntity = unitOfWork.get( testEntity );
             testEntity.name().set( "Rickard" );
             version = spi.getEntityState( testEntity ).version();
 
@@ -252,7 +243,7 @@ public abstract class AbstractEntityStoreTest
 
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            testEntity = unitOfWork.dereference( testEntity );
+            testEntity = unitOfWork.get( testEntity );
             long newVersion = spi.getEntityState( testEntity ).version();
             assertThat( "version has not changed", newVersion, equalTo( version + 1 ) );
 
@@ -277,8 +268,8 @@ public abstract class AbstractEntityStoreTest
 
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            testEntity = unitOfWork.dereference( testEntity );
-            testEntity.manyAssociation().add( testEntity );
+            testEntity = unitOfWork.get( testEntity );
+            testEntity.manyAssociation().add( 0, testEntity );
             version = spi.getEntityState( testEntity ).version();
 
             unitOfWork.complete();
@@ -287,9 +278,9 @@ public abstract class AbstractEntityStoreTest
 
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            testEntity = unitOfWork.dereference( testEntity );
+            testEntity = unitOfWork.get( testEntity );
             long newVersion = spi.getEntityState( testEntity ).version();
-            assertThat( "version has not changed", newVersion, equalTo( version + 1 ) );
+            assertThat( "version has changed", newVersion, equalTo( version + 1 ) );
 
             unitOfWork.complete();
         }
@@ -313,7 +304,7 @@ public abstract class AbstractEntityStoreTest
         {
             // Start working with Entity in one UoW
             unitOfWork1 = unitOfWorkFactory.newUnitOfWork();
-            testEntity1 = unitOfWork1.dereference( testEntity );
+            testEntity1 = unitOfWork1.get( testEntity );
             long version = spi.getEntityState( testEntity1 ).version();
             if (version == 0)
             {
@@ -328,7 +319,7 @@ public abstract class AbstractEntityStoreTest
         {
             // Start working with same Entity in another UoW, and complete it
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            TestEntity testEntity2 = unitOfWork.dereference( testEntity );
+            TestEntity testEntity2 = unitOfWork.get( testEntity );
             assertThat( "version is correct", spi.getEntityState( testEntity1 ).version(), equalTo( 1L ) );
             testEntity2.name().set( "B" );
             unitOfWork.complete();
@@ -358,7 +349,7 @@ public abstract class AbstractEntityStoreTest
         {
             // Check values
             unitOfWork1 = unitOfWorkFactory.newUnitOfWork();
-            testEntity1 = unitOfWork1.dereference( testEntity );
+            testEntity1 = unitOfWork1.get( testEntity );
             assertThat( "property name has not been set", testEntity1.name().get(), equalTo( "A" ) );
             assertThat( "version is incorrect", spi.getEntityState( testEntity1 ).version(), equalTo( 3L ) );
             unitOfWork1.discard();
@@ -379,12 +370,6 @@ public abstract class AbstractEntityStoreTest
         @Optional Association<TestEntity> unsetAssociation();
 
         ManyAssociation<TestEntity> manyAssociation();
-
-        ListAssociation<TestEntity> listAssociation();
-
-        SetAssociation<TestEntity> setAssociation();
-
-        @Optional Association<Qualifier<TestEntity, TestEntity>> qualifier();
     }
 
     public interface TjabbaValue extends Tjabba, ValueComposite

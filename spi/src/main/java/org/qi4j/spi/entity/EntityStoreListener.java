@@ -15,6 +15,7 @@
 package org.qi4j.spi.entity;
 
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.api.entity.EntityReference;
 
 /**
  * Implement this interface in a Service if you want it to listen
@@ -24,5 +25,5 @@ public interface EntityStoreListener
 {
     void notifyChanges( Iterable<EntityState> newStates,
                         Iterable<EntityState> changedStates,
-                        Iterable<QualifiedIdentity> removedStates );
+                        Iterable<EntityReference> removedStates );
 }

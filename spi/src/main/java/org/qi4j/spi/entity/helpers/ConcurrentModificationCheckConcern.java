@@ -12,21 +12,16 @@
  *
  */
 
-package org.qi4j.entitystore.memory;
+package org.qi4j.spi.entity.helpers;
+
+import org.qi4j.api.concern.ConcernOf;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.WeakHashMap;
-import org.qi4j.api.concern.ConcernOf;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.StateCommitter;
 
 /**
  * Concern that helps EntityStores do concurrent modification checks.
@@ -41,19 +36,17 @@ import org.qi4j.spi.entity.StateCommitter;
 public abstract class ConcurrentModificationCheckConcern extends ConcernOf<EntityStore>
     implements EntityStore
 {
-    private @This ServiceComposite service;
+    private final Map<EntityReference, Long> versions = new WeakHashMap<EntityReference, Long>();
 
-    private final Map<QualifiedIdentity, Long> versions = new WeakHashMap<QualifiedIdentity, Long>();
-
-    public EntityState getEntityState( QualifiedIdentity anIdentity ) throws EntityStoreException
+    public EntityState getEntityState( EntityReference anIdentity ) throws EntityStoreException
     {
         EntityState entityState = next.getEntityState( anIdentity );
-        rememberVersion( entityState.qualifiedIdentity(), entityState.version() );
+        rememberVersion( entityState.identity(), entityState.version() );
         return entityState;
     }
 
     public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates,
-                                   Iterable<QualifiedIdentity> removedStates ) 
+                                   Iterable<EntityReference> removedStates )
         throws EntityStoreException, ConcurrentEntityStateModificationException
     {
         // Check for concurrent modification
@@ -75,12 +68,12 @@ public abstract class ConcurrentModificationCheckConcern extends ConcernOf<Entit
         {
             for( EntityState loadedState : loadedStates )
             {
-                versions.remove( loadedState.qualifiedIdentity() );
+                versions.remove( loadedState.identity() );
             }
         }
     }
 
-    private void rememberVersion( QualifiedIdentity identity, long version )
+    private void rememberVersion( EntityReference identity, long version )
     {
         synchronized( versions )
         {
@@ -91,32 +84,32 @@ public abstract class ConcurrentModificationCheckConcern extends ConcernOf<Entit
     private void checkForConcurrentModification( Iterable<EntityState> loadedStates )
         throws ConcurrentEntityStateModificationException
     {
-        Collection<QualifiedIdentity> concurrentModifications = null;
+        Collection<EntityReference> concurrentModifications = null;
         for( EntityState loadedState : loadedStates )
         {
-            if( hasBeenModified( loadedState.qualifiedIdentity(), loadedState.version() ) )
+            if( hasBeenModified( loadedState.identity(), loadedState.version() ) )
             {
                 if( concurrentModifications == null )
                 {
-                    concurrentModifications = new ArrayList<QualifiedIdentity>();
+                    concurrentModifications = new ArrayList<EntityReference>();
                 }
-                concurrentModifications.add( loadedState.qualifiedIdentity() );
+                concurrentModifications.add( loadedState.identity() );
             }
         }
 
         if( concurrentModifications != null )
         {
-            throw new ConcurrentEntityStateModificationException( service.identity().get(), concurrentModifications );
+            throw new ConcurrentEntityStateModificationException( concurrentModifications );
         }
     }
 
-    private boolean hasBeenModified( QualifiedIdentity qualifiedIdentity, long oldVersion )
+    private boolean hasBeenModified( EntityReference identity, long oldVersion )
     {
         // Try version cache first
         Long rememberedVersion;
         synchronized( versions )
         {
-            rememberedVersion = versions.get( qualifiedIdentity );
+            rememberedVersion = versions.get( identity );
         }
 
         if( rememberedVersion != null )
@@ -125,7 +118,7 @@ public abstract class ConcurrentModificationCheckConcern extends ConcernOf<Entit
         }
 
         // Miss! Load state and compare
-        EntityState state = getEntityState( qualifiedIdentity );
+        EntityState state = getEntityState( identity );
         return state.version() != oldVersion;
     }
 

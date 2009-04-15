@@ -10,24 +10,25 @@ public class TypeName implements Serializable, Comparable<TypeName>
 {
     private final String name;
 
-    public static TypeName nameOf( Class type )
+    public static TypeName nameOf(Class type)
     {
-        NullArgumentException.validateNotNull( "type",type );
-        return new TypeName( type.getName() );
+        NullArgumentException.validateNotNull("type", type);
+        return new TypeName(type.getName());
     }
 
-    public static TypeName nameOf( Type type )
+    public static TypeName nameOf(Type type)
     {
-        return nameOf( Classes.getRawClass( type ) );
+        return nameOf(Classes.getRawClass(type));
     }
 
-    public static TypeName nameOf( String typeName ) {
+    public static TypeName nameOf(String typeName)
+    {
         return new TypeName(typeName);
     }
-    
-    private TypeName( String name)
+
+    private TypeName(String name)
     {
-        NullArgumentException.validateNotEmpty( "name",name );
+        NullArgumentException.validateNotEmpty("name", name);
         this.name = name;
     }
 
@@ -46,17 +47,19 @@ public class TypeName implements Serializable, Comparable<TypeName>
         return name;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return name;
     }
 
-    public boolean isClass(final Class<?> type) {
-        NullArgumentException.validateNotNull( "type",type );
+    public boolean isClass(final Class<?> type)
+    {
         return type.getName().equals(name);
     }
 
-    public boolean equals(final Object o) {
+    public boolean equals(final Object o)
+    {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -66,11 +69,13 @@ public class TypeName implements Serializable, Comparable<TypeName>
 
     }
 
-    public int hashCode() {
+    public int hashCode()
+    {
         return name.hashCode();
     }
 
-    public int compareTo(final TypeName typeName) {
+    public int compareTo(final TypeName typeName)
+    {
         return this.name.compareTo(typeName.name);
     }
 }

@@ -14,82 +14,58 @@
 
 package org.qi4j.runtime.unitofwork;
 
-import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.UnknownEntityTypeException;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.runtime.entity.EntityInstance;
-import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import java.util.Map;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.*;
+
 import java.util.HashMap;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * JAVADOC
-*/
+ */
 public class UnitOfWorkStore
-    implements EntityStore
+        implements EntityStore
 {
-    final Map<String, EntityType> entityTypes = new HashMap<String, EntityType>();
     private UnitOfWorkInstance unitOfWork;
 
-    public UnitOfWorkStore( UnitOfWorkInstance unitOfWork)
+    public UnitOfWorkStore(UnitOfWorkInstance unitOfWork)
     {
         this.unitOfWork = unitOfWork;
     }
 
-    public void registerEntityType( EntityType entityType )
+    public EntityState newEntityState(EntityReference identity) throws EntityStoreException
     {
-        entityTypes.put( entityType.type(), entityType );
-    }
-
-    public EntityType getEntityType( String aEntityType )
-    {
-        return entityTypes.get( aEntityType );
-    }
-
-    public EntityState newEntityState( QualifiedIdentity identity ) throws EntityStoreException
-    {
-        EntityType entityType = entityTypes.get( identity.type() );
-        if( entityType == null )
-        {
-            throw new UnknownEntityTypeException( identity.type() );
-        }
-
-        UnitOfWorkEntityState entityState = new UnitOfWorkEntityState( 0, System.currentTimeMillis(), identity, EntityStatus.NEW, entityType,
-                                                                       new HashMap<QualifiedName, Object>(), new HashMap<QualifiedName, QualifiedIdentity>(), new HashMap<QualifiedName, Collection<QualifiedIdentity>>(), null );
+        UnitOfWorkEntityState entityState = new UnitOfWorkEntityState(0,
+                System.currentTimeMillis(),
+                identity,
+                EntityStatus.NEW,
+                new HashSet<EntityTypeReference>(),
+                new HashMap<StateName, String>(),
+                new HashMap<StateName, EntityReference>(),
+                new HashMap<StateName, ManyAssociationState>(),
+                null);
         return entityState;
     }
 
-    public EntityState getEntityState( QualifiedIdentity identity ) throws EntityStoreException
+    public EntityState getEntityState(EntityReference identity) throws EntityStoreException
     {
-        EntityType entityType = entityTypes.get( identity.type() );
-        if( entityType == null )
-        {
-            throw new UnknownEntityTypeException( identity.type() );
-        }
-
-        EntityState parentState = unitOfWork.getCachedState( identity );
-        UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( parentState.version(),
-                                                                                 parentState.lastModified(),
-                                                                                 identity,
-                                                                                 EntityStatus.LOADED,
-                                                                                 entityType,
-                                                                                 new HashMap<QualifiedName, Object>(),
-                                                                                 new HashMap<QualifiedName, QualifiedIdentity>(),
-                                                                                 new HashMap<QualifiedName, Collection<QualifiedIdentity>>(),
-                                                                                 parentState );
+        EntityState parentState = unitOfWork.getCachedState(identity.toString());
+        UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState(parentState.version(),
+                parentState.lastModified(),
+                identity,
+                EntityStatus.LOADED,
+                new HashSet<EntityTypeReference>(),
+                new HashMap<StateName, String>(),
+                new HashMap<StateName, EntityReference>(),
+                new HashMap<StateName, ManyAssociationState>(),
+                parentState);
         return unitOfWorkEntityState;
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<QualifiedIdentity> removedStates ) throws EntityStoreException
+    public StateCommitter prepare(Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityReference> removedStates) throws EntityStoreException
     {
         // Unused
         return null;
@@ -100,24 +76,24 @@ public class UnitOfWorkStore
         return null;
     }
 
-    public EntityStateStore getEffectiveEntityStateStore( QualifiedIdentity qi, EntityType entityType )
+    public EntityStateStore getEffectiveEntityStateStore(EntityReference identity, EntityType entityType)
     {
-        EntityStateStore entityStateStore = unitOfWork.getEffectiveEntityStateStore( qi, entityType );
-        if( entityStateStore == null )
+        EntityStateStore entityStateStore = unitOfWork.getEffectiveEntityStateStore(identity, entityType);
+        if (entityStateStore == null)
         {
             return null;
         }
 
         EntityState parentState = entityStateStore.state;
-        UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( parentState.version(),
-                                                                                 parentState.lastModified(),
-                                                                                 qi,
-                                                                                 EntityStatus.LOADED,
-                                                                                 entityType,
-                                                                                 new HashMap<QualifiedName, Object>(),
-                                                                                 new HashMap<QualifiedName, QualifiedIdentity>(),
-                                                                                 new HashMap<QualifiedName, Collection<QualifiedIdentity>>(),
-                                                                                 parentState );
+        UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState(parentState.version(),
+                parentState.lastModified(),
+                identity,
+                EntityStatus.LOADED,
+                new HashSet<EntityTypeReference>(),
+                new HashMap<StateName, String>(),
+                new HashMap<StateName, EntityReference>(),
+                new HashMap<StateName, ManyAssociationState>(),
+                parentState);
         entityStateStore = new EntityStateStore();
         entityStateStore.state = unitOfWorkEntityState;
         entityStateStore.store = this;
@@ -125,16 +101,20 @@ public class UnitOfWorkStore
         return entityStateStore;
     }
 
-    public void mergeWith( Map<QualifiedIdentity, EntityStateStore> entityStateStores )
+    public void visitEntityStates(EntityStateVisitor visitor)
     {
-        for( Map.Entry<QualifiedIdentity, EntityStateStore> entry : entityStateStores.entrySet() )
+        // ???
+    }
+
+    public void mergeWith(Map<String, EntityStateStore> entityStateStores)
+    {
+        for (Map.Entry<String, EntityStateStore> entry : entityStateStores.entrySet())
         {
-            EntityStateStore ess = unitOfWork.stateCache.get( entry.getKey() );
-            if( ess == null )
+            EntityStateStore ess = unitOfWork.stateCache.get(entry.getKey());
+            if (ess == null)
             {
-                unitOfWork.stateCache.put( entry.getKey(), entry.getValue() );
-            }
-            else
+                unitOfWork.stateCache.put(entry.getKey(), entry.getValue());
+            } else
             {
                 EntityState parentState = ess.state;
 
@@ -145,15 +125,15 @@ public class UnitOfWorkStore
                 } else
                 {
                     UnitOfWorkEntityState state = (UnitOfWorkEntityState) entry.getValue().state;
-                    state.mergeTo( parentState );
+                    state.mergeTo(parentState);
                     ess.instance.refreshState();
                 }
             }
         }
     }
 
-    public void refresh( QualifiedIdentity qid )
+    public void refresh(String identity)
     {
-        unitOfWork.refresh( qid );
+        unitOfWork.refresh(identity);
     }
 }

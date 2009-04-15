@@ -132,7 +132,7 @@ public final class MixinTypeProxy
         }
 
         throw new QueryException(
-            "Only property, association and many associations methods can be used" );
+            "Only property, association and many manyAssociations methods can be used" );
     }
 
     @Override

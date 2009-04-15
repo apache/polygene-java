@@ -17,6 +17,7 @@ package org.qi4j.spi.property;
 import java.io.Serializable;
 import org.qi4j.spi.value.ValueType;
 import org.qi4j.spi.entity.SchemaVersion;
+import org.qi4j.spi.entity.StateName;
 import org.qi4j.api.common.QualifiedName;
 
 /**
@@ -35,6 +36,7 @@ public class PropertyType
     private String rdf;
     private final boolean queryable;
     private final PropertyTypeEnum propertyType;
+    private final StateName stateName;
 
     public PropertyType( final QualifiedName qualifiedName,
                          final ValueType type,
@@ -47,11 +49,21 @@ public class PropertyType
         this.rdf = rdf;
         this.queryable = queryable;
         this.propertyType = propertyType;
+
+        SchemaVersion schemaVersion = new SchemaVersion();
+        schemaVersion.versionize(type.type());
+        schemaVersion.versionize(qualifiedName);
+        stateName = new StateName(qualifiedName, rdf, schemaVersion.base64());
     }
 
     public QualifiedName qualifiedName()
     {
         return qualifiedName;
+    }
+
+    public StateName stateName()
+    {
+        return stateName;
     }
 
     public ValueType type()

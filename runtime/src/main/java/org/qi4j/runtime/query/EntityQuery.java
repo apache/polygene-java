@@ -23,9 +23,7 @@ import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryExecutionException;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 
@@ -49,8 +47,6 @@ final class EntityQuery<T>
      */
     private final EntityFinder entityFinder;
 
-    private final ClassLoader classLoader;
-
     /**
      * Constructor.
      *
@@ -61,14 +57,12 @@ final class EntityQuery<T>
      */
     EntityQuery( final UnitOfWork unitOfWorkInstance,
                  final EntityFinder entityFinder,
-                 final ClassLoader classLoader,
                  final Class<T> resultType,
                  final BooleanExpression whereClause )
     {
         super( resultType, whereClause );
         this.unitOfWorkInstance = unitOfWorkInstance;
         this.entityFinder = entityFinder;
-        this.classLoader = classLoader;
     }
 
     /**
@@ -78,7 +72,7 @@ final class EntityQuery<T>
     {
         try
         {
-            final QualifiedIdentity foundEntity = entityFinder.findEntity( resultType.getName(), whereClause );
+            final EntityReference foundEntity = entityFinder.findEntity( resultType.getName(), whereClause );
             if( foundEntity != null )
             {
                 return loadEntity( foundEntity );
@@ -99,7 +93,7 @@ final class EntityQuery<T>
     {
         try
         {
-            final Iterator<QualifiedIdentity> foundEntities = entityFinder.findEntities(
+            final Iterator<EntityReference> foundEntities = entityFinder.findEntities(
                 resultType.getName(), whereClause, orderBySegments, firstResult, maxResults
             ).iterator();
 
@@ -112,7 +106,7 @@ final class EntityQuery<T>
 
                 public T next()
                 {
-                    final QualifiedIdentity foundEntity = foundEntities.next();
+                    final EntityReference foundEntity = foundEntities.next();
                     return loadEntity( foundEntity );
                 }
 
@@ -153,22 +147,12 @@ final class EntityQuery<T>
     /**
      * Loads an entity (reference) based on qualified identity of that entity.
      *
-     * @param qualifiedIdentity to be loaded
+     * @param entityReference to be loaded
      * @return corresponding entity
      */
-    private T loadEntity( final QualifiedIdentity qualifiedIdentity )
+    private T loadEntity( final EntityReference entityReference)
     {
-        final String entityTypeAsString = qualifiedIdentity.type();
-        final Class<T> entityType;
-        try
-        {
-            entityType = (Class<T>) classLoader.loadClass( entityTypeAsString );
-        }
-        catch( ClassNotFoundException e )
-        {
-            throw new QueryExecutionException( String.format( "Entity type %s not found", entityTypeAsString ) );
-        }
-        return unitOfWorkInstance.getReference( qualifiedIdentity.identity(), entityType );
+        return unitOfWorkInstance.get(resultType, entityReference.identity());
     }
 
 }

@@ -19,6 +19,7 @@ package org.qi4j.api.entity.association;
 
 import java.lang.reflect.Method;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * This represents the state of a entity (properties+associations).
@@ -31,6 +32,22 @@ public interface EntityStateHolder extends StateHolder
      * @param associationMethod for the association
      * @return the association
      */
-    AbstractAssociation getAssociation( Method associationMethod );
+    <T> Association<T> getAssociation( Method associationMethod );
 
+    /**
+     * Get a many-association for a specific accessor method
+     *
+     * @param manyassociationMethod for the many-association
+     * @return the association
+     */
+    <T> ManyAssociation<T> getManyAssociation( Method manyassociationMethod );
+
+    void visitState(EntityStateVisitor visitor);
+
+    public interface EntityStateVisitor
+        extends StateVisitor
+    {
+        void visitAssociation(QualifiedName name, Object association);
+        void visitManyAssociation(QualifiedName name, ManyAssociation association);
+    }
 }

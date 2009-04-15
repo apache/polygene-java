@@ -18,8 +18,10 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.TypeName;
 import static org.qi4j.api.common.TypeName.nameOf;
 import org.qi4j.spi.entity.SchemaVersion;
+import org.qi4j.spi.entity.StateName;
 
 /**
  * JAVADOC
@@ -28,12 +30,13 @@ public final class AssociationType
     implements Serializable
 {
     private final QualifiedName qualifiedName;
-    private final String type;
+    private final TypeName type;
     private final String rdf;
     private final boolean queryable;
+    private StateName stateName;
 
     public AssociationType( final QualifiedName qualifiedName,
-                            final String type,
+                            final TypeName type,
                             final String rdf,
                             final boolean queryable )
     {
@@ -41,6 +44,11 @@ public final class AssociationType
         this.type = type;
         this.rdf = rdf;
         this.queryable = queryable;
+
+        SchemaVersion schemaVersion = new SchemaVersion();
+        schemaVersion.versionize(type);
+        schemaVersion.versionize(qualifiedName);
+        stateName = new StateName(qualifiedName, rdf, schemaVersion.base64());
     }
 
     public QualifiedName qualifiedName()
@@ -48,7 +56,7 @@ public final class AssociationType
         return qualifiedName;
     }
 
-    public String type()
+    public TypeName type()
     {
         return type;
     }
@@ -64,6 +72,12 @@ public final class AssociationType
         return queryable;
     }
 
+
+    public StateName stateName()
+    {
+        return stateName;
+    }
+
     @Override public String toString()
     {
         return qualifiedName + "(" + type + ")";
@@ -72,7 +86,7 @@ public final class AssociationType
     public void versionize( SchemaVersion schemaVersion ) throws UnsupportedEncodingException
     {
         schemaVersion.versionize( qualifiedName);
-        schemaVersion.versionize( nameOf( type ));
+        schemaVersion.versionize( type );
         
     }
 }

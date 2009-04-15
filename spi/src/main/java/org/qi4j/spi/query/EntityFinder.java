@@ -20,7 +20,7 @@ package org.qi4j.spi.query;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.api.entity.EntityReference;
 
 /**
  * JAVADOC Add JavaDoc
@@ -29,14 +29,14 @@ import org.qi4j.spi.entity.QualifiedIdentity;
  */
 public interface EntityFinder
 {
-    Iterable<QualifiedIdentity> findEntities( String resultType,
+    Iterable<EntityReference> findEntities( String resultType,
                                               @Optional BooleanExpression whereClause,
                                               @Optional OrderBy[] orderBySegments,
                                               @Optional Integer firstResult,
                                               @Optional Integer maxResults )
         throws EntityFinderException;
 
-    QualifiedIdentity findEntity( String resultType, @Optional BooleanExpression whereClause )
+    EntityReference findEntity( String resultType, @Optional BooleanExpression whereClause )
         throws EntityFinderException;
 
     long countEntities( String resultType, @Optional BooleanExpression whereClause )

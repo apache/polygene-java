@@ -29,6 +29,6 @@ class EntityStateStore
 
     @Override public String toString()
     {
-        return instance.qualifiedIdentity()+" "+state+" "+store;
+        return instance.identity()+" "+state+" "+store;
     }
 }

@@ -12,14 +12,17 @@
  *
  */
 
-package org.qi4j.api.entity.association;
+package org.qi4j.spi.entity.association;
 
-import java.util.List;
+import java.lang.reflect.Method;
+import org.qi4j.api.entity.association.AssociationInfo;
 
 /**
- * Specialization of ManyAssociation which has List semantics.
+ * JAVADOC
  */
-public interface ListAssociation<A>
-    extends ManyAssociation<A>, List<A>
+public interface ManyAssociationDescriptor extends AssociationInfo
 {
+    Method accessor();
+
+    ManyAssociationType manyAssociationType();
 }

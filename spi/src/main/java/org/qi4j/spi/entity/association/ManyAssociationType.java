@@ -19,6 +19,7 @@ import java.io.Serializable;
 import org.qi4j.api.common.QualifiedName;
 import static org.qi4j.api.common.TypeName.nameOf;
 import org.qi4j.spi.entity.SchemaVersion;
+import org.qi4j.spi.entity.StateName;
 
 /**
  * JAVADOC
@@ -28,38 +29,31 @@ public final class ManyAssociationType
 {
     private static final long serialVersionUID = 1L;
 
-    public enum ManyAssociationTypeEnum
-    {
-        MANY, LIST, SET
-    }
-
     private final QualifiedName qualifiedName;
-    private final ManyAssociationTypeEnum associationType;
     private final String type;
     private final String rdf;
     private final boolean queryable;
+    private StateName stateName;
 
     public ManyAssociationType( final QualifiedName qualifiedName,
-                                final ManyAssociationTypeEnum associationType,
                                 final String type,
                                 final String rdf,
                                 final boolean queryable )
     {
         this.qualifiedName = qualifiedName;
-        this.associationType = associationType;
         this.type = type;
         this.rdf = rdf;
         this.queryable = queryable;
+
+        SchemaVersion schemaVersion = new SchemaVersion();
+        schemaVersion.versionize(type);
+        schemaVersion.versionize(qualifiedName);
+        stateName = new StateName(qualifiedName, rdf, schemaVersion.base64());
     }
 
     public QualifiedName qualifiedName()
     {
         return qualifiedName;
-    }
-
-    public ManyAssociationTypeEnum associationType()
-    {
-        return associationType;
     }
 
     public String type()
@@ -75,6 +69,12 @@ public final class ManyAssociationType
     public boolean queryable()
     {
         return queryable;
+    }
+
+
+    public StateName stateName()
+    {
+        return stateName;
     }
 
     @Override public String toString()

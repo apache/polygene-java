@@ -16,21 +16,13 @@
  */
 package org.qi4j.spi.entity;
 
-import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.EntityState;
+import org.qi4j.api.entity.EntityReference;
 
 /**
  * Interface that must be implemented by store for persistent state of EntityComposites.
  */
 public interface EntityStore
-    extends Iterable<EntityState>
 {
-    void registerEntityType( EntityType entityType )
-        throws EntityStoreException;
-
-    EntityType getEntityType( String aEntityType )
-        throws UnknownEntityTypeException;
-
     /**
      * Create new EntityState for a given identity.
      * <p/>
@@ -41,11 +33,11 @@ public interface EntityStore
      * @return The new entity state.
      * @throws EntityStoreException Thrown if creational fails.
      */
-    EntityState newEntityState( QualifiedIdentity anIdentity )
+    EntityState newEntityState( EntityReference anIdentity )
         throws EntityStoreException;
 
     /**
-     * Get the EntityState for a given identity and composite type. Throws {@link EntityNotFoundException}
+     * Get the EntityState for a given identity. Throws {@link EntityNotFoundException}
      * if the entity with given {@code anIdentity} is not found.
      *
      * @param anIdentity The entity identity. This argument must not be {@code null}.
@@ -53,7 +45,7 @@ public interface EntityStore
      * @throws EntityStoreException    thrown if retrieval failed.
      * @throws EntityNotFoundException thrown if wanted entity does not exist
      */
-    EntityState getEntityState( QualifiedIdentity anIdentity )
+    EntityState getEntityState( EntityReference anIdentity )
         throws EntityStoreException, EntityNotFoundException;
 
     /**
@@ -77,6 +69,13 @@ public interface EntityStore
      */
     StateCommitter prepare( Iterable<EntityState> newStates,
                             Iterable<EntityState> updatedStates,
-                            Iterable<QualifiedIdentity> removedStates )
+                            Iterable<EntityReference> removedStates )
         throws EntityStoreException, ConcurrentEntityStateModificationException;
+
+    void visitEntityStates(EntityStateVisitor visitor);
+
+    interface EntityStateVisitor
+    {
+        void visitEntityState(EntityState entityState);
+    }
 }

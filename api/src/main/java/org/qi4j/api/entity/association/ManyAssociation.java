@@ -14,12 +14,21 @@
 
 package org.qi4j.api.entity.association;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Association to a collection of entities.
  */
 public interface ManyAssociation<T>
-    extends Collection<T>, AbstractAssociation
+    extends Iterable<T>, AbstractAssociation
 {
+    int count();
+    boolean contains(T entity);
+    boolean add(int i, T entity);
+    boolean remove(T entity);
+    T get(int i);
+
+    List<T> toList();
+    Set<T> toSet();
 }

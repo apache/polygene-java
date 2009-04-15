@@ -14,45 +14,56 @@
 
 package org.qi4j.spi.serialization;
 
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.StateName;
+
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Map;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.api.common.QualifiedName;
+import java.util.Set;
 
 /**
  * Serializable state for a single entity. This includes the version
  * of the state and the version of the type.
  */
 public final class SerializableState
-    implements Serializable
+        implements Serializable
 {
-    private static final long serialVersionUID = 3L;
+    private static final long serialVersionUID = 4L;
 
-    private final QualifiedIdentity identity;
+    private final EntityReference identity;
     private final long entityVersion;
     private final long lastModified;
-    private final Map<QualifiedName, Object> properties;
-    private final Map<QualifiedName, QualifiedIdentity> associations;
-    private final Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations;
+    private final Set<EntityTypeReference> entityTypeReferences;
+    private final Map<StateName, String> properties;
+    private final Map<StateName, EntityReference> associations;
+    private final Map<StateName, ManyAssociationState> manyAssociations;
 
-    public SerializableState( QualifiedIdentity identity,
-                              long entityVersion, long lastModified,
-                              Map<QualifiedName, Object> properties,
-                              Map<QualifiedName, QualifiedIdentity> associations,
-                              Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations )
+    public SerializableState(EntityReference identity,
+                             long entityVersion, long lastModified,
+                             Set<EntityTypeReference> entityTypeReferences,
+                             Map<StateName, String> properties,
+                             Map<StateName, EntityReference> associations,
+                             Map<StateName, ManyAssociationState> manyAssociations)
     {
         this.identity = identity;
         this.entityVersion = entityVersion;
         this.lastModified = lastModified;
+        this.entityTypeReferences = entityTypeReferences;
         this.properties = properties;
         this.associations = associations;
         this.manyAssociations = manyAssociations;
     }
 
-    public QualifiedIdentity qualifiedIdentity()
+    public EntityReference identity()
     {
         return identity;
+    }
+
+    public Set<EntityTypeReference> entityTypeReferences()
+    {
+        return entityTypeReferences;
     }
 
     public long version()
@@ -65,17 +76,17 @@ public final class SerializableState
         return lastModified;
     }
 
-    public Map<QualifiedName, Object> properties()
+    public Map<StateName, String> properties()
     {
         return properties;
     }
 
-    public Map<QualifiedName, QualifiedIdentity> associations()
+    public Map<StateName, EntityReference> associations()
     {
         return associations;
     }
 
-    public Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations()
+    public Map<StateName, ManyAssociationState> manyAssociations()
     {
         return manyAssociations;
     }

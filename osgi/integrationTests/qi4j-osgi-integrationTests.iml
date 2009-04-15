@@ -28,10 +28,10 @@
     <orderEntry type="library" name="Maven: org.ops4j.base:ops4j-base-net:0.5.3" level="project" />
     <orderEntry type="library" name="Maven: org.ops4j.base:ops4j-base-monitors:0.5.3" level="project" />
     <orderEntry type="library" name="Maven: org.ops4j.pax.runner:pax-runner-no-jcl:0.17.2" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-api:0.7-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="qi4j-core-api" exported="" />
     <orderEntry type="module" module-name="qi4j-osgi-example" />
-    <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-bootstrap:0.7-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-spi:0.7-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="qi4j-core-bootstrap" />
+    <orderEntry type="module" module-name="qi4j-core-spi" />
     <orderEntry type="library" name="Maven: org.ops4j.pax.logging:pax-logging-api:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.felix:org.osgi.core:1.2.0" level="project" />
   </component>

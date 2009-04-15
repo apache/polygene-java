@@ -21,32 +21,28 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.TypeName;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Aggregated;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.RDF;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
-import org.qi4j.api.entity.association.ListAssociation;
 import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.entity.association.SetAssociation;
-import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Immutable;
-import org.qi4j.api.util.Classes;
 import static org.qi4j.api.util.Classes.getRawClass;
 import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
@@ -63,9 +59,11 @@ public final class AssociationModel
     private QualifiedName qualifiedName;
     private String rdf;
     private ValueConstraintsInstance constraints;
+    private ValueConstraintsInstance associationConstraints;
     private boolean queryable;
     private boolean immutable;
     private boolean aggregated;
+    private AssociationType associationType;
 
     private void writeObject( ObjectOutputStream out )
         throws IOException
@@ -92,12 +90,14 @@ public final class AssociationModel
     }
 
 
-    public AssociationModel( Method accessor, ValueConstraintsInstance valueConstraintsInstance, MetaInfo metaInfo )
+    public AssociationModel( Method accessor, ValueConstraintsInstance valueConstraintsInstance, ValueConstraintsInstance associationConstraintsInstance, MetaInfo metaInfo )
     {
         this.metaInfo = metaInfo;
         this.constraints = valueConstraintsInstance;
+        this.associationConstraints = associationConstraintsInstance;
         this.accessor = accessor;
         initialize();
+        this.associationType = new AssociationType(qualifiedName, TypeName.nameOf(type), rdf, queryable);
     }
 
     private void initialize()
@@ -148,86 +148,75 @@ public final class AssociationModel
         return ManyAssociation.class.isAssignableFrom( accessor.getReturnType() );
     }
 
-    public boolean isListAssociation()
-    {
-        return ListAssociation.class.isAssignableFrom( accessor.getReturnType() );
-    }
-
-    public boolean isSetAssociation()
-    {
-        return SetAssociation.class.isAssignableFrom( accessor.getReturnType() );
-    }
-
     public boolean isAssociation()
     {
         return Association.class.isAssignableFrom( accessor.getReturnType() );
     }
 
-    public AbstractAssociation newDefaultInstance()
+    public AbstractAssociation newDefaultInstance(ModuleUnitOfWork uow, EntityState entityState)
     {
         AbstractAssociation instance;
-        if( isListAssociation() )
+        if( isManyAssociation() )
         {
-            instance = new EntityBuilderListAssociation<Object>();
-        }
-        else if( isSetAssociation() )
-        {
-            instance = new EntityBuilderSetAssociation<Object>();
-        }
-        else if( isManyAssociation() )
-        {
-            instance = new EntityBuilderListAssociation<Object>();
+            instance = new ManyAssociationInstance(this, uow, entityState);
         }
         else
         {
-            instance = new EntityBuilderAssociation<Object>( this );
+            instance = new AssociationInstance<Object>( this, uow, entityState );
         }
         return instance;
     }
 
-    public AbstractAssociation newInstance( ModuleUnitOfWork uow, EntityState state )
+    public <T> Association<T> newInstance( ModuleUnitOfWork uow, EntityState state )
     {
-        AbstractAssociation associationInstance;
-        if( !isManyAssociation() )
-        {
-            associationInstance = new AssociationInstance<Object>( this, uow, state );
-        }
-        else
-        {
-            if( isListAssociation() )
-            {
-                associationInstance = new ListAssociationInstance<Object>( this, uow, state );
-            }
-            else if( isSetAssociation() )
-            {
-                associationInstance = new SetAssociationInstance<Object>( this, uow, state );
-            }
-            else
-            {
-                associationInstance = new ManyAssociationInstance<Object>( this, uow, state );
-            }
-        }
+        Association<T> associationInstance = new AssociationInstance<T>( this, uow, state );
 
         if( Composite.class.isAssignableFrom( accessor.getReturnType() ) )
         {
-            associationInstance = (AbstractAssociation) uow.module().compositeBuilderFactory().newCompositeBuilder( accessor.getReturnType() ).use( associationInstance ).newInstance();
+            associationInstance = (Association<T>) uow.module().compositeBuilderFactory().newCompositeBuilder( accessor.getReturnType() ).use( associationInstance ).newInstance();
         }
 
         return associationInstance;
     }
 
-    public void checkConstraints( Object value )
-        throws ConstraintViolationException
+    public void checkConstraints(Object value)
+            throws ConstraintViolationException
     {
         if( constraints != null )
         {
-            List<ConstraintViolation> violations = constraints.checkConstraints( value, false );
+             List<ConstraintViolation> violations = constraints.checkConstraints( value );
             if( !violations.isEmpty() )
             {
                 throw new ConstraintViolationException( accessor, violations );
             }
         }
     }
+
+    public void checkConstraints( EntityAssociationsInstance associations )
+        throws ConstraintViolationException
+    {
+        if( constraints != null )
+        {
+            Object value = associations.associationFor(accessor).get();
+            checkConstraints(value);
+        }
+    }
+
+    public void checkAssociationConstraints( EntityAssociationsInstance associationsInstance )
+        throws ConstraintViolationException
+    {
+        if( associationConstraints != null )
+        {
+            Association association = associationsInstance.associationFor(accessor);
+
+            List<ConstraintViolation> violations = associationConstraints.checkConstraints( association );
+            if( !violations.isEmpty() )
+            {
+                throw new ConstraintViolationException( accessor, violations );
+            }
+        }
+    }
+
 
     public boolean equals( Object o )
     {
@@ -260,54 +249,8 @@ public final class AssociationModel
         return accessor.toGenericString();
     }
 
-    public void setState( AbstractAssociation association, EntityState entityState )
-    {
-        if( association != null )
-        {
-            if( isManyAssociation() )
-            {
-                ManyAssociation<?> manyAssociation = (ManyAssociation<?>) association;
-                Collection<QualifiedIdentity> stateCollection = entityState.getManyAssociation( qualifiedName );
-                for( Object associated : manyAssociation )
-                {
-                    stateCollection.add( QualifiedIdentity.getQualifiedIdentity( associated ) );
-                }
-            }
-            else
-            {
-                Association<?> assoc = (Association<?>) association;
-                Object associated = assoc.get();
-
-                checkConstraints( associated );
-
-                if( associated != null )
-                {
-                    entityState.setAssociation( qualifiedName, QualifiedIdentity.getQualifiedIdentity( associated ) );
-                }
-            }
-        }
-    }
-
     public AssociationType associationType()
     {
-        return new AssociationType( qualifiedName, getRawClass( type ).getName(), rdf, queryable );
-    }
-
-    public ManyAssociationType manyAssociationType()
-    {
-        ManyAssociationType.ManyAssociationTypeEnum manyAssocType;
-        if( isListAssociation() )
-        {
-            manyAssocType = ManyAssociationType.ManyAssociationTypeEnum.LIST;
-        }
-        else if( isSetAssociation() )
-        {
-            manyAssocType = ManyAssociationType.ManyAssociationTypeEnum.SET;
-        }
-        else
-        {
-            manyAssocType = ManyAssociationType.ManyAssociationTypeEnum.MANY;
-        }
-        return new ManyAssociationType( qualifiedName, manyAssocType, getRawClass( type ).getName(), rdf, queryable );
+        return associationType;
     }
 }

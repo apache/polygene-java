@@ -218,7 +218,7 @@ public final class ServiceModel
         // Service has no state
         StateHolder stateHolder = new StateHolder()
         {
-            public Property<?> getProperty( Method propertyMethod )
+            public <T> Property<T> getProperty(Method propertyMethod)
             {
                 if (QualifiedName.fromMethod(propertyMethod).equals( QualifiedName.fromClass( Identity.class, "identity" )))
                 {
@@ -227,14 +227,18 @@ public final class ServiceModel
                 } else
                 {
                     // State is set to defaults
-                    return new ComputedPropertyInstance(new GenericPropertyInfo(propertyMethod))
+                    return new ComputedPropertyInstance<T>(new GenericPropertyInfo(propertyMethod))
                     {
-                        public Object get()
+                        public T get()
                         {
                             return null;
                         }
                     };
                 }
+            }
+
+            public void visitProperties(StateVisitor visitor)
+            {
             }
         };
         stateHolder = stateModel.newInstance( stateHolder );

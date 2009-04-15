@@ -18,8 +18,15 @@ package org.qi4j.spi.entity;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
+
 import org.qi4j.spi.value.ValueState;
+import org.qi4j.spi.value.ValueType;
+import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.entity.association.AssociationType;
+import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.EntityReference;
 
 /**
  */
@@ -30,11 +37,11 @@ public interface EntityState
      *
      * @return the identity of the entity that this EntityState represents.
      */
-    QualifiedIdentity qualifiedIdentity();
+    EntityReference identity();
 
     /**
      * Version of the entity. This is managed by the EntityStore.
-     *
+     * <p/>
      * If the underlying EntityStore does not support versioning, then version
      * must always be set to 0.
      *
@@ -44,7 +51,7 @@ public interface EntityState
 
     /**
      * Last modified timestamp of the entity. This is managed by the EntityStore.
-     *
+     * <p/>
      * If the underlying EntityStore does not support timestamping, then last modified
      * must always be set to the current time.
      *
@@ -64,38 +71,23 @@ public interface EntityState
      */
     EntityStatus status();
 
-    /**
-     * The Entitytype describes the "schema" for the Entity, including a list
-     * of all properties and associations, and all relevant metadata about them.
-     *
-     * @return the EntityType
-     */
-    EntityType entityType();
+    void addEntityTypeReference(EntityTypeReference type);
 
-    /**
-     * Get the value of a property with the given qualified name
-     *
-     * @param qualifiedName of the property
-     * @return the value of the property
-     */
+    void removeEntityTypeReference(EntityTypeReference type);
 
-    Object getProperty( QualifiedName qualifiedName );
+    boolean hasEntityTypeReference(EntityTypeReference type);
 
-    void setProperty( QualifiedName qualifiedName, Object newValue );
+    Set<EntityTypeReference> entityTypeReferences();
 
-    QualifiedIdentity getAssociation( QualifiedName qualifiedName );
+    String getProperty(StateName stateName);
 
-    void setAssociation( QualifiedName qualifiedName, QualifiedIdentity newEntity );
+    void setProperty(StateName stateName, String json);
 
-    Collection<QualifiedIdentity> getManyAssociation( QualifiedName qualifiedName );
+    EntityReference getAssociation(StateName stateName);
 
-    Iterable<QualifiedName> propertyNames();
+    void setAssociation(StateName stateName, EntityReference newEntity);
 
-    Iterable<QualifiedName> associationNames();
-
-    Iterable<QualifiedName> manyAssociationNames();
+    ManyAssociationState getManyAssociation(StateName stateName);
 
     void hasBeenApplied();
-
-    ValueState newValueState( Map<QualifiedName, Object> values);
 }

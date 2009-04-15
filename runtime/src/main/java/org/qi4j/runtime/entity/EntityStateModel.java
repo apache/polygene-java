@@ -15,27 +15,21 @@
 package org.qi4j.runtime.entity;
 
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
-import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.entity.association.AbstractAssociation;
+import java.util.Set;
+
 import org.qi4j.api.entity.association.EntityStateHolder;
+import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.runtime.composite.AbstractStateModel;
-import org.qi4j.runtime.entity.association.AssociationInstance;
-import org.qi4j.runtime.entity.association.AssociationsInstance;
-import org.qi4j.runtime.entity.association.EntityAssociationsModel;
-import org.qi4j.runtime.property.PropertiesInstance;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.runtime.entity.association.*;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
+import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.property.PropertyType;
 
 /**
@@ -46,23 +40,21 @@ public final class EntityStateModel
     implements EntityStateDescriptor
 {
     private final EntityAssociationsModel associationsModel;
+    private EntityManyAssociationsModel manyAssociationsModel;
 
-    public EntityStateModel( EntityPropertiesModel propertiesModel, EntityAssociationsModel associationsModel )
+    public EntityStateModel( EntityPropertiesModel propertiesModel, EntityAssociationsModel associationsModel, EntityManyAssociationsModel manyAssociationsModel )
     {
         super(propertiesModel);
         this.associationsModel = associationsModel;
+        this.manyAssociationsModel = manyAssociationsModel;
     }
 
-    public EntityStateHolder newBuilderInstance()
-    {
-        PropertiesInstance properties = propertiesModel.newBuilderInstance();
-        AssociationsInstance associations = associationsModel.newBuilderInstance();
-        return new EntityBuilderStateInstance( properties, associations );
-    }
 
     public EntityStateModel.EntityStateInstance newInstance( ModuleUnitOfWork uow, EntityState entityState )
     {
-        return new EntityStateInstance( propertiesModel, associationsModel, entityState, uow );
+        return new EntityStateInstance( propertiesModel.newInstance(entityState, uow),
+                associationsModel.newInstance(entityState, uow),
+                manyAssociationsModel.newInstance(entityState, uow));
     }
 
     @Override public void addStateFor( Iterable<Method> methods )
@@ -72,6 +64,10 @@ public final class EntityStateModel
         {
             associationsModel.addAssociationFor( method );
         }
+        for( Method method : methods )
+        {
+            manyAssociationsModel.addManyAssociationFor( method );
+        }
     }
 
     public AssociationDescriptor getAssociationByName( String name )
@@ -79,146 +75,93 @@ public final class EntityStateModel
         return associationsModel.getAssociationByName( name );
     }
 
-    public AssociationDescriptor getAssociationByQualifiedName( QualifiedName name )
+    public ManyAssociationDescriptor getManyAssociationByName( String name )
     {
-        return associationsModel.getAssociationByQualifiedName( name );
+        return manyAssociationsModel.getManyAssociationByName( name );
     }
 
-    public List<AssociationDescriptor> associations()
+    public <T extends AssociationDescriptor> Set<T> associations()
     {
         return associationsModel.associations();
     }
 
-    public void setState( StateHolder state, EntityState entityState )
-        throws ConstraintViolationException
+    public <T extends ManyAssociationDescriptor> Set<T> manyAssociations()
     {
-        EntityBuilderStateInstance builderStateInstance = (EntityBuilderStateInstance) state;
-
-        propertiesModel.setState( builderStateInstance.properties, entityState );
-        associationsModel.setState( builderStateInstance.associations, entityState );
+        return manyAssociationsModel.manyAssociations();
     }
 
-    public Iterable<PropertyType> propertyTypes()
+    public Set<PropertyType> propertyTypes()
     {
         return propertiesModel.propertyTypes();
     }
 
-    public Iterable<AssociationType> associationTypes()
+    public Set<AssociationType> associationTypes()
     {
         return associationsModel.associationTypes();
     }
 
-    public Iterable<ManyAssociationType> manyAssociationTypes()
+    public Set<ManyAssociationType> manyAssociationTypes()
     {
-        return associationsModel.manyAssociationTypes();
+        return manyAssociationsModel.manyAssociationTypes();
     }
 
-    private static final class EntityBuilderStateInstance
+    public final class EntityStateInstance
         implements EntityStateHolder
     {
-        private final PropertiesInstance properties;
-        private final AssociationsInstance associations;
-
-        private EntityBuilderStateInstance( PropertiesInstance properties, AssociationsInstance associations )
-        {
-            this.properties = properties;
-            this.associations = associations;
-        }
-
-        public Property<?> getProperty( Method propertyMethod )
-        {
-            return properties.propertyFor( propertyMethod );
-        }
-
-        public AbstractAssociation getAssociation( Method associationMethod )
-        {
-            return associations.associationFor( associationMethod );
-        }
-    }
-
-    public static final class EntityStateInstance
-        implements EntityStateHolder
-    {
-        private Map<Method, Property<?>> properties;
-        private Map<Method, AbstractAssociation> associations;
-
-        private final EntityPropertiesModel entityPropertiesModel;
-        private final EntityAssociationsModel associationsModel;
-        private final EntityState entityState;
-        private final ModuleUnitOfWork uow;
+        private final EntityPropertiesInstance entityPropertiesInstance;
+        private final EntityAssociationsInstance entityAssociationsInstance;
+        private final EntityManyAssociationsInstance entityManyAssociationsInstance;
 
         private EntityStateInstance(
-            EntityPropertiesModel entityPropertiesModel, EntityAssociationsModel associationsModel, EntityState entityState,
-            ModuleUnitOfWork uow )
+            EntityPropertiesInstance entityPropertiesInstance,
+            EntityAssociationsInstance entityAssociationsInstance,
+            EntityManyAssociationsInstance entityManyAssociationsInstance)
         {
-            this.entityPropertiesModel = entityPropertiesModel;
-            this.associationsModel = associationsModel;
-            this.entityState = entityState;
-            this.uow = uow;
+            this.entityPropertiesInstance = entityPropertiesInstance;
+            this.entityAssociationsInstance = entityAssociationsInstance;
+            this.entityManyAssociationsInstance = entityManyAssociationsInstance;
         }
 
-        public Property<?> getProperty( Method accessor )
+        public <T> Property<T> getProperty( Method accessor )
         {
-            if( properties == null )
-            {
-                properties = new MethodKeyMap<Property<?>>();
-            }
-
-            Property<?> property = properties.get( accessor );
-
-            if( property == null )
-            {
-                EntityPropertyModel model = entityPropertiesModel.getPropertyByAccessor( accessor );
-                property = model.newInstance( entityState, uow );
-                properties.put( accessor, property );
-            }
-
-            return property;
+            return entityPropertiesInstance.<T>getProperty(accessor);
         }
 
-        public AbstractAssociation getAssociation( Method accessor )
+        public <T> Association<T> getAssociation( Method accessor )
         {
-            if( associations == null )
-            {
-                associations = new MethodKeyMap<AbstractAssociation>();
-            }
+            return entityAssociationsInstance.associationFor(accessor);
+        }
 
-            AbstractAssociation association = associations.get( accessor );
+        public <T> ManyAssociation<T> getManyAssociation( Method accessor )
+        {
+            return entityManyAssociationsInstance.manyAssociationFor(accessor);
+        }
 
-            if( association == null )
-            {
-                association = associationsModel.newInstance( accessor, entityState, uow );
-                associations.put( accessor, association );
-            }
+        public void visitState(EntityStateVisitor visitor)
+        {
+            visitProperties(visitor);
 
-            return association;
+            entityAssociationsInstance.visitAssociations(visitor);
+            entityManyAssociationsInstance.visitManyAssociations(visitor);
+        }
+
+        public void visitProperties(StateVisitor visitor)
+        {
+            entityPropertiesInstance.visitProperties(visitor);
         }
 
         public void refresh( EntityState entityState )
         {
-            if( properties != null )
-            {
-                for( Property property : properties.values() )
-                {
-                    if( property instanceof EntityPropertyInstance )
-                    {
-                        EntityPropertyInstance entityProperty = (EntityPropertyInstance) property;
-                        entityProperty.refresh( entityState );
-                    }
-                }
-            }
+            entityPropertiesInstance.refresh(entityState);
+            entityAssociationsInstance.refresh(entityState);
+            entityManyAssociationsInstance.refresh(entityState);
+        }
 
-            if( associations != null )
-            {
-                for( AbstractAssociation abstractAssociation : associations.values() )
-                {
-                    if( abstractAssociation instanceof AssociationInstance )
-                    {
-                        AssociationInstance associationInstance = (AssociationInstance) abstractAssociation;
-                        associationInstance.refresh( entityState );
-                    }
-                }
-            }
+        public void checkConstraints()
+        {
+            entityPropertiesInstance.checkConstraints();
+            entityAssociationsInstance.checkConstraints();
+            entityManyAssociationsInstance.checkConstraints();
         }
     }
 

@@ -22,7 +22,6 @@ import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PersistentPropertyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 
 /**
@@ -45,7 +44,7 @@ public final class EntityPropertyModel extends PersistentPropertyModel
         return null;
     }
 
-    public Property newInstance( EntityState state, ModuleUnitOfWork uow )
+    public <T> Property<T> newInstance( EntityState state, ModuleUnitOfWork uow )
     {
         Property property;
         if( isComputed() )
@@ -60,21 +59,9 @@ public final class EntityPropertyModel extends PersistentPropertyModel
         return wrapProperty( property );
     }
 
-    public void setState( Property property, EntityState entityState )
-        throws ConstraintViolationException
-    {
-        Object value = property.get();
-
-        // Check constraints
-        checkConstraints( value, false );
-
-        Object persistentValue = toValue( value, entityState );
-        entityState.setProperty( qualifiedName(), persistentValue );
-    }
-
     public <T> T fromEntityState( ModuleInstance moduleInstance, EntityState entityState )
     {
-        Object value = entityState.getProperty( qualifiedName() );
-        return super.<T>fromValue( moduleInstance, value );
+        String value = entityState.getProperty( propertyType().stateName() );
+        return super.<T>fromJSON( moduleInstance, value );
     }
 }

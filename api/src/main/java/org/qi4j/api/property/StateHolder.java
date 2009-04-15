@@ -14,6 +14,8 @@
 
 package org.qi4j.api.property;
 
+import org.qi4j.api.common.QualifiedName;
+
 import java.lang.reflect.Method;
 
 /**
@@ -29,4 +31,10 @@ public interface StateHolder
      */
     <T> Property<T> getProperty( Method propertyMethod );
 
+    void visitProperties(StateVisitor visitor);
+
+    public interface StateVisitor
+    {
+        void visitProperty(QualifiedName name, Object value);
+    }
 }

@@ -16,6 +16,8 @@
  */
 package org.qi4j.spi.entity;
 
+import org.qi4j.api.entity.EntityReference;
+
 import java.util.Collection;
 
 /**
@@ -24,27 +26,20 @@ import java.util.Collection;
  */
 public class ConcurrentEntityStateModificationException extends EntityStoreException
 {
-    private String storeName;
-    private Collection<QualifiedIdentity> modifiedEntities;
+    private Collection<EntityReference> modifiedEntities;
 
-    public ConcurrentEntityStateModificationException( String storeName, Collection<QualifiedIdentity> modifiedEntities )
+    public ConcurrentEntityStateModificationException(Collection<EntityReference> modifiedEntities )
     {
-        this.storeName = storeName;
         this.modifiedEntities = modifiedEntities;
     }
 
-    public String storeId()
-    {
-        return storeName;
-    }
-
-    public Collection<QualifiedIdentity> modifiedEntities()
+    public Collection<EntityReference> modifiedEntities()
     {
         return modifiedEntities;
     }
 
     public String getMessage()
     {
-        return "Entities changed concurrently in the '" + storeName + "' store:" + modifiedEntities;
+        return "Entities changed concurrently:" + modifiedEntities;
     }
 }

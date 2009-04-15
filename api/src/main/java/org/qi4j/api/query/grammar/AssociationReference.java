@@ -73,6 +73,4 @@ public interface AssociationReference
      * @return associated instance from the target
      */
     Object eval( Object target );
-
-    ReferenceType roleType();
 }

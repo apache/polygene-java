@@ -17,48 +17,34 @@ package org.qi4j.spi.value;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.StringTokenizer;
+import java.text.StringCharacterIterator;
 
 import org.qi4j.api.common.TypeName;
+import org.qi4j.api.structure.Module;
 import org.qi4j.spi.entity.SchemaVersion;
+import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.util.PeekableStringTokenizer;
 
 /**
- * Primitive type
+ * Boolean type
  */
-public class PrimitiveType
+public class BooleanType
     implements ValueType
 {
-    private static Set<Class> primitiveClasses = new HashSet<Class>();
-
-    static
-    {
-        primitiveClasses.add( Long.class );
-        primitiveClasses.add( Integer.class );
-        primitiveClasses.add( Float.class );
-        primitiveClasses.add( Double.class );
-        primitiveClasses.add( Character.class );
-        primitiveClasses.add( Boolean.class );
-        primitiveClasses.add( Short.class );
-        primitiveClasses.add( Byte.class );
-        primitiveClasses.add( String.class );
-    }
-
-    public static boolean isPrimitive( Type type)
+    public static boolean isBoolean( Type type)
     {
         if (type instanceof Class)
         {
             Class typeClass = (Class) type;
-            if (typeClass.isPrimitive())
-                return true;
-            else if (typeClass.isEnum())
-                return true;
+            return  (typeClass.equals(Boolean.class));
         }
-
-        return primitiveClasses.contains( type );
+        return false;
     }
 
     private final TypeName type;
 
-    public PrimitiveType( TypeName type )
+    public BooleanType( TypeName type )
     {
         this.type = type;
     }
@@ -71,6 +57,17 @@ public class PrimitiveType
     public TypeName type()
     {
         return type;
+    }
+
+    public void toJSON(Object value, StringBuilder json, Qi4jSPI spi)
+    {
+        json.append(((Boolean)value).booleanValue());
+    }
+
+    public Object fromJSON(PeekableStringTokenizer json, Module module)
+    {
+        String string = json.nextToken();
+        return Boolean.valueOf(string);
     }
 
     @Override public String toString()

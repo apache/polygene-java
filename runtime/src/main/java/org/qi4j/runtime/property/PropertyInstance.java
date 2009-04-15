@@ -69,7 +69,7 @@ public class PropertyInstance<T> extends AbstractPropertyInstance<T>
 
         if( constraints != null)
         {
-            constraints.checkConstraints( aNewValue, false );
+            constraints.checkConstraints( aNewValue);
         }
 
         value = aNewValue;

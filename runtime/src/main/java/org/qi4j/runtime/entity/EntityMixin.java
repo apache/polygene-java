@@ -26,12 +26,6 @@ public final class EntityMixin
 {
     @This private EntityComposite meAsEntity;
 
-    public boolean isReference()
-    {
-        EntityInstance instance = EntityInstance.getEntityInstance( meAsEntity );
-        return instance.isReference();
-    }
-
     public UnitOfWork unitOfWork()
     {
         EntityInstance instance = EntityInstance.getEntityInstance( meAsEntity );

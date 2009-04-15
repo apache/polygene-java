@@ -85,7 +85,7 @@ public final class EntityTest extends AbstractTest
 
         // Test retrieval
         UnitOfWork work = uowf.newUnitOfWork();
-        AnEntity entity = work.find( identity, AnEntity.class );
+        AnEntity entity = work.get(AnEntity.class, identity);
         assertNotNull( entity );
 
         // Test update
@@ -94,14 +94,14 @@ public final class EntityTest extends AbstractTest
         work.complete();
 
         work = uowf.newUnitOfWork();
-        entity = work.find( identity, AnEntity.class );
+        entity = work.get(AnEntity.class, identity);
         assertNotNull( entity );
         assertEquals( newPropValue, entity.property().get() );
         work.complete();
 
         // Test removal
         work = uowf.newUnitOfWork();
-        entity = work.find( identity, AnEntity.class );
+        entity = work.get(AnEntity.class, identity);
         assertNotNull( entity );
         work.remove( entity );
         work.complete();
@@ -110,7 +110,7 @@ public final class EntityTest extends AbstractTest
         work = uowf.newUnitOfWork();
         try
         {
-            entity = work.find( identity, AnEntity.class );
+            entity = work.get(AnEntity.class, identity);
             fail( "Test removal fail. [" + ( entity == null ) + "] identity [" + identity + "]" );
         }
         catch( NoSuchEntityException e )

@@ -16,89 +16,58 @@
  */
 package org.qi4j.spi.entity.helpers;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.association.ManyAssociationType;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.*;
 import org.qi4j.spi.value.ValueState;
-import org.qi4j.api.common.QualifiedName;
+import org.qi4j.spi.value.ValueType;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Standard implementation of EntityState.
  */
 public class DefaultEntityState
-    implements EntityState, Serializable
+        implements EntityState, Serializable
 {
-    public static Map<QualifiedName, Collection<QualifiedIdentity>> newManyCollections( EntityType entityType )
-    {
-        Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations = new HashMap<QualifiedName, Collection<QualifiedIdentity>>();
-        for( ManyAssociationType manyAssociationType : entityType.manyAssociations() )
-        {
-            switch( manyAssociationType.associationType() )
-            {
-            case LIST:
-            {
-                manyAssociations.put( manyAssociationType.qualifiedName(), new ArrayList<QualifiedIdentity>() );
-                break;
-            }
-            case SET:
-            {
-                manyAssociations.put( manyAssociationType.qualifiedName(), new LinkedHashSet<QualifiedIdentity>() );
-                break;
-            }
-            case MANY:
-            {
-                manyAssociations.put( manyAssociationType.qualifiedName(), new HashSet<QualifiedIdentity>() );
-                break;
-            }
-            }
-        }
-        return manyAssociations;
-    }
-
     protected EntityStatus status;
     private boolean modified;
 
     protected long version;
     protected long lastModified;
-    private final QualifiedIdentity identity;
-    private final EntityType entityType;
+    private final EntityReference identity;
+    private final Set<EntityTypeReference> entityTypes;
 
-    protected final Map<QualifiedName, Object> properties;
-    protected final Map<QualifiedName, QualifiedIdentity> associations;
-    protected final Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations;
+    protected final Map<StateName, String> properties;
+    protected final Map<StateName, EntityReference> associations;
+    protected final Map<StateName, ManyAssociationState> manyAssociations;
 
-    public DefaultEntityState( QualifiedIdentity identity, EntityType entityType )
+    public DefaultEntityState(EntityReference identity)
     {
-        this( 0, System.currentTimeMillis(), identity, EntityStatus.NEW, entityType, new HashMap<QualifiedName, Object>(), new HashMap<QualifiedName, QualifiedIdentity>(), newManyCollections( entityType ) );
+        this(0,
+                System.currentTimeMillis(),
+                identity,
+                EntityStatus.NEW,
+                new HashSet<EntityTypeReference>(),
+                new HashMap<StateName, String>(),
+                new HashMap<StateName, EntityReference>(),
+                new HashMap<StateName, ManyAssociationState>());
     }
 
-    public DefaultEntityState( long version,
-                               long lastModified,
-                               QualifiedIdentity identity,
-                               EntityStatus status,
-                               EntityType entityType,
-                               Map<QualifiedName, Object> properties,
-                               Map<QualifiedName, QualifiedIdentity> associations,
-                               Map<QualifiedName, Collection<QualifiedIdentity>> manyAssociations )
+    public DefaultEntityState(long version,
+                              long lastModified,
+                              EntityReference identity,
+                              EntityStatus status,
+                              Set<EntityTypeReference> entityTypes,
+                              Map<StateName, String> properties,
+                              Map<StateName, EntityReference> associations,
+                              Map<StateName, ManyAssociationState> manyAssociations)
     {
         this.version = version;
         this.lastModified = lastModified;
         this.identity = identity;
         this.status = status;
-        this.entityType = entityType;
+        this.entityTypes = entityTypes;
         this.properties = properties;
         this.associations = associations;
         this.manyAssociations = manyAssociations;
@@ -115,54 +84,39 @@ public class DefaultEntityState
         return lastModified;
     }
 
-    public QualifiedIdentity qualifiedIdentity()
+    public EntityReference identity()
     {
         return identity;
     }
 
-    public Object getProperty( QualifiedName qualifiedName )
+    public String getProperty(StateName stateName)
     {
-        return properties.get( qualifiedName );
+        return properties.get(stateName);
     }
 
-    public void setProperty( QualifiedName qualifiedName, Object newValue )
+    public void setProperty(StateName stateName, String newValue)
     {
-        properties.put( qualifiedName, newValue );
+        properties.put(stateName, newValue);
         modified = true;
     }
 
-    public QualifiedIdentity getAssociation( QualifiedName qualifiedName )
+    public EntityReference getAssociation(StateName stateName)
     {
-        return associations.get( qualifiedName );
+        return associations.get(stateName);
     }
 
-    public void setAssociation( QualifiedName qualifiedName, QualifiedIdentity newEntity )
+    public void setAssociation(StateName stateName, EntityReference newEntity)
     {
-        associations.put( qualifiedName, newEntity );
+        associations.put(stateName, newEntity);
         modified = true;
     }
 
-    public Collection<QualifiedIdentity> getManyAssociation( QualifiedName qualifiedName )
+    public ManyAssociationState getManyAssociation(StateName stateName)
     {
-        Collection<QualifiedIdentity> manyAssociation = manyAssociations.get( qualifiedName );
-
-        if( status == EntityStatus.LOADED )
-        {
-            if( manyAssociation instanceof List )
-            {
-                manyAssociation = new ModificationTrackerList( (List<QualifiedIdentity>) manyAssociation );
-            }
-            else if( manyAssociation instanceof Set )
-            {
-                manyAssociation = new ModificationTrackerSet( (Set<QualifiedIdentity>) manyAssociation );
-            }
-            else
-            {
-                manyAssociation = new ModificationTrackerCollection<Collection<QualifiedIdentity>>( manyAssociation );
-            }
-        }
-
-        return manyAssociation;
+        ManyAssociationState manyAssociationState = manyAssociations.get(stateName);
+        if (manyAssociationState == null)
+            manyAssociations.put(stateName, new DefaultManyAssociationState());
+        return manyAssociationState;
     }
 
     public void remove()
@@ -175,47 +129,58 @@ public class DefaultEntityState
         return status;
     }
 
-    public EntityType entityType()
+    public void addEntityTypeReference(EntityTypeReference entityType)
     {
-        return entityType;
+        entityTypes.add(entityType);
     }
 
-    public Iterable<QualifiedName> propertyNames()
+    public void removeEntityTypeReference(EntityTypeReference type)
     {
-        return properties.keySet();
+        entityTypes.remove(type);
     }
 
-    public Iterable<QualifiedName> associationNames()
+    public boolean hasEntityTypeReference(EntityTypeReference type)
     {
-        return associations.keySet();
+        return entityTypes.contains(type);
     }
 
-    public Iterable<QualifiedName> manyAssociationNames()
+    public Set<EntityTypeReference> entityTypeReferences()
     {
-        return manyAssociations.keySet();
+        return entityTypes;
     }
 
     public boolean isModified()
     {
-        return modified;
+        if (modified)
+            return true;
+
+        for (ManyAssociationState manyAssociationState : manyAssociations.values())
+        {
+            DefaultManyAssociationState state = (DefaultManyAssociationState) manyAssociationState;
+            if (state.isModified())
+                return true;
+        }
+
+        return false;
     }
 
-    public Map<QualifiedName, Object> getProperties()
+    public Map<StateName, String> getProperties()
     {
         return properties;
     }
 
-    public Map<QualifiedName, QualifiedIdentity> getAssociations()
+    public Map<StateName, EntityReference> getAssociations()
     {
         return associations;
     }
 
-    public Map<QualifiedName, Collection<QualifiedIdentity>> getManyAssociations()
+    public Map<StateName, ManyAssociationState> getManyAssociations()
     {
         return manyAssociations;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return identity + "(" + properties.size() + " properties, " + associations.size() + " associations, " + manyAssociations.size() + " many-associations)";
     }
@@ -231,255 +196,8 @@ public class DefaultEntityState
         version++;
     }
 
-    public ValueState newValueState( Map<QualifiedName, Object> values)
+    protected ManyAssociationState createManyAssociationState()
     {
-        return new DefaultValueState(values);
-    }
-
-    protected class ModificationTrackerCollection<T extends Collection<QualifiedIdentity>>
-        implements Collection<QualifiedIdentity>
-    {
-        protected T collection;
-
-        public ModificationTrackerCollection( T collection )
-        {
-            this.collection = collection;
-        }
-
-        public int size()
-        {
-            return collection.size();
-        }
-
-        public boolean isEmpty()
-        {
-            return collection.isEmpty();
-        }
-
-        public boolean contains( Object o )
-        {
-            return collection.contains( o );
-        }
-
-        public Iterator<QualifiedIdentity> iterator()
-        {
-            return new Iterator<QualifiedIdentity>()
-            {
-                Iterator<QualifiedIdentity> iterator = collection.iterator();
-
-                public boolean hasNext()
-                {
-                    return iterator.hasNext();
-                }
-
-                public QualifiedIdentity next()
-                {
-                    return iterator.next();
-                }
-
-                public void remove()
-                {
-                    modified = true;
-                    iterator.remove();
-                }
-            };
-        }
-
-        public Object[] toArray()
-        {
-            return collection.toArray();
-        }
-
-        public <T> T[] toArray( T[] ts )
-        {
-            return collection.toArray( ts );
-        }
-
-        public boolean add( QualifiedIdentity qualifiedIdentity )
-        {
-            boolean added = collection.add( qualifiedIdentity );
-            if( added )
-            {
-                modified = true;
-            }
-            return added;
-        }
-
-        public boolean remove( Object o )
-        {
-            boolean removed = collection.remove( o );
-            if( removed )
-            {
-                modified = true;
-            }
-            return removed;
-        }
-
-        public boolean containsAll( Collection<?> objects )
-        {
-            return collection.containsAll( objects );
-        }
-
-        public boolean addAll( Collection<? extends QualifiedIdentity> qualifiedIdentities )
-        {
-            modified = true;
-            return collection.addAll( qualifiedIdentities );
-        }
-
-        public boolean removeAll( Collection<?> objects )
-        {
-            modified = true;
-            return collection.removeAll( objects );
-        }
-
-        public boolean retainAll( Collection<?> objects )
-        {
-            modified = true;
-            return collection.retainAll( objects );
-        }
-
-        public void clear()
-        {
-            modified = true;
-            collection.clear();
-        }
-    }
-
-    protected class ModificationTrackerList
-        extends ModificationTrackerCollection<List<QualifiedIdentity>>
-        implements List<QualifiedIdentity>
-    {
-        public ModificationTrackerList( List<QualifiedIdentity> collection )
-        {
-            super( collection );
-        }
-
-        public boolean addAll( int i, Collection<? extends QualifiedIdentity> qualifiedIdentities )
-        {
-            modified = true;
-            return collection.addAll( i, qualifiedIdentities );
-        }
-
-        public QualifiedIdentity get( int i )
-        {
-            return collection.get( i );
-        }
-
-        public QualifiedIdentity set( int i, QualifiedIdentity qualifiedIdentity )
-        {
-            QualifiedIdentity old = collection.set( i, qualifiedIdentity );
-            if( old != qualifiedIdentity )
-            {
-                modified = true;
-            }
-            return old;
-        }
-
-        public void add( int i, QualifiedIdentity qualifiedIdentity )
-        {
-            modified = true;
-            collection.add( i, qualifiedIdentity );
-        }
-
-        public QualifiedIdentity remove( int i )
-        {
-            modified = true;
-            return collection.remove( i );
-        }
-
-        public int indexOf( Object o )
-        {
-            return collection.indexOf( o );
-        }
-
-        public int lastIndexOf( Object o )
-        {
-            return collection.lastIndexOf( o );
-        }
-
-        public ListIterator<QualifiedIdentity> listIterator()
-        {
-            final ListIterator<QualifiedIdentity> iterator = collection.listIterator();
-
-            return new ModificationTrackerListIterator( iterator );
-        }
-
-        public ListIterator<QualifiedIdentity> listIterator( int i )
-        {
-            return new ModificationTrackerListIterator( collection.listIterator( i ) );
-        }
-
-        public List<QualifiedIdentity> subList( int i, int i1 )
-        {
-            return new ModificationTrackerList( collection.subList( i, i1 ) );
-        }
-
-        private class ModificationTrackerListIterator implements ListIterator<QualifiedIdentity>
-        {
-            private final ListIterator<QualifiedIdentity> iterator;
-
-            public ModificationTrackerListIterator( ListIterator<QualifiedIdentity> iterator )
-            {
-                this.iterator = iterator;
-            }
-
-            public boolean hasNext()
-            {
-                return iterator.hasNext();
-            }
-
-            public QualifiedIdentity next()
-            {
-                return iterator.next();
-            }
-
-            public boolean hasPrevious()
-            {
-                return iterator.hasPrevious();
-            }
-
-            public QualifiedIdentity previous()
-            {
-                return iterator.previous();
-            }
-
-            public int nextIndex()
-            {
-                return iterator.nextIndex();
-            }
-
-            public int previousIndex()
-            {
-                return iterator.previousIndex();
-            }
-
-            public void remove()
-            {
-                modified = true;
-                iterator.remove();
-            }
-
-            public void set( QualifiedIdentity qualifiedIdentity )
-            {
-                modified = true;
-                iterator.set( qualifiedIdentity );
-            }
-
-            public void add( QualifiedIdentity qualifiedIdentity )
-            {
-                modified = true;
-                iterator.add( qualifiedIdentity );
-            }
-        }
-    }
-
-    protected class ModificationTrackerSet
-        extends ModificationTrackerCollection<Set<QualifiedIdentity>>
-        implements Set<QualifiedIdentity>
-    {
-        public ModificationTrackerSet( Set<QualifiedIdentity> collection )
-        {
-            super( collection );
-        }
+        return new DefaultManyAssociationState();
     }
 }

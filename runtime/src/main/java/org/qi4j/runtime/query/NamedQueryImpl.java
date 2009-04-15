@@ -21,14 +21,12 @@ import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryExecutionException;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.named.NamedEntityFinder;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.api.entity.EntityReference;
+
 import java.util.Iterator;
 import java.util.HashMap;
-import sun.applet.AppletClassLoader;
 
 public class NamedQueryImpl<T>
     implements Query<T>
@@ -98,7 +96,7 @@ public class NamedQueryImpl<T>
 
     public T find()
     {
-        QualifiedIdentity foundEntity;
+        EntityReference foundEntity;
         try
         {
             foundEntity = namedFinder.findEntity( queryName, resultType.getName(), variables );
@@ -110,15 +108,7 @@ public class NamedQueryImpl<T>
 
         if( foundEntity != null )
         {
-            try
-            {
-                final Class<T> entityType = (Class<T>) classLoader.loadClass( foundEntity.type() );
-                return unitOfWork.getReference( foundEntity.identity(), entityType );
-            }
-            catch( ClassNotFoundException e )
-            {
-                throw new QueryExecutionException( "Entity type not found", e );
-            }
+            return unitOfWork.get(resultType, foundEntity.identity());
         }
         else
         {
@@ -144,7 +134,7 @@ public class NamedQueryImpl<T>
     {
         try
         {
-            final Iterator<QualifiedIdentity> foundEntities = namedFinder.findEntities( queryName,
+            final Iterator<EntityReference> foundEntities = namedFinder.findEntities( queryName,
                 resultType.getName(), variables, orderBySegments, firstResult, maxResults
             ).iterator();
 
@@ -157,20 +147,8 @@ public class NamedQueryImpl<T>
 
                 public T next()
                 {
-                    QualifiedIdentity foundEntity = foundEntities.next();
-                    final Class<T> entityType;
-                    try
-                    {
-                        entityType = (Class<T>) classLoader.loadClass( foundEntity.type() );
-                        final T entity = unitOfWork.getReference( foundEntity.identity(), entityType );
-                        return entity;
-                    }
-                    catch( ClassNotFoundException e )
-                    {
-                        // TODO shall we throw an exception if class cannot be found?
-                        e.printStackTrace();
-                        return null;
-                    }
+                    EntityReference foundEntity = foundEntities.next();
+                    return unitOfWork.get(resultType, foundEntity.identity());
                 }
 
                 public void remove()

@@ -89,22 +89,22 @@ class Network
         setName( annDoe, "Ann Doe" );
         annDoe.placeOfBirth().set( kualaLumpur );
         annDoe.yearOfBirth().set( 1975 );
-        annDoe.interests().add( cooking );
+        annDoe.interests().add( 0, cooking );
 
         Male joeDoe = maleBuilder.newInstance();
         setName( joeDoe, "Joe Doe" );
         joeDoe.placeOfBirth().set( kualaLumpur );
         joeDoe.yearOfBirth().set( 1990 );
         joeDoe.mother().set( annDoe );
-        joeDoe.interests().add( programming );
-        joeDoe.interests().add( gaming );
+        joeDoe.interests().add( 0, programming );
+        joeDoe.interests().add( 0, gaming );
         joeDoe.email().set( "joe@thedoes.net" );
 
         Male jackDoe = maleBuilder.newInstance();
         setName( jackDoe, "Jack Doe" );
         jackDoe.placeOfBirth().set( penang );
         jackDoe.yearOfBirth().set( 1970 );
-        jackDoe.interests().add( cars );
+        jackDoe.interests().add( 0, cars );
         jackDoe.wife().set( annDoe );
 
         domains.add( gaming );

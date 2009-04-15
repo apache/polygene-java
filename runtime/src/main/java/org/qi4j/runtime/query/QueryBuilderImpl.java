@@ -104,7 +104,7 @@ final class QueryBuilderImpl<T>
         {
             throw new MissingIndexingSystemException();
         }
-        return new EntityQuery<T>( unitOfWork, entityFinder, classLoader, resultType, whereClause );
+        return new EntityQuery<T>( unitOfWork, entityFinder, resultType, whereClause );
     }
 
     /**

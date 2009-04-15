@@ -15,12 +15,12 @@
 package org.qi4j.spi.entity;
 
 /**
- * This is thrown by an EntityStore if it is invoked with
- * a QualifiedIdentity whose type is not known by the EntityStore.
+ * This is thrown by an EntityTypeRegistry if it is invoked with
+ * a EntityTypeReference that is not known by the EntityTypeRegistry.
  * The client must first register the type.
  */
 public class UnknownEntityTypeException
-    extends EntityStoreException
+    extends EntityTypeRegistryException
 {
     public UnknownEntityTypeException( String type )
     {

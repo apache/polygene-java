@@ -14,17 +14,11 @@
 
 package org.qi4j.runtime.structure;
 
-import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
-import org.qi4j.runtime.entity.EntityInstance;
-import org.qi4j.runtime.entity.EntityModel;
-import org.qi4j.runtime.unitofwork.EntityBuilderInstance;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.EntityTypeRegistry;
 
 /**
  * JAVADOC
@@ -37,6 +31,8 @@ public class EntitiesInstance
     private EntityStore store;
     //lazy assigned on accessor
     private IdentityGenerator generator;
+    //lazy assigned on accessor
+    private EntityTypeRegistry registry;
 
     public EntitiesInstance( EntitiesModel entities, ModuleInstance moduleInstance )
     {
@@ -83,5 +79,22 @@ public class EntitiesInstance
             }
         }
         return generator;
+    }
+
+    public EntityTypeRegistry entityTypeRegistry()
+    {
+        synchronized (this)
+        {
+            if( registry == null )
+            {
+                ServiceReference<EntityTypeRegistry> service = moduleInstance.serviceFinder().findService( EntityTypeRegistry.class );
+                if( service == null )
+                {
+                    throw new UnitOfWorkException( "No EntityTypeRegistry service available in module " + moduleInstance.name() );
+                }
+                registry = service.get();
+            }
+        }
+        return registry;
     }
 }

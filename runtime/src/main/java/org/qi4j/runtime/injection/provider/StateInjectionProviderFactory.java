@@ -3,6 +3,8 @@ package org.qi4j.runtime.injection.provider;
 import java.io.Serializable;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.EntityStateHolder;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
@@ -16,6 +18,7 @@ import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
+import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
@@ -57,7 +60,7 @@ public final class StateInjectionProviderFactory
 
             return new PropertyInjectionProvider( propertyDescriptor );
         }
-        else if( AbstractAssociation.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
+        else if( Association.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
         {
             // @State Association<MyEntity> name;
             EntityStateDescriptor descriptor = ((EntityDescriptor) resolution.object()).state();
@@ -80,6 +83,30 @@ public final class StateInjectionProviderFactory
             }
 
             return new AssociationInjectionProvider( model );
+        }
+        else if( ManyAssociation.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
+        {
+            // @State ManyAssociation<MyEntity> name;
+            EntityStateDescriptor descriptor = ((EntityDescriptor) resolution.object()).state();
+            State annotation = (State) dependencyModel.injectionAnnotation();
+            String name;
+            if( annotation.value().equals( "" ) )
+            {
+                name = resolution.field().getName();
+            }
+            else
+            {
+                name = annotation.value();
+            }
+            ManyAssociationDescriptor model = descriptor.getManyAssociationByName( name );
+
+            // No such association found
+            if( model == null )
+            {
+                return null;
+            }
+
+            return new ManyAssociationInjectionProvider( model );
         }
 
         throw new InjectionProviderException( "Injected value has invalid type" );
@@ -129,6 +156,30 @@ public final class StateInjectionProviderFactory
             else
             {
                 throw new InjectionProviderException( "Non-optional association " + associationDescriptor.qualifiedName() + " had no association" );
+            }
+        }
+    }
+
+    static private class ManyAssociationInjectionProvider
+        implements InjectionProvider, Serializable
+    {
+        private final ManyAssociationDescriptor manyAssociationDescriptor;
+
+        public ManyAssociationInjectionProvider( ManyAssociationDescriptor manyAssociationDescriptor)
+        {
+            this.manyAssociationDescriptor = manyAssociationDescriptor;
+        }
+
+        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        {
+            ManyAssociation abstractAssociation = ((EntityStateHolder) context.state()).getManyAssociation( manyAssociationDescriptor.accessor() );
+            if( abstractAssociation != null )
+            {
+                return abstractAssociation;
+            }
+            else
+            {
+                throw new InjectionProviderException( "Non-optional association " + manyAssociationDescriptor.qualifiedName() + " had no association" );
             }
         }
     }

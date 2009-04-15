@@ -277,7 +277,7 @@ public final class ModuleAssemblyImpl
 
         for( EntityDeclarationImpl entityDeclaration : entityDeclarations )
         {
-            entityDeclaration.addEntities( entityModels, metaInfoDeclaration, metaInfoDeclaration );
+            entityDeclaration.addEntities( entityModels, metaInfoDeclaration, metaInfoDeclaration, metaInfoDeclaration );
         }
 
         for( ObjectDeclarationImpl objectDeclaration : objectDeclarations )
