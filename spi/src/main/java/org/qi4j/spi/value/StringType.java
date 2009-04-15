@@ -60,9 +60,6 @@ public class StringType
 
     public void toJSON(Object value, StringBuilder json, Qi4jSPI spi)
     {
-        if (value == null)
-            json.append("null");
-
         json.append('"');
         String stringValue = value.toString();
         int len = stringValue.length();
@@ -91,9 +88,6 @@ public class StringType
     public Object fromJSON(PeekableStringTokenizer json, Module module)
     {
         String token = json.nextToken("\"");
-        if (token.equals("null"))
-            return null;
-
         String result = json.nextToken();
 
         // Empty String

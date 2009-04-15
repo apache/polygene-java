@@ -93,10 +93,13 @@ public class CollectionType
         else
             coll = new LinkedHashSet();
 
-        token = json.peekNextToken("]{\"");
+        token = json.peekNextToken("]{\",");
         while (!token.equals("]"))
         {
-            coll.add(collectedType.fromJSON(json, module));
+            if (token.equals("null"))
+                coll.add(null);
+            else
+                coll.add(collectedType.fromJSON(json, module));
             token = json.nextToken(",]");
         }
 

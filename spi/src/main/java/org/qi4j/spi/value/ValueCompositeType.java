@@ -89,9 +89,6 @@ public class ValueCompositeType
 
     public void toJSON(Object value, StringBuilder json, Qi4jSPI spi)
     {
-        if (value == null)
-            json.append("null");
-
         json.append('{');
         ValueComposite valueComposite = (ValueComposite) value;
         StateHolder state = spi.getState(valueComposite);
@@ -109,7 +106,15 @@ public class ValueCompositeType
         {
             json.append(comma);
             json.append(propertyType.qualifiedName().name()).append(':');
-            propertyType.type().toJSON(values.get(propertyType.qualifiedName()), json, spi);
+
+            Object propertyValue = values.get( propertyType.qualifiedName() );
+            if (propertyValue == null)
+            {
+                json.append("null");
+            } else
+            {
+                propertyType.type().toJSON( propertyValue, json, spi);
+            }
             comma = ",";
         }
         json.append('}');
@@ -119,16 +124,18 @@ public class ValueCompositeType
     {
         String token = json.nextToken("{");
 
-        if (token.equals("null"))
-            return null;
-
         final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
         for (PropertyType propertyType : types)
         {
             String name = json.nextToken(":");
             token = json.nextToken(",:");
 
-            Object value = propertyType.type().fromJSON(json, module);
+            token = json.peekNextToken(",}");
+            Object value;
+            if (token.equals( "null" ))
+                value = null;
+            else
+                value = propertyType.type().fromJSON(json, module);
 
             if (!name.equals(propertyType.qualifiedName().name()))
                 throw new IllegalStateException("Could not deserialize value. Expected '"+propertyType.qualifiedName()+"' but got '"+name);

@@ -113,7 +113,7 @@ public final class EntityBuilderInstance<T>
         } else
         {
             identityJson = entityState.getProperty(identityStateName);
-            identity = identityJson.substring(1, identityJson.length()-2);
+            identity = identityJson.substring(1, identityJson.length()-1);
             newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference(identity), moduleInstance.layerInstance().applicationInstance().runtime());
         }
 
