@@ -348,7 +348,7 @@ public class UsageGraphTest
     }
 
     @Test
-    @Ignore("What is this supposed to do anyway???")
+    @Ignore( "What is this supposed to do anyway???" )
     public void when100LevelsOfNodesWith100NodesOnEachLevelThenTakeLessThanOneMilliSecond()
         throws Exception
     {

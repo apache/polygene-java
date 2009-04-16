@@ -65,20 +65,23 @@ public final class ValueConstraintsInstance
         List<ConstraintViolation> violations = null;
 
         // Check optional first - this avoids NPE's in constraints
-        if (optional)
+        if( optional )
         {
-            if (value == null)
+            if( value == null )
+            {
                 violations = Collections.emptyList();
-        } else
+            }
+        }
+        else
         {
-            if (value == null)
+            if( value == null )
             {
                 violations = new ArrayList<ConstraintViolation>();
-                violations.add( new ConstraintViolation( name, OPTIONAL, null) );
+                violations.add( new ConstraintViolation( name, OPTIONAL, null ) );
             }
         }
 
-        if (violations == null && value != null)
+        if( violations == null && value != null )
         {
             for( ConstraintInstance constraint : constraints )
             {

@@ -15,7 +15,6 @@
 package org.qi4j.spi.entity.helpers;
 
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.StateName;
 
@@ -27,14 +26,14 @@ public class AssociationChange
 {
     private EntityReference reference;
 
-    public AssociationChange(StateName stateName, EntityReference reference)
+    public AssociationChange( StateName stateName, EntityReference reference )
     {
-        super(stateName);
+        super( stateName );
         this.reference = reference;
     }
 
-    public void applyTo(EntityState state)
+    public void applyTo( EntityState state )
     {
-        state.setAssociation(stateName, reference);
+        state.setAssociation( stateName, reference );
     }
 }

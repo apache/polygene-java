@@ -18,13 +18,12 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.query.grammar.AssociationReference;
-import org.qi4j.runtime.query.QueryException;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.query.grammar.AssociationReference;
+import org.qi4j.runtime.query.QueryException;
 
 /**
  * Default {@link AssociationReference}.
@@ -65,8 +64,8 @@ public class AssociationReferenceImpl
      * @param accessor  method that acts as association
      * @param traversed traversed association
      */
-    public AssociationReferenceImpl(final Method accessor,
-                                    final AssociationReference traversed
+    public AssociationReferenceImpl( final Method accessor,
+                                     final AssociationReference traversed
     )
     {
         this.accessor = accessor;
@@ -78,7 +77,7 @@ public class AssociationReferenceImpl
             throw new QueryException( "Unsupported association type:" + returnType );
         }
         Type associationTypeAsType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
-        if( !( associationTypeAsType instanceof Class ))
+        if( !( associationTypeAsType instanceof Class ) )
         {
             throw new QueryException( "Unsupported association type:" + associationTypeAsType );
         }

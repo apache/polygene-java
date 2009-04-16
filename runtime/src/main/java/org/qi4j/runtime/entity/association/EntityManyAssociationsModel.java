@@ -17,29 +17,26 @@ package org.qi4j.runtime.entity.association;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.*;
-
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.api.util.MethodSet;
 import org.qi4j.api.util.MethodValueMap;
-import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.ManyAssociationDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
-import org.qi4j.runtime.util.Annotations;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
+import org.qi4j.runtime.util.Annotations;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
-import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
+import org.qi4j.spi.entity.association.ManyAssociationType;
 
 /**
  * JAVADOC
@@ -109,7 +106,7 @@ public final class EntityManyAssociationsModel
 
     public ManyAssociationDescriptor getManyAssociationByName( String name )
     {
-        for( ManyAssociationModel associationModel : manyAssociationModels)
+        for( ManyAssociationModel associationModel : manyAssociationModels )
         {
             if( associationModel.qualifiedName().name().equals( name ) )
             {
@@ -123,23 +120,23 @@ public final class EntityManyAssociationsModel
     public Set<ManyAssociationType> manyAssociationTypes()
     {
         Set<ManyAssociationType> associationTypes = new LinkedHashSet<ManyAssociationType>();
-        for( ManyAssociationModel associationModel : manyAssociationModels)
+        for( ManyAssociationModel associationModel : manyAssociationModels )
         {
             associationTypes.add( associationModel.manyAssociationType() );
         }
         return associationTypes;
     }
 
-    public void checkConstraints(EntityManyAssociationsInstance entityManyAssociationsInstance)
+    public void checkConstraints( EntityManyAssociationsInstance entityManyAssociationsInstance )
     {
-        for (ManyAssociationModel manyAssociationModel : manyAssociationModels)
+        for( ManyAssociationModel manyAssociationModel : manyAssociationModels )
         {
-            manyAssociationModel.checkAssociationConstraints(entityManyAssociationsInstance);
+            manyAssociationModel.checkAssociationConstraints( entityManyAssociationsInstance );
         }
     }
 
-    public EntityManyAssociationsInstance newInstance(EntityState entityState, ModuleUnitOfWork uow)
+    public EntityManyAssociationsInstance newInstance( EntityState entityState, ModuleUnitOfWork uow )
     {
-        return new EntityManyAssociationsInstance(this, entityState, uow);
+        return new EntityManyAssociationsInstance( this, entityState, uow );
     }
 }

@@ -29,7 +29,7 @@ public class EntityReference
     public static EntityReference parseURI( String uri )
     {
         String identity = uri.substring( "urn:qi4j:entity:".length() );
-        return new EntityReference( identity);
+        return new EntityReference( identity );
     }
 
     public static EntityReference parseEntityReference( String id )
@@ -45,13 +45,13 @@ public class EntityReference
     private static final long serialVersionUID = 1L;
 
     // Associations who have been set to "null" should use this as the representation in the EntityState
-    public static final EntityReference NULL = new EntityReference( "null");
+    public static final EntityReference NULL = new EntityReference( "null" );
 
     private String identity;
 
     public EntityReference( EntityComposite entityComposite )
     {
-        this( entityComposite.identity().get());
+        this( entityComposite.identity().get() );
     }
 
     public EntityReference( String identity )
@@ -66,7 +66,7 @@ public class EntityReference
 
     public String toURI()
     {
-        return "urn:qi4j:entity:"+identity;
+        return "urn:qi4j:entity:" + identity;
     }
 
     @Override

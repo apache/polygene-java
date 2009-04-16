@@ -14,31 +14,29 @@
 
 package org.qi4j.spi.entity.helpers;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Map;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityStoreException;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.io.OutputStream;
-import java.io.InputStream;
 
 /**
  * JAVADOC
  */
 public interface MapEntityStore
 {
-    boolean contains(EntityReference entityReference)
-            throws EntityStoreException;
+    boolean contains( EntityReference entityReference )
+        throws EntityStoreException;
 
-    void get(EntityReference entityReference, OutputStream out)
-            throws EntityStoreException;
+    void get( EntityReference entityReference, OutputStream out )
+        throws EntityStoreException;
 
-    void update(Map<EntityReference, InputStream> newEntities, Map<EntityReference, InputStream> updatedEntities, Iterable<EntityReference> removedEntities);
+    void update( Map<EntityReference, InputStream> newEntities, Map<EntityReference, InputStream> updatedEntities, Iterable<EntityReference> removedEntities );
 
-    void visitMap(MapEntityStoreVisitor visitor);
+    void visitMap( MapEntityStoreVisitor visitor );
 
     interface MapEntityStoreVisitor
     {
-        void visitEntity(InputStream entityState);
+        void visitEntity( InputStream entityState );
     }
 }

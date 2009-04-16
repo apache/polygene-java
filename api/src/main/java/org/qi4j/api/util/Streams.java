@@ -17,18 +17,24 @@
  */
 package org.qi4j.api.util;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class Streams
 {
     public static long copyStream( InputStream source, OutputStream destination, boolean closeStreams )
         throws IOException
     {
-        if( !( source instanceof BufferedInputStream ) && !(source instanceof ByteArrayInputStream))
+        if( !( source instanceof BufferedInputStream ) && !( source instanceof ByteArrayInputStream ) )
         {
             source = new BufferedInputStream( source );
         }
-        if( !( destination instanceof BufferedOutputStream ) && !(destination instanceof ByteArrayOutputStream))
+        if( !( destination instanceof BufferedOutputStream ) && !( destination instanceof ByteArrayOutputStream ) )
         {
             destination = new BufferedOutputStream( destination );
         }

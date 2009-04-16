@@ -14,9 +14,8 @@
 
 package org.qi4j.spi.entity;
 
-import org.qi4j.api.common.QualifiedName;
-
 import java.io.Serializable;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * A state name. State can be either a property or an association..
@@ -40,15 +39,15 @@ public class StateName
     private String rdf;
     private String version;
 
-    public StateName(String stateName)
+    public StateName( String stateName )
     {
-        String[] parts = stateName.split("/", 3);
-        version = parts[0];
-        name = QualifiedName.fromQN(parts[1]);
-        rdf = parts[2];
+        String[] parts = stateName.split( "/", 3 );
+        version = parts[ 0 ];
+        name = QualifiedName.fromQN( parts[ 1 ] );
+        rdf = parts[ 2 ];
     }
 
-    public StateName(QualifiedName name, String rdf, String version)
+    public StateName( QualifiedName name, String rdf, String version )
     {
         this.name = name;
         this.rdf = rdf;
@@ -73,18 +72,27 @@ public class StateName
     @Override
     public String toString()
     {
-        return version+"/"+name.toString()+"/"+rdf;
+        return version + "/" + name.toString() + "/" + rdf;
     }
 
     @Override
-    public boolean equals(Object o)
+    public boolean equals( Object o )
     {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if( this == o )
+        {
+            return true;
+        }
+        if( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
 
         StateName stateName = (StateName) o;
 
-        if (!version.equals(stateName.version)) return false;
+        if( !version.equals( stateName.version ) )
+        {
+            return false;
+        }
 
         return true;
     }

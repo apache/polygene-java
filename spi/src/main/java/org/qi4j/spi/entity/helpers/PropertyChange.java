@@ -14,7 +14,6 @@
 
 package org.qi4j.spi.entity.helpers;
 
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.StateName;
 
@@ -26,14 +25,14 @@ public class PropertyChange
 {
     private String value;
 
-    public PropertyChange(StateName stateName, String value)
+    public PropertyChange( StateName stateName, String value )
     {
-        super(stateName);
+        super( stateName );
         this.value = value;
     }
 
-    public void applyTo(EntityState state)
+    public void applyTo( EntityState state )
     {
-        state.setProperty(stateName, value);
+        state.setProperty( stateName, value );
     }
 }

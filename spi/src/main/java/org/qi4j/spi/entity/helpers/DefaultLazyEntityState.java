@@ -14,16 +14,13 @@
 
 package org.qi4j.spi.entity.helpers;
 
+import java.util.Map;
+import java.util.Set;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityTypeReference;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.StateName;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.value.ValueType;
-
-import java.util.Map;
-import java.util.Set;
 
 /**
  * JAVADOC
@@ -33,59 +30,59 @@ public class DefaultLazyEntityState
 {
     private LazyStateLoader loader;
 
-    public DefaultLazyEntityState(EntityReference identity, LazyStateLoader loader)
+    public DefaultLazyEntityState( EntityReference identity, LazyStateLoader loader )
     {
-        super(identity);
+        super( identity );
         this.loader = loader;
     }
 
-    public DefaultLazyEntityState(long version,
-                                  long lastModified,
-                                  EntityReference identity,
-                                  EntityStatus status,
-                                  Set<EntityTypeReference> entityTypes,
-                                  Map<StateName, String> properties,
-                                  Map<StateName, EntityReference> associations,
-                                  Map<StateName, ManyAssociationState> manyAssociations,
-                                  LazyStateLoader loader)
+    public DefaultLazyEntityState( long version,
+                                   long lastModified,
+                                   EntityReference identity,
+                                   EntityStatus status,
+                                   Set<EntityTypeReference> entityTypes,
+                                   Map<StateName, String> properties,
+                                   Map<StateName, EntityReference> associations,
+                                   Map<StateName, ManyAssociationState> manyAssociations,
+                                   LazyStateLoader loader )
     {
-        super(version, lastModified, identity, status, entityTypes, properties, associations, manyAssociations);
+        super( version, lastModified, identity, status, entityTypes, properties, associations, manyAssociations );
         this.loader = loader;
     }
 
     @Override
-    public String getProperty(StateName stateName)
+    public String getProperty( StateName stateName )
     {
-        if (!properties.containsKey(stateName))
+        if( !properties.containsKey( stateName ) )
         {
-            String loadedValue = loader.getProperty(identity(), stateName);
-            properties.put(stateName, loadedValue );
+            String loadedValue = loader.getProperty( identity(), stateName );
+            properties.put( stateName, loadedValue );
         }
 
-        return super.getProperty(stateName);
+        return super.getProperty( stateName );
     }
 
     @Override
-    public EntityReference getAssociation(StateName stateName)
+    public EntityReference getAssociation( StateName stateName )
     {
-        if (!associations.containsKey(stateName))
+        if( !associations.containsKey( stateName ) )
         {
-            EntityReference loadedValue = loader.getAssociation(identity(), stateName);
-            associations.put(stateName, loadedValue );
+            EntityReference loadedValue = loader.getAssociation( identity(), stateName );
+            associations.put( stateName, loadedValue );
         }
 
-        return super.getAssociation(stateName);
+        return super.getAssociation( stateName );
     }
 
     @Override
-    public ManyAssociationState getManyAssociation(StateName stateName)
+    public ManyAssociationState getManyAssociation( StateName stateName )
     {
-        if (!manyAssociations.containsKey(stateName))
+        if( !manyAssociations.containsKey( stateName ) )
         {
-            ManyAssociationState loadedValue = loader.getManyAssociation(identity(), stateName);
-            manyAssociations.put(stateName, loadedValue );
+            ManyAssociationState loadedValue = loader.getManyAssociation( identity(), stateName );
+            manyAssociations.put( stateName, loadedValue );
         }
 
-        return super.getManyAssociation(stateName);
+        return super.getManyAssociation( stateName );
     }
 }

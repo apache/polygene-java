@@ -14,20 +14,21 @@
 
 package org.qi4j.runtime.unitofwork;
 
+import java.util.Map;
+import java.util.Set;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.*;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.StateName;
 import org.qi4j.spi.entity.helpers.DefaultDiffManyAssociationState;
 import org.qi4j.spi.entity.helpers.DefaultEntityState;
 import org.qi4j.spi.entity.helpers.EntityStateChanges;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.value.ValueType;
-
-import java.util.Map;
-import java.util.Set;
 
 /**
  * JAVADOC
-*/
+ */
 class UnitOfWorkEntityState
     extends DefaultEntityState
 {
@@ -35,20 +36,20 @@ class UnitOfWorkEntityState
     private final EntityStateChanges changes;
 
     UnitOfWorkEntityState( long entityVersion, long lastModified,
-                                   EntityReference identity,
-                                   EntityStatus status,
-                                   Set<EntityTypeReference> entityTypes,
-                                   Map<StateName, String> properties,
-                                   Map<StateName, EntityReference> associations,
-                                   Map<StateName, ManyAssociationState> manyAssociations,
-                                   EntityState parentState )
+                           EntityReference identity,
+                           EntityStatus status,
+                           Set<EntityTypeReference> entityTypes,
+                           Map<StateName, String> properties,
+                           Map<StateName, EntityReference> associations,
+                           Map<StateName, ManyAssociationState> manyAssociations,
+                           EntityState parentState )
     {
         super( entityVersion, lastModified, identity, status, entityTypes, properties, associations, manyAssociations );
         this.parentState = parentState;
         this.changes = new EntityStateChanges();
     }
 
-    public String getProperty(StateName stateName)
+    public String getProperty( StateName stateName )
     {
         if( properties.containsKey( stateName ) )
         {
@@ -56,14 +57,14 @@ class UnitOfWorkEntityState
         }
 
         // Get from parent state
-        return parentState == null ? null : parentState.getProperty( stateName);
+        return parentState == null ? null : parentState.getProperty( stateName );
     }
 
     @Override
-    public void setProperty(StateName stateName, String newValue)
+    public void setProperty( StateName stateName, String newValue )
     {
-        super.setProperty(stateName, newValue);
-        changes.setProperty(stateName, newValue);
+        super.setProperty( stateName, newValue );
+        changes.setProperty( stateName, newValue );
     }
 
     public EntityReference getAssociation( StateName stateName )
@@ -77,10 +78,10 @@ class UnitOfWorkEntityState
     }
 
     @Override
-    public void setAssociation(StateName stateName, EntityReference newEntity)
+    public void setAssociation( StateName stateName, EntityReference newEntity )
     {
-        super.setAssociation(stateName, newEntity);
-        changes.setAssociation(stateName, newEntity);
+        super.setAssociation( stateName, newEntity );
+        changes.setAssociation( stateName, newEntity );
     }
 
     public ManyAssociationState getManyAssociation( StateName stateName )
@@ -90,13 +91,15 @@ class UnitOfWorkEntityState
             return manyAssociations.get( stateName );
         }
 
-        if (parentState == null)
+        if( parentState == null )
+        {
             return null;
+        }
 
         // Copy parent
         ManyAssociationState parentManyAssociation = parentState.getManyAssociation( stateName );
-        ManyAssociationState unitManyAssociation = new DefaultDiffManyAssociationState(stateName, parentManyAssociation, changes);
-        manyAssociations.put(stateName, unitManyAssociation);
+        ManyAssociationState unitManyAssociation = new DefaultDiffManyAssociationState( stateName, parentManyAssociation, changes );
+        manyAssociations.put( stateName, unitManyAssociation );
         return unitManyAssociation;
     }
 
@@ -107,6 +110,6 @@ class UnitOfWorkEntityState
 
     public void mergeTo( EntityState state )
     {
-        changes.applyTo(state);
+        changes.applyTo( state );
     }
 }

@@ -1,11 +1,11 @@
 package org.qi4j.runtime.entity.association;
 
 import java.lang.reflect.Type;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.AssociationInfo;
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
@@ -65,10 +65,10 @@ public abstract class AbstractAssociationInstance<T>
             return null;
         }
 
-            {
+        {
 //                Class<? extends EntityComposite> entityCompositeType = (Class<? extends EntityComposite>) unitOfWork.module().classLoader().loadClass( entityId.type() );
-                return (T) unitOfWork.get((Class<? extends Object>) type(), entityId.identity());
-            }
+            return (T) unitOfWork.get( (Class<? extends Object>) type(), entityId.identity() );
+        }
     }
 
     protected QualifiedIdentity getEntityId( Object composite )
@@ -98,7 +98,7 @@ public abstract class AbstractAssociationInstance<T>
     {
         if( instance != null )
         {
-            if( !( instance instanceof EntityComposite) )
+            if( !( instance instanceof EntityComposite ) )
             {
                 throw new IllegalArgumentException( "Object must be an EntityComposite" );
             }
@@ -108,7 +108,9 @@ public abstract class AbstractAssociationInstance<T>
     protected void checkImmutable()
     {
         if( isImmutable() )
+        {
             throw new IllegalStateException( "Association [" + qualifiedName() + "] is immutable." );
+        }
     }
 
     protected abstract boolean isSet();

@@ -59,7 +59,7 @@ public class ClassesTest
     {
         assertThat( "URI is correct", Classes.toURI( A.class ), equalTo( "urn:qi4j:type:org.qi4j.api.util.ClassesTest-A" ) );
     }
-    
+
 
     @Test
     public void givenUriWhenToClassNameThenClassNameIsReturned()

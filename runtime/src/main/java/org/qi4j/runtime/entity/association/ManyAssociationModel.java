@@ -14,15 +14,23 @@
 
 package org.qi4j.runtime.entity.association;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Aggregated;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.RDF;
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Immutable;
@@ -33,11 +41,6 @@ import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationType;
-
-import java.io.*;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.List;
 
 /**
  * JAVADOC
@@ -89,13 +92,13 @@ public final class ManyAssociationModel
         this.associationConstraints = associationConstraintsInstance;
         this.accessor = accessor;
         initialize();
-        this.manyAssociationType = new ManyAssociationType(qualifiedName, getRawClass(type).getName(), rdf, queryable);
+        this.manyAssociationType = new ManyAssociationType( qualifiedName, getRawClass( type ).getName(), rdf, queryable );
     }
 
     private void initialize()
     {
         this.type = GenericAssociationInfo.getAssociationType( accessor );
-        this.qualifiedName = QualifiedName.fromMethod(accessor);
+        this.qualifiedName = QualifiedName.fromMethod( accessor );
         this.immutable = metaInfo.get( Immutable.class ) != null;
         this.aggregated = metaInfo.get( Aggregated.class ) != null;
         RDF uriAnnotation = accessor().getAnnotation( RDF.class );
@@ -152,7 +155,7 @@ public final class ManyAssociationModel
         return associationInstance;
     }
 
-    public void checkConstraints( EntityComposite composite)
+    public void checkConstraints( EntityComposite composite )
         throws ConstraintViolationException
     {
         if( constraints != null )
@@ -171,7 +174,7 @@ public final class ManyAssociationModel
     {
         if( associationConstraints != null )
         {
-            ManyAssociation manyAssociation = manyAssociations.manyAssociationFor(accessor);
+            ManyAssociation manyAssociation = manyAssociations.manyAssociationFor( accessor );
 
             List<ConstraintViolation> violations = associationConstraints.checkConstraints( manyAssociation );
             if( !violations.isEmpty() )
@@ -194,7 +197,7 @@ public final class ManyAssociationModel
 
         ManyAssociationModel that = (ManyAssociationModel) o;
 
-        return accessor.equals(that.accessor);
+        return accessor.equals( that.accessor );
     }
 
     public int hashCode()

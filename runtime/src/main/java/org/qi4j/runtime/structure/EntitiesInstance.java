@@ -64,9 +64,9 @@ public class EntitiesInstance
     }
 
     // todo DCL??
-    public  IdentityGenerator identityGenerator()
+    public IdentityGenerator identityGenerator()
     {
-        synchronized (this)
+        synchronized( this )
         {
             if( generator == null )
             {
@@ -83,7 +83,7 @@ public class EntitiesInstance
 
     public EntityTypeRegistry entityTypeRegistry()
     {
-        synchronized (this)
+        synchronized( this )
         {
             if( registry == null )
             {

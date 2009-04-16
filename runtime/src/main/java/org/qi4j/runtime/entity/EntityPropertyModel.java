@@ -14,16 +14,14 @@
 
 package org.qi4j.runtime.entity;
 
+import java.lang.reflect.Method;
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.Property;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PersistentPropertyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
-
-import java.lang.reflect.Method;
 
 /**
  * JAVADOC

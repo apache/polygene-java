@@ -17,16 +17,16 @@
  */
 package org.qi4j.api.util;
 
-import org.junit.Test;
-import org.junit.Assert;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.IOException;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.lang.reflect.Method;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class SerializationUtilTests
 {
@@ -51,7 +51,7 @@ public class SerializationUtilTests
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream( baos );
-        Constructor cons1 = String.class.getConstructor( (new char[0]).getClass() );
+        Constructor cons1 = String.class.getConstructor( ( new char[0] ).getClass() );
         SerializationUtil.writeConstructor( oos, cons1 );
         oos.flush();
         ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
@@ -72,7 +72,7 @@ public class SerializationUtilTests
         ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
         ObjectInputStream ois = new ObjectInputStream( bais );
         Field field2 = SerializationUtil.readField( ois );
-        Assert.assertEquals(field1, field2);
+        Assert.assertEquals( field1, field2 );
     }
 
     private Method getMethod( Class clazz, String methodName, Class... parameterTypes )

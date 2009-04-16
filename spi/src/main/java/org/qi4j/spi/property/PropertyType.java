@@ -15,10 +15,10 @@
 package org.qi4j.spi.property;
 
 import java.io.Serializable;
-import org.qi4j.spi.value.ValueType;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.entity.StateName;
-import org.qi4j.api.common.QualifiedName;
+import org.qi4j.spi.value.ValueType;
 
 /**
  * JAVADOC
@@ -51,9 +51,9 @@ public class PropertyType
         this.propertyType = propertyType;
 
         SchemaVersion schemaVersion = new SchemaVersion();
-        schemaVersion.versionize(type.type());
-        schemaVersion.versionize(qualifiedName);
-        stateName = new StateName(qualifiedName, rdf, schemaVersion.base64());
+        schemaVersion.versionize( type.type() );
+        schemaVersion.versionize( qualifiedName );
+        stateName = new StateName( qualifiedName, rdf, schemaVersion.base64() );
     }
 
     public QualifiedName qualifiedName()

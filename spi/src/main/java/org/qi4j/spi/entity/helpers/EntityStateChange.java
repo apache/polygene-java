@@ -14,11 +14,9 @@
 
 package org.qi4j.spi.entity.helpers;
 
-import org.qi4j.api.common.QualifiedName;
+import java.io.Serializable;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.StateName;
-
-import java.io.Serializable;
 
 /**
  * JAVADOC
@@ -28,11 +26,11 @@ public abstract class EntityStateChange
 {
     protected StateName stateName;
 
-    protected EntityStateChange(StateName stateName)
+    protected EntityStateChange( StateName stateName )
     {
         this.stateName = stateName;
     }
 
-    public abstract void applyTo(EntityState state);
+    public abstract void applyTo( EntityState state );
 
 }

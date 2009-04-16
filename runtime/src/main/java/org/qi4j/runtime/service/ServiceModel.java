@@ -20,29 +20,28 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.ArrayList;
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.property.ComputedPropertyInstance;
+import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.property.ComputedPropertyInstance;
-import org.qi4j.api.property.PropertyInfo;
-import org.qi4j.api.property.GenericPropertyInfo;
-import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.api.util.Classes;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.configuration.Configuration;
-import org.qi4j.api.entity.Identity;
 import org.qi4j.bootstrap.MetaInfoDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.AbstractCompositeModel;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.CompositeMethodsModel;
+import org.qi4j.runtime.composite.ConcernDeclaration;
 import org.qi4j.runtime.composite.ConcernsDeclaration;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.DefaultCompositeInstance;
@@ -51,16 +50,15 @@ import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.SideEffectsDeclaration;
 import org.qi4j.runtime.composite.StateModel;
 import org.qi4j.runtime.composite.UsesInstance;
-import org.qi4j.runtime.composite.ConcernDeclaration;
+import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.property.PropertyModel;
+import org.qi4j.runtime.structure.DependencyVisitor;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.runtime.structure.DependencyVisitor;
-import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
-import org.qi4j.spi.property.PropertyDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
 
 /**
  * JAVADOC
@@ -113,9 +111,9 @@ public final class ServiceModel
                          CompositeMethodsModel compositeMethodsModel,
                          String moduleName,
                          String identity,
-                         boolean instantiateOnStartup)
+                         boolean instantiateOnStartup )
     {
-        super(compositeType,  visibility,  metaInfo,  mixinsModel,  stateModel, compositeMethodsModel);
+        super( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
 
         this.identity = identity;
         this.instantiateOnStartup = instantiateOnStartup;
@@ -218,16 +216,17 @@ public final class ServiceModel
         // Service has no state
         StateHolder stateHolder = new StateHolder()
         {
-            public <T> Property<T> getProperty(Method propertyMethod)
+            public <T> Property<T> getProperty( Method propertyMethod )
             {
-                if (QualifiedName.fromMethod(propertyMethod).equals( QualifiedName.fromClass( Identity.class, "identity" )))
+                if( QualifiedName.fromMethod( propertyMethod ).equals( QualifiedName.fromClass( Identity.class, "identity" ) ) )
                 {
-                    PropertyModel propertyDescriptor = (PropertyModel) stateModel.getPropertyByQualifiedName(QualifiedName.fromMethod(propertyMethod));
+                    PropertyModel propertyDescriptor = (PropertyModel) stateModel.getPropertyByQualifiedName( QualifiedName.fromMethod( propertyMethod ) );
                     return propertyDescriptor.newInstance( identity );
-                } else
+                }
+                else
                 {
                     // State is set to defaults
-                    return new ComputedPropertyInstance<T>(new GenericPropertyInfo(propertyMethod))
+                    return new ComputedPropertyInstance<T>( new GenericPropertyInfo( propertyMethod ) )
                     {
                         public T get()
                         {
@@ -237,7 +236,7 @@ public final class ServiceModel
                 }
             }
 
-            public void visitProperties(StateVisitor visitor)
+            public void visitProperties( StateVisitor visitor )
             {
             }
         };
@@ -250,10 +249,10 @@ public final class ServiceModel
         try
         {
             // Instantiate all mixins
-            ((MixinsModel)mixinsModel).newMixins( compositeInstance,
-                                   uses,
-                                   stateHolder,
-                                   mixins );
+            ( (MixinsModel) mixinsModel ).newMixins( compositeInstance,
+                                                     uses,
+                                                     stateHolder,
+                                                     mixins );
 
         }
         catch( InvalidCompositeException e )
@@ -270,16 +269,16 @@ public final class ServiceModel
     {
         if( type().isInterface() )
         {
-            return Composite.class.cast(Proxy.newProxyInstance( type().getClassLoader(),
-                                           new Class[]{ type() },
-                                           serviceInvocationHandler ));
+            return Composite.class.cast( Proxy.newProxyInstance( type().getClassLoader(),
+                                                                 new Class[]{ type() },
+                                                                 serviceInvocationHandler ) );
         }
         else
         {
             Class[] interfaces = type().getInterfaces();
-            return Composite.class.cast(Proxy.newProxyInstance( type().getClassLoader(),
-                                           interfaces,
-                                           serviceInvocationHandler ));
+            return Composite.class.cast( Proxy.newProxyInstance( type().getClassLoader(),
+                                                                 interfaces,
+                                                                 serviceInvocationHandler ) );
         }
 
     }

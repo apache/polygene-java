@@ -17,6 +17,9 @@
  */
 package org.qi4j.bootstrap.osgi;
 
+import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
 import org.ops4j.pax.swissbox.core.BundleClassLoader;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
@@ -26,10 +29,6 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.qi4j.bootstrap.internal.ServiceLoader;
 import org.qi4j.bootstrap.spi.Qi4jRuntime;
-
-import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
 
 public final class Activator
     implements BundleActivator

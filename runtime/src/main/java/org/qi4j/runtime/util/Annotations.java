@@ -14,15 +14,18 @@
 
 package org.qi4j.runtime.util;
 
-import org.qi4j.api.constraint.ConstraintDeclaration;
-import org.qi4j.api.injection.InjectionScope;
-import org.qi4j.api.util.Classes;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.qi4j.api.constraint.ConstraintDeclaration;
+import org.qi4j.api.injection.InjectionScope;
+import org.qi4j.api.util.Classes;
 
 /**
  * Useful methods for handling Annotations.

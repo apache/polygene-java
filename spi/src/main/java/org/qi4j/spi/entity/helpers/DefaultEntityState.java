@@ -16,19 +16,23 @@
  */
 package org.qi4j.spi.entity.helpers;
 
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.*;
-import org.qi4j.spi.value.ValueState;
-import org.qi4j.spi.value.ValueType;
-
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.StateName;
 
 /**
  * Standard implementation of EntityState.
  */
 public class DefaultEntityState
-        implements EntityState, Serializable
+    implements EntityState, Serializable
 {
     protected EntityStatus status;
     private boolean modified;
@@ -42,26 +46,26 @@ public class DefaultEntityState
     protected final Map<StateName, EntityReference> associations;
     protected final Map<StateName, ManyAssociationState> manyAssociations;
 
-    public DefaultEntityState(EntityReference identity)
+    public DefaultEntityState( EntityReference identity )
     {
-        this(0,
-                System.currentTimeMillis(),
-                identity,
-                EntityStatus.NEW,
-                new HashSet<EntityTypeReference>(),
-                new HashMap<StateName, String>(),
-                new HashMap<StateName, EntityReference>(),
-                new HashMap<StateName, ManyAssociationState>());
+        this( 0,
+              System.currentTimeMillis(),
+              identity,
+              EntityStatus.NEW,
+              new HashSet<EntityTypeReference>(),
+              new HashMap<StateName, String>(),
+              new HashMap<StateName, EntityReference>(),
+              new HashMap<StateName, ManyAssociationState>() );
     }
 
-    public DefaultEntityState(long version,
-                              long lastModified,
-                              EntityReference identity,
-                              EntityStatus status,
-                              Set<EntityTypeReference> entityTypes,
-                              Map<StateName, String> properties,
-                              Map<StateName, EntityReference> associations,
-                              Map<StateName, ManyAssociationState> manyAssociations)
+    public DefaultEntityState( long version,
+                               long lastModified,
+                               EntityReference identity,
+                               EntityStatus status,
+                               Set<EntityTypeReference> entityTypes,
+                               Map<StateName, String> properties,
+                               Map<StateName, EntityReference> associations,
+                               Map<StateName, ManyAssociationState> manyAssociations )
     {
         this.version = version;
         this.lastModified = lastModified;
@@ -89,33 +93,35 @@ public class DefaultEntityState
         return identity;
     }
 
-    public String getProperty(StateName stateName)
+    public String getProperty( StateName stateName )
     {
-        return properties.get(stateName);
+        return properties.get( stateName );
     }
 
-    public void setProperty(StateName stateName, String newValue)
+    public void setProperty( StateName stateName, String newValue )
     {
-        properties.put(stateName, newValue);
+        properties.put( stateName, newValue );
         modified = true;
     }
 
-    public EntityReference getAssociation(StateName stateName)
+    public EntityReference getAssociation( StateName stateName )
     {
-        return associations.get(stateName);
+        return associations.get( stateName );
     }
 
-    public void setAssociation(StateName stateName, EntityReference newEntity)
+    public void setAssociation( StateName stateName, EntityReference newEntity )
     {
-        associations.put(stateName, newEntity);
+        associations.put( stateName, newEntity );
         modified = true;
     }
 
-    public ManyAssociationState getManyAssociation(StateName stateName)
+    public ManyAssociationState getManyAssociation( StateName stateName )
     {
-        ManyAssociationState manyAssociationState = manyAssociations.get(stateName);
-        if (manyAssociationState == null)
-            manyAssociations.put(stateName, new DefaultManyAssociationState());
+        ManyAssociationState manyAssociationState = manyAssociations.get( stateName );
+        if( manyAssociationState == null )
+        {
+            manyAssociations.put( stateName, new DefaultManyAssociationState() );
+        }
         return manyAssociationState;
     }
 
@@ -129,19 +135,19 @@ public class DefaultEntityState
         return status;
     }
 
-    public void addEntityTypeReference(EntityTypeReference entityType)
+    public void addEntityTypeReference( EntityTypeReference entityType )
     {
-        entityTypes.add(entityType);
+        entityTypes.add( entityType );
     }
 
-    public void removeEntityTypeReference(EntityTypeReference type)
+    public void removeEntityTypeReference( EntityTypeReference type )
     {
-        entityTypes.remove(type);
+        entityTypes.remove( type );
     }
 
-    public boolean hasEntityTypeReference(EntityTypeReference type)
+    public boolean hasEntityTypeReference( EntityTypeReference type )
     {
-        return entityTypes.contains(type);
+        return entityTypes.contains( type );
     }
 
     public Set<EntityTypeReference> entityTypeReferences()
@@ -151,14 +157,18 @@ public class DefaultEntityState
 
     public boolean isModified()
     {
-        if (modified)
+        if( modified )
+        {
             return true;
+        }
 
-        for (ManyAssociationState manyAssociationState : manyAssociations.values())
+        for( ManyAssociationState manyAssociationState : manyAssociations.values() )
         {
             DefaultManyAssociationState state = (DefaultManyAssociationState) manyAssociationState;
-            if (state.isModified())
+            if( state.isModified() )
+            {
                 return true;
+            }
         }
 
         return false;

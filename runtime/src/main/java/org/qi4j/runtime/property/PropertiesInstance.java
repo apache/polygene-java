@@ -32,16 +32,16 @@ public class PropertiesInstance
         this.properties = properties;
     }
 
-    public <T> Property<T> getProperty(Method propertyMethod)
+    public <T> Property<T> getProperty( Method propertyMethod )
     {
         return (Property<T>) properties.get( propertyMethod );
     }
 
-    public void visitProperties(StateVisitor visitor)
+    public void visitProperties( StateVisitor visitor )
     {
-        for (Property<?> property : properties.values())
+        for( Property<?> property : properties.values() )
         {
-            visitor.visitProperty(property.qualifiedName(), property.get());
+            visitor.visitProperty( property.qualifiedName(), property.get() );
         }
     }
 

@@ -16,12 +16,11 @@
  */
 package org.qi4j.api.unitofwork;
 
+import java.lang.reflect.Method;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.concern.GenericConcern;
 import org.qi4j.api.injection.scope.Invocation;
 import org.qi4j.api.injection.scope.Structure;
-
-import java.lang.reflect.Method;
 
 /**
  * {@code UnitOfWorkConcern} manages the unit of work complete and discard policy.

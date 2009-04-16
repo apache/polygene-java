@@ -15,15 +15,10 @@
 package org.qi4j.spi.value;
 
 import java.lang.reflect.Type;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.text.StringCharacterIterator;
-
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
-import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
 /**
@@ -32,12 +27,12 @@ import org.qi4j.spi.util.PeekableStringTokenizer;
 public class BooleanType
     implements ValueType
 {
-    public static boolean isBoolean( Type type)
+    public static boolean isBoolean( Type type )
     {
-        if (type instanceof Class)
+        if( type instanceof Class )
         {
             Class typeClass = (Class) type;
-            return  (typeClass.equals(Boolean.class));
+            return ( typeClass.equals( Boolean.class ) );
         }
         return false;
     }
@@ -59,15 +54,15 @@ public class BooleanType
         return type;
     }
 
-    public void toJSON(Object value, StringBuilder json, Qi4jSPI spi)
+    public void toJSON( Object value, StringBuilder json, Qi4jSPI spi )
     {
-        json.append(((Boolean)value).booleanValue());
+        json.append( ( (Boolean) value ).booleanValue() );
     }
 
-    public Object fromJSON(PeekableStringTokenizer json, Module module)
+    public Object fromJSON( PeekableStringTokenizer json, Module module )
     {
         String string = json.nextToken();
-        return Boolean.valueOf(string);
+        return Boolean.valueOf( string );
     }
 
     @Override public String toString()

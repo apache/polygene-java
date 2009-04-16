@@ -14,16 +14,6 @@
 
 package org.qi4j.runtime.composite;
 
-import net.sf.cglib.proxy.*;
-import org.qi4j.api.common.ConstructionException;
-import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.injection.InjectedParametersModel;
-import org.qi4j.runtime.injection.InjectionContext;
-import org.qi4j.runtime.structure.Binder;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.runtime.util.Annotations;
-import org.qi4j.spi.composite.AbstractCompositeDescriptor;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -34,6 +24,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import net.sf.cglib.proxy.Callback;
+import net.sf.cglib.proxy.CallbackFilter;
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.Factory;
+import net.sf.cglib.proxy.NoOp;
+import org.qi4j.api.common.ConstructionException;
+import org.qi4j.runtime.injection.DependencyModel;
+import org.qi4j.runtime.injection.InjectedParametersModel;
+import org.qi4j.runtime.injection.InjectionContext;
+import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.runtime.util.Annotations;
+import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 
 /**
  * JAVADOC

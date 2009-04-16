@@ -72,10 +72,10 @@ public interface EntityStore
                             Iterable<EntityReference> removedStates )
         throws EntityStoreException, ConcurrentEntityStateModificationException;
 
-    void visitEntityStates(EntityStateVisitor visitor);
+    void visitEntityStates( EntityStateVisitor visitor );
 
     interface EntityStateVisitor
     {
-        void visitEntityState(EntityState entityState);
+        void visitEntityState( EntityState entityState );
     }
 }

@@ -20,8 +20,11 @@ import java.util.HashSet;
 import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.entity.*;
-import org.qi4j.api.entity.association.AbstractAssociation;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.entity.Lifecycle;
+import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
@@ -31,7 +34,9 @@ import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.composite.CompositeInstance;
-import org.qi4j.spi.entity.*;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStateDescriptor;
+import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 
@@ -72,7 +77,7 @@ public final class EntityInstance
     private EntityState entityState;
     private EntityStateModel.EntityStateInstance state;
 
-    public EntityInstance( ModuleUnitOfWork uow, 
+    public EntityInstance( ModuleUnitOfWork uow,
                            ModuleInstance moduleInstance,
                            EntityModel entityModel,
                            EntityReference identity,
@@ -103,9 +108,9 @@ public final class EntityInstance
         return (T) proxy;
     }
 
-    public <T> T newProxy(Class<T> mixinType)
+    public <T> T newProxy( Class<T> mixinType )
     {
-        return entityModel.newProxy(this, mixinType);
+        return entityModel.newProxy( this, mixinType );
     }
 
     public MetaInfo metaInfo()
@@ -162,7 +167,7 @@ public final class EntityInstance
 
         Object mixin = methodInstance.getMixin( mixins );
 
-        if (mixin == null)
+        if( mixin == null )
         {
             mixin = entityModel.newMixin( mixins, state, this, methodInstance.method() );
         }
@@ -179,8 +184,8 @@ public final class EntityInstance
     {
         if( status() == EntityStatus.LOADED && entityState != null )
         {
-            EntityState newEntityState = uow.instance().refresh(identity.toString());
-            
+            EntityState newEntityState = uow.instance().refresh( identity.toString() );
+
             if( newEntityState.version() != entityState.version() )
             {
                 entityState = newEntityState;
@@ -191,8 +196,10 @@ public final class EntityInstance
 
     public void refreshState()
     {
-        if (entityState != null && state != null)
+        if( entityState != null && state != null )
+        {
             state.refresh( entityState );
+        }
     }
 
     private void initState()
@@ -203,7 +210,7 @@ public final class EntityInstance
         }
 
         mixins = entityModel.newMixinHolder();
-        state = entityModel.newStateHolder(uow, entityState);
+        state = entityModel.newStateHolder( uow, entityState );
     }
 
 
@@ -235,7 +242,7 @@ public final class EntityInstance
     {
         invokeRemove();
 
-        removeAggregatedEntities(unitOfWork);
+        removeAggregatedEntities( unitOfWork );
 
         entityState.remove();
         entityState = null;
@@ -269,23 +276,23 @@ public final class EntityInstance
         Set<AssociationDescriptor> associations = stateDescriptor.associations();
         for( AssociationDescriptor association : associations )
         {
-            if (association.isAggregated())
+            if( association.isAggregated() )
             {
                 Association assoc = state.getAssociation( association.accessor() );
-                Object aggregatedEntity = ((Association)assoc).get();
-                if (aggregatedEntity != null)
+                Object aggregatedEntity = ( (Association) assoc ).get();
+                if( aggregatedEntity != null )
                 {
-                    aggregatedEntities.add(aggregatedEntity);
+                    aggregatedEntities.add( aggregatedEntity );
                 }
             }
         }
         Set<ManyAssociationDescriptor> manyAssociations = stateDescriptor.manyAssociations();
         for( ManyAssociationDescriptor association : manyAssociations )
         {
-            if (association.isAggregated())
+            if( association.isAggregated() )
             {
                 ManyAssociation manyAssoc = state.getManyAssociation( association.accessor() );
-                for (Object entity : manyAssoc)
+                for( Object entity : manyAssoc )
                 {
                     aggregatedEntities.add( entity );
                 }

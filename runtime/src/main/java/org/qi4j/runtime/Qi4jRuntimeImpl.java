@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationHandler;
 import static java.lang.reflect.Proxy.getInvocationHandler;
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.PropertyMapper;
 import org.qi4j.api.configuration.Configuration;
@@ -34,24 +35,26 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import org.qi4j.bootstrap.spi.ApplicationModelFactory;
+import org.qi4j.bootstrap.spi.Qi4jRuntime;
+import org.qi4j.runtime.bootstrap.ApplicationAssemblyFactoryImpl;
+import org.qi4j.runtime.bootstrap.ApplicationModelFactoryImpl;
+import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.composite.DefaultCompositeInstance;
 import static org.qi4j.runtime.composite.DefaultCompositeInstance.getCompositeInstance;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
-import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.injection.DependencyModel;
+import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.structure.DependencyVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.runtime.structure.ModuleVisitor;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.runtime.bootstrap.ApplicationAssemblyFactoryImpl;
-import org.qi4j.runtime.bootstrap.ApplicationModelFactoryImpl;
-import org.qi4j.runtime.object.ObjectModel;
+import org.qi4j.runtime.structure.ModuleVisitor;
 import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
@@ -59,9 +62,6 @@ import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.object.ObjectDescriptor;
-import org.qi4j.bootstrap.spi.Qi4jRuntime;
-import org.qi4j.bootstrap.spi.ApplicationModelFactory;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 
 /**
  * Incarnation of Qi4j.
@@ -131,16 +131,16 @@ public final class Qi4jRuntimeImpl
     {
         ServiceModel serviceModel = (ServiceModel) DefaultCompositeInstance.getCompositeInstance( serviceComposite ).compositeModel();
 
-        String identity = ((ServiceComposite) serviceComposite).identity().get();
+        String identity = ( (ServiceComposite) serviceComposite ).identity().get();
         T configuration;
         try
         {
-            configuration = uow.get(serviceModel.<T>configurationType(), identity);
+            configuration = uow.get( serviceModel.<T>configurationType(), identity );
         }
         catch( NoSuchEntityException e )
         {
 
-            EntityBuilder<T> configBuilder = uow.newEntityBuilder(serviceModel.<T>configurationType(), identity);
+            EntityBuilder<T> configBuilder = uow.newEntityBuilder( serviceModel.<T>configurationType(), identity );
             // Check for defaults
             String s = identity + ".properties";
             InputStream asStream = serviceComposite.type().getResourceAsStream( s );
@@ -164,7 +164,7 @@ public final class Qi4jRuntimeImpl
             }
             catch( Exception e1 )
             {
-                InstantiationException ex = new InstantiationException("Could not instantiate configuration, and no Properties file was found ("+s+")");
+                InstantiationException ex = new InstantiationException( "Could not instantiate configuration, and no Properties file was found (" + s + ")" );
                 ex.initCause( e1 );
                 throw ex;
             }
@@ -224,12 +224,12 @@ public final class Qi4jRuntimeImpl
 
     public Module getModule( UnitOfWork uow )
     {
-        return (Module) ((ModuleUnitOfWork) uow);
+        return (Module) ( (ModuleUnitOfWork) uow );
     }
 
     public Module getModule( Composite composite )
     {
-        return ((CompositeInstance) composite).module();
+        return ( (CompositeInstance) composite ).module();
     }
 
     // SPI
@@ -305,9 +305,9 @@ public final class Qi4jRuntimeImpl
         return finder.model;
     }
 
-    public StateHolder getState(ValueComposite composite)
+    public StateHolder getState( ValueComposite composite )
     {
-        return ValueInstance.getValueInstance(composite).state();
+        return ValueInstance.getValueInstance( composite ).state();
     }
 
     class EntityFinder

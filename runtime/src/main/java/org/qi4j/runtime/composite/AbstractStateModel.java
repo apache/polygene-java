@@ -16,21 +16,15 @@ package org.qi4j.runtime.composite;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
-
-import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.constraint.ConstraintViolationException;
+import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.property.AbstractPropertiesModel;
-import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.runtime.property.AbstractPropertyModel;
-import org.qi4j.runtime.property.PropertyModel;
+import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.spi.composite.StateDescriptor;
-import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
@@ -56,9 +50,9 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
         return propertiesModel.newBuilderInstance();
     }
 
-    public StateHolder newBuilderInstance(StateHolder state)
+    public StateHolder newBuilderInstance( StateHolder state )
     {
-        return propertiesModel.newBuilderInstance(state);
+        return propertiesModel.newBuilderInstance( state );
     }
 
     public StateHolder newInstance( StateHolder state )
@@ -94,16 +88,16 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
         propertiesModel.bind( resolution );
     }
 
-    public void checkConstraints( StateHolder state)
+    public void checkConstraints( StateHolder state )
         throws ConstraintViolationException
     {
         PropertiesInstance stateInstance = (PropertiesInstance) state;
-        propertiesModel.checkConstraints(stateInstance);
+        propertiesModel.checkConstraints( stateInstance );
     }
 
-    public void setProperty(QualifiedName name, Object value, StateHolder valueState)
+    public void setProperty( QualifiedName name, Object value, StateHolder valueState )
     {
-        AbstractPropertyModel model = propertiesModel.getPropertyByQualifiedName(name);
-        valueState.getProperty(model.accessor()).set(value);
+        AbstractPropertyModel model = propertiesModel.getPropertyByQualifiedName( name );
+        valueState.getProperty( model.accessor() ).set( value );
     }
 }

@@ -14,13 +14,13 @@
 
 package org.qi4j.test;
 
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.spi.entity.helpers.EntityTypeRegistryService;
-import org.qi4j.api.common.Visibility;
+import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 
 /**
  * Helper assembler that adds an in-memory EntityStore, a UUID generator, and an Entity type registry to the module

@@ -14,7 +14,6 @@
 
 package org.qi4j.spi.entity;
 
-import org.qi4j.spi.entity.EntityState;
 import org.qi4j.api.entity.EntityReference;
 
 /**

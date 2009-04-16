@@ -17,17 +17,16 @@
  */
 package org.qi4j.api.util;
 
-import org.junit.Test;
-import org.junit.Assert;
-import org.qi4j.api.util.MethodSet;
-import java.util.Date;
-import java.util.ArrayList;
-import java.lang.reflect.Method;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
 import java.io.ByteArrayInputStream;
-import java.io.ObjectInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Date;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class MethodSetTest
 {
@@ -61,13 +60,13 @@ public class MethodSetTest
     {
         MethodSet set = new MethodSet();
         Method method1 = getMethod( StringBuffer.class, "append", Character.TYPE );
-        Method method2= getMethod( StringBuffer.class, "append", Integer.TYPE );
-        Method method3= getMethod( StringBuffer.class, "append", Object.class );
-        Method method4= getMethod( StringBuffer.class, "append", char[].class );
-        Method method5= getMethod( StringBuffer.class, "append", CharSequence.class );
-        Method method6= getMethod( StringBuffer.class, "append", Long.TYPE );
-        Method method7= getMethod( StringBuffer.class, "append", Float.TYPE );
-        Method method8= getMethod( StringBuffer.class, "append", Double.TYPE );
+        Method method2 = getMethod( StringBuffer.class, "append", Integer.TYPE );
+        Method method3 = getMethod( StringBuffer.class, "append", Object.class );
+        Method method4 = getMethod( StringBuffer.class, "append", char[].class );
+        Method method5 = getMethod( StringBuffer.class, "append", CharSequence.class );
+        Method method6 = getMethod( StringBuffer.class, "append", Long.TYPE );
+        Method method7 = getMethod( StringBuffer.class, "append", Float.TYPE );
+        Method method8 = getMethod( StringBuffer.class, "append", Double.TYPE );
         set.add( method1 );
         set.add( method2 );
         set.add( method3 );

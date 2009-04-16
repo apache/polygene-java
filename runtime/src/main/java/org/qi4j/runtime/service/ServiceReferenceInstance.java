@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.service;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceImporterException;
@@ -21,9 +23,6 @@ import org.qi4j.api.service.ServiceReference;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.service.Activator;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 
 /**
  * Implementation of ServiceReference. This manages the actual instance of the service

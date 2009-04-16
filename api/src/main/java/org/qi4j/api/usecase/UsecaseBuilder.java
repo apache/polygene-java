@@ -26,9 +26,9 @@ public class UsecaseBuilder
         return new UsecaseBuilder( aName );
     }
 
-    public static Usecase newUsecase(String aName)
+    public static Usecase newUsecase( String aName )
     {
-        return new UsecaseBuilder(aName).newUsecase();
+        return new UsecaseBuilder( aName ).newUsecase();
     }
 
     private MetaInfo metaInfo = new MetaInfo();

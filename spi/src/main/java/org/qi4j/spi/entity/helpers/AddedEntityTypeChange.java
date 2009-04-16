@@ -25,14 +25,14 @@ public class AddedEntityTypeChange
 {
     private EntityTypeReference entityTypeReference;
 
-    public AddedEntityTypeChange(EntityTypeReference entityTypeReference)
+    public AddedEntityTypeChange( EntityTypeReference entityTypeReference )
     {
-        super(null);
+        super( null );
         this.entityTypeReference = entityTypeReference;
     }
 
-    public void applyTo(EntityState state)
+    public void applyTo( EntityState state )
     {
-        state.addEntityTypeReference(entityTypeReference);
+        state.addEntityTypeReference( entityTypeReference );
     }
 }

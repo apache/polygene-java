@@ -14,14 +14,17 @@
 
 package org.qi4j.spi.entity.helpers;
 
-import org.qi4j.api.concern.ConcernOf;
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.*;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.WeakHashMap;
+import org.qi4j.api.concern.ConcernOf;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.StateCommitter;
 
 /**
  * Concern that helps EntityStores do concurrent modification checks.
@@ -31,7 +34,6 @@ import java.util.WeakHashMap;
  * not have to go down to the underlying store to get the current version.
  * Whenever there is a concurrent modification the store will most likely
  * have to check with the underlying store what the current version is.
- *
  */
 public abstract class ConcurrentModificationCheckConcern extends ConcernOf<EntityStore>
     implements EntityStore

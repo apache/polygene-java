@@ -1,16 +1,25 @@
 package org.qi4j.spi.entity.helpers;
 
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
-
-import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.spi.entity.*;
-import org.qi4j.spi.entity.helpers.DefaultEntityState;
-import org.qi4j.spi.entity.helpers.MapEntityStore;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.spi.entity.EntityAlreadyExistsException;
+import org.qi4j.spi.entity.EntityNotFoundException;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.serialization.FastObjectInputStream;
 import org.qi4j.spi.serialization.FastObjectOutputStream;
 import org.qi4j.spi.serialization.SerializableState;
@@ -27,13 +36,13 @@ public class MapEntityStoreMixin
     public EntityState newEntityState( EntityReference identity )
         throws EntityStoreException
     {
-       synchronized( mapEntityStore )
-       {
-           if( mapEntityStore.contains( identity ) )
-           {
-               throw new EntityAlreadyExistsException( identity );
-           }
-       }
+        synchronized( mapEntityStore )
+        {
+            if( mapEntityStore.contains( identity ) )
+            {
+                throw new EntityAlreadyExistsException( identity );
+            }
+        }
 
         return new DefaultEntityState( identity );
     }
@@ -45,7 +54,7 @@ public class MapEntityStoreMixin
         {
             SerializableState serializableState = loadSerializableState( identity );
 
-            return getEntityState(serializableState);
+            return getEntityState( serializableState );
         }
         catch( ClassNotFoundException e )
         {
@@ -72,7 +81,7 @@ public class MapEntityStoreMixin
             for( EntityState entityState : newStates )
             {
                 byte[] stateArray = serializeState( entityState, currentTime, baos );
-                newState.put( entityState.identity(), new ByteArrayInputStream(stateArray) );
+                newState.put( entityState.identity(), new ByteArrayInputStream( stateArray ) );
             }
 
             for( EntityState entityState : loadedStates )
@@ -81,7 +90,7 @@ public class MapEntityStoreMixin
                 if( entityStateInstance.isModified() )
                 {
                     byte[] stateArray = serializeState( entityState, currentTime, baos );
-                    updatedState.put( entityState.identity(), new ByteArrayInputStream(stateArray) );
+                    updatedState.put( entityState.identity(), new ByteArrayInputStream( stateArray ) );
                 }
             }
         }
@@ -96,7 +105,7 @@ public class MapEntityStoreMixin
             {
                 synchronized( mapEntityStore )
                 {
-                    mapEntityStore.update(newState, updatedState, removedStates);
+                    mapEntityStore.update( newState, updatedState, removedStates );
                 }
             }
 
@@ -107,47 +116,48 @@ public class MapEntityStoreMixin
         };
     }
 
-    public void visitEntityStates(final EntityStateVisitor visitor)
+    public void visitEntityStates( final EntityStateVisitor visitor )
     {
-        mapEntityStore.visitMap(new MapEntityStore.MapEntityStoreVisitor()
+        mapEntityStore.visitMap( new MapEntityStore.MapEntityStoreVisitor()
         {
-            public void visitEntity(InputStream entityState)
+            public void visitEntity( InputStream entityState )
             {
                 try
                 {
                     ObjectInputStream oin = new FastObjectInputStream( entityState, false );
                     SerializableState state = (SerializableState) oin.readObject();
 
-                    EntityState entity = getEntityState(state);
-                    visitor.visitEntityState(entity);
-                } catch (Exception e)
+                    EntityState entity = getEntityState( state );
+                    visitor.visitEntityState( entity );
+                }
+                catch( Exception e )
                 {
-                    Logger.getLogger(getClass().getName()).throwing(getClass().getName(), "visitEntityStates", e);
+                    Logger.getLogger( getClass().getName() ).throwing( getClass().getName(), "visitEntityStates", e );
                 }
             }
-        });
+        } );
     }
 
-    private EntityState getEntityState(SerializableState serializableState)
+    private EntityState getEntityState( SerializableState serializableState )
     {
         EntityReference identity = serializableState.identity();
         Set<EntityTypeReference> entityTypeReferences = serializableState.entityTypeReferences();
 
         return new DefaultEntityState( serializableState.version(),
-                                                           serializableState.lastModified(),
-                                                           identity,
-                                                           EntityStatus.LOADED,
-                                                           entityTypeReferences,
-                                                           serializableState.properties(),
-                                                           serializableState.associations(),
-                                                           serializableState.manyAssociations() );
+                                       serializableState.lastModified(),
+                                       identity,
+                                       EntityStatus.LOADED,
+                                       entityTypeReferences,
+                                       serializableState.properties(),
+                                       serializableState.associations(),
+                                       serializableState.manyAssociations() );
     }
 
     private SerializableState loadSerializableState( EntityReference identity )
         throws IOException, ClassNotFoundException, EntityNotFoundException
     {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        mapEntityStore.get( identity , bout);
+        mapEntityStore.get( identity, bout );
         byte[] serializedState = bout.toByteArray();
 
         if( serializedState == null )

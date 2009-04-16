@@ -16,14 +16,13 @@
  */
 package org.qi4j.runtime.query.proxy;
 
-import org.qi4j.api.query.grammar.AssociationReference;
-import org.qi4j.runtime.query.QueryException;
-import org.qi4j.runtime.query.grammar.impl.ManyAssociationReferenceImpl;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import static java.lang.reflect.Proxy.newProxyInstance;
 import java.lang.reflect.Type;
+import org.qi4j.api.query.grammar.AssociationReference;
+import org.qi4j.runtime.query.QueryException;
+import org.qi4j.runtime.query.grammar.impl.ManyAssociationReferenceImpl;
 
 /**
  * JAVADOC: Add javadoc
@@ -55,7 +54,7 @@ public class ManyAssociationReferenceProxy
                                    final AssociationReference traversedAssociation )
     {
         ManyAssociationReferenceImpl associationReference =
-            new ManyAssociationReferenceImpl( accessor, traversedAssociation);
+            new ManyAssociationReferenceImpl( accessor, traversedAssociation );
 
         // Create any proxy
         ClassLoader loader = ManyAssociationReferenceProxy.class.getClassLoader();

@@ -25,14 +25,14 @@ public class RemovedEntityTypeChange
 {
     private EntityTypeReference entityTypeReference;
 
-    public RemovedEntityTypeChange(EntityTypeReference entityTypeReference)
+    public RemovedEntityTypeChange( EntityTypeReference entityTypeReference )
     {
-        super(null);
+        super( null );
         this.entityTypeReference = entityTypeReference;
     }
 
-    public void applyTo(EntityState state)
+    public void applyTo( EntityState state )
     {
-        state.removeEntityTypeReference(entityTypeReference);
+        state.removeEntityTypeReference( entityTypeReference );
     }
 }

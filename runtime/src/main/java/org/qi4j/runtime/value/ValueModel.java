@@ -14,22 +14,28 @@
 
 package org.qi4j.runtime.value;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.runtime.composite.*;
+import org.qi4j.runtime.composite.AbstractCompositeModel;
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.composite.CompositeMethodsModel;
+import org.qi4j.runtime.composite.ConcernDeclaration;
+import org.qi4j.runtime.composite.ConcernsDeclaration;
+import org.qi4j.runtime.composite.ConstraintsModel;
+import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.composite.SideEffectsDeclaration;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.value.ValueDescriptor;
 import org.qi4j.spi.value.ValueState;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Model for ValueComposites
@@ -85,10 +91,10 @@ public final class ValueModel extends AbstractCompositeModel
         mixinsModel.bind( resolution );
     }
 
-    public void checkConstraints( StateHolder state)
+    public void checkConstraints( StateHolder state )
         throws ConstraintViolationException
     {
-        stateModel.checkConstraints( state);
+        stateModel.checkConstraints( state );
     }
 
     public ValueInstance newValueInstance( ModuleInstance moduleInstance,

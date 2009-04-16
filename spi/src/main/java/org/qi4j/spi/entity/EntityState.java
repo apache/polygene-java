@@ -16,16 +16,7 @@
  */
 package org.qi4j.spi.entity;
 
-import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
-
-import org.qi4j.spi.value.ValueState;
-import org.qi4j.spi.value.ValueType;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
 
 /**
@@ -71,23 +62,23 @@ public interface EntityState
      */
     EntityStatus status();
 
-    void addEntityTypeReference(EntityTypeReference type);
+    void addEntityTypeReference( EntityTypeReference type );
 
-    void removeEntityTypeReference(EntityTypeReference type);
+    void removeEntityTypeReference( EntityTypeReference type );
 
-    boolean hasEntityTypeReference(EntityTypeReference type);
+    boolean hasEntityTypeReference( EntityTypeReference type );
 
     Set<EntityTypeReference> entityTypeReferences();
 
-    String getProperty(StateName stateName);
+    String getProperty( StateName stateName );
 
-    void setProperty(StateName stateName, String json);
+    void setProperty( StateName stateName, String json );
 
-    EntityReference getAssociation(StateName stateName);
+    EntityReference getAssociation( StateName stateName );
 
-    void setAssociation(StateName stateName, EntityReference newEntity);
+    void setAssociation( StateName stateName, EntityReference newEntity );
 
-    ManyAssociationState getManyAssociation(StateName stateName);
+    ManyAssociationState getManyAssociation( StateName stateName );
 
     void hasBeenApplied();
 }

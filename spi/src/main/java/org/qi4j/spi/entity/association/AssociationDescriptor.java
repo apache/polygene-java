@@ -14,10 +14,8 @@
 
 package org.qi4j.spi.entity.association;
 
-import org.qi4j.api.entity.association.AssociationInfo;
-import org.qi4j.spi.entity.StateName;
-
 import java.lang.reflect.Method;
+import org.qi4j.api.entity.association.AssociationInfo;
 
 /**
  * JAVADOC
@@ -25,6 +23,7 @@ import java.lang.reflect.Method;
 public interface AssociationDescriptor extends AssociationInfo
 {
     Method accessor();
+
     AssociationType associationType();
 
 }

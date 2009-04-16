@@ -14,21 +14,20 @@
 
 package org.qi4j.spi.serialization;
 
+import java.io.Serializable;
+import java.util.Map;
+import java.util.Set;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityTypeReference;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.StateName;
-
-import java.io.Serializable;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Serializable state for a single entity. This includes the version
  * of the state and the version of the type.
  */
 public final class SerializableState
-        implements Serializable
+    implements Serializable
 {
     private static final long serialVersionUID = 4L;
 
@@ -40,12 +39,12 @@ public final class SerializableState
     private final Map<StateName, EntityReference> associations;
     private final Map<StateName, ManyAssociationState> manyAssociations;
 
-    public SerializableState(EntityReference identity,
-                             long entityVersion, long lastModified,
-                             Set<EntityTypeReference> entityTypeReferences,
-                             Map<StateName, String> properties,
-                             Map<StateName, EntityReference> associations,
-                             Map<StateName, ManyAssociationState> manyAssociations)
+    public SerializableState( EntityReference identity,
+                              long entityVersion, long lastModified,
+                              Set<EntityTypeReference> entityTypeReferences,
+                              Map<StateName, String> properties,
+                              Map<StateName, EntityReference> associations,
+                              Map<StateName, ManyAssociationState> manyAssociations )
     {
         this.identity = identity;
         this.entityVersion = entityVersion;

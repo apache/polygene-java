@@ -14,12 +14,11 @@
 
 package org.qi4j.runtime.object;
 
+import java.util.Iterator;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
-
-import java.util.Iterator;
 
 /**
  * JAVADOC

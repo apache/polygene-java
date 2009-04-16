@@ -15,9 +15,8 @@
 package org.qi4j.spi.entity.helpers;
 
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.StateName;
 
 /**
@@ -31,18 +30,18 @@ public class ManyAssociationChange
     EntityReference reference;
 
     // Added to ManyAssociation
-    ManyAssociationChange(StateName stateName, int index, EntityReference reference)
+    ManyAssociationChange( StateName stateName, int index, EntityReference reference )
     {
-        super(stateName);
+        super( stateName );
 
         this.index = index;
         this.reference = reference;
     }
 
     // Remove from ManyAssociation
-    ManyAssociationChange(StateName stateName, EntityReference reference)
+    ManyAssociationChange( StateName stateName, EntityReference reference )
     {
-        super(stateName);
+        super( stateName );
 
         this.reference = reference;
     }
@@ -62,13 +61,17 @@ public class ManyAssociationChange
         return reference;
     }
 
-    public void applyTo(EntityState entityState)
+    public void applyTo( EntityState entityState )
     {
-        ManyAssociationState manyAssociation = entityState.getManyAssociation(stateName);
+        ManyAssociationState manyAssociation = entityState.getManyAssociation( stateName );
 
-        if (isAdded())
-            manyAssociation.add(index,  reference);
+        if( isAdded() )
+        {
+            manyAssociation.add( index, reference );
+        }
         else
-            manyAssociation.remove(reference);
+        {
+            manyAssociation.remove( reference );
+        }
     }
 }

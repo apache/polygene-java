@@ -14,14 +14,17 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyVisitor;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
-
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * Assembly of a Layer. From here you can create more ModuleAssemblies for

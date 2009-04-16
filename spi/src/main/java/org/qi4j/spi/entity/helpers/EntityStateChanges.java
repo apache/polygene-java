@@ -14,17 +14,14 @@
 
 package org.qi4j.spi.entity.helpers;
 
-import org.qi4j.api.common.QualifiedName;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.StateName;
 import org.qi4j.spi.entity.EntityTypeReference;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
-import java.io.Serializable;
+import org.qi4j.spi.entity.StateName;
 
 /**
  * Tracker for changes in an EntityState
@@ -34,41 +31,49 @@ public class EntityStateChanges
 {
     private List<EntityStateChange> changes;
 
-    public void setProperty(StateName stateName, String newValue)
+    public void setProperty( StateName stateName, String newValue )
     {
-        if (changes == null)
-            changes = new ArrayList<EntityStateChange>();
-        changes.add(new PropertyChange(stateName, newValue));
-    }
-
-    public void setAssociation(StateName stateName, EntityReference entityReference)
-    {
-        if (changes == null)
-            changes = new ArrayList<EntityStateChange>();
-        changes.add(new AssociationChange(stateName, entityReference));
-    }
-
-    public void added(StateName stateName, int index, EntityReference reference)
-    {
-        if (changes == null)
-            changes = new ArrayList<EntityStateChange>();
-        changes.add(new ManyAssociationChange(stateName, index, reference));
-    }
-
-    public void removed(StateName stateName, EntityReference reference)
-    {
-        if (changes == null)
-            changes = new ArrayList<EntityStateChange>();
-        changes.add(new ManyAssociationChange(stateName, reference));
-    }
-
-    public void applyTo(EntityState state)
-    {
-        if (changes != null)
+        if( changes == null )
         {
-            for (EntityStateChange change : changes)
+            changes = new ArrayList<EntityStateChange>();
+        }
+        changes.add( new PropertyChange( stateName, newValue ) );
+    }
+
+    public void setAssociation( StateName stateName, EntityReference entityReference )
+    {
+        if( changes == null )
+        {
+            changes = new ArrayList<EntityStateChange>();
+        }
+        changes.add( new AssociationChange( stateName, entityReference ) );
+    }
+
+    public void added( StateName stateName, int index, EntityReference reference )
+    {
+        if( changes == null )
+        {
+            changes = new ArrayList<EntityStateChange>();
+        }
+        changes.add( new ManyAssociationChange( stateName, index, reference ) );
+    }
+
+    public void removed( StateName stateName, EntityReference reference )
+    {
+        if( changes == null )
+        {
+            changes = new ArrayList<EntityStateChange>();
+        }
+        changes.add( new ManyAssociationChange( stateName, reference ) );
+    }
+
+    public void applyTo( EntityState state )
+    {
+        if( changes != null )
+        {
+            for( EntityStateChange change : changes )
             {
-                change.applyTo(state);
+                change.applyTo( state );
             }
         }
     }
@@ -78,18 +83,22 @@ public class EntityStateChanges
         return changes == null ? Collections.<EntityStateChange>emptyList() : changes;
     }
 
-    public void addEntityTypeReference(EntityTypeReference entityTypeReference)
+    public void addEntityTypeReference( EntityTypeReference entityTypeReference )
     {
-        if (changes == null)
+        if( changes == null )
+        {
             changes = new ArrayList<EntityStateChange>();
-        changes.add(new AddedEntityTypeChange(entityTypeReference));
+        }
+        changes.add( new AddedEntityTypeChange( entityTypeReference ) );
     }
 
 
-    public void removeEntityTypeReference(EntityTypeReference entityTypeReference)
+    public void removeEntityTypeReference( EntityTypeReference entityTypeReference )
     {
-        if (changes == null)
+        if( changes == null )
+        {
             changes = new ArrayList<EntityStateChange>();
-        changes.add(new RemovedEntityTypeChange(entityTypeReference));
+        }
+        changes.add( new RemovedEntityTypeChange( entityTypeReference ) );
     }
 }

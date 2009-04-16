@@ -32,7 +32,7 @@ public class EntityCompositeAlreadyExistsException
 
     public EntityCompositeAlreadyExistsException( EntityReference identity )
     {
-        super( "EntityComposite (" + identity +") already exists." );
+        super( "EntityComposite (" + identity + ") already exists." );
         this.identity = identity;
     }
 

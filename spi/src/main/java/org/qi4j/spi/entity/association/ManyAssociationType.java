@@ -14,12 +14,11 @@
 
 package org.qi4j.spi.entity.association;
 
+import java.io.Serializable;
 import org.qi4j.api.common.QualifiedName;
 import static org.qi4j.api.common.TypeName.nameOf;
 import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.entity.StateName;
-
-import java.io.Serializable;
 
 /**
  * JAVADOC
@@ -46,9 +45,9 @@ public final class ManyAssociationType
         this.queryable = queryable;
 
         SchemaVersion schemaVersion = new SchemaVersion();
-        schemaVersion.versionize(type);
-        schemaVersion.versionize(qualifiedName);
-        stateName = new StateName(qualifiedName, rdf, schemaVersion.base64());
+        schemaVersion.versionize( type );
+        schemaVersion.versionize( qualifiedName );
+        stateName = new StateName( qualifiedName, rdf, schemaVersion.base64() );
     }
 
     public QualifiedName qualifiedName()

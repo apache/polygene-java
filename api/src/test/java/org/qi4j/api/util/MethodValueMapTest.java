@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
-import org.qi4j.api.util.MethodValueMap;
 
 public class MethodValueMapTest
 {
@@ -64,18 +63,18 @@ public class MethodValueMapTest
         Method method2 = getMethod( StringBuffer.class, "append", Integer.TYPE );
         Method method3 = getMethod( StringBuffer.class, "append", Object.class );
         Method method4 = getMethod( StringBuffer.class, "append", Character.TYPE );
-        Method method5 = getMethod( StringBuffer.class, "append", (new char[0]).getClass() );
-        Method method6 = getMethod( StringBuffer.class, "append", (new char[0]).getClass(), Integer.TYPE, Integer.TYPE );
+        Method method5 = getMethod( StringBuffer.class, "append", ( new char[0] ).getClass() );
+        Method method6 = getMethod( StringBuffer.class, "append", ( new char[0] ).getClass(), Integer.TYPE, Integer.TYPE );
         Method method7 = getMethod( StringBuffer.class, "append", Long.TYPE );
         Method method8 = getMethod( StringBuffer.class, "append", Double.TYPE );
-        map.put( 1,method1 );
-        map.put( 2,method2 );
-        map.put( 3,method3 );
-        map.put( 4,method4 );
-        map.put( 5,method5 );
-        map.put( 6,method6 );
-        map.put( 7,method7 );
-        map.put( 8,method8 );
+        map.put( 1, method1 );
+        map.put( 2, method2 );
+        map.put( 3, method3 );
+        map.put( 4, method4 );
+        map.put( 5, method5 );
+        map.put( 6, method6 );
+        map.put( 7, method7 );
+        map.put( 8, method8 );
         MethodValueMap resultMap = saveMapAndReloadIt( map );
         Assert.assertTrue( resultMap.containsValue( method1 ) );
         Assert.assertTrue( resultMap.containsValue( method2 ) );

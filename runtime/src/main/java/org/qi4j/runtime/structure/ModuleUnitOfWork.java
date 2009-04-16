@@ -14,30 +14,40 @@
 
 package org.qi4j.runtime.structure;
 
-import org.qi4j.api.unitofwork.*;
-import org.qi4j.api.query.QueryBuilderFactory;
-import org.qi4j.api.usecase.Usecase;
+import java.lang.reflect.Method;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.*;
-import static org.qi4j.api.entity.EntityReference.parseEntityReference;
-import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.configuration.ConfigurationComposite;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.entity.EntityComposite;
+import static org.qi4j.api.entity.EntityReference.parseEntityReference;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.entity.Lifecycle;
+import org.qi4j.api.entity.LifecycleException;
+import org.qi4j.api.query.QueryBuilderFactory;
+import org.qi4j.api.service.ServiceFinder;
+import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
+import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCallback;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkException;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.usecase.Usecase;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
+import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.StateName;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 
-import java.lang.reflect.Method;
-
 /**
  * JAVADOC
-*/
+ */
 public class ModuleUnitOfWork
     implements UnitOfWork
 {
@@ -97,12 +107,12 @@ public class ModuleUnitOfWork
 
     public <T> T newEntity( Class<T> type ) throws EntityTypeNotFoundException, LifecycleException
     {
-        return newEntity(type, null);
+        return newEntity( type, null );
     }
 
-    public <T> T newEntity(Class<T> type, String identity) throws EntityTypeNotFoundException, LifecycleException
+    public <T> T newEntity( Class<T> type, String identity ) throws EntityTypeNotFoundException, LifecycleException
     {
-        EntityFinder finder = moduleInstance.findEntityModel(type);
+        EntityFinder finder = moduleInstance.findEntityModel( type );
 
         if( finder.model == null )
         {
@@ -110,24 +120,28 @@ public class ModuleUnitOfWork
         }
 
         // Register type
-        if (!ConfigurationComposite.class.isAssignableFrom(finder.model.type()))
-            finder.module.entities().entityTypeRegistry().registerEntityType(finder.model.entityType());
+        if( !ConfigurationComposite.class.isAssignableFrom( finder.model.type() ) )
+        {
+            finder.module.entities().entityTypeRegistry().registerEntityType( finder.model.entityType() );
+        }
 
         // Transfer state
         EntityModel entityModel = finder.model;
 
         // Generate id
-        if (identity == null)
+        if( identity == null )
         {
             identity = finder.module.entities().identityGenerator().generate( entityModel.type() );
         }
 
         EntityStore entityStore = finder.module.entities().entityStore();
-        EntityState entityState = entityModel.newEntityState( entityStore, parseEntityReference(identity) , moduleInstance.layerInstance().applicationInstance().runtime());
+        EntityState entityState = entityModel.newEntityState( entityStore, parseEntityReference( identity ), moduleInstance.layerInstance().applicationInstance().runtime() );
 
-        if (identityStateName == null)
-            identityStateName = entityModel.state().<PropertyTypeDescriptor>getPropertyByQualifiedName(QualifiedName.fromMethod(IDENTITY_METHOD)).propertyType().stateName();
-        entityState.setProperty(identityStateName, '\"'+identity+'\"');
+        if( identityStateName == null )
+        {
+            identityStateName = entityModel.state().<PropertyTypeDescriptor>getPropertyByQualifiedName( QualifiedName.fromMethod( IDENTITY_METHOD ) ).propertyType().stateName();
+        }
+        entityState.setProperty( identityStateName, '\"' + identity + '\"' );
 
         EntityInstance instance = new EntityInstance( this, moduleInstance, entityModel, entityState.identity(), entityState );
 
@@ -155,10 +169,10 @@ public class ModuleUnitOfWork
 
     public <T> EntityBuilder<T> newEntityBuilder( Class<T> type ) throws EntityTypeNotFoundException
     {
-        return newEntityBuilder(type, null);
+        return newEntityBuilder( type, null );
     }
 
-    public <T> EntityBuilder<T> newEntityBuilder(Class<T> type, String identity)
+    public <T> EntityBuilder<T> newEntityBuilder( Class<T> type, String identity )
         throws EntityTypeNotFoundException
     {
         EntityFinder finder = moduleInstance.findEntityModel( type );
@@ -169,13 +183,15 @@ public class ModuleUnitOfWork
         }
 
         // Register type if not a configuration
-        if (!ConfigurationComposite.class.isAssignableFrom(finder.model.type()))
-            finder.module.entities().entityTypeRegistry().registerEntityType(finder.model.entityType());
+        if( !ConfigurationComposite.class.isAssignableFrom( finder.model.type() ) )
+        {
+            finder.module.entities().entityTypeRegistry().registerEntityType( finder.model.entityType() );
+        }
 
         return uow.newEntityBuilder( identity, finder.model, finder.module.entities().entityStore(), finder.module, this );
     }
 
-    public <T> T get(Class<T> type, String identity)
+    public <T> T get( Class<T> type, String identity )
         throws EntityTypeNotFoundException, NoSuchEntityException
     {
         EntityFinder finder = moduleInstance.findEntityModel( type );
@@ -185,7 +201,7 @@ public class ModuleUnitOfWork
             throw new EntityTypeNotFoundException( type.getName() );
         }
 
-        return uow.get( parseEntityReference(identity), this, finder.model, finder.module ).<T>proxy();
+        return uow.get( parseEntityReference( identity ), this, finder.model, finder.module ).<T>proxy();
     }
 
     public <T> T get( T entity ) throws EntityTypeNotFoundException
@@ -213,16 +229,18 @@ public class ModuleUnitOfWork
 
         EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
 
-        if (compositeInstance.status() == EntityStatus.NEW)
+        if( compositeInstance.status() == EntityStatus.NEW )
         {
-            compositeInstance.remove(this);
-            uow.remove(compositeInstance.identity());
-        } else if (compositeInstance.status() == EntityStatus.LOADED)
+            compositeInstance.remove( this );
+            uow.remove( compositeInstance.identity() );
+        }
+        else if( compositeInstance.status() == EntityStatus.LOADED )
         {
-            compositeInstance.remove(this);
-        } else
+            compositeInstance.remove( this );
+        }
+        else
         {
-            throw new NoSuchEntityException(compositeInstance.identity());
+            throw new NoSuchEntityException( compositeInstance.identity() );
         }
 
     }

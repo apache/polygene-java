@@ -16,10 +16,9 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
+import java.lang.reflect.Method;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.ManyAssociationReference;
-
-import java.lang.reflect.Method;
 
 /**
  * @author edward.yakop@gmail.com
@@ -28,10 +27,10 @@ public class ManyAssociationReferenceImpl
     extends AssociationReferenceImpl
     implements ManyAssociationReference
 {
-    public ManyAssociationReferenceImpl(final Method accessor,
-                                        final AssociationReference traversed
+    public ManyAssociationReferenceImpl( final Method accessor,
+                                         final AssociationReference traversed
     )
     {
-        super( accessor, traversed);
+        super( accessor, traversed );
     }
 }

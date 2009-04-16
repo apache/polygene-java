@@ -14,14 +14,13 @@
 
 package org.qi4j.spi.entity.helpers;
 
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.StateCommitter;
-
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.StateCommitter;
 
 /**
  * JAVADOC
@@ -32,26 +31,26 @@ public class EntityStoreChanges
     private Map<EntityReference, EntityStateChanges> updatedEntityStates;
     private List<EntityReference> removedEntityStates;
 
-    public StateCommitter applyTo(EntityStore store)
+    public StateCommitter applyTo( EntityStore store )
     {
         // New state
         List<EntityState> newStates = new ArrayList<EntityState>();
-        for (Map.Entry<EntityReference, EntityStateChanges> entityReferenceEntityStateChangesEntry : newEntityStates.entrySet())
+        for( Map.Entry<EntityReference, EntityStateChanges> entityReferenceEntityStateChangesEntry : newEntityStates.entrySet() )
         {
-            EntityState state = store.getEntityState(entityReferenceEntityStateChangesEntry.getKey());
-            entityReferenceEntityStateChangesEntry.getValue().applyTo(state);
-            newStates.add(state);
+            EntityState state = store.getEntityState( entityReferenceEntityStateChangesEntry.getKey() );
+            entityReferenceEntityStateChangesEntry.getValue().applyTo( state );
+            newStates.add( state );
         }
 
         // Updated states
         List<EntityState> updatedStates = new ArrayList<EntityState>();
-        for (Map.Entry<EntityReference, EntityStateChanges> entityReferenceEntityStateChangesEntry : updatedEntityStates.entrySet())
+        for( Map.Entry<EntityReference, EntityStateChanges> entityReferenceEntityStateChangesEntry : updatedEntityStates.entrySet() )
         {
-            EntityState state = store.getEntityState(entityReferenceEntityStateChangesEntry.getKey());
-            entityReferenceEntityStateChangesEntry.getValue().applyTo(state);
-            updatedStates.add(state);
+            EntityState state = store.getEntityState( entityReferenceEntityStateChangesEntry.getKey() );
+            entityReferenceEntityStateChangesEntry.getValue().applyTo( state );
+            updatedStates.add( state );
         }
 
-        return store.prepare(newStates, updatedStates, removedEntityStates);
+        return store.prepare( newStates, updatedStates, removedEntityStates );
     }
 }

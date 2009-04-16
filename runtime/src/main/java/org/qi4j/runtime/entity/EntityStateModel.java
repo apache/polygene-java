@@ -16,20 +16,22 @@ package org.qi4j.runtime.entity;
 
 import java.lang.reflect.Method;
 import java.util.Set;
-
+import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.property.Property;
 import org.qi4j.runtime.composite.AbstractStateModel;
-import org.qi4j.runtime.entity.association.*;
+import org.qi4j.runtime.entity.association.EntityAssociationsInstance;
+import org.qi4j.runtime.entity.association.EntityAssociationsModel;
+import org.qi4j.runtime.entity.association.EntityManyAssociationsInstance;
+import org.qi4j.runtime.entity.association.EntityManyAssociationsModel;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
+import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
 
 /**
@@ -44,7 +46,7 @@ public final class EntityStateModel
 
     public EntityStateModel( EntityPropertiesModel propertiesModel, EntityAssociationsModel associationsModel, EntityManyAssociationsModel manyAssociationsModel )
     {
-        super(propertiesModel);
+        super( propertiesModel );
         this.associationsModel = associationsModel;
         this.manyAssociationsModel = manyAssociationsModel;
     }
@@ -52,9 +54,9 @@ public final class EntityStateModel
 
     public EntityStateModel.EntityStateInstance newInstance( ModuleUnitOfWork uow, EntityState entityState )
     {
-        return new EntityStateInstance( propertiesModel.newInstance(entityState, uow),
-                associationsModel.newInstance(entityState, uow),
-                manyAssociationsModel.newInstance(entityState, uow));
+        return new EntityStateInstance( propertiesModel.newInstance( entityState, uow ),
+                                        associationsModel.newInstance( entityState, uow ),
+                                        manyAssociationsModel.newInstance( entityState, uow ) );
     }
 
     @Override public void addStateFor( Iterable<Method> methods )
@@ -115,7 +117,7 @@ public final class EntityStateModel
         private EntityStateInstance(
             EntityPropertiesInstance entityPropertiesInstance,
             EntityAssociationsInstance entityAssociationsInstance,
-            EntityManyAssociationsInstance entityManyAssociationsInstance)
+            EntityManyAssociationsInstance entityManyAssociationsInstance )
         {
             this.entityPropertiesInstance = entityPropertiesInstance;
             this.entityAssociationsInstance = entityAssociationsInstance;
@@ -124,37 +126,37 @@ public final class EntityStateModel
 
         public <T> Property<T> getProperty( Method accessor )
         {
-            return entityPropertiesInstance.<T>getProperty(accessor);
+            return entityPropertiesInstance.<T>getProperty( accessor );
         }
 
         public <T> Association<T> getAssociation( Method accessor )
         {
-            return entityAssociationsInstance.associationFor(accessor);
+            return entityAssociationsInstance.associationFor( accessor );
         }
 
         public <T> ManyAssociation<T> getManyAssociation( Method accessor )
         {
-            return entityManyAssociationsInstance.manyAssociationFor(accessor);
+            return entityManyAssociationsInstance.manyAssociationFor( accessor );
         }
 
-        public void visitState(EntityStateVisitor visitor)
+        public void visitState( EntityStateVisitor visitor )
         {
-            visitProperties(visitor);
+            visitProperties( visitor );
 
-            entityAssociationsInstance.visitAssociations(visitor);
-            entityManyAssociationsInstance.visitManyAssociations(visitor);
+            entityAssociationsInstance.visitAssociations( visitor );
+            entityManyAssociationsInstance.visitManyAssociations( visitor );
         }
 
-        public void visitProperties(StateVisitor visitor)
+        public void visitProperties( StateVisitor visitor )
         {
-            entityPropertiesInstance.visitProperties(visitor);
+            entityPropertiesInstance.visitProperties( visitor );
         }
 
         public void refresh( EntityState entityState )
         {
-            entityPropertiesInstance.refresh(entityState);
-            entityAssociationsInstance.refresh(entityState);
-            entityManyAssociationsInstance.refresh(entityState);
+            entityPropertiesInstance.refresh( entityState );
+            entityAssociationsInstance.refresh( entityState );
+            entityManyAssociationsInstance.refresh( entityState );
         }
 
         public void checkConstraints()

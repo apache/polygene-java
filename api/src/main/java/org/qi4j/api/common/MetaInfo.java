@@ -14,17 +14,20 @@
 
 package org.qi4j.api.common;
 
-import org.qi4j.api.concern.Concerns;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.sideeffect.SideEffects;
-import org.qi4j.api.util.Classes;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 import static java.util.Arrays.asList;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.sideeffect.SideEffects;
+import org.qi4j.api.util.Classes;
 
 /**
  * Used to declare and access meta-info.

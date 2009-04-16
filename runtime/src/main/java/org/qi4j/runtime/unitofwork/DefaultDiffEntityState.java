@@ -14,64 +14,64 @@
 
 package org.qi4j.runtime.unitofwork;
 
-import org.qi4j.spi.entity.helpers.DefaultEntityState;
-import org.qi4j.spi.entity.helpers.EntityStateChanges;
-import org.qi4j.spi.entity.helpers.DefaultDiffManyAssociationState;
-import org.qi4j.spi.entity.StateName;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityTypeReference;
 import org.qi4j.spi.entity.ManyAssociationState;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.StateName;
+import org.qi4j.spi.entity.helpers.DefaultDiffManyAssociationState;
+import org.qi4j.spi.entity.helpers.DefaultEntityState;
+import org.qi4j.spi.entity.helpers.EntityStateChanges;
 
 /**
  * JAVADOC
  */
 public class DefaultDiffEntityState
-        extends DefaultEntityState
+    extends DefaultEntityState
 {
     EntityStateChanges changes = new EntityStateChanges();
 
     public DefaultDiffEntityState()
     {
-        super(EntityReference.NULL);
+        super( EntityReference.NULL );
     }
 
     @Override
-    public void setProperty(StateName stateName, String newValue)
+    public void setProperty( StateName stateName, String newValue )
     {
-        super.setProperty(stateName, newValue);
-        changes.setProperty(stateName, newValue);
+        super.setProperty( stateName, newValue );
+        changes.setProperty( stateName, newValue );
     }
 
     @Override
-    public void setAssociation(StateName stateName, EntityReference newEntity)
+    public void setAssociation( StateName stateName, EntityReference newEntity )
     {
-        super.setAssociation(stateName, newEntity);
-        changes.setAssociation(stateName, newEntity);
+        super.setAssociation( stateName, newEntity );
+        changes.setAssociation( stateName, newEntity );
     }
 
     @Override
-    public void addEntityTypeReference(EntityTypeReference entityType)
+    public void addEntityTypeReference( EntityTypeReference entityType )
     {
-        super.addEntityTypeReference(entityType);
-        changes.addEntityTypeReference(entityType);
+        super.addEntityTypeReference( entityType );
+        changes.addEntityTypeReference( entityType );
     }
 
     @Override
-    public void removeEntityTypeReference(EntityTypeReference type)
+    public void removeEntityTypeReference( EntityTypeReference type )
     {
-        super.removeEntityTypeReference(type);
-        changes.removeEntityTypeReference(type);
+        super.removeEntityTypeReference( type );
+        changes.removeEntityTypeReference( type );
     }
 
     @Override
-    public ManyAssociationState getManyAssociation(StateName stateName)
+    public ManyAssociationState getManyAssociation( StateName stateName )
     {
-        return new DefaultDiffManyAssociationState(stateName, changes);
+        return new DefaultDiffManyAssociationState( stateName, changes );
     }
 
-    public void applyTo(EntityState entityState)
+    public void applyTo( EntityState entityState )
     {
-        changes.applyTo(entityState);
+        changes.applyTo( entityState );
     }
 }

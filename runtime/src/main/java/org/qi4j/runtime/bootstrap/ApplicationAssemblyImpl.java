@@ -14,14 +14,13 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyVisitor;
 import org.qi4j.bootstrap.LayerAssembly;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The representation of an entire application. From

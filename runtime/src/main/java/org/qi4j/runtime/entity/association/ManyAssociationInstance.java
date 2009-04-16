@@ -1,5 +1,11 @@
 package org.qi4j.runtime.entity.association;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.ManyAssociation;
@@ -7,8 +13,6 @@ import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.QualifiedIdentity;
-
-import java.util.*;
 
 /**
  * JAVADOC
@@ -26,32 +30,32 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
         return associated().count();
     }
 
-    public boolean contains(T entity)
+    public boolean contains( T entity )
     {
-        return associated().contains(getEntityReference(entity));
+        return associated().contains( getEntityReference( entity ) );
     }
 
-    public boolean add(int i, T entity)
+    public boolean add( int i, T entity )
     {
-        return associated().add(i, getEntityReference(entity));
+        return associated().add( i, getEntityReference( entity ) );
     }
 
-    public boolean remove(T entity)
+    public boolean remove( T entity )
     {
-        return associated().remove(getEntityReference(entity));
+        return associated().remove( getEntityReference( entity ) );
     }
 
-    public T get(int i)
+    public T get( int i )
     {
-        return getEntity( associated().get(i));
+        return getEntity( associated().get( i ) );
     }
 
     public List<T> toList()
     {
         ArrayList<T> list = new ArrayList<T>();
-        for (EntityReference entityReference : associated())
+        for( EntityReference entityReference : associated() )
         {
-            list.add(getEntity(entityReference));
+            list.add( getEntity( entityReference ) );
         }
 
         return list;
@@ -60,9 +64,9 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
     public Set<T> toSet()
     {
         Set<T> set = new HashSet<T>();
-        for (EntityReference entityReference : associated())
+        for( EntityReference entityReference : associated() )
         {
-            set.add(getEntity(entityReference));
+            set.add( getEntity( entityReference ) );
         }
 
         return set;
@@ -95,7 +99,7 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
 
         ManyAssociationInstance that = (ManyAssociationInstance) o;
 
-        return associated().equals(that.associated());
+        return associated().equals( that.associated() );
 
     }
 
@@ -160,6 +164,6 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
 
     private ManyAssociationState associated()
     {
-        return entityState.getManyAssociation( ((ManyAssociationModel)associationInfo).manyAssociationType().stateName() );
+        return entityState.getManyAssociation( ( (ManyAssociationModel) associationInfo ).manyAssociationType().stateName() );
     }
 }

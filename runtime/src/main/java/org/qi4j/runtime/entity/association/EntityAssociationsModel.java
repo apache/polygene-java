@@ -17,30 +17,26 @@ package org.qi4j.runtime.entity.association;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.*;
-
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.association.AbstractAssociation;
-import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.api.util.MethodSet;
 import org.qi4j.api.util.MethodValueMap;
-import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.runtime.util.Annotations;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
+import org.qi4j.runtime.util.Annotations;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
 
 /**
  * JAVADOC
@@ -135,17 +131,17 @@ public final class EntityAssociationsModel
         return associationTypes;
     }
 
-    public void checkConstraints(EntityAssociationsInstance associations)
+    public void checkConstraints( EntityAssociationsInstance associations )
     {
-        for (AssociationModel associationModel : associationModels)
+        for( AssociationModel associationModel : associationModels )
         {
-            associationModel.checkAssociationConstraints(associations);
-            associationModel.checkConstraints(associations);
+            associationModel.checkAssociationConstraints( associations );
+            associationModel.checkConstraints( associations );
         }
     }
 
-    public EntityAssociationsInstance newInstance(EntityState entityState, ModuleUnitOfWork uow)
+    public EntityAssociationsInstance newInstance( EntityState entityState, ModuleUnitOfWork uow )
     {
-        return new EntityAssociationsInstance(this, entityState, uow);
+        return new EntityAssociationsInstance( this, entityState, uow );
     }
 }

@@ -16,9 +16,13 @@ package org.qi4j.runtime.unitofwork;
 
 import java.lang.reflect.Method;
 import java.util.Iterator;
-
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.*;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.entity.IdentityGenerator;
+import org.qi4j.api.entity.Lifecycle;
+import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -27,7 +31,6 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.StateName;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
-import org.qi4j.api.entity.EntityReference;
 
 /**
  * JAVADOC
@@ -71,18 +74,20 @@ public final class EntityBuilderInstance<T>
         this.store = store;
         this.identityGenerator = identityGenerator;
 
-        if (identityStateName == null)
-            identityStateName = entityModel.state().<PropertyTypeDescriptor>getPropertyByQualifiedName(QualifiedName.fromMethod(IDENTITY_METHOD)).propertyType().stateName();
+        if( identityStateName == null )
+        {
+            identityStateName = entityModel.state().<PropertyTypeDescriptor>getPropertyByQualifiedName( QualifiedName.fromMethod( IDENTITY_METHOD ) ).propertyType().stateName();
+        }
 
         entityState = new DefaultDiffEntityState();
-        entityState.addEntityTypeReference(entityModel.entityType().reference());
-        prototypeInstance = entityModel.newInstance(uow, moduleInstance, EntityReference.NULL, entityState);
+        entityState.addEntityTypeReference( entityModel.entityType().reference() );
+        prototypeInstance = entityModel.newInstance( uow, moduleInstance, EntityReference.NULL, entityState );
     }
 
     public EntityBuilderInstance( ModuleInstance moduleInstance, EntityModel model, ModuleUnitOfWork uow, EntityStore store, String identity )
     {
-        this(moduleInstance, model, uow, store, (IdentityGenerator) null);
-        entityState.setProperty(identityStateName, '\"'+identity+'\"');
+        this( moduleInstance, model, uow, store, (IdentityGenerator) null );
+        entityState.setProperty( identityStateName, '\"' + identity + '\"' );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -93,7 +98,7 @@ public final class EntityBuilderInstance<T>
 
     public <K> K prototypeFor( Class<K> mixinType )
     {
-        return prototypeInstance.newProxy(mixinType);
+        return prototypeInstance.newProxy( mixinType );
     }
 
     public T newInstance()
@@ -108,20 +113,21 @@ public final class EntityBuilderInstance<T>
         {
             Class compositeType = entityModel.type();
             identity = identityGenerator.generate( compositeType );
-            identityJson = '\"'+identity+'\"';
-            newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference(identity), moduleInstance.layerInstance().applicationInstance().runtime());
-        } else
+            identityJson = '\"' + identity + '\"';
+            newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ), moduleInstance.layerInstance().applicationInstance().runtime() );
+        }
+        else
         {
-            identityJson = entityState.getProperty(identityStateName);
-            identity = identityJson.substring(1, identityJson.length()-1);
-            newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference(identity), moduleInstance.layerInstance().applicationInstance().runtime());
+            identityJson = entityState.getProperty( identityStateName );
+            identity = identityJson.substring( 1, identityJson.length() - 1 );
+            newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ), moduleInstance.layerInstance().applicationInstance().runtime() );
         }
 
         // Transfer state from prototype
-        entityState.applyTo(newEntityState);
+        entityState.applyTo( newEntityState );
 
         // Set identity property
-        newEntityState.setProperty(identityStateName, identityJson);
+        newEntityState.setProperty( identityStateName, identityJson );
 
         EntityInstance instance = entityModel.newInstance( uow, moduleInstance, newEntityState.identity(), newEntityState );
 

@@ -14,15 +14,17 @@
 
 package org.qi4j.spi.value;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
+import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.util.Base64Encoder;
 import org.qi4j.spi.util.PeekableStringTokenizer;
-import org.qi4j.spi.Qi4jSPI;
-
-import java.io.*;
-import java.util.StringTokenizer;
 
 /**
  * JAVADOC
@@ -47,44 +49,44 @@ public class SerializableType
         schemaVersion.versionize( type );
     }
 
-    public void toJSON(Object value, StringBuilder json, Qi4jSPI spi)
+    public void toJSON( Object value, StringBuilder json, Qi4jSPI spi )
     {
         // Serialize value
         try
         {
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(bout);
-            out.writeUnshared(value);
+            ObjectOutputStream out = new ObjectOutputStream( bout );
+            out.writeUnshared( value );
             out.close();
-            String stringValue = new String(Base64Encoder.encode(bout.toByteArray(), true), "UTF-8");
-            json.append(stringValue);
+            String stringValue = new String( Base64Encoder.encode( bout.toByteArray(), true ), "UTF-8" );
+            json.append( stringValue );
         }
-        catch (IOException e)
+        catch( IOException e )
         {
-            throw new IllegalArgumentException("Could not serialize value", e);
+            throw new IllegalArgumentException( "Could not serialize value", e );
         }
 
     }
 
-    public Object fromJSON(PeekableStringTokenizer json, Module module)
+    public Object fromJSON( PeekableStringTokenizer json, Module module )
     {
         try
         {
-            byte[] bytes = json.nextToken().getBytes("UTF-8");
-            bytes = Base64Encoder.decode(bytes);
-            ByteArrayInputStream bin = new ByteArrayInputStream(bytes);
-            ObjectInputStream oin = new ObjectInputStream(bin);
+            byte[] bytes = json.nextToken().getBytes( "UTF-8" );
+            bytes = Base64Encoder.decode( bytes );
+            ByteArrayInputStream bin = new ByteArrayInputStream( bytes );
+            ObjectInputStream oin = new ObjectInputStream( bin );
             Object result = oin.readObject();
             oin.close();
             return result;
         }
-        catch (IOException e)
+        catch( IOException e )
         {
-            throw new IllegalStateException("Could not deserialize value", e);
+            throw new IllegalStateException( "Could not deserialize value", e );
         }
-        catch (ClassNotFoundException e)
+        catch( ClassNotFoundException e )
         {
-            throw new IllegalStateException("Could not find class for serialized value", e);
+            throw new IllegalStateException( "Could not find class for serialized value", e );
         }
     }
 

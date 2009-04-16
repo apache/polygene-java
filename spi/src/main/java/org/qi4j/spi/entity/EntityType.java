@@ -16,13 +16,10 @@ package org.qi4j.spi.entity;
 
 import java.io.Serializable;
 import java.util.Set;
-
+import org.qi4j.api.common.TypeName;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
-import static org.qi4j.api.common.TypeName.nameOf;
-import org.qi4j.api.common.TypeName;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.value.ValueType;
 
 /**
  * SPI-level description of an Entity type. This contains
@@ -61,8 +58,8 @@ public final class EntityType
         this.associations = associations;
         this.manyAssociations = manyAssociations;
         this.version = calculateSchemaVersion();
-        this.uri = "urn:qi4j:type:"+version+":"+entityType.normalized();
-        this.reference = new EntityTypeReference(type, rdf, version);
+        this.uri = "urn:qi4j:type:" + version + ":" + entityType.normalized();
+        this.reference = new EntityTypeReference( type, rdf, version );
     }
 
     public TypeName type()
@@ -148,12 +145,12 @@ public final class EntityType
             final SchemaVersion schemaVersion = new SchemaVersion();
 
             // Entity type
-            schemaVersion.versionize(type);
+            schemaVersion.versionize( type );
 
             // Properties
             for( PropertyType property : properties )
             {
-                 property.versionize( schemaVersion );
+                property.versionize( schemaVersion );
             }
 
             // Associations

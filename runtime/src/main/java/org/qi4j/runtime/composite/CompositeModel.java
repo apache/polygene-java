@@ -14,23 +14,21 @@
 
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.InvocationHandler;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
-
-import java.lang.reflect.InvocationHandler;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Model for Transient Composites

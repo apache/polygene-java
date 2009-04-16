@@ -14,9 +14,12 @@
  */
 package org.qi4j.spi.query.named;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import org.qi4j.api.injection.InjectionScope;
-
-import java.lang.annotation.*;
 
 /**
  * Annotation for the method in the bean service, to indicate that the method is a QueryMethod and should

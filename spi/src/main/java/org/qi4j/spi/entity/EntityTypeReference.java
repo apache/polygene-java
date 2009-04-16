@@ -14,9 +14,8 @@
 
 package org.qi4j.spi.entity;
 
-import org.qi4j.api.common.TypeName;
-
 import java.io.Serializable;
+import org.qi4j.api.common.TypeName;
 
 /**
  * JAVADOC
@@ -28,15 +27,15 @@ public class EntityTypeReference
     private String rdf;
     private String version;
 
-    public EntityTypeReference(String ref)
+    public EntityTypeReference( String ref )
     {
-        String[] refs = ref.split(":", 3);
-        version = refs[0];
-        type = TypeName.nameOf(refs[1]);
-        rdf = refs[2];
+        String[] refs = ref.split( ":", 3 );
+        version = refs[ 0 ];
+        type = TypeName.nameOf( refs[ 1 ] );
+        rdf = refs[ 2 ];
     }
 
-    public EntityTypeReference(TypeName type, String rdf, String version)
+    public EntityTypeReference( TypeName type, String rdf, String version )
     {
         this.type = type;
         this.rdf = rdf;
@@ -61,23 +60,32 @@ public class EntityTypeReference
     @Override
     public String toString()
     {
-        return version + ":" + type + (rdf == null ? "" : ":" + rdf);
+        return version + ":" + type + ( rdf == null ? "" : ":" + rdf );
     }
 
     public String toUri()
     {
-        return "urn:qi4j:type:"+version + ":" + type + (rdf == null ? "" : ":" + rdf);
+        return "urn:qi4j:type:" + version + ":" + type + ( rdf == null ? "" : ":" + rdf );
     }
 
     @Override
-    public boolean equals(Object o)
+    public boolean equals( Object o )
     {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if( this == o )
+        {
+            return true;
+        }
+        if( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
 
         EntityTypeReference that = (EntityTypeReference) o;
 
-        if (!version.equals(that.version)) return false;
+        if( !version.equals( that.version ) )
+        {
+            return false;
+        }
 
         return true;
     }

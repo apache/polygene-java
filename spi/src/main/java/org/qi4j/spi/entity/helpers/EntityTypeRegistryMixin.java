@@ -14,11 +14,13 @@
 
 package org.qi4j.spi.entity.helpers;
 
-import org.qi4j.spi.entity.*;
-
-import java.util.Map;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.EntityTypeRegistry;
+import org.qi4j.spi.entity.UnknownEntityTypeException;
 
 /**
  * EntityType registry mixin which helps EntityStore implementations.
@@ -31,8 +33,10 @@ public class EntityTypeRegistryMixin
     public void registerEntityType( EntityType entityType )
     {
         EntityTypeReference reference = entityType.reference();
-        if (!entityTypes.containsKey(reference))
-            entityTypes.put(reference, entityType );
+        if( !entityTypes.containsKey( reference ) )
+        {
+            entityTypes.put( reference, entityType );
+        }
     }
 
     public EntityType getEntityType( EntityTypeReference type )

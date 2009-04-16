@@ -15,14 +15,10 @@
 package org.qi4j.spi.value;
 
 import java.lang.reflect.Type;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.StringTokenizer;
-
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
-import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
 /**
@@ -31,12 +27,12 @@ import org.qi4j.spi.util.PeekableStringTokenizer;
 public class StringType
     implements ValueType
 {
-    public static boolean isString( Type type)
+    public static boolean isString( Type type )
     {
-        if (type instanceof Class)
+        if( type instanceof Class )
         {
             Class typeClass = (Class) type;
-            return  (typeClass.equals(String.class));
+            return ( typeClass.equals( String.class ) );
         }
         return false;
     }
@@ -58,44 +54,46 @@ public class StringType
         return type;
     }
 
-    public void toJSON(Object value, StringBuilder json, Qi4jSPI spi)
+    public void toJSON( Object value, StringBuilder json, Qi4jSPI spi )
     {
-        json.append('"');
+        json.append( '"' );
         String stringValue = value.toString();
         int len = stringValue.length();
-        for (int i = 0; i < len; i++)
+        for( int i = 0; i < len; i++ )
         {
-            char ch = stringValue.charAt(i);
+            char ch = stringValue.charAt( i );
             // Escape characters properly
-            switch(ch)
+            switch( ch )
             {
-                case '"':
-                    json.append('\\').append('"');
-                    break;
-                case '\\':
-                    json.append('\\').append('\\');
-                    break;
+            case '"':
+                json.append( '\\' ).append( '"' );
+                break;
+            case '\\':
+                json.append( '\\' ).append( '\\' );
+                break;
 
-                // TODO Control characters
+            // TODO Control characters
 
-                default:
-                    json.append(ch);
+            default:
+                json.append( ch );
             }
         }
-        json.append('"');
+        json.append( '"' );
     }
 
-    public Object fromJSON(PeekableStringTokenizer json, Module module)
+    public Object fromJSON( PeekableStringTokenizer json, Module module )
     {
-        String token = json.nextToken("\"");
+        String token = json.nextToken( "\"" );
         String result = json.nextToken();
 
         // Empty String
-        if (result.equals("\""))
+        if( result.equals( "\"" ) )
+        {
             return "";
+        }
 
         // TODO unescaping
-        
+
         token = json.nextToken();
         return result;
     }

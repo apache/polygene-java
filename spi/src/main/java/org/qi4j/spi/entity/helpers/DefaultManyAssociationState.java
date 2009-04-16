@@ -14,20 +14,19 @@
 
 package org.qi4j.spi.entity.helpers;
 
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.ManyAssociationState;
-
-import java.util.List;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.io.Serializable;
-import java.io.IOException;
+import java.util.List;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.ManyAssociationState;
 
 /**
  * Default implementation of ManyAssociationState. Backed by ArrayList.
  */
 public class DefaultManyAssociationState
-        implements ManyAssociationState, Serializable
+    implements ManyAssociationState, Serializable
 {
     private List<EntityReference> references;
     private boolean modified = false;
@@ -42,31 +41,33 @@ public class DefaultManyAssociationState
         return references.size();
     }
 
-    public boolean contains(EntityReference entityReference)
+    public boolean contains( EntityReference entityReference )
     {
-        return references.contains(entityReference);
+        return references.contains( entityReference );
     }
 
-    public boolean add(int i, EntityReference entityReference)
+    public boolean add( int i, EntityReference entityReference )
     {
-        if (references.contains(entityReference))
+        if( references.contains( entityReference ) )
+        {
             return false;
+        }
 
-        references.add(i, entityReference);
+        references.add( i, entityReference );
         modified = true;
         return true;
     }
 
-    public boolean remove(EntityReference entity)
+    public boolean remove( EntityReference entity )
     {
-        boolean removed = references.remove(entity);
+        boolean removed = references.remove( entity );
         modified = modified || removed;
         return removed;
     }
 
-    public EntityReference get(int i)
+    public EntityReference get( int i )
     {
-        return references.get(i);
+        return references.get( i );
     }
 
     public Iterator<EntityReference> iterator()
@@ -79,8 +80,8 @@ public class DefaultManyAssociationState
         return modified;
     }
 
-    private void readObject(java.io.ObjectInputStream in)
-            throws IOException, ClassNotFoundException
+    private void readObject( java.io.ObjectInputStream in )
+        throws IOException, ClassNotFoundException
     {
         in.defaultReadObject();
 

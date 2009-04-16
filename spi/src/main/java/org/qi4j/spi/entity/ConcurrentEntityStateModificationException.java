@@ -16,9 +16,8 @@
  */
 package org.qi4j.spi.entity;
 
-import org.qi4j.api.entity.EntityReference;
-
 import java.util.Collection;
+import org.qi4j.api.entity.EntityReference;
 
 /**
  * This exception should be thrown from {@link EntityStore#prepare(Iterable, Iterable, Iterable)} if the EntityStore
@@ -28,7 +27,7 @@ public class ConcurrentEntityStateModificationException extends EntityStoreExcep
 {
     private Collection<EntityReference> modifiedEntities;
 
-    public ConcurrentEntityStateModificationException(Collection<EntityReference> modifiedEntities )
+    public ConcurrentEntityStateModificationException( Collection<EntityReference> modifiedEntities )
     {
         this.modifiedEntities = modifiedEntities;
     }
