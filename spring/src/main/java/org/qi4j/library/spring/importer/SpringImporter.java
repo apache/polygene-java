@@ -14,11 +14,10 @@
 
 package org.qi4j.library.spring.importer;
 
-import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ServiceImporterException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.beans.BeansException;
 
 /**
  * Import a service from Spring. This assumes that the service has been imported
@@ -46,7 +45,7 @@ public class SpringImporter
         }
         catch( Throwable e )
         {
-            throw new ServiceImporterException("Could not import Spring service with id "+serviceDescriptor.identity(), e);
+            throw new ServiceImporterException( "Could not import Spring service with id " + serviceDescriptor.identity(), e );
         }
     }
 

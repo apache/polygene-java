@@ -1,6 +1,7 @@
 // This is a line comment.
 
-/* A block comment should not interfere */ function /* not even here*/ do1()
+/* A block comment should not interfere */
+function /* not even here*/ do1()
 {
     // {
     // { are nasty...

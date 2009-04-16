@@ -1,7 +1,15 @@
 package org.qi4j.library.struts2;
 
 import static com.opensymphony.xwork2.conversion.impl.XWorkConverter.CONVERSION_PROPERTY_FULLNAME;
-import ognl.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import ognl.MethodFailedException;
+import ognl.ObjectMethodAccessor;
+import ognl.ObjectPropertyAccessor;
+import ognl.OgnlContext;
+import ognl.OgnlException;
+import ognl.OgnlRuntime;
 import static ognl.OgnlRuntime.getConvertedType;
 import static ognl.OgnlRuntime.getFieldValue;
 import org.qi4j.api.constraint.ConstraintViolation;
@@ -11,10 +19,6 @@ import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
 import static org.qi4j.library.struts2.ConstraintViolationInterceptor.CONTEXT_CONSTRAINT_VIOLATIONS;
 import org.qi4j.library.struts2.ConstraintViolationInterceptor.FieldConstraintViolations;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * <p>An implementation of the ObjectPropertyAccessor that provides conversion for Qi4j properties.  The typical way that

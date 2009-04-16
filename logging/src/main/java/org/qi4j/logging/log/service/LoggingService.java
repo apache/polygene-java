@@ -17,10 +17,9 @@
  */
 package org.qi4j.logging.log.service;
 
+import java.io.Serializable;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.logging.log.LogType;
-
-import java.io.Serializable;
 
 public interface LoggingService
 {

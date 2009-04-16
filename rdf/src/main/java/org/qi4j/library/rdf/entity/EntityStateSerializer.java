@@ -14,7 +14,18 @@
 
 package org.qi4j.library.rdf.entity;
 
-import org.openrdf.model.*;
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import org.openrdf.model.BNode;
+import org.openrdf.model.Graph;
+import org.openrdf.model.Literal;
+import org.openrdf.model.Resource;
+import org.openrdf.model.Statement;
+import org.openrdf.model.URI;
+import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.XMLSchema;
@@ -29,13 +40,12 @@ import org.qi4j.spi.entity.QualifierQualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.value.*;
-
-import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import org.qi4j.spi.value.CollectionType;
+import org.qi4j.spi.value.PrimitiveType;
+import org.qi4j.spi.value.SerializableType;
+import org.qi4j.spi.value.ValueCompositeType;
+import org.qi4j.spi.value.ValueState;
+import org.qi4j.spi.value.ValueType;
 
 /**
  * JAVADOC

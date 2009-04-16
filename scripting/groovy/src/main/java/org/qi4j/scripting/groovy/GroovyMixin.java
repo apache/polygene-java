@@ -21,11 +21,6 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 import groovy.lang.GroovyShell;
-import org.qi4j.api.common.AppliesTo;
-import org.qi4j.api.common.AppliesToFilter;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.injection.scope.This;
-
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.InvocationHandler;
@@ -33,6 +28,10 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import org.qi4j.api.common.AppliesTo;
+import org.qi4j.api.common.AppliesToFilter;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.injection.scope.This;
 
 /**
  * Generic mixin that implements interfaces by delegating to Groovy functions

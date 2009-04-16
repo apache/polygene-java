@@ -16,6 +16,10 @@
  */
 package org.qi4j.library.struts2;
 
+import java.util.logging.Logger;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.ApplicationAssembler;
@@ -23,11 +27,6 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
 import static org.qi4j.library.struts2.Constants.SERVLET_ATTRIBUTE;
 import org.qi4j.spi.structure.ApplicationSPI;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import java.util.logging.Logger;
 
 /**
  * @author edward.yakop@gmail.com

@@ -17,14 +17,13 @@
  */
 package org.qi4j.library.rdf.serializer;
 
+import java.io.Writer;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.RDFWriterFactory;
 import org.qi4j.library.rdf.Qi4jRdf;
 import org.qi4j.library.rdf.Rdfs;
-
-import java.io.Writer;
 
 abstract class AbstractSerializer
     implements Serializer

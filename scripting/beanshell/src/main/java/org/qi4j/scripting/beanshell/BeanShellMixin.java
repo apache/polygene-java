@@ -18,6 +18,17 @@ import bsh.Interpreter;
 import bsh.NameSpace;
 import bsh.classpath.BshClassPath;
 import bsh.classpath.ClassManagerImpl;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
 import org.qi4j.api.composite.Composite;
@@ -28,14 +39,6 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.scripting.common.ScriptException;
 import org.qi4j.scripting.common.ScriptReloadable;
-
-import java.io.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Generic mixin that implements interfaces by delegating to BeanShell methods

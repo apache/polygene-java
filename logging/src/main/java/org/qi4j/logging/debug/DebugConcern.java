@@ -17,6 +17,7 @@
  */
 package org.qi4j.logging.debug;
 
+import java.io.Serializable;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.Composite;
@@ -24,8 +25,6 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.logging.debug.service.DebuggingService;
-
-import java.io.Serializable;
 
 public final class DebugConcern
     implements Debug

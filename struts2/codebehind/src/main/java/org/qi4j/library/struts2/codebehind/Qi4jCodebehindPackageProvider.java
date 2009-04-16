@@ -12,14 +12,22 @@ import com.opensymphony.xwork2.util.ClassLoaderUtil;
 import com.opensymphony.xwork2.util.TextUtils;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
-import org.apache.struts2.config.*;
-import org.qi4j.library.struts2.ActionConfiguration;
-
-import javax.servlet.ServletContext;
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.ServletContext;
+import org.apache.struts2.config.Namespace;
+import org.apache.struts2.config.NullResult;
+import org.apache.struts2.config.ParentPackage;
+import org.apache.struts2.config.Result;
+import org.apache.struts2.config.Results;
+import org.qi4j.library.struts2.ActionConfiguration;
 
 /**
  * This is inspired by the ClasspathPackageProvider from the struts2-codebehind-plugin.  Most of the code

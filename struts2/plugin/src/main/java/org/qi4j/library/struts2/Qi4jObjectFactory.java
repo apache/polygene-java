@@ -19,16 +19,17 @@ package org.qi4j.library.struts2;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.struts2.util.ObjectFactoryDestroyable;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectBuilderFactory;
-import static org.qi4j.library.struts2.Qi4jObjectFactory.ClassType.*;
-
-import java.util.HashMap;
-import java.util.Map;
+import static org.qi4j.library.struts2.Qi4jObjectFactory.ClassType.object;
+import static org.qi4j.library.struts2.Qi4jObjectFactory.ClassType.qi4jComposite;
+import static org.qi4j.library.struts2.Qi4jObjectFactory.ClassType.qi4jObject;
 
 /**
  * Qi4j implementation of struts object factory.

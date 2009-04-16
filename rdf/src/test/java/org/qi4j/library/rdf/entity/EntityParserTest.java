@@ -14,6 +14,7 @@
 
 package org.qi4j.library.rdf.entity;
 
+import java.util.Collections;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import org.junit.Before;
@@ -34,8 +35,6 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.test.AbstractQi4jTest;
-
-import java.util.Collections;
 
 /**
  * JAVADOC

@@ -14,6 +14,7 @@
 
 package org.qi4j.library.rdf.entity;
 
+import java.util.ArrayList;
 import org.openrdf.model.Statement;
 import org.qi4j.api.util.Classes;
 import org.qi4j.library.rdf.Qi4jEntityType;
@@ -22,8 +23,6 @@ import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
-
-import java.util.ArrayList;
 
 /**
  * Parser for RDF to EntityType.

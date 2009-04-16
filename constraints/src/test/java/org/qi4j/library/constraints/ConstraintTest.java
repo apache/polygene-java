@@ -12,6 +12,9 @@
 */
 package org.qi4j.library.constraints;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.qi4j.api.composite.CompositeBuilder;
@@ -19,10 +22,6 @@ import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 
 public class ConstraintTest extends AbstractQi4jTest
 {

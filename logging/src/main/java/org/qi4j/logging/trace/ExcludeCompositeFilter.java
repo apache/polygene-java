@@ -17,10 +17,9 @@
  */
 package org.qi4j.logging.trace;
 
+import java.lang.reflect.Method;
 import org.qi4j.api.common.AppliesToFilter;
 import org.qi4j.api.composite.Composite;
-
-import java.lang.reflect.Method;
 
 public class ExcludeCompositeFilter
     implements AppliesToFilter

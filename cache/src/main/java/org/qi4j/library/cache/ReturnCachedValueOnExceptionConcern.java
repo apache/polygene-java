@@ -1,12 +1,11 @@
 package org.qi4j.library.cache;
 
-import org.qi4j.api.common.AppliesTo;
-import org.qi4j.api.concern.ConcernOf;
-import org.qi4j.api.injection.scope.This;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import org.qi4j.api.common.AppliesTo;
+import org.qi4j.api.concern.ConcernOf;
+import org.qi4j.api.injection.scope.This;
 
 /**
  * Return value of @Cached calls on exceptions.

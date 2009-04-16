@@ -14,7 +14,15 @@
 
 package org.qi4j.library.rdf.entity;
 
-import org.openrdf.model.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import org.openrdf.model.BNode;
+import org.openrdf.model.Resource;
+import org.openrdf.model.Statement;
+import org.openrdf.model.URI;
+import org.openrdf.model.Value;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.util.Classes;
@@ -24,11 +32,6 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * JAVADOC

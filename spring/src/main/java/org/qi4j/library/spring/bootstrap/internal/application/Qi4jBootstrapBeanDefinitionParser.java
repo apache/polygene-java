@@ -16,26 +16,26 @@
 */
 package org.qi4j.library.spring.bootstrap.internal.application;
 
+import org.qi4j.api.structure.Application;
+import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.bootstrap.ApplicationAssembler;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
-import static org.qi4j.library.spring.bootstrap.Constants.*;
+import static org.qi4j.library.spring.bootstrap.Constants.BEAN_ID_QI4J_APPLICATION;
 import org.qi4j.library.spring.bootstrap.Qi4jApplicationBootstrap;
-import org.qi4j.api.structure.Application;
 import org.springframework.beans.BeanInstantiationException;
-import static org.springframework.beans.BeanUtils.*;
+import static org.springframework.beans.BeanUtils.instantiateClass;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import static org.springframework.beans.factory.support.BeanDefinitionBuilder.*;
+import static org.springframework.beans.factory.support.BeanDefinitionBuilder.rootBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.beans.factory.xml.XmlReaderContext;
-import static org.springframework.util.Assert.*;
-import static org.springframework.util.ClassUtils.*;
+import static org.springframework.util.Assert.hasText;
+import static org.springframework.util.ClassUtils.forName;
 import org.w3c.dom.Element;
 
 /**
@@ -119,7 +119,7 @@ public final class Qi4jBootstrapBeanDefinitionParser
                     aBootstrap.assemble( applicationAssembly );
                     return applicationAssembly;
                 }
-            });
+            } );
         }
         catch( AssemblyException e )
         {
