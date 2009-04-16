@@ -16,7 +16,7 @@
   </scm>
 
   <properties>
-    <version.qi4j-core>0.7</version.qi4j-core>
+    <version.qi4j-core>0.8-SNAPSHOT</version.qi4j-core>
     <version.jetty>6.1.11</version.jetty>
   </properties>
 

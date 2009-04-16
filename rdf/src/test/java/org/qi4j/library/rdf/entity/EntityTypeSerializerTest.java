@@ -35,6 +35,7 @@ import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.helpers.EntityTypeRegistryService;
 import org.qi4j.test.AbstractQi4jTest;
 
 
@@ -49,7 +50,7 @@ public class EntityTypeSerializerTest
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class );
+        module.addServices( MemoryEntityStoreService.class, EntityTypeRegistryService.class );
         module.addEntities( TestEntity.class );
         module.addValues( TestValue.class );
         module.addObjects( EntityTypeSerializer.class, EntityTypeSerializerTest.class );
@@ -90,22 +91,22 @@ public class EntityTypeSerializerTest
             valueBuilder.prototype().test1().set( 4L );
             TestValue testValue = valueBuilder.newInstance();
 
-            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( "test1", TestEntity.class );
-            TestEntity rickardTemplate = builder.stateOfComposite();
+            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class, "test1");
+            TestEntity rickardTemplate = builder.prototype();
             rickardTemplate.name().set( "Rickard" );
             rickardTemplate.title().set( "Mr" );
             rickardTemplate.value().set( testValue );
             TestEntity testEntity = builder.newInstance();
 
-            EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( "test2", TestEntity.class );
-            TestEntity niclasTemplate = builder2.stateOfComposite();
+            EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder(TestEntity.class, "test2");
+            TestEntity niclasTemplate = builder2.prototype();
             niclasTemplate.name().set( "Niclas" );
             niclasTemplate.title().set( "Mr" );
             niclasTemplate.association().set( testEntity );
-            niclasTemplate.manyAssoc().add( testEntity );
-            niclasTemplate.group().add( testEntity );
-            niclasTemplate.group().add( testEntity );
-            niclasTemplate.group().add( testEntity );
+            niclasTemplate.manyAssoc().add( 0, testEntity );
+            niclasTemplate.group().add( 0, testEntity );
+            niclasTemplate.group().add( 0, testEntity );
+            niclasTemplate.group().add( 0, testEntity );
             valueBuilder = testValue.buildWith();
             valueBuilder.prototype().test1().set( 5L );
             testValue = valueBuilder.newInstance();

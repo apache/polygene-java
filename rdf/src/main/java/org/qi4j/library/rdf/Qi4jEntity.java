@@ -28,5 +28,6 @@ public interface Qi4jEntity
 
     // Types
     URI ENTITY = new URIImpl( NAMESPACE + "entity" );
+    URI ENTITYTYPEREFERENCE = new URIImpl( NAMESPACE + "entitytypereference" );
     URI QUALIFIER = new URIImpl( NAMESPACE + "qualifier" );
 }

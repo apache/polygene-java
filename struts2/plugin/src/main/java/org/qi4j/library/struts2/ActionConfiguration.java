@@ -31,11 +31,11 @@ public class ActionConfiguration implements Assembler, Serializable
         }
     }
 
-    public Iterable<Class> getClasses()
+    public Set<Class> getClasses()
     {
         Set<Class> classes = new HashSet<Class>( objectTypes );
         classes.addAll( compositeTypes );
-        return Collections.unmodifiableCollection( classes );
+        return Collections.unmodifiableSet( classes );
     }
 
     public void assemble( ModuleAssembly module ) throws AssemblyException

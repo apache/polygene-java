@@ -11,11 +11,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.sun:tools:1.5.0" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-api:0.7" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-bootstrap:0.7" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-spi:0.7" level="project" />
-    <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-runtime:0.7" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-api:0.8-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-bootstrap:0.8-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-spi:0.8-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-runtime:0.8-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.apache.struts:struts2-core:2.1.2" level="project" />
     <orderEntry type="library" exported="" name="Maven: com.opensymphony:xwork:2.1.1" level="project" />

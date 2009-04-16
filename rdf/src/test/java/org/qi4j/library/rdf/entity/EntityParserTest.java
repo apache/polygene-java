@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
 import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.Property;
@@ -33,7 +34,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.helpers.EntityTypeRegistryService;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -48,7 +49,7 @@ public class EntityParserTest
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class );
+        module.addServices( MemoryEntityStoreService.class, EntityTypeRegistryService.class );
         module.addEntities( TestEntity.class );
         module.addValues( TestValue.class );
         module.addObjects( EntityStateSerializer.class, EntityStateParser.class, EntityParserTest.class );
@@ -66,8 +67,8 @@ public class EntityParserTest
     {
         objectBuilderFactory.newObjectBuilder( EntityParserTest.class ).injectTo( this );
 
-        QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( "test2", TestEntity.class );
-        EntityState entityState = entityStore.getEntityState( qualifiedIdentity );
+        EntityReference entityReference = new EntityReference( "test2" );
+        EntityState entityState = entityStore.getEntityState(entityReference);
 
         Iterable<Statement> graph = serializer.serialize( entityState );
 
@@ -78,8 +79,8 @@ public class EntityParserTest
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            TestEntity entity = unitOfWork.find( "test1", TestEntity.class );
-            TestEntity entity2 = unitOfWork.find( "test2", TestEntity.class );
+            TestEntity entity = unitOfWork.get(TestEntity.class, "test1");
+            TestEntity entity2 = unitOfWork.get(TestEntity.class, "test2");
             assertThat( "values are ok", entity2.name().get(), equalTo( "Niclas" ) );
             assertThat( "values are ok", entity2.association().get(), equalTo( entity ) );
             // TODO test that Value Composites are parsed correctly
@@ -101,21 +102,21 @@ public class EntityParserTest
         TestValue testValue = valueBuilder.newInstance();
 
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( "test1", TestEntity.class );
-        builder.stateOfComposite().name().set( "Rickard" );
-        builder.stateOfComposite().title().set( "Developer" );
-        builder.stateOfComposite().value().set( testValue );
+        EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class, "test1");
+        builder.prototype().name().set( "Rickard" );
+        builder.prototype().title().set( "Developer" );
+        builder.prototype().value().set( testValue );
         TestEntity testEntity = builder.newInstance();
 
-        EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( "test2", TestEntity.class );
-        builder2.stateOfComposite().name().set( "Niclas" );
-        builder2.stateOfComposite().title().set( "Developer" );
-        builder2.stateOfComposite().association().set( testEntity );
-        builder2.stateOfComposite().manyAssoc().add( testEntity );
-        builder2.stateOfComposite().group().add( testEntity );
-        builder2.stateOfComposite().group().add( testEntity );
-        builder2.stateOfComposite().group().add( testEntity );
-        builder2.stateOfComposite().value().set( testValue );
+        EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder(TestEntity.class, "test2");
+        builder2.prototype().name().set( "Niclas" );
+        builder2.prototype().title().set( "Developer" );
+        builder2.prototype().association().set( testEntity );
+        builder2.prototype().manyAssoc().add( 0, testEntity );
+        builder2.prototype().group().add( 0, testEntity );
+        builder2.prototype().group().add( 0, testEntity );
+        builder2.prototype().group().add( 0, testEntity );
+        builder2.prototype().value().set( testValue );
         builder2.newInstance();
         unitOfWork.complete();
     }

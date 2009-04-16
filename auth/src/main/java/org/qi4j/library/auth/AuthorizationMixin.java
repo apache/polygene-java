@@ -33,7 +33,7 @@ public class AuthorizationMixin
             if( assignee instanceof Members )
             {
                 // Check if user is a member of this group or not
-                if( !members.contains( assignee ) )
+                if( !members.contains( (Members) assignee ) )
                 {
                     continue; // Not a member - check next assignment
                 }

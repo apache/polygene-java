@@ -33,7 +33,6 @@ public class Qi4jPackageBasedActionConfigBuilder extends PackageBasedActionConfi
         buildConfiguration(actionConfiguration.getClasses());
     }
     
-    @Override
     protected boolean cannotInstantiate(Class<?> actionClass) {
         return actionClass.isAnnotation()
             || actionClass.isEnum()

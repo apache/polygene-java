@@ -31,7 +31,7 @@ public class EntityCompositeConverter extends StrutsTypeConverter
     {
         String identity = extractIdentity( values );
         UnitOfWork uow = uowf.currentUnitOfWork();
-        return uow.find( identity, toClass );
+        return uow.get(toClass, identity);
     }
 
     @Override
