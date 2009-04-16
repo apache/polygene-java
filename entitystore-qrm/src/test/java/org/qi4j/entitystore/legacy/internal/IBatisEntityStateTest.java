@@ -16,6 +16,9 @@
  */
 package org.qi4j.entitystore.legacy.internal;
 
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.Map;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import org.junit.Test;
@@ -29,10 +32,6 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.test.AbstractQi4jTest;
-
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.Map;
 
 public final class IBatisEntityStateTest extends AbstractQi4jTest
 {

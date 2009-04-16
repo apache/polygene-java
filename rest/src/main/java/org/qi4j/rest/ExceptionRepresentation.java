@@ -13,11 +13,10 @@
  */
 package org.qi4j.rest;
 
-import org.restlet.resource.StringRepresentation;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import org.restlet.resource.StringRepresentation;
 
 public class ExceptionRepresentation extends StringRepresentation
 {

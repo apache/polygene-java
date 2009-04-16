@@ -16,11 +16,10 @@
  */
 package org.qi4j.entitystore.legacy.dbInitializer;
 
+import java.util.Properties;
 import org.junit.After;
 import org.junit.Test;
 import org.qi4j.entitystore.legacy.DerbyDatabaseHandler;
-
-import java.util.Properties;
 
 /**
  * {@code DBInitializerTest} test db initializer.

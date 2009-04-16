@@ -13,26 +13,43 @@
  */
 package org.qi4j.rest.entity;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.qi4j.api.entity.Entity;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.spi.entity.*;
+import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.UnknownEntityTypeException;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.restlet.Context;
-import org.restlet.data.*;
+import org.restlet.data.CharacterSet;
+import org.restlet.data.MediaType;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
+import org.restlet.data.Status;
 import org.restlet.ext.atom.Entry;
 import org.restlet.ext.atom.Feed;
 import org.restlet.ext.atom.Link;
 import org.restlet.ext.atom.Text;
-import org.restlet.resource.*;
+import org.restlet.resource.DomRepresentation;
+import org.restlet.resource.Representation;
+import org.restlet.resource.Resource;
+import org.restlet.resource.ResourceException;
+import org.restlet.resource.Variant;
+import org.restlet.resource.WriterRepresentation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import java.io.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Listing of all Entities.

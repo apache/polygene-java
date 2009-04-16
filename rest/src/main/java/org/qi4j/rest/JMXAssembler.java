@@ -14,11 +14,10 @@
 
 package org.qi4j.rest;
 
+import javax.management.MBeanServer;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-
-import javax.management.MBeanServer;
 
 /**
  * JAVADOC

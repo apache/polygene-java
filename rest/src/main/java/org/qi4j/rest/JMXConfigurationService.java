@@ -14,6 +14,15 @@
 
 package org.qi4j.rest;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.management.MBeanAttributeInfo;
+import javax.management.MBeanConstructorInfo;
+import javax.management.MBeanInfo;
+import javax.management.MBeanNotificationInfo;
+import javax.management.MBeanOperationInfo;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -28,10 +37,6 @@ import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.DescriptorVisitor;
-
-import javax.management.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * JAVADOC

@@ -16,15 +16,18 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
-import org.neo4j.api.core.*;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
-import org.qi4j.spi.entity.QualifiedIdentity;
-
 import java.util.AbstractSequentialList;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import org.neo4j.api.core.Direction;
+import org.neo4j.api.core.NeoService;
+import org.neo4j.api.core.Node;
+import org.neo4j.api.core.Relationship;
+import org.neo4j.api.core.RelationshipType;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
+import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

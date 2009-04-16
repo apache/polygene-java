@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.qi4j</groupId>
@@ -34,7 +35,7 @@
       <url>http://repository.ops4j.org/maven2</url>
     </repository>
   </repositories>
-  
+
   <developers>
     <developer>
       <id>niclas@hedhman.org</id>
@@ -113,7 +114,7 @@
     <developer>
       <id>mesirii</id>
       <name>Michael Hunger</name>
-      <organization />
+      <organization/>
       <email>qi4j@jexp.de</email>
       <timezone>CET</timezone>
     </developer>
@@ -121,7 +122,7 @@
       <id>nmwael</id>
       <name>Nino Saturnino Martinez Vazquez Wael</name>
       <organization>Jayway</organization>
-      <email />
+      <email/>
       <timezone>CET</timezone>
     </developer>
     <developer>
@@ -134,7 +135,7 @@
     <developer>
       <id>rwallace</id>
       <name>Richard Wallace</name>
-      <organization />
+      <organization/>
       <email>rwallace@thewallacepack.net</email>
       <timezone>UTC-7</timezone>
     </developer>
@@ -148,7 +149,7 @@
   </developers>
 
   <build>
-  <extensions>
+    <extensions>
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-ssh-external</artifactId>
@@ -267,7 +268,7 @@
     </plugins>
   </reporting>
 
-  
+
   <dependencyManagement>
     <dependencies>
       <dependency>

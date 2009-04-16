@@ -13,6 +13,8 @@
  */
 package org.qi4j.rest.type;
 
+import java.io.StringWriter;
+import java.util.Map;
 import org.openrdf.model.Statement;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
@@ -30,11 +32,16 @@ import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.value.PrimitiveType;
 import org.restlet.Context;
-import org.restlet.data.*;
-import org.restlet.resource.*;
-
-import java.io.StringWriter;
-import java.util.Map;
+import org.restlet.data.Language;
+import org.restlet.data.MediaType;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
+import org.restlet.data.Status;
+import org.restlet.resource.Representation;
+import org.restlet.resource.Resource;
+import org.restlet.resource.ResourceException;
+import org.restlet.resource.StringRepresentation;
+import org.restlet.resource.Variant;
 
 public class EntityTypeResource extends Resource
 {

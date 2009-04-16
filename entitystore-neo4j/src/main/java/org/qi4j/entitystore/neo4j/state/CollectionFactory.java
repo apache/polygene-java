@@ -16,12 +16,15 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import org.neo4j.api.core.NeoService;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.ManyAssociationType;
-
-import java.util.*;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

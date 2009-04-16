@@ -16,9 +16,8 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
-import org.qi4j.spi.entity.QualifiedIdentity;
-
 import java.util.Collection;
+import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

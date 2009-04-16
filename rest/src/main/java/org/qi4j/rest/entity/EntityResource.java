@@ -17,6 +17,17 @@
  */
 package org.qi4j.rest.entity;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.Writer;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Map;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
 import org.qi4j.api.common.QualifiedName;
@@ -27,20 +38,32 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.entity.*;
+import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
+import org.qi4j.spi.entity.EntityNotFoundException;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.UnknownEntityTypeException;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.value.PrimitiveType;
 import org.restlet.Context;
-import org.restlet.data.*;
-import org.restlet.resource.*;
-
-import java.io.*;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Map;
+import org.restlet.data.CharacterSet;
+import org.restlet.data.Form;
+import org.restlet.data.Language;
+import org.restlet.data.MediaType;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
+import org.restlet.data.Status;
+import org.restlet.data.Tag;
+import org.restlet.resource.OutputRepresentation;
+import org.restlet.resource.Representation;
+import org.restlet.resource.Resource;
+import org.restlet.resource.ResourceException;
+import org.restlet.resource.Variant;
+import org.restlet.resource.WriterRepresentation;
 
 public class EntityResource extends Resource
 {

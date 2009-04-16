@@ -16,20 +16,23 @@
  */
 package org.qi4j.entitystore.neo4j;
 
-import org.neo4j.api.core.*;
-import org.neo4j.util.index.IndexService;
-import org.neo4j.util.index.Isolation;
-import org.neo4j.util.index.LuceneIndexService;
-import org.neo4j.util.index.NeoIndexService;
-import org.qi4j.api.service.Activatable;
-
-import javax.transaction.SystemException;
-import javax.transaction.TransactionManager;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.transaction.SystemException;
+import javax.transaction.TransactionManager;
+import org.neo4j.api.core.EmbeddedNeo;
+import org.neo4j.api.core.NeoService;
+import org.neo4j.api.core.Node;
+import org.neo4j.api.core.Relationship;
+import org.neo4j.api.core.Transaction;
+import org.neo4j.util.index.IndexService;
+import org.neo4j.util.index.Isolation;
+import org.neo4j.util.index.LuceneIndexService;
+import org.neo4j.util.index.NeoIndexService;
+import org.qi4j.api.service.Activatable;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

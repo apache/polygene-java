@@ -16,7 +16,14 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
-import org.neo4j.api.core.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import org.neo4j.api.core.Direction;
+import org.neo4j.api.core.NeoService;
+import org.neo4j.api.core.Node;
+import org.neo4j.api.core.Relationship;
+import org.neo4j.api.core.RelationshipType;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.EntityStatus;
@@ -24,10 +31,6 @@ import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.helpers.DefaultValueState;
 import org.qi4j.spi.value.ValueState;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

@@ -16,13 +16,12 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
+import java.util.Iterator;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.StateCommitter;
-
-import java.util.Iterator;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

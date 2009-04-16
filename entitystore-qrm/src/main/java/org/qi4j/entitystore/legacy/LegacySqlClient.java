@@ -16,16 +16,15 @@ package org.qi4j.entitystore.legacy;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import static com.ibatis.sqlmap.client.SqlMapClientBuilder.buildSqlMapClient;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.StateCommitter;
-
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
+import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.StateCommitter;
 
 public class LegacySqlClient
     implements Serializable, StateCommitter

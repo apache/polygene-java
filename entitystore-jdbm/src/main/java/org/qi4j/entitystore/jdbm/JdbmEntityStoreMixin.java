@@ -16,25 +16,48 @@
  */
 package org.qi4j.entitystore.jdbm;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.locks.ReadWriteLock;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import jdbm.btree.BTree;
-import jdbm.helper.*;
+import jdbm.helper.ByteArrayComparator;
+import jdbm.helper.ByteArraySerializer;
+import jdbm.helper.LongSerializer;
+import jdbm.helper.Serializer;
+import jdbm.helper.Tuple;
+import jdbm.helper.TupleBrowser;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.library.locking.WriteLock;
-import org.qi4j.spi.entity.*;
+import org.qi4j.spi.entity.EntityAlreadyExistsException;
+import org.qi4j.spi.entity.EntityNotFoundException;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.EntityTypeRegistryMixin;
+import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.helpers.DefaultEntityState;
 import org.qi4j.spi.serialization.FastObjectInputStream;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.service.ServiceDescriptor;
-
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.locks.ReadWriteLock;
 
 /**
  * JDBM implementation of SerializationStore

@@ -16,6 +16,10 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
+import java.util.AbstractCollection;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Set;
 import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
@@ -23,11 +27,6 @@ import org.neo4j.api.core.RelationshipType;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.QualifiedIdentity;
-
-import java.util.AbstractCollection;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Set;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

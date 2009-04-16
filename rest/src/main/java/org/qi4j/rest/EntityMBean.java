@@ -14,10 +14,16 @@
 
 package org.qi4j.rest;
 
+import javax.management.Attribute;
+import javax.management.AttributeList;
+import javax.management.AttributeNotFoundException;
+import javax.management.DynamicMBean;
+import javax.management.InvalidAttributeValueException;
+import javax.management.MBeanException;
+import javax.management.MBeanInfo;
+import javax.management.ReflectionException;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
-
-import javax.management.*;
 
 /**
  * JAVADOC

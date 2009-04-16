@@ -14,13 +14,12 @@
 
 package org.qi4j.rest;
 
+import java.util.List;
+import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ServiceImporterException;
-
-import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
-import java.util.List;
 
 /**
  * JAVADOC

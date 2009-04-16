@@ -16,15 +16,24 @@
  */
 package org.qi4j.entitystore.neo4j;
 
-import org.neo4j.api.core.Transaction;
-import org.qi4j.api.common.Optional;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.entitystore.neo4j.state.*;
-import org.qi4j.spi.entity.*;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.neo4j.api.core.Transaction;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.entitystore.neo4j.state.CommittableEntityState;
+import org.qi4j.entitystore.neo4j.state.DirectEntityStateFactory;
+import org.qi4j.entitystore.neo4j.state.IndirectEntityStateFactory;
+import org.qi4j.entitystore.neo4j.state.LoadedDescriptor;
+import org.qi4j.entitystore.neo4j.state.NeoEntityStateFactory;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.EntityTypeRegistryMixin;
+import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.StateCommitter;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

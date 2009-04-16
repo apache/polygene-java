@@ -14,14 +14,13 @@
 
 package org.qi4j.entitystore.legacy;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import org.junit.After;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 
 public class DerbyDatabaseHandlerTest
 {

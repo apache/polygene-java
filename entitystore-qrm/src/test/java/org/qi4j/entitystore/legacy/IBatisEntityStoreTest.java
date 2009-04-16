@@ -16,7 +16,13 @@
  */
 package org.qi4j.entitystore.legacy;
 
-import static org.junit.Assert.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Map;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.common.QualifiedName;
@@ -36,11 +42,6 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * {@code IBatisEntityStoreTest} tests {@code IBatisEntityStore}.

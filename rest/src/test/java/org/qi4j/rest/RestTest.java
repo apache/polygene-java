@@ -17,6 +17,11 @@
  */
 package org.qi4j.rest;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.DeleteMethod;
@@ -25,7 +30,9 @@ import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -47,12 +54,6 @@ import org.qi4j.rest.assembly.RestAssembler;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.test.AbstractQi4jTest;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
 
 @Ignore( "Need to rebuild tests after larger changes to implementation." )
 public class RestTest extends AbstractQi4jTest

@@ -18,7 +18,11 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.RDF;
-import org.qi4j.api.entity.association.*;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.ListAssociation;
+import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.entity.association.Qualifier;
+import org.qi4j.api.entity.association.SetAssociation;
 import org.qi4j.api.property.Property;
 import org.qi4j.library.rdf.DcRdf;
 

@@ -14,7 +14,12 @@
 
 package org.qi4j.rest;
 
-import org.qi4j.bootstrap.*;
+import org.qi4j.bootstrap.ApplicationAssembler;
+import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleName;
 import org.qi4j.library.http.JettyServiceAssembler;
 import org.qi4j.rest.assembly.RestAssembler;
 
