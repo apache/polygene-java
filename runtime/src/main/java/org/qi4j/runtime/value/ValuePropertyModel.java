@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.value;
 
-import java.lang.reflect.Method;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.GenericPropertyInfo;
@@ -27,6 +26,8 @@ import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.value.ValueState;
 import org.qi4j.spi.value.ValueType;
+
+import java.lang.reflect.Method;
 
 /**
  * Property model for values

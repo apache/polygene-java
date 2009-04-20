@@ -17,10 +17,11 @@
  */
 package org.qi4j.test.mock.internal;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import org.qi4j.test.mock.MockRecorder;
 import org.qi4j.test.mock.MockResolverType;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * JAVADOC Add JavaDoc.

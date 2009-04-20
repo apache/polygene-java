@@ -14,14 +14,15 @@
 
 package org.qi4j.runtime.structure;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.service.Activator;
 import org.qi4j.spi.structure.LayerSPI;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * JAVADOC

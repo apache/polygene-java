@@ -13,14 +13,6 @@
  */
 package org.qi4j.runtime.injection;
 
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
-import java.util.Collections;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
 import org.qi4j.runtime.composite.BindingException;
@@ -33,6 +25,11 @@ import org.qi4j.runtime.structure.Specification;
 import org.qi4j.runtime.util.Annotations;
 import static org.qi4j.runtime.util.CollectionUtils.firstElementOrNull;
 import org.qi4j.spi.composite.DependencyDescriptor;
+
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.util.Collections;
 
 /**
  * JAVADOC

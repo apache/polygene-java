@@ -14,12 +14,13 @@
 
 package org.qi4j.api.usecase;
 
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.property.Property;
+
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.property.Property;
 
 /**
  * JAVADOC

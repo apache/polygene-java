@@ -1,5 +1,8 @@
 package org.qi4j.api.composite;
 
+import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.property.Property;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -7,8 +10,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Properties;
-import org.qi4j.api.property.GenericPropertyInfo;
-import org.qi4j.api.property.Property;
 
 /**
  * Transfer properties to Composite properties

@@ -18,8 +18,9 @@
  */
 package org.qi4j.api.property;
 
-import java.lang.reflect.Method;
 import org.qi4j.api.common.QualifiedName;
+
+import java.lang.reflect.Method;
 
 /**
  * {@code ComputedPropertyInstance} is the base implementation of {@link Property}.

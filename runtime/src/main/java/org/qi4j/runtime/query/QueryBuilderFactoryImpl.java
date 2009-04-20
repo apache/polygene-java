@@ -18,11 +18,7 @@
  */
 package org.qi4j.runtime.query;
 
-import org.qi4j.api.query.MissingIndexingSystemException;
-import org.qi4j.api.query.Query;
-import org.qi4j.api.query.QueryBuilder;
-import org.qi4j.api.query.QueryBuilderFactory;
-import org.qi4j.api.query.QueryExpressions;
+import org.qi4j.api.query.*;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWork;

@@ -14,9 +14,10 @@
 
 package org.qi4j.runtime.composite;
 
+import org.qi4j.runtime.structure.ModelVisitor;
+
 import java.io.Serializable;
 import java.util.List;
-import org.qi4j.runtime.structure.ModelVisitor;
 
 /**
  * JAVADOC

@@ -14,10 +14,6 @@
 
 package org.qi4j.runtime.structure;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.runtime.composite.BindingException;
@@ -28,6 +24,11 @@ import org.qi4j.runtime.service.ImportedServicesModel;
 import org.qi4j.runtime.service.ServicesModel;
 import org.qi4j.runtime.value.ValuesModel;
 import org.qi4j.spi.structure.ModuleDescriptor;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * JAVADOC

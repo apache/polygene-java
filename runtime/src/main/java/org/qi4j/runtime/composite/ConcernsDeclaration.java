@@ -14,18 +14,15 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.concern.Concerns;
 import static org.qi4j.api.util.Classes.genericInterfacesOf;
 import org.qi4j.api.util.MethodKeyMap;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.*;
 
 /**
  * JAVADOC

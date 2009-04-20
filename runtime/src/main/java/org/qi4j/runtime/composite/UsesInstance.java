@@ -14,10 +14,11 @@
 
 package org.qi4j.runtime.composite;
 
+import org.qi4j.runtime.object.ObjectBuilderInstance;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import org.qi4j.runtime.object.ObjectBuilderInstance;
 
 /**
  * JAVADOC

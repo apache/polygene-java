@@ -17,10 +17,11 @@
  */
 package org.qi4j.api.property;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.util.NullArgumentException;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 
 /**
  * Use the ImmutableFacade if you have a Property that you want to
