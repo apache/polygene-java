@@ -97,17 +97,27 @@ public class CollectionType
         }
 
         token = json.peekNextToken( "]{\"," );
-        while( !token.equals( "]" ) )
+
+        if( token.equals( "]" ) )
         {
-            if( token.equals( "null" ) )
+            // Empty collection
+            token = json.nextToken();
+        }
+        else
+        {
+
+            while( !token.equals( "]" ) )
             {
-                coll.add( null );
+                if( token.equals( "null" ) )
+                {
+                    coll.add( null );
+                }
+                else
+                {
+                    coll.add( collectedType.fromJSON( json, module ) );
+                }
+                token = json.nextToken( ",]" );
             }
-            else
-            {
-                coll.add( collectedType.fromJSON( json, module ) );
-            }
-            token = json.nextToken( ",]" );
         }
 
         return coll;

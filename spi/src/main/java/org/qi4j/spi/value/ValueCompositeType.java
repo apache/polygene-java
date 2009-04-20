@@ -136,7 +136,7 @@ public class ValueCompositeType
             String name = json.nextToken( ":" );
             token = json.nextToken( ",:" );
 
-            token = json.peekNextToken( ",}\"" );
+            token = json.peekNextToken( ",}\"[" );
             Object value;
             if( token.equals( "null" ) )
             {
