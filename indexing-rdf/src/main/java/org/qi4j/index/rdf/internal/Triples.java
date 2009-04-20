@@ -17,6 +17,11 @@
  */
 package org.qi4j.index.rdf.internal;
 
+import static java.lang.String.format;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.query.grammar.AssociationReference;
@@ -24,12 +29,6 @@ import org.qi4j.api.query.grammar.ManyAssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.util.Classes;
 import org.qi4j.index.rdf.Namespaces;
-
-import static java.lang.String.format;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class Triples
     implements Iterable<Triples.Triple>

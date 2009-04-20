@@ -14,10 +14,9 @@
 
 package org.qi4j.entitystore.legacy.test;
 
+import java.lang.reflect.Type;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.property.Property;
-
-import java.lang.reflect.Type;
 
 public class TestProperty<T> implements Property<T>
 {

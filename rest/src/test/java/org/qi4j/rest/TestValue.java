@@ -14,13 +14,12 @@
 
 package org.qi4j.rest;
 
+import java.util.HashMap;
+import java.util.List;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
-
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * JAVADOC

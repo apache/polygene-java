@@ -16,6 +16,9 @@
  */
 package org.qi4j.entitystore.neo4j.state;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Transaction;
@@ -27,10 +30,6 @@ import org.qi4j.entitystore.neo4j.NeoTransactionService;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
-
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

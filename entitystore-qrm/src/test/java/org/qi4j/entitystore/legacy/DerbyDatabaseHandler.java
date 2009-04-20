@@ -16,23 +16,29 @@
  */
 package org.qi4j.entitystore.legacy;
 
+import java.io.PrintWriter;
+import static java.lang.System.out;
+import static java.lang.Thread.sleep;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import static java.sql.DriverManager.getConnection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
 import org.apache.derby.drda.NetworkServerControl;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.property.Property;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.legacy.dbInitializer.DBInitializerConfiguration;
 import org.qi4j.entitystore.legacy.test.TestProperty;
-
-import java.io.PrintWriter;
-import static java.lang.System.out;
-import static java.lang.Thread.sleep;
-import java.net.URL;
-import java.sql.*;
-import static java.sql.DriverManager.getConnection;
-import java.util.Properties;
 
 /**
  * @author edward.yakop@gmail.com

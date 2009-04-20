@@ -9,7 +9,8 @@
     <result property="id"/>
     <result property="firstName"/>
     <result property="lastName"/>
-    <result property="accounts" javaType="java.util.ArrayList" column="ID" select="org.qi4j.entitystore.legacy.entity.PersonComposite.loadAccounts"/>
+    <result property="accounts" javaType="java.util.ArrayList" column="ID"
+            select="org.qi4j.entitystore.legacy.entity.PersonComposite.loadAccounts"/>
   </resultMap>
 
   <select id="loadAccounts" resultClass="string">
@@ -23,7 +24,7 @@
     FROM PERSON
     WHERE ID = #id#
   </select>
-  
+
   <delete id="delete" parameterClass="string">
     DELETE
     FROM PERSON

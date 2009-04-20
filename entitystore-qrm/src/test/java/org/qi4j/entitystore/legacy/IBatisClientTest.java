@@ -1,14 +1,6 @@
 package org.qi4j.entitystore.legacy;
 
 import com.ibatis.common.jdbc.ScriptRunner;
-import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
-import org.qi4j.entitystore.legacy.entity.PersonComposite;
-import org.qi4j.spi.entity.QualifiedIdentity;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -17,6 +9,13 @@ import java.sql.SQLException;
 import static java.util.Arrays.asList;
 import java.util.Collection;
 import java.util.Map;
+import org.junit.After;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+import org.qi4j.entitystore.legacy.entity.PersonComposite;
+import org.qi4j.spi.entity.QualifiedIdentity;
 
 /**
  * @author mh14 @ jexp.de

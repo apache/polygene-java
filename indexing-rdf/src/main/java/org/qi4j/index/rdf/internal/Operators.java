@@ -17,10 +17,15 @@
  */
 package org.qi4j.index.rdf.internal;
 
-import org.qi4j.api.query.grammar.*;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.qi4j.api.query.grammar.EqualsPredicate;
+import org.qi4j.api.query.grammar.GreaterOrEqualPredicate;
+import org.qi4j.api.query.grammar.GreaterThanPredicate;
+import org.qi4j.api.query.grammar.LessOrEqualPredicate;
+import org.qi4j.api.query.grammar.LessThanPredicate;
+import org.qi4j.api.query.grammar.NotEqualsPredicate;
+import org.qi4j.api.query.grammar.Predicate;
 
 /**
  * Utility class for mathcing an operator based on a predicate.

@@ -13,9 +13,8 @@
  */
 package org.qi4j.entitystore.legacy;
 
-import org.qi4j.api.common.QualifiedName;
-
 import java.util.Map;
+import org.qi4j.api.common.QualifiedName;
 
 public interface IdentifierConverter
 {

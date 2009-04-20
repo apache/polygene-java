@@ -14,12 +14,11 @@
 
 package org.qi4j.entitystore.legacy.internal;
 
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.entitystore.legacy.IdentifierConverter;
-
 import static java.lang.String.format;
 import java.util.HashMap;
 import java.util.Map;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.entitystore.legacy.IdentifierConverter;
 
 /**
  * @autor Michael Hunger

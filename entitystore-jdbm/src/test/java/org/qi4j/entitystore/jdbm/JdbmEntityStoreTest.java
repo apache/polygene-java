@@ -16,6 +16,7 @@
  */
 package org.qi4j.entitystore.jdbm;
 
+import java.io.File;
 import org.junit.After;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
@@ -24,8 +25,6 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.entity.helpers.EntityTypeRegistryService;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
-
-import java.io.File;
 
 /**
  * JAVADOC

@@ -1,11 +1,10 @@
 package org.qi4j.entitystore.legacy.internal;
 
+import java.util.HashMap;
+import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.qi4j.api.common.QualifiedName;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author mh14 @ jexp.de
