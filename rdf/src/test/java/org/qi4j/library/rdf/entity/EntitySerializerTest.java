@@ -18,12 +18,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -69,7 +71,7 @@ public class EntitySerializerTest
     public void testEntitySerializer() throws RDFHandlerException
     {
         EntityReference entityReference = new EntityReference( "test2" );
-        EntityState entityState = entityStore.getEntityState(entityReference);
+        EntityState entityState = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase("Test" ), new MetaInfo()).getEntityState(entityReference);
 
         Iterable<Statement> graph = serializer.serialize( entityState );
 

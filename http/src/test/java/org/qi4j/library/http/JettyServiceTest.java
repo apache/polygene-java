@@ -23,8 +23,9 @@ import org.qi4j.bootstrap.ApplicationName;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import static org.qi4j.library.http.Dispatchers.Dispatcher.REQUEST;
+import static org.qi4j.library.http.Dispatchers.Dispatcher.*;
 import static org.qi4j.library.http.Servlets.*;
+import org.qi4j.spi.entity.helpers.EntityTypeRegistryService;
 import org.qi4j.test.AbstractQi4jTest;
 
 import java.io.BufferedReader;
@@ -43,7 +44,7 @@ public final class JettyServiceTest extends AbstractQi4jTest
         throws AssemblyException
     {
         aModule.addAssembler( new ApplicationName( "Jetty test" ) );
-        aModule.addServices( MemoryEntityStoreService.class );
+        aModule.addServices( MemoryEntityStoreService.class, EntityTypeRegistryService.class );
         aModule.addAssembler( new JettyServiceAssembler() );
 
         // Hello world servlet related assembly

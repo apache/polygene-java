@@ -14,16 +14,25 @@
 
 package org.qi4j.library.rdf.entity;
 
-import org.openrdf.model.*;
+import org.openrdf.model.BNode;
+import org.openrdf.model.Resource;
+import org.openrdf.model.Statement;
+import org.openrdf.model.URI;
+import org.openrdf.model.Value;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.library.rdf.Qi4jEntity;
-import org.qi4j.spi.entity.*;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.EntityTypeRegistry;
+import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.value.StringType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -109,7 +118,15 @@ public class EntityStateParser
 
         for( PropertyType propertyType : entityType.properties() )
         {
-            entityState.setProperty( propertyType.stateName(), propertyValues.get( propertyType.qualifiedName().toURI() ) );
+            String json = propertyValues.get( propertyType.qualifiedName().toURI() );
+
+            if (propertyType.type() instanceof StringType )
+            {
+                StringBuilder builder = new StringBuilder(json);
+                propertyType.type().toJSON( json, builder, null );
+            }
+
+            entityState.setProperty( propertyType.stateName(), json );
         }
 
         for( AssociationType associationType : entityType.associations() )

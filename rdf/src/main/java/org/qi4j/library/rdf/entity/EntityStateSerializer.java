@@ -14,16 +14,29 @@
 
 package org.qi4j.library.rdf.entity;
 
-import org.openrdf.model.*;
+import org.openrdf.model.BNode;
+import org.openrdf.model.Graph;
+import org.openrdf.model.Literal;
+import org.openrdf.model.Resource;
+import org.openrdf.model.Statement;
+import org.openrdf.model.URI;
+import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.library.rdf.Rdfs;
-import org.qi4j.spi.entity.*;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.EntityTypeRegistry;
+import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.StateName;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.util.PeekableStringTokenizer;
+import org.qi4j.spi.value.StringType;
 import org.qi4j.spi.value.ValueType;
 
 import java.math.BigDecimal;
@@ -117,13 +130,17 @@ public class EntityStateSerializer
             {
                 continue; // Skip non-queryable
             }
-            final String property = entityState.getProperty(propertyType.stateName());
-            if (property == null)
+            String property = entityState.getProperty(propertyType.stateName());
+            if (property == null || property.equals("null"))
             {
                 continue; // Skip properties with null values
             }
-            final ValueType valueType = propertyType.type();
-            final URI predicate = valueFactory.createURI(propertyType.qualifiedName().toURI());
+            ValueType valueType = propertyType.type();
+            if (valueType instanceof StringType ) // Remove "" around strings
+                property = valueType.fromJSON( new PeekableStringTokenizer(property, "", true), null ).toString();
+
+            URI predicate = valueFactory.createURI(propertyType.qualifiedName().toURI());
+
             final Literal object = valueFactory.createLiteral(property);
             graph.add(subject, predicate, object);
         }
