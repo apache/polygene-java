@@ -181,21 +181,13 @@ public final class EntityInstance
     {
         if( status() == EntityStatus.LOADED && entityState != null )
         {
-            EntityState newEntityState = uow.instance().refresh( identity );
+            String oldVersion = entityState.version();
+            uow.instance().refresh( identity );
 
-            if( newEntityState.version() != entityState.version() )
+            if( entityState.version() != entityState.version() )
             {
-                entityState = newEntityState;
-                state.refresh( newEntityState );
+                state.refresh();
             }
-        }
-    }
-
-    public void refreshState()
-    {
-        if( entityState != null && state != null )
-        {
-            state.refresh( entityState );
         }
     }
 

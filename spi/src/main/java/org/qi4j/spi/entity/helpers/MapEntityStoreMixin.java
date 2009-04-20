@@ -271,56 +271,40 @@ public class MapEntityStoreMixin
                 SetPropertyEvent setPropertyEvent = (SetPropertyEvent) unitOfWorkEvent;
 
                 SerializableState serializableState = getState( updatedStates, states, setPropertyEvent.identity(), usecaseMetaInfo, unitOfWorkMetaInfo );
-
-                serializableState.properties().put( setPropertyEvent.stateName(), setPropertyEvent.value() );
+                serializableState.setProperty( setPropertyEvent.stateName(), setPropertyEvent.value(), event.identity(), event.timeStamp() );
             }
             else if( unitOfWorkEvent instanceof SetAssociationEvent )
             {
                 SetAssociationEvent setAssociationEvent = (SetAssociationEvent) unitOfWorkEvent;
 
                 SerializableState serializableState = getState( updatedStates, states, setAssociationEvent.identity(), usecaseMetaInfo, unitOfWorkMetaInfo );
-
-                serializableState.associations().put( setAssociationEvent.stateName(), setAssociationEvent.associatedEntity() );
+                serializableState.setAssociation( setAssociationEvent.stateName(), setAssociationEvent.associatedEntity(), event.identity(), event.timeStamp() );
             }
             else if( unitOfWorkEvent instanceof AddManyAssociationEvent )
             {
                 AddManyAssociationEvent addManyAssociationEvent = (AddManyAssociationEvent) unitOfWorkEvent;
 
                 SerializableState serializableState = getState( updatedStates, states, addManyAssociationEvent.identity(), usecaseMetaInfo, unitOfWorkMetaInfo );
-
-                List<EntityReference> manyAssociationState = serializableState.manyAssociations().get( addManyAssociationEvent.stateName() );
-                if( manyAssociationState == null )
-                {
-                    manyAssociationState = new ArrayList<EntityReference>();
-                    serializableState.manyAssociations().put( addManyAssociationEvent.stateName(), manyAssociationState );
-                }
-                manyAssociationState.add( addManyAssociationEvent.index(), addManyAssociationEvent.associatedEntity() );
+                serializableState.addManyAssociation( addManyAssociationEvent.stateName(), addManyAssociationEvent.index(), addManyAssociationEvent.associatedEntity(), event.identity(), event.timeStamp() );
             }
             else if( unitOfWorkEvent instanceof RemoveManyAssociationEvent )
             {
                 RemoveManyAssociationEvent removeManyAssociationEvent = (RemoveManyAssociationEvent) unitOfWorkEvent;
 
                 SerializableState serializableState = getState( updatedStates, states, removeManyAssociationEvent.identity(), usecaseMetaInfo, unitOfWorkMetaInfo );
-
-                List<EntityReference> manyAssociationState = serializableState.manyAssociations().get( removeManyAssociationEvent.stateName() );
-                if( manyAssociationState == null )
-                {
-                    manyAssociationState = new ArrayList<EntityReference>();
-                    serializableState.manyAssociations().put( removeManyAssociationEvent.stateName(), manyAssociationState );
-                }
-                manyAssociationState.remove( removeManyAssociationEvent.associatedEntity() );
+                serializableState.removeManyAssociation( removeManyAssociationEvent.stateName(), removeManyAssociationEvent.associatedEntity(), event.identity(), event.timeStamp() );
             }
             else if( unitOfWorkEvent instanceof AddEntityTypeEvent )
             {
                 AddEntityTypeEvent addEntityTypeEventEvent = (AddEntityTypeEvent) unitOfWorkEvent;
                 SerializableState serializableState = getState( updatedStates, states, addEntityTypeEventEvent.identity(), usecaseMetaInfo, unitOfWorkMetaInfo );
-                serializableState.entityTypeReferences().add( addEntityTypeEventEvent.entityType() );
+                serializableState.addEntityTypeReference( addEntityTypeEventEvent.entityType(), event.identity(), event.timeStamp() );
             }
             else if( unitOfWorkEvent instanceof RemoveEntityTypeEvent )
             {
                 RemoveEntityTypeEvent removeEntityTypeEvent = (RemoveEntityTypeEvent) unitOfWorkEvent;
                 SerializableState serializableState = getState( updatedStates, states, removeEntityTypeEvent.identity(), usecaseMetaInfo, unitOfWorkMetaInfo );
-                serializableState.entityTypeReferences().remove( removeEntityTypeEvent.entityType() );
+                serializableState.removeEntityTypeReference( removeEntityTypeEvent.entityType(), event.identity(), event.timeStamp() );
             }
         }
 

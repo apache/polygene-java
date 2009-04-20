@@ -54,11 +54,6 @@ public abstract class AbstractAssociationInstance<T>
         return associationInfo.isAggregated();
     }
 
-    public void refresh( EntityState newState )
-    {
-        entityState = newState;
-    }
-
     protected T getEntity( EntityReference entityId )
     {
         if( entityId == null || entityId == EntityReference.NULL )

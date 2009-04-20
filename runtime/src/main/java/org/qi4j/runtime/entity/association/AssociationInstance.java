@@ -143,9 +143,8 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
         return true;
     }
 
-    public void refresh( EntityState newState )
+    public void refresh()
     {
-        super.refresh( newState );
         value = (T) NOT_LOADED;
     }
 

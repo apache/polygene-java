@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.ArrayList;
 
 /**
  * Serializable state for a single entity. This includes the version
@@ -33,8 +34,8 @@ public final class SerializableState
     private static final long serialVersionUID = 5L;
 
     private final EntityReference identity;
-    private final String entityVersion;
-    private final long lastModified;
+    private String entityVersion;
+    private long lastModified;
     private final Set<EntityTypeReference> entityTypeReferences;
     private final Map<StateName, String> properties;
     private final Map<StateName, EntityReference> associations;
@@ -90,4 +91,60 @@ public final class SerializableState
     {
         return manyAssociations;
     }
+
+    public void addEntityTypeReference( EntityTypeReference addedTypeReference, String version, long lastModified )
+    {
+        entityTypeReferences.add( addedTypeReference );
+        entityVersion = version;
+        this.lastModified = lastModified;
+    }
+
+    public void removeEntityTypeReference( EntityTypeReference addedTypeReference, String version, long lastModified )
+    {
+        entityTypeReferences.remove( addedTypeReference );
+        entityVersion = version;
+        this.lastModified = lastModified;
+    }
+
+    public void setProperty( StateName stateName, String value, String version, long lastModified )
+    {
+        properties.put( stateName, value );
+        entityVersion = version;
+        this.lastModified = lastModified;
+    }
+
+    public void setAssociation( StateName stateName, EntityReference associatedEntity, String version, long lastModified )
+    {
+        associations.put( stateName, associatedEntity );
+        entityVersion = version;
+        this.lastModified = lastModified;
+    }
+
+    public void addManyAssociation( StateName stateName, int index, EntityReference associatedEntity, String version, long lastModified )
+    {
+        List<EntityReference> manyAssociationState = manyAssociations.get( stateName );
+        if( manyAssociationState == null )
+        {
+            manyAssociationState = new ArrayList<EntityReference>();
+            manyAssociations.put( stateName, manyAssociationState );
+        }
+        manyAssociationState.add( index, associatedEntity );
+
+        entityVersion = version;
+        this.lastModified = lastModified;
+    }
+
+    public void removeManyAssociation( StateName stateName, EntityReference associatedEntity, String version, long lastModified )
+    {
+        List<EntityReference> manyAssociationState = manyAssociations.get( stateName );
+        if( manyAssociationState == null )
+        {
+            return;
+        }
+        manyAssociationState.remove( associatedEntity );
+
+        entityVersion = version;
+        this.lastModified = lastModified;
+    }
+
 }

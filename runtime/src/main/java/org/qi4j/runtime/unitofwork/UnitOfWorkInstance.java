@@ -333,7 +333,7 @@ public final class UnitOfWorkInstance
         complete( true );
     }
 
-    public EntityState refresh( EntityReference identity )
+    public void refresh( EntityReference identity )
     {
         if( unitOfWorkStore != null )
         {
@@ -344,12 +344,6 @@ public final class UnitOfWorkInstance
         if( entityState != null )
         {
             entityState.refresh();
-            // Refresh state
-            return entityState;
-        }
-        else
-        {
-            return null; // TODO Can this happen?
         }
     }
 

@@ -58,20 +58,6 @@ public final class EntityManyAssociationsInstance
         return association;
     }
 
-    public void refresh( EntityState entityState )
-    {
-        if( manyAssociations != null )
-        {
-            for( ManyAssociation<?> property : manyAssociations.values() )
-            {
-                ManyAssociationInstance entityProperty = (ManyAssociationInstance) property;
-                entityProperty.refresh( entityState );
-            }
-        }
-
-        this.entityState = entityState;
-    }
-
     public void checkConstraints()
     {
         model.checkConstraints( this );

@@ -58,18 +58,16 @@ public class EntityPropertiesInstance
         return property;
     }
 
-    public void refresh( EntityState entityState )
+    public void refresh()
     {
         if( properties != null )
         {
             for( Property<?> property : properties.values() )
             {
                 EntityPropertyInstance entityProperty = (EntityPropertyInstance) property;
-                entityProperty.refresh( entityState );
+                entityProperty.refresh();
             }
         }
-
-        this.entityState = entityState;
     }
 
     public void checkConstraints()
