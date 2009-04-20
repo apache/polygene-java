@@ -160,6 +160,10 @@ public class DefaultEntityState
         {
             entityState.manyAssociations.put( stateNameStringEntry.getKey(), stateNameStringEntry.getValue() );
         }
+
+        // Set version and timestamp
+        entityState.version = version;
+        entityState.lastModified = lastModified;
     }
 
     public void remove()

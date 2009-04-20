@@ -184,7 +184,7 @@ public final class EntityInstance
             String oldVersion = entityState.version();
             uow.instance().refresh( identity );
 
-            if( entityState.version() != entityState.version() )
+            if( !oldVersion.equals( entityState.version() ) )
             {
                 state.refresh();
             }
