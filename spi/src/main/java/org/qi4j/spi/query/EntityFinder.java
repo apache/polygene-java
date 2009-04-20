@@ -18,9 +18,9 @@
 package org.qi4j.spi.query;
 
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.entity.EntityReference;
 
 /**
  * JAVADOC Add JavaDoc
@@ -30,10 +30,10 @@ import org.qi4j.api.entity.EntityReference;
 public interface EntityFinder
 {
     Iterable<EntityReference> findEntities( String resultType,
-                                              @Optional BooleanExpression whereClause,
-                                              @Optional OrderBy[] orderBySegments,
-                                              @Optional Integer firstResult,
-                                              @Optional Integer maxResults )
+                                            @Optional BooleanExpression whereClause,
+                                            @Optional OrderBy[] orderBySegments,
+                                            @Optional Integer firstResult,
+                                            @Optional Integer maxResults )
         throws EntityFinderException;
 
     EntityReference findEntity( String resultType, @Optional BooleanExpression whereClause )

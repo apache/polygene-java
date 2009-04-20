@@ -17,16 +17,16 @@
  */
 package org.qi4j.runtime.query;
 
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryExecutionException;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.named.NamedEntityFinder;
-import org.qi4j.api.entity.EntityReference;
 
-import java.util.Iterator;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class NamedQueryImpl<T>
     implements Query<T>
@@ -108,7 +108,7 @@ public class NamedQueryImpl<T>
 
         if( foundEntity != null )
         {
-            return unitOfWork.get(resultType, foundEntity.identity());
+            return unitOfWork.get( resultType, foundEntity.identity() );
         }
         else
         {
@@ -135,7 +135,7 @@ public class NamedQueryImpl<T>
         try
         {
             final Iterator<EntityReference> foundEntities = namedFinder.findEntities( queryName,
-                resultType.getName(), variables, orderBySegments, firstResult, maxResults
+                                                                                      resultType.getName(), variables, orderBySegments, firstResult, maxResults
             ).iterator();
 
             return new Iterator<T>()
@@ -148,7 +148,7 @@ public class NamedQueryImpl<T>
                 public T next()
                 {
                     EntityReference foundEntity = foundEntities.next();
-                    return unitOfWork.get(resultType, foundEntity.identity());
+                    return unitOfWork.get( resultType, foundEntity.identity() );
                 }
 
                 public void remove()

@@ -14,13 +14,12 @@
 
 package org.qi4j.runtime.property;
 
+import java.lang.reflect.Method;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
-
-import java.lang.reflect.Method;
 
 /**
  * Implementation of Properties for Transient Composites

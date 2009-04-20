@@ -132,10 +132,10 @@ public class Base64Encoder
             eData[ eIndex++ ] = ( pad < 1 ) ? (byte) e4 : (byte) '=';
 
 
-            if (pad > 0 && !includePadding)
+            if( pad > 0 && !includePadding )
             {
-                byte[] neweData = new byte[eData.length-pad];
-                System.arraycopy(eData, 0, neweData, 0, eIndex-pad);
+                byte[] neweData = new byte[eData.length - pad];
+                System.arraycopy( eData, 0, neweData, 0, eIndex - pad );
                 eData = neweData;
             }
         }

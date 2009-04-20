@@ -29,7 +29,6 @@ import java.lang.annotation.*;
  * <li>Iterable type injection. This will inject an ObjectBuilder or CompositeBuilder for the type: @Uses Iterable<SomeType> someIterable;
  * <li>Builder type injection. This will inject an ObjectBuilder or CompositeBuilder for the type: @Uses ObjectBuilder<SomeType> someBuilder;
  * </ul>
- * 
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.PARAMETER, ElementType.FIELD } )

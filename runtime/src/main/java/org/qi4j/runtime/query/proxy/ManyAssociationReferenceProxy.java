@@ -55,7 +55,7 @@ public class ManyAssociationReferenceProxy
                                    final AssociationReference traversedAssociation )
     {
         ManyAssociationReferenceImpl associationReference =
-            new ManyAssociationReferenceImpl( accessor, traversedAssociation);
+            new ManyAssociationReferenceImpl( accessor, traversedAssociation );
 
         // Create any proxy
         ClassLoader loader = ManyAssociationReferenceProxy.class.getClassLoader();

@@ -14,15 +14,14 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.io.Serializable;
+import java.lang.reflect.Modifier;
+import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.bootstrap.ObjectDeclaration;
 import org.qi4j.runtime.object.ObjectModel;
-
-import java.io.Serializable;
-import java.lang.reflect.Modifier;
-import java.util.List;
 
 /**
  * Declaration of an Object. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#addObjects(Class[])}.

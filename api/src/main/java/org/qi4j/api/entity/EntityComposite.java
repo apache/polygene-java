@@ -22,7 +22,7 @@ import org.qi4j.api.mixin.Mixins;
 /**
  * Entity Composites must extend this interface.
  */
-@Mixins( {AssociationMixin.class, ManyAssociationMixin.class} )
+@Mixins( { AssociationMixin.class, ManyAssociationMixin.class } )
 public interface EntityComposite extends Identity, Lifecycle, Entity, Composite
 {
 }

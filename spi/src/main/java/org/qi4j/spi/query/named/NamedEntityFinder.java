@@ -17,8 +17,8 @@
  */
 package org.qi4j.spi.query.named;
 
-import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.spi.query.EntityFinderException;
 
 import java.util.Map;
@@ -26,11 +26,11 @@ import java.util.Map;
 public interface NamedEntityFinder
 {
     Iterable<EntityReference> findEntities( String name,
-                                              String resultType,
-                                              Map<String, Object> variables,
-                                              OrderBy[] orderBySegments,
-                                              Integer firstResult,
-                                              Integer maxResults )
+                                            String resultType,
+                                            Map<String, Object> variables,
+                                            OrderBy[] orderBySegments,
+                                            Integer firstResult,
+                                            Integer maxResults )
         throws EntityFinderException;
 
     EntityReference findEntity( String name, String resultType, Map<String, Object> variables )

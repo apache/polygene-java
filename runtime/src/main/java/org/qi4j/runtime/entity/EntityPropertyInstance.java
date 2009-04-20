@@ -18,8 +18,8 @@ import org.qi4j.api.property.AbstractPropertyInstance;
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.entity.EntityState;
 
 /**
  * {@code EntityPropertyInstance} represents a property whose value must be backed by an EntityState.
@@ -51,7 +51,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
     {
         super( aPropertyInfo );
 
-        validateNotNull("entitystate", entityState);
+        validateNotNull( "entitystate", entityState );
 
         this.constraints = constraints;
         this.value = (T) NOT_LOADED;
@@ -69,7 +69,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
     {
         if( value == NOT_LOADED )
         {
-            value = ((EntityPropertyModel) propertyInfo ).<T>fromEntityState( uow.module(), entityState );
+            value = ( (EntityPropertyModel) propertyInfo ).<T>fromEntityState( uow.module(), entityState );
         }
 
         return value;
@@ -94,8 +94,8 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
 
         // Change property
         Qi4jSPI spi = uow.module().layerInstance().applicationInstance().runtime();
-        String json = ((EntityPropertyModel) propertyInfo).toJSON(aNewValue, spi);
-        entityState.setProperty( ((EntityPropertyModel) propertyInfo ).propertyType().stateName(), json);
+        String json = ( (EntityPropertyModel) propertyInfo ).toJSON( aNewValue, spi );
+        entityState.setProperty( ( (EntityPropertyModel) propertyInfo ).propertyType().stateName(), json );
         value = aNewValue;
     }
 

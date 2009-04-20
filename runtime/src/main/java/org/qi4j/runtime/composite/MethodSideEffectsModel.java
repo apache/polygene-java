@@ -14,18 +14,21 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.util.SerializationUtil;
-import org.qi4j.runtime.structure.Binder;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.sideeffect.MethodSideEffectsDescriptor;
-
-import java.io.*;
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.qi4j.api.util.SerializationUtil;
+import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.sideeffect.MethodSideEffectsDescriptor;
 
 /**
  * JAVADOC

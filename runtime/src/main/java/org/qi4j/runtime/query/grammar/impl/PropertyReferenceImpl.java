@@ -19,15 +19,14 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.runtime.query.NotQueryableException;
 import org.qi4j.runtime.query.QueryException;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
 /**
  * Default {@link org.qi4j.api.query.grammar.PropertyReference} implementation.

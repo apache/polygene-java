@@ -31,10 +31,10 @@ public interface StateHolder
      */
     <T> Property<T> getProperty( Method propertyMethod );
 
-    void visitProperties(StateVisitor visitor);
+    void visitProperties( StateVisitor visitor );
 
     public interface StateVisitor
     {
-        void visitProperty(QualifiedName name, Object value);
+        void visitProperty( QualifiedName name, Object value );
     }
 }

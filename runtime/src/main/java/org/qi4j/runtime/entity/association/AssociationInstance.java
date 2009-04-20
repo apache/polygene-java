@@ -14,15 +14,15 @@
 
 package org.qi4j.runtime.entity.association;
 
-import java.lang.reflect.Type;
-
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.AssociationInfo;
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.StateName;
+
+import java.lang.reflect.Type;
 
 /**
  * Implementation of Association to a single Entity.
@@ -145,13 +145,13 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
 
     public void refresh( EntityState newState )
     {
-        super.refresh(newState);
+        super.refresh( newState );
         value = (T) NOT_LOADED;
     }
 
 
     protected StateName stateName()
     {
-        return ((AssociationModel)associationInfo).associationType().stateName();
+        return ( (AssociationModel) associationInfo ).associationType().stateName();
     }
 }

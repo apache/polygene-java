@@ -24,11 +24,16 @@ public interface ManyAssociation<T>
     extends Iterable<T>, AbstractAssociation
 {
     int count();
-    boolean contains(T entity);
-    boolean add(int i, T entity);
-    boolean remove(T entity);
-    T get(int i);
+
+    boolean contains( T entity );
+
+    boolean add( int i, T entity );
+
+    boolean remove( T entity );
+
+    T get( int i );
 
     List<T> toList();
+
     Set<T> toSet();
 }

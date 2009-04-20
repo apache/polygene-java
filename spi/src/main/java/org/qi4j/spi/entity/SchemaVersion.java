@@ -38,10 +38,11 @@ public class SchemaVersion
     {
         try
         {
-            return new String( Base64Encoder.encode( calculate(), false ), "UTF-8");
-        } catch (UnsupportedEncodingException e)
+            return new String( Base64Encoder.encode( calculate(), false ), "UTF-8" );
+        }
+        catch( UnsupportedEncodingException e )
         {
-            throw new IllegalStateException(e);
+            throw new IllegalStateException( e );
         }
     }
 

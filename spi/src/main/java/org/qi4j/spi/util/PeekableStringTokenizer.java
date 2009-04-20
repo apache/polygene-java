@@ -20,7 +20,7 @@ import java.util.StringTokenizer;
  * JAVADOC
  */
 public class PeekableStringTokenizer
-        extends StringTokenizer
+    extends StringTokenizer
 {
     private String bufferedToken;
 
@@ -42,7 +42,7 @@ public class PeekableStringTokenizer
 
     public boolean hasMoreTokens()
     {
-        if ( bufferedToken != null )
+        if( bufferedToken != null )
         {
             return true;
         }
@@ -54,7 +54,7 @@ public class PeekableStringTokenizer
 
     public String nextToken()
     {
-        if ( bufferedToken != null )
+        if( bufferedToken != null )
         {
             String temp = bufferedToken;
             bufferedToken = null;
@@ -68,7 +68,7 @@ public class PeekableStringTokenizer
 
     public String nextToken( String delim )
     {
-        if ( bufferedToken != null )
+        if( bufferedToken != null )
         {
             String temp = bufferedToken;
             bufferedToken = null;
@@ -82,7 +82,7 @@ public class PeekableStringTokenizer
 
     public boolean hasMoreElements()
     {
-        if ( bufferedToken != null )
+        if( bufferedToken != null )
         {
             return true;
         }
@@ -94,7 +94,7 @@ public class PeekableStringTokenizer
 
     public Object nextElement()
     {
-        if ( bufferedToken != null )
+        if( bufferedToken != null )
         {
             String temp = bufferedToken;
             bufferedToken = null;
@@ -108,7 +108,7 @@ public class PeekableStringTokenizer
 
     public int countTokens()
     {
-        if ( bufferedToken != null )
+        if( bufferedToken != null )
         {
             return super.countTokens() + 1;
         }
@@ -120,7 +120,7 @@ public class PeekableStringTokenizer
 
     public String peekNextToken()
     {
-        if ( bufferedToken != null )
+        if( bufferedToken != null )
         {
             return bufferedToken;
         }
@@ -131,15 +131,15 @@ public class PeekableStringTokenizer
         }
     }
 
-    public String peekNextToken(String delim)
+    public String peekNextToken( String delim )
     {
-        if ( bufferedToken != null )
+        if( bufferedToken != null )
         {
             return bufferedToken;
         }
         else
         {
-            bufferedToken = nextToken(delim);
+            bufferedToken = nextToken( delim );
             return bufferedToken;
         }
     }

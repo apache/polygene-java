@@ -14,13 +14,8 @@
 
 package org.qi4j.runtime.entity;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.*;
-
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
-import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
@@ -29,11 +24,15 @@ import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.property.AbstractPropertiesModel;
-import org.qi4j.runtime.property.PropertiesInstance;
-import org.qi4j.runtime.util.Annotations;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
+import org.qi4j.runtime.util.Annotations;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.PropertyType;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Model for Properties in Entities
@@ -43,7 +42,7 @@ public final class EntityPropertiesModel
 {
     public EntityPropertiesModel( ConstraintsModel constraints, PropertyDeclarations propertyDeclarations, boolean immutable )
     {
-        super(constraints, propertyDeclarations,  immutable);
+        super( constraints, propertyDeclarations, immutable );
     }
 
     public Set<PropertyType> propertyTypes()
@@ -58,7 +57,7 @@ public final class EntityPropertiesModel
 
     public <T> Property<T> newInstance( Method accessor, EntityState entityState, ModuleUnitOfWork uow )
     {
-        return mapMethodPropertyModel.get( accessor ).newInstance( entityState, uow);
+        return mapMethodPropertyModel.get( accessor ).newInstance( entityState, uow );
     }
 
     protected EntityPropertyModel newPropertyModel( Method method )
@@ -78,8 +77,8 @@ public final class EntityPropertiesModel
         return propertyModel;
     }
 
-    public EntityPropertiesInstance newInstance(EntityState entityState, ModuleUnitOfWork uow)
+    public EntityPropertiesInstance newInstance( EntityState entityState, ModuleUnitOfWork uow )
     {
-        return new EntityPropertiesInstance(this, entityState, uow);
+        return new EntityPropertiesInstance( this, entityState, uow );
     }
 }

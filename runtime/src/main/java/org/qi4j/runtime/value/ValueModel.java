@@ -85,10 +85,10 @@ public final class ValueModel extends AbstractCompositeModel
         mixinsModel.bind( resolution );
     }
 
-    public void checkConstraints( StateHolder state)
+    public void checkConstraints( StateHolder state )
         throws ConstraintViolationException
     {
-        stateModel.checkConstraints( state);
+        stateModel.checkConstraints( state );
     }
 
     public ValueInstance newValueInstance( ModuleInstance moduleInstance,

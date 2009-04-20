@@ -46,9 +46,9 @@ public final class ManyAssociationType
         this.queryable = queryable;
 
         SchemaVersion schemaVersion = new SchemaVersion();
-        schemaVersion.versionize(type);
-        schemaVersion.versionize(qualifiedName);
-        stateName = new StateName(qualifiedName, rdf, schemaVersion.base64());
+        schemaVersion.versionize( type );
+        schemaVersion.versionize( qualifiedName );
+        stateName = new StateName( qualifiedName, rdf, schemaVersion.base64() );
     }
 
     public QualifiedName qualifiedName()

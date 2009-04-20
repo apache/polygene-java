@@ -18,14 +18,15 @@
  */
 package org.qi4j.runtime.query;
 
-import java.util.Iterator;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryExecutionException;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
+
+import java.util.Iterator;
 
 /**
  * Default implementation of {@link Query}.
@@ -150,9 +151,9 @@ final class EntityQuery<T>
      * @param entityReference to be loaded
      * @return corresponding entity
      */
-    private T loadEntity( final EntityReference entityReference)
+    private T loadEntity( final EntityReference entityReference )
     {
-        return unitOfWorkInstance.get(resultType, entityReference.identity());
+        return unitOfWorkInstance.get( resultType, entityReference.identity() );
     }
 
 }

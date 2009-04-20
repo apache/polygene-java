@@ -17,6 +17,8 @@
  */
 package org.qi4j.runtime.injection.provider;
 
+import java.io.Serializable;
+import java.lang.reflect.Type;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.api.object.ObjectBuilderFactory;
@@ -33,9 +35,6 @@ import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationSPI;
-
-import java.io.Serializable;
-import java.lang.reflect.Type;
 
 public final class StructureInjectionProviderFactory
     implements InjectionProviderFactory, Serializable

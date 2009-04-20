@@ -15,7 +15,6 @@
 package org.qi4j.spi.property;
 
 import org.qi4j.api.property.PropertyInfo;
-import org.qi4j.spi.entity.StateName;
 
 import java.lang.reflect.Method;
 

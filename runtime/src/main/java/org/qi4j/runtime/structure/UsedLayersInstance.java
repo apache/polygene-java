@@ -14,9 +14,8 @@
 
 package org.qi4j.runtime.structure;
 
-import org.qi4j.api.common.Visibility;
-
 import java.util.List;
+import org.qi4j.api.common.Visibility;
 
 /**
  * JAVADOC

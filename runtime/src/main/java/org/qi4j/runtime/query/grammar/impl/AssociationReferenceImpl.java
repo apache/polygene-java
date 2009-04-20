@@ -65,8 +65,8 @@ public class AssociationReferenceImpl
      * @param accessor  method that acts as association
      * @param traversed traversed association
      */
-    public AssociationReferenceImpl(final Method accessor,
-                                    final AssociationReference traversed
+    public AssociationReferenceImpl( final Method accessor,
+                                     final AssociationReference traversed
     )
     {
         this.accessor = accessor;
@@ -78,7 +78,7 @@ public class AssociationReferenceImpl
             throw new QueryException( "Unsupported association type:" + returnType );
         }
         Type associationTypeAsType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
-        if( !( associationTypeAsType instanceof Class ))
+        if( !( associationTypeAsType instanceof Class ) )
         {
             throw new QueryException( "Unsupported association type:" + associationTypeAsType );
         }

@@ -14,11 +14,11 @@
  */
 package org.qi4j.api.unitofwork;
 
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.usecase.Usecase;
-import org.qi4j.api.common.MetaInfo;
 
 /**
  * All operations on entities goes through an UnitOfWork.
@@ -47,7 +47,8 @@ import org.qi4j.api.common.MetaInfo;
 public interface UnitOfWork
 {
 
-    /** Get the UnitOfWorkFactory that this UnitOfWork was created from.
+    /**
+     * Get the UnitOfWorkFactory that this UnitOfWork was created from.
      *
      * @return The UnitOfWorkFactory instance that was used to create this UnitOfWork.
      */
@@ -72,8 +73,9 @@ public interface UnitOfWork
      *
      * @param type the mixin type that the EntityComposite must implement
      * @return a new Entity
-     * @throws NoSuchEntityException if no EntityComposite type of the given mixin type has been registered
-     * @throws org.qi4j.api.entity.LifecycleException if the entity cannot be created
+     * @throws NoSuchEntityException       if no EntityComposite type of the given mixin type has been registered
+     * @throws org.qi4j.api.entity.LifecycleException
+     *                                     if the entity cannot be created
      * @throws EntityTypeNotFoundException
      */
     <T> T newEntity( Class<T> type )
@@ -88,11 +90,11 @@ public interface UnitOfWork
      * @param type     the mixin type that the EntityComposite must implement
      * @param identity the identity of the new Entity
      * @return a new Entity
-     * @throws NoSuchEntityException if no EntityComposite type of the given mixin type has been registered
-     * @throws LifecycleException if the entity cannot be created
+     * @throws NoSuchEntityException       if no EntityComposite type of the given mixin type has been registered
+     * @throws LifecycleException          if the entity cannot be created
      * @throws EntityTypeNotFoundException
      */
-    <T> T newEntity(Class<T> type, String identity)
+    <T> T newEntity( Class<T> type, String identity )
         throws EntityTypeNotFoundException, LifecycleException;
 
     /**
@@ -103,7 +105,7 @@ public interface UnitOfWork
      *
      * @param type the mixin type that the EntityComposite must implement
      * @return a new Entity
-     * @throws NoSuchEntityException if no EntityComposite type of the given mixin type has been registered
+     * @throws NoSuchEntityException       if no EntityComposite type of the given mixin type has been registered
      * @throws LifecycleException
      * @throws EntityTypeNotFoundException
      */
@@ -119,25 +121,24 @@ public interface UnitOfWork
      * @param type     the mixin type that the EntityComposite must implement
      * @param identity the identity of the new Entity
      * @return a new Entity
-     * @throws NoSuchEntityException if no EntityComposite type of the given mixin type has been registered
+     * @throws NoSuchEntityException       if no EntityComposite type of the given mixin type has been registered
      * @throws LifecycleException
      * @throws EntityTypeNotFoundException
      */
-    <T> EntityBuilder<T> newEntityBuilder(Class<T> type, String identity)
+    <T> EntityBuilder<T> newEntityBuilder( Class<T> type, String identity )
         throws EntityTypeNotFoundException;
 
     /**
      * Find an Entity of the given mixin type with the give identity. This
      * method verifies that it exists by asking the underlying EntityStore.
      *
-     * @param type of the entity
+     * @param type     of the entity
      * @param identity of the entity
      * @return the entity
      * @throws EntityTypeNotFoundException if no entity type could be found
-     *
      * @throws NoSuchEntityException
      */
-    <T> T get(Class<T> type, String identity)
+    <T> T get( Class<T> type, String identity )
         throws EntityTypeNotFoundException, NoSuchEntityException;
 
     /**
@@ -148,7 +149,6 @@ public interface UnitOfWork
      * @param entity the Entity to be dereferenced
      * @return an Entity from this UnitOfWork
      * @throws EntityTypeNotFoundException if no entity type could be found
-     *
      */
     <T> T get( T entity )
         throws EntityTypeNotFoundException;
@@ -196,8 +196,8 @@ public interface UnitOfWork
      * as necessary. After completion this UnitOfWork becomes invalid.
      *
      * @throws UnitOfWorkCompletionException if the UnitOfWork could not be completed
-     * @throws ConcurrentEntityModificationException if entities have been modified by others
-     *
+     * @throws ConcurrentEntityModificationException
+     *                                       if entities have been modified by others
      */
     void complete()
         throws UnitOfWorkCompletionException, ConcurrentEntityModificationException;
@@ -207,8 +207,8 @@ public interface UnitOfWork
      * EntityStores, without making this UnitOfWork invalid.
      *
      * @throws UnitOfWorkCompletionException if the changes could not be applied
-     * @throws ConcurrentEntityModificationException if entities have been modified by others
-     *
+     * @throws ConcurrentEntityModificationException
+     *                                       if entities have been modified by others
      */
     void apply()
         throws UnitOfWorkCompletionException, ConcurrentEntityModificationException;
@@ -231,6 +231,7 @@ public interface UnitOfWork
      * Check if the UnitOfWork is paused. It is not paused after it has been create through the
      * UnitOfWorkFactory, and it can be paused by calling {@link #pause()} and then resumed by calling
      * {@link #resume()}.
+     *
      * @return true if this UnitOfWork has been paused.
      */
     boolean isPaused();
@@ -264,5 +265,6 @@ public interface UnitOfWork
      * @param callback a callback to be registered with this UnitOfWork
      */
     void addUnitOfWorkCallback( UnitOfWorkCallback callback );
+
     void removeUnitOfWorkCallback( UnitOfWorkCallback callback );
 }

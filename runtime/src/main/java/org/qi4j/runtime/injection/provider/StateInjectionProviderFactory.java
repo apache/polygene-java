@@ -1,8 +1,8 @@
 package org.qi4j.runtime.injection.provider;
 
 import org.qi4j.api.entity.association.AbstractAssociation;
-import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.property.Property;
@@ -88,7 +88,7 @@ public final class StateInjectionProviderFactory
         else if( ManyAssociation.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
         {
             // @State ManyAssociation<MyEntity> name;
-            EntityStateDescriptor descriptor = ((EntityDescriptor) resolution.object()).state();
+            EntityStateDescriptor descriptor = ( (EntityDescriptor) resolution.object() ).state();
             State annotation = (State) dependencyModel.injectionAnnotation();
             String name;
             if( annotation.value().equals( "" ) )
@@ -166,14 +166,14 @@ public final class StateInjectionProviderFactory
     {
         private final ManyAssociationDescriptor manyAssociationDescriptor;
 
-        public ManyAssociationInjectionProvider( ManyAssociationDescriptor manyAssociationDescriptor)
+        public ManyAssociationInjectionProvider( ManyAssociationDescriptor manyAssociationDescriptor )
         {
             this.manyAssociationDescriptor = manyAssociationDescriptor;
         }
 
         public Object provideInjection( InjectionContext context ) throws InjectionProviderException
         {
-            ManyAssociation abstractAssociation = ((EntityStateHolder) context.state()).getManyAssociation( manyAssociationDescriptor.accessor() );
+            ManyAssociation abstractAssociation = ( (EntityStateHolder) context.state() ).getManyAssociation( manyAssociationDescriptor.accessor() );
             if( abstractAssociation != null )
             {
                 return abstractAssociation;

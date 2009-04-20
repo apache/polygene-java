@@ -14,6 +14,10 @@
 
 package org.qi4j.runtime.value;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.GenericPropertyInfo;
@@ -29,11 +33,6 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.util.Annotations;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.value.ValueState;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Properties model for values

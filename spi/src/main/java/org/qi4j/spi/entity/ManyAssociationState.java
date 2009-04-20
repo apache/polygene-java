@@ -24,8 +24,12 @@ public interface ManyAssociationState
     extends Iterable<EntityReference>
 {
     int count();
-    boolean contains(EntityReference entityReference);
-    boolean add(int index, EntityReference entityReference);
-    boolean remove(EntityReference entityReference);
-    EntityReference get(int index);
+
+    boolean contains( EntityReference entityReference );
+
+    boolean add( int index, EntityReference entityReference );
+
+    boolean remove( EntityReference entityReference );
+
+    EntityReference get( int index );
 }

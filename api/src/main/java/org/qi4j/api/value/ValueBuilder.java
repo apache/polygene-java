@@ -31,7 +31,7 @@ public interface ValueBuilder<T>
      */
     ValueBuilder<T> withPrototype( T value );
 
-    ValueBuilder<T> withState(StateHolder state);
+    ValueBuilder<T> withState( StateHolder state );
 
     /**
      * Get a representation of the state for the new Value.

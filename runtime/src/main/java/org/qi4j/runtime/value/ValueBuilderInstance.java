@@ -14,14 +14,14 @@
 
 package org.qi4j.runtime.value;
 
-import java.util.Iterator;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.structure.ModuleInstance;
+
+import java.util.Iterator;
 
 /**
  * Implementation of ValueBuilder
@@ -55,16 +55,16 @@ public final class ValueBuilderInstance<T>
         return this;
     }
 
-    public ValueBuilder<T> withState(StateHolder state)
+    public ValueBuilder<T> withState( StateHolder state )
     {
         final StateHolder valueState = getState();
-        state.visitProperties(new StateHolder.StateVisitor()
+        state.visitProperties( new StateHolder.StateVisitor()
         {
-            public void visitProperty(QualifiedName name, Object value)
+            public void visitProperty( QualifiedName name, Object value )
             {
-                valueModel.state().setProperty(name, value, valueState);
+                valueModel.state().setProperty( name, value, valueState );
             }
-        });
+        } );
         return this;
     }
 
@@ -88,10 +88,10 @@ public final class ValueBuilderInstance<T>
         }
         else
         {
-            instanceState = valueModel.newState(state);
+            instanceState = valueModel.newState( state );
         }
 
-        valueModel.checkConstraints( instanceState);
+        valueModel.checkConstraints( instanceState );
         ValueInstance valueInstance = valueModel.newValueInstance( moduleInstance, instanceState );
         return valueInstance.<T>proxy();
     }

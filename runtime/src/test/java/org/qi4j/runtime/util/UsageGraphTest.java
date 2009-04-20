@@ -17,8 +17,6 @@
  */
 package org.qi4j.runtime.util;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Assert;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -27,6 +25,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.util.CyclicUsageException;
 import org.qi4j.api.util.UsageGraph;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class UsageGraphTest
@@ -348,7 +349,7 @@ public class UsageGraphTest
     }
 
     @Test
-    @Ignore("What is this supposed to do anyway???")
+    @Ignore( "What is this supposed to do anyway???" )
     public void when100LevelsOfNodesWith100NodesOnEachLevelThenTakeLessThanOneMilliSecond()
         throws Exception
     {

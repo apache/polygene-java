@@ -23,7 +23,7 @@ public class NoSuchEntityException extends UnitOfWorkException
 {
     private final EntityReference identity;
 
-    public NoSuchEntityException(EntityReference identity)
+    public NoSuchEntityException( EntityReference identity )
     {
         this.identity = identity;
     }

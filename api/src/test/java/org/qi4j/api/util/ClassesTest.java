@@ -14,14 +14,15 @@
 
 package org.qi4j.api.util;
 
-import java.util.HashSet;
-import java.util.Set;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import static org.qi4j.api.util.Classes.interfacesOf;
 import static org.qi4j.api.util.Classes.interfacesWithMethods;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Tests for Classes
@@ -59,7 +60,7 @@ public class ClassesTest
     {
         assertThat( "URI is correct", Classes.toURI( A.class ), equalTo( "urn:qi4j:type:org.qi4j.api.util.ClassesTest-A" ) );
     }
-    
+
 
     @Test
     public void givenUriWhenToClassNameThenClassNameIsReturned()

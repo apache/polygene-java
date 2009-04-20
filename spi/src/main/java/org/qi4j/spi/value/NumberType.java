@@ -14,43 +14,40 @@
 
 package org.qi4j.spi.value;
 
-import java.lang.reflect.Type;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.StringTokenizer;
-
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
-import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.util.PeekableStringTokenizer;
+
+import java.lang.reflect.Type;
 
 /**
  * Boolean type
  */
 public class NumberType
-        implements ValueType
+    implements ValueType
 {
-    public static boolean isNumber(Type type)
+    public static boolean isNumber( Type type )
     {
-        if (type instanceof Class)
+        if( type instanceof Class )
         {
             Class typeClass = (Class) type;
-            return (Number.class.isAssignableFrom(typeClass));
+            return ( Number.class.isAssignableFrom( typeClass ) );
         }
         return false;
     }
 
     private final TypeName type;
 
-    public NumberType(TypeName type)
+    public NumberType( TypeName type )
     {
         this.type = type;
     }
 
-    public void versionize(SchemaVersion schemaVersion)
+    public void versionize( SchemaVersion schemaVersion )
     {
-        schemaVersion.versionize(type);
+        schemaVersion.versionize( type );
     }
 
     public TypeName type()
@@ -58,26 +55,36 @@ public class NumberType
         return type;
     }
 
-    public void toJSON(Object value, StringBuilder json, Qi4jSPI spi)
+    public void toJSON( Object value, StringBuilder json, Qi4jSPI spi )
     {
-        json.append(value.toString());
+        json.append( value.toString() );
     }
 
-    public Object fromJSON(PeekableStringTokenizer json, Module module)
+    public Object fromJSON( PeekableStringTokenizer json, Module module )
     {
         String token = json.nextToken();
-        if (type.isClass(Integer.class))
-            return Integer.valueOf(token);
-        else if (type.isClass(Long.class))
-            return Long.valueOf(token);
-        else if (type.isClass(Double.class))
-            return Double.valueOf(token);
-        else if (type.isClass(Float.class))
-            return Float.valueOf(token);
-        else if (type.isClass(Short.class))
-            return Short.valueOf(token);
+        if( type.isClass( Integer.class ) )
+        {
+            return Integer.valueOf( token );
+        }
+        else if( type.isClass( Long.class ) )
+        {
+            return Long.valueOf( token );
+        }
+        else if( type.isClass( Double.class ) )
+        {
+            return Double.valueOf( token );
+        }
+        else if( type.isClass( Float.class ) )
+        {
+            return Float.valueOf( token );
+        }
+        else if( type.isClass( Short.class ) )
+        {
+            return Short.valueOf( token );
+        }
 
-        throw new IllegalStateException("Unknown number type:"+type);
+        throw new IllegalStateException( "Unknown number type:" + type );
     }
 
     @Override

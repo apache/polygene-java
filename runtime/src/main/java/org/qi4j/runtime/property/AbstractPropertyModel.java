@@ -77,7 +77,7 @@ public abstract class AbstractPropertyModel
         this.metaInfo = metaInfo;
         type = GenericPropertyInfo.getPropertyType( accessor );
         this.accessor = accessor;
-        qualifiedName = QualifiedName.fromMethod(accessor);
+        qualifiedName = QualifiedName.fromMethod( accessor );
 
         // Check for @UseDefaults annotation
         useDefaults = this.metaInfo.get( UseDefaults.class ) != null;
@@ -124,23 +124,23 @@ public abstract class AbstractPropertyModel
                     String rdf = rdfAnnotation == null ? null : rdfAnnotation.value();
                     Queryable queryableAnnotation = method.getAnnotation( Queryable.class );
                     boolean queryable = queryableAnnotation == null || queryableAnnotation.value();
-                    PropertyType propertyType = new PropertyType(QualifiedName.fromMethod(method), createValueType(propType), rdf, queryable, PropertyType.PropertyTypeEnum.IMMUTABLE);
+                    PropertyType propertyType = new PropertyType( QualifiedName.fromMethod( method ), createValueType( propType ), rdf, queryable, PropertyType.PropertyTypeEnum.IMMUTABLE );
                     types.add( propertyType );
                 }
             }
-            valueType = new ValueCompositeType( nameOf(valueTypeClass), types );
+            valueType = new ValueCompositeType( nameOf( valueTypeClass ), types );
         }
         else if( StringType.isString( type ) )
         {
-            valueType = new StringType( nameOf(type ) );
+            valueType = new StringType( nameOf( type ) );
         }
         else if( NumberType.isNumber( type ) )
         {
-            valueType = new NumberType( nameOf(type ) );
+            valueType = new NumberType( nameOf( type ) );
         }
-        else if( BooleanType.isBoolean(type ) )
+        else if( BooleanType.isBoolean( type ) )
         {
-            valueType = new BooleanType( nameOf(type ) );
+            valueType = new BooleanType( nameOf( type ) );
         }
         else
         {
@@ -252,7 +252,7 @@ public abstract class AbstractPropertyModel
 
     public abstract <T> Property<T> newInstance( Object value );
 
-    public void checkConstraints(Object value) throws ConstraintViolationException
+    public void checkConstraints( Object value ) throws ConstraintViolationException
     {
         if( constraints != null )
         {
@@ -264,14 +264,14 @@ public abstract class AbstractPropertyModel
         }
     }
 
-    public void checkConstraints( PropertiesInstance properties)
+    public void checkConstraints( PropertiesInstance properties )
         throws ConstraintViolationException
     {
         if( constraints != null )
         {
-            Object value = properties.getProperty(accessor).get();
+            Object value = properties.getProperty( accessor ).get();
 
-            checkConstraints(value);
+            checkConstraints( value );
         }
     }
 

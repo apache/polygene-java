@@ -17,8 +17,8 @@
  */
 package org.qi4j.api.entity.association;
 
-import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.property.StateHolder;
 
 import java.lang.reflect.Method;
 
@@ -43,12 +43,13 @@ public interface EntityStateHolder extends StateHolder
      */
     <T> ManyAssociation<T> getManyAssociation( Method manyassociationMethod );
 
-    void visitState(EntityStateVisitor visitor);
+    void visitState( EntityStateVisitor visitor );
 
     public interface EntityStateVisitor
         extends StateVisitor
     {
-        void visitAssociation(QualifiedName name, Object association);
-        void visitManyAssociation(QualifiedName name, ManyAssociation association);
+        void visitAssociation( QualifiedName name, Object association );
+
+        void visitManyAssociation( QualifiedName name, ManyAssociation association );
     }
 }

@@ -14,10 +14,9 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.common.AppliesToFilter;
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import org.qi4j.api.common.AppliesToFilter;
 
 /**
  * JAVADOC

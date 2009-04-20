@@ -22,7 +22,7 @@ public class EntityAlreadyExistsException extends EntityStoreException
 {
     private EntityReference identity;
 
-    public EntityAlreadyExistsException(EntityReference identity)
+    public EntityAlreadyExistsException( EntityReference identity )
     {
         this.identity = identity;
     }

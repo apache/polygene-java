@@ -14,14 +14,6 @@
 
 package org.qi4j.runtime.entity.association;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
@@ -31,21 +23,22 @@ import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Aggregated;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.RDF;
-import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Immutable;
-import static org.qi4j.api.util.Classes.getRawClass;
 import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
+
+import java.io.*;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.List;
 
 /**
  * JAVADOC
@@ -97,13 +90,13 @@ public final class AssociationModel
         this.associationConstraints = associationConstraintsInstance;
         this.accessor = accessor;
         initialize();
-        this.associationType = new AssociationType(qualifiedName, TypeName.nameOf(type), rdf, queryable);
+        this.associationType = new AssociationType( qualifiedName, TypeName.nameOf( type ), rdf, queryable );
     }
 
     private void initialize()
     {
         this.type = GenericAssociationInfo.getAssociationType( accessor );
-        this.qualifiedName = QualifiedName.fromMethod(accessor);
+        this.qualifiedName = QualifiedName.fromMethod( accessor );
         this.immutable = metaInfo.get( Immutable.class ) != null;
         this.aggregated = metaInfo.get( Aggregated.class ) != null;
         RDF uriAnnotation = accessor().getAnnotation( RDF.class );
@@ -153,12 +146,12 @@ public final class AssociationModel
         return Association.class.isAssignableFrom( accessor.getReturnType() );
     }
 
-    public AbstractAssociation newDefaultInstance(ModuleUnitOfWork uow, EntityState entityState)
+    public AbstractAssociation newDefaultInstance( ModuleUnitOfWork uow, EntityState entityState )
     {
         AbstractAssociation instance;
         if( isManyAssociation() )
         {
-            instance = new ManyAssociationInstance(this, uow, entityState);
+            instance = new ManyAssociationInstance( this, uow, entityState );
         }
         else
         {
@@ -179,12 +172,12 @@ public final class AssociationModel
         return associationInstance;
     }
 
-    public void checkConstraints(Object value)
-            throws ConstraintViolationException
+    public void checkConstraints( Object value )
+        throws ConstraintViolationException
     {
         if( constraints != null )
         {
-             List<ConstraintViolation> violations = constraints.checkConstraints( value );
+            List<ConstraintViolation> violations = constraints.checkConstraints( value );
             if( !violations.isEmpty() )
             {
                 throw new ConstraintViolationException( accessor, violations );
@@ -197,8 +190,8 @@ public final class AssociationModel
     {
         if( constraints != null )
         {
-            Object value = associations.associationFor(accessor).get();
-            checkConstraints(value);
+            Object value = associations.associationFor( accessor ).get();
+            checkConstraints( value );
         }
     }
 
@@ -207,7 +200,7 @@ public final class AssociationModel
     {
         if( associationConstraints != null )
         {
-            Association association = associationsInstance.associationFor(accessor);
+            Association association = associationsInstance.associationFor( accessor );
 
             List<ConstraintViolation> violations = associationConstraints.checkConstraints( association );
             if( !violations.isEmpty() )

@@ -13,7 +13,11 @@
  */
 package org.qi4j.api.common;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Annotation to denote that the initial value of a Property will be the default value for the type if none is
