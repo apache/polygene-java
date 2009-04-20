@@ -8,7 +8,8 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extension</groupId>
   <artifactId>qi4j-entitystore-qrm</artifactId>
-  <name>Qi4j Extension - Qi4j-to-Relational Mapping Store</name>
+  <name>Qi4j Extension - QRM Store</name>
+  <description>QRM stands for Qi4j-to-Relational Mapping, and refers to using an RDBMS as the backend entitystore as Qi4j persistence.</description>
   <version>0.8-SNAPSHOT</version>
 
   <properties>
