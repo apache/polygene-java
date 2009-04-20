@@ -16,14 +16,16 @@
  */
 package org.qi4j.entitystore.jdbm;
 
-import java.io.File;
 import org.junit.After;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.spi.entity.helpers.EntityTypeRegistryService;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
+
+import java.io.File;
 
 /**
  * JAVADOC
@@ -33,11 +35,11 @@ public class JdbmEntityStoreTest extends AbstractEntityStoreTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         super.assemble( module );
-        module.addServices( JdbmEntityStoreService.class, UuidIdentityGeneratorService.class );
+        module.addServices( JdbmEntityStoreService.class, UuidIdentityGeneratorService.class, EntityTypeRegistryService.class );
 
         ModuleAssembly config = module.layerAssembly().newModuleAssembly( "config" );
         config.addEntities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
-        config.addServices( MemoryEntityStoreService.class );
+        config.addServices( MemoryEntityStoreService.class, EntityTypeRegistryService.class );
     }
 
     @Override @After public void tearDown() throws Exception

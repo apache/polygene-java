@@ -40,7 +40,7 @@ public class DomainAssembler
         ).visibleIn( application );
         module.addServices( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" ).visibleIn( layer );
 
-        module.addEntities( TestEntity.class, TestRole.class ).visibleIn( application );
+        module.addEntities( TestEntity.class, TestRole.class, TestEntity2.class ).visibleIn( application );
         module.addServices( DummyDataService.class ).instantiateOnStartup();
     }
 }

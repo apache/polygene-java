@@ -13,16 +13,17 @@
  */
 package org.qi4j.rest;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.IOException;
 import org.restlet.representation.StringRepresentation;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 
 public class ExceptionRepresentation extends StringRepresentation
 {
     public ExceptionRepresentation( Throwable e )
     {
-        super( getStackTraceAsHtml( e ));
+        super( getStackTraceAsHtml( e ) );
     }
 
     private static String getStackTraceAsHtml( Throwable e )

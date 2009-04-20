@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project relativePaths="false" version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/entitystore-jdbm/qi4j-entitystore-jdbm.iml" filepath="$PROJECT_DIR$/entitystore-jdbm/qi4j-entitystore-jdbm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/entitystore-neo4j/qi4j-entitystore-neo4j.iml" filepath="$PROJECT_DIR$/entitystore-neo4j/qi4j-entitystore-neo4j.iml" />
+      <module fileurl="file://$PROJECT_DIR$/entitystore-qrm/qi4j-entitystore-qrm.iml" filepath="$PROJECT_DIR$/entitystore-qrm/qi4j-entitystore-qrm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/qi4j-extensions.iml" filepath="$PROJECT_DIR$/qi4j-extensions.iml" />
+      <module fileurl="file://$PROJECT_DIR$/indexing-rdf/qi4j-indexing-rdf.iml" filepath="$PROJECT_DIR$/indexing-rdf/qi4j-indexing-rdf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rest/qi4j-rest.iml" filepath="$PROJECT_DIR$/rest/qi4j-rest.iml" />
+    </modules>
+  </component>
+</project>
+

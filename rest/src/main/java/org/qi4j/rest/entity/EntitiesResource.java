@@ -13,15 +13,17 @@
  */
 package org.qi4j.rest.entity;
 
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.Entity;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
-import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
+import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
 import org.restlet.Context;
 import org.restlet.data.*;
 import org.restlet.ext.atom.Entry;
@@ -219,14 +221,15 @@ public class EntitiesResource extends Resource
         {
             InputStream in = entity.getStream();
             ObjectInputStream oin = new ObjectInputStream(in);
-            Iterable<EntityState> newState = (Iterable<EntityState>) oin.readObject();
-            Iterable<EntityState> loadedState = (Iterable<EntityState>) oin.readObject();
-            Iterable<EntityReference> removedState = (Iterable<EntityReference>) oin.readObject();
+            String identity = oin.readUTF();
+            Usecase usecase = (Usecase) oin.readUnshared();
+            MetaInfo unitofwork = (MetaInfo) oin.readUnshared();
+            Iterable<UnitOfWorkEvent> events = (Iterable<UnitOfWorkEvent>) oin.readUnshared();
 
             // Store state
             try
             {
-                entityStore.prepare(newState, loadedState, removedState).commit();
+                entityStore.apply( identity, events, usecase, unitofwork ).commit();
             }
             catch (ConcurrentEntityStateModificationException e)
             {

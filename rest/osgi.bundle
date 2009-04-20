@@ -39,6 +39,7 @@ Import-Package: javax.servlet, \
                 org.qi4j.api.service, \
                 org.qi4j.api.structure, \
                 org.qi4j.api.unitofwork, \
+                org.qi4j.api.usecase, \
                 org.qi4j.bootstrap, \
                 org.qi4j.index.rdf, \
                 org.qi4j.index.rdf.assembly, \
@@ -54,7 +55,9 @@ Import-Package: javax.servlet, \
                 org.qi4j.spi.property, \
                 org.qi4j.spi.query, \
                 org.qi4j.spi.service, \
+                org.qi4j.spi.serialization, \
                 org.qi4j.spi.structure, \
+                org.qi4j.spi.unitofwork, \
                 org.qi4j.spi.value, \
                 org.xml.sax, \
                 org.xml.sax.helpers, \

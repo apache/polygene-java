@@ -26,15 +26,23 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Initializable;
+import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.spi.entity.*;
+import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
+import org.qi4j.spi.unitofwork.UnitOfWorkEventListener;
+import org.qi4j.spi.unitofwork.event.AddEntityTypeEvent;
+import org.qi4j.spi.unitofwork.event.EntityEvent;
+import org.qi4j.spi.unitofwork.event.RemoveEntityEvent;
+import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -44,8 +52,11 @@ import java.util.logging.Logger;
  * JAVADOC Add JavaDoc
  */
 public class RdfEntityIndexerMixin
-        implements EntityStoreListener, Initializable
+    implements UnitOfWorkEventListener, Initializable
 {
+    @Service
+    private EntityStore entityStore;
+
     @Service
     private EntityTypeRegistry entityTypeRegistry;
     @Service
@@ -64,112 +75,144 @@ public class RdfEntityIndexerMixin
     }
 
     public void initialize()
-            throws ConstructionException
+        throws ConstructionException
     {
     }
 
-    public synchronized void notifyChanges(Iterable<EntityState> newStates, Iterable<EntityState> changedStates, Iterable<EntityReference> removedStates)
+    public void notifyEvents( Iterable<UnitOfWorkEvent> events )
     {
         try
         {
-            boolean abort = abortIfInternalConfigurationEntity(newStates);
-            if (abort)
-            {
-                return;
-            }
             final RepositoryConnection connection = repository.getConnection();
-            connection.setAutoCommit(false);
+            connection.setAutoCommit( false );
             try
             {
-                // Update index
+                // Figure out what to update
+                Set<EntityReference> updatedEntities = new HashSet<EntityReference>();
+                Set<EntityReference> removedEntities = new HashSet<EntityReference>();
                 final Set<EntityType> entityTypes = new HashSet<EntityType>();
-                for (EntityState entityState : newStates)
+                for( UnitOfWorkEvent event : events )
                 {
-                    for (EntityTypeReference entityTypeReference : entityState.entityTypeReferences())
+                    if( event instanceof RemoveEntityEvent )
+                    {
+                        RemoveEntityEvent removeEvent = (RemoveEntityEvent) event;
+                        removedEntities.add( removeEvent.identity() );
+                    }
+                    else if( event instanceof AddEntityTypeEvent )
+                    {
+                        AddEntityTypeEvent addEvent = (AddEntityTypeEvent) event;
+                        try
+                        {
+                            EntityType entityType = entityTypeRegistry.getEntityType( addEvent.entityType() );
+
+                            if( entityType.queryable() )
+                            {
+                                entityTypes.add( entityType );
+                            }
+                        }
+                        catch( UnknownEntityTypeException e )
+                        {
+                            // Skip this one
+                        }
+                    }
+                    else if( event instanceof EntityEvent )
+                    {
+                        EntityEvent entityEvent = (EntityEvent) event;
+                        updatedEntities.add( entityEvent.identity() );
+                    }
+                }
+
+                // Update entities
+                EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase( "Update index" ), new MetaInfo() );
+
+                for( EntityReference entityReference : updatedEntities )
+                {
+                    EntityState entityState = null;
+                    try
+                    {
+                        entityState = uow.getEntityState( entityReference );
+                    }
+                    catch( EntityNotFoundException e )
+                    {
+                        // Skip this one
+                        continue;
+                    }
+
+                    for( EntityTypeReference entityTypeReference : entityState.entityTypeReferences() )
                     {
                         try
                         {
-                            EntityType entityType = entityTypeRegistry.getEntityType(entityTypeReference);
-
-                            if (entityType.queryable())
-                            {
-                                entityTypes.add(entityType);
-                                indexEntityState(entityState, connection);
-                            }
-                        } catch (UnknownEntityTypeException e)
+                            removeEntityState( entityState.identity(), connection ); // TODO Fix so that new entities are not removed first
+                            indexEntityState( entityState, connection );
+                        }
+                        catch( UnknownEntityTypeException e )
                         {
                             // No EntityType registered - ignore
-                            Logger.getLogger(getClass().getName()).warning("Could not get EntityType for " + entityTypeReference.toString());
+                            Logger.getLogger( getClass().getName() ).warning( "Could not get EntityType for " + entityTypeReference.toString() );
                         }
                     }
                 }
 
-                for (EntityState entityState : changedStates)
+                for( EntityReference entityId : removedEntities )
                 {
-                    removeEntityState(entityState.identity(), connection);
-                    indexEntityState(entityState, connection);
-                }
-
-                for (EntityReference entityId : removedStates)
-                {
-                    removeEntityState(entityId, connection);
+                    removeEntityState( entityId, connection );
                 }
 
                 // Index new types
-                for (EntityType entityType : entityTypes)
+                for( EntityType entityType : entityTypes )
                 {
-                    if (!indexedEntityTypes.contains(entityType))
+                    if( !indexedEntityTypes.contains( entityType ) )
                     {
-                        indexEntityType(entityType, connection);
-                        indexedEntityTypes.add(entityType);
+                        indexEntityType( entityType, connection );
+                        indexedEntityTypes.add( entityType );
                     }
                 }
             }
             finally
             {
-                if (connection != null)
+                if( connection != null )
                 {
                     connection.commit();
                     connection.close();
                 }
             }
         }
-        catch (Throwable e)
+        catch( Throwable e )
         {
             e.printStackTrace();
             //TODO What shall we do with the exception?
         }
     }
 
-    private void indexEntityState(final EntityState entityState,
-                                  final RepositoryConnection connection)
-            throws RepositoryException
+    private void indexEntityState( final EntityState entityState,
+                                   final RepositoryConnection connection )
+        throws RepositoryException
     {
-        final URI entityURI = stateSerializer.createEntityURI(getValueFactory(), entityState.identity());
+        final URI entityURI = stateSerializer.createEntityURI( getValueFactory(), entityState.identity() );
 
         Graph graph = new GraphImpl();
-        stateSerializer.serialize(entityState, false, graph);
+        stateSerializer.serialize( entityState, false, graph );
 
-        connection.add(graph, entityURI);
+        connection.add( graph, entityURI );
     }
 
-    private void removeEntityState(final EntityReference identity,
-                                   final RepositoryConnection connection)
-            throws RepositoryException
+    private void removeEntityState( final EntityReference identity,
+                                    final RepositoryConnection connection )
+        throws RepositoryException
     {
-        connection.clear(stateSerializer.createEntityURI(getValueFactory(), identity));
+        connection.clear( stateSerializer.createEntityURI( getValueFactory(), identity ) );
     }
 
-    private void indexEntityType(final EntityType entityType,
-                                 final RepositoryConnection connection)
-            throws RepositoryException
+    private void indexEntityType( final EntityType entityType,
+                                  final RepositoryConnection connection )
+        throws RepositoryException
     {
-        final URI compositeURI = getValueFactory().createURI(entityType.uri());
+        final URI compositeURI = getValueFactory().createURI( entityType.uri() );
         // remove composite type if already present
-        connection.clear(compositeURI);
+        connection.clear( compositeURI );
 
-        Iterable<Statement> statements = typeSerializer.serialize(entityType);
-        connection.add(statements, compositeURI);
+        Iterable<Statement> statements = typeSerializer.serialize( entityType );
+        connection.add( statements, compositeURI );
 
 /*
         // first add the composite type as rdfs:Class
@@ -185,14 +228,16 @@ public class RdfEntityIndexerMixin
 */
     }
 
-    private boolean abortIfInternalConfigurationEntity(Iterable<EntityState> newStates)
+    private boolean abortIfInternalConfigurationEntity( Iterable<EntityState> newStates )
     {
-        for (EntityState newState : newStates)
+        for( EntityState newState : newStates )
         {
-            for (EntityTypeReference type : newState.entityTypeReferences())
+            for( EntityTypeReference type : newState.entityTypeReferences() )
             {
-                if (type.type().equals(TypeName.nameOf(NativeConfiguration.class)))
+                if( type.type().equals( TypeName.nameOf( NativeConfiguration.class ) ) )
+                {
                     return true;
+                }
             }
         }
 
@@ -201,7 +246,7 @@ public class RdfEntityIndexerMixin
 
     private ValueFactory getValueFactory()
     {
-        if (valueFactory == null)
+        if( valueFactory == null )
         {
             valueFactory = repository.getValueFactory();
         }

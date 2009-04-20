@@ -17,20 +17,19 @@
  */
 package org.qi4j.index.rdf.internal;
 
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.query.grammar.AssociationReference;
+import org.qi4j.api.query.grammar.ManyAssociationReference;
+import org.qi4j.api.query.grammar.PropertyReference;
+import org.qi4j.api.util.Classes;
+import org.qi4j.index.rdf.Namespaces;
+
 import static java.lang.String.format;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.qi4j.api.entity.Identity;
-import org.qi4j.api.entity.association.GenericAssociationInfo;
-import org.qi4j.api.property.GenericPropertyInfo;
-import org.qi4j.api.query.grammar.AssociationReference;
-import org.qi4j.api.query.grammar.ManyAssociationReference;
-import org.qi4j.api.query.grammar.PropertyReference;
-import org.qi4j.api.util.Classes;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.index.rdf.Namespaces;
 
 public class Triples
     implements Iterable<Triples.Triple>
@@ -63,7 +62,7 @@ public class Triples
         triples.add(
             new Triple(
                 "?entity",
-                addNamespace( QualifiedName.fromClass(Identity.class, "identity" ).toNamespace() ) + ":identity",
+                addNamespace( QualifiedName.fromClass( Identity.class, "identity" ).toNamespace() ) + ":identity",
                 "?identity",
                 false
             )
@@ -84,11 +83,11 @@ public class Triples
         {
             subject = addTriple( propertyReference.traversedAssociation(), false ).value;
         }
-        else if (propertyReference.traversedProperty() != null)
+        else if( propertyReference.traversedProperty() != null )
         {
             subject = addTriple( propertyReference.traversedProperty(), false ).value;
         }
-        String prefix = addNamespace(QualifiedName.fromMethod(propertyReference.propertyAccessor()).toNamespace() );
+        String prefix = addNamespace( QualifiedName.fromMethod( propertyReference.propertyAccessor() ).toNamespace() );
         return addTriple( subject, prefix + ":" + propertyReference.propertyName(), optional );
     }
 
@@ -113,7 +112,7 @@ public class Triples
         {
             subject = addTriple( associationReference.traversedAssociation(), false ).value;
         }
-        String prefix = addNamespace(QualifiedName.fromMethod(associationReference.associationAccessor()).toNamespace() );
+        String prefix = addNamespace( QualifiedName.fromMethod( associationReference.associationAccessor() ).toNamespace() );
         return addTriple( subject, prefix + ":" + associationReference.associationName(), optional );
     }
 
@@ -126,7 +125,7 @@ public class Triples
         {
             subject = addTriple( traversedAssociation, false ).value;
         }
-        String predicatePrefix = addNamespace(QualifiedName.fromMethod(manyAssociationReference.associationAccessor()).toNamespace() );
+        String predicatePrefix = addNamespace( QualifiedName.fromMethod( manyAssociationReference.associationAccessor() ).toNamespace() );
         String predicate = predicatePrefix + ":" + manyAssociationReference.associationName();
         Triple collectionTriple = addTriple( subject, predicate, optional );
 

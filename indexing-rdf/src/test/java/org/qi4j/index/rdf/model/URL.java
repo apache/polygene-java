@@ -17,11 +17,12 @@
  */
 package org.qi4j.index.rdf.model;
 
-import java.util.Collection;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
+
+import java.util.Collection;
 
 /**
  * JAVADOC Add JavaDoc.

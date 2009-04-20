@@ -20,21 +20,19 @@ import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import jdbm.btree.BTree;
 import jdbm.helper.*;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.util.Streams;
+import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.helpers.MapEntityStore;
-import org.qi4j.spi.serialization.FastObjectInputStream;
-import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.service.ServiceDescriptor;
 
 import java.io.*;
-import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.ReadWriteLock;
 
@@ -89,7 +87,7 @@ public class JdbmEntityStoreMixin
         recordManager.close();
     }
 
-    public boolean contains(EntityReference entityReference) throws EntityStoreException
+    public boolean contains( EntityReference entityReference, Usecase usecase, MetaInfo unitofwork ) throws EntityStoreException
     {
         try
         {
@@ -101,8 +99,7 @@ public class JdbmEntityStoreMixin
         }
     }
 
-
-    public void get(EntityReference entityReference, OutputStream out) throws EntityStoreException
+    public InputStream get( EntityReference entityReference, Usecase usecase, MetaInfo unitOfWork ) throws EntityStoreException
     {
         try
         {
@@ -120,78 +117,81 @@ public class JdbmEntityStoreMixin
                 throw new EntityNotFoundException(entityReference);
             }
 
-            out.write(serializedState);
+            return new ByteArrayInputStream(serializedState);
         } catch (IOException e)
         {
             throw new EntityStoreException(e);
         }
     }
 
-    public void update(Map<EntityReference, InputStream> newEntities, Map<EntityReference, InputStream> updatedEntities, Iterable<EntityReference> removedEntities)
+    public void applyChanges( MapChanges changes, Usecase usecase, MetaInfo unitOfWork ) throws IOException
     {
         try
         {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            // New entities
-            for (Map.Entry<EntityReference, InputStream> entityReferenceInputStreamEntry : newEntities.entrySet())
+            changes.visitMap( new MapChanger()
             {
-                try
+                public OutputStream newEntity( final EntityReference ref ) throws IOException
                 {
-                    Streams.copyStream(entityReferenceInputStreamEntry.getValue(), out, true);
+                    return new ByteArrayOutputStream()
+                    {
+                        @Override public void close() throws IOException
+                        {
+                            super.close();
 
-                    byte[] stateArray = out.toByteArray();
-                    long stateIndex = recordManager.insert(stateArray, serializer);
-                    out.reset();
-                    String indexKey = entityReferenceInputStreamEntry.getKey().toString();
-                    index.insert(indexKey.getBytes("UTF-8"), stateIndex, false);
-                } catch (IOException e)
-                {
-                    throw new EntityStoreException(e);
+                            byte[] stateArray = toByteArray();
+                            long stateIndex = recordManager.insert(stateArray, serializer);
+                            String indexKey = ref.toString();
+                            index.insert(indexKey.getBytes("UTF-8"), stateIndex, false);
+                        }
+                    };
                 }
-            }
 
-            // Updated entities
-            for (Map.Entry<EntityReference, InputStream> entityReferenceInputStreamEntry : updatedEntities.entrySet())
-            {
-                try
+                public OutputStream updateEntity( final EntityReference ref ) throws IOException
                 {
-                    Streams.copyStream(entityReferenceInputStreamEntry.getValue(), out, true);
+                    return new ByteArrayOutputStream()
+                    {
+                        @Override public void close() throws IOException
+                        {
+                            super.close();
 
-
-                    Long stateIndex = getStateIndex(entityReferenceInputStreamEntry.getKey().toString());
-                    byte[] stateArray = out.toByteArray();
-                    out.reset();
-                    recordManager.update(stateIndex, stateArray, serializer);
-                } catch (IOException e)
-                {
-                    throw new EntityStoreException(e);
+                            Long stateIndex = getStateIndex(ref.toString());
+                            byte[] stateArray = toByteArray();
+                            recordManager.update(stateIndex, stateArray, serializer);
+                        }
+                    };
                 }
-            }
 
-            // Removed entities
-            for (EntityReference removedEntity : removedEntities)
-            {
-                Long stateIndex = getStateIndex(removedEntity.toString());
-                recordManager.delete(stateIndex);
-                index.remove(removedEntity.toString().getBytes("UTF-8"));
-            }
+                public void removeEntity( EntityReference ref ) throws EntityNotFoundException
+                {
+                    try
+                    {
+                        Long stateIndex = getStateIndex(ref.toString());
+                        recordManager.delete(stateIndex);
+                        index.remove(ref.toString().getBytes("UTF-8"));
+                    }
+                    catch( IOException e )
+                    {
+                        throw new EntityStoreException(e);
+                    }
+                }
+            }, usecase, unitOfWork);
 
             recordManager.commit();
-        } catch (IOException e)
+        } catch (Exception e)
         {
-            try
-            {
-                recordManager.rollback();
-            } catch (IOException e1)
-            {
-                // Ignore
-            }
-
-            throw new EntityStoreException("Could not update state", e);
+            recordManager.rollback();
+            if (e instanceof IOException)
+                throw (IOException) e;
+            else if (e instanceof EntityStoreException)
+                throw (EntityStoreException) e;
+            else
+                throw (IOException) new IOException().initCause( e );
         }
+
     }
 
-    public void visitMap(MapEntityStoreVisitor visitor)
+
+    public void visitMap(MapEntityStoreVisitor visitor, Usecase usecase, MetaInfo unitOfWorkMetaInfo)
     {
         try
         {
@@ -266,27 +266,5 @@ public class JdbmEntityStoreMixin
             index = BTree.createInstance(recordManager, new ByteArrayComparator(), new ByteArraySerializer(), new LongSerializer(), 16);
             recordManager.setNamedObject("index", index.getRecid());
         }
-    }
-
-    private SerializableState loadSerializableState(String identity)
-            throws IOException, ClassNotFoundException
-    {
-        Long stateIndex = getStateIndex(identity);
-
-        if (stateIndex == null)
-        {
-            return null;
-        }
-
-        byte[] serializedState = (byte[]) recordManager.fetch(stateIndex, serializer);
-
-        if (serializedState == null)
-        {
-            return null;
-        }
-
-        ByteArrayInputStream bin = new ByteArrayInputStream(serializedState);
-        ObjectInputStream oin = new FastObjectInputStream(bin, config.configuration().turboMode().get());
-        return (SerializableState) oin.readObject();
     }
 }

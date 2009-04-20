@@ -10,7 +10,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: junit:junit:4.4" level="project" />
+    <orderEntry type="library" name="Maven: junit:junit:4.5" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.neo4j:index-util:0.5" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.neo4j:neo:1.0-b7-pre1" level="project" />
     <orderEntry type="library" exported="" name="Maven: javax.transaction:jta:1.0.1" level="project" />

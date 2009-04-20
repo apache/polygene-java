@@ -16,19 +16,20 @@
  */
 package org.qi4j.entitystore.neo4j.test;
 
-import java.util.Collection;
 import org.junit.Before;
 import org.neo4j.api.core.Transaction;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.query.QueryBuilderFactory;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.entitystore.neo4j.Configuration;
 import org.qi4j.entitystore.neo4j.NeoTransactionService;
-import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.test.AbstractQi4jTest;
+
+import java.util.Collection;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)

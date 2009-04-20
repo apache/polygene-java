@@ -20,31 +20,35 @@ import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.helpers.StatementCollector;
 import org.openrdf.rio.rdfxml.RDFXMLParserFactory;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.usecase.Usecase;
 import org.qi4j.library.rdf.entity.EntityStateParser;
 import org.qi4j.spi.entity.*;
 import org.qi4j.spi.entity.helpers.DefaultEntityState;
+import org.qi4j.spi.entity.helpers.DefaultEntityStoreUnitOfWork;
+import org.qi4j.spi.entity.helpers.EntityStoreEvents;
+import org.qi4j.spi.serialization.SerializableState;
+import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
+import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
 import org.restlet.Uniform;
 import org.restlet.data.*;
 import org.restlet.representation.OutputRepresentation;
 import org.restlet.representation.Representation;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * EntityStore implementation that uses REST to access EntityState from a server.
  */
 public class RESTEntityStoreServiceMixin
-        implements EntityStore, Activatable
+        implements EntityStore, EntityStoreEvents, Activatable
 {
     @Uses
     EntityStateParser parser;
@@ -55,8 +59,12 @@ public class RESTEntityStoreServiceMixin
     private Uniform client;
     private Reference entityStoreUrl;
 
+    protected String uuid;
+    private int count;
+
     public void activate() throws Exception
     {
+        uuid = UUID.randomUUID().toString() + "-";
         entityStoreUrl = new Reference(config.configuration().storeUrl().get());
     }
 
@@ -64,16 +72,21 @@ public class RESTEntityStoreServiceMixin
     {
     }
 
-    public EntityState newEntityState(EntityReference anReference) throws EntityStoreException
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, MetaInfo unitOfWorkMetaInfo )
     {
-        return new DefaultEntityState(anReference);
+        return new DefaultEntityStoreUnitOfWork( this, newUnitOfWorkId(), usecase, unitOfWorkMetaInfo );
     }
 
-    public EntityState getEntityState(EntityReference anReference) throws EntityStoreException
+    public EntityState newEntityState( DefaultEntityStoreUnitOfWork unitOfWork, EntityReference identity, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo )
+    {
+        return new DefaultEntityState(unitOfWork, identity);
+    }
+
+    public EntityState getEntityState( DefaultEntityStoreUnitOfWork unitOfWork, EntityReference identity, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo )
     {
         try
         {
-            Reference ref = entityStoreUrl.clone().addSegment(anReference.identity());
+            Reference ref = entityStoreUrl.clone().addSegment(identity.identity());
             Request request = new Request(Method.GET, ref);
             request.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_JAVA_OBJECT));
             Response response = client.handle(request);
@@ -82,11 +95,11 @@ public class RESTEntityStoreServiceMixin
                 if (response.isEntityAvailable())
                 {
                     Representation entity = response.getEntity();
-                    return parseEntityState(anReference, ref, response, entity);
+                    return parseEntityState(unitOfWork, identity, ref, response, entity);
                 }
             } else if (response.getStatus().equals(Status.CLIENT_ERROR_NOT_FOUND))
             {
-                throw new EntityNotFoundException(anReference);
+                throw new EntityNotFoundException(identity);
             }
         }
         catch (EntityStoreException e)
@@ -100,7 +113,7 @@ public class RESTEntityStoreServiceMixin
         throw new EntityStoreException();
     }
 
-    private EntityState parseEntityState(EntityReference anReference, Reference ref, Response response, Representation entity)
+    private EntityState parseEntityState(DefaultEntityStoreUnitOfWork uow, EntityReference anReference, Reference ref, Response response, Representation entity)
             throws IOException, RDFParseException, RDFHandlerException, ClassNotFoundException
     {
         if (entity.getMediaType().equals(MediaType.APPLICATION_RDF_XML))
@@ -113,26 +126,37 @@ public class RESTEntityStoreServiceMixin
             rdfParser.parse(reader, ref.toString());
 
             long modified = response.getEntity().getModificationDate().getTime();
-            long version = Long.parseLong(response.getEntity().getTag().getName());
-            DefaultEntityState entityState = new DefaultEntityState(version, modified,
+            String version = response.getEntity().getTag().getName();
+            DefaultEntityState entityState = new DefaultEntityState(uow,version, modified,
                     anReference, EntityStatus.LOADED,
                     new HashSet<EntityTypeReference>(),
                     new HashMap<StateName, String>(),
                     new HashMap<StateName, EntityReference>(),
-                    new HashMap<StateName, ManyAssociationState>());
+                    new HashMap<StateName, List<EntityReference>>());
             parser.parse(statements, entityState);
-            entityState.clearModified();
             return entityState;
         } else
         {
             ObjectInputStream oin = new ObjectInputStream(entity.getStream());
-            EntityState state = (EntityState) oin.readObject();
+            SerializableState serializableState = (SerializableState) oin.readUnshared();
             oin.close();
-            return state;
+
+            EntityReference identity = serializableState.identity();
+            Set<EntityTypeReference> entityTypeReferences = serializableState.entityTypeReferences();
+
+            return new DefaultEntityState( uow,
+                                           serializableState.version(),
+                                           serializableState.lastModified(),
+                                           identity,
+                                           EntityStatus.LOADED,
+                                           entityTypeReferences,
+                                           serializableState.properties(),
+                                           serializableState.associations(),
+                                           serializableState.manyAssociations() );
         }
     }
 
-    public StateCommitter prepare(final Iterable<EntityState> newStates, final Iterable<EntityState> loadedStates, final Iterable<EntityReference> removedStates) throws EntityStoreException
+    public StateCommitter apply( final String unitOfWorkIdentity, final Iterable<UnitOfWorkEvent> events, final Usecase usecase, final MetaInfo metaInfo ) throws EntityStoreException
     {
         Reference ref = entityStoreUrl.clone();
 
@@ -141,9 +165,10 @@ public class RESTEntityStoreServiceMixin
             public void write(OutputStream outputStream) throws IOException
             {
                 ObjectOutputStream oout = new ObjectOutputStream(outputStream);
-                oout.writeObject(newStates);
-                oout.writeObject(loadedStates);
-                oout.writeObject(removedStates);
+                oout.writeUTF(unitOfWorkIdentity);
+                oout.writeUnshared( usecase );
+                oout.writeUnshared( metaInfo );
+                oout.writeUnshared(events);
                 oout.close();
             }
         });
@@ -152,10 +177,6 @@ public class RESTEntityStoreServiceMixin
         {
             // TODO Figure out which ones were changed
             Collection<EntityReference> modifiedReferences = new ArrayList<EntityReference>();
-            for (EntityState loadedState : loadedStates)
-            {
-                modifiedReferences.add(loadedState.identity());
-            }
             throw new ConcurrentEntityStateModificationException(modifiedReferences);
         } else if (!response.getStatus().isSuccess())
         {
@@ -174,8 +195,16 @@ public class RESTEntityStoreServiceMixin
         };
     }
 
-    public void visitEntityStates(EntityStateVisitor visitor)
+
+    public EntityStoreUnitOfWork visitEntityStates(EntityStateVisitor visitor)
     {
         // TODO Iterate over all EntityStates
+        return null;
     }
+
+    private String newUnitOfWorkId()
+    {
+        return uuid + Integer.toHexString( count++ );
+    }
+
 }

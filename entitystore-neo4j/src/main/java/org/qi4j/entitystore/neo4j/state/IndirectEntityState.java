@@ -29,7 +29,8 @@ import java.util.Set;
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
-public class IndirectEntityState implements CommittableEntityState
+public class IndirectEntityState
+    //implements CommittableEntityState
 {
     // Cached state
     private final DirectEntityState state;
@@ -199,7 +200,7 @@ public class IndirectEntityState implements CommittableEntityState
 
     public ManyAssociationState getManyAssociation(StateName qualifiedName)
     {
-        return manyAssociations.get(qualifiedName);
+        return null; // manyAssociations.get(qualifiedName);
     }
 
     public void hasBeenApplied()

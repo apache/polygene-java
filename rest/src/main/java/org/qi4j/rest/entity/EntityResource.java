@@ -19,12 +19,15 @@ package org.qi4j.rest.entity;
 
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.spi.Qi4jSPI;
@@ -32,6 +35,8 @@ import org.qi4j.spi.entity.*;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.serialization.SerializableState;
+import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 import org.restlet.Context;
 import org.restlet.data.*;
 import org.restlet.representation.OutputRepresentation;
@@ -42,9 +47,7 @@ import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
 
 import java.io.*;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 public class EntityResource extends Resource
 {
@@ -120,7 +123,12 @@ public class EntityResource extends Resource
     {
         try
         {
-            entityStore.prepare(Collections.EMPTY_LIST, Collections.EMPTY_LIST, Collections.singleton(EntityReference.parseEntityReference(identity))).commit();
+            Usecase usecase = UsecaseBuilder.newUsecase( "Remove entity" );
+            MetaInfo info = new MetaInfo();
+            EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( usecase, info );
+            EntityReference identityRef = EntityReference.parseEntityReference( identity );
+            uow.getEntityState( identityRef ).remove();
+            entityStore.apply( uow.identity(), uow.events(), usecase, info ).commit();
             getResponse().setStatus(Status.SUCCESS_NO_CONTENT);
         }
         catch (EntityNotFoundException e)
@@ -133,7 +141,8 @@ public class EntityResource extends Resource
     public Representation represent(Variant variant)
             throws ResourceException
     {
-        EntityState entityState = getEntityState();
+        EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase("Get entity" ), new MetaInfo());
+        EntityState entityState = getEntityState(uow);
 
         // Check modification date
         Date lastModified = getRequest().getConditions().getModifiedSince();
@@ -160,13 +169,14 @@ public class EntityResource extends Resource
         throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND);
     }
 
-    private EntityState getEntityState()
+    private EntityState getEntityState(EntityStoreUnitOfWork unitOfWork)
             throws ResourceException
     {
         EntityState entityState;
         try
         {
-            entityState = entityStore.getEntityState(EntityReference.parseEntityReference(identity));
+            EntityReference entityReference = EntityReference.parseEntityReference( identity );
+            entityState = unitOfWork.getEntityState( entityReference );
         }
         catch (EntityNotFoundException e)
         {
@@ -307,7 +317,45 @@ public class EntityResource extends Resource
             public void write(OutputStream outputStream) throws IOException
             {
                 ObjectOutputStream oout = new ObjectOutputStream(outputStream);
-                oout.writeObject(entity);
+                HashMap<StateName, String> properties = new HashMap<StateName, String>( );
+                HashMap<StateName, EntityReference> associations = new HashMap<StateName, EntityReference>( );
+                HashMap<StateName, List<EntityReference>> manyAssociations = new HashMap<StateName, List<EntityReference>>( );
+                for( EntityTypeReference entityTypeReference : entity.entityTypeReferences() )
+                {
+                    EntityType type = typeRegistry.getEntityType( entityTypeReference );
+                    for( PropertyType propertyType : type.properties() )
+                    {
+                        properties.put(propertyType.stateName(), entity.getProperty( propertyType.stateName() ));
+                    }
+
+                    for( AssociationType associationType : type.associations() )
+                    {
+                        associations.put(associationType.stateName(), entity.getAssociation( associationType.stateName() ));
+                    }
+
+                    for( ManyAssociationType manyAssociationType : type.manyAssociations() )
+                    {
+                        ManyAssociationState state = entity.getManyAssociation( manyAssociationType.stateName() );
+                        List<EntityReference> references = new ArrayList<EntityReference>(state.count());
+                        for (int i = 0; i < state.count(); i++)
+                            references.add( state.get(i ));
+
+                        manyAssociations.put( manyAssociationType.stateName(), references );
+                    }
+                }
+
+                String entityVersion = entity.version();
+                long lastModified = entity.lastModified();
+
+                SerializableState state = new SerializableState(entity.identity(),
+                                                                entityVersion,
+                                                                lastModified,
+                                                                entity.entityTypeReferences(),
+                                                                properties,
+                                                                associations,
+                                                                manyAssociations);
+
+                oout.writeUnshared(state);
                 oout.close();
             }
         };
@@ -327,7 +375,10 @@ public class EntityResource extends Resource
     public void storeRepresentation(Representation entityRepresentation)
             throws ResourceException
     {
-        EntityState entity = getEntityState();
+        Usecase usecase = UsecaseBuilder.newUsecase( "Update entity" );
+        MetaInfo info = new MetaInfo();
+        EntityStoreUnitOfWork unitOfWork = entityStore.newUnitOfWork( usecase, info );
+        EntityState entity = getEntityState(unitOfWork);
 
         Form form = new Form(entityRepresentation);
 
@@ -405,7 +456,7 @@ public class EntityResource extends Resource
 
         try
         {
-            entityStore.prepare(Collections.EMPTY_LIST, Collections.singleton(entity), Collections.EMPTY_LIST).commit();
+            entityStore.apply(unitOfWork.identity(), unitOfWork.events(), usecase, info).commit();
         }
         catch (ConcurrentEntityStateModificationException e)
         {

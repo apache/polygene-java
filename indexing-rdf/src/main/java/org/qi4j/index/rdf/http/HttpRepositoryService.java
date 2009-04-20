@@ -14,9 +14,9 @@
 package org.qi4j.index.rdf.http;
 
 import org.openrdf.repository.Repository;
-import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceComposite;
 
 @Mixins( HttpRepositoryMixin.class )
 public interface HttpRepositoryService extends Repository, ServiceComposite, Activatable

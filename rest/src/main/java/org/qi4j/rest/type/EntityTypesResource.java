@@ -66,7 +66,7 @@ public final class EntityTypesResource extends Resource
         feed.setTitle(new Text(MediaType.TEXT_PLAIN, "Entity types"));
         List<Entry> entries = feed.getEntries();
 
-        for (EntityType entityType : registry)
+        for (EntityType entityType : registry.getEntityTypes())
         {
             Entry entry = new Entry();
             entry.setTitle(new Text(MediaType.TEXT_PLAIN, entityType.type().name()));

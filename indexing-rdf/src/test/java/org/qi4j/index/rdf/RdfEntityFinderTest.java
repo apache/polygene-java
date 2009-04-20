@@ -29,7 +29,6 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import static org.qi4j.index.rdf.NameableAssert.assertNames;
 import static org.qi4j.index.rdf.NameableAssert.toList;
 import org.qi4j.index.rdf.model.*;
@@ -37,9 +36,9 @@ import org.qi4j.index.rdf.model.entities.*;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
-import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
+import org.qi4j.test.EntityTestAssembler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,9 +82,8 @@ public class RdfEntityFinderTest
                         File.class,
                         QueryParam.class
                 );
+                new EntityTestAssembler().assemble( module );
                 module.addServices(
-                        MemoryEntityStoreService.class,
-                        UuidIdentityGeneratorService.class,
                         RdfFactoryService.class,
                         RdfIndexerExporterComposite.class
                 );

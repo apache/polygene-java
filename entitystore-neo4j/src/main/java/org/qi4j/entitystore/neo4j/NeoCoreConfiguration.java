@@ -16,10 +16,9 @@
  */
 package org.qi4j.entitystore.neo4j;
 
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.configuration.ConfigurationComposite;
+import org.qi4j.api.property.Property;
 import org.qi4j.library.constraints.annotation.NotEmpty;
 
 /**
@@ -34,8 +33,7 @@ public interface NeoCoreConfiguration extends ConfigurationComposite
      *
      * @return The path to where the Neo Nodespace is stored.
      */
-    @NotEmpty
-    Property<String> path();
+    @NotEmpty Property<String> path();
 
     /**
      * Configuration of what kind of index to use for indexing of entity ids.
@@ -43,6 +41,5 @@ public interface NeoCoreConfiguration extends ConfigurationComposite
      * @return <code>true</code> if Lucene should be used to index entity ids,
      *         <code>false</code> to use a tree based index of Nodes in Neo.
      */
-    @UseDefaults
-    Property<Boolean> useLuceneIndex();
+    @UseDefaults Property<Boolean> useLuceneIndex();
 }

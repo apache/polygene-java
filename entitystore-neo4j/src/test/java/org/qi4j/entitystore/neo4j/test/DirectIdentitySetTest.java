@@ -16,9 +16,10 @@
  */
 package org.qi4j.entitystore.neo4j.test;
 
-import java.util.Set;
 import org.junit.Test;
 import org.qi4j.entitystore.neo4j.Configuration;
+
+import java.util.Set;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
@@ -28,12 +29,7 @@ public class DirectIdentitySetTest
 {
     public DirectIdentitySetTest()
     {
-        this( Configuration.DIRECT );
-    }
-
-    public DirectIdentitySetTest( Configuration config )
-    {
-        super( config, config == Configuration.INDIRECT, true );
+        super( Configuration.DIRECT, false, true );
     }
 
     @Test

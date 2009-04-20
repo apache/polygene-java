@@ -21,18 +21,13 @@ import org.qi4j.api.entity.RDF;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
-import org.qi4j.library.rdf.DcRdf;
 
 /**
  * JAVADOC
  */
 public interface TestEntity
-        extends EntityComposite
+        extends Named, EntityComposite
 {
-    @UseDefaults
-    @RDF(DcRdf.NAMESPACE + "title")
-    Property<String> name();
-
     @UseDefaults
     Property<Integer> age();
 
@@ -53,3 +48,4 @@ public interface TestEntity
     @RDF("http://www.w3.org/2001/vcard-rdf/3.0#GROUP")
     ManyAssociation<TestEntity> rdfAssociation();
 }
+

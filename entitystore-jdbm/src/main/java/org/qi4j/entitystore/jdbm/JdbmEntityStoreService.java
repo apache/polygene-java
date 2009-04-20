@@ -21,10 +21,9 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.library.locking.LockingAbstractComposite;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.EntityStoreListenerNotificationSideEffect;
+import org.qi4j.spi.entity.UnitOfWorkListenerNotificationConcern;
 import org.qi4j.spi.entity.helpers.ConcurrentModificationCheckConcern;
 import org.qi4j.spi.entity.helpers.MapEntityStoreMixin;
 
@@ -32,8 +31,7 @@ import org.qi4j.spi.entity.helpers.MapEntityStoreMixin;
  * EntityStore service backed by JDBM store.
  */
 
-@Concerns(ConcurrentModificationCheckConcern.class)
-@SideEffects(EntityStoreListenerNotificationSideEffect.class)
+@Concerns({ UnitOfWorkListenerNotificationConcern.class, ConcurrentModificationCheckConcern.class})
 @Mixins({MapEntityStoreMixin.class, JdbmEntityStoreMixin.class})
 public interface JdbmEntityStoreService
         extends EntityStore, ServiceComposite, Activatable, LockingAbstractComposite, Configuration

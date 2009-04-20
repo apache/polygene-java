@@ -21,14 +21,14 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.index.rdf.internal.RdfEntityFinderMixin;
 import org.qi4j.index.rdf.internal.RdfEntityIndexerMixin;
-import org.qi4j.spi.entity.EntityStoreListener;
 import org.qi4j.spi.query.EntityFinder;
+import org.qi4j.spi.unitofwork.UnitOfWorkEventListener;
 
 /**
  * JAVADOC Add JavaDoc
  */
 @Mixins( { RdfEntityIndexerMixin.class, RdfEntityFinderMixin.class, RdfExportMixin.class } )
 public interface RdfQueryService
-    extends EntityStoreListener, EntityFinder, RdfExport, ServiceComposite
+    extends UnitOfWorkEventListener, EntityFinder, RdfExport, ServiceComposite
 {
 }

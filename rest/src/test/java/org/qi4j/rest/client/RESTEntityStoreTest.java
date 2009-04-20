@@ -93,7 +93,7 @@ public void testEntityStore()
         // Create state
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            TestEntity entity = unitOfWork.newEntity(TestEntity.class, "test3");
+            TestEntity entity = unitOfWork.newEntity(TestEntity.class, "test4");
             entity.name().set("Rickard");
             entity.age().set(42);
             unitOfWork.complete();

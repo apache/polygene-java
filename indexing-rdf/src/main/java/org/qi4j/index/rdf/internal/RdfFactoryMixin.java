@@ -17,11 +17,10 @@
  */
 package org.qi4j.index.rdf.internal;
 
-import org.qi4j.index.rdf.RdfFactoryService;
+import org.openrdf.query.QueryLanguage;
+import org.qi4j.index.rdf.RdfFactory;
 import org.qi4j.index.rdf.RdfQueryParser;
 import org.qi4j.index.rdf.UnsupportedLanguageException;
-import org.qi4j.index.rdf.RdfFactory;
-import org.openrdf.query.QueryLanguage;
 
 public class RdfFactoryMixin
     implements RdfFactory

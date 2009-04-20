@@ -57,7 +57,7 @@ public class IndirectEntityStateFactoryMixin implements NeoEntityStateFactory
             {
                 node = UncreatedNode.getNode(reference.identity(), neo);
             }
-            CommittableEntityState state = new IndirectEntityState((DirectEntityState) directFactory.createEntityState(idIndex, node, descriptor, reference, status));
+            CommittableEntityState state = null; // new IndirectEntityState((DirectEntityState) directFactory.createEntityState(idIndex, node, descriptor, reference, status));
             state.preloadState();
             return state;
         }
@@ -139,7 +139,7 @@ public class IndirectEntityStateFactoryMixin implements NeoEntityStateFactory
 
             public CommittableEntityState next()
             {
-                return new IndirectEntityState((DirectEntityState) direct.next());
+                return null; // new IndirectEntityState((DirectEntityState) direct.next());
             }
 
             public void remove()

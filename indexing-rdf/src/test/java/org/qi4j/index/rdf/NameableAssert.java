@@ -25,6 +25,8 @@ import org.qi4j.index.rdf.model.Nameable;
 
 import java.util.*;
 
+import java.util.*;
+
 public class NameableAssert
 {
     // id -> name

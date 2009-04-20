@@ -14,12 +14,13 @@
 
 package org.qi4j.rest;
 
-import java.util.HashMap;
-import java.util.List;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * JAVADOC
@@ -27,14 +28,11 @@ import org.qi4j.api.value.ValueComposite;
 public interface TestValue
     extends ValueComposite
 {
-    @UseDefaults
-    Property<String> string();
+    @UseDefaults Property<String> string();
 
-    @Optional
-    Property<TestValue2> testValue();
+    @Optional Property<TestValue2> testValue();
 
-    @UseDefaults
-    Property<List<Long>> longList();
+    @UseDefaults Property<List<Long>> longList();
 
     Property<HashMap> map();
 }

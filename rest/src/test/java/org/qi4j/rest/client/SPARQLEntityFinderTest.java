@@ -29,9 +29,12 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.RdfFactoryService;
 import org.qi4j.library.rdf.entity.EntityStateParser;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
+import org.qi4j.library.rdf.entity.EntityTypeParser;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.rest.Main;
+import org.qi4j.rest.Named;
 import org.qi4j.rest.TestEntity;
+import org.qi4j.rest.TestEntity2;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.test.AbstractQi4jTest;
 import org.restlet.Client;
@@ -49,9 +52,9 @@ public class SPARQLEntityFinderTest
     public void assemble(ModuleAssembly module)
             throws AssemblyException
     {
-        module.addEntities(TestEntity.class);
+        module.addEntities(TestEntity.class, TestEntity2.class);
         ModuleAssembly store = module.layerAssembly().newModuleAssembly("REST Store/Finder/Registry");
-        store.addObjects(EntityStateSerializer.class, EntityStateParser.class, EntityTypeSerializer.class);
+        store.addObjects(EntityStateSerializer.class, EntityStateParser.class, EntityTypeSerializer.class, EntityTypeParser.class);
         store.addEntities(RESTEntityStoreConfiguration.class, SPARQLEntityFinderConfiguration.class, RESTEntityTypeRegistryConfiguration.class);
         store.addServices(MemoryEntityStoreService.class);
         store.addServices(RESTEntityStoreService.class, SPARQLEntityFinderService.class, RESTEntityTypeRegistryService.class, RdfFactoryService.class).visibleIn(Visibility.layer);
@@ -81,7 +84,8 @@ public class SPARQLEntityFinderTest
     {
         super.tearDown();
 
-        server.passivate();
+        if (server != null)
+            server.passivate();
     }
 
     @Test
@@ -91,12 +95,12 @@ public class SPARQLEntityFinderTest
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             try
             {
-                Query<TestEntity> query = unitOfWork.queryBuilderFactory().newQueryBuilder(TestEntity.class).newQuery();
-                for (TestEntity testEntity : query)
+                Query<Named> query = unitOfWork.queryBuilderFactory().newQueryBuilder(Named.class).newQuery();
+                for (Named testEntity : query)
                 {
                     System.out.println(testEntity.name().get());
                 }
-                Assert.assertThat("result size is correct", query.count(), equalTo(2L));
+                Assert.assertThat("result size is correct", query.count(), equalTo(3L));
             }
             finally
             {

@@ -31,7 +31,7 @@ import java.util.List;
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
 public class NeoEntityStoreMixin
-        implements EntityStore
+      //   implements EntityStore
 {
     // Dependancies
     private
@@ -90,7 +90,7 @@ public class NeoEntityStoreMixin
         return factory().prepareCommit(idService, updated, removedStates);
     }
 
-    public void visitEntityStates(EntityStateVisitor visitor)
+    public void visitEntityStates( EntityStore.EntityStateVisitor visitor)
     {
         final Iterator<CommittableEntityState> iter = factory().iterator(idService);
         while (iter.hasNext())

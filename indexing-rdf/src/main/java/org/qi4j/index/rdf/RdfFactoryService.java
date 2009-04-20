@@ -17,12 +17,11 @@
  */
 package org.qi4j.index.rdf;
 
-import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.index.rdf.internal.RdfFactoryMixin;
-import org.qi4j.index.rdf.RdfFactory;
 
-@Mixins( RdfFactoryMixin.class)
+@Mixins( RdfFactoryMixin.class )
 public interface RdfFactoryService extends ServiceComposite, RdfFactory
 {
 

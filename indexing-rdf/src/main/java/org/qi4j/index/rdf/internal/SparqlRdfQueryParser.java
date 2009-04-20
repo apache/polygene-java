@@ -17,7 +17,6 @@
  */
 package org.qi4j.index.rdf.internal;
 
-import org.openrdf.query.QueryLanguage;
 import org.qi4j.api.query.grammar.*;
 import org.qi4j.index.rdf.Namespaces;
 import org.qi4j.index.rdf.RdfQueryParser;
@@ -36,11 +35,6 @@ public class SparqlRdfQueryParser
 
     public SparqlRdfQueryParser()
     {
-    }
-
-    QueryLanguage getQueryLanguage()
-    {
-        return QueryLanguage.SPARQL;
     }
 
     public String getQuery(final String resultType,

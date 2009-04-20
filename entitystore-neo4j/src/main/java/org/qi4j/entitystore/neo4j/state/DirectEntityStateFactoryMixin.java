@@ -44,7 +44,7 @@ public class DirectEntityStateFactoryMixin implements NodeEntityStateFactory
 
     public CommittableEntityState createEntityState(NeoIdentityIndex idIndex, Node node, LoadedDescriptor descriptor, EntityReference reference, EntityStatus status)
     {
-        return new DirectEntityState(neo, idIndex, node, reference, status, descriptor);
+        return null; // new DirectEntityState(neo, idIndex, node, reference, status, descriptor);
     }
 
     public CommittableEntityState loadEntityStateFromNode(NeoIdentityIndex idIndex, Node node)

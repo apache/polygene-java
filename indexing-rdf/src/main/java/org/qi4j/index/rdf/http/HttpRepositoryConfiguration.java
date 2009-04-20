@@ -13,10 +13,8 @@
  */
 package org.qi4j.index.rdf.http;
 
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.property.Property;
 import org.qi4j.api.configuration.ConfigurationComposite;
+import org.qi4j.api.property.Property;
 
 /**
  * JAVADOC Add JavaDoc

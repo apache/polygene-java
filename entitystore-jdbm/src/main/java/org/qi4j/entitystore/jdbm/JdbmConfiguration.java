@@ -1,10 +1,9 @@
 package org.qi4j.entitystore.jdbm;
 
 import org.qi4j.api.common.UseDefaults;
-import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.configuration.ConfigurationComposite;
 
 /**
  * JAVADOC
@@ -24,6 +23,5 @@ public interface JdbmConfiguration
      * @return the turboMode setting. True if turboMode is enabled, but serialization of entities that contain classes
      *         that has readObject() or writeObject() overrides will fail.
      */
-    @UseDefaults
-    Property<Boolean> turboMode();
+    @UseDefaults Property<Boolean> turboMode();
 }

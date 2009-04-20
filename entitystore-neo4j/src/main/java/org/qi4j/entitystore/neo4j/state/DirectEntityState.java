@@ -29,7 +29,8 @@ import java.util.Set;
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
-public class DirectEntityState implements CommittableEntityState
+public class DirectEntityState
+    // implements CommittableEntityState
 {
     // Constants
     public static final String IDENTITY_PROPERTY_KEY = "<entity reference>";
