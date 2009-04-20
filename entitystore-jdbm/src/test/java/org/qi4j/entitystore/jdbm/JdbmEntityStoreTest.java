@@ -18,7 +18,9 @@ package org.qi4j.entitystore.jdbm;
 
 import java.io.File;
 import org.junit.After;
+import org.junit.Test;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -39,6 +41,12 @@ public class JdbmEntityStoreTest extends AbstractEntityStoreTest
         ModuleAssembly config = module.layerAssembly().newModuleAssembly( "config" );
         config.addEntities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class, EntityTypeRegistryService.class );
+    }
+
+    @Test
+    @Override public void givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification() throws UnitOfWorkCompletionException
+    {
+        super.givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification();
     }
 
     @Override @After public void tearDown() throws Exception
