@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.composite;
 
+import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.constraint.ConstraintImplementationNotFoundException;
 import org.qi4j.api.constraint.Constraints;
@@ -110,15 +111,22 @@ public final class ConstraintsModel
         if( type instanceof Class )
         {
             Class<?> clazz = (Class<?>) type;
-            Constraints annotation = clazz.getAnnotation( Constraints.class );
-
-            if( annotation != null )
+            try
             {
-                Class<? extends Constraint<?, ?>>[] constraintClasses = annotation.value();
-                for( Class<? extends Constraint<?, ?>> constraintClass : constraintClasses )
+                Constraints annotation = clazz.getAnnotation( Constraints.class );
+
+                if( annotation != null )
                 {
-                    constraints.add( new ConstraintDeclaration( constraintClass, type ) );
+                    Class<? extends Constraint<?, ?>>[] constraintClasses = annotation.value();
+                    for( Class<? extends Constraint<?, ?>> constraintClass : constraintClasses )
+                    {
+                        constraints.add( new ConstraintDeclaration( constraintClass, type ) );
+                    }
                 }
+            }
+            catch( Exception e )
+            {
+                throw (InvalidApplicationException) new InvalidApplicationException( "Could not get Constraints for type " + clazz.getName() ).initCause( e );
             }
         }
     }

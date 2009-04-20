@@ -62,7 +62,7 @@ public class EntitiesModel
             {
                 if( foundModel != null )
                 {
-                    throw new AmbiguousTypeException( mixinType );
+                    throw new AmbiguousTypeException( mixinType, foundModel.type(), entityModel.type() );
                 }
                 else
                 {

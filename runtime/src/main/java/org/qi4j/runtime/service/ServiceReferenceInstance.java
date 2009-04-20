@@ -16,6 +16,7 @@ package org.qi4j.runtime.service;
 
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceException;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -24,6 +25,7 @@ import org.qi4j.spi.service.Activator;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.logging.Logger;
 
 /**
  * Implementation of ServiceReference. This manages the actual instance of the service
@@ -35,7 +37,7 @@ import java.lang.reflect.Method;
 public final class ServiceReferenceInstance<T>
     implements ServiceReference<T>, Activatable
 {
-    private volatile CompositeInstance instance;
+    private volatile ServiceInstance instance;
     private final T serviceProxy;
     private final ModuleInstance module;
     private final ServiceModel serviceModel;
@@ -83,6 +85,7 @@ public final class ServiceReferenceInstance<T>
     {
         if( instance != null )
         {
+            Logger.getLogger( getClass().getName() ).info( "Passivating service for " + serviceModel.identity() + " " + this.hashCode() );
             activator.passivate();
             instance = null;
         }
@@ -98,19 +101,17 @@ public final class ServiceReferenceInstance<T>
             {
                 if( instance == null )
                 {
+                    Logger.getLogger( getClass().getName() ).info( "Activating service for " + serviceModel.identity() + " " + this.hashCode() );
                     instance = serviceModel.newInstance( module );
 
-                    if( instance.<T>proxy() instanceof Activatable )
+                    try
                     {
-                        try
-                        {
-                            activator.activate( (Activatable) instance.proxy() );
-                        }
-                        catch( Exception e )
-                        {
-                            instance = null;
-                            throw new ServiceImporterException( e );
-                        }
+                        activator.activate( instance );
+                    }
+                    catch( Exception e )
+                    {
+                        instance = null;
+                        throw new ServiceException( "Could not activate service " + serviceModel.identity(), e );
                     }
                 }
             }

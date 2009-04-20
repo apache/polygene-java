@@ -16,10 +16,10 @@ package org.qi4j.spi.serialization;
 
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityTypeReference;
-import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.StateName;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,24 +28,24 @@ import java.util.Set;
  * of the state and the version of the type.
  */
 public final class SerializableState
-        implements Serializable
+    implements Serializable
 {
-    private static final long serialVersionUID = 4L;
+    private static final long serialVersionUID = 5L;
 
     private final EntityReference identity;
-    private final long entityVersion;
+    private final String entityVersion;
     private final long lastModified;
     private final Set<EntityTypeReference> entityTypeReferences;
     private final Map<StateName, String> properties;
     private final Map<StateName, EntityReference> associations;
-    private final Map<StateName, ManyAssociationState> manyAssociations;
+    private final Map<StateName, List<EntityReference>> manyAssociations;
 
-    public SerializableState(EntityReference identity,
-                             long entityVersion, long lastModified,
-                             Set<EntityTypeReference> entityTypeReferences,
-                             Map<StateName, String> properties,
-                             Map<StateName, EntityReference> associations,
-                             Map<StateName, ManyAssociationState> manyAssociations)
+    public SerializableState( EntityReference identity,
+                              String entityVersion, long lastModified,
+                              Set<EntityTypeReference> entityTypeReferences,
+                              Map<StateName, String> properties,
+                              Map<StateName, EntityReference> associations,
+                              Map<StateName, List<EntityReference>> manyAssociations )
     {
         this.identity = identity;
         this.entityVersion = entityVersion;
@@ -66,7 +66,7 @@ public final class SerializableState
         return entityTypeReferences;
     }
 
-    public long version()
+    public String version()
     {
         return entityVersion;
     }
@@ -86,7 +86,7 @@ public final class SerializableState
         return associations;
     }
 
-    public Map<StateName, ManyAssociationState> manyAssociations()
+    public Map<StateName, List<EntityReference>> manyAssociations()
     {
         return manyAssociations;
     }

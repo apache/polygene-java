@@ -45,14 +45,14 @@ public final class UsedLayersModel
         CompositeModel foundModel = null;
         for( LayerModel usedLayer : usedLayers )
         {
-            CompositeModel module = usedLayer.findCompositeFor( mixinType, Visibility.application );
-            if( module != null )
+            CompositeModel compositeModel = usedLayer.findCompositeFor( mixinType, Visibility.application );
+            if( compositeModel != null )
             {
                 if( foundModel != null )
                 {
-                    throw new AmbiguousTypeException( mixinType );
+                    throw new AmbiguousTypeException( mixinType, foundModel.type(), compositeModel.type() );
                 }
-                foundModel = module;
+                foundModel = compositeModel;
             }
         }
 

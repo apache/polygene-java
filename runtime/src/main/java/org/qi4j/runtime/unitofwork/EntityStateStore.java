@@ -14,21 +14,19 @@
 
 package org.qi4j.runtime.unitofwork;
 
-import org.qi4j.runtime.entity.EntityInstance;
+import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStore;
 
 /**
  * JAVADOC
-*/
+ */
 class EntityStateStore
 {
-    EntityInstance instance; // May be null
-    EntityState state; // May be null
-    EntityStore store;
+    EntityStateHolder stateHolder;
+    EntityState state;
 
     @Override public String toString()
     {
-        return instance.identity()+" "+state+" "+store;
+        return state.identity().toString();
     }
 }

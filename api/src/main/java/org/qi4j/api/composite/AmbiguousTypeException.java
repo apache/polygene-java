@@ -19,6 +19,8 @@ package org.qi4j.api.composite;
 
 import org.qi4j.api.mixin.MixinMappingException;
 
+import java.util.Arrays;
+
 /**
  * This Exception is thrown when more than one Composite implements a MixinType
  * that one tries to use to create a Composite instance from.
@@ -52,15 +54,27 @@ public class AmbiguousTypeException extends MixinMappingException
     private static final long serialVersionUID = 1L;
 
     private final Class<?> mixinType;
+    private Iterable<Class<?>> matchingTypes;
 
-    public AmbiguousTypeException( Class<?> mixinType )
+    public AmbiguousTypeException( Class<?> mixinType, Class<?>... matchingTypes )
     {
-        super( "More than one visible CompositeType implements mixintype: " + mixinType.getName() );
+        this( mixinType, Arrays.asList( matchingTypes ) );
+    }
+
+    public AmbiguousTypeException( Class<?> mixinType, Iterable<Class<?>> matchingTypes )
+    {
+        super( "More than one visible CompositeType implements mixintype " + mixinType.getName() + ":" + matchingTypes );
         this.mixinType = mixinType;
+        this.matchingTypes = matchingTypes;
     }
 
     public Class<?> mixinType()
     {
         return mixinType;
+    }
+
+    public Iterable<Class<?>> matchingTypes()
+    {
+        return matchingTypes;
     }
 }

@@ -12,28 +12,19 @@
  *
  */
 
-package org.qi4j.spi.entity.helpers;
-
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.StateName;
+package org.qi4j.spi.unitofwork.event;
 
 /**
  * JAVADOC
  */
-public class PropertyChange
-    extends EntityStateChange
+public interface UnitOfWorkEvents
 {
-    private String value;
+    /**
+     * Add an event to this UnitOfWork.
+     *
+     * @param event
+     */
+    void addEvent( UnitOfWorkEvent event );
 
-    public PropertyChange(StateName stateName, String value)
-    {
-        super(stateName);
-        this.value = value;
-    }
-
-    public void applyTo(EntityState state)
-    {
-        state.setProperty(stateName, value);
-    }
+    Iterable<UnitOfWorkEvent> events();
 }

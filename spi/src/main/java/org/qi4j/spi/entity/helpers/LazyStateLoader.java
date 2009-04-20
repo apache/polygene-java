@@ -15,25 +15,22 @@
 package org.qi4j.spi.entity.helpers;
 
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateName;
-import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.value.ValueType;
+
+import java.util.List;
 
 /**
  * JAVADOC
  */
 public interface LazyStateLoader
 {
-    String getProperty(EntityReference reference, StateName stateName)
-            throws EntityStoreException;
+    String getProperty( EntityReference reference, StateName stateName )
+        throws EntityStoreException;
 
-    EntityReference getAssociation(EntityReference reference, StateName stateName)
-            throws EntityStoreException;
+    EntityReference getAssociation( EntityReference reference, StateName stateName )
+        throws EntityStoreException;
 
-    ManyAssociationState getManyAssociation(EntityReference reference, StateName stateName)
-            throws EntityStoreException;
+    List<EntityReference> getManyAssociation( EntityReference reference, StateName stateName )
+        throws EntityStoreException;
 }

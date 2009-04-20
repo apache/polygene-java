@@ -15,39 +15,37 @@
 package org.qi4j.spi.entity.helpers;
 
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.StateName;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Default implementation of ManyAssociationState that also
  * keeps a list of changes that can be extracted at any time.
  */
-public class DefaultDiffManyAssociationState
+public class BuilderManyAssociationState
     implements ManyAssociationState
 {
     private List<EntityReference> references;
     private StateName name;
     private EntityStateChanges changes;
 
-    public DefaultDiffManyAssociationState(StateName name, ManyAssociationState state, EntityStateChanges changes)
+    public BuilderManyAssociationState( StateName name, ManyAssociationState state, EntityStateChanges changes )
     {
         this.name = name;
         this.changes = changes;
 
         // Copy
-        for (int i = 0; i < state.count(); i++)
+        for( int i = 0; i < state.count(); i++ )
         {
-            references.add(state.get(i));
+            references.add( state.get( i ) );
         }
     }
 
-    public DefaultDiffManyAssociationState(StateName name, EntityStateChanges changes)
+    public BuilderManyAssociationState( StateName name, EntityStateChanges changes )
     {
         this.name = name;
         this.changes = changes;
@@ -59,31 +57,36 @@ public class DefaultDiffManyAssociationState
         return references.size();
     }
 
-    public boolean contains(EntityReference entityReference)
+    public boolean contains( EntityReference entityReference )
     {
-        return references.contains(entityReference);
+        return references.contains( entityReference );
     }
 
-    public boolean add(int i, EntityReference entityReference)
+    public boolean add( int i, EntityReference entityReference )
     {
-        if (references.contains(entityReference))
+        if( references.contains( entityReference ) )
+        {
             return false;
+        }
 
-        references.add(i, entityReference);
-        changes.added(name, i, entityReference);
+        references.add( i, entityReference );
+        changes.added( name, i, entityReference );
         return true;
     }
 
-    public boolean remove(EntityReference entityReference)
+    public boolean remove( EntityReference entityReference )
     {
-        boolean removed = references.remove(entityReference);
-        if (removed) changes.removed(name, entityReference);
+        boolean removed = references.remove( entityReference );
+        if( removed )
+        {
+            changes.removed( name, entityReference );
+        }
         return removed;
     }
 
-    public EntityReference get(int i)
+    public EntityReference get( int i )
     {
-        return references.get(i);
+        return references.get( i );
     }
 
     public Iterator<EntityReference> iterator()

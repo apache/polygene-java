@@ -206,6 +206,7 @@ public class ModuleInstance
     public void activate()
         throws Exception
     {
+        entities.activate();
         services.activate();
     }
 
@@ -246,10 +247,7 @@ public class ModuleInstance
             finder = new EntityFinder();
             finder.mixinType = type;
             visitModules( finder );
-            if( finder.model != null )
-            {
-                entityFinders.put( type, finder );
-            }
+            entityFinders.put( type, finder );
         }
         return finder;
     }
@@ -449,7 +447,7 @@ public class ModuleInstance
             }
 
             StateHolder initialState = finder.model.newInitialState();
-            finder.model.checkConstraints( initialState);
+            finder.model.checkConstraints( initialState );
             return valueType.cast( finder.model.newValueInstance( finder.module, initialState ).proxy() );
 
         }

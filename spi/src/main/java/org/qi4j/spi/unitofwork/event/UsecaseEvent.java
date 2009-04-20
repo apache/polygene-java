@@ -12,27 +12,31 @@
  *
  */
 
-package org.qi4j.spi.entity.helpers;
+package org.qi4j.spi.unitofwork.event;
 
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.StateName;
-
-import java.io.Serializable;
+import org.qi4j.api.usecase.Usecase;
+import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 
 /**
  * JAVADOC
  */
-public abstract class EntityStateChange
-    implements Serializable
+public class UsecaseEvent
+    implements UnitOfWorkEvent
 {
-    protected StateName stateName;
+    private Usecase usecase;
 
-    protected EntityStateChange(StateName stateName)
+    public UsecaseEvent( Usecase usecase )
     {
-        this.stateName = stateName;
+        this.usecase = usecase;
     }
 
-    public abstract void applyTo(EntityState state);
+    public Usecase usecase()
+    {
+        return usecase;
+    }
 
+    public void applyTo( EntityStoreUnitOfWork uow )
+    {
+        uow.addEvent( this );
+    }
 }

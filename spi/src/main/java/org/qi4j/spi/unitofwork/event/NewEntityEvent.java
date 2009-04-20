@@ -12,27 +12,29 @@
  *
  */
 
-package org.qi4j.spi.entity.helpers;
+package org.qi4j.spi.unitofwork.event;
 
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 
 /**
  * JAVADOC
  */
-public class AddedEntityTypeChange
-    extends EntityStateChange
+public class NewEntityEvent extends EntityEvent
 {
-    private EntityTypeReference entityTypeReference;
-
-    public AddedEntityTypeChange(EntityTypeReference entityTypeReference)
+    public NewEntityEvent( EntityReference identity )
     {
-        super(null);
-        this.entityTypeReference = entityTypeReference;
+        super( identity );
     }
 
-    public void applyTo(EntityState state)
+    public void applyTo( EntityStoreUnitOfWork uow )
     {
-        state.addEntityTypeReference(entityTypeReference);
+        uow.newEntityState( identity() );
+    }
+
+    public void applyTo( EntityState entityState )
+    {
+        // Ignore
     }
 }

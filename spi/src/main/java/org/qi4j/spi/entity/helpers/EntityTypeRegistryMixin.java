@@ -14,11 +14,14 @@
 
 package org.qi4j.spi.entity.helpers;
 
-import org.qi4j.spi.entity.*;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.EntityTypeRegistry;
+import org.qi4j.spi.entity.UnknownEntityTypeException;
 
 import java.util.Map;
-import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 /**
  * EntityType registry mixin which helps EntityStore implementations.
@@ -31,8 +34,11 @@ public class EntityTypeRegistryMixin
     public void registerEntityType( EntityType entityType )
     {
         EntityTypeReference reference = entityType.reference();
-        if (!entityTypes.containsKey(reference))
-            entityTypes.put(reference, entityType );
+        if( !entityTypes.containsKey( reference ) )
+        {
+            Logger.getLogger( EntityTypeRegistry.class.getName() ).info( "Registered entity type:" + entityType.reference() + " " + this );
+            entityTypes.put( reference, entityType );
+        }
     }
 
     public EntityType getEntityType( EntityTypeReference type )
@@ -41,13 +47,14 @@ public class EntityTypeRegistryMixin
         EntityType entityType = entityTypes.get( type );
         if( entityType == null )
         {
+            Logger.getLogger( EntityTypeRegistry.class.getName() ).warning( "Unknown entity type:" + type );
             throw new UnknownEntityTypeException( type.toString() );
         }
         return entityType;
     }
 
-    public Iterator<EntityType> iterator()
+    public Iterable<EntityType> getEntityTypes()
     {
-        return entityTypes.values().iterator();
+        return entityTypes.values();
     }
 }

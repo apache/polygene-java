@@ -97,7 +97,7 @@ public final class LayerModel
             {
                 if( foundModel != null )
                 {
-                    throw new AmbiguousTypeException( mixinType );
+                    throw new AmbiguousTypeException( mixinType, foundModel.type(), compositeModel.type() );
                 }
                 else
                 {

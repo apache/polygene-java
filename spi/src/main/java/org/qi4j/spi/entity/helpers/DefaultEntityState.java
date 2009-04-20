@@ -18,8 +18,6 @@ package org.qi4j.spi.entity.helpers;
 
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.*;
-import org.qi4j.spi.value.ValueState;
-import org.qi4j.spi.value.ValueType;
 
 import java.io.Serializable;
 import java.util.*;
@@ -28,41 +26,44 @@ import java.util.*;
  * Standard implementation of EntityState.
  */
 public class DefaultEntityState
-        implements EntityState, Serializable
+    implements EntityState, Serializable
 {
-    protected EntityStatus status;
-    private boolean modified;
+    protected DefaultEntityStoreUnitOfWork unitOfWork;
 
-    protected long version;
+    protected EntityStatus status;
+
+    protected String version;
     protected long lastModified;
     private final EntityReference identity;
     private final Set<EntityTypeReference> entityTypes;
 
     protected final Map<StateName, String> properties;
     protected final Map<StateName, EntityReference> associations;
-    protected final Map<StateName, ManyAssociationState> manyAssociations;
+    protected final Map<StateName, List<EntityReference>> manyAssociations;
 
-    public DefaultEntityState(EntityReference identity)
+    public DefaultEntityState( DefaultEntityStoreUnitOfWork unitOfWork, EntityReference identity )
     {
-        this(0,
-                System.currentTimeMillis(),
-                identity,
-                EntityStatus.NEW,
-                new HashSet<EntityTypeReference>(),
-                new HashMap<StateName, String>(),
-                new HashMap<StateName, EntityReference>(),
-                new HashMap<StateName, ManyAssociationState>());
+        this( unitOfWork, "",
+              System.currentTimeMillis(),
+              identity,
+              EntityStatus.NEW,
+              new HashSet<EntityTypeReference>(),
+              new HashMap<StateName, String>(),
+              new HashMap<StateName, EntityReference>(),
+              new HashMap<StateName, List<EntityReference>>() );
     }
 
-    public DefaultEntityState(long version,
-                              long lastModified,
-                              EntityReference identity,
-                              EntityStatus status,
-                              Set<EntityTypeReference> entityTypes,
-                              Map<StateName, String> properties,
-                              Map<StateName, EntityReference> associations,
-                              Map<StateName, ManyAssociationState> manyAssociations)
+    public DefaultEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
+                               String version,
+                               long lastModified,
+                               EntityReference identity,
+                               EntityStatus status,
+                               Set<EntityTypeReference> entityTypes,
+                               Map<StateName, String> properties,
+                               Map<StateName, EntityReference> associations,
+                               Map<StateName, List<EntityReference>> manyAssociations )
     {
+        this.unitOfWork = unitOfWork;
         this.version = version;
         this.lastModified = lastModified;
         this.identity = identity;
@@ -74,7 +75,7 @@ public class DefaultEntityState
     }
 
     // EntityState implementation
-    public final long version()
+    public final String version()
     {
         return version;
     }
@@ -89,39 +90,82 @@ public class DefaultEntityState
         return identity;
     }
 
-    public String getProperty(StateName stateName)
+    public String getProperty( StateName stateName )
     {
-        return properties.get(stateName);
+        return properties.get( stateName );
     }
 
-    public void setProperty(StateName stateName, String newValue)
+    public void setProperty( StateName stateName, String newValue )
     {
-        properties.put(stateName, newValue);
-        modified = true;
+        properties.put( stateName, newValue );
+        unitOfWork.setProperty( identity, stateName, newValue );
     }
 
-    public EntityReference getAssociation(StateName stateName)
+    public EntityReference getAssociation( StateName stateName )
     {
-        return associations.get(stateName);
+        return associations.get( stateName );
     }
 
-    public void setAssociation(StateName stateName, EntityReference newEntity)
+    public void setAssociation( StateName stateName, EntityReference newEntity )
     {
-        associations.put(stateName, newEntity);
-        modified = true;
+        associations.put( stateName, newEntity );
+        unitOfWork.setAssociation( identity, stateName, newEntity );
     }
 
-    public ManyAssociationState getManyAssociation(StateName stateName)
+    public ManyAssociationState getManyAssociation( StateName stateName )
     {
-        ManyAssociationState manyAssociationState = manyAssociations.get(stateName);
-        if (manyAssociationState == null)
-            manyAssociations.put(stateName, new DefaultManyAssociationState());
-        return manyAssociationState;
+        List<EntityReference> manyAssociationState = manyAssociations.get( stateName );
+        if( manyAssociationState == null )
+        {
+            manyAssociationState = new ArrayList<EntityReference>();
+            manyAssociations.put( stateName, manyAssociationState );
+        }
+        return new DefaultManyAssociationState( manyAssociationState, identity, stateName, unitOfWork );
+    }
+
+    public void refresh()
+    {
+        if( status == EntityStatus.LOADED )
+        {
+            unitOfWork.refresh( this );
+        }
+    }
+
+    public void copyTo( DefaultEntityState entityState )
+    {
+        // Copy entity types
+        entityState.entityTypes.clear();
+        for( EntityTypeReference entityType : entityTypes )
+        {
+            entityState.entityTypes.add( entityType );
+        }
+
+        // Copy properties
+        entityState.properties.clear();
+        for( Map.Entry<StateName, String> stateNameStringEntry : properties.entrySet() )
+        {
+            entityState.properties.put( stateNameStringEntry.getKey(), stateNameStringEntry.getValue() );
+        }
+
+        // Copy associations
+        entityState.associations.clear();
+        for( Map.Entry<StateName, EntityReference> stateNameStringEntry : associations.entrySet() )
+        {
+            entityState.associations.put( stateNameStringEntry.getKey(), stateNameStringEntry.getValue() );
+        }
+
+        // Copy many-associations
+        entityState.manyAssociations.clear();
+        for( Map.Entry<StateName, List<EntityReference>> stateNameStringEntry : manyAssociations.entrySet() )
+        {
+            entityState.manyAssociations.put( stateNameStringEntry.getKey(), stateNameStringEntry.getValue() );
+        }
     }
 
     public void remove()
     {
         status = EntityStatus.REMOVED;
+        unitOfWork.removeEntityState( identity );
     }
 
     public EntityStatus status()
@@ -129,54 +173,26 @@ public class DefaultEntityState
         return status;
     }
 
-    public void addEntityTypeReference(EntityTypeReference entityType)
+    public void addEntityTypeReference( EntityTypeReference entityType )
     {
-        entityTypes.add(entityType);
+        entityTypes.add( entityType );
+        unitOfWork.addEntityType( identity, entityType );
     }
 
-    public void removeEntityTypeReference(EntityTypeReference type)
+    public void removeEntityTypeReference( EntityTypeReference entityTypeReference )
     {
-        entityTypes.remove(type);
+        entityTypes.remove( entityTypeReference );
+        unitOfWork.removeEntityType( identity, entityTypeReference );
     }
 
-    public boolean hasEntityTypeReference(EntityTypeReference type)
+    public boolean hasEntityTypeReference( EntityTypeReference type )
     {
-        return entityTypes.contains(type);
+        return entityTypes.contains( type );
     }
 
     public Set<EntityTypeReference> entityTypeReferences()
     {
         return entityTypes;
-    }
-
-    public boolean isModified()
-    {
-        if (modified)
-            return true;
-
-        for (ManyAssociationState manyAssociationState : manyAssociations.values())
-        {
-            DefaultManyAssociationState state = (DefaultManyAssociationState) manyAssociationState;
-            if (state.isModified())
-                return true;
-        }
-
-        return false;
-    }
-
-    public Map<StateName, String> getProperties()
-    {
-        return properties;
-    }
-
-    public Map<StateName, EntityReference> getAssociations()
-    {
-        return associations;
-    }
-
-    public Map<StateName, ManyAssociationState> getManyAssociations()
-    {
-        return manyAssociations;
     }
 
     @Override
@@ -185,19 +201,8 @@ public class DefaultEntityState
         return identity + "(" + properties.size() + " properties, " + associations.size() + " associations, " + manyAssociations.size() + " many-associations)";
     }
 
-    public void clearModified()
-    {
-        modified = false;
-    }
-
     public void hasBeenApplied()
     {
         status = EntityStatus.LOADED;
-        version++;
-    }
-
-    protected ManyAssociationState createManyAssociationState()
-    {
-        return new DefaultManyAssociationState();
     }
 }

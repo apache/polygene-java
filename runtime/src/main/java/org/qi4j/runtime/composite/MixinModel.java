@@ -20,6 +20,7 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.service.Activatable;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
 import org.qi4j.runtime.injection.InjectedMethodsModel;
@@ -195,5 +196,21 @@ public final class MixinModel
                 }
             }
         );
+    }
+
+    public void activate( Object mixin ) throws Exception
+    {
+        if( mixin instanceof Activatable )
+        {
+            ( (Activatable) mixin ).activate();
+        }
+    }
+
+    public void passivate( Object mixin ) throws Exception
+    {
+        if( mixin instanceof Activatable )
+        {
+            ( (Activatable) mixin ).passivate();
+        }
     }
 }

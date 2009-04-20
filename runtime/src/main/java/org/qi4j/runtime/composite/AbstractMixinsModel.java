@@ -260,6 +260,57 @@ public abstract class AbstractMixinsModel
         return mixinFor( method ).newInvocationHandler( method.getDeclaringClass() );
     }
 
+    public void activate( Object[] mixins ) throws Exception
+    {
+        int idx = 0;
+        try
+        {
+            for( MixinModel mixinModel : mixinModels )
+            {
+                mixinModel.activate( mixins[ idx ] );
+                idx++;
+            }
+        }
+        catch( Exception e )
+        {
+            // Passivate activated mixins
+            for( int i = idx - 1; i >= 0; i-- )
+            {
+                try
+                {
+                    mixinModels.get( i ).passivate( i );
+                }
+                catch( Exception e1 )
+                {
+                    // Ignore
+                }
+            }
+
+            throw e;
+        }
+    }
+
+    public void passivate( Object[] mixins ) throws Exception
+    {
+        int idx = 0;
+        Exception ex = null;
+        for( MixinModel mixinModel : mixinModels )
+        {
+            try
+            {
+                mixinModel.passivate( mixins[ idx++ ] );
+            }
+            catch( Exception e )
+            {
+                ex = e;
+            }
+        }
+        if( ex != null )
+        {
+            throw ex;
+        }
+    }
+
     private class Uses
         implements UsageGraph.Use<MixinModel>
     {

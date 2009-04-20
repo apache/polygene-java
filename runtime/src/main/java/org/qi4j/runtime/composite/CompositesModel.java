@@ -62,7 +62,7 @@ public class CompositesModel
             {
                 if( foundModel != null )
                 {
-                    throw new AmbiguousTypeException( mixinType );
+                    throw new AmbiguousTypeException( mixinType, foundModel.type(), composite.type() );
                 }
                 else
                 {

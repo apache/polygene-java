@@ -14,16 +14,15 @@
 
 package org.qi4j.spi.value;
 
+import org.qi4j.api.common.TypeName;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.util.Classes;
+import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.entity.SchemaVersion;
+import org.qi4j.spi.util.PeekableStringTokenizer;
+
 import java.lang.reflect.Type;
 import java.util.*;
-
-import org.qi4j.api.util.Classes;
-import org.qi4j.api.common.TypeName;
-import static org.qi4j.api.common.TypeName.nameOf;
-import org.qi4j.api.structure.Module;
-import org.qi4j.spi.entity.SchemaVersion;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.util.PeekableStringTokenizer;
 
 /**
  * JAVADOC
@@ -31,7 +30,7 @@ import org.qi4j.spi.util.PeekableStringTokenizer;
 public class CollectionType
     implements ValueType
 {
-    public static boolean isCollection( Type type)
+    public static boolean isCollection( Type type )
     {
         Class cl = Classes.getRawClass( type );
         return cl.equals( Collection.class ) || cl.equals( List.class ) || cl.equals( Set.class );
@@ -64,43 +63,51 @@ public class CollectionType
 
     @Override public String toString()
     {
-        return type +"<"+ collectedType +">";
+        return type + "<" + collectedType + ">";
     }
 
-    public void toJSON(Object value, StringBuilder json, Qi4jSPI spi)
+    public void toJSON( Object value, StringBuilder json, Qi4jSPI spi )
     {
-        json.append('[');
+        json.append( '[' );
 
         Collection collection = (Collection) value;
         String comma = "";
-        for (Object collectionValue : collection)
+        for( Object collectionValue : collection )
         {
-            json.append(comma);
-            collectedType.toJSON(collectionValue, json, spi);
-            comma=",";
+            json.append( comma );
+            collectedType.toJSON( collectionValue, json, spi );
+            comma = ",";
         }
 
-        json.append("]");
+        json.append( "]" );
     }
 
-    public Object fromJSON(PeekableStringTokenizer json, Module module)
+    public Object fromJSON( PeekableStringTokenizer json, Module module )
     {
-        String token = json.nextToken("[");
+        String token = json.nextToken( "[" );
 
-        Collection coll;
-        if (type.isClass(List.class))
-            coll = new ArrayList();
-        else
-            coll = new LinkedHashSet();
-
-        token = json.peekNextToken("]{\",");
-        while (!token.equals("]"))
+        Collection<Object> coll;
+        if( type.isClass( List.class ) )
         {
-            if (token.equals("null"))
-                coll.add(null);
+            coll = new ArrayList<Object>();
+        }
+        else
+        {
+            coll = new LinkedHashSet<Object>();
+        }
+
+        token = json.peekNextToken( "]{\"," );
+        while( !token.equals( "]" ) )
+        {
+            if( token.equals( "null" ) )
+            {
+                coll.add( null );
+            }
             else
-                coll.add(collectedType.fromJSON(json, module));
-            token = json.nextToken(",]");
+            {
+                coll.add( collectedType.fromJSON( json, module ) );
+            }
+            token = json.nextToken( ",]" );
         }
 
         return coll;

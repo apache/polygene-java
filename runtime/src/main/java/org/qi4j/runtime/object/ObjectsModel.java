@@ -63,7 +63,7 @@ public class ObjectsModel
             {
                 if( foundModel != null )
                 {
-                    throw new AmbiguousTypeException( type );
+                    throw new AmbiguousTypeException( type, foundModel.type(), objectModel.type() );
                 }
                 else
                 {

@@ -14,61 +14,60 @@
 
 package org.qi4j.runtime.unitofwork;
 
-import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.*;
+import org.qi4j.spi.entity.helpers.DefaultEntityStoreUnitOfWork;
+import org.qi4j.spi.entity.helpers.EntityStoreEvents;
+import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
+import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.UUID;
 
 /**
  * JAVADOC
  */
 public class UnitOfWorkStore
-        implements EntityStore
+    implements EntityStore, EntityStoreEvents
 {
     private UnitOfWorkInstance unitOfWork;
+    private String uuid;
+    private int count;
 
-    public UnitOfWorkStore(UnitOfWorkInstance unitOfWork)
+    public UnitOfWorkStore( UnitOfWorkInstance unitOfWork )
     {
         this.unitOfWork = unitOfWork;
+        uuid = UUID.randomUUID().toString() + "-";
+
     }
 
-    public EntityState newEntityState(EntityReference identity) throws EntityStoreException
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, MetaInfo unitOfWorkMetaInfo )
     {
-        UnitOfWorkEntityState entityState = new UnitOfWorkEntityState(0,
-                System.currentTimeMillis(),
-                identity,
-                EntityStatus.NEW,
-                new HashSet<EntityTypeReference>(),
-                new HashMap<StateName, String>(),
-                new HashMap<StateName, EntityReference>(),
-                new HashMap<StateName, ManyAssociationState>(),
-                null);
+        return new DefaultEntityStoreUnitOfWork( this, newUnitOfWorkId(), usecase, unitOfWorkMetaInfo );
+    }
+
+    public StateCommitter apply( String unitOfWorkIdentity, Iterable<UnitOfWorkEvent> events, Usecase usecase, MetaInfo metaInfo ) throws EntityStoreException
+    {
+        // TODO
+        return null;
+    }
+
+    public EntityState newEntityState( DefaultEntityStoreUnitOfWork unitOfWork, EntityReference identity, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo )
+    {
+        UnitOfWorkEntityState entityState = new UnitOfWorkEntityState( unitOfWork, "",
+                                                                       System.currentTimeMillis(),
+                                                                       identity,
+                                                                       EntityStatus.NEW );
         return entityState;
     }
 
-    public EntityState getEntityState(EntityReference identity) throws EntityStoreException
+    public EntityState getEntityState( DefaultEntityStoreUnitOfWork uow, EntityReference identity, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo )
     {
-        EntityState parentState = unitOfWork.getCachedState(identity.toString());
-        UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState(parentState.version(),
-                parentState.lastModified(),
-                identity,
-                EntityStatus.LOADED,
-                new HashSet<EntityTypeReference>(),
-                new HashMap<StateName, String>(),
-                new HashMap<StateName, EntityReference>(),
-                new HashMap<StateName, ManyAssociationState>(),
-                parentState);
+        EntityState parentState = unitOfWork.getCachedState( identity );
+        UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( uow, parentState );
         return unitOfWorkEntityState;
-    }
-
-    public StateCommitter prepare(Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityReference> removedStates) throws EntityStoreException
-    {
-        // Unused
-        return null;
     }
 
     public Iterator<EntityState> iterator()
@@ -76,64 +75,35 @@ public class UnitOfWorkStore
         return null;
     }
 
-    public EntityStateStore getEffectiveEntityStateStore(EntityReference identity, EntityType entityType)
+    public EntityState getParentEntityState( EntityReference identity )
     {
-        EntityStateStore entityStateStore = unitOfWork.getEffectiveEntityStateStore(identity, entityType);
-        if (entityStateStore == null)
+        EntityState parentState = unitOfWork.getParentEntityState( identity );
+        if( parentState == null )
         {
             return null;
         }
 
-        EntityState parentState = entityStateStore.state;
-        UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState(parentState.version(),
-                parentState.lastModified(),
-                identity,
-                EntityStatus.LOADED,
-                new HashSet<EntityTypeReference>(),
-                new HashMap<StateName, String>(),
-                new HashMap<StateName, EntityReference>(),
-                new HashMap<StateName, ManyAssociationState>(),
-                parentState);
-        entityStateStore = new EntityStateStore();
-        entityStateStore.state = unitOfWorkEntityState;
-        entityStateStore.store = this;
+        // TODO Needs to be fixed
+        UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( null, parentState );
 
-        return entityStateStore;
+        return unitOfWorkEntityState;
     }
 
-    public void visitEntityStates(EntityStateVisitor visitor)
+    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor )
     {
         // ???
+        return null;
     }
 
-    public void mergeWith(Map<String, EntityStateStore> entityStateStores)
+
+    public void refresh( EntityReference identity )
     {
-        for (Map.Entry<String, EntityStateStore> entry : entityStateStores.entrySet())
-        {
-            EntityStateStore ess = unitOfWork.stateCache.get(entry.getKey());
-            if (ess == null)
-            {
-                unitOfWork.stateCache.put(entry.getKey(), entry.getValue());
-            } else
-            {
-                EntityState parentState = ess.state;
-
-                if (entry.getValue().state.status() == EntityStatus.REMOVED)
-                {
-                    parentState.remove();
-                    ess.instance.refreshState();
-                } else
-                {
-                    UnitOfWorkEntityState state = (UnitOfWorkEntityState) entry.getValue().state;
-                    state.mergeTo(parentState);
-                    ess.instance.refreshState();
-                }
-            }
-        }
+        unitOfWork.refresh( identity );
     }
 
-    public void refresh(String identity)
+    private String newUnitOfWorkId()
     {
-        unitOfWork.refresh(identity);
+        return uuid + Integer.toHexString( count++ );
     }
+
 }

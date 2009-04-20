@@ -1,15 +1,16 @@
 package org.qi4j.entitystore.memory;
 
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.util.Streams;
-import org.qi4j.spi.entity.helpers.MapEntityStore;
-import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.api.usecase.Usecase;
+import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
+import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.helpers.MapEntityStore;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * In-memory implementation of MapEntityStore.
@@ -24,68 +25,76 @@ public class MemoryMapEntityStoreMixin
         store = new HashMap<EntityReference, byte[]>();
     }
 
-    public boolean contains(EntityReference entityReference)
+    public boolean contains( EntityReference entityReference, Usecase usecase, MetaInfo unitofwork ) throws EntityStoreException
     {
-        return store.containsKey(entityReference);
+        return store.containsKey( entityReference );
     }
 
-    public void get(EntityReference entityReference, OutputStream out) throws EntityNotFoundException
+    public InputStream get( EntityReference entityReference, Usecase usecase, MetaInfo unitOfWork ) throws EntityStoreException
     {
-        byte[] state = store.get(entityReference);
-        if (state == null)
-            throw new EntityNotFoundException(entityReference);
-        try
+        byte[] state = store.get( entityReference );
+        if( state == null )
         {
-            out.write(state);
-        } catch (IOException e)
-        {
-            throw new EntityStoreException(e);
+            throw new EntityNotFoundException( entityReference );
         }
+
+        return new ByteArrayInputStream( state );
     }
 
-    public void update(Map<EntityReference, InputStream> newEntities, Map<EntityReference, InputStream> updatedEntities, Iterable<EntityReference> removedEntities)
+    public void applyChanges( MapChanges changes, Usecase usecase, MetaInfo unitOfWork ) throws IOException
     {
-        for (Map.Entry<EntityReference, InputStream> entityReferenceInputStreamEntry : newEntities.entrySet())
+        changes.visitMap( new MapChanger()
         {
-            put(entityReferenceInputStreamEntry.getKey(), entityReferenceInputStreamEntry.getValue());
-        }
+            public OutputStream newEntity( final EntityReference ref )
+            {
+                return new ByteArrayOutputStream()
+                {
+                    @Override public void close() throws IOException
+                    {
+                        super.close();
+                        byte[] old = store.put( ref, toByteArray() );
+                        if( old != null )
+                        {
+                            store.put( ref, old );
+                            throw new EntityAlreadyExistsException( ref );
+                        }
+                    }
+                };
+            }
 
-        for (Map.Entry<EntityReference, InputStream> entityReferenceInputStreamEntry : updatedEntities.entrySet())
-        {
-            put(entityReferenceInputStreamEntry.getKey(), entityReferenceInputStreamEntry.getValue());
-        }
+            public OutputStream updateEntity( final EntityReference ref ) throws IOException
+            {
+                return new ByteArrayOutputStream()
+                {
+                    @Override public void close() throws IOException
+                    {
+                        super.close();
+                        byte[] old = store.put( ref, toByteArray() );
+                        if( old == null )
+                        {
+                            store.remove( ref );
+                            throw new EntityNotFoundException( ref );
+                        }
+                    }
+                };
+            }
 
-        for (EntityReference removedEntity : removedEntities)
-        {
-            remove(removedEntity);
-        }
+            public void removeEntity( EntityReference ref ) throws EntityNotFoundException
+            {
+                byte[] state = store.remove( ref );
+                if( state == null )
+                {
+                    throw new EntityNotFoundException( ref );
+                }
+            }
+        }, usecase, unitOfWork );
     }
 
-    public void put(EntityReference entityReference, InputStream in) throws EntityStoreException
+    public void visitMap( MapEntityStoreVisitor visitor, Usecase usecase, MetaInfo unitOfWorkMetaInfo )
     {
-        try
+        for( byte[] bytes : store.values() )
         {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            Streams.copyStream(in, out, true);
-            store.put(entityReference, out.toByteArray());
-        } catch (IOException e)
-        {
-            throw new EntityStoreException(e);
-        }
-    }
-
-    public void remove(EntityReference removedEntity) throws EntityNotFoundException
-    {
-        byte[] state = store.remove(removedEntity);
-        if (state == null)
-            throw new EntityNotFoundException(removedEntity);
-    }
-
-    public void visitMap(MapEntityStoreVisitor visitor)
-    {
-        for (byte[] bytes : store.values())
-        {
-            visitor.visitEntity(new ByteArrayInputStream(bytes));
+            visitor.visitEntity( new ByteArrayInputStream( bytes ) );
         }
     }
 }

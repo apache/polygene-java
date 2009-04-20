@@ -16,13 +16,18 @@
  */
 package org.qi4j.spi.entity;
 
-import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.usecase.Usecase;
+import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
+import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
 
 /**
  * Interface that must be implemented by store for persistent state of EntityComposites.
  */
 public interface EntityStore
 {
+    EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, MetaInfo unitOfWorkMetaInfo );
+
     /**
      * Create new EntityState for a given identity.
      * <p/>
@@ -32,9 +37,9 @@ public interface EntityStore
      * @param anIdentity the identity of the entity
      * @return The new entity state.
      * @throws EntityStoreException Thrown if creational fails.
-     */
     EntityState newEntityState( EntityReference anIdentity )
-        throws EntityStoreException;
+    throws EntityStoreException;
+     */
 
     /**
      * Get the EntityState for a given identity. Throws {@link EntityNotFoundException}
@@ -44,9 +49,9 @@ public interface EntityStore
      * @return Entity state given the composite descriptor and identity.
      * @throws EntityStoreException    thrown if retrieval failed.
      * @throws EntityNotFoundException thrown if wanted entity does not exist
-     */
     EntityState getEntityState( EntityReference anIdentity )
-        throws EntityStoreException, EntityNotFoundException;
+    throws EntityStoreException, EntityNotFoundException;
+     */
 
     /**
      * This method is called by {@link org.qi4j.api.unitofwork.UnitOfWork#complete()}.
@@ -59,23 +64,23 @@ public interface EntityStore
      * a concurrent modification was done, and the store should throw ConcurrentEntityModificationException so that
      * the client can do a refresh() of those entities and try again.
      *
-     * @param newStates     The new states. This argument must not be {@code null}.
-     * @param updatedStates The loaded states. This argument must not be {@code null}.
-     * @param removedStates The removed states. This argument must not be {@code null}.
      * @return an implementation of StateCommitter
      * @throws EntityStoreException if the state could not be sent to the datastore
      * @throws ConcurrentEntityStateModificationException
      *                              if the prepared state has changed in the store
+     *                              StateCommitter prepare( Iterable<EntityState> newStates,
+     *                              Iterable<EntityState> updatedStates,
+     *                              Iterable<EntityReference> removedStates )
+     *                              throws EntityStoreException, ConcurrentEntityStateModificationException;
      */
-    StateCommitter prepare( Iterable<EntityState> newStates,
-                            Iterable<EntityState> updatedStates,
-                            Iterable<EntityReference> removedStates )
-        throws EntityStoreException, ConcurrentEntityStateModificationException;
 
-    void visitEntityStates(EntityStateVisitor visitor);
+    StateCommitter apply( String unitOfWorkIdentity, Iterable<UnitOfWorkEvent> events, Usecase usecase, MetaInfo metaInfo )
+        throws EntityStoreException;
+
+    EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor );
 
     interface EntityStateVisitor
     {
-        void visitEntityState(EntityState entityState);
+        void visitEntityState( EntityState entityState );
     }
 }

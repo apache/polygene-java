@@ -15,8 +15,6 @@
 package org.qi4j.api.configuration;
 
 import org.qi4j.api.Qi4j;
-import org.qi4j.api.concern.ConcernOf;
-import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -56,9 +54,8 @@ public interface Configuration<T>
     void refresh();
 
     // Implementation of Configuration
-    @Concerns( Configuration.ConfigurationActivationRefreshConcern.class )
     public final class ConfigurationMixin<T>
-        implements Configuration<T>
+        implements Configuration<T>, Activatable
     {
         private T configuration;
         private UnitOfWork uow;
@@ -79,24 +76,16 @@ public interface Configuration<T>
 
         public void refresh()
         {
-            if( uow != null )
-            {
-                uow.refresh( configuration );
-            }
+            uow.refresh( configuration );
         }
-    }
-
-    // Refresh the Configuration when the Service is activated
-    public abstract class ConfigurationActivationRefreshConcern
-        extends ConcernOf<Activatable>
-        implements Activatable
-    {
-        @This Configuration<Object> configuration;
 
         public void activate() throws Exception
         {
-            configuration.refresh();
-            next.activate();
+            refresh();
+        }
+
+        public void passivate() throws Exception
+        {
         }
     }
 }

@@ -14,16 +14,11 @@
 
 package org.qi4j.spi.entity.helpers;
 
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.StateName;
 import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.StateName;
+import org.qi4j.spi.unitofwork.event.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
 import java.io.Serializable;
 
 /**
@@ -32,64 +27,44 @@ import java.io.Serializable;
 public class EntityStateChanges
     implements Serializable
 {
-    private List<EntityStateChange> changes;
+    private UnitOfWorkEvents uow;
+    private EntityReference identity;
 
-    public void setProperty(StateName stateName, String newValue)
+
+    public EntityStateChanges( UnitOfWorkEvents uow, EntityReference identity )
     {
-        if (changes == null)
-            changes = new ArrayList<EntityStateChange>();
-        changes.add(new PropertyChange(stateName, newValue));
+        this.uow = uow;
+        this.identity = identity;
     }
 
-    public void setAssociation(StateName stateName, EntityReference entityReference)
+    public void setProperty( StateName stateName, String newValue )
     {
-        if (changes == null)
-            changes = new ArrayList<EntityStateChange>();
-        changes.add(new AssociationChange(stateName, entityReference));
+        uow.addEvent( new SetPropertyEvent( identity, stateName, newValue ) );
     }
 
-    public void added(StateName stateName, int index, EntityReference reference)
+    public void setAssociation( StateName stateName, EntityReference entityReference )
     {
-        if (changes == null)
-            changes = new ArrayList<EntityStateChange>();
-        changes.add(new ManyAssociationChange(stateName, index, reference));
+        uow.addEvent( new SetAssociationEvent( identity, stateName, entityReference ) );
     }
 
-    public void removed(StateName stateName, EntityReference reference)
+    public void added( StateName stateName, int index, EntityReference reference )
     {
-        if (changes == null)
-            changes = new ArrayList<EntityStateChange>();
-        changes.add(new ManyAssociationChange(stateName, reference));
+        uow.addEvent( new AddManyAssociationEvent( identity, stateName, index, reference ) );
     }
 
-    public void applyTo(EntityState state)
+    public void removed( StateName stateName, EntityReference reference )
     {
-        if (changes != null)
-        {
-            for (EntityStateChange change : changes)
-            {
-                change.applyTo(state);
-            }
-        }
+        uow.addEvent( new RemoveManyAssociationEvent( identity, stateName, reference ) );
     }
 
-    public Iterable<EntityStateChange> changes()
+    public void addEntityTypeReference( EntityTypeReference entityTypeReference )
     {
-        return changes == null ? Collections.<EntityStateChange>emptyList() : changes;
-    }
-
-    public void addEntityTypeReference(EntityTypeReference entityTypeReference)
-    {
-        if (changes == null)
-            changes = new ArrayList<EntityStateChange>();
-        changes.add(new AddedEntityTypeChange(entityTypeReference));
+        uow.addEvent( new AddEntityTypeEvent( identity, entityTypeReference ) );
     }
 
 
-    public void removeEntityTypeReference(EntityTypeReference entityTypeReference)
+    public void removeEntityTypeReference( EntityTypeReference entityTypeReference )
     {
-        if (changes == null)
-            changes = new ArrayList<EntityStateChange>();
-        changes.add(new RemovedEntityTypeChange(entityTypeReference));
+        uow.addEvent( new RemoveEntityTypeEvent( identity, entityTypeReference ) );
     }
 }

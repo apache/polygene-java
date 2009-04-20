@@ -36,35 +36,37 @@ import java.lang.reflect.Method;
  * JAVADOC
  */
 public abstract class PersistentPropertyModel
-        extends AbstractPropertyModel
-        implements PropertyTypeDescriptor
+    extends AbstractPropertyModel
+    implements PropertyTypeDescriptor
 {
     private final boolean queryable;
     private final PropertyType propertyType;
     protected final PropertyInfo propertyInfo;
 
-    public PersistentPropertyModel(Method accessor, boolean immutable, ValueConstraintsInstance constraints, MetaInfo metaInfo, Object initialValue)
+    public PersistentPropertyModel( Method accessor, boolean immutable, ValueConstraintsInstance constraints, MetaInfo metaInfo, Object initialValue )
     {
-        super(accessor, immutable, constraints, metaInfo, initialValue);
+        super( accessor, immutable, constraints, metaInfo, initialValue );
 
-        final Queryable queryable = accessor.getAnnotation(Queryable.class);
+        final Queryable queryable = accessor.getAnnotation( Queryable.class );
         this.queryable = queryable == null || queryable.value();
 
         PropertyType.PropertyTypeEnum type;
-        if (isComputed())
+        if( isComputed() )
         {
             type = PropertyType.PropertyTypeEnum.COMPUTED;
-        } else if (isImmutable())
+        }
+        else if( isImmutable() )
         {
             type = PropertyType.PropertyTypeEnum.IMMUTABLE;
-        } else
+        }
+        else
         {
             type = PropertyType.PropertyTypeEnum.MUTABLE;
         }
 
-        propertyType = new PropertyType(qualifiedName(), createValueType(type()), toRDF(), this.queryable, type);
+        propertyType = new PropertyType( qualifiedName(), createValueType( type() ), toRDF(), this.queryable, type );
 
-        propertyInfo = new GenericPropertyInfo(metaInfo, isImmutable(), isComputed(), qualifiedName(), type());
+        propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), qualifiedName(), type() );
 
     }
 
@@ -78,40 +80,52 @@ public abstract class PersistentPropertyModel
         return queryable;
     }
 
-    public String toJSON(Object value, Qi4jSPI spi)
+    public String toJSON( Object value, Qi4jSPI spi )
     {
-        if (value == null)
+        if( value == null )
+        {
             return "null";
+        }
 
         ValueType valueType = propertyType().type();
         StringBuilder json = new StringBuilder();
-        valueType.toJSON(value, json, spi);
+        valueType.toJSON( value, json, spi );
         return json.toString();
     }
 
-    public <T> T fromJSON(ModuleInstance moduleInstance, String value)
+    public <T> T fromJSON( ModuleInstance moduleInstance, String value )
     {
-        if (value.equals("null"))
+        if( value.equals( "null" ) )
+        {
             return null;
+        }
 
         ValueType valueType = propertyType().type();
-        System.out.println("Decoding:"+value);
-        return (T) valueType.fromJSON(new PeekableStringTokenizer(value, "", true), moduleInstance);
+        try
+        {
+            return (T) valueType.fromJSON( new PeekableStringTokenizer( value, "", true ), moduleInstance );
+        }
+        catch( Exception e )
+        {
+            throw new IllegalStateException( "Could not deserialize JSON value:" + value, e );
+        }
     }
 
     class ValueFinder
-            implements ModuleVisitor
+        implements ModuleVisitor
     {
         public Class type;
         public ValueModel model;
         public ModuleInstance module;
 
-        public boolean visitModule(ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility)
+        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
         {
 
-            model = moduleModel.values().getValueModelFor(type, visibility);
-            if (model != null)
+            model = moduleModel.values().getValueModelFor( type, visibility );
+            if( model != null )
+            {
                 module = moduleInstance;
+            }
 
             return model == null;
         }

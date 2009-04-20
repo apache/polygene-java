@@ -12,27 +12,30 @@
  *
  */
 
-package org.qi4j.spi.entity.helpers;
+package org.qi4j.spi.unitofwork.event;
 
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.StateName;
+import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 
 /**
  * JAVADOC
  */
-public class RemovedEntityTypeChange
-    extends EntityStateChange
+public class RemoveManyAssociationEvent extends AssociationEvent
 {
-    private EntityTypeReference entityTypeReference;
-
-    public RemovedEntityTypeChange(EntityTypeReference entityTypeReference)
+    public RemoveManyAssociationEvent( EntityReference anIdentity, StateName stateName, EntityReference associatedEntity )
     {
-        super(null);
-        this.entityTypeReference = entityTypeReference;
+        super( anIdentity, stateName, associatedEntity );
     }
 
-    public void applyTo(EntityState state)
+    public void applyTo( EntityStoreUnitOfWork uow )
     {
-        state.removeEntityTypeReference(entityTypeReference);
+        applyTo( uow.getEntityState( identity() ) );
+    }
+
+    public void applyTo( EntityState entityState )
+    {
+        entityState.getManyAssociation( stateName() ).remove( associatedEntity() );
     }
 }

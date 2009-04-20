@@ -14,27 +14,17 @@
 
 package org.qi4j.spi.entity.helpers;
 
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.StateName;
 
 /**
  * JAVADOC
  */
-public class AssociationChange
-    extends EntityStateChange
+public interface EntityStoreEvents
 {
-    private EntityReference reference;
+    public EntityState newEntityState( DefaultEntityStoreUnitOfWork unitOfWork, EntityReference identity, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo );
 
-    public AssociationChange(StateName stateName, EntityReference reference)
-    {
-        super(stateName);
-        this.reference = reference;
-    }
-
-    public void applyTo(EntityState state)
-    {
-        state.setAssociation(stateName, reference);
-    }
+    public EntityState getEntityState( DefaultEntityStoreUnitOfWork unitOfWork, EntityReference identity, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo );
 }

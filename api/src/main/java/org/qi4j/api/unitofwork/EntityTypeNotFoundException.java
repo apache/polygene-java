@@ -35,6 +35,6 @@ public class EntityTypeNotFoundException extends UnitOfWorkException
 
     @Override public String getMessage()
     {
-        return "Could not find an EntityComposite of type " + compositeType + ")";
+        return "Could not find an EntityComposite of type " + compositeType;
     }
 }

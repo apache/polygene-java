@@ -14,40 +14,43 @@
 
 package org.qi4j.spi.value;
 
-import java.lang.reflect.Type;
-import java.lang.reflect.Method;
-import java.util.*;
-
-import org.qi4j.api.value.ValueComposite;
-import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.common.TypeName;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.structure.Module;
-import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.common.TypeName;
 import org.qi4j.api.property.Property;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.entity.SchemaVersion;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.entity.SchemaVersion;
+import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.util.PeekableStringTokenizer;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * JAVADOC
  */
 public class ValueCompositeType
-        implements ValueType
+    implements ValueType
 {
-    public static boolean isValueComposite(Type type)
+    public static boolean isValueComposite( Type type )
     {
-        return type instanceof Class && ((Class) type).isInterface();
+        return type instanceof Class && ( (Class) type ).isInterface();
     }
 
     private final TypeName type;
     private List<PropertyType> types;
 
-    public ValueCompositeType(TypeName type, List<PropertyType> types)
+    public ValueCompositeType( TypeName type, List<PropertyType> types )
     {
         this.type = type;
-        Collections.sort(types); // Sort by property name
+        Collections.sort( types ); // Sort by property name
         this.types = types;
     }
 
@@ -61,23 +64,25 @@ public class ValueCompositeType
         return types;
     }
 
-    public PropertyType propertyWithVersion(String version)
+    public PropertyType propertyWithVersion( String version )
     {
-        for (PropertyType propertyType : types)
+        for( PropertyType propertyType : types )
         {
-            if (propertyType.stateName().version().equals(version))
+            if( propertyType.stateName().version().equals( version ) )
+            {
                 return propertyType;
+            }
         }
 
         return null;
     }
 
-    public void versionize(SchemaVersion schemaVersion)
+    public void versionize( SchemaVersion schemaVersion )
     {
-        schemaVersion.versionize(type);
-        for (PropertyType propertyType : types)
+        schemaVersion.versionize( type );
+        for( PropertyType propertyType : types )
         {
-            propertyType.versionize(schemaVersion);
+            propertyType.versionize( schemaVersion );
         }
     }
 
@@ -87,86 +92,94 @@ public class ValueCompositeType
         return type.toString();
     }
 
-    public void toJSON(Object value, StringBuilder json, Qi4jSPI spi)
+    public void toJSON( Object value, StringBuilder json, Qi4jSPI spi )
     {
-        json.append('{');
+        json.append( '{' );
         ValueComposite valueComposite = (ValueComposite) value;
-        StateHolder state = spi.getState(valueComposite);
+        StateHolder state = spi.getState( valueComposite );
         final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
-        state.visitProperties(new StateHolder.StateVisitor()
+        state.visitProperties( new StateHolder.StateVisitor()
         {
-            public void visitProperty(QualifiedName name, Object value)
+            public void visitProperty( QualifiedName name, Object value )
             {
-                values.put(name, value);
+                values.put( name, value );
             }
-        });
+        } );
 
         String comma = "";
-        for (PropertyType propertyType : types)
+        for( PropertyType propertyType : types )
         {
-            json.append(comma);
-            json.append(propertyType.qualifiedName().name()).append(':');
+            json.append( comma );
+            json.append( propertyType.qualifiedName().name() ).append( ':' );
 
             Object propertyValue = values.get( propertyType.qualifiedName() );
-            if (propertyValue == null)
+            if( propertyValue == null )
             {
-                json.append("null");
-            } else
+                json.append( "null" );
+            }
+            else
             {
-                propertyType.type().toJSON( propertyValue, json, spi);
+                propertyType.type().toJSON( propertyValue, json, spi );
             }
             comma = ",";
         }
-        json.append('}');
+        json.append( '}' );
     }
 
-    public Object fromJSON(PeekableStringTokenizer json, Module module)
+    public Object fromJSON( PeekableStringTokenizer json, Module module )
     {
-        String token = json.nextToken("{");
+        String token = json.nextToken( "{" );
 
         final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
-        for (PropertyType propertyType : types)
+        for( PropertyType propertyType : types )
         {
-            String name = json.nextToken(":");
-            token = json.nextToken(",:");
+            String name = json.nextToken( ":" );
+            token = json.nextToken( ",:" );
 
-            token = json.peekNextToken(",}");
+            token = json.peekNextToken( ",}\"" );
             Object value;
-            if (token.equals( "null" ))
+            if( token.equals( "null" ) )
+            {
                 value = null;
+            }
             else
-                value = propertyType.type().fromJSON(json, module);
+            {
+                value = propertyType.type().fromJSON( json, module );
+            }
 
-            if (!name.equals(propertyType.qualifiedName().name()))
-                throw new IllegalStateException("Could not deserialize value. Expected '"+propertyType.qualifiedName()+"' but got '"+name);
+            if( !name.equals( propertyType.qualifiedName().name() ) )
+            {
+                throw new IllegalStateException( "Could not deserialize value. Expected '" + propertyType.qualifiedName() + "' but got '" + name );
+            }
 
-            values.put(propertyType.qualifiedName(), value);
-            token = json.nextToken(",}");
+            values.put( propertyType.qualifiedName(), value );
+            token = json.nextToken( ",}" );
         }
 
         try
         {
-            ValueBuilder valueBuilder = module.valueBuilderFactory().newValueBuilder(module.classLoader().loadClass(type.name()));
-            valueBuilder.withState(new StateHolder()
+            ValueBuilder valueBuilder = module.valueBuilderFactory().newValueBuilder( module.classLoader().loadClass( type.name() ) );
+            valueBuilder.withState( new StateHolder()
             {
-                public <T> Property<T> getProperty(Method propertyMethod)
+                public <T> Property<T> getProperty( Method propertyMethod )
                 {
                     return null;
                 }
 
-                public void visitProperties(StateVisitor visitor)
+                public void visitProperties( StateVisitor visitor )
                 {
-                    for (Map.Entry<QualifiedName, Object> qualifiedNameObjectEntry : values.entrySet())
+                    for( Map.Entry<QualifiedName, Object> qualifiedNameObjectEntry : values.entrySet() )
                     {
-                        visitor.visitProperty(qualifiedNameObjectEntry.getKey(), qualifiedNameObjectEntry.getValue());
+                        visitor.visitProperty( qualifiedNameObjectEntry.getKey(), qualifiedNameObjectEntry.getValue() );
                     }
                 }
-            });
+            } );
 
             return valueBuilder.newInstance();
-        } catch (ClassNotFoundException e)
+        }
+        catch( ClassNotFoundException e )
         {
-            throw new IllegalStateException("Could not deserialize value", e);
+            throw new IllegalStateException( "Could not deserialize value", e );
         }
     }
 }

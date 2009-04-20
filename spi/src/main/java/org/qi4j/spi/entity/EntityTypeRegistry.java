@@ -14,19 +14,20 @@
 
 package org.qi4j.spi.entity;
 
-import org.qi4j.spi.entity.helpers.EntityTypeRegistryMixin;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.spi.entity.helpers.EntityTypeRegistryMixin;
 
 /**
  * JAVADOC
  */
-@Mixins(EntityTypeRegistryMixin.class)
+@Mixins( EntityTypeRegistryMixin.class )
 public interface EntityTypeRegistry
-    extends Iterable<EntityType>
 {
-    void registerEntityType(EntityType type)
+    void registerEntityType( EntityType type )
         throws EntityTypeRegistrationException;
 
-    EntityType getEntityType(EntityTypeReference reference)
+    EntityType getEntityType( EntityTypeReference reference )
         throws UnknownEntityTypeException;
+
+    Iterable<EntityType> getEntityTypes();
 }

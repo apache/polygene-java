@@ -17,6 +17,9 @@ package org.qi4j.runtime.structure;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.runtime.entity.EntityModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * JAVADOC
  */
@@ -24,16 +27,23 @@ class EntityFinder
     implements ModuleVisitor
 {
     Class mixinType;
-    ModuleInstance module;
-    EntityModel model;
+    List<ModuleInstance> modules = new ArrayList<ModuleInstance>();
+    List<EntityModel> models = new ArrayList<EntityModel>();
 
-    public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
+    public boolean visitModule( final ModuleInstance moduleInstance, ModuleModel moduleModel, final Visibility visibility )
     {
-        model = moduleModel.entities().getEntityModelFor( mixinType, visibility );
-        if( model != null )
+        moduleModel.entities().visitModel( new ModelVisitor()
         {
-            module = moduleInstance;
-        }
-        return model == null;
+            @Override public void visit( EntityModel entityModel )
+            {
+                if( mixinType.isAssignableFrom( entityModel.type() ) && entityModel.visibility() == visibility )
+                {
+                    modules.add( moduleInstance );
+                    models.add( entityModel );
+                }
+            }
+        } );
+
+        return true;
     }
 }

@@ -27,7 +27,7 @@ public final class InjectionContext
 {
     private final CompositeInstance compositeInstance;
     private final ModuleInstance moduleInstance;
-    private final UsesInstance uses;
+    private UsesInstance uses;
     private final StateHolder state;
     private final Object next;
     private final ProxyReferenceInvocationHandler proxyHandler;
@@ -92,5 +92,10 @@ public final class InjectionContext
     public ProxyReferenceInvocationHandler proxyHandler()
     {
         return proxyHandler;
+    }
+
+    public void setUses( UsesInstance uses )
+    {
+        this.uses = uses;
     }
 }

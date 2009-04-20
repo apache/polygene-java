@@ -15,8 +15,10 @@
 package org.qi4j.runtime.structure;
 
 import org.qi4j.api.entity.IdentityGenerator;
+import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
+import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityTypeRegistry;
 
@@ -24,6 +26,7 @@ import org.qi4j.spi.entity.EntityTypeRegistry;
  * JAVADOC
  */
 public class EntitiesInstance
+    implements Activatable
 {
     private final EntitiesModel entities;
     private final ModuleInstance moduleInstance;
@@ -39,6 +42,22 @@ public class EntitiesInstance
         this.entities = entities;
         this.moduleInstance = moduleInstance;
     }
+
+    public void activate() throws Exception
+    {
+        entities.visitModel( new ModelVisitor()
+        {
+            @Override public void visit( EntityModel entityModel )
+            {
+                entityTypeRegistry().registerEntityType( entityModel.entityType() );
+            }
+        } );
+    }
+
+    public void passivate() throws Exception
+    {
+    }
+
 
     public EntitiesModel model()
     {
@@ -64,9 +83,9 @@ public class EntitiesInstance
     }
 
     // todo DCL??
-    public  IdentityGenerator identityGenerator()
+    public IdentityGenerator identityGenerator()
     {
-        synchronized (this)
+        synchronized( this )
         {
             if( generator == null )
             {
@@ -83,7 +102,7 @@ public class EntitiesInstance
 
     public EntityTypeRegistry entityTypeRegistry()
     {
-        synchronized (this)
+        synchronized( this )
         {
             if( registry == null )
             {

@@ -17,9 +17,6 @@
  */
 package org.qi4j.runtime.query;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.junit.After;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -28,39 +25,24 @@ import org.junit.Test;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
-import static org.qi4j.api.query.QueryExpressions.and;
-import static org.qi4j.api.query.QueryExpressions.eq;
-import static org.qi4j.api.query.QueryExpressions.ge;
-import static org.qi4j.api.query.QueryExpressions.gt;
-import static org.qi4j.api.query.QueryExpressions.isNotNull;
-import static org.qi4j.api.query.QueryExpressions.isNull;
-import static org.qi4j.api.query.QueryExpressions.lt;
-import static org.qi4j.api.query.QueryExpressions.matches;
-import static org.qi4j.api.query.QueryExpressions.not;
-import static org.qi4j.api.query.QueryExpressions.oneOf;
-import static org.qi4j.api.query.QueryExpressions.or;
-import static org.qi4j.api.query.QueryExpressions.orderBy;
-import static org.qi4j.api.query.QueryExpressions.templateFor;
+import static org.qi4j.api.query.QueryExpressions.*;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.runtime.query.model.City;
-import org.qi4j.runtime.query.model.Domain;
-import org.qi4j.runtime.query.model.Female;
-import org.qi4j.runtime.query.model.Male;
-import org.qi4j.runtime.query.model.Nameable;
-import org.qi4j.runtime.query.model.Person;
+import org.qi4j.runtime.query.model.*;
 import org.qi4j.runtime.query.model.entities.CityEntity;
 import org.qi4j.runtime.query.model.entities.DomainEntity;
 import org.qi4j.runtime.query.model.entities.FemaleEntity;
 import org.qi4j.runtime.query.model.entities.MaleEntity;
-import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
-import org.qi4j.spi.entity.helpers.EntityTypeRegistryService;
 import org.qi4j.spi.query.EntityFinderException;
+import org.qi4j.test.EntityTestAssembler;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class IterableQueryTest
 {
@@ -81,12 +63,7 @@ public class IterableQueryTest
                     CityEntity.class,
                     DomainEntity.class
                 );
-                module.addServices(
-                    MemoryEntityStoreService.class,
-                    UuidIdentityGeneratorService.class,
-                    EntityTypeRegistryService.class
-
-                );
+                new EntityTestAssembler().assemble( module );
             }
         };
         uow = assembler.unitOfWorkFactory().newUnitOfWork();

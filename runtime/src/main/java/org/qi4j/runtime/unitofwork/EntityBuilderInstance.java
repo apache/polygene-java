@@ -14,9 +14,6 @@
 
 package org.qi4j.runtime.unitofwork;
 
-import java.lang.reflect.Method;
-import java.util.Iterator;
-
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.*;
 import org.qi4j.runtime.entity.EntityInstance;
@@ -24,16 +21,23 @@ import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.StateName;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
-import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
+import org.qi4j.spi.unitofwork.event.EntityEvent;
+import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
+import org.qi4j.spi.unitofwork.event.UnitOfWorkEvents;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * JAVADOC
  */
 public final class EntityBuilderInstance<T>
-    implements EntityBuilder<T>
+    implements EntityBuilder<T>, UnitOfWorkEvents
 {
     private static final Method IDENTITY_METHOD;
     private static final Method CREATE_METHOD;
@@ -42,11 +46,12 @@ public final class EntityBuilderInstance<T>
     private final ModuleInstance moduleInstance;
     private final EntityModel entityModel;
     private final ModuleUnitOfWork uow;
-    private final EntityStore store;
+    private final EntityStoreUnitOfWork store;
     private final IdentityGenerator identityGenerator;
 
-    private final DefaultDiffEntityState entityState;
+    private final BuilderEntityState entityState;
     private final EntityInstance prototypeInstance;
+    private final List<UnitOfWorkEvent> events;
 
     static
     {
@@ -62,7 +67,7 @@ public final class EntityBuilderInstance<T>
     }
 
     public EntityBuilderInstance(
-        ModuleInstance moduleInstance, EntityModel entityModel, ModuleUnitOfWork uow, EntityStore store,
+        ModuleInstance moduleInstance, EntityModel entityModel, ModuleUnitOfWork uow, EntityStoreUnitOfWork store,
         IdentityGenerator identityGenerator )
     {
         this.moduleInstance = moduleInstance;
@@ -71,18 +76,21 @@ public final class EntityBuilderInstance<T>
         this.store = store;
         this.identityGenerator = identityGenerator;
 
-        if (identityStateName == null)
-            identityStateName = entityModel.state().<PropertyTypeDescriptor>getPropertyByQualifiedName(QualifiedName.fromMethod(IDENTITY_METHOD)).propertyType().stateName();
+        if( identityStateName == null )
+        {
+            identityStateName = entityModel.state().<PropertyTypeDescriptor>getPropertyByQualifiedName( QualifiedName.fromMethod( IDENTITY_METHOD ) ).propertyType().stateName();
+        }
 
-        entityState = new DefaultDiffEntityState();
-        entityState.addEntityTypeReference(entityModel.entityType().reference());
-        prototypeInstance = entityModel.newInstance(uow, moduleInstance, EntityReference.NULL, entityState);
+        events = new ArrayList<UnitOfWorkEvent>();
+        entityState = new BuilderEntityState( this );
+        entityState.addEntityTypeReference( entityModel.entityType().reference() );
+        prototypeInstance = entityModel.newInstance( uow, moduleInstance, EntityReference.NULL, entityState );
     }
 
-    public EntityBuilderInstance( ModuleInstance moduleInstance, EntityModel model, ModuleUnitOfWork uow, EntityStore store, String identity )
+    public EntityBuilderInstance( ModuleInstance moduleInstance, EntityModel model, ModuleUnitOfWork uow, EntityStoreUnitOfWork store, String identity )
     {
-        this(moduleInstance, model, uow, store, (IdentityGenerator) null);
-        entityState.setProperty(identityStateName, '\"'+identity+'\"');
+        this( moduleInstance, model, uow, store, (IdentityGenerator) null );
+        entityState.setProperty( identityStateName, '\"' + identity + '\"' );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -93,7 +101,7 @@ public final class EntityBuilderInstance<T>
 
     public <K> K prototypeFor( Class<K> mixinType )
     {
-        return prototypeInstance.newProxy(mixinType);
+        return prototypeInstance.newProxy( mixinType );
     }
 
     public T newInstance()
@@ -108,20 +116,25 @@ public final class EntityBuilderInstance<T>
         {
             Class compositeType = entityModel.type();
             identity = identityGenerator.generate( compositeType );
-            identityJson = '\"'+identity+'\"';
-            newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference(identity), moduleInstance.layerInstance().applicationInstance().runtime());
-        } else
+            identityJson = '\"' + identity + '\"';
+            newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ), moduleInstance.layerInstance().applicationInstance().runtime() );
+        }
+        else
         {
-            identityJson = entityState.getProperty(identityStateName);
-            identity = identityJson.substring(1, identityJson.length()-1);
-            newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference(identity), moduleInstance.layerInstance().applicationInstance().runtime());
+            identityJson = entityState.getProperty( identityStateName );
+            identity = identityJson.substring( 1, identityJson.length() - 1 );
+            newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ), moduleInstance.layerInstance().applicationInstance().runtime() );
         }
 
         // Transfer state from prototype
-        entityState.applyTo(newEntityState);
+        for( UnitOfWorkEvent event : events )
+        {
+            EntityEvent entityEvent = (EntityEvent) event;
+            entityEvent.applyTo( newEntityState );
+        }
 
         // Set identity property
-        newEntityState.setProperty(identityStateName, identityJson);
+        newEntityState.setProperty( identityStateName, identityJson );
 
         EntityInstance instance = entityModel.newInstance( uow, moduleInstance, newEntityState.identity(), newEntityState );
 
@@ -147,8 +160,8 @@ public final class EntityBuilderInstance<T>
         // Check constraints
         instance.checkConstraints();
 
-        // Register entity in UOW
-        uow.instance().createEntity( instance, store );
+        // Add entity in UOW
+        uow.addEntity( instance );
 
         return (T) proxy;
     }
@@ -173,5 +186,16 @@ public final class EntityBuilderInstance<T>
                 throw new UnsupportedOperationException();
             }
         };
+    }
+
+    // UnitOfWorkEvents
+    public void addEvent( UnitOfWorkEvent event )
+    {
+        events.add( event );
+    }
+
+    public Iterable<UnitOfWorkEvent> events()
+    {
+        return events;
     }
 }

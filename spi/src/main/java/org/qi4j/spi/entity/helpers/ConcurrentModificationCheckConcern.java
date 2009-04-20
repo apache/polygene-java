@@ -14,14 +14,17 @@
 
 package org.qi4j.spi.entity.helpers;
 
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.spi.entity.*;
+import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
+import org.qi4j.spi.unitofwork.event.GetEntityEvent;
+import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 
 /**
  * Concern that helps EntityStores do concurrent modification checks.
@@ -31,49 +34,56 @@ import java.util.WeakHashMap;
  * not have to go down to the underlying store to get the current version.
  * Whenever there is a concurrent modification the store will most likely
  * have to check with the underlying store what the current version is.
- *
  */
 public abstract class ConcurrentModificationCheckConcern extends ConcernOf<EntityStore>
     implements EntityStore
 {
-    private final Map<EntityReference, Long> versions = new WeakHashMap<EntityReference, Long>();
+    private static final Map<EntityReference, String> versions = new WeakHashMap<EntityReference, String>();
 
-    public EntityState getEntityState( EntityReference anIdentity ) throws EntityStoreException
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, MetaInfo unitOfWorkMetaInfo )
     {
-        EntityState entityState = next.getEntityState( anIdentity );
-        rememberVersion( entityState.identity(), entityState.version() );
-        return entityState;
+        final EntityStoreUnitOfWork uow = next.newUnitOfWork( usecase, unitOfWorkMetaInfo );
+
+        return new ConcurrentCheckingEntityStoreUnitOfWork( uow );
     }
 
-    public StateCommitter prepare( Iterable<EntityState> newStates, Iterable<EntityState> loadedStates,
-                                   Iterable<EntityReference> removedStates )
-        throws EntityStoreException, ConcurrentEntityStateModificationException
+    public StateCommitter apply( String unitOfWorkIdentity, final Iterable<UnitOfWorkEvent> events, Usecase usecase, MetaInfo metaInfo ) throws EntityStoreException
     {
-        // Check for concurrent modification
-        checkForConcurrentModification( loadedStates );
+        checkForConcurrentModification( events );
 
-        try
+        final StateCommitter stateCommitter = next.apply( unitOfWorkIdentity, events, usecase, metaInfo );
+        return new StateCommitter()
         {
-            return next.prepare( newStates, loadedStates, removedStates );
-        }
-        finally
-        {
-            forgetVersions( loadedStates );
-        }
+            public void commit()
+            {
+                stateCommitter.commit();
+                forgetVersions( events );
+            }
+
+            public void cancel()
+            {
+                stateCommitter.cancel();
+                forgetVersions( events );
+            }
+        };
     }
 
-    private void forgetVersions( Iterable<EntityState> loadedStates )
+    private void forgetVersions( Iterable<UnitOfWorkEvent> events )
     {
         synchronized( versions )
         {
-            for( EntityState loadedState : loadedStates )
+            for( UnitOfWorkEvent event : events )
             {
-                versions.remove( loadedState.identity() );
+                if( event instanceof GetEntityEvent )
+                {
+                    GetEntityEvent getEntityEvent = (GetEntityEvent) event;
+                    versions.remove( getEntityEvent.identity() );
+                }
             }
         }
     }
 
-    private void rememberVersion( EntityReference identity, long version )
+    private void rememberVersion( EntityReference identity, String version )
     {
         synchronized( versions )
         {
@@ -81,19 +91,29 @@ public abstract class ConcurrentModificationCheckConcern extends ConcernOf<Entit
         }
     }
 
-    private void checkForConcurrentModification( Iterable<EntityState> loadedStates )
+    private void checkForConcurrentModification( Iterable<UnitOfWorkEvent> events )
         throws ConcurrentEntityStateModificationException
     {
         Collection<EntityReference> concurrentModifications = null;
-        for( EntityState loadedState : loadedStates )
+        List<GetEntityEvent> getEvents = new ArrayList<GetEntityEvent>();
+        for( UnitOfWorkEvent event : events )
         {
-            if( hasBeenModified( loadedState.identity(), loadedState.version() ) )
+            if( event instanceof GetEntityEvent )
+            {
+                GetEntityEvent getEntityEvent = (GetEntityEvent) event;
+                getEvents.add( getEntityEvent );
+            }
+        }
+
+        for( GetEntityEvent getEntityEvent : getEvents )
+        {
+            if( hasBeenModified( getEntityEvent.identity(), getEntityEvent.version() ) )
             {
                 if( concurrentModifications == null )
                 {
                     concurrentModifications = new ArrayList<EntityReference>();
                 }
-                concurrentModifications.add( loadedState.identity() );
+                concurrentModifications.add( getEntityEvent.identity() );
             }
         }
 
@@ -103,10 +123,10 @@ public abstract class ConcurrentModificationCheckConcern extends ConcernOf<Entit
         }
     }
 
-    private boolean hasBeenModified( EntityReference identity, long oldVersion )
+    private boolean hasBeenModified( EntityReference identity, String oldVersion )
     {
         // Try version cache first
-        Long rememberedVersion;
+        String rememberedVersion;
         synchronized( versions )
         {
             rememberedVersion = versions.get( identity );
@@ -114,12 +134,49 @@ public abstract class ConcurrentModificationCheckConcern extends ConcernOf<Entit
 
         if( rememberedVersion != null )
         {
-            return rememberedVersion != oldVersion;
+            return !rememberedVersion.equals( oldVersion );
         }
 
         // Miss! Load state and compare
-        EntityState state = getEntityState( identity );
-        return state.version() != oldVersion;
+        EntityStoreUnitOfWork uow = next.newUnitOfWork( UsecaseBuilder.newUsecase( "Check version" ), new MetaInfo() );
+        EntityState state = uow.getEntityState( identity );
+        return !state.version().equals( oldVersion );
     }
 
+    private class ConcurrentCheckingEntityStoreUnitOfWork implements EntityStoreUnitOfWork
+    {
+        private final EntityStoreUnitOfWork uow;
+
+        public ConcurrentCheckingEntityStoreUnitOfWork( EntityStoreUnitOfWork uow )
+        {
+            this.uow = uow;
+        }
+
+        public String identity()
+        {
+            return uow.identity();
+        }
+
+        public EntityState newEntityState( EntityReference anIdentity ) throws EntityStoreException
+        {
+            return uow.newEntityState( anIdentity );
+        }
+
+        public EntityState getEntityState( EntityReference anIdentity ) throws EntityStoreException, EntityNotFoundException
+        {
+            EntityState entityState = uow.getEntityState( anIdentity );
+            rememberVersion( entityState.identity(), entityState.version() );
+            return entityState;
+        }
+
+        public void addEvent( UnitOfWorkEvent event )
+        {
+            uow.addEvent( event );
+        }
+
+        public Iterable<UnitOfWorkEvent> events()
+        {
+            return uow.events();
+        }
+    }
 }

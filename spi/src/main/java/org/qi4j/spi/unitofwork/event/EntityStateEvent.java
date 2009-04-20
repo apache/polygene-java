@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,18 +12,27 @@
  *
  */
 
-package org.qi4j.spi.entity;
+package org.qi4j.spi.unitofwork.event;
 
-import org.qi4j.spi.entity.EntityState;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.StateName;
 
 /**
- * Implement this interface in a Service if you want it to listen
- * to changes from EntityStores.
+ * JAVADOC
  */
-public interface EntityStoreListener
+public abstract class EntityStateEvent
+    extends EntityEvent
 {
-    void notifyChanges( Iterable<EntityState> newStates,
-                        Iterable<EntityState> changedStates,
-                        Iterable<EntityReference> removedStates );
+    private StateName stateName;
+
+    public EntityStateEvent( EntityReference identity, StateName stateName )
+    {
+        super( identity );
+        this.stateName = stateName;
+    }
+
+    public StateName stateName()
+    {
+        return stateName;
+    }
 }

@@ -14,31 +14,52 @@
 
 package org.qi4j.spi.entity.helpers;
 
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.usecase.Usecase;
+import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityStoreException;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.io.OutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * JAVADOC
  */
 public interface MapEntityStore
 {
-    boolean contains(EntityReference entityReference)
-            throws EntityStoreException;
+    boolean contains( EntityReference entityReference, Usecase usecase, MetaInfo unitofwork )
+        throws EntityStoreException;
 
-    void get(EntityReference entityReference, OutputStream out)
-            throws EntityStoreException;
+    InputStream get( EntityReference entityReference, Usecase usecase, MetaInfo unitOfWork )
+        throws EntityStoreException;
 
-    void update(Map<EntityReference, InputStream> newEntities, Map<EntityReference, InputStream> updatedEntities, Iterable<EntityReference> removedEntities);
-
-    void visitMap(MapEntityStoreVisitor visitor);
+    void visitMap( MapEntityStoreVisitor visitor, Usecase usecase, MetaInfo unitOfWorkMetaInfo );
 
     interface MapEntityStoreVisitor
     {
-        void visitEntity(InputStream entityState);
+        void visitEntity( InputStream entityState );
+    }
+
+    void applyChanges( MapChanges changes, Usecase usecase, MetaInfo unitOfWork )
+        throws IOException;
+
+    interface MapChanges
+    {
+        void visitMap( MapChanger changer, Usecase usecase, MetaInfo unitOfWorkMetaInfo )
+            throws IOException;
+    }
+
+    interface MapChanger
+    {
+        OutputStream newEntity( EntityReference ref )
+            throws IOException;
+
+        OutputStream updateEntity( EntityReference ref )
+            throws IOException;
+
+        void removeEntity( EntityReference ref )
+            throws EntityNotFoundException;
     }
 }

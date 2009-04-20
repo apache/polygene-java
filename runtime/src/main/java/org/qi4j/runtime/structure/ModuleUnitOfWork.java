@@ -14,35 +14,41 @@
 
 package org.qi4j.runtime.structure;
 
-import org.qi4j.api.unitofwork.*;
-import org.qi4j.api.query.QueryBuilderFactory;
-import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.*;
+import org.qi4j.api.composite.AmbiguousTypeException;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.entity.EntityComposite;
 import static org.qi4j.api.entity.EntityReference.parseEntityReference;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.entity.LifecycleException;
+import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
-import org.qi4j.api.configuration.ConfigurationComposite;
-import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.api.unitofwork.*;
+import org.qi4j.api.usecase.Usecase;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
+import org.qi4j.runtime.unitofwork.EntityBuilderInstance;
+import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.StateName;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * JAVADOC
-*/
+ */
 public class ModuleUnitOfWork
     implements UnitOfWork
 {
     private static final Method IDENTITY_METHOD;
-    private static final Method CREATE_METHOD;
     private static StateName identityStateName;
 
     static
@@ -50,7 +56,6 @@ public class ModuleUnitOfWork
         try
         {
             IDENTITY_METHOD = Identity.class.getMethod( "identity" );
-            CREATE_METHOD = Lifecycle.class.getMethod( "create" );
         }
         catch( NoSuchMethodException e )
         {
@@ -97,102 +102,118 @@ public class ModuleUnitOfWork
 
     public <T> T newEntity( Class<T> type ) throws EntityTypeNotFoundException, LifecycleException
     {
-        return newEntity(type, null);
+        return newEntity( type, null );
     }
 
-    public <T> T newEntity(Class<T> type, String identity) throws EntityTypeNotFoundException, LifecycleException
+    public <T> T newEntity( Class<T> type, String identity ) throws EntityTypeNotFoundException, LifecycleException
     {
-        EntityFinder finder = moduleInstance.findEntityModel(type);
+        EntityFinder finder = moduleInstance.findEntityModel( type );
 
-        if( finder.model == null )
+        if( finder.models.isEmpty() )
         {
             throw new EntityTypeNotFoundException( type.getName() );
         }
 
-        // Register type
-        if (!ConfigurationComposite.class.isAssignableFrom(finder.model.type()))
-            finder.module.entities().entityTypeRegistry().registerEntityType(finder.model.entityType());
-
-        // Transfer state
-        EntityModel entityModel = finder.model;
-
-        // Generate id
-        if (identity == null)
+        if( finder.models.size() > 1 )
         {
-            identity = finder.module.entities().identityGenerator().generate( entityModel.type() );
+            List<Class<?>> ambiguousTypes = new ArrayList<Class<?>>();
+            for( EntityModel model : finder.models )
+            {
+                ambiguousTypes.add( model.type() );
+            }
+            throw new AmbiguousTypeException( type, ambiguousTypes );
         }
 
-        EntityStore entityStore = finder.module.entities().entityStore();
-        EntityState entityState = entityModel.newEntityState( entityStore, parseEntityReference(identity) , moduleInstance.layerInstance().applicationInstance().runtime());
+        // Transfer state
+        EntityModel entityModel = finder.models.get( 0 );
+        ModuleInstance entityModuleInstance = finder.modules.get( 0 );
 
-        if (identityStateName == null)
-            identityStateName = entityModel.state().<PropertyTypeDescriptor>getPropertyByQualifiedName(QualifiedName.fromMethod(IDENTITY_METHOD)).propertyType().stateName();
-        entityState.setProperty(identityStateName, '\"'+identity+'\"');
+        // Generate id
+        if( identity == null )
+        {
+            identity = entityModuleInstance.entities().identityGenerator().generate( entityModel.type() );
+        }
+
+        EntityStore entityStore = entityModuleInstance.entities().entityStore();
+
+        EntityState entityState = entityModel.newEntityState( uow.getEntityStoreUnitOfWork( entityStore ),
+                                                              parseEntityReference( identity ),
+                                                              moduleInstance.layerInstance().applicationInstance().runtime() );
+
+        if( identityStateName == null )
+        {
+            identityStateName = entityModel.state().<PropertyTypeDescriptor>getPropertyByQualifiedName( QualifiedName.fromMethod( IDENTITY_METHOD ) ).propertyType().stateName();
+        }
+        entityState.setProperty( identityStateName, '\"' + identity + '\"' );
 
         EntityInstance instance = new EntityInstance( this, moduleInstance, entityModel, entityState.identity(), entityState );
 
-        instance().createEntity( instance, entityStore );
+        entityModel.invokeCreate( instance );
 
-        // Invoke lifecycle create() method
-        if( instance.entityModel().hasMixinType( Lifecycle.class ) )
-        {
-            try
-            {
-                instance.invoke( null, CREATE_METHOD, new Object[0] );
-            }
-            catch( LifecycleException throwable )
-            {
-                throw throwable;
-            }
-            catch( Throwable throwable )
-            {
-                throw new LifecycleException( throwable );
-            }
-        }
+        addEntity( instance );
 
         return instance.<T>proxy();
     }
 
     public <T> EntityBuilder<T> newEntityBuilder( Class<T> type ) throws EntityTypeNotFoundException
     {
-        return newEntityBuilder(type, null);
+        return newEntityBuilder( type, null );
     }
 
-    public <T> EntityBuilder<T> newEntityBuilder(Class<T> type, String identity)
+    public <T> EntityBuilder<T> newEntityBuilder( Class<T> type, String identity )
         throws EntityTypeNotFoundException
     {
         EntityFinder finder = moduleInstance.findEntityModel( type );
 
-        if( finder.model == null )
+        if( finder.models.isEmpty() )
         {
             throw new EntityTypeNotFoundException( type.getName() );
         }
 
-        // Register type if not a configuration
-        if (!ConfigurationComposite.class.isAssignableFrom(finder.model.type()))
-            finder.module.entities().entityTypeRegistry().registerEntityType(finder.model.entityType());
+        if( finder.models.size() > 1 )
+        {
+            List<Class<?>> ambiguousTypes = new ArrayList<Class<?>>();
+            for( EntityModel model : finder.models )
+            {
+                ambiguousTypes.add( model.type() );
+            }
+            throw new AmbiguousTypeException( type, ambiguousTypes );
+        }
 
-        return uow.newEntityBuilder( identity, finder.model, finder.module.entities().entityStore(), finder.module, this );
+        EntityModel entityModel = finder.models.get( 0 );
+        ModuleInstance entityModuleInstance = finder.modules.get( 0 );
+        EntityStore entityStore = entityModuleInstance.entities().entityStore();
+        EntityBuilder<T> builder;
+
+        if( identity != null )
+        {
+            builder = new EntityBuilderInstance<T>( entityModuleInstance, entityModel, this, uow.getEntityStoreUnitOfWork( entityStore ), identity );
+        }
+        else
+        {
+            builder = new EntityBuilderInstance<T>( moduleInstance, entityModel, this, uow.getEntityStoreUnitOfWork( entityModuleInstance.entities().entityStore() ), moduleInstance.entities().identityGenerator() );
+        }
+        return builder;
     }
 
-    public <T> T get(Class<T> type, String identity)
+    public <T> T get( Class<T> type, String identity )
         throws EntityTypeNotFoundException, NoSuchEntityException
     {
         EntityFinder finder = moduleInstance.findEntityModel( type );
 
-        if( finder.model == null )
+        if( finder.models.isEmpty() )
         {
             throw new EntityTypeNotFoundException( type.getName() );
         }
 
-        return uow.get( parseEntityReference(identity), this, finder.model, finder.module ).<T>proxy();
+        return uow.get( parseEntityReference( identity ), this, finder.models, finder.modules, type ).<T>proxy();
     }
 
     public <T> T get( T entity ) throws EntityTypeNotFoundException
     {
         EntityComposite entityComposite = (EntityComposite) entity;
         EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
-        return uow.get( compositeInstance.identity(), this, compositeInstance.entityModel(), compositeInstance.module() ).<T>proxy();
+        return uow.get( compositeInstance.identity(), this, Collections.singletonList( compositeInstance.entityModel() ), Collections.singletonList( compositeInstance.module() ), compositeInstance.type() ).<T>proxy();
     }
 
     public void refresh( Object entity ) throws UnitOfWorkException
@@ -213,16 +234,18 @@ public class ModuleUnitOfWork
 
         EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
 
-        if (compositeInstance.status() == EntityStatus.NEW)
+        if( compositeInstance.status() == EntityStatus.NEW )
         {
-            compositeInstance.remove(this);
-            uow.remove(compositeInstance.identity());
-        } else if (compositeInstance.status() == EntityStatus.LOADED)
+            compositeInstance.remove( this );
+            uow.remove( compositeInstance.identity() );
+        }
+        else if( compositeInstance.status() == EntityStatus.LOADED )
         {
-            compositeInstance.remove(this);
-        } else
+            compositeInstance.remove( this );
+        }
+        else
         {
-            throw new NoSuchEntityException(compositeInstance.identity());
+            throw new NoSuchEntityException( compositeInstance.identity() );
         }
 
     }
@@ -315,4 +338,8 @@ public class ModuleUnitOfWork
         return uow.toString();
     }
 
+    public void addEntity( EntityInstance instance )
+    {
+        uow.createEntity( instance );
+    }
 }

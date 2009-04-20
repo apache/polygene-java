@@ -37,9 +37,9 @@ public class DefaultCompositeInstance
     }
 
     private final Composite proxy;
-    private final Object[] mixins;
+    protected final Object[] mixins;
     protected StateHolder state;
-    private final AbstractCompositeModel compositeModel;
+    protected final AbstractCompositeModel compositeModel;
     private final ModuleInstance moduleInstance;
 
     public DefaultCompositeInstance( AbstractCompositeModel compositeModel, ModuleInstance moduleInstance, Object[] mixins, StateHolder state )
