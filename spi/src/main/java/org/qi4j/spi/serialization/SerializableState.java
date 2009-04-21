@@ -183,7 +183,7 @@ public final class SerializableState
             EntityReference value = stateNameEntityReferenceEntry.getValue();
             if( value == null )
             {
-                out.writeUTF( null );
+                out.writeUTF( "null" );
             }
             else
             {
@@ -234,7 +234,7 @@ public final class SerializableState
         {
             String stateNameStr = in.readUTF();
             String refStr = in.readUTF();
-            if( refStr != null )
+            if( !refStr.equals( "null" ) )
             {
                 associations.put( new StateName( stateNameStr ), EntityReference.parseEntityReference( refStr ) );
             }
