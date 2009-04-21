@@ -45,7 +45,10 @@ public class StateName
         String[] parts = stateName.split( "/", 3 );
         version = parts[ 0 ];
         name = QualifiedName.fromQN( parts[ 1 ] );
-        rdf = parts[ 2 ];
+        if( parts.length == 3 )
+        {
+            rdf = parts[ 2 ];
+        }
     }
 
     public StateName( QualifiedName name, String rdf, String version )
@@ -73,7 +76,7 @@ public class StateName
     @Override
     public String toString()
     {
-        return version + "/" + name.toString() + "/" + rdf;
+        return version + "/" + name.toString() + ( rdf == null ? "" : "/" + rdf );
     }
 
     @Override

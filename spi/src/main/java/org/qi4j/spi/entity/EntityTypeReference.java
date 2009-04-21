@@ -33,7 +33,10 @@ public class EntityTypeReference
         String[] refs = ref.split( ":", 3 );
         version = refs[ 0 ];
         type = TypeName.nameOf( refs[ 1 ] );
-        rdf = refs[ 2 ];
+        if( refs.length == 3 )
+        {
+            rdf = refs[ 2 ];
+        }
     }
 
     public EntityTypeReference( TypeName type, String rdf, String version )

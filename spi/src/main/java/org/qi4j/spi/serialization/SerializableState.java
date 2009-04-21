@@ -18,28 +18,38 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityTypeReference;
 import org.qi4j.spi.entity.StateName;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.ArrayList;
 
 /**
  * Serializable state for a single entity. This includes the version
  * of the state and the version of the type.
  */
 public final class SerializableState
-    implements Serializable
+    implements Externalizable
 {
     private static final long serialVersionUID = 5L;
 
-    private final EntityReference identity;
+    private EntityReference identity;
     private String entityVersion;
     private long lastModified;
-    private final Set<EntityTypeReference> entityTypeReferences;
-    private final Map<StateName, String> properties;
-    private final Map<StateName, EntityReference> associations;
-    private final Map<StateName, List<EntityReference>> manyAssociations;
+    private Set<EntityTypeReference> entityTypeReferences;
+    private Map<StateName, String> properties;
+    private Map<StateName, EntityReference> associations;
+    private Map<StateName, List<EntityReference>> manyAssociations;
+
+    public SerializableState()
+    {
+        // Externalizable constructor
+    }
 
     public SerializableState( EntityReference identity,
                               String entityVersion, long lastModified,
@@ -147,4 +157,90 @@ public final class SerializableState
         this.lastModified = lastModified;
     }
 
+    public void writeExternal( ObjectOutput out ) throws IOException
+    {
+        out.writeUTF( identity.identity() );
+        out.writeLong( lastModified );
+
+        out.writeInt( entityTypeReferences.size() );
+        for( EntityTypeReference entityTypeReference : entityTypeReferences )
+        {
+            out.writeUTF( entityTypeReference.toString() );
+        }
+
+        out.writeInt( properties.size() );
+        for( Map.Entry<StateName, String> stateNameStringEntry : properties.entrySet() )
+        {
+            out.writeUTF( stateNameStringEntry.getKey().toString() );
+            out.writeUTF( stateNameStringEntry.getValue() );
+        }
+
+        out.writeInt( associations.size() );
+        for( Map.Entry<StateName, EntityReference> stateNameEntityReferenceEntry : associations.entrySet() )
+        {
+            out.writeUTF( stateNameEntityReferenceEntry.getKey().toString() );
+            out.writeUTF( stateNameEntityReferenceEntry.getValue().identity() );
+        }
+
+        out.writeInt( manyAssociations.size() );
+        for( Map.Entry<StateName, List<EntityReference>> stateNameListEntry : manyAssociations.entrySet() )
+        {
+            out.writeUTF( stateNameListEntry.getKey().toString() );
+            List<EntityReference> list = stateNameListEntry.getValue();
+            out.writeInt( list.size() );
+            for( EntityReference entityReference : list )
+            {
+                out.writeUTF( entityReference.identity() );
+            }
+        }
+    }
+
+    public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
+    {
+        String identityStr = in.readUTF();
+        identity = EntityReference.parseEntityReference( identityStr );
+        lastModified = in.readLong();
+
+        int size = in.readInt();
+        entityTypeReferences = new HashSet<EntityTypeReference>( size );
+        for( int i = 0; i < size; i++ )
+        {
+            String typeStr = in.readUTF();
+            entityTypeReferences.add( new EntityTypeReference( typeStr ) );
+        }
+
+        size = in.readInt();
+        properties = new HashMap<StateName, String>();
+        for( int i = 0; i < size; i++ )
+        {
+            String stateNameStr = in.readUTF();
+            String propertyValueStr = in.readUTF();
+            properties.put( new StateName( stateNameStr ), propertyValueStr );
+        }
+
+        size = in.readInt();
+        associations = new HashMap<StateName, EntityReference>();
+        for( int i = 0; i < size; i++ )
+        {
+            String stateNameStr = in.readUTF();
+            String refStr = in.readUTF();
+            associations.put( new StateName( stateNameStr ), EntityReference.parseEntityReference( refStr ) );
+        }
+
+        size = in.readInt();
+        manyAssociations = new HashMap<StateName, List<EntityReference>>();
+        for( int i = 0; i < size; i++ )
+        {
+            String stateNameStr = in.readUTF();
+            StateName stateName = new StateName( stateNameStr );
+            int listSize = in.readInt();
+            List<EntityReference> list = new ArrayList<EntityReference>( listSize );
+            for( int j = 0; j < listSize; j++ )
+            {
+                String refStr = in.readUTF();
+                list.add( EntityReference.parseEntityReference( refStr ) );
+            }
+            manyAssociations.put( stateName, list );
+        }
+    }
 }
