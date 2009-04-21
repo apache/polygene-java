@@ -160,6 +160,7 @@ public final class SerializableState
     public void writeExternal( ObjectOutput out ) throws IOException
     {
         out.writeUTF( identity.identity() );
+        out.writeUTF( entityVersion );
         out.writeLong( lastModified );
 
         out.writeInt( entityTypeReferences.size() );
@@ -199,6 +200,7 @@ public final class SerializableState
     {
         String identityStr = in.readUTF();
         identity = EntityReference.parseEntityReference( identityStr );
+        entityVersion = in.readUTF();
         lastModified = in.readLong();
 
         int size = in.readInt();
