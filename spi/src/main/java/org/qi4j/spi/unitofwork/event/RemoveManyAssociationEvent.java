@@ -38,4 +38,10 @@ public class RemoveManyAssociationEvent extends AssociationEvent
     {
         entityState.getManyAssociation( stateName() ).remove( associatedEntity() );
     }
+
+    @Override public String toString()
+    {
+        return super.toString() + " remove associated " + associatedEntity().identity();
+    }
+
 }

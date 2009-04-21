@@ -35,4 +35,9 @@ public abstract class EntityStateEvent
     {
         return stateName;
     }
+
+    @Override public String toString()
+    {
+        return super.toString() + ", for " + stateName.qualifiedName().name();
+    }
 }

@@ -47,4 +47,9 @@ public class AddManyAssociationEvent
     {
         entityState.getManyAssociation( stateName() ).add( index, associatedEntity() );
     }
+
+    @Override public String toString()
+    {
+        return super.toString() + " add associated " + associatedEntity().identity() + " at index " + index;
+    }
 }

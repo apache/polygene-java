@@ -38,4 +38,9 @@ public class SetAssociationEvent extends AssociationEvent
     {
         entityState.setAssociation( stateName(), associatedEntity() );
     }
+
+    @Override public String toString()
+    {
+        return super.toString() + " set associated to " + associatedEntity();
+    }
 }

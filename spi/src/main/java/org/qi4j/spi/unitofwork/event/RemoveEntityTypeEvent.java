@@ -46,4 +46,9 @@ public class RemoveEntityTypeEvent extends EntityEvent
     {
         entityState.removeEntityTypeReference( entityType );
     }
+
+    @Override public String toString()
+    {
+        return super.toString() + " remove type " + entityType.type().name();
+    }
 }

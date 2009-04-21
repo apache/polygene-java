@@ -187,11 +187,19 @@ public class ModuleUnitOfWork
 
         if( identity != null )
         {
-            builder = new EntityBuilderInstance<T>( entityModuleInstance, entityModel, this, uow.getEntityStoreUnitOfWork( entityStore ), identity );
+            builder = new EntityBuilderInstance<T>( entityModuleInstance,
+                                                    entityModel,
+                                                    this,
+                                                    uow.getEntityStoreUnitOfWork( entityStore ),
+                                                    identity );
         }
         else
         {
-            builder = new EntityBuilderInstance<T>( moduleInstance, entityModel, this, uow.getEntityStoreUnitOfWork( entityModuleInstance.entities().entityStore() ), moduleInstance.entities().identityGenerator() );
+            builder = new EntityBuilderInstance<T>( moduleInstance,
+                                                    entityModel,
+                                                    this,
+                                                    uow.getEntityStoreUnitOfWork( entityModuleInstance.entities().entityStore() ),
+                                                    entityModuleInstance.entities().identityGenerator() );
         }
         return builder;
     }

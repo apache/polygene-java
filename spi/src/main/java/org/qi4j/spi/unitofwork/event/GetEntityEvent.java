@@ -51,4 +51,9 @@ public class GetEntityEvent
     {
         // Do nothing
     }
+
+    @Override public String toString()
+    {
+        return super.toString() + " get state";
+    }
 }

@@ -234,7 +234,6 @@ public final class EntityInstance
         removeAggregatedEntities( unitOfWork );
 
         entityState.remove();
-        entityState = null;
         mixins = null;
     }
 

@@ -46,4 +46,9 @@ public class SetPropertyEvent extends EntityStateEvent
     {
         entityState.setProperty( stateName(), value );
     }
+
+    @Override public String toString()
+    {
+        return super.toString() + " set value to '" + value + "'";
+    }
 }

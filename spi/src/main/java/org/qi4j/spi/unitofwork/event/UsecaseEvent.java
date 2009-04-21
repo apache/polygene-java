@@ -39,4 +39,9 @@ public class UsecaseEvent
     {
         uow.addEvent( this );
     }
+
+    @Override public String toString()
+    {
+        return "Usecase " + usecase.name();
+    }
 }

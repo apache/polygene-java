@@ -37,4 +37,9 @@ public class RemoveEntityEvent extends EntityEvent
     {
         entityState.remove();
     }
+
+    @Override public String toString()
+    {
+        return super.toString() + ", remove";
+    }
 }

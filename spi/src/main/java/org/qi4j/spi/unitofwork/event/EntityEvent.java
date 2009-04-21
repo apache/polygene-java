@@ -36,4 +36,9 @@ public abstract class EntityEvent
     }
 
     public abstract void applyTo( EntityState entityState );
+
+    @Override public String toString()
+    {
+        return "On " + identity.identity();
+    }
 }

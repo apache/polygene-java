@@ -46,4 +46,9 @@ public class AddEntityTypeEvent extends EntityEvent
     {
         entityState.addEntityTypeReference( entityType );
     }
+
+    @Override public String toString()
+    {
+        return super.toString() + " add type " + entityType.type().name();
+    }
 }

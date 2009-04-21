@@ -37,4 +37,9 @@ public class NewEntityEvent extends EntityEvent
     {
         // Ignore
     }
+
+    @Override public String toString()
+    {
+        return super.toString() + ", create";
+    }
 }

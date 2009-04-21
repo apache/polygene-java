@@ -36,7 +36,7 @@ public class EntityTypeRegistryMixin
         EntityTypeReference reference = entityType.reference();
         if( !entityTypes.containsKey( reference ) )
         {
-            Logger.getLogger( EntityTypeRegistry.class.getName() ).info( "Registered entity type:" + entityType.reference() + " " + this );
+            Logger.getLogger( EntityTypeRegistry.class.getName() ).info( "Registered entity type:" + entityType.reference() );
             entityTypes.put( reference, entityType );
         }
     }
