@@ -39,6 +39,8 @@ import org.qi4j.spi.entity.StateName;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.util.PeekableStringTokenizer;
+import org.qi4j.spi.value.StringType;
 import org.qi4j.spi.value.ValueType;
 
 /**
@@ -56,146 +58,152 @@ public class EntityStateSerializer
     public EntityStateSerializer()
     {
         // TODO A ton more types need to be added here
-        dataTypes.put(String.class.getName(), XMLSchema.STRING);
-        dataTypes.put(Integer.class.getName(), XMLSchema.INT);
-        dataTypes.put(Boolean.class.getName(), XMLSchema.BOOLEAN);
-        dataTypes.put(Byte.class.getName(), XMLSchema.BYTE);
-        dataTypes.put(BigDecimal.class.getName(), XMLSchema.DECIMAL);
-        dataTypes.put(Double.class.getName(), XMLSchema.DOUBLE);
-        dataTypes.put(Long.class.getName(), XMLSchema.LONG);
-        dataTypes.put(Short.class.getName(), XMLSchema.SHORT);
-        dataTypes.put(Date.class.getName(), XMLSchema.DATETIME);
+        dataTypes.put( String.class.getName(), XMLSchema.STRING );
+        dataTypes.put( Integer.class.getName(), XMLSchema.INT );
+        dataTypes.put( Boolean.class.getName(), XMLSchema.BOOLEAN );
+        dataTypes.put( Byte.class.getName(), XMLSchema.BYTE );
+        dataTypes.put( BigDecimal.class.getName(), XMLSchema.DECIMAL );
+        dataTypes.put( Double.class.getName(), XMLSchema.DOUBLE );
+        dataTypes.put( Long.class.getName(), XMLSchema.LONG );
+        dataTypes.put( Short.class.getName(), XMLSchema.SHORT );
+        dataTypes.put( Date.class.getName(), XMLSchema.DATETIME );
     }
 
-    public URI createEntityURI(ValueFactory valueFactory, EntityReference identity)
+    public URI createEntityURI( ValueFactory valueFactory, EntityReference identity )
     {
-        return valueFactory.createURI(identity.toURI());
+        return valueFactory.createURI( identity.toURI() );
     }
 
-    public Iterable<Statement> serialize(final EntityState entityState)
+    public Iterable<Statement> serialize( final EntityState entityState )
     {
-        return serialize(entityState, true);
+        return serialize( entityState, true );
     }
 
-    public Iterable<Statement> serialize(final EntityState entityState,
-                                         final boolean includeNonQueryable)
+    public Iterable<Statement> serialize( final EntityState entityState,
+                                          final boolean includeNonQueryable )
     {
         Graph graph = new GraphImpl();
-        serialize(entityState, includeNonQueryable, graph);
+        serialize( entityState, includeNonQueryable, graph );
         return graph;
     }
 
-    public void serialize(final EntityState entityState,
-                          final boolean includeNonQueryable,
-                          final Graph graph)
+    public void serialize( final EntityState entityState,
+                           final boolean includeNonQueryable,
+                           final Graph graph )
     {
         ValueFactory values = graph.getValueFactory();
         EntityReference identity = entityState.identity();
-        URI entityUri = createEntityURI(values, identity);
+        URI entityUri = createEntityURI( values, identity );
 
-        for (EntityTypeReference entityTypeReference : entityState.entityTypeReferences())
+        for( EntityTypeReference entityTypeReference : entityState.entityTypeReferences() )
         {
-            EntityType entityType = typeRegistry.getEntityType(entityTypeReference);
+            EntityType entityType = typeRegistry.getEntityType( entityTypeReference );
 
-            graph.add(entityUri, Rdfs.TYPE, values.createURI(entityType.uri()));
+            graph.add( entityUri, Rdfs.TYPE, values.createURI( entityType.uri() ) );
 
-            serializeProperties(entityState,
-                    graph,
-                    entityUri,
-                    entityType,
-                    includeNonQueryable
+            serializeProperties( entityState,
+                                 graph,
+                                 entityUri,
+                                 entityType,
+                                 includeNonQueryable
             );
 
-            serializeAssociations(entityState, graph, entityUri, entityType.associations(), includeNonQueryable);
-            serializeManyAssociations(entityState, graph, entityUri, entityType.manyAssociations(), includeNonQueryable);
+            serializeAssociations( entityState, graph, entityUri, entityType.associations(), includeNonQueryable );
+            serializeManyAssociations( entityState, graph, entityUri, entityType.manyAssociations(), includeNonQueryable );
         }
 
     }
 
-    private void serializeProperties(final EntityState entityState,
-                                     final Graph graph,
-                                     final Resource subject,
-                                     final EntityType entityType,
-                                     final boolean includeNonQueryable)
+    private void serializeProperties( final EntityState entityState,
+                                      final Graph graph,
+                                      final Resource subject,
+                                      final EntityType entityType,
+                                      final boolean includeNonQueryable )
     {
         final ValueFactory valueFactory = graph.getValueFactory();
 
         // Properties
-        for (PropertyType propertyType : entityType.properties())
+        for( PropertyType propertyType : entityType.properties() )
         {
-            if (!(includeNonQueryable || propertyType.queryable()))
+            if( !( includeNonQueryable || propertyType.queryable() ) )
             {
                 continue; // Skip non-queryable
             }
-            final String property = entityState.getProperty(propertyType.stateName());
-            if (property == null)
+            String property = entityState.getProperty( propertyType.stateName() );
+            if( property == null || property.equals( "null" ) )
             {
                 continue; // Skip properties with null values
             }
-            final ValueType valueType = propertyType.type();
-            final URI predicate = valueFactory.createURI(propertyType.qualifiedName().toURI());
-            final Literal object = valueFactory.createLiteral(property);
-            graph.add(subject, predicate, object);
+            ValueType valueType = propertyType.type();
+            if( valueType instanceof StringType ) // Remove "" around strings
+            {
+                property = valueType.fromJSON( new PeekableStringTokenizer( property, "", true ), null ).toString();
+            }
+
+            URI predicate = valueFactory.createURI( propertyType.qualifiedName().toURI() );
+
+            final Literal object = valueFactory.createLiteral( property );
+            graph.add( subject, predicate, object );
         }
     }
 
-    private void serializeAssociations(final EntityState entityState,
-                                       final Graph graph, URI entityUri,
-                                       final Iterable<AssociationType> associations,
-                                       final boolean includeNonQueryable)
+    private void serializeAssociations( final EntityState entityState,
+                                        final Graph graph, URI entityUri,
+                                        final Iterable<AssociationType> associations,
+                                        final boolean includeNonQueryable )
     {
         ValueFactory values = graph.getValueFactory();
 
         // Associations
-        for (AssociationType associationType : associations)
+        for( AssociationType associationType : associations )
         {
-            if (!(includeNonQueryable || associationType.queryable()))
+            if( !( includeNonQueryable || associationType.queryable() ) )
             {
                 continue; // Skip non-queryable
             }
 
-            EntityReference associatedId = entityState.getAssociation(associationType.stateName());
-            if (associatedId != null)
+            EntityReference associatedId = entityState.getAssociation( associationType.stateName() );
+            if( associatedId != null )
             {
-                URI assocURI = values.createURI(associationType.qualifiedName().toURI());
-                URI assocEntityURI = values.createURI(associatedId.toURI());
-                graph.add(entityUri, assocURI, assocEntityURI);
+                URI assocURI = values.createURI( associationType.qualifiedName().toURI() );
+                URI assocEntityURI = values.createURI( associatedId.toURI() );
+                graph.add( entityUri, assocURI, assocEntityURI );
             }
         }
     }
 
-    private void serializeManyAssociations(final EntityState entityState,
-                                           final Graph graph,
-                                           final URI entityUri,
-                                           final Iterable<ManyAssociationType> associations,
-                                           final boolean includeNonQueryable)
+    private void serializeManyAssociations( final EntityState entityState,
+                                            final Graph graph,
+                                            final URI entityUri,
+                                            final Iterable<ManyAssociationType> associations,
+                                            final boolean includeNonQueryable )
     {
         ValueFactory values = graph.getValueFactory();
 
         // Many-Associations
-        for (ManyAssociationType associationType : associations)
+        for( ManyAssociationType associationType : associations )
         {
-            if (!(includeNonQueryable || associationType.queryable()))
+            if( !( includeNonQueryable || associationType.queryable() ) )
             {
                 continue; // Skip non-queryable
             }
 
             BNode collection = values.createBNode();
-            graph.add(entityUri, values.createURI(associationType.qualifiedName().toURI()), collection);
-            graph.add(collection, Rdfs.TYPE, Rdfs.SEQ);
+            graph.add( entityUri, values.createURI( associationType.qualifiedName().toURI() ), collection );
+            graph.add( collection, Rdfs.TYPE, Rdfs.SEQ );
 
-            ManyAssociationState associatedIds = entityState.getManyAssociation(associationType.stateName());
-            for (EntityReference associatedId : associatedIds)
+            ManyAssociationState associatedIds = entityState.getManyAssociation( associationType.stateName() );
+            for( EntityReference associatedId : associatedIds )
             {
-                URI assocEntityURI = values.createURI(associatedId.toURI());
-                graph.add(collection, Rdfs.LIST_ITEM, assocEntityURI);
+                URI assocEntityURI = values.createURI( associatedId.toURI() );
+                graph.add( collection, Rdfs.LIST_ITEM, assocEntityURI );
             }
         }
     }
 
     private interface State
     {
-        Object getProperty(StateName stateName);
+        Object getProperty( StateName stateName );
     }
 
 }

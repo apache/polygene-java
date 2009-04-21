@@ -14,13 +14,13 @@
 
 package org.qi4j.library.rdf.entity;
 
-import java.util.Collections;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
@@ -28,14 +28,17 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.helpers.EntityTypeRegistryService;
+import org.qi4j.spi.entity.EntityTypeRegistry;
+import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
 /**
  * JAVADOC
@@ -46,10 +49,11 @@ public class EntityParserTest
     @Service private EntityStore entityStore;
     @Uses private EntityStateSerializer serializer;
     @Uses private EntityStateParser parser;
+    @Service EntityTypeRegistry registry;
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class, EntityTypeRegistryService.class );
+        new EntityTestAssembler().assemble( module );
         module.addEntities( TestEntity.class );
         module.addValues( TestValue.class );
         module.addObjects( EntityStateSerializer.class, EntityStateParser.class, EntityParserTest.class );
@@ -68,19 +72,22 @@ public class EntityParserTest
         objectBuilderFactory.newObjectBuilder( EntityParserTest.class ).injectTo( this );
 
         EntityReference entityReference = new EntityReference( "test2" );
-        EntityState entityState = entityStore.getEntityState(entityReference);
+        Usecase usecase = UsecaseBuilder.newUsecase( "Test" );
+        MetaInfo info = new MetaInfo();
+        EntityStoreUnitOfWork work = entityStore.newUnitOfWork( usecase, info );
+        EntityState entityState = work.getEntityState( entityReference );
 
         Iterable<Statement> graph = serializer.serialize( entityState );
 
         parser.parse( graph, entityState );
 
-        entityStore.prepare( Collections.EMPTY_LIST, Collections.singleton( entityState ), Collections.EMPTY_LIST ).commit();
+        entityStore.apply( work.identity(), work.events(), usecase, info ).commit();
 
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            TestEntity entity = unitOfWork.get(TestEntity.class, "test1");
-            TestEntity entity2 = unitOfWork.get(TestEntity.class, "test2");
+            TestEntity entity = unitOfWork.get( TestEntity.class, "test1" );
+            TestEntity entity2 = unitOfWork.get( TestEntity.class, "test2" );
             assertThat( "values are ok", entity2.name().get(), equalTo( "Niclas" ) );
             assertThat( "values are ok", entity2.association().get(), equalTo( entity ) );
             // TODO test that Value Composites are parsed correctly
@@ -102,13 +109,13 @@ public class EntityParserTest
         TestValue testValue = valueBuilder.newInstance();
 
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class, "test1");
+        EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class, "test1" );
         builder.prototype().name().set( "Rickard" );
         builder.prototype().title().set( "Developer" );
         builder.prototype().value().set( testValue );
         TestEntity testEntity = builder.newInstance();
 
-        EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder(TestEntity.class, "test2");
+        EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( TestEntity.class, "test2" );
         builder2.prototype().name().set( "Niclas" );
         builder2.prototype().title().set( "Developer" );
         builder2.prototype().association().set( testEntity );

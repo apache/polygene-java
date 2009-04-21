@@ -28,10 +28,15 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.library.rdf.Qi4jEntity;
-import org.qi4j.spi.entity.*;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.EntityTypeRegistry;
+import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.value.StringType;
 
 /**
  * JAVADOC
@@ -58,7 +63,7 @@ public class EntityStateParser
         String entityTypeReference = null;
         for( Statement statement : entityGraph )
         {
-            if( statement.getPredicate().equals( Qi4jEntity.ENTITYTYPEREFERENCE) )
+            if( statement.getPredicate().equals( Qi4jEntity.ENTITYTYPEREFERENCE ) )
             {
                 entityTypeReference = statement.getObject().toString();
             }
@@ -107,12 +112,20 @@ public class EntityStateParser
             return;
         }
 
-        EntityTypeReference entityTypeReference1 = new EntityTypeReference(entityTypeReference);
-        EntityType entityType = typeRegistry.getEntityType(entityTypeReference1);
+        EntityTypeReference entityTypeReference1 = new EntityTypeReference( entityTypeReference );
+        EntityType entityType = typeRegistry.getEntityType( entityTypeReference1 );
 
         for( PropertyType propertyType : entityType.properties() )
         {
-            entityState.setProperty( propertyType.stateName(), propertyValues.get( propertyType.qualifiedName().toURI() ) );
+            String json = propertyValues.get( propertyType.qualifiedName().toURI() );
+
+            if( propertyType.type() instanceof StringType )
+            {
+                StringBuilder builder = new StringBuilder( json );
+                propertyType.type().toJSON( json, builder, null );
+            }
+
+            entityState.setProperty( propertyType.stateName(), json );
         }
 
         for( AssociationType associationType : entityType.associations() )
@@ -130,13 +143,15 @@ public class EntityStateParser
             if( entities != null )
             {
                 ManyAssociationState stateEntities = entityState.getManyAssociation( manyAssociationType.stateName() );
-                while (stateEntities.count() > 0)
-                    stateEntities.remove(stateEntities.get(0));
+                while( stateEntities.count() > 0 )
+                {
+                    stateEntities.remove( stateEntities.get( 0 ) );
+                }
 
                 int idx = 0;
-                for (EntityReference entity : entities)
+                for( EntityReference entity : entities )
                 {
-                    stateEntities.add(idx++, entity);
+                    stateEntities.add( idx++, entity );
                 }
             }
         }

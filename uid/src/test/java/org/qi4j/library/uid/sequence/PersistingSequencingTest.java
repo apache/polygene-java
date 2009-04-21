@@ -17,25 +17,23 @@
  */
 package org.qi4j.library.uid.sequence;
 
-import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.uid.sequence.assembly.PersistingSequencingAssembler;
-import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
 public class PersistingSequencingTest extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addAssembler( new PersistingSequencingAssembler() );
-        module.addServices( MemoryEntityStoreService.class );
-        module.addServices( UuidIdentityGeneratorService.class );
+        new EntityTestAssembler().assemble( module );
         module.addComposites( UnderTestComposite.class );
     }
 

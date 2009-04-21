@@ -22,20 +22,16 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Iterator;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.bootstrap.ApplicationName;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import static org.qi4j.library.http.Dispatchers.Dispatcher.REQUEST;
-import static org.qi4j.library.http.Servlets.addFilters;
-import static org.qi4j.library.http.Servlets.addServlets;
-import static org.qi4j.library.http.Servlets.filter;
-import static org.qi4j.library.http.Servlets.serve;
+import static org.qi4j.library.http.Dispatchers.Dispatcher.*;
+import static org.qi4j.library.http.Servlets.*;
+import org.qi4j.spi.entity.helpers.EntityTypeRegistryService;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -47,7 +43,7 @@ public final class JettyServiceTest extends AbstractQi4jTest
         throws AssemblyException
     {
         aModule.addAssembler( new ApplicationName( "Jetty test" ) );
-        aModule.addServices( MemoryEntityStoreService.class );
+        aModule.addServices( MemoryEntityStoreService.class, EntityTypeRegistryService.class );
         aModule.addAssembler( new JettyServiceAssembler() );
 
         // Hello world servlet related assembly
