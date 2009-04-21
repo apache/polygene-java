@@ -180,7 +180,15 @@ public final class SerializableState
         for( Map.Entry<StateName, EntityReference> stateNameEntityReferenceEntry : associations.entrySet() )
         {
             out.writeUTF( stateNameEntityReferenceEntry.getKey().toString() );
-            out.writeUTF( stateNameEntityReferenceEntry.getValue().identity() );
+            EntityReference value = stateNameEntityReferenceEntry.getValue();
+            if( value == null )
+            {
+                out.writeUTF( null );
+            }
+            else
+            {
+                out.writeUTF( value.identity() );
+            }
         }
 
         out.writeInt( manyAssociations.size() );
@@ -226,7 +234,14 @@ public final class SerializableState
         {
             String stateNameStr = in.readUTF();
             String refStr = in.readUTF();
-            associations.put( new StateName( stateNameStr ), EntityReference.parseEntityReference( refStr ) );
+            if( refStr != null )
+            {
+                associations.put( new StateName( stateNameStr ), EntityReference.parseEntityReference( refStr ) );
+            }
+            else
+            {
+                associations.put( new StateName( stateNameStr ), null );
+            }
         }
 
         size = in.readInt();
