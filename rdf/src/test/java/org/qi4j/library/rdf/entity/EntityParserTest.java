@@ -75,7 +75,7 @@ public class EntityParserTest
         Usecase usecase = UsecaseBuilder.newUsecase( "Test" );
         MetaInfo info = new MetaInfo();
         EntityStoreUnitOfWork work = entityStore.newUnitOfWork( usecase, info );
-        EntityState entityState = work.getEntityState(entityReference);
+        EntityState entityState = work.getEntityState( entityReference );
 
         Iterable<Statement> graph = serializer.serialize( entityState );
 
@@ -86,8 +86,8 @@ public class EntityParserTest
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            TestEntity entity = unitOfWork.get(TestEntity.class, "test1");
-            TestEntity entity2 = unitOfWork.get(TestEntity.class, "test2");
+            TestEntity entity = unitOfWork.get( TestEntity.class, "test1" );
+            TestEntity entity2 = unitOfWork.get( TestEntity.class, "test2" );
             assertThat( "values are ok", entity2.name().get(), equalTo( "Niclas" ) );
             assertThat( "values are ok", entity2.association().get(), equalTo( entity ) );
             // TODO test that Value Composites are parsed correctly
@@ -109,13 +109,13 @@ public class EntityParserTest
         TestValue testValue = valueBuilder.newInstance();
 
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class, "test1");
+        EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class, "test1" );
         builder.prototype().name().set( "Rickard" );
         builder.prototype().title().set( "Developer" );
         builder.prototype().value().set( testValue );
         TestEntity testEntity = builder.newInstance();
 
-        EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder(TestEntity.class, "test2");
+        EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( TestEntity.class, "test2" );
         builder2.prototype().name().set( "Niclas" );
         builder2.prototype().title().set( "Developer" );
         builder2.prototype().association().set( testEntity );

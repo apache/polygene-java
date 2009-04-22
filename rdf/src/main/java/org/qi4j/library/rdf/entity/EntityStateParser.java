@@ -14,6 +14,10 @@
 
 package org.qi4j.library.rdf.entity;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
@@ -33,11 +37,6 @@ import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.value.StringType;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * JAVADOC
@@ -64,7 +63,7 @@ public class EntityStateParser
         String entityTypeReference = null;
         for( Statement statement : entityGraph )
         {
-            if( statement.getPredicate().equals( Qi4jEntity.ENTITYTYPEREFERENCE) )
+            if( statement.getPredicate().equals( Qi4jEntity.ENTITYTYPEREFERENCE ) )
             {
                 entityTypeReference = statement.getObject().toString();
             }
@@ -113,16 +112,16 @@ public class EntityStateParser
             return;
         }
 
-        EntityTypeReference entityTypeReference1 = new EntityTypeReference(entityTypeReference);
-        EntityType entityType = typeRegistry.getEntityType(entityTypeReference1);
+        EntityTypeReference entityTypeReference1 = new EntityTypeReference( entityTypeReference );
+        EntityType entityType = typeRegistry.getEntityType( entityTypeReference1 );
 
         for( PropertyType propertyType : entityType.properties() )
         {
             String json = propertyValues.get( propertyType.qualifiedName().toURI() );
 
-            if (propertyType.type() instanceof StringType )
+            if( propertyType.type() instanceof StringType )
             {
-                StringBuilder builder = new StringBuilder(json);
+                StringBuilder builder = new StringBuilder( json );
                 propertyType.type().toJSON( json, builder, null );
             }
 
@@ -144,13 +143,15 @@ public class EntityStateParser
             if( entities != null )
             {
                 ManyAssociationState stateEntities = entityState.getManyAssociation( manyAssociationType.stateName() );
-                while (stateEntities.count() > 0)
-                    stateEntities.remove(stateEntities.get(0));
+                while( stateEntities.count() > 0 )
+                {
+                    stateEntities.remove( stateEntities.get( 0 ) );
+                }
 
                 int idx = 0;
-                for (EntityReference entity : entities)
+                for( EntityReference entity : entities )
                 {
-                    stateEntities.add(idx++, entity);
+                    stateEntities.add( idx++, entity );
                 }
             }
         }

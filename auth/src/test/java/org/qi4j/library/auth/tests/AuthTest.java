@@ -17,6 +17,7 @@
  */
 package org.qi4j.library.auth.tests;
 
+import java.util.Date;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -29,12 +30,25 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.library.auth.*;
+import org.qi4j.library.auth.AuthenticationMethod;
+import org.qi4j.library.auth.Authorization;
+import org.qi4j.library.auth.AuthorizationContext;
+import org.qi4j.library.auth.AuthorizationContextComposite;
+import org.qi4j.library.auth.AuthorizationService;
+import org.qi4j.library.auth.Group;
+import org.qi4j.library.auth.GroupEntity;
+import org.qi4j.library.auth.NamedPermission;
+import org.qi4j.library.auth.NamedPermissionEntity;
+import org.qi4j.library.auth.ProtectedResource;
+import org.qi4j.library.auth.Role;
+import org.qi4j.library.auth.RoleAssignment;
+import org.qi4j.library.auth.RoleAssignmentEntity;
+import org.qi4j.library.auth.RoleEntity;
+import org.qi4j.library.auth.User;
+import org.qi4j.library.auth.UserComposite;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
-
-import java.util.Date;
 
 public class AuthTest
     extends AbstractQi4jTest

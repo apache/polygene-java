@@ -27,5 +27,6 @@
   "http://struts.apache.org/dtds/struts-2.0.dtd">
 
 <struts>
-  <bean type="com.opensymphony.xwork2.config.PackageProvider" name="qi4j" class="org.qi4j.library.struts2.codebehind.Qi4jCodebehindPackageProvider" />
+  <bean type="com.opensymphony.xwork2.config.PackageProvider" name="qi4j"
+        class="org.qi4j.library.struts2.codebehind.Qi4jCodebehindPackageProvider"/>
 </struts>

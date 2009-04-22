@@ -17,11 +17,10 @@
  */
 package org.qi4j.logging.log.records;
 
-import org.qi4j.api.property.Property;
-import org.qi4j.logging.log.LogType;
-
 import java.io.Serializable;
 import java.util.List;
+import org.qi4j.api.property.Property;
+import org.qi4j.logging.log.LogType;
 
 public interface LogRecord
 {

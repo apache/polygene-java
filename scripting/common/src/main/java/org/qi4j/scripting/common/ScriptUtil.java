@@ -11,9 +11,8 @@
 */
 package org.qi4j.scripting.common;
 
-import org.qi4j.api.mixin.Mixins;
-
 import java.io.PrintStream;
+import org.qi4j.api.mixin.Mixins;
 
 /**
  * JAVADOC

@@ -18,6 +18,10 @@
 
 package org.qi4j.logging.debug.service;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityBuilder;
@@ -33,11 +37,6 @@ import org.qi4j.logging.debug.records.CompositeDebugRecordEntity;
 import org.qi4j.logging.debug.records.DebugRecord;
 import org.qi4j.logging.debug.records.EntityDebugRecordEntity;
 import org.qi4j.logging.debug.records.ServiceDebugRecordEntity;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class DebuggingServiceMixin
     implements DebuggingService

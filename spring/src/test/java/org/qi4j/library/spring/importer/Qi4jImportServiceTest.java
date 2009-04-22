@@ -41,6 +41,7 @@ public final class Qi4jImportServiceTest
     @Autowired ApplicationContext appContext;
 
     @Service CommentService service;
+
     @Test
     public final void givenImportedSpringServicesWhenServiceIsInjectedThenUseSpringService()
     {
@@ -50,16 +51,17 @@ public final class Qi4jImportServiceTest
             {
                 module.addObjects( Qi4jImportServiceTest.class );
 
-                new SpringImporterAssembler(appContext).assemble( module );
+                new SpringImporterAssembler( appContext ).assemble( module );
             }
         };
 
         assembler.objectBuilderFactory().newObjectBuilder( Qi4jImportServiceTest.class ).injectTo( this );
 
-        assertThat("service can be called", service.comment( "beer" ), equalTo( "beer is good." ));
+        assertThat( "service can be called", service.comment( "beer" ), equalTo( "beer is good." ) );
     }
 
     @Service Iterable<ServiceReference<CommentService>> services;
+
     @Test
     public final void givenImportedSpringServicesWhenServicesAreInjectedThenCanIdentifyByName()
     {
@@ -69,17 +71,18 @@ public final class Qi4jImportServiceTest
             {
                 module.addObjects( Qi4jImportServiceTest.class );
 
-                new SpringImporterAssembler(appContext).assemble( module );
+                new SpringImporterAssembler( appContext ).assemble( module );
             }
         };
 
         assembler.objectBuilderFactory().newObjectBuilder( Qi4jImportServiceTest.class ).injectTo( this );
 
-        CommentService service = service( services, withId("commentService2" ));
-        assertThat("service with correct id has been selected", service.comment( "pizza" ), equalTo( "pizza is good." ));
+        CommentService service = service( services, withId( "commentService2" ) );
+        assertThat( "service with correct id has been selected", service.comment( "pizza" ), equalTo( "pizza is good." ) );
     }
 
     @Structure ServiceFinder finder;
+
     @Test
     public final void givenImportedSpringServicesWhenServicesAreFoundThenCanIdentifyByName()
     {
@@ -89,13 +92,13 @@ public final class Qi4jImportServiceTest
             {
                 module.addObjects( Qi4jImportServiceTest.class );
 
-                new SpringImporterAssembler(appContext).assemble( module );
+                new SpringImporterAssembler( appContext ).assemble( module );
             }
         };
 
         assembler.objectBuilderFactory().newObjectBuilder( Qi4jImportServiceTest.class ).injectTo( this );
 
-        CommentService foundService = service( finder.<CommentService>findServices( CommentService.class ), withId("commentService2" ));
-        assertThat("service with correct id has been selected", foundService.comment( "pizza" ), equalTo( "pizza is good." ));
+        CommentService foundService = service( finder.<CommentService>findServices( CommentService.class ), withId( "commentService2" ) );
+        assertThat( "service with correct id has been selected", foundService.comment( "pizza" ), equalTo( "pizza is good." ) );
     }
 }

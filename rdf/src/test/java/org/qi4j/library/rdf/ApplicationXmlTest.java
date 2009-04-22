@@ -14,6 +14,11 @@
 
 package org.qi4j.library.rdf;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import org.junit.Test;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
@@ -33,12 +38,6 @@ import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.rdf.model.ApplicationSerializer;
 import org.qi4j.test.AbstractQi4jTest;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 
 /**
  * JAVADOC

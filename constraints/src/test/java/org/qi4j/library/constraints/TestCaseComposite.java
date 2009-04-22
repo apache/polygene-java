@@ -12,12 +12,21 @@
 */
 package org.qi4j.library.constraints;
 
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.property.Property;
-import org.qi4j.library.constraints.annotation.*;
-
 import java.util.Collection;
 import java.util.List;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.property.Property;
+import org.qi4j.library.constraints.annotation.Contains;
+import org.qi4j.library.constraints.annotation.Email;
+import org.qi4j.library.constraints.annotation.GreaterThan;
+import org.qi4j.library.constraints.annotation.InstanceOf;
+import org.qi4j.library.constraints.annotation.LessThan;
+import org.qi4j.library.constraints.annotation.Matches;
+import org.qi4j.library.constraints.annotation.MaxLength;
+import org.qi4j.library.constraints.annotation.MinLength;
+import org.qi4j.library.constraints.annotation.NotEmpty;
+import org.qi4j.library.constraints.annotation.OneOf;
+import org.qi4j.library.constraints.annotation.Range;
 
 /**
  * Test composite with all the constraints

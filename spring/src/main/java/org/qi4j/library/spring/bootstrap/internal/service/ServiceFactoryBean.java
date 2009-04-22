@@ -16,12 +16,12 @@
 */
 package org.qi4j.library.spring.bootstrap.internal.service;
 
-import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.api.structure.Application;
+import org.qi4j.spi.service.ServiceDescriptor;
+import org.qi4j.spi.structure.ApplicationSPI;
 import org.springframework.beans.factory.FactoryBean;
-import static org.springframework.util.Assert.*;
+import static org.springframework.util.Assert.notNull;
 
 /**
  * @author edward.yakop@gmail.com

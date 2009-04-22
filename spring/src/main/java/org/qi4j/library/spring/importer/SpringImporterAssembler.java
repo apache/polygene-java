@@ -32,18 +32,20 @@ public class SpringImporterAssembler
     /**
      * Import all beans from the given ApplicationContext as services in Qi4j,
      * using Module as Visibility.
+     *
      * @param context the Spring ApplicationContext
      */
     public SpringImporterAssembler( ApplicationContext context )
     {
-        this(context, Visibility.module);
+        this( context, Visibility.module );
     }
 
 
     /**
      * Import all beans from the given ApplicationContext as services in Qi4j,
      * using the specified Visibility level.
-     * @param context the Spring ApplicationContext
+     *
+     * @param context           the Spring ApplicationContext
      * @param defaultVisibility the visibility level for the imported services
      */
     public SpringImporterAssembler( ApplicationContext context, Visibility defaultVisibility )

@@ -13,10 +13,9 @@
  */
 package org.qi4j.library.rdf.serializer;
 
+import java.io.Writer;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
-
-import java.io.Writer;
 
 public interface Serializer
 {
