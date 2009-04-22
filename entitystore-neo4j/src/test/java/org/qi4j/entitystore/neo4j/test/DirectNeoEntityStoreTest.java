@@ -18,12 +18,14 @@ package org.qi4j.entitystore.neo4j.test;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.entitystore.neo4j.Configuration;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
+@Ignore("Until Neo4j is upgraded")
 public class DirectNeoEntityStoreTest
         extends TestBase
 {

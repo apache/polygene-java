@@ -17,10 +17,12 @@
 package org.qi4j.entitystore.neo4j.test;
 
 import org.junit.Test;
+import org.junit.Ignore;
 
 /**
  * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
+@Ignore("Until Neo4j is upgraded")
 public class IndirectIdentitySetTest extends DirectIdentitySetTest
 {
 /*
