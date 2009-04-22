@@ -69,7 +69,7 @@ public final class JettyServiceTest extends AbstractQi4jTest
         JettyService jettyService = serviceRef.get();
         assertNotNull( jettyService );
 
-        URL url = new URL( "http://localhost:8040/helloWorld" );
+        URL url = new URL( "http://localhost:8041/helloWorld" );
         URLConnection urlConnection = url.openConnection();
         InputStream inputStream = urlConnection.getInputStream();
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader( inputStream ) );
