@@ -26,7 +26,7 @@ import java.lang.reflect.Type;
  * Boolean type
  */
 public class NumberType
-    implements ValueType
+    extends ValueType
 {
     public static boolean isNumber( Type type )
     {

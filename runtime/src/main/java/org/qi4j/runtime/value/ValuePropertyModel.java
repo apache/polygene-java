@@ -50,7 +50,7 @@ public final class ValuePropertyModel extends PersistentPropertyModel
         PropertyType.PropertyTypeEnum type;
         type = PropertyType.PropertyTypeEnum.IMMUTABLE;
 
-        ValueType valueType = createValueType( type() );
+        ValueType valueType = ValueType.newValueType( type() );
 
         propertyType = new PropertyType( qualifiedName(), valueType, toRDF(), isQueryable, type );
         propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), qualifiedName(), type() );

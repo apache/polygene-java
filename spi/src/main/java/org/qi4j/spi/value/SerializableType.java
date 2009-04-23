@@ -15,19 +15,27 @@
 package org.qi4j.spi.value;
 
 import org.qi4j.api.common.TypeName;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.util.Base64Encoder;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 /**
  * JAVADOC
  */
 public class SerializableType
-    implements ValueType
+    extends ValueType
 {
     private final TypeName type;
 
@@ -48,6 +56,17 @@ public class SerializableType
 
     public void toJSON( Object value, StringBuilder json, Qi4jSPI spi )
     {
+        // Check if we are serializing an Entity
+        if( value instanceof EntityComposite )
+        {
+            // Store reference instead
+            value = EntityReference.getEntityReference( value );
+        }
+        else if( value instanceof ValueComposite )
+        {
+            value = ( (ValueComposite) value ).toJSON();
+        }
+
         // Serialize value
         try
         {
@@ -75,6 +94,28 @@ public class SerializableType
             ObjectInputStream oin = new ObjectInputStream( bin );
             Object result = oin.readObject();
             oin.close();
+
+            if( result instanceof EntityReference )
+            {
+                EntityReference ref = (EntityReference) result;
+                if( !type.isClass( EntityReference.class ) )
+                {
+                    Class mixinType = module.classLoader().loadClass( type.name() );
+                    UnitOfWork unitOfWork = module.unitOfWorkFactory().currentUnitOfWork();
+                    if( unitOfWork != null )
+                    {
+                        result = unitOfWork.get( mixinType, ref.identity() );
+                    }
+                }
+            }
+            else if( result instanceof String )
+            {
+                String jsonValue = (String) result;
+                Class valueType = module.classLoader().loadClass( type.name() );
+                result = module.valueBuilderFactory().newValueFromJSON( valueType, jsonValue );
+                ;
+            }
+
             return result;
         }
         catch( IOException e )

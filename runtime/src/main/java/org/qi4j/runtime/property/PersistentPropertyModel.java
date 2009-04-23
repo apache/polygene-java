@@ -64,7 +64,7 @@ public abstract class PersistentPropertyModel
             type = PropertyType.PropertyTypeEnum.MUTABLE;
         }
 
-        propertyType = new PropertyType( qualifiedName(), createValueType( type() ), toRDF(), this.queryable, type );
+        propertyType = new PropertyType( qualifiedName(), ValueType.newValueType( type() ), toRDF(), this.queryable, type );
 
         propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), qualifiedName(), type() );
 

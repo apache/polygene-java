@@ -42,4 +42,6 @@ public interface ValueBuilderFactory
      */
     <T> T newValue( Class<T> valueType )
         throws NoSuchValueException, ConstructionException;
+
+    <T> T newValueFromJSON( Class<T> valueType, String jsonValue );
 }

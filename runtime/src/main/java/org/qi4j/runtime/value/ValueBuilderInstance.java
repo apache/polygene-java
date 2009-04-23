@@ -20,6 +20,7 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.util.PeekableStringTokenizer;
 
 import java.util.Iterator;
 
@@ -66,6 +67,11 @@ public final class ValueBuilderInstance<T>
             }
         } );
         return this;
+    }
+
+    public ValueBuilder<T> fromJSON( String jsonValue )
+    {
+        return withPrototype( (T) valueModel.valueType().fromJSON( new PeekableStringTokenizer( jsonValue, "", true ), moduleInstance ) );
     }
 
     public T prototype()

@@ -21,7 +21,7 @@ import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
  * JAVADOC
  */
 public class UsecaseEvent
-    implements UnitOfWorkEvent
+    extends UnitOfWorkEvent
 {
     private Usecase usecase;
 

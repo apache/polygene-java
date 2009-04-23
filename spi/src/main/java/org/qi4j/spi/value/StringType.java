@@ -26,7 +26,7 @@ import java.lang.reflect.Type;
  * Boolean type
  */
 public class StringType
-    implements ValueType
+    extends ValueType
 {
     public static boolean isString( Type type )
     {

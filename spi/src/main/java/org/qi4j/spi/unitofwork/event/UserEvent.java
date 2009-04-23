@@ -12,14 +12,28 @@
  *
  */
 
-package org.qi4j.api.value;
+package org.qi4j.spi.unitofwork.event;
 
 /**
- * Methods specifically for Values
+ * JAVADOC
  */
-public interface Value
+public class UserEvent
+    extends UnitOfWorkEvent
 {
-    <T> ValueBuilder<T> buildWith();
+    private String username;
 
-    String toJSON();
+    public UserEvent( String username )
+    {
+        this.username = username;
+    }
+
+    public String username()
+    {
+        return username;
+    }
+
+    @Override public String toString()
+    {
+        return "Username " + username;
+    }
 }

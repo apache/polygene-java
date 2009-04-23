@@ -15,24 +15,91 @@
 package org.qi4j.spi.value;
 
 import org.qi4j.api.common.TypeName;
+import org.qi4j.api.common.QualifiedName;
+import static org.qi4j.api.common.TypeName.nameOf;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.entity.RDF;
+import org.qi4j.api.entity.Queryable;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * JAVADOC
  */
-public interface ValueType
-    extends Serializable
+public abstract class ValueType
+    implements Serializable
 {
-    public TypeName type();
+    public static ValueType newValueType( Type type )
+    {
+        ValueType valueType;
+        if( CollectionType.isCollection( type ) )
+        {
+            if( type instanceof ParameterizedType )
+            {
+                ParameterizedType pt = (ParameterizedType) type;
+                valueType = new CollectionType( nameOf( type ), newValueType( pt.getActualTypeArguments()[ 0 ] ) );
+            }
+            else
+            {
+                valueType = new CollectionType( nameOf( type ), newValueType( Object.class ) );
+            }
+        }
+        else if( ValueCompositeType.isValueComposite( type ) )
+        {
+            Class valueTypeClass = (Class) type;
+            List<PropertyType> types = new ArrayList<PropertyType>();
+            for( Method method : valueTypeClass.getMethods() )
+            {
+                Type returnType = method.getGenericReturnType();
+                if( returnType instanceof ParameterizedType && ( (ParameterizedType) returnType ).getRawType().equals( Property.class ) )
+                {
+                    Type propType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
+                    RDF rdfAnnotation = method.getAnnotation( RDF.class );
+                    String rdf = rdfAnnotation == null ? null : rdfAnnotation.value();
+                    Queryable queryableAnnotation = method.getAnnotation( Queryable.class );
+                    boolean queryable = queryableAnnotation == null || queryableAnnotation.value();
+                    PropertyType propertyType = new PropertyType( QualifiedName.fromMethod( method ), newValueType( propType ), rdf, queryable, PropertyType.PropertyTypeEnum.IMMUTABLE );
+                    types.add( propertyType );
+                }
+            }
+            valueType = new ValueCompositeType( nameOf( valueTypeClass ), types );
+        }
+        else if( StringType.isString( type ) )
+        {
+            valueType = new StringType( nameOf( type ) );
+        }
+        else if( NumberType.isNumber( type ) )
+        {
+            valueType = new NumberType( nameOf( type ) );
+        }
+        else if( BooleanType.isBoolean( type ) )
+        {
+            valueType = new BooleanType( nameOf( type ) );
+        }
+        else
+        {
+            // TODO: shouldn't we check that the type is a Serializable?
+            valueType = new SerializableType( nameOf( type ) );
+        }
 
-    void versionize( SchemaVersion schemaVersion );
+        return valueType;
+    }
 
-    public void toJSON( Object value, StringBuilder json, Qi4jSPI spi );
+    public abstract TypeName type();
 
-    public Object fromJSON( PeekableStringTokenizer json, Module module );
+    public abstract void versionize( SchemaVersion schemaVersion );
+
+    public abstract void toJSON( Object value, StringBuilder json, Qi4jSPI spi );
+
+    public abstract Object fromJSON( PeekableStringTokenizer json, Module module );
 }

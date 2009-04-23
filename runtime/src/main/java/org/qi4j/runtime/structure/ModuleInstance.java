@@ -50,6 +50,7 @@ import org.qi4j.runtime.value.ValueBuilderInstance;
 import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.runtime.value.ValuesInstance;
 import org.qi4j.runtime.value.ValuesModel;
+import org.qi4j.spi.util.PeekableStringTokenizer;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -450,6 +451,19 @@ public class ModuleInstance
             finder.model.checkConstraints( initialState );
             return valueType.cast( finder.model.newValueInstance( finder.module, initialState ).proxy() );
 
+        }
+
+        public <T> T newValueFromJSON( Class<T> valueType, String jsonValue )
+            throws NoSuchValueException, ConstructionException
+        {
+            ValueFinder finder = findValueModel( valueType );
+
+            if( finder.model == null )
+            {
+                throw new NoSuchValueException( valueType.getName(), name() );
+            }
+
+            return (T) finder.model.valueType().fromJSON( new PeekableStringTokenizer( jsonValue, "", true ), finder.module );
         }
     }
 

@@ -16,13 +16,15 @@ package org.qi4j.runtime.property;
 
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
-import static org.qi4j.api.common.TypeName.nameOf;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.RDF;
-import org.qi4j.api.property.*;
+import org.qi4j.api.property.Computed;
+import org.qi4j.api.property.ComputedPropertyInstance;
+import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.ConstraintsCheck;
@@ -30,12 +32,17 @@ import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.value.*;
 
-import java.io.*;
-import java.lang.reflect.*;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -93,62 +100,6 @@ public abstract class AbstractPropertyModel
         needsWrapper = !this.accessor.getReturnType().equals( Property.class );
 
         builderInfo = new GenericPropertyInfo( this.metaInfo, false, computed, qualifiedName, type );
-    }
-
-    protected ValueType createValueType( Type type )
-    {
-        ValueType valueType;
-        if( CollectionType.isCollection( type ) )
-        {
-            if( type instanceof ParameterizedType )
-            {
-                ParameterizedType pt = (ParameterizedType) type;
-                valueType = new CollectionType( nameOf( type ), createValueType( pt.getActualTypeArguments()[ 0 ] ) );
-            }
-            else
-            {
-                valueType = new CollectionType( nameOf( type ), createValueType( Object.class ) );
-            }
-        }
-        else if( ValueCompositeType.isValueComposite( type ) )
-        {
-            Class valueTypeClass = (Class) type;
-            List<PropertyType> types = new ArrayList<PropertyType>();
-            for( Method method : valueTypeClass.getMethods() )
-            {
-                Type returnType = method.getGenericReturnType();
-                if( returnType instanceof ParameterizedType && ( (ParameterizedType) returnType ).getRawType().equals( Property.class ) )
-                {
-                    Type propType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
-                    RDF rdfAnnotation = method.getAnnotation( RDF.class );
-                    String rdf = rdfAnnotation == null ? null : rdfAnnotation.value();
-                    Queryable queryableAnnotation = method.getAnnotation( Queryable.class );
-                    boolean queryable = queryableAnnotation == null || queryableAnnotation.value();
-                    PropertyType propertyType = new PropertyType( QualifiedName.fromMethod( method ), createValueType( propType ), rdf, queryable, PropertyType.PropertyTypeEnum.IMMUTABLE );
-                    types.add( propertyType );
-                }
-            }
-            valueType = new ValueCompositeType( nameOf( valueTypeClass ), types );
-        }
-        else if( StringType.isString( type ) )
-        {
-            valueType = new StringType( nameOf( type ) );
-        }
-        else if( NumberType.isNumber( type ) )
-        {
-            valueType = new NumberType( nameOf( type ) );
-        }
-        else if( BooleanType.isBoolean( type ) )
-        {
-            valueType = new BooleanType( nameOf( type ) );
-        }
-        else
-        {
-            // TODO: shouldn't we check that the type is a Serializable?
-            valueType = new SerializableType( nameOf( type ) );
-        }
-
-        return valueType;
     }
 
     public <T> T metaInfo( Class<T> infoType )

@@ -21,7 +21,7 @@ import org.qi4j.spi.entity.EntityState;
  * JAVADOC
  */
 public abstract class EntityEvent
-    implements UnitOfWorkEvent
+    extends UnitOfWorkEvent
 {
     private EntityReference identity;
 

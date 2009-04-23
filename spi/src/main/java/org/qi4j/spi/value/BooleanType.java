@@ -26,7 +26,7 @@ import java.lang.reflect.Type;
  * Boolean type
  */
 public class BooleanType
-    implements ValueType
+    extends ValueType
 {
     public static boolean isBoolean( Type type )
     {

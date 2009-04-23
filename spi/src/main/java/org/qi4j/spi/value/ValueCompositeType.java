@@ -37,7 +37,7 @@ import java.util.Map;
  * JAVADOC
  */
 public class ValueCompositeType
-    implements ValueType
+    extends ValueType
 {
     public static boolean isValueComposite( Type type )
     {

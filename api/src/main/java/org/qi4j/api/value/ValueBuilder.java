@@ -33,6 +33,8 @@ public interface ValueBuilder<T>
 
     ValueBuilder<T> withState( StateHolder state );
 
+    ValueBuilder<T> fromJSON( String jsonValue );
+
     /**
      * Get a representation of the state for the new Value.
      * It is possible to access and update properties and associations,

@@ -20,12 +20,20 @@ import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.runtime.composite.*;
+import org.qi4j.runtime.composite.AbstractCompositeModel;
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.composite.CompositeMethodsModel;
+import org.qi4j.runtime.composite.ConcernDeclaration;
+import org.qi4j.runtime.composite.ConcernsDeclaration;
+import org.qi4j.runtime.composite.ConstraintsModel;
+import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.composite.SideEffectsDeclaration;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.value.ValueDescriptor;
 import org.qi4j.spi.value.ValueState;
+import org.qi4j.spi.value.ValueType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,6 +45,8 @@ import java.util.List;
 public final class ValueModel extends AbstractCompositeModel
     implements ValueDescriptor, Serializable
 {
+    private ValueType valueType;
+
     public static ValueModel newModel( final Class<? extends ValueComposite> compositeType,
                                        final Visibility visibility,
                                        final MetaInfo metaInfo,
@@ -61,12 +71,21 @@ public final class ValueModel extends AbstractCompositeModel
             new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
         stateModel.addStateFor( compositeMethodsModel.methods() );
 
-        return new ValueModel( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
+        ValueType valueType = ValueType.newValueType( compositeType );
+
+        return new ValueModel( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, valueType );
     }
 
-    private ValueModel( final Class<? extends ValueComposite> compositeType, final Visibility visibility, final MetaInfo metaInfo, final ValueMixinsModel mixinsModel, final ValueStateModel stateModel, final CompositeMethodsModel compositeMethodsModel )
+    private ValueModel( final Class<? extends ValueComposite> compositeType, final Visibility visibility, final MetaInfo metaInfo, final ValueMixinsModel mixinsModel, final ValueStateModel stateModel, final CompositeMethodsModel compositeMethodsModel, ValueType valueType )
     {
         super( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
+
+        this.valueType = valueType;
+    }
+
+    public ValueType valueType()
+    {
+        return valueType;
     }
 
     public void visitModel( ModelVisitor modelVisitor )

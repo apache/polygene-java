@@ -21,8 +21,11 @@ import java.io.Serializable;
 /**
  * JAVADOC
  */
-public interface UnitOfWorkEvent
-    extends Serializable
+public abstract class UnitOfWorkEvent
+    implements Serializable
 {
-    void applyTo( EntityStoreUnitOfWork uow );
+    public void applyTo( EntityStoreUnitOfWork uow )
+    {
+        uow.addEvent( this );
+    }
 }

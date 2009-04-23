@@ -28,7 +28,7 @@ import java.util.*;
  * JAVADOC
  */
 public class CollectionType
-    implements ValueType
+    extends ValueType
 {
     public static boolean isCollection( Type type )
     {
