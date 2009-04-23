@@ -21,7 +21,6 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.util.PeekableStringTokenizer;
@@ -92,11 +91,11 @@ public class ValueCompositeType
         return type.toString();
     }
 
-    public void toJSON( Object value, StringBuilder json, Qi4jSPI spi )
+    public void toJSON( Object value, StringBuilder json )
     {
         json.append( '{' );
         ValueComposite valueComposite = (ValueComposite) value;
-        StateHolder state = spi.getState( valueComposite );
+        StateHolder state = valueComposite.state();
         final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
         state.visitProperties( new StateHolder.StateVisitor()
         {
@@ -119,7 +118,7 @@ public class ValueCompositeType
             }
             else
             {
-                propertyType.type().toJSON( propertyValue, json, spi );
+                propertyType.type().toJSON( propertyValue, json );
             }
             comma = ",";
         }

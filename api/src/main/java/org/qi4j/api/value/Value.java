@@ -14,11 +14,15 @@
 
 package org.qi4j.api.value;
 
+import org.qi4j.api.property.StateHolder;
+
 /**
  * Methods specifically for Values
  */
 public interface Value
 {
+    StateHolder state();
+
     <T> ValueBuilder<T> buildWith();
 
     String toJSON();

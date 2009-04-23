@@ -15,11 +15,12 @@
 package org.qi4j.runtime.value;
 
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.Value;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.value.ValueType;
 
 /**
@@ -31,7 +32,12 @@ public class ValueMixin
 {
     @This Value thisValue;
 
-    @This Qi4jSPI spi;
+    @State StateHolder state;
+
+    public StateHolder state()
+    {
+        return state;
+    }
 
     public <T> ValueBuilder<T> buildWith()
     {
@@ -46,7 +52,7 @@ public class ValueMixin
 
         ValueType valueType = ( (ValueModel) valueInstance.compositeModel() ).valueType();
         StringBuilder json = new StringBuilder();
-        valueType.toJSON( thisValue, json, spi );
+        valueType.toJSON( thisValue, json );
         return json.toString();
     }
 }

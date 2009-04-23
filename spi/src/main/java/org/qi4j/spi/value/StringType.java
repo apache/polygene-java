@@ -16,7 +16,6 @@ package org.qi4j.spi.value;
 
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
-import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
@@ -55,7 +54,7 @@ public class StringType
         return type;
     }
 
-    public void toJSON( Object value, StringBuilder json, Qi4jSPI spi )
+    public void toJSON( Object value, StringBuilder json )
     {
         json.append( '"' );
         String stringValue = value.toString();

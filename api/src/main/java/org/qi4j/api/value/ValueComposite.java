@@ -16,6 +16,7 @@ package org.qi4j.api.value;
 
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Immutable;
+import org.qi4j.api.property.StateHolder;
 
 /**
  * ValueComposites are Composites that only has value, and equality is defined from its values and not any identity
@@ -29,7 +30,6 @@ import org.qi4j.api.property.Immutable;
  * <li>Can only have property methods.</li>
  * <li>Can not reference Services</li>
  * <li>Can not have @Uses</li>
- * <li>Instance management for reuse</li>
  */
 @Immutable
 public interface ValueComposite extends Value, Composite

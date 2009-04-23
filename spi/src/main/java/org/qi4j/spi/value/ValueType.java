@@ -14,24 +14,23 @@
 
 package org.qi4j.spi.value;
 
-import org.qi4j.api.common.TypeName;
 import org.qi4j.api.common.QualifiedName;
-import static org.qi4j.api.common.TypeName.nameOf;
-import org.qi4j.api.structure.Module;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.entity.RDF;
+import org.qi4j.api.common.TypeName;
+import static org.qi4j.api.common.TypeName.*;
 import org.qi4j.api.entity.Queryable;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.property.PropertyType;
+import org.qi4j.api.entity.RDF;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.structure.Module;
 import org.qi4j.spi.entity.SchemaVersion;
+import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Method;
-import java.util.List;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * JAVADOC
@@ -99,7 +98,7 @@ public abstract class ValueType
 
     public abstract void versionize( SchemaVersion schemaVersion );
 
-    public abstract void toJSON( Object value, StringBuilder json, Qi4jSPI spi );
+    public abstract void toJSON( Object value, StringBuilder json );
 
     public abstract Object fromJSON( PeekableStringTokenizer json, Module module );
 }

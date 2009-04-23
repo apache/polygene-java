@@ -17,7 +17,6 @@ package org.qi4j.spi.value;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
-import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
@@ -66,7 +65,7 @@ public class CollectionType
         return type + "<" + collectedType + ">";
     }
 
-    public void toJSON( Object value, StringBuilder json, Qi4jSPI spi )
+    public void toJSON( Object value, StringBuilder json )
     {
         json.append( '[' );
 
@@ -75,7 +74,7 @@ public class CollectionType
         for( Object collectionValue : collection )
         {
             json.append( comma );
-            collectedType.toJSON( collectionValue, json, spi );
+            collectedType.toJSON( collectionValue, json );
             comma = ",";
         }
 

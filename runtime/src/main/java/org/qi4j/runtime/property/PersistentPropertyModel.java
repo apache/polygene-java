@@ -89,7 +89,7 @@ public abstract class PersistentPropertyModel
 
         ValueType valueType = propertyType().type();
         StringBuilder json = new StringBuilder();
-        valueType.toJSON( value, json, spi );
+        valueType.toJSON( value, json );
         return json.toString();
     }
 

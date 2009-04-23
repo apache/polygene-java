@@ -20,7 +20,6 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.util.Base64Encoder;
 import org.qi4j.spi.util.PeekableStringTokenizer;
@@ -54,7 +53,7 @@ public class SerializableType
         schemaVersion.versionize( type );
     }
 
-    public void toJSON( Object value, StringBuilder json, Qi4jSPI spi )
+    public void toJSON( Object value, StringBuilder json )
     {
         // Check if we are serializing an Entity
         if( value instanceof EntityComposite )
