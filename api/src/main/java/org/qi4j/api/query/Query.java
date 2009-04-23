@@ -78,8 +78,9 @@ public interface Query<T>
      *
      * @param name  of the variable
      * @param value of the variable
+     * @return the query
      */
-    void setVariable( String name, Object value );
+    Query<T> setVariable( String name, Object value );
 
     /**
      * Get the value of a named variable.

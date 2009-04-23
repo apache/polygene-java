@@ -69,7 +69,7 @@ public class NamedQueryImpl<T>
         return this;
     }
 
-    public void setVariable( String name, Object value )
+    public Query<T> setVariable( String name, Object value )
     {
         Object oldvalue = variables.put( name, value );
         if( oldvalue == null )
@@ -77,6 +77,8 @@ public class NamedQueryImpl<T>
             variables.remove( name );
             throw new IllegalArgumentException( "Variable [" + name + "] is not found." );
         }
+
+        return this;
     }
 
     public <V> V getVariable( String name )

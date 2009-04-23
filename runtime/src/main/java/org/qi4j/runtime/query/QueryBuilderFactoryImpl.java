@@ -78,7 +78,7 @@ public final class QueryBuilderFactoryImpl
         return new QueryBuilderImpl<T>( unitOfWork, serviceReference.get(), classLoader, resultType );
     }
 
-    public <T> Query<T> newNamedQuery( String name, Class<T> resultType )
+    public <T> Query<T> newNamedQuery( Class<T> resultType, String name )
     {
         final ServiceReference<NamedEntityFinder> serviceReference = finder.findService( NamedEntityFinder.class );
         if( serviceReference == null )

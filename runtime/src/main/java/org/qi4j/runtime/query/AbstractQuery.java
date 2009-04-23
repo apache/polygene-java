@@ -140,7 +140,7 @@ abstract class AbstractQuery<T>
      * @see org.qi4j.api.query.Query#setVariable(String, Object)
      */
     @SuppressWarnings( "unchecked" )
-    public void setVariable( final String name, final Object value )
+    public Query<T> setVariable( final String name, final Object value )
     {
         // TODO: Casting to VariableValueExpression
         VariableValueExpressionImpl variable = getVariable( name );
@@ -149,6 +149,8 @@ abstract class AbstractQuery<T>
             throw new IllegalArgumentException( "Variable [" + name + "] is not found." );
         }
         variable.setValue( value );
+
+        return this;
     }
 
     /**

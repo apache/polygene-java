@@ -35,5 +35,5 @@ public interface QueryBuilderFactory
         throws MissingIndexingSystemException;
 
 
-    <T> Query<T> newNamedQuery( String name, Class<T> resultType );
+    <T> Query<T> newNamedQuery( Class<T> resultType, String name );
 }
