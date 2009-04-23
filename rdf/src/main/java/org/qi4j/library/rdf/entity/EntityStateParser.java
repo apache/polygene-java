@@ -122,7 +122,7 @@ public class EntityStateParser
             if( propertyType.type() instanceof StringType )
             {
                 StringBuilder builder = new StringBuilder( json );
-                propertyType.type().toJSON( json, builder, null );
+                propertyType.type().toJSON( json, builder );
             }
 
             entityState.setProperty( propertyType.stateName(), json );
