@@ -14,13 +14,13 @@
 
 package org.qi4j.api.util;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 import org.junit.Test;
-import static org.qi4j.api.util.Classes.interfacesOf;
-import static org.qi4j.api.util.Classes.interfacesWithMethods;
+import static org.qi4j.api.util.Classes.*;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -68,6 +68,14 @@ public class ClassesTest
         assertThat( "Class name is correct", Classes.toClassName( "urn:qi4j:type:org.qi4j.api.util.ClassesTest-A" ), equalTo( "org.qi4j.api.util.ClassesTest$A" ) );
     }
 
+    @Test
+    public void givenGenericTypeWithWildCardWhenGetRawClassThenCorrectTypeIsReturned() throws NoSuchMethodException
+    {
+        Type returnType = Generics.class.getMethod( "wildcard" ).getGenericReturnType();
+        Type wildcardType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
+        assertThat( "Return type is A", (Class) Classes.getRawClass( wildcardType ), equalTo( (Class) A.class ) );
+    }
+
     interface A
     {
     }
@@ -79,5 +87,10 @@ public class ClassesTest
 
     interface C extends A, B
     {
+    }
+
+    interface Generics
+    {
+        Iterable<? extends A> wildcard();
     }
 }

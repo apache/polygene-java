@@ -225,6 +225,10 @@ public class Classes
         {
             return (Class<?>) ( (TypeVariable) genericType ).getGenericDeclaration();
         }
+        else if( genericType instanceof WildcardType )
+        {
+            return (Class<?>) ( (WildcardType) genericType ).getUpperBounds()[ 0 ];
+        }
         else if( genericType instanceof GenericArrayType )
         {
             Object temp = Array.newInstance( (Class<?>) ( (GenericArrayType) genericType ).getGenericComponentType(), 0 );
