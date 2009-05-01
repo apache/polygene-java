@@ -32,5 +32,5 @@ public interface LayerAssembly
 
     LayerAssembly uses( LayerAssembly... layerAssembly );
 
-    public void visit( AssemblyVisitor visitor );
+    void visit( AssemblyVisitor visitor ) throws AssemblyException;
 }

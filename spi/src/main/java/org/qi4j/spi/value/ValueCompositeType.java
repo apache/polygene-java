@@ -27,7 +27,6 @@ import org.qi4j.spi.util.PeekableStringTokenizer;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +48,6 @@ public class ValueCompositeType
     public ValueCompositeType( TypeName type, List<PropertyType> types )
     {
         this.type = type;
-        Collections.sort( types ); // Sort by property name
         this.types = types;
     }
 
@@ -135,7 +133,7 @@ public class ValueCompositeType
             String name = json.nextToken( ":" );
             token = json.nextToken( ",:" );
 
-            token = json.peekNextToken( ",}\"[" );
+            token = json.peekNextToken( "{,}\"[" );
             Object value;
             if( token.equals( "null" ) )
             {

@@ -31,6 +31,9 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Collections;
 
 /**
  * JAVADOC
@@ -40,38 +43,63 @@ public abstract class ValueType
 {
     public static ValueType newValueType( Type type )
     {
-        ValueType valueType;
+        return newValueType( null, type );
+    }
+
+    public static ValueType newValueType( Map<Type, ValueType> typeMap, Type type )
+    {
+        ValueType valueType = null;
         if( CollectionType.isCollection( type ) )
         {
             if( type instanceof ParameterizedType )
             {
                 ParameterizedType pt = (ParameterizedType) type;
-                valueType = new CollectionType( nameOf( type ), newValueType( pt.getActualTypeArguments()[ 0 ] ) );
+                valueType = new CollectionType( nameOf( type ), newValueType( typeMap, pt.getActualTypeArguments()[ 0 ] ) );
             }
             else
             {
-                valueType = new CollectionType( nameOf( type ), newValueType( Object.class ) );
+                valueType = new CollectionType( nameOf( type ), newValueType( typeMap, Object.class ) );
             }
         }
         else if( ValueCompositeType.isValueComposite( type ) )
         {
-            Class valueTypeClass = (Class) type;
-            List<PropertyType> types = new ArrayList<PropertyType>();
-            for( Method method : valueTypeClass.getMethods() )
+            if( typeMap != null )
             {
-                Type returnType = method.getGenericReturnType();
-                if( returnType instanceof ParameterizedType && ( (ParameterizedType) returnType ).getRawType().equals( Property.class ) )
-                {
-                    Type propType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
-                    RDF rdfAnnotation = method.getAnnotation( RDF.class );
-                    String rdf = rdfAnnotation == null ? null : rdfAnnotation.value();
-                    Queryable queryableAnnotation = method.getAnnotation( Queryable.class );
-                    boolean queryable = queryableAnnotation == null || queryableAnnotation.value();
-                    PropertyType propertyType = new PropertyType( QualifiedName.fromMethod( method ), newValueType( propType ), rdf, queryable, PropertyType.PropertyTypeEnum.IMMUTABLE );
-                    types.add( propertyType );
-                }
+                valueType = typeMap.get( type );
             }
-            valueType = new ValueCompositeType( nameOf( valueTypeClass ), types );
+
+            if( valueType == null )
+            {
+                Class valueTypeClass = (Class) type;
+
+                List<PropertyType> types = new ArrayList<PropertyType>();
+                valueType = new ValueCompositeType( nameOf( valueTypeClass ), types );
+                if( typeMap == null )
+                {
+                    typeMap = new HashMap<Type, ValueType>();
+                }
+                typeMap.put( type, valueType );
+                for( Method method : valueTypeClass.getMethods() )
+                {
+                    Type returnType = method.getGenericReturnType();
+                    if( returnType instanceof ParameterizedType && ( (ParameterizedType) returnType ).getRawType().equals( Property.class ) )
+                    {
+                        Type propType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
+                        RDF rdfAnnotation = method.getAnnotation( RDF.class );
+                        String rdf = rdfAnnotation == null ? null : rdfAnnotation.value();
+                        Queryable queryableAnnotation = method.getAnnotation( Queryable.class );
+                        boolean queryable = queryableAnnotation == null || queryableAnnotation.value();
+                        ValueType propValueType = newValueType( typeMap, propType );
+                        PropertyType propertyType = new PropertyType( QualifiedName.fromMethod( method ), propValueType, rdf, queryable, PropertyType.PropertyTypeEnum.IMMUTABLE );
+                        types.add( propertyType );
+                    }
+                }
+                Collections.sort( types ); // Sort by property name
+            }
+        }
+        else if( EnumType.isEnum( type ) )
+        {
+            valueType = new EnumType( nameOf( type ) );
         }
         else if( StringType.isString( type ) )
         {
@@ -101,4 +129,26 @@ public abstract class ValueType
     public abstract void toJSON( Object value, StringBuilder json );
 
     public abstract Object fromJSON( PeekableStringTokenizer json, Module module );
+
+    public String toQueryParameter( Object value )
+    {
+        if( value == null )
+        {
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder();
+        toJSON( value, builder );
+        return builder.toString();
+    }
+
+    public Object fromQueryParameter( String parameter, Module module )
+    {
+        if( parameter == null )
+        {
+            return null;
+        }
+
+        return fromJSON( new PeekableStringTokenizer( parameter ), module );
+    }
 }

@@ -46,6 +46,7 @@ import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.structure.*;
 import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.value.ValueDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -302,9 +303,21 @@ public final class Qi4jRuntimeImpl
         return finder.model;
     }
 
+    public ValueDescriptor getValueDescriptor( ValueComposite value )
+    {
+        ValueInstance valueInstance = ValueInstance.getValueInstance( value );
+        return (ValueDescriptor) valueInstance.compositeModel();
+    }
+
     public StateHolder getState( ValueComposite composite )
     {
         return ValueInstance.getValueInstance( composite ).state();
+    }
+
+    public <T> T cast( EntityComposite entity, Class<T> mixinType )
+    {
+        EntityInstance instance = EntityInstance.getEntityInstance( entity );
+        return instance.newProxy( mixinType );
     }
 
     class EntityFinder

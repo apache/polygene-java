@@ -18,6 +18,7 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyVisitor;
 import org.qi4j.bootstrap.LayerAssembly;
+import org.qi4j.bootstrap.AssemblyException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public final class ApplicationAssemblyImpl
         return this;
     }
 
-    public void visit( AssemblyVisitor visitor )
+    public void visit( AssemblyVisitor visitor ) throws AssemblyException
     {
         visitor.visitApplication( this );
         for( LayerAssemblyImpl layerAssembly : layerAssemblies )

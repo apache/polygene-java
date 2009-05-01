@@ -25,6 +25,7 @@ import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.object.ObjectDescriptor;
+import org.qi4j.spi.value.ValueDescriptor;
 
 /**
  * Encapsulation of the Qi4j SPI. This is implemented by the runtime.
@@ -46,9 +47,13 @@ public interface Qi4jSPI
 
     EntityStateHolder getState( EntityComposite composite );
 
+    ValueDescriptor getValueDescriptor( ValueComposite value );
+
     StateHolder getState( ValueComposite composite );
 
     ObjectDescriptor getObjectDescriptor( Class mixinType, Module module );
 
     void setMixins( Composite composite, Object[] mixins );
+
+    <T> T cast( EntityComposite entity, Class<T> mixinType );
 }

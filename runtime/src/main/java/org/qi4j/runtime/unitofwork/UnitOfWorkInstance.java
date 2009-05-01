@@ -21,20 +21,36 @@ import org.qi4j.api.common.TypeName;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.unitofwork.*;
-import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.COMPLETED;
-import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.DISCARDED;
-import org.qi4j.api.usecase.StateUsage;
+import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
+import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
+import org.qi4j.api.unitofwork.UnitOfWorkCallback;
+import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.*;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.spi.entity.*;
+import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
+import org.qi4j.spi.entity.EntityNotFoundException;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 public final class UnitOfWorkInstance
 {
@@ -402,16 +418,19 @@ public final class UnitOfWorkInstance
     private void close()
     {
         checkOpen();
-        current.get().pop();
-        open = false;
-        stateCache.clear();
 
-        // Turn off recording for the state usage
-        StateUsage stateUsage = usecase.metaInfo().get( StateUsage.class );
-        if( stateUsage != null && stateUsage.isRecording() )
+        if( !isPaused() )
         {
-            stateUsage.setRecording( false );
+            current.get().pop();
         }
+        open = false;
+
+        for( EntityInstance entityInstance : instanceCache.values() )
+        {
+            entityInstance.discard();
+        }
+
+        stateCache.clear();
     }
 
     public boolean isOpen()

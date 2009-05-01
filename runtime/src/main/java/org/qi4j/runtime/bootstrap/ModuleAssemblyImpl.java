@@ -192,7 +192,7 @@ public final class ModuleAssemblyImpl
         return metaInfoDeclaration.on( mixinType );
     }
 
-    public void visit( AssemblyVisitor visitor )
+    public void visit( AssemblyVisitor visitor ) throws AssemblyException
     {
         visitor.visitModule( this );
 

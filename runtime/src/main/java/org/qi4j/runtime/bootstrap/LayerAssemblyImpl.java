@@ -19,6 +19,7 @@ import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyVisitor;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.AssemblyException;
 
 import java.io.Serializable;
 import java.util.*;
@@ -78,7 +79,7 @@ public final class LayerAssemblyImpl
         return this;
     }
 
-    public void visit( AssemblyVisitor visitor )
+    public void visit( AssemblyVisitor visitor ) throws AssemblyException
     {
         visitor.visitLayer( this );
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies )

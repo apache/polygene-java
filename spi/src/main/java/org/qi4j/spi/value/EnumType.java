@@ -22,24 +22,24 @@ import org.qi4j.spi.util.PeekableStringTokenizer;
 import java.lang.reflect.Type;
 
 /**
- * Boolean type
+ * Enumeration type
  */
-public class StringType
+public class EnumType
     extends ValueType
 {
-    public static boolean isString( Type type )
+    public static boolean isEnum( Type type )
     {
         if( type instanceof Class )
         {
             Class typeClass = (Class) type;
-            return ( typeClass.equals( String.class ) );
+            return ( typeClass.isEnum() );
         }
         return false;
     }
 
     private final TypeName type;
 
-    public StringType( TypeName type )
+    public EnumType( TypeName type )
     {
         this.type = type;
     }
@@ -86,26 +86,19 @@ public class StringType
         String token = json.nextToken( "\"" );
         String result = json.nextToken();
 
-        // Empty String
-        if( result.equals( "\"" ) )
-        {
-            return "";
-        }
-
-        // TODO unescaping
-
         token = json.nextToken();
-        return result;
-    }
 
-    @Override public String toQueryParameter( Object value )
-    {
-        return value == null ? null : value.toString();
-    }
+        try
+        {
+            Class enumType = module.classLoader().loadClass( type.name() );
 
-    @Override public Object fromQueryParameter( String parameter, Module module )
-    {
-        return parameter;
+            // Get enum value
+            return Enum.valueOf( enumType, result );
+        }
+        catch( Exception e )
+        {
+            throw new IllegalStateException( e );
+        }
     }
 
     @Override public String toString()

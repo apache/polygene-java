@@ -31,6 +31,7 @@ import org.qi4j.runtime.composite.SideEffectsDeclaration;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
+import org.qi4j.spi.value.ValueCompositeType;
 import org.qi4j.spi.value.ValueDescriptor;
 import org.qi4j.spi.value.ValueState;
 import org.qi4j.spi.value.ValueType;
@@ -45,7 +46,7 @@ import java.util.List;
 public final class ValueModel extends AbstractCompositeModel
     implements ValueDescriptor, Serializable
 {
-    private ValueType valueType;
+    private ValueCompositeType valueType;
 
     public static ValueModel newModel( final Class<? extends ValueComposite> compositeType,
                                        final Visibility visibility,
@@ -71,19 +72,19 @@ public final class ValueModel extends AbstractCompositeModel
             new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
         stateModel.addStateFor( compositeMethodsModel.methods() );
 
-        ValueType valueType = ValueType.newValueType( compositeType );
+        ValueCompositeType valueType = (ValueCompositeType) ValueType.newValueType( compositeType );
 
         return new ValueModel( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, valueType );
     }
 
-    private ValueModel( final Class<? extends ValueComposite> compositeType, final Visibility visibility, final MetaInfo metaInfo, final ValueMixinsModel mixinsModel, final ValueStateModel stateModel, final CompositeMethodsModel compositeMethodsModel, ValueType valueType )
+    private ValueModel( final Class<? extends ValueComposite> compositeType, final Visibility visibility, final MetaInfo metaInfo, final ValueMixinsModel mixinsModel, final ValueStateModel stateModel, final CompositeMethodsModel compositeMethodsModel, ValueCompositeType valueType )
     {
         super( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
 
         this.valueType = valueType;
     }
 
-    public ValueType valueType()
+    public ValueCompositeType valueType()
     {
         return valueType;
     }

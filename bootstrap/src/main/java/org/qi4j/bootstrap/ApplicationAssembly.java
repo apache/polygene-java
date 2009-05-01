@@ -48,5 +48,5 @@ public interface ApplicationAssembly
 
     ApplicationAssembly setMetaInfo( Object info );
 
-    public void visit( AssemblyVisitor visitor );
+    void visit( AssemblyVisitor visitor ) throws AssemblyException;
 }

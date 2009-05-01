@@ -21,7 +21,7 @@ import java.lang.annotation.Annotation;
  * All Constraints must implement this interface, which is used for each
  * value validation.
  */
-public interface Constraint<A extends Annotation, P> extends Serializable
+public interface Constraint<ANNOTATION extends Annotation, TYPE> extends Serializable
 {
     /**
      * For each value or parameter which should be checked this method will be invoked.
@@ -33,5 +33,5 @@ public interface Constraint<A extends Annotation, P> extends Serializable
      * @param value      the value to be checked
      * @return true if valid, false if invalid
      */
-    boolean isValid( A annotation, P value );
+    boolean isValid( ANNOTATION annotation, TYPE value );
 }

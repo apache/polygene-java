@@ -17,7 +17,8 @@ package org.qi4j.spi.util;
 import java.util.StringTokenizer;
 
 /**
- * JAVADOC
+ * Peekable String tokenizer. This is primarily used by the JSON deserializing
+ * algorithm.
  */
 public class PeekableStringTokenizer
     extends StringTokenizer
@@ -36,7 +37,7 @@ public class PeekableStringTokenizer
 
     public PeekableStringTokenizer( String str )
     {
-        super( str );
+        super( str, " \t\n\r\f", true );
     }
 
 

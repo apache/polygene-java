@@ -22,4 +22,5 @@ import org.qi4j.spi.composite.CompositeDescriptor;
 public interface ValueDescriptor
     extends CompositeDescriptor
 {
+    ValueCompositeType valueType();
 }

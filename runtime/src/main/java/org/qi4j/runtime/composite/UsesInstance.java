@@ -31,6 +31,18 @@ public final class UsesInstance
 
     public void use( Object... objects )
     {
+        if( !uses.isEmpty() )
+        {
+            for( Object object : objects )
+            {
+                Object oldUseForType = useForType( object.getClass() );
+                if( oldUseForType != null )
+                {
+                    uses.remove( oldUseForType );
+                }
+            }
+        }
+
         uses.addAll( Arrays.asList( objects ) );
     }
 
