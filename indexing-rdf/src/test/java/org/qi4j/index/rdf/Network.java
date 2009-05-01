@@ -63,9 +63,6 @@ class Network
             NameableAssert.trace(gaming);
         }
 
-        unitOfWork.complete();
-        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
-
         Domain programming;
         {
             EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder(Domain.class);
@@ -75,9 +72,6 @@ class Network
             programming = domainBuilder.newInstance();
             NameableAssert.trace(programming);
         }
-
-        unitOfWork.complete();
-        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         Domain cooking;
         {
@@ -89,9 +83,6 @@ class Network
             NameableAssert.trace(cooking);
         }
 
-        unitOfWork.complete();
-        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
-
         Domain cars;
         {
             EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder(Domain.class);
@@ -101,9 +92,6 @@ class Network
             cars = domainBuilder.newInstance();
             NameableAssert.trace(cars);
         }
-
-        unitOfWork.complete();
-        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         City kualaLumpur;
         {
@@ -116,9 +104,6 @@ class Network
             NameableAssert.trace(kualaLumpur);
         }
 
-        unitOfWork.complete();
-        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
-
         City penang;
         {
             EntityBuilder<City> cityBuilder = unitOfWork.newEntityBuilder(City.class);
@@ -130,9 +115,6 @@ class Network
             NameableAssert.trace(penang);
         }
 
-        unitOfWork.complete();
-        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
-
         Account annsAccount;
         {
             EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder(Account.class);
@@ -141,9 +123,6 @@ class Network
             annsAccount = accountBuilder.newInstance();
         }
 
-        unitOfWork.complete();
-        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
-
         Account jacksAccount;
         {
             EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder(Account.class);
@@ -151,9 +130,6 @@ class Network
             jacksAccount.number().set("accountOfJackDoe");
             jacksAccount = accountBuilder.newInstance();
         }
-
-        unitOfWork.complete();
-        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         Female annDoe;
         {
@@ -171,9 +147,6 @@ class Network
             NameableAssert.trace(annDoe);
         }
 
-        unitOfWork.complete();
-        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
-
         {
             EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder(MaleEntity.class);
             Male joeDoe = maleBuilder.prototype();
@@ -188,9 +161,6 @@ class Network
             joeDoe = maleBuilder.newInstance();
             NameableAssert.trace(joeDoe);
         }
-
-        unitOfWork.complete();
-        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         {
             EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder(MaleEntity.class);
@@ -230,9 +200,6 @@ class Network
             jackDoe = maleBuilder.newInstance();
             NameableAssert.trace(jackDoe);
         }
-
-        unitOfWork.complete();
-        unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         {
             EntityBuilder<CatEntity> catBuilder = unitOfWork.newEntityBuilder(CatEntity.class);
