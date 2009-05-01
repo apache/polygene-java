@@ -39,7 +39,7 @@ import org.qi4j.spi.entity.StateName;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.util.PeekableStringTokenizer;
+import org.qi4j.spi.value.EnumType;
 import org.qi4j.spi.value.StringType;
 import org.qi4j.spi.value.ValueType;
 
@@ -135,9 +135,9 @@ public class EntityStateSerializer
                 continue; // Skip properties with null values
             }
             ValueType valueType = propertyType.type();
-            if( valueType instanceof StringType ) // Remove "" around strings
+            if( valueType instanceof StringType || valueType instanceof EnumType) // Remove "" around strings
             {
-                property = valueType.fromJSON( new PeekableStringTokenizer( property, "", true ), null ).toString();
+                property = property.substring( 1, property.length()-1 );
             }
 
             URI predicate = valueFactory.createURI( propertyType.qualifiedName().toURI() );
