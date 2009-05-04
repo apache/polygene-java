@@ -32,7 +32,7 @@ public class UuidServiceTest extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addAssembler( new UuidServiceAssembler() );
+        new UuidServiceAssembler().assemble(module);
         module.addComposites( UnderTestComposite.class );
     }
 

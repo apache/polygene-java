@@ -32,7 +32,7 @@ public class PersistingSequencingTest extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addAssembler( new PersistingSequencingAssembler() );
+        new PersistingSequencingAssembler().assemble(module);
         new EntityTestAssembler().assemble( module );
         module.addComposites( UnderTestComposite.class );
     }

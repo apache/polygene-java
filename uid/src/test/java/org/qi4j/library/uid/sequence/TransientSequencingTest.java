@@ -31,7 +31,7 @@ public class TransientSequencingTest extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addAssembler( new TransientSequencingAssembler() );
+        new TransientSequencingAssembler().assemble(module);
         module.addComposites( UnderTestComposite.class );
     }
 
