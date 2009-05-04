@@ -12,11 +12,11 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-api:0.8-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-bootstrap:0.8-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-spi:0.8-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.qi4j.library:qi4j-lib-rdf:0.8-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.qi4j.library:qi4j-lib-constraints:0.8-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="qi4j-core-api" />
+    <orderEntry type="module" module-name="qi4j-core-bootstrap" />
+    <orderEntry type="module" module-name="qi4j-core-spi" />
+    <orderEntry type="module" module-name="qi4j-lib-rdf" />
+    <orderEntry type="module" module-name="qi4j-lib-constraints" />
     <orderEntry type="library" exported="" name="Maven: org.openrdf.sesame:sesame-model:2.2.1" level="project" />
     <orderEntry type="library" exported="" name="Maven: info.aduna.commons:aduna-commons-collections:2.1" level="project" />
     <orderEntry type="library" exported="" name="Maven: info.aduna.commons:aduna-commons-concurrent:2.1" level="project" />
@@ -70,13 +70,13 @@
     <orderEntry type="library" exported="" name="Maven: org.restlet:org.restlet.ext.atom:1.2-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.restlet:org.restlet.ext.servlet:1.2-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
-    <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-testsupport:0.8-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="qi4j-core-testsupport" />
     <orderEntry type="library" name="Maven: junit:junit:4.5" level="project" />
-    <orderEntry type="library" name="Maven: org.qi4j.library:qi4j-lib-http:0.8-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="qi4j-lib-http" />
     <orderEntry type="library" name="Maven: org.mortbay.jetty:jetty:6.1.11" level="project" />
     <orderEntry type="library" name="Maven: org.mortbay.jetty:jetty-util:6.1.11" level="project" />
     <orderEntry type="library" name="Maven: org.mortbay.jetty:servlet-api-2.5:6.1.11" level="project" />
-    <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-runtime:0.8-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="qi4j-core-runtime" />
     <orderEntry type="library" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
     <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.1" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.12" level="project" />

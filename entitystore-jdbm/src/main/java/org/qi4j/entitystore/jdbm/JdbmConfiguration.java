@@ -2,13 +2,11 @@ package org.qi4j.entitystore.jdbm;
 
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.configuration.ConfigurationComposite;
-import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Property;
 
 /**
  * JAVADOC
  */
-@Queryable( false )
 public interface JdbmConfiguration
     extends ConfigurationComposite
 {
