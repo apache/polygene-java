@@ -59,24 +59,39 @@ public interface Configuration<T>
     {
         private T configuration;
         private UnitOfWork uow;
-
-        public ConfigurationMixin( @Structure Qi4j api,
-                                   @This ServiceComposite me,
-                                   @Structure UnitOfWorkFactory uowf )
+        private @Structure Qi4j api;
+        private @This ServiceComposite me;
+        private @Structure UnitOfWorkFactory uowf;
+        public ConfigurationMixin()
             throws Exception
         {
-            uow = uowf.newUnitOfWork();
-            configuration = api.<T>getConfigurationInstance( me, uow );
         }
 
-        public T configuration()
+        public synchronized T configuration()
         {
+            if (configuration == null)
+            {
+                uow = uowf.newUnitOfWork();
+                try
+                {
+                    configuration = api.<T>getConfigurationInstance( me, uow );
+                } catch (InstantiationException e)
+                {
+                    throw new IllegalStateException(e);
+                }
+            }
+
             return configuration;
         }
 
-        public void refresh()
+        public synchronized void refresh()
         {
-            uow.refresh( configuration );
+            if (configuration != null)
+            {
+                configuration = null;
+                uow.discard();
+                uow = null;
+            }
         }
 
         public void activate() throws Exception

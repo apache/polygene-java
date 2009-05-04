@@ -87,16 +87,6 @@ public abstract class AbstractPropertyInstance<T>
         return propertyInfo.isComputed();
     }
 
-    public T _()
-    {
-        return get();
-    }
-
-    public void _( T newValue ) throws IllegalArgumentException, IllegalStateException
-    {
-        set( newValue );
-    }
-
     /**
      * Perform equals with {@code o} argument.
      *

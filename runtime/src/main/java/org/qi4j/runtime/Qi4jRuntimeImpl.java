@@ -27,7 +27,6 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.spi.ApplicationModelFactory;
@@ -36,28 +35,32 @@ import org.qi4j.runtime.bootstrap.ApplicationAssemblyFactoryImpl;
 import org.qi4j.runtime.bootstrap.ApplicationModelFactoryImpl;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.composite.DefaultCompositeInstance;
-import static org.qi4j.runtime.composite.DefaultCompositeInstance.getCompositeInstance;
+import static org.qi4j.runtime.composite.DefaultCompositeInstance.*;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.service.ServiceModel;
-import org.qi4j.runtime.structure.*;
+import org.qi4j.runtime.structure.DependencyVisitor;
+import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.structure.ModuleModel;
+import org.qi4j.runtime.structure.ModuleUnitOfWork;
+import org.qi4j.runtime.structure.ModuleVisitor;
 import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.value.ValueDescriptor;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.object.ObjectDescriptor;
+import org.qi4j.spi.value.ValueDescriptor;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
-import static java.lang.reflect.Proxy.getInvocationHandler;
+import static java.lang.reflect.Proxy.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -165,17 +168,6 @@ public final class Qi4jRuntimeImpl
                 InstantiationException ex = new InstantiationException( "Could not instantiate configuration, and no Properties file was found (" + s + ")" );
                 ex.initCause( e1 );
                 throw ex;
-            }
-
-            try
-            {
-                uow.apply();
-            }
-            catch( UnitOfWorkCompletionException e1 )
-            {
-                InstantiationException exception = new InstantiationException( "Underlying EntityStore is unable to complete." );
-                exception.initCause( e1 );
-                throw exception;
             }
         }
         finally

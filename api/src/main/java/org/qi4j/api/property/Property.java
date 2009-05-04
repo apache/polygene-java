@@ -47,21 +47,4 @@ public interface Property<T>
      */
     void set( T newValue )
         throws IllegalArgumentException, IllegalStateException;
-
-    /**
-     * Syntactic sugar for get()
-     *
-     * @return value of property
-     */
-    T _();
-
-    /**
-     * Syntactic sugar for set()
-     *
-     * @param newValue the new value
-     * @throws IllegalArgumentException
-     * @throws IllegalStateException
-     */
-    void _( T newValue )
-        throws IllegalArgumentException, IllegalStateException;
 }

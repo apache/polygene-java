@@ -14,8 +14,14 @@
 
 package org.qi4j.runtime.unitofwork;
 
+import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.*;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.entity.IdentityGenerator;
+import org.qi4j.api.entity.Lifecycle;
+import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -48,6 +54,7 @@ public final class EntityBuilderInstance<T>
     private final ModuleUnitOfWork uow;
     private final EntityStoreUnitOfWork store;
     private final IdentityGenerator identityGenerator;
+    private final String identity;
 
     private final BuilderEntityState entityState;
     private final EntityInstance prototypeInstance;
@@ -68,13 +75,14 @@ public final class EntityBuilderInstance<T>
 
     public EntityBuilderInstance(
         ModuleInstance moduleInstance, EntityModel entityModel, ModuleUnitOfWork uow, EntityStoreUnitOfWork store,
-        IdentityGenerator identityGenerator )
+        IdentityGenerator identityGenerator, String identity )
     {
         this.moduleInstance = moduleInstance;
         this.entityModel = entityModel;
         this.uow = uow;
         this.store = store;
         this.identityGenerator = identityGenerator;
+        this.identity = identity;
 
         if( identityStateName == null )
         {
@@ -83,14 +91,7 @@ public final class EntityBuilderInstance<T>
 
         events = new ArrayList<UnitOfWorkEvent>();
         entityState = new BuilderEntityState( this );
-        entityState.addEntityTypeReference( entityModel.entityType().reference() );
         prototypeInstance = entityModel.newInstance( uow, moduleInstance, EntityReference.NULL, entityState );
-    }
-
-    public EntityBuilderInstance( ModuleInstance moduleInstance, EntityModel model, ModuleUnitOfWork uow, EntityStoreUnitOfWork store, String identity )
-    {
-        this( moduleInstance, model, uow, store, (IdentityGenerator) null );
-        entityState.setProperty( identityStateName, '\"' + identity + '\"' );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -122,19 +123,32 @@ public final class EntityBuilderInstance<T>
         else
         {
             identityJson = entityState.getProperty( identityStateName );
-            identity = identityJson.substring( 1, identityJson.length() - 1 );
-            newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ), moduleInstance.layerInstance().applicationInstance().runtime() );
+
+            if (identityJson == null)
+            {
+                identity = this.identity;
+
+                if (identity == null)
+                    throw new ConstructionException("No identity set and no identity generator specified");
+
+                newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ), moduleInstance.layerInstance().applicationInstance().runtime() );
+                identityJson = "\""+identity+"\"";
+                newEntityState.setProperty( identityStateName, identityJson );
+            } else
+            {
+                identity = identityJson.substring( 1, identityJson.length() - 1 );
+                
+                newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ), moduleInstance.layerInstance().applicationInstance().runtime() );
+            }
+
         }
 
-        // Transfer state from prototype
         for( UnitOfWorkEvent event : events )
         {
             EntityEvent entityEvent = (EntityEvent) event;
             entityEvent.applyTo( newEntityState );
         }
 
-        // Set identity property
-        newEntityState.setProperty( identityStateName, identityJson );
 
         EntityInstance instance = entityModel.newInstance( uow, moduleInstance, newEntityState.identity(), newEntityState );
 

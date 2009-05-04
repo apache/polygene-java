@@ -217,12 +217,12 @@ public final class EntityModel
             // New EntityState
             EntityState entityState = store.newEntityState( identity );
 
+            // Add EntityType
+            addEntityType( entityState, qi4jSPI );
+
             // Set identity property
             PropertyTypeDescriptor propertyDescriptor = state().getPropertyByQualifiedName( QualifiedName.fromMethod( IDENTITY_METHOD ) );
             entityState.setProperty( propertyDescriptor.propertyType().stateName(), '\"' + identity.identity() + '\"' );
-
-            // Add EntityType
-            addEntityType( entityState, qi4jSPI );
 
             return entityState;
         }
@@ -243,6 +243,8 @@ public final class EntityModel
 
     public void addEntityType( EntityState entityState, Qi4jSPI qi4jSPI )
     {
+        entityState.addEntityTypeReference( entityType().reference() );
+
         {
             // Set new properties to default value
             Set<PersistentPropertyModel> entityProperties = state().properties();
@@ -270,8 +272,6 @@ public final class EntityModel
                 entityState.getManyAssociation( associationDescriptor.manyAssociationType().stateName() );
             }
         }
-
-        entityState.addEntityTypeReference( entityType().reference() );
     }
 
     void removeEntityType( EntityModel entityModel, EntityState entityState )

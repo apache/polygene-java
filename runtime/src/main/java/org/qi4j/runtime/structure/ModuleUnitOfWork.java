@@ -191,6 +191,7 @@ public class ModuleUnitOfWork
                                                     entityModel,
                                                     this,
                                                     uow.getEntityStoreUnitOfWork( entityStore ),
+                                                    null,
                                                     identity );
         }
         else
@@ -199,7 +200,7 @@ public class ModuleUnitOfWork
                                                     entityModel,
                                                     this,
                                                     uow.getEntityStoreUnitOfWork( entityModuleInstance.entities().entityStore() ),
-                                                    entityModuleInstance.entities().identityGenerator() );
+                                                    entityModuleInstance.entities().identityGenerator(), identity );
         }
         return builder;
     }

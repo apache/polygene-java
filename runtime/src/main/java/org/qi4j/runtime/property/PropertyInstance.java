@@ -77,6 +77,8 @@ public class PropertyInstance<T> extends AbstractPropertyInstance<T>
         value = aNewValue;
     }
 
+
+
     /**
      * Returns the value as string.
      *

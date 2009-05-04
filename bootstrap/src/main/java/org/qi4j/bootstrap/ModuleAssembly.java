@@ -31,9 +31,6 @@ import org.qi4j.api.value.ValueComposite;
  */
 public interface ModuleAssembly
 {
-    void addAssembler( Assembler assembler )
-        throws AssemblyException;
-
     LayerAssembly layerAssembly();
 
     ModuleAssembly setName( String name );

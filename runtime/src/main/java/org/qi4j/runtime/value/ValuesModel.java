@@ -16,6 +16,7 @@ package org.qi4j.runtime.value;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.Binder;
@@ -57,17 +58,37 @@ public class ValuesModel
     public ValueModel getValueModelFor( Class valueType, Visibility visibility )
     {
         ValueModel foundModel = null;
-        for( ValueModel valueModel : valueModels )
+        if (ValueComposite.class.isAssignableFrom(valueType))
         {
-            if( valueType.isAssignableFrom( valueModel.type() ) && valueModel.visibility() == visibility )
+            for( ValueModel valueModel : valueModels )
             {
-                if( foundModel != null )
+                if( valueType.equals( valueModel.type() ) && valueModel.visibility() == visibility )
                 {
-                    throw new AmbiguousTypeException( valueType, foundModel.type(), valueModel.type() );
+                    if( foundModel != null )
+                    {
+                        throw new AmbiguousTypeException( valueType, foundModel.type(), valueModel.type() );
+                    }
+                    else
+                    {
+                        foundModel = valueModel;
+                    }
                 }
-                else
+            }
+
+        } else
+        {
+            for( ValueModel valueModel : valueModels )
+            {
+                if( valueType.isAssignableFrom( valueModel.type() ) && valueModel.visibility() == visibility )
                 {
-                    foundModel = valueModel;
+                    if( foundModel != null )
+                    {
+                        throw new AmbiguousTypeException( valueType, foundModel.type(), valueModel.type() );
+                    }
+                    else
+                    {
+                        foundModel = valueModel;
+                    }
                 }
             }
         }

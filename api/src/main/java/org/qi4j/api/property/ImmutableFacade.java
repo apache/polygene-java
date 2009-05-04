@@ -49,16 +49,6 @@ public class ImmutableFacade<T>
         throw new IllegalArgumentException( "Property '" + qualifiedName() + "' is immutable." );
     }
 
-    public T _()
-    {
-        return get();
-    }
-
-    public void _( T newValue ) throws IllegalArgumentException, IllegalStateException
-    {
-        set( newValue );
-    }
-
     // I think that using T again here is a mistake...
     public <V> V metaInfo( Class<V> infoType )
     {

@@ -33,11 +33,17 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
 
     public boolean add( int i, T entity )
     {
+        checkImmutable();
+        checkType( entity );
+
         return associated().add( i, getEntityReference( entity ) );
     }
 
     public boolean remove( T entity )
     {
+        checkImmutable();
+        checkType( entity );
+
         return associated().remove( getEntityReference( entity ) );
     }
 

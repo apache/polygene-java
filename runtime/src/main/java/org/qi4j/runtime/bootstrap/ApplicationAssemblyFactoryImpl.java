@@ -47,7 +47,7 @@ public final class ApplicationAssemblyFactoryImpl
                 for( int assembly = 0; assembly < assemblers[ layer ][ module ].length; assembly++ )
                 {
                     // Register Assembler
-                    moduleAssembly.addAssembler( assemblers[ layer ][ module ][ assembly ] );
+                    assemblers[ layer ][ module ][ assembly ].assemble(moduleAssembly);
                 }
             }
             if( below != null )
