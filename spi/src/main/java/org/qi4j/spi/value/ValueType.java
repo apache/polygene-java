@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,10 +44,10 @@ public abstract class ValueType
 {
     public static ValueType newValueType( Type type )
     {
-        return newValueType( null, type );
+        return newValueType( null, null, type );
     }
 
-    public static ValueType newValueType( Map<Type, ValueType> typeMap, Type type )
+    public static ValueType newValueType( Map<Type, ValueType> typeMap, Map<String, Type> typeVariables, Type type )
     {
         ValueType valueType = null;
         if( CollectionType.isCollection( type ) )
@@ -54,11 +55,19 @@ public abstract class ValueType
             if( type instanceof ParameterizedType )
             {
                 ParameterizedType pt = (ParameterizedType) type;
-                valueType = new CollectionType( nameOf( type ), newValueType( typeMap, pt.getActualTypeArguments()[ 0 ] ) );
+                Type collectionType = pt.getActualTypeArguments()[0];
+                if( collectionType instanceof TypeVariable)
+                {
+                    TypeVariable collectionTypeVariable = (TypeVariable) collectionType;
+                    if (typeVariables != null && typeVariables.containsKey(collectionTypeVariable.getName()))
+                        collectionType = typeVariables.get(collectionTypeVariable.getName());
+                }
+                ValueType collectedType = newValueType(typeMap, typeVariables, collectionType);
+                valueType = new CollectionType( nameOf( type ), collectedType);
             }
             else
             {
-                valueType = new CollectionType( nameOf( type ), newValueType( typeMap, Object.class ) );
+                valueType = new CollectionType( nameOf( type ), newValueType( typeMap, typeVariables, Object.class ) );
             }
         }
         else if( ValueCompositeType.isValueComposite( type ) )
@@ -79,21 +88,9 @@ public abstract class ValueType
                     typeMap = new HashMap<Type, ValueType>();
                 }
                 typeMap.put( type, valueType );
-                for( Method method : valueTypeClass.getMethods() )
-                {
-                    Type returnType = method.getGenericReturnType();
-                    if( returnType instanceof ParameterizedType && ( (ParameterizedType) returnType ).getRawType().equals( Property.class ) )
-                    {
-                        Type propType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
-                        RDF rdfAnnotation = method.getAnnotation( RDF.class );
-                        String rdf = rdfAnnotation == null ? null : rdfAnnotation.value();
-                        Queryable queryableAnnotation = method.getAnnotation( Queryable.class );
-                        boolean queryable = queryableAnnotation == null || queryableAnnotation.value();
-                        ValueType propValueType = newValueType( typeMap, propType );
-                        PropertyType propertyType = new PropertyType( QualifiedName.fromMethod( method ), propValueType, rdf, queryable, PropertyType.PropertyTypeEnum.IMMUTABLE );
-                        types.add( propertyType );
-                    }
-                }
+
+                addProperties(typeMap, typeVariables, valueTypeClass, types);
+
                 Collections.sort( types ); // Sort by property name
             }
         }
@@ -128,6 +125,55 @@ public abstract class ValueType
         }
 
         return valueType;
+    }
+
+    private static void addProperties(Map<Type, ValueType> typeMap, Map<String, Type> typeVariables, Class valueTypeClass, List<PropertyType> types)
+    {
+        for( Method method : valueTypeClass.getDeclaredMethods() )
+        {
+            Type returnType = method.getGenericReturnType();
+            if( returnType instanceof ParameterizedType && ( (ParameterizedType) returnType ).getRawType().equals( Property.class ) )
+            {
+                Type propType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
+                RDF rdfAnnotation = method.getAnnotation( RDF.class );
+                String rdf = rdfAnnotation == null ? null : rdfAnnotation.value();
+                Queryable queryableAnnotation = method.getAnnotation( Queryable.class );
+                boolean queryable = queryableAnnotation == null || queryableAnnotation.value();
+                ValueType propValueType = newValueType( typeMap, typeVariables, propType );
+                PropertyType propertyType = new PropertyType( QualifiedName.fromMethod( method ), propValueType, rdf, queryable, PropertyType.PropertyTypeEnum.IMMUTABLE );
+                types.add( propertyType );
+            }
+        }
+
+        // Add methods from subinterface
+        for (Type subType : valueTypeClass.getGenericInterfaces())
+        {
+            // Handles generic type variables
+            Class subClass;
+            if (subType instanceof ParameterizedType)
+            {
+                ParameterizedType pt = (ParameterizedType) subType;
+                Type[] parameterTypes = pt.getActualTypeArguments();
+                TypeVariable[] variables = ((Class)pt.getRawType()).getTypeParameters();
+                int idx = 0;
+                for (TypeVariable variable : variables)
+                {
+                    if (typeVariables == null)
+                    {
+                        typeVariables = new HashMap<String, Type>();
+                    }
+
+                    typeVariables.put(variable.getName(), parameterTypes[idx++]);
+                }
+
+                subClass = (Class) ((ParameterizedType) subType).getRawType();
+            } else
+            {
+                subClass = (Class) subType;
+            }
+
+            addProperties(typeMap, typeVariables, subClass, types);
+        }
     }
 
     protected final TypeName type;
