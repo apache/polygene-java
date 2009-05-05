@@ -14,10 +14,6 @@
 
 package org.qi4j.library.rdf.entity;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Literal;
@@ -39,9 +35,13 @@ import org.qi4j.spi.entity.StateName;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.value.EnumType;
-import org.qi4j.spi.value.StringType;
+import org.qi4j.spi.value.AbstractStringType;
 import org.qi4j.spi.value.ValueType;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * JAVADOC
@@ -135,7 +135,7 @@ public class EntityStateSerializer
                 continue; // Skip properties with null values
             }
             ValueType valueType = propertyType.type();
-            if( valueType instanceof StringType || valueType instanceof EnumType) // Remove "" around strings
+            if( valueType instanceof AbstractStringType) // Remove "" around strings
             {
                 property = property.substring( 1, property.length()-1 );
             }

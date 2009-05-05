@@ -30,7 +30,5 @@ public interface JettyConfiguration
 
     @Optional Property<String> hostName();
 
-    @NotEmpty Property<String> rootContextPath();
-
     @NotEmpty Property<String> resourcePath();
 }

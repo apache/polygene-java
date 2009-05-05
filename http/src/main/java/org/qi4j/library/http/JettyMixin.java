@@ -14,18 +14,10 @@
 
 package org.qi4j.library.http;
 
-import java.io.File;
-import java.net.InetAddress;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.security.CodeSource;
-import java.security.ProtectionDomain;
-import javax.servlet.Filter;
-import javax.servlet.Servlet;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
-import static org.mortbay.jetty.servlet.Context.SESSIONS;
+import static org.mortbay.jetty.servlet.Context.*;
 import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.servlet.FilterHolder;
 import org.mortbay.jetty.servlet.ServletHolder;
@@ -37,6 +29,15 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.library.http.Dispatchers.Dispatcher;
 import org.qi4j.spi.service.ServiceDescriptor;
+
+import javax.servlet.Filter;
+import javax.servlet.Servlet;
+import java.io.File;
+import java.net.InetAddress;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 
 /**
  * JAVADOC
@@ -130,7 +131,6 @@ class JettyMixin
     public final void activate() throws Exception
     {
         // Sets the resource
-        root.setContextPath( configuration.configuration().rootContextPath().get() );
         root.setResourceBase( rootResourceBase( configuration.configuration().resourcePath().get() ) );
 
         addServlets( root, servlets );
