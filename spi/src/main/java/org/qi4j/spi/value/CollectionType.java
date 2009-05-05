@@ -24,7 +24,7 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 /**
- * JAVADOC
+ * Collection type
  */
 public class CollectionType
     extends ValueType
@@ -35,18 +35,12 @@ public class CollectionType
         return cl.equals( Collection.class ) || cl.equals( List.class ) || cl.equals( Set.class );
     }
 
-    private TypeName type;
     private ValueType collectedType;
 
     public CollectionType( TypeName type, ValueType collectedType )
     {
-        this.type = type;
+        super(type);
         this.collectedType = collectedType;
-    }
-
-    public TypeName type()
-    {
-        return type;
     }
 
     public ValueType collectedType()
@@ -56,13 +50,13 @@ public class CollectionType
 
     public void versionize( SchemaVersion schemaVersion )
     {
-        schemaVersion.versionize( type );
+        super.versionize(schemaVersion);
         collectedType.versionize( schemaVersion );
     }
 
     @Override public String toString()
     {
-        return type + "<" + collectedType + ">";
+        return type() + "<" + collectedType + ">";
     }
 
     public void toJSON( Object value, StringBuilder json )
@@ -86,7 +80,7 @@ public class CollectionType
         String token = json.nextToken( "[" );
 
         Collection<Object> coll;
-        if( type.isClass( List.class ) )
+        if( type().isClass( List.class ) )
         {
             coll = new ArrayList<Object>();
         }

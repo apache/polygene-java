@@ -16,13 +16,12 @@ package org.qi4j.spi.value;
 
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
-import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
 import java.lang.reflect.Type;
 
 /**
- * Boolean type
+ * Number type
  */
 public class NumberType
     extends ValueType
@@ -37,21 +36,9 @@ public class NumberType
         return false;
     }
 
-    private final TypeName type;
-
     public NumberType( TypeName type )
     {
-        this.type = type;
-    }
-
-    public void versionize( SchemaVersion schemaVersion )
-    {
-        schemaVersion.versionize( type );
-    }
-
-    public TypeName type()
-    {
-        return type;
+        super(type);
     }
 
     public void toJSON( Object value, StringBuilder json )
@@ -84,11 +71,5 @@ public class NumberType
         }
 
         throw new IllegalStateException( "Unknown number type:" + type );
-    }
-
-    @Override
-    public String toString()
-    {
-        return type.toString();
     }
 }

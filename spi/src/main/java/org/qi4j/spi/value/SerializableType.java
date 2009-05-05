@@ -20,7 +20,6 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.util.Base64Encoder;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
@@ -31,26 +30,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 /**
- * JAVADOC
+ * Serializable type. If the serialized object is an ValueComposite,
+ * then use JSON format for VC's. If the serialized object is an
+ * EntityReference, then use JSON format for EntityReferences.
  */
 public class SerializableType
     extends ValueType
 {
-    private final TypeName type;
-
     public SerializableType( TypeName type )
     {
-        this.type = type;
-    }
-
-    public TypeName type()
-    {
-        return type;
-    }
-
-    public void versionize( SchemaVersion schemaVersion )
-    {
-        schemaVersion.versionize( type );
+        super(type);
     }
 
     public void toJSON( Object value, StringBuilder json )
@@ -75,7 +64,7 @@ public class SerializableType
             out.close();
             byte[] bytes = Base64Encoder.encode(bout.toByteArray(), true);
             String stringValue = new String(bytes, "UTF-8" );
-            json.append( stringValue );
+            json.append('"').append( stringValue ).append('"');
         }
         catch( IOException e )
         {
@@ -88,7 +77,8 @@ public class SerializableType
     {
         try
         {
-            String token = json.nextToken();
+            String token = json.nextToken("\"");
+            token = json.nextToken();
             byte[] bytes = token.getBytes( "UTF-8" );
             bytes = Base64Encoder.decode( bytes );
             ByteArrayInputStream bin = new ByteArrayInputStream( bytes );
@@ -114,8 +104,9 @@ public class SerializableType
                 String jsonValue = (String) result;
                 Class valueType = module.classLoader().loadClass( type.name() );
                 result = module.valueBuilderFactory().newValueFromJSON( valueType, jsonValue );
-                ;
             }
+
+            token = json.nextToken();
 
             return result;
         }

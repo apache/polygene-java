@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.Collections;
 
 /**
- * JAVADOC
+ * Base class for types of values in ValueComposites.
  */
 public abstract class ValueType
     implements Serializable
@@ -113,6 +113,14 @@ public abstract class ValueType
         {
             valueType = new BooleanType( nameOf( type ) );
         }
+        else if( DateType.isDate( type ) )
+        {
+            valueType = new DateType( nameOf( type ) );
+        }
+        else if( EntityReferenceType.isEntityReference( type ) )
+        {
+            valueType = new EntityReferenceType( nameOf( type ) );
+        }
         else
         {
             // TODO: shouldn't we check that the type is a Serializable?
@@ -122,15 +130,29 @@ public abstract class ValueType
         return valueType;
     }
 
-    public abstract TypeName type();
+    protected final TypeName type;
 
-    public abstract void versionize( SchemaVersion schemaVersion );
+    protected ValueType(TypeName type)
+    {
+        this.type = type;
+    }
+
+    public TypeName type()
+    {
+        return type;
+    }
+
+    public void versionize( SchemaVersion schemaVersion )
+    {
+        schemaVersion.versionize(type);
+    }
 
     public abstract void toJSON( Object value, StringBuilder json );
 
     public abstract Object fromJSON( PeekableStringTokenizer json, Module module );
 
     public String toQueryParameter( Object value )
+            throws IllegalArgumentException
     {
         if( value == null )
         {
@@ -143,6 +165,7 @@ public abstract class ValueType
     }
 
     public Object fromQueryParameter( String parameter, Module module )
+            throws IllegalArgumentException
     {
         if( parameter == null )
         {
@@ -151,4 +174,10 @@ public abstract class ValueType
 
         return fromJSON( new PeekableStringTokenizer( parameter ), module );
     }
+
+    @Override public String toString()
+    {
+        return type.toString();
+    }
+
 }

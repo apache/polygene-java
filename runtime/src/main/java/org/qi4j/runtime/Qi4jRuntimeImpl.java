@@ -215,7 +215,7 @@ public final class Qi4jRuntimeImpl
 
     public Module getModule( UnitOfWork uow )
     {
-        return (Module) ( (ModuleUnitOfWork) uow );
+        return ( (ModuleUnitOfWork) uow ).module();
     }
 
     public Module getModule( Composite composite )

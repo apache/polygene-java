@@ -17,7 +17,7 @@ package org.qi4j.spi.value;
 import org.qi4j.spi.composite.CompositeDescriptor;
 
 /**
- * JAVADOC
+ * Descriptor for ValueComposites.
  */
 public interface ValueDescriptor
     extends CompositeDescriptor

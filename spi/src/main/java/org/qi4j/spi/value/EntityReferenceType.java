@@ -15,28 +15,29 @@
 package org.qi4j.spi.value;
 
 import org.qi4j.api.common.TypeName;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
 import java.lang.reflect.Type;
 
 /**
- * Enumeration type
+ * {@link EntityReference} type
  */
-public class EnumType
+public class EntityReferenceType
     extends ValueType
 {
-    public static boolean isEnum( Type type )
+    public static boolean isEntityReference( Type type )
     {
         if( type instanceof Class )
         {
             Class typeClass = (Class) type;
-            return ( typeClass.isEnum() );
+            return ( typeClass.equals( EntityReference.class ) );
         }
         return false;
     }
 
-    public EnumType( TypeName type )
+    public EntityReferenceType( TypeName type )
     {
         super(type);
     }
@@ -59,8 +60,6 @@ public class EnumType
                 json.append( '\\' ).append( '\\' );
                 break;
 
-            // TODO Control characters
-
             default:
                 json.append( ch );
             }
@@ -73,18 +72,23 @@ public class EnumType
         String token = json.nextToken( "\"" );
         String result = json.nextToken();
 
+        // Empty String
+        if( result.equals( "\"" ) )
+        {
+            return "";
+        }
+
         token = json.nextToken();
+        return EntityReference.parseEntityReference(result);
+    }
 
-        try
-        {
-            Class enumType = module.classLoader().loadClass( type().name() );
+    @Override public String toQueryParameter( Object value )
+    {
+        return value == null ? null : value.toString();
+    }
 
-            // Get enum value
-            return Enum.valueOf( enumType, result );
-        }
-        catch( Exception e )
-        {
-            throw new IllegalStateException( e );
-        }
+    @Override public Object fromQueryParameter( String parameter, Module module )
+    {
+        return EntityReference.parseEntityReference(parameter);
     }
 }

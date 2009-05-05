@@ -14,11 +14,7 @@
 
 package org.qi4j.runtime.value;
 
-import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.composite.AbstractStateModel;
-import org.qi4j.runtime.property.PropertiesInstance;
-import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.value.ValueState;
 
 /**
  * State model for values
@@ -29,11 +25,5 @@ public final class ValueStateModel
     public ValueStateModel( ValuePropertiesModel propertiesModel )
     {
         super( propertiesModel );
-    }
-
-    public StateHolder newInstance( ModuleInstance moduleInstance, ValueState state )
-    {
-        PropertiesInstance properties = propertiesModel.newInstance( moduleInstance, state );
-        return properties;
     }
 }

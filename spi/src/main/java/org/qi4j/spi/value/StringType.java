@@ -16,99 +16,151 @@ package org.qi4j.spi.value;
 
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
-import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
 import java.lang.reflect.Type;
 
 /**
- * Boolean type
+ * String type
  */
 public class StringType
-    extends ValueType
+        extends ValueType
 {
-    public static boolean isString( Type type )
+    public static boolean isString(Type type)
     {
-        if( type instanceof Class )
+        if (type instanceof Class)
         {
             Class typeClass = (Class) type;
-            return ( typeClass.equals( String.class ) );
+            return (typeClass.equals(String.class));
         }
         return false;
     }
 
-    private final TypeName type;
-
-    public StringType( TypeName type )
+    public StringType(TypeName type)
     {
-        this.type = type;
+        super(type);
     }
 
-    public void versionize( SchemaVersion schemaVersion )
+    public void toJSON(Object value, StringBuilder json)
     {
-        schemaVersion.versionize( type );
-    }
-
-    public TypeName type()
-    {
-        return type;
-    }
-
-    public void toJSON( Object value, StringBuilder json )
-    {
-        json.append( '"' );
+        json.append('"');
         String stringValue = value.toString();
         int len = stringValue.length();
-        for( int i = 0; i < len; i++ )
+        for (int i = 0; i < len; i++)
         {
-            char ch = stringValue.charAt( i );
+            char ch = stringValue.charAt(i);
             // Escape characters properly
-            switch( ch )
+            switch (ch)
             {
-            case '"':
-                json.append( '\\' ).append( '"' );
-                break;
-            case '\\':
-                json.append( '\\' ).append( '\\' );
-                break;
+                case '"':
+                    json.append('\\').append('"');
+                    break;
+                case '\\':
+                    json.append('\\').append('\\');
+                    break;
+                case '/':
+                    json.append('\\').append('/');
+                    break;
+                case '\b':
+                    json.append('\\').append('b');
+                    break;
+                case '\f':
+                    json.append('\\').append('f');
+                    break;
+                case '\n':
+                    json.append('\\').append('n');
+                    break;
+                case '\r':
+                    json.append('\\').append('r');
+                    break;
+                case '\t':
+                    json.append('\\').append('t');
+                    break;
 
-            // TODO Control characters
-
-            default:
-                json.append( ch );
+                default:
+                    json.append(ch);
             }
         }
-        json.append( '"' );
+        json.append('"');
     }
 
-    public Object fromJSON( PeekableStringTokenizer json, Module module )
+    public Object fromJSON(PeekableStringTokenizer json, Module module)
     {
-        String token = json.nextToken( "\"" );
-        String result = json.nextToken();
+        String token = json.nextToken("\"");
 
-        // Empty String
-        if( result.equals( "\"" ) )
-        {
+        StringBuilder builder = new StringBuilder();
+
+        String result = json.nextToken("\\\"");
+
+        if (result.equals("\""))
             return "";
+
+        builder.append(result);
+
+        while (!(token = json.nextToken()).equals("\""))
+        {
+            if (token.charAt(0) == '\\')
+            {
+                result = json.nextToken();
+
+                char controlChar = result.charAt(0);
+                // Unescape characters properly
+                switch (controlChar)
+                {
+                    case '"':
+                        builder.append('"');
+                        break;
+                    case '\\':
+                        builder.append('\\');
+                        break;
+                    case '/':
+                        builder.append('/');
+                        break;
+                    case 'b':
+                        builder.append('\b');
+                        break;
+                    case 'f':
+                        builder.append('\f');
+                        break;
+                    case 'n':
+                        builder.append('\n');
+                        break;
+                    case 'r':
+                        builder.append('\r');
+                        break;
+                    case 't':
+                        builder.append('\t');
+                        break;
+
+                    default:
+                        throw new IllegalStateException("Illegal control character in string:"+controlChar);
+                }
+
+                if (result.length() > 1)
+                    builder.append(result.substring(1));
+            } else
+            {
+                builder.append(token);
+            }
         }
 
-        // TODO unescaping
-
-        token = json.nextToken();
-        return result;
+        return builder.toString();
     }
 
-    @Override public String toQueryParameter( Object value )
+    @Override
+    public String toQueryParameter(Object value)
     {
         return value == null ? null : value.toString();
     }
 
-    @Override public Object fromQueryParameter( String parameter, Module module )
+    @Override
+    public Object fromQueryParameter(String parameter, Module module)
     {
         return parameter;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return type.toString();
     }

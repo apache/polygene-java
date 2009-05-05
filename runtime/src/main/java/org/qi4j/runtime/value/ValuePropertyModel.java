@@ -21,10 +21,8 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PersistentPropertyModel;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
-import org.qi4j.spi.value.ValueState;
 import org.qi4j.spi.value.ValueType;
 
 import java.lang.reflect.Method;
@@ -59,12 +57,6 @@ public final class ValuePropertyModel extends PersistentPropertyModel
     public PropertyType propertyType()
     {
         return propertyType;
-    }
-
-    public <T> T fromValueState( ModuleInstance moduleInstance, ValueState valueState )
-    {
-        String value = valueState.getProperty( propertyType.stateName() );
-        return super.<T>fromJSON( moduleInstance, value );
     }
 
     public Property<?> newInstance( Object value )

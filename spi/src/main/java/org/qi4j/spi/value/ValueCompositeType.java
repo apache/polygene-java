@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * JAVADOC
+ * ValueComposite type
  */
 public class ValueCompositeType
     extends ValueType
@@ -42,18 +42,12 @@ public class ValueCompositeType
         return type instanceof Class && ValueComposite.class.isAssignableFrom( (Class) type );
     }
 
-    private final TypeName type;
     private List<PropertyType> types;
 
     public ValueCompositeType( TypeName type, List<PropertyType> types )
     {
-        this.type = type;
+        super(type);
         this.types = types;
-    }
-
-    public TypeName type()
-    {
-        return type;
     }
 
     public List<PropertyType> types()
@@ -76,17 +70,11 @@ public class ValueCompositeType
 
     public void versionize( SchemaVersion schemaVersion )
     {
-        schemaVersion.versionize( type );
+        super.versionize(schemaVersion);
         for( PropertyType propertyType : types )
         {
             propertyType.versionize( schemaVersion );
         }
-    }
-
-    @Override
-    public String toString()
-    {
-        return type.toString();
     }
 
     public void toJSON( Object value, StringBuilder json )
@@ -137,6 +125,7 @@ public class ValueCompositeType
             Object value;
             if( token.equals( "null" ) )
             {
+                json.nextToken();
                 value = null;
             }
             else

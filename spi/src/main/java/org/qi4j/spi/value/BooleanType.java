@@ -16,7 +16,6 @@ package org.qi4j.spi.value;
 
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
-import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
 import java.lang.reflect.Type;
@@ -41,17 +40,8 @@ public class BooleanType
 
     public BooleanType( TypeName type )
     {
+        super(type);
         this.type = type;
-    }
-
-    public void versionize( SchemaVersion schemaVersion )
-    {
-        schemaVersion.versionize( type );
-    }
-
-    public TypeName type()
-    {
-        return type;
     }
 
     public void toJSON( Object value, StringBuilder json )
@@ -63,10 +53,5 @@ public class BooleanType
     {
         String string = json.nextToken();
         return Boolean.valueOf( string );
-    }
-
-    @Override public String toString()
-    {
-        return type.toString();
     }
 }

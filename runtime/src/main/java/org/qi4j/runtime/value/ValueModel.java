@@ -33,7 +33,6 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.value.ValueCompositeType;
 import org.qi4j.spi.value.ValueDescriptor;
-import org.qi4j.spi.value.ValueState;
 import org.qi4j.spi.value.ValueType;
 
 import java.io.Serializable;
@@ -134,11 +133,5 @@ public final class ValueModel extends AbstractCompositeModel
         }
         // Return
         return instance;
-    }
-
-    public ValueInstance newValueInstance( ModuleInstance moduleInstance, ValueState state )
-    {
-        StateHolder stateHolder = ( (ValueStateModel) stateModel ).newInstance( moduleInstance, state );
-        return newValueInstance( moduleInstance, stateHolder );
     }
 }
