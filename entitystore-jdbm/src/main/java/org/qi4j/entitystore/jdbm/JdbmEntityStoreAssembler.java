@@ -22,6 +22,7 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.spi.entity.helpers.EntityTypeRegistryService;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 
 public class JdbmEntityStoreAssembler
@@ -36,7 +37,7 @@ public class JdbmEntityStoreAssembler
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( JdbmEntityStoreService.class, UuidIdentityGeneratorService.class );
+        module.addServices( JdbmEntityStoreService.class, UuidIdentityGeneratorService.class, EntityTypeRegistryService.class ).visibleIn(Visibility.layer);
         ModuleAssembly config = module.layerAssembly().newModuleAssembly( jdbmConfigurationModule );
         config.addEntities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
