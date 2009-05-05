@@ -33,27 +33,29 @@ import org.qi4j.spi.value.ValueDescriptor;
 public interface Qi4jSPI
     extends Qi4j
 {
+    // Composites
     CompositeDescriptor getCompositeDescriptor( Composite composite );
 
-    CompositeDescriptor getCompositeDescriptor( Class mixinType, Module module );
+    CompositeDescriptor getCompositeDescriptor( Class<? extends Composite> compositeType, Module module );
 
     StateHolder getState( Composite composite );
 
+    // Entities
     EntityDescriptor getEntityDescriptor( EntityComposite composite );
 
-    EntityDescriptor getEntityDescriptor( Class mixinType, Module module );
-
-    EntityState getEntityState( EntityComposite composite );
+    EntityDescriptor getEntityDescriptor( Class<? extends EntityComposite> entityType, Module module );
 
     EntityStateHolder getState( EntityComposite composite );
 
+    EntityState getEntityState( EntityComposite composite );
+
+    // Values
     ValueDescriptor getValueDescriptor( ValueComposite value );
+
+    ValueDescriptor getValueDescriptor( Class<? extends ValueComposite> entityType, Module module );
 
     StateHolder getState( ValueComposite composite );
 
-    ObjectDescriptor getObjectDescriptor( Class mixinType, Module module );
-
-    void setMixins( Composite composite, Object[] mixins );
-
-    <T> T cast( EntityComposite entity, Class<T> mixinType );
+    // Objects
+    ObjectDescriptor getObjectDescriptor( Class objectType, Module module );
 }

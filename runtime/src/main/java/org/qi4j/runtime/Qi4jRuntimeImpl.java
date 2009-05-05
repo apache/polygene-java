@@ -48,6 +48,7 @@ import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.runtime.structure.ModuleVisitor;
 import org.qi4j.runtime.value.ValueInstance;
+import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
@@ -230,11 +231,11 @@ public final class Qi4jRuntimeImpl
     }
 
     @SuppressWarnings( "unchecked" )
-    public CompositeDescriptor getCompositeDescriptor( Class mixinType, Module module )
+    public CompositeDescriptor getCompositeDescriptor( Class<? extends Composite> compositeType, Module module )
     {
         ModuleInstance moduleInstance = (ModuleInstance) module;
         CompositeFinder finder = new CompositeFinder();
-        finder.type = mixinType;
+        finder.type = compositeType;
         moduleInstance.model().visitModules( finder );
         return finder.model;
     }
@@ -252,28 +253,6 @@ public final class Qi4jRuntimeImpl
         }
     }
 
-    public ObjectDescriptor getObjectDescriptor( Class objectType, Module module )
-    {
-        ModuleInstance moduleInstance = (ModuleInstance) module;
-        ObjectFinder finder = new ObjectFinder();
-        finder.type = objectType;
-        moduleInstance.model().visitModules( finder );
-        return finder.model;
-    }
-
-    class ObjectFinder
-        implements ModuleVisitor
-    {
-        Class type;
-        ObjectModel model;
-
-        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
-        {
-            model = moduleModel.objects().getObjectModelFor( type, visibility );
-            return model == null;
-        }
-    }
-
     public StateHolder getState( Composite composite )
     {
         return DefaultCompositeInstance.getCompositeInstance( composite ).state();
@@ -286,30 +265,13 @@ public final class Qi4jRuntimeImpl
     }
 
     @SuppressWarnings( "unchecked" )
-    public EntityDescriptor getEntityDescriptor( Class mixinType, Module module )
+    public EntityDescriptor getEntityDescriptor( Class<? extends EntityComposite> entityType, Module module )
     {
         ModuleInstance moduleInstance = (ModuleInstance) module;
         EntityFinder finder = new EntityFinder();
-        finder.type = mixinType;
+        finder.type = entityType;
         moduleInstance.model().visitModules( finder );
         return finder.model;
-    }
-
-    public ValueDescriptor getValueDescriptor( ValueComposite value )
-    {
-        ValueInstance valueInstance = ValueInstance.getValueInstance( value );
-        return (ValueDescriptor) valueInstance.compositeModel();
-    }
-
-    public StateHolder getState( ValueComposite composite )
-    {
-        return ValueInstance.getValueInstance( composite ).state();
-    }
-
-    public <T> T cast( EntityComposite entity, Class<T> mixinType )
-    {
-        EntityInstance instance = EntityInstance.getEntityInstance( entity );
-        return instance.newProxy( mixinType );
     }
 
     class EntityFinder
@@ -334,11 +296,61 @@ public final class Qi4jRuntimeImpl
     {
         return EntityInstance.getEntityInstance( composite ).state();
     }
-
-    public void setMixins( Composite composite, Object[] mixins )
+    public ValueDescriptor getValueDescriptor( ValueComposite value )
     {
-        DefaultCompositeInstance instance = getCompositeInstance( composite );
-
-        instance.setMixins( mixins );
+        ValueInstance valueInstance = ValueInstance.getValueInstance( value );
+        return (ValueDescriptor) valueInstance.compositeModel();
     }
+
+    @SuppressWarnings( "unchecked" )
+    public ValueDescriptor getValueDescriptor( Class<? extends ValueComposite> valueType, Module module )
+    {
+        ModuleInstance moduleInstance = (ModuleInstance) module;
+        ValueFinder finder = new ValueFinder();
+        finder.type = valueType;
+        moduleInstance.model().visitModules( finder );
+        return finder.model;
+    }
+
+    class ValueFinder
+        implements ModuleVisitor
+    {
+        Class type;
+        ValueModel model;
+
+        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
+        {
+            model = moduleModel.values().getValueModelFor(type, visibility );
+            return model == null;
+        }
+    }
+
+    public StateHolder getState( ValueComposite composite )
+    {
+        return ValueInstance.getValueInstance( composite ).state();
+    }
+
+    public ObjectDescriptor getObjectDescriptor( Class objectType, Module module )
+    {
+        ModuleInstance moduleInstance = (ModuleInstance) module;
+        ObjectFinder finder = new ObjectFinder();
+        finder.type = objectType;
+        moduleInstance.model().visitModules( finder );
+        return finder.model;
+    }
+
+    class ObjectFinder
+        implements ModuleVisitor
+    {
+        Class type;
+        ObjectModel model;
+
+        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
+        {
+            model = moduleModel.objects().getObjectModelFor( type, visibility );
+            return model == null;
+        }
+    }
+
+
 }

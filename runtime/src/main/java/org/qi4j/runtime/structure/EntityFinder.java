@@ -15,6 +15,7 @@
 package org.qi4j.runtime.structure;
 
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.runtime.entity.EntityModel;
 
 import java.util.ArrayList;
@@ -24,25 +25,36 @@ import java.util.List;
  * JAVADOC
  */
 class EntityFinder
-    implements ModuleVisitor
+        implements ModuleVisitor
 {
     Class mixinType;
     List<ModuleInstance> modules = new ArrayList<ModuleInstance>();
     List<EntityModel> models = new ArrayList<EntityModel>();
 
-    public boolean visitModule( final ModuleInstance moduleInstance, ModuleModel moduleModel, final Visibility visibility )
+    public boolean visitModule(final ModuleInstance moduleInstance, ModuleModel moduleModel, final Visibility visibility)
     {
-        moduleModel.entities().visitModel( new ModelVisitor()
+        moduleModel.entities().visitModel(new ModelVisitor()
         {
-            @Override public void visit( EntityModel entityModel )
+            @Override
+            public void visit(EntityModel entityModel)
             {
-                if( mixinType.isAssignableFrom( entityModel.type() ) && entityModel.visibility() == visibility )
+                if (EntityComposite.class.isAssignableFrom(mixinType))
                 {
-                    modules.add( moduleInstance );
-                    models.add( entityModel );
+                    if (mixinType.equals(entityModel.type()) && entityModel.visibility() == visibility)
+                    {
+                        modules.add(moduleInstance);
+                        models.add(entityModel);
+                    }
+                } else
+                {
+                    if (mixinType.isAssignableFrom(entityModel.type()) && entityModel.visibility() == visibility)
+                    {
+                        modules.add(moduleInstance);
+                        models.add(entityModel);
+                    }
                 }
             }
-        } );
+        });
 
         return true;
     }

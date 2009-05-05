@@ -39,7 +39,7 @@ public class ValueCompositeType
 {
     public static boolean isValueComposite( Type type )
     {
-        return type instanceof Class && ( (Class) type ).isInterface();
+        return type instanceof Class && ValueComposite.class.isAssignableFrom( (Class) type );
     }
 
     private final TypeName type;

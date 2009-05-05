@@ -16,6 +16,7 @@ package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
+import org.qi4j.api.composite.Composite;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 
@@ -58,17 +59,34 @@ public class CompositesModel
         CompositeModel foundModel = null;
         for( CompositeModel composite : compositeModels )
         {
-            if( mixinType.isAssignableFrom( composite.type() ) && composite.visibility() == visibility )
+            if (Composite.class.isAssignableFrom(mixinType))
             {
-                if( foundModel != null )
+                if( mixinType.equals( composite.type() ) && composite.visibility() == visibility )
                 {
-                    throw new AmbiguousTypeException( mixinType, foundModel.type(), composite.type() );
+                    if( foundModel != null )
+                    {
+                        throw new AmbiguousTypeException( mixinType, foundModel.type(), composite.type() );
+                    }
+                    else
+                    {
+                        foundModel = composite;
+                    }
                 }
-                else
+            } else
+            {
+                if( mixinType.isAssignableFrom( composite.type() ) && composite.visibility() == visibility )
                 {
-                    foundModel = composite;
+                    if( foundModel != null )
+                    {
+                        throw new AmbiguousTypeException( mixinType, foundModel.type(), composite.type() );
+                    }
+                    else
+                    {
+                        foundModel = composite;
+                    }
                 }
             }
+
         }
 
         return foundModel;

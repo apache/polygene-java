@@ -73,7 +73,8 @@ public class SerializableType
             ObjectOutputStream out = new ObjectOutputStream( bout );
             out.writeUnshared( value );
             out.close();
-            String stringValue = new String( Base64Encoder.encode( bout.toByteArray(), true ), "UTF-8" );
+            byte[] bytes = Base64Encoder.encode(bout.toByteArray(), true);
+            String stringValue = new String(bytes, "UTF-8" );
             json.append( stringValue );
         }
         catch( IOException e )
@@ -87,7 +88,8 @@ public class SerializableType
     {
         try
         {
-            byte[] bytes = json.nextToken().getBytes( "UTF-8" );
+            String token = json.nextToken();
+            byte[] bytes = token.getBytes( "UTF-8" );
             bytes = Base64Encoder.decode( bytes );
             ByteArrayInputStream bin = new ByteArrayInputStream( bytes );
             ObjectInputStream oin = new ObjectInputStream( bin );
