@@ -24,7 +24,7 @@ import java.lang.reflect.Type;
  * Enumeration type
  */
 public class EnumType
-    extends ValueType
+    extends AbstractStringType
 {
     public static boolean isEnum( Type type )
     {
@@ -75,16 +75,28 @@ public class EnumType
 
         token = json.nextToken();
 
+        return fromQueryParameter(result, module);
+    }
+
+    @Override
+    public String toQueryParameter(Object value) throws IllegalArgumentException
+    {
+        return value.toString();
+    }
+
+    @Override
+    public Object fromQueryParameter(String parameter, Module module) throws IllegalArgumentException
+    {
         try
         {
             Class enumType = module.classLoader().loadClass( type().name() );
 
             // Get enum value
-            return Enum.valueOf( enumType, result );
+            return Enum.valueOf( enumType, parameter );
         }
         catch( Exception e )
         {
-            throw new IllegalStateException( e );
+            throw new IllegalArgumentException( e );
         }
     }
 }

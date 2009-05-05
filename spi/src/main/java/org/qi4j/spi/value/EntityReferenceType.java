@@ -25,7 +25,7 @@ import java.lang.reflect.Type;
  * {@link EntityReference} type
  */
 public class EntityReferenceType
-    extends ValueType
+    extends AbstractStringType
 {
     public static boolean isEntityReference( Type type )
     {

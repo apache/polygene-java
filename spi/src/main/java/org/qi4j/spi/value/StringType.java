@@ -24,7 +24,7 @@ import java.lang.reflect.Type;
  * String type
  */
 public class StringType
-        extends ValueType
+        extends AbstractStringType
 {
     public static boolean isString(Type type)
     {
@@ -157,11 +157,5 @@ public class StringType
     public Object fromQueryParameter(String parameter, Module module)
     {
         return parameter;
-    }
-
-    @Override
-    public String toString()
-    {
-        return type.toString();
     }
 }

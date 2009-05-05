@@ -28,7 +28,7 @@ import java.util.Date;
  * Date type. Use ISO8601 format (http://www.w3.org/TR/NOTE-datetime). Assumes UTC time.
  */
 public class DateType
-    extends ValueType
+    extends AbstractStringType
 {
     // Formatters are not thread-safe. Create one per thread
     private static ThreadLocal<DateFormat> ISO8601 = new ThreadLocal<DateFormat>()

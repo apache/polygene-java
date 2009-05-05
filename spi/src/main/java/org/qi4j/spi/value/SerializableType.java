@@ -35,7 +35,7 @@ import java.io.ObjectOutputStream;
  * EntityReference, then use JSON format for EntityReferences.
  */
 public class SerializableType
-    extends ValueType
+    extends AbstractStringType
 {
     public SerializableType( TypeName type )
     {
@@ -120,8 +120,18 @@ public class SerializableType
         }
     }
 
-    @Override public String toString()
+    @Override
+    public String toQueryParameter(Object value)
     {
-        return type.toString();
+        String json = super.toQueryParameter(value);
+        return json.substring(1, json.length()-1);
+    }
+
+    @Override
+    public Object fromQueryParameter(String parameter, Module module)
+    {
+        String json = "\""+parameter+"\"";
+
+        return fromJSON(new PeekableStringTokenizer(json), module);
     }
 }
