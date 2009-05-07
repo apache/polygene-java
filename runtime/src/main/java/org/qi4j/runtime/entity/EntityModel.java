@@ -14,23 +14,42 @@
 
 package org.qi4j.runtime.entity;
 
-import org.qi4j.api.common.*;
+import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.TypeName;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.entity.*;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.entity.Lifecycle;
+import org.qi4j.api.entity.LifecycleException;
+import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.entity.RDF;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.unitofwork.EntityCompositeAlreadyExistsException;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.ManyAssociationDeclarations;
 import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.runtime.composite.*;
+import org.qi4j.runtime.composite.AbstractCompositeModel;
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.composite.CompositeMethodsModel;
+import org.qi4j.runtime.composite.ConcernsDeclaration;
+import org.qi4j.runtime.composite.ConstraintsModel;
+import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.composite.SideEffectsDeclaration;
 import org.qi4j.runtime.entity.association.EntityAssociationsModel;
 import org.qi4j.runtime.entity.association.EntityManyAssociationsModel;
 import org.qi4j.runtime.property.PersistentPropertyModel;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.entity.*;
+import org.qi4j.spi.entity.EntityAlreadyExistsException;
+import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
@@ -38,7 +57,6 @@ import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -190,12 +208,12 @@ public final class EntityModel
         return ( (EntityMixinsModel) mixinsModel ).newMixin( entityInstance, entityState, mixins, method );
     }
 
-    public EntityComposite newProxy( EntityInstance entityInstance )
+    public EntityComposite newProxy( InvocationHandler invocationHandler)
     {
         // Instantiate proxy for given composite interface
         try
         {
-            return EntityComposite.class.cast( proxyClass.getConstructor( InvocationHandler.class ).newInstance( entityInstance ) );
+            return EntityComposite.class.cast( proxyClass.getConstructor( InvocationHandler.class ).newInstance( invocationHandler ) );
         }
         catch( Exception e )
         {
@@ -203,13 +221,7 @@ public final class EntityModel
         }
     }
 
-    public <T> T newProxy( EntityInstance entityInstance, Class<T> mixinType )
-    {
-        // Instantiate proxy for given mixin interface
-        return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, entityInstance ) );
-    }
-
-    public EntityState newEntityState( EntityStoreUnitOfWork store, EntityReference identity, Qi4jSPI qi4jSPI )
+    public EntityState newEntityState( EntityStoreUnitOfWork store, EntityReference identity)
         throws ConstraintViolationException, EntityStoreException
     {
         try
@@ -218,7 +230,7 @@ public final class EntityModel
             EntityState entityState = store.newEntityState( identity );
 
             // Add EntityType
-            addEntityType( entityState, qi4jSPI );
+            addEntityType( entityState );
 
             // Set identity property
             PropertyTypeDescriptor propertyDescriptor = state().getPropertyByQualifiedName( QualifiedName.fromMethod( IDENTITY_METHOD ) );
@@ -241,7 +253,7 @@ public final class EntityModel
         return type().getName();
     }
 
-    public void addEntityType( EntityState entityState, Qi4jSPI qi4jSPI )
+    public void addEntityType( EntityState entityState)
     {
         entityState.addEntityTypeReference( entityType().reference() );
 
@@ -250,7 +262,7 @@ public final class EntityModel
             Set<PersistentPropertyModel> entityProperties = state().properties();
             for( PersistentPropertyModel propertyDescriptor : entityProperties )
             {
-                String stringValue = propertyDescriptor.toJSON( propertyDescriptor.initialValue(), qi4jSPI );
+                String stringValue = propertyDescriptor.toJSON( propertyDescriptor.initialValue() );
                 entityState.setProperty( propertyDescriptor.propertyType().stateName(), stringValue );
             }
         }

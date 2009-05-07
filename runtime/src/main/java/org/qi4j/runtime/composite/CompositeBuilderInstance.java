@@ -24,7 +24,6 @@ import org.qi4j.spi.composite.CompositeInstance;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.Iterator;
 
 /**
@@ -51,12 +50,13 @@ public final class CompositeBuilderInstance<T>
 
     private final ModuleInstance moduleInstance;
     private final CompositeModel compositeModel;
-    private final Class<T> compositeType;
 
     // lazy initialized in accessor
     private UsesInstance uses;
+
     // lazy initialized in accessor
-    private T stateProxy;
+    private CompositeInstance prototypeInstance;
+
     // lazy initialized in accessor
     private StateHolder state;
 
@@ -71,12 +71,11 @@ public final class CompositeBuilderInstance<T>
         this.moduleInstance = moduleInstance;
 
         this.compositeModel = compositeModel;
-        compositeType = (Class<T>) compositeModel.type();
     }
 
     public Class<T> compositeType()
     {
-        return compositeType;
+        return (Class<T>) compositeModel.type();
     }
 
     public CompositeBuilder<T> use( Object... usedObjects )
@@ -86,41 +85,26 @@ public final class CompositeBuilderInstance<T>
         return this;
     }
 
-    public T stateOfComposite()
+    public T prototype()
     {
-        // Instantiate proxy for given composite interface
-        if( stateProxy == null )
+        // Instantiate given value type
+        if( prototypeInstance == null )
         {
-            try
-            {
-                StateInvocationHandler handler = new StateInvocationHandler();
-                ClassLoader proxyClassloader = compositeType.getClassLoader();
-                Class[] interfaces = new Class[]{ compositeType };
-                stateProxy = compositeType.cast( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ) );
-            }
-            catch( Exception e )
-            {
-                throw new ConstructionException( e );
-            }
+            prototypeInstance = compositeModel.newCompositeInstance(moduleInstance, getUses(), getState() );
         }
 
-        return stateProxy;
+        return prototypeInstance.<T>proxy();
     }
 
-    public <K> K stateFor( Class<K> mixinType )
+    public <K> K prototypeFor( Class<K> mixinType )
     {
-        // Instantiate proxy for given interface
-        try
+        // Instantiate given value type
+        if( prototypeInstance == null )
         {
-            StateInvocationHandler handler = new StateInvocationHandler();
-            ClassLoader proxyClassloader = mixinType.getClassLoader();
-            Class[] interfaces = new Class[]{ mixinType };
-            return mixinType.cast( Proxy.newProxyInstance( proxyClassloader, interfaces, handler ) );
+            prototypeInstance = compositeModel.newCompositeInstance(moduleInstance, getUses(), getState() );
         }
-        catch( Exception e )
-        {
-            throw new ConstructionException( e );
-        }
+
+        return prototypeInstance.newProxy( mixinType );
     }
 
     public T newInstance() throws ConstructionException
@@ -135,8 +119,9 @@ public final class CompositeBuilderInstance<T>
             instanceState = compositeModel.newState( state );
         }
 
+        compositeModel.state().checkConstraints( instanceState );
+
         CompositeInstance compositeInstance = compositeModel.newCompositeInstance( moduleInstance, uses == null ? UsesInstance.NO_USES : uses, instanceState );
-        state = null; // Reset state - TODO should create a copy lazily
         return compositeInstance.<T>proxy();
     }
 

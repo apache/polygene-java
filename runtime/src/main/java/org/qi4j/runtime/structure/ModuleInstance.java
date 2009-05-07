@@ -370,7 +370,9 @@ public class ModuleInstance
                 throw new NoSuchCompositeException( mixinType.getName(), name() );
             }
 
-            return finder.model.newCompositeInstance( finder.module, UsesInstance.NO_USES, finder.model.newInitialState() ).<T>proxy();
+            StateHolder stateHolder = finder.model.newInitialState();
+            finder.model.state().checkConstraints(stateHolder);
+            return finder.model.newCompositeInstance( finder.module, UsesInstance.NO_USES, stateHolder).<T>proxy();
         }
     }
 

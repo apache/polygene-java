@@ -75,7 +75,7 @@ public abstract class AbstractPropertyModel
 
     private final boolean needsWrapper;
 
-    private final PropertyInfo builderInfo;
+    protected final PropertyInfo builderInfo;
 
     public AbstractPropertyModel( Method accessor, boolean immutable, ValueConstraintsInstance constraints,
                                   MetaInfo metaInfo, Object initialValue )

@@ -63,6 +63,11 @@ public class DefaultCompositeInstance
         return (T) proxy;
     }
 
+    public <T> T newProxy( Class<T> mixinType )
+    {
+        return compositeModel.newProxy( this, mixinType );
+    }
+
     public MetaInfo metaInfo()
     {
         return compositeModel.metaInfo();

@@ -27,6 +27,8 @@ public interface CompositeInstance extends InvocationHandler
 {
     <T> T proxy();
 
+    <T> T newProxy( Class<T> mixinType );
+
     Module module();
 
     MetaInfo metaInfo();

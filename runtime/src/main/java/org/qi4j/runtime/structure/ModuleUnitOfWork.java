@@ -137,8 +137,7 @@ public class ModuleUnitOfWork
         EntityStore entityStore = entityModuleInstance.entities().entityStore();
 
         EntityState entityState = entityModel.newEntityState( uow.getEntityStoreUnitOfWork( entityStore ),
-                                                              parseEntityReference( identity ),
-                                                              moduleInstance.layerInstance().applicationInstance().runtime() );
+                                                              parseEntityReference( identity ) );
 
         if( identityStateName == null )
         {

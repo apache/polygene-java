@@ -15,10 +15,10 @@
 package org.qi4j.runtime.entity;
 
 import org.qi4j.api.property.AbstractPropertyInstance;
-import static org.qi4j.api.util.NullArgumentException.validateNotNull;
+import org.qi4j.api.property.PropertyInfo;
+import static org.qi4j.api.util.NullArgumentException.*;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
 
 /**
@@ -46,7 +46,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
      * @since 0.1.0
      */
-    public EntityPropertyInstance( EntityPropertyModel aPropertyInfo, EntityState entityState, ConstraintsCheck constraints, ModuleUnitOfWork uow )
+    public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState, ConstraintsCheck constraints, ModuleUnitOfWork uow )
         throws IllegalArgumentException
     {
         super( aPropertyInfo );
@@ -93,9 +93,8 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
         }
 
         // Change property
-        Qi4jSPI spi = uow.module().layerInstance().applicationInstance().runtime();
-        String json = ( (EntityPropertyModel) propertyInfo ).toJSON( aNewValue, spi );
-        entityState.setProperty( ( (EntityPropertyModel) propertyInfo ).propertyType().stateName(), json );
+        String json = ( (EntityPropertyModel) constraints ).toJSON( aNewValue );
+        entityState.setProperty( ( (EntityPropertyModel) constraints ).propertyType().stateName(), json );
         value = aNewValue;
     }
 

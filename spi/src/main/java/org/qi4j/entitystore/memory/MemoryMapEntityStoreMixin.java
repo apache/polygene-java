@@ -47,7 +47,7 @@ public class MemoryMapEntityStoreMixin
         {
             public OutputStream newEntity( final EntityReference ref )
             {
-                return new ByteArrayOutputStream()
+                return new ByteArrayOutputStream(1000)
                 {
                     @Override public void close() throws IOException
                     {
@@ -64,7 +64,7 @@ public class MemoryMapEntityStoreMixin
 
             public OutputStream updateEntity( final EntityReference ref ) throws IOException
             {
-                return new ByteArrayOutputStream()
+                return new ByteArrayOutputStream(1000)
                 {
                     @Override public void close() throws IOException
                     {

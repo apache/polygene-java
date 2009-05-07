@@ -2,6 +2,7 @@ package org.qi4j.runtime.injection.provider;
 
 import org.qi4j.api.composite.CompositeBuilder;
 import org.qi4j.api.object.ObjectBuilder;
+import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.composite.CompositeBuilderInstance;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.UsesInstance;
@@ -68,7 +69,9 @@ public final class UsesInjectionProviderFactory
                     }
                     else
                     {
-                        usesObject = compositeFinder.model.newCompositeInstance( compositeFinder.module, uses, context.state() );
+                        StateHolder stateHolder = context.state();
+                        compositeFinder.model.state().checkConstraints(stateHolder);
+                        usesObject = compositeFinder.model.newCompositeInstance( compositeFinder.module, uses, stateHolder);
                     }
                 }
                 else

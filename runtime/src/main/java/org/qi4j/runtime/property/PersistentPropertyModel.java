@@ -24,7 +24,6 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.ModuleVisitor;
 import org.qi4j.runtime.value.ValueModel;
-import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.util.PeekableStringTokenizer;
@@ -80,7 +79,7 @@ public abstract class PersistentPropertyModel
         return queryable;
     }
 
-    public String toJSON( Object value, Qi4jSPI spi )
+    public String toJSON( Object value)
     {
         if( value == null )
         {

@@ -131,6 +131,12 @@ public abstract class AbstractCompositeModel
         }
     }
 
+    public <T> T newProxy( InvocationHandler invocationHandler, Class<T> mixinType )
+    {
+        // Instantiate proxy for given mixin interface
+        return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, invocationHandler ) );
+    }
+
     public StateHolder newBuilderState()
     {
         return stateModel.newBuilderInstance();

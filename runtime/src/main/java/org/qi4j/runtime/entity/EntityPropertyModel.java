@@ -15,6 +15,7 @@
 package org.qi4j.runtime.entity;
 
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.Property;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PersistentPropertyModel;
@@ -54,7 +55,7 @@ public final class EntityPropertyModel extends PersistentPropertyModel
         }
         else
         {
-            property = new EntityPropertyInstance( this, state, this, uow );
+            property = new EntityPropertyInstance( state.identity() == EntityReference.NULL ? builderInfo : this, state, this, uow );
         }
 
         return wrapProperty( property );

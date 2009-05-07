@@ -118,7 +118,7 @@ public final class EntityBuilderInstance<T>
             Class compositeType = entityModel.type();
             identity = identityGenerator.generate( compositeType );
             identityJson = '\"' + identity + '\"';
-            newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ), moduleInstance.layerInstance().applicationInstance().runtime() );
+            newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ) );
         }
         else
         {
@@ -131,14 +131,14 @@ public final class EntityBuilderInstance<T>
                 if (identity == null)
                     throw new ConstructionException("No identity set and no identity generator specified");
 
-                newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ), moduleInstance.layerInstance().applicationInstance().runtime() );
+                newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ));
                 identityJson = "\""+identity+"\"";
                 newEntityState.setProperty( identityStateName, identityJson );
             } else
             {
                 identity = identityJson.substring( 1, identityJson.length() - 1 );
                 
-                newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ), moduleInstance.layerInstance().applicationInstance().runtime() );
+                newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ));
             }
 
         }
