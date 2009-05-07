@@ -29,7 +29,6 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.auth.AuthenticationMethod;
 import org.qi4j.library.auth.Authorization;
 import org.qi4j.library.auth.AuthorizationContext;
@@ -46,7 +45,6 @@ import org.qi4j.library.auth.RoleAssignmentEntity;
 import org.qi4j.library.auth.RoleEntity;
 import org.qi4j.library.auth.User;
 import org.qi4j.library.auth.UserComposite;
-import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
@@ -98,7 +96,7 @@ public class AuthTest
 
             // Create authorization context
             CompositeBuilder<AuthorizationContext> accb = compositeBuilderFactory.newCompositeBuilder( AuthorizationContext.class );
-            AuthorizationContext context = accb.stateOfComposite();
+            AuthorizationContext context = accb.prototype();
             context.user().set( user );
             context.time().set( new Date() );
             context.authenticationMethod().set( AuthenticationMethod.BASIC );

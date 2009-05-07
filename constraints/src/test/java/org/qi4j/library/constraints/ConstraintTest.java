@@ -35,7 +35,7 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().containsString().set( "bar" );
+        cb.prototype().containsString().set( "bar" );
     }
 
     @Test
@@ -43,8 +43,8 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().containsString().set( "foo" );
-        cb.stateOfComposite().containsString().set( "xxxfooyyy" );
+        cb.prototype().containsString().set( "foo" );
+        cb.prototype().containsString().set( "xxxfooyyy" );
     }
 
     @Test( expected = ConstraintViolationException.class )
@@ -52,7 +52,7 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().email().set( "foo.com" );
+        cb.prototype().email().set( "foo.com" );
     }
 
     @Test
@@ -60,7 +60,7 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().email().set( "rickard@gmail.com" );
+        cb.prototype().email().set( "rickard@gmail.com" );
     }
 
     @Test( expected = ConstraintViolationException.class )
@@ -68,7 +68,7 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().greaterThan().set( 10 );
+        cb.prototype().greaterThan().set( 10 );
     }
 
     @Test
@@ -76,7 +76,7 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().greaterThan().set( 11 );
+        cb.prototype().greaterThan().set( 11 );
     }
 
     @Test( expected = ConstraintViolationException.class )
@@ -84,7 +84,7 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().instanceOf().set( new HashSet() );
+        cb.prototype().instanceOf().set( new HashSet() );
     }
 
     @Test
@@ -92,7 +92,7 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().instanceOf().set( new ArrayList() );
+        cb.prototype().instanceOf().set( new ArrayList() );
     }
 
     @Test( expected = ConstraintViolationException.class )
@@ -100,7 +100,7 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().lessThan().set( 10 );
+        cb.prototype().lessThan().set( 10 );
     }
 
     @Test
@@ -108,7 +108,7 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().lessThan().set( 9 );
+        cb.prototype().lessThan().set( 9 );
     }
 
     @Test( expected = ConstraintViolationException.class )
@@ -116,7 +116,7 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().matches().set( "cba" );
+        cb.prototype().matches().set( "cba" );
     }
 
     @Test
@@ -124,7 +124,7 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().matches().set( "abbccc" );
+        cb.prototype().matches().set( "abbccc" );
     }
 
     @Test( expected = ConstraintViolationException.class )
@@ -132,7 +132,7 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().maxLength().set( "xxxxx" );
+        cb.prototype().maxLength().set( "xxxxx" );
     }
 
     @Test
@@ -140,7 +140,7 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().maxLength().set( "xxx" );
+        cb.prototype().maxLength().set( "xxx" );
     }
 
     @Test( expected = ConstraintViolationException.class )
@@ -148,7 +148,7 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().minLength().set( "xx" );
+        cb.prototype().minLength().set( "xx" );
     }
 
     @Test
@@ -156,7 +156,7 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().minLength().set( "xxx" );
+        cb.prototype().minLength().set( "xxx" );
     }
 
     @Test
@@ -165,7 +165,7 @@ public class ConstraintTest extends AbstractQi4jTest
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
         try
         {
-            cb.stateOfComposite().notEmptyString().set( "" );
+            cb.prototype().notEmptyString().set( "" );
             fail( "Should have thrown exception" );
         }
         catch( ConstraintViolationException e )
@@ -174,7 +174,7 @@ public class ConstraintTest extends AbstractQi4jTest
 
         try
         {
-            cb.stateOfComposite().notEmptyCollection().set( new ArrayList() );
+            cb.prototype().notEmptyCollection().set( new ArrayList() );
             fail( "Should have thrown exception" );
         }
         catch( ConstraintViolationException e )
@@ -183,7 +183,7 @@ public class ConstraintTest extends AbstractQi4jTest
 
         try
         {
-            cb.stateOfComposite().notEmptyList().set( new ArrayList() );
+            cb.prototype().notEmptyList().set( new ArrayList() );
             fail( "Should have thrown exception" );
         }
         catch( ConstraintViolationException e )
@@ -195,9 +195,9 @@ public class ConstraintTest extends AbstractQi4jTest
     public void testNotEmptyOk()
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
-        cb.stateOfComposite().notEmptyString().set( "X" );
-        cb.stateOfComposite().notEmptyCollection().set( Arrays.asList( "X" ) );
-        cb.stateOfComposite().notEmptyList().set( Arrays.asList( "X" ) );
+        cb.prototype().notEmptyString().set( "X" );
+        cb.prototype().notEmptyCollection().set( Arrays.asList( "X" ) );
+        cb.prototype().notEmptyList().set( Arrays.asList( "X" ) );
     }
 
     @Test( expected = ConstraintViolationException.class )
@@ -205,7 +205,7 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().oneOf().set( "Foo" );
+        cb.prototype().oneOf().set( "Foo" );
     }
 
     @Test
@@ -213,7 +213,7 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().oneOf().set( "Bar" );
+        cb.prototype().oneOf().set( "Bar" );
     }
 
     @Test( expected = ConstraintViolationException.class )
@@ -221,7 +221,7 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().range().set( 101 );
+        cb.prototype().range().set( 101 );
     }
 
     @Test
@@ -229,9 +229,9 @@ public class ConstraintTest extends AbstractQi4jTest
     {
         CompositeBuilder<TestCaseComposite> cb = compositeBuilderFactory.newCompositeBuilder( TestCaseComposite.class );
 
-        cb.stateOfComposite().range().set( 0 );
-        cb.stateOfComposite().range().set( 50 );
-        cb.stateOfComposite().range().set( 100 );
+        cb.prototype().range().set( 0 );
+        cb.prototype().range().set( 50 );
+        cb.prototype().range().set( 100 );
     }
 
 }
