@@ -11,10 +11,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="qi4j-core-api" />
-    <orderEntry type="module" module-name="qi4j-core-spi" />
-    <orderEntry type="module" module-name="qi4j-core-bootstrap" />
-    <orderEntry type="module" module-name="qi4j-lib-locking" />
+    <orderEntry type="module" module-name="qi4j-core-api" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
+    <orderEntry type="module" module-name="qi4j-lib-locking" exported="" />
     <orderEntry type="library" exported="" name="Maven: jdbm:jdbm:1.0" level="project" />
     <orderEntry type="module" module-name="qi4j-core-testsupport" />
     <orderEntry type="library" name="Maven: junit:junit:4.5" level="project" />

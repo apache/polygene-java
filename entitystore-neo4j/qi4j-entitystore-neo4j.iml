@@ -16,10 +16,10 @@
     <orderEntry type="library" exported="" name="Maven: javax.transaction:jta:1.0.1" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.apache.lucene:lucene-core:2.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.neo4j:shell:1.0-b7-pre1" level="project" />
-    <orderEntry type="module" module-name="qi4j-core-bootstrap" />
-    <orderEntry type="module" module-name="qi4j-core-spi" />
-    <orderEntry type="module" module-name="qi4j-core-api" />
-    <orderEntry type="module" module-name="qi4j-lib-constraints" />
+    <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-api" exported="" />
+    <orderEntry type="module" module-name="qi4j-lib-constraints" exported="" />
     <orderEntry type="module" module-name="qi4j-core-testsupport" />
     <orderEntry type="module" module-name="qi4j-core-runtime" />
     <orderEntry type="library" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
