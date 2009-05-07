@@ -38,7 +38,7 @@ public final class PropertiesModel
         super( constraints, propertyDeclarations, immutable );
     }
 
-    protected PropertyModel newPropertyModel( Method method )
+    protected PropertyModel newPropertyModel(Method method, Class compositeType)
     {
         Annotation[] annotations = Annotations.getMethodAndTypeAnnotations( method );
         boolean optional = Annotations.getAnnotationOfType( annotations, Optional.class ) != null;

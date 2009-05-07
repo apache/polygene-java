@@ -30,12 +30,13 @@ import java.lang.reflect.Method;
 public final class EntityPropertyModel extends PersistentPropertyModel
 {
     public EntityPropertyModel( Method anAccessor,
+                                Class compositeType,
                                 boolean immutable,
                                 ValueConstraintsInstance constraints,
                                 MetaInfo metaInfo,
                                 Object defaultValue )
     {
-        super( anAccessor, immutable, constraints, metaInfo, defaultValue );
+        super( anAccessor, compositeType, immutable, constraints, metaInfo, defaultValue );
     }
 
     public Property<?> newInstance( Object value )

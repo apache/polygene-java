@@ -69,9 +69,9 @@ public final class ValueModel extends AbstractCompositeModel
         // TODO: Disable constraints, concerns and sideeffects??
         CompositeMethodsModel compositeMethodsModel =
             new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
-        stateModel.addStateFor( compositeMethodsModel.methods() );
+        stateModel.addStateFor( compositeMethodsModel.methods(), compositeType );
 
-        ValueCompositeType valueType = (ValueCompositeType) ValueType.newValueType( compositeType );
+        ValueCompositeType valueType = (ValueCompositeType) ValueType.newValueType( compositeType, compositeType, compositeType);
 
         return new ValueModel( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, valueType );
     }

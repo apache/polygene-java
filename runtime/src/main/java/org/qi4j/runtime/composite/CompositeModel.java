@@ -58,7 +58,7 @@ public class CompositeModel
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
         CompositeMethodsModel compositeMethodsModel =
             new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
-        stateModel.addStateFor( compositeMethodsModel.methods() );
+        stateModel.addStateFor( compositeMethodsModel.methods(), compositeType);
 
         return new CompositeModel(
             compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );

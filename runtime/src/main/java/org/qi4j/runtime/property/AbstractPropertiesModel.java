@@ -53,11 +53,11 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
         this.immutable = immutable;
     }
 
-    public void addPropertyFor( Method method )
+    public void addPropertyFor(Method method, Class compositeType)
     {
         if( Property.class.isAssignableFrom( method.getReturnType() ) )
         {
-            T propertyModel = newPropertyModel( method );
+            T propertyModel = newPropertyModel( method, compositeType );
             propertyModels.add( propertyModel );
             accessors.put( propertyModel.qualifiedName(), propertyModel.accessor() );
             mapMethodPropertyModel.put( method, propertyModel );
@@ -238,5 +238,5 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
         }
     }
 
-    protected abstract T newPropertyModel( Method method );
+    protected abstract T newPropertyModel(Method method, Class compositeType);
 }

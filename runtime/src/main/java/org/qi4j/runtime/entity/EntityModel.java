@@ -89,7 +89,7 @@ public final class EntityModel
                                                                                  concernsDeclaration,
                                                                                  sideEffectsModel,
                                                                                  mixinsModel );
-        stateModel.addStateFor( compositeMethodsModel.methods() );
+        stateModel.addStateFor( compositeMethodsModel.methods(), type);
 
         return new EntityModel( type,
                                 visibility,

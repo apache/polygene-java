@@ -61,11 +61,11 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
         return propertiesModel.newInstance( state );
     }
 
-    public void addStateFor( Iterable<Method> methods )
+    public void addStateFor(Iterable<Method> methods, Class compositeType)
     {
         for( Method method : methods )
         {
-            propertiesModel.addPropertyFor( method );
+            propertiesModel.addPropertyFor( method, compositeType );
         }
     }
 

@@ -60,7 +60,7 @@ public final class EntityPropertiesModel
         return mapMethodPropertyModel.get( accessor ).newInstance( entityState, uow );
     }
 
-    protected EntityPropertyModel newPropertyModel( Method method )
+    protected EntityPropertyModel newPropertyModel(Method method, Class compositeType)
     {
         Annotation[] annotations = Annotations.getMethodAndTypeAnnotations( method );
         boolean optional = Annotations.getAnnotationOfType( annotations, Optional.class ) != null;
@@ -73,7 +73,7 @@ public final class EntityPropertiesModel
         MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
         Object defaultValue = propertyDeclarations.getInitialValue( method );
         boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
-        EntityPropertyModel propertyModel = new EntityPropertyModel( method, immutable, valueConstraintsInstance, metaInfo, defaultValue );
+        EntityPropertyModel propertyModel = new EntityPropertyModel( method, compositeType, immutable, valueConstraintsInstance, metaInfo, defaultValue );
         return propertyModel;
     }
 

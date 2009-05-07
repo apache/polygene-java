@@ -43,7 +43,7 @@ public abstract class PersistentPropertyModel
     private final PropertyType propertyType;
     protected final PropertyInfo propertyInfo;
 
-    public PersistentPropertyModel( Method accessor, boolean immutable, ValueConstraintsInstance constraints, MetaInfo metaInfo, Object initialValue )
+    public PersistentPropertyModel( Method accessor, Class compositeType, boolean immutable, ValueConstraintsInstance constraints, MetaInfo metaInfo, Object initialValue )
     {
         super( accessor, immutable, constraints, metaInfo, initialValue );
 
@@ -64,7 +64,7 @@ public abstract class PersistentPropertyModel
             type = PropertyType.PropertyTypeEnum.MUTABLE;
         }
 
-        propertyType = new PropertyType( qualifiedName(), ValueType.newValueType( type() ), toRDF(), this.queryable, type );
+        propertyType = new PropertyType( qualifiedName(), ValueType.newValueType( type(), accessor.getDeclaringClass(), compositeType), toRDF(), this.queryable, type );
 
         propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), qualifiedName(), type() );
 

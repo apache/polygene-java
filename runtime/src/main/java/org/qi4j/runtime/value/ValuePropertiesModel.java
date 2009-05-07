@@ -40,7 +40,7 @@ public final class ValuePropertiesModel
         super( constraints, propertyDeclarations, true );
     }
 
-    protected ValuePropertyModel newPropertyModel( Method method )
+    protected ValuePropertyModel newPropertyModel(Method method, Class compositeType)
     {
         Annotation[] annotations = Annotations.getMethodAndTypeAnnotations( method );
         boolean optional = Annotations.getAnnotationOfType( annotations, Optional.class ) != null;
@@ -52,7 +52,7 @@ public final class ValuePropertiesModel
         }
         MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
         Object initialValue = propertyDeclarations.getInitialValue( method );
-        return new ValuePropertyModel( method, valueConstraintsInstance, metaInfo, initialValue );
+        return new ValuePropertyModel( method, compositeType, valueConstraintsInstance, metaInfo, initialValue );
     }
 
     public List<PropertyType> propertyTypes()

@@ -19,8 +19,10 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import static org.qi4j.api.util.Classes.*;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -76,6 +78,18 @@ public class ClassesTest
         assertThat( "Return type is A", (Class) Classes.getRawClass( wildcardType ), equalTo( (Class) A.class ) );
     }
 
+    @Test
+    public void givenTypeVariableWhenResolveThenResolved()
+    {
+        for (Method method : Type1.class.getMethods())
+        {
+            Type type = method.getGenericReturnType();
+            TypeVariable typeVariable = (TypeVariable) type;
+            Type resolvedType = Classes.resolveTypeVariable(typeVariable, method.getDeclaringClass(), Type1.class);
+            System.out.println(type+"="+resolvedType);
+        }
+    }
+
     interface A
     {
     }
@@ -92,5 +106,23 @@ public class ClassesTest
     interface Generics
     {
         Iterable<? extends A> wildcard();
+    }
+
+    interface Type1
+        extends Type2<String, Long>
+    {
+
+    }
+
+    interface Type2<TYPE1,TYPE2>
+        extends Type3<TYPE1>
+    {
+        TYPE1 type1();
+        TYPE2 type2();
+    }
+
+    interface Type3<TYPE>
+    {
+        TYPE type();
     }
 }

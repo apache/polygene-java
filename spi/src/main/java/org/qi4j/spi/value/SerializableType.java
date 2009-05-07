@@ -53,7 +53,7 @@ public class SerializableType
         else if( value instanceof ValueComposite )
         {
             value = ( (ValueComposite) value ).toJSON();
-        }
+        } 
 
         // Serialize value
         try

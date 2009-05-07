@@ -19,6 +19,7 @@ import org.qi4j.api.common.TypeName;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.spi.entity.SchemaVersion;
@@ -39,7 +40,7 @@ public class ValueCompositeType
 {
     public static boolean isValueComposite( Type type )
     {
-        return type instanceof Class && ValueComposite.class.isAssignableFrom( (Class) type );
+        return ValueComposite.class.isAssignableFrom( Classes.getRawClass(type) );
     }
 
     private List<PropertyType> types;
@@ -118,7 +119,14 @@ public class ValueCompositeType
         final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
         for( PropertyType propertyType : types )
         {
-            String name = json.nextToken( ":" );
+            String name = null;
+            try
+            {
+                name = json.nextToken( ":" );
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
             token = json.nextToken( ",:" );
 
             token = json.peekNextToken( "{,}\"[" );

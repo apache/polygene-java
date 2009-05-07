@@ -36,19 +36,19 @@ public final class ValuePropertyModel extends PersistentPropertyModel
     private final PropertyType propertyType;
     private PropertyInfo propertyInfo;
 
-    public ValuePropertyModel( Method anAccessor,
-                               ValueConstraintsInstance constraints,
-                               MetaInfo metaInfo,
-                               Object defaultValue )
+    public ValuePropertyModel(Method anAccessor,
+                              Class compositeType, ValueConstraintsInstance constraints,
+                              MetaInfo metaInfo,
+                              Object defaultValue)
     {
-        super( anAccessor, true, constraints, metaInfo, defaultValue );
+        super( anAccessor, compositeType, true, constraints, metaInfo, defaultValue );
         final Queryable queryable = anAccessor.getAnnotation( Queryable.class );
         boolean isQueryable = queryable == null || queryable.value();
 
         PropertyType.PropertyTypeEnum type;
         type = PropertyType.PropertyTypeEnum.IMMUTABLE;
 
-        ValueType valueType = ValueType.newValueType( type() );
+        ValueType valueType = ValueType.newValueType( type(), anAccessor.getDeclaringClass(), compositeType );
 
         propertyType = new PropertyType( qualifiedName(), valueType, toRDF(), isQueryable, type );
         propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), qualifiedName(), type() );
