@@ -8,7 +8,12 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * JAVADOC
@@ -16,9 +21,12 @@ import java.util.*;
 public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
     implements ManyAssociation<T>
 {
-    public ManyAssociationInstance( AssociationInfo associationInfo, ModuleUnitOfWork unitOfWork, EntityState entityState )
+    private ManyAssociationModel model;
+
+    public ManyAssociationInstance( AssociationInfo associationInfo, ManyAssociationModel constraints, ModuleUnitOfWork unitOfWork, EntityState entityState )
     {
         super( associationInfo, unitOfWork, entityState );
+        this.model = constraints;
     }
 
     public int count()
@@ -35,8 +43,14 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
     {
         checkImmutable();
         checkType( entity );
-
-        return associated().add( i, getEntityReference( entity ) );
+        model.checkConstraints(entity);
+        try
+        {
+            return associated().add( i, getEntityReference( entity ) );
+        } finally
+        {
+            model.checkAssociationConstraints(this);
+        }
     }
 
     public boolean remove( T entity )
@@ -44,7 +58,13 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
         checkImmutable();
         checkType( entity );
 
-        return associated().remove( getEntityReference( entity ) );
+        try
+        {
+            return associated().remove( getEntityReference( entity ) );
+        } finally
+        {
+            model.checkAssociationConstraints(this);
+        }
     }
 
     public T get( int i )
@@ -166,6 +186,6 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
 
     private ManyAssociationState associated()
     {
-        return entityState.getManyAssociation( ( (ManyAssociationModel) associationInfo ).manyAssociationType().stateName() );
+        return entityState.getManyAssociation( ( model).manyAssociationType().stateName() );
     }
 }

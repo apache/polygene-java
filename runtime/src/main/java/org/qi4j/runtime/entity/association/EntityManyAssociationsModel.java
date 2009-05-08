@@ -132,7 +132,8 @@ public final class EntityManyAssociationsModel
     {
         for( ManyAssociationModel manyAssociationModel : manyAssociationModels )
         {
-            manyAssociationModel.checkAssociationConstraints( entityManyAssociationsInstance );
+            ManyAssociation manyAssociation = entityManyAssociationsInstance.manyAssociationFor( manyAssociationModel.accessor() );
+            manyAssociationModel.checkAssociationConstraints( manyAssociation );
         }
     }
 

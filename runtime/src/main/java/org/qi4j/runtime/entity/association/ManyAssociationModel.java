@@ -20,21 +20,27 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Aggregated;
-import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.RDF;
+import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Immutable;
-import static org.qi4j.api.util.Classes.getRawClass;
+import static org.qi4j.api.util.Classes.*;
 import org.qi4j.api.util.SerializationUtil;
+import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -43,7 +49,7 @@ import java.util.List;
  * JAVADOC
  */
 public final class ManyAssociationModel
-    implements ManyAssociationDescriptor, Serializable
+    implements ManyAssociationDescriptor, ConstraintsCheck, Serializable
 {
     private ValueConstraintsInstance associationConstraints;
     private MetaInfo metaInfo;
@@ -56,6 +62,7 @@ public final class ManyAssociationModel
     private boolean immutable;
     private boolean aggregated;
     private ManyAssociationType manyAssociationType;
+    private AssociationInfo builderInfo;
 
     private void writeObject( ObjectOutputStream out )
         throws IOException
@@ -90,6 +97,7 @@ public final class ManyAssociationModel
         this.accessor = accessor;
         initialize();
         this.manyAssociationType = new ManyAssociationType( qualifiedName, getRawClass( type ).getName(), rdf, queryable );
+        this.builderInfo = new GenericAssociationInfo(accessor, metaInfo, false);
     }
 
     private void initialize()
@@ -142,7 +150,7 @@ public final class ManyAssociationModel
 
     public <T> ManyAssociation<T> newInstance( ModuleUnitOfWork uow, EntityState state )
     {
-        ManyAssociation<T> associationInstance = new ManyAssociationInstance<T>( this, uow, state );
+        ManyAssociation<T> associationInstance = new ManyAssociationInstance<T>( state.identity() == EntityReference.NULL ? builderInfo : this, this, uow, state );
 
         if( Composite.class.isAssignableFrom( accessor.getReturnType() ) )
         {
@@ -152,7 +160,7 @@ public final class ManyAssociationModel
         return associationInstance;
     }
 
-    public void checkConstraints( EntityComposite composite )
+    public void checkConstraints( Object composite )
         throws ConstraintViolationException
     {
         if( constraints != null )
@@ -166,13 +174,11 @@ public final class ManyAssociationModel
         }
     }
 
-    public void checkAssociationConstraints( EntityManyAssociationsInstance manyAssociations )
+    public void checkAssociationConstraints( ManyAssociation manyAssociation )
         throws ConstraintViolationException
     {
         if( associationConstraints != null )
         {
-            ManyAssociation manyAssociation = manyAssociations.manyAssociationFor( accessor );
-
             List<ConstraintViolation> violations = associationConstraints.checkConstraints( manyAssociation );
             if( !violations.isEmpty() )
             {
