@@ -21,21 +21,26 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Aggregated;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.RDF;
-import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
-import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.util.SerializationUtil;
+import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -44,7 +49,7 @@ import java.util.List;
  * JAVADOC
  */
 public final class AssociationModel
-    implements AssociationDescriptor, Serializable
+    implements AssociationDescriptor, Serializable, ConstraintsCheck
 {
     private MetaInfo metaInfo;
     private Type type;
@@ -57,6 +62,7 @@ public final class AssociationModel
     private boolean immutable;
     private boolean aggregated;
     private AssociationType associationType;
+    private AssociationInfo builderInfo;
 
     private void writeObject( ObjectOutputStream out )
         throws IOException
@@ -91,6 +97,7 @@ public final class AssociationModel
         this.accessor = accessor;
         initialize();
         this.associationType = new AssociationType( qualifiedName, TypeName.nameOf( type ), rdf, queryable );
+        builderInfo = new GenericAssociationInfo(accessor, metaInfo, false);
     }
 
     private void initialize()
@@ -136,33 +143,14 @@ public final class AssociationModel
         return accessor;
     }
 
-    public boolean isManyAssociation()
-    {
-        return ManyAssociation.class.isAssignableFrom( accessor.getReturnType() );
-    }
-
     public boolean isAssociation()
     {
         return Association.class.isAssignableFrom( accessor.getReturnType() );
     }
 
-    public AbstractAssociation newDefaultInstance( ModuleUnitOfWork uow, EntityState entityState )
-    {
-        AbstractAssociation instance;
-        if( isManyAssociation() )
-        {
-            instance = new ManyAssociationInstance( this, uow, entityState );
-        }
-        else
-        {
-            instance = new AssociationInstance<Object>( this, uow, entityState );
-        }
-        return instance;
-    }
-
     public <T> Association<T> newInstance( ModuleUnitOfWork uow, EntityState state )
     {
-        Association<T> associationInstance = new AssociationInstance<T>( this, uow, state );
+        Association<T> associationInstance = new AssociationInstance<T>( state.identity() == EntityReference.NULL ? builderInfo : this, this, uow, state );
 
         if( Composite.class.isAssignableFrom( accessor.getReturnType() ) )
         {

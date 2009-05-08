@@ -124,10 +124,7 @@ public final class EntityAssociationsModel
         Set<AssociationType> associationTypes = new LinkedHashSet<AssociationType>();
         for( AssociationModel associationModel : associationModels )
         {
-            if( associationModel.isAssociation() )
-            {
-                associationTypes.add( associationModel.associationType() );
-            }
+            associationTypes.add( associationModel.associationType() );
         }
         return associationTypes;
     }

@@ -57,31 +57,29 @@ public class GenericAssociationInfo
         return null;
     }
 
-    /**
-     * Get qualified association name from a URI
-     *
-     * @param uri of the association
-     * @return qualified association name
-     */
-    public static String toQualifiedName( final String uri )
-    {
-        return uri.substring( "urn:qi4j:entitytype:".length() ).replace( '#', ':' );
-    }
-
     private QualifiedName qualifiedName;
     private Type type;
     private MetaInfo metainfo;
     private boolean immutable;
     private boolean aggregated;
 
+    public GenericAssociationInfo( MetaInfo infos, boolean immutable, boolean aggregated, QualifiedName qualifiedName, Type type )
+    {
+        this.metainfo = infos;
+        this.immutable = immutable;
+        this.aggregated = aggregated;
+        this.qualifiedName = qualifiedName;
+        this.type = type;
+    }
+
     public GenericAssociationInfo( Method accessor, MetaInfo metainfo )
     {
-        this.qualifiedName = QualifiedName.fromMethod( accessor );
-        this.metainfo = metainfo;
-        immutable = metainfo.get( Immutable.class ) != null;
-        aggregated = metainfo.get( Aggregated.class ) != null;
-        Type methodReturnType = accessor.getGenericReturnType();
-        type = getAssociationType( methodReturnType );
+        this(metainfo, metainfo.get( Immutable.class ) != null, metainfo.get( Aggregated.class ) != null, QualifiedName.fromMethod( accessor ), getAssociationType( accessor.getGenericReturnType() ));
+    }
+
+    public GenericAssociationInfo( Method accessor, MetaInfo metainfo, boolean immutable )
+    {
+        this(metainfo, immutable, metainfo.get( Aggregated.class ) != null, QualifiedName.fromMethod( accessor ), getAssociationType( accessor.getGenericReturnType() ));
     }
 
     public <T> T metaInfo( Class<T> infoType )

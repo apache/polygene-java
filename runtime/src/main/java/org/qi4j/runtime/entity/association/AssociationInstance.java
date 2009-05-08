@@ -18,6 +18,7 @@ import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.AssociationInfo;
+import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.StateName;
@@ -33,10 +34,12 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
     private static final Object NOT_LOADED = new Object();
 
     private T value = (T) NOT_LOADED;
+    private ConstraintsCheck constraints;
 
-    public AssociationInstance( AssociationInfo associationInfo, ModuleUnitOfWork unitOfWork, EntityState entityState )
+    public AssociationInstance( AssociationInfo associationInfo, ConstraintsCheck constraints, ModuleUnitOfWork unitOfWork, EntityState entityState )
     {
         super( associationInfo, unitOfWork, entityState );
+        this.constraints = constraints;
     }
 
     // Association implementation
@@ -56,8 +59,7 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
         checkImmutable();
         checkType( newValue );
 
-        AssociationModel associationModel = (AssociationModel) associationInfo;
-        associationModel.checkConstraints( newValue );
+        constraints.checkConstraints( newValue );
 
         // Change association
         if( entityState != null )
@@ -151,6 +153,6 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
 
     protected StateName stateName()
     {
-        return ( (AssociationModel) associationInfo ).associationType().stateName();
+        return ( (AssociationModel) constraints ).associationType().stateName();
     }
 }
