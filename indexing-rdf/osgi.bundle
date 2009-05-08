@@ -18,6 +18,8 @@ Import-Package: org.apache.commons.logging, \
                 javax.xml.namespace, \
                 javax.xml.parsers, \
                 javax.xml.validation, \
+                net.sf.cglib.asm.util, \
+                org.codehaus.aspectwerkz.hook, \
                 org.qi4j.api.common, \
                 org.qi4j.api.composite, \
                 org.qi4j.api.configuration, \

@@ -275,25 +275,21 @@
         <groupId>org.qi4j.core</groupId>
         <artifactId>qi4j-core-api</artifactId>
         <version>${version.qi4j-core}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.qi4j.core</groupId>
         <artifactId>qi4j-core-spi</artifactId>
         <version>${version.qi4j-core}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.qi4j.core</groupId>
         <artifactId>qi4j-core-bootstrap</artifactId>
         <version>${version.qi4j-core}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.qi4j.core</groupId>
         <artifactId>qi4j-core-runtime</artifactId>
         <version>${version.qi4j-core}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.qi4j.core</groupId>
@@ -305,19 +301,16 @@
         <groupId>org.qi4j.library</groupId>
         <artifactId>qi4j-lib-constraints</artifactId>
         <version>${version.qi4j-libraries}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.qi4j.library</groupId>
         <artifactId>qi4j-lib-locking</artifactId>
         <version>${version.qi4j-libraries}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.qi4j.library</groupId>
         <artifactId>qi4j-lib-rdf</artifactId>
         <version>${version.qi4j-libraries}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.qi4j.library</groupId>
