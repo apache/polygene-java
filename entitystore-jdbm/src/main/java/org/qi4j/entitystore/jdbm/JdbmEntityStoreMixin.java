@@ -18,8 +18,16 @@ package org.qi4j.entitystore.jdbm;
 
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
+import jdbm.RecordManagerOptions;
 import jdbm.btree.BTree;
-import jdbm.helper.*;
+import jdbm.helper.ByteArrayComparator;
+import jdbm.helper.ByteArraySerializer;
+import jdbm.helper.LongSerializer;
+import jdbm.helper.MRU;
+import jdbm.helper.Serializer;
+import jdbm.helper.Tuple;
+import jdbm.helper.TupleBrowser;
+import jdbm.recman.CacheRecordManager;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityReference;
@@ -32,7 +40,12 @@ import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.helpers.MapEntityStore;
 import org.qi4j.spi.service.ServiceDescriptor;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Properties;
 import java.util.concurrent.locks.ReadWriteLock;
 
@@ -53,9 +66,9 @@ public class JdbmEntityStoreMixin
     ServiceDescriptor descriptor;
 
     private RecordManager recordManager;
+    private CacheRecordManager cacheRecordManager;
     private BTree index;
     private Serializer serializer;
-    private long registryId;
 
     // Activatable implementation
     public void activate()
@@ -69,7 +82,7 @@ public class JdbmEntityStoreMixin
         Properties properties;
         try
         {
-            properties = getProperties(directory);
+            properties = getProperties(config.configuration());
         }
         catch (IOException e)
         {
@@ -138,7 +151,7 @@ public class JdbmEntityStoreMixin
                         {
                             super.close();
 
-                            byte[] stateArray = toByteArray();
+                            byte[] stateArray = buf;
                             long stateIndex = recordManager.insert(stateArray, serializer);
                             String indexKey = ref.toString();
                             index.insert(indexKey.getBytes("UTF-8"), stateIndex, false);
@@ -220,28 +233,14 @@ public class JdbmEntityStoreMixin
         }
     }
 
-    private Properties getProperties(File directory)
+    private Properties getProperties(JdbmConfiguration config)
             throws IOException
     {
         Properties properties = new Properties();
-        File propertiesFile = new File(directory, "qi4j.properties");
-        if (propertiesFile.exists())
-        {
-            FileInputStream fis = null;
-            try
-            {
-                fis = new FileInputStream(propertiesFile);
-                BufferedInputStream bis = new BufferedInputStream(fis);
-                properties.load(bis);
-            }
-            finally
-            {
-                if (fis != null)
-                {
-                    fis.close();
-                }
-            }
-        }
+
+        properties.put(RecordManagerOptions.AUTO_COMMIT, config.autoCommit().get().toString());
+        properties.put(RecordManagerOptions.DISABLE_TRANSACTIONS, config.disableTransactions().get().toString());
+        
         return properties;
     }
 
@@ -255,16 +254,17 @@ public class JdbmEntityStoreMixin
     private void initializeIndex()
             throws IOException
     {
+        cacheRecordManager = new CacheRecordManager(recordManager, new MRU(1000));
         long recid = recordManager.getNamedObject("index");
         if (recid != 0)
         {
             System.out.println("Using existing index");
-            index = BTree.load(recordManager, recid);
+            index = BTree.load(cacheRecordManager, recid);
         } else
         {
             System.out.println("Creating new index");
-            index = BTree.createInstance(recordManager, new ByteArrayComparator(), new ByteArraySerializer(), new LongSerializer(), 16);
-            recordManager.setNamedObject("index", index.getRecid());
+            index = BTree.createInstance(cacheRecordManager, new ByteArrayComparator(), new ByteArraySerializer(), new LongSerializer(), 16);
+            cacheRecordManager.setNamedObject("index", index.getRecid());
         }
     }
 }
