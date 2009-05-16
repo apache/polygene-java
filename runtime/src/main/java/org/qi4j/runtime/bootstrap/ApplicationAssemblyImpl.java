@@ -15,10 +15,11 @@
 package org.qi4j.runtime.bootstrap;
 
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.AssemblyVisitor;
 import org.qi4j.bootstrap.LayerAssembly;
-import org.qi4j.bootstrap.AssemblyException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,7 +35,13 @@ public final class ApplicationAssemblyImpl
 {
     private List<LayerAssemblyImpl> layerAssemblies = new ArrayList<LayerAssemblyImpl>();
     private String name = "Application";
+    private Application.Mode mode;
     private MetaInfo metaInfo = new MetaInfo();
+
+    public ApplicationAssemblyImpl()
+    {
+        mode = Application.Mode.valueOf(System.getProperty("mode", "production"));
+    }
 
     public LayerAssembly newLayerAssembly( String name )
     {
@@ -46,6 +53,12 @@ public final class ApplicationAssemblyImpl
     public ApplicationAssembly setName( String name )
     {
         this.name = name;
+        return this;
+    }
+
+    public ApplicationAssembly setMode(Application.Mode mode)
+    {
+        this.mode = mode;
         return this;
     }
 
@@ -78,5 +91,10 @@ public final class ApplicationAssemblyImpl
     public String name()
     {
         return name;
+    }
+
+    public Application.Mode mode()
+    {
+        return mode;
     }
 }

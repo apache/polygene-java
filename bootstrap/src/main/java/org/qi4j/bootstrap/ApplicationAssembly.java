@@ -18,6 +18,8 @@
 
 package org.qi4j.bootstrap;
 
+import org.qi4j.api.structure.Application;
+
 /**
  * An application assembly. This can be used by Assemblers to programmatically
  * set the name of the application and create new layers.
@@ -30,7 +32,7 @@ public interface ApplicationAssembly
      * @param name of the new layer
      * @return a LayerAssembly instance
      */
-    LayerAssembly newLayerAssembly( String name );
+    LayerAssembly newLayerAssembly(String name);
 
     /**
      * Get the currently set name of the application
@@ -40,13 +42,31 @@ public interface ApplicationAssembly
     String name();
 
     /**
+     * Get the currently set mode of the application
+     * @return the application mode
+     */
+    Application.Mode mode();
+
+    /**
      * Set the name of the application
      *
      * @param name
      */
-    ApplicationAssembly setName( String name );
+    ApplicationAssembly setName(String name);
 
-    ApplicationAssembly setMetaInfo( Object info );
+    /**
+     * Set the application mode. This will be set to "production" by default. You can
+     * set the system property "mode" to either "development", "test" or "production"
+     * to explicitly set the mode. If that is not an option, then call this method
+     * during assembly to set the mode. The mode may then be queried by assemblers,
+     * and they may assemble the application differentlly depending on this setting.
+     *
+     * @param mode the application mode
+     * @return the current application mode
+     */
+    ApplicationAssembly setMode(Application.Mode mode);
 
-    void visit( AssemblyVisitor visitor ) throws AssemblyException;
+    ApplicationAssembly setMetaInfo(Object info);
+
+    void visit(AssemblyVisitor visitor) throws AssemblyException;
 }

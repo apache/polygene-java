@@ -16,6 +16,7 @@ package org.qi4j.runtime.structure;
 
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.structure.Application;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
@@ -38,13 +39,15 @@ public final class ApplicationModel
     implements ApplicationModelSPI, ApplicationDescriptor, Serializable
 {
     private final String name;
+    private Application.Mode mode;
     private MetaInfo metaInfo;
     private final List<LayerModel> layers;
     private final InjectionProviderFactory ipf;
 
-    public ApplicationModel( String name, MetaInfo metaInfo, List<LayerModel> layers )
+    public ApplicationModel( String name, Application.Mode mode, MetaInfo metaInfo, List<LayerModel> layers )
     {
         this.name = name;
+        this.mode = mode;
         this.metaInfo = metaInfo;
         this.layers = layers;
         ipf = new InjectionProviderFactoryStrategy();
@@ -55,6 +58,10 @@ public final class ApplicationModel
         return name;
     }
 
+    public Application.Mode mode()
+    {
+        return mode;
+    }
 
     public MetaInfo metaInfo()
     {

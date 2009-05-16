@@ -38,7 +38,7 @@ public final class ApplicationModelFactoryImpl
     {
         ApplicationAssemblyImpl applicationAssembly = (ApplicationAssemblyImpl) assembly;
         List<LayerModel> layerModels = new ArrayList<LayerModel>();
-        ApplicationModel applicationModel = new ApplicationModel( applicationAssembly.name(), applicationAssembly.metaInfo(), layerModels );
+        ApplicationModel applicationModel = new ApplicationModel( applicationAssembly.name(), applicationAssembly.mode(), applicationAssembly.metaInfo(), layerModels );
         Map<LayerAssembly, LayerModel> mapAssemblyModel = new HashMap<LayerAssembly, LayerModel>();
         Map<LayerAssembly, List<LayerModel>> mapUsedLayers = new HashMap<LayerAssembly, List<LayerModel>>();
 

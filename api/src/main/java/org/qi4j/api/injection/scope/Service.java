@@ -15,8 +15,14 @@
 package org.qi4j.api.injection.scope;
 
 import org.qi4j.api.injection.InjectionScope;
+import org.qi4j.api.service.ServiceSelector;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Annotation to denote the injection of a service dependency into a Fragment.
@@ -35,4 +41,29 @@ import java.lang.annotation.*;
 @InjectionScope
 public @interface Service
 {
+}
+
+@interface Qualifier
+{
+    Class<? extends QualifierSelector> value();
+}
+
+@Qualifier(TaggedSelector.class)
+@interface Tagged
+{
+    String[] value();
+}
+
+interface QualifierSelector<QUALIFIER extends Annotation>
+{
+    public <T> ServiceSelector.Selector select(QUALIFIER qualifier);
+}
+
+class TaggedSelector
+    implements QualifierSelector<Tagged>
+{
+    public <T> ServiceSelector.Selector select(Tagged tagged)
+    {
+        return ServiceSelector.withTags(tagged.value());
+    }
 }

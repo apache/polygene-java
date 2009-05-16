@@ -59,6 +59,11 @@ public class ApplicationInstance
         return model.name();
     }
 
+    public Mode mode()
+    {
+        return model.mode();
+    }
+
     public MetaInfo metaInfo()
     {
         return model.metaInfo();

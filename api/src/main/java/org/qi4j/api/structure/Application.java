@@ -21,7 +21,15 @@ import org.qi4j.api.common.MetaInfo;
  */
 public interface Application
 {
+    public enum Mode
+    {
+        // Application modes
+        test,development,production
+    }
+
     String name();
+
+    Mode mode();
 
     MetaInfo metaInfo();
 
