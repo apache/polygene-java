@@ -42,7 +42,7 @@
     </dependency>
     <dependency>
       <groupId>org.restlet</groupId>
-      <artifactId>org.restlet</artifactId>
+      <artifactId>org.restlet.ext.xml</artifactId>
       <version>${version.restlet}</version>
     </dependency>
     <dependency>

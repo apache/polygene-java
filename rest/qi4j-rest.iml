@@ -70,6 +70,7 @@
     <orderEntry type="library" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.restlet:org.restlet:1.2-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.osgi:osgi_R4_core:1.0" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.restlet:org.restlet.ext.xml:1.2-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.restlet:org.restlet.ext.atom:1.2-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.restlet:org.restlet.ext.servlet:1.2-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
