@@ -13,7 +13,7 @@
   <packaging>bundle</packaging>
 
   <properties>
-    <version.restlet>1.2-SNAPSHOT</version.restlet>
+    <version.restlet>1.2-M2</version.restlet>
     <version.openrdf>2.2.1</version.openrdf>
   </properties>
 
@@ -38,11 +38,6 @@
     <dependency>
       <groupId>org.restlet</groupId>
       <artifactId>org.restlet</artifactId>
-      <version>${version.restlet}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.restlet</groupId>
-      <artifactId>org.restlet.ext.xml</artifactId>
       <version>${version.restlet}</version>
     </dependency>
     <dependency>
