@@ -48,6 +48,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 import java.util.concurrent.locks.ReadWriteLock;
+import java.util.logging.Logger;
 
 /**
  * JDBM implementation of SerializationStore
@@ -69,13 +70,14 @@ public class JdbmEntityStoreMixin
     private CacheRecordManager cacheRecordManager;
     private BTree index;
     private Serializer serializer;
+    public final Logger logger = Logger.getLogger(JdbmEntityStoreService.class.getName());
 
     // Activatable implementation
     public void activate()
             throws Exception
     {
         File dataFile = new File(config.configuration().file().get());
-        System.out.println("JDBM store:" + dataFile.getAbsolutePath());
+        logger.info("JDBM store:" + dataFile.getAbsolutePath());
         File directory = dataFile.getAbsoluteFile().getParentFile();
         directory.mkdirs();
         String name = dataFile.getAbsolutePath();
@@ -258,11 +260,11 @@ public class JdbmEntityStoreMixin
         long recid = recordManager.getNamedObject("index");
         if (recid != 0)
         {
-            System.out.println("Using existing index");
+            logger.info("Using existing index");
             index = BTree.load(cacheRecordManager, recid);
         } else
         {
-            System.out.println("Creating new index");
+            logger.info("Creating new index");
             index = BTree.createInstance(cacheRecordManager, new ByteArrayComparator(), new ByteArraySerializer(), new LongSerializer(), 16);
             cacheRecordManager.setNamedObject("index", index.getRecid());
         }
