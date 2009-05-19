@@ -14,7 +14,7 @@
 
 package org.qi4j.spi.value;
 
-import org.qi4j.api.common.TypeName;
+import static org.qi4j.api.common.TypeName.*;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
@@ -50,9 +50,9 @@ public class DateType
         return false;
     }
 
-    public DateType( TypeName type )
+    public DateType( )
     {
-        super(type);
+        super(nameOf( Date.class ));
     }
 
     public void toJSON( Object value, StringBuilder json )

@@ -14,7 +14,7 @@
 
 package org.qi4j.spi.value;
 
-import org.qi4j.api.common.TypeName;
+import static org.qi4j.api.common.TypeName.*;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
@@ -36,12 +36,9 @@ public class BooleanType
         return false;
     }
 
-    private final TypeName type;
-
-    public BooleanType( TypeName type )
+    public BooleanType( )
     {
-        super(type);
-        this.type = type;
+        super( nameOf( Boolean.class ) );
     }
 
     public void toJSON( Object value, StringBuilder json )

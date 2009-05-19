@@ -100,7 +100,7 @@ public abstract class ValueType
         }
         else if( StringType.isString( type ) )
         {
-            valueType = new StringType( nameOf( type ) );
+            valueType = new StringType();
         }
         else if( NumberType.isNumber( type ) )
         {
@@ -108,11 +108,11 @@ public abstract class ValueType
         }
         else if( BooleanType.isBoolean( type ) )
         {
-            valueType = new BooleanType( nameOf( type ) );
+            valueType = new BooleanType();
         }
         else if( DateType.isDate( type ) )
         {
-            valueType = new DateType( nameOf( type ) );
+            valueType = new DateType(  );
         }
         else if( EntityReferenceType.isEntityReference( type ) )
         {

@@ -36,9 +36,9 @@ public class StringType
         return false;
     }
 
-    public StringType(TypeName type)
+    public StringType()
     {
-        super(type);
+        super(TypeName.nameOf(String.class));
     }
 
     public void toJSON(Object value, StringBuilder json)
@@ -90,12 +90,13 @@ public class StringType
 
         StringBuilder builder = new StringBuilder();
 
-        String result = json.nextToken("\\\"");
+        String result = json.peekNextToken("\\\"");
 
         if (result.equals("\""))
+        {
+            json.nextToken();
             return "";
-
-        builder.append(result);
+        }
 
         while (!(token = json.nextToken()).equals("\""))
         {
