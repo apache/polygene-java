@@ -26,6 +26,6 @@
     </dataSource>
   </transactionManager>
 
-  <sqlMap resource="org/qi4j/entitystore/legacy/PersonComposite.xml"/>
-  <sqlMap resource="org/qi4j/entitystore/legacy/AccountComposite.xml"/>
+  <sqlMap resource="org/qi4j/entitystore/qrm/PersonComposite.xml"/>
+  <sqlMap resource="org/qi4j/entitystore/qrm/AccountComposite.xml"/>
 </sqlMapConfig>

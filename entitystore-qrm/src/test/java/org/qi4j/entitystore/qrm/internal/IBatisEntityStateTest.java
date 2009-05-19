@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entitystore.legacy.internal;
+package org.qi4j.entitystore.qrm.internal;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -26,9 +26,9 @@ import org.junit.Ignore;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.legacy.entity.HasFirstName;
-import org.qi4j.entitystore.legacy.entity.HasLastName;
-import org.qi4j.entitystore.legacy.entity.PersonComposite;
+import org.qi4j.entitystore.qrm.entity.HasFirstName;
+import org.qi4j.entitystore.qrm.entity.PersonComposite;
+import org.qi4j.entitystore.qrm.entity.HasLastName;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.StateName;
 import org.qi4j.test.AbstractQi4jTest;
