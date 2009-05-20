@@ -16,6 +16,7 @@ package org.qi4j.runtime.bootstrap;
 
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.bootstrap.ValueDeclaration;
@@ -78,14 +79,20 @@ public final class ValueDeclarationImpl
     {
         for( Class<? extends ValueComposite> compositeType : compositeTypes )
         {
-            ValueModel valueModel = ValueModel.newModel( compositeType,
-                                                         visibility,
-                                                         new MetaInfo( metaInfo ).withAnnotations( compositeType ),
-                                                         propertyDecs,
-                                                         concerns,
-                                                         sideEffects,
-                                                         mixins );
-            values.add( valueModel );
+            try
+            {
+                ValueModel valueModel = ValueModel.newModel( compositeType,
+                                                             visibility,
+                                                             new MetaInfo( metaInfo ).withAnnotations( compositeType ),
+                                                             propertyDecs,
+                                                             concerns,
+                                                             sideEffects,
+                                                             mixins );
+                values.add( valueModel );
+            } catch (Exception e)
+            {
+                throw (RuntimeException) new InvalidApplicationException("Could not register "+compositeType.getName()).initCause(e);
+            }
         }
     }
 }

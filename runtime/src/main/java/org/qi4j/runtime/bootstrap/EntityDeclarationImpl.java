@@ -16,6 +16,7 @@ package org.qi4j.runtime.bootstrap;
 
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.EntityDeclaration;
@@ -82,21 +83,27 @@ public final class EntityDeclarationImpl
     {
         for( Class<? extends EntityComposite> compositeType : compositeTypes )
         {
-            List<ConcernDeclaration> concernDeclarations = new ArrayList<ConcernDeclaration>();
-            ConcernsDeclaration.concernDeclarations( concerns, concernDeclarations );
-            ConcernsDeclaration.concernDeclarations( compositeType, concernDeclarations );
-            ConcernsDeclaration concernsDeclaration = new ConcernsDeclaration( concernDeclarations );
+            try
+            {
+                List<ConcernDeclaration> concernDeclarations = new ArrayList<ConcernDeclaration>();
+                ConcernsDeclaration.concernDeclarations( concerns, concernDeclarations );
+                ConcernsDeclaration.concernDeclarations( compositeType, concernDeclarations );
+                ConcernsDeclaration concernsDeclaration = new ConcernsDeclaration( concernDeclarations );
 
-            EntityModel compositeModel = EntityModel.newModel( compositeType,
-                                                               visibility,
-                                                               new MetaInfo( metaInfo ).withAnnotations( compositeType ),
-                                                               propertyDecs,
-                                                               associationDecs,
-                                                               manyAssociationDecs,
-                                                               concernsDeclaration,
-                                                               sideEffects,
-                                                               mixins );
-            entities.add( compositeModel );
+                EntityModel compositeModel = EntityModel.newModel( compositeType,
+                                                                   visibility,
+                                                                   new MetaInfo( metaInfo ).withAnnotations( compositeType ),
+                                                                   propertyDecs,
+                                                                   associationDecs,
+                                                                   manyAssociationDecs,
+                                                                   concernsDeclaration,
+                                                                   sideEffects,
+                                                                   mixins );
+                entities.add( compositeModel );
+            } catch (Exception e)
+            {
+                throw (RuntimeException) new InvalidApplicationException("Could not register "+compositeType.getName()).initCause(e);
+            }
         }
     }
 }

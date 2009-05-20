@@ -16,6 +16,7 @@ package org.qi4j.runtime.bootstrap;
 
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.CompositeDeclaration;
@@ -80,13 +81,19 @@ public final class CompositeDeclarationImpl
     {
         for( Class<? extends Composite> compositeType : compositeTypes )
         {
-            MetaInfo compositeMetaInfo = new MetaInfo( metaInfo ).withAnnotations( compositeType );
-            addAnnotationsMetaInfo( compositeType, compositeMetaInfo );
-            CompositeModel compositeModel = CompositeModel.newModel( compositeType,
-                                                                     visibility,
-                                                                     compositeMetaInfo,
-                                                                     propertyDeclarations, concerns, sideEffects, mixins );
-            composites.add( compositeModel );
+            try
+            {
+                MetaInfo compositeMetaInfo = new MetaInfo( metaInfo ).withAnnotations( compositeType );
+                addAnnotationsMetaInfo( compositeType, compositeMetaInfo );
+                CompositeModel compositeModel = CompositeModel.newModel( compositeType,
+                                                                         visibility,
+                                                                         compositeMetaInfo,
+                                                                         propertyDeclarations, concerns, sideEffects, mixins );
+                composites.add( compositeModel );
+            } catch (Exception e)
+            {
+                throw (RuntimeException) new InvalidApplicationException("Could not register "+compositeType.getName()).initCause(e);
+            }
         }
     }
 

@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
@@ -65,8 +66,14 @@ public final class ObjectDeclarationImpl
     {
         for( Class objectType : objectTypes )
         {
-            ObjectModel objectModel = new ObjectModel( objectType, visibility, metaInfo );
-            objectModels.add( objectModel );
+            try
+            {
+                ObjectModel objectModel = new ObjectModel( objectType, visibility, metaInfo );
+                objectModels.add( objectModel );
+            } catch (Throwable e)
+            {
+                throw (RuntimeException) new InvalidApplicationException("Could not register "+objectType.getName()).initCause(e);
+            }
         }
     }
 }

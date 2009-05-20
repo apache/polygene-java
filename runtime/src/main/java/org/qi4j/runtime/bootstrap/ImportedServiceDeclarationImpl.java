@@ -16,6 +16,7 @@ package org.qi4j.runtime.bootstrap;
 
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.bootstrap.ImportedServiceDeclaration;
@@ -72,19 +73,25 @@ public final class ImportedServiceDeclarationImpl
     {
         for( Class<? extends Composite> serviceType : serviceTypes )
         {
-            String id = identity;
-            if( id == null )
+            try
             {
-                id = generateId( serviceModels, serviceType );
-            }
+                String id = identity;
+                if( id == null )
+                {
+                    id = generateId( serviceModels, serviceType );
+                }
 
-            ImportedServiceModel serviceModel = new ImportedServiceModel( serviceType,
-                                                                          visibility,
-                                                                          serviceProvider,
-                                                                          id,
-                                                                          new MetaInfo( metaInfo ).withAnnotations( serviceType ),
-                                                                          moduleAssembly.name() );
-            serviceModels.add( serviceModel );
+                ImportedServiceModel serviceModel = new ImportedServiceModel( serviceType,
+                                                                              visibility,
+                                                                              serviceProvider,
+                                                                              id,
+                                                                              new MetaInfo( metaInfo ).withAnnotations( serviceType ),
+                                                                              moduleAssembly.name() );
+                serviceModels.add( serviceModel );
+            } catch (Exception e)
+            {
+                throw (RuntimeException) new InvalidApplicationException("Could not register "+serviceType.getName()).initCause(e);
+            }
         }
     }
 
