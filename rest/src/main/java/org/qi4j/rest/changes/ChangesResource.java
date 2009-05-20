@@ -14,17 +14,17 @@
 
 package org.qi4j.rest.changes;
 
-import org.restlet.resource.Resource;
-import org.restlet.resource.Put;
-import org.restlet.resource.ResourceException;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
+import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
+import org.restlet.data.Status;
+import org.restlet.representation.EmptyRepresentation;
+import org.restlet.representation.Representation;
+import org.restlet.resource.ResourceException;
+import org.restlet.resource.ServerResource;
 
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -33,12 +33,11 @@ import java.io.ObjectInputStream;
  * JAVADOC
  */
 public class ChangesResource
-    extends Resource
+    extends ServerResource
 {
     @Service EntityStore entityStore;
 
-    @Put()
-    public void putUnitOfWork() throws ResourceException
+    public Representation put(Representation representation) throws ResourceException
     {
         String id = (String) getRequest().getAttributes().get( "id" );
         
@@ -66,5 +65,7 @@ public class ChangesResource
         {
             throw new ResourceException(e);
         }
+
+        return new EmptyRepresentation();
     }
 }

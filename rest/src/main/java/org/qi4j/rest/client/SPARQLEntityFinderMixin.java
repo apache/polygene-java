@@ -35,7 +35,7 @@ import org.qi4j.spi.query.EntityFinderException;
 import org.restlet.Uniform;
 import org.restlet.data.Reference;
 import org.restlet.data.Response;
-import org.restlet.representation.SaxRepresentation;
+import org.restlet.ext.xml.SaxRepresentation;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLReaderAdapter;
@@ -155,7 +155,7 @@ public class SPARQLEntityFinderMixin
             if (!response.getStatus().isSuccess())
                 throw new SPARQLEntityFinderException(response.getRequest().getResourceRef(), response.getStatus());
 
-            SaxRepresentation sax = response.getEntityAsSax();
+            SaxRepresentation sax = new SaxRepresentation(response.getEntity());
             final EntityResultXMLReaderAdapter xmlReaderAdapter = new EntityResultXMLReaderAdapter(callback);
             sax.parse(xmlReaderAdapter);
             return xmlReaderAdapter.getRows();

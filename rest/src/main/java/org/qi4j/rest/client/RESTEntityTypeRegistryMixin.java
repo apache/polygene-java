@@ -79,7 +79,6 @@ public class RESTEntityTypeRegistryMixin
                 {
                     ObjectOutputStream oout = new ObjectOutputStream(outputStream);
                     oout.writeUnshared(entityType);
-//                    oout.close();
                 }
             });
 

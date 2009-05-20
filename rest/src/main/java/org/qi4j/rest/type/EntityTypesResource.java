@@ -14,13 +14,10 @@
 package org.qi4j.rest.type;
 
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.EntityTypeRegistry;
-import org.restlet.Context;
 import org.restlet.data.MediaType;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
+import org.restlet.data.Method;
 import org.restlet.data.Status;
 import org.restlet.ext.atom.Entry;
 import org.restlet.ext.atom.Feed;
@@ -28,28 +25,24 @@ import org.restlet.ext.atom.Link;
 import org.restlet.ext.atom.Text;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
-import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
+import org.restlet.resource.ServerResource;
 
 import java.util.List;
 
-public final class EntityTypesResource extends Resource
+public final class EntityTypesResource extends ServerResource
 {
     @Service
     EntityTypeRegistry registry;
 
-    public EntityTypesResource(@Uses Context context,
-                               @Uses Request request,
-                               @Uses Response response)
+    public EntityTypesResource()
     {
-        super(context, request, response);
-
-        List<Variant> variants = getVariants();
-        variants.add(new Variant(MediaType.APPLICATION_ATOM));
+        getVariants().put(Method.ALL, MediaType.APPLICATION_ATOM);
+        setNegotiated(true);
     }
 
     @Override
-    public Representation represent(Variant variant)
+    public Representation get(Variant variant)
             throws ResourceException
     {
         if (MediaType.APPLICATION_ATOM.equals(variant.getMediaType()))

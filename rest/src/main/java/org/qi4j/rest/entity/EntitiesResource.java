@@ -17,29 +17,36 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.Entity;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
-import org.restlet.Context;
-import org.restlet.data.*;
+import org.restlet.data.CharacterSet;
+import org.restlet.data.MediaType;
+import org.restlet.data.Method;
+import org.restlet.data.Status;
 import org.restlet.ext.atom.Entry;
 import org.restlet.ext.atom.Feed;
 import org.restlet.ext.atom.Link;
 import org.restlet.ext.atom.Text;
-import org.restlet.representation.DomRepresentation;
+import org.restlet.ext.xml.DomRepresentation;
+import org.restlet.representation.EmptyRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.representation.WriterRepresentation;
-import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
+import org.restlet.resource.ServerResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -47,32 +54,29 @@ import java.util.List;
  * <p/>
  * Mapped to /entity
  */
-public class EntitiesResource extends Resource
+public class EntitiesResource extends ServerResource
 {
     @Service
     private EntityFinder entityFinder;
     @Service
     private EntityStore entityStore;
 
-    public EntitiesResource(@Uses Context context,
-                            @Uses Request request,
-                            @Uses Response response)
-            throws ClassNotFoundException
+    public EntitiesResource()
     {
-        super(context, request, response);
+        super();
 
-        // Define the supported variant.
-        getVariants().add(new Variant(MediaType.TEXT_HTML));
-        getVariants().add(new Variant(MediaType.APPLICATION_RDF_XML));
-        getVariants().add(new Variant(MediaType.TEXT_XML));
-        getVariants().add(new Variant(MediaType.APPLICATION_JAVA_OBJECT));
-        getVariants().add(new Variant(MediaType.APPLICATION_ATOM));
-        setModifiable(true);
+        // Define the supported variants.
+        getVariants().put(Method.ALL, Arrays.asList(
+                MediaType.TEXT_HTML,
+                MediaType.APPLICATION_RDF_XML,
+                MediaType.APPLICATION_JAVA_OBJECT,
+                MediaType.APPLICATION_ATOM));
+
+        setNegotiated(true);
     }
 
     @Override
-    public Representation represent(final Variant variant)
-            throws ResourceException
+    protected Representation get(Variant variant) throws ResourceException
     {
         // Generate the right representation according to its media type.
         if (MediaType.TEXT_XML.equals(variant.getMediaType()))
@@ -215,7 +219,8 @@ public class EntitiesResource extends Resource
         }
     }
 
-    public void acceptRepresentation(Representation entity) throws ResourceException
+    @Override
+    protected Representation post(Representation entity, Variant variant) throws ResourceException
     {
         try
         {
@@ -240,5 +245,7 @@ public class EntitiesResource extends Resource
         {
             throw new ResourceException(e);
         }
+
+        return new EmptyRepresentation();
     }
 }

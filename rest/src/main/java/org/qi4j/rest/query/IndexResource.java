@@ -15,39 +15,37 @@
 package org.qi4j.rest.query;
 
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.index.rdf.RdfExport;
-import org.restlet.Context;
 import org.restlet.data.MediaType;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
+import org.restlet.data.Method;
 import org.restlet.representation.OutputRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
-import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
+import org.restlet.resource.ServerResource;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 /**
  * Show RDF index
  */
 public class IndexResource
-    extends Resource
+    extends ServerResource
 {
     @Service private RdfExport export;
 
-    public IndexResource( @Uses Context context, @Uses Request request, @Uses Response response )
-        throws ClassNotFoundException
+    public IndexResource()
     {
-        super( context, request, response );
+        getVariants().put(Method.ALL, Arrays.asList(
+                MediaType.TEXT_HTML,
+                MediaType.APPLICATION_RDF_XML));
+        setNegotiated(true);
+    }    
 
-        getVariants().add( new Variant( MediaType.APPLICATION_RDF_XML ) );
-    }
-
-    @Override @SuppressWarnings( "unused" )
-    public Representation represent( Variant variant ) throws ResourceException
+    @Override
+    public Representation get( Variant variant ) throws ResourceException
     {
         return new OutputRepresentation( MediaType.APPLICATION_RDF_XML )
         {

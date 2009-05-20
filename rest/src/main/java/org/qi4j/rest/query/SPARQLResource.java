@@ -19,7 +19,16 @@ import org.openrdf.http.protocol.Protocol;
 import static org.openrdf.http.protocol.Protocol.*;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
-import org.openrdf.query.*;
+import org.openrdf.query.BooleanQuery;
+import org.openrdf.query.GraphQuery;
+import org.openrdf.query.MalformedQueryException;
+import org.openrdf.query.Query;
+import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.QueryLanguage;
+import org.openrdf.query.QueryResultUtil;
+import org.openrdf.query.TupleQuery;
+import org.openrdf.query.TupleQueryResult;
+import org.openrdf.query.UnsupportedQueryLanguageException;
 import org.openrdf.query.impl.DatasetImpl;
 import org.openrdf.query.resultio.TupleQueryResultWriter;
 import org.openrdf.query.resultio.sparqljson.SPARQLResultsJSONWriterFactory;
@@ -28,42 +37,50 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.rest.RestApplication;
-import org.restlet.Context;
-import org.restlet.data.*;
+import org.restlet.data.Form;
+import org.restlet.data.MediaType;
+import org.restlet.data.Method;
+import org.restlet.data.Status;
 import org.restlet.representation.InputRepresentation;
 import org.restlet.representation.OutputRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
-import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
+import org.restlet.resource.ServerResource;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Arrays;
 
 /**
  * JAVADOC
  */
 public class SPARQLResource
-    extends Resource
+    extends ServerResource
 {
     @Service Repository repository;
 
-    public SPARQLResource( @Uses Context context, @Uses Request request, @Uses Response response )
+    public SPARQLResource()
     {
-        super( context, request, response );
-
-        getVariants().add( new Variant( MediaType.TEXT_HTML ) );
-        getVariants().add( new Variant( MediaType.APPLICATION_RDF_XML ) );
-        getVariants().add( new Variant( RestApplication.APPLICATION_SPARQL_JSON ) );
+        getVariants().put(Method.ALL, Arrays.asList(
+                MediaType.TEXT_HTML,
+                MediaType.APPLICATION_RDF_XML,
+                RestApplication.APPLICATION_SPARQL_JSON));
+        setNegotiated(true);
     }
 
-    @Override @SuppressWarnings( "unused" )
-    public Representation represent( final Variant variant ) throws ResourceException
+    @Override
+    protected void doInit() throws ResourceException
+    {
+        super.doInit();
+    }
+
+    @Override
+    public Representation get( final Variant variant ) throws ResourceException
     {
         try
         {

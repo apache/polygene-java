@@ -19,9 +19,12 @@ package org.qi4j.rest;
 
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
-import org.qi4j.api.unitofwork.*;
+import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkException;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.rest.entity.EntitiesResource;
 import org.qi4j.rest.entity.EntityResource;
 import org.qi4j.rest.query.IndexResource;
@@ -36,7 +39,7 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.resource.Finder;
-import org.restlet.resource.Resource;
+import org.restlet.resource.ServerResource;
 import org.restlet.routing.Router;
 
 public class RestApplication extends Application
@@ -109,11 +112,10 @@ public class RestApplication extends Application
         return new ExtensionMediaTypeFilter(getContext(), router);
     }
 
-    private Finder createFinder(Class<? extends Resource> resource)
+    private Finder createFinder(Class<? extends ServerResource> resource)
     {
-        ObjectBuilder<Finder> builder = factory.newObjectBuilder(Finder.class);
-        builder.use(getContext().createChildContext());
-        builder.use(resource);
-        return builder.newInstance();
+        Finder finder = factory.newObject(Finder.class);
+        finder.setTargetClass(resource);
+        return finder;
     }
 }

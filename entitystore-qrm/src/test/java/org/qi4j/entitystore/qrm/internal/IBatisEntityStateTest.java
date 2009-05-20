@@ -14,24 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entitystore.legacy.internal;
+package org.qi4j.entitystore.qrm.internal;
+
+import static junit.framework.Assert.*;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.qrm.entity.HasFirstName;
+import org.qi4j.entitystore.qrm.entity.HasLastName;
+import org.qi4j.entitystore.qrm.entity.PersonComposite;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.StateName;
+import org.qi4j.test.AbstractQi4jTest;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import org.junit.Test;
-import org.junit.Ignore;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.legacy.entity.HasFirstName;
-import org.qi4j.entitystore.legacy.entity.HasLastName;
-import org.qi4j.entitystore.legacy.entity.PersonComposite;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.StateName;
-import org.qi4j.test.AbstractQi4jTest;
 
 @Ignore("Until store is upgraded")
 public final class IBatisEntityStateTest extends AbstractQi4jTest

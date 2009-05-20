@@ -31,25 +31,52 @@ import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.entity.*;
+import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
+import org.qi4j.spi.entity.EntityNotFoundException;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.EntityTypeRegistry;
+import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.StateName;
+import org.qi4j.spi.entity.UnknownEntityTypeException;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
-import org.restlet.Context;
-import org.restlet.data.*;
+import org.restlet.data.CharacterSet;
+import org.restlet.data.Form;
+import org.restlet.data.Language;
+import org.restlet.data.MediaType;
+import org.restlet.data.Method;
+import org.restlet.data.Status;
+import org.restlet.data.Tag;
+import org.restlet.representation.EmptyRepresentation;
 import org.restlet.representation.OutputRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.representation.WriterRepresentation;
-import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
+import org.restlet.resource.ServerResource;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Arrays;
 
-public class EntityResource extends Resource
+public class EntityResource extends ServerResource
 {
     public static Object toValue(String stringValue, QualifiedName propertyName, TypeName propertyType)
             throws IllegalArgumentException
@@ -98,28 +125,26 @@ public class EntityResource extends Resource
 
     private String identity;
 
-    public EntityResource(@Uses Context context, @Uses Request request, @Uses Response response)
-            throws ClassNotFoundException
+    public EntityResource()
     {
-        super(context, request, response);
-
         // Define the supported variant.
-        getVariants().add(new Variant(MediaType.TEXT_HTML));
-        getVariants().add(new Variant(MediaType.APPLICATION_RDF_XML));
-        getVariants().add(new Variant(MediaType.APPLICATION_JAVA_OBJECT));
-        setModifiable(true);
+        getVariants().put(Method.ALL, Arrays.asList(
+                MediaType.TEXT_HTML,
+                MediaType.APPLICATION_RDF_XML,
+                MediaType.APPLICATION_JAVA_OBJECT));
+        setNegotiated(true);
+    }
 
+    @Override
+    protected void doInit() throws ResourceException
+    {
         // /entity/{identity}
         Map<String, Object> attributes = getRequest().getAttributes();
         identity = (String) attributes.get("identity");
     }
 
-    /**
-     * Handle DELETE requests.
-     */
     @Override
-    public void removeRepresentations()
-            throws ResourceException
+    protected Representation delete() throws ResourceException
     {
         try
         {
@@ -135,11 +160,12 @@ public class EntityResource extends Resource
         {
             getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
         }
+
+        return new EmptyRepresentation();
     }
 
     @Override
-    public Representation represent(Variant variant)
-            throws ResourceException
+    protected Representation get(Variant variant) throws ResourceException
     {
         EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase("Get entity" ), new MetaInfo());
         EntityState entityState = getEntityState(uow);
@@ -361,18 +387,18 @@ public class EntityResource extends Resource
         };
     }
 
+
     @Override
-    @SuppressWarnings("unused")
-    public void acceptRepresentation(Representation entity) throws ResourceException
+    protected Representation put(Representation representation, Variant variant) throws ResourceException
     {
-        storeRepresentation(entity);
+        return post(representation, variant);
     }
 
     /**
      * Handle PUT requests.
      */
     @Override
-    public void storeRepresentation(Representation entityRepresentation)
+    public Representation post(Representation entityRepresentation, Variant variant)
             throws ResourceException
     {
         Usecase usecase = UsecaseBuilder.newUsecase( "Update entity" );
@@ -468,11 +494,7 @@ public class EntityResource extends Resource
         }
 
         getResponse().setStatus(Status.SUCCESS_RESET_CONTENT);
-    }
-
-    @Override
-    public boolean isModifiable()
-    {
-        return true;
+        
+        return new EmptyRepresentation();
     }
 }

@@ -27,19 +27,28 @@ import org.qi4j.spi.entity.EntityTypeRegistry;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
-import org.restlet.Context;
-import org.restlet.data.*;
+import org.restlet.data.Language;
+import org.restlet.data.MediaType;
+import org.restlet.data.Method;
+import org.restlet.data.Status;
+import org.restlet.representation.EmptyRepresentation;
 import org.restlet.representation.OutputRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.Variant;
-import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
+import org.restlet.resource.ServerResource;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.Map;
 
-public class EntityTypeResource extends Resource
+public class EntityTypeResource extends ServerResource
 {
     @Service
     EntityTypeRegistry registry;
@@ -49,25 +58,24 @@ public class EntityTypeResource extends Resource
 
     private String version;
 
-    public EntityTypeResource(@Uses Context context,
-                              @Uses Request request,
-                              @Uses Response response)
-            throws ClassNotFoundException
+    public EntityTypeResource()
     {
-        super(context, request, response);
-
         // Define the supported variant.
-        getVariants().add(new Variant(MediaType.TEXT_HTML));
-        getVariants().add(new Variant(MediaType.APPLICATION_RDF_XML));
-        getVariants().add(new Variant(MediaType.APPLICATION_JAVA_OBJECT));
-        setModifiable(true);
+        getVariants().put(Method.ALL, Arrays.asList(
+                MediaType.TEXT_HTML,
+                MediaType.APPLICATION_JAVA_OBJECT));
+        setNegotiated(true);
+    }
 
+    @Override
+    protected void doInit() throws ResourceException
+    {
         final Map<String, Object> attributes = getRequest().getAttributes();
         version = (String) attributes.get("version");
     }
 
     @Override
-    public Representation represent(final Variant variant)
+    public Representation get(final Variant variant)
             throws ResourceException
     {
         EntityType entityType = registry.getEntityType(new EntityTypeReference(null, null, version));
@@ -179,7 +187,7 @@ public class EntityTypeResource extends Resource
     }
 
     @Override
-    public void storeRepresentation(Representation entity) throws ResourceException
+    public Representation put(Representation entity, Variant variant) throws ResourceException
     {
         try
         {
@@ -194,5 +202,7 @@ public class EntityTypeResource extends Resource
         {
             throw new ResourceException(e);
         }
+
+        return new EmptyRepresentation();
     }
 }
