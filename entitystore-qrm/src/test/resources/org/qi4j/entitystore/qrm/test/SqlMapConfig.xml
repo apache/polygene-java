@@ -26,5 +26,5 @@
     </dataSource>
   </transactionManager>
 
-  <sqlMap resource="org/qi4j/entitystore/legacy/test/TestComposite.xml"/>
+  <sqlMap resource="org/qi4j/entitystore/qrm/test/TestComposite.xml"/>
 </sqlMapConfig>
