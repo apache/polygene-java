@@ -17,6 +17,7 @@ package org.qi4j.runtime.composite;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.ConstraintViolation;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,18 +32,7 @@ public final class ValueConstraintsInstance
 
     static
     {
-        OPTIONAL = new Optional()
-        {
-            public Class<? extends Annotation> annotationType()
-            {
-                return Optional.class;
-            }
-
-            @Override public String toString()
-            {
-                return "not optional";
-            }
-        };
+        OPTIONAL = new OptionalDummy();
     }
 
     private final List<ConstraintInstance> constraints;
@@ -115,5 +105,18 @@ public final class ValueConstraintsInstance
         }
 
         return violations;
+    }
+
+    private static class OptionalDummy implements Optional, Serializable
+    {
+        public Class<? extends Annotation> annotationType()
+        {
+            return Optional.class;
+        }
+
+        @Override public String toString()
+        {
+            return "not optional";
+        }
     }
 }
