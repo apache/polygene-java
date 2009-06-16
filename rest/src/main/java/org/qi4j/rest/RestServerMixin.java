@@ -17,18 +17,18 @@
  */
 package org.qi4j.rest;
 
-import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.composite.TransientBuilderFactory;
 import org.restlet.Component;
 import org.restlet.data.Protocol;
 
 public class RestServerMixin
     implements Activatable
 {
-    @Structure private CompositeBuilderFactory cbf;
+    @Structure private TransientBuilderFactory cbf;
     @Structure private ObjectBuilderFactory obf;
 
     private Component component;
