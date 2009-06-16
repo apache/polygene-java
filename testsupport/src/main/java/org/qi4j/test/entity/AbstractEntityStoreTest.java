@@ -1,10 +1,8 @@
 package org.qi4j.test.entity;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.*;
 import org.junit.After;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
@@ -19,13 +17,14 @@ import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import static org.qi4j.api.usecase.UsecaseBuilder.newUsecase;
+import static org.qi4j.api.usecase.UsecaseBuilder.*;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.helpers.EntityTypeRegistryService;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 import org.qi4j.test.AbstractQi4jTest;
@@ -46,6 +45,7 @@ public abstract class AbstractEntityStoreTest
         throws AssemblyException
     {
         module.addServices( UuidIdentityGeneratorService.class );
+        module.addServices( EntityTypeRegistryService.class );
         module.addEntities( TestEntity.class );
         module.addValues( TestValue.class, TestValue2.class, TjabbaValue.class );
         module.addObjects( getClass() );
@@ -104,7 +104,7 @@ public abstract class AbstractEntityStoreTest
         TestValue prototype = valueBuilder1.prototype();
         prototype.listProperty().get().add( "Foo" );
         prototype.valueProperty().set( valueBuilder2.newInstance() );
-        //     prototype.tjabbaProperty().set( valueBuilder3.newInstance() );
+        prototype.tjabbaProperty().set( valueBuilder3.newInstance() );
         Map<String, String> mapValue = new HashMap<String, String>();
         mapValue.put( "foo", "bar" );
         prototype.serializableProperty().set( mapValue );
@@ -397,7 +397,9 @@ public abstract class AbstractEntityStoreTest
 
         Property<TestValue2> valueProperty();
 
-        // TODO Doesn't work Property<Tjabba> tjabbaProperty();
+        // TODO Doesn't work
+
+        Property<Tjabba> tjabbaProperty();
 
         Property<Map<String, String>> serializableProperty();
     }
