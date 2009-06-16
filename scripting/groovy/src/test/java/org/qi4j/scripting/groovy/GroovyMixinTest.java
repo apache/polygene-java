@@ -23,14 +23,14 @@ public class GroovyMixinTest extends AbstractQi4jTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addComposites( GroovyComposite.class );
+        module.addTransients( GroovyComposite.class );
     }
 
     @Test
     public void testInvoke()
     {
-        GroovyComposite domain1 = compositeBuilderFactory.newComposite( GroovyComposite.class );
-        GroovyComposite domain2 = compositeBuilderFactory.newComposite( GroovyComposite.class );
+        GroovyComposite domain1 = transientBuilderFactory.newTransient( GroovyComposite.class );
+        GroovyComposite domain2 = transientBuilderFactory.newTransient( GroovyComposite.class );
         Assert.assertEquals( "do1() in Groovy:1", domain1.do1() );
         Assert.assertEquals( "do1() in Groovy:2", domain1.do1() );
         Assert.assertEquals( "do1() in Groovy:3", domain1.do1() );

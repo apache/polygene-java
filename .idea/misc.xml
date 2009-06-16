@@ -42,7 +42,7 @@
   </component>
   <component name="ProjectFileVersion" converted="true" />
   <component name="ProjectKey">
-    <option name="state" value="project:///Users/rickard/projects/gitqi4j/qi4j-libraries/.idea/misc.xml" />
+    <option name="state" value="project:///Users/niclas/dev/qi4j/qi4j-libraries/.idea/misc.xml" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
@@ -59,8 +59,5 @@
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
-  <UsedPathMacros>
-    <macro name="M2_REPO" />
-  </UsedPathMacros>
 </project>
 

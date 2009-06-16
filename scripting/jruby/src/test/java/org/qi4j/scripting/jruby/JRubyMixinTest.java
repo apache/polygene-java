@@ -25,7 +25,7 @@ public class JRubyMixinTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addComposites( JRubyComposite.class );
+        module.addTransients( JRubyComposite.class );
 
         Ruby ruby = Ruby.newInstance();
         module.importServices( Ruby.class ).importedBy( InstanceImporter.class ).setMetaInfo( ruby );
@@ -35,7 +35,7 @@ public class JRubyMixinTest
     public void testInvoke()
         throws Throwable
     {
-        JRubyComposite domain = compositeBuilderFactory.newCompositeBuilder( JRubyComposite.class ).newInstance();
+        JRubyComposite domain = transientBuilderFactory.newTransientBuilder( JRubyComposite.class ).newInstance();
 
         Assert.assertEquals( "do1() in Ruby mixin.", domain.do1() );
     }

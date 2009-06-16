@@ -12,11 +12,11 @@ import javax.servlet.FilterConfig;
 import org.apache.struts2.config.BeanSelectionProvider;
 import org.apache.struts2.dispatcher.Dispatcher;
 import org.apache.struts2.dispatcher.FilterDispatcher;
-import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import static org.qi4j.library.struts2.Constants.SERVLET_ATTRIBUTE;
+import org.qi4j.api.composite.TransientBuilderFactory;
+import static org.qi4j.library.struts2.Constants.*;
 
 public class Qi4jFilterDispatcher extends FilterDispatcher
 {
@@ -55,7 +55,7 @@ public class Qi4jFilterDispatcher extends FilterDispatcher
         {
             factory( builder, UnitOfWorkFactory.class, module.unitOfWorkFactory() );
             factory( builder, ObjectBuilderFactory.class, module.objectBuilderFactory() );
-            factory( builder, CompositeBuilderFactory.class, module.compositeBuilderFactory() );
+            factory( builder, TransientBuilderFactory.class, module.transientBuilderFactory() );
             factory( builder, ActionConfiguration.class, actionConfiguration() );
             registered = true;
         }

@@ -26,7 +26,7 @@ import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.RDFWriterFactory;
 import org.openrdf.rio.n3.N3WriterFactory;
 import org.openrdf.rio.rdfxml.RDFXMLWriterFactory;
-import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.injection.scope.This;
@@ -50,7 +50,7 @@ public class ApplicationXmlTest extends AbstractQi4jTest
     {
         LayerAssembly layerAssembly = module.layerAssembly();
         layerAssembly.applicationAssembly().setName( "testapp" );
-        module.addComposites( TestComposite.class );
+        module.addTransients( TestComposite.class );
     }
 
     @Test
@@ -156,7 +156,7 @@ public class ApplicationXmlTest extends AbstractQi4jTest
     @Concerns( OtherStuffConcern.class )
     @Mixins( { BMixin.class } )
     public interface TestComposite
-        extends A, Composite
+        extends A, TransientComposite
     {
     }
 }

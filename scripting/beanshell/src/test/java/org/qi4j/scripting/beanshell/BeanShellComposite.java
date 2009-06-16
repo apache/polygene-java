@@ -11,13 +11,13 @@
 */
 package org.qi4j.scripting.beanshell;
 
-import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.mixin.Mixins;
 
 /**
  * JAVADOC
  */
 @Mixins( BeanShellMixin.class )
-public interface BeanShellComposite extends Mixin1, Composite
+public interface BeanShellComposite extends Mixin1, TransientComposite
 {
 }

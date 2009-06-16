@@ -22,11 +22,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.Ignore;
-import org.qi4j.api.composite.CompositeBuilder;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.auth.AuthenticationMethod;
@@ -60,7 +60,7 @@ public class AuthTest
                             NamedPermissionEntity.class,
                             RoleAssignmentEntity.class,
                             SecuredRoom.class );
-        module.addComposites( AuthorizationContextComposite.class );
+        module.addTransients( AuthorizationContextComposite.class );
         module.addServices( AuthorizationService.class);
 
         new EntityTestAssembler().assemble( module );
@@ -95,7 +95,7 @@ public class AuthTest
             Authorization authorization = serviceLocator.<Authorization>findService( Authorization.class ).get();
 
             // Create authorization context
-            CompositeBuilder<AuthorizationContext> accb = compositeBuilderFactory.newCompositeBuilder( AuthorizationContext.class );
+            TransientBuilder<AuthorizationContext> accb = transientBuilderFactory.newTransientBuilder( AuthorizationContext.class );
             AuthorizationContext context = accb.prototype();
             context.user().set( user );
             context.time().set( new Date() );

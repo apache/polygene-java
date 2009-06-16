@@ -37,7 +37,7 @@ import org.jruby.runtime.builtin.IRubyObject;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
@@ -74,7 +74,7 @@ public class JRubyMixin
 
     }
 
-    @Structure CompositeBuilderFactory factory;
+    @Structure TransientBuilderFactory factory;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {

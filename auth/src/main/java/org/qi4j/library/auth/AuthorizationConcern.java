@@ -24,8 +24,8 @@ import java.security.AccessController;
 import java.util.Date;
 import javax.security.auth.Subject;
 import org.qi4j.api.common.AppliesTo;
-import org.qi4j.api.composite.CompositeBuilder;
-import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.composite.TransientBuilder;
+import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.injection.scope.Invocation;
 import org.qi4j.api.injection.scope.Service;
@@ -40,18 +40,18 @@ public class AuthorizationConcern extends ConcernOf<InvocationHandler>
 
     @Service private Authorization authorizor;
     @This private ProtectedResource roleAssignments;
-    @Structure private CompositeBuilderFactory cbf;
+    @Structure private TransientBuilderFactory cbf;
 
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
-        CompositeBuilder<NamedPermission> cb = cbf.newCompositeBuilder( NamedPermission.class );
+        TransientBuilder<NamedPermission> cb = cbf.newTransientBuilder( NamedPermission.class );
         cb.prototype().name().set( requiresPermission.value() );
         Permission permission = cb.newInstance();
 
         Subject subject = Subject.getSubject( AccessController.getContext() );
         User user = subject.getPrincipals( UserPrincipal.class ).iterator().next().getUser();
 
-        CompositeBuilder<AuthorizationContext> authBuilder = cbf.newCompositeBuilder( AuthorizationContext.class );
+        TransientBuilder<AuthorizationContext> authBuilder = cbf.newTransientBuilder( AuthorizationContext.class );
         AuthorizationContext authProps = authBuilder.prototypeFor( AuthorizationContext.class );
         authProps.user().set( user );
         authProps.time().set( new Date() );

@@ -32,7 +32,7 @@ import java.util.Map;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.structure.Module;
@@ -57,7 +57,7 @@ public class BeanShellMixin
 
     @This private Composite me;
     @Structure private Module module;
-    @Structure private CompositeBuilderFactory compositeBuilderFactory;
+    @Structure private TransientBuilderFactory compositeBuilderFactory;
     @Structure private UnitOfWorkFactory uowFactory;
     private Map<Class, Object> mixins;
 

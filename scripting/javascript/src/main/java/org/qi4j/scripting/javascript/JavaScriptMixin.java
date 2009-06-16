@@ -29,7 +29,7 @@ import org.mozilla.javascript.Wrapper;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.scripting.common.ScriptException;
@@ -64,7 +64,7 @@ public class JavaScriptMixin
     static private Scriptable standardScope;
 
     private HashMap<String, Function> cachedScripts;
-    @Structure private CompositeBuilderFactory factory;
+    @Structure private TransientBuilderFactory factory;
     private Scriptable instanceScope;
 
     static

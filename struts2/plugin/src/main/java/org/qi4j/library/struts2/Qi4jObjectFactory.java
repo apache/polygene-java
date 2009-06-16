@@ -23,8 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.struts2.util.ObjectFactoryDestroyable;
 import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.composite.CompositeBuilderFactory;
 import org.qi4j.api.composite.NoSuchCompositeException;
+import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import static org.qi4j.library.struts2.Qi4jObjectFactory.ClassType.object;
@@ -51,7 +51,7 @@ public class Qi4jObjectFactory extends ObjectFactory
     private final Map<Class, ClassType> types;
 
     private ObjectBuilderFactory objectBuilderFactory;
-    private CompositeBuilderFactory compositeBuilderFactory;
+    private TransientBuilderFactory compositeBuilderFactory;
 
     public Qi4jObjectFactory()
     {
@@ -65,7 +65,7 @@ public class Qi4jObjectFactory extends ObjectFactory
     }
 
     @Inject
-    public void setCompositeBuilderFactory( CompositeBuilderFactory compositeBuilderFactory )
+    public void setCompositeBuilderFactory( TransientBuilderFactory compositeBuilderFactory )
     {
         this.compositeBuilderFactory = compositeBuilderFactory;
     }
@@ -193,7 +193,7 @@ public class Qi4jObjectFactory extends ObjectFactory
 
         try
         {
-            obj = compositeBuilderFactory.newComposite( aClass );
+            obj = compositeBuilderFactory.newTransient( aClass );
         }
         catch( NoSuchCompositeException e )
         {

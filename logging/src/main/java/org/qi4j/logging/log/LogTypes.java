@@ -15,12 +15,12 @@
 package org.qi4j.logging.log;
 
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.TransientComposite;
 
 /**
  * Composite for log types
  */
-public interface LogTypes
-    extends Composite
+public interface LogTypes extends TransientComposite
 {
     LogType info();
 

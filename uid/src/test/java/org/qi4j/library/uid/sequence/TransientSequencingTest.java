@@ -17,9 +17,9 @@
  */
 package org.qi4j.library.uid.sequence;
 
-import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.*;
 import org.junit.Test;
-import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.bootstrap.AssemblyException;
@@ -31,15 +31,15 @@ public class TransientSequencingTest extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        new TransientSequencingAssembler().assemble(module);
-        module.addComposites( UnderTestComposite.class );
+        new TransientSequencingAssembler().assemble( module );
+        module.addTransients( UnderTestComposite.class );
     }
 
     @Test
     public void whenTransientSequencingThenNumbersStartAtZero()
         throws Exception
     {
-        UnderTest underTest = compositeBuilderFactory.newComposite( UnderTest.class );
+        UnderTest underTest = transientBuilderFactory.newTransient( UnderTest.class );
         assertEquals( 0, underTest.currentValue() );
     }
 
@@ -47,7 +47,7 @@ public class TransientSequencingTest extends AbstractQi4jTest
     public void whenTransientSequencingThenFirstNextValueIsOne()
         throws Exception
     {
-        UnderTest underTest = compositeBuilderFactory.newComposite( UnderTest.class );
+        UnderTest underTest = transientBuilderFactory.newTransient( UnderTest.class );
         assertEquals( 1, underTest.nextValue() );
         assertEquals( 1, underTest.currentValue() );
     }
@@ -56,7 +56,7 @@ public class TransientSequencingTest extends AbstractQi4jTest
     public void whenTransientSequencingThenFirst100ValuesAreInSequence()
         throws Exception
     {
-        UnderTest underTest = compositeBuilderFactory.newComposite( UnderTest.class );
+        UnderTest underTest = transientBuilderFactory.newTransient( UnderTest.class );
         for( int i = 1; i <= 100; i++ )
         {
             assertEquals( i, underTest.nextValue() );
@@ -74,7 +74,7 @@ public class TransientSequencingTest extends AbstractQi4jTest
     }
 
     @Mixins( UnderTestMixin.class )
-    public interface UnderTestComposite extends UnderTest, Composite
+    public interface UnderTestComposite extends UnderTest, TransientComposite
     {
     }
 

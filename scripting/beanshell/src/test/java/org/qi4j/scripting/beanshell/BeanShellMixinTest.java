@@ -24,14 +24,14 @@ public class BeanShellMixinTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addComposites( BeanShellComposite.class );
+        module.addTransients( BeanShellComposite.class );
     }
 
     @Test
     public void testInvoke() throws Throwable
     {
-        BeanShellComposite domain1 = compositeBuilderFactory.newComposite( BeanShellComposite.class );
-        BeanShellComposite domain2 = compositeBuilderFactory.newComposite( BeanShellComposite.class );
+        BeanShellComposite domain1 = transientBuilderFactory.newTransient( BeanShellComposite.class );
+        BeanShellComposite domain2 = transientBuilderFactory.newTransient( BeanShellComposite.class );
         Assert.assertEquals( "do1() in Beanshell:1", domain1.do1() );
         Assert.assertEquals( "do1() in Beanshell:2", domain1.do1() );
         Assert.assertEquals( "do1() in Beanshell:3", domain1.do1() );

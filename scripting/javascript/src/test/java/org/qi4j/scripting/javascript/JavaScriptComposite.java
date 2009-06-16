@@ -1,6 +1,6 @@
 package org.qi4j.scripting.javascript;
 
-import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.mixin.Mixins;
 /*
  * Copyright 2007 Rickard Öberg
@@ -18,7 +18,6 @@ import org.qi4j.api.mixin.Mixins;
  * JAVADOC
  */
 @Mixins( JavaScriptMixin.class )
-public interface JavaScriptComposite
-    extends Mixin1, Composite
+public interface JavaScriptComposite extends Mixin1, TransientComposite
 {
 }

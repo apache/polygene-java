@@ -21,7 +21,7 @@ import java.io.Serializable;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
@@ -36,12 +36,12 @@ public final class SimpleLogConcern
     private String category;
     private LogTypes types;
 
-    public SimpleLogConcern( @This Composite composite, @Structure CompositeBuilderFactory cbf )
+    public SimpleLogConcern( @This Composite composite, @Structure TransientBuilderFactory cbf )
     {
         this.composite = composite;
         Class<?> type = composite.type();
         category = type.getName();
-        types = cbf.newComposite( LogTypes.class );
+        types = cbf.newTransient( LogTypes.class );
     }
 
     public void info( String message )

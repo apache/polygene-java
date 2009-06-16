@@ -31,7 +31,7 @@ public class LoggingAssembler
         throws AssemblyException
     {
         module.addServices( LoggingServiceComposite.class );
-        module.addComposites( LogTypes.class );
+        module.addTransients( LogTypes.class );
         module.on( LogTypes.class ).to().info().set( "INFO" );
         module.on( LogTypes.class ).to().warning().set( "WARNING" );
         module.on( LogTypes.class ).to().error().set( "ERROR" );

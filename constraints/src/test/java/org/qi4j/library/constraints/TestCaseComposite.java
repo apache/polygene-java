@@ -14,7 +14,7 @@ package org.qi4j.library.constraints;
 
 import java.util.Collection;
 import java.util.List;
-import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.property.Property;
 import org.qi4j.library.constraints.annotation.Contains;
 import org.qi4j.library.constraints.annotation.Email;
@@ -31,7 +31,7 @@ import org.qi4j.library.constraints.annotation.Range;
 /**
  * Test composite with all the constraints
  */
-public interface TestCaseComposite extends Composite
+public interface TestCaseComposite extends TransientComposite
 {
     @Contains( "foo" ) Property<String> containsString();
 

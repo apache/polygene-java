@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.bootstrap.AssemblyException;
@@ -33,14 +34,14 @@ public class UuidServiceTest extends AbstractQi4jTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         new UuidServiceAssembler().assemble(module);
-        module.addComposites( UnderTestComposite.class );
+        module.addTransients( UnderTestComposite.class );
     }
 
     @Test
     public void whenGeneratingUuidGivenHashLengthLargerThanZeroThenValidateTheSizeAndContent()
         throws Exception
     {
-        UnderTest ut = compositeBuilderFactory.newComposite( UnderTest.class );
+        UnderTest ut = transientBuilderFactory.newTransient( UnderTest.class );
         for( int hashLength = 1; hashLength < 50; hashLength++ )
         {
             String uid = ut.generateUuid( hashLength );
@@ -57,7 +58,7 @@ public class UuidServiceTest extends AbstractQi4jTest
     public void whenGeneratingUuidGivenZeroHashLengthThenValidateFormat()
         throws Exception
     {
-        UnderTest ut = compositeBuilderFactory.newComposite( UnderTest.class );
+        UnderTest ut = transientBuilderFactory.newTransient( UnderTest.class );
         String uid = ut.generateUuid( 0 );
         int dashCounter = 0;
         for( int i = 0; i < uid.length(); i++ )
@@ -76,7 +77,7 @@ public class UuidServiceTest extends AbstractQi4jTest
     }
 
     @Mixins( UnderTestMixin.class )
-    public interface UnderTestComposite extends UnderTest, Composite
+    public interface UnderTestComposite extends UnderTest, TransientComposite
     {
     }
 

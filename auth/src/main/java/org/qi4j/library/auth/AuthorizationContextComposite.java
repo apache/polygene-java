@@ -15,11 +15,11 @@
 
 package org.qi4j.library.auth;
 
-import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.TransientComposite;
 
 /**
  * JAVADOC
  */
-public interface AuthorizationContextComposite extends Composite, AuthorizationContext
+public interface AuthorizationContextComposite extends TransientComposite, AuthorizationContext
 {
 }

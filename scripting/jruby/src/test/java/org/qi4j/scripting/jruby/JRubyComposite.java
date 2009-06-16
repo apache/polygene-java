@@ -11,14 +11,13 @@
 */
 package org.qi4j.scripting.jruby;
 
-import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.mixin.Mixins;
 
 /**
  * JAVADOC
  */
 @Mixins( JRubyMixin.class )
-public interface JRubyComposite
-    extends Mixin1, Composite
+public interface JRubyComposite extends Mixin1, TransientComposite
 {
 }

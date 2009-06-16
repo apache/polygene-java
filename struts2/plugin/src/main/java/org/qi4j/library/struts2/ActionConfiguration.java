@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -41,6 +42,6 @@ public class ActionConfiguration implements Assembler, Serializable
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.addObjects( objectTypes.toArray( new Class[]{ } ) ).visibleIn( Visibility.module );
-        module.addComposites( (Class<? extends Composite>[]) compositeTypes.toArray( new Class[]{ } ) ).visibleIn( Visibility.module );
+        module.addTransients( (Class<? extends TransientComposite>[]) compositeTypes.toArray( new Class[]{ } ) ).visibleIn( Visibility.module );
     }
 }

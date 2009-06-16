@@ -26,10 +26,6 @@
     <orderEntry type="library" exported="" name="Maven: org.springframework:spring-core:2.5.6" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.springframework:spring-context:2.5.6" level="project" />
     <orderEntry type="library" exported="" name="Maven: aopalliance:aopalliance:1.0" level="project" />
-    <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-api" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-runtime" />
     <orderEntry type="library" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-test:2.5.6" level="project" />
     <orderEntry type="library" name="Maven: junit:junit:4.4" level="project" />
