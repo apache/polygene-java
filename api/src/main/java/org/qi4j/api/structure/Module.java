@@ -15,7 +15,7 @@
 package org.qi4j.api.structure;
 
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
@@ -33,7 +33,7 @@ public interface Module
 
     MetaInfo metaInfo();
 
-    CompositeBuilderFactory compositeBuilderFactory();
+    TransientBuilderFactory transientBuilderFactory();
 
     ObjectBuilderFactory objectBuilderFactory();
 

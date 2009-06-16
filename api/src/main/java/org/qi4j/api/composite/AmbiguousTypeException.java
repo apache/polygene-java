@@ -28,10 +28,10 @@ import java.util.Arrays;
  * For instance;
  * </p>
  * <code><pre>
- * public interface AbcComposite extends Composite, Abc
+ * public interface AbcComposite extends TransientComposite, Abc
  * {}
  *
- * public interface DefComposite extends Composite, Def
+ * public interface DefComposite extends TransientComposite, Def
  * {}
  *
  * public interface Abc
@@ -41,11 +41,11 @@ import java.util.Arrays;
  * {}
  *
  *
- * CompositeBuilder cb = factory.newCompositeBuilder( Abc.class );
+ * TransientBuilder cb = factory.newTransientBuilder( Abc.class );
  * </pre></code>
  * <p>
  * In the code above, both the AbcComposite and DefComposite implement Abc, and therefore
- * the <code>newCompositeBuilder</code> method can not unambiguously figure out which
+ * the <code>newTransientBuilder</code> method can not unambiguously figure out which
  * one is intended.
  * </p>
  */

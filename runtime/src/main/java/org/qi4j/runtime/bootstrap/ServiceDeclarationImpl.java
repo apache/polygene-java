@@ -14,10 +14,9 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.common.InvalidApplicationException;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.runtime.service.ServiceModel;
@@ -93,7 +92,7 @@ public final class ServiceDeclarationImpl
 
     void addServices( List<ServiceModel> serviceModels )
     {
-        for( Class<? extends Composite> serviceType : serviceTypes )
+        for( Class<? extends ServiceComposite> serviceType : serviceTypes )
         {
             try
             {
@@ -113,9 +112,10 @@ public final class ServiceDeclarationImpl
                                                                    id,
                                                                    instantiateOnStartup );
                 serviceModels.add( serviceModel );
-            } catch (Exception e)
+            }
+            catch( Exception e )
             {
-                throw (RuntimeException) new InvalidApplicationException("Could not register "+serviceType.getName()).initCause(e);
+                throw new InvalidApplicationException( "Could not register " + serviceType.getName(), e );
             }
         }
     }

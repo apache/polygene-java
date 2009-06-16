@@ -59,7 +59,7 @@ import org.qi4j.api.mixin.Mixins;
  *      public void create()
  *      {
  *          String thisId = meAsIdentity.identity().get();
- *          CompositeBuilder builder = unit.newEntityBuilder( thisId + ":1", UserComposite.class );
+ *          EntityBuilder builder = unit.newEntityBuilder( thisId + ":1", UserComposite.class );
  *          User admin = builder.newInstance();
  *          meAsSystem.setAdmin( admin );
  *          next.create();

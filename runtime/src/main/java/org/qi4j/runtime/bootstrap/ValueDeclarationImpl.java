@@ -91,7 +91,7 @@ public final class ValueDeclarationImpl
                 values.add( valueModel );
             } catch (Exception e)
             {
-                throw (RuntimeException) new InvalidApplicationException("Could not register "+compositeType.getName()).initCause(e);
+                throw new InvalidApplicationException("Could not register "+compositeType.getName(), e);
             }
         }
     }

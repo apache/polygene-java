@@ -15,7 +15,6 @@
 package org.qi4j.runtime.entity;
 
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
@@ -64,7 +63,7 @@ public final class EntityInstance
     }
 
 
-    public static EntityInstance getEntityInstance( Composite composite )
+    public static EntityInstance getEntityInstance( EntityComposite composite )
     {
         return (EntityInstance) Proxy.getInvocationHandler( composite );
     }

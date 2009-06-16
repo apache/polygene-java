@@ -18,8 +18,8 @@ import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
-import org.qi4j.api.composite.CompositeBuilder;
-import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.composite.TransientBuilder;
+import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectBuilder;
@@ -74,7 +74,7 @@ public class ModuleInstance
     private final ServicesInstance services;
     private final ImportedServicesInstance importedServices;
 
-    private final CompositeBuilderFactory compositeBuilderFactory;
+    private final TransientBuilderFactory transientBuilderFactory;
     private final ObjectBuilderFactory objectBuilderFactory;
     private final ValueBuilderFactory valueBuilderFactory;
     private final UnitOfWorkFactory unitOfWorkFactory;
@@ -99,7 +99,7 @@ public class ModuleInstance
         services = servicesModel.newInstance( this );
         importedServices = importedServicesModel.newInstance( this );
 
-        compositeBuilderFactory = new CompositeBuilderFactoryInstance();
+        transientBuilderFactory = new TransientBuilderFactoryInstance();
         objectBuilderFactory = new ObjectBuilderFactoryInstance();
         valueBuilderFactory = new ValueBuilderFactoryInstance();
         unitOfWorkFactory = new UnitOfWorkFactoryInstance();
@@ -162,9 +162,9 @@ public class ModuleInstance
         return importedServices;
     }
 
-    public CompositeBuilderFactory compositeBuilderFactory()
+    public TransientBuilderFactory transientBuilderFactory()
     {
-        return compositeBuilderFactory;
+        return transientBuilderFactory;
     }
 
     public ObjectBuilderFactory objectBuilderFactory()
@@ -344,10 +344,10 @@ public class ModuleInstance
         protected abstract T findModel( ModuleModel model, Visibility visibility );
     }
 
-    private class CompositeBuilderFactoryInstance
-        implements CompositeBuilderFactory
+    private class TransientBuilderFactoryInstance
+        implements TransientBuilderFactory
     {
-        public <T> CompositeBuilder<T> newCompositeBuilder( Class<T> mixinType )
+        public <T> TransientBuilder<T> newTransientBuilder( Class<T> mixinType )
             throws NoSuchCompositeException
         {
             CompositeFinder finder = findCompositeModel( mixinType );
@@ -357,10 +357,10 @@ public class ModuleInstance
                 throw new NoSuchCompositeException( mixinType.getName(), name() );
             }
 
-            return new CompositeBuilderInstance<T>( finder.module, finder.model );
+            return new TransientBuilderInstance<T>( finder.module, finder.model );
         }
 
-        public <T> T newComposite( final Class<T> mixinType )
+        public <T> T newTransient( final Class<T> mixinType )
             throws NoSuchCompositeException, ConstructionException
         {
             CompositeFinder finder = findCompositeModel( mixinType );

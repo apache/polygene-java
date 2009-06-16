@@ -17,7 +17,7 @@ package org.qi4j.test;
 import org.junit.After;
 import org.junit.Before;
 import org.qi4j.api.Qi4j;
-import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.structure.Application;
@@ -43,7 +43,7 @@ public abstract class AbstractQi4jTest
     protected ApplicationModelSPI applicationModel;
     protected ApplicationSPI application;
 
-    protected CompositeBuilderFactory compositeBuilderFactory;
+    protected TransientBuilderFactory transientBuilderFactory;
     protected ObjectBuilderFactory objectBuilderFactory;
     protected ValueBuilderFactory valueBuilderFactory;
     protected UnitOfWorkFactory unitOfWorkFactory;
@@ -62,7 +62,7 @@ public abstract class AbstractQi4jTest
 
         // Assume only one module
         moduleInstance = application.findModule( "Layer 1", "Module 1" );
-        compositeBuilderFactory = moduleInstance.compositeBuilderFactory();
+        transientBuilderFactory = moduleInstance.transientBuilderFactory();
         objectBuilderFactory = moduleInstance.objectBuilderFactory();
         valueBuilderFactory = moduleInstance.valueBuilderFactory();
         unitOfWorkFactory = moduleInstance.unitOfWorkFactory();

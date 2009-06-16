@@ -22,7 +22,7 @@ import org.qi4j.api.common.Visibility;
 
 /**
  * Fluent API for declaring Composites. Instances
- * of this API are acquired by calling {@link ModuleAssembly#addComposites(Class[])}.
+ * of this API are acquired by calling {@link ModuleAssembly#addTransients(Class[])}.
  */
 public interface CompositeDeclaration
 {

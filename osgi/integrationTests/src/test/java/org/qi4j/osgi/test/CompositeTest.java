@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.ops4j.pax.exam.Inject;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Module;
 import org.qi4j.core.test.osgi.AComposite;
@@ -46,8 +46,8 @@ public final class CompositeTest extends AbstractTest
         Module module = (Module) bundleContext.getService( moduleServiceRef );
         assertNotNull( module );
 
-        CompositeBuilderFactory cmpBuilderFactory = module.compositeBuilderFactory();
-        AComposite composite = cmpBuilderFactory.newComposite( AComposite.class );
+        TransientBuilderFactory factory = module.transientBuilderFactory();
+        AComposite composite = factory.newTransient( AComposite.class );
         assertNotNull( composite );
 
         Property<String> property = composite.property();

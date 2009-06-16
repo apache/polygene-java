@@ -15,6 +15,7 @@
 package org.qi4j.api;
 
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 
@@ -55,7 +56,7 @@ public interface Qi4j
      * @return configuration instance
      * @throws InstantiationException thrown if the configuration cannot be instantiated
      */
-    <T> T getConfigurationInstance( Composite serviceComposite, UnitOfWork uow )
+    <T> T getConfigurationInstance( ServiceComposite serviceComposite, UnitOfWork uow )
         throws InstantiationException;
 
     Class<?> getConfigurationType( Composite serviceComposite );

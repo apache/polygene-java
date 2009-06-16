@@ -14,10 +14,11 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.CompositeDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
@@ -29,19 +30,19 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addComposites(Class[])}.
+ * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addTransients(Class[])}.
  */
 public final class CompositeDeclarationImpl
     implements CompositeDeclaration, Serializable
 {
-    private Class<? extends Composite>[] compositeTypes;
+    private Class<? extends TransientComposite>[] compositeTypes;
     private List<Class<?>> concerns = new ArrayList<Class<?>>();
     private List<Class<?>> sideEffects = new ArrayList<Class<?>>();
     private List<Class<?>> mixins = new ArrayList<Class<?>>();
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
-    public CompositeDeclarationImpl( Class<? extends Composite>... compositeTypes )
+    public CompositeDeclarationImpl( Class<? extends TransientComposite>... compositeTypes )
         throws AssemblyException
     {
         this.compositeTypes = compositeTypes;
@@ -79,7 +80,7 @@ public final class CompositeDeclarationImpl
 
     void addComposites( List<CompositeModel> composites, PropertyDeclarations propertyDeclarations )
     {
-        for( Class<? extends Composite> compositeType : compositeTypes )
+        for( Class<? extends TransientComposite> compositeType : compositeTypes )
         {
             try
             {
@@ -92,7 +93,7 @@ public final class CompositeDeclarationImpl
                 composites.add( compositeModel );
             } catch (Exception e)
             {
-                throw (RuntimeException) new InvalidApplicationException("Could not register "+compositeType.getName()).initCause(e);
+                throw new InvalidApplicationException( "Could not register " + compositeType.getName(), e );
             }
         }
     }

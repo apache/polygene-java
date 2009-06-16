@@ -30,6 +30,7 @@ public class PropertyMapper
             try
             {
                 Method propertyMethod = composite.getClass().getInterfaces()[ 0 ].getMethod( objectObjectEntry.getKey().toString() );
+                propertyMethod.setAccessible( true );
                 Object value = objectObjectEntry.getValue();
                 Type propertyType = GenericPropertyInfo.getPropertyType( propertyMethod );
 

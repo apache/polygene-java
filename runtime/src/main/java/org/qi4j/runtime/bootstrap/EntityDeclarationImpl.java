@@ -14,9 +14,9 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.EntityDeclaration;
@@ -32,7 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addComposites(Class[])}.
+ * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addTransients(Class[])}.
  */
 public final class EntityDeclarationImpl
     implements EntityDeclaration, Serializable
@@ -100,9 +100,10 @@ public final class EntityDeclarationImpl
                                                                    sideEffects,
                                                                    mixins );
                 entities.add( compositeModel );
-            } catch (Exception e)
+            }
+            catch( Exception e )
             {
-                throw (RuntimeException) new InvalidApplicationException("Could not register "+compositeType.getName()).initCause(e);
+                throw new InvalidApplicationException( "Could not register " + compositeType.getName(), e );
             }
         }
     }

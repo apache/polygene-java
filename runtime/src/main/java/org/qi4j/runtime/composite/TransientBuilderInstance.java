@@ -16,7 +16,7 @@ package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.CompositeBuilder;
+import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -29,8 +29,8 @@ import java.util.Iterator;
 /**
  * JAVADOC
  */
-public final class CompositeBuilderInstance<T>
-    implements CompositeBuilder<T>
+public final class TransientBuilderInstance<T>
+    implements TransientBuilder<T>
 {
     private static final Method TYPE_METHOD;
     private static final Method METAINFO_METHOD;
@@ -44,7 +44,7 @@ public final class CompositeBuilderInstance<T>
         }
         catch( NoSuchMethodException e )
         {
-            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: CompositeBuilderInstance" );
+            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: TransientBuilderInstance" );
         }
     }
 
@@ -52,7 +52,8 @@ public final class CompositeBuilderInstance<T>
     private final CompositeModel compositeModel;
 
     // lazy initialized in accessor
-    private UsesInstance uses;
+    private UsesInstance uses = UsesInstance.NO_USES;
+
 
     // lazy initialized in accessor
     private CompositeInstance prototypeInstance;
@@ -60,13 +61,13 @@ public final class CompositeBuilderInstance<T>
     // lazy initialized in accessor
     private StateHolder state;
 
-    public CompositeBuilderInstance( ModuleInstance moduleInstance, CompositeModel compositeModel, UsesInstance uses )
+    public TransientBuilderInstance( ModuleInstance moduleInstance, CompositeModel compositeModel, UsesInstance uses )
     {
         this( moduleInstance, compositeModel );
         this.uses = uses;
     }
 
-    public CompositeBuilderInstance( ModuleInstance moduleInstance, CompositeModel compositeModel )
+    public TransientBuilderInstance( ModuleInstance moduleInstance, CompositeModel compositeModel )
     {
         this.moduleInstance = moduleInstance;
 
@@ -78,7 +79,7 @@ public final class CompositeBuilderInstance<T>
         return (Class<T>) compositeModel.type();
     }
 
-    public CompositeBuilder<T> use( Object... usedObjects )
+    public TransientBuilder<T> use( Object... usedObjects )
     {
         getUses().use( usedObjects );
 
@@ -90,7 +91,7 @@ public final class CompositeBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = compositeModel.newCompositeInstance(moduleInstance, getUses(), getState() );
+            prototypeInstance = compositeModel.newCompositeInstance( moduleInstance, getUses(), getState() );
         }
 
         return prototypeInstance.<T>proxy();
@@ -101,7 +102,7 @@ public final class CompositeBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = compositeModel.newCompositeInstance(moduleInstance, getUses(), getState() );
+            prototypeInstance = compositeModel.newCompositeInstance( moduleInstance, getUses(), getState() );
         }
 
         return prototypeInstance.newProxy( mixinType );
@@ -121,7 +122,8 @@ public final class CompositeBuilderInstance<T>
 
         compositeModel.state().checkConstraints( instanceState );
 
-        CompositeInstance compositeInstance = compositeModel.newCompositeInstance( moduleInstance, uses == null ? UsesInstance.NO_USES : uses, instanceState );
+        CompositeInstance compositeInstance =
+            compositeModel.newCompositeInstance( moduleInstance, uses, instanceState );
         return compositeInstance.<T>proxy();
     }
 
@@ -172,7 +174,8 @@ public final class CompositeBuilderInstance<T>
         {
         }
 
-        public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
+        public Object invoke( Object o, Method method, Object[] objects )
+            throws Throwable
         {
             if( Property.class.isAssignableFrom( method.getReturnType() ) )
             {

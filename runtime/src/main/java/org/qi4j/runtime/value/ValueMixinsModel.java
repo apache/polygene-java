@@ -14,9 +14,9 @@
 
 package org.qi4j.runtime.value;
 
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.Value;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.composite.AbstractMixinsModel;
 import org.qi4j.runtime.composite.MixinDeclaration;
 import org.qi4j.runtime.composite.MixinModel;
@@ -28,7 +28,7 @@ import java.util.List;
  */
 public final class ValueMixinsModel extends AbstractMixinsModel
 {
-    public ValueMixinsModel( Class<? extends Composite> compositeType, List<Class<?>> assemblyMixins )
+    public ValueMixinsModel( Class<? extends ValueComposite> compositeType, List<Class<?>> assemblyMixins )
     {
         super( compositeType, assemblyMixins );
         mixins.add( new MixinDeclaration( ValueMixin.class, Value.class ) );

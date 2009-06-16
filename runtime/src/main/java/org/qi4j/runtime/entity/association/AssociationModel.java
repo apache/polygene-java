@@ -154,7 +154,7 @@ public final class AssociationModel
 
         if( Composite.class.isAssignableFrom( accessor.getReturnType() ) )
         {
-            associationInstance = (Association<T>) uow.module().compositeBuilderFactory().newCompositeBuilder( accessor.getReturnType() ).use( associationInstance ).newInstance();
+            associationInstance = (Association<T>) uow.module().transientBuilderFactory().newTransientBuilder( accessor.getReturnType() ).use( associationInstance ).newInstance();
         }
 
         return associationInstance;

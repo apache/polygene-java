@@ -70,9 +70,10 @@ public final class ObjectDeclarationImpl
             {
                 ObjectModel objectModel = new ObjectModel( objectType, visibility, metaInfo );
                 objectModels.add( objectModel );
-            } catch (Throwable e)
+            }
+            catch( Throwable e )
             {
-                throw (RuntimeException) new InvalidApplicationException("Could not register "+objectType.getName()).initCause(e);
+                throw new InvalidApplicationException( "Could not register " + objectType.getName(), e );
             }
         }
     }

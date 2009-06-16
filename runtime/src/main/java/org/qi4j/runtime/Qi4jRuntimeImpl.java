@@ -128,12 +128,12 @@ public final class Qi4jRuntimeImpl
         return null; // No super Composite type found
     }
 
-    public <T> T getConfigurationInstance( Composite serviceComposite, UnitOfWork uow )
+    public <T> T getConfigurationInstance( ServiceComposite serviceComposite, UnitOfWork uow )
         throws InstantiationException
     {
         ServiceModel serviceModel = (ServiceModel) DefaultCompositeInstance.getCompositeInstance( serviceComposite ).compositeModel();
 
-        String identity = ( (ServiceComposite) serviceComposite ).identity().get();
+        String identity = serviceComposite.identity().get();
         T configuration;
         try
         {

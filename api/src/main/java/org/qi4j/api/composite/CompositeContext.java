@@ -27,9 +27,9 @@ import java.lang.reflect.Proxy;
 public class CompositeContext<T extends Composite>
     extends ThreadLocal<T>
 {
-    private final CompositeBuilder<T> builder;
+    private final TransientBuilder<T> builder;
 
-    public CompositeContext( CompositeBuilder<T> builder )
+    public CompositeContext( TransientBuilder<T> builder )
     {
         this.builder = builder;
     }

@@ -16,8 +16,8 @@ package org.qi4j.runtime.service;
 
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.structure.Module;
@@ -37,14 +37,14 @@ import java.util.Set;
 public final class ImportedServiceModel
     implements ImportedServiceDescriptor, Serializable
 {
-    private final Class type;
+    private final Class<? extends ServiceComposite> type;
     private final Visibility visibility;
     private final Class<? extends ServiceImporter> serviceImporter;
     private final String identity;
     private final MetaInfo metaInfo;
     private String moduleName;
 
-    public ImportedServiceModel( Class serviceType,
+    public ImportedServiceModel( Class<? extends ServiceComposite> serviceType,
                                  Visibility visibility,
                                  Class<? extends ServiceImporter> serviceImporter,
                                  String identity,
@@ -58,7 +58,7 @@ public final class ImportedServiceModel
         this.moduleName = moduleName;
     }
 
-    public Class<? extends Composite> type()
+    public Class<? extends ServiceComposite> type()
     {
         return type;
     }

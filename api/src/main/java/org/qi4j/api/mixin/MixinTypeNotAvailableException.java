@@ -19,7 +19,7 @@ package org.qi4j.api.mixin;
 
 /**
  * This Exception is thrown when no visible Composite implements the MixinType that is
- * requested to be built in the CompositeBuilder.
+ * requested to be built in the builder.
  */
 public class MixinTypeNotAvailableException extends MixinMappingException
 {

@@ -18,7 +18,7 @@
 package org.qi4j.runtime.injection.provider;
 
 import org.qi4j.api.Qi4j;
-import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.structure.Application;
@@ -62,9 +62,9 @@ public final class StructureInjectionProviderFactory
         {
             Type type = dependencyModel.injectionType();
 
-            if( type.equals( CompositeBuilderFactory.class ) )
+            if( type.equals( TransientBuilderFactory.class ) )
             {
-                return context.moduleInstance().compositeBuilderFactory();
+                return context.moduleInstance().transientBuilderFactory();
             }
             else if( type.equals( ObjectBuilderFactory.class ) )
             {

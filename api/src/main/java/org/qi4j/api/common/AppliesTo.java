@@ -79,7 +79,7 @@ import java.lang.annotation.*;
  *
  * &#64;Concerns( SessionModifier.class )
  * &#64;Mixins( MyStateMixin.class )
- * public interface MyComposite extends Composite, SessionState
+ * public interface MyComposite extends TransientComposite, SessionState
  * {}
  * </code></pre>
  * <p>

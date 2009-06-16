@@ -60,9 +60,9 @@ public final class UsesInstance
         // Check builders
         for( Object use : uses )
         {
-            if( use instanceof CompositeBuilderInstance )
+            if( use instanceof TransientBuilderInstance )
             {
-                CompositeBuilderInstance builder = (CompositeBuilderInstance) use;
+                TransientBuilderInstance builder = (TransientBuilderInstance) use;
                 if( type.isAssignableFrom( builder.compositeType() ) )
                 {
                     return builder.newInstance();

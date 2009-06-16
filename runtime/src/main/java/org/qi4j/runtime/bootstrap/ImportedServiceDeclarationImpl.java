@@ -14,10 +14,10 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.common.InvalidApplicationException;
-import org.qi4j.api.composite.Composite;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.bootstrap.ImportedServiceDeclaration;
 import org.qi4j.runtime.service.ImportedServiceModel;
@@ -39,7 +39,8 @@ public final class ImportedServiceDeclarationImpl
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
-    public ImportedServiceDeclarationImpl( Iterable<Class> serviceTypes, ModuleAssemblyImpl moduleAssembly )
+    public ImportedServiceDeclarationImpl( Iterable<Class> serviceTypes,
+                                           ModuleAssemblyImpl moduleAssembly )
     {
         this.serviceTypes = serviceTypes;
         this.moduleAssembly = moduleAssembly;
@@ -71,7 +72,7 @@ public final class ImportedServiceDeclarationImpl
 
     void addServices( List<ImportedServiceModel> serviceModels )
     {
-        for( Class<? extends Composite> serviceType : serviceTypes )
+        for( Class<? extends ServiceComposite> serviceType : serviceTypes )
         {
             try
             {
@@ -90,7 +91,7 @@ public final class ImportedServiceDeclarationImpl
                 serviceModels.add( serviceModel );
             } catch (Exception e)
             {
-                throw (RuntimeException) new InvalidApplicationException("Could not register "+serviceType.getName()).initCause(e);
+                throw new InvalidApplicationException( "Could not register " + serviceType.getName(), e );
             }
         }
     }

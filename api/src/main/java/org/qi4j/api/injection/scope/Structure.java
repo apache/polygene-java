@@ -25,7 +25,7 @@ import java.lang.annotation.*;
  * <p/>
  * Valid types are:
  * <code><pre>
- * - CompositeBuilderFactory
+ * - TransientBuilderFactory
  * - ObjectBuilderFactory
  * - UnitOfWorkFactory
  * - ServiceFinder

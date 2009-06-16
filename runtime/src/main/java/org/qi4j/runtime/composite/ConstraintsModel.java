@@ -18,9 +18,8 @@ import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.constraint.ConstraintImplementationNotFoundException;
 import org.qi4j.api.constraint.Constraints;
-import static org.qi4j.api.util.Classes.genericInterfacesOf;
-import static org.qi4j.runtime.util.Annotations.isCompositeConstraintAnnotation;
-import static org.qi4j.runtime.util.Annotations.isConstraintAnnotation;
+import static org.qi4j.api.util.Classes.*;
+import static org.qi4j.runtime.util.Annotations.*;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -126,7 +125,7 @@ public final class ConstraintsModel
             }
             catch( Exception e )
             {
-                throw (InvalidApplicationException) new InvalidApplicationException( "Could not get Constraints for type " + clazz.getName() ).initCause( e );
+                throw new InvalidApplicationException( "Could not get Constraints for type " + clazz.getName(), e );
             }
         }
     }

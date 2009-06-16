@@ -17,30 +17,34 @@ package org.qi4j.api.composite;
 import org.qi4j.api.common.ConstructionException;
 
 /**
- * This factory creates proxies that implement the given
- * thisAs interfaces.
+ * This factory creates TransientComposites and the TransientBuilders.
+ *
+ * TransientComposite instances are very flexible in what it can reference, but are restricted in where they
+ * can be used. So, TransientComposites are mainly recommended where Values, Entities and Services can not be used,
+ * but they can also not be used to store state, be serialized across a network or have automatic equals/hashCode
+ * calculations.
  */
-public interface CompositeBuilderFactory
+public interface TransientBuilderFactory
 {
     /**
-     * Create a builder for creating new Composites that implements the given Composite type.
+     * Create a builder for creating new TransientComposites that implements the given TransientComposite type.
      *
-     * @param mixinType an interface that describes the Composite to be instantiated
-     * @return a CompositeBuilder for creation of Composites implementing the interface
+     * @param mixinType an interface that describes the TransientComposite to be instantiated
+     * @return a TransientBuilder for creation of TransientComposites implementing the interface
      * @throws NoSuchCompositeException if no composite extending the mixinType has been registered
      */
-    <T> CompositeBuilder<T> newCompositeBuilder( Class<T> mixinType )
+    <T> TransientBuilder<T> newTransientBuilder( Class<T> mixinType )
         throws NoSuchCompositeException;
 
     /**
-     * Instantiate a Composite of the given type.
+     * Instantiate a TransientComposite of the given type.
      *
-     * @param mixinType the Composite type to instantiate
-     * @return a new Composite instance
+     * @param mixinType the TransientComposite type to instantiate
+     * @return a new TransientComposite instance
      * @throws NoSuchCompositeException if no composite extending the mixinType has been registered
      * @throws org.qi4j.api.common.ConstructionException
      *                                  if the composite could not be instantiated
      */
-    <T> T newComposite( Class<T> mixinType )
+    <T> T newTransient( Class<T> mixinType )
         throws NoSuchCompositeException, ConstructionException;
 }

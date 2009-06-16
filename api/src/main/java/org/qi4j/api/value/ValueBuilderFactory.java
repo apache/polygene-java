@@ -17,7 +17,7 @@ package org.qi4j.api.value;
 import org.qi4j.api.common.ConstructionException;
 
 /**
- * Factory for ValueBuilders.
+ * Factory for Values and ValueBuilders.
  */
 public interface ValueBuilderFactory
 {
@@ -25,7 +25,7 @@ public interface ValueBuilderFactory
      * Create a builder for creating new Values that implements the given Value type.
      *
      * @param valueType an interface that describes the Composite to be instantiated
-     * @return a CompositeBuilder for creation of Composites implementing the interface
+     * @return a ValueBuilder for creation of ValueComposites implementing the interface
      * @throws NoSuchValueException if no value extending the mixinType has been registered
      */
     <T> ValueBuilder<T> newValueBuilder( Class<T> valueType )

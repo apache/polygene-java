@@ -15,7 +15,7 @@
 package org.qi4j.bootstrap;
 
 import org.qi4j.api.Qi4j;
-import org.qi4j.api.composite.CompositeBuilderFactory;
+import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.structure.Module;
@@ -29,7 +29,7 @@ import org.qi4j.spi.structure.ApplicationSPI;
  * and implement the {@link Assembler#assemble(ModuleAssembly)} method.
  * Once the SingletonAssembler is instantiated it will have created and activated
  * an Application which can be accessed from {@link org.qi4j.bootstrap.SingletonAssembler#application()}.
- * You can also easily access any resources specific for the single Module, such as the CompositeBuilderFactory.
+ * You can also easily access any resources specific for the single Module, such as the TransientBuilderFactory.
  */
 public abstract class SingletonAssembler
     implements Assembler
@@ -93,9 +93,9 @@ public abstract class SingletonAssembler
         return moduleInstance;
     }
 
-    public final CompositeBuilderFactory compositeBuilderFactory()
+    public final TransientBuilderFactory transientBuilderFactory()
     {
-        return moduleInstance.compositeBuilderFactory();
+        return moduleInstance.transientBuilderFactory();
     }
 
     public final ObjectBuilderFactory objectBuilderFactory()

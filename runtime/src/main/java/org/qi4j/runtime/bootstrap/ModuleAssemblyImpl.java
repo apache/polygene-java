@@ -17,12 +17,24 @@ package org.qi4j.runtime.bootstrap;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.service.DuplicateServiceIdentityException;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.bootstrap.*;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.AssemblyVisitor;
+import org.qi4j.bootstrap.CompositeDeclaration;
+import org.qi4j.bootstrap.EntityDeclaration;
+import org.qi4j.bootstrap.ImportedServiceDeclaration;
+import org.qi4j.bootstrap.InfoDeclaration;
+import org.qi4j.bootstrap.LayerAssembly;
+import org.qi4j.bootstrap.MetaInfoDeclaration;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ObjectDeclaration;
+import org.qi4j.bootstrap.ServiceDeclaration;
+import org.qi4j.bootstrap.ValueDeclaration;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.composite.CompositesModel;
 import org.qi4j.runtime.entity.EntityModel;
@@ -38,7 +50,11 @@ import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.runtime.value.ValuesModel;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Assembly of a Module. This is where you register all objects, Composites,
@@ -65,13 +81,6 @@ public final class ModuleAssemblyImpl
     {
         this.layerAssembly = layerAssembly;
         this.name = name;
-    }
-
-    public void addAssembler( Assembler assembler )
-        throws AssemblyException
-    {
-        // Invoke Assembler callback
-        assembler.assemble( this );
     }
 
     public LayerAssembly layerAssembly()
@@ -104,10 +113,10 @@ public final class ModuleAssemblyImpl
 
     }
 
-    public CompositeDeclaration addComposites( Class<? extends Composite>... compositeTypes )
+    public CompositeDeclaration addTransients( Class<? extends TransientComposite>... compositeTypes )
         throws AssemblyException
     {
-        for( Class<? extends Composite> compositeType : compositeTypes )
+        for( Class<? extends TransientComposite> compositeType : compositeTypes )
         {
             // May not register ServiceComposites
             if( ServiceComposite.class.isAssignableFrom( compositeType ) )
@@ -179,7 +188,8 @@ public final class ModuleAssemblyImpl
         return serviceDeclaration;
     }
 
-    public ImportedServiceDeclaration importServices( Class... serviceTypes ) throws AssemblyException
+    public ImportedServiceDeclaration importServices( Class... serviceTypes )
+        throws AssemblyException
     {
         List<Class> classes = Arrays.asList( serviceTypes );
         ImportedServiceDeclarationImpl serviceDeclaration = new ImportedServiceDeclarationImpl( classes, this );

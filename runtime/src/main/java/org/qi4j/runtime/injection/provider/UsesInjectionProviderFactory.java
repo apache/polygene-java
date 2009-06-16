@@ -1,9 +1,9 @@
 package org.qi4j.runtime.injection.provider;
 
-import org.qi4j.api.composite.CompositeBuilder;
+import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.runtime.composite.CompositeBuilderInstance;
+import org.qi4j.runtime.composite.TransientBuilderInstance;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -49,7 +49,7 @@ public final class UsesInjectionProviderFactory
 
             Class injectionType = dependency.rawInjectionType();
             Object usesObject = null;
-            if( !Iterable.class.equals( injectionType ) && !ObjectBuilder.class.equals( injectionType ) && !CompositeBuilder.class.equals( injectionType ) )
+            if( !Iterable.class.equals( injectionType ) && !ObjectBuilder.class.equals( injectionType ) && !TransientBuilder.class.equals( injectionType ) )
             {
                 usesObject = uses.useForType( injectionType );
             }
@@ -63,9 +63,9 @@ public final class UsesInjectionProviderFactory
                 ModuleInstance.CompositeFinder compositeFinder = moduleInstance.findCompositeModel( dependency.injectionClass() );
                 if( compositeFinder.model != null )
                 {
-                    if( Iterable.class.equals( injectionType ) || CompositeBuilder.class.equals( injectionType ) )
+                    if( Iterable.class.equals( injectionType ) || TransientBuilder.class.equals( injectionType ) )
                     {
-                        usesObject = new CompositeBuilderInstance( compositeFinder.module, compositeFinder.model, uses );
+                        usesObject = new TransientBuilderInstance( compositeFinder.module, compositeFinder.model, uses );
                     }
                     else
                     {

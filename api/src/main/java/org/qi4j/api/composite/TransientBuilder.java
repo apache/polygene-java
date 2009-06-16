@@ -19,14 +19,14 @@ package org.qi4j.api.composite;
 import org.qi4j.api.common.ConstructionException;
 
 /**
- * CompositeBuilders are used to instantiate Composites. They can be acquired from
- * {@link CompositeBuilderFactory#newCompositeBuilder(Class)} and allows the client
- * to provide additional settings before instantiating the Composite.
+ * TransientBuilders are used to instantiate TransientComposites. They can be acquired from
+ * {@link TransientBuilderFactory#newTransientBuilder(Class)} and allows the client
+ * to provide additional settings before instantiating the TransientComposite.
  * <p/>
  * It extends Iterable which allows client code to iteratively create new instances. This
  * can be used to implement the prototype pattern.
  */
-public interface CompositeBuilder<T>
+public interface TransientBuilder<T>
     extends Iterable<T>
 {
     /**
@@ -34,10 +34,10 @@ public interface CompositeBuilder<T>
      * dependency injection annotation.
      *
      * @param usedObjects The objects that can be injected into mixins.
-     * @return the compositebuilder instance
+     * @return the transient builder instance
      * @see org.qi4j.api.injection.scope.Uses
      */
-    CompositeBuilder<T> use( Object... usedObjects );
+    TransientBuilder<T> use( Object... usedObjects );
 
     /**
      * Get a representation of the state for the new Composite.

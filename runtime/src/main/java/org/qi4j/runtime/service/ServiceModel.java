@@ -21,11 +21,26 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.property.*;
+import org.qi4j.api.property.ComputedPropertyInstance;
+import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.property.Immutable;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.MetaInfoDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.runtime.composite.*;
+import org.qi4j.runtime.composite.AbstractCompositeModel;
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.composite.CompositeMethodsModel;
+import org.qi4j.runtime.composite.ConcernDeclaration;
+import org.qi4j.runtime.composite.ConcernsDeclaration;
+import org.qi4j.runtime.composite.ConstraintsModel;
+import org.qi4j.runtime.composite.MixinsModel;
+import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.composite.SideEffectsDeclaration;
+import org.qi4j.runtime.composite.StateModel;
+import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.property.PropertyModel;
@@ -36,7 +51,11 @@ import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.service.ServiceDescriptor;
 
 import java.io.Serializable;
-import java.lang.reflect.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -48,7 +67,7 @@ public final class ServiceModel
     extends AbstractCompositeModel
     implements ServiceDescriptor, Serializable
 {
-    public static ServiceModel newModel( final Class<? extends Composite> compositeType,
+    public static ServiceModel newModel( final Class<? extends ServiceComposite> compositeType,
                                          final Visibility visibility,
                                          final MetaInfo metaInfo,
                                          final List<Class<?>> assemblyConcerns,

@@ -28,4 +28,9 @@ public class InvalidApplicationException
     {
         super( string );
     }
+
+    public InvalidApplicationException( String string, Throwable cause )
+    {
+        super( string, cause );
+    }
 }

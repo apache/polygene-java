@@ -18,7 +18,7 @@
 
 package org.qi4j.bootstrap;
 
-import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.value.ValueComposite;
@@ -37,7 +37,7 @@ public interface ModuleAssembly
 
     String name();
 
-    CompositeDeclaration addComposites( Class<? extends Composite>... compositeTypes )
+    CompositeDeclaration addTransients( Class<? extends TransientComposite>... compositeTypes )
         throws AssemblyException;
 
     ValueDeclaration addValues( Class<? extends ValueComposite>... compositeTypes )
