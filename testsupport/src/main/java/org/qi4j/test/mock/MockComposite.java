@@ -17,7 +17,7 @@
  */
 package org.qi4j.test.mock;
 
-import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.test.mock.internal.MockRecorderMixin;
 
@@ -27,7 +27,6 @@ import org.qi4j.test.mock.internal.MockRecorderMixin;
  * @author Alin Dreghiciu
  */
 @Mixins( { MockRecorderMixin.class } )
-public interface MockComposite
-    extends MockRecorder, Composite
+public interface MockComposite extends MockRecorder, TransientComposite
 {
 }
