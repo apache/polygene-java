@@ -6,7 +6,6 @@
   <name>Qi4j Library (Build POM)</name>
   <version>0.8-SNAPSHOT</version>
   <packaging>pom</packaging>
-
   <inceptionYear>2007</inceptionYear>
   <url>http://www.qi4j.org/</url>
 
