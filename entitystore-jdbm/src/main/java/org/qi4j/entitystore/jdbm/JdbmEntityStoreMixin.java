@@ -16,6 +16,14 @@
  */
 package org.qi4j.entitystore.jdbm;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Properties;
+import java.util.concurrent.locks.ReadWriteLock;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import jdbm.RecordManagerOptions;
@@ -40,106 +48,82 @@ import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.helpers.MapEntityStore;
 import org.qi4j.spi.service.ServiceDescriptor;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Properties;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.logging.Logger;
-
 /**
  * JDBM implementation of SerializationStore
  */
 public class JdbmEntityStoreMixin
-        implements Activatable, MapEntityStore
+    implements Activatable, MapEntityStore
 {
-    private
-    @This
-    ReadWriteLock lock;
-    private
-    @This
-    Configuration<JdbmConfiguration> config;
-    private
-    @Uses
-    ServiceDescriptor descriptor;
+    @This private ReadWriteLock lock;
+    @This private Configuration<JdbmConfiguration> config;
+    @Uses private ServiceDescriptor descriptor;
 
     private RecordManager recordManager;
-    private CacheRecordManager cacheRecordManager;
     private BTree index;
     private Serializer serializer;
-    public final Logger logger = Logger.getLogger(JdbmEntityStoreService.class.getName());
 
     // Activatable implementation
+    @SuppressWarnings( { "ResultOfMethodCallIgnored" } ) 
     public void activate()
-            throws Exception
+        throws Exception
     {
-        File dataFile = new File(config.configuration().file().get());
-        logger.info("JDBM store:" + dataFile.getAbsolutePath());
+        File dataFile = new File( config.configuration().file().get() );
         File directory = dataFile.getAbsoluteFile().getParentFile();
         directory.mkdirs();
         String name = dataFile.getAbsolutePath();
-        Properties properties;
-        try
-        {
-            properties = getProperties(config.configuration());
-        }
-        catch (IOException e)
-        {
-            throw new EntityStoreException("Unable to read properties from " + directory + "/qi4j.properties", e);
-        }
-        recordManager = RecordManagerFactory.createRecordManager(name, properties);
-        serializer = new ByteArraySerializer();
-
-        initializeIndex();
+        Properties properties = getProperties( config.configuration() );
+        initialize( name, properties );
     }
 
     public void passivate()
-            throws Exception
+        throws Exception
     {
         recordManager.close();
     }
 
-    public boolean contains( EntityReference entityReference, Usecase usecase, MetaInfo unitofwork ) throws EntityStoreException
+    public boolean contains( EntityReference entityReference, Usecase usecase, MetaInfo unitofwork )
+        throws EntityStoreException
     {
         try
         {
-            Long stateIndex = getStateIndex(entityReference.toString());
+            Long stateIndex = getStateIndex( entityReference.toString() );
             return stateIndex != null;
-        } catch (IOException e)
+        }
+        catch( IOException e )
         {
-            throw new EntityStoreException(e);
+            throw new EntityStoreException( e );
         }
     }
 
-    public InputStream get( EntityReference entityReference, Usecase usecase, MetaInfo unitOfWork ) throws EntityStoreException
+    public InputStream get( EntityReference entityReference, Usecase usecase, MetaInfo unitOfWork )
+        throws EntityStoreException
     {
         try
         {
-            Long stateIndex = getStateIndex(entityReference.identity());
+            Long stateIndex = getStateIndex( entityReference.identity() );
 
-            if (stateIndex == null)
+            if( stateIndex == null )
             {
-                throw new EntityNotFoundException(entityReference);
+                throw new EntityNotFoundException( entityReference );
             }
 
-            byte[] serializedState = (byte[]) recordManager.fetch(stateIndex, serializer);
+            byte[] serializedState = (byte[]) recordManager.fetch( stateIndex, serializer );
 
-            if (serializedState == null)
+            if( serializedState == null )
             {
-                throw new EntityNotFoundException(entityReference);
+                throw new EntityNotFoundException( entityReference );
             }
 
-            return new ByteArrayInputStream(serializedState);
-        } catch (IOException e)
+            return new ByteArrayInputStream( serializedState );
+        }
+        catch( IOException e )
         {
-            throw new EntityStoreException(e);
+            throw new EntityStoreException( e );
         }
     }
 
-    public void applyChanges( MapChanges changes, Usecase usecase, MetaInfo unitOfWork ) throws IOException
+    public void applyChanges( MapChanges changes, Usecase usecase, MetaInfo unitOfWork )
+        throws IOException
     {
         try
         {
@@ -147,31 +131,31 @@ public class JdbmEntityStoreMixin
             {
                 public OutputStream newEntity( final EntityReference ref ) throws IOException
                 {
-                    return new ByteArrayOutputStream(1000)
+                    return new ByteArrayOutputStream( 1000 )
                     {
                         @Override public void close() throws IOException
                         {
                             super.close();
 
                             byte[] stateArray = buf;
-                            long stateIndex = recordManager.insert(stateArray, serializer);
+                            long stateIndex = recordManager.insert( stateArray, serializer );
                             String indexKey = ref.toString();
-                            index.insert(indexKey.getBytes("UTF-8"), stateIndex, false);
+                            index.insert( indexKey.getBytes( "UTF-8" ), stateIndex, false );
                         }
                     };
                 }
 
                 public OutputStream updateEntity( final EntityReference ref ) throws IOException
                 {
-                    return new ByteArrayOutputStream(1000)
+                    return new ByteArrayOutputStream( 1000 )
                     {
                         @Override public void close() throws IOException
                         {
                             super.close();
 
-                            Long stateIndex = getStateIndex(ref.toString());
+                            Long stateIndex = getStateIndex( ref.toString() );
                             byte[] stateArray = toByteArray();
-                            recordManager.update(stateIndex, stateArray, serializer);
+                            recordManager.update( stateIndex, stateArray, serializer );
                         }
                     };
                 }
@@ -180,93 +164,103 @@ public class JdbmEntityStoreMixin
                 {
                     try
                     {
-                        Long stateIndex = getStateIndex(ref.toString());
-                        recordManager.delete(stateIndex);
-                        index.remove(ref.toString().getBytes("UTF-8"));
+                        Long stateIndex = getStateIndex( ref.toString() );
+                        recordManager.delete( stateIndex );
+                        index.remove( ref.toString().getBytes( "UTF-8" ) );
                     }
                     catch( IOException e )
                     {
-                        throw new EntityStoreException(e);
+                        throw new EntityStoreException( e );
                     }
                 }
-            }, usecase, unitOfWork);
+            }, usecase, unitOfWork );
 
             recordManager.commit();
-        } catch (Exception e)
+        }
+        catch( Exception e )
         {
             recordManager.rollback();
-            if (e instanceof IOException)
+            if( e instanceof IOException )
+            {
                 throw (IOException) e;
-            else if (e instanceof EntityStoreException)
+            }
+            else if( e instanceof EntityStoreException )
+            {
                 throw (EntityStoreException) e;
+            }
             else
-                throw (IOException) new IOException().initCause( e );
+            {
+                IOException exception = new IOException();
+                exception.initCause( e );
+                throw exception; 
+            }
         }
 
     }
 
 
-    public void visitMap(MapEntityStoreVisitor visitor, Usecase usecase, MetaInfo unitOfWorkMetaInfo)
+    public void visitMap( MapEntityStoreVisitor visitor, Usecase usecase, MetaInfo unitOfWorkMetaInfo )
     {
         try
         {
             final TupleBrowser browser = index.browse();
             final Tuple tuple = new Tuple();
 
-            while (browser.getNext(tuple))
+            while( browser.getNext( tuple ) )
             {
-                String id = new String((byte[]) tuple.getKey(), "UTF-8");
+                String id = new String( (byte[]) tuple.getKey(), "UTF-8" );
 
-                Long stateIndex = getStateIndex(id);
+                Long stateIndex = getStateIndex( id );
 
-                if (stateIndex == null)
+                if( stateIndex == null )
                 {
-                    throw new EntityNotFoundException(new EntityReference(id));
+                    throw new EntityNotFoundException( new EntityReference( id ) );
                 }
 
-                byte[] serializedState = (byte[]) recordManager.fetch(stateIndex, serializer);
+                byte[] serializedState = (byte[]) recordManager.fetch( stateIndex, serializer );
 
-                visitor.visitEntity(new ByteArrayInputStream(serializedState));
+                visitor.visitEntity( new ByteArrayInputStream( serializedState ) );
             }
         }
-        catch (IOException e)
+        catch( IOException e )
         {
-            throw new EntityStoreException(e);
+            throw new EntityStoreException( e );
         }
     }
 
-    private Properties getProperties(JdbmConfiguration config)
-            throws IOException
+    private Properties getProperties( JdbmConfiguration config )
     {
         Properties properties = new Properties();
 
-        properties.put(RecordManagerOptions.AUTO_COMMIT, config.autoCommit().get().toString());
-        properties.put(RecordManagerOptions.DISABLE_TRANSACTIONS, config.disableTransactions().get().toString());
-        
+        properties.put( RecordManagerOptions.AUTO_COMMIT, config.autoCommit().get().toString() );
+        properties.put( RecordManagerOptions.DISABLE_TRANSACTIONS, config.disableTransactions().get().toString() );
+
         return properties;
     }
 
-    private Long getStateIndex(String identity)
-            throws IOException
+    private Long getStateIndex( String identity )
+        throws IOException
     {
-        Long stateIndex = (Long) index.find(identity.getBytes("UTF-8"));
-        return stateIndex;
+        return (Long) index.find( identity.getBytes( "UTF-8" ) );
     }
 
-    private void initializeIndex()
-            throws IOException
+    private void initialize( String name, Properties properties )
+        throws IOException
     {
-        cacheRecordManager = new CacheRecordManager(recordManager, new MRU(1000));
-        long recid = recordManager.getNamedObject("index");
-        if (recid != 0)
+        recordManager = RecordManagerFactory.createRecordManager( name, properties );
+        serializer = new ByteArraySerializer();
+        recordManager = new CacheRecordManager( recordManager, new MRU( 1000 ) );
+        long recid = recordManager.getNamedObject( "index" );
+        if( recid != 0 )
         {
-            logger.info("Using existing index");
-            index = BTree.load(cacheRecordManager, recid);
-        } else
-        {
-            logger.info("Creating new index");
-            index = BTree.createInstance(cacheRecordManager, new ByteArrayComparator(), new ByteArraySerializer(), new LongSerializer(), 16);
-            cacheRecordManager.setNamedObject("index", index.getRecid());
+            index = BTree.load( recordManager, recid );
         }
+        else
+        {
+            ByteArrayComparator comparator = new ByteArrayComparator();
+            index = BTree.createInstance( recordManager, comparator, serializer, new LongSerializer(), 16 );
+            recordManager.setNamedObject( "index", index.getRecid() );
+        }
+        recordManager.commit();
     }
 }
