@@ -95,7 +95,7 @@ public class SPARQLEntityFinderTest
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             try
             {
-                Query<Named> query = unitOfWork.queryBuilderFactory().newQueryBuilder(Named.class).newQuery();
+                Query<Named> query = queryBuilderFactory.newQueryBuilder(Named.class).newQuery(unitOfWork);
                 for (Named testEntity : query)
                 {
                     System.out.println(testEntity.name().get());

@@ -27,7 +27,7 @@ public class CollectingQualifiedIdentityResultCallback
 {
     private final Collection<EntityReference> entities = new ArrayList<EntityReference>();
 
-    public boolean processRow(int row, EntityReference entityReference)
+    public boolean processRow(long row, EntityReference entityReference)
     {
         entities.add(entityReference);
         return true;

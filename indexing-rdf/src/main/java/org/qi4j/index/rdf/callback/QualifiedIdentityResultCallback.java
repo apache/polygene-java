@@ -21,5 +21,5 @@ import org.qi4j.api.entity.EntityReference;
 
 public interface QualifiedIdentityResultCallback
 {
-    boolean processRow(int row, EntityReference entityReference);
+    boolean processRow(long row, EntityReference entityReference);
 }

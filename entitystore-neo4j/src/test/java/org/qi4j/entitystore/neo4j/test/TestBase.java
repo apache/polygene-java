@@ -96,7 +96,6 @@ public abstract class TestBase extends AbstractQi4jTest
         throws Exception
     {
         uow = unitOfWorkFactory.newUnitOfWork();
-        qbf = uow.queryBuilderFactory();
         try
         {
             TestExecutor.setup( uow, executor );

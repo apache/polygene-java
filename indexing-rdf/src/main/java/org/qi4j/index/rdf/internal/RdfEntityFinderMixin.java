@@ -48,6 +48,7 @@ public class RdfEntityFinderMixin
         implements EntityFinder
 {
     private static final QueryLanguage language = QueryLanguage.SPARQL;
+
     @Service
     private Repository repository;
     @Service
@@ -60,7 +61,8 @@ public class RdfEntityFinderMixin
     {
         CollectingQualifiedIdentityResultCallback collectingCallback = new CollectingQualifiedIdentityResultCallback();
         RdfQueryParser rdfQueryParser = factory.newQueryParser(language);
-        performTupleQuery(resultType, whereClause, orderBySegments, firstResult, maxResults, rdfQueryParser, collectingCallback);
+        String query = rdfQueryParser.getQuery(resultType, whereClause, orderBySegments, firstResult, maxResults);
+        performTupleQuery(query, collectingCallback);
         return collectingCallback.getEntities();
     }
 
@@ -69,23 +71,20 @@ public class RdfEntityFinderMixin
     {
         final SingleQualifiedIdentityResultCallback singleCallback = new SingleQualifiedIdentityResultCallback();
         RdfQueryParser rdfQueryParser = factory.newQueryParser(language);
-        performTupleQuery(resultType, whereClause, null, null, null, rdfQueryParser, singleCallback);
+        String query = rdfQueryParser.getQuery(resultType, whereClause, null, null, null);
+        performTupleQuery(query, singleCallback);
         return singleCallback.getQualifiedIdentity();
     }
 
     public long countEntities(String resultType, BooleanExpression whereClause) throws EntityFinderException
     {
         RdfQueryParser rdfQueryParser = factory.newQueryParser(language);
-        return performTupleQuery(resultType, whereClause, null, null, null, rdfQueryParser, null);
+        String query = rdfQueryParser.getQuery(resultType, whereClause, null, null, null);
+        return performTupleQuery(query, null);
     }
 
 
-    private int performTupleQuery(String resultType,
-                                  BooleanExpression whereClause,
-                                  OrderBy[] orderBySegments,
-                                  Integer firstResult,
-                                  Integer maxResults,
-                                  RdfQueryParser parser,
+    private long performTupleQuery(String query,
                                   QualifiedIdentityResultCallback qualifiedIdentityResultCallback)
             throws EntityFinderException
     {
@@ -93,14 +92,13 @@ public class RdfEntityFinderMixin
         {
             RepositoryConnection connection = repository.getConnection();
 
-            String query = parser.getQuery(resultType, whereClause, orderBySegments, firstResult, maxResults);
             TupleQuery tupleQuery = connection.prepareTupleQuery(language, query);
             tupleQuery.setIncludeInferred(false);
 
             TupleQueryResult result = tupleQuery.evaluate();
             try
             {
-                int row = 0;
+                long row = 0;
                 while (result.hasNext())
                 {
                     if (handleCallbacks(qualifiedIdentityResultCallback, result, row))
@@ -141,7 +139,7 @@ public class RdfEntityFinderMixin
         }
     }
 
-    private boolean handleCallbacks(QualifiedIdentityResultCallback qualifiedIdentityResultCallback, TupleQueryResult result, int row)
+    private boolean handleCallbacks(QualifiedIdentityResultCallback qualifiedIdentityResultCallback, TupleQueryResult result, long row)
             throws Exception
     {
         BindingSet bindingSet = result.next();
@@ -155,7 +153,7 @@ public class RdfEntityFinderMixin
         return false;
     }
 
-    private boolean processRow(int row, BindingSet bindingSet, QualifiedIdentityResultCallback qualifiedIdentityResultCallback)
+    private boolean processRow(long row, BindingSet bindingSet, QualifiedIdentityResultCallback qualifiedIdentityResultCallback)
     {
         final Value identifier = bindingSet.getValue("identity");
 
