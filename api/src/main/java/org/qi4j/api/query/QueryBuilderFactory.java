@@ -17,6 +17,8 @@
  */
 package org.qi4j.api.query;
 
+import org.qi4j.api.unitofwork.UnitOfWork;
+
 /**
  * This is used to create QueryBuilders.
  *
@@ -35,5 +37,5 @@ public interface QueryBuilderFactory
         throws MissingIndexingSystemException;
 
 
-    <T> Query<T> newNamedQuery( Class<T> resultType, String name );
+    <T> Query<T> newNamedQuery( Class<T> resultType, UnitOfWork unitOfWork, String name );
 }

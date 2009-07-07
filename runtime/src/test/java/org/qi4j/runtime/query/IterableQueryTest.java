@@ -69,7 +69,7 @@ public class IterableQueryTest
         uow = assembler.unitOfWorkFactory().newUnitOfWork();
         Network.populate( uow );
         uow.apply();
-        qbf = uow.queryBuilderFactory();
+        qbf = assembler.queryBuilderFactory();
     }
 
     @After

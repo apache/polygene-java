@@ -18,6 +18,7 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilderFactory;
@@ -40,6 +41,8 @@ public interface Module
     ValueBuilderFactory valueBuilderFactory();
 
     UnitOfWorkFactory unitOfWorkFactory();
+
+    QueryBuilderFactory queryBuilderFactory();
 
     ServiceFinder serviceFinder();
 

@@ -35,11 +35,6 @@ import org.qi4j.spi.query.named.NamedEntityFinder;
 public final class QueryBuilderFactoryImpl
     implements QueryBuilderFactory
 {
-
-    /**
-     * Parent unit of work.
-     */
-    private final UnitOfWork unitOfWork;
     private ServiceFinder finder;
     private ClassLoader classLoader;
 
@@ -51,15 +46,12 @@ public final class QueryBuilderFactoryImpl
     /**
      * Constructor.
      *
-     * @param unitOfWork parent unit of work; cannot be null
      * @param finder     The ServiceFinder of the Module this QueryBuilderFactory belongs to.
      */
-    public QueryBuilderFactoryImpl( final UnitOfWork unitOfWork, ClassLoader classLoader, ServiceFinder finder )
+    public QueryBuilderFactoryImpl( ClassLoader classLoader, ServiceFinder finder )
     {
-        NullArgumentException.validateNotNull( "Unit of work instance", unitOfWork );
         NullArgumentException.validateNotNull( "ServiceFinder", finder );
         this.finder = finder;
-        this.unitOfWork = unitOfWork;
         this.classLoader = classLoader;
     }
 
@@ -73,12 +65,12 @@ public final class QueryBuilderFactoryImpl
         final ServiceReference<EntityFinder> serviceReference = finder.findService( EntityFinder.class );
         if( serviceReference == null )
         {
-            return new QueryBuilderImpl<T>( unitOfWork, null, classLoader, resultType );
+            return new QueryBuilderImpl<T>( null, classLoader, resultType );
         }
-        return new QueryBuilderImpl<T>( unitOfWork, serviceReference.get(), classLoader, resultType );
+        return new QueryBuilderImpl<T>( serviceReference.get(), classLoader, resultType );
     }
 
-    public <T> Query<T> newNamedQuery( Class<T> resultType, String name )
+    public <T> Query<T> newNamedQuery( Class<T> resultType, UnitOfWork unitOfWork, String name )
     {
         final ServiceReference<NamedEntityFinder> serviceReference = finder.findService( NamedEntityFinder.class );
         if( serviceReference == null )

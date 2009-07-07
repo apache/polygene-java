@@ -19,16 +19,20 @@ import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
-import static org.qi4j.api.entity.EntityReference.parseEntityReference;
+import static org.qi4j.api.entity.EntityReference.*;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.LifecycleException;
-import org.qi4j.api.query.QueryBuilderFactory;
-import org.qi4j.api.service.ServiceFinder;
-import org.qi4j.api.unitofwork.*;
+import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
+import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCallback;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkException;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
-import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
 import org.qi4j.runtime.unitofwork.EntityBuilderInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
@@ -63,8 +67,6 @@ public class ModuleUnitOfWork
         }
     }
 
-
-    private QueryBuilderFactory queryBuilderFactory;
 
     private UnitOfWorkInstance uow;
     private ModuleInstance moduleInstance;
@@ -291,16 +293,6 @@ public class ModuleUnitOfWork
     public void resume()
     {
         uow.resume();
-    }
-
-    public QueryBuilderFactory queryBuilderFactory()
-    {
-        if( queryBuilderFactory == null )
-        {
-            ServiceFinder finder = moduleInstance.serviceFinder();
-            queryBuilderFactory = new QueryBuilderFactoryImpl( this, moduleInstance.classLoader(), finder );
-        }
-        return queryBuilderFactory;
     }
 
     public void addUnitOfWorkCallback( UnitOfWorkCallback callback )

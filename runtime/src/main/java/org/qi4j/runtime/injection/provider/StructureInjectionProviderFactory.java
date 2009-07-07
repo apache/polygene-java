@@ -20,6 +20,7 @@ package org.qi4j.runtime.injection.provider;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Layer;
@@ -77,6 +78,10 @@ public final class StructureInjectionProviderFactory
             else if( type.equals( UnitOfWorkFactory.class ) )
             {
                 return context.moduleInstance().unitOfWorkFactory();
+            }
+            else if( type.equals( QueryBuilderFactory.class ) )
+            {
+                return context.moduleInstance().queryBuilderFactory();
             }
             else if( type.equals( ServiceFinder.class ) )
             {

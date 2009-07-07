@@ -20,11 +20,12 @@
 package org.qi4j.api.query;
 
 import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.api.unitofwork.UnitOfWork;
 
 /**
  * QueryBuilders are used to create {@link Query} instances.
  * Iteratively add where() clauses to the query, and then use
- * {@link QueryBuilder#newQuery()} to instantiate the Query.
+ * {@link QueryBuilder#newQuery(org.qi4j.api.unitofwork.UnitOfWork)} to instantiate the Query.
  *
  * DDD tip: Query objects are not executed immediately, so they
  * should be constructed in the domain model and handed over to
@@ -45,9 +46,10 @@ public interface QueryBuilder<T>
     /**
      * Create a new query with the declared where-clauses.
      *
+     * @param unitOfWork the UoW in which the query is to be executed
      * @return a new Query instance
      */
-    Query<T> newQuery();
+    Query<T> newQuery(UnitOfWork unitOfWork);
 
     /**
      * Create a new query with the declared where-clauses that will be evaluated against the iterable entries.

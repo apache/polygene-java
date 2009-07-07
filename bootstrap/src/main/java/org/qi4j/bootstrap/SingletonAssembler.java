@@ -17,6 +17,7 @@ package org.qi4j.bootstrap;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
@@ -118,4 +119,8 @@ public abstract class SingletonAssembler
         return moduleInstance.valueBuilderFactory();
     }
 
+    public final QueryBuilderFactory queryBuilderFactory()
+    {
+        return moduleInstance.queryBuilderFactory();
+    }
 }

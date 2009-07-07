@@ -18,13 +18,14 @@ import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
+import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.composite.TransientBuilderFactory;
-import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
@@ -35,11 +36,16 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.runtime.composite.*;
+import org.qi4j.runtime.composite.CompositeModel;
+import org.qi4j.runtime.composite.CompositesInstance;
+import org.qi4j.runtime.composite.CompositesModel;
+import org.qi4j.runtime.composite.TransientBuilderInstance;
+import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.object.ObjectBuilderInstance;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.object.ObjectsInstance;
 import org.qi4j.runtime.object.ObjectsModel;
+import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
 import org.qi4j.runtime.service.ImportedServicesInstance;
 import org.qi4j.runtime.service.ImportedServicesModel;
 import org.qi4j.runtime.service.ServicesInstance;
@@ -78,6 +84,7 @@ public class ModuleInstance
     private final ObjectBuilderFactory objectBuilderFactory;
     private final ValueBuilderFactory valueBuilderFactory;
     private final UnitOfWorkFactory unitOfWorkFactory;
+    private final QueryBuilderFactory queryBuilderFactory;
     private final ServiceFinder serviceFinder;
 
     // Lookup caches
@@ -104,6 +111,7 @@ public class ModuleInstance
         valueBuilderFactory = new ValueBuilderFactoryInstance();
         unitOfWorkFactory = new UnitOfWorkFactoryInstance();
         serviceFinder = new ServiceFinderInstance();
+        queryBuilderFactory = new QueryBuilderFactoryImpl(moduleModel.classLoader(), serviceFinder);
 
         entityFinders = new ConcurrentHashMap<Class, EntityFinder>();
         compositeFinders = new ConcurrentHashMap<Class, CompositeFinder>();
@@ -180,6 +188,11 @@ public class ModuleInstance
     public UnitOfWorkFactory unitOfWorkFactory()
     {
         return unitOfWorkFactory;
+    }
+
+    public QueryBuilderFactory queryBuilderFactory()
+    {
+        return queryBuilderFactory;
     }
 
     public ServiceFinder serviceFinder()

@@ -37,10 +37,6 @@ final class QueryBuilderImpl<T>
 {
 
     /**
-     * Parent unit of work.
-     */
-    private final UnitOfWork unitOfWork;
-    /**
      * Entity finder to be used to locate entities.
      */
     private final EntityFinder entityFinder;
@@ -59,16 +55,13 @@ final class QueryBuilderImpl<T>
     /**
      * Constructor.
      *
-     * @param unitOfWork   parent unit of work; cannot be null
      * @param entityFinder entity finder to be used to locate entities; canot be null
      * @param resultType   type of queried entities; cannot be null
      */
-    public QueryBuilderImpl( final UnitOfWork unitOfWork,
-                             final EntityFinder entityFinder,
+    public QueryBuilderImpl( final EntityFinder entityFinder,
                              final ClassLoader classLoader,
                              final Class<T> resultType )
     {
-        this.unitOfWork = unitOfWork;
         this.entityFinder = entityFinder;
         this.classLoader = classLoader;
         this.resultType = resultType;
@@ -96,10 +89,15 @@ final class QueryBuilderImpl<T>
     }
 
     /**
-     * @see QueryBuilder#newQuery()
+     * @see QueryBuilder#newQuery(org.qi4j.api.unitofwork.UnitOfWork)
      */
-    public Query<T> newQuery()
+    public Query<T> newQuery(UnitOfWork unitOfWork)
     {
+        if (unitOfWork == null)
+        {
+            throw new IllegalArgumentException("UnitOfWork may not be null");
+        }
+
         if( entityFinder == null )
         {
             throw new MissingIndexingSystemException();

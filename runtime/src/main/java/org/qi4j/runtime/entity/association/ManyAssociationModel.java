@@ -16,7 +16,7 @@ package org.qi4j.runtime.entity.association;
 
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Aggregated;
@@ -152,7 +152,7 @@ public final class ManyAssociationModel
     {
         ManyAssociation<T> associationInstance = new ManyAssociationInstance<T>( state.identity() == EntityReference.NULL ? builderInfo : this, this, uow, state );
 
-        if( Composite.class.isAssignableFrom( accessor.getReturnType() ) )
+        if( TransientComposite.class.isAssignableFrom( accessor.getReturnType() ) )
         {
             associationInstance = (ManyAssociation<T>) uow.module().transientBuilderFactory().newTransientBuilder( accessor.getReturnType() ).use( associationInstance ).newInstance();
         }

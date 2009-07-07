@@ -19,13 +19,19 @@ import org.junit.Before;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.bootstrap.*;
+import org.qi4j.bootstrap.ApplicationAssembler;
+import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.spi.structure.ApplicationSPI;
@@ -47,6 +53,7 @@ public abstract class AbstractQi4jTest
     protected ObjectBuilderFactory objectBuilderFactory;
     protected ValueBuilderFactory valueBuilderFactory;
     protected UnitOfWorkFactory unitOfWorkFactory;
+    protected QueryBuilderFactory queryBuilderFactory;
     protected ServiceFinder serviceLocator;
 
     protected Module moduleInstance;
@@ -66,6 +73,7 @@ public abstract class AbstractQi4jTest
         objectBuilderFactory = moduleInstance.objectBuilderFactory();
         valueBuilderFactory = moduleInstance.valueBuilderFactory();
         unitOfWorkFactory = moduleInstance.unitOfWorkFactory();
+        queryBuilderFactory = moduleInstance.queryBuilderFactory();
         serviceLocator = moduleInstance.serviceFinder();
     }
 
