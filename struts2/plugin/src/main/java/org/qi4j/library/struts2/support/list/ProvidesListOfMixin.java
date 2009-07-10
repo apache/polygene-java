@@ -7,13 +7,14 @@ import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import static org.qi4j.library.struts2.util.ParameterizedTypes.findTypeVariables;
+import static org.qi4j.library.struts2.util.ParameterizedTypes.*;
 
 public abstract class ProvidesListOfMixin<T> extends ActionSupport implements ProvidesListOf<T>
 {
 
     @This ProvidesListOf<T> action;
     @Structure UnitOfWorkFactory uowf;
+    @Structure QueryBuilderFactory qbf;
 
     Iterable<T> results;
 
@@ -30,12 +31,12 @@ public abstract class ProvidesListOfMixin<T> extends ActionSupport implements Pr
      * do validation, but for now we'll just use the prepare() method.  We can change it easily enough later if this
      * becomes an issue for some reason.
      */
-    public void prepare() throws Exception
+    public void prepare()
+        throws Exception
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
-        QueryBuilderFactory qbf = uow.queryBuilderFactory();
         QueryBuilder<T> qb = qbf.newQueryBuilder( typeToList() );
-        results = qb.newQuery();
+        results = qb.newQuery( uow );
     }
 
     private Class<T> typeToList()
