@@ -21,9 +21,9 @@ import java.io.Serializable;
 /**
  * A state name. State can be either a property or an association..
  * This includes three versions of the name:
- * 1) The {@link QualifiedName}
- * 2) The RDF name
- * 3) The hashed version of the name
+ * 1) The hashed version of the name
+ * 2) The {@link QualifiedName}
+ * 3) The RDF name (optional)
  *
  * The QualifiedName is the most shortlived name. It changes whenever the package
  * or name of the state changes. The RDF name is probably more longlived as it is

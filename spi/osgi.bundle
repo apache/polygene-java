@@ -20,7 +20,9 @@ Import-Package: org.qi4j.api, \
                 org.qi4j.api.unitofwork, \
                 org.qi4j.api.usecase, \
                 org.qi4j.api.util, \
-                org.qi4j.api.value
+                org.qi4j.api.value, \
+                org.xml.sax, \
+                org.xml.sax.helpers
 
 
 Export-Package: org.qi4j.spi;version=${pom.version}, \

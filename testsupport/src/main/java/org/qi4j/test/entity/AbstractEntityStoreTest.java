@@ -3,6 +3,7 @@ package org.qi4j.test.entity;
 import static org.hamcrest.CoreMatchers.*;
 import org.junit.After;
 import static org.junit.Assert.*;
+import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
@@ -51,14 +52,17 @@ public abstract class AbstractEntityStoreTest
         module.addObjects( getClass() );
     }
 
+    @Before
+    public void init()
+    {
+        objectBuilderFactory.newObjectBuilder( AbstractEntityStoreTest.class ).injectTo( this );
+    }
+
     @Override @After public void tearDown()
         throws Exception
     {
         try
         {
-            // Remove all state that was created
-            objectBuilderFactory.newObjectBuilder( AbstractEntityStoreTest.class ).injectTo( this );
-
             EntityStoreUnitOfWork uow = store.visitEntityStates( new EntityStore.EntityStateVisitor()
             {
                 public void visitEntityState( EntityState entityState )

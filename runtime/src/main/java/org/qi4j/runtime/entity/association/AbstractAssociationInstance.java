@@ -5,10 +5,12 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.AssociationInfo;
+import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
+import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 
 /**
@@ -85,8 +87,8 @@ public abstract class AbstractAssociationInstance<T>
             return null;
         }
 
-        EntityComposite entityComposite = (EntityComposite) composite;
-        return new EntityReference( entityComposite );
+        EntityInstance instance = (EntityInstance) Proxy.getInvocationHandler( composite );
+        return instance.identity();
     }
 
 
@@ -96,6 +98,14 @@ public abstract class AbstractAssociationInstance<T>
         {
             if( !( instance instanceof EntityComposite ) )
             {
+                if( instance instanceof Proxy )
+                {
+                    if( Proxy.getInvocationHandler( instance ) instanceof EntityInstance )
+                    {
+                        return; // It's fine
+                    }
+                }
+
                 throw new IllegalArgumentException( "Object must be an EntityComposite" );
             }
         }

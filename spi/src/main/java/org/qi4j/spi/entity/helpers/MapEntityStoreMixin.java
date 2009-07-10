@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  * MapEntityStore and add as mixin to the service using this mixin. See {@link org.qi4j.entitystore.memory.MemoryMapEntityStoreMixin} for reference.
  */
 public class MapEntityStoreMixin
-    implements EntityStore, EntityStoreEvents, Activatable
+    implements EntityStore, EntityStoreEvents, UnitOfWorkEventFeed, Activatable
 {
     private @This MapEntityStore mapEntityStore;
     private @This EntityStoreEvents events;
@@ -432,5 +432,42 @@ public class MapEntityStoreMixin
         InputStream in = mapEntityStore.get( identity, usecase, unitOfWork );
         ObjectInputStream oin = new FastObjectInputStream( in, false );
         return (SerializableState) oin.readObject();
+    }
+
+    public Iterable<UnitOfWorkEventsEntry> getUnitOfWorkEvents( String startId, int count, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo )
+    {
+        if( startId == null )
+        {
+            startId = lastAppliedEvent.identity();
+        }
+
+        String uowIdentity = startId;
+
+        LinkedList<UnitOfWorkEventsEntry> events = new LinkedList<UnitOfWorkEventsEntry>();
+        try
+        {
+            int idx = 0;
+            while( !uowIdentity.equals( "none" ) && idx < count )
+            {
+                InputStream in = mapEntityStore.get( new EntityReference( uowIdentity ), usecaseMetaInfo, unitOfWorkMetaInfo );
+                FastObjectInputStream oin = new FastObjectInputStream( in, false );
+                UnitOfWorkEventsEntry event = (UnitOfWorkEventsEntry) oin.readUnshared();
+                oin.close();
+                events.addFirst( event );
+                uowIdentity = event.previous();
+                idx++;
+            }
+
+            return events;
+        }
+        catch( IOException e )
+        {
+            throw new EntityStoreException( "Could not bring state up to date", e );
+        }
+        catch( ClassNotFoundException e )
+        {
+            throw new EntityStoreException( "Could not bring state up to date", e );
+        }
+
     }
 }
