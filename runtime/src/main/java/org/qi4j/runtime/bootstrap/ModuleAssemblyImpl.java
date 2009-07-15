@@ -25,7 +25,7 @@ import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.AssemblyVisitor;
-import org.qi4j.bootstrap.CompositeDeclaration;
+import org.qi4j.bootstrap.TransientDeclaration;
 import org.qi4j.bootstrap.EntityDeclaration;
 import org.qi4j.bootstrap.ImportedServiceDeclaration;
 import org.qi4j.bootstrap.InfoDeclaration;
@@ -69,7 +69,7 @@ public final class ModuleAssemblyImpl
     private LayerAssembly layerAssembly;
     private String name;
     private MetaInfo metaInfo = new MetaInfo();
-    private final List<CompositeDeclarationImpl> compositeDeclarations = new ArrayList<CompositeDeclarationImpl>();
+    private final List<TransientDeclarationImpl> compositeDeclarations = new ArrayList<TransientDeclarationImpl>();
     private final List<EntityDeclarationImpl> entityDeclarations = new ArrayList<EntityDeclarationImpl>();
     private final List<ValueDeclarationImpl> valueDeclarations = new ArrayList<ValueDeclarationImpl>();
     private final List<ObjectDeclarationImpl> objectDeclarations = new ArrayList<ObjectDeclarationImpl>();
@@ -113,7 +113,7 @@ public final class ModuleAssemblyImpl
 
     }
 
-    public CompositeDeclaration addTransients( Class<? extends TransientComposite>... compositeTypes )
+    public TransientDeclaration addTransients( Class<? extends TransientComposite>... compositeTypes )
         throws AssemblyException
     {
         for( Class<? extends TransientComposite> compositeType : compositeTypes )
@@ -133,7 +133,7 @@ public final class ModuleAssemblyImpl
             }
         }
 
-        CompositeDeclarationImpl compositeDeclaration = new CompositeDeclarationImpl( compositeTypes );
+        TransientDeclarationImpl compositeDeclaration = new TransientDeclarationImpl( compositeTypes );
         compositeDeclarations.add( compositeDeclaration );
         return compositeDeclaration;
     }
@@ -206,7 +206,7 @@ public final class ModuleAssemblyImpl
     {
         visitor.visitModule( this );
 
-        for( CompositeDeclarationImpl compositeDeclaration : compositeDeclarations )
+        for( TransientDeclarationImpl compositeDeclaration : compositeDeclarations )
         {
             visitor.visitComposite( compositeDeclaration );
         }
@@ -260,7 +260,7 @@ public final class ModuleAssemblyImpl
                                                    new ServicesModel( serviceModels ),
                                                    new ImportedServicesModel( importedServiceModels ) );
 
-        for( CompositeDeclarationImpl compositeDeclaration : compositeDeclarations )
+        for( TransientDeclarationImpl compositeDeclaration : compositeDeclarations )
         {
             compositeDeclaration.addComposites( compositeModels, metaInfoDeclaration );
         }

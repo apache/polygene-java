@@ -35,7 +35,7 @@ public class AssemblyVisitorAdapter implements AssemblyVisitor
     {
     }
 
-    public void visitComposite( CompositeDeclaration declaration )
+    public void visitComposite( TransientDeclaration declaration )
         throws AssemblyException
     {
     }

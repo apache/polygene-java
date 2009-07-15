@@ -20,7 +20,7 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.CompositeDeclaration;
+import org.qi4j.bootstrap.TransientDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.CompositeModel;
 
@@ -32,8 +32,8 @@ import java.util.List;
 /**
  * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addTransients(Class[])}.
  */
-public final class CompositeDeclarationImpl
-    implements CompositeDeclaration, Serializable
+public final class TransientDeclarationImpl
+    implements TransientDeclaration, Serializable
 {
     private Class<? extends TransientComposite>[] compositeTypes;
     private List<Class<?>> concerns = new ArrayList<Class<?>>();
@@ -42,37 +42,37 @@ public final class CompositeDeclarationImpl
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
-    public CompositeDeclarationImpl( Class<? extends TransientComposite>... compositeTypes )
+    public TransientDeclarationImpl( Class<? extends TransientComposite>... compositeTypes )
         throws AssemblyException
     {
         this.compositeTypes = compositeTypes;
     }
 
-    public CompositeDeclaration setMetaInfo( Object info )
+    public TransientDeclaration setMetaInfo( Object info )
     {
         metaInfo.set( info );
         return this;
     }
 
-    public CompositeDeclaration visibleIn( Visibility visibility )
+    public TransientDeclaration visibleIn( Visibility visibility )
     {
         this.visibility = visibility;
         return this;
     }
 
-    public CompositeDeclaration withConcerns( Class<?>... concerns )
+    public TransientDeclaration withConcerns( Class<?>... concerns )
     {
         this.concerns.addAll( Arrays.asList( concerns ) );
         return this;
     }
 
-    public CompositeDeclaration withSideEffects( Class<?>... sideEffects )
+    public TransientDeclaration withSideEffects( Class<?>... sideEffects )
     {
         this.sideEffects.addAll( Arrays.asList( sideEffects ) );
         return this;
     }
 
-    public CompositeDeclaration withMixins( Class<?>... mixins )
+    public TransientDeclaration withMixins( Class<?>... mixins )
     {
         this.mixins.addAll( Arrays.asList( mixins ) );
         return this;

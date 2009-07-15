@@ -31,7 +31,7 @@ public interface AssemblyVisitor
     public void visitModule( ModuleAssembly assembly )
         throws AssemblyException;
 
-    public void visitComposite( CompositeDeclaration declaration )
+    public void visitComposite( TransientDeclaration declaration )
         throws AssemblyException;
 
     public void visitEntity( EntityDeclaration declaration )

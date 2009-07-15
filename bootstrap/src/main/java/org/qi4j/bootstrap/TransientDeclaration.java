@@ -21,18 +21,18 @@ package org.qi4j.bootstrap;
 import org.qi4j.api.common.Visibility;
 
 /**
- * Fluent API for declaring Composites. Instances
+ * Fluent API for declaring TransientComposites. Instances
  * of this API are acquired by calling {@link ModuleAssembly#addTransients(Class[])}.
  */
-public interface CompositeDeclaration
+public interface TransientDeclaration
 {
-    CompositeDeclaration setMetaInfo( Object info );
+    TransientDeclaration setMetaInfo( Object info );
 
-    CompositeDeclaration visibleIn( Visibility visibility );
+    TransientDeclaration visibleIn( Visibility visibility );
 
-    CompositeDeclaration withConcerns( Class<?>... concerns );
+    TransientDeclaration withConcerns( Class<?>... concerns );
 
-    CompositeDeclaration withSideEffects( Class<?>... sideEffects );
+    TransientDeclaration withSideEffects( Class<?>... sideEffects );
 
-    CompositeDeclaration withMixins( Class<?>... mixins );
+    TransientDeclaration withMixins( Class<?>... mixins );
 }
