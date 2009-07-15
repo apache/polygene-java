@@ -13,7 +13,7 @@
   <packaging>bundle</packaging>
 
   <properties>
-    <version.openrdf>2.2.1</version.openrdf>
+    <version.openrdf>2.3-pr1</version.openrdf>
   </properties>
 
   <dependencies>
