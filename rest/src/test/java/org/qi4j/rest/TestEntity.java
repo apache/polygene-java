@@ -26,26 +26,20 @@ import org.qi4j.api.property.Property;
  * JAVADOC
  */
 public interface TestEntity
-        extends Named, EntityComposite
+    extends Named, EntityComposite
 {
-    @UseDefaults
-    Property<Integer> age();
+    @UseDefaults Property<Integer> age();
 
-    @Optional
-    Property<TestValue> value();
+    @Optional Property<TestValue> value();
 
-    @Optional
-    Property<String> unsetName();
+    @Optional Property<String> unsetName();
 
-    @Optional
-    Association<TestEntity> association();
+    @Optional Association<TestEntity> association();
 
-    @Optional
-    Association<TestEntity> unsetAssociation();
+    @Optional Association<TestEntity> unsetAssociation();
 
     ManyAssociation<TestEntity> manyAssociation();
 
-    @RDF("http://www.w3.org/2001/vcard-rdf/3.0#GROUP")
-    ManyAssociation<TestEntity> rdfAssociation();
+    @RDF( "http://www.w3.org/2001/vcard-rdf/3.0#GROUP" ) ManyAssociation<TestEntity> rdfAssociation();
 }
 

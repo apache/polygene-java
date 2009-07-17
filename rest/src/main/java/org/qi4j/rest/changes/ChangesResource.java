@@ -14,6 +14,8 @@
 
 package org.qi4j.rest.changes;
 
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.usecase.Usecase;
@@ -26,9 +28,6 @@ import org.restlet.representation.Representation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-
 /**
  * JAVADOC
  */
@@ -37,15 +36,15 @@ public class ChangesResource
 {
     @Service EntityStore entityStore;
 
-    public Representation put(Representation representation) throws ResourceException
+    public Representation put( Representation representation ) throws ResourceException
     {
         String id = (String) getRequest().getAttributes().get( "id" );
-        
+
         Representation entity = this.getRequest().getEntity();
         try
         {
             InputStream in = entity.getStream();
-            ObjectInputStream oin = new ObjectInputStream(in);
+            ObjectInputStream oin = new ObjectInputStream( in );
             String identity = oin.readUTF();
             Usecase usecase = (Usecase) oin.readUnshared();
             MetaInfo unitofwork = (MetaInfo) oin.readUnshared();
@@ -56,14 +55,14 @@ public class ChangesResource
             {
                 entityStore.apply( identity, events, usecase, unitofwork ).commit();
             }
-            catch ( ConcurrentEntityStateModificationException e)
+            catch( ConcurrentEntityStateModificationException e )
             {
-                throw new ResourceException( Status.CLIENT_ERROR_CONFLICT);
+                throw new ResourceException( Status.CLIENT_ERROR_CONFLICT );
             }
         }
-        catch (Exception e)
+        catch( Exception e )
         {
-            throw new ResourceException(e);
+            throw new ResourceException( e );
         }
 
         return new EmptyRepresentation();

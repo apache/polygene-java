@@ -23,7 +23,7 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.RdfFactoryService;
 import org.qi4j.index.rdf.RdfQueryService;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
-import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
+import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 /**
  * JAVADOC

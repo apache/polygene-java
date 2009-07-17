@@ -28,6 +28,7 @@ Import-Package: javax.transaction,\
                 org.qi4j.spi.entity.association, \
                 org.qi4j.spi.entity.helpers, \
                 org.qi4j.spi.property, \
+                org.qi4j.spi.uuid, \
                 org.qi4j.spi.value, \
                 org.w3c.dom, \
                 org.xml.sax

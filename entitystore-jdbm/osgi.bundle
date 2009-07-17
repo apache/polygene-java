@@ -18,15 +18,19 @@ Import-Package: org.qi4j.api.common, \
                 org.qi4j.api.usecase, \
                 org.qi4j.api.util, \
                 org.qi4j.bootstrap, \
+                org.qi4j.entitystore.map, \
                 org.qi4j.entitystore.memory, \
                 org.qi4j.library.locking, \
                 org.qi4j.spi, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.entity, \
                 org.qi4j.spi.entity.helpers, \
+                org.qi4j.spi.entity.typeregistry, \
                 org.qi4j.spi.query, \
                 org.qi4j.spi.serialization, \
-                org.qi4j.spi.service
+                org.qi4j.spi.service, \
+                org.qi4j.spi.uuid
+                
 
 Export-Package: org.qi4j.entitystore.jdbm
 

@@ -25,5 +25,5 @@ import org.qi4j.library.rdf.DcRdf;
 public interface Named
 {
     @UseDefaults
-    @RDF( DcRdf.NAMESPACE + "title") Property<String> name();
+    @RDF( DcRdf.NAMESPACE + "title" ) Property<String> name();
 }

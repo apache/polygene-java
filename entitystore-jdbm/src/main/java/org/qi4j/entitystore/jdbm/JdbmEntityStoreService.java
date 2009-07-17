@@ -25,14 +25,14 @@ import org.qi4j.library.locking.LockingAbstractComposite;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.UnitOfWorkListenerNotificationConcern;
 import org.qi4j.spi.entity.helpers.ConcurrentModificationCheckConcern;
-import org.qi4j.spi.entity.helpers.MapEntityStoreMixin;
+import org.qi4j.entitystore.map.MapEntityStoreMixin;
 
 /**
  * EntityStore service backed by JDBM store.
  */
 
 @Concerns({ UnitOfWorkListenerNotificationConcern.class, ConcurrentModificationCheckConcern.class})
-@Mixins({MapEntityStoreMixin.class, JdbmEntityStoreMixin.class})
+@Mixins({ MapEntityStoreMixin.class, JdbmEntityStoreMixin.class})
 public interface JdbmEntityStoreService
         extends EntityStore, ServiceComposite, Activatable, LockingAbstractComposite, Configuration
 

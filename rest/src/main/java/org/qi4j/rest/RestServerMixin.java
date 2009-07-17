@@ -17,11 +17,11 @@
  */
 package org.qi4j.rest;
 
+import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.composite.TransientBuilderFactory;
 import org.restlet.Component;
 import org.restlet.data.Protocol;
 

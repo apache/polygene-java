@@ -14,6 +14,9 @@
 
 package org.qi4j.rest.query;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Arrays;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.index.rdf.RdfExport;
 import org.restlet.data.MediaType;
@@ -23,10 +26,6 @@ import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Arrays;
 
 /**
  * Show RDF index
@@ -38,11 +37,11 @@ public class IndexResource
 
     public IndexResource()
     {
-        getVariants().put(Method.ALL, Arrays.asList(
-                MediaType.TEXT_HTML,
-                MediaType.APPLICATION_RDF_XML));
-        setNegotiated(true);
-    }    
+        getVariants().put( Method.ALL, Arrays.asList(
+            MediaType.TEXT_HTML,
+            MediaType.APPLICATION_RDF_XML ) );
+        setNegotiated( true );
+    }
 
     @Override
     public Representation get( Variant variant ) throws ResourceException

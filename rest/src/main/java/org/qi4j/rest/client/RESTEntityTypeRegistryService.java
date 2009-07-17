@@ -22,7 +22,7 @@ import org.qi4j.spi.entity.EntityTypeRegistry;
 /**
  * JAVADOC
  */
-@Mixins(RESTEntityTypeRegistryMixin.class)
+@Mixins( RESTEntityTypeRegistryMixin.class )
 public interface RESTEntityTypeRegistryService
     extends EntityTypeRegistry, ServiceComposite, Activatable
 {

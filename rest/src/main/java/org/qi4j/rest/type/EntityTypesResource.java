@@ -13,6 +13,7 @@
  */
 package org.qi4j.rest.type;
 
+import java.util.List;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.EntityTypeRegistry;
@@ -28,8 +29,6 @@ import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
-import java.util.List;
-
 public final class EntityTypesResource extends ServerResource
 {
     @Service
@@ -37,36 +36,36 @@ public final class EntityTypesResource extends ServerResource
 
     public EntityTypesResource()
     {
-        getVariants().put(Method.ALL, MediaType.APPLICATION_ATOM);
-        setNegotiated(true);
+        getVariants().put( Method.ALL, MediaType.APPLICATION_ATOM );
+        setNegotiated( true );
     }
 
     @Override
-    public Representation get(Variant variant)
-            throws ResourceException
+    public Representation get( Variant variant )
+        throws ResourceException
     {
-        if (MediaType.APPLICATION_ATOM.equals(variant.getMediaType()))
+        if( MediaType.APPLICATION_ATOM.equals( variant.getMediaType() ) )
         {
             return representAtom();
         }
 
-        throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND);
+        throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
     }
 
     private Representation representAtom() throws ResourceException
     {
         Feed feed = new Feed();
-        feed.setTitle(new Text(MediaType.TEXT_PLAIN, "Entity types"));
+        feed.setTitle( new Text( MediaType.TEXT_PLAIN, "Entity types" ) );
         List<Entry> entries = feed.getEntries();
 
-        for (EntityType entityType : registry.getEntityTypes())
+        for( EntityType entityType : registry.getEntityTypes() )
         {
             Entry entry = new Entry();
-            entry.setTitle(new Text(MediaType.TEXT_PLAIN, entityType.type().name()));
+            entry.setTitle( new Text( MediaType.TEXT_PLAIN, entityType.type().name() ) );
             Link link = new Link();
-            link.setHref(getRequest().getResourceRef().clone().addSegment(entityType.version()));
-            entry.getLinks().add(link);
-            entries.add(entry);
+            link.setHref( getRequest().getResourceRef().clone().addSegment( entityType.version() ) );
+            entry.getLinks().add( link );
+            entries.add( entry );
         }
 
         return feed;

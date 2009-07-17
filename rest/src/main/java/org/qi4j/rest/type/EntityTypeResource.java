@@ -13,6 +13,14 @@
  */
 package org.qi4j.rest.type;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.Map;
 import org.openrdf.model.Statement;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
@@ -39,15 +47,6 @@ import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.Map;
-
 public class EntityTypeResource extends ServerResource
 {
     @Service
@@ -61,146 +60,150 @@ public class EntityTypeResource extends ServerResource
     public EntityTypeResource()
     {
         // Define the supported variant.
-        getVariants().put(Method.ALL, Arrays.asList(
-                MediaType.TEXT_HTML,
-                MediaType.APPLICATION_JAVA_OBJECT));
-        setNegotiated(true);
+        getVariants().put( Method.ALL, Arrays.asList(
+            MediaType.TEXT_HTML,
+            MediaType.APPLICATION_JAVA_OBJECT ) );
+        setNegotiated( true );
     }
 
     @Override
     protected void doInit() throws ResourceException
     {
         final Map<String, Object> attributes = getRequest().getAttributes();
-        version = (String) attributes.get("version");
+        version = (String) attributes.get( "version" );
     }
 
     @Override
-    public Representation get(final Variant variant)
-            throws ResourceException
+    public Representation get( final Variant variant )
+        throws ResourceException
     {
-        EntityType entityType = registry.getEntityType(new EntityTypeReference(null, null, version));
-        if (entityType == null)
-            throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND);
-
-        // Generate the right representation according to its media type.
-        if (MediaType.APPLICATION_RDF_XML.equals(variant.getMediaType()))
+        EntityType entityType = registry.getEntityType( new EntityTypeReference( null, null, version ) );
+        if( entityType == null )
         {
-            return representRdf(entityType);
-        } else if (MediaType.TEXT_HTML.equals(variant.getMediaType()))
-        {
-            return representHtml(entityType);
-        } else if (MediaType.APPLICATION_JAVA_OBJECT.equals(variant.getMediaType()))
-        {
-            return representJava(entityType);
+            throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
         }
 
-        throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND);
+        // Generate the right representation according to its media type.
+        if( MediaType.APPLICATION_RDF_XML.equals( variant.getMediaType() ) )
+        {
+            return representRdf( entityType );
+        }
+        else if( MediaType.TEXT_HTML.equals( variant.getMediaType() ) )
+        {
+            return representHtml( entityType );
+        }
+        else if( MediaType.APPLICATION_JAVA_OBJECT.equals( variant.getMediaType() ) )
+        {
+            return representJava( entityType );
+        }
+
+        throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
     }
 
-    private Representation representRdf(EntityType entityType)
-            throws ResourceException
+    private Representation representRdf( EntityType entityType )
+        throws ResourceException
     {
         try
         {
-            Iterable<Statement> statements = entityTypeSerializer.serialize(entityType);
+            Iterable<Statement> statements = entityTypeSerializer.serialize( entityType );
 
             StringWriter out = new StringWriter();
-            String[] prefixes = new String[]{"rdf", "dc", " vc", "qi4j"};
-            String[] namespaces = new String[]{Rdfs.RDF, DcRdf.NAMESPACE, "http://www.w3.org/2001/vcard-rdf/3.0#", Qi4jEntityType.NAMESPACE};
-            new RdfXmlSerializer().serialize(statements, out, prefixes, namespaces);
+            String[] prefixes = new String[]{ "rdf", "dc", " vc", "qi4j" };
+            String[] namespaces = new String[]{ Rdfs.RDF, DcRdf.NAMESPACE, "http://www.w3.org/2001/vcard-rdf/3.0#", Qi4jEntityType.NAMESPACE };
+            new RdfXmlSerializer().serialize( statements, out, prefixes, namespaces );
 
-            return new StringRepresentation(out.toString(), MediaType.APPLICATION_RDF_XML);
+            return new StringRepresentation( out.toString(), MediaType.APPLICATION_RDF_XML );
         }
-        catch (Exception e)
+        catch( Exception e )
         {
-            throw new ResourceException(e);
+            throw new ResourceException( e );
         }
     }
 
-    private Representation representHtml(EntityType entityType) throws ResourceException
+    private Representation representHtml( EntityType entityType ) throws ResourceException
     {
         StringBuffer buf = new StringBuffer();
-        buf.append("<html><head><title>" + entityType.type() + "</title><link rel=\"alternate\" type=\"application/rdf+xml\" href=\"" + entityType.type() + ".rdf\"/></head><body><h1>" + entityType.type() + "</h1>\n");
+        buf.append( "<html><head><title>" + entityType.type() + "</title><link rel=\"alternate\" type=\"application/rdf+xml\" href=\"" + entityType.type() + ".rdf\"/></head><body><h1>" + entityType.type() + "</h1>\n" );
 
-        buf.append("<form method=\"post\" action=\"" + getRequest().getResourceRef().getPath() + "\">\n");
-        buf.append("<fieldset><legend>Properties</legend>\n<table>");
-        for (PropertyType propertyType : entityType.properties())
+        buf.append( "<form method=\"post\" action=\"" + getRequest().getResourceRef().getPath() + "\">\n" );
+        buf.append( "<fieldset><legend>Properties</legend>\n<table>" );
+        for( PropertyType propertyType : entityType.properties() )
         {
-            buf.append("<tr><td>" +
-                    "<label for=\"" + propertyType.qualifiedName() + "\" >" +
-                    propertyType.qualifiedName().name() +
-                    "</label></td>\n" +
-                    "<td><input " +
-                    "type=\"text\" " +
-                    "readonly=\"true\" " +
-                    "name=\"" + propertyType.qualifiedName() + "\" " +
-                    "value=\"" + propertyType.type() + "\"></td></tr>");
+            buf.append( "<tr><td>" +
+                        "<label for=\"" + propertyType.qualifiedName() + "\" >" +
+                        propertyType.qualifiedName().name() +
+                        "</label></td>\n" +
+                        "<td><input " +
+                        "type=\"text\" " +
+                        "readonly=\"true\" " +
+                        "name=\"" + propertyType.qualifiedName() + "\" " +
+                        "value=\"" + propertyType.type() + "\"></td></tr>" );
         }
-        buf.append("</table></fieldset>\n");
+        buf.append( "</table></fieldset>\n" );
 
-        buf.append("<fieldset><legend>Associations</legend>\n<table>");
-        for (AssociationType associationType : entityType.associations())
+        buf.append( "<fieldset><legend>Associations</legend>\n<table>" );
+        for( AssociationType associationType : entityType.associations() )
         {
-            buf.append("<tr><td>" +
-                    "<label for=\"" + associationType.qualifiedName() + "\" >" +
-                    associationType.qualifiedName().name() +
-                    "</label></td>\n" +
-                    "<td><input " +
-                    "type=\"text\" " +
-                    "readonly=\"true\" " +
-                    "size=\"40\" " +
-                    "name=\"" + associationType.qualifiedName() + "\" " +
-                    "value=\"" + associationType.type() + "\"></td></tr>");
+            buf.append( "<tr><td>" +
+                        "<label for=\"" + associationType.qualifiedName() + "\" >" +
+                        associationType.qualifiedName().name() +
+                        "</label></td>\n" +
+                        "<td><input " +
+                        "type=\"text\" " +
+                        "readonly=\"true\" " +
+                        "size=\"40\" " +
+                        "name=\"" + associationType.qualifiedName() + "\" " +
+                        "value=\"" + associationType.type() + "\"></td></tr>" );
         }
-        buf.append("</table></fieldset>\n");
+        buf.append( "</table></fieldset>\n" );
 
-        buf.append("<fieldset><legend>Many manyAssociations</legend>\n<table>");
-        for (ManyAssociationType associationType : entityType.manyAssociations())
+        buf.append( "<fieldset><legend>Many manyAssociations</legend>\n<table>" );
+        for( ManyAssociationType associationType : entityType.manyAssociations() )
         {
-            buf.append("<tr><td>" +
-                    "<label for=\"" + associationType.qualifiedName() + "\" >" +
-                    associationType.qualifiedName().name() +
-                    "</label></td>\n" +
-                    "<td><input " +
-                    "type=\"text\" " +
-                    "name=\"" + associationType.qualifiedName() + "\" " +
-                    "value=\"" + associationType.type() + "\"></td></tr>");
+            buf.append( "<tr><td>" +
+                        "<label for=\"" + associationType.qualifiedName() + "\" >" +
+                        associationType.qualifiedName().name() +
+                        "</label></td>\n" +
+                        "<td><input " +
+                        "type=\"text\" " +
+                        "name=\"" + associationType.qualifiedName() + "\" " +
+                        "value=\"" + associationType.type() + "\"></td></tr>" );
         }
-        buf.append("</table></fieldset>\n");
+        buf.append( "</table></fieldset>\n" );
 
-        buf.append("</body></html>\n");
+        buf.append( "</body></html>\n" );
 
-        return new StringRepresentation(buf, MediaType.TEXT_HTML, Language.ENGLISH);
+        return new StringRepresentation( buf, MediaType.TEXT_HTML, Language.ENGLISH );
     }
 
-    private Representation representJava(final EntityType entityType) throws ResourceException
+    private Representation representJava( final EntityType entityType ) throws ResourceException
     {
-        return new OutputRepresentation(MediaType.APPLICATION_JAVA_OBJECT)
+        return new OutputRepresentation( MediaType.APPLICATION_JAVA_OBJECT )
         {
-            public void write(OutputStream outputStream) throws IOException
+            public void write( OutputStream outputStream ) throws IOException
             {
-                ObjectOutputStream oout = new ObjectOutputStream(outputStream);
-                oout.writeUnshared(entityType);
+                ObjectOutputStream oout = new ObjectOutputStream( outputStream );
+                oout.writeUnshared( entityType );
                 oout.close();
             }
         };
     }
 
     @Override
-    public Representation put(Representation entity, Variant variant) throws ResourceException
+    public Representation put( Representation entity, Variant variant ) throws ResourceException
     {
         try
         {
             InputStream in = entity.getStream();
-            ObjectInputStream oin = new ObjectInputStream(in);
+            ObjectInputStream oin = new ObjectInputStream( in );
             EntityType entityType = (EntityType) oin.readUnshared();
 
             // Store state
-            registry.registerEntityType(entityType);
+            registry.registerEntityType( entityType );
         }
-        catch (Exception e)
+        catch( Exception e )
         {
-            throw new ResourceException(e);
+            throw new ResourceException( e );
         }
 
         return new EmptyRepresentation();

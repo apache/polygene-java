@@ -14,54 +14,57 @@
 
 package org.qi4j.rest;
 
+import java.util.Collections;
 import org.restlet.Context;
 import org.restlet.Restlet;
-import org.restlet.data.*;
+import org.restlet.data.MediaType;
+import org.restlet.data.Metadata;
+import org.restlet.data.Preference;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
 import org.restlet.routing.Filter;
-
-import java.util.Collections;
 
 /**
  * Check the extension used and set the corresponding media type
  * in the request. Then remove the extension from the request resource name.
  */
 public class ExtensionMediaTypeFilter
-        extends Filter
+    extends Filter
 {
 
     public ExtensionMediaTypeFilter()
     {
     }
 
-    public ExtensionMediaTypeFilter(Context context)
+    public ExtensionMediaTypeFilter( Context context )
     {
-        super(context);
+        super( context );
     }
 
-    public ExtensionMediaTypeFilter(Context context, Restlet next)
+    public ExtensionMediaTypeFilter( Context context, Restlet next )
     {
-        super(context, next);
+        super( context, next );
     }
 
     @Override
-    protected int beforeHandle(Request request, Response response)
+    protected int beforeHandle( Request request, Response response )
     {
         String extensions = request.getResourceRef().getExtensions();
-        if (extensions != null)
+        if( extensions != null )
         {
-            int idx = extensions.lastIndexOf(".");
-            if (idx != -1)
+            int idx = extensions.lastIndexOf( "." );
+            if( idx != -1 )
             {
-                extensions = extensions.substring(idx + 1);
+                extensions = extensions.substring( idx + 1 );
             }
 
-            Metadata metadata = getApplication().getMetadataService().getMetadata(extensions);
-            if (metadata != null && metadata instanceof MediaType)
+            Metadata metadata = getApplication().getMetadataService().getMetadata( extensions );
+            if( metadata != null && metadata instanceof MediaType )
             {
-                request.getClientInfo().setAcceptedMediaTypes(Collections.singletonList(new Preference<MediaType>((MediaType) metadata)));
+                request.getClientInfo().setAcceptedMediaTypes( Collections.singletonList( new Preference<MediaType>( (MediaType) metadata ) ) );
                 String path = request.getResourceRef().getPath();
-                path = path.substring(0, path.length() - extensions.length() - 1);
-                request.getResourceRef().setPath(path);
+                path = path.substring( 0, path.length() - extensions.length() - 1 );
+                request.getResourceRef().setPath( path );
             }
         }
 

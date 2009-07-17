@@ -20,6 +20,6 @@ import org.qi4j.api.entity.EntityComposite;
  * JAVADOC
  */
 public interface TestEntity2
-        extends Named, EntityComposite
+    extends Named, EntityComposite
 {
 }

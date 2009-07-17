@@ -30,8 +30,8 @@ public class Qi4jFinder extends Finder
     }
 
     @Override
-    public ServerResource create(Class<? extends ServerResource> targetClass, Request request, Response response)
+    public ServerResource create( Class<? extends ServerResource> targetClass, Request request, Response response )
     {
-        return factory.newObject(targetClass);
+        return factory.newObject( targetClass );
     }
 }
