@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.spi.entity.helpers;
+package org.qi4j.spi.uuid;
 
 import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.mixin.Mixins;

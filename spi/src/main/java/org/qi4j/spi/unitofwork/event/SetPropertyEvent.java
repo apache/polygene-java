@@ -22,7 +22,7 @@ import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 /**
  * JAVADOC
  */
-public class SetPropertyEvent extends EntityStateEvent
+public final class SetPropertyEvent extends EntityStateEvent
 {
     private String value;
 

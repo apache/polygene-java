@@ -24,7 +24,7 @@ import org.qi4j.api.injection.scope.State;
  * Generic mixin for associations.
  */
 @AppliesTo( { ManyAssociationMixin.AssociationFilter.class } )
-public class ManyAssociationMixin
+public final class ManyAssociationMixin
     implements InvocationHandler
 {
     @State private EntityStateHolder associations;

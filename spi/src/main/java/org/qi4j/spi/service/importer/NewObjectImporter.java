@@ -23,11 +23,10 @@ import org.qi4j.api.service.ServiceImporterException;
 /**
  * JAVADOC
  */
-public class NewObjectImporter
+public final class NewObjectImporter
     implements ServiceImporter
 {
-    @Structure
-    ObjectBuilderFactory obf;
+    @Structure private ObjectBuilderFactory obf;
 
     public Object importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
     {

@@ -14,20 +14,19 @@
 
 package org.qi4j.spi.value;
 
-import static org.qi4j.api.common.TypeName.*;
-import org.qi4j.api.structure.Module;
-import org.qi4j.spi.util.PeekableStringTokenizer;
-
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import static org.qi4j.api.common.TypeName.*;
+import org.qi4j.api.structure.Module;
+import org.qi4j.spi.util.PeekableStringTokenizer;
 
 /**
  * Date type. Use ISO8601 format (http://www.w3.org/TR/NOTE-datetime). Assumes UTC time.
  */
-public class DateType
+public final class DateType
     extends AbstractStringType
 {
     // Formatters are not thread-safe. Create one per thread
@@ -36,7 +35,7 @@ public class DateType
         @Override
         protected DateFormat initialValue()
         {
-            return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            return new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" );
         }
     };
 
@@ -50,17 +49,17 @@ public class DateType
         return false;
     }
 
-    public DateType( )
+    public DateType()
     {
-        super(nameOf( Date.class ));
+        super( nameOf( Date.class ) );
     }
 
     public void toJSON( Object value, StringBuilder json )
     {
         json.append( '"' );
         Date date = (Date) value;
-        String dateString = ISO8601.get().format(date);
-        json.append(dateString);
+        String dateString = ISO8601.get().format( date );
+        json.append( dateString );
         json.append( '"' );
     }
 
@@ -71,30 +70,32 @@ public class DateType
 
         try
         {
-            Date date = ISO8601.get().parse(result);
+            Date date = ISO8601.get().parse( result );
             token = json.nextToken();
             return date;
-        } catch (ParseException e)
+        }
+        catch( ParseException e )
         {
-            throw new IllegalStateException("Illegal date:"+result);
+            throw new IllegalStateException( "Illegal date:" + result );
         }
     }
 
     @Override public String toQueryParameter( Object value )
-            throws IllegalArgumentException
+        throws IllegalArgumentException
     {
-        return value == null ? null : ISO8601.get().format((Date) value);
+        return value == null ? null : ISO8601.get().format( (Date) value );
     }
 
     @Override public Object fromQueryParameter( String parameter, Module module )
-            throws IllegalArgumentException
+        throws IllegalArgumentException
     {
         try
         {
-            return ISO8601.get().parse(parameter);
-        } catch (ParseException e)
+            return ISO8601.get().parse( parameter );
+        }
+        catch( ParseException e )
         {
-            throw new IllegalArgumentException("Illegal date:"+parameter);
+            throw new IllegalArgumentException( "Illegal date:" + parameter );
         }
     }
 }

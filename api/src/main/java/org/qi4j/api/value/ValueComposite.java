@@ -16,7 +16,6 @@ package org.qi4j.api.value;
 
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Immutable;
-import org.qi4j.api.property.StateHolder;
 
 /**
  * ValueComposites are Composites that only has value, and equality is defined from its values and not any identity

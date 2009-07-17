@@ -14,9 +14,8 @@
 
 package org.qi4j.spi.property;
 
-import org.qi4j.api.property.PropertyInfo;
-
 import java.lang.reflect.Method;
+import org.qi4j.api.property.PropertyInfo;
 
 /**
  * JAVADOC

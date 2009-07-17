@@ -12,16 +12,15 @@
  *
  */
 
-package org.qi4j.spi.entity.helpers;
-
-import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
+package org.qi4j.entitystore.map;
 
 import java.io.Serializable;
+import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
 
 /**
  * JAVADOC
  */
-public class UnitOfWorkEventsEntry
+public final class UnitOfWorkEventsEntry
     implements Serializable
 {
     private String identity;

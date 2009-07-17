@@ -16,8 +16,8 @@ package org.qi4j.runtime.unitofwork;
 
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.*;
-import org.qi4j.spi.entity.helpers.BuilderManyAssociationState;
-import org.qi4j.spi.entity.helpers.EntityStateChanges;
+import org.qi4j.runtime.unitofwork.BuilderManyAssociationState;
+import org.qi4j.runtime.unitofwork.EntityStateChanges;
 import org.qi4j.spi.unitofwork.event.*;
 
 import java.util.HashMap;

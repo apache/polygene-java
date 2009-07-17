@@ -14,17 +14,16 @@
 
 package org.qi4j.spi.value;
 
+import java.lang.reflect.Type;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
-import java.lang.reflect.Type;
-
 /**
  * {@link EntityReference} type
  */
-public class EntityReferenceType
+public final class EntityReferenceType
     extends AbstractStringType
 {
     public static boolean isEntityReference( Type type )
@@ -39,7 +38,7 @@ public class EntityReferenceType
 
     public EntityReferenceType( TypeName type )
     {
-        super(type);
+        super( type );
     }
 
     public void toJSON( Object value, StringBuilder json )
@@ -79,7 +78,7 @@ public class EntityReferenceType
         }
 
         token = json.nextToken();
-        return EntityReference.parseEntityReference(result);
+        return EntityReference.parseEntityReference( result );
     }
 
     @Override public String toQueryParameter( Object value )
@@ -89,6 +88,6 @@ public class EntityReferenceType
 
     @Override public Object fromQueryParameter( String parameter, Module module )
     {
-        return EntityReference.parseEntityReference(parameter);
+        return EntityReference.parseEntityReference( parameter );
     }
 }

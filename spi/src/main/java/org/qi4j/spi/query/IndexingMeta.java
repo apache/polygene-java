@@ -15,7 +15,7 @@ package org.qi4j.spi.query;
 
 import java.io.Serializable;
 
-public class IndexingMeta
+public final class IndexingMeta
     implements Serializable
 {
     private boolean ignore;

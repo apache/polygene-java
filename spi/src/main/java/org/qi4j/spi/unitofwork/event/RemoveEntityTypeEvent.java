@@ -22,7 +22,7 @@ import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 /**
  * JAVADOC
  */
-public class RemoveEntityTypeEvent extends EntityEvent
+public final class RemoveEntityTypeEvent extends EntityEvent
 {
     private EntityTypeReference entityType;
 

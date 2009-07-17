@@ -30,7 +30,7 @@ import java.util.Map;
  *
  * @param <K> The Key in the HashMap.
  */
-public class MethodValueMap<K> extends HashMap<K, Method>
+public final class MethodValueMap<K> extends HashMap<K, Method>
     implements Externalizable
 {
     static final long serialVersionUID = 1L;

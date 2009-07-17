@@ -14,14 +14,13 @@
 
 package org.qi4j.spi.entity;
 
-import org.qi4j.api.common.TypeName;
-
 import java.io.Serializable;
+import org.qi4j.api.common.TypeName;
 
 /**
  * JAVADOC
  */
-public class EntityTypeReference
+public final class EntityTypeReference
     implements Serializable
 {
     private TypeName type;

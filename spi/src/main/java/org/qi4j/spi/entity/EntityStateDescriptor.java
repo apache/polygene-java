@@ -17,11 +17,10 @@
  */
 package org.qi4j.spi.entity;
 
+import java.util.Set;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
-
-import java.util.Set;
 
 public interface EntityStateDescriptor extends StateDescriptor
 {

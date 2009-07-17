@@ -14,13 +14,12 @@
 
 package org.qi4j.spi.entity.association;
 
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.entity.StateName;
-
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 
 /**
  * JAVADOC

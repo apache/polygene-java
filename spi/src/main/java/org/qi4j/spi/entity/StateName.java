@@ -14,9 +14,8 @@
 
 package org.qi4j.spi.entity;
 
-import org.qi4j.api.common.QualifiedName;
-
 import java.io.Serializable;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * A state name. State can be either a property or an association..
@@ -31,7 +30,7 @@ import java.io.Serializable;
  * of the property. The hashed version of the name assures that we can look at a property/association
  * in an entity store and see where it came from originally.
  */
-public class StateName
+public final class StateName
     implements Serializable
 {
     static final long serialVersionUID = 42L;

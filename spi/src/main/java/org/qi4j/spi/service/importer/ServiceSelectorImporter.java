@@ -14,11 +14,16 @@
 
 package org.qi4j.spi.service.importer;
 
-import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.service.*;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.service.ImportedServiceDescriptor;
+import org.qi4j.api.service.ServiceFinder;
+import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.api.service.ServiceImporterException;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.service.ServiceSelector;
+
 
 /**
  * If several services are available with a given type, and you want to constrain
@@ -29,10 +34,10 @@ import java.util.List;
  * This importer will avoid selecting itself, as could be possible if the ServiceSelector.first()
  * filter is used.
  */
-public class ServiceSelectorImporter
+public final class ServiceSelectorImporter
     implements ServiceImporter
 {
-    private @Structure ServiceFinder locator;
+    @Structure private ServiceFinder locator;
 
     public Object importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
     {

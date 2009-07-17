@@ -21,7 +21,7 @@ import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 /**
  * JAVADOC
  */
-public class RemoveEntityEvent extends EntityEvent
+public final class RemoveEntityEvent extends EntityEvent
 {
     public RemoveEntityEvent( EntityReference identity )
     {

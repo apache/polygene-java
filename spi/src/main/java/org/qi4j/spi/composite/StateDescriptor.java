@@ -14,10 +14,9 @@
 
 package org.qi4j.spi.composite;
 
+import java.util.Set;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.property.PropertyDescriptor;
-
-import java.util.Set;
 
 /**
  * JAVADOC

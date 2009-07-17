@@ -19,7 +19,7 @@ import org.qi4j.api.common.MetaInfo;
 /**
  * Builder for Usecases.
  */
-public class UsecaseBuilder
+public final class UsecaseBuilder
 {
     public static UsecaseBuilder buildUsecase( String aName )
     {

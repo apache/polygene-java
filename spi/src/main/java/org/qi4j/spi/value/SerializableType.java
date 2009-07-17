@@ -14,6 +14,11 @@
 
 package org.qi4j.spi.value;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
@@ -23,23 +28,17 @@ import org.qi4j.api.value.ValueComposite;
 import org.qi4j.spi.util.Base64Encoder;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
 /**
  * Serializable type. If the serialized object is an ValueComposite,
  * then use JSON format for VC's. If the serialized object is an
  * EntityReference, then use JSON format for EntityReferences.
  */
-public class SerializableType
+public final class SerializableType
     extends AbstractStringType
 {
     public SerializableType( TypeName type )
     {
-        super(type);
+        super( type );
     }
 
     public void toJSON( Object value, StringBuilder json )
@@ -53,7 +52,7 @@ public class SerializableType
         else if( value instanceof ValueComposite )
         {
             value = ( (ValueComposite) value ).toJSON();
-        } 
+        }
 
         // Serialize value
         try
@@ -62,9 +61,9 @@ public class SerializableType
             ObjectOutputStream out = new ObjectOutputStream( bout );
             out.writeUnshared( value );
             out.close();
-            byte[] bytes = Base64Encoder.encode(bout.toByteArray(), true);
-            String stringValue = new String(bytes, "UTF-8" );
-            json.append('"').append( stringValue ).append('"');
+            byte[] bytes = Base64Encoder.encode( bout.toByteArray(), true );
+            String stringValue = new String( bytes, "UTF-8" );
+            json.append( '"' ).append( stringValue ).append( '"' );
         }
         catch( IOException e )
         {
@@ -77,7 +76,7 @@ public class SerializableType
     {
         try
         {
-            String token = json.nextToken("\"");
+            String token = json.nextToken( "\"" );
             token = json.nextToken();
             byte[] bytes = token.getBytes( "UTF-8" );
             bytes = Base64Encoder.decode( bytes );
@@ -121,17 +120,17 @@ public class SerializableType
     }
 
     @Override
-    public String toQueryParameter(Object value)
+    public String toQueryParameter( Object value )
     {
-        String json = super.toQueryParameter(value);
-        return json.substring(1, json.length()-1);
+        String json = super.toQueryParameter( value );
+        return json.substring( 1, json.length() - 1 );
     }
 
     @Override
-    public Object fromQueryParameter(String parameter, Module module)
+    public Object fromQueryParameter( String parameter, Module module )
     {
-        String json = "\""+parameter+"\"";
+        String json = "\"" + parameter + "\"";
 
-        return fromJSON(new PeekableStringTokenizer(json), module);
+        return fromJSON( new PeekableStringTokenizer( json ), module );
     }
 }

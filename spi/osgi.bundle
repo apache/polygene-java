@@ -32,6 +32,7 @@ Export-Package: org.qi4j.spi;version=${pom.version}, \
                 org.qi4j.spi.entity;version=${pom.version}, \
                 org.qi4j.spi.entity.association;version=${pom.version}, \
                 org.qi4j.spi.entity.helpers;version=${pom.version}, \
+                org.qi4j.spi.entity.typeregistry;version=${pom.version}, \
                 org.qi4j.spi.mixin;version=${pom.version}, \
                 org.qi4j.spi.object;version=${pom.version}, \
                 org.qi4j.spi.property;version=${pom.version}, \
@@ -44,7 +45,9 @@ Export-Package: org.qi4j.spi;version=${pom.version}, \
                 org.qi4j.spi.structure;version=${pom.version}, \
                 org.qi4j.spi.unitofwork;version=${pom.version}, \
                 org.qi4j.spi.unitofwork.event;version=${pom.version}, \
+                org.qi4j.spi.uuid;version=${pom.version}, \
                 org.qi4j.spi.value;version=${pom.version}, \
-                org.qi4j.entitystore.memory;version=${pom.version}
+                org.qi4j.entitystore.memory;version=${pom.version}, \
+                org.qi4j.entitystore.map;version=${pom.version}
 
 Private-Package: org.qi4j.spi.util

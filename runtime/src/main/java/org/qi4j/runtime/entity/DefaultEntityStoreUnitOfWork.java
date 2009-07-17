@@ -12,22 +12,35 @@
  *
  */
 
-package org.qi4j.spi.entity.helpers;
-
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.usecase.Usecase;
-import org.qi4j.spi.entity.*;
-import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
-import org.qi4j.spi.unitofwork.event.*;
+package org.qi4j.runtime.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.usecase.Usecase;
+import org.qi4j.spi.entity.EntityNotFoundException;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.StateName;
+import org.qi4j.spi.entity.EntityStoreEvents;
+import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
+import org.qi4j.spi.unitofwork.event.AddEntityTypeEvent;
+import org.qi4j.spi.unitofwork.event.AddManyAssociationEvent;
+import org.qi4j.spi.unitofwork.event.GetEntityEvent;
+import org.qi4j.spi.unitofwork.event.NewEntityEvent;
+import org.qi4j.spi.unitofwork.event.RemoveEntityEvent;
+import org.qi4j.spi.unitofwork.event.RemoveEntityTypeEvent;
+import org.qi4j.spi.unitofwork.event.RemoveManyAssociationEvent;
+import org.qi4j.spi.unitofwork.event.SetAssociationEvent;
+import org.qi4j.spi.unitofwork.event.SetPropertyEvent;
+import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
 
 /**
  * JAVADOC
  */
-public class DefaultEntityStoreUnitOfWork
+public final class DefaultEntityStoreUnitOfWork
     implements EntityStoreUnitOfWork
 {
     private List<UnitOfWorkEvent> events = new ArrayList<UnitOfWorkEvent>();

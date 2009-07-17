@@ -39,6 +39,14 @@
         <option name="SPACE_BEFORE_SYNCHRONIZED_PARENTHESES" value="false" />
         <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="100" />
         <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="1" />
+        <option name="PACKAGES_TO_USE_IMPORT_ON_DEMAND">
+          <value />
+        </option>
+        <option name="IMPORT_LAYOUT_TABLE">
+          <value>
+            <package name="" withSubpackages="true" />
+          </value>
+        </option>
         <option name="OPTIMIZE_IMPORTS_ON_THE_FLY" value="true" />
         <option name="IF_BRACE_FORCE" value="3" />
         <option name="DOWHILE_BRACE_FORCE" value="3" />

@@ -1,12 +1,11 @@
 package org.qi4j.spi.entity;
 
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.common.TypeName;
-import org.qi4j.spi.util.Base64Encoder;
-
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.TypeName;
+import org.qi4j.spi.util.Base64Encoder;
 
 public class SchemaVersion
 {

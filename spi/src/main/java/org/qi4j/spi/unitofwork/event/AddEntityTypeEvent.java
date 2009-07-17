@@ -22,7 +22,7 @@ import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 /**
  * JAVADOC
  */
-public class AddEntityTypeEvent extends EntityEvent
+public final class AddEntityTypeEvent extends EntityEvent
 {
     private EntityTypeReference entityType;
 

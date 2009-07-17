@@ -26,7 +26,7 @@ import java.util.List;
  * This class is NOT thread-safe.
  * //TODO: Algorithm need to be optimized.
  */
-public class UsageGraph<K>
+public final class UsageGraph<K>
 {
     private final Collection<K> data;
     private final Use<K> use;

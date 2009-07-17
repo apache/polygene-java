@@ -22,7 +22,7 @@ import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 /**
  * JAVADOC
  */
-public class RemoveManyAssociationEvent extends AssociationEvent
+public final class RemoveManyAssociationEvent extends AssociationEvent
 {
     public RemoveManyAssociationEvent( EntityReference anIdentity, StateName stateName, EntityReference associatedEntity )
     {

@@ -62,6 +62,7 @@ public interface Configuration<T>
         private @Structure Qi4j api;
         private @This ServiceComposite me;
         private @Structure UnitOfWorkFactory uowf;
+
         public ConfigurationMixin()
             throws Exception
         {
@@ -69,15 +70,16 @@ public interface Configuration<T>
 
         public synchronized T configuration()
         {
-            if (configuration == null)
+            if( configuration == null )
             {
                 uow = uowf.newUnitOfWork();
                 try
                 {
                     configuration = api.<T>getConfigurationInstance( me, uow );
-                } catch (InstantiationException e)
+                }
+                catch( InstantiationException e )
                 {
-                    throw new IllegalStateException(e);
+                    throw new IllegalStateException( e );
                 }
             }
 
@@ -86,7 +88,7 @@ public interface Configuration<T>
 
         public synchronized void refresh()
         {
-            if (configuration != null)
+            if( configuration != null )
             {
                 configuration = null;
                 uow.discard();

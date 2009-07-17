@@ -1,12 +1,12 @@
 package org.qi4j.api.common;
 
+import java.io.Serializable;
+import java.lang.reflect.Type;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.NullArgumentException;
 
-import java.io.Serializable;
-import java.lang.reflect.Type;
-
-public class TypeName implements Serializable, Comparable<TypeName>
+public final class TypeName
+    implements Serializable, Comparable<TypeName>
 {
     private final String name;
 

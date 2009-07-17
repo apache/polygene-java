@@ -18,10 +18,10 @@ import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.UnitOfWorkEventFeed;
+import org.qi4j.entitystore.map.UnitOfWorkEventFeed;
 import org.qi4j.spi.entity.UnitOfWorkListenerNotificationConcern;
 import org.qi4j.spi.entity.helpers.ConcurrentModificationCheckConcern;
-import org.qi4j.spi.entity.helpers.MapEntityStoreMixin;
+import org.qi4j.entitystore.map.MapEntityStoreMixin;
 
 /**
  * In-memory EntityStore service. Useful for testing

@@ -14,12 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.spi.entity.helpers;
-
-import org.qi4j.api.entity.Identity;
-import org.qi4j.api.entity.IdentityGenerator;
+package org.qi4j.spi.uuid;
 
 import java.util.UUID;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.entity.IdentityGenerator;
 
 public final class UuidIdentityGeneratorMixin
     implements IdentityGenerator

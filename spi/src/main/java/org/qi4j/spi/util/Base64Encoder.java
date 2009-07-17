@@ -23,7 +23,7 @@ package org.qi4j.spi.util;
  * @author Alin Dreghiciu (adreghiciu@gmail.com)
  * @since 0.6.0, February 19, 2009
  */
-public class Base64Encoder
+public final class Base64Encoder
 {
 
     /**

@@ -14,9 +14,8 @@
 
 package org.qi4j.api.property;
 
-import org.qi4j.api.common.QualifiedName;
-
 import java.lang.reflect.Method;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * This represents the state of a composite (properties).

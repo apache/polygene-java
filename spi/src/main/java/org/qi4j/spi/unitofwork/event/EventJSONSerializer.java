@@ -17,7 +17,7 @@ package org.qi4j.spi.unitofwork.event;
 /**
  * Serialize entity events to JSON
  */
-public class EventJSONSerializer
+public final class EventJSONSerializer
 {
     String toJSON( UnitOfWorkEvent event )
     {

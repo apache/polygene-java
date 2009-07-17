@@ -14,19 +14,18 @@
 
 package org.qi4j.api.property;
 
-import org.qi4j.api.common.AppliesTo;
-import org.qi4j.api.common.AppliesToFilter;
-import org.qi4j.api.injection.scope.State;
-
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import org.qi4j.api.common.AppliesTo;
+import org.qi4j.api.common.AppliesToFilter;
+import org.qi4j.api.injection.scope.State;
 
 /**
  * Generic mixin for properties.
  */
 @AppliesTo( { PropertyMixin.PropertyFilter.class } )
-public class PropertyMixin
+public final class PropertyMixin
     implements InvocationHandler
 {
     @State private StateHolder state;

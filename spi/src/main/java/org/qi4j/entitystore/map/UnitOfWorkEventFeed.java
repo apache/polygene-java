@@ -12,19 +12,20 @@
  *
  */
 
-package org.qi4j.spi.entity.helpers;
+package org.qi4j.entitystore.map;
 
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.usecase.Usecase;
-import org.qi4j.spi.entity.EntityState;
 
 /**
- * JAVADOC
+ * Interface to access list of events that have occurred
+ * in completed UnitOfWorks.
  */
-public interface EntityStoreEvents
+public interface UnitOfWorkEventFeed
 {
-    public EntityState newEntityState( DefaultEntityStoreUnitOfWork unitOfWork, EntityReference identity, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo );
-
-    public EntityState getEntityState( DefaultEntityStoreUnitOfWork unitOfWork, EntityReference identity, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo );
+    public Iterable<UnitOfWorkEventsEntry> getUnitOfWorkEvents( @Optional String startId,
+                                                                int count,
+                                                                Usecase usecaseMetaInfo,
+                                                                MetaInfo unitOfWorkMetaInfo );
 }

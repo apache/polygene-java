@@ -49,7 +49,7 @@ public interface QueryBuilder<T>
      * @param unitOfWork the UoW in which the query is to be executed
      * @return a new Query instance
      */
-    Query<T> newQuery(UnitOfWork unitOfWork);
+    Query<T> newQuery( UnitOfWork unitOfWork );
 
     /**
      * Create a new query with the declared where-clauses that will be evaluated against the iterable entries.

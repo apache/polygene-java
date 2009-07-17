@@ -12,21 +12,20 @@
  *
  */
 
-package org.qi4j.spi.entity.helpers;
+package org.qi4j.spi.entity.typeregistry;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.EntityTypeReference;
 import org.qi4j.spi.entity.EntityTypeRegistry;
 import org.qi4j.spi.entity.UnknownEntityTypeException;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
-
 /**
  * EntityType registry mixin which helps EntityStore implementations.
  */
-public class EntityTypeRegistryMixin
+public final class EntityTypeRegistryMixin
     implements EntityTypeRegistry
 {
     protected Map<EntityTypeReference, EntityType> entityTypes = new ConcurrentHashMap<EntityTypeReference, EntityType>();

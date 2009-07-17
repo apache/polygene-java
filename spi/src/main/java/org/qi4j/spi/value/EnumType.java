@@ -14,16 +14,15 @@
 
 package org.qi4j.spi.value;
 
+import java.lang.reflect.Type;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
-import java.lang.reflect.Type;
-
 /**
  * Enumeration type
  */
-public class EnumType
+public final class EnumType
     extends AbstractStringType
 {
     public static boolean isEnum( Type type )
@@ -38,7 +37,7 @@ public class EnumType
 
     public EnumType( TypeName type )
     {
-        super(type);
+        super( type );
     }
 
     public void toJSON( Object value, StringBuilder json )
@@ -75,17 +74,17 @@ public class EnumType
 
         token = json.nextToken();
 
-        return fromQueryParameter(result, module);
+        return fromQueryParameter( result, module );
     }
 
     @Override
-    public String toQueryParameter(Object value) throws IllegalArgumentException
+    public String toQueryParameter( Object value ) throws IllegalArgumentException
     {
         return value.toString();
     }
 
     @Override
-    public Object fromQueryParameter(String parameter, Module module) throws IllegalArgumentException
+    public Object fromQueryParameter( String parameter, Module module ) throws IllegalArgumentException
     {
         try
         {

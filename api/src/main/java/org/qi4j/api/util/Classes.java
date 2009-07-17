@@ -25,16 +25,16 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import static java.util.Arrays.*;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashMap;
 
 /**
  * Class-related utility methods
  */
-public class Classes
+public final class Classes
 {
     /**
      * Get all interfaces for the given type,
@@ -351,50 +351,56 @@ public class Classes
     /**
      * Given a type variable, find what it resolves to given the declaring class where type
      * variable was found and a top class that extends the declaring class.
+     *
      * @param name
      * @param declaringClass
      * @param topClass
      * @return
      */
-    public static Type resolveTypeVariable(TypeVariable name, Class declaringClass, Class topClass)
+    public static Type resolveTypeVariable( TypeVariable name, Class declaringClass, Class topClass )
     {
-        return resolveTypeVariable(name, declaringClass, new HashMap<TypeVariable, Type>(), topClass);
+        return resolveTypeVariable( name, declaringClass, new HashMap<TypeVariable, Type>(), topClass );
     }
 
-    private static Type resolveTypeVariable(TypeVariable name, Class declaringClass, Map<TypeVariable, Type> mappings, Class current)
+    private static Type resolveTypeVariable( TypeVariable name, Class declaringClass, Map<TypeVariable, Type> mappings, Class current )
     {
-        if (current.equals(declaringClass))
+        if( current.equals( declaringClass ) )
         {
             Type resolvedType = name;
-            while (resolvedType instanceof TypeVariable)
-                resolvedType = mappings.get(resolvedType);
+            while( resolvedType instanceof TypeVariable )
+            {
+                resolvedType = mappings.get( resolvedType );
+            }
             return resolvedType;
         }
 
-        for (Type type : current.getGenericInterfaces())
+        for( Type type : current.getGenericInterfaces() )
         {
             Class subClass;
-            if (type instanceof ParameterizedType)
+            if( type instanceof ParameterizedType )
             {
                 ParameterizedType pt = (ParameterizedType) type;
                 Type[] args = pt.getActualTypeArguments();
                 Class clazz = (Class) pt.getRawType();
                 TypeVariable[] vars = clazz.getTypeParameters();
-                for (int i = 0; i < vars.length; i++)
+                for( int i = 0; i < vars.length; i++ )
                 {
-                    TypeVariable var = vars[i];
-                    Type mappedType = args[i];
-                    mappings.put(var, mappedType);
+                    TypeVariable var = vars[ i ];
+                    Type mappedType = args[ i ];
+                    mappings.put( var, mappedType );
                 }
                 subClass = (Class) pt.getRawType();
-            } else
+            }
+            else
             {
                 subClass = (Class) type;
             }
 
-            Type resolvedType = resolveTypeVariable(name, declaringClass, mappings, subClass);
-            if (resolvedType != null)
+            Type resolvedType = resolveTypeVariable( name, declaringClass, mappings, subClass );
+            if( resolvedType != null )
+            {
                 return resolvedType;
+            }
         }
 
         return Object.class;

@@ -14,6 +14,13 @@
 
 package org.qi4j.runtime;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import static java.lang.reflect.Proxy.*;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.PropertyMapper;
@@ -39,6 +46,7 @@ import static org.qi4j.runtime.composite.DefaultCompositeInstance.*;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
+import org.qi4j.runtime.entity.DefaultStateFactory;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.service.ServiceModel;
@@ -54,16 +62,9 @@ import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.StateFactory;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.value.ValueDescriptor;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import static java.lang.reflect.Proxy.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Incarnation of Qi4j.
@@ -337,6 +338,11 @@ public final class Qi4jRuntimeImpl
         finder.type = objectType;
         moduleInstance.model().visitModules( finder );
         return finder.model;
+    }
+
+    public StateFactory getDefaultStateFactory()
+    {
+        return new DefaultStateFactory();
     }
 
     class ObjectFinder

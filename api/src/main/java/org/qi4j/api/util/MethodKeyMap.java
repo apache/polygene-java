@@ -17,7 +17,11 @@
  */
 package org.qi4j.api.util;
 
-import java.io.*;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +31,7 @@ import java.util.Map;
  *
  * @param <V> The Value in the HashMap.
  */
-public class MethodKeyMap<V> extends HashMap<Method, V>
+public final class MethodKeyMap<V> extends HashMap<Method, V>
     implements Externalizable
 {
     static final long serialVersionUID = 1L;

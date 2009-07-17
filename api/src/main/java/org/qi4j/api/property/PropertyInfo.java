@@ -14,9 +14,8 @@
 
 package org.qi4j.api.property;
 
-import org.qi4j.api.common.QualifiedName;
-
 import java.lang.reflect.Type;
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * Provide access to metadata information about a property.

@@ -14,10 +14,6 @@
 
 package org.qi4j.spi.serialization;
 
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.EntityTypeReference;
-import org.qi4j.spi.entity.StateName;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -28,6 +24,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.StateName;
 
 /**
  * Serializable state for a single entity. This includes the version

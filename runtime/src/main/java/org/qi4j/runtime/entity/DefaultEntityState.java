@@ -14,18 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.spi.entity.helpers;
-
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.*;
+package org.qi4j.runtime.entity;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.StateName;
 
 /**
  * Standard implementation of EntityState.
  */
-public class DefaultEntityState
+public final class DefaultEntityState
     implements EntityState, Serializable
 {
     protected DefaultEntityStoreUnitOfWork unitOfWork;
@@ -202,7 +210,10 @@ public class DefaultEntityState
     @Override
     public String toString()
     {
-        return identity + "(" + properties.size() + " properties, " + associations.size() + " associations, " + manyAssociations.size() + " many-associations)";
+        return identity + "(" +
+               properties.size() + " properties, " +
+               associations.size() + " associations, " +
+               manyAssociations.size() + " many-associations)";
     }
 
     public void hasBeenApplied()

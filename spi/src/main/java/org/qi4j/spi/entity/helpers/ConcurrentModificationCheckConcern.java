@@ -14,17 +14,25 @@
 
 package org.qi4j.spi.entity.helpers;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
-import org.qi4j.spi.entity.*;
+import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
+import org.qi4j.spi.entity.EntityNotFoundException;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 import org.qi4j.spi.unitofwork.event.GetEntityEvent;
 import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
-
-import java.util.*;
 
 /**
  * Concern that helps EntityStores do concurrent modification checks.
@@ -143,7 +151,8 @@ public abstract class ConcurrentModificationCheckConcern extends ConcernOf<Entit
         return !state.version().equals( oldVersion );
     }
 
-    private class ConcurrentCheckingEntityStoreUnitOfWork implements EntityStoreUnitOfWork
+    private class ConcurrentCheckingEntityStoreUnitOfWork
+        implements EntityStoreUnitOfWork
     {
         private final EntityStoreUnitOfWork uow;
 
@@ -157,12 +166,14 @@ public abstract class ConcurrentModificationCheckConcern extends ConcernOf<Entit
             return uow.identity();
         }
 
-        public EntityState newEntityState( EntityReference anIdentity ) throws EntityStoreException
+        public EntityState newEntityState( EntityReference anIdentity )
+            throws EntityStoreException
         {
             return uow.newEntityState( anIdentity );
         }
 
-        public EntityState getEntityState( EntityReference anIdentity ) throws EntityStoreException, EntityNotFoundException
+        public EntityState getEntityState( EntityReference anIdentity )
+            throws EntityStoreException, EntityNotFoundException
         {
             EntityState entityState = uow.getEntityState( anIdentity );
             rememberVersion( entityState.identity(), entityState.version() );

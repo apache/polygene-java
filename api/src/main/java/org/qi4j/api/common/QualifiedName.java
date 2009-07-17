@@ -14,16 +14,15 @@
 
 package org.qi4j.api.common;
 
-import org.qi4j.api.util.NullArgumentException;
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import org.qi4j.api.util.NullArgumentException;
 
 /**
  * A QualifiedName is created by combining the name of a method and the
  * name of the type that declares the method.
  */
-public class QualifiedName
+public final class QualifiedName
     implements Comparable<QualifiedName>, Serializable
 {
     private final TypeName typeName;

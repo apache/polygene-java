@@ -17,9 +17,8 @@
  */
 package org.qi4j.api.composite;
 
-import org.qi4j.api.mixin.MixinMappingException;
-
 import java.util.Arrays;
+import org.qi4j.api.mixin.MixinMappingException;
 
 /**
  * This Exception is thrown when more than one Composite implements a MixinType

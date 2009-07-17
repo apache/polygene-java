@@ -14,17 +14,16 @@
 
 package org.qi4j.spi.property;
 
+import java.io.Serializable;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.entity.StateName;
 import org.qi4j.spi.value.ValueType;
 
-import java.io.Serializable;
-
 /**
  * JAVADOC
  */
-public class PropertyType
+public final class PropertyType
     implements Serializable, Comparable<PropertyType>
 {
     public enum PropertyTypeEnum
