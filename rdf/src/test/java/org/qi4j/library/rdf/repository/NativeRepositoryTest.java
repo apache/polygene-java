@@ -25,7 +25,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.spi.entity.helpers.EntityTypeRegistryService;
+import org.qi4j.spi.entity.typeregistry.EntityTypeRegistryService;
 
 /**
  * JAVADOC
