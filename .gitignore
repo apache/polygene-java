@@ -1,7 +1,9 @@
 target/
 api/target/
 bootstrap/target/
-qi4j-core.iws
+*.iws
+*.iml
+*.ipr
 runtime/target/
 spi/target/
 testsupport/target/
