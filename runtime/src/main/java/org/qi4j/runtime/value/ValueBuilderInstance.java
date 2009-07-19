@@ -34,7 +34,7 @@ public final class ValueBuilderInstance<T>
     private final ValueModel valueModel;
 
     // lazy initialized in accessor
-    private T prototypeInstance;
+    private ValueInstance prototypeInstance;
 
     // lazy initialized in accessor
     private StateHolder state;
@@ -71,7 +71,8 @@ public final class ValueBuilderInstance<T>
 
     public ValueBuilder<T> fromJSON( String jsonValue )
     {
-        return withPrototype( (T) valueModel.valueType().fromJSON( new PeekableStringTokenizer( jsonValue, "", true ), moduleInstance ) );
+        PeekableStringTokenizer tokenizer = new PeekableStringTokenizer( jsonValue, "", true );
+        return withPrototype( (T) valueModel.valueType().fromJSON( tokenizer, moduleInstance ) );
     }
 
     public T prototype()
@@ -79,10 +80,21 @@ public final class ValueBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = valueModel.newValueInstance( moduleInstance, getState() ).<T>proxy();
+            prototypeInstance = valueModel.newValueInstance( moduleInstance, getState() );
         }
 
-        return prototypeInstance;
+        return prototypeInstance.<T>proxy();
+    }
+
+    public <K> K prototypeFor( Class<K> mixinType )
+    {
+        // Instantiate given value type
+        if( prototypeInstance == null )
+        {
+            prototypeInstance = valueModel.newValueInstance( moduleInstance, getState() );
+        }
+
+        return prototypeInstance.newProxy( mixinType );
     }
 
     public T newInstance() throws ConstructionException
