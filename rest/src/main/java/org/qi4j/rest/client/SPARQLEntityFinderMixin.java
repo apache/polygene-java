@@ -44,7 +44,7 @@ import org.xml.sax.helpers.XMLReaderAdapter;
  * JAVADOC Add JavaDoc
  */
 public class SPARQLEntityFinderMixin
-        implements EntityFinder, Activatable
+    implements EntityFinder, Activatable
 {
     @This
     Configuration<SPARQLEntityFinderConfiguration> config;
@@ -57,34 +57,34 @@ public class SPARQLEntityFinderMixin
 
     public void activate() throws Exception
     {
-        sparqlQueryRef = new Reference(config.configuration().sparqlUrl().get());
+        sparqlQueryRef = new Reference( config.configuration().sparqlUrl().get() );
     }
 
     public void passivate() throws Exception
     {
     }
 
-    public Iterable<EntityReference> findEntities(String resultType, BooleanExpression whereClause,
-                                                  OrderBy[] orderBySegments, Integer firstResult, Integer maxResults)
-            throws EntityFinderException
+    public Iterable<EntityReference> findEntities( String resultType, BooleanExpression whereClause,
+                                                   OrderBy[] orderBySegments, Integer firstResult, Integer maxResults )
+        throws EntityFinderException
     {
         CollectingQualifiedIdentityResultCallback callback = new CollectingQualifiedIdentityResultCallback();
-        performQuery(resultType, whereClause, orderBySegments, firstResult, maxResults, callback);
+        performQuery( resultType, whereClause, orderBySegments, firstResult, maxResults, callback );
         return callback.getEntities();
     }
 
-    public EntityReference findEntity(String resultType, BooleanExpression whereClause)
-            throws EntityFinderException
+    public EntityReference findEntity( String resultType, BooleanExpression whereClause )
+        throws EntityFinderException
     {
         final SingleQualifiedIdentityResultCallback callback = new SingleQualifiedIdentityResultCallback();
-        performQuery(resultType, whereClause, null, null, null, callback);
+        performQuery( resultType, whereClause, null, null, null, callback );
         return callback.getQualifiedIdentity();
     }
 
-    public long countEntities(String resultType, BooleanExpression whereClause)
-            throws EntityFinderException
+    public long countEntities( String resultType, BooleanExpression whereClause )
+        throws EntityFinderException
     {
-        return performQuery(resultType, whereClause, null, null, null, null);
+        return performQuery( resultType, whereClause, null, null, null, null );
     }
 
     private static class EntityResultXMLReaderAdapter extends XMLReaderAdapter
@@ -95,39 +95,39 @@ public class SPARQLEntityFinderMixin
         private int row = 0;
         private boolean done = false;
 
-        public EntityResultXMLReaderAdapter(QualifiedIdentityResultCallback callback)
-                throws SAXException
+        public EntityResultXMLReaderAdapter( QualifiedIdentityResultCallback callback )
+            throws SAXException
         {
             this.callback = callback;
         }
 
         @Override
-        public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException
+        public void startElement( String uri, String localName, String qName, Attributes atts ) throws SAXException
         {
             element = localName;
         }
 
         @Override
-        public void characters(char ch[], int start, int length) throws SAXException
+        public void characters( char ch[], int start, int length ) throws SAXException
         {
-            if ("literal".equals(element))
+            if( "literal".equals( element ) )
             {
-                id = String.valueOf(ch, start, length);
+                id = String.valueOf( ch, start, length );
             }
         }
 
         @Override
-        public void endElement(String uri, String localName, String qName) throws SAXException
+        public void endElement( String uri, String localName, String qName ) throws SAXException
         {
             element = null;
 
-            if (localName.equals("result"))
+            if( localName.equals( "result" ) )
             {
-                if (!done && callback != null)
+                if( !done && callback != null )
                 {
-                    final EntityReference entityReference = new EntityReference(id);
+                    final EntityReference entityReference = new EntityReference( id );
                     // todo could also throw flow control exception
-                    done = !callback.processRow(row, entityReference);
+                    done = !callback.processRow( row, entityReference );
                     id = null;
                 }
                 row++;
@@ -140,33 +140,35 @@ public class SPARQLEntityFinderMixin
         }
     }
 
-    public int performQuery(String resultType, BooleanExpression whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, QualifiedIdentityResultCallback callback)
-            throws EntityFinderException
+    public int performQuery( String resultType, BooleanExpression whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, QualifiedIdentityResultCallback callback )
+        throws EntityFinderException
     {
         try
         {
             // TODO shall we support different implementation as SERQL?
-            final RdfQueryParser parser = rdfFactory.newQueryParser(QueryLanguage.SPARQL);
-            String query = parser.getQuery(resultType, whereClause, orderBySegments, firstResult, maxResults);
+            final RdfQueryParser parser = rdfFactory.newQueryParser( QueryLanguage.SPARQL );
+            String query = parser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults );
 
             Reference queryReference = sparqlQueryRef.clone();
-            queryReference.addQueryParameter("query", query);
-            Response response = client.get(queryReference);
-            if (!response.getStatus().isSuccess())
-                throw new SPARQLEntityFinderException(response.getRequest().getResourceRef(), response.getStatus());
+            queryReference.addQueryParameter( "query", query );
+            Response response = client.get( queryReference );
+            if( !response.getStatus().isSuccess() )
+            {
+                throw new SPARQLEntityFinderException( response.getRequest().getResourceRef(), response.getStatus() );
+            }
 
-            SaxRepresentation sax = new SaxRepresentation(response.getEntity());
-            final EntityResultXMLReaderAdapter xmlReaderAdapter = new EntityResultXMLReaderAdapter(callback);
-            sax.parse(xmlReaderAdapter);
+            SaxRepresentation sax = new SaxRepresentation( response.getEntity() );
+            final EntityResultXMLReaderAdapter xmlReaderAdapter = new EntityResultXMLReaderAdapter( callback );
+            sax.parse( xmlReaderAdapter );
             return xmlReaderAdapter.getRows();
         }
-        catch (SPARQLEntityFinderException e)
+        catch( SPARQLEntityFinderException e )
         {
             throw e;
         }
-        catch (Exception e)
+        catch( Exception e )
         {
-            throw new EntityFinderException(e);
+            throw new EntityFinderException( e );
         }
     }
 

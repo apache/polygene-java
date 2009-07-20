@@ -27,53 +27,53 @@ import org.qi4j.rest.assembly.RestAssembler;
  * JAVADOC
  */
 public class MainAssembler
-        implements ApplicationAssembler
+    implements ApplicationAssembler
 {
-    public ApplicationAssembly assemble(ApplicationAssemblyFactory applicationFactory) throws AssemblyException
+    public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
     {
-        return applicationFactory.newApplicationAssembly(new Assembler[][][]
+        return applicationFactory.newApplicationAssembly( new Assembler[][][]
+            {
+                // UI
                 {
-                        // UI
-                        {
-                                {
-                                        new ModuleName("Configuration store"),
-                                        new MemoryEntityStoreServiceAssembler(),
-                                },
-                                {
-                                        new ModuleName("Restlet servlet"),
-                                        new RestletServletAssembler(),
-                                },
-                                {
-                                        new ModuleName("Jetty"),
-                                        new JettyServiceAssembler()
-                                },
-                                {
-                                        new ModuleName("JMX Configuration"),
+                    {
+                        new ModuleName( "Configuration store" ),
+                        new MemoryEntityStoreServiceAssembler(),
+                    },
+                    {
+                        new ModuleName( "Restlet servlet" ),
+                        new RestletServletAssembler(),
+                    },
+                    {
+                        new ModuleName( "Jetty" ),
+                        new JettyServiceAssembler()
+                    },
+                    {
+                        new ModuleName( "JMX Configuration" ),
 //                        new JMXAssembler()
-                                }
-                        },
-                        // Domain
-                        {
-                                {
-                                        new ModuleName("Restlet application"),
-                                        new RestAssembler(),
-                                },
-                                {
-                                        new ModuleName("RDF"),
-                                        new RDFAssembler(),
-                                },
-                                {
-                                        new ModuleName("Domain"),
-                                        new DomainAssembler(),
-                                }
-                        },
-                        // Infrastructure
-                        {
-                                {
-                                        new ModuleName("Domain store"),
-                                        new MemoryEntityStoreServiceAssembler()
-                                }
-                        }
-                });
+                    }
+                },
+                // Domain
+                {
+                    {
+                        new ModuleName( "Restlet application" ),
+                        new RestAssembler(),
+                    },
+                    {
+                        new ModuleName( "RDF" ),
+                        new RDFAssembler(),
+                    },
+                    {
+                        new ModuleName( "Domain" ),
+                        new DomainAssembler(),
+                    }
+                },
+                // Infrastructure
+                {
+                    {
+                        new ModuleName( "Domain store" ),
+                        new MemoryEntityStoreServiceAssembler()
+                    }
+                }
+            } );
     }
 }

@@ -14,19 +14,6 @@
 
 package org.qi4j.rest.client;
 
-import org.qi4j.api.configuration.Configuration;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.library.rdf.entity.EntityTypeParser;
-import org.qi4j.library.rdf.entity.EntityTypeSerializer;
-import org.qi4j.spi.entity.*;
-import org.restlet.Uniform;
-import org.restlet.data.*;
-import org.restlet.representation.OutputRepresentation;
-import org.restlet.representation.Representation;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -34,12 +21,34 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.library.rdf.entity.EntityTypeParser;
+import org.qi4j.library.rdf.entity.EntityTypeSerializer;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.EntityTypeRegistrationException;
+import org.qi4j.spi.entity.EntityTypeRegistry;
+import org.qi4j.spi.entity.UnknownEntityTypeException;
+import org.restlet.Uniform;
+import org.restlet.data.MediaType;
+import org.restlet.data.Method;
+import org.restlet.data.Preference;
+import org.restlet.data.Reference;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
+import org.restlet.data.Status;
+import org.restlet.representation.OutputRepresentation;
+import org.restlet.representation.Representation;
 
 /**
  * EntityStore implementation that uses REST to access EntityState from a server.
  */
 public class RESTEntityTypeRegistryMixin
-        implements EntityTypeRegistry, Activatable
+    implements EntityTypeRegistry, Activatable
 {
     protected Map<EntityTypeReference, EntityType> entityTypes = new ConcurrentHashMap<EntityTypeReference, EntityType>();
 
@@ -58,7 +67,7 @@ public class RESTEntityTypeRegistryMixin
 
     public void activate() throws Exception
     {
-        entityRegistryUrl = new Reference(config.configuration().registryUrl().get());
+        entityRegistryUrl = new Reference( config.configuration().registryUrl().get() );
     }
 
     public void passivate() throws Exception
@@ -68,26 +77,28 @@ public class RESTEntityTypeRegistryMixin
     public void registerEntityType( final EntityType entityType )
     {
         EntityTypeReference reference = entityType.reference();
-        if (!entityTypes.containsKey(reference))
+        if( !entityTypes.containsKey( reference ) )
         {
             // Register with server
-            Reference ref = entityRegistryUrl.clone().addSegment(entityType.version());
+            Reference ref = entityRegistryUrl.clone().addSegment( entityType.version() );
 
-            Response response = client.put(ref, new OutputRepresentation(MediaType.APPLICATION_JAVA_OBJECT)
+            Response response = client.put( ref, new OutputRepresentation( MediaType.APPLICATION_JAVA_OBJECT )
             {
-                public void write(OutputStream outputStream) throws IOException
+                public void write( OutputStream outputStream ) throws IOException
                 {
-                    ObjectOutputStream oout = new ObjectOutputStream(outputStream);
-                    oout.writeUnshared(entityType);
+                    ObjectOutputStream oout = new ObjectOutputStream( outputStream );
+                    oout.writeUnshared( entityType );
                 }
-            });
+            } );
 
 
-            if (response.getStatus().isSuccess())
-                entityTypes.put(reference, entityType );
+            if( response.getStatus().isSuccess() )
+            {
+                entityTypes.put( reference, entityType );
+            }
             else
             {
-                throw new EntityTypeRegistrationException("Could not register EntityType");
+                throw new EntityTypeRegistrationException( "Could not register EntityType" );
             }
         }
     }
@@ -99,34 +110,52 @@ public class RESTEntityTypeRegistryMixin
         if( entityType == null )
         {
             // Get type from the server
-            Reference ref = entityRegistryUrl.clone().addSegment(type.version());
-            Request request = new Request(Method.GET, ref);
-            request.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_JAVA_OBJECT));
-            Response response = client.handle(request);
-            if (response.getStatus().isSuccess())
+            Reference ref = entityRegistryUrl.clone().addSegment( type.version() );
+            Request request = new Request( Method.GET, ref );
+            request.getClientInfo().getAcceptedMediaTypes().add( new Preference<MediaType>( MediaType.APPLICATION_JAVA_OBJECT ) );
+            Response response = client.handle( request );
+            if( response.getStatus().isSuccess() )
             {
-                if (response.isEntityAvailable())
+                if( response.isEntityAvailable() )
                 {
                     try
                     {
                         Representation entity = response.getEntity();
-                        ObjectInputStream oin = new ObjectInputStream(entity.getStream());
+                        ObjectInputStream oin = new ObjectInputStream( entity.getStream() );
                         entityType = (EntityType) oin.readUnshared();
-                        entityTypes.put(type, entityType);
-                    } catch (Exception e)
-                    {
-                        throw (UnknownEntityTypeException) new UnknownEntityTypeException( type.toString() ).initCause(e);
+                        entityTypes.put( type, entityType );
                     }
-                } else
+                    catch( Exception e )
+                    {
+                        throw (UnknownEntityTypeException) new UnknownEntityTypeException( type.toString() ).initCause( e );
+                    }
+                }
+                else
                 {
                     throw new UnknownEntityTypeException( type.toString() );
                 }
-            } else if (response.getStatus().equals(Status.CLIENT_ERROR_NOT_FOUND))
+            }
+            else if( response.getStatus().equals( Status.CLIENT_ERROR_NOT_FOUND ) )
             {
                 throw new UnknownEntityTypeException( type.toString() );
             }
         }
         return entityType;
+    }
+
+    public EntityType getEntityTypeByVersion( String version ) throws UnknownEntityTypeException
+    {
+        return null;
+    }
+
+    public EntityType getEntityTypeByClassname( String className ) throws UnknownEntityTypeException
+    {
+        return null;
+    }
+
+    public EntityType getEntityTypeByRDF( String rdf ) throws UnknownEntityTypeException
+    {
+        return null;
     }
 
     public Iterable<EntityType> getEntityTypes()

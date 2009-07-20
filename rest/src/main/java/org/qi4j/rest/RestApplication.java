@@ -45,48 +45,48 @@ import org.restlet.routing.Router;
 
 public class RestApplication extends Application
 {
-    public static final MediaType APPLICATION_SPARQL_JSON = new MediaType("application/sparql-results+json", "SPARQL JSON");
+    public static final MediaType APPLICATION_SPARQL_JSON = new MediaType( "application/sparql-results+json", "SPARQL JSON" );
 
     @Structure
     ObjectBuilderFactory factory;
     @Structure
     UnitOfWorkFactory unitOfWorkFactory;
 
-    public RestApplication(@Uses Context parentContext)
+    public RestApplication( @Uses Context parentContext )
     {
-        super(parentContext);
+        super( parentContext );
 
-        getMetadataService().addExtension("srj", APPLICATION_SPARQL_JSON);
+        getMetadataService().addExtension( "srj", APPLICATION_SPARQL_JSON );
     }
 
     @Override
-    public void handle(Request request, Response response)
+    public void handle( Request request, Response response )
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            super.handle(request, response);
+            super.handle( request, response );
             uow.complete();
         }
-        catch (UnitOfWorkException e)
+        catch( UnitOfWorkException e )
         {
             uow.discard();
-            response.setStatus(Status.CLIENT_ERROR_NOT_ACCEPTABLE);
-            response.setEntity(new ExceptionRepresentation(e));
+            response.setStatus( Status.CLIENT_ERROR_NOT_ACCEPTABLE );
+            response.setEntity( new ExceptionRepresentation( e ) );
             // More info to send...
         }
-        catch (ConcurrentEntityModificationException e)
+        catch( ConcurrentEntityModificationException e )
         {
             uow.discard();
-            response.setStatus(Status.CLIENT_ERROR_LOCKED);
-            response.setEntity(new ExceptionRepresentation(e));
+            response.setStatus( Status.CLIENT_ERROR_LOCKED );
+            response.setEntity( new ExceptionRepresentation( e ) );
             // Info to try again...
         }
-        catch (UnitOfWorkCompletionException e)
+        catch( UnitOfWorkCompletionException e )
         {
             uow.discard();
-            response.setStatus(Status.CLIENT_ERROR_NOT_ACCEPTABLE);
-            response.setEntity(new ExceptionRepresentation(e));
+            response.setStatus( Status.CLIENT_ERROR_NOT_ACCEPTABLE );
+            response.setEntity( new ExceptionRepresentation( e ) );
         }
     }
 
@@ -96,29 +96,29 @@ public class RestApplication extends Application
     @Override
     public synchronized Restlet createRoot()
     {
-        Router router = new Router(getContext());
+        Router router = new Router( getContext() );
 
-        router.attach("/service", Qi4jServiceResource.class);
+        router.attach( "/service", Qi4jServiceResource.class );
 
-        router.attach("/type", createFinder(EntityTypesResource.class));
-        router.attach("/type/{version}", createFinder(EntityTypeResource.class));
+        router.attach( "/type", createFinder( EntityTypesResource.class ) );
+        router.attach( "/type/{version}", createFinder( EntityTypeResource.class ) );
 
-        router.attach("/entity", createFinder(EntitiesResource.class));
-        router.attach("/entity/{identity}", createFinder(EntityResource.class));
+        router.attach( "/entity", createFinder( EntitiesResource.class ) );
+        router.attach( "/entity/{identity}", createFinder( EntityResource.class ) );
 
-        router.attach("/query", createFinder(SPARQLResource.class));
-        router.attach("/query/index", createFinder(IndexResource.class));
+        router.attach( "/query", createFinder( SPARQLResource.class ) );
+        router.attach( "/query/index", createFinder( IndexResource.class ) );
 
         router.attach("/events", createFinder( EventsResource.class));
 
         // Add filters
-        return new ExtensionMediaTypeFilter(getContext(), router);
+        return new ExtensionMediaTypeFilter( getContext(), router );
     }
 
-    private Finder createFinder(Class<? extends ServerResource> resource)
+    private Finder createFinder( Class<? extends ServerResource> resource )
     {
-        Finder finder = factory.newObject(Finder.class);
-        finder.setTargetClass(resource);
+        Finder finder = factory.newObject( Finder.class );
+        finder.setTargetClass( resource );
         return finder;
     }
 }

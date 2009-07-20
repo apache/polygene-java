@@ -14,6 +14,8 @@
 
 package org.qi4j.rest.events;
 
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
@@ -29,9 +31,6 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 import org.restlet.ext.atom.Feed;
 
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-
 /**
  * invoked with to /events?start={id}&count={count}
  */
@@ -41,15 +40,15 @@ public class EventsResource
     @Service EntityStore entityStore;
     @Uses ObjectBuilder<EventsFeed> feeds;
 
-    public Representation put(Representation representation) throws ResourceException
+    public Representation put( Representation representation ) throws ResourceException
     {
         String id = (String) getRequest().getAttributes().get( "id" );
-        
+
         Representation entity = this.getRequest().getEntity();
         try
         {
             InputStream in = entity.getStream();
-            ObjectInputStream oin = new ObjectInputStream(in);
+            ObjectInputStream oin = new ObjectInputStream( in );
             String identity = oin.readUTF();
             Usecase usecase = (Usecase) oin.readUnshared();
             MetaInfo unitofwork = (MetaInfo) oin.readUnshared();
@@ -60,14 +59,14 @@ public class EventsResource
             {
                 entityStore.apply( identity, events, usecase, unitofwork ).commit();
             }
-            catch ( ConcurrentEntityStateModificationException e)
+            catch( ConcurrentEntityStateModificationException e )
             {
-                throw new ResourceException( Status.CLIENT_ERROR_CONFLICT);
+                throw new ResourceException( Status.CLIENT_ERROR_CONFLICT );
             }
         }
-        catch (Exception e)
+        catch( Exception e )
         {
-            throw new ResourceException(e);
+            throw new ResourceException( e );
         }
 
         return new EmptyRepresentation();

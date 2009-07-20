@@ -45,8 +45,8 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.helpers.MapEntityStore;
 import org.qi4j.spi.service.ServiceDescriptor;
+import org.qi4j.entitystore.map.MapEntityStore;
 
 /**
  * JDBM implementation of SerializationStore

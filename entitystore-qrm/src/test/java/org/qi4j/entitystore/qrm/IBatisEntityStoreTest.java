@@ -16,6 +16,9 @@
  */
 package org.qi4j.entitystore.qrm;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Ignore;
@@ -27,17 +30,17 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.qrm.entity.AccountComposite;
 import org.qi4j.entitystore.qrm.entity.Person;
 import org.qi4j.entitystore.qrm.entity.PersonComposite;
 import org.qi4j.entitystore.qrm.test.AbstractTestCase;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.spi.entity.*;
-import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Map;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entity.StateName;
+import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 /**
  * {@code IBatisEntityStoreTest} tests {@code IBatisEntityStore}.
@@ -114,7 +117,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         throws SQLException, UnitOfWorkCompletionException
     {
         final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        final PersonComposite john = uow.get( PersonComposite.class, TestConfig.JOHN_SMITH_ID);
+        final PersonComposite john = uow.get( PersonComposite.class, TestConfig.JOHN_SMITH_ID );
         john.lastName().set( "Doe" );
         uow.complete();
         derbyDatabaseHandler.executeStatement( "select LAST_NAME from person where ID= '" + TestConfig.JOHN_SMITH_ID + "'", new DerbyDatabaseHandler.ResultSetCallback()

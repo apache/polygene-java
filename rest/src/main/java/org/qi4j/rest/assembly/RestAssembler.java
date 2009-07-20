@@ -30,10 +30,10 @@ import org.qi4j.rest.type.EntityTypeResource;
 import org.qi4j.rest.type.EntityTypesResource;
 
 public class RestAssembler
-        implements Assembler
+    implements Assembler
 {
-    public void assemble(ModuleAssembly module)
-            throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addObjects(RestApplication.class).visibleIn(Visibility.application);
         module.addObjects(Qi4jFinder.class,

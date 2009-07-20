@@ -13,6 +13,13 @@
  */
 package org.qi4j.rest.entity;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.util.Arrays;
+import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.Entity;
 import org.qi4j.api.entity.EntityReference;
@@ -41,14 +48,6 @@ import org.restlet.resource.ServerResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Listing of all Entities.
  * <p/>
@@ -66,130 +65,133 @@ public class EntitiesResource extends ServerResource
         super();
 
         // Define the supported variants.
-        getVariants().put(Method.ALL, Arrays.asList(
-                MediaType.TEXT_HTML,
-                MediaType.APPLICATION_RDF_XML,
-                MediaType.APPLICATION_JAVA_OBJECT,
-                MediaType.APPLICATION_ATOM));
+        getVariants().put( Method.ALL, Arrays.asList(
+            MediaType.TEXT_HTML,
+            MediaType.APPLICATION_RDF_XML,
+            MediaType.APPLICATION_JAVA_OBJECT,
+            MediaType.APPLICATION_ATOM ) );
 
-        setNegotiated(true);
+        setNegotiated( true );
     }
 
     @Override
-    protected Representation get(Variant variant) throws ResourceException
+    protected Representation get( Variant variant ) throws ResourceException
     {
         // Generate the right representation according to its media type.
-        if (MediaType.TEXT_XML.equals(variant.getMediaType()))
+        if( MediaType.TEXT_XML.equals( variant.getMediaType() ) )
         {
             return representXml();
-        } else if (MediaType.APPLICATION_RDF_XML.equals(variant.getMediaType()))
+        }
+        else if( MediaType.APPLICATION_RDF_XML.equals( variant.getMediaType() ) )
         {
             return representRdf();
-        } else if (MediaType.TEXT_HTML.equals(variant.getMediaType()))
+        }
+        else if( MediaType.TEXT_HTML.equals( variant.getMediaType() ) )
         {
             return representHtml();
-        } else if (MediaType.APPLICATION_ATOM.equals(variant.getMediaType()))
+        }
+        else if( MediaType.APPLICATION_ATOM.equals( variant.getMediaType() ) )
         {
             return representAtom();
         }
 
-        throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND);
+        throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
     }
 
     private Representation representXml()
-            throws ResourceException
+        throws ResourceException
     {
         try
         {
-            final Iterable<EntityReference> query = entityFinder.findEntities(Entity.class.getName(), null, null, null, null);
+            final Iterable<EntityReference> query = entityFinder.findEntities( Entity.class.getName(), null, null, null, null );
 
-            DomRepresentation representation = new DomRepresentation(MediaType.TEXT_XML);
+            DomRepresentation representation = new DomRepresentation( MediaType.TEXT_XML );
             // Generate a DOM document representing the item.
             Document d = representation.getDocument();
 
-            Element entitiesElement = d.createElement("entities");
-            d.appendChild(entitiesElement);
-            for (EntityReference entity : query)
+            Element entitiesElement = d.createElement( "entities" );
+            d.appendChild( entitiesElement );
+            for( EntityReference entity : query )
             {
-                Element entityElement = d.createElement("entity");
-                entitiesElement.appendChild(entityElement);
-                entityElement.setAttribute("href", getRequest().getResourceRef().getPath() + "/" + entity.identity());
-                entityElement.appendChild(d.createTextNode(entity.identity()));
+                Element entityElement = d.createElement( "entity" );
+                entitiesElement.appendChild( entityElement );
+                entityElement.setAttribute( "href", getRequest().getResourceRef().getPath() + "/" + entity.identity() );
+                entityElement.appendChild( d.createTextNode( entity.identity() ) );
             }
             d.normalizeDocument();
 
             // Returns the XML representation of this document.
             return representation;
         }
-        catch (Exception e)
+        catch( Exception e )
         {
-            throw new ResourceException(e);
+            throw new ResourceException( e );
         }
     }
 
     private Representation representRdf()
-            throws ResourceException
+        throws ResourceException
     {
         try
         {
-            final Iterable<EntityReference> query = entityFinder.findEntities(Entity.class.getName(), null, null, null, null);
+            final Iterable<EntityReference> query = entityFinder.findEntities( Entity.class.getName(), null, null, null, null );
 
-            WriterRepresentation representation = new WriterRepresentation(MediaType.APPLICATION_RDF_XML)
+            WriterRepresentation representation = new WriterRepresentation( MediaType.APPLICATION_RDF_XML )
             {
-                public void write(Writer writer) throws IOException
+                public void write( Writer writer ) throws IOException
                 {
-                    PrintWriter out = new PrintWriter(writer);
-                    out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                            "<rdf:RDF\n" +
-                            "\txmlns=\"urn:qi4j:\"\n" +
-                            "\txmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n" +
-                            "\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n" +
-                            "\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">");
-                    for (EntityReference qualifiedIdentity : query)
+                    PrintWriter out = new PrintWriter( writer );
+                    out.println( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                                 "<rdf:RDF\n" +
+                                 "\txmlns=\"urn:qi4j:\"\n" +
+                                 "\txmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n" +
+                                 "\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n" +
+                                 "\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">" );
+                    for( EntityReference qualifiedIdentity : query )
                     {
-                        out.println("<qi4j:entity rdf:about=\"" + getRequest().getResourceRef().getPath() + "/" + qualifiedIdentity.identity() + ".rdf\"/>");
+                        out.println( "<qi4j:entity rdf:about=\"" + getRequest().getResourceRef().getPath() + "/" + qualifiedIdentity.identity() + ".rdf\"/>" );
                     }
 
-                    out.println("</rdf:RDF>");
+                    out.println( "</rdf:RDF>" );
                     out.close();
                 }
             };
-            representation.setCharacterSet(CharacterSet.UTF_8);
+            representation.setCharacterSet( CharacterSet.UTF_8 );
 
             return representation;
         }
-        catch (EntityFinderException e)
+        catch( EntityFinderException e )
         {
-            throw new ResourceException(Status.SERVER_ERROR_INTERNAL, e);
+            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, e );
         }
     }
 
     private Representation representHtml()
-            throws ResourceException
+        throws ResourceException
     {
         try
         {
-            final Iterable<EntityReference> query = entityFinder.findEntities(Entity.class.getName(), null, null, null, null);
-            Representation representation = new WriterRepresentation(MediaType.TEXT_HTML)
+            final Iterable<EntityReference> query = entityFinder.findEntities( Entity.class.getName(), null, null, null, null );
+            Representation representation = new WriterRepresentation( MediaType.TEXT_HTML )
             {
-                public void write(Writer buf) throws IOException
+                public void write( Writer buf ) throws IOException
                 {
-                    PrintWriter out = new PrintWriter(buf);
-                    out.println("<html><head><title>All entities</title</head><body><h1>All entities</h1><ul>");
+                    PrintWriter out = new PrintWriter( buf );
+                    out.println( "<html><head><title>All entities</title</head><body><h1>All entities</h1><ul>" );
 
-                    for (EntityReference entity : query)
+                    for( EntityReference entity : query )
                     {
-                        out.println("<li><a href=\"" + getRequest().getResourceRef().clone().addSegment("/" + entity.identity() + ".html") + "\">" + entity.identity() + "</a></li>");
+                        out.println( "<li><a href=\"" + getRequest().getResourceRef().clone().addSegment( "/" + entity.identity() + ".html" ) + "\">" + entity.identity() + "</a></li>" );
                     }
-                    out.println("</ul></body></html>");
+                    out.println( "</ul></body></html>" );
                 }
             };
-            representation.setCharacterSet(CharacterSet.UTF_8);
+            representation.setCharacterSet( CharacterSet.UTF_8 );
             return representation;
         }
-        catch (EntityFinderException e)
+        catch( EntityFinderException e )
         {
-            throw new ResourceException(e);
+            throw new ResourceException( e );
         }
     }
 
@@ -198,34 +200,34 @@ public class EntitiesResource extends ServerResource
         try
         {
             Feed feed = new Feed();
-            feed.setTitle(new Text(MediaType.TEXT_PLAIN, "All entities"));
+            feed.setTitle( new Text( MediaType.TEXT_PLAIN, "All entities" ) );
             List<Entry> entries = feed.getEntries();
-            final Iterable<EntityReference> query = entityFinder.findEntities(Entity.class.getName(), null, null, null, null);
-            for (EntityReference entityReference : query)
+            final Iterable<EntityReference> query = entityFinder.findEntities( Entity.class.getName(), null, null, null, null );
+            for( EntityReference entityReference : query )
             {
                 Entry entry = new Entry();
-                entry.setTitle(new Text(MediaType.TEXT_PLAIN, entityReference.toString()));
+                entry.setTitle( new Text( MediaType.TEXT_PLAIN, entityReference.toString() ) );
                 Link link = new Link();
-                link.setHref(getRequest().getResourceRef().clone().addSegment(entityReference.identity()));
-                entry.getLinks().add(link);
-                entries.add(entry);
+                link.setHref( getRequest().getResourceRef().clone().addSegment( entityReference.identity() ) );
+                entry.getLinks().add( link );
+                entries.add( entry );
             }
 
             return feed;
         }
-        catch (Exception e)
+        catch( Exception e )
         {
-            throw new ResourceException(e);
+            throw new ResourceException( e );
         }
     }
 
     @Override
-    protected Representation post(Representation entity, Variant variant) throws ResourceException
+    protected Representation post( Representation entity, Variant variant ) throws ResourceException
     {
         try
         {
             InputStream in = entity.getStream();
-            ObjectInputStream oin = new ObjectInputStream(in);
+            ObjectInputStream oin = new ObjectInputStream( in );
             String identity = oin.readUTF();
             Usecase usecase = (Usecase) oin.readUnshared();
             MetaInfo unitofwork = (MetaInfo) oin.readUnshared();
@@ -236,14 +238,14 @@ public class EntitiesResource extends ServerResource
             {
                 entityStore.apply( identity, events, usecase, unitofwork ).commit();
             }
-            catch (ConcurrentEntityStateModificationException e)
+            catch( ConcurrentEntityStateModificationException e )
             {
-                throw new ResourceException(Status.CLIENT_ERROR_CONFLICT);
+                throw new ResourceException( Status.CLIENT_ERROR_CONFLICT );
             }
         }
-        catch (Exception e)
+        catch( Exception e )
         {
-            throw new ResourceException(e);
+            throw new ResourceException( e );
         }
 
         return new EmptyRepresentation();

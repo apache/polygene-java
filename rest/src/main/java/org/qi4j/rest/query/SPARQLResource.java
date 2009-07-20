@@ -15,8 +15,16 @@
 package org.qi4j.rest.query;
 
 import info.aduna.xml.XMLWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 import org.openrdf.http.protocol.Protocol;
-import static org.openrdf.http.protocol.Protocol.*;
+import static org.openrdf.http.protocol.Protocol.BINDING_PREFIX;
+import static org.openrdf.http.protocol.Protocol.DEFAULT_GRAPH_PARAM_NAME;
+import static org.openrdf.http.protocol.Protocol.NAMED_GRAPH_PARAM_NAME;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.query.BooleanQuery;
@@ -49,13 +57,6 @@ import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Arrays;
-
 /**
  * JAVADOC
  */
@@ -66,11 +67,11 @@ public class SPARQLResource
 
     public SPARQLResource()
     {
-        getVariants().put(Method.ALL, Arrays.asList(
-                MediaType.TEXT_HTML,
-                MediaType.APPLICATION_RDF_XML,
-                RestApplication.APPLICATION_SPARQL_JSON));
-        setNegotiated(true);
+        getVariants().put( Method.ALL, Arrays.asList(
+            MediaType.TEXT_HTML,
+            MediaType.APPLICATION_RDF_XML,
+            RestApplication.APPLICATION_SPARQL_JSON ) );
+        setNegotiated( true );
     }
 
     @Override
