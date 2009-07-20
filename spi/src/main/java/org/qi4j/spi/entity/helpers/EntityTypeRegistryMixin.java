@@ -27,30 +27,55 @@ import java.util.logging.Logger;
  * EntityType registry mixin which helps EntityStore implementations.
  */
 public class EntityTypeRegistryMixin
-    implements EntityTypeRegistry
+        implements EntityTypeRegistry
 {
     protected Map<EntityTypeReference, EntityType> entityTypes = new ConcurrentHashMap<EntityTypeReference, EntityType>();
 
-    public void registerEntityType( EntityType entityType )
+    public void registerEntityType(EntityType entityType)
     {
         EntityTypeReference reference = entityType.reference();
-        if( !entityTypes.containsKey( reference ) )
+        if (!entityTypes.containsKey(reference))
         {
-            Logger.getLogger( EntityTypeRegistry.class.getName() ).info( "Registered entity type:" + entityType.reference() );
-            entityTypes.put( reference, entityType );
+            Logger.getLogger(EntityTypeRegistry.class.getName()).info("Registered entity type:" + entityType.reference());
+            entityTypes.put(reference, entityType);
         }
     }
 
-    public EntityType getEntityType( EntityTypeReference type )
-        throws UnknownEntityTypeException
+    public EntityType getEntityType(EntityTypeReference type)
+            throws UnknownEntityTypeException
     {
-        EntityType entityType = entityTypes.get( type );
-        if( entityType == null )
+        EntityType entityType = entityTypes.get(type);
+        if (entityType == null)
         {
-            Logger.getLogger( EntityTypeRegistry.class.getName() ).warning( "Unknown entity type:" + type );
-            throw new UnknownEntityTypeException( type.toString() );
+            Logger.getLogger(EntityTypeRegistry.class.getName()).warning("Unknown entity type:" + type);
+            throw new UnknownEntityTypeException(type.toString());
         }
         return entityType;
+    }
+
+    public EntityType getEntityTypeByVersion(String version)
+    {
+        return entityTypes.get(new EntityTypeReference(version));
+    }
+
+    public EntityType getEntityTypeByClassname(String className)
+    {
+        for (EntityTypeReference entityTypeReference : entityTypes.keySet())
+        {
+            if (entityTypeReference.type().name().equals(className))
+                return entityTypes.get(entityTypeReference);
+        }
+        return null;
+    }
+
+    public EntityType getEntityTypeByRDF(String rdf)
+    {
+        for (EntityTypeReference entityTypeReference : entityTypes.keySet())
+        {
+            if (entityTypeReference.rdf().equals(rdf))
+                return entityTypes.get(entityTypeReference);
+        }
+        return null;
     }
 
     public Iterable<EntityType> getEntityTypes()

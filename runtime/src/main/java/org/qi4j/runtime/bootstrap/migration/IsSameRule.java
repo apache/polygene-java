@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,18 +12,20 @@
  *
  */
 
-package org.qi4j.spi.structure;
+package org.qi4j.runtime.bootstrap.migration;
 
-import org.qi4j.api.service.Activatable;
-import org.qi4j.api.structure.Application;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityType;
 
 /**
- * SPI for Applications.
+ * JAVADOC
  */
-public interface ApplicationSPI
-    extends Application, Activatable
+public class IsSameRule
+    implements MigrationRule
 {
-    void visitDescriptor( DescriptorVisitor visitor );
-
-    void migrate();
+    public void migrate(EntityState state, EntityType from, EntityType to)
+    {
+        state.removeEntityTypeReference(from.reference());
+        state.addEntityTypeReference(to.reference());
+    }
 }
