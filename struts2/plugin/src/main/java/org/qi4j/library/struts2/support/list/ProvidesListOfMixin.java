@@ -31,11 +31,12 @@ public abstract class ProvidesListOfMixin<T> extends ActionSupport implements Pr
      * do validation, but for now we'll just use the prepare() method.  We can change it easily enough later if this
      * becomes an issue for some reason.
      */
-    public void prepare() throws Exception
+    public void prepare()
+        throws Exception
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
         QueryBuilder<T> qb = qbf.newQueryBuilder( typeToList() );
-        results = qb.newQuery(uow);
+        results = qb.newQuery( uow );
     }
 
     private Class<T> typeToList()

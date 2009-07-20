@@ -42,11 +42,11 @@ public class NativeRepositoryMixin extends SailRepository
             String id = configuration.configuration().identity().get();
             if( id == null || "".equals( id ) )
             {
-                dataDir = "./rdf-store";
+                dataDir = "./rdf/repositories/qi4j";
             }
             else
             {
-                dataDir = "./rdf-stores/" + id;
+                dataDir = "./rdf/repositories/" + id;
             }
             configuration.configuration().dataDirectory().set( dataDir );
         }

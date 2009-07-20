@@ -16,6 +16,12 @@
  */
 package org.qi4j.library.http;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Iterator;
 import static junit.framework.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.service.ServiceReference;
@@ -25,15 +31,8 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import static org.qi4j.library.http.Dispatchers.Dispatcher.*;
 import static org.qi4j.library.http.Servlets.*;
-import org.qi4j.spi.entity.helpers.EntityTypeRegistryService;
+import org.qi4j.spi.entity.typeregistry.EntityTypeRegistryService;
 import org.qi4j.test.AbstractQi4jTest;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Iterator;
 
 /**
  * @author edward.yakop@gmail.com
@@ -43,9 +42,9 @@ public final class JettyServiceTest extends AbstractQi4jTest
     public final void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {
-        new ApplicationName( "Jetty test" ).assemble(aModule);
+        new ApplicationName( "Jetty test" ).assemble( aModule );
         aModule.addServices( MemoryEntityStoreService.class, EntityTypeRegistryService.class );
-        new JettyServiceAssembler().assemble(aModule);
+        new JettyServiceAssembler().assemble( aModule );
 
         // Hello world servlet related assembly
         addServlets( serve( "/helloWorld" ).with( HelloWorldServletService.class ) ).to( aModule );
