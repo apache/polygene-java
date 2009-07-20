@@ -20,6 +20,8 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.rest.Qi4jFinder;
 import org.qi4j.rest.Qi4jServiceResource;
 import org.qi4j.rest.RestApplication;
+import org.qi4j.rest.events.EventsResource;
+import org.qi4j.rest.events.EventsFeed;
 import org.qi4j.rest.entity.EntitiesResource;
 import org.qi4j.rest.entity.EntityResource;
 import org.qi4j.rest.query.IndexResource;
@@ -41,6 +43,8 @@ public class RestAssembler
                 EntityTypesResource.class,
                 EntityTypeResource.class,
                 IndexResource.class,
-                SPARQLResource.class);
+                SPARQLResource.class,
+                EventsResource.class,
+                EventsFeed.class);
     }
 }
