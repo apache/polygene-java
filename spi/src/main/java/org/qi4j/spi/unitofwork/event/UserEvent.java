@@ -17,7 +17,7 @@ package org.qi4j.spi.unitofwork.event;
 /**
  * JAVADOC
  */
-public class UserEvent
+public final class UserEvent
     extends UnitOfWorkEvent
 {
     private String username;

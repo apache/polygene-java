@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.spi.entity.helpers;
+package org.qi4j.spi.entity.typeregistry;
 
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.spi.entity.EntityTypeRegistry;

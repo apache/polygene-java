@@ -21,7 +21,7 @@ import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 /**
  * JAVADOC
  */
-public class GetEntityEvent
+public final class GetEntityEvent
     extends EntityEvent
 {
     private String version;

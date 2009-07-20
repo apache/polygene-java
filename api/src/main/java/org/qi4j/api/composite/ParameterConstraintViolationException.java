@@ -17,13 +17,16 @@
  */
 package org.qi4j.api.composite;
 
-import org.qi4j.api.constraint.ConstraintViolation;
-import org.qi4j.api.constraint.ConstraintViolationException;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import org.qi4j.api.constraint.ConstraintViolation;
+import org.qi4j.api.constraint.ConstraintViolationException;
 
 /**
  * This Exception is thrown when there is one or more Constraint Violations in a method

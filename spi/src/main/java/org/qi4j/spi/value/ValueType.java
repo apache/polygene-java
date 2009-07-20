@@ -14,6 +14,16 @@
 
 package org.qi4j.spi.value;
 
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import static org.qi4j.api.common.TypeName.*;
@@ -26,24 +36,13 @@ import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Base class for types of values in ValueComposites.
  */
 public abstract class ValueType
     implements Serializable
 {
-    public static ValueType newValueType(Type type, Class declaringClass, Class compositeType)
+    public static ValueType newValueType( Type type, Class declaringClass, Class compositeType )
     {
         return newValueType( null, type, declaringClass, compositeType );
     }
@@ -56,14 +55,14 @@ public abstract class ValueType
             if( type instanceof ParameterizedType )
             {
                 ParameterizedType pt = (ParameterizedType) type;
-                Type collectionType = pt.getActualTypeArguments()[0];
-                if( collectionType instanceof TypeVariable)
+                Type collectionType = pt.getActualTypeArguments()[ 0 ];
+                if( collectionType instanceof TypeVariable )
                 {
                     TypeVariable collectionTypeVariable = (TypeVariable) collectionType;
-                    collectionType = Classes.resolveTypeVariable(collectionTypeVariable, declaringClass, compositeType);
+                    collectionType = Classes.resolveTypeVariable( collectionTypeVariable, declaringClass, compositeType );
                 }
-                ValueType collectedType = newValueType(typeMap, collectionType, declaringClass, compositeType);
-                valueType = new CollectionType( nameOf( type ), collectedType);
+                ValueType collectedType = newValueType( typeMap, collectionType, declaringClass, compositeType );
+                valueType = new CollectionType( nameOf( type ), collectedType );
             }
             else
             {
@@ -79,7 +78,7 @@ public abstract class ValueType
 
             if( valueType == null )
             {
-                Class valueTypeClass = Classes.getRawClass(type);
+                Class valueTypeClass = Classes.getRawClass( type );
 
                 List<PropertyType> types = new ArrayList<PropertyType>();
                 valueType = new ValueCompositeType( nameOf( valueTypeClass ), types );
@@ -89,7 +88,7 @@ public abstract class ValueType
                 }
                 typeMap.put( type, valueType );
 
-                addProperties(typeMap, valueTypeClass, compositeType, types);
+                addProperties( typeMap, valueTypeClass, compositeType, types );
 
                 Collections.sort( types ); // Sort by property name
             }
@@ -112,7 +111,7 @@ public abstract class ValueType
         }
         else if( DateType.isDate( type ) )
         {
-            valueType = new DateType(  );
+            valueType = new DateType();
         }
         else if( EntityReferenceType.isEntityReference( type ) )
         {
@@ -127,7 +126,7 @@ public abstract class ValueType
         return valueType;
     }
 
-    private static void addProperties(Map<Type, ValueType> typeMap, Class valueTypeClass, Class compositeType, List<PropertyType> types)
+    private static void addProperties( Map<Type, ValueType> typeMap, Class valueTypeClass, Class compositeType, List<PropertyType> types )
     {
         for( Method method : valueTypeClass.getDeclaredMethods() )
         {
@@ -146,25 +145,26 @@ public abstract class ValueType
         }
 
         // Add methods from subinterface
-        for (Type subType : valueTypeClass.getGenericInterfaces())
+        for( Type subType : valueTypeClass.getGenericInterfaces() )
         {
             // Handles generic type variables
             Class subClass;
-            if (subType instanceof ParameterizedType)
+            if( subType instanceof ParameterizedType )
             {
-                subClass = (Class) ((ParameterizedType) subType).getRawType();
-            } else
+                subClass = (Class) ( (ParameterizedType) subType ).getRawType();
+            }
+            else
             {
                 subClass = (Class) subType;
             }
 
-            addProperties(typeMap, subClass, valueTypeClass, types);
+            addProperties( typeMap, subClass, valueTypeClass, types );
         }
     }
 
     protected final TypeName type;
 
-    protected ValueType(TypeName type)
+    protected ValueType( TypeName type )
     {
         this.type = type;
     }
@@ -176,7 +176,7 @@ public abstract class ValueType
 
     public void versionize( SchemaVersion schemaVersion )
     {
-        schemaVersion.versionize(type);
+        schemaVersion.versionize( type );
     }
 
     public abstract void toJSON( Object value, StringBuilder json );
@@ -184,7 +184,7 @@ public abstract class ValueType
     public abstract Object fromJSON( PeekableStringTokenizer json, Module module );
 
     public String toQueryParameter( Object value )
-            throws IllegalArgumentException
+        throws IllegalArgumentException
     {
         if( value == null )
         {
@@ -197,7 +197,7 @@ public abstract class ValueType
     }
 
     public Object fromQueryParameter( String parameter, Module module )
-            throws IllegalArgumentException
+        throws IllegalArgumentException
     {
         if( parameter == null )
         {

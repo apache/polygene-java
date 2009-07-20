@@ -12,33 +12,45 @@
  *
  */
 
-package org.qi4j.spi.entity.helpers;
+package org.qi4j.runtime.unitofwork;
 
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.StateName;
+import org.qi4j.runtime.unitofwork.EntityStateChanges;
 
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 /**
- * Default implementation of ManyAssociationState. Backed by ArrayList.
+ * Default implementation of ManyAssociationState that also
+ * keeps a list of changes that can be extracted at any time.
  */
-public class DefaultManyAssociationState
-    implements ManyAssociationState, Serializable
+public final class BuilderManyAssociationState
+    implements ManyAssociationState
 {
     private List<EntityReference> references;
-    private EntityReference identity;
-    private StateName stateName;
-    private DefaultEntityStoreUnitOfWork unitOfWork;
+    private StateName name;
+    private EntityStateChanges changes;
 
-    public DefaultManyAssociationState( List<EntityReference> references, EntityReference identity, StateName stateName, DefaultEntityStoreUnitOfWork unitOfWork )
+    public BuilderManyAssociationState( StateName name, ManyAssociationState state, EntityStateChanges changes )
     {
-        this.references = references;
-        this.identity = identity;
-        this.stateName = stateName;
-        this.unitOfWork = unitOfWork;
+        this.name = name;
+        this.changes = changes;
+
+        // Copy
+        for( int i = 0; i < state.count(); i++ )
+        {
+            references.add( state.get( i ) );
+        }
+    }
+
+    public BuilderManyAssociationState( StateName name, EntityStateChanges changes )
+    {
+        this.name = name;
+        this.changes = changes;
+        references = new ArrayList<EntityReference>();
     }
 
     public int count()
@@ -59,14 +71,17 @@ public class DefaultManyAssociationState
         }
 
         references.add( i, entityReference );
-        unitOfWork.addManyAssociation( identity, stateName, i, entityReference );
+        changes.added( name, i, entityReference );
         return true;
     }
 
-    public boolean remove( EntityReference entity )
+    public boolean remove( EntityReference entityReference )
     {
-        boolean removed = references.remove( entity );
-        unitOfWork.removeManyAssociation( identity, stateName, entity );
+        boolean removed = references.remove( entityReference );
+        if( removed )
+        {
+            changes.removed( name, entityReference );
+        }
         return removed;
     }
 

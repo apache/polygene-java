@@ -14,16 +14,15 @@
 
 package org.qi4j.spi.value;
 
+import java.lang.reflect.Type;
 import static org.qi4j.api.common.TypeName.*;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
-import java.lang.reflect.Type;
-
 /**
  * Boolean type
  */
-public class BooleanType
+public final class BooleanType
     extends ValueType
 {
     public static boolean isBoolean( Type type )
@@ -36,7 +35,7 @@ public class BooleanType
         return false;
     }
 
-    public BooleanType( )
+    public BooleanType()
     {
         super( nameOf( Boolean.class ) );
     }

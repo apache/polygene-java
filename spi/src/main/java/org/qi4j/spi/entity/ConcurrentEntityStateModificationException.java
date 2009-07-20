@@ -16,9 +16,8 @@
  */
 package org.qi4j.spi.entity;
 
-import org.qi4j.api.entity.EntityReference;
-
 import java.util.Collection;
+import org.qi4j.api.entity.EntityReference;
 
 /**
  * This exception should be thrown from {@link EntityStore#apply(String, Iterable, org.qi4j.api.usecase.Usecase, org.qi4j.api.common.MetaInfo)}  if the EntityStore

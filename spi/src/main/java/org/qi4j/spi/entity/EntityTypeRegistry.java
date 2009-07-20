@@ -15,7 +15,7 @@
 package org.qi4j.spi.entity;
 
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.spi.entity.helpers.EntityTypeRegistryMixin;
+import org.qi4j.spi.entity.typeregistry.EntityTypeRegistryMixin;
 
 /**
  * JAVADOC

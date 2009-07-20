@@ -17,17 +17,16 @@
  */
 package org.qi4j.api.property;
 
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.util.NullArgumentException;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.util.NullArgumentException;
 
 /**
  * Use the ImmutableFacade if you have a Property that you want to
  * expose as an immutable Property.
  */
-public class ImmutableFacade<T>
+public final class ImmutableFacade<T>
     implements Property<T>
 {
     private final Property<T> target;

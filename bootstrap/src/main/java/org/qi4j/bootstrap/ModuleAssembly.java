@@ -37,7 +37,7 @@ public interface ModuleAssembly
 
     String name();
 
-    CompositeDeclaration addTransients( Class<? extends TransientComposite>... compositeTypes )
+    TransientDeclaration addTransients( Class<? extends TransientComposite>... compositeTypes )
         throws AssemblyException;
 
     ValueDeclaration addValues( Class<? extends ValueComposite>... compositeTypes )

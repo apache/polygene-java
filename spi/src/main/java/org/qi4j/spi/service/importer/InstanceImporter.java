@@ -26,14 +26,15 @@ import org.qi4j.api.structure.Module;
  * Return a predefined service instance that was provided as meta-info. Search for meta-info in the following order:
  * the service itself, the module of the service, the layer of the service, the whole application.
  */
-public class InstanceImporter
+public final class InstanceImporter
     implements ServiceImporter
 {
     @Structure Application application;
     @Structure Layer layer;
     @Structure Module module;
 
-    public Object importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
+    public Object importService( ImportedServiceDescriptor serviceDescriptor )
+        throws ServiceImporterException
     {
         Object instance = serviceDescriptor.metaInfo().get( serviceDescriptor.type() );
         if( instance == null )

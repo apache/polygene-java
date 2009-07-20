@@ -13,14 +13,13 @@
  */
 package org.qi4j.api.unitofwork;
 
-import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.REQUIRED;
-
 import java.lang.annotation.Documented;
-import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.*;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.lang.annotation.RetentionPolicy.*;
 import java.lang.annotation.Target;
+import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.*;
 
 /**
  * Annotation to denote the unit of work propagation.

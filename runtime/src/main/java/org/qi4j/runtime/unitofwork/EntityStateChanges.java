@@ -12,19 +12,24 @@
  *
  */
 
-package org.qi4j.spi.entity.helpers;
+package org.qi4j.runtime.unitofwork;
 
+import java.io.Serializable;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityTypeReference;
 import org.qi4j.spi.entity.StateName;
-import org.qi4j.spi.unitofwork.event.*;
-
-import java.io.Serializable;
+import org.qi4j.spi.unitofwork.event.AddEntityTypeEvent;
+import org.qi4j.spi.unitofwork.event.AddManyAssociationEvent;
+import org.qi4j.spi.unitofwork.event.RemoveEntityTypeEvent;
+import org.qi4j.spi.unitofwork.event.RemoveManyAssociationEvent;
+import org.qi4j.spi.unitofwork.event.SetAssociationEvent;
+import org.qi4j.spi.unitofwork.event.SetPropertyEvent;
+import org.qi4j.spi.unitofwork.event.UnitOfWorkEvents;
 
 /**
  * Tracker for changes in an EntityState
  */
-public class EntityStateChanges
+public final class EntityStateChanges
     implements Serializable
 {
     private UnitOfWorkEvents uow;
@@ -61,7 +66,6 @@ public class EntityStateChanges
     {
         uow.addEvent( new AddEntityTypeEvent( identity, entityTypeReference ) );
     }
-
 
     public void removeEntityTypeReference( EntityTypeReference entityTypeReference )
     {

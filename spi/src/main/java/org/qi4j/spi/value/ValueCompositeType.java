@@ -14,6 +14,11 @@
 
 package org.qi4j.spi.value;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.property.Property;
@@ -26,28 +31,22 @@ import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * ValueComposite type
  */
-public class ValueCompositeType
+public final class ValueCompositeType
     extends ValueType
 {
     public static boolean isValueComposite( Type type )
     {
-        return ValueComposite.class.isAssignableFrom( Classes.getRawClass(type) );
+        return ValueComposite.class.isAssignableFrom( Classes.getRawClass( type ) );
     }
 
     private List<PropertyType> types;
 
     public ValueCompositeType( TypeName type, List<PropertyType> types )
     {
-        super(type);
+        super( type );
         this.types = types;
     }
 
@@ -71,7 +70,7 @@ public class ValueCompositeType
 
     public void versionize( SchemaVersion schemaVersion )
     {
-        super.versionize(schemaVersion);
+        super.versionize( schemaVersion );
         for( PropertyType propertyType : types )
         {
             propertyType.versionize( schemaVersion );
@@ -123,7 +122,8 @@ public class ValueCompositeType
             try
             {
                 name = json.nextToken( ":" );
-            } catch (Exception e)
+            }
+            catch( Exception e )
             {
                 e.printStackTrace();
             }

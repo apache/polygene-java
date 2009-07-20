@@ -14,9 +14,8 @@
 
 package org.qi4j.spi.unitofwork.event;
 
-import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
-
 import java.io.Serializable;
+import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 
 /**
  * JAVADOC

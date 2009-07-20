@@ -23,7 +23,7 @@ import java.io.Serializable;
  * 123456-abcde
  * </pre>
  */
-public class EntityReference
+public final class EntityReference
     implements Serializable
 {
     public static EntityReference parseURI( String uri )

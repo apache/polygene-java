@@ -22,7 +22,7 @@ import java.util.List;
  * Map whose values are Lists of things. Create
  * one ArrayList for each key that is added
  */
-public class ListMap<K, V>
+public final class ListMap<K, V>
     extends HashMap<K, List<V>>
 {
     public void add( K key, V value )

@@ -25,8 +25,8 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.helpers.EntityTypeRegistryService;
-import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
+import org.qi4j.spi.entity.typeregistry.EntityTypeRegistryService;
+import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 import org.qi4j.test.AbstractQi4jTest;
 

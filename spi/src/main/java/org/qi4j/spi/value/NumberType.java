@@ -14,16 +14,15 @@
 
 package org.qi4j.spi.value;
 
+import java.lang.reflect.Type;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
-import java.lang.reflect.Type;
-
 /**
  * Number type
  */
-public class NumberType
+public final class NumberType
     extends ValueType
 {
     public static boolean isNumber( Type type )
@@ -38,7 +37,7 @@ public class NumberType
 
     public NumberType( TypeName type )
     {
-        super(type);
+        super( type );
     }
 
     public void toJSON( Object value, StringBuilder json )

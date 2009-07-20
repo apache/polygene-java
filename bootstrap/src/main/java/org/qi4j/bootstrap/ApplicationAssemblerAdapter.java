@@ -19,7 +19,7 @@ package org.qi4j.bootstrap;
  * want to either create applications using only one layer/module,
  * or that wants to create pancake-layered applications.
  */
-public abstract class ApplicationAssemblerAdapter
+public class ApplicationAssemblerAdapter
     implements ApplicationAssembler
 {
     private Assembler[][][] assemblers;

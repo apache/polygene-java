@@ -20,10 +20,10 @@ import org.qi4j.api.common.TypeName;
  * Base class for all types that use string representations in JSON
  */
 public abstract class AbstractStringType
-        extends ValueType
+    extends ValueType
 {
-    protected AbstractStringType(TypeName type)
+    protected AbstractStringType( TypeName type )
     {
-        super(type);
+        super( type );
     }
 }

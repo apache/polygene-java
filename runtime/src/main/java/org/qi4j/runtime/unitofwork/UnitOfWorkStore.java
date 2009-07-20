@@ -18,8 +18,8 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.*;
-import org.qi4j.spi.entity.helpers.DefaultEntityStoreUnitOfWork;
-import org.qi4j.spi.entity.helpers.EntityStoreEvents;
+import org.qi4j.runtime.entity.DefaultEntityStoreUnitOfWork;
+import org.qi4j.spi.entity.EntityStoreEvents;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
 
@@ -54,7 +54,7 @@ public class UnitOfWorkStore
         return null;
     }
 
-    public EntityState newEntityState( DefaultEntityStoreUnitOfWork unitOfWork, EntityReference identity, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo )
+    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo )
     {
         UnitOfWorkEntityState entityState = new UnitOfWorkEntityState( unitOfWork, "",
                                                                        System.currentTimeMillis(),
@@ -63,7 +63,7 @@ public class UnitOfWorkStore
         return entityState;
     }
 
-    public EntityState getEntityState( DefaultEntityStoreUnitOfWork uow, EntityReference identity, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo )
+    public EntityState getEntityState( EntityStoreUnitOfWork uow, EntityReference identity, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo )
     {
         EntityState parentState = unitOfWork.getCachedState( identity );
         UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( uow, parentState );

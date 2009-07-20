@@ -21,7 +21,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * Serialize entity events to XML using SAX
  */
-public class EventXMLSerializer
+public final class EventXMLSerializer
 {
     AttributesImpl atts = new AttributesImpl();
 

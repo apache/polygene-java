@@ -8,7 +8,7 @@ import java.io.ObjectStreamClass;
 /**
  * JAVADOC
  */
-public class FastObjectInputStream
+public final class FastObjectInputStream
     extends ObjectInputStream
 {
     private final boolean usesReadObjectMethod;

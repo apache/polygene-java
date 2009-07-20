@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.spi.entity.helpers;
+package org.qi4j.spi.entity.typeregistry;
 
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.EntityTypeReference;
@@ -26,8 +26,8 @@ import java.util.logging.Logger;
 /**
  * EntityType registry mixin which helps EntityStore implementations.
  */
-public class EntityTypeRegistryMixin
-        implements EntityTypeRegistry
+public final class EntityTypeRegistryMixin
+    implements EntityTypeRegistry
 {
     protected Map<EntityTypeReference, EntityType> entityTypes = new ConcurrentHashMap<EntityTypeReference, EntityType>();
 

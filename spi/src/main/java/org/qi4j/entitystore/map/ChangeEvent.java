@@ -12,14 +12,14 @@
  *
  */
 
-package org.qi4j.spi.entity.helpers;
+package org.qi4j.entitystore.map;
 
 import java.io.Serializable;
 
 /**
  * JAVADOC
  */
-public class ChangeEvent
+public final class ChangeEvent
     implements Serializable
 {
     private String identity;

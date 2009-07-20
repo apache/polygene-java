@@ -45,6 +45,15 @@ public interface ValueBuilder<T>
     T prototype();
 
     /**
+     * Get a representation of the state of the given type for the new ValueComposite.
+     * This is primarily used if you want to provide state for a private mixin type.
+     *
+     * @param mixinType the mixin which you want to provide state for
+     * @return a proxy implementing the given mixin type
+     */
+    <K> K prototypeFor( Class<K> mixinType );
+
+    /**
      * Create a new Composite instance.
      *
      * @return a new Composite instance

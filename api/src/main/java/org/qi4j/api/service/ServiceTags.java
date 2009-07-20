@@ -22,7 +22,7 @@ import java.io.Serializable;
  * These can be used in conjunction with the withTags() Service
  * Selector.
  */
-public class ServiceTags
+public final class ServiceTags
     implements Serializable
 {
     public static ServiceTags tags( String... tags )

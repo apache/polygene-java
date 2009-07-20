@@ -14,17 +14,18 @@
 
 package org.qi4j.api.entity.association;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
 import org.qi4j.api.injection.scope.State;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
 /**
  * Generic mixin for associations.
  */
 @AppliesTo( { ManyAssociationMixin.AssociationFilter.class } )
-public class ManyAssociationMixin
+public final class ManyAssociationMixin
     implements InvocationHandler
 {
     @State private EntityStateHolder associations;

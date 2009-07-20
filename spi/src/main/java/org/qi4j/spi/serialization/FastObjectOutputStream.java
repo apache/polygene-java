@@ -8,7 +8,7 @@ import java.io.OutputStream;
 /**
  * JAVADOC
  */
-public class FastObjectOutputStream
+public final class FastObjectOutputStream
     extends ObjectOutputStream
 {
     private final boolean usesWriteObjectMethod;

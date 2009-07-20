@@ -17,11 +17,10 @@
  */
 package org.qi4j.spi.query.named;
 
+import java.util.Map;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.spi.query.EntityFinderException;
-
-import java.util.Map;
 
 public interface NamedEntityFinder
 {

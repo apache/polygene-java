@@ -20,7 +20,7 @@ import java.util.StringTokenizer;
  * Peekable String tokenizer. This is primarily used by the JSON deserializing
  * algorithm.
  */
-public class PeekableStringTokenizer
+public final class PeekableStringTokenizer
     extends StringTokenizer
 {
     private String bufferedToken;

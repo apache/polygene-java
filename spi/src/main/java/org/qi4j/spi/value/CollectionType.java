@@ -14,19 +14,22 @@
 
 package org.qi4j.spi.value;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
 import org.qi4j.spi.entity.SchemaVersion;
 import org.qi4j.spi.util.PeekableStringTokenizer;
 
-import java.lang.reflect.Type;
-import java.util.*;
-
 /**
  * Collection type
  */
-public class CollectionType
+public final class CollectionType
     extends ValueType
 {
     public static boolean isCollection( Type type )
@@ -39,7 +42,7 @@ public class CollectionType
 
     public CollectionType( TypeName type, ValueType collectedType )
     {
-        super(type);
+        super( type );
         this.collectedType = collectedType;
     }
 
@@ -50,7 +53,7 @@ public class CollectionType
 
     public void versionize( SchemaVersion schemaVersion )
     {
-        super.versionize(schemaVersion);
+        super.versionize( schemaVersion );
         collectedType.versionize( schemaVersion );
     }
 

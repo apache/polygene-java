@@ -19,6 +19,7 @@ Import-Package: org.ops4j.pax.swissbox.core, \
                 org.qi4j.api.util, \
                 org.qi4j.api.value, \
                 org.qi4j.spi, \
+                org.qi4j.spi.entity, \
                 org.qi4j.spi.structure
 
 Export-Package: org.qi4j.bootstrap;version=${pom.version}, \

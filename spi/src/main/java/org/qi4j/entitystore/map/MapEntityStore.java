@@ -12,17 +12,16 @@
  *
  */
 
-package org.qi4j.spi.entity.helpers;
+package org.qi4j.entitystore.map;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityStoreException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * JAVADOC

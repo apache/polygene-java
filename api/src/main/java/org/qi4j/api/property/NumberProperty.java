@@ -20,7 +20,7 @@ import java.math.BigDecimal;
  * Convenience class for mathematical operations on
  * numerical properties.
  */
-public class NumberProperty
+public final class NumberProperty
 {
     // Integer operations
     public static Property<Integer> add( Property<Integer> property, int amount )

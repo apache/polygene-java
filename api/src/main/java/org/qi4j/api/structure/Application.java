@@ -24,7 +24,7 @@ public interface Application
     public enum Mode
     {
         // Application modes
-        test,development,production
+        test, development, production
     }
 
     String name();

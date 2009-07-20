@@ -24,7 +24,7 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 
-public class MethodSet extends HashSet<Method>
+public final class MethodSet extends HashSet<Method>
     implements Externalizable
 {
     static final long serialVersionUID = 1L;

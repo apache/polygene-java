@@ -22,7 +22,7 @@ import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 /**
  * JAVADOC
  */
-public class SetAssociationEvent extends AssociationEvent
+public final class SetAssociationEvent extends AssociationEvent
 {
     public SetAssociationEvent( EntityReference identity, StateName stateName, EntityReference associatedEntity )
     {

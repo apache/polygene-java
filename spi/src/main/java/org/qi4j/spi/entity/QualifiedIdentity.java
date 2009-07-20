@@ -14,10 +14,9 @@
 
 package org.qi4j.spi.entity;
 
+import java.io.Serializable;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.util.Classes;
-
-import java.io.Serializable;
 
 /**
  * A Qualified Identity is the combination of the Composite type name and the identity of a specific

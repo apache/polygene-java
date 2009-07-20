@@ -24,6 +24,7 @@ import org.qi4j.api.value.ValueComposite;
 import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.StateFactory;
 import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.value.ValueDescriptor;
 
@@ -58,4 +59,6 @@ public interface Qi4jSPI
 
     // Objects
     ObjectDescriptor getObjectDescriptor( Class objectType, Module module );
+
+    StateFactory getDefaultStateFactory();
 }

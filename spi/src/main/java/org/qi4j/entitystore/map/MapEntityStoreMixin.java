@@ -1,32 +1,65 @@
-package org.qi4j.spi.entity.helpers;
+package org.qi4j.entitystore.map;
 
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.usecase.Usecase;
-import static org.qi4j.api.usecase.UsecaseBuilder.newUsecase;
-import org.qi4j.spi.entity.*;
+import static org.qi4j.api.usecase.UsecaseBuilder.*;
+import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.spi.entity.EntityNotFoundException;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityStoreEvents;
+import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.entity.StateFactory;
+import org.qi4j.spi.entity.StateName;
 import org.qi4j.spi.serialization.FastObjectInputStream;
 import org.qi4j.spi.serialization.FastObjectOutputStream;
 import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
-import org.qi4j.spi.unitofwork.event.*;
+import org.qi4j.spi.unitofwork.event.AddEntityTypeEvent;
+import org.qi4j.spi.unitofwork.event.AddManyAssociationEvent;
+import org.qi4j.spi.unitofwork.event.NewEntityEvent;
+import org.qi4j.spi.unitofwork.event.RemoveEntityEvent;
+import org.qi4j.spi.unitofwork.event.RemoveEntityTypeEvent;
+import org.qi4j.spi.unitofwork.event.RemoveManyAssociationEvent;
+import org.qi4j.spi.unitofwork.event.SetAssociationEvent;
+import org.qi4j.spi.unitofwork.event.SetPropertyEvent;
+import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore. Implement
- * MapEntityStore and add as mixin to the service using this mixin. See {@link org.qi4j.entitystore.memory.MemoryMapEntityStoreMixin} for reference.
+ * MapEntityStore and add as mixin to the service using this mixin.
+ * See {@link org.qi4j.entitystore.memory.MemoryMapEntityStoreMixin} for reference.
  */
-public class MapEntityStoreMixin
+public final class MapEntityStoreMixin
     implements EntityStore, EntityStoreEvents, UnitOfWorkEventFeed, Activatable
 {
+    private static final ChangeEvent noneEvent = new ChangeEvent( "none", 0 );
+    
+    private final EntityReference lastAppliedEventRef = new EntityReference( "lastAppliedEvent" );
+    private final EntityReference lastReadEventRef = new EntityReference( "lastReadEvent" );
+
     private @This MapEntityStore mapEntityStore;
     private @This EntityStoreEvents events;
 
@@ -35,11 +68,22 @@ public class MapEntityStoreMixin
 
     private ChangeEvent lastAppliedEvent;
     private ChangeEvent lastReadEvent;
-    private ChangeEvent noneEvent = new ChangeEvent( "none", 0 );
-    private EntityReference lastAppliedEventRef = new EntityReference( "lastAppliedEvent" );
-    private EntityReference lastReadEventRef = new EntityReference( "lastReadEvent" );
+    private final StateFactory stateFactory;
 
-    public void activate() throws Exception
+    public MapEntityStoreMixin( @Structure Qi4jSPI spi, @Service @Optional StateFactory stateFactory )
+    {
+        if( stateFactory == null )
+        {
+            this.stateFactory = spi.getDefaultStateFactory();
+        }
+        else
+        {
+            this.stateFactory = stateFactory;
+        }
+    }
+
+    public void activate()
+        throws Exception
     {
         uuid = UUID.randomUUID().toString() + "-";
 
@@ -75,7 +119,7 @@ public class MapEntityStoreMixin
     // EntityStore
     public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo )
     {
-        return new DefaultEntityStoreUnitOfWork( this, newUnitOfWorkId(), usecaseMetaInfo, unitOfWorkMetaInfo );
+        return stateFactory.createEntityStoreUnitOfWork( this, newUnitOfWorkId(), usecaseMetaInfo, unitOfWorkMetaInfo );
     }
 
     public StateCommitter apply( final String identity, Iterable<UnitOfWorkEvent> events, final Usecase usecase, final MetaInfo metaInfo )
@@ -98,7 +142,6 @@ public class MapEntityStoreMixin
                         FastObjectOutputStream oout = new FastObjectOutputStream( eventStream, false );
                         oout.writeUnshared( uowEventsEntry );
                         oout.close();
-
                     }
                     catch( IOException e )
                     {
@@ -174,12 +217,12 @@ public class MapEntityStoreMixin
     }
 
     // EntityStoreEvents
-    public EntityState newEntityState( DefaultEntityStoreUnitOfWork unitOfWork, EntityReference identity, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo )
+    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo )
     {
-        return new DefaultEntityState( unitOfWork, identity );
+        return stateFactory.createEntityState( unitOfWork, identity );
     }
 
-    public synchronized EntityState getEntityState( DefaultEntityStoreUnitOfWork unitOfWork, EntityReference identity, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo )
+    public synchronized EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo )
     {
         // Bring state up to date first
         ensureUpToDate(usecaseMetaInfo, unitOfWorkMetaInfo);
@@ -391,7 +434,10 @@ public class MapEntityStoreMixin
         MetaInfo uowMetaInfo = new MetaInfo();
         ensureUpToDate(usecaseInfo, uowMetaInfo);
 
-        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( this, newUnitOfWorkId(), usecaseInfo, uowMetaInfo);
+        final EntityStoreUnitOfWork uow = stateFactory.createEntityStoreUnitOfWork( this,
+                                                                                    newUnitOfWorkId(),
+                                                                                    usecaseInfo,
+                                                                                    uowMetaInfo );
         mapEntityStore.visitMap( new MapEntityStore.MapEntityStoreVisitor()
         {
             public void visitEntity( InputStream entityState )
@@ -423,12 +469,12 @@ public class MapEntityStoreMixin
         return uuid + Integer.toHexString( count++ );
     }
 
-    private EntityState getEntityState( DefaultEntityStoreUnitOfWork unitOfWork, SerializableState serializableState )
+    private EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, SerializableState serializableState )
     {
         EntityReference identity = serializableState.identity();
         Set<EntityTypeReference> entityTypeReferences = serializableState.entityTypeReferences();
 
-        return new DefaultEntityState( unitOfWork,
+        return stateFactory.createEntityState( unitOfWork,
                                        serializableState.version(),
                                        serializableState.lastModified(),
                                        identity,

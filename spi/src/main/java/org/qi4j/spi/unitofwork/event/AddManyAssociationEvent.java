@@ -22,7 +22,7 @@ import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 /**
  * JAVADOC
  */
-public class AddManyAssociationEvent
+public final class AddManyAssociationEvent
     extends AssociationEvent
 {
     private int index;
