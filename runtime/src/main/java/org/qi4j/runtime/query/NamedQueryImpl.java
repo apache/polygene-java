@@ -23,7 +23,7 @@ import org.qi4j.api.query.QueryExecutionException;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.spi.query.EntityFinderException;
-import org.qi4j.spi.query.named.NamedEntityFinder;
+import org.qi4j.spi.query.NamedEntityFinder;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -39,13 +39,12 @@ public class NamedQueryImpl<T>
     private String queryName;
     private UnitOfWork unitOfWork;
     private NamedEntityFinder namedFinder;
-    private ClassLoader classLoader;
 
-    public NamedQueryImpl( NamedEntityFinder namedFinder, UnitOfWork unitOfWork, ClassLoader classLoader, String queryName, Class<T> resultType )
+    public NamedQueryImpl( NamedEntityFinder namedFinder, UnitOfWork unitOfWork,
+                           String queryName, Class<T> resultType )
     {
         this.namedFinder = namedFinder;
         this.unitOfWork = unitOfWork;
-        this.classLoader = classLoader;
         this.queryName = queryName;
         this.resultType = resultType;
         this.variables = new HashMap<String, Object>();
@@ -136,8 +135,9 @@ public class NamedQueryImpl<T>
     {
         try
         {
-            final Iterator<EntityReference> foundEntities = namedFinder.findEntities( queryName,
-                                                                                      resultType.getName(), variables, orderBySegments, firstResult, maxResults
+            final Iterator<EntityReference> foundEntities =
+                namedFinder.findEntities( queryName, resultType.getName(), variables,
+                                          orderBySegments, firstResult, maxResults
             ).iterator();
 
             return new Iterator<T>()
@@ -162,5 +162,10 @@ public class NamedQueryImpl<T>
         {
             throw (QueryExecutionException) new QueryExecutionException( "Query '" + toString() + "' could not be executed" ).initCause( e );
         }
+    }
+
+    public String toString()
+    {
+        return queryName + " : [" + namedFinder.showQuery( queryName ) + " ]";
     }
 }

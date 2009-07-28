@@ -24,9 +24,6 @@ import org.qi4j.api.query.grammar.PropertyReference;
 /**
  * Query sorting segment.
  *
- * @author Niclas Hedhman
- * @author Alin Dreghiciu
- * @since March 25, 2008
  */
 public final class OrderByImpl
     implements OrderBy

@@ -14,47 +14,47 @@
 
 package org.qi4j.runtime.structure;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.runtime.entity.EntityModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * JAVADOC
  */
 class EntityFinder
-        implements ModuleVisitor
+    implements ModuleVisitor
 {
     Class mixinType;
     List<ModuleInstance> modules = new ArrayList<ModuleInstance>();
     List<EntityModel> models = new ArrayList<EntityModel>();
 
-    public boolean visitModule(final ModuleInstance moduleInstance, ModuleModel moduleModel, final Visibility visibility)
+    public boolean visitModule( final ModuleInstance moduleInstance, ModuleModel moduleModel, final Visibility visibility )
     {
-        moduleModel.entities().visitModel(new ModelVisitor()
+        moduleModel.entities().visitModel( new ModelVisitor()
         {
             @Override
-            public void visit(EntityModel entityModel)
+            public void visit( EntityModel entityModel )
             {
-                if (EntityComposite.class.isAssignableFrom(mixinType))
+                if( EntityComposite.class.isAssignableFrom( mixinType ) )
                 {
-                    if (mixinType.equals(entityModel.type()) && entityModel.visibility() == visibility)
+                    if( mixinType.equals( entityModel.type() ) && entityModel.visibility() == visibility )
                     {
-                        modules.add(moduleInstance);
-                        models.add(entityModel);
+                        modules.add( moduleInstance );
+                        models.add( entityModel );
                     }
-                } else
+                }
+                else
                 {
-                    if (mixinType.isAssignableFrom(entityModel.type()) && entityModel.visibility() == visibility)
+                    if( mixinType.isAssignableFrom( entityModel.type() ) && entityModel.visibility() == visibility )
                     {
-                        modules.add(moduleInstance);
-                        models.add(entityModel);
+                        modules.add( moduleInstance );
+                        models.add( entityModel );
                     }
                 }
             }
-        });
+        } );
 
         return true;
     }

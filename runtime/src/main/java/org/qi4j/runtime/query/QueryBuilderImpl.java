@@ -1,5 +1,5 @@
 /*
- * Copyright 2007 Niclas Hedhman.
+ * Copyright 2007-2009 Niclas Hedhman.
  * Copyright 2008 Alin Dreghiciu.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
@@ -29,8 +29,6 @@ import org.qi4j.spi.query.EntityFinder;
 /**
  * Default implementation of {@link QueryBuilder}
  *
- * @author Alin Dreghiciu
- * @since March 25, 2008
  */
 final class QueryBuilderImpl<T>
     implements QueryBuilder<T>
@@ -56,6 +54,7 @@ final class QueryBuilderImpl<T>
      * Constructor.
      *
      * @param entityFinder entity finder to be used to locate entities; canot be null
+     * @param classLoader The classloader to use for deserializing Serializable instances. (Not used at the moment.)
      * @param resultType   type of queried entities; cannot be null
      */
     public QueryBuilderImpl( final EntityFinder entityFinder,

@@ -25,7 +25,6 @@ import org.qi4j.spi.service.Activator;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.logging.Logger;
 
 /**
  * Implementation of ServiceReference. This manages the actual instance of the service
@@ -85,7 +84,8 @@ public final class ServiceReferenceInstance<T>
     {
         if( instance != null )
         {
-            Logger.getLogger( getClass().getName() ).info( "Passivating service for " + serviceModel.identity() + " " + this.hashCode() );
+//            Logger disabled, as the framework itself shouldn't emit that much information, and the calls are fairly expensive.
+//            Logger.getLogger( getClass().getName() ).info( "Passivating service for " + serviceModel.identity() + " " + this.hashCode() );
             activator.passivate();
             instance = null;
         }
@@ -101,7 +101,8 @@ public final class ServiceReferenceInstance<T>
             {
                 if( instance == null )
                 {
-                    Logger.getLogger( getClass().getName() ).info( "Activating service for " + serviceModel.identity() + " " + this.hashCode() );
+//                    Logger disabled, as the framework itself shouldn't emit that much information, and the calls are fairly expensive.            
+//                    Logger.getLogger( getClass().getName() ).info( "Activating service for " + serviceModel.identity() + " " + this.hashCode() );
                     instance = serviceModel.newInstance( module );
 
                     try

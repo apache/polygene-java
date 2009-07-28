@@ -37,7 +37,6 @@ Export-Package: org.qi4j.spi;version=${pom.version}, \
                 org.qi4j.spi.object;version=${pom.version}, \
                 org.qi4j.spi.property;version=${pom.version}, \
                 org.qi4j.spi.query;version=${pom.version}, \
-                org.qi4j.spi.query.named;version=${pom.version}, \
                 org.qi4j.spi.serialization;version=${pom.version}, \
                 org.qi4j.spi.service;version=${pom.version}, \
                 org.qi4j.spi.service.importer;version=${pom.version}, \

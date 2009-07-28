@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2008 Niclas Hedhman.
+ * Copyright 2007-2009 Niclas Hedhman.
  * Copyright 2008 Alin Dreghiciu.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
@@ -24,13 +24,11 @@ import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.spi.query.EntityFinder;
-import org.qi4j.spi.query.named.NamedEntityFinder;
+import org.qi4j.spi.query.NamedEntityFinder;
 
 /**
  * Default implementation of {@link QueryBuilderFactory}
  *
- * @author Alin Dreghiciu
- * @since March 25, 2008
  */
 public final class QueryBuilderFactoryImpl
     implements QueryBuilderFactory
@@ -46,6 +44,7 @@ public final class QueryBuilderFactoryImpl
     /**
      * Constructor.
      *
+     * @param classLoader The classloader to use for deserialization of Serializable instances. (Not used currently)
      * @param finder     The ServiceFinder of the Module this QueryBuilderFactory belongs to.
      */
     public QueryBuilderFactoryImpl( ClassLoader classLoader, ServiceFinder finder )
@@ -77,6 +76,6 @@ public final class QueryBuilderFactoryImpl
         {
             throw new MissingIndexingSystemException();
         }
-        return new NamedQueryImpl<T>( serviceReference.get(), unitOfWork, classLoader, name, resultType );
+        return new NamedQueryImpl<T>( serviceReference.get(), unitOfWork, name, resultType );
     }
 }
