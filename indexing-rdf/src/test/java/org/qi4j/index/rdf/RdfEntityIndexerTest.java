@@ -24,6 +24,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import static org.qi4j.index.rdf.Network.populate;
+import org.qi4j.index.rdf.assembly.RdfFactoryService;
 import org.qi4j.index.rdf.model.File;
 import org.qi4j.index.rdf.model.Host;
 import org.qi4j.index.rdf.model.Port;

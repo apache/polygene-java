@@ -18,7 +18,6 @@
 package org.qi4j.index.rdf.internal;
 
 import static java.lang.String.format;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -28,7 +27,6 @@ import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.ManyAssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.util.Classes;
-import org.qi4j.index.rdf.Namespaces;
 
 public class Triples
     implements Iterable<Triples.Triple>
@@ -74,8 +72,7 @@ public class Triples
     }
 
 
-    public Triple addTriple( final PropertyReference propertyReference,
-                             boolean optional )
+    public Triple addTriple( final PropertyReference propertyReference, boolean optional )
     {
         String subject = "?entity";
         if( propertyReference.traversedAssociation() != null )
@@ -162,18 +159,6 @@ public class Triples
             }
         }
         return null;
-    }
-
-    private static Method getIdentityAccessor( final Class declaringClass )
-    {
-        try
-        {
-            return declaringClass.getMethod( "identity" );
-        }
-        catch( NoSuchMethodException e )
-        {
-            throw new RuntimeException( "Internal error", e );
-        }
     }
 
     public boolean hasTriples()

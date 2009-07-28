@@ -1,5 +1,6 @@
 /*
  * Copyright 2008 Alin Dreghiciu.
+ * Copyright 2009 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -17,199 +18,215 @@
  */
 package org.qi4j.index.rdf.internal;
 
-import org.qi4j.api.query.grammar.*;
-import org.qi4j.index.rdf.Namespaces;
-import org.qi4j.index.rdf.RdfQueryParser;
-
 import static java.lang.String.format;
 import java.util.logging.Logger;
+import org.qi4j.api.query.grammar.AssociationIsNullPredicate;
+import org.qi4j.api.query.grammar.AssociationNullPredicate;
+import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.api.query.grammar.ComparisonPredicate;
+import org.qi4j.api.query.grammar.Conjunction;
+import org.qi4j.api.query.grammar.Disjunction;
+import org.qi4j.api.query.grammar.MatchesPredicate;
+import org.qi4j.api.query.grammar.Negation;
+import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.query.grammar.PropertyIsNullPredicate;
+import org.qi4j.api.query.grammar.PropertyNullPredicate;
+import org.qi4j.api.query.grammar.SingleValueExpression;
+import org.qi4j.api.query.grammar.ValueExpression;
+import org.qi4j.index.rdf.RdfQueryParser;
 
 /**
  * JAVADOC Add JavaDoc
  */
 public class SparqlRdfQueryParser
-        implements RdfQueryParser
+    implements RdfQueryParser
 {
-    Namespaces namespaces = new Namespaces();
-    Triples triples = new Triples(namespaces);
+    private Namespaces namespaces = new Namespaces();
+    private Triples triples = new Triples( namespaces );
 
     public SparqlRdfQueryParser()
     {
     }
 
-    public String getQuery(final String resultType,
-                           final BooleanExpression whereClause,
-                           final OrderBy[] orderBySegments,
-                           final Integer firstResult,
-                           final Integer maxResults)
+    public String getQuery( final String resultType,
+                            final BooleanExpression whereClause,
+                            final OrderBy[] orderBySegments,
+                            final Integer firstResult,
+                            final Integer maxResults )
     {
-        triples.addDefaultTriples(resultType);
+        triples.addDefaultTriples( resultType );
 
         // and collect namespaces
-        final String filter = processFilter(whereClause);
-        final String orderBy = processOrderBy(orderBySegments);
+        final String filter = processFilter( whereClause );
+        final String orderBy = processOrderBy( orderBySegments );
 
         StringBuilder query = new StringBuilder();
 
-        for (String namespace : namespaces.getNamespaces())
+        for( String namespace : namespaces.getNamespaces() )
         {
-            query.append(format("PREFIX %s: <%s> %n", namespaces.getNamespacePrefix(namespace), namespace));
+            query.append( format( "PREFIX %s: <%s> %n", namespaces.getNamespacePrefix( namespace ), namespace ) );
         }
-        query.append("SELECT DISTINCT ?entityType ?identity\n");
-        if (triples.hasTriples())
+        query.append( "SELECT DISTINCT ?entityType ?identity\n" );
+        if( triples.hasTriples() )
         {
-            query.append("WHERE {\n");
-            for (Triples.Triple triple : triples)
+            query.append( "WHERE {\n" );
+            for( Triples.Triple triple : triples )
             {
                 final String subject = triple.getSubject();
                 final String predicate = triple.getPredicate();
                 final String value = triple.getValue();
 
-                if (triple.isOptional())
+                if( triple.isOptional() )
                 {
-                    query.append(format("OPTIONAL {%s %s %s}. ", subject, predicate, value));
-                } else
-                {
-                    query.append(format("%s %s %s. ", subject, predicate, value));
+                    query.append( format( "OPTIONAL {%s %s %s}. ", subject, predicate, value ) );
                 }
-                query.append('\n');
+                else
+                {
+                    query.append( format( "%s %s %s. ", subject, predicate, value ) );
+                }
+                query.append( '\n' );
             }
 
-            if (filter.length() > 0)
+            if( filter.length() > 0 )
             {
-                query.append("FILTER ").append(filter);
+                query.append( "FILTER " ).append( filter );
             }
-            query.append("\n}");
+            query.append( "\n}" );
         }
-        if (orderBy != null)
+        if( orderBy != null )
         {
-            query.append("\nORDER BY ").append(orderBy);
+            query.append( "\nORDER BY " ).append( orderBy );
         }
-        if (firstResult != null)
+        if( firstResult != null )
         {
-            query.append("\nOFFSET ").append(firstResult);
+            query.append( "\nOFFSET " ).append( firstResult );
         }
-        if (maxResults != null)
+        if( maxResults != null )
         {
-            query.append("\nLIMIT ").append(maxResults);
+            query.append( "\nLIMIT " ).append( maxResults );
         }
 
-        Logger.getLogger(getClass().getName()).info("Query:\n" + query);
+        Logger.getLogger( getClass().getName() ).info( "Query:\n" + query );
         return query.toString();
     }
 
-    private String processFilter(final BooleanExpression expression)
+    private String processFilter( final BooleanExpression expression )
     {
-        if (expression == null)
+        if( expression == null )
         {
             return "";
         }
-        if (expression instanceof Conjunction)
+        if( expression instanceof Conjunction )
         {
             final Conjunction conjunction = (Conjunction) expression;
-            return format("(%s && %s)",
-                    processFilter(conjunction.leftSideExpression()),
-                    processFilter(conjunction.rightSideExpression()));
+            return format( "(%s && %s)",
+                           processFilter( conjunction.leftSideExpression() ),
+                           processFilter( conjunction.rightSideExpression() ) );
         }
-        if (expression instanceof Disjunction)
+        if( expression instanceof Disjunction )
         {
             final Disjunction disjunction = (Disjunction) expression;
-            return format("(%s || %s)",
-                    processFilter(disjunction.leftSideExpression()),
-                    processFilter(disjunction.rightSideExpression()));
+            return format( "(%s || %s)",
+                           processFilter( disjunction.leftSideExpression() ),
+                           processFilter( disjunction.rightSideExpression() ) );
         }
-        if (expression instanceof Negation)
+        if( expression instanceof Negation )
         {
-            return format("(!%s)", processFilter(((Negation) expression).expression()));
+            return format( "(!%s)", processFilter( ( (Negation) expression ).expression() ) );
         }
-        if (expression instanceof MatchesPredicate)
+        if( expression instanceof MatchesPredicate )
         {
-            return processMatchesPredicate((MatchesPredicate) expression);
+            return processMatchesPredicate( (MatchesPredicate) expression );
         }
-        if (expression instanceof ComparisonPredicate)
+        if( expression instanceof ComparisonPredicate )
         {
-            return processComparisonPredicate((ComparisonPredicate) expression);
+            return processComparisonPredicate( (ComparisonPredicate) expression );
         }
-        if (expression instanceof PropertyNullPredicate)
+        if( expression instanceof PropertyNullPredicate )
         {
-            return processNullPredicate((PropertyNullPredicate) expression);
+            return processNullPredicate( (PropertyNullPredicate) expression );
         }
-        if (expression instanceof AssociationNullPredicate)
+        if( expression instanceof AssociationNullPredicate )
         {
-            return processNullPredicate((AssociationNullPredicate) expression);
+            return processNullPredicate( (AssociationNullPredicate) expression );
         }
-        throw new UnsupportedOperationException("Expression " + expression + " is not supported");
+        throw new UnsupportedOperationException( "Expression " + expression + " is not supported" );
     }
 
-    private String processMatchesPredicate(final MatchesPredicate predicate)
+    private String processMatchesPredicate( final MatchesPredicate predicate )
     {
         ValueExpression valueExpression = predicate.valueExpression();
-        if (valueExpression instanceof SingleValueExpression)
+        if( valueExpression instanceof SingleValueExpression )
         {
-            String valueVariable = triples.addTriple(predicate.propertyReference(), false).getValue();
+            String valueVariable = triples.addTriple( predicate.propertyReference(), false ).getValue();
             final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
-            return format("regex(%s,\"%s\")", valueVariable, singleValueExpression.value());
-        } else
+            return format( "regex(%s,\"%s\")", valueVariable, singleValueExpression.value() );
+        }
+        else
         {
-            throw new UnsupportedOperationException("Value " + valueExpression + " is not supported");
+            throw new UnsupportedOperationException( "Value " + valueExpression + " is not supported" );
         }
     }
 
-    private String processComparisonPredicate(final ComparisonPredicate predicate)
+    private String processComparisonPredicate( final ComparisonPredicate predicate )
     {
         ValueExpression valueExpression = predicate.valueExpression();
-        if (valueExpression instanceof SingleValueExpression)
+        if( valueExpression instanceof SingleValueExpression )
         {
-            String valueVariable = triples.addTriple(predicate.propertyReference(), false).getValue();
+            String valueVariable = triples.addTriple( predicate.propertyReference(), false ).getValue();
             final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
-            return String.format("(%s %s \"%s\")", valueVariable, Operators.getOperator(predicate.getClass()),
-                    singleValueExpression.value());
-        } else
+            return String.format( "(%s %s \"%s\")", valueVariable, Operators.getOperator( predicate.getClass() ),
+                                  singleValueExpression.value() );
+        }
+        else
         {
-            throw new UnsupportedOperationException("Value " + valueExpression + " is not supported");
+            throw new UnsupportedOperationException( "Value " + valueExpression + " is not supported" );
         }
     }
 
-    private String processNullPredicate(final PropertyNullPredicate predicate)
+    private String processNullPredicate( final PropertyNullPredicate predicate )
     {
-        final String value = triples.addTriple(predicate.propertyReference(), true).getValue();
-        if (predicate instanceof PropertyIsNullPredicate)
+        final String value = triples.addTriple( predicate.propertyReference(), true ).getValue();
+        if( predicate instanceof PropertyIsNullPredicate )
         {
-            return format("(! bound(%s))", value);
-        } else
+            return format( "(! bound(%s))", value );
+        }
+        else
         {
-            return format("(bound(%s))", value);
+            return format( "(bound(%s))", value );
         }
     }
 
-    private String processNullPredicate(final AssociationNullPredicate predicate)
+    private String processNullPredicate( final AssociationNullPredicate predicate )
     {
-        final String value = triples.addTriple(predicate.associationReference(), true).getValue();
-        if (predicate instanceof AssociationIsNullPredicate)
+        final String value = triples.addTriple( predicate.associationReference(), true ).getValue();
+        if( predicate instanceof AssociationIsNullPredicate )
         {
-            return format("(! bound(%s))", value);
-        } else
+            return format( "(! bound(%s))", value );
+        }
+        else
         {
-            return format("(bound(%s))", value);
+            return format( "(bound(%s))", value );
         }
     }
 
-    private String processOrderBy(OrderBy[] orderBySegments)
+    private String processOrderBy( OrderBy[] orderBySegments )
     {
-        if (orderBySegments != null && orderBySegments.length > 0)
+        if( orderBySegments != null && orderBySegments.length > 0 )
         {
             final StringBuilder orderBy = new StringBuilder();
-            for (OrderBy orderBySegment : orderBySegments)
+            for( OrderBy orderBySegment : orderBySegments )
             {
-                if (orderBySegment != null)
+                if( orderBySegment != null )
                 {
-                    final String valueVariable = triples.addTriple(orderBySegment.propertyReference(), false).getValue();
-                    if (orderBySegment.order() == OrderBy.Order.ASCENDING)
+                    final String valueVariable = triples.addTriple( orderBySegment.propertyReference(), false ).getValue();
+                    if( orderBySegment.order() == OrderBy.Order.ASCENDING )
                     {
-                        orderBy.append(format("ASC(%s)", valueVariable));
-                    } else
+                        orderBy.append( format( "ASC(%s)", valueVariable ) );
+                    }
+                    else
                     {
-                        orderBy.append(format("DESC(%s)", valueVariable));
+                        orderBy.append( format( "DESC(%s)", valueVariable ) );
                     }
                 }
             }

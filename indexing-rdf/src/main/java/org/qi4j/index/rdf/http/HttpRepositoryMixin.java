@@ -28,11 +28,13 @@ public class HttpRepositoryMixin extends HTTPRepository
         super( getRepositoryUrl( configuration.configuration() ), getRepositoryId( configuration.configuration() ) );
     }
 
-    public void activate() throws Exception
+    public void activate()
+        throws Exception
     {
     }
 
-    public void passivate() throws Exception
+    public void passivate()
+        throws Exception
     {
         shutDown();
     }

@@ -15,20 +15,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.index.rdf;
+package org.qi4j.index.rdf.assembly;
 
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.index.rdf.internal.RdfEntityFinderMixin;
 import org.qi4j.index.rdf.internal.RdfEntityIndexerMixin;
+import org.qi4j.index.rdf.internal.RdfNamedEntityFinderMixin;
+import org.qi4j.index.rdf.internal.TupleQueryExecutorMixin;
+import org.qi4j.index.rdf.internal.RdfExportMixin;
+import org.qi4j.index.rdf.RdfExport;
 import org.qi4j.spi.query.EntityFinder;
+import org.qi4j.spi.query.NamedEntityFinder;
 import org.qi4j.spi.unitofwork.UnitOfWorkEventListener;
 
 /**
  * JAVADOC Add JavaDoc
  */
-@Mixins( { RdfEntityIndexerMixin.class, RdfEntityFinderMixin.class, RdfExportMixin.class } )
+@Mixins( { RdfEntityIndexerMixin.class, RdfEntityFinderMixin.class, RdfNamedEntityFinderMixin.class, RdfExportMixin.class, TupleQueryExecutorMixin.class } )
 public interface RdfQueryService
-    extends UnitOfWorkEventListener, EntityFinder, RdfExport, ServiceComposite
+    extends UnitOfWorkEventListener, EntityFinder, NamedEntityFinder, RdfExport, ServiceComposite
 {
 }

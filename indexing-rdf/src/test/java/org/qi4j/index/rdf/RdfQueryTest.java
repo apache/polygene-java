@@ -17,17 +17,35 @@
  */
 package org.qi4j.index.rdf;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import org.junit.After;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
-import static org.qi4j.api.query.QueryExpressions.*;
+import static org.qi4j.api.query.QueryExpressions.and;
+import static org.qi4j.api.query.QueryExpressions.eq;
+import static org.qi4j.api.query.QueryExpressions.ge;
+import static org.qi4j.api.query.QueryExpressions.gt;
+import static org.qi4j.api.query.QueryExpressions.isNotNull;
+import static org.qi4j.api.query.QueryExpressions.isNull;
+import static org.qi4j.api.query.QueryExpressions.matches;
+import static org.qi4j.api.query.QueryExpressions.not;
+import static org.qi4j.api.query.QueryExpressions.oneOf;
+import static org.qi4j.api.query.QueryExpressions.or;
+import static org.qi4j.api.query.QueryExpressions.orderBy;
+import static org.qi4j.api.query.QueryExpressions.templateFor;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -35,16 +53,31 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.index.rdf.model.*;
-import org.qi4j.index.rdf.model.entities.*;
+import org.qi4j.index.rdf.assembly.RdfFactoryService;
+import org.qi4j.index.rdf.model.City;
+import org.qi4j.index.rdf.model.Domain;
+import org.qi4j.index.rdf.model.Female;
+import org.qi4j.index.rdf.model.File;
+import org.qi4j.index.rdf.model.Host;
+import org.qi4j.index.rdf.model.Male;
+import org.qi4j.index.rdf.model.Nameable;
+import org.qi4j.index.rdf.model.Person;
+import org.qi4j.index.rdf.model.Port;
+import org.qi4j.index.rdf.model.Protocol;
+import org.qi4j.index.rdf.model.QueryParam;
+import org.qi4j.index.rdf.model.URL;
+import org.qi4j.index.rdf.model.entities.AccountEntity;
+import org.qi4j.index.rdf.model.entities.CatEntity;
+import org.qi4j.index.rdf.model.entities.CityEntity;
+import org.qi4j.index.rdf.model.entities.DomainEntity;
+import org.qi4j.index.rdf.model.entities.FemaleEntity;
+import org.qi4j.index.rdf.model.entities.MaleEntity;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.runtime.query.NotQueryableException;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.test.EntityTestAssembler;
-
-import java.util.*;
 
 public class RdfQueryTest
 {
@@ -143,8 +176,8 @@ public class RdfQueryTest
     public void script01() throws EntityFinderException
     {
         final QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
-        final Query<Person> query = qb.newQuery(unitOfWork);
-        System.out.println( query );
+        final Query<Person> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script01: " + query );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Jack Doe" );
     }
 
@@ -156,7 +189,8 @@ public class RdfQueryTest
         qb.where(
             eq( nameable.name(), "Gaming" )
         );
-        final Query<Domain> query = qb.newQuery(unitOfWork);
+        final Query<Domain> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script02: " + query );
         verifyUnorderedResults( query, "Gaming" );
     }
 
@@ -164,13 +198,14 @@ public class RdfQueryTest
     public void script03() throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
-        Query<Nameable> query = qb.newQuery(unitOfWork);
+        Query<Nameable> query = qb.newQuery( unitOfWork );
         verifyUnorderedResults(
             query,
             "Joe Doe", "Ann Doe", "Jack Doe",
             "Penang", "Kuala Lumpur",
             "Cooking", "Gaming", "Programming", "Cars"
         );
+        System.out.println( "*** script03: " + query );
     }
 
     @Test
@@ -183,7 +218,8 @@ public class RdfQueryTest
             eq( placeOfBirth.name(), "Kuala Lumpur" )
         );
 
-        Query<Person> query = qb.newQuery(unitOfWork);
+        Query<Person> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script04: " + query );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
     }
 
@@ -195,7 +231,8 @@ public class RdfQueryTest
         qb.where(
             eq( person.mother().get().placeOfBirth().get().name(), "Kuala Lumpur" )
         );
-        Query<Person> query = qb.newQuery(unitOfWork);
+        Query<Person> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script05: " + query );
         verifyUnorderedResults( query, "Joe Doe" );
     }
 
@@ -207,7 +244,8 @@ public class RdfQueryTest
         qb.where(
             ge( person.yearOfBirth(), 1973 )
         );
-        Query<Person> query = qb.newQuery(unitOfWork);
+        Query<Person> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script06: " + query );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
     }
 
@@ -222,7 +260,8 @@ public class RdfQueryTest
                 eq( person.placeOfBirth().get().name(), "Penang" )
             )
         );
-        Query<Nameable> query = qb.newQuery(unitOfWork);
+        Query<Nameable> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script07: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
     }
 
@@ -237,7 +276,8 @@ public class RdfQueryTest
                 eq( person.yearOfBirth(), 1975 )
             )
         );
-        Query<Person> query = qb.newQuery(unitOfWork);
+        Query<Person> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script08: " + query );
         verifyUnorderedResults( query, "Jack Doe", "Ann Doe" );
     }
 
@@ -252,7 +292,8 @@ public class RdfQueryTest
                 eq( person.yearOfBirth(), 1975 )
             )
         );
-        Query<Female> query = qb.newQuery(unitOfWork);
+        Query<Female> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script09: " + query );
         verifyUnorderedResults( query, "Ann Doe" );
     }
 
@@ -266,7 +307,8 @@ public class RdfQueryTest
                 eq( person.yearOfBirth(), 1975 )
             )
         );
-        Query<Person> query = qb.newQuery(unitOfWork);
+        Query<Person> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script10: " + query );
         verifyUnorderedResults( query, "Jack Doe", "Joe Doe" );
     }
 
@@ -278,7 +320,8 @@ public class RdfQueryTest
         qb.where(
             isNotNull( person.email() )
         );
-        Query<Person> query = qb.newQuery(unitOfWork);
+        Query<Person> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script11: " + query );
         verifyUnorderedResults( query, "Joe Doe" );
     }
 
@@ -290,7 +333,8 @@ public class RdfQueryTest
         qb.where(
             isNull( person.email() )
         );
-        Query<Person> query = qb.newQuery(unitOfWork);
+        Query<Person> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script12: " + query );
         verifyUnorderedResults( query, "Ann Doe", "Jack Doe" );
     }
 
@@ -302,7 +346,8 @@ public class RdfQueryTest
         qb.where(
             isNotNull( person.wife() )
         );
-        Query<Person> query = qb.newQuery(unitOfWork);
+        Query<Person> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script13: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
     }
 
@@ -314,7 +359,8 @@ public class RdfQueryTest
         qb.where(
             isNull( person.wife() )
         );
-        Query<Male> query = qb.newQuery(unitOfWork);
+        Query<Male> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script14: " + query );
         verifyUnorderedResults( query, "Joe Doe" );
     }
 
@@ -326,7 +372,8 @@ public class RdfQueryTest
         qb.where(
             isNull( person.wife() )
         );
-        Query<Person> query = qb.newQuery(unitOfWork);
+        Query<Person> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script15: " + query );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
     }
 
@@ -336,9 +383,10 @@ public class RdfQueryTest
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return only 2 entities
         Nameable nameable = templateFor( Nameable.class );
-        Query<Nameable> query = qb.newQuery(unitOfWork);
+        Query<Nameable> query = qb.newQuery( unitOfWork );
         query.orderBy( orderBy( nameable.name() ) );
         query.maxResults( 2 );
+        System.out.println( "*** script16: " + query );
         verifyOrderedResults(
             query,
             "Ann Doe", "Cars"
@@ -351,10 +399,11 @@ public class RdfQueryTest
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return only 3 entities starting with forth one
         Nameable nameable = templateFor( Nameable.class );
-        Query<Nameable> query = qb.newQuery(unitOfWork);
+        Query<Nameable> query = qb.newQuery( unitOfWork );
         query.orderBy( orderBy( nameable.name() ) );
         query.firstResult( 3 );
         query.maxResults( 3 );
+        System.out.println( "*** script17: " + query );
         verifyOrderedResults(
             query,
             "Gaming", "Jack Doe", "Joe Doe"
@@ -367,8 +416,9 @@ public class RdfQueryTest
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return all Nameable entities sorted by name
         Nameable nameable = templateFor( Nameable.class );
-        Query<Nameable> query = qb.newQuery(unitOfWork);
+        Query<Nameable> query = qb.newQuery( unitOfWork );
         query.orderBy( orderBy( nameable.name() ) );
+        System.out.println( "*** script18: " + query );
         verifyOrderedResults(
             query,
             "Ann Doe", "Cars", "Cooking", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
@@ -384,8 +434,9 @@ public class RdfQueryTest
         qb.where(
             gt( nameable.name(), "D" )
         );
-        Query<Nameable> query = qb.newQuery(unitOfWork);
+        Query<Nameable> query = qb.newQuery( unitOfWork );
         query.orderBy( orderBy( nameable.name() ) );
+        System.out.println( "*** script19: " + query );
         verifyOrderedResults(
             query,
             "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
@@ -401,8 +452,9 @@ public class RdfQueryTest
         qb.where(
             gt( person.yearOfBirth(), 1973 )
         );
-        Query<Person> query = qb.newQuery(unitOfWork);
+        Query<Person> query = qb.newQuery( unitOfWork );
         query.orderBy( orderBy( person.name(), OrderBy.Order.DESCENDING ) );
+        System.out.println( "*** script20: " + query );
         verifyOrderedResults(
             query,
             "Joe Doe", "Ann Doe"
@@ -415,9 +467,10 @@ public class RdfQueryTest
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         // should return all Persons sorted by name of the city they were born, and then by year they were born
         Person person = templateFor( Person.class );
-        Query<Person> query = qb.newQuery(unitOfWork);
+        Query<Person> query = qb.newQuery( unitOfWork );
         query.orderBy( orderBy( person.placeOfBirth().get().name() ),
                        orderBy( person.yearOfBirth() ) );
+        System.out.println( "*** script21: " + query );
         verifyOrderedResults(
             query,
             "Ann Doe", "Joe Doe", "Jack Doe"
@@ -434,7 +487,8 @@ public class RdfQueryTest
         qb.where(
             matches( nameable.name(), "J.*Doe" )
         );
-        Query<Nameable> query = qb.newQuery(unitOfWork);
+        Query<Nameable> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script22: " + query );
         verifyUnorderedResults(
             query,
             "Jack Doe", "Joe Doe"
@@ -451,7 +505,8 @@ public class RdfQueryTest
         Domain interests = oneOf( person.interests() );
         qb.where( eq( interests.name(), "Cars" ) );
 
-        Query<Person> query = qb.newQuery(unitOfWork);
+        Query<Person> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script23: " + query );
         verifyOrderedResults( query, "Jack Doe" );
     }
 
@@ -463,7 +518,8 @@ public class RdfQueryTest
         qb.where(
             eq( nameable.name(), "Gaming" )
         );
-        final Query<Domain> query = qb.newQuery(unitOfWork);
+        final Query<Domain> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script24: " + query );
         assertThat( query.find().name().get(), is( equalTo( "Gaming" ) ) );
     }
 
@@ -504,7 +560,7 @@ public class RdfQueryTest
     }
 
     @Test
-    @Ignore("Wait until indexing of complex values is implemented")
+    @Ignore( "Wait until indexing of complex values is implemented" )
     public void script29()
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
@@ -512,7 +568,8 @@ public class RdfQueryTest
         qb.where(
             eq( person.personalWebsite().get().protocol().get().value(), "http" )
         );
-        Query<Person> query = qb.newQuery(unitOfWork);
+        Query<Person> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script29: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
     }
 
@@ -529,7 +586,8 @@ public class RdfQueryTest
                 eq( queryParam.value(), "bar" )
             )
         );
-        Query<Person> query = qb.newQuery(unitOfWork);
+        Query<Person> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script30: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
     }
 
@@ -543,7 +601,8 @@ public class RdfQueryTest
         qb.where(
             eq( person.additionalInfo(), info )
         );
-        Query<Person> query = qb.newQuery(unitOfWork);
+        Query<Person> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script31: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
     }
 

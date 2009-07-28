@@ -15,14 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.index.rdf;
+package org.qi4j.index.rdf.assembly;
 
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.index.rdf.internal.RdfFactoryMixin;
+import org.qi4j.index.rdf.RdfFactory;
 
 @Mixins( RdfFactoryMixin.class )
-public interface RdfFactoryService extends ServiceComposite, RdfFactory
+public interface RdfFactoryService extends RdfFactory, ServiceComposite 
 {
 
 }

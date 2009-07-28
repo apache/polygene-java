@@ -23,13 +23,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class CollectingQualifiedIdentityResultCallback
-        implements QualifiedIdentityResultCallback
+    implements QualifiedIdentityResultCallback
 {
     private final Collection<EntityReference> entities = new ArrayList<EntityReference>();
 
-    public boolean processRow(long row, EntityReference entityReference)
+    public boolean processRow( long row, EntityReference entityReference )
     {
-        entities.add(entityReference);
+        entities.add( entityReference );
         return true;
     }
 
