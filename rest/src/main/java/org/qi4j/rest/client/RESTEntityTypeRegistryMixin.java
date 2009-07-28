@@ -143,6 +143,21 @@ public class RESTEntityTypeRegistryMixin
         return entityType;
     }
 
+    public EntityType getEntityTypeByVersion( String version ) throws UnknownEntityTypeException
+    {
+        return null;
+    }
+
+    public EntityType getEntityTypeByClassname( String className ) throws UnknownEntityTypeException
+    {
+        return null;
+    }
+
+    public EntityType getEntityTypeByRDF( String rdf ) throws UnknownEntityTypeException
+    {
+        return null;
+    }
+
     public Iterable<EntityType> getEntityTypes()
     {
         // TODO Implement this

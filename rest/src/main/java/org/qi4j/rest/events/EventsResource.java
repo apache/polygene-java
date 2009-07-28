@@ -12,13 +12,15 @@
  *
  */
 
-package org.qi4j.rest.changes;
+package org.qi4j.rest.events;
 
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
@@ -27,14 +29,16 @@ import org.restlet.representation.EmptyRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
+import org.restlet.ext.atom.Feed;
 
 /**
- * JAVADOC
+ * invoked with to /events?start={id}&count={count}
  */
-public class ChangesResource
+public class EventsResource
     extends ServerResource
 {
     @Service EntityStore entityStore;
+    @Uses ObjectBuilder<EventsFeed> feeds;
 
     public Representation put( Representation representation ) throws ResourceException
     {
@@ -66,5 +70,20 @@ public class ChangesResource
         }
 
         return new EmptyRepresentation();
+    }
+
+    @Override protected Representation get() throws ResourceException
+    {
+        EventsFeed feed = feeds.newInstance();
+
+        String start = null;
+        int count = 10;
+        start = (String) getRequest().getAttributes().get("start" );
+        if (getRequest().getAttributes().get("count") != null)
+            count = Integer.parseInt( getRequest().getAttributes().get("count").toString() );
+
+        feed.setEventQuery(start, count );
+
+        return feed;
     }
 }

@@ -31,6 +31,7 @@ import org.qi4j.rest.query.IndexResource;
 import org.qi4j.rest.query.SPARQLResource;
 import org.qi4j.rest.type.EntityTypeResource;
 import org.qi4j.rest.type.EntityTypesResource;
+import org.qi4j.rest.events.EventsResource;
 import org.restlet.Application;
 import org.restlet.Context;
 import org.restlet.Restlet;
@@ -107,6 +108,8 @@ public class RestApplication extends Application
 
         router.attach( "/query", createFinder( SPARQLResource.class ) );
         router.attach( "/query/index", createFinder( IndexResource.class ) );
+
+        router.attach("/events", createFinder( EventsResource.class));
 
         // Add filters
         return new ExtensionMediaTypeFilter( getContext(), router );

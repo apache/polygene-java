@@ -42,6 +42,7 @@ Import-Package: javax.servlet, \
                 org.qi4j.api.unitofwork, \
                 org.qi4j.api.usecase, \
                 org.qi4j.bootstrap, \
+                org.qi4j.entitystore.map, \
                 org.qi4j.index.rdf, \
                 org.qi4j.index.rdf.assembly, \
                 org.qi4j.index.rdf.callback, \
