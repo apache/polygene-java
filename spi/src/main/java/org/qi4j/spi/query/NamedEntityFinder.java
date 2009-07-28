@@ -15,21 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.spi.query.named;
+package org.qi4j.spi.query;
 
 import java.util.Map;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.spi.query.EntityFinderException;
 
 public interface NamedEntityFinder
 {
     Iterable<EntityReference> findEntities( String name,
                                             String resultType,
-                                            Map<String, Object> variables,
-                                            OrderBy[] orderBySegments,
-                                            Integer firstResult,
-                                            Integer maxResults )
+                                            @Optional Map<String, Object> variables,
+                                            @Optional OrderBy[] orderBySegments,
+                                            @Optional Integer firstResult,
+                                            @Optional Integer maxResults )
         throws EntityFinderException;
 
     EntityReference findEntity( String name, String resultType, Map<String, Object> variables )
@@ -37,4 +37,6 @@ public interface NamedEntityFinder
 
     long countEntities( String name, String resultType, Map<String, Object> variables )
         throws EntityFinderException;
+
+    String showQuery( String queryName );
 }
