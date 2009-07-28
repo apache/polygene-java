@@ -46,16 +46,21 @@ public class ParameterConstraintViolationException extends ConstraintViolationEx
     private static final long serialVersionUID = -7526075395778399932L;
 
     private final String instanceName;
-    private final String compositeType;
+    private final String type;
 
     public ParameterConstraintViolationException( Composite instance, Method method,
                                                   Collection<ConstraintViolation> constraintViolations )
     {
-        super( method, constraintViolations );
-        instanceName = instance.toString();
-        compositeType = instance.type().getName();
+        this( instance.toString(), instance.type().getName(), method, constraintViolations );
     }
 
+    public ParameterConstraintViolationException( String instanceName, String type, Method method,
+                                                  Collection<ConstraintViolation> constraintViolations )
+    {
+        super( method, constraintViolations );
+        this.instanceName = instanceName;
+        this.type = type;
+    }
     /**
      * Creates localized messages of all the constraint violations that have occurred.
      * <p/>
@@ -119,7 +124,7 @@ public class ParameterConstraintViolationException extends ConstraintViolationEx
             {
                 try
                 {
-                    pattern = bundle.getString( "qi4j.constraint." + compositeType );
+                    pattern = bundle.getString( "qi4j.constraint." + type );
                 }
                 catch( MissingResourceException e1 )
                 {
@@ -145,7 +150,7 @@ public class ParameterConstraintViolationException extends ConstraintViolationEx
             Object[] args = new String[]
                 {
                     instanceName,
-                    compositeType,
+                    type,
                     method().getDeclaringClass().getSimpleName(),
                     method().getName(),
                     annotation.toString(),
@@ -185,6 +190,6 @@ public class ParameterConstraintViolationException extends ConstraintViolationEx
 
     public String compositeType()
     {
-        return compositeType;
+        return type;
     }
 }

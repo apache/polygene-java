@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2009, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +15,13 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.ParameterConstraintViolationException;
-import org.qi4j.api.constraint.ConstraintViolation;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.ParameterConstraintViolationException;
+import org.qi4j.api.constraint.ConstraintViolation;
+import org.qi4j.spi.composite.CompositeInstance;
 
 /**
  * JAVADOC
@@ -70,7 +71,15 @@ public final class MethodConstraintsInstance
 
         if( violations != null )
         {
-            throw new ParameterConstraintViolationException( (Composite) instance, method, violations );
+            if( instance instanceof Composite )
+            {
+                throw new ParameterConstraintViolationException( (Composite) instance, method, violations );
+            }
+            if( instance instanceof CompositeInstance )
+            {
+                throw new ParameterConstraintViolationException( (Composite) ( (CompositeInstance) instance ).proxy(), method, violations );
+            }
+            throw new ParameterConstraintViolationException( instance.toString(), instance.getClass().getName(), method, violations );
         }
     }
 }
