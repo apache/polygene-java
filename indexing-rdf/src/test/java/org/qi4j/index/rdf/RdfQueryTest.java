@@ -1,5 +1,6 @@
 /*
  * Copyright 2008 Alin Dreghiciu.
+ * Copyright 2009 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -66,6 +67,7 @@ import org.qi4j.index.rdf.model.Port;
 import org.qi4j.index.rdf.model.Protocol;
 import org.qi4j.index.rdf.model.QueryParam;
 import org.qi4j.index.rdf.model.URL;
+import org.qi4j.index.rdf.model.Address;
 import org.qi4j.index.rdf.model.entities.AccountEntity;
 import org.qi4j.index.rdf.model.entities.CatEntity;
 import org.qi4j.index.rdf.model.entities.CityEntity;
@@ -103,6 +105,7 @@ public class RdfQueryTest
                 );
                 module.addValues(
                     URL.class,
+                    Address.class,
                     Protocol.class,
                     Host.class,
                     Port.class,
@@ -606,4 +609,18 @@ public class RdfQueryTest
         verifyUnorderedResults( query, "Jack Doe" );
     }
 
+    @Test
+    @Ignore( "Wait for QI-58" )
+    public void script32()
+    {
+        QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Map<String, String> info = new HashMap<String, String>();
+        qb.where(
+            eq( person.address().get().line2(), "Qi Alley 4j" )
+        );
+        Query<Person> query = qb.newQuery( unitOfWork );
+        System.out.println( "*** script32: " + query );
+        verifyUnorderedResults( query, "Joe Doe" );
+    }
 }

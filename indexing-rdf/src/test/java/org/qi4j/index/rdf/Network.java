@@ -34,6 +34,7 @@ import org.qi4j.index.rdf.model.Male;
 import org.qi4j.index.rdf.model.Protocol;
 import org.qi4j.index.rdf.model.QueryParam;
 import org.qi4j.index.rdf.model.URL;
+import org.qi4j.index.rdf.model.Address;
 import org.qi4j.index.rdf.model.entities.CatEntity;
 import org.qi4j.index.rdf.model.entities.FemaleEntity;
 import org.qi4j.index.rdf.model.entities.MaleEntity;
@@ -131,6 +132,12 @@ class Network
             jacksAccount = accountBuilder.newInstance();
         }
 
+        ValueBuilder<Address> addressBuilder = valueBuilderFactory.newValueBuilder( Address.class );
+        Address address = addressBuilder.prototype();
+        address.line1().set( "Qi Street 4j" );
+        address.line2().set( "Off main Java Street" );
+        address.zipcode().set( "12345" );
+
         Female annDoe;
         {
             EntityBuilder<FemaleEntity> femaleBuilder = unitOfWork.newEntityBuilder( FemaleEntity.class );
@@ -143,11 +150,13 @@ class Network
             annDoe.mainAccount().set( annsAccount );
             annDoe.accounts().add( 0, annsAccount );
             annDoe.accounts().add( 0, jacksAccount );
+            annDoe.address().set( addressBuilder.newInstance() );
             annDoe = femaleBuilder.newInstance();
             NameableAssert.trace( annDoe );
         }
 
         {
+
             EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder( MaleEntity.class );
             Male joeDoe = maleBuilder.prototype();
             joeDoe.name().set( "Joe Doe" );
@@ -159,6 +168,8 @@ class Network
             joeDoe.email().set( "joe@thedoes.net" );
             joeDoe.password().set( "passwordOfJoeDoe" );
             joeDoe = maleBuilder.newInstance();
+            address.line1().set( "Qi Alley 4j" );
+            joeDoe.address().set( addressBuilder.newInstance() );
             NameableAssert.trace( joeDoe );
         }
 
@@ -174,6 +185,8 @@ class Network
             jackDoe.mainAccount().set( jacksAccount );
             jackDoe.accounts().add( 0, annsAccount );
             jackDoe.accounts().add( 0, jacksAccount );
+            address.line1().set( "Qi Avenue 4j" );
+            jackDoe.address().set( addressBuilder.newInstance() );
 
             ValueBuilder<URL> urlBuilder = valueBuilderFactory.newValueBuilder( URL.class );
             ValueBuilder<Protocol> protocolBuilder = valueBuilderFactory.newValueBuilder( Protocol.class );

@@ -15,15 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.index.rdf.internal;
 
-import org.openrdf.query.QueryLanguage;
-import org.qi4j.index.rdf.callback.QualifiedIdentityResultCallback;
-import org.qi4j.spi.query.EntityFinderException;
-import org.qi4j.api.common.Optional;
+package org.qi4j.index.rdf.model;
 
-public interface TupleQueryExecutor
+import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.property.Property;
+
+public interface Address extends ValueComposite
 {
-    long performTupleQuery( QueryLanguage language, String query, @Optional QualifiedIdentityResultCallback callback )
-        throws EntityFinderException;
+    Property<String> line1();
+    Property<String> line2();
+    Property<String> zipcode();
 }

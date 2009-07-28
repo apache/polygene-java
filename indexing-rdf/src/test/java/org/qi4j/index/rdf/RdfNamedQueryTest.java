@@ -53,6 +53,7 @@ import org.qi4j.index.rdf.model.Port;
 import org.qi4j.index.rdf.model.Protocol;
 import org.qi4j.index.rdf.model.QueryParam;
 import org.qi4j.index.rdf.model.URL;
+import org.qi4j.index.rdf.model.Address;
 import org.qi4j.index.rdf.model.entities.AccountEntity;
 import org.qi4j.index.rdf.model.entities.CatEntity;
 import org.qi4j.index.rdf.model.entities.CityEntity;
@@ -91,6 +92,7 @@ public class RdfNamedQueryTest
                 );
                 module.addValues(
                     URL.class,
+                    Address.class,
                     Protocol.class,
                     Host.class,
                     Port.class,

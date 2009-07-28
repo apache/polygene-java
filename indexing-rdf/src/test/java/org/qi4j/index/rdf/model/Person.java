@@ -27,8 +27,6 @@ import org.qi4j.api.property.Property;
 /**
  * JAVADOC Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since March 20, 2008
  */
 public interface Person
     extends Nameable, Alive
@@ -36,6 +34,8 @@ public interface Person
     @Optional Association<City> placeOfBirth();
 
     Property<Integer> yearOfBirth();
+
+    @Optional Property<Address> address();
 
     @Optional Association<Female> mother();
 
