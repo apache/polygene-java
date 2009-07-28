@@ -1,17 +1,5 @@
 package org.qi4j.entitystore.map;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Logger;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityReference;
@@ -45,6 +33,19 @@ import org.qi4j.spi.unitofwork.event.RemoveManyAssociationEvent;
 import org.qi4j.spi.unitofwork.event.SetAssociationEvent;
 import org.qi4j.spi.unitofwork.event.SetPropertyEvent;
 import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.logging.Logger;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore. Implement
@@ -224,45 +225,7 @@ public final class MapEntityStoreMixin
     public synchronized EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo )
     {
         // Bring state up to date first
-        // TODO Allow client to indicate that inconsistency is ok
-        if( lastAppliedEvent != null )
-        {
-            if( lastReadEvent != null )
-            {
-                if( !lastAppliedEvent.equals( lastReadEvent ) )
-                {
-                    LinkedList<UnitOfWorkEventsEntry> events = new LinkedList<UnitOfWorkEventsEntry>();
-                    String uowIdentity = lastAppliedEvent.identity();
-
-                    try
-                    {
-                        while( !uowIdentity.equals( lastReadEvent.identity() ) )
-                        {
-                            InputStream in = mapEntityStore.get( new EntityReference( uowIdentity ), usecaseMetaInfo, unitOfWorkMetaInfo );
-                            FastObjectInputStream oin = new FastObjectInputStream( in, false );
-                            UnitOfWorkEventsEntry event = (UnitOfWorkEventsEntry) oin.readUnshared();
-                            oin.close();
-                            events.addFirst( event );
-                            uowIdentity = event.previous();
-                        }
-
-                        // Apply events in reverse order
-                        for( UnitOfWorkEventsEntry event : events )
-                        {
-                            apply( event, usecaseMetaInfo, unitOfWorkMetaInfo );
-                        }
-                    }
-                    catch( IOException e )
-                    {
-                        throw new EntityStoreException( "Could not bring state up to date", e );
-                    }
-                    catch( ClassNotFoundException e )
-                    {
-                        throw new EntityStoreException( "Could not bring state up to date", e );
-                    }
-                }
-            }
-        }
+        ensureUpToDate(usecaseMetaInfo, unitOfWorkMetaInfo);
 
         // Get state
         try
@@ -422,12 +385,59 @@ public final class MapEntityStoreMixin
         return serializableState;
     }
 
+    private void ensureUpToDate(Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo)
+    {
+        // TODO Allow client to indicate that inconsistency is ok
+        if( lastAppliedEvent != null )
+        {
+            if( lastReadEvent != null )
+            {
+                if( !lastAppliedEvent.equals( lastReadEvent ) )
+                {
+                    LinkedList<UnitOfWorkEventsEntry> events = new LinkedList<UnitOfWorkEventsEntry>();
+                    String uowIdentity = lastAppliedEvent.identity();
+
+                    try
+                    {
+                        while( !uowIdentity.equals( lastReadEvent.identity() ) )
+                        {
+                            InputStream in = mapEntityStore.get( new EntityReference( uowIdentity ), usecaseMetaInfo, unitOfWorkMetaInfo );
+                            FastObjectInputStream oin = new FastObjectInputStream( in, false );
+                            UnitOfWorkEventsEntry event = (UnitOfWorkEventsEntry) oin.readUnshared();
+                            oin.close();
+                            events.addFirst( event );
+                            uowIdentity = event.previous();
+                        }
+
+                        // Apply events in reverse order
+                        for( UnitOfWorkEventsEntry event : events )
+                        {
+                            apply( event, usecaseMetaInfo, unitOfWorkMetaInfo );
+                        }
+                    }
+                    catch( IOException e )
+                    {
+                        throw new EntityStoreException( "Could not bring state up to date", e );
+                    }
+                    catch( ClassNotFoundException e )
+                    {
+                        throw new EntityStoreException( "Could not bring state up to date", e );
+                    }
+                }
+            }
+        }
+    }
+
     public EntityStoreUnitOfWork visitEntityStates( final EntityStateVisitor visitor )
     {
+        Usecase usecaseInfo = newUsecase("Visit entity state");
+        MetaInfo uowMetaInfo = new MetaInfo();
+        ensureUpToDate(usecaseInfo, uowMetaInfo);
+
         final EntityStoreUnitOfWork uow = stateFactory.createEntityStoreUnitOfWork( this,
                                                                                     newUnitOfWorkId(),
-                                                                                    newUsecase( "Visit entity state" ),
-                                                                                    new MetaInfo() );
+                                                                                    usecaseInfo,
+                                                                                    uowMetaInfo );
         mapEntityStore.visitMap( new MapEntityStore.MapEntityStoreVisitor()
         {
             public void visitEntity( InputStream entityState )
@@ -435,10 +445,14 @@ public final class MapEntityStoreMixin
                 try
                 {
                     ObjectInputStream oin = new FastObjectInputStream( entityState, false );
-                    SerializableState state = (SerializableState) oin.readObject();
+                    Object serializedObject = oin.readObject();
+                    if (serializedObject instanceof SerializableState)
+                    {
+                        SerializableState state = (SerializableState) serializedObject;
 
-                    EntityState entity = getEntityState( uow, state );
-                    visitor.visitEntityState( entity );
+                        EntityState entity = getEntityState( uow, state );
+                        visitor.visitEntityState( entity );
+                    }
                 }
                 catch( Exception e )
                 {

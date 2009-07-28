@@ -29,5 +29,14 @@ public interface EntityTypeRegistry
     EntityType getEntityType( EntityTypeReference reference )
         throws UnknownEntityTypeException;
 
+    public EntityType getEntityTypeByVersion(String version)
+            throws UnknownEntityTypeException;
+
+    public EntityType getEntityTypeByClassname(String className)
+            throws UnknownEntityTypeException;
+
+    public EntityType getEntityTypeByRDF(String rdf)
+            throws UnknownEntityTypeException;
+    
     Iterable<EntityType> getEntityTypes();
 }

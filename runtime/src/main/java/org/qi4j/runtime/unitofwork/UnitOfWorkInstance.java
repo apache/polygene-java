@@ -21,6 +21,7 @@ import org.qi4j.api.common.TypeName;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
@@ -40,7 +41,9 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.EntityTypeRegistry;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 
@@ -198,6 +201,22 @@ public final class UnitOfWorkInstance
                 else
                 {
                     // State was found, but no model to match it
+                    ServiceReference<EntityTypeRegistry> ref = uow.module().serviceFinder().findService(EntityTypeRegistry.class);
+                    if (ref != null)
+                    {
+                        EntityTypeRegistry registry = ref.get();
+                        for (EntityTypeReference entityTypeReference : entityState.entityTypeReferences())
+                        {
+                            EntityType fromType = registry.getEntityType(entityTypeReference);
+
+                            for (EntityModel potentialModel : potentialModels)
+                            {
+                                EntityType toType = potentialModel.entityType();
+                                uow.module().layerInstance().applicationInstance().migration().migrate(entityState, fromType, toType);
+                            }
+                        }
+                    }
+
                     throw new EntityTypeNotFoundException( mixinType.getName() );
                 }
             }

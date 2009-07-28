@@ -12,18 +12,26 @@
  *
  */
 
-package org.qi4j.spi.structure;
+package org.qi4j.runtime.structure;
 
-import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Layer;
+import org.qi4j.api.structure.Module;
 
 /**
- * SPI for Applications.
+ * JAVADOC
  */
-public interface ApplicationSPI
-    extends Application, Activatable
+public class InstanceVisitor
 {
-    void visitDescriptor( DescriptorVisitor visitor );
+    public void visit( Application application )
+    {
+    }
 
-    void migrate();
+    public void visit( Layer layer )
+    {
+    }
+
+    public void visit( Module module )
+    {
+    }
 }

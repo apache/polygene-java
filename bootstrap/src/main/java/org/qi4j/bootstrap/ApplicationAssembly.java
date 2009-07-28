@@ -69,4 +69,6 @@ public interface ApplicationAssembly
     ApplicationAssembly setMetaInfo(Object info);
 
     void visit(AssemblyVisitor visitor) throws AssemblyException;
+
+    MigrationAssembly migrate();
 }

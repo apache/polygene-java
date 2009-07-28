@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,18 +12,17 @@
  *
  */
 
-package org.qi4j.spi.structure;
+package org.qi4j.runtime.bootstrap.migration;
 
-import org.qi4j.api.service.Activatable;
-import org.qi4j.api.structure.Application;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityType;
 
 /**
- * SPI for Applications.
+ * Interface for migration rule implementations. When an Entity is found to have an outdated Entity version
+ * the migration rules for converting the data from the current version to the desired version will be executed
+ * on the EntityState of the Entity.
  */
-public interface ApplicationSPI
-    extends Application, Activatable
+interface MigrationRule
 {
-    void visitDescriptor( DescriptorVisitor visitor );
-
-    void migrate();
+    void migrate(EntityState state, EntityType from, EntityType to);
 }

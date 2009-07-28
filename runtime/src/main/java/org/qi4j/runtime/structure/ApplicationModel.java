@@ -17,6 +17,7 @@ package org.qi4j.runtime.structure;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.structure.Application;
+import org.qi4j.runtime.bootstrap.migration.MigrationImpl;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
@@ -42,14 +43,16 @@ public final class ApplicationModel
     private Application.Mode mode;
     private MetaInfo metaInfo;
     private final List<LayerModel> layers;
+    private MigrationImpl migration;
     private final InjectionProviderFactory ipf;
 
-    public ApplicationModel( String name, Application.Mode mode, MetaInfo metaInfo, List<LayerModel> layers )
+    public ApplicationModel( String name, Application.Mode mode, MetaInfo metaInfo, List<LayerModel> layers, MigrationImpl migration )
     {
         this.name = name;
         this.mode = mode;
         this.metaInfo = metaInfo;
         this.layers = layers;
+        this.migration = migration;
         ipf = new InjectionProviderFactoryStrategy();
     }
 
@@ -103,7 +106,7 @@ public final class ApplicationModel
         throws InvalidApplicationException
     {
         List<LayerInstance> layerInstances = new ArrayList<LayerInstance>();
-        ApplicationInstance applicationInstance = new ApplicationInstance( this, runtime, layerInstances );
+        ApplicationInstance applicationInstance = new ApplicationInstance( this, runtime, layerInstances, migration );
 
         // Create layer instances
         Map<LayerModel, LayerInstance> layerInstanceMap = new HashMap<LayerModel, LayerInstance>();

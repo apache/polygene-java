@@ -20,6 +20,9 @@ import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.AssemblyVisitor;
 import org.qi4j.bootstrap.LayerAssembly;
+import org.qi4j.bootstrap.MigrationAssembly;
+import org.qi4j.runtime.bootstrap.migration.MigrationAssemblyImpl;
+import org.qi4j.runtime.bootstrap.migration.MigrationImpl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,6 +40,7 @@ public final class ApplicationAssemblyImpl
     private String name = "Application";
     private Application.Mode mode;
     private MetaInfo metaInfo = new MetaInfo();
+    private MigrationAssemblyImpl migrationAssembly = new MigrationAssemblyImpl();
 
     public ApplicationAssemblyImpl()
     {
@@ -68,6 +72,11 @@ public final class ApplicationAssemblyImpl
         return this;
     }
 
+    public MigrationAssembly migrate()
+    {
+        return migrationAssembly;
+    }
+
     public void visit( AssemblyVisitor visitor ) throws AssemblyException
     {
         visitor.visitApplication( this );
@@ -82,6 +91,10 @@ public final class ApplicationAssemblyImpl
         return layerAssemblies;
     }
 
+    public MigrationImpl getMigration()
+    {
+        return migrationAssembly.getMigration();
+    }
 
     public MetaInfo metaInfo()
     {
