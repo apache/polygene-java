@@ -19,6 +19,7 @@ package org.qi4j.index.rdf;
 
 import java.io.OutputStream;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.index.rdf.assembly.RdfQueryService;
 
 /**
  * JAVADOC Add JavaDoc

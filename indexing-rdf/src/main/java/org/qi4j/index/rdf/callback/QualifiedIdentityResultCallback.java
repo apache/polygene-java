@@ -21,5 +21,11 @@ import org.qi4j.api.entity.EntityReference;
 
 public interface QualifiedIdentityResultCallback
 {
-    boolean processRow(long row, EntityReference entityReference);
+    /**
+     *
+     * @param row the current row of the resultset
+     * @param entityReference The entity reference found via the query.
+     * @return true if resultset processing should stop.
+     */
+    boolean processRow( long row, EntityReference entityReference );
 }

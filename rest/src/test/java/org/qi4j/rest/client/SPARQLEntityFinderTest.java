@@ -26,7 +26,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.index.rdf.RdfFactoryService;
+import org.qi4j.index.rdf.assembly.RdfFactoryService;
 import org.qi4j.library.rdf.entity.EntityStateParser;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeParser;

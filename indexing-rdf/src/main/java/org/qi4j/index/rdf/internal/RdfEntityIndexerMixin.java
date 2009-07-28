@@ -17,6 +17,9 @@
  */
 package org.qi4j.index.rdf.internal;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Logger;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
@@ -36,17 +39,19 @@ import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
-import org.qi4j.spi.entity.*;
+import org.qi4j.spi.entity.EntityNotFoundException;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.EntityTypeReference;
+import org.qi4j.spi.entity.EntityTypeRegistry;
+import org.qi4j.spi.entity.UnknownEntityTypeException;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 import org.qi4j.spi.unitofwork.UnitOfWorkEventListener;
 import org.qi4j.spi.unitofwork.event.AddEntityTypeEvent;
 import org.qi4j.spi.unitofwork.event.EntityEvent;
 import org.qi4j.spi.unitofwork.event.RemoveEntityEvent;
 import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * JAVADOC Add JavaDoc

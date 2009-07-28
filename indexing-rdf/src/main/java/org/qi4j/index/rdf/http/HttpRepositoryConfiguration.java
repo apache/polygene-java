@@ -15,13 +15,14 @@ package org.qi4j.index.rdf.http;
 
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.common.Optional;
 
 /**
  * JAVADOC Add JavaDoc
  */
 public interface HttpRepositoryConfiguration extends ConfigurationComposite
 {
-    Property<String> repositoryUrl();
+    @Optional Property<String> repositoryUrl();
 
-    Property<String> repositoryId();
+    @Optional Property<String> repositoryId();
 }

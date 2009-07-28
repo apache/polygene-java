@@ -20,11 +20,11 @@ package org.qi4j.index.rdf.callback;
 import org.qi4j.api.entity.EntityReference;
 
 public class SingleQualifiedIdentityResultCallback
-        implements QualifiedIdentityResultCallback
+    implements QualifiedIdentityResultCallback
 {
     private EntityReference entityReference;
 
-    public boolean processRow(long row, EntityReference entityReference)
+    public boolean processRow( long row, EntityReference entityReference )
     {
         this.entityReference = entityReference;
         return false;
