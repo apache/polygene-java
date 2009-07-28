@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="Maven: rhino:js:1.6R5">
     <CLASSES>
-      <root url="jar://$M2_REPO$/rhino/js/1.6R5/js-1.6R5.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/rhino/js/1.6R5/js-1.6R5.jar!/" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$M2_REPO$/rhino/js/1.6R5/js-1.6R5-javadoc.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/rhino/js/1.6R5/js-1.6R5-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$M2_REPO$/rhino/js/1.6R5/js-1.6R5-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/rhino/js/1.6R5/js-1.6R5-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
