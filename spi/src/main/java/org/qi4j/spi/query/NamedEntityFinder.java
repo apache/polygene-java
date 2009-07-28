@@ -35,7 +35,7 @@ public interface NamedEntityFinder
     EntityReference findEntity( String name, String resultType, Map<String, Object> variables )
         throws EntityFinderException;
 
-    long countEntities( String name, String resultType, Map<String, Object> variables )
+    long countEntities( String name, String resultType, @Optional Map<String, Object> variables )
         throws EntityFinderException;
 
     String showQuery( String queryName );
