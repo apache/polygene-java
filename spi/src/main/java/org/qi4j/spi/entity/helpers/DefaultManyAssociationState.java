@@ -54,14 +54,14 @@ public final class DefaultManyAssociationState
         }
 
         references.add( i, entityReference );
-        entityState.setModified();
+        entityState.markUpdated();
         return true;
     }
 
     public boolean remove( EntityReference entity )
     {
         boolean removed = references.remove( entity );
-        entityState.setModified();
+        entityState.markUpdated();
         return removed;
     }
 

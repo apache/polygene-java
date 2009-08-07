@@ -36,8 +36,6 @@ import java.util.Map;
 public final class DefaultEntityState
     implements EntityState, Serializable
 {
-    boolean isModified = false;
-
     protected DefaultEntityStoreUnitOfWork unitOfWork;
 
     protected EntityStatus status;
@@ -108,7 +106,7 @@ public final class DefaultEntityState
     public void setProperty( QualifiedName stateName, Object newValue )
     {
         properties.put( stateName, newValue );
-        isModified = true;
+        markUpdated();
     }
 
     public EntityReference getAssociation( QualifiedName stateName )
@@ -119,7 +117,7 @@ public final class DefaultEntityState
     public void setAssociation( QualifiedName stateName, EntityReference newEntity )
     {
         associations.put( stateName, newEntity );
-        isModified = true;
+        markUpdated();
     }
 
     public ManyAssociationState getManyAssociation( QualifiedName stateName )
@@ -218,13 +216,9 @@ public final class DefaultEntityState
         status = EntityStatus.LOADED;
     }
 
-    public void setModified()
+    public void markUpdated()
     {
-        isModified = true;
-    }
-
-    public boolean isModified()
-    {
-        return isModified;
+        if (status == EntityStatus.LOADED)
+            status = EntityStatus.UPDATED;
     }
 }

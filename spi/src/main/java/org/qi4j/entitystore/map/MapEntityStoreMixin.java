@@ -100,14 +100,11 @@ public final class MapEntityStoreMixin
                                         Writer writer = changer.newEntity(state.identity());
                                         writeEntityState(state, writer, identity);
                                         writer.close();
-                                    } else if (state.status().equals(EntityStatus.LOADED))
+                                    } else if (state.status().equals(EntityStatus.UPDATED))
                                     {
-                                        if (state.isModified())
-                                        {
-                                            Writer writer = changer.updateEntity(state.identity());
-                                            writeEntityState(state, writer, identity);
-                                            writer.close();
-                                        }
+                                        Writer writer = changer.updateEntity(state.identity());
+                                        writeEntityState(state, writer, identity);
+                                        writer.close();
                                     } else if (state.status().equals(EntityStatus.REMOVED))
                                     {
                                         changer.removeEntity(state.identity());
@@ -115,7 +112,7 @@ public final class MapEntityStoreMixin
                                 }
                             } catch (JSONException e)
                             {
-                                throw new IOException(e);
+                                throw (IOException) new IOException().initCause(e);
                             }
                         }
                     });

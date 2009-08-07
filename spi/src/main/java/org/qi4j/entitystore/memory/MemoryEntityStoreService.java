@@ -21,12 +21,13 @@ import org.qi4j.entitystore.map.MapEntityStoreMixin;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.helpers.ConcurrentModificationCheckConcern;
 import org.qi4j.spi.entity.helpers.EntityStateVersions;
+import org.qi4j.spi.entity.helpers.StateChangeNotificationConcern;
 
 /**
  * In-memory EntityStore service. Useful for testing
  * and non-persistent entities.
  */
-@Concerns( { ConcurrentModificationCheckConcern.class } )
+@Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
 @Mixins( { MapEntityStoreMixin.class, MemoryMapEntityStoreMixin.class } )
 public interface MemoryEntityStoreService extends EntityStore, EntityStateVersions, ServiceComposite
 {

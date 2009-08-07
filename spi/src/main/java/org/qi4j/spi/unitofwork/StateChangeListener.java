@@ -20,7 +20,7 @@ import org.qi4j.spi.entity.EntityState;
  * Implement this interface in a Service if you want it to listen
  * to changes from EntityStores.
  */
-public interface UnitOfWorkEventListener
+public interface StateChangeListener
 {
-    void notifyChanges( Iterable<EntityState> events );
+    void notifyChanges( Iterable<EntityState> changedStates );
 }

@@ -69,7 +69,6 @@ public final class MemoryMapEntityStoreMixin
                 @Override public void close() throws IOException
                 {
                     super.close();
-                    System.out.println(toString());
                     String old = store.put( ref, toString() );
                     if( old != null )
                     {
@@ -88,7 +87,6 @@ public final class MemoryMapEntityStoreMixin
                 @Override public void close() throws IOException
                 {
                     super.close();
-                    System.out.println(toString());
                     String old = store.put( ref, toString() );
                     if( old == null )
                     {

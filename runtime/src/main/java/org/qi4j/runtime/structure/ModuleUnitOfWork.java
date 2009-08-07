@@ -247,7 +247,7 @@ public class ModuleUnitOfWork
             compositeInstance.remove( this );
             uow.remove( compositeInstance.identity() );
         }
-        else if( compositeInstance.status() == EntityStatus.LOADED )
+        else if( compositeInstance.status() == EntityStatus.LOADED || compositeInstance.status() == EntityStatus.UPDATED)
         {
             compositeInstance.remove( this );
         }
