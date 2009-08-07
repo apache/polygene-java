@@ -12,17 +12,18 @@
  *
  */
 
-package org.qi4j.runtime.bootstrap.migration;
+package org.qi4j.spi.structure;
 
-import org.qi4j.spi.entity.EntityState;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.spi.entity.EntityType;
 
 /**
- * Interface for migration rule implementations. When an Entity is found to have an outdated Entity version
- * the migration rules for converting the data from the current version to the desired version will be executed
- * on the EntityState of the Entity.
+ * JAVADOC
  */
-interface MigrationRule
+public interface ModuleSPI
+    extends Module
 {
-    void migrate(EntityState state, EntityType from, EntityType to);
+    EntityType entityType(String name)
+        throws EntityTypeNotFoundException;
 }

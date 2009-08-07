@@ -18,10 +18,7 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
-import org.qi4j.runtime.bootstrap.migration.MigrationImpl;
-import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.entity.EntityTypeRegistry;
 import org.qi4j.spi.service.Activator;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.DescriptorVisitor;
@@ -37,15 +34,13 @@ public class ApplicationInstance
     private final ApplicationModel model;
     private final Qi4jSPI runtime;
     private final List<LayerInstance> layerInstances;
-    private MigrationImpl migration;
     private final Activator layerActivator;
 
-    public ApplicationInstance( ApplicationModel model, Qi4jSPI runtime, List<LayerInstance> layerInstances, MigrationImpl migration )
+    public ApplicationInstance( ApplicationModel model, Qi4jSPI runtime, List<LayerInstance> layerInstances)
     {
         this.model = model;
         this.runtime = runtime;
         this.layerInstances = layerInstances;
-        this.migration = migration;
         layerActivator = new Activator();
     }
 
@@ -120,35 +115,6 @@ public class ApplicationInstance
     public void visitDescriptor( DescriptorVisitor visitor )
     {
         model.visitDescriptor( visitor );
-    }
-
-    public void migrate()
-    {
-        // Find all types and corresponding registries
-        visitInstance(new InstanceVisitor()
-        {
-            @Override
-            public void visit(Module module)
-            {
-                EntitiesInstance entitiesInstance = ((ModuleInstance) module).entities();
-                EntityTypeRegistry registry = entitiesInstance.entityTypeRegistry();
-                entitiesInstance.model().visitModel(new ModelVisitor()
-                {
-                    @Override
-                    public void visit(EntityModel entityModel)
-                    {
-                        
-                        super.visit(entityModel);
-                    }
-                });
-                super.visit(module);
-            }
-        });
-    }
-
-    public MigrationImpl migration()
-    {
-        return migration;
     }
 
     public void visitInstance(InstanceVisitor visitor)

@@ -14,10 +14,12 @@
 
 package org.qi4j.spi.value;
 
-import java.lang.reflect.Type;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
-import org.qi4j.spi.util.PeekableStringTokenizer;
+import org.qi4j.spi.entity.helpers.json.JSONException;
+import org.qi4j.spi.entity.helpers.json.JSONWriter;
+
+import java.lang.reflect.Type;
 
 /**
  * String type
@@ -40,114 +42,14 @@ public final class StringType
         super( TypeName.nameOf( String.class ) );
     }
 
-    public void toJSON( Object value, StringBuilder json )
+    public void toJSON( Object value, JSONWriter json ) throws JSONException
     {
-        json.append( '"' );
-        String stringValue = value.toString();
-        int len = stringValue.length();
-        for( int i = 0; i < len; i++ )
-        {
-            char ch = stringValue.charAt( i );
-            // Escape characters properly
-            switch( ch )
-            {
-            case '"':
-                json.append( '\\' ).append( '"' );
-                break;
-            case '\\':
-                json.append( '\\' ).append( '\\' );
-                break;
-            case '/':
-                json.append( '\\' ).append( '/' );
-                break;
-            case '\b':
-                json.append( '\\' ).append( 'b' );
-                break;
-            case '\f':
-                json.append( '\\' ).append( 'f' );
-                break;
-            case '\n':
-                json.append( '\\' ).append( 'n' );
-                break;
-            case '\r':
-                json.append( '\\' ).append( 'r' );
-                break;
-            case '\t':
-                json.append( '\\' ).append( 't' );
-                break;
-
-            default:
-                json.append( ch );
-            }
-        }
-        json.append( '"' );
+        json.value(value);
     }
 
-    public Object fromJSON( PeekableStringTokenizer json, Module module )
+    public Object fromJSON( Object json, Module module )
     {
-        String token = json.nextToken( "\"" );
-
-        StringBuilder builder = new StringBuilder();
-
-        String result = json.peekNextToken( "\\\"" );
-
-        if( result.equals( "\"" ) )
-        {
-            json.nextToken();
-            return "";
-        }
-
-        while( !( token = json.nextToken() ).equals( "\"" ) )
-        {
-            if( token.charAt( 0 ) == '\\' )
-            {
-                result = json.nextToken();
-
-                char controlChar = result.charAt( 0 );
-                // Unescape characters properly
-                switch( controlChar )
-                {
-                case '"':
-                    builder.append( '"' );
-                    break;
-                case '\\':
-                    builder.append( '\\' );
-                    break;
-                case '/':
-                    builder.append( '/' );
-                    break;
-                case 'b':
-                    builder.append( '\b' );
-                    break;
-                case 'f':
-                    builder.append( '\f' );
-                    break;
-                case 'n':
-                    builder.append( '\n' );
-                    break;
-                case 'r':
-                    builder.append( '\r' );
-                    break;
-                case 't':
-                    builder.append( '\t' );
-                    break;
-
-                default:
-                    throw new IllegalStateException( "Illegal control character in string:" + controlChar );
-                }
-
-                if( result.length() > 1 )
-                {
-                    builder.append( result.substring( 1 ) );
-                }
-            }
-            else
-            {
-                builder.append( token );
-            }
-        }
-
-        return builder.toString();
+        return json;
     }
 
     @Override

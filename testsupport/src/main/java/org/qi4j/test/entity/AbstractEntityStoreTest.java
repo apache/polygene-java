@@ -5,7 +5,6 @@ import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityBuilder;
@@ -18,16 +17,14 @@ import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import static org.qi4j.api.usecase.UsecaseBuilder.*;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.typeregistry.EntityTypeRegistryService;
-import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
+import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
 import java.util.HashMap;
@@ -46,7 +43,6 @@ public abstract class AbstractEntityStoreTest
         throws AssemblyException
     {
         module.addServices( UuidIdentityGeneratorService.class );
-        module.addServices( EntityTypeRegistryService.class );
         module.addEntities( TestEntity.class );
         module.addValues( TestValue.class, TestValue2.class, TjabbaValue.class );
         module.addObjects( getClass() );
@@ -69,8 +65,8 @@ public abstract class AbstractEntityStoreTest
                 {
                     entityState.remove();
                 }
-            } );
-            store.apply( uow.identity(), uow.events(), newUsecase( "Remove state" ), new MetaInfo() ).commit();
+            }, moduleInstance );
+            uow.apply().commit();
 
             super.tearDown();
         }

@@ -14,7 +14,7 @@
 
 package org.qi4j.spi.unitofwork;
 
-import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
+import org.qi4j.spi.entity.EntityState;
 
 /**
  * Implement this interface in a Service if you want it to listen
@@ -22,5 +22,5 @@ import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
  */
 public interface UnitOfWorkEventListener
 {
-    void notifyEvents( Iterable<UnitOfWorkEvent> events );
+    void notifyChanges( Iterable<EntityState> events );
 }

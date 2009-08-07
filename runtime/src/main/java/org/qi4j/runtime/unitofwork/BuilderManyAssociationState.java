@@ -16,8 +16,6 @@ package org.qi4j.runtime.unitofwork;
 
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.ManyAssociationState;
-import org.qi4j.spi.entity.StateName;
-import org.qi4j.runtime.unitofwork.EntityStateChanges;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,14 +29,9 @@ public final class BuilderManyAssociationState
     implements ManyAssociationState
 {
     private List<EntityReference> references;
-    private StateName name;
-    private EntityStateChanges changes;
 
-    public BuilderManyAssociationState( StateName name, ManyAssociationState state, EntityStateChanges changes )
+    public BuilderManyAssociationState( ManyAssociationState state)
     {
-        this.name = name;
-        this.changes = changes;
-
         // Copy
         for( int i = 0; i < state.count(); i++ )
         {
@@ -46,10 +39,8 @@ public final class BuilderManyAssociationState
         }
     }
 
-    public BuilderManyAssociationState( StateName name, EntityStateChanges changes )
+    public BuilderManyAssociationState()
     {
-        this.name = name;
-        this.changes = changes;
         references = new ArrayList<EntityReference>();
     }
 
@@ -71,18 +62,12 @@ public final class BuilderManyAssociationState
         }
 
         references.add( i, entityReference );
-        changes.added( name, i, entityReference );
         return true;
     }
 
     public boolean remove( EntityReference entityReference )
     {
-        boolean removed = references.remove( entityReference );
-        if( removed )
-        {
-            changes.removed( name, entityReference );
-        }
-        return removed;
+        return references.remove( entityReference );
     }
 
     public EntityReference get( int i )

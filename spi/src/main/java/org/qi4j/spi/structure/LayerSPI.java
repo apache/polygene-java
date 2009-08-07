@@ -15,11 +15,12 @@
 package org.qi4j.spi.structure;
 
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.structure.Layer;
 
 /**
  * JAVADOC
  */
 public interface LayerSPI
-    extends Activatable
+    extends Layer, Activatable
 {
 }

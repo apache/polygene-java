@@ -12,31 +12,36 @@
  *
  */
 
-package org.qi4j.runtime.bootstrap.migration;
-
-import org.qi4j.bootstrap.MigrationAssembly;
-import org.qi4j.bootstrap.EntityMigrationDeclaration;
+package org.qi4j.spi.entity.helpers.json;
 
 /**
- * JAVADOC
+ * The JSONException is thrown by the JSON.org classes then things are amiss.
+ *
+ * @author JSON.org
+ * @version 2008-09-18
  */
-public class MigrationAssemblyImpl
-    implements MigrationAssembly
+public class JSONException extends Exception
 {
-    MigrationImpl migration = new MigrationImpl();
+    private Throwable cause;
 
-    public EntityMigrationDeclaration migrate(String fromVersion, String toVersion)
+    /**
+     * Constructs a JSONException with an explanatory message.
+     *
+     * @param message Detail about the reason for the exception.
+     */
+    public JSONException(String message)
     {
-        return new EntityMigrationDeclarationImpl(fromVersion, toVersion, migration);
+        super(message);
     }
 
-    public EntityMigrationDeclaration defaultMigration()
+    public JSONException(Throwable t)
     {
-        return new EntityMigrationDeclarationImpl(migration);
+        super(t.getMessage());
+        this.cause = t;
     }
 
-    public MigrationImpl getMigration()
+    public Throwable getCause()
     {
-        return migration;
+        return this.cause;
     }
 }

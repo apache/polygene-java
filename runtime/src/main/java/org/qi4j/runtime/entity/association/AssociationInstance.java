@@ -21,7 +21,6 @@ import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.StateName;
 
 import java.lang.reflect.Type;
 
@@ -47,7 +46,7 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
     {
         if( !isSet() )
         {
-            EntityReference entityId = entityState.getAssociation( stateName() );
+            EntityReference entityId = entityState.getAssociation( qualifiedName() );
             value = getEntity( entityId );
         }
         return value;
@@ -64,7 +63,7 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
         // Change association
         if( entityState != null )
         {
-            entityState.setAssociation( stateName(), getEntityReference( newValue ) );
+            entityState.setAssociation( qualifiedName(), getEntityReference( newValue ) );
         }
         this.value = newValue;
     }
@@ -148,11 +147,5 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
     public void refresh()
     {
         value = (T) NOT_LOADED;
-    }
-
-
-    protected StateName stateName()
-    {
-        return ( (AssociationModel) constraints ).associationType().stateName();
     }
 }

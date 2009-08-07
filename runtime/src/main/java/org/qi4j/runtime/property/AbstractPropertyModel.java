@@ -19,7 +19,6 @@ import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.entity.RDF;
 import org.qi4j.api.property.Computed;
 import org.qi4j.api.property.ComputedPropertyInstance;
 import org.qi4j.api.property.GenericPropertyInfo;
@@ -59,8 +58,6 @@ public abstract class AbstractPropertyModel
 
     private final QualifiedName qualifiedName;
 
-    private final String rdf;
-
     private final ValueConstraintsInstance constraints; // May be null
 
     protected final MetaInfo metaInfo;
@@ -90,9 +87,6 @@ public abstract class AbstractPropertyModel
         useDefaults = this.metaInfo.get( UseDefaults.class ) != null;
 
         this.initialValue = initialValue;
-
-        RDF uriAnnotation = this.metaInfo.get( RDF.class );
-        rdf = uriAnnotation == null ? null : uriAnnotation.value();
 
         this.constraints = constraints;
 
@@ -148,11 +142,6 @@ public abstract class AbstractPropertyModel
         }
 
         return value;
-    }
-
-    public String toRDF()
-    {
-        return rdf;
     }
 
     public void bind( Resolution resolution ) throws BindingException

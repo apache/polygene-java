@@ -24,6 +24,4 @@ public interface ApplicationSPI
     extends Application, Activatable
 {
     void visitDescriptor( DescriptorVisitor visitor );
-
-    void migrate();
 }

@@ -14,48 +14,47 @@
 
 package org.qi4j.entitystore.map;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityStoreException;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 
 /**
  * JAVADOC
  */
 public interface MapEntityStore
 {
-    boolean contains( EntityReference entityReference, Usecase usecase, MetaInfo unitofwork )
+    boolean contains( EntityReference entityReference)
         throws EntityStoreException;
 
-    InputStream get( EntityReference entityReference, Usecase usecase, MetaInfo unitOfWork )
+    Reader get( EntityReference entityReference)
         throws EntityStoreException;
 
-    void visitMap( MapEntityStoreVisitor visitor, Usecase usecase, MetaInfo unitOfWorkMetaInfo );
+    void visitMap( MapEntityStoreVisitor visitor);
 
     interface MapEntityStoreVisitor
     {
-        void visitEntity( InputStream entityState );
+        void visitEntity( Reader entityState );
     }
 
-    void applyChanges( MapChanges changes, Usecase usecase, MetaInfo unitOfWork )
+    void applyChanges( MapChanges changes)
         throws IOException;
 
     interface MapChanges
     {
-        void visitMap( MapChanger changer, Usecase usecase, MetaInfo unitOfWorkMetaInfo )
+        void visitMap( MapChanger changer)
             throws IOException;
     }
 
     interface MapChanger
     {
-        OutputStream newEntity( EntityReference ref )
+        Writer newEntity( EntityReference ref )
             throws IOException;
 
-        OutputStream updateEntity( EntityReference ref )
+        Writer updateEntity( EntityReference ref )
             throws IOException;
 
         void removeEntity( EntityReference ref )

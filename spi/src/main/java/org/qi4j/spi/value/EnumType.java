@@ -14,10 +14,12 @@
 
 package org.qi4j.spi.value;
 
-import java.lang.reflect.Type;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
-import org.qi4j.spi.util.PeekableStringTokenizer;
+import org.qi4j.spi.entity.helpers.json.JSONException;
+import org.qi4j.spi.entity.helpers.json.JSONWriter;
+
+import java.lang.reflect.Type;
 
 /**
  * Enumeration type
@@ -40,39 +42,14 @@ public final class EnumType
         super( type );
     }
 
-    public void toJSON( Object value, StringBuilder json )
+    public void toJSON( Object value, JSONWriter json ) throws JSONException
     {
-        json.append( '"' );
-        String stringValue = value.toString();
-        int len = stringValue.length();
-        for( int i = 0; i < len; i++ )
-        {
-            char ch = stringValue.charAt( i );
-            // Escape characters properly
-            switch( ch )
-            {
-            case '"':
-                json.append( '\\' ).append( '"' );
-                break;
-            case '\\':
-                json.append( '\\' ).append( '\\' );
-                break;
-
-            // TODO Control characters
-
-            default:
-                json.append( ch );
-            }
-        }
-        json.append( '"' );
+        json.value(value.toString());
     }
 
-    public Object fromJSON( PeekableStringTokenizer json, Module module )
+    public Object fromJSON( Object json, Module module )
     {
-        String token = json.nextToken( "\"" );
-        String result = json.nextToken();
-
-        token = json.nextToken();
+        String result = (String) json;
 
         return fromQueryParameter( result, module );
     }

@@ -14,19 +14,22 @@
 
 package org.qi4j.spi.value;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.spi.entity.helpers.json.JSONException;
+import org.qi4j.spi.entity.helpers.json.JSONWriter;
 import org.qi4j.spi.util.Base64Encoder;
 import org.qi4j.spi.util.PeekableStringTokenizer;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 /**
  * Serializable type. If the serialized object is an ValueComposite,
@@ -41,7 +44,7 @@ public final class SerializableType
         super( type );
     }
 
-    public void toJSON( Object value, StringBuilder json )
+    public void toJSON( Object value, JSONWriter json ) throws JSONException
     {
         // Check if we are serializing an Entity
         if( value instanceof EntityComposite )
@@ -63,7 +66,7 @@ public final class SerializableType
             out.close();
             byte[] bytes = Base64Encoder.encode( bout.toByteArray(), true );
             String stringValue = new String( bytes, "UTF-8" );
-            json.append( '"' ).append( stringValue ).append( '"' );
+            json.value(stringValue);
         }
         catch( IOException e )
         {
@@ -72,13 +75,12 @@ public final class SerializableType
 
     }
 
-    public Object fromJSON( PeekableStringTokenizer json, Module module )
+    public Object fromJSON( Object json, Module module )
     {
         try
         {
-            String token = json.nextToken( "\"" );
-            token = json.nextToken();
-            byte[] bytes = token.getBytes( "UTF-8" );
+            String serializedString  = (String) json;
+            byte[] bytes = serializedString.getBytes( "UTF-8" );
             bytes = Base64Encoder.decode( bytes );
             ByteArrayInputStream bin = new ByteArrayInputStream( bytes );
             ObjectInputStream oin = new ObjectInputStream( bin );
@@ -104,8 +106,6 @@ public final class SerializableType
                 Class valueType = module.classLoader().loadClass( type.name() );
                 result = module.valueBuilderFactory().newValueFromJSON( valueType, jsonValue );
             }
-
-            token = json.nextToken();
 
             return result;
         }

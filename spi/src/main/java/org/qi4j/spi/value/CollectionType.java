@@ -14,17 +14,19 @@
 
 package org.qi4j.spi.value;
 
+import org.qi4j.api.common.TypeName;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.util.Classes;
+import org.qi4j.spi.entity.helpers.json.JSONArray;
+import org.qi4j.spi.entity.helpers.json.JSONException;
+import org.qi4j.spi.entity.helpers.json.JSONWriter;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import org.qi4j.api.common.TypeName;
-import org.qi4j.api.structure.Module;
-import org.qi4j.api.util.Classes;
-import org.qi4j.spi.entity.SchemaVersion;
-import org.qi4j.spi.util.PeekableStringTokenizer;
 
 /**
  * Collection type
@@ -51,36 +53,27 @@ public final class CollectionType
         return collectedType;
     }
 
-    public void versionize( SchemaVersion schemaVersion )
-    {
-        super.versionize( schemaVersion );
-        collectedType.versionize( schemaVersion );
-    }
-
     @Override public String toString()
     {
         return type() + "<" + collectedType + ">";
     }
 
-    public void toJSON( Object value, StringBuilder json )
+    public void toJSON( Object value, JSONWriter json ) throws JSONException
     {
-        json.append( '[' );
+        json.array();
 
         Collection collection = (Collection) value;
-        String comma = "";
         for( Object collectionValue : collection )
         {
-            json.append( comma );
             collectedType.toJSON( collectionValue, json );
-            comma = ",";
         }
 
-        json.append( "]" );
+        json.endArray();
     }
 
-    public Object fromJSON( PeekableStringTokenizer json, Module module )
+    public Object fromJSON( Object json, Module module ) throws JSONException
     {
-        String token = json.nextToken( "[" );
+        JSONArray array = (JSONArray) json;
 
         Collection<Object> coll;
         if( type().isClass( List.class ) )
@@ -92,28 +85,10 @@ public final class CollectionType
             coll = new LinkedHashSet<Object>();
         }
 
-        token = json.peekNextToken( "]{\"," );
-
-        if( token.equals( "]" ) )
+        for (int i = 0; i < array.length(); i++)
         {
-            // Empty collection
-            token = json.nextToken();
-        }
-        else
-        {
-
-            while( !token.equals( "]" ) )
-            {
-                if( token.equals( "null" ) )
-                {
-                    coll.add( null );
-                }
-                else
-                {
-                    coll.add( collectedType.fromJSON( json, module ) );
-                }
-                token = json.nextToken( ",]" );
-            }
+            Object value = array.get(i);
+            coll.add(collectedType.fromJSON(value, module));
         }
 
         return coll;

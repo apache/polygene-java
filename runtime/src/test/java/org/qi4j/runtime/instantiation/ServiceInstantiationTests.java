@@ -30,7 +30,6 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.spi.entity.typeregistry.EntityTypeRegistryService;
 
 public class ServiceInstantiationTests extends AbstractQi4jTest
 {
@@ -40,7 +39,6 @@ public class ServiceInstantiationTests extends AbstractQi4jTest
         module.addEntities( MyConfigurationEntity.class );
         module.addServices( MyService.class );
         module.addServices( MemoryEntityStoreService.class );
-        module.addServices( EntityTypeRegistryService.class );
     }
 
     @Test
