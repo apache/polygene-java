@@ -133,9 +133,10 @@ public final class DefaultEntityState
 
     public void refresh()
     {
-        if( status == EntityStatus.LOADED )
+        if( status == EntityStatus.LOADED || status == EntityStatus.UPDATED)
         {
             unitOfWork.refresh( this );
+            status = EntityStatus.LOADED;
         }
     }
 

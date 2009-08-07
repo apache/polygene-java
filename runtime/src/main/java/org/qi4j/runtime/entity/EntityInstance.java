@@ -183,7 +183,7 @@ public final class EntityInstance
 
     public void refresh()
     {
-        if( status() == EntityStatus.LOADED && entityState != null )
+        if( (status() == EntityStatus.LOADED || status() == EntityStatus.UPDATED) && entityState != null )
         {
             String oldVersion = entityState.version();
             uow.instance().refresh( identity );

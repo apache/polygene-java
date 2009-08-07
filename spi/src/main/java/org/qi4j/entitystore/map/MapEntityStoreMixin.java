@@ -42,6 +42,7 @@ public final class MapEntityStoreMixin
     implements EntityStore, EntityStoreSPI, Activatable
 {
     private @This MapEntityStore mapEntityStore;
+    private @This EntityStoreSPI entityStoreSpi;
 
     protected String uuid;
     private int count;
@@ -59,7 +60,7 @@ public final class MapEntityStoreMixin
     // EntityStore
     public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo, ModuleSPI module )
     {
-        return new DefaultEntityStoreUnitOfWork(this, newUnitOfWorkId(), module);
+        return new DefaultEntityStoreUnitOfWork(entityStoreSpi, newUnitOfWorkId(), module);
     }
 
     // EntityStoreSPI
@@ -169,7 +170,7 @@ public final class MapEntityStoreMixin
 
     public EntityStoreUnitOfWork visitEntityStates(final EntityStateVisitor visitor, ModuleSPI moduleInstance)
     {
-        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork(this, newUnitOfWorkId(), moduleInstance);
+        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork(entityStoreSpi, newUnitOfWorkId(), moduleInstance);
 
         mapEntityStore.visitMap( new MapEntityStore.MapEntityStoreVisitor()
         {
