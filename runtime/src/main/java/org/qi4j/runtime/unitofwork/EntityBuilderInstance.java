@@ -100,7 +100,6 @@ public final class EntityBuilderInstance<T>
         throws LifecycleException
     {
         String identity;
-        String identityJson;
 
         // Figure out whether to use given or generated identity
         EntityState newEntityState;
@@ -108,14 +107,13 @@ public final class EntityBuilderInstance<T>
         {
             Class compositeType = entityModel.type();
             identity = identityGenerator.generate( compositeType );
-            identityJson = '\"' + identity + '\"';
             newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ));
         }
         else
         {
-            identityJson = (String) entityState.getProperty( identityStateName );
+            identity = (String) entityState.getProperty( identityStateName );
 
-            if (identityJson == null)
+            if (identity == null)
             {
                 identity = this.identity;
 
@@ -123,12 +121,8 @@ public final class EntityBuilderInstance<T>
                     throw new ConstructionException("No identity set and no identity generator specified");
 
                 newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ));
-                identityJson = identity;
-                newEntityState.setProperty( identityStateName, identityJson );
             } else
             {
-                identity = identityJson;
-                
                 newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ));
             }
 

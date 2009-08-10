@@ -229,7 +229,7 @@ public final class EntityModel
 
             // Set identity property
             PropertyTypeDescriptor propertyDescriptor = state().getPropertyByQualifiedName( QualifiedName.fromMethod( IDENTITY_METHOD ) );
-            entityState.setProperty( propertyDescriptor.propertyType().qualifiedName(), '\"' + identity.identity() + '\"' );
+            entityState.setProperty( propertyDescriptor.propertyType().qualifiedName(), identity.identity() );
 
             return entityState;
         }

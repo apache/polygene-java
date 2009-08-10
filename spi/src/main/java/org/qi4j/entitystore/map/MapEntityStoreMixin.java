@@ -13,9 +13,11 @@ import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.association.AssociationType;
+import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.entity.helpers.DefaultEntityState;
 import org.qi4j.spi.entity.helpers.DefaultEntityStoreUnitOfWork;
 import org.qi4j.spi.entity.helpers.EntityStoreSPI;
+import org.qi4j.spi.entity.helpers.json.JSONArray;
 import org.qi4j.spi.entity.helpers.json.JSONException;
 import org.qi4j.spi.entity.helpers.json.JSONObject;
 import org.qi4j.spi.entity.helpers.json.JSONTokener;
@@ -31,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
@@ -144,7 +147,13 @@ public final class MapEntityStoreMixin
         {
             Object value = state.properties().get(propertyType.qualifiedName());
             json.key(propertyType.qualifiedName().name());
-            propertyType.type().toJSON(value, json);
+            if (value == null)
+            {
+                json.value(null);
+            } else
+            {
+                propertyType.type().toJSON(value, json);
+            }
         }
 
         JSONWriter associations = properties.endObject().key("associations").object();
@@ -230,6 +239,21 @@ public final class MapEntityStoreMixin
                 associations.put(associationType.qualifiedName(), value);
             }
 
+            JSONObject manyAssocs = jsonObject.getJSONObject("manyassociations");
+            Map<QualifiedName, List<EntityReference>> manyAssociations = new HashMap<QualifiedName, List<EntityReference>>();
+            for (ManyAssociationType manyAssociationType : entityType.manyAssociations())
+            {
+                List<EntityReference> references = new ArrayList<EntityReference>();
+                JSONArray jsonValues = manyAssocs.getJSONArray(manyAssociationType.qualifiedName().name());
+                for (int i = 0; i < jsonValues.length(); i ++)
+                {
+                    Object jsonValue = jsonValues.getString(i);
+                    EntityReference value = jsonValue == JSONObject.NULL ? null: EntityReference.parseEntityReference((String) jsonValue);
+                    references.add(value);
+                }
+                manyAssociations.put(manyAssociationType.qualifiedName(), references);
+            }
+
             return new DefaultEntityState(unitOfWork,
                     jsonObject.getString("version"),
                     jsonObject.getLong("modified"),
@@ -238,7 +262,7 @@ public final class MapEntityStoreMixin
                     entityType,
                     properties,
                     associations,
-                    new HashMap<QualifiedName, List<EntityReference>>() // TODO!!!!
+                    manyAssociations
                     );
         } catch (JSONException e)
         {

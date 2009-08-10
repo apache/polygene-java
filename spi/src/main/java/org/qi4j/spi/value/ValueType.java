@@ -191,12 +191,15 @@ public abstract class ValueType
         JSONStringer jsonStringer = new JSONStringer();
         try
         {
+            jsonStringer.array();
             toJSON( value, jsonStringer);
+            jsonStringer.endArray();
         } catch (JSONException e)
         {
             throw new IllegalArgumentException("Query parameter value is not a proper JSON value", e);
         }
-        return jsonStringer.toString();
+        String str = jsonStringer.toString();
+        return str.substring(1, str.length()-1);
     }
 
     public Object fromQueryParameter( String parameter, Module module )
