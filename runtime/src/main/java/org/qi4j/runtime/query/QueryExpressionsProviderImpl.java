@@ -27,6 +27,7 @@ import org.qi4j.runtime.query.proxy.ManyAssociationReferenceProxy;
 import org.qi4j.runtime.query.proxy.MixinTypeProxy;
 
 import static java.lang.reflect.Proxy.*;
+import java.util.Collection;
 
 public class QueryExpressionsProviderImpl
     implements QueryExpressionsProvider
@@ -188,5 +189,15 @@ public class QueryExpressionsProviderImpl
             (ManyAssociationReferenceProxy) getInvocationHandler( association );
 
         return (T) manyAssociationReferenceProxy.getAnyProxy();
+    }
+
+    public <T> ContainsAllPredicate<T> newContainsAllPredicate( PropertyReference<Collection<T>> propertyRef, SingleValueExpression<Collection<T>> collectionValues )
+    {
+        return new ContainsAllPredicateImpl( propertyRef, collectionValues );
+    }
+
+    public <T> ContainsPredicate<T> newContainsPredicate( PropertyReference<Collection<T>> propertyRef, SingleValueExpression<T> singleValueExpression )
+    {
+        return new ContainsPredicateImpl( propertyRef, singleValueExpression );
     }
 }

@@ -14,11 +14,11 @@
 
 package org.qi4j.runtime.property;
 
-import org.qi4j.api.property.Property;
-import org.qi4j.api.property.StateHolder;
-
 import java.lang.reflect.Method;
 import java.util.Map;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.property.StateHolder;
 
 /**
  * Collection of Property instances.
@@ -36,6 +36,18 @@ public class PropertiesInstance
     public <T> Property<T> getProperty( Method propertyMethod )
     {
         return (Property<T>) properties.get( propertyMethod );
+    }
+
+    public <T> Property<T> getProperty( QualifiedName name )
+    {
+        for( Property property : properties.values() )
+        {
+            if( property.qualifiedName().equals( name ) )
+            {
+                return property;
+            }
+        }
+        return null; // indicate with null that it has not been found.
     }
 
     public void visitProperties( StateVisitor visitor )
@@ -59,13 +71,8 @@ public class PropertiesInstance
         }
 
         PropertiesInstance that = (PropertiesInstance) o;
+        return properties.equals( that.properties );
 
-        if( !properties.equals( that.properties ) )
-        {
-            return false;
-        }
-
-        return true;
     }
 
     @Override

@@ -17,17 +17,14 @@
  */
 package org.qi4j.runtime.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Assert;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.util.CyclicUsageException;
 import org.qi4j.api.util.UsageGraph;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class UsageGraphTest
@@ -348,63 +345,6 @@ public class UsageGraphTest
         // The cyclic nodes can not be determine which one is before the other
     }
 
-    @Test
-    @Ignore( "What is this supposed to do anyway???" )
-    public void when100LevelsOfNodesWith100NodesOnEachLevelThenTakeLessThanOneMilliSecond()
-        throws Exception
-    {
-        long timeSpent = createThingGraph( 1 );
-        assertTrue( timeSpent < 10 );
-        timeSpent = createThingGraph( 2 );
-        assertTrue( timeSpent < 10 );
-        timeSpent = createThingGraph( 3 );
-        assertTrue( timeSpent < 10 );
-        timeSpent = createThingGraph( 4 );
-        assertTrue( timeSpent < 100 );
-        timeSpent = createThingGraph( 5 );
-        assertTrue( timeSpent < 100 );
-        timeSpent = createThingGraph( 6 );
-        assertTrue( timeSpent < 100 );
-        timeSpent = createThingGraph( 7 );
-        assertTrue( timeSpent < 1000 );
-        timeSpent = createThingGraph( 8 );
-        assertTrue( timeSpent < 1000 );
-        timeSpent = createThingGraph( 9 );
-        assertTrue( timeSpent < 2000 );
-    }
-
-    private long createThingGraph( int maxLevels )
-    {
-        ArrayList<Thing> all = new ArrayList<Thing>();
-        long t0 = System.currentTimeMillis();
-        Thing root = createThing( all, 0, maxLevels );
-        long t1 = System.currentTimeMillis();
-        long timeSpent = t1 - t0;
-        String countText = "" + ( Thing.counter - 1 );
-        System.out.print( countText );
-        int len = countText.length();
-        for( int i = 20 - ( len < 20 ? len : 20 ); i > 0; i-- )
-        {
-            System.out.print( " " );
-        }
-        System.out.println( timeSpent + "ms" );
-        Thing.counter = 1;
-        return timeSpent;
-    }
-
-    private Thing createThing( ArrayList<Thing> all, int level, int maxLevels )
-    {
-        Thing thing = new Thing();
-        if( level < maxLevels )
-        {
-            for( int i = 0; i < 4; i++ )
-            {
-                Thing child = createThing( all, level + 1, maxLevels );
-                thing.uses.add( child );
-            }
-        }
-        return thing;
-    }
 
     public class Userator
         implements UsageGraph.Use<Thing>

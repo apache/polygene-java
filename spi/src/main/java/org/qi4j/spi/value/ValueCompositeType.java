@@ -160,6 +160,11 @@ public final class ValueCompositeType
                     return null;
                 }
 
+                public <T> Property<T> getProperty( QualifiedName name )
+                {
+                    return null;
+                }
+
                 public void visitProperties( StateVisitor visitor )
                 {
                     for( Map.Entry<QualifiedName, Object> qualifiedNameObjectEntry : values.entrySet() )

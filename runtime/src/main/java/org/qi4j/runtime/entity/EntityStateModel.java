@@ -14,6 +14,9 @@
 
 package org.qi4j.runtime.entity;
 
+import java.lang.reflect.Method;
+import java.util.Set;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.entity.association.ManyAssociation;
@@ -32,9 +35,6 @@ import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
 
-import java.lang.reflect.Method;
-import java.util.Set;
-
 /**
  * JAVADOC
  */
@@ -45,7 +45,9 @@ public final class EntityStateModel
     private final EntityAssociationsModel associationsModel;
     private EntityManyAssociationsModel manyAssociationsModel;
 
-    public EntityStateModel( EntityPropertiesModel propertiesModel, EntityAssociationsModel associationsModel, EntityManyAssociationsModel manyAssociationsModel )
+    public EntityStateModel( EntityPropertiesModel propertiesModel,
+                             EntityAssociationsModel associationsModel,
+                             EntityManyAssociationsModel manyAssociationsModel )
     {
         super( propertiesModel );
         this.associationsModel = associationsModel;
@@ -60,9 +62,9 @@ public final class EntityStateModel
                                         manyAssociationsModel.newInstance( entityState, uow ) );
     }
 
-    @Override public void addStateFor(Iterable<Method> methods, Class compositeType)
+    @Override public void addStateFor( Iterable<Method> methods, Class compositeType )
     {
-        super.addStateFor( methods, compositeType);
+        super.addStateFor( methods, compositeType );
         for( Method method : methods )
         {
             associationsModel.addAssociationFor( method );
@@ -128,6 +130,11 @@ public final class EntityStateModel
         public <T> Property<T> getProperty( Method accessor )
         {
             return entityPropertiesInstance.<T>getProperty( accessor );
+        }
+
+        public <T> Property<T> getProperty( QualifiedName name )
+        {
+            return entityPropertiesInstance.getProperty( name );
         }
 
         public <T> Association<T> getAssociation( Method accessor )

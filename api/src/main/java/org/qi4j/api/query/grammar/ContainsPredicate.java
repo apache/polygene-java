@@ -1,5 +1,4 @@
 /*
- * Copyright 2008 Alin Dreghiciu.
  * Copyright 2009 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
@@ -16,21 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.runtime.query.model;
 
-import org.qi4j.api.common.Optional;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.entity.association.ManyAssociation;
+package org.qi4j.api.query.grammar;
 
-/**
- * JAVADOC Add JavaDoc
- *
- */
-public interface Male
-    extends Person
+import java.util.Collection;
+
+public interface ContainsPredicate<T>
+    extends Predicate
 {
-    @Optional Association<Female> wife();
+    PropertyReference<Collection<T>> propertyReference();
 
-    @Optional ManyAssociation<Female> pastGirlFriends();
-
+    ValueExpression<T> valueExpression();
 }

@@ -20,6 +20,7 @@
  */
 package org.qi4j.api.query;
 
+import java.util.Collection;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
@@ -28,6 +29,8 @@ import org.qi4j.api.query.grammar.AssociationIsNullPredicate;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.Conjunction;
+import org.qi4j.api.query.grammar.ContainsAllPredicate;
+import org.qi4j.api.query.grammar.ContainsPredicate;
 import org.qi4j.api.query.grammar.Disjunction;
 import org.qi4j.api.query.grammar.EqualsPredicate;
 import org.qi4j.api.query.grammar.GreaterOrEqualPredicate;
@@ -412,6 +415,16 @@ public final class QueryExpressions
     public static Negation not( final BooleanExpression expression )
     {
         return provider.newNegation( expression );
+    }
+
+    public static <T> ContainsPredicate<T> contains( Property<Collection<T>> property, T value )
+    {
+        return provider.newContainsPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
+    }
+
+    public static <T> ContainsAllPredicate<T> containsAll( Property<Collection<T>> property, Collection<T> value )
+    {
+        return provider.newContainsAllPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
     }
 
     /**

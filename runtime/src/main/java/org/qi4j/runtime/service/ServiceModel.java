@@ -14,6 +14,15 @@
 
 package org.qi4j.runtime.service;
 
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.Visibility;
@@ -50,16 +59,6 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.service.ServiceDescriptor;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 /**
  * JAVADOC
  */
@@ -91,7 +90,7 @@ public final class ServiceModel
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
         CompositeMethodsModel compositeMethodsModel =
             new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
-        stateModel.addStateFor( compositeMethodsModel.methods(), compositeType);
+        stateModel.addStateFor( compositeMethodsModel.methods(), compositeType );
 
         return new ServiceModel(
             compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, moduleName, identity, instantiateOnStartup );
@@ -216,7 +215,7 @@ public final class ServiceModel
         // Service has no state
         StateHolder stateHolder = new StateHolder()
         {
-            public <T> Property<T> getProperty( Method propertyMethod )
+            public <T> Property<T> getProperty( final Method propertyMethod )
             {
                 if( QualifiedName.fromMethod( propertyMethod ).equals( QualifiedName.fromClass( Identity.class, "identity" ) ) )
                 {
@@ -233,7 +232,20 @@ public final class ServiceModel
                             return null;
                         }
                     };
+
                 }
+            }
+
+            public <T> Property<T> getProperty( QualifiedName name )
+            {
+                // Create a dummy one...
+                return new ComputedPropertyInstance<T>( new GenericPropertyInfo( null, true, true, name, null ) )
+                {
+                    public T get()
+                    {
+                        return null;
+                    }
+                };
             }
 
             public void visitProperties( StateVisitor visitor )
