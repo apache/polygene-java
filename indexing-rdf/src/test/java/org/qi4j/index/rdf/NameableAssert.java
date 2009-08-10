@@ -46,7 +46,7 @@ public class NameableAssert
     public static void assertNames( boolean sort, Iterable<EntityReference> identitiesIterable, String... expectedNames )
     {
         final List<EntityReference> references = toList( identitiesIterable );
-        assertEquals( expectedNames.length + " entries", expectedNames.length, references.size() );
+        assertEquals( expectedNames.length + " entries("+expectedNames.length+", got "+getNames(references)+")", expectedNames.length, references.size() );
         List<String> sortedNames = getNames( references );
         final List<String> expectedSorted = java.util.Arrays.asList( expectedNames );
         if( sort )

@@ -34,7 +34,7 @@ enum CollectionFactory implements BackendFactory
                 @Override
                 ManyAssociationState createNodeCollection(ManyAssociationFactory factory, DirectEntityState state, NeoService neo, NeoIdentityIndex idIndex)
                 {
-                    return new DirectIdentityList(neo, idIndex, state, factory.getStateName());
+                    return new DirectIdentityList(neo, idIndex, state, factory.getQualifiedName());
                 }
 
                 IndirectCollection createPreloadedCollection(Collection<EntityReference> manyAssociation)
@@ -87,7 +87,7 @@ enum CollectionFactory implements BackendFactory
 
     ManyAssociationState createNodeCollection(ManyAssociationFactory factory, DirectEntityState state, NeoService neo, NeoIdentityIndex idIndex)
     {
-        return new DirectUnorderedCollection(idIndex, checker, state, factory.getStateName());
+        return new DirectUnorderedCollection(idIndex, checker, state, factory.getQualifiedName());
     }
 
 }

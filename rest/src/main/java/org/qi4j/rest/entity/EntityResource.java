@@ -50,15 +50,11 @@ import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.EntityTypeReference;
-import org.qi4j.spi.entity.EntityTypeRegistry;
 import org.qi4j.spi.entity.ManyAssociationState;
-import org.qi4j.spi.entity.StateName;
 import org.qi4j.spi.entity.UnknownEntityTypeException;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.serialization.SerializableState;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
@@ -77,7 +73,7 @@ import org.restlet.resource.ServerResource;
 
 public class EntityResource extends ServerResource
 {
-    public static Object toValue( String stringValue, QualifiedName propertyName, TypeName propertyType )
+/*    public static Object toValue( String stringValue, QualifiedName propertyName, TypeName propertyType )
         throws IllegalArgumentException
     {
         Object newValue = null;
@@ -399,9 +395,9 @@ public class EntityResource extends ServerResource
         return post( representation, variant );
     }
 
-    /**
+    *//**
      * Handle PUT requests.
-     */
+     *//*
     @Override
     public Representation post( Representation entityRepresentation, Variant variant )
         throws ResourceException
@@ -504,5 +500,5 @@ public class EntityResource extends ServerResource
         getResponse().setStatus( Status.SUCCESS_RESET_CONTENT );
 
         return new EmptyRepresentation();
-    }
+    }*/
 }

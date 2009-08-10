@@ -17,10 +17,9 @@
 package org.qi4j.entitystore.neo4j.state;
 
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityTypeReference;
 import org.qi4j.spi.entity.ManyAssociationState;
-import org.qi4j.spi.entity.StateName;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,9 +38,9 @@ public class IndirectEntityState
     private EntityStatus status;
 
     // Properties and manyAssociations
-    private final Map<StateName, Holder<String>> properties = new HashMap<StateName, Holder<String>>();
-    private final Map<StateName, Holder<EntityReference>> associations = new HashMap<StateName, Holder<EntityReference>>();
-    private final Map<StateName, IndirectCollection> manyAssociations = new HashMap<StateName, IndirectCollection>();
+    private final Map<QualifiedName, Holder<String>> properties = new HashMap<QualifiedName, Holder<String>>();
+    private final Map<QualifiedName, Holder<EntityReference>> associations = new HashMap<QualifiedName, Holder<EntityReference>>();
+    private final Map<QualifiedName, IndirectCollection> manyAssociations = new HashMap<QualifiedName, IndirectCollection>();
     private boolean loaded = false;
 
     public IndirectEntityState(DirectEntityState state)
@@ -160,45 +159,27 @@ public class IndirectEntityState
         return status;
     }
 
-    public void addEntityTypeReference(EntityTypeReference type)
-    {
-    }
-
-    public void removeEntityTypeReference(EntityTypeReference type)
-    {
-    }
-
-    public boolean hasEntityTypeReference(EntityTypeReference type)
-    {
-        return false;
-    }
-
-    public Set<EntityTypeReference> entityTypeReferences()
-    {
-        return null;
-    }
-
-    public String getProperty(StateName qualifiedName)
+    public String getProperty(QualifiedName qualifiedName)
     {
         return properties.get(qualifiedName).value;
     }
 
-    public void setProperty(StateName qualifiedName, String newValue)
+    public void setProperty(QualifiedName qualifiedName, String newValue)
     {
         properties.get(qualifiedName).set(newValue);
     }
 
-    public EntityReference getAssociation(StateName qualifiedName)
+    public EntityReference getAssociation(QualifiedName qualifiedName)
     {
         return associations.get(qualifiedName).value;
     }
 
-    public void setAssociation(StateName qualifiedName, EntityReference newEntity)
+    public void setAssociation(QualifiedName qualifiedName, EntityReference newEntity)
     {
         associations.get(qualifiedName).set(newEntity);
     }
 
-    public ManyAssociationState getManyAssociation(StateName qualifiedName)
+    public ManyAssociationState getManyAssociation(QualifiedName qualifiedName)
     {
         return null; // manyAssociations.get(qualifiedName);
     }

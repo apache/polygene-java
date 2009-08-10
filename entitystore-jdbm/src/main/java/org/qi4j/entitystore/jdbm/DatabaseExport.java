@@ -12,18 +12,20 @@
  *
  */
 
-package org.qi4j.rest.client;
+package org.qi4j.entitystore.jdbm;
 
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.spi.entity.EntityTypeRegistry;
+import java.io.Writer;
+import java.io.IOException;
 
 /**
- * JAVADOC
+ * Export database, using the JSON format.
  */
-@Mixins( RESTEntityTypeRegistryMixin.class )
-public interface RESTEntityTypeRegistryService
-    extends EntityTypeRegistry, ServiceComposite, Activatable
+public interface DatabaseExport
 {
+    /**
+     * Export data to the writer, with one line per object, in JSON format.
+     *
+     * @param out
+     */
+    void exportTo( Writer out) throws IOException;
 }

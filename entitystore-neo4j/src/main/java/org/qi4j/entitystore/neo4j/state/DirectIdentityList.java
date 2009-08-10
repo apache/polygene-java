@@ -18,9 +18,9 @@ package org.qi4j.entitystore.neo4j.state;
 
 import org.neo4j.api.core.*;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.ManyAssociationState;
-import org.qi4j.spi.entity.StateName;
 
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -36,17 +36,17 @@ public class DirectIdentityList implements ManyAssociationState
     private final RelationshipType internalType;
     private final RelationshipType startType;
     private final RelationshipType endType;
-    private final StateName stateName;
+    private final QualifiedName stateName;
     private final NeoIdentityIndex idIndex;
 
-    public DirectIdentityList(NeoService neo, NeoIdentityIndex idIndex, DirectEntityState state, StateName stateName)
+    public DirectIdentityList(NeoService neo, NeoIdentityIndex idIndex, DirectEntityState state, QualifiedName stateName)
     {
         this.neo = neo;
         this.state = state;
         this.stateName = stateName;
-        this.internalType = LinkType.INTERNAL.getRelationshipType(stateName.qualifiedName().name());
-        this.startType = LinkType.START.getRelationshipType(this.stateName.qualifiedName().name());
-        this.endType = LinkType.END.getRelationshipType(this.stateName.qualifiedName().name());
+        this.internalType = LinkType.INTERNAL.getRelationshipType(stateName.name());
+        this.startType = LinkType.START.getRelationshipType(this.stateName.name());
+        this.endType = LinkType.END.getRelationshipType(this.stateName.name());
         this.idIndex = idIndex;
     }
 
@@ -384,6 +384,6 @@ public class DirectIdentityList implements ManyAssociationState
 
     private void changeSizeBy(int delta)
     {
-        state.setSizeOfCollection(stateName.qualifiedName(), count() + delta);
+        state.setSizeOfCollection(stateName, count() + delta);
     }
 }

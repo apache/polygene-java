@@ -26,7 +26,6 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
-import org.qi4j.spi.entity.typeregistry.EntityTypeRegistryService;
 
 /**
  * JAVADOC
@@ -36,11 +35,11 @@ public class JdbmEntityStoreTest extends AbstractEntityStoreTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         super.assemble( module );
-        module.addServices( JdbmEntityStoreService.class, UuidIdentityGeneratorService.class, EntityTypeRegistryService.class );
+        module.addServices( JdbmEntityStoreService.class, UuidIdentityGeneratorService.class );
 
         ModuleAssembly config = module.layerAssembly().newModuleAssembly( "config" );
         config.addEntities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
-        config.addServices( MemoryEntityStoreService.class, EntityTypeRegistryService.class );
+        config.addServices( MemoryEntityStoreService.class );
     }
 
     @Test

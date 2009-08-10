@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="Maven: org.restlet:org.restlet.ext.atom:2.0-M3">
     <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/org/restlet/org.restlet.ext.atom/2.0-M3/org.restlet.ext.atom-2.0-M3.jar!/" />
+      <root url="jar://$M2_REPO$/org/restlet/org.restlet.ext.atom/2.0-M3/org.restlet.ext.atom-2.0-M3.jar!/" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$MAVEN_REPOSITORY$/org/restlet/org.restlet.ext.atom/2.0-M3/org.restlet.ext.atom-2.0-M3-javadoc.jar!/" />
+      <root url="jar://$M2_REPO$/org/restlet/org.restlet.ext.atom/2.0-M3/org.restlet.ext.atom-2.0-M3-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$MAVEN_REPOSITORY$/org/restlet/org.restlet.ext.atom/2.0-M3/org.restlet.ext.atom-2.0-M3-sources.jar!/" />
+      <root url="jar://$M2_REPO$/org/restlet/org.restlet.ext.atom/2.0-M3/org.restlet.ext.atom-2.0-M3-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

@@ -22,6 +22,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
+import java.io.StringWriter;
 import java.util.Properties;
 import java.util.concurrent.locks.ReadWriteLock;
 import jdbm.RecordManager;
@@ -52,7 +56,7 @@ import org.qi4j.entitystore.map.MapEntityStore;
  * JDBM implementation of SerializationStore
  */
 public class JdbmEntityStoreMixin
-    implements Activatable, MapEntityStore
+    implements Activatable, MapEntityStore, DatabaseExport
 {
     @This private ReadWriteLock lock;
     @This private Configuration<JdbmConfiguration> config;
@@ -81,8 +85,7 @@ public class JdbmEntityStoreMixin
         recordManager.close();
     }
 
-    public boolean contains( EntityReference entityReference, Usecase usecase, MetaInfo unitofwork )
-        throws EntityStoreException
+    public boolean contains( EntityReference entityReference ) throws EntityStoreException
     {
         try
         {
@@ -95,8 +98,7 @@ public class JdbmEntityStoreMixin
         }
     }
 
-    public InputStream get( EntityReference entityReference, Usecase usecase, MetaInfo unitOfWork )
-        throws EntityStoreException
+    public Reader get( EntityReference entityReference ) throws EntityStoreException
     {
         try
         {
@@ -114,7 +116,7 @@ public class JdbmEntityStoreMixin
                 throw new EntityNotFoundException( entityReference );
             }
 
-            return new ByteArrayInputStream( serializedState );
+            return new StringReader( new String(serializedState, "UTF-8") );
         }
         catch( IOException e )
         {
@@ -122,22 +124,22 @@ public class JdbmEntityStoreMixin
         }
     }
 
-    public void applyChanges( MapChanges changes, Usecase usecase, MetaInfo unitOfWork )
+    public void applyChanges( MapChanges changes)
         throws IOException
     {
         try
         {
             changes.visitMap( new MapChanger()
             {
-                public OutputStream newEntity( final EntityReference ref ) throws IOException
+                public Writer newEntity( final EntityReference ref ) throws IOException
                 {
-                    return new ByteArrayOutputStream( 1000 )
+                    return new StringWriter( 1000 )
                     {
                         @Override public void close() throws IOException
                         {
                             super.close();
 
-                            byte[] stateArray = buf;
+                            byte[] stateArray = toString().getBytes( "UTF-8" );
                             long stateIndex = recordManager.insert( stateArray, serializer );
                             String indexKey = ref.toString();
                             index.insert( indexKey.getBytes( "UTF-8" ), stateIndex, false );
@@ -145,16 +147,16 @@ public class JdbmEntityStoreMixin
                     };
                 }
 
-                public OutputStream updateEntity( final EntityReference ref ) throws IOException
+                public Writer updateEntity( final EntityReference ref ) throws IOException
                 {
-                    return new ByteArrayOutputStream( 1000 )
+                    return new StringWriter( 1000 )
                     {
                         @Override public void close() throws IOException
                         {
                             super.close();
 
                             Long stateIndex = getStateIndex( ref.toString() );
-                            byte[] stateArray = toByteArray();
+                            byte[] stateArray = toString().getBytes( "UTF-8" );
                             recordManager.update( stateIndex, stateArray, serializer );
                         }
                     };
@@ -173,7 +175,7 @@ public class JdbmEntityStoreMixin
                         throw new EntityStoreException( e );
                     }
                 }
-            }, usecase, unitOfWork );
+            });
 
             recordManager.commit();
         }
@@ -199,7 +201,7 @@ public class JdbmEntityStoreMixin
     }
 
 
-    public void visitMap( MapEntityStoreVisitor visitor, Usecase usecase, MetaInfo unitOfWorkMetaInfo )
+    public void visitMap( MapEntityStoreVisitor visitor)
     {
         try
         {
@@ -219,12 +221,27 @@ public class JdbmEntityStoreMixin
 
                 byte[] serializedState = (byte[]) recordManager.fetch( stateIndex, serializer );
 
-                visitor.visitEntity( new ByteArrayInputStream( serializedState ) );
+                visitor.visitEntity( new StringReader( new String(serializedState, "UTF-8" ) ));
             }
         }
         catch( IOException e )
         {
             throw new EntityStoreException( e );
+        }
+    }
+
+    public void exportTo( Writer out )
+        throws IOException
+    {
+        TupleBrowser browser = index.browse();
+        Tuple tuple = new Tuple();
+        while (browser.getNext( tuple ))
+        {
+            Long stateIndex = (Long) tuple.getValue();
+            byte[] bytes = (byte[]) recordManager.fetch( stateIndex, serializer );
+            String value = new String(bytes, "UTF-8");
+            out.write( value );
+            out.write( '\n' );
         }
     }
 
