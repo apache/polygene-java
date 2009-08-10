@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,17 +12,15 @@
  *
  */
 
-package org.qi4j.runtime.bootstrap.migration;
+package org.qi4j.spi.unitofwork;
 
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityType;
 
 /**
- * Interface for migration rule implementations. When an Entity is found to have an outdated Entity version
- * the migration rules for converting the data from the current version to the desired version will be executed
- * on the EntityState of the Entity.
+ * Implement this interface in a Service if you want it to listen
+ * to changes from EntityStores.
  */
-interface MigrationRule
+public interface StateChangeListener
 {
-    void migrate(EntityState state, EntityType from, EntityType to);
+    void notifyChanges( Iterable<EntityState> changedStates );
 }

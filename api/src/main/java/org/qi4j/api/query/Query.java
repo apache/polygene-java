@@ -20,8 +20,9 @@
  */
 package org.qi4j.api.query;
 
-import java.io.Serializable;
 import org.qi4j.api.query.grammar.OrderBy;
+
+import java.io.Serializable;
 
 /**
  * This represents a Query in an indexing system. It is created from a

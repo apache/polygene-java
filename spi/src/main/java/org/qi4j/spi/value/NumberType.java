@@ -14,10 +14,12 @@
 
 package org.qi4j.spi.value;
 
-import java.lang.reflect.Type;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
-import org.qi4j.spi.util.PeekableStringTokenizer;
+import org.qi4j.spi.entity.helpers.json.JSONException;
+import org.qi4j.spi.entity.helpers.json.JSONWriter;
+
+import java.lang.reflect.Type;
 
 /**
  * Number type
@@ -40,33 +42,54 @@ public final class NumberType
         super( type );
     }
 
-    public void toJSON( Object value, StringBuilder json )
+    public void toJSON( Object value, JSONWriter json ) throws JSONException
     {
-        json.append( value.toString() );
-    }
-
-    public Object fromJSON( PeekableStringTokenizer json, Module module )
-    {
-        String token = json.nextToken();
+        Number number = (Number) value;
         if( type.isClass( Integer.class ) )
         {
-            return Integer.valueOf( token );
+            json.value(number.longValue());
         }
         else if( type.isClass( Long.class ) )
         {
-            return Long.valueOf( token );
+            json.value(number.longValue());
         }
         else if( type.isClass( Double.class ) )
         {
-            return Double.valueOf( token );
+            json.value(number.doubleValue());
         }
         else if( type.isClass( Float.class ) )
         {
-            return Float.valueOf( token );
+            json.value(number.doubleValue());
         }
         else if( type.isClass( Short.class ) )
         {
-            return Short.valueOf( token );
+            json.value(number.longValue());
+        }
+    }
+
+    public Object fromJSON( Object json, Module module )
+    {
+        Number number = (Number) json;
+
+        if( type.isClass( Integer.class ) )
+        {
+            return number.intValue();
+        }
+        else if( type.isClass( Long.class ) )
+        {
+            return number.longValue();
+        }
+        else if( type.isClass( Double.class ) )
+        {
+            return number.doubleValue();
+        }
+        else if( type.isClass( Float.class ) )
+        {
+            return number.floatValue();
+        }
+        else if( type.isClass( Short.class ) )
+        {
+            return number.shortValue();
         }
 
         throw new IllegalStateException( "Unknown number type:" + type );

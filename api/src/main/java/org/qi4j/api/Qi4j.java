@@ -32,7 +32,7 @@ public interface Qi4j
      * @param composite instance reference injected in Modified using @This
      * @return the dereferenced Composite
      */
-    <T extends Composite> T dereference( T composite );
+    <T> T dereference( T composite );
 
     /**
      * Get the super Composite of the given Composite. If one Composite

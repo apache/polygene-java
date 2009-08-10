@@ -14,12 +14,13 @@
 
 package org.qi4j.spi.entity;
 
-import java.io.Serializable;
-import java.util.Set;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
+
+import java.io.Serializable;
+import java.util.Set;
 
 /**
  * SPI-level description of an Entity type. This contains
@@ -32,18 +33,14 @@ public final class EntityType
     implements Serializable
 {
     private final TypeName type;
-    private final String version;
     private final String uri;
     private final boolean queryable;
     private final Set<PropertyType> properties;
     private final Set<AssociationType> associations;
     private final Set<ManyAssociationType> manyAssociations;
     private final Set<String> mixinTypes;
-    private final EntityTypeReference reference;
-    private final String rdf;
 
     public EntityType( final TypeName entityType,
-                       final String rdf,
                        final boolean queryable,
                        final Set<String> mixinTypes,
                        final Set<PropertyType> properties,
@@ -51,15 +48,12 @@ public final class EntityType
                        final Set<ManyAssociationType> manyAssociations )
     {
         this.type = entityType;
-        this.rdf = rdf;
         this.queryable = queryable;
         this.mixinTypes = mixinTypes;
         this.properties = properties;
         this.associations = associations;
         this.manyAssociations = manyAssociations;
-        this.version = calculateSchemaVersion();
-        this.uri = "urn:qi4j:type:" + version + ":" + entityType.normalized();
-        this.reference = new EntityTypeReference( type, rdf, version );
+        this.uri = "urn:qi4j:type:" + entityType.normalized();
     }
 
     public TypeName type()
@@ -72,24 +66,9 @@ public final class EntityType
         return mixinTypes;
     }
 
-    public String version()
-    {
-        return version;
-    }
-
-    public boolean isSameVersion( EntityType type )
-    {
-        return version.equals( type.version );
-    }
-
     public String uri()
     {
         return uri;
-    }
-
-    public String rdf()
-    {
-        return rdf;
     }
 
     public boolean queryable()
@@ -114,7 +93,7 @@ public final class EntityType
 
     @Override public String toString()
     {
-        return type + "(" + version + ")";
+        return type.toString();
     }
 
     public int hashCode()
@@ -135,48 +114,6 @@ public final class EntityType
         }
 
         EntityType that = (EntityType) o;
-        return version.equals( that.version ) && type.equals( that.type );
-    }
-
-    private String calculateSchemaVersion()
-    {
-        try
-        {
-            final SchemaVersion schemaVersion = new SchemaVersion();
-
-            // Entity type
-            schemaVersion.versionize( type );
-
-            // Properties
-            for( PropertyType property : properties )
-            {
-                property.versionize( schemaVersion );
-            }
-
-            // Associations
-            for( AssociationType association : associations )
-            {
-                association.versionize( schemaVersion );
-            }
-
-            // ManyAssociations
-            for( ManyAssociationType manyAssociation : manyAssociations )
-            {
-                manyAssociation.versionize( schemaVersion );
-            }
-
-
-            return schemaVersion.base64();
-        }
-        catch( Exception e )
-        {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
-    public EntityTypeReference reference()
-    {
-        return reference;
+        return type.equals( that.type );
     }
 }

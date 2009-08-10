@@ -16,7 +16,8 @@
  */
 package org.qi4j.spi.entity;
 
-import java.util.Set;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
 
 /**
@@ -62,23 +63,19 @@ public interface EntityState
      */
     EntityStatus status();
 
-    void addEntityTypeReference( EntityTypeReference type );
+    boolean isOfType( TypeName type );
 
-    void removeEntityTypeReference( EntityTypeReference type );
+    EntityType entityType();
 
-    boolean hasEntityTypeReference( EntityTypeReference type );
+    Object getProperty( QualifiedName stateName );
 
-    Set<EntityTypeReference> entityTypeReferences();
+    void setProperty( QualifiedName stateName, Object json );
 
-    String getProperty( StateName stateName );
+    EntityReference getAssociation( QualifiedName stateName );
 
-    void setProperty( StateName stateName, String json );
+    void setAssociation( QualifiedName stateName, EntityReference newEntity );
 
-    EntityReference getAssociation( StateName stateName );
-
-    void setAssociation( StateName stateName, EntityReference newEntity );
-
-    ManyAssociationState getManyAssociation( StateName stateName );
+    ManyAssociationState getManyAssociation( QualifiedName stateName );
 
     void refresh();
 

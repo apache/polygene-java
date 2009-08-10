@@ -14,6 +14,19 @@
 
 package org.qi4j.spi.value;
 
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.TypeName;
+import static org.qi4j.api.common.TypeName.*;
+import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.util.Classes;
+import org.qi4j.spi.entity.helpers.json.JSONException;
+import org.qi4j.spi.entity.helpers.json.JSONStringer;
+import org.qi4j.spi.entity.helpers.json.JSONTokener;
+import org.qi4j.spi.entity.helpers.json.JSONWriter;
+import org.qi4j.spi.property.PropertyType;
+
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -24,17 +37,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.common.TypeName;
-import static org.qi4j.api.common.TypeName.*;
-import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.entity.RDF;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.structure.Module;
-import org.qi4j.api.util.Classes;
-import org.qi4j.spi.entity.SchemaVersion;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.util.PeekableStringTokenizer;
 
 /**
  * Base class for types of values in ValueComposites.
@@ -134,12 +136,10 @@ public abstract class ValueType
             if( returnType instanceof ParameterizedType && ( (ParameterizedType) returnType ).getRawType().equals( Property.class ) )
             {
                 Type propType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
-                RDF rdfAnnotation = method.getAnnotation( RDF.class );
-                String rdf = rdfAnnotation == null ? null : rdfAnnotation.value();
                 Queryable queryableAnnotation = method.getAnnotation( Queryable.class );
                 boolean queryable = queryableAnnotation == null || queryableAnnotation.value();
                 ValueType propValueType = newValueType( typeMap, propType, valueTypeClass, compositeType );
-                PropertyType propertyType = new PropertyType( QualifiedName.fromMethod( method ), propValueType, rdf, queryable, PropertyType.PropertyTypeEnum.IMMUTABLE );
+                PropertyType propertyType = new PropertyType( QualifiedName.fromMethod( method ), propValueType, queryable, PropertyType.PropertyTypeEnum.IMMUTABLE );
                 types.add( propertyType );
             }
         }
@@ -174,37 +174,43 @@ public abstract class ValueType
         return type;
     }
 
-    public void versionize( SchemaVersion schemaVersion )
-    {
-        schemaVersion.versionize( type );
-    }
+    public abstract void toJSON( Object value, JSONWriter json )
+        throws JSONException;
 
-    public abstract void toJSON( Object value, StringBuilder json );
-
-    public abstract Object fromJSON( PeekableStringTokenizer json, Module module );
+    public abstract Object fromJSON( Object object, Module module )
+        throws JSONException;
 
     public String toQueryParameter( Object value )
-        throws IllegalArgumentException
+            throws IllegalArgumentException
     {
         if( value == null )
         {
             return null;
         }
 
-        StringBuilder builder = new StringBuilder();
-        toJSON( value, builder );
-        return builder.toString();
+        JSONStringer jsonStringer = new JSONStringer();
+        try
+        {
+            jsonStringer.array();
+            toJSON( value, jsonStringer);
+            jsonStringer.endArray();
+        } catch (JSONException e)
+        {
+            throw new IllegalArgumentException("Query parameter value is not a proper JSON value", e);
+        }
+        String str = jsonStringer.toString();
+        return str.substring(1, str.length()-1);
     }
 
     public Object fromQueryParameter( String parameter, Module module )
-        throws IllegalArgumentException
+            throws IllegalArgumentException, JSONException
     {
         if( parameter == null )
         {
             return null;
         }
 
-        return fromJSON( new PeekableStringTokenizer( parameter ), module );
+        return fromJSON( new JSONTokener(parameter).nextValue(), module );
     }
 
     @Override public String toString()

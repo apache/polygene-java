@@ -12,14 +12,14 @@
  *
  */
 
-package org.qi4j.runtime.entity;
+package org.qi4j.spi.entity.helpers;
+
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.ManyAssociationState;
 
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.ManyAssociationState;
-import org.qi4j.spi.entity.StateName;
 
 /**
  * Default implementation of ManyAssociationState. Backed by ArrayList.
@@ -27,17 +27,13 @@ import org.qi4j.spi.entity.StateName;
 public final class DefaultManyAssociationState
     implements ManyAssociationState, Serializable
 {
+    private DefaultEntityState entityState;
     private List<EntityReference> references;
-    private EntityReference identity;
-    private StateName stateName;
-    private DefaultEntityStoreUnitOfWork unitOfWork;
 
-    public DefaultManyAssociationState( List<EntityReference> references, EntityReference identity, StateName stateName, DefaultEntityStoreUnitOfWork unitOfWork )
+    public DefaultManyAssociationState( DefaultEntityState entityState, List<EntityReference> references)
     {
+        this.entityState = entityState;
         this.references = references;
-        this.identity = identity;
-        this.stateName = stateName;
-        this.unitOfWork = unitOfWork;
     }
 
     public int count()
@@ -58,14 +54,14 @@ public final class DefaultManyAssociationState
         }
 
         references.add( i, entityReference );
-        unitOfWork.addManyAssociation( identity, stateName, i, entityReference );
+        entityState.markUpdated();
         return true;
     }
 
     public boolean remove( EntityReference entity )
     {
         boolean removed = references.remove( entity );
-        unitOfWork.removeManyAssociation( identity, stateName, entity );
+        entityState.markUpdated();
         return removed;
     }
 

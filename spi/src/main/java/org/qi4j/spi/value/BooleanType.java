@@ -14,10 +14,12 @@
 
 package org.qi4j.spi.value;
 
-import java.lang.reflect.Type;
 import static org.qi4j.api.common.TypeName.*;
 import org.qi4j.api.structure.Module;
-import org.qi4j.spi.util.PeekableStringTokenizer;
+import org.qi4j.spi.entity.helpers.json.JSONException;
+import org.qi4j.spi.entity.helpers.json.JSONWriter;
+
+import java.lang.reflect.Type;
 
 /**
  * Boolean type
@@ -40,14 +42,13 @@ public final class BooleanType
         super( nameOf( Boolean.class ) );
     }
 
-    public void toJSON( Object value, StringBuilder json )
+    public void toJSON( Object value, JSONWriter json ) throws JSONException
     {
-        json.append( ( (Boolean) value ).booleanValue() );
+        json.value(( (Boolean) value ).booleanValue());
     }
 
-    public Object fromJSON( PeekableStringTokenizer json, Module module )
+    public Object fromJSON( Object json, Module module ) throws JSONException
     {
-        String string = json.nextToken();
-        return Boolean.valueOf( string );
+        return (Boolean)json;
     }
 }

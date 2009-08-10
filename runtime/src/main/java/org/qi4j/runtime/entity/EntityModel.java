@@ -26,7 +26,6 @@ import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.entity.RDF;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.unitofwork.EntityCompositeAlreadyExistsException;
 import org.qi4j.bootstrap.AssociationDeclarations;
@@ -117,7 +116,6 @@ public final class EntityModel
                                 compositeMethodsModel );
     }
 
-    private String rdf;
     private final boolean queryable;
     private EntityType entityType;
 
@@ -130,9 +128,6 @@ public final class EntityModel
     )
     {
         super( type, visibility, info, mixinsModel, stateModel, compositeMethodsModel );
-
-        RDF rdfAnnotation = type.getAnnotation( RDF.class );
-        this.rdf = rdfAnnotation == null ? null : rdfAnnotation.value();
 
         final Queryable queryable = type.getAnnotation( Queryable.class );
         this.queryable = queryable == null || queryable.value();
@@ -176,7 +171,7 @@ public final class EntityModel
 
         EntityStateModel entityStateModel = (EntityStateModel) stateModel;
         entityType = new EntityType(
-            TypeName.nameOf( type() ), rdf, queryable,
+            TypeName.nameOf( type() ), queryable,
             mixinTypes, entityStateModel.propertyTypes(), entityStateModel.associationTypes(), entityStateModel.manyAssociationTypes()
         );
 
@@ -221,20 +216,20 @@ public final class EntityModel
         }
     }
 
-    public EntityState newEntityState( EntityStoreUnitOfWork store, EntityReference identity)
+    public EntityState newEntityState(EntityStoreUnitOfWork store, EntityReference identity)
         throws ConstraintViolationException, EntityStoreException
     {
         try
         {
             // New EntityState
-            EntityState entityState = store.newEntityState( identity );
+            EntityState entityState = store.newEntityState( identity, entityType());
 
             // Add EntityType
-            addEntityType( entityState );
+            initState( entityState );
 
             // Set identity property
             PropertyTypeDescriptor propertyDescriptor = state().getPropertyByQualifiedName( QualifiedName.fromMethod( IDENTITY_METHOD ) );
-            entityState.setProperty( propertyDescriptor.propertyType().stateName(), '\"' + identity.identity() + '\"' );
+            entityState.setProperty( propertyDescriptor.propertyType().qualifiedName(), identity.identity() );
 
             return entityState;
         }
@@ -253,17 +248,14 @@ public final class EntityModel
         return type().getName();
     }
 
-    public void addEntityType( EntityState entityState)
+    public void initState( EntityState entityState)
     {
-        entityState.addEntityTypeReference( entityType().reference() );
-
         {
             // Set new properties to default value
             Set<PersistentPropertyModel> entityProperties = state().properties();
             for( PersistentPropertyModel propertyDescriptor : entityProperties )
             {
-                String stringValue = propertyDescriptor.toJSON( propertyDescriptor.initialValue() );
-                entityState.setProperty( propertyDescriptor.propertyType().stateName(), stringValue );
+                entityState.setProperty( propertyDescriptor.propertyType().qualifiedName(), propertyDescriptor.initialValue() );
             }
         }
 
@@ -272,7 +264,7 @@ public final class EntityModel
             Set<AssociationDescriptor> entityAssociations = state().associations();
             for( AssociationDescriptor associationDescriptor : entityAssociations )
             {
-                entityState.setAssociation( associationDescriptor.associationType().stateName(), null );
+                entityState.setAssociation( associationDescriptor.associationType().qualifiedName(), null );
             }
         }
 
@@ -281,20 +273,14 @@ public final class EntityModel
             Set<ManyAssociationDescriptor> entityAssociations = state().manyAssociations();
             for( ManyAssociationDescriptor associationDescriptor : entityAssociations )
             {
-                entityState.getManyAssociation( associationDescriptor.manyAssociationType().stateName() );
+                entityState.getManyAssociation( associationDescriptor.manyAssociationType().qualifiedName() );
             }
         }
     }
 
-    void removeEntityType( EntityModel entityModel, EntityState entityState )
-    {
-        // Remove type but keep data
-        entityState.removeEntityTypeReference( entityModel.entityType().reference() );
-    }
-
     boolean hasEntityType( EntityModel entityModel, EntityState entityState )
     {
-        return entityState.hasEntityTypeReference( entityModel.entityType().reference() );
+        return entityState.isOfType( entityModel.entityType().type() );
     }
 
     public void invokeCreate( EntityInstance instance )

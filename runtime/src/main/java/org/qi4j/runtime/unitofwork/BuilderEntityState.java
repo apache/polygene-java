@@ -14,16 +14,16 @@
 
 package org.qi4j.runtime.unitofwork;
 
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.*;
-import org.qi4j.runtime.unitofwork.BuilderManyAssociationState;
-import org.qi4j.runtime.unitofwork.EntityStateChanges;
-import org.qi4j.spi.unitofwork.event.UnitOfWorkEvents;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.ManyAssociationState;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * JAVADOC
@@ -31,20 +31,17 @@ import java.util.Set;
 public final class BuilderEntityState
     implements EntityState
 {
-    EntityStateChanges changes;
+    private final EntityType entityType;
+    private final Map<QualifiedName, Object> properties;
+    private final Map<QualifiedName, EntityReference> associations;
+    private final Map<QualifiedName, ManyAssociationState> manyAssociations;
 
-    private final Set<EntityTypeReference> entityTypes;
-    private final Map<StateName, String> properties;
-    private final Map<StateName, EntityReference> associations;
-    private final Map<StateName, ManyAssociationState> manyAssociations;
-
-    public BuilderEntityState( UnitOfWorkEvents events )
+    public BuilderEntityState( EntityType type )
     {
-        entityTypes = new HashSet<EntityTypeReference>();
-        properties = new HashMap<StateName, String>();
-        associations = new HashMap<StateName, EntityReference>();
-        manyAssociations = new HashMap<StateName, ManyAssociationState>();
-        changes = new EntityStateChanges( events, EntityReference.NULL );
+        entityType = type;
+        properties = new HashMap<QualifiedName, Object>();
+        associations = new HashMap<QualifiedName, EntityReference>();
+        manyAssociations = new HashMap<QualifiedName, ManyAssociationState>();
     }
 
     public EntityReference identity()
@@ -71,22 +68,22 @@ public final class BuilderEntityState
         return EntityStatus.NEW;
     }
 
-    public boolean hasEntityTypeReference( EntityTypeReference type )
+    public boolean isOfType( TypeName type )
     {
-        return entityTypes.contains( type );
+        return entityType.type().equals(type);
     }
 
-    public Set<EntityTypeReference> entityTypeReferences()
+    public EntityType entityType()
     {
-        return entityTypes;
+        return entityType;
     }
 
-    public String getProperty( StateName stateName )
+    public Object getProperty( QualifiedName stateName )
     {
         return properties.get( stateName );
     }
 
-    public EntityReference getAssociation( StateName stateName )
+    public EntityReference getAssociation( QualifiedName stateName )
     {
         return associations.get( stateName );
     }
@@ -95,36 +92,22 @@ public final class BuilderEntityState
     {
     }
 
-    public void setProperty( StateName stateName, String newValue )
+    public void setProperty( QualifiedName stateName, Object newValue )
     {
         properties.put( stateName, newValue );
-        changes.setProperty( stateName, newValue );
     }
 
-    public void setAssociation( StateName stateName, EntityReference newEntity )
+    public void setAssociation( QualifiedName stateName, EntityReference newEntity )
     {
         associations.put( stateName, newEntity );
-        changes.setAssociation( stateName, newEntity );
     }
 
-    public void addEntityTypeReference( EntityTypeReference entityTypeReference )
-    {
-        entityTypes.add( entityTypeReference );
-        changes.addEntityTypeReference( entityTypeReference );
-    }
-
-    public void removeEntityTypeReference( EntityTypeReference entityTypeReference )
-    {
-        entityTypes.add( entityTypeReference );
-        changes.removeEntityTypeReference( entityTypeReference );
-    }
-
-    public ManyAssociationState getManyAssociation( StateName stateName )
+    public ManyAssociationState getManyAssociation( QualifiedName stateName )
     {
         ManyAssociationState state = manyAssociations.get( stateName );
         if( state == null )
         {
-            state = new BuilderManyAssociationState( stateName, changes );
+            state = new BuilderManyAssociationState( );
             manyAssociations.put( stateName, state );
         }
 
@@ -133,5 +116,26 @@ public final class BuilderEntityState
 
     public void refresh()
     {
+    }
+
+    public void copyTo(EntityState newEntityState)
+    {
+        for (Map.Entry<QualifiedName, Object> stateNameStringEntry : properties.entrySet())
+        {
+            newEntityState.setProperty(stateNameStringEntry.getKey(), stateNameStringEntry.getValue());
+        }
+        for (Map.Entry<QualifiedName, EntityReference> stateNameEntityReferenceEntry : associations.entrySet())
+        {
+            newEntityState.setAssociation(stateNameEntityReferenceEntry.getKey(), stateNameEntityReferenceEntry.getValue());
+        }
+        for (Map.Entry<QualifiedName, ManyAssociationState> stateNameManyAssociationStateEntry : manyAssociations.entrySet())
+        {
+            ManyAssociationState manyAssoc = newEntityState.getManyAssociation(stateNameManyAssociationStateEntry.getKey());
+            int idx = 0;
+            for (EntityReference entityReference : stateNameManyAssociationStateEntry.getValue())
+            {
+                manyAssoc.add(idx, entityReference);
+            }
+        }
     }
 }

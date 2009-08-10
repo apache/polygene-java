@@ -53,6 +53,11 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
         }
     }
 
+    public boolean add(T entity)
+    {
+        return add(associated().count(), entity);
+    }
+
     public boolean remove( T entity )
     {
         checkImmutable();
@@ -186,6 +191,6 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
 
     private ManyAssociationState associated()
     {
-        return entityState.getManyAssociation( ( model).manyAssociationType().stateName() );
+        return entityState.getManyAssociation( ( model).manyAssociationType().qualifiedName() );
     }
 }

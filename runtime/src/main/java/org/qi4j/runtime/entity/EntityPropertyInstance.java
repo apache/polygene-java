@@ -69,7 +69,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
     {
         if( value == NOT_LOADED )
         {
-            value = ( (EntityPropertyModel) propertyInfo ).<T>fromEntityState( uow.module(), entityState );
+            value = ( (EntityPropertyModel) propertyInfo ).<T>fromEntityState( entityState );
         }
 
         return value;
@@ -93,8 +93,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
         }
 
         // Change property
-        String json = ( (EntityPropertyModel) constraints ).toJSON( aNewValue );
-        entityState.setProperty( ( (EntityPropertyModel) constraints ).propertyType().stateName(), json );
+        entityState.setProperty( ( (EntityPropertyModel) constraints ).propertyType().qualifiedName(), aNewValue );
         value = aNewValue;
     }
 

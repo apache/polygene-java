@@ -14,11 +14,6 @@
 
 package org.qi4j.spi.value;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.property.Property;
@@ -27,9 +22,16 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.spi.entity.SchemaVersion;
+import org.qi4j.spi.entity.helpers.json.JSONException;
+import org.qi4j.spi.entity.helpers.json.JSONObject;
+import org.qi4j.spi.entity.helpers.json.JSONWriter;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.util.PeekableStringTokenizer;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ValueComposite type
@@ -55,31 +57,15 @@ public final class ValueCompositeType
         return types;
     }
 
-    public PropertyType propertyWithVersion( String version )
+    public void toJSON( Object value, JSONWriter json ) throws JSONException
     {
-        for( PropertyType propertyType : types )
+        if (value == null)
         {
-            if( propertyType.stateName().version().equals( version ) )
-            {
-                return propertyType;
-            }
+            json.value(null);
+            return;
         }
 
-        return null;
-    }
-
-    public void versionize( SchemaVersion schemaVersion )
-    {
-        super.versionize( schemaVersion );
-        for( PropertyType propertyType : types )
-        {
-            propertyType.versionize( schemaVersion );
-        }
-    }
-
-    public void toJSON( Object value, StringBuilder json )
-    {
-        json.append( '{' );
+        json.object();
         ValueComposite valueComposite = (ValueComposite) value;
         StateHolder state = valueComposite.state();
         final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
@@ -91,63 +77,38 @@ public final class ValueCompositeType
             }
         } );
 
-        String comma = "";
         for( PropertyType propertyType : types )
         {
-            json.append( comma );
-            json.append( propertyType.qualifiedName().name() ).append( ':' );
+            json.key(propertyType.qualifiedName().name());
 
             Object propertyValue = values.get( propertyType.qualifiedName() );
             if( propertyValue == null )
             {
-                json.append( "null" );
+                json.value(null);
             }
             else
             {
                 propertyType.type().toJSON( propertyValue, json );
             }
-            comma = ",";
         }
-        json.append( '}' );
+        json.endObject();
     }
 
-    public Object fromJSON( PeekableStringTokenizer json, Module module )
+    public Object fromJSON( Object json, Module module ) throws JSONException
     {
-        String token = json.nextToken( "{" );
+        JSONObject jsonObject = (JSONObject) json;
 
         final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
         for( PropertyType propertyType : types )
         {
-            String name = null;
-            try
+            Object valueJson = jsonObject.get(propertyType.qualifiedName().name());
+            Object value = null;
+            if( valueJson != null && !valueJson.equals(JSONObject.NULL))
             {
-                name = json.nextToken( ":" );
-            }
-            catch( Exception e )
-            {
-                e.printStackTrace();
-            }
-            token = json.nextToken( ",:" );
-
-            token = json.peekNextToken( "{,}\"[" );
-            Object value;
-            if( token.equals( "null" ) )
-            {
-                json.nextToken();
-                value = null;
-            }
-            else
-            {
-                value = propertyType.type().fromJSON( json, module );
-            }
-
-            if( !name.equals( propertyType.qualifiedName().name() ) )
-            {
-                throw new IllegalStateException( "Could not deserialize value. Expected '" + propertyType.qualifiedName() + "' but got '" + name );
+                value = propertyType.type().fromJSON( valueJson, module );
             }
 
             values.put( propertyType.qualifiedName(), value );
-            token = json.nextToken( ",}" );
         }
 
         try

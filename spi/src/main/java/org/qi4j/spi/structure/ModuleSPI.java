@@ -12,20 +12,18 @@
  *
  */
 
-package org.qi4j.runtime.bootstrap.migration;
+package org.qi4j.spi.structure;
 
-import org.qi4j.spi.entity.EntityState;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.spi.entity.EntityType;
 
 /**
  * JAVADOC
  */
-public class IsSameRule
-    implements MigrationRule
+public interface ModuleSPI
+    extends Module
 {
-    public void migrate(EntityState state, EntityType from, EntityType to)
-    {
-        state.removeEntityTypeReference(from.reference());
-        state.addEntityTypeReference(to.reference());
-    }
+    EntityType entityType(String name)
+        throws EntityTypeNotFoundException;
 }
