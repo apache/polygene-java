@@ -35,7 +35,6 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.EntityTypeRegistry;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
@@ -49,7 +48,6 @@ public class EntityParserTest
     @Service private EntityStore entityStore;
     @Uses private EntityStateSerializer serializer;
     @Uses private EntityStateParser parser;
-    @Service EntityTypeRegistry registry;
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
@@ -74,14 +72,14 @@ public class EntityParserTest
         EntityReference entityReference = new EntityReference( "test2" );
         Usecase usecase = UsecaseBuilder.newUsecase( "Test" );
         MetaInfo info = new MetaInfo();
-        EntityStoreUnitOfWork work = entityStore.newUnitOfWork( usecase, info );
+        EntityStoreUnitOfWork work = entityStore.newUnitOfWork( usecase, info, moduleInstance );
         EntityState entityState = work.getEntityState( entityReference );
 
         Iterable<Statement> graph = serializer.serialize( entityState );
 
         parser.parse( graph, entityState );
 
-        entityStore.apply( work.identity(), work.events(), usecase, info ).commit();
+        work.apply().commit();
 
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try

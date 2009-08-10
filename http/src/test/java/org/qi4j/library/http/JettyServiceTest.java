@@ -31,7 +31,6 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import static org.qi4j.library.http.Dispatchers.Dispatcher.*;
 import static org.qi4j.library.http.Servlets.*;
-import org.qi4j.spi.entity.typeregistry.EntityTypeRegistryService;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -43,7 +42,7 @@ public final class JettyServiceTest extends AbstractQi4jTest
         throws AssemblyException
     {
         new ApplicationName( "Jetty test" ).assemble( aModule );
-        aModule.addServices( MemoryEntityStoreService.class, EntityTypeRegistryService.class );
+        aModule.addServices( MemoryEntityStoreService.class );
         new JettyServiceAssembler().assemble( aModule );
 
         // Hello world servlet related assembly

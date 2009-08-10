@@ -36,7 +36,6 @@ import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.typeregistry.EntityTypeRegistryService;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -50,7 +49,7 @@ public class EntitySerializerTest
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class, EntityTypeRegistryService.class );
+        module.addServices( MemoryEntityStoreService.class);
         module.addEntities( TestEntity.class );
         module.addValues( TestValue.class );
         module.addObjects( EntityStateSerializer.class, EntitySerializerTest.class );
@@ -70,7 +69,7 @@ public class EntitySerializerTest
     public void testEntitySerializer() throws RDFHandlerException
     {
         EntityReference entityReference = new EntityReference( "test2" );
-        EntityState entityState = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase("Test" ), new MetaInfo()).getEntityState(entityReference);
+        EntityState entityState = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase("Test" ), new MetaInfo(), moduleInstance).getEntityState(entityReference);
 
         Iterable<Statement> graph = serializer.serialize( entityState );
 

@@ -64,12 +64,8 @@ public class EntityTypeSerializer
         graph.add( entityTypeUri, Rdfs.TYPE, Rdfs.CLASS );
         graph.add( entityTypeUri, Rdfs.TYPE, OWL.CLASS );
 
-        if (entityType.rdf() != null)
-            graph.add(entityTypeUri, Rdfs.SUB_CLASS_OF, values.createURI(entityType.rdf()));
-
         graph.add(entityTypeUri, Qi4jEntityType.TYPE, values.createLiteral( entityType.type().toString() ));
         graph.add(entityTypeUri, Qi4jEntityType.QUERYABLE, values.createLiteral( entityType.queryable() ));
-        graph.add(entityTypeUri, Qi4jEntityType.VERSION, values.createLiteral( entityType.version() ));
 
         serializeMixinTypes( entityType, graph, entityTypeUri );
 
@@ -108,10 +104,6 @@ public class EntityTypeSerializer
             graph.add( associationURI, Rdfs.DOMAIN, entityTypeUri );
 
             graph.add( associationURI, Rdfs.TYPE, Rdfs.SEQ );
-            if( manyAssociationType.rdf() != null )
-            {
-                graph.add( associationURI, Rdfs.SUB_PROPERTY_OF, values.createURI( manyAssociationType.rdf() ) );
-            }
 
             URI associatedURI = values.createURI( manyAssociationType.qualifiedName().toURI() );
             graph.add( associationURI, Rdfs.RANGE, associatedURI );
@@ -130,10 +122,6 @@ public class EntityTypeSerializer
             URI associationURI = values.createURI( associationType.qualifiedName().toURI() );
             graph.add( associationURI, Rdfs.DOMAIN, entityTypeUri );
             graph.add( associationURI, Rdfs.TYPE, Rdfs.PROPERTY );
-            if( associationType.rdf() != null )
-            {
-                graph.add( associationURI, Rdfs.SUB_PROPERTY_OF, values.createURI( associationType.rdf() ) );
-            }
 
             URI associatedURI = values.createURI( associationType.type().toURI() );
             graph.add( associationURI, Rdfs.RANGE, associatedURI );
@@ -153,10 +141,6 @@ public class EntityTypeSerializer
             URI propertyURI = values.createURI( propertyType.qualifiedName().toURI() );
             graph.add( propertyURI, Rdfs.DOMAIN, entityTypeUri );
             graph.add( propertyURI, Rdfs.TYPE, Rdfs.PROPERTY );
-            if( propertyType.rdf() != null )
-            {
-                graph.add( propertyURI, Rdfs.SUB_PROPERTY_OF, values.createURI( propertyType.rdf() ) );
-            }
 
             // TODO Support more types
             URI type = dataTypes.get( propertyType.type().type().name() );
