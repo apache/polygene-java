@@ -2,7 +2,6 @@
 Private-Package: org.qi4j.runtime, \
                  org.qi4j.runtime.composite, \
                  org.qi4j.runtime.bootstrap, \
-                 org.qi4j.runtime.bootstrap.migration, \
                  org.qi4j.runtime.entity, \
                  org.qi4j.runtime.entity.association, \
                  org.qi4j.runtime.injection, \
@@ -61,6 +60,7 @@ Import-Package: net.sf.cglib.asm;version=2.1.3, \
                 org.qi4j.spi.entity, \
                 org.qi4j.spi.entity.association, \
                 org.qi4j.spi.entity.helpers, \
+                org.qi4j.spi.entity.helpers.json, \
                 org.qi4j.spi.mixin, \
                 org.qi4j.spi.object, \
                 org.qi4j.spi.property, \

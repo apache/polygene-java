@@ -19,7 +19,6 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.Property;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PersistentPropertyModel;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 
@@ -61,9 +60,8 @@ public final class EntityPropertyModel extends PersistentPropertyModel
         return wrapProperty( property );
     }
 
-    public <T> T fromEntityState( ModuleInstance moduleInstance, EntityState entityState )
+    public <T> T fromEntityState(EntityState entityState )
     {
-        String value = entityState.getProperty( propertyType().stateName() );
-        return super.<T>fromJSON( moduleInstance, value );
+        return (T)entityState.getProperty( propertyType().qualifiedName() );
     }
 }

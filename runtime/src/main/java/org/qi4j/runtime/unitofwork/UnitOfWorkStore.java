@@ -17,20 +17,23 @@ package org.qi4j.runtime.unitofwork;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.usecase.Usecase;
-import org.qi4j.spi.entity.*;
-import org.qi4j.runtime.entity.DefaultEntityStoreUnitOfWork;
-import org.qi4j.spi.entity.EntityStoreEvents;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.helpers.DefaultEntityStoreUnitOfWork;
+import org.qi4j.spi.entity.helpers.EntityStoreSPI;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
-import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
+import org.qi4j.spi.structure.ModuleSPI;
 
-import java.util.Iterator;
 import java.util.UUID;
 
 /**
  * JAVADOC
  */
 public class UnitOfWorkStore
-    implements EntityStore, EntityStoreEvents
+    implements EntityStore, EntityStoreSPI
 {
     private UnitOfWorkInstance unitOfWork;
     private String uuid;
@@ -43,34 +46,27 @@ public class UnitOfWorkStore
 
     }
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, MetaInfo unitOfWorkMetaInfo )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, MetaInfo unitOfWorkMetaInfo, ModuleSPI module )
     {
-        return new DefaultEntityStoreUnitOfWork( this, newUnitOfWorkId(), usecase, unitOfWorkMetaInfo );
+        return new DefaultEntityStoreUnitOfWork( this, newUnitOfWorkId(), module);
     }
 
-    public StateCommitter apply( String unitOfWorkIdentity, Iterable<UnitOfWorkEvent> events, Usecase usecase, MetaInfo metaInfo ) throws EntityStoreException
+    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity, EntityType type)
     {
-        // TODO
-        return null;
-    }
-
-    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo )
-    {
-        UnitOfWorkEntityState entityState = new UnitOfWorkEntityState( unitOfWork, "",
+        UnitOfWorkEntityState entityState = new UnitOfWorkEntityState( "",
                                                                        System.currentTimeMillis(),
-                                                                       identity,
                                                                        EntityStatus.NEW );
         return entityState;
     }
 
-    public EntityState getEntityState( EntityStoreUnitOfWork uow, EntityReference identity, Usecase usecaseMetaInfo, MetaInfo unitOfWorkMetaInfo )
+    public EntityState getEntityState( EntityStoreUnitOfWork uow, EntityReference identity)
     {
         EntityState parentState = unitOfWork.getCachedState( identity );
-        UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( uow, parentState );
+        UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( parentState );
         return unitOfWorkEntityState;
     }
 
-    public Iterator<EntityState> iterator()
+    public StateCommitter apply(Iterable<EntityState> state, String identity)
     {
         return null;
     }
@@ -84,12 +80,12 @@ public class UnitOfWorkStore
         }
 
         // TODO Needs to be fixed
-        UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( null, parentState );
+        UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( parentState );
 
         return unitOfWorkEntityState;
     }
 
-    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor )
+    public EntityStoreUnitOfWork visitEntityStates(EntityStateVisitor visitor, ModuleSPI moduleInstance)
     {
         // ???
         return null;

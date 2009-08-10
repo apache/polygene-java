@@ -29,6 +29,8 @@ public interface ManyAssociation<T>
 
     boolean add( int i, T entity );
 
+    boolean add( T entity);
+
     boolean remove( T entity );
 
     T get( int i );

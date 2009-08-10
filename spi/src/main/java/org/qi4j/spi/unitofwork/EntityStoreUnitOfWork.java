@@ -18,13 +18,13 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.unitofwork.event.UnitOfWorkEvents;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.StateCommitter;
 
 /**
  * JAVADOC
  */
 public interface EntityStoreUnitOfWork
-    extends UnitOfWorkEvents
 {
     String identity();
 
@@ -32,14 +32,14 @@ public interface EntityStoreUnitOfWork
      * Create new EntityState for a given identity.
      * <p/>
      * This should only create the EntityState and not insert it into any database, since that should occur during
-     * the {@link org.qi4j.spi.entity.EntityStore#apply(String, Iterable, org.qi4j.api.usecase.Usecase, org.qi4j.api.common.MetaInfo)} call.
+     * the {@link org.qi4j.spi.unitofwork.EntityStoreUnitOfWork#apply()} call.
      *
      * @param anIdentity the identity of the entity
      * @return The new entity state.
      * @throws org.qi4j.spi.entity.EntityStoreException
      *          Thrown if creational fails.
      */
-    EntityState newEntityState( EntityReference anIdentity )
+    EntityState newEntityState( EntityReference anIdentity, EntityType entityType)
         throws EntityStoreException;
 
     /**
@@ -54,4 +54,9 @@ public interface EntityStoreUnitOfWork
      */
     EntityState getEntityState( EntityReference anIdentity )
         throws EntityStoreException, EntityNotFoundException;
+
+    StateCommitter apply()
+        throws EntityStoreException;
+
+    void discard();
 }

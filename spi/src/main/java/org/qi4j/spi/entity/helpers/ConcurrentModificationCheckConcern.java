@@ -14,25 +14,24 @@
 
 package org.qi4j.spi.entity.helpers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.usecase.Usecase;
-import org.qi4j.api.usecase.UsecaseBuilder;
-import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
-import org.qi4j.spi.unitofwork.event.GetEntityEvent;
-import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Concern that helps EntityStores do concurrent modification checks.
@@ -46,119 +45,33 @@ import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
 public abstract class ConcurrentModificationCheckConcern extends ConcernOf<EntityStore>
     implements EntityStore
 {
-    private static final Map<EntityReference, String> versions = new WeakHashMap<EntityReference, String>();
+    @This
+    EntityStateVersions versions;
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, MetaInfo unitOfWorkMetaInfo )
+    @Structure
+    Qi4j api;
+
+    public EntityStoreUnitOfWork newUnitOfWork(Usecase usecase, MetaInfo unitOfWorkMetaInfo, ModuleSPI module)
     {
-        final EntityStoreUnitOfWork uow = next.newUnitOfWork( usecase, unitOfWorkMetaInfo );
+        final EntityStoreUnitOfWork uow = next.newUnitOfWork( usecase, unitOfWorkMetaInfo, module );
 
-        return new ConcurrentCheckingEntityStoreUnitOfWork( uow );
-    }
-
-    public StateCommitter apply( String unitOfWorkIdentity, final Iterable<UnitOfWorkEvent> events, Usecase usecase, MetaInfo metaInfo ) throws EntityStoreException
-    {
-        checkForConcurrentModification( events );
-
-        final StateCommitter stateCommitter = next.apply( unitOfWorkIdentity, events, usecase, metaInfo );
-        return new StateCommitter()
-        {
-            public void commit()
-            {
-                stateCommitter.commit();
-                forgetVersions( events );
-            }
-
-            public void cancel()
-            {
-                stateCommitter.cancel();
-                forgetVersions( events );
-            }
-        };
-    }
-
-    private void forgetVersions( Iterable<UnitOfWorkEvent> events )
-    {
-        synchronized( versions )
-        {
-            for( UnitOfWorkEvent event : events )
-            {
-                if( event instanceof GetEntityEvent )
-                {
-                    GetEntityEvent getEntityEvent = (GetEntityEvent) event;
-                    versions.remove( getEntityEvent.identity() );
-                }
-            }
-        }
-    }
-
-    private void rememberVersion( EntityReference identity, String version )
-    {
-        synchronized( versions )
-        {
-            versions.put( identity, version );
-        }
-    }
-
-    private void checkForConcurrentModification( Iterable<UnitOfWorkEvent> events )
-        throws ConcurrentEntityStateModificationException
-    {
-        Collection<EntityReference> concurrentModifications = null;
-        List<GetEntityEvent> getEvents = new ArrayList<GetEntityEvent>();
-        for( UnitOfWorkEvent event : events )
-        {
-            if( event instanceof GetEntityEvent )
-            {
-                GetEntityEvent getEntityEvent = (GetEntityEvent) event;
-                getEvents.add( getEntityEvent );
-            }
-        }
-
-        for( GetEntityEvent getEntityEvent : getEvents )
-        {
-            if( hasBeenModified( getEntityEvent.identity(), getEntityEvent.version() ) )
-            {
-                if( concurrentModifications == null )
-                {
-                    concurrentModifications = new ArrayList<EntityReference>();
-                }
-                concurrentModifications.add( getEntityEvent.identity() );
-            }
-        }
-
-        if( concurrentModifications != null )
-        {
-            throw new ConcurrentEntityStateModificationException( concurrentModifications );
-        }
-    }
-
-    private boolean hasBeenModified( EntityReference identity, String oldVersion )
-    {
-        // Try version cache first
-        String rememberedVersion;
-        synchronized( versions )
-        {
-            rememberedVersion = versions.get( identity );
-        }
-
-        if( rememberedVersion != null )
-        {
-            return !rememberedVersion.equals( oldVersion );
-        }
-
-        // Miss! Load state and compare
-        EntityStoreUnitOfWork uow = next.newUnitOfWork( UsecaseBuilder.newUsecase( "Check version" ), new MetaInfo() );
-        EntityState state = uow.getEntityState( identity );
-        return !state.version().equals( oldVersion );
+        return new ConcurrentCheckingEntityStoreUnitOfWork( uow, api.dereference(versions), module );
     }
 
     private class ConcurrentCheckingEntityStoreUnitOfWork
         implements EntityStoreUnitOfWork
     {
         private final EntityStoreUnitOfWork uow;
+        private EntityStateVersions versions;
+        private ModuleSPI module;
 
-        public ConcurrentCheckingEntityStoreUnitOfWork( EntityStoreUnitOfWork uow )
+        private List<EntityState> loaded = new ArrayList<EntityState>();
+
+        public ConcurrentCheckingEntityStoreUnitOfWork(EntityStoreUnitOfWork uow, EntityStateVersions versions, ModuleSPI module)
         {
             this.uow = uow;
+            this.versions = versions;
+            this.module = module;
         }
 
         public String identity()
@@ -166,28 +79,52 @@ public abstract class ConcurrentModificationCheckConcern extends ConcernOf<Entit
             return uow.identity();
         }
 
-        public EntityState newEntityState( EntityReference anIdentity )
-            throws EntityStoreException
+        public EntityState newEntityState(EntityReference anIdentity, EntityType entityType) throws EntityStoreException
         {
-            return uow.newEntityState( anIdentity );
+            return uow.newEntityState( anIdentity, entityType );
+        }
+
+        public StateCommitter apply() throws EntityStoreException
+        {
+            versions.checkForConcurrentModification(loaded, module );
+
+            final StateCommitter committer = uow.apply();
+
+            return new StateCommitter()
+            {
+                public void commit()
+                {
+                    committer.commit();
+                    versions.forgetVersions(loaded);
+                }
+
+                public void cancel()
+                {
+                    committer.cancel();
+                    versions.forgetVersions(loaded);
+                }
+            };
+        }
+
+        public void discard()
+        {
+            try
+            {
+                uow.discard();
+            } finally
+            {
+                versions.forgetVersions(loaded);
+            }
         }
 
         public EntityState getEntityState( EntityReference anIdentity )
             throws EntityStoreException, EntityNotFoundException
         {
             EntityState entityState = uow.getEntityState( anIdentity );
-            rememberVersion( entityState.identity(), entityState.version() );
+            versions.rememberVersion( entityState.identity(), entityState.version() );
+            loaded.add(entityState);
             return entityState;
         }
 
-        public void addEvent( UnitOfWorkEvent event )
-        {
-            uow.addEvent( event );
-        }
-
-        public Iterable<UnitOfWorkEvent> events()
-        {
-            return uow.events();
-        }
     }
 }

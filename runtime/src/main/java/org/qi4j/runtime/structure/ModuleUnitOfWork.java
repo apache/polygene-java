@@ -38,8 +38,6 @@ import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.StateName;
-import org.qi4j.spi.property.PropertyTypeDescriptor;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -53,7 +51,7 @@ public class ModuleUnitOfWork
     implements UnitOfWork
 {
     private static final Method IDENTITY_METHOD;
-    private static StateName identityStateName;
+    private static QualifiedName identityStateName;
 
     static
     {
@@ -138,12 +136,12 @@ public class ModuleUnitOfWork
 
         EntityStore entityStore = entityModuleInstance.entities().entityStore();
 
-        EntityState entityState = entityModel.newEntityState( uow.getEntityStoreUnitOfWork( entityStore ),
+        EntityState entityState = entityModel.newEntityState( uow.getEntityStoreUnitOfWork( entityStore, module() ),
                                                               parseEntityReference( identity ) );
 
         if( identityStateName == null )
         {
-            identityStateName = entityModel.state().<PropertyTypeDescriptor>getPropertyByQualifiedName( QualifiedName.fromMethod( IDENTITY_METHOD ) ).propertyType().stateName();
+            identityStateName = QualifiedName.fromMethod( IDENTITY_METHOD );
         }
         entityState.setProperty( identityStateName, '\"' + identity + '\"' );
 
@@ -191,7 +189,7 @@ public class ModuleUnitOfWork
             builder = new EntityBuilderInstance<T>( entityModuleInstance,
                                                     entityModel,
                                                     this,
-                                                    uow.getEntityStoreUnitOfWork( entityStore ),
+                                                    uow.getEntityStoreUnitOfWork( entityStore, moduleInstance ),
                                                     null,
                                                     identity );
         }
@@ -200,7 +198,7 @@ public class ModuleUnitOfWork
             builder = new EntityBuilderInstance<T>( moduleInstance,
                                                     entityModel,
                                                     this,
-                                                    uow.getEntityStoreUnitOfWork( entityModuleInstance.entities().entityStore() ),
+                                                    uow.getEntityStoreUnitOfWork( entityModuleInstance.entities().entityStore(), moduleInstance ),
                                                     entityModuleInstance.entities().identityGenerator(), identity );
         }
         return builder;
@@ -249,7 +247,7 @@ public class ModuleUnitOfWork
             compositeInstance.remove( this );
             uow.remove( compositeInstance.identity() );
         }
-        else if( compositeInstance.status() == EntityStatus.LOADED )
+        else if( compositeInstance.status() == EntityStatus.LOADED || compositeInstance.status() == EntityStatus.UPDATED)
         {
             compositeInstance.remove( this );
         }

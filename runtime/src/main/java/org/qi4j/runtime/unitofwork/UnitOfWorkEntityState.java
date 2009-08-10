@@ -14,16 +14,16 @@
 
 package org.qi4j.runtime.unitofwork;
 
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.*;
-import org.qi4j.runtime.unitofwork.BuilderManyAssociationState;
-import org.qi4j.runtime.unitofwork.EntityStateChanges;
-import org.qi4j.spi.unitofwork.event.*;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.ManyAssociationState;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * JAVADOC
@@ -33,44 +33,35 @@ class UnitOfWorkEntityState
 {
     private String entityVersion;
     private long lastModified;
-    private EntityReference identity;
     private EntityStatus status;
     private EntityState parentState;
-    private Set<EntityTypeReference> entityTypes;
-    private Map<StateName, String> properties;
-    private Map<StateName, EntityReference> associations;
-    private Map<StateName, ManyAssociationState> manyAssociations;
-    private UnitOfWorkEvents uow;
+    private Map<QualifiedName, Object> properties;
+    private Map<QualifiedName, EntityReference> associations;
+    private Map<QualifiedName, ManyAssociationState> manyAssociations;
 
-    UnitOfWorkEntityState( UnitOfWorkEvents uow, EntityState parentState )
+    UnitOfWorkEntityState( EntityState parentState )
     {
-        this.uow = uow;
         this.entityVersion = parentState.version();
         this.lastModified = parentState.lastModified();
-        this.identity = parentState.identity();
         this.status = parentState.status();
         this.parentState = parentState;
     }
 
-    UnitOfWorkEntityState( UnitOfWorkEvents uow, String entityVersion, long lastModified,
-                           EntityReference identity,
+    UnitOfWorkEntityState( String entityVersion, long lastModified,
                            EntityStatus status )
     {
-        this.uow = uow;
         this.entityVersion = entityVersion;
         this.lastModified = lastModified;
-        this.identity = identity;
         this.status = status;
 
-        entityTypes = new HashSet<EntityTypeReference>();
-        properties = new HashMap<StateName, String>();
-        associations = new HashMap<StateName, EntityReference>();
-        manyAssociations = new HashMap<StateName, ManyAssociationState>();
+        properties = new HashMap<QualifiedName, Object>();
+        associations = new HashMap<QualifiedName, EntityReference>();
+        manyAssociations = new HashMap<QualifiedName, ManyAssociationState>();
     }
 
     public EntityReference identity()
     {
-        return identity;
+        return parentState.identity();
     }
 
     public String version()
@@ -93,36 +84,14 @@ class UnitOfWorkEntityState
         return status;
     }
 
-    public void addEntityTypeReference( EntityTypeReference type )
+    public boolean isOfType( TypeName type )
     {
-        if( entityTypes == null )
-        {
-            entityTypes = new HashSet<EntityTypeReference>( parentState.entityTypeReferences() );
-        }
-
-        entityTypes.add( type );
-        uow.addEvent( new AddEntityTypeEvent( identity, type ) );
+        return parentState.isOfType(type);
     }
 
-    public void removeEntityTypeReference( EntityTypeReference type )
+    public EntityType entityType()
     {
-        if( entityTypes == null )
-        {
-            entityTypes = new HashSet<EntityTypeReference>( parentState.entityTypeReferences() );
-        }
-
-        entityTypes.remove( type );
-        uow.addEvent( new RemoveEntityTypeEvent( identity, type ) );
-    }
-
-    public boolean hasEntityTypeReference( EntityTypeReference type )
-    {
-        return entityTypes == null ? parentState.hasEntityTypeReference( type ) : entityTypes.contains( type );
-    }
-
-    public Set<EntityTypeReference> entityTypeReferences()
-    {
-        return entityTypes == null ? parentState.entityTypeReferences() : entityTypes;
+        return parentState.entityType();
     }
 
     public void hasBeenApplied()
@@ -130,7 +99,7 @@ class UnitOfWorkEntityState
         status = EntityStatus.LOADED;
     }
 
-    public String getProperty( StateName stateName )
+    public Object getProperty( QualifiedName stateName )
     {
         if( properties != null && properties.containsKey( stateName ) )
         {
@@ -141,18 +110,17 @@ class UnitOfWorkEntityState
         return parentState.getProperty( stateName );
     }
 
-    public void setProperty( StateName stateName, String newValue )
+    public void setProperty( QualifiedName stateName, Object newValue )
     {
         if( properties == null )
         {
-            properties = new HashMap<StateName, String>();
+            properties = new HashMap<QualifiedName, Object>();
         }
 
         properties.put( stateName, newValue );
-        uow.addEvent( new SetPropertyEvent( identity, stateName, newValue ) );
     }
 
-    public EntityReference getAssociation( StateName stateName )
+    public EntityReference getAssociation( QualifiedName stateName )
     {
         if( associations != null && associations.containsKey( stateName ) )
         {
@@ -162,17 +130,16 @@ class UnitOfWorkEntityState
         return parentState.getAssociation( stateName );
     }
 
-    public void setAssociation( StateName stateName, EntityReference newEntity )
+    public void setAssociation( QualifiedName stateName, EntityReference newEntity )
     {
         if( associations == null )
         {
-            associations = new HashMap<StateName, EntityReference>();
+            associations = new HashMap<QualifiedName, EntityReference>();
         }
         associations.put( stateName, newEntity );
-        uow.addEvent( new SetAssociationEvent( identity, stateName, newEntity ) );
     }
 
-    public ManyAssociationState getManyAssociation( StateName stateName )
+    public ManyAssociationState getManyAssociation( QualifiedName stateName )
     {
         if( manyAssociations != null && manyAssociations.containsKey( stateName ) )
         {
@@ -186,7 +153,7 @@ class UnitOfWorkEntityState
 
         // Copy parent
         ManyAssociationState parentManyAssociation = parentState.getManyAssociation( stateName );
-        ManyAssociationState unitManyAssociation = new BuilderManyAssociationState( stateName, parentManyAssociation, new EntityStateChanges( uow, identity ) );
+        ManyAssociationState unitManyAssociation = new BuilderManyAssociationState( parentManyAssociation);
         manyAssociations.put( stateName, unitManyAssociation );
         return unitManyAssociation;
     }

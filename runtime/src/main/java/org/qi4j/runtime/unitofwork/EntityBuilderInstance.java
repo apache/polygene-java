@@ -27,27 +27,20 @@ import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.StateName;
-import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
-import org.qi4j.spi.unitofwork.event.EntityEvent;
-import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
-import org.qi4j.spi.unitofwork.event.UnitOfWorkEvents;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * JAVADOC
  */
 public final class EntityBuilderInstance<T>
-    implements EntityBuilder<T>, UnitOfWorkEvents
+    implements EntityBuilder<T>
 {
     private static final Method IDENTITY_METHOD;
     private static final Method CREATE_METHOD;
-    private static StateName identityStateName;
+    private static QualifiedName identityStateName;
 
     private final ModuleInstance moduleInstance;
     private final EntityModel entityModel;
@@ -58,7 +51,6 @@ public final class EntityBuilderInstance<T>
 
     private final BuilderEntityState entityState;
     private final EntityInstance prototypeInstance;
-    private final List<UnitOfWorkEvent> events;
 
     static
     {
@@ -86,11 +78,10 @@ public final class EntityBuilderInstance<T>
 
         if( identityStateName == null )
         {
-            identityStateName = entityModel.state().<PropertyTypeDescriptor>getPropertyByQualifiedName( QualifiedName.fromMethod( IDENTITY_METHOD ) ).propertyType().stateName();
+            identityStateName = QualifiedName.fromMethod( IDENTITY_METHOD );
         }
 
-        events = new ArrayList<UnitOfWorkEvent>();
-        entityState = new BuilderEntityState( this );
+        entityState = new BuilderEntityState( entityModel.entityType() );
         prototypeInstance = entityModel.newInstance( uow, moduleInstance, EntityReference.NULL, entityState );
     }
 
@@ -109,7 +100,6 @@ public final class EntityBuilderInstance<T>
         throws LifecycleException
     {
         String identity;
-        String identityJson;
 
         // Figure out whether to use given or generated identity
         EntityState newEntityState;
@@ -117,14 +107,13 @@ public final class EntityBuilderInstance<T>
         {
             Class compositeType = entityModel.type();
             identity = identityGenerator.generate( compositeType );
-            identityJson = '\"' + identity + '\"';
-            newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ) );
+            newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ));
         }
         else
         {
-            identityJson = entityState.getProperty( identityStateName );
+            identity = (String) entityState.getProperty( identityStateName );
 
-            if (identityJson == null)
+            if (identity == null)
             {
                 identity = this.identity;
 
@@ -132,23 +121,14 @@ public final class EntityBuilderInstance<T>
                     throw new ConstructionException("No identity set and no identity generator specified");
 
                 newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ));
-                identityJson = "\""+identity+"\"";
-                newEntityState.setProperty( identityStateName, identityJson );
             } else
             {
-                identity = identityJson.substring( 1, identityJson.length() - 1 );
-                
                 newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ));
             }
 
         }
 
-        for( UnitOfWorkEvent event : events )
-        {
-            EntityEvent entityEvent = (EntityEvent) event;
-            entityEvent.applyTo( newEntityState );
-        }
-
+        entityState.copyTo(newEntityState);
 
         EntityInstance instance = entityModel.newInstance( uow, moduleInstance, newEntityState.identity(), newEntityState );
 
@@ -200,16 +180,5 @@ public final class EntityBuilderInstance<T>
                 throw new UnsupportedOperationException();
             }
         };
-    }
-
-    // UnitOfWorkEvents
-    public void addEvent( UnitOfWorkEvent event )
-    {
-        events.add( event );
-    }
-
-    public Iterable<UnitOfWorkEvent> events()
-    {
-        return events;
     }
 }

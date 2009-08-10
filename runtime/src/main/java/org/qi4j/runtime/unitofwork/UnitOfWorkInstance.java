@@ -21,7 +21,6 @@ import org.qi4j.api.common.TypeName;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
@@ -41,10 +40,8 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.EntityTypeReference;
-import org.qi4j.spi.entity.EntityTypeRegistry;
 import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 
 import java.util.ArrayList;
@@ -106,12 +103,12 @@ public final class UnitOfWorkInstance
         this.unitOfWorkStore = unitOfWorkStore;
     }
 
-    public EntityStoreUnitOfWork getEntityStoreUnitOfWork( EntityStore store )
+    public EntityStoreUnitOfWork getEntityStoreUnitOfWork( EntityStore store, ModuleSPI module )
     {
         EntityStoreUnitOfWork uow = storeUnitOfWork.get( store );
         if( uow == null )
         {
-            uow = store.newUnitOfWork( usecase, metaInfo() );
+            uow = store.newUnitOfWork( usecase, metaInfo(), module );
             storeUnitOfWork.put( store, uow );
         }
         return uow;
@@ -139,7 +136,7 @@ public final class UnitOfWorkInstance
                 {
                     ModuleInstance potentialModule = potentialModules.get( i );
                     EntityStore store = potentialModule.entities().entityStore();
-                    EntityStoreUnitOfWork storeUow = getEntityStoreUnitOfWork( store );
+                    EntityStoreUnitOfWork storeUow = getEntityStoreUnitOfWork( store, potentialModule );
                     try
                     {
                         entityState = storeUow.getEntityState( identity );
@@ -151,8 +148,8 @@ public final class UnitOfWorkInstance
 
                     // See if any types match
                     EntityModel potentialModel = potentialModels.get( i );
-                    EntityTypeReference typeRef = potentialModel.entityType().reference();
-                    if( entityState.hasEntityTypeReference( typeRef ) )
+                    TypeName typeRef = potentialModel.entityType().type();
+                    if( entityState.isOfType( typeRef ) )
                     {
                         // Found it!
                         // Check for ambiguity
@@ -174,8 +171,8 @@ public final class UnitOfWorkInstance
                 {
                     ModuleInstance potentialModule = potentialModules.get( i );
                     EntityModel potentialModel = potentialModels.get( i );
-                    EntityTypeReference typeRef = potentialModel.entityType().reference();
-                    if( entityState.hasEntityTypeReference( typeRef ) )
+                    TypeName typeRef = potentialModel.entityType().type();
+                    if( entityState.isOfType( typeRef ) )
                     {
                         // Found it!
                         // Check for ambiguity
@@ -200,23 +197,6 @@ public final class UnitOfWorkInstance
                 }
                 else
                 {
-                    // State was found, but no model to match it
-                    ServiceReference<EntityTypeRegistry> ref = uow.module().serviceFinder().findService(EntityTypeRegistry.class);
-                    if (ref != null)
-                    {
-                        EntityTypeRegistry registry = ref.get();
-                        for (EntityTypeReference entityTypeReference : entityState.entityTypeReferences())
-                        {
-                            EntityType fromType = registry.getEntityType(entityTypeReference);
-
-                            for (EntityModel potentialModel : potentialModels)
-                            {
-                                EntityType toType = potentialModel.entityType();
-                                uow.module().layerInstance().applicationInstance().migration().migrate(entityState, fromType, toType);
-                            }
-                        }
-                    }
-
                     throw new EntityTypeNotFoundException( mixinType.getName() );
                 }
             }
@@ -255,8 +235,8 @@ public final class UnitOfWorkInstance
             for( int i = 0; i < potentialModels.size(); i++ )
             {
                 EntityModel potentialModel = potentialModels.get( i );
-                EntityTypeReference typeRef = potentialModel.entityType().reference();
-                if( entityState.hasEntityTypeReference( typeRef ) )
+                TypeName typeRef = potentialModel.entityType().type();
+                if( entityState.isOfType( typeRef ) )
                 {
                     // Found it!
                     // Check for ambiguity
@@ -431,6 +411,11 @@ public final class UnitOfWorkInstance
         // Call callbacks
         notifyAfterCompletion( currentCallbacks, DISCARDED );
 
+        for (EntityStoreUnitOfWork entityStoreUnitOfWork : storeUnitOfWork.values())
+        {
+            entityStoreUnitOfWork.discard();
+        }
+
         callbacks = currentCallbacks;
     }
 
@@ -493,7 +478,7 @@ public final class UnitOfWorkInstance
 
             try
             {
-                StateCommitter committer = entityStore.apply( entityStoreUnitOfWork.identity(), entityStoreUnitOfWork.events(), usecase, metaInfo() );
+                StateCommitter committer = entityStoreUnitOfWork.apply();
                 committers.add( committer );
             }
             catch( Exception e )

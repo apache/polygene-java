@@ -14,14 +14,16 @@
 
 package org.qi4j.spi.value;
 
+import static org.qi4j.api.common.TypeName.*;
+import org.qi4j.api.structure.Module;
+import org.qi4j.spi.entity.helpers.json.JSONException;
+import org.qi4j.spi.entity.helpers.json.JSONWriter;
+
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import static org.qi4j.api.common.TypeName.*;
-import org.qi4j.api.structure.Module;
-import org.qi4j.spi.util.PeekableStringTokenizer;
 
 /**
  * Date type. Use ISO8601 format (http://www.w3.org/TR/NOTE-datetime). Assumes UTC time.
@@ -54,29 +56,25 @@ public final class DateType
         super( nameOf( Date.class ) );
     }
 
-    public void toJSON( Object value, StringBuilder json )
+    public void toJSON( Object value, JSONWriter json ) throws JSONException
     {
-        json.append( '"' );
         Date date = (Date) value;
         String dateString = ISO8601.get().format( date );
-        json.append( dateString );
-        json.append( '"' );
+        json.value(dateString);
     }
 
-    public Object fromJSON( PeekableStringTokenizer json, Module module )
+    public Object fromJSON( Object json, Module module )
     {
-        String token = json.nextToken( "\"" );
-        String result = json.nextToken();
+        String stringDate = (String) json;
 
         try
         {
-            Date date = ISO8601.get().parse( result );
-            token = json.nextToken();
+            Date date = ISO8601.get().parse( stringDate );
             return date;
         }
         catch( ParseException e )
         {
-            throw new IllegalStateException( "Illegal date:" + result );
+            throw new IllegalStateException( "Illegal date:" + stringDate );
         }
     }
 

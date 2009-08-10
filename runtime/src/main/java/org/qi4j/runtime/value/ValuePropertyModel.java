@@ -50,7 +50,7 @@ public final class ValuePropertyModel extends PersistentPropertyModel
 
         ValueType valueType = ValueType.newValueType( type(), anAccessor.getDeclaringClass(), compositeType );
 
-        propertyType = new PropertyType( qualifiedName(), valueType, toRDF(), isQueryable, type );
+        propertyType = new PropertyType( qualifiedName(), valueType, isQueryable, type );
         propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), qualifiedName(), type() );
     }
 

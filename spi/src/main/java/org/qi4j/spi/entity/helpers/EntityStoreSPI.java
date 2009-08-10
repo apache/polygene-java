@@ -12,32 +12,23 @@
  *
  */
 
-package org.qi4j.spi.unitofwork.event;
+package org.qi4j.spi.entity.helpers;
 
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.StateName;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 
 /**
  * JAVADOC
  */
-public abstract class EntityStateEvent
-    extends EntityEvent
+public interface EntityStoreSPI
 {
-    private StateName stateName;
+    EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
+                                       EntityReference identity, EntityType entityType);
 
-    public EntityStateEvent( EntityReference identity, StateName stateName )
-    {
-        super( identity );
-        this.stateName = stateName;
-    }
+    EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity);
 
-    public StateName stateName()
-    {
-        return stateName;
-    }
-
-    @Override public String toString()
-    {
-        return super.toString() + ", for " + stateName.qualifiedName().name();
-    }
+    StateCommitter apply(Iterable<EntityState> state, String identity);
 }

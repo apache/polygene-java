@@ -14,11 +14,10 @@
 
 package org.qi4j.spi.property;
 
-import java.io.Serializable;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.spi.entity.SchemaVersion;
-import org.qi4j.spi.entity.StateName;
 import org.qi4j.spi.value.ValueType;
+
+import java.io.Serializable;
 
 /**
  * JAVADOC
@@ -33,37 +32,23 @@ public final class PropertyType
 
     private final QualifiedName qualifiedName;
     private final ValueType type;
-    private String rdf;
     private final boolean queryable;
     private final PropertyTypeEnum propertyType;
-    private final StateName stateName;
 
     public PropertyType( final QualifiedName qualifiedName,
                          final ValueType type,
-                         final String rdf,
                          final boolean queryable,
                          final PropertyTypeEnum propertyType )
     {
         this.qualifiedName = qualifiedName;
         this.type = type;
-        this.rdf = rdf;
         this.queryable = queryable;
         this.propertyType = propertyType;
-
-        SchemaVersion schemaVersion = new SchemaVersion();
-        schemaVersion.versionize( type.type() );
-        schemaVersion.versionize( qualifiedName );
-        stateName = new StateName( qualifiedName, rdf, schemaVersion.base64() );
     }
 
     public QualifiedName qualifiedName()
     {
         return qualifiedName;
-    }
-
-    public StateName stateName()
-    {
-        return stateName;
     }
 
     public ValueType type()
@@ -74,11 +59,6 @@ public final class PropertyType
     public PropertyTypeEnum propertyType()
     {
         return propertyType;
-    }
-
-    public String rdf()
-    {
-        return rdf;
     }
 
     public boolean queryable()
@@ -94,12 +74,5 @@ public final class PropertyType
     public int compareTo( PropertyType pt )
     {
         return qualifiedName.compareTo( pt.qualifiedName );
-    }
-
-    public void versionize( SchemaVersion schemaVersion )
-    {
-
-        schemaVersion.versionize( qualifiedName );
-        type.versionize( schemaVersion );
     }
 }

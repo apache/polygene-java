@@ -1,19 +1,18 @@
 package org.qi4j.entitystore.memory;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.usecase.Usecase;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.spi.entity.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityStoreException;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * In-memory implementation of MapEntityStore.
@@ -21,56 +20,56 @@ import org.qi4j.spi.entity.EntityStoreException;
 public final class MemoryMapEntityStoreMixin
     implements MapEntityStore
 {
-    private final Map<EntityReference, byte[]> store;
+    private final Map<EntityReference, String> store;
 
     public MemoryMapEntityStoreMixin()
     {
-        store = new HashMap<EntityReference, byte[]>();
+        store = new HashMap<EntityReference, String>();
     }
 
-    public boolean contains( EntityReference entityReference, Usecase usecase, MetaInfo unitofwork )
+    public boolean contains( EntityReference entityReference)
         throws EntityStoreException
     {
         return store.containsKey( entityReference );
     }
 
-    public InputStream get( EntityReference entityReference, Usecase usecase, MetaInfo unitOfWork )
+    public Reader get( EntityReference entityReference)
         throws EntityStoreException
     {
-        byte[] state = store.get( entityReference );
+        String state = store.get( entityReference );
         if( state == null )
         {
             throw new EntityNotFoundException( entityReference );
         }
 
-        return new ByteArrayInputStream( state );
+        return new StringReader( state );
     }
 
-    public void applyChanges( MapEntityStore.MapChanges changes, Usecase usecase, MetaInfo unitOfWork )
+    public void applyChanges( MapEntityStore.MapChanges changes)
         throws IOException
     {
-        changes.visitMap( new MemoryMapChanger(), usecase, unitOfWork );
+        changes.visitMap( new MemoryMapChanger());
     }
 
-    public void visitMap( MapEntityStoreVisitor visitor, Usecase usecase, MetaInfo unitOfWorkMetaInfo )
+    public void visitMap( MapEntityStoreVisitor visitor)
     {
-        for( byte[] bytes : store.values() )
+        for( String state : store.values() )
         {
-            visitor.visitEntity( new ByteArrayInputStream( bytes ) );
+            visitor.visitEntity( new StringReader( state ) );
         }
     }
 
     private class MemoryMapChanger
         implements MapChanger
     {
-        public OutputStream newEntity( final EntityReference ref )
+        public Writer newEntity( final EntityReference ref )
         {
-            return new ByteArrayOutputStream(1000)
+            return new StringWriter(1000)
             {
                 @Override public void close() throws IOException
                 {
                     super.close();
-                    byte[] old = store.put( ref, toByteArray() );
+                    String old = store.put( ref, toString() );
                     if( old != null )
                     {
                         store.put( ref, old );
@@ -80,15 +79,15 @@ public final class MemoryMapEntityStoreMixin
             };
         }
 
-        public OutputStream updateEntity( final EntityReference ref )
+        public Writer updateEntity( final EntityReference ref )
             throws IOException
         {
-            return new ByteArrayOutputStream(1000)
+            return new StringWriter(1000)
             {
                 @Override public void close() throws IOException
                 {
                     super.close();
-                    byte[] old = store.put( ref, toByteArray() );
+                    String old = store.put( ref, toString() );
                     if( old == null )
                     {
                         store.remove( ref );
@@ -101,7 +100,7 @@ public final class MemoryMapEntityStoreMixin
         public void removeEntity( EntityReference ref )
             throws EntityNotFoundException
         {
-            byte[] state = store.remove( ref );
+            String state = store.remove( ref );
             if( state == null )
             {
                 throw new EntityNotFoundException( ref );

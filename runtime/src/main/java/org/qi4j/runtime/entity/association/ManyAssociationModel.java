@@ -22,7 +22,6 @@ import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Aggregated;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.entity.RDF;
 import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.entity.association.ManyAssociation;
@@ -56,7 +55,6 @@ public final class ManyAssociationModel
     private Type type;
     private Method accessor;
     private QualifiedName qualifiedName;
-    private String rdf;
     private ValueConstraintsInstance constraints;
     private boolean queryable;
     private boolean immutable;
@@ -96,7 +94,7 @@ public final class ManyAssociationModel
         this.associationConstraints = associationConstraintsInstance;
         this.accessor = accessor;
         initialize();
-        this.manyAssociationType = new ManyAssociationType( qualifiedName, getRawClass( type ).getName(), rdf, queryable );
+        this.manyAssociationType = new ManyAssociationType( qualifiedName, getRawClass( type ).getName(), queryable );
         this.builderInfo = new GenericAssociationInfo(accessor, metaInfo, false);
     }
 
@@ -106,8 +104,6 @@ public final class ManyAssociationModel
         this.qualifiedName = QualifiedName.fromMethod( accessor );
         this.immutable = metaInfo.get( Immutable.class ) != null;
         this.aggregated = metaInfo.get( Aggregated.class ) != null;
-        RDF uriAnnotation = accessor().getAnnotation( RDF.class );
-        this.rdf = uriAnnotation == null ? null : uriAnnotation.value();
 
         final Queryable queryable = accessor.getAnnotation( Queryable.class );
         this.queryable = queryable == null || queryable.value();
