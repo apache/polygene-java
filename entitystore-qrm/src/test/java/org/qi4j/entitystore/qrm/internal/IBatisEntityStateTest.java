@@ -30,7 +30,6 @@ import org.qi4j.entitystore.qrm.entity.HasFirstName;
 import org.qi4j.entitystore.qrm.entity.HasLastName;
 import org.qi4j.entitystore.qrm.entity.PersonComposite;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.StateName;
 import org.qi4j.test.AbstractQi4jTest;
 
 @Ignore( "Until store is upgraded" )
@@ -55,7 +54,7 @@ public final class IBatisEntityStateTest extends AbstractQi4jTest
         throws NoSuchMethodException
     {
         final Method method = type.getMethod( propertyName );
-        return (String) person.getProperty( new StateName( method.getName() ) );
+        return (String) person.getProperty( QualifiedName.fromQN( method.getName() ) );
     }
 
     public final void assemble( final ModuleAssembly module ) throws AssemblyException

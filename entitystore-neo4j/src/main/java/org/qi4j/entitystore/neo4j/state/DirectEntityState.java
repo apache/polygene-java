@@ -49,7 +49,7 @@ public class DirectEntityState
     private EntityStatus status;
     private EntityType entityType;
     private final LoadedDescriptor descriptor;
-    private final Map<StateName, ManyAssociationState> manyAssociations = new HashMap<StateName, ManyAssociationState>();
+    private final Map<QualifiedName, ManyAssociationState> manyAssociations = new HashMap<QualifiedName, ManyAssociationState>();
     private boolean loaded = false;
     final NeoService neo;
 
@@ -69,7 +69,7 @@ public class DirectEntityState
     {
         for (ManyAssociationFactory factory : getManyAssociationFactories())
         {
-            manyAssociations.put(factory.getStateName(), factory.createNodeCollection(this, neo, idIndex));
+            manyAssociations.put(factory.getQualifiedName(), factory.createNodeCollection(this, neo, idIndex));
         }
     }
 
@@ -197,6 +197,7 @@ public class DirectEntityState
         return status;
     }
 
+/*
     public void addEntityTypeReference(EntityTypeReference type)
     {
         // TODO
@@ -227,13 +228,14 @@ public class DirectEntityState
         // TODO
         return null;
     }
+*/
 
-    public String getProperty(StateName stateName)
+    public String getProperty(QualifiedName stateName)
     {
         return underlyingNode.getProperty(stateName.toString()).toString();
     }
 
-    public void setProperty(StateName stateName, String newValue)
+    public void setProperty(QualifiedName stateName, String newValue)
     {
         if (newValue != null)
         {
@@ -244,9 +246,9 @@ public class DirectEntityState
         }
     }
 
-    public EntityReference getAssociation(StateName stateName)
+    public EntityReference getAssociation(QualifiedName stateName)
     {
-        RelationshipType associationType = getAssociationType(stateName.qualifiedName().name());
+        RelationshipType associationType = getAssociationType(stateName.name());
         Relationship relation = underlyingNode.getSingleRelationship(associationType, Direction.OUTGOING);
         if (relation != null)
         {
@@ -257,9 +259,9 @@ public class DirectEntityState
         }
     }
 
-    public void setAssociation(StateName stateName, EntityReference newEntity)
+    public void setAssociation(QualifiedName stateName, EntityReference newEntity)
     {
-        RelationshipType associationType = getAssociationType(stateName.qualifiedName().name());
+        RelationshipType associationType = getAssociationType(stateName.name());
         Relationship relation = underlyingNode.getSingleRelationship(associationType, Direction.OUTGOING);
         if (relation != null)
         {
@@ -277,7 +279,7 @@ public class DirectEntityState
         }
     }
 
-    public ManyAssociationState getManyAssociation(StateName stateName)
+    public ManyAssociationState getManyAssociation(QualifiedName stateName)
     {
         return manyAssociations.get(stateName);
     }
@@ -301,9 +303,9 @@ public class DirectEntityState
         return new EntityReference(id);
     }
 
-    public int getSizeOfCollection(StateName qualifiedName)
+    public int getSizeOfCollection(QualifiedName qualifiedName)
     {
-        return (Integer) underlyingNode.getProperty(COLLECTION_SIZE_PROPERTY_PREFIX + qualifiedName.qualifiedName(), 0);
+        return (Integer) underlyingNode.getProperty(COLLECTION_SIZE_PROPERTY_PREFIX + qualifiedName, 0);
     }
 
     public void setSizeOfCollection(QualifiedName qualifiedName, int size)

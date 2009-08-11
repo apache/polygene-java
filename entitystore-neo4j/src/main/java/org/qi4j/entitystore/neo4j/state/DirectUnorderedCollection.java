@@ -21,9 +21,9 @@ import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.ManyAssociationState;
-import org.qi4j.spi.entity.StateName;
 
 import java.util.AbstractCollection;
 import java.util.Iterator;
@@ -37,14 +37,14 @@ public class DirectUnorderedCollection extends AbstractCollection<EntityReferenc
     private final DirectEntityState state;
     private final RelationshipType associationType;
     private final DuplicationChecker checker;
-    private final StateName stateName;
+    private final QualifiedName stateName;
     private final NeoIdentityIndex idIndex;
 
-    public DirectUnorderedCollection(NeoIdentityIndex idIndex, DuplicationChecker checker, final DirectEntityState state, final StateName stateName)
+    public DirectUnorderedCollection(NeoIdentityIndex idIndex, DuplicationChecker checker, final DirectEntityState state, final QualifiedName stateName)
     {
         this.idIndex = idIndex;
         this.state = state;
-        this.associationType = LinkType.UNQUALIFIED.getRelationshipType(stateName.qualifiedName().name());
+        this.associationType = LinkType.UNQUALIFIED.getRelationshipType(stateName.name());
         this.stateName = stateName;
         this.checker = checker;
     }
@@ -125,7 +125,7 @@ public class DirectUnorderedCollection extends AbstractCollection<EntityReferenc
 
     private void changeSize(int delta)
     {
-        state.setSizeOfCollection(stateName.qualifiedName(), size() + delta);
+        state.setSizeOfCollection(stateName, size() + delta);
     }
 
     public boolean add(EntityReference entityReference)

@@ -29,7 +29,6 @@ import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
-import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
@@ -226,6 +225,7 @@ public class EntitiesResource extends ServerResource
     {
         try
         {
+/*
             InputStream in = entity.getStream();
             ObjectInputStream oin = new ObjectInputStream( in );
             String identity = oin.readUTF();
@@ -242,6 +242,7 @@ public class EntitiesResource extends ServerResource
             {
                 throw new ResourceException( Status.CLIENT_ERROR_CONFLICT );
             }
+*/
         }
         catch( Exception e )
         {

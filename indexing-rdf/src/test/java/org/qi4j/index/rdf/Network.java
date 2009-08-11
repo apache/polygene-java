@@ -219,6 +219,7 @@ class Network
             Cat felix = catBuilder.prototype();
             felix.name().set( "Felix" );
             felix = catBuilder.newInstance();
+            NameableAssert.trace( felix );
         }
 
         unitOfWork.complete();

@@ -29,9 +29,6 @@ import org.qi4j.rest.entity.EntitiesResource;
 import org.qi4j.rest.entity.EntityResource;
 import org.qi4j.rest.query.IndexResource;
 import org.qi4j.rest.query.SPARQLResource;
-import org.qi4j.rest.type.EntityTypeResource;
-import org.qi4j.rest.type.EntityTypesResource;
-import org.qi4j.rest.events.EventsResource;
 import org.restlet.Application;
 import org.restlet.Context;
 import org.restlet.Restlet;
@@ -100,16 +97,11 @@ public class RestApplication extends Application
 
         router.attach( "/service", Qi4jServiceResource.class );
 
-        router.attach( "/type", createFinder( EntityTypesResource.class ) );
-        router.attach( "/type/{version}", createFinder( EntityTypeResource.class ) );
-
         router.attach( "/entity", createFinder( EntitiesResource.class ) );
         router.attach( "/entity/{identity}", createFinder( EntityResource.class ) );
 
         router.attach( "/query", createFinder( SPARQLResource.class ) );
         router.attach( "/query/index", createFinder( IndexResource.class ) );
-
-        router.attach("/events", createFinder( EventsResource.class));
 
         // Add filters
         return new ExtensionMediaTypeFilter( getContext(), router );

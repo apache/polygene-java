@@ -19,9 +19,9 @@ package org.qi4j.entitystore.neo4j.state;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.RelationshipType;
 import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.ManyAssociationState;
-import org.qi4j.spi.entity.StateName;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 
@@ -33,12 +33,12 @@ import java.util.Map;
  */
 class ManyAssociationFactory
 {
-    private static final Map<StateName, ManyAssociationFactory> cache = new HashMap<StateName, ManyAssociationFactory>();
+    private static final Map<QualifiedName, ManyAssociationFactory> cache = new HashMap<QualifiedName, ManyAssociationFactory>();
 
 
     static ManyAssociationFactory getFactory(ManyAssociationType model)
     {
-        StateName qName = model.stateName();
+        QualifiedName qName = model.qualifiedName();
         ManyAssociationFactory value = cache.get(qName);
         if (value == null)
         {
@@ -54,7 +54,7 @@ class ManyAssociationFactory
         return value;
     }
 
-    public static ManyAssociationFactory load(StateName qName, String typeString)
+    public static ManyAssociationFactory load(QualifiedName qName, String typeString)
     {
         ManyAssociationFactory value = cache.get(qName);
         if (value == null)
@@ -71,22 +71,22 @@ class ManyAssociationFactory
         return value;
     }
 
-    private final StateName stateName;
+    private final QualifiedName stateName;
     private final CollectionFactory factory;
 
     private ManyAssociationFactory(ManyAssociationType model)
     {
-        this.stateName = model.stateName();
+        this.stateName = model.qualifiedName();
         this.factory = CollectionFactory.getFactoryFor();
     }
 
-    public ManyAssociationFactory(StateName stateName, String typeString)
+    public ManyAssociationFactory(QualifiedName stateName, String typeString)
     {
         this.stateName = stateName;
         this.factory = CollectionFactory.getFactoryFor();
     }
 
-    StateName getStateName()
+    QualifiedName getQualifiedName()
     {
         return stateName;
     }
@@ -103,7 +103,7 @@ class ManyAssociationFactory
 
     RelationshipType createAssociationType(LinkType type)
     {
-        return type.getRelationshipType(stateName.qualifiedName().name());
+        return type.getRelationshipType(stateName.name());
     }
 
     public String typeString()

@@ -41,7 +41,6 @@ import org.qi4j.index.rdf.model.entities.MaleEntity;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
-import org.qi4j.spi.entity.typeregistry.EntityTypeRegistryService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 public class RdfEntityIndexerTest
@@ -76,8 +75,7 @@ public class RdfEntityIndexerTest
                     UuidIdentityGeneratorService.class,
                     RdfIndexerExporterComposite.class,
                     RdfFactoryService.class,
-                    MemoryRepositoryService.class,
-                    EntityTypeRegistryService.class
+                    MemoryRepositoryService.class
                 );
             }
         };

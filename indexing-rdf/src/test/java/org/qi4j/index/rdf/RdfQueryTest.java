@@ -206,7 +206,7 @@ public class RdfQueryTest
             query,
             "Joe Doe", "Ann Doe", "Jack Doe",
             "Penang", "Kuala Lumpur",
-            "Cooking", "Gaming", "Programming", "Cars"
+            "Cooking", "Gaming", "Programming", "Cars", "Felix"
         );
         System.out.println( "*** script03: " + query );
     }
@@ -409,7 +409,7 @@ public class RdfQueryTest
         System.out.println( "*** script17: " + query );
         verifyOrderedResults(
             query,
-            "Gaming", "Jack Doe", "Joe Doe"
+            "Felix", "Gaming", "Jack Doe"
         );
     }
 
@@ -424,7 +424,7 @@ public class RdfQueryTest
         System.out.println( "*** script18: " + query );
         verifyOrderedResults(
             query,
-            "Ann Doe", "Cars", "Cooking", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
+            "Ann Doe", "Cars", "Cooking", "Felix", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
         );
     }
 
@@ -442,7 +442,7 @@ public class RdfQueryTest
         System.out.println( "*** script19: " + query );
         verifyOrderedResults(
             query,
-            "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
+            "Felix", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
         );
     }
 

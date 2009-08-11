@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -39,7 +40,6 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.StateName;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 /**
@@ -59,17 +59,6 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     {
 //        entityStore.iterator();
         derbyDatabaseHandler.checkDataInitialization();
-    }
-
-    @Test public final void createNewEntityStateWithoutPersisting()
-        throws SQLException, UnitOfWorkCompletionException
-    {
-        final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-
-        final EntityState state = entityStore.newUnitOfWork( null, null ).newEntityState( EntityReference.parseEntityReference( NEW_TEST_ID ) );
-        assertNotNull( state );
-        checkEntityStateProperties( spi.getEntityDescriptor( PersonComposite.class, moduleInstance ), state, false );
-        uow.complete();
     }
 
     @Test public final void newEntityStateIsPersistedToDatabase()
@@ -166,8 +155,8 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         final EntityState state = loadEntity( TestConfig.JANE_SMITH_ID );
         assertPersonEntityStateEquals( TestConfig.JANE_SMITH_ID, "Jane", "Smith", state );
 //        assertEquals( "ACCOUNTS", state.manyAssociationNames().iterator().next() );
-        assertEquals( "no association accounts", null, state.getAssociation( new StateName( "ACCOUNTS" ) ) );
-        final ManyAssociationState manyAssociation = state.getManyAssociation( new StateName( "ACCOUNTS" ) );
+        assertEquals( "no association accounts", null, state.getAssociation( QualifiedName.fromQN( "ACCOUNTS" ) ) );
+        final ManyAssociationState manyAssociation = state.getManyAssociation( QualifiedName.fromQN( "ACCOUNTS" ) );
         assertEquals( "many association accounts", 2, manyAssociation.count() );
 //        assertTrue( "account reference 1", manyAssociation.contains( createId( "1", Account.class ) ) );
 //        assertTrue( "account reference 2", manyAssociation.contains( createId( "2", Account.class ) ) );

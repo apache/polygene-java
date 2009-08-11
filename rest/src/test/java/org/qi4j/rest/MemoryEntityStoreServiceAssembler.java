@@ -19,7 +19,6 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.spi.entity.typeregistry.EntityTypeRegistryService;
 
 /**
  * JAVADOC
@@ -29,6 +28,6 @@ class MemoryEntityStoreServiceAssembler
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class, EntityTypeRegistryService.class ).visibleIn( Visibility.application );
+        module.addServices( MemoryEntityStoreService.class).visibleIn( Visibility.application );
     }
 }
