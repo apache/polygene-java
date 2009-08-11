@@ -49,6 +49,7 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.entitystore.map.MapEntityStore;
 
@@ -85,19 +86,6 @@ public class JdbmEntityStoreMixin
         recordManager.close();
     }
 
-    public boolean contains( EntityReference entityReference ) throws EntityStoreException
-    {
-        try
-        {
-            Long stateIndex = getStateIndex( entityReference.toString() );
-            return stateIndex != null;
-        }
-        catch( IOException e )
-        {
-            throw new EntityStoreException( e );
-        }
-    }
-
     public Reader get( EntityReference entityReference ) throws EntityStoreException
     {
         try
@@ -131,7 +119,7 @@ public class JdbmEntityStoreMixin
         {
             changes.visitMap( new MapChanger()
             {
-                public Writer newEntity( final EntityReference ref ) throws IOException
+                public Writer newEntity( final EntityReference ref, EntityType entityType ) throws IOException
                 {
                     return new StringWriter( 1000 )
                     {
@@ -147,7 +135,7 @@ public class JdbmEntityStoreMixin
                     };
                 }
 
-                public Writer updateEntity( final EntityReference ref ) throws IOException
+                public Writer updateEntity( final EntityReference ref, EntityType entityType ) throws IOException
                 {
                     return new StringWriter( 1000 )
                     {
@@ -162,7 +150,7 @@ public class JdbmEntityStoreMixin
                     };
                 }
 
-                public void removeEntity( EntityReference ref ) throws EntityNotFoundException
+                public void removeEntity( EntityReference ref, EntityType entityType ) throws EntityNotFoundException
                 {
                     try
                     {
