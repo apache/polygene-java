@@ -37,7 +37,7 @@ public final class DateType
         @Override
         protected DateFormat initialValue()
         {
-            return new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" );
+            return new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
         }
     };
 
