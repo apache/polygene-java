@@ -143,7 +143,7 @@ public class ModuleUnitOfWork
         {
             identityStateName = QualifiedName.fromMethod( IDENTITY_METHOD );
         }
-        entityState.setProperty( identityStateName, '\"' + identity + '\"' );
+        entityState.setProperty( identityStateName, identity );
 
         EntityInstance instance = new EntityInstance( this, moduleInstance, entityModel, entityState.identity(), entityState );
 

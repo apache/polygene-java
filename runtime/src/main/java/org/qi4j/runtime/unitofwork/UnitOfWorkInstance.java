@@ -653,6 +653,8 @@ public final class UnitOfWorkInstance
         return paused;
     }
 
+
+
     @Override public String toString()
     {
         return "UnitOfWork " + hashCode() + "(" + usecase + "): entities:" + stateCache.size();
