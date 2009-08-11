@@ -89,7 +89,7 @@ public class EntityStateSerializer
         EntityReference identity = entityState.identity();
         URI entityUri = createEntityURI( values, identity );
 
-        EntityType entityType = entityState.entityType();
+        EntityType entityType = entityState.entityDescriptor().entityType();
         graph.add( entityUri, Rdfs.TYPE, values.createURI( entityType.uri() ) );
 
         serializeProperties( entityState,

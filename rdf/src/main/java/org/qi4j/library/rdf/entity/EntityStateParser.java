@@ -107,7 +107,7 @@ public class EntityStateParser
             return;
         }
 
-        EntityType entityType = entityState.entityType();
+        EntityType entityType = entityState.entityDescriptor().entityType();
 
         for( PropertyType propertyType : entityType.properties() )
         {
