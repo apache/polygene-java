@@ -52,7 +52,7 @@ public class EntitySerializerTest
     {
         module.addServices( MemoryEntityStoreService.class, EntityTypeRegistryService.class );
         module.addEntities( TestEntity.class );
-        module.addValues( TestValue.class );
+        module.addValues( TestValue.class, Test2Value.class );
         module.addObjects( EntityStateSerializer.class, EntitySerializerTest.class );
     }
 
@@ -88,6 +88,9 @@ public class EntitySerializerTest
         {
             ValueBuilder<TestValue> valueBuilder = valueBuilderFactory.newValueBuilder( TestValue.class );
             valueBuilder.prototype().test1().set( 4L );
+            ValueBuilder<Test2Value> valueBuilder2 = valueBuilderFactory.newValueBuilder( Test2Value.class );
+            valueBuilder2.prototype().data().set( "Habba" );
+            valueBuilder.prototype().test3().set( valueBuilder2.newInstance() );
             TestValue testValue = valueBuilder.newInstance();
 
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class, "test1");

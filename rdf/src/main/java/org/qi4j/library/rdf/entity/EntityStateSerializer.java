@@ -14,6 +14,10 @@
 
 package org.qi4j.library.rdf.entity;
 
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Literal;
@@ -22,9 +26,11 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.GraphImpl;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityType;
@@ -35,13 +41,10 @@ import org.qi4j.spi.entity.StateName;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.util.PeekableStringTokenizer;
 import org.qi4j.spi.value.AbstractStringType;
 import org.qi4j.spi.value.ValueType;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import org.qi4j.spi.value.ValueCompositeType;
 
 /**
  * JAVADOC
@@ -51,9 +54,7 @@ public class EntityStateSerializer
 
     private Map<String, URI> dataTypes = new HashMap<String, URI>();
 
-    private
-    @Service
-    EntityTypeRegistry typeRegistry;
+    @Service private EntityTypeRegistry typeRegistry;
 
     public EntityStateSerializer()
     {
@@ -135,15 +136,63 @@ public class EntityStateSerializer
                 continue; // Skip properties with null values
             }
             ValueType valueType = propertyType.type();
-            if( valueType instanceof AbstractStringType) // Remove "" around strings
+
+            if( valueType instanceof AbstractStringType ) // Remove "" around strings
             {
-                property = property.substring( 1, property.length()-1 );
+                property = property.substring( 1, property.length() - 1 );
             }
+            String propertyURI = propertyType.qualifiedName().toURI();
+            URI predicate = valueFactory.createURI( propertyURI );
+            String baseURI = propertyURI.substring( 0, propertyURI.indexOf( '#' ) ) + "/";
 
-            URI predicate = valueFactory.createURI( propertyType.qualifiedName().toURI() );
+            if( valueType instanceof ValueCompositeType )
+            {
+                serializeValueComposite( subject, predicate, new PeekableStringTokenizer( property ), graph, baseURI );
+            }
+            else
+            {
+                final Literal object = valueFactory.createLiteral( property );
+                graph.add( subject, predicate, object );
+            }
+        }
+    }
+    
+    private void serializeValueComposite( Resource subject, URI predicate,
+                                          PeekableStringTokenizer json, Graph graph, String baseUri )
+    {
+        final ValueFactory valueFactory = graph.getValueFactory();
+        BNode collection = valueFactory.createBNode();
+        graph.add( subject, predicate, collection );
+//        graph.add( collection, Rdfs.TYPE, Rdfs.CONTAINER );
 
-            final Literal object = valueFactory.createLiteral( property );
-            graph.add( subject, predicate, object );
+        String token = json.nextToken( "{" );
+        while( json.hasMoreTokens() && ! token.equals( "}" ) )
+        {
+            String name = json.nextToken( ":" );
+            token = json.nextToken( ",:" );
+            token = json.peekNextToken( "{,}\"[" );
+            URI namePredicate = valueFactory.createURI( baseUri, name );
+            if( token.equals( "null" ) )
+            {
+                json.nextToken();
+                graph.add( collection, namePredicate, valueFactory.createBNode() );
+            }
+            else if( token.equals( "{" ) )
+            {
+                serializeValueComposite( collection, namePredicate, json, graph, baseUri + name + "/" );
+            }
+            else
+            {
+                token = json.nextToken( ",}\"[" );
+                if( token.equals( "\"" ))
+                {
+                    token = json.nextToken( "\"" );  // Grab the value inside the quotes.
+                    String dummy = json.nextToken( "\"" );          // Removing closing quote
+                }
+                Literal object = valueFactory.createLiteral( token );
+                graph.add( collection, namePredicate, object );
+            }
+            token = json.nextToken( ",}" );
         }
     }
 

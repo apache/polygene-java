@@ -21,11 +21,10 @@ ldap/server/target/
 locking/target/
 logging/target/
 observations/target/
-qi4j-library.ipr
-qi4j-library.iws
 rdf/application.rdfn3
 rdf/application.rdfxml
 rdf/rdf-stores/
+rdf/rdf/
 rdf/target/
 registry/target/
 rmi/target/
