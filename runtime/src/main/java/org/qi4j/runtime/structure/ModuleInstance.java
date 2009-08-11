@@ -17,7 +17,6 @@ package org.qi4j.runtime.structure;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.common.TypeName;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.composite.TransientBuilder;
@@ -31,9 +30,9 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
@@ -58,9 +57,9 @@ import org.qi4j.runtime.value.ValueBuilderInstance;
 import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.runtime.value.ValuesInstance;
 import org.qi4j.runtime.value.ValuesModel;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.helpers.json.JSONException;
 import org.qi4j.spi.entity.helpers.json.JSONTokener;
-import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.structure.ModuleSPI;
 
 import java.lang.reflect.Type;
@@ -175,7 +174,7 @@ public class ModuleInstance
         return importedServices;
     }
 
-    public EntityType entityType(String name)
+    public EntityDescriptor entityDescriptor(String name)
             throws EntityTypeNotFoundException
     {
         EntityFinder finder = null;
@@ -188,7 +187,7 @@ public class ModuleInstance
         }
         if (finder.models.isEmpty())
             throw new EntityTypeNotFoundException(name);
-        return finder.models.get(0).entityType();
+        return finder.models.get(0);
     }
 
     public TransientBuilderFactory transientBuilderFactory()

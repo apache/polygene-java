@@ -21,11 +21,11 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.usecase.Usecase;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
@@ -79,9 +79,9 @@ public abstract class ConcurrentModificationCheckConcern extends ConcernOf<Entit
             return uow.identity();
         }
 
-        public EntityState newEntityState(EntityReference anIdentity, EntityType entityType) throws EntityStoreException
+        public EntityState newEntityState(EntityReference anIdentity, EntityDescriptor entityDescriptor) throws EntityStoreException
         {
-            return uow.newEntityState( anIdentity, entityType );
+            return uow.newEntityState( anIdentity, entityDescriptor );
         }
 
         public StateCommitter apply() throws EntityStoreException

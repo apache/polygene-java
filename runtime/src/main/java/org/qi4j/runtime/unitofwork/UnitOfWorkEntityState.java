@@ -17,9 +17,9 @@ package org.qi4j.runtime.unitofwork;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.ManyAssociationState;
 
 import java.util.HashMap;
@@ -89,9 +89,9 @@ class UnitOfWorkEntityState
         return parentState.isOfType(type);
     }
 
-    public EntityType entityType()
+    public EntityDescriptor entityDescriptor()
     {
-        return parentState.entityType();
+        return parentState.entityDescriptor();
     }
 
     public void hasBeenApplied()

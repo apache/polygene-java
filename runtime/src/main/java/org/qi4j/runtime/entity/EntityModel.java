@@ -222,7 +222,7 @@ public final class EntityModel
         try
         {
             // New EntityState
-            EntityState entityState = store.newEntityState( identity, entityType());
+            EntityState entityState = store.newEntityState( identity, this);
 
             // Add EntityType
             initState( entityState );

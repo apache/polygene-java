@@ -81,7 +81,7 @@ public final class EntityBuilderInstance<T>
             identityStateName = QualifiedName.fromMethod( IDENTITY_METHOD );
         }
 
-        entityState = new BuilderEntityState( entityModel.entityType() );
+        entityState = new BuilderEntityState( entityModel );
         prototypeInstance = entityModel.newInstance( uow, moduleInstance, EntityReference.NULL, entityState );
     }
 

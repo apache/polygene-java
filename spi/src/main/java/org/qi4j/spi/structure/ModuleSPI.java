@@ -16,7 +16,7 @@ package org.qi4j.spi.structure;
 
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
-import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.EntityDescriptor;
 
 /**
  * JAVADOC
@@ -24,6 +24,6 @@ import org.qi4j.spi.entity.EntityType;
 public interface ModuleSPI
     extends Module
 {
-    EntityType entityType(String name)
+    EntityDescriptor entityDescriptor(String name)
         throws EntityTypeNotFoundException;
 }

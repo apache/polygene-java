@@ -19,10 +19,10 @@ package org.qi4j.spi.entity.helpers;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
-import org.qi4j.spi.entity.EntityType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -43,19 +43,19 @@ public final class DefaultEntityState
     protected String version;
     protected long lastModified;
     private final EntityReference identity;
-    private final EntityType entityType;
+    private final EntityDescriptor entityDescriptor;
 
     protected final Map<QualifiedName, Object> properties;
     protected final Map<QualifiedName, EntityReference> associations;
     protected final Map<QualifiedName, List<EntityReference>> manyAssociations;
 
-    public DefaultEntityState( DefaultEntityStoreUnitOfWork unitOfWork, EntityReference identity, EntityType entityType )
+    public DefaultEntityState( DefaultEntityStoreUnitOfWork unitOfWork, EntityReference identity, EntityDescriptor entityDescriptor)
     {
         this( unitOfWork, "",
               System.currentTimeMillis(),
               identity,
               EntityStatus.NEW,
-              entityType,
+                entityDescriptor,
               new HashMap<QualifiedName, Object>(),
               new HashMap<QualifiedName, EntityReference>(),
               new HashMap<QualifiedName, List<EntityReference>>() );
@@ -66,7 +66,7 @@ public final class DefaultEntityState
                                long lastModified,
                                EntityReference identity,
                                EntityStatus status,
-                               EntityType typeReference,
+                               EntityDescriptor entityDescriptor,
                                Map<QualifiedName, Object> properties,
                                Map<QualifiedName, EntityReference> associations,
                                Map<QualifiedName, List<EntityReference>> manyAssociations )
@@ -76,7 +76,7 @@ public final class DefaultEntityState
         this.lastModified = lastModified;
         this.identity = identity;
         this.status = status;
-        this.entityType = typeReference;
+        this.entityDescriptor = entityDescriptor;
         this.properties = properties;
         this.associations = associations;
         this.manyAssociations = manyAssociations;
@@ -180,12 +180,12 @@ public final class DefaultEntityState
 
     public boolean isOfType( TypeName type )
     {
-        return entityType.type().equals( type );
+        return entityDescriptor.entityType().type().equals( type );
     }
 
-    public EntityType entityType()
+    public EntityDescriptor entityDescriptor()
     {
-        return entityType;
+        return entityDescriptor;
     }
 
     public Map<QualifiedName, Object> properties()

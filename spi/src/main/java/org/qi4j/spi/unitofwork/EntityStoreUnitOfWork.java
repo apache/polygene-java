@@ -15,10 +15,10 @@
 package org.qi4j.spi.unitofwork;
 
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.StateCommitter;
 
 /**
@@ -35,11 +35,12 @@ public interface EntityStoreUnitOfWork
      * the {@link org.qi4j.spi.unitofwork.EntityStoreUnitOfWork#apply()} call.
      *
      * @param anIdentity the identity of the entity
+     * @param entityDescriptor entity descriptor
      * @return The new entity state.
      * @throws org.qi4j.spi.entity.EntityStoreException
      *          Thrown if creational fails.
      */
-    EntityState newEntityState( EntityReference anIdentity, EntityType entityType)
+    EntityState newEntityState( EntityReference anIdentity, EntityDescriptor entityDescriptor)
         throws EntityStoreException;
 
     /**

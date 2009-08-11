@@ -17,9 +17,9 @@ package org.qi4j.runtime.unitofwork;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.ManyAssociationState;
 
 import java.util.HashMap;
@@ -31,12 +31,12 @@ import java.util.Map;
 public final class BuilderEntityState
     implements EntityState
 {
-    private final EntityType entityType;
+    private final EntityDescriptor entityType;
     private final Map<QualifiedName, Object> properties;
     private final Map<QualifiedName, EntityReference> associations;
     private final Map<QualifiedName, ManyAssociationState> manyAssociations;
 
-    public BuilderEntityState( EntityType type )
+    public BuilderEntityState( EntityDescriptor type )
     {
         entityType = type;
         properties = new HashMap<QualifiedName, Object>();
@@ -73,7 +73,7 @@ public final class BuilderEntityState
         return entityType.type().equals(type);
     }
 
-    public EntityType entityType()
+    public EntityDescriptor entityDescriptor()
     {
         return entityType;
     }

@@ -17,15 +17,15 @@ package org.qi4j.runtime.unitofwork;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.usecase.Usecase;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.helpers.DefaultEntityStoreUnitOfWork;
 import org.qi4j.spi.entity.helpers.EntityStoreSPI;
-import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 import org.qi4j.spi.structure.ModuleSPI;
+import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 
 import java.util.UUID;
 
@@ -51,7 +51,7 @@ public class UnitOfWorkStore
         return new DefaultEntityStoreUnitOfWork( this, newUnitOfWorkId(), module);
     }
 
-    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity, EntityType type)
+    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity, EntityDescriptor type)
     {
         UnitOfWorkEntityState entityState = new UnitOfWorkEntityState( "",
                                                                        System.currentTimeMillis(),

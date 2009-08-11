@@ -65,7 +65,7 @@ public interface EntityState
 
     boolean isOfType( TypeName type );
 
-    EntityType entityType();
+    EntityDescriptor entityDescriptor();
 
     Object getProperty( QualifiedName stateName );
 
