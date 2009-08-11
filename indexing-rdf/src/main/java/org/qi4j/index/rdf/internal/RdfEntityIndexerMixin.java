@@ -57,19 +57,13 @@ import org.qi4j.spi.unitofwork.event.UnitOfWorkEvent;
  * JAVADOC Add JavaDoc
  */
 public class RdfEntityIndexerMixin
-    implements UnitOfWorkEventListener, Initializable
+    implements UnitOfWorkEventListener
 {
-    @Service
-    private EntityStore entityStore;
-
-    @Service
-    private EntityTypeRegistry entityTypeRegistry;
-    @Service
-    private Repository repository;
-    @Uses
-    private EntityStateSerializer stateSerializer;
-    @Uses
-    private EntityTypeSerializer typeSerializer;
+    @Service private EntityStore entityStore;
+    @Service private EntityTypeRegistry entityTypeRegistry;
+    @Service private Repository repository;
+    @Uses private EntityStateSerializer stateSerializer;
+    @Uses private EntityTypeSerializer typeSerializer;
 
     private Set<EntityType> indexedEntityTypes;
     private ValueFactory valueFactory;
@@ -77,11 +71,6 @@ public class RdfEntityIndexerMixin
     public RdfEntityIndexerMixin()
     {
         indexedEntityTypes = new HashSet<EntityType>();
-    }
-
-    public void initialize()
-        throws ConstructionException
-    {
     }
 
     public void notifyEvents( Iterable<UnitOfWorkEvent> events )
@@ -129,7 +118,6 @@ public class RdfEntityIndexerMixin
 
                 // Update entities
                 EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase( "Update index" ), new MetaInfo() );
-
                 for( EntityReference entityReference : updatedEntities )
                 {
                     EntityState entityState = null;
@@ -189,8 +177,7 @@ public class RdfEntityIndexerMixin
         }
     }
 
-    private void indexEntityState( final EntityState entityState,
-                                   final RepositoryConnection connection )
+    private void indexEntityState( final EntityState entityState, final RepositoryConnection connection )
         throws RepositoryException
     {
         final URI entityURI = stateSerializer.createEntityURI( getValueFactory(), entityState.identity() );
@@ -201,15 +188,13 @@ public class RdfEntityIndexerMixin
         connection.add( graph, entityURI );
     }
 
-    private void removeEntityState( final EntityReference identity,
-                                    final RepositoryConnection connection )
+    private void removeEntityState( final EntityReference identity, final RepositoryConnection connection )
         throws RepositoryException
     {
         connection.clear( stateSerializer.createEntityURI( getValueFactory(), identity ) );
     }
 
-    private void indexEntityType( final EntityType entityType,
-                                  final RepositoryConnection connection )
+    private void indexEntityType( final EntityType entityType, final RepositoryConnection connection )
         throws RepositoryException
     {
         final URI compositeURI = getValueFactory().createURI( entityType.uri() );

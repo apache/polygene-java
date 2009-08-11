@@ -115,14 +115,13 @@ public class EntityResource extends ServerResource
         }
     }
 
-    @Service
-    private EntityStore entityStore;
-    @Service
-    private EntityTypeRegistry typeRegistry;
-    @Structure
-    private Qi4jSPI spi;
-    @Uses
-    EntityStateSerializer entitySerializer;
+    @Service private EntityStore entityStore;
+
+    @Service private EntityTypeRegistry typeRegistry;
+
+    @Structure private Qi4jSPI spi;
+
+    @Uses EntityStateSerializer entitySerializer;
 
     private String identity;
 

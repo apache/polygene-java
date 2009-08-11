@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project relativePaths="true" version="4">
+<project relativePaths="false" version="4">
   <component name="DependencyValidationManager">
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
   </component>
-  <component name="IdProvider" IDEtalkID="AEF091FFD67089C6B95CACDB7397A4B9" />
+  <component name="IdProvider" IDEtalkID="7C78CB286778C8E6254E055E9D0512AB" />
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" />
     <option name="OPTION_SCOPE" value="protected" />
@@ -21,13 +21,6 @@
     <option name="LOCALE" />
     <option name="OPEN_IN_BROWSER" value="true" />
   </component>
-  <component name="MavenProjectsManager">
-    <option name="originalFiles">
-      <list>
-        <option value="$PROJECT_DIR$/pom.xml" />
-      </list>
-    </option>
-  </component>
   <component name="ProjectDetails">
     <option name="projectName" value="qi4j-extensions" />
   </component>
@@ -35,9 +28,7 @@
   <component name="ProjectKey">
     <option name="state" value="project:///Users/niclas/dev/qi4j/qi4j-extensions/.idea/misc.xml" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.5" project-jdk-type="JavaSDK">
-    <output url="file://$PROJECT_DIR$/out" />
-  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.5" project-jdk-type="JavaSDK" />
   <component name="ResourceManagerContainer">
     <option name="myResourceBundles">
       <value>
@@ -45,12 +36,9 @@
       </value>
     </option>
   </component>
-  <component name="SvnBranchConfigurationManager">
-    <option name="mySupportsUserInfoFilter" value="true" />
-  </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <UsedPathMacros>
-    <macro name="MAVEN_REPOSITORY" description="Maven Local Repostiry" />
+    <macro name="M2_REPO" description="" />
   </UsedPathMacros>
 </project>
 
