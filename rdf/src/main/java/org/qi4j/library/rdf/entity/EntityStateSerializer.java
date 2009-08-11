@@ -14,11 +14,6 @@
 
 package org.qi4j.library.rdf.entity;
 
-import java.io.StringWriter;
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Literal;
@@ -27,6 +22,7 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.GraphImpl;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.library.rdf.Rdfs;
@@ -38,8 +34,16 @@ import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.entity.helpers.json.JSONException;
 import org.qi4j.spi.entity.helpers.json.JSONWriter;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.util.PeekableStringTokenizer;
 import org.qi4j.spi.value.AbstractStringType;
 import org.qi4j.spi.value.ValueType;
+import org.qi4j.spi.value.ValueCompositeType;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.io.StringWriter;
 
 /**
  * JAVADOC
@@ -129,10 +133,8 @@ public class EntityStateSerializer
                     continue; // Skip properties with null values
                 }
                 ValueType valueType = propertyType.type();
-
-                String stringProperty = null;
                 valueType.toJSON( property, jsonStringer );
-                stringProperty = stringWriter.toString();
+                String stringProperty = stringWriter.toString();
 
 
                 if( valueType instanceof AbstractStringType ) // Remove "" around strings
@@ -143,10 +145,22 @@ public class EntityStateSerializer
                     stringProperty = stringProperty.substring( 1 );
                 }
 
-                URI predicate = valueFactory.createURI( propertyType.qualifiedName().toURI() );
+                String propertyURI = propertyType.qualifiedName().toURI();
+                URI predicate = valueFactory.createURI( propertyURI );
+                String baseURI = propertyURI.substring( 0, propertyURI.indexOf( '#' ) ) + "/";
 
-                final Literal object = valueFactory.createLiteral( stringProperty );
-                graph.add( subject, predicate, object );
+                if( valueType instanceof ValueCompositeType )
+                {
+                    PeekableStringTokenizer tokenizer = new PeekableStringTokenizer( stringProperty );
+                    serializeValueComposite( subject, predicate, tokenizer, graph, baseURI );
+                }
+                else
+                {
+                    final Literal object = valueFactory.createLiteral( stringProperty );
+                    graph.add( subject, predicate, object );
+                }
+
+                // Reset and re-use the StringWriter.
                 stringWriter.getBuffer().setLength( 0 );
             }
 
@@ -155,8 +169,48 @@ public class EntityStateSerializer
         {
             throw new IllegalArgumentException( "Could not JSON serialize value", e );
         }
+
     }
 
+    private void serializeValueComposite( Resource subject, URI predicate,
+                                          PeekableStringTokenizer json, Graph graph, String baseUri )
+    {
+        final ValueFactory valueFactory = graph.getValueFactory();
+        BNode collection = valueFactory.createBNode();
+        graph.add( subject, predicate, collection );
+//        graph.add( collection, Rdfs.TYPE, Rdfs.CONTAINER );
+
+        String token = json.nextToken( "{" );
+        while( json.hasMoreTokens() && ! token.equals( "}" ) )
+        {
+            String name = json.nextToken( ":" );
+            token = json.nextToken( ",:" );
+            token = json.peekNextToken( "{,}\"[" );
+            URI namePredicate = valueFactory.createURI( baseUri, name );
+            if( token.equals( "null" ) )
+            {
+                json.nextToken();
+                graph.add( collection, namePredicate, valueFactory.createBNode() );
+            }
+            else if( token.equals( "{" ) )
+            {
+                serializeValueComposite( collection, namePredicate, json, graph, baseUri + name + "/" );
+            }
+            else
+            {
+                token = json.nextToken( ",}\"[" );
+                if( token.equals( "\"" ))
+                {
+                    token = json.nextToken( "\"" );  // Grab the value inside the quotes.
+                    String dummy = json.nextToken( "\"" );          // Removing closing quote
+                }
+                Literal object = valueFactory.createLiteral( token );
+                graph.add( collection, namePredicate, object );
+            }
+            token = json.nextToken( ",}" );
+        }
+    }
+    
     private void serializeAssociations( final EntityState entityState,
                                         final Graph graph, URI entityUri,
                                         final Iterable<AssociationType> associations,

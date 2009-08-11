@@ -53,7 +53,7 @@ public class EntityParserTest
     {
         new EntityTestAssembler().assemble( module );
         module.addEntities( TestEntity.class );
-        module.addValues( TestValue.class );
+        module.addValues( TestValue.class, Test2Value.class );
         module.addObjects( EntityStateSerializer.class, EntityStateParser.class, EntityParserTest.class );
     }
 
@@ -88,9 +88,13 @@ public class EntityParserTest
             TestEntity entity2 = unitOfWork.get( TestEntity.class, "test2" );
             assertThat( "values are ok", entity2.name().get(), equalTo( "Niclas" ) );
             assertThat( "values are ok", entity2.association().get(), equalTo( entity ) );
-            // TODO test that Value Composites are parsed correctly
             final Property<Long> longProperty = entity2.value().get().test1();
+            assertThat( "values are ok", longProperty.get(), equalTo( 4L ) );
             final Property<String> stringProperty = entity2.value().get().test2();
+            assertThat( "values are ok", stringProperty.get(), equalTo( null ) );
+            final Property<Test2Value> valueProperty = entity2.value().get().test3();
+            final Property<String> dataProperty = valueProperty.get().data();
+            assertThat( "values are ok", dataProperty.get(), equalTo( "Zout" ) );
             unitOfWork.complete();
         }
         catch( Exception e )
@@ -102,8 +106,12 @@ public class EntityParserTest
     void createDummyData()
         throws UnitOfWorkCompletionException
     {
+        ValueBuilder<Test2Value> vb2 = valueBuilderFactory.newValueBuilder( Test2Value.class );
+        vb2.prototype().data().set( "Zout" );
+
         ValueBuilder<TestValue> valueBuilder = valueBuilderFactory.newValueBuilder( TestValue.class );
         valueBuilder.prototype().test1().set( 4L );
+        valueBuilder.prototype().test3().set( vb2.newInstance() );
         TestValue testValue = valueBuilder.newInstance();
 
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();

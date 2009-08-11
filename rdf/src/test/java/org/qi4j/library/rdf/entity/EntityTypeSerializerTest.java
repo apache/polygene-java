@@ -51,7 +51,7 @@ public class EntityTypeSerializerTest
     {
         module.addServices( MemoryEntityStoreService.class);
         module.addEntities( TestEntity.class );
-        module.addValues( TestValue.class );
+        module.addValues( TestValue.class, Test2Value.class );
         module.addObjects( EntityTypeSerializer.class, EntityTypeSerializerTest.class );
     }
 
@@ -85,8 +85,12 @@ public class EntityTypeSerializerTest
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
+            ValueBuilder<Test2Value> vb2 = valueBuilderFactory.newValueBuilder( Test2Value.class );
+            vb2.prototype().data().set( "Zout" );
+
             ValueBuilder<TestValue> valueBuilder = valueBuilderFactory.newValueBuilder( TestValue.class );
             valueBuilder.prototype().test1().set( 4L );
+            valueBuilder.prototype().test3().set( vb2.newInstance() );
             TestValue testValue = valueBuilder.newInstance();
 
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class, "test1");

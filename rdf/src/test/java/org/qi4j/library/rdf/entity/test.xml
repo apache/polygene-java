@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:ns1="http://www.w3.org/2001/vcard-rdf/3.0#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+  <org.qi4j.library.rdf.entity.TestEntity xmlns="urn:qi4j:type:Wvgf5vdB2OuC8JfcNmUqJLEPSYM:"
+                                          rdf:about="urn:qi4j:entity:test2"/>
+  <rdf:Description>
+    <value.test1 xmlns="urn:qi4j:type:org.qi4j.library.rdf.entity.TestEntity#">5</value.test1>
+    <value.,test2 xmlns="urn:qi4j:type:org.qi4j.library.rdf.entity.TestEntity#"/>
+  </rdf:Description>
+  <rdf:Description>
+    <value.data xmlns=".urn:qi4j:type:org.qi4j.library.rdf.entity.TestEntity#">Habba</value.data>
+  </rdf:Description>
+  <rdf:Description>
+    <value.test3 xmlns="urn:qi4j:type:org.qi4j.library.rdf.entity.TestEntity#"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="urn:qi4j:entity:test2">
+    <value xmlns="urn:qi4j:type:org.qi4j.library.rdf.entity.TestEntity#"/>
+    <identity xmlns="urn:qi4j:type:org.qi4j.api.entity.Identity#">test2</identity>
+    <name xmlns="urn:qi4j:type:org.qi4j.library.rdf.entity.TestEntity#">Niclas</name>
+    <title xmlns="urn:qi4j:type:org.qi4j.library.rdf.entity.TestEntity#">Mr</title>
+    <association xmlns="urn:qi4j:type:org.qi4j.library.rdf.entity.TestEntity#" rdf:resource="urn:qi4j:entity:test1"/>
+    <group xmlns="urn:qi4j:type:org.qi4j.library.rdf.entity.TestEntity#">
+      <rdf:Seq>
+        <rdf:li rdf:resource="urn:qi4j:entity:test1"/>
+      </rdf:Seq>
+    </group>
+    <manyAssoc xmlns="urn:qi4j:type:org.qi4j.library.rdf.entity.TestEntity#">
+      <rdf:Seq>
+        <rdf:li rdf:resource="urn:qi4j:entity:test1"/>
+      </rdf:Seq>
+    </manyAssoc>
+  </rdf:Description>
+
+</rdf:RDF>

@@ -21,10 +21,11 @@ import org.qi4j.api.value.ValueComposite;
 /**
  * JAVADOC
  */
-public interface TestValue
-    extends ValueComposite
+public interface TestValue extends ValueComposite
 {
     Property<Long> test1();
 
     @Optional Property<String> test2();
+
+    Property<Test2Value> test3();
 }
