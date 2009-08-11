@@ -16,16 +16,12 @@
  */
 package org.qi4j.entitystore.jdbm;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.Writer;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Properties;
 import java.util.concurrent.locks.ReadWriteLock;
 import jdbm.RecordManager;
@@ -40,18 +36,16 @@ import jdbm.helper.Serializer;
 import jdbm.helper.Tuple;
 import jdbm.helper.TupleBrowser;
 import jdbm.recman.CacheRecordManager;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.usecase.Usecase;
+import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.entitystore.map.MapEntityStore;
 
 /**
  * JDBM implementation of SerializationStore
@@ -68,7 +62,7 @@ public class JdbmEntityStoreMixin
     private Serializer serializer;
 
     // Activatable implementation
-    @SuppressWarnings( { "ResultOfMethodCallIgnored" } ) 
+    @SuppressWarnings( { "ResultOfMethodCallIgnored" } )
     public void activate()
         throws Exception
     {
@@ -104,7 +98,7 @@ public class JdbmEntityStoreMixin
                 throw new EntityNotFoundException( entityReference );
             }
 
-            return new StringReader( new String(serializedState, "UTF-8") );
+            return new StringReader( new String( serializedState, "UTF-8" ) );
         }
         catch( IOException e )
         {
@@ -112,7 +106,7 @@ public class JdbmEntityStoreMixin
         }
     }
 
-    public void applyChanges( MapChanges changes)
+    public void applyChanges( MapChanges changes )
         throws IOException
     {
         try
@@ -163,7 +157,7 @@ public class JdbmEntityStoreMixin
                         throw new EntityStoreException( e );
                     }
                 }
-            });
+            } );
 
             recordManager.commit();
         }
@@ -182,14 +176,14 @@ public class JdbmEntityStoreMixin
             {
                 IOException exception = new IOException();
                 exception.initCause( e );
-                throw exception; 
+                throw exception;
             }
         }
 
     }
 
 
-    public void visitMap( MapEntityStoreVisitor visitor)
+    public void visitMap( MapEntityStoreVisitor visitor )
     {
         try
         {
@@ -209,7 +203,7 @@ public class JdbmEntityStoreMixin
 
                 byte[] serializedState = (byte[]) recordManager.fetch( stateIndex, serializer );
 
-                visitor.visitEntity( new StringReader( new String(serializedState, "UTF-8" ) ));
+                visitor.visitEntity( new StringReader( new String( serializedState, "UTF-8" ) ) );
             }
         }
         catch( IOException e )
@@ -223,11 +217,11 @@ public class JdbmEntityStoreMixin
     {
         TupleBrowser browser = index.browse();
         Tuple tuple = new Tuple();
-        while (browser.getNext( tuple ))
+        while( browser.getNext( tuple ) )
         {
             Long stateIndex = (Long) tuple.getValue();
             byte[] bytes = (byte[]) recordManager.fetch( stateIndex, serializer );
-            String value = new String(bytes, "UTF-8");
+            String value = new String( bytes, "UTF-8" );
             out.write( value );
             out.write( '\n' );
         }
