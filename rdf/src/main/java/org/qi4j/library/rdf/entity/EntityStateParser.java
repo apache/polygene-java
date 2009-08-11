@@ -26,12 +26,9 @@ import org.openrdf.model.Value;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
-import org.qi4j.api.injection.scope.Service;
 import org.qi4j.library.rdf.Qi4jEntity;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.EntityTypeReference;
-import org.qi4j.spi.entity.EntityTypeRegistry;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
@@ -45,9 +42,6 @@ import org.qi4j.spi.value.StringType;
 public class EntityStateParser
 {
     private String identityUri;
-
-    private @Service
-    EntityTypeRegistry typeRegistry;
 
     public EntityStateParser()
     {
@@ -113,8 +107,7 @@ public class EntityStateParser
             return;
         }
 
-        EntityTypeReference entityTypeReference1 = new EntityTypeReference( entityTypeReference );
-        EntityType entityType = typeRegistry.getEntityType( entityTypeReference1 );
+        EntityType entityType = entityState.entityType();
 
         for( PropertyType propertyType : entityType.properties() )
         {
@@ -127,7 +120,7 @@ public class EntityStateParser
                 json = "\"" + json + "\"";
             }
 
-            entityState.setProperty( propertyType.stateName(), json );
+            entityState.setProperty( propertyType.qualifiedName(), json );
         }
 
         for( AssociationType associationType : entityType.associations() )
@@ -135,7 +128,7 @@ public class EntityStateParser
             EntityReference entity = associationValues.get( associationType.qualifiedName().toURI() );
             if( entity != null )
             {
-                entityState.setAssociation( associationType.stateName(), entity );
+                entityState.setAssociation( associationType.qualifiedName(), entity );
             }
         }
 
@@ -144,7 +137,7 @@ public class EntityStateParser
             Collection<EntityReference> entities = manyAssociationValues.get( manyAssociationResources.get( manyAssociationType.qualifiedName().toURI() ) );
             if( entities != null )
             {
-                ManyAssociationState stateEntities = entityState.getManyAssociation( manyAssociationType.stateName() );
+                ManyAssociationState stateEntities = entityState.getManyAssociation( manyAssociationType.qualifiedName() );
                 while( stateEntities.count() > 0 )
                 {
                     stateEntities.remove( stateEntities.get( 0 ) );

@@ -105,7 +105,7 @@ public class EntityTypeParser
 */
         }
 
-        EntityType entityType = new EntityType(type, rdf, queryable, mixinTypes, properties, associations, manyAssociations);
+        EntityType entityType = new EntityType(type, queryable, mixinTypes, properties, associations, manyAssociations);
         return entityType;
     }
 }
