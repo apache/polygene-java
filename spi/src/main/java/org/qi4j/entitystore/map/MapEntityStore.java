@@ -17,6 +17,7 @@ package org.qi4j.entitystore.map;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entity.EntityType;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -27,9 +28,6 @@ import java.io.Writer;
  */
 public interface MapEntityStore
 {
-    boolean contains( EntityReference entityReference)
-        throws EntityStoreException;
-
     Reader get( EntityReference entityReference)
         throws EntityStoreException;
 
@@ -51,13 +49,13 @@ public interface MapEntityStore
 
     interface MapChanger
     {
-        Writer newEntity( EntityReference ref )
+        Writer newEntity( EntityReference ref, EntityType entityType )
             throws IOException;
 
-        Writer updateEntity( EntityReference ref )
+        Writer updateEntity( EntityReference ref, EntityType entityType )
             throws IOException;
 
-        void removeEntity( EntityReference ref )
+        void removeEntity( EntityReference ref, EntityType entityType )
             throws EntityNotFoundException;
     }
 }
