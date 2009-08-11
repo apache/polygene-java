@@ -142,6 +142,16 @@ public class SPARQLResource
                             catch( Exception e )
                             {
                                 throw (IOException) new IOException().initCause( e );
+                            } finally
+                            {
+                                try
+                                {
+                                    conn.close();
+                                }
+                                catch( RepositoryException e )
+                                {
+                                    throw (IOException) new IOException().initCause( e );
+                                }
                             }
                         }
                     };

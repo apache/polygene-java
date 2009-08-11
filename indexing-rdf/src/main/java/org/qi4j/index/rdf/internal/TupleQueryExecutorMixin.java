@@ -45,13 +45,13 @@ public class TupleQueryExecutorMixin
         try
         {
             RepositoryConnection connection = repository.getConnection();
-
-            TupleQuery tupleQuery = connection.prepareTupleQuery( language, query );
-            tupleQuery.setIncludeInferred( false );
-
-            TupleQueryResult result = tupleQuery.evaluate();
+            TupleQueryResult result = null;
             try
             {
+
+                TupleQuery tupleQuery = connection.prepareTupleQuery( language, query );
+
+                result = tupleQuery.evaluate();
                 long row = 0;
                 while( result.hasNext() )
                 {
