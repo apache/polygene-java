@@ -17,9 +17,11 @@
  */
 package org.qi4j.runtime.query;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.After;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.query.Query;
@@ -32,17 +34,18 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.runtime.query.model.*;
+import org.qi4j.runtime.query.model.City;
+import org.qi4j.runtime.query.model.Domain;
+import org.qi4j.runtime.query.model.Female;
+import org.qi4j.runtime.query.model.Male;
+import org.qi4j.runtime.query.model.Nameable;
+import org.qi4j.runtime.query.model.Person;
 import org.qi4j.runtime.query.model.entities.CityEntity;
 import org.qi4j.runtime.query.model.entities.DomainEntity;
 import org.qi4j.runtime.query.model.entities.FemaleEntity;
 import org.qi4j.runtime.query.model.entities.MaleEntity;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.test.EntityTestAssembler;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class IterableQueryTest
 {
@@ -131,7 +134,7 @@ public class IterableQueryTest
         final QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         final Query<Person> query = qb.newQuery( Network.persons() );
         System.out.println( query );
-        verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Jack Doe" );
+        verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Jack Doe", "Vivian Smith" );
     }
 
     @Test
@@ -153,7 +156,7 @@ public class IterableQueryTest
         Query<Nameable> query = qb.newQuery( Network.nameables() );
         verifyUnorderedResults(
             query,
-            "Joe Doe", "Ann Doe", "Jack Doe",
+            "Joe Doe", "Ann Doe", "Jack Doe", "Vivian Smith",
             "Penang", "Kuala Lumpur",
             "Cooking", "Gaming", "Programming", "Cars"
         );
@@ -170,7 +173,7 @@ public class IterableQueryTest
         );
 
         Query<Person> query = qb.newQuery( Network.persons() );
-        verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
+        verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Vivian Smith" );
     }
 
     @Test
@@ -194,7 +197,7 @@ public class IterableQueryTest
             ge( person.yearOfBirth(), 1973 )
         );
         Query<Person> query = qb.newQuery( Network.persons() );
-        verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
+        verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Vivian Smith" );
     }
 
     @Test
@@ -285,7 +288,7 @@ public class IterableQueryTest
             )
         );
         Query<Person> query = qb.newQuery( Network.persons() );
-        verifyUnorderedResults( query, "Jack Doe", "Joe Doe" );
+        verifyUnorderedResults( query, "Jack Doe", "Joe Doe", "Vivian Smith" );
     }
 
     @Test
@@ -297,7 +300,7 @@ public class IterableQueryTest
             isNotNull( person.email() )
         );
         Query<Person> query = qb.newQuery( Network.persons() );
-        verifyUnorderedResults( query, "Joe Doe" );
+        verifyUnorderedResults( query, "Joe Doe", "Vivian Smith" );
     }
 
     @Test
@@ -345,7 +348,7 @@ public class IterableQueryTest
             isNull( person.wife() )
         );
         Query<Person> query = qb.newQuery( Network.persons() );
-        verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
+        verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Vivian Smith" );
     }
 
     @Test
@@ -389,7 +392,7 @@ public class IterableQueryTest
         query.orderBy( orderBy( nameable.name() ) );
         verifyOrderedResults(
             query,
-            "Ann Doe", "Cars", "Cooking", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
+            "Ann Doe", "Cars", "Cooking", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming", "Vivian Smith"
         );
     }
 
@@ -406,7 +409,7 @@ public class IterableQueryTest
         query.orderBy( orderBy( nameable.name() ) );
         verifyOrderedResults(
             query,
-            "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming"
+            "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming", "Vivian Smith"
         );
     }
 
@@ -421,10 +424,7 @@ public class IterableQueryTest
         );
         Query<Person> query = qb.newQuery( Network.persons() );
         query.orderBy( orderBy( person.name(), OrderBy.Order.DESCENDING ) );
-        verifyOrderedResults(
-            query,
-            "Joe Doe", "Ann Doe"
-        );
+        verifyOrderedResults( query, "Vivian Smith", "Joe Doe", "Ann Doe" );
     }
 
     @Test
@@ -436,10 +436,7 @@ public class IterableQueryTest
         Query<Person> query = qb.newQuery( Network.persons() );
         query.orderBy( orderBy( person.placeOfBirth().get().name() ),
                        orderBy( person.yearOfBirth() ) );
-        verifyOrderedResults(
-            query,
-            "Ann Doe", "Joe Doe", "Jack Doe"
-        );
+        verifyOrderedResults( query, "Ann Doe", "Joe Doe", "Vivian Smith", "Jack Doe" );
     }
 
     @Test

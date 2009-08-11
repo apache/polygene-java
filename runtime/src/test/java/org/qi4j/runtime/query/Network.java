@@ -85,20 +85,43 @@ class Network
         EntityBuilder<MaleEntity> maleBuilder = uow.newEntityBuilder( MaleEntity.class );
         EntityBuilder<FemaleEntity> femaleBuilder = uow.newEntityBuilder( FemaleEntity.class );
 
+        Female vivianSmith = femaleBuilder.newInstance();
+        setName( vivianSmith, "Vivian Smith" );
+        vivianSmith.placeOfBirth().set( kualaLumpur );
+        vivianSmith.yearOfBirth().set( 1992 );
+        vivianSmith.interests().add( 0, gaming );
+        vivianSmith.interests().add( 0, programming );
+        vivianSmith.email().set( "viv@smith.edu" );
+        List<String> vivianTags = new ArrayList<String>();
+        vivianTags.add( "Awesome" );
+        vivianTags.add( "Pretty" );
+        vivianTags.add( "Cool" );
+        vivianSmith.tags().set( vivianTags );
+
         Female annDoe = femaleBuilder.newInstance();
         setName( annDoe, "Ann Doe" );
         annDoe.placeOfBirth().set( kualaLumpur );
         annDoe.yearOfBirth().set( 1975 );
         annDoe.interests().add( 0, cooking );
+        List<String> annTags = new ArrayList<String>();
+        annTags.add( "Conservative" );
+        annTags.add( "Pretty");
+        annDoe.tags().set( annTags );
 
         Male joeDoe = maleBuilder.newInstance();
         setName( joeDoe, "Joe Doe" );
         joeDoe.placeOfBirth().set( kualaLumpur );
         joeDoe.yearOfBirth().set( 1990 );
         joeDoe.mother().set( annDoe );
+        joeDoe.pastGirlFriends().add( 0, annDoe  );
         joeDoe.interests().add( 0, programming );
         joeDoe.interests().add( 0, gaming );
         joeDoe.email().set( "joe@thedoes.net" );
+        List<String> joeTags = new ArrayList<String>();
+        joeTags.add( "Cool" );
+        joeTags.add( "Hunk" );
+        joeTags.add( "Awesome" );
+        joeDoe.tags().set( joeTags );
 
         Male jackDoe = maleBuilder.newInstance();
         setName( jackDoe, "Jack Doe" );
@@ -106,6 +129,12 @@ class Network
         jackDoe.yearOfBirth().set( 1970 );
         jackDoe.interests().add( 0, cars );
         jackDoe.wife().set( annDoe );
+        List<String> jackTags = new ArrayList<String>();
+        jackTags.add( "Conservative" );
+        jackTags.add( "Awesome");
+        jackDoe.tags().set( jackTags );
+
+        annDoe.husband().set( jackDoe );
 
         domains.add( gaming );
         domains.add( programming );
@@ -115,8 +144,10 @@ class Network
         persons.add( annDoe );
         persons.add( joeDoe );
         persons.add( jackDoe );
+        persons.add( vivianSmith );
 
         females.add( annDoe );
+        females.add( vivianSmith );
 
         males.add( joeDoe );
         males.add( jackDoe );
@@ -130,6 +161,7 @@ class Network
         nameables.add( annDoe );
         nameables.add( joeDoe );
         nameables.add( jackDoe );
+        nameables.add( vivianSmith );
     }
 
     static Iterable<Domain> domains()

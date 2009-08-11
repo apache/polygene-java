@@ -78,7 +78,6 @@ public final class GenericPropertyInfo
         try
         {
             Method accessor = declaringClass.getMethod( accessorName );
-
             this.qualifiedName = QualifiedName.fromMethod( accessor );
             this.type = getPropertyType( accessor );
             infos = new MetaInfo().withAnnotations( accessor );

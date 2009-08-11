@@ -17,6 +17,9 @@
  */
 package org.qi4j.runtime.query.model;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
@@ -42,4 +45,9 @@ public interface Person
     @Optional ManyAssociation<Domain> interests();
 
     @Optional Property<String> email();
+
+    @Optional Property<Map<Date,String>> datesToRemember();
+
+    @Optional Property<List<String>> tags();
+    
 }

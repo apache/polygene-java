@@ -30,6 +30,14 @@ public interface StateHolder
      */
     <T> Property<T> getProperty( Method propertyMethod );
 
+    /**
+     * Get a property for a specific accessor method
+     *
+     * @param name The qualified name of the property
+     * @return the property
+     */
+    <T> Property<T> getProperty( QualifiedName name );
+
     void visitProperties( StateVisitor visitor );
 
     public interface StateVisitor
