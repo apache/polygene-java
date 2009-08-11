@@ -50,6 +50,7 @@ import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.helpers.DefaultEntityStoreUnitOfWork;
 import org.qi4j.spi.entity.helpers.EntityStoreSPI;
 import org.qi4j.spi.entity.helpers.DefaultEntityState;
@@ -104,7 +105,7 @@ public class RESTEntityStoreServiceMixin
         return null;
     }
 
-    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity, EntityType entityType )
+    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity, EntityDescriptor entityType )
     {
         return null;
     }

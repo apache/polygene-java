@@ -89,12 +89,12 @@ public class RdfEntityIndexerMixin
                     {
                         removeEntityState( entityState.identity(), connection );
                         indexEntityState( entityState, connection );
-                        entityTypes.add( entityState.entityType() );
+                        entityTypes.add( entityState.entityDescriptor().entityType() );
                     }
                     else if (entityState.status().equals( EntityStatus.NEW))
                     {
                         indexEntityState( entityState, connection );
-                        entityTypes.add( entityState.entityType() );
+                        entityTypes.add( entityState.entityDescriptor().entityType() );
                     }
                 }
 
