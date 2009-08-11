@@ -27,8 +27,6 @@ import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.rio.rdfxml.RDFXMLWriter;
-import org.openrdf.rio.RDFHandlerException;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
@@ -48,15 +46,10 @@ import org.qi4j.spi.unitofwork.StateChangeListener;
 public class RdfEntityIndexerMixin
     implements StateChangeListener, Initializable
 {
-    @Service
-    private EntityStore entityStore;
-
-    @Service
-    private Repository repository;
-    @Uses
-    private EntityStateSerializer stateSerializer;
-    @Uses
-    private EntityTypeSerializer typeSerializer;
+    @Service private EntityStore entityStore;
+    @Service private Repository repository;
+    @Uses private EntityStateSerializer stateSerializer;
+    @Uses private EntityTypeSerializer typeSerializer;
 
     private Set<EntityType> indexedEntityTypes;
     private ValueFactory valueFactory;
@@ -83,15 +76,17 @@ public class RdfEntityIndexerMixin
                 final Set<EntityType> entityTypes = new HashSet<EntityType>();
                 for( EntityState entityState : entityStates )
                 {
-                    if (entityState.status().equals( EntityStatus.REMOVED))
+                    if( entityState.status().equals( EntityStatus.REMOVED ) )
+                    {
                         removeEntityState( entityState.identity(), connection );
-                    else if (entityState.status().equals( EntityStatus.UPDATED))
+                    }
+                    else if( entityState.status().equals( EntityStatus.UPDATED ) )
                     {
                         removeEntityState( entityState.identity(), connection );
                         indexEntityState( entityState, connection );
                         entityTypes.add( entityState.entityDescriptor().entityType() );
                     }
-                    else if (entityState.status().equals( EntityStatus.NEW))
+                    else if( entityState.status().equals( EntityStatus.NEW ) )
                     {
                         indexEntityState( entityState, connection );
                         entityTypes.add( entityState.entityDescriptor().entityType() );
@@ -129,10 +124,8 @@ public class RdfEntityIndexerMixin
         throws RepositoryException
     {
         final URI entityURI = stateSerializer.createEntityURI( getValueFactory(), entityState.identity() );
-
         Graph graph = new GraphImpl();
         stateSerializer.serialize( entityState, false, graph );
-
         connection.add( graph, entityURI );
     }
 
@@ -161,7 +154,6 @@ public class RdfEntityIndexerMixin
         {
             valueFactory = repository.getValueFactory();
         }
-
         return valueFactory;
     }
 }
