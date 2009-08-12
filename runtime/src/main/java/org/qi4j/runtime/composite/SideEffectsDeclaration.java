@@ -16,7 +16,7 @@ package org.qi4j.runtime.composite;
 
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.sideeffect.SideEffects;
-import static org.qi4j.api.util.Classes.genericInterfacesOf;
+import static org.qi4j.api.util.Classes.*;
 import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.runtime.util.Annotations;
 
@@ -25,7 +25,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
-import static java.util.Collections.singleton;
+import static java.util.Collections.*;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -85,7 +86,7 @@ public final class SideEffectsDeclaration
 
     private Collection<Class> matchingSideEffectClasses( Method method, Class<? extends Composite> compositeType )
     {
-        Collection<Class> result = new ArrayList<Class>( sideEffectDeclarations.size() );
+        Collection<Class> result = new LinkedHashSet<Class>( sideEffectDeclarations.size() );
 
         for( SideEffectDeclaration sideEffectDeclaration : sideEffectDeclarations )
         {

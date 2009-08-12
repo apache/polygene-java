@@ -20,7 +20,11 @@ import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.sideeffect.MethodSideEffectsDescriptor;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -118,6 +122,7 @@ public final class MethodSideEffectsModel
     {
         List<MethodSideEffectModel> combinedModels = new ArrayList<MethodSideEffectModel>( sideEffectModels.size() + mixinMethodSideEffectsModel.sideEffectModels.size() );
         combinedModels.addAll( sideEffectModels );
+        combinedModels.remove(mixinMethodSideEffectsModel.sideEffectModels);
         combinedModels.addAll( mixinMethodSideEffectsModel.sideEffectModels );
         return new MethodSideEffectsModel( method, combinedModels );
     }

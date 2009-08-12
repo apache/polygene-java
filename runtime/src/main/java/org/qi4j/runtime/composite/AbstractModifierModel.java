@@ -113,4 +113,22 @@ public abstract class AbstractModifierModel
         }
     }
 
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractModifierModel that = (AbstractModifierModel) o;
+
+        if (!modifierClass.equals(that.modifierClass)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return modifierClass.hashCode();
+    }
 }

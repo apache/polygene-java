@@ -14,16 +14,17 @@
 
 package org.qi4j.spi.value;
 
+import static org.qi4j.api.common.TypeName.*;
+import org.qi4j.api.structure.Module;
+import org.qi4j.spi.entity.helpers.json.JSONException;
+import org.qi4j.spi.entity.helpers.json.JSONWriter;
+
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-import static org.qi4j.api.common.TypeName.*;
-import org.qi4j.api.structure.Module;
-import org.qi4j.spi.entity.helpers.json.JSONException;
-import org.qi4j.spi.entity.helpers.json.JSONWriter;
 
 /**
  * Date type. Use ISO8601 format (http://www.w3.org/TR/NOTE-datetime). Assumes UTC time.
@@ -111,7 +112,7 @@ public final class DateType
     @Override public String toQueryParameter( Object value )
         throws IllegalArgumentException
     {
-        return value == null ? null : ISO8601.get().format( (Date) value );
+        return value == null ? null : ISO8601_UTC.get().format( (Date) value );
     }
 
     @Override public Object fromQueryParameter( String parameter, Module module )
@@ -119,7 +120,7 @@ public final class DateType
     {
         try
         {
-            return ISO8601.get().parse( parameter );
+            return ISO8601_UTC.get().parse( parameter );
         }
         catch( ParseException e )
         {

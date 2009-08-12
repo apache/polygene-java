@@ -20,7 +20,11 @@ import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.concern.MethodConcernsDescriptor;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -120,6 +124,7 @@ public final class MethodConcernsModel
     {
         List<MethodConcernModel> combinedModels = new ArrayList<MethodConcernModel>( concernsForMethod.size() + mixinMethodConcernsModel.concernsForMethod.size() );
         combinedModels.addAll( concernsForMethod );
+        combinedModels.removeAll(mixinMethodConcernsModel.concernsForMethod); // Remove duplicates
         combinedModels.addAll( mixinMethodConcernsModel.concernsForMethod );
         return new MethodConcernsModel( method, combinedModels );
     }
