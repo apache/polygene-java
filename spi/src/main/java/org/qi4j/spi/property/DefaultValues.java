@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.runtime.property;
+package org.qi4j.spi.property;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

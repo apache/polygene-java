@@ -31,6 +31,7 @@ import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.spi.property.PropertyDescriptor;
+import org.qi4j.spi.property.DefaultValues;
 
 import java.io.IOException;
 import java.io.NotSerializableException;

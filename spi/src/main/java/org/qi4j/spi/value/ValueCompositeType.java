@@ -25,6 +25,7 @@ import org.qi4j.api.value.ValueComposite;
 import org.qi4j.spi.entity.helpers.json.JSONException;
 import org.qi4j.spi.entity.helpers.json.JSONObject;
 import org.qi4j.spi.entity.helpers.json.JSONWriter;
+import org.qi4j.spi.property.DefaultValues;
 import org.qi4j.spi.property.PropertyType;
 
 import java.lang.reflect.Method;
@@ -101,14 +102,32 @@ public final class ValueCompositeType
         final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
         for( PropertyType propertyType : types )
         {
-            Object valueJson = jsonObject.get(propertyType.qualifiedName().name());
-            Object value = null;
-            if( valueJson != null && !valueJson.equals(JSONObject.NULL))
+            Object valueJson = null;
+            try
             {
-                value = propertyType.type().fromJSON( valueJson, module );
-            }
+                valueJson = jsonObject.get(propertyType.qualifiedName().name());
 
-            values.put( propertyType.qualifiedName(), value );
+                Object value = null;
+                if( valueJson != null && !valueJson.equals(JSONObject.NULL))
+                {
+                    value = propertyType.type().fromJSON( valueJson, module );
+                }
+
+                values.put( propertyType.qualifiedName(), value );
+
+            } catch (JSONException e)
+            {
+                // Not found in JSON or wrong format - try defaulting it
+                try
+                {
+                    Object defaultValue = DefaultValues.getDefaultValue(module.classLoader().loadClass(propertyType.type().type().name()));
+                    values.put(propertyType.qualifiedName(), defaultValue);
+                } catch (ClassNotFoundException e1)
+                {
+                    // Didn't work, throw exception
+                    throw e;
+                }
+            }
         }
 
         try
