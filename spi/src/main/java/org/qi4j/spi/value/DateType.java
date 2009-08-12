@@ -14,16 +14,16 @@
 
 package org.qi4j.spi.value;
 
-import static org.qi4j.api.common.TypeName.*;
-import org.qi4j.api.structure.Module;
-import org.qi4j.spi.entity.helpers.json.JSONException;
-import org.qi4j.spi.entity.helpers.json.JSONWriter;
-
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
+import static org.qi4j.api.common.TypeName.*;
+import org.qi4j.api.structure.Module;
+import org.qi4j.spi.entity.helpers.json.JSONException;
+import org.qi4j.spi.entity.helpers.json.JSONWriter;
 
 /**
  * Date type. Use ISO8601 format (http://www.w3.org/TR/NOTE-datetime). Assumes UTC time.
@@ -46,7 +46,9 @@ public final class DateType
         @Override
         protected DateFormat initialValue()
         {
-            return new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" );
+            SimpleDateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" );
+            dateFormat.setTimeZone( TimeZone.getTimeZone( "UTC" ));
+            return dateFormat;
         }
     };
 
