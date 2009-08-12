@@ -41,6 +41,7 @@ import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.object.ObjectModel;
+import org.qi4j.runtime.service.ServiceInstance;
 import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.structure.DependencyVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -138,11 +139,16 @@ public final class Qi4jRuntimeImpl
         try
         {
             configuration = uow.get( serviceModel.<T>configurationType(), identity );
+            uow.pause();
         }
         catch( NoSuchEntityException e )
         {
 
-            EntityBuilder<T> configBuilder = uow.newEntityBuilder( serviceModel.<T>configurationType(), identity );
+            Module module = ServiceInstance.getCompositeInstance(serviceComposite).module();
+            UnitOfWork buildUow = module.unitOfWorkFactory().newUnitOfWork();
+
+            EntityBuilder<T> configBuilder = buildUow.newEntityBuilder( serviceModel.<T>configurationType(), identity );
+
             // Check for defaults
             String s = identity + ".properties";
             InputStream asStream = serviceComposite.type().getResourceAsStream( s );
@@ -163,6 +169,10 @@ public final class Qi4jRuntimeImpl
             try
             {
                 configuration = configBuilder.newInstance();
+                buildUow.complete();
+
+                // Try again
+                return (T) getConfigurationInstance(serviceComposite, uow);
             }
             catch( Exception e1 )
             {
@@ -170,10 +180,6 @@ public final class Qi4jRuntimeImpl
                 ex.initCause( e1 );
                 throw ex;
             }
-        }
-        finally
-        {
-            uow.pause();
         }
         return (T) configuration;
     }
