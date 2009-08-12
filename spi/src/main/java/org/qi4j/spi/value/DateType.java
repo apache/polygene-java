@@ -41,6 +41,15 @@ public final class DateType
         }
     };
 
+    private static ThreadLocal<DateFormat> ISO8601_UTC = new ThreadLocal<DateFormat>()
+    {
+        @Override
+        protected DateFormat initialValue()
+        {
+            return new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" );
+        }
+    };
+
     public static boolean isDate( Type type )
     {
         if( type instanceof Class )
@@ -59,7 +68,7 @@ public final class DateType
     public void toJSON( Object value, JSONWriter json ) throws JSONException
     {
         Date date = (Date) value;
-        String dateString = ISO8601.get().format( date );
+        String dateString = ISO8601_UTC.get().format( date );
         json.value(dateString);
     }
 
@@ -69,12 +78,31 @@ public final class DateType
 
         try
         {
-            Date date = ISO8601.get().parse( stringDate );
+            Date date = ISO8601_UTC.get().parse( stringDate );
             return date;
         }
         catch( ParseException e )
         {
-            throw new IllegalStateException( "Illegal date:" + stringDate );
+            try
+            {
+                Date date = ISO8601.get().parse(stringDate);
+                return date;
+            } catch (ParseException e1)
+            {
+                // @millis@ format
+                if (stringDate.startsWith("@") && stringDate.endsWith("@"))
+                {
+                    long time = Long.parseLong(stringDate.substring(1, stringDate.length()-1));
+                    Date date = new Date(time);
+                    return date;
+                } else if (stringDate.startsWith("/Date(") && stringDate.endsWith(")/")) // Microsoft format
+                {
+                    long time = Long.parseLong(stringDate.substring(6, stringDate.length()-2));
+                    Date date = new Date(time);
+                    return date;
+                }
+                throw new IllegalStateException( "Illegal date:" + stringDate );
+            }
         }
     }
 
