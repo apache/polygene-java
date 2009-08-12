@@ -215,6 +215,7 @@ public final class DefaultEntityState
     public void hasBeenApplied()
     {
         status = EntityStatus.LOADED;
+        version = unitOfWork.identity();
     }
 
     public void markUpdated()

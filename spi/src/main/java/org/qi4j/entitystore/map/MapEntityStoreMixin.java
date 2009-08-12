@@ -88,7 +88,7 @@ public final class MapEntityStoreMixin
         return readEntityState((DefaultEntityStoreUnitOfWork) unitOfWork, in);
     }
 
-    public StateCommitter apply(final Iterable<EntityState> state, final String identity)
+    public StateCommitter apply(final Iterable<EntityState> state, final String version)
             throws EntityStoreException
     {
         return new StateCommitter()
@@ -107,12 +107,12 @@ public final class MapEntityStoreMixin
                                 if (state.status().equals(EntityStatus.NEW))
                                 {
                                     Writer writer = changer.newEntity(state.identity(), state.entityDescriptor().entityType());
-                                    writeEntityState(state, writer, identity);
+                                    writeEntityState(state, writer, version);
                                     writer.close();
                                 } else if (state.status().equals(EntityStatus.UPDATED))
                                 {
                                     Writer writer = changer.updateEntity(state.identity(), state.entityDescriptor().entityType());
-                                    writeEntityState(state, writer, identity);
+                                    writeEntityState(state, writer, version);
                                     writer.close();
                                 } else if (state.status().equals(EntityStatus.REMOVED))
                                 {
