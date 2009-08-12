@@ -14,6 +14,10 @@
 
 package org.qi4j.library.rdf.entity;
 
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Literal;
@@ -22,9 +26,9 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.GraphImpl;
-import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.value.Value;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityType;
@@ -32,18 +36,11 @@ import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.entity.helpers.json.JSONException;
-import org.qi4j.spi.entity.helpers.json.JSONWriter;
+import org.qi4j.spi.entity.helpers.json.JSONStringer;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.util.PeekableStringTokenizer;
 import org.qi4j.spi.value.AbstractStringType;
-import org.qi4j.spi.value.ValueType;
 import org.qi4j.spi.value.ValueCompositeType;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.io.StringWriter;
+import org.qi4j.spi.value.ValueType;
 
 /**
  * JAVADOC
@@ -118,50 +115,12 @@ public class EntityStateSerializer
         try
         {
             // Properties
-            StringWriter stringWriter = new StringWriter();
-            JSONWriter jsonStringer = new JSONWriter( stringWriter );
-            jsonStringer.array();
+            JSONStringer jsonStringer = new JSONStringer();
             for( PropertyType propertyType : entityType.properties() )
             {
-                if( !( includeNonQueryable || propertyType.queryable() ) )
-                {
-                    continue; // Skip non-queryable
-                }
                 Object property = entityState.getProperty( propertyType.qualifiedName() );
-                if( property == null || property.equals( "null" ) )
-                {
-                    continue; // Skip properties with null values
-                }
-                ValueType valueType = propertyType.type();
-                valueType.toJSON( property, jsonStringer );
-                String stringProperty = stringWriter.toString();
-
-
-                if( valueType instanceof AbstractStringType ) // Remove "" around strings
-                {
-                    stringProperty = stringProperty.substring( 2, stringProperty.length() - 1 );
-                } else
-                {
-                    stringProperty = stringProperty.substring( 1 );
-                }
-
-                String propertyURI = propertyType.qualifiedName().toURI();
-                URI predicate = valueFactory.createURI( propertyURI );
-                String baseURI = propertyURI.substring( 0, propertyURI.indexOf( '#' ) ) + "/";
-
-                if( valueType instanceof ValueCompositeType )
-                {
-                    PeekableStringTokenizer tokenizer = new PeekableStringTokenizer( stringProperty );
-                    serializeValueComposite( subject, predicate, tokenizer, graph, baseURI );
-                }
-                else
-                {
-                    final Literal object = valueFactory.createLiteral( stringProperty );
-                    graph.add( subject, predicate, object );
-                }
-
-                // Reset and re-use the StringWriter.
-                stringWriter.getBuffer().setLength( 0 );
+                if (property != null)
+                    serializeProperty(propertyType, property, subject, graph, includeNonQueryable);
             }
 
         }
@@ -172,42 +131,70 @@ public class EntityStateSerializer
 
     }
 
+    private void serializeProperty( PropertyType propertyType, Object property, Resource subject, Graph graph, boolean includeNonQueryable) throws JSONException
+    {
+        if( !( includeNonQueryable || propertyType.queryable() ) )
+        {
+            return; // Skip non-queryable
+        }
+
+        ValueType valueType = propertyType.type();
+
+        final ValueFactory valueFactory = graph.getValueFactory();
+
+        String propertyURI = propertyType.qualifiedName().toURI();
+        URI predicate = valueFactory.createURI( propertyURI );
+        String baseURI = propertyURI.substring( 0, propertyURI.indexOf( '#' ) ) + "/";
+
+        if( valueType instanceof ValueCompositeType )
+        {
+            serializeValueComposite( subject, predicate, (Value) property, (ValueCompositeType) valueType, graph, baseURI, includeNonQueryable );
+        }
+        else
+        {
+            JSONStringer jsonStringer = new JSONStringer();
+            jsonStringer.array();
+            valueType.toJSON( property, jsonStringer );
+            jsonStringer.endArray();
+            String stringProperty = jsonStringer.toString();
+
+            if( valueType instanceof AbstractStringType ) // Remove "" around strings
+            {
+                stringProperty = stringProperty.substring( 2, stringProperty.length() - 2 );
+            } else
+            {
+                stringProperty = stringProperty.substring( 1, stringProperty.length()-1 );
+            }
+
+            final Literal object = valueFactory.createLiteral( stringProperty );
+            graph.add( subject, predicate, object );
+        }
+    }
+
     private void serializeValueComposite( Resource subject, URI predicate,
-                                          PeekableStringTokenizer json, Graph graph, String baseUri )
+                                          Value value, ValueCompositeType valueType, Graph graph, String baseUri, boolean includeNonQueryable ) throws JSONException
     {
         final ValueFactory valueFactory = graph.getValueFactory();
         BNode collection = valueFactory.createBNode();
         graph.add( subject, predicate, collection );
-//        graph.add( collection, Rdfs.TYPE, Rdfs.CONTAINER );
 
-        String token = json.nextToken( "{" );
-        while( json.hasMoreTokens() && ! token.equals( "}" ) )
+        for( PropertyType propertyType : valueType.types() )
         {
-            String name = json.nextToken( ":" );
-            token = json.nextToken( ",:" );
-            token = json.peekNextToken( "{,}\"[" );
-            URI namePredicate = valueFactory.createURI( baseUri, name );
-            if( token.equals( "null" ) )
+            Object propertyValue = value.state().getProperty( propertyType.qualifiedName() ).get();
+
+            if (propertyValue == null)
+                continue; // Skip null values
+
+            ValueType type = propertyType.type();
+            if (type instanceof ValueCompositeType)
             {
-                json.nextToken();
-                graph.add( collection, namePredicate, valueFactory.createBNode() );
-            }
-            else if( token.equals( "{" ) )
+                URI pred = valueFactory.createURI( baseUri, propertyType.qualifiedName().name() );
+                serializeValueComposite( collection, pred, (Value) propertyValue, (ValueCompositeType) type, graph, baseUri+propertyType.qualifiedName().name()+"/", includeNonQueryable );
+            } else
             {
-                serializeValueComposite( collection, namePredicate, json, graph, baseUri + name + "/" );
+                serializeProperty( propertyType,  propertyValue, collection, graph, includeNonQueryable);
             }
-            else
-            {
-                token = json.nextToken( ",}\"[" );
-                if( token.equals( "\"" ))
-                {
-                    token = json.nextToken( "\"" );  // Grab the value inside the quotes.
-                    String dummy = json.nextToken( "\"" );          // Removing closing quote
-                }
-                Literal object = valueFactory.createLiteral( token );
-                graph.add( collection, namePredicate, object );
-            }
-            token = json.nextToken( ",}" );
+
         }
     }
     

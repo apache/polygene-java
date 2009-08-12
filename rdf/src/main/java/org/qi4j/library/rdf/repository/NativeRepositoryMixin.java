@@ -16,7 +16,7 @@ package org.qi4j.library.rdf.repository;
 import java.io.File;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.sail.inferencer.fc.ForwardChainingRDFSInferencer;
+import org.openrdf.sail.Sail;
 import org.openrdf.sail.nativerdf.NativeStore;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
@@ -29,13 +29,13 @@ public class NativeRepositoryMixin extends SailRepository
 
     public NativeRepositoryMixin()
     {
-        super( new ForwardChainingRDFSInferencer( new NativeStore() ) );
+        super( new NativeStore() );
     }
 
     public void activate() throws Exception
     {
-        ForwardChainingRDFSInferencer store = (ForwardChainingRDFSInferencer) getSail();
-        NativeStore store2 = (NativeStore) store.getBaseSail();
+        Sail store = getSail();
+        NativeStore store2 = (NativeStore) store;
         String dataDir = configuration.configuration().dataDirectory().get();
         if( dataDir == null || "".equals( dataDir ) )
         {
@@ -49,6 +49,7 @@ public class NativeRepositoryMixin extends SailRepository
                 dataDir = "./rdf/repositories/" + id;
             }
             configuration.configuration().dataDirectory().set( dataDir );
+            configuration.configuration().unitOfWork().apply();
         }
         store2.setDataDir( new File( dataDir ) );
         String tripleIndexes = configuration.configuration().tripleIndexes().get();
@@ -58,12 +59,7 @@ public class NativeRepositoryMixin extends SailRepository
             configuration.configuration().tripleIndexes().set( tripleIndexes );
         }
         store2.setTripleIndexes( tripleIndexes );
-        Boolean forceSync = configuration.configuration().forceSync().get();
-        if( forceSync == null )
-        {
-            configuration.configuration().forceSync().set( false );
-            forceSync = false;
-        }
+        boolean forceSync = configuration.configuration().forceSync().get();
         store2.setForceSync( forceSync );
         initialize();
     }
