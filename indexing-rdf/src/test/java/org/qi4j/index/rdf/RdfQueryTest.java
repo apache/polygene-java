@@ -51,6 +51,7 @@ import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
@@ -77,9 +78,12 @@ import org.qi4j.index.rdf.model.entities.MaleEntity;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
+import org.qi4j.library.rdf.repository.NativeRepositoryService;
+import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.runtime.query.NotQueryableException;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.test.EntityTestAssembler;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 
 public class RdfQueryTest
 {
@@ -114,25 +118,51 @@ public class RdfQueryTest
                 );
                 new EntityTestAssembler().assemble( module );
                 module.addServices(
-                    MemoryRepositoryService.class,
+                    NativeRepositoryService.class,
                     RdfFactoryService.class,
                     RdfIndexerExporterComposite.class
                 );
                 module.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
+
+                ModuleAssembly config = module.layerAssembly().newModuleAssembly( "Config" );
+                config.addEntities( NativeConfiguration.class ).visibleIn( Visibility.layer );
+                config.addServices( MemoryEntityStoreService.class );
             }
         };
         Network.populate( assembler );
         unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
+
         qbf = assembler.queryBuilderFactory();
     }
 
     @After
-    public void tearDown()
+    public void tearDown() throws Exception
     {
+        NativeConfiguration conf = unitOfWork.get( NativeConfiguration.class, "NativeRepositoryService" );
+        java.io.File data = new java.io.File(conf.dataDirectory().get());
+
         if( unitOfWork != null )
         {
             unitOfWork.discard();
         }
+
+        assembler.application().passivate();
+
+        remove(data);
+    }
+
+    private void remove( java.io.File data )
+    {
+        if (data.isDirectory())
+        {
+            for( java.io.File file : data.listFiles() )
+            {
+                remove(file);
+            }
+
+            data.delete();
+        } else
+            data.delete();
     }
 
     @Test
