@@ -14,8 +14,6 @@
 
 package org.qi4j.runtime.entity;
 
-import java.lang.reflect.Method;
-import java.util.Set;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.EntityStateHolder;
@@ -34,6 +32,9 @@ import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
+
+import java.lang.reflect.Method;
+import java.util.Set;
 
 /**
  * JAVADOC
@@ -57,7 +58,7 @@ public final class EntityStateModel
 
     public EntityStateModel.EntityStateInstance newInstance( ModuleUnitOfWork uow, EntityState entityState )
     {
-        return new EntityStateInstance( propertiesModel.newInstance( entityState, uow ),
+        return new EntityStateInstance( propertiesModel.newInstance( entityState),
                                         associationsModel.newInstance( entityState, uow ),
                                         manyAssociationsModel.newInstance( entityState, uow ) );
     }

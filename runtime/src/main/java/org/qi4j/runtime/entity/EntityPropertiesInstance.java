@@ -30,14 +30,12 @@ public class EntityPropertiesInstance
 {
     private EntityPropertiesModel model;
     private EntityState entityState;
-    private ModuleUnitOfWork uow;
 
-    public EntityPropertiesInstance( EntityPropertiesModel model, EntityState entityState, ModuleUnitOfWork uow )
+    public EntityPropertiesInstance( EntityPropertiesModel model, EntityState entityState)
     {
         super( null );
         this.model = model;
         this.entityState = entityState;
-        this.uow = uow;
     }
 
     public <T> Property<T> getProperty( Method accessor )
@@ -51,7 +49,7 @@ public class EntityPropertiesInstance
 
         if( property == null )
         {
-            property = model.newInstance( accessor, entityState, uow );
+            property = model.newInstance( accessor, entityState);
             properties.put( accessor, property );
         }
 

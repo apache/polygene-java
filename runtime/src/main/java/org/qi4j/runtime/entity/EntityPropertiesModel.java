@@ -24,7 +24,6 @@ import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.property.AbstractPropertiesModel;
-import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.runtime.util.Annotations;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.PropertyType;
@@ -55,9 +54,9 @@ public final class EntityPropertiesModel
         return propertyTypes;
     }
 
-    public <T> Property<T> newInstance( Method accessor, EntityState entityState, ModuleUnitOfWork uow )
+    public <T> Property<T> newInstance( Method accessor, EntityState entityState)
     {
-        return mapMethodPropertyModel.get( accessor ).newInstance( entityState, uow );
+        return mapMethodPropertyModel.get( accessor ).newInstance( entityState);
     }
 
     protected EntityPropertyModel newPropertyModel(Method method, Class compositeType)
@@ -77,8 +76,8 @@ public final class EntityPropertiesModel
         return propertyModel;
     }
 
-    public EntityPropertiesInstance newInstance( EntityState entityState, ModuleUnitOfWork uow )
+    public EntityPropertiesInstance newInstance( EntityState entityState)
     {
-        return new EntityPropertiesInstance( this, entityState, uow );
+        return new EntityPropertiesInstance( this, entityState );
     }
 }

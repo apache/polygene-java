@@ -19,7 +19,6 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.Property;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PersistentPropertyModel;
-import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 
 import java.lang.reflect.Method;
@@ -45,7 +44,7 @@ public final class EntityPropertyModel extends PersistentPropertyModel
         return null;
     }
 
-    public <T> Property<T> newInstance( EntityState state, ModuleUnitOfWork uow )
+    public <T> Property<T> newInstance( EntityState state)
     {
         Property property;
         if( isComputed() )
@@ -54,14 +53,9 @@ public final class EntityPropertyModel extends PersistentPropertyModel
         }
         else
         {
-            property = new EntityPropertyInstance( state.identity() == EntityReference.NULL ? builderInfo : this, state, this, uow );
+            property = new EntityPropertyInstance( state.identity() == EntityReference.NULL ? builderInfo : this, state, this );
         }
 
         return wrapProperty( property );
-    }
-
-    public <T> T fromEntityState(EntityState entityState )
-    {
-        return (T)entityState.getProperty( propertyType().qualifiedName() );
     }
 }

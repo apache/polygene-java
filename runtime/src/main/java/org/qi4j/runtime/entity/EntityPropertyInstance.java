@@ -18,7 +18,6 @@ import org.qi4j.api.property.AbstractPropertyInstance;
 import org.qi4j.api.property.PropertyInfo;
 import static org.qi4j.api.util.NullArgumentException.*;
 import org.qi4j.runtime.composite.ConstraintsCheck;
-import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 
 /**
@@ -32,7 +31,6 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
     private static final Object NOT_LOADED = new Object();
 
     private EntityState entityState;
-    private ModuleUnitOfWork uow;
 
     private T value;
     private ConstraintsCheck constraints;
@@ -42,11 +40,10 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
      *
      * @param aPropertyInfo The property info. This argument must not be {@code null}.
      * @param entityState
-     * @param uow
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
      * @since 0.1.0
      */
-    public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState, ConstraintsCheck constraints, ModuleUnitOfWork uow )
+    public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState, ConstraintsCheck constraints)
         throws IllegalArgumentException
     {
         super( aPropertyInfo );
@@ -56,7 +53,6 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
         this.constraints = constraints;
         this.value = (T) NOT_LOADED;
         this.entityState = entityState;
-        this.uow = uow;
     }
 
     /**
@@ -69,7 +65,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
     {
         if( value == NOT_LOADED )
         {
-            value = ( (EntityPropertyModel) propertyInfo ).<T>fromEntityState( entityState );
+            value = (T) entityState.getProperty( propertyInfo.qualifiedName() );
         }
 
         return value;
@@ -93,7 +89,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
         }
 
         // Change property
-        entityState.setProperty( ( (EntityPropertyModel) constraints ).propertyType().qualifiedName(), aNewValue );
+        entityState.setProperty( propertyInfo.qualifiedName(), aNewValue );
         value = aNewValue;
     }
 
