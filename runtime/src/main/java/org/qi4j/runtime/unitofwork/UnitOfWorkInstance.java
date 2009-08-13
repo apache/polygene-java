@@ -145,22 +145,10 @@ public final class UnitOfWorkInstance
                     {
                         continue;
                     }
-
-                    // See if any types match
-                    EntityModel potentialModel = potentialModels.get( i );
-                    TypeName typeRef = potentialModel.entityType().type();
-                    if( entityState.isOfType( typeRef ) )
-                    {
-                        // Found it!
-                        // Check for ambiguity
-                        if( model != null )
-                        {
-                            throw new AmbiguousTypeException( mixinType, model.type(), potentialModel.type() );
-                        }
-
-                        model = potentialModel;
-                        module = potentialModule;
-                    }
+                    
+                    // Get the selected model
+                    model = (EntityModel) entityState.entityDescriptor();
+                    module = potentialModule;
                 }
             }
             else
