@@ -12,13 +12,15 @@ Import-Package: org.qi4j.scripting.common, \
                 javax.swing, \
                 javax.swing.border, \
                 javax.swing.plaf.basic, \
-                javax.swing.text
+                javax.swing.text, \
+                org.jruby, \
+                org.jruby.exceptions, \
+                org.jruby.internal.runtime.methods, \
+                org.jruby.javasupport, \
+                org.jruby.runtime, \
+                org.jruby.runtime.builtin \
 
 Export-Package: org.qi4j.scripting.jruby
-
-Embed-Dependency: *;scope=compile|runtime
-
-Embed-Transitive:  true
 
 Ignore-Package: org.apache.bsf, \
                 org.apache.bsf.util, \

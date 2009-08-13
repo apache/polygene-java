@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.openrdf.sesame:sesame-sail-api:2.3-pr1">
+    <CLASSES>
+      <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-api/2.3-pr1/sesame-sail-api-2.3-pr1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-api/2.3-pr1/sesame-sail-api-2.3-pr1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$M2_REPO$/org/openrdf/sesame/sesame-sail-api/2.3-pr1/sesame-sail-api-2.3-pr1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

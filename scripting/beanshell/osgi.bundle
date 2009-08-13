@@ -3,7 +3,14 @@ Bundle-Activator:
 
 Private-Package:
 
-Import-Package: org.qi4j.scripting.common
+Import-Package: org.qi4j.scripting.common, \
+                bsh, \
+                bsh.classpath, \
+                org.qi4j.api.common, \
+                org.qi4j.api.composite, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.structure, \
+                org.qi4j.api.unitofwork
 
 
 Ignore-Package: clover.com.lowagie.text.xml, \
@@ -61,7 +68,3 @@ Ignore-Package: clover.com.lowagie.text.xml, \
                 sun.misc
 
 Export-Package: org.qi4j.scripting.beanshell
-
-Embed-Dependency: *;scope=compile|runtime
-
-Embed-Transitive:  true

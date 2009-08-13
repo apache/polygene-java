@@ -15,7 +15,8 @@ Import-Package: org.qi4j.scripting.common, \
                 javax.swing.text, \
                 javax.swing.tree, \
                 javax.xml.namespace, \
-                org.apache.xmlbeans
+                org.apache.xmlbeans, \
+                org.mozilla.javascript
 
 Ignore-Package: clover.com.lowagie.text.xml, \
                 clover.it.unimi.dsi.fastutil.booleans, \
@@ -65,8 +66,3 @@ Ignore-Package: clover.com.lowagie.text.xml, \
                 sun.misc
 
 Export-Package: org.qi4j.scripting.javascript
-
-Embed-Dependency: *;scope=compile|runtime
-
-Embed-Transitive:  true
-

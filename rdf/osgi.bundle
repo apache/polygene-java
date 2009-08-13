@@ -8,11 +8,19 @@ Import-Package: javax.*, \
                 org.apache.commons.logging, \
                 org.apache.commons.logging, \
                 org.xml.sax, \
-                org.xml.sax.helpers
-
-Embed-Dependency: *;scope=compile|runtime;groupId=!org.slf4j*
-
-Embed-Transitive:  true
+                org.xml.sax.helpers, \
+                org.openrdf.model, \
+                org.openrdf.model.impl, \
+                org.openrdf.model.vocabulary, \
+                org.openrdf.repository, \
+                org.openrdf.repository.sail, \
+                org.openrdf.rio, \
+                org.openrdf.rio.n3, \
+                org.openrdf.rio.rdfxml.util, \
+                org.openrdf.rio.turtle, \
+                org.openrdf.sail, \
+                org.openrdf.sail.memory, \
+                org.openrdf.sail.nativerdf \
 
 Ignore-Package: clover.com.lowagie.text.xml, \
                 clover.it.unimi.dsi.fastutil.booleans, \
