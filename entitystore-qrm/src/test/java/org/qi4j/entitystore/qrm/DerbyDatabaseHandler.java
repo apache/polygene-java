@@ -61,6 +61,7 @@ public class DerbyDatabaseHandler
     {
         try
         {
+            System.setProperty( "derby.authentication.provider", "BUILTIN" );
             System.setProperty( "derby.drda.securityMechanism", "CLEAR_TEXT_PASSWORD_SECURITY" );
             nsc = startServer();
             waitForStart();
