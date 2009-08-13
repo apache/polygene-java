@@ -60,10 +60,6 @@ Import-Package: org.apache.commons.logging, \
                 org.xml.sax, \
                 org.xml.sax.helpers
  
-Embed-Dependency: *;scope=compile|runtime;groupId=!org.slf4j*
-
-Embed-Transitive:  true
-
 Ignore-Package: clover.com.lowagie.text.xml, \
                 clover.it.unimi.dsi.fastutil.booleans, \
                 clover.it.unimi.dsi.fastutil.chars, \

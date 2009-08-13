@@ -29,12 +29,11 @@ Import-Package: org.qi4j.api.common, \
                 org.qi4j.spi.query, \
                 org.qi4j.spi.serialization, \
                 org.qi4j.spi.service, \
-                org.qi4j.spi.uuid
+                org.qi4j.spi.uuid, \
+                jdbm, \
+                jdbm.btree, \
+                jdbm.helper, \
+                jdbm.recman
                 
 
 Export-Package: org.qi4j.entitystore.jdbm
-
-Embed-Dependency: jdbm;scope=compile|runtime, \
-                  jdbm.*;scope=compile|runtime
-
-Embed-Transitive:  true
