@@ -93,6 +93,3 @@ Ignore-Package: net.sf.cglib.asm.util, \
                 org.apache.tools.ant.types, \
                 org.codehaus.aspectwerkz.hook, \
                 com_cenqua_clover
-
-Embed-Dependency: cglib-nodep;scope=compile|runtime
-Embed-Transitive: true
