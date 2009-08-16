@@ -43,7 +43,7 @@ public final class ApplicationModelFactoryImpl
         Map<LayerAssembly, List<LayerModel>> mapUsedLayers = new HashMap<LayerAssembly, List<LayerModel>>();
 
         // Build all layers
-        List<LayerAssemblyImpl> layerAssemblies = new ArrayList<LayerAssemblyImpl>( applicationAssembly.getLayerAssemblies() );
+        List<LayerAssemblyImpl> layerAssemblies = new ArrayList<LayerAssemblyImpl>( applicationAssembly.layerAssemblies() );
         for( LayerAssemblyImpl layerAssembly : layerAssemblies )
         {
             List<LayerModel> usedLayers = new ArrayList<LayerModel>();

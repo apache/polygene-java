@@ -32,7 +32,7 @@ public interface ApplicationAssembly
      * @param name of the new layer
      * @return a LayerAssembly instance
      */
-    LayerAssembly newLayerAssembly(String name);
+    LayerAssembly layerAssembly(String name);
 
     /**
      * Get the currently set name of the application
@@ -68,5 +68,6 @@ public interface ApplicationAssembly
 
     ApplicationAssembly setMetaInfo(Object info);
 
-    void visit(AssemblyVisitor visitor) throws AssemblyException;
+    void visit(AssemblyVisitor visitor)
+        throws AssemblyException;
 }

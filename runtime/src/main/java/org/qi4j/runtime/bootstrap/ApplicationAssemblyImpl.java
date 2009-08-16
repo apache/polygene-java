@@ -14,16 +14,16 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.AssemblyVisitor;
 import org.qi4j.bootstrap.LayerAssembly;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The representation of an entire application. From
@@ -33,20 +33,28 @@ import java.util.List;
 public final class ApplicationAssemblyImpl
     implements ApplicationAssembly, Serializable
 {
-    private List<LayerAssemblyImpl> layerAssemblies = new ArrayList<LayerAssemblyImpl>();
+    private Map<String, LayerAssemblyImpl> layerAssemblies = new HashMap<String, LayerAssemblyImpl>();
     private String name = "Application";
     private Application.Mode mode;
     private MetaInfo metaInfo = new MetaInfo();
 
     public ApplicationAssemblyImpl()
     {
-        mode = Application.Mode.valueOf(System.getProperty("mode", "production"));
+        mode = Application.Mode.valueOf( System.getProperty( "mode", "production" ) );
     }
 
-    public LayerAssembly newLayerAssembly( String name )
+    public LayerAssembly layerAssembly( String name )
     {
+        if( name != null )
+        {
+            LayerAssemblyImpl existing = layerAssemblies.get( name );
+            if( existing != null )
+            {
+                return existing;
+            }
+        }
         LayerAssemblyImpl layerAssembly = new LayerAssemblyImpl( this, name );
-        layerAssemblies.add( layerAssembly );
+        layerAssemblies.put( name, layerAssembly );
         return layerAssembly;
     }
 
@@ -56,7 +64,7 @@ public final class ApplicationAssemblyImpl
         return this;
     }
 
-    public ApplicationAssembly setMode(Application.Mode mode)
+    public ApplicationAssembly setMode( Application.Mode mode )
     {
         this.mode = mode;
         return this;
@@ -71,15 +79,15 @@ public final class ApplicationAssemblyImpl
     public void visit( AssemblyVisitor visitor ) throws AssemblyException
     {
         visitor.visitApplication( this );
-        for( LayerAssemblyImpl layerAssembly : layerAssemblies )
+        for( LayerAssemblyImpl layerAssembly : layerAssemblies.values() )
         {
             layerAssembly.visit( visitor );
         }
     }
 
-    public List<LayerAssemblyImpl> getLayerAssemblies()
+    public Collection<LayerAssemblyImpl> layerAssemblies()
     {
-        return layerAssemblies;
+        return layerAssemblies.values();
     }
 
     public MetaInfo metaInfo()

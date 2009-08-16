@@ -14,15 +14,18 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.AssemblyVisitor;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.AssemblyException;
-
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * Assembly of a Layer. From here you can create more ModuleAssemblies for
@@ -33,7 +36,7 @@ public final class LayerAssemblyImpl
     implements LayerAssembly, Serializable
 {
     private ApplicationAssembly applicationAssembly;
-    private List<ModuleAssemblyImpl> moduleAssemblies;
+    private HashMap<String, ModuleAssemblyImpl> moduleAssemblies;
     private Set<LayerAssembly> uses;
 
     private String name;
@@ -44,14 +47,22 @@ public final class LayerAssemblyImpl
         this.applicationAssembly = applicationAssembly;
         this.name = name;
 
-        moduleAssemblies = new ArrayList<ModuleAssemblyImpl>();
+        moduleAssemblies = new HashMap<String, ModuleAssemblyImpl>();
         uses = new LinkedHashSet<LayerAssembly>();
     }
 
-    public ModuleAssembly newModuleAssembly( String name )
+    public ModuleAssembly moduleAssembly( String name )
     {
+        if( name != null )
+        {
+            ModuleAssemblyImpl existing = moduleAssemblies.get( name );
+            if( existing != null )
+            {
+                return existing;
+            }
+        }
         ModuleAssemblyImpl moduleAssembly = new ModuleAssemblyImpl( this, name );
-        moduleAssemblies.add( moduleAssembly );
+        moduleAssemblies.put( name, moduleAssembly );
         return moduleAssembly;
     }
 
@@ -82,15 +93,15 @@ public final class LayerAssemblyImpl
     public void visit( AssemblyVisitor visitor ) throws AssemblyException
     {
         visitor.visitLayer( this );
-        for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies )
+        for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
         {
             moduleAssembly.visit( visitor );
         }
     }
 
-    List<ModuleAssemblyImpl> moduleAssemblies()
+    Collection<ModuleAssemblyImpl> moduleAssemblies()
     {
-        return moduleAssemblies;
+        return moduleAssemblies.values();
     }
 
     Set<LayerAssembly> uses()
