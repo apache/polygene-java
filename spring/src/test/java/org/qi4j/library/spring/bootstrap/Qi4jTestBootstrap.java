@@ -35,8 +35,8 @@ public final class Qi4jTestBootstrap extends Qi4jApplicationBootstrap
     public final void assemble( ApplicationAssembly applicationAssembly )
         throws AssemblyException
     {
-        LayerAssembly layerAssembly = applicationAssembly.newLayerAssembly( LAYER );
-        ModuleAssembly moduleAssembly = layerAssembly.newModuleAssembly( MODULE );
+        LayerAssembly layerAssembly = applicationAssembly.layerAssembly( LAYER );
+        ModuleAssembly moduleAssembly = layerAssembly.moduleAssembly( MODULE );
         moduleAssembly.addServices( CommentServiceComposite.class )
             .identifiedBy( COMMENT_SERVICE_ID );
     }
