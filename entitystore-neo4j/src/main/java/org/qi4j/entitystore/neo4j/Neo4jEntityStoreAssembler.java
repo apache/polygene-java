@@ -48,7 +48,7 @@ public class Neo4jEntityStoreAssembler
             UuidIdentityGeneratorService.class
         );
 
-        ModuleAssembly config = module.layerAssembly().newModuleAssembly( neo4jConfigModuleName );
+        ModuleAssembly config = module.layerAssembly().moduleAssembly( neo4jConfigModuleName );
         config.addEntities( NeoCoreConfiguration.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
     }

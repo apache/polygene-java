@@ -124,7 +124,7 @@ public class RdfQueryTest
                 );
                 module.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
 
-                ModuleAssembly config = module.layerAssembly().newModuleAssembly( "Config" );
+                ModuleAssembly config = module.layerAssembly().moduleAssembly( "Config" );
                 config.addEntities( NativeConfiguration.class ).visibleIn( Visibility.layer );
                 config.addServices( MemoryEntityStoreService.class );
             }

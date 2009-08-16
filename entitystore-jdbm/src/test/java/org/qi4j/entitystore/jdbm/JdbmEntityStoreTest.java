@@ -37,7 +37,7 @@ public class JdbmEntityStoreTest extends AbstractEntityStoreTest
         super.assemble( module );
         module.addServices( JdbmEntityStoreService.class, UuidIdentityGeneratorService.class );
 
-        ModuleAssembly config = module.layerAssembly().newModuleAssembly( "config" );
+        ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
         config.addEntities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
     }

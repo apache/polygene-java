@@ -49,7 +49,7 @@ public class RESTEntityStoreTest
     {
         module.addEntities( TestEntity.class );
 
-        ModuleAssembly store = module.layerAssembly().newModuleAssembly( "REST Store" );
+        ModuleAssembly store = module.layerAssembly().moduleAssembly( "REST Store" );
         store.addObjects( EntityStateParser.class, EntityTypeParser.class, EntityTypeSerializer.class );
         store.addEntities( RESTEntityStoreConfiguration.class);
         store.addServices( MemoryEntityStoreService.class );

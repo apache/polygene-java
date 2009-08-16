@@ -54,7 +54,7 @@ public class SPARQLEntityFinderTest
         throws AssemblyException
     {
         module.addEntities( TestEntity.class, TestEntity2.class );
-        ModuleAssembly store = module.layerAssembly().newModuleAssembly( "REST Store/Finder/Registry" );
+        ModuleAssembly store = module.layerAssembly().moduleAssembly( "REST Store/Finder/Registry" );
         store.addObjects( EntityStateSerializer.class, EntityStateParser.class, EntityTypeSerializer.class, EntityTypeParser.class );
         store.addEntities( RESTEntityStoreConfiguration.class, SPARQLEntityFinderConfiguration.class);
         store.addServices( MemoryEntityStoreService.class );
