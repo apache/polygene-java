@@ -24,6 +24,7 @@ import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 
@@ -34,10 +35,11 @@ import java.util.List;
 /**
  * Model for Transient Composites
  */
-public class CompositeModel
+public class TransientModel
     extends AbstractCompositeModel
+    implements TransientDescriptor
 {
-    public static CompositeModel newModel( final Class<? extends Composite> compositeType,
+    public static TransientModel newModel( final Class<? extends Composite> compositeType,
                                            final Visibility visibility,
                                            final MetaInfo metaInfo,
                                            final PropertyDeclarations propertyDeclarations,
@@ -60,11 +62,11 @@ public class CompositeModel
             new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
         stateModel.addStateFor( compositeMethodsModel.methods(), compositeType);
 
-        return new CompositeModel(
+        return new TransientModel(
             compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
     }
 
-    protected CompositeModel( final Class<? extends Composite> compositeType,
+    protected TransientModel( final Class<? extends Composite> compositeType,
                               final Visibility visibility,
                               final MetaInfo metaInfo,
                               final MixinsModel mixinsModel,
@@ -110,7 +112,7 @@ public class CompositeModel
                                                    StateHolder state )
     {
         Object[] mixins = mixinsModel.newMixinHolder();
-        CompositeInstance compositeInstance = new DefaultCompositeInstance( this, moduleInstance, mixins, state );
+        CompositeInstance compositeInstance = new TransientInstance( this, moduleInstance, mixins, state );
 
         try
         {

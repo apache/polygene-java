@@ -15,10 +15,10 @@
 package org.qi4j.runtime.entity;
 
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.Property;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PersistentPropertyModel;
+import org.qi4j.runtime.unitofwork.BuilderEntityState;
 import org.qi4j.spi.entity.EntityState;
 
 import java.lang.reflect.Method;
@@ -53,7 +53,7 @@ public final class EntityPropertyModel extends PersistentPropertyModel
         }
         else
         {
-            property = new EntityPropertyInstance( state.identity() == EntityReference.NULL ? builderInfo : this, state, this );
+            property = new EntityPropertyInstance( state instanceof BuilderEntityState ? builderInfo : this, state, this );
         }
 
         return wrapProperty( property );

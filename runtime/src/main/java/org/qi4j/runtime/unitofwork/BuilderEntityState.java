@@ -32,13 +32,15 @@ public final class BuilderEntityState
     implements EntityState
 {
     private final EntityDescriptor entityType;
+    private EntityReference reference;
     private final Map<QualifiedName, Object> properties;
     private final Map<QualifiedName, EntityReference> associations;
     private final Map<QualifiedName, ManyAssociationState> manyAssociations;
 
-    public BuilderEntityState( EntityDescriptor type )
+    public BuilderEntityState(EntityDescriptor type, EntityReference reference)
     {
         entityType = type;
+        this.reference = reference;
         properties = new HashMap<QualifiedName, Object>();
         associations = new HashMap<QualifiedName, EntityReference>();
         manyAssociations = new HashMap<QualifiedName, ManyAssociationState>();
@@ -46,7 +48,7 @@ public final class BuilderEntityState
 
     public EntityReference identity()
     {
-        return EntityReference.NULL;
+        return identity();
     }
 
     public String version()
@@ -70,7 +72,7 @@ public final class BuilderEntityState
 
     public boolean isOfType( TypeName type )
     {
-        return entityType.type().equals(type);
+        return entityType.entityType().type().equals(type);
     }
 
     public EntityDescriptor entityDescriptor()

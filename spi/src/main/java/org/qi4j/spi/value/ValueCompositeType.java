@@ -22,9 +22,9 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.spi.entity.helpers.json.JSONException;
-import org.qi4j.spi.entity.helpers.json.JSONObject;
-import org.qi4j.spi.entity.helpers.json.JSONWriter;
+import org.qi4j.spi.util.json.JSONException;
+import org.qi4j.spi.util.json.JSONObject;
+import org.qi4j.spi.util.json.JSONWriter;
 import org.qi4j.spi.property.DefaultValues;
 import org.qi4j.spi.property.PropertyType;
 

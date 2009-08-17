@@ -32,8 +32,6 @@ import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.structure.ApplicationSPI;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -95,11 +93,11 @@ public final class StructureInjectionProviderFactory
             {
                 return context.moduleInstance().layerInstance();
             }
-            else if( Application.class.isAssignableFrom( (Class<?>) type ) || ApplicationSPI.class.isAssignableFrom( (Class<?>) type ) )
+            else if( Application.class.isAssignableFrom( (Class<?>) type ))
             {
                 return context.moduleInstance().layerInstance().applicationInstance();
             }
-            else if( type.equals( Qi4j.class ) || type.equals( Qi4jSPI.class ) )
+            else if( Qi4j.class.isAssignableFrom((Class<?>) type))
             {
                 return context.moduleInstance().layerInstance().applicationInstance().runtime();
             }

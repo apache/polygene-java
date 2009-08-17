@@ -15,7 +15,7 @@
 package org.qi4j.runtime.composite;
 
 import org.qi4j.api.common.Optional;
-import org.qi4j.api.injection.Name;
+import org.qi4j.api.constraint.Name;
 import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.util.Annotations;

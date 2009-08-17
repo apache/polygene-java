@@ -60,7 +60,7 @@ public final class UsesInjectionProviderFactory
                 // Try instantiating a Composite or Object for the given type
                 ModuleInstance moduleInstance = context.moduleInstance();
 
-                ModuleInstance.CompositeFinder compositeFinder = moduleInstance.findCompositeModel( dependency.injectionClass() );
+                ModuleInstance.CompositeFinder compositeFinder = moduleInstance.findTransientModel( dependency.injectionClass() );
                 if( compositeFinder.model != null )
                 {
                     if( Iterable.class.equals( injectionType ) || TransientBuilder.class.equals( injectionType ) )

@@ -22,12 +22,10 @@ import org.qi4j.api.common.ConstructionException;
  * EntityBuilders are used to instantiate EntityComposites. They can be acquired from
  * {@link org.qi4j.api.unitofwork.UnitOfWork#newEntityBuilder(Class)} and allows the client
  * to provide additional settings before instantiating the Composite.
- * <p/>
- * It extends Iterable which allows client code to iteratively create new instances. This
- * can be used to implement the prototype pattern.
+ *
+ * After calling newInstance() the builder becomes invalid, and may not be called again.
  */
 public interface EntityBuilder<T>
-    extends Iterable<T>
 {
     /**
      * Get a representation of the state for the new Composite.
@@ -36,7 +34,7 @@ public interface EntityBuilder<T>
      *
      * @return a proxy implementing the Composite type
      */
-    T prototype();
+    T instance();
 
     /**
      * Get a representation of the state of the given type for the new Composite.
@@ -45,7 +43,7 @@ public interface EntityBuilder<T>
      * @param mixinType the mixin which you want to provide state for
      * @return a proxy implementing the given mixin type
      */
-    <K> K prototypeFor( Class<K> mixinType );
+    <K> K instanceFor( Class<K> mixinType );
 
     /**
      * Create a new Entity instance.

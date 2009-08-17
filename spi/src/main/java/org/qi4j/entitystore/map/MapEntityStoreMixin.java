@@ -6,6 +6,7 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
@@ -18,11 +19,11 @@ import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entity.helpers.DefaultEntityState;
 import org.qi4j.spi.entity.helpers.DefaultEntityStoreUnitOfWork;
 import org.qi4j.spi.entity.helpers.EntityStoreSPI;
-import org.qi4j.spi.entity.helpers.json.JSONArray;
-import org.qi4j.spi.entity.helpers.json.JSONException;
-import org.qi4j.spi.entity.helpers.json.JSONObject;
-import org.qi4j.spi.entity.helpers.json.JSONTokener;
-import org.qi4j.spi.entity.helpers.json.JSONWriter;
+import org.qi4j.spi.util.json.JSONArray;
+import org.qi4j.spi.util.json.JSONException;
+import org.qi4j.spi.util.json.JSONObject;
+import org.qi4j.spi.util.json.JSONTokener;
+import org.qi4j.spi.util.json.JSONWriter;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
@@ -223,6 +224,8 @@ public final class MapEntityStoreMixin
             EntityStatus status = EntityStatus.LOADED;
 
             EntityDescriptor entityDescriptor = module.entityDescriptor(type);
+            if (entityDescriptor == null)
+                throw new EntityTypeNotFoundException(type);
 
             Map<QualifiedName, Object> properties = new HashMap<QualifiedName, Object>();
             JSONObject props = jsonObject.getJSONObject("properties");

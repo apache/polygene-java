@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,21 +11,19 @@
  * limitations under the License.
  *
  */
+
 package org.qi4j.api.injection;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.qi4j.api.service.ServiceSelector;
 
 /**
- * Annotation for parameter names. This is used to add extra information for constraint exception.
+ * JAVADOC
  */
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.PARAMETER } )
-@Documented
-public @interface Name
+final class TaggedSelector
+    implements QualifierSelector<Tagged>
 {
-    String value();
+    public <T> ServiceSelector.Selector select( Tagged tagged )
+    {
+        return ServiceSelector.withTags( tagged.value() );
+    }
 }

@@ -20,7 +20,6 @@ import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Aggregated;
-import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
@@ -31,6 +30,7 @@ import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
+import org.qi4j.runtime.unitofwork.BuilderEntityState;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationType;
@@ -146,7 +146,7 @@ public final class ManyAssociationModel
 
     public <T> ManyAssociation<T> newInstance( ModuleUnitOfWork uow, EntityState state )
     {
-        ManyAssociation<T> associationInstance = new ManyAssociationInstance<T>( state.identity() == EntityReference.NULL ? builderInfo : this, this, uow, state );
+        ManyAssociation<T> associationInstance = new ManyAssociationInstance<T>( state instanceof BuilderEntityState ? builderInfo : this, this, uow, state );
 
         if( TransientComposite.class.isAssignableFrom( accessor.getReturnType() ) )
         {

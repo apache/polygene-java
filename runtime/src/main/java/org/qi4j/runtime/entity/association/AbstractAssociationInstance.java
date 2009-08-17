@@ -60,15 +60,12 @@ public abstract class AbstractAssociationInstance<T>
 
     protected T getEntity( EntityReference entityId )
     {
-        if( entityId == null || entityId == EntityReference.NULL )
+        if( entityId == null)
         {
             return null;
         }
 
-        {
-//                Class<? extends EntityComposite> entityCompositeType = (Class<? extends EntityComposite>) unitOfWork.module().classLoader().loadClass( entityId.type() );
-            return (T) unitOfWork.get( (Class<? extends Object>) type(), entityId.identity() );
-        }
+        return (T) unitOfWork.get( (Class<? extends Object>) type(), entityId.identity() );
     }
 
     protected QualifiedIdentity getEntityId( Object composite )

@@ -22,7 +22,7 @@ import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.TransientDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.runtime.composite.CompositeModel;
+import org.qi4j.runtime.composite.TransientModel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -78,7 +78,7 @@ public final class TransientDeclarationImpl
         return this;
     }
 
-    void addComposites( List<CompositeModel> composites, PropertyDeclarations propertyDeclarations )
+    void addComposites( List<TransientModel> aTransients, PropertyDeclarations propertyDeclarations )
     {
         for( Class<? extends TransientComposite> compositeType : compositeTypes )
         {
@@ -86,11 +86,11 @@ public final class TransientDeclarationImpl
             {
                 MetaInfo compositeMetaInfo = new MetaInfo( metaInfo ).withAnnotations( compositeType );
                 addAnnotationsMetaInfo( compositeType, compositeMetaInfo );
-                CompositeModel compositeModel = CompositeModel.newModel( compositeType,
+                TransientModel transientModel = TransientModel.newModel( compositeType,
                                                                          visibility,
                                                                          compositeMetaInfo,
                                                                          propertyDeclarations, concerns, sideEffects, mixins );
-                composites.add( compositeModel );
+                aTransients.add(transientModel);
             } catch (Exception e)
             {
                 throw new InvalidApplicationException( "Could not register " + compositeType.getName(), e );

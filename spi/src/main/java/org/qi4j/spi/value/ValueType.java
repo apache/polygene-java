@@ -21,10 +21,10 @@ import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
-import org.qi4j.spi.entity.helpers.json.JSONException;
-import org.qi4j.spi.entity.helpers.json.JSONStringer;
-import org.qi4j.spi.entity.helpers.json.JSONTokener;
-import org.qi4j.spi.entity.helpers.json.JSONWriter;
+import org.qi4j.spi.util.json.JSONException;
+import org.qi4j.spi.util.json.JSONStringer;
+import org.qi4j.spi.util.json.JSONTokener;
+import org.qi4j.spi.util.json.JSONWriter;
 import org.qi4j.spi.property.PropertyType;
 
 import java.io.Serializable;

@@ -20,10 +20,9 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.spi.entity.helpers.json.JSONException;
-import org.qi4j.spi.entity.helpers.json.JSONWriter;
 import org.qi4j.spi.util.Base64Encoder;
-import org.qi4j.spi.util.PeekableStringTokenizer;
+import org.qi4j.spi.util.json.JSONException;
+import org.qi4j.spi.util.json.JSONWriter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -131,6 +130,6 @@ public final class SerializableType
     {
         String json = "\"" + parameter + "\"";
 
-        return fromJSON( new PeekableStringTokenizer( json ), module );
+        return fromJSON( json, module );
     }
 }

@@ -28,12 +28,12 @@ import java.lang.reflect.Proxy;
 /**
  * InvocationHandler for proxy objects.
  */
-public class DefaultCompositeInstance
+public class TransientInstance
     implements CompositeInstance, MixinsInstance
 {
-    public static DefaultCompositeInstance getCompositeInstance( Composite composite )
+    public static TransientInstance getCompositeInstance( Composite composite )
     {
-        return (DefaultCompositeInstance) Proxy.getInvocationHandler( composite );
+        return (TransientInstance) Proxy.getInvocationHandler( composite );
     }
 
     private final Composite proxy;
@@ -42,7 +42,7 @@ public class DefaultCompositeInstance
     protected final AbstractCompositeModel compositeModel;
     private final ModuleInstance moduleInstance;
 
-    public DefaultCompositeInstance( AbstractCompositeModel compositeModel, ModuleInstance moduleInstance, Object[] mixins, StateHolder state )
+    public TransientInstance( AbstractCompositeModel compositeModel, ModuleInstance moduleInstance, Object[] mixins, StateHolder state )
     {
         this.compositeModel = compositeModel;
         this.moduleInstance = moduleInstance;
@@ -78,11 +78,6 @@ public class DefaultCompositeInstance
         return compositeModel.type();
     }
 
-    public Object[] mixins()
-    {
-        return mixins;
-    }
-
     public ModuleInstance module()
     {
         return moduleInstance;
@@ -108,11 +103,6 @@ public class DefaultCompositeInstance
                 }
             }
         }
-    }
-
-    public Object[] getMixins()
-    {
-        return mixins;
     }
 
     public StateHolder state()

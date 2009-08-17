@@ -17,9 +17,6 @@
  */
 package org.qi4j.runtime.query;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -46,6 +43,10 @@ import org.qi4j.runtime.query.model.entities.FemaleEntity;
 import org.qi4j.runtime.query.model.entities.MaleEntity;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.test.EntityTestAssembler;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class IterableQueryTest
 {

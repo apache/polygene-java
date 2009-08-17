@@ -49,7 +49,7 @@ public final class TransientBuilderInstance<T>
     }
 
     private final ModuleInstance moduleInstance;
-    private final CompositeModel compositeModel;
+    private final TransientModel transientModel;
 
     // lazy initialized in accessor
     private UsesInstance uses = UsesInstance.NO_USES;
@@ -61,22 +61,22 @@ public final class TransientBuilderInstance<T>
     // lazy initialized in accessor
     private StateHolder state;
 
-    public TransientBuilderInstance( ModuleInstance moduleInstance, CompositeModel compositeModel, UsesInstance uses )
+    public TransientBuilderInstance( ModuleInstance moduleInstance, TransientModel transientModel, UsesInstance uses )
     {
-        this( moduleInstance, compositeModel );
+        this( moduleInstance, transientModel);
         this.uses = uses;
     }
 
-    public TransientBuilderInstance( ModuleInstance moduleInstance, CompositeModel compositeModel )
+    public TransientBuilderInstance( ModuleInstance moduleInstance, TransientModel transientModel)
     {
         this.moduleInstance = moduleInstance;
 
-        this.compositeModel = compositeModel;
+        this.transientModel = transientModel;
     }
 
     public Class<T> compositeType()
     {
-        return (Class<T>) compositeModel.type();
+        return (Class<T>) transientModel.type();
     }
 
     public TransientBuilder<T> use( Object... usedObjects )
@@ -91,7 +91,7 @@ public final class TransientBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = compositeModel.newCompositeInstance( moduleInstance, getUses(), getState() );
+            prototypeInstance = transientModel.newCompositeInstance( moduleInstance, getUses(), getState() );
         }
 
         return prototypeInstance.<T>proxy();
@@ -102,7 +102,7 @@ public final class TransientBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = compositeModel.newCompositeInstance( moduleInstance, getUses(), getState() );
+            prototypeInstance = transientModel.newCompositeInstance( moduleInstance, getUses(), getState() );
         }
 
         return prototypeInstance.newProxy( mixinType );
@@ -113,17 +113,17 @@ public final class TransientBuilderInstance<T>
         StateHolder instanceState;
         if( state == null )
         {
-            instanceState = compositeModel.newInitialState();
+            instanceState = transientModel.newInitialState();
         }
         else
         {
-            instanceState = compositeModel.newState( state );
+            instanceState = transientModel.newState( state );
         }
 
-        compositeModel.state().checkConstraints( instanceState );
+        transientModel.state().checkConstraints( instanceState );
 
         CompositeInstance compositeInstance =
-            compositeModel.newCompositeInstance( moduleInstance, uses, instanceState );
+            transientModel.newCompositeInstance( moduleInstance, uses, instanceState );
         return compositeInstance.<T>proxy();
     }
 
@@ -161,7 +161,7 @@ public final class TransientBuilderInstance<T>
     {
         if( state == null )
         {
-            state = compositeModel.newBuilderState();
+            state = transientModel.newBuilderState();
         }
 
         return state;
@@ -183,11 +183,11 @@ public final class TransientBuilderInstance<T>
             }
             else if( method.equals( TYPE_METHOD ) )
             {
-                return compositeModel.type();
+                return transientModel.type();
             }
             else if( method.equals( METAINFO_METHOD ) )
             {
-                return compositeModel.metaInfo().get( (Class<? extends Object>) objects[ 0 ] );
+                return transientModel.metaInfo().get( (Class<? extends Object>) objects[ 0 ] );
             }
             else
             {

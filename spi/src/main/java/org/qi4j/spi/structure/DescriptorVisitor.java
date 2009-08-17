@@ -15,7 +15,7 @@
 package org.qi4j.spi.structure;
 
 import org.qi4j.api.service.ImportedServiceDescriptor;
-import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
 import org.qi4j.spi.composite.ConstructorDescriptor;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
@@ -51,7 +51,7 @@ public class DescriptorVisitor
     {
     }
 
-    public void visit( CompositeDescriptor compositeDescriptor )
+    public void visit( TransientDescriptor transientDescriptor)
     {
     }
 

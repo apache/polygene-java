@@ -21,6 +21,7 @@ import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import static org.qi4j.api.entity.EntityReference.*;
 import org.qi4j.api.entity.Identity;
+import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
@@ -139,6 +140,9 @@ public class ModuleUnitOfWork
         EntityState entityState = entityModel.newEntityState( uow.getEntityStoreUnitOfWork( entityStore, module() ),
                                                               parseEntityReference( identity ) );
 
+        // Init state
+        entityModel.initState( entityState );
+
         if( identityStateName == null )
         {
             identityStateName = QualifiedName.fromMethod( IDENTITY_METHOD );
@@ -148,6 +152,8 @@ public class ModuleUnitOfWork
         EntityInstance instance = new EntityInstance( this, moduleInstance, entityModel, entityState.identity(), entityState );
 
         entityModel.invokeCreate( instance );
+
+        instance.checkConstraints();
 
         addEntity( instance );
 
@@ -182,6 +188,14 @@ public class ModuleUnitOfWork
         EntityModel entityModel = finder.models.get( 0 );
         ModuleInstance entityModuleInstance = finder.modules.get( 0 );
         EntityStore entityStore = entityModuleInstance.entities().entityStore();
+
+        // Generate id if necessary
+        if (identity == null)
+        {
+            IdentityGenerator idGen = entityModuleInstance.entities().identityGenerator();
+            identity = idGen.generate(entityModel.type());
+        }
+
         EntityBuilder<T> builder;
 
         if( identity != null )
@@ -190,7 +204,6 @@ public class ModuleUnitOfWork
                                                     entityModel,
                                                     this,
                                                     uow.getEntityStoreUnitOfWork( entityStore, moduleInstance ),
-                                                    null,
                                                     identity );
         }
         else
@@ -199,7 +212,7 @@ public class ModuleUnitOfWork
                                                     entityModel,
                                                     this,
                                                     uow.getEntityStoreUnitOfWork( entityModuleInstance.entities().entityStore(), moduleInstance ),
-                                                    entityModuleInstance.entities().identityGenerator(), identity );
+                                                    identity );
         }
         return builder;
     }

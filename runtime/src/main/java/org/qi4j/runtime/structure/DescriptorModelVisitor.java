@@ -54,9 +54,9 @@ public class DescriptorModelVisitor extends ModelVisitor
         visitor.visit( moduleModel );
     }
 
-    @Override public void visit( CompositeModel compositeModel )
+    @Override public void visit( TransientModel transientModel)
     {
-        visitor.visit( compositeModel );
+        visitor.visit(transientModel);
     }
 
     @Override public void visit( EntityModel entityModel )

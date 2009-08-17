@@ -55,7 +55,7 @@ public interface ModuleAssembly
     ImportedServiceDeclaration importServices( Class... serviceTypes )
         throws AssemblyException;
 
-    <T> InfoDeclaration<T> on( Class<T> mixinType );
+    <T> MixinDeclaration<T> forMixin( Class<T> mixinType );
 
     public void visit( AssemblyVisitor visitor ) throws AssemblyException;
 }

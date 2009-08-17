@@ -41,7 +41,7 @@ public class ModelVisitor
     {
     }
 
-    public void visit( CompositeModel compositeModel )
+    public void visit( TransientModel transientModel)
     {
     }
 

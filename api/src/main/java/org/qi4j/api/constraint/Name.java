@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,8 +12,7 @@
  * limitations under the License.
  *
  */
-
-package org.qi4j.api.entity;
+package org.qi4j.api.constraint;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -21,14 +21,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Use this annotation on Properties, Association and
- * EntityComposite declarations to specify their RDF URI.
- * This is primarily used for RDF generation purposes.
+ * Annotation for parameter names. This is used to add extra information for constraint exception.
  */
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.METHOD, ElementType.TYPE } )
+@Target( { ElementType.PARAMETER } )
 @Documented
-public @interface RDF
+public @interface Name
 {
-    String value(); // The URI of the type, property or association
+    String value();
 }

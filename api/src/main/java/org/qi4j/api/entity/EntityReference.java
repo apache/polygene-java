@@ -44,9 +44,6 @@ public final class EntityReference
 
     private static final long serialVersionUID = 1L;
 
-    // Associations who have been set to "null" should use this as the representation in the EntityState
-    public static final EntityReference NULL = new EntityReference( "null" );
-
     private String identity;
 
     public EntityReference( EntityComposite entityComposite )

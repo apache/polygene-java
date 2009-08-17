@@ -16,14 +16,14 @@ package org.qi4j.runtime.service;
 
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.runtime.composite.DefaultCompositeInstance;
+import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
  * JAVADOC
  */
 public class ServiceInstance
-    extends DefaultCompositeInstance
+    extends TransientInstance
     implements Activatable
 {
     public ServiceInstance( ServiceModel compositeModel, ModuleInstance moduleInstance, Object[] mixins, StateHolder state )

@@ -16,7 +16,7 @@ package org.qi4j.runtime.structure;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
-import org.qi4j.runtime.composite.CompositeModel;
+import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.spi.structure.UsedLayersDescriptor;
 
 import java.io.Serializable;
@@ -40,19 +40,19 @@ public final class UsedLayersModel
         return usedLayers;
     }
 
-    public CompositeModel findCompositeFor( Class mixinType )
+    public TransientModel findCompositeFor( Class mixinType )
     {
-        CompositeModel foundModel = null;
+        TransientModel foundModel = null;
         for( LayerModel usedLayer : usedLayers )
         {
-            CompositeModel compositeModel = usedLayer.findCompositeFor( mixinType, Visibility.application );
-            if( compositeModel != null )
+            TransientModel transientModel = usedLayer.findCompositeFor( mixinType, Visibility.application );
+            if( transientModel != null )
             {
                 if( foundModel != null )
                 {
-                    throw new AmbiguousTypeException( mixinType, foundModel.type(), compositeModel.type() );
+                    throw new AmbiguousTypeException( mixinType, foundModel.type(), transientModel.type() );
                 }
-                foundModel = compositeModel;
+                foundModel = transientModel;
             }
         }
 

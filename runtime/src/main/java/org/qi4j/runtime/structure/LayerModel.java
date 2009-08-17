@@ -18,7 +18,7 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.composite.CompositeModel;
+import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.spi.structure.LayerDescriptor;
 
@@ -86,22 +86,22 @@ public final class LayerModel
     }
 
     // Context
-    public CompositeModel findCompositeFor( Class mixinType, Visibility visibility )
+    public TransientModel findCompositeFor( Class mixinType, Visibility visibility )
     {
         // Check this layer
-        CompositeModel foundModel = null;
+        TransientModel foundModel = null;
         for( ModuleModel model : modules )
         {
-            CompositeModel compositeModel = model.composites().getCompositeModelFor( mixinType, visibility );
-            if( compositeModel != null )
+            TransientModel transientModel = model.composites().getCompositeModelFor( mixinType, visibility );
+            if( transientModel != null )
             {
                 if( foundModel != null )
                 {
-                    throw new AmbiguousTypeException( mixinType, foundModel.type(), compositeModel.type() );
+                    throw new AmbiguousTypeException( mixinType, foundModel.type(), transientModel.type() );
                 }
                 else
                 {
-                    foundModel = compositeModel;
+                    foundModel = transientModel;
                 }
             }
         }

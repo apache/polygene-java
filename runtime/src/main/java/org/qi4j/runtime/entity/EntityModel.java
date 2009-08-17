@@ -224,9 +224,6 @@ public final class EntityModel
             // New EntityState
             EntityState entityState = store.newEntityState( identity, this);
 
-            // Add EntityType
-            initState( entityState );
-
             // Set identity property
             PropertyTypeDescriptor propertyDescriptor = state().getPropertyByQualifiedName( QualifiedName.fromMethod( IDENTITY_METHOD ) );
             entityState.setProperty( propertyDescriptor.propertyType().qualifiedName(), identity.identity() );

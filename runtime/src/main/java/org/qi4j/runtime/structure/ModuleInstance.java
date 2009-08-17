@@ -30,14 +30,13 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.runtime.composite.CompositeModel;
+import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.composite.CompositesInstance;
 import org.qi4j.runtime.composite.CompositesModel;
 import org.qi4j.runtime.composite.TransientBuilderInstance;
@@ -57,9 +56,10 @@ import org.qi4j.runtime.value.ValueBuilderInstance;
 import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.runtime.value.ValuesInstance;
 import org.qi4j.runtime.value.ValuesModel;
+import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.entity.helpers.json.JSONException;
-import org.qi4j.spi.entity.helpers.json.JSONTokener;
+import org.qi4j.spi.util.json.JSONException;
+import org.qi4j.spi.util.json.JSONTokener;
 import org.qi4j.spi.structure.ModuleSPI;
 
 import java.lang.reflect.Type;
@@ -175,7 +175,6 @@ public class ModuleInstance
     }
 
     public EntityDescriptor entityDescriptor(String name)
-            throws EntityTypeNotFoundException
     {
         EntityFinder finder = null;
         try
@@ -183,11 +182,24 @@ public class ModuleInstance
             finder = findEntityModel(classLoader().loadClass(name));
         } catch (ClassNotFoundException e)
         {
-            throw new EntityTypeNotFoundException(name);
+            return null;
         }
         if (finder.models.isEmpty())
-            throw new EntityTypeNotFoundException(name);
+            return null;
         return finder.models.get(0);
+    }
+
+    public TransientDescriptor transientDescriptor(String name)
+    {
+        CompositeFinder finder = null;
+        try
+        {
+            finder = findTransientModel(classLoader().loadClass(name));
+        } catch (ClassNotFoundException e)
+        {
+            return null;
+        }
+        return finder.model;
     }
 
     public TransientBuilderFactory transientBuilderFactory()
@@ -286,7 +298,7 @@ public class ModuleInstance
         return finder;
     }
 
-    public CompositeFinder findCompositeModel( Class mixinType )
+    public CompositeFinder findTransientModel( Class mixinType )
     {
         CompositeFinder finder = compositeFinders.get( mixinType );
         if( finder == null )
@@ -383,7 +395,7 @@ public class ModuleInstance
         public <T> TransientBuilder<T> newTransientBuilder( Class<T> mixinType )
             throws NoSuchCompositeException
         {
-            CompositeFinder finder = findCompositeModel( mixinType );
+            CompositeFinder finder = findTransientModel( mixinType );
 
             if( finder.model == null )
             {
@@ -396,7 +408,7 @@ public class ModuleInstance
         public <T> T newTransient( final Class<T> mixinType )
             throws NoSuchCompositeException, ConstructionException
         {
-            CompositeFinder finder = findCompositeModel( mixinType );
+            CompositeFinder finder = findTransientModel( mixinType );
 
             if( finder.model == null )
             {
@@ -410,9 +422,9 @@ public class ModuleInstance
     }
 
     public class CompositeFinder
-        extends TypeFinder<CompositeModel>
+        extends TypeFinder<TransientModel>
     {
-        protected CompositeModel findModel( ModuleModel model, Visibility visibility )
+        protected TransientModel findModel( ModuleModel model, Visibility visibility )
         {
             return model.composites().getCompositeModelFor( type, visibility );
         }

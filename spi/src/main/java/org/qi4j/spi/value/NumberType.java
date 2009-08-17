@@ -16,8 +16,8 @@ package org.qi4j.spi.value;
 
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
-import org.qi4j.spi.entity.helpers.json.JSONException;
-import org.qi4j.spi.entity.helpers.json.JSONWriter;
+import org.qi4j.spi.util.json.JSONException;
+import org.qi4j.spi.util.json.JSONWriter;
 
 import java.lang.reflect.Type;
 

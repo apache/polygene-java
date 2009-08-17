@@ -29,9 +29,9 @@ import java.util.List;
 public class CompositesModel
     implements Binder, Serializable
 {
-    private final List<? extends CompositeModel> compositeModels;
+    private final List<? extends TransientModel> compositeModels;
 
-    public CompositesModel( List<? extends CompositeModel> compositeModels )
+    public CompositesModel( List<? extends TransientModel> compositeModels )
     {
         this.compositeModels = compositeModels;
     }
@@ -39,50 +39,50 @@ public class CompositesModel
 
     public void visitModel( ModelVisitor modelVisitor )
     {
-        for( CompositeModel compositeModel : compositeModels )
+        for( TransientModel transientModel : compositeModels )
         {
-            compositeModel.visitModel( modelVisitor );
+            transientModel.visitModel( modelVisitor );
         }
     }
 
     public void bind( Resolution resolution )
         throws BindingException
     {
-        for( CompositeModel compositeModel : compositeModels )
+        for( TransientModel transientModel : compositeModels )
         {
-            compositeModel.bind( resolution );
+            transientModel.bind( resolution );
         }
     }
 
-    public CompositeModel getCompositeModelFor( Class mixinType, Visibility visibility )
+    public TransientModel getCompositeModelFor( Class mixinType, Visibility visibility )
     {
-        CompositeModel foundModel = null;
-        for( CompositeModel composite : compositeModels )
+        TransientModel foundModel = null;
+        for( TransientModel aTransient : compositeModels )
         {
             if (Composite.class.isAssignableFrom(mixinType))
             {
-                if( mixinType.equals( composite.type() ) && composite.visibility() == visibility )
+                if( mixinType.equals( aTransient.type() ) && aTransient.visibility() == visibility )
                 {
                     if( foundModel != null )
                     {
-                        throw new AmbiguousTypeException( mixinType, foundModel.type(), composite.type() );
+                        throw new AmbiguousTypeException( mixinType, foundModel.type(), aTransient.type() );
                     }
                     else
                     {
-                        foundModel = composite;
+                        foundModel = aTransient;
                     }
                 }
             } else
             {
-                if( mixinType.isAssignableFrom( composite.type() ) && composite.visibility() == visibility )
+                if( mixinType.isAssignableFrom( aTransient.type() ) && aTransient.visibility() == visibility )
                 {
                     if( foundModel != null )
                     {
-                        throw new AmbiguousTypeException( mixinType, foundModel.type(), composite.type() );
+                        throw new AmbiguousTypeException( mixinType, foundModel.type(), aTransient.type() );
                     }
                     else
                     {
-                        foundModel = composite;
+                        foundModel = aTransient;
                     }
                 }
             }
@@ -94,11 +94,11 @@ public class CompositesModel
 
     public Class getClassForName( String type )
     {
-        for( CompositeModel compositeModel : compositeModels )
+        for( TransientModel transientModel : compositeModels )
         {
-            if( compositeModel.type().getName().equals( type ) )
+            if( transientModel.type().getName().equals( type ) )
             {
-                return compositeModel.type();
+                return transientModel.type();
             }
         }
 

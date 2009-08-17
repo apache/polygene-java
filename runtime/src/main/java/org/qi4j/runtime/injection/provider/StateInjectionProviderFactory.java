@@ -12,13 +12,15 @@ import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
-import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.StateDescriptor;
+import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
+import org.qi4j.spi.service.ServiceDescriptor;
+import org.qi4j.spi.value.ValueDescriptor;
 
 import java.io.Serializable;
 
@@ -39,7 +41,16 @@ public final class StateInjectionProviderFactory
         else if( Property.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
         {
             // @State Property<String> name;
-            StateDescriptor descriptor = ( (CompositeDescriptor) resolution.object() ).state();
+            StateDescriptor descriptor;
+            if (resolution.object() instanceof TransientDescriptor)
+                descriptor = ( (TransientDescriptor) resolution.object() ).state();
+            else if (resolution.object() instanceof ValueDescriptor)
+                descriptor = ( (ValueDescriptor) resolution.object() ).state();
+            else if (resolution.object() instanceof ServiceDescriptor)
+                descriptor = ( (ServiceDescriptor) resolution.object() ).state();
+            else
+                descriptor = ( (EntityDescriptor) resolution.object() ).state();
+
             State annotation = (State) dependencyModel.injectionAnnotation();
             String name;
             if( annotation.value().equals( "" ) )

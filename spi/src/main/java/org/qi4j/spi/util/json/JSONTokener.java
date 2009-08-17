@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.qi4j.spi.entity.helpers.json;
+package org.qi4j.spi.util.json;
 
 import java.io.BufferedReader;
 import java.io.IOException;

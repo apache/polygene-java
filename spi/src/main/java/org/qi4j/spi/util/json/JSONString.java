@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.spi.entity.helpers.json;
+package org.qi4j.spi.util.json;
 
 /**
  * The <code>JSONString</code> interface allows a <code>toJSONString()</code>

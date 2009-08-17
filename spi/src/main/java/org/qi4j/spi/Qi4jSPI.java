@@ -15,16 +15,14 @@
 package org.qi4j.spi;
 
 import org.qi4j.api.Qi4j;
-import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.spi.composite.CompositeDescriptor;
+import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.value.ValueDescriptor;
 
 /**
@@ -34,16 +32,12 @@ public interface Qi4jSPI
     extends Qi4j
 {
     // Composites
-    CompositeDescriptor getCompositeDescriptor( Composite composite );
+    TransientDescriptor getTransientDescriptor( TransientComposite composite );
 
-    CompositeDescriptor getCompositeDescriptor( Class<? extends Composite> compositeType, Module module );
-
-    StateHolder getState( Composite composite );
+    StateHolder getState( TransientComposite composite );
 
     // Entities
     EntityDescriptor getEntityDescriptor( EntityComposite composite );
-
-    EntityDescriptor getEntityDescriptor( Class<? extends EntityComposite> entityType, Module module );
 
     EntityStateHolder getState( EntityComposite composite );
 
@@ -52,10 +46,5 @@ public interface Qi4jSPI
     // Values
     ValueDescriptor getValueDescriptor( ValueComposite value );
 
-    ValueDescriptor getValueDescriptor( Class<? extends ValueComposite> entityType, Module module );
-
     StateHolder getState( ValueComposite composite );
-
-    // Objects
-    ObjectDescriptor getObjectDescriptor( Class objectType, Module module );
 }

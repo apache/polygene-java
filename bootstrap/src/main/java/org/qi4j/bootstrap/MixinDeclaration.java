@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Michael Hunger. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,17 +12,16 @@
  *
  */
 
-package org.qi4j.api.service;
+package org.qi4j.bootstrap;
 
 /**
- * Services which simply wraps some resource should extend this interface
- * and specify the type of resource.
- * <p/>
- * If the default WrapperMixin is used, then register the wrapped object
- * as meta-info for the service using:<br/>
- * assembly.addService(YouService.class).setMetaInfo(new WrappedObject(wrappedObject));
+ * Fluent API for declaring information about properties
+ *
+ * @param <T>
  */
-public interface Wrapper<T>
+public interface MixinDeclaration<T>
 {
-    T get();
+    T declareDefaults();
+
+    MixinDeclaration<T> setMetaInfo( Object info );
 }

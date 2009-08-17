@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.spi.entity.helpers.json;
+package org.qi4j.spi.util.json;
 
 /*
 Copyright (c) 2002 JSON.org

@@ -19,8 +19,11 @@ import java.math.BigDecimal;
 /**
  * Convenience class for mathematical operations on
  * numerical properties.
+ *
+ * add(object.number(), 5)
+ *
  */
-public final class NumberProperty
+public final class Numbers
 {
     // Integer operations
     public static Property<Integer> add( Property<Integer> property, int amount )

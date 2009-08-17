@@ -14,12 +14,10 @@
 
 package org.qi4j.runtime.unitofwork;
 
-import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
-import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.runtime.entity.EntityInstance;
@@ -30,10 +28,10 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 
 import java.lang.reflect.Method;
-import java.util.Iterator;
 
 /**
- * JAVADOC
+ * Implementation of EntityBuilder. Maintains an instance of the entity which
+ * will not have its state validated until it is created by calling newInstance().
  */
 public final class EntityBuilderInstance<T>
     implements EntityBuilder<T>
@@ -46,8 +44,7 @@ public final class EntityBuilderInstance<T>
     private final EntityModel entityModel;
     private final ModuleUnitOfWork uow;
     private final EntityStoreUnitOfWork store;
-    private final IdentityGenerator identityGenerator;
-    private final String identity;
+    private String identity;
 
     private final BuilderEntityState entityState;
     private final EntityInstance prototypeInstance;
@@ -66,14 +63,12 @@ public final class EntityBuilderInstance<T>
     }
 
     public EntityBuilderInstance(
-        ModuleInstance moduleInstance, EntityModel entityModel, ModuleUnitOfWork uow, EntityStoreUnitOfWork store,
-        IdentityGenerator identityGenerator, String identity )
+        ModuleInstance moduleInstance, EntityModel entityModel, ModuleUnitOfWork uow, EntityStoreUnitOfWork store, String identity )
     {
         this.moduleInstance = moduleInstance;
         this.entityModel = entityModel;
         this.uow = uow;
         this.store = store;
-        this.identityGenerator = identityGenerator;
         this.identity = identity;
 
         if( identityStateName == null )
@@ -81,52 +76,41 @@ public final class EntityBuilderInstance<T>
             identityStateName = QualifiedName.fromMethod( IDENTITY_METHOD );
         }
 
-        entityState = new BuilderEntityState( entityModel );
-        prototypeInstance = entityModel.newInstance( uow, moduleInstance, EntityReference.NULL, entityState );
+        EntityReference reference = new EntityReference(identity);
+        entityState = new BuilderEntityState( entityModel, reference );
+        entityModel.initState(entityState);
+        entityState.setProperty(identityStateName, identity);
+        prototypeInstance = entityModel.newInstance( uow, moduleInstance, reference, entityState );
     }
 
     @SuppressWarnings( "unchecked" )
-    public T prototype()
+    public T instance()
     {
+        checkValid();
         return prototypeInstance.<T>proxy();
     }
 
-    public <K> K prototypeFor( Class<K> mixinType )
+    public <K> K instanceFor( Class<K> mixinType )
     {
+        checkValid();
         return prototypeInstance.newProxy( mixinType );
     }
 
     public T newInstance()
         throws LifecycleException
     {
+        checkValid();
+
         String identity;
 
         // Figure out whether to use given or generated identity
-        EntityState newEntityState;
-        if( identityGenerator != null )
-        {
-            Class compositeType = entityModel.type();
-            identity = identityGenerator.generate( compositeType );
-            newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ));
-        }
-        else
-        {
-            identity = (String) entityState.getProperty( identityStateName );
+        identity = (String) entityState.getProperty( identityStateName );
+        EntityState newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ));
 
-            if (identity == null)
-            {
-                identity = this.identity;
+        entityModel.invokeCreate(prototypeInstance);
 
-                if (identity == null)
-                    throw new ConstructionException("No identity set and no identity generator specified");
-
-                newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ));
-            } else
-            {
-                newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ));
-            }
-
-        }
+        // Check constraints
+        prototypeInstance.checkConstraints();
 
         entityState.copyTo(newEntityState);
 
@@ -134,51 +118,18 @@ public final class EntityBuilderInstance<T>
 
         Object proxy = instance.proxy();
 
-        // Invoke lifecycle create() method
-        if( instance.entityModel().hasMixinType( Lifecycle.class ) )
-        {
-            try
-            {
-                instance.invoke( null, CREATE_METHOD, new Object[0] );
-            }
-            catch( LifecycleException throwable )
-            {
-                throw throwable;
-            }
-            catch( Throwable throwable )
-            {
-                throw new LifecycleException( throwable );
-            }
-        }
-
-        // Check constraints
-        instance.checkConstraints();
-
         // Add entity in UOW
         uow.addEntity( instance );
+
+        // Invalidate builder
+        this.identity = null;
 
         return (T) proxy;
     }
 
-    public Iterator<T> iterator()
+    private void checkValid() throws IllegalStateException
     {
-        return new Iterator<T>()
-        {
-            public boolean hasNext()
-            {
-                return true;
-            }
-
-            public T next()
-            {
-                T instance = newInstance();
-                return instance;
-            }
-
-            public void remove()
-            {
-                throw new UnsupportedOperationException();
-            }
-        };
+        if (identity == null)
+            throw new IllegalStateException("EntityBuilder is not valid after call to newInstance()");
     }
 }

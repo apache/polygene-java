@@ -17,6 +17,7 @@ package org.qi4j.runtime;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.PropertyMapper;
+import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
@@ -33,10 +34,10 @@ import org.qi4j.bootstrap.spi.ApplicationModelFactory;
 import org.qi4j.bootstrap.spi.Qi4jRuntime;
 import org.qi4j.runtime.bootstrap.ApplicationAssemblyFactoryImpl;
 import org.qi4j.runtime.bootstrap.ApplicationModelFactoryImpl;
-import org.qi4j.runtime.composite.CompositeModel;
-import org.qi4j.runtime.composite.DefaultCompositeInstance;
-import static org.qi4j.runtime.composite.DefaultCompositeInstance.*;
+import org.qi4j.runtime.composite.TransientInstance;
+import static org.qi4j.runtime.composite.TransientInstance.*;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
+import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -51,11 +52,10 @@ import org.qi4j.runtime.structure.ModuleVisitor;
 import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
+import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.value.ValueDescriptor;
 
 import java.io.IOException;
@@ -132,7 +132,7 @@ public final class Qi4jRuntimeImpl
     public <T> T getConfigurationInstance( ServiceComposite serviceComposite, UnitOfWork uow )
         throws InstantiationException
     {
-        ServiceModel serviceModel = (ServiceModel) DefaultCompositeInstance.getCompositeInstance( serviceComposite ).compositeModel();
+        ServiceModel serviceModel = (ServiceModel) TransientInstance.getCompositeInstance( serviceComposite ).compositeModel();
 
         String identity = serviceComposite.identity().get();
         T configuration;
@@ -156,7 +156,7 @@ public final class Qi4jRuntimeImpl
             {
                 try
                 {
-                    PropertyMapper.map( asStream, (Composite) configBuilder.prototype() );
+                    PropertyMapper.map( asStream, (Composite) configBuilder.instance() );
                 }
                 catch( IOException e1 )
                 {
@@ -186,7 +186,7 @@ public final class Qi4jRuntimeImpl
 
     public Class<?> getConfigurationType( Composite serviceComposite )
     {
-        ServiceModel descriptor = (ServiceModel) getCompositeDescriptor( serviceComposite );
+        ServiceModel descriptor = (ServiceModel) ServiceInstance.getCompositeInstance(serviceComposite ).compositeModel();
         final List<DependencyModel> dependencyModels = new ArrayList<DependencyModel>();
         descriptor.visitModel( new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
         {
@@ -230,27 +230,17 @@ public final class Qi4jRuntimeImpl
     }
 
     // SPI
-    public CompositeDescriptor getCompositeDescriptor( Composite composite )
+    public TransientDescriptor getTransientDescriptor( TransientComposite composite )
     {
-        DefaultCompositeInstance defaultCompositeInstance = getCompositeInstance( composite );
-        return defaultCompositeInstance.compositeModel();
-    }
-
-    @SuppressWarnings( "unchecked" )
-    public CompositeDescriptor getCompositeDescriptor( Class<? extends Composite> compositeType, Module module )
-    {
-        ModuleInstance moduleInstance = (ModuleInstance) module;
-        CompositeFinder finder = new CompositeFinder();
-        finder.type = compositeType;
-        moduleInstance.model().visitModules( finder );
-        return finder.model;
+        TransientInstance transientInstance = getCompositeInstance( composite );
+        return (TransientDescriptor) transientInstance.compositeModel();
     }
 
     class CompositeFinder
         implements ModuleVisitor
     {
         Class type;
-        CompositeModel model;
+        TransientModel model;
 
         public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
         {
@@ -259,25 +249,15 @@ public final class Qi4jRuntimeImpl
         }
     }
 
-    public StateHolder getState( Composite composite )
+    public StateHolder getState( TransientComposite composite )
     {
-        return DefaultCompositeInstance.getCompositeInstance( composite ).state();
+        return TransientInstance.getCompositeInstance( composite ).state();
     }
 
     public EntityDescriptor getEntityDescriptor( EntityComposite composite )
     {
         EntityInstance entityInstance = (EntityInstance) getInvocationHandler( composite );
         return entityInstance.entityModel();
-    }
-
-    @SuppressWarnings( "unchecked" )
-    public EntityDescriptor getEntityDescriptor( Class<? extends EntityComposite> entityType, Module module )
-    {
-        ModuleInstance moduleInstance = (ModuleInstance) module;
-        EntityFinder finder = new EntityFinder();
-        finder.type = entityType;
-        moduleInstance.model().visitModules( finder );
-        return finder.model;
     }
 
     class EntityFinder
@@ -308,16 +288,6 @@ public final class Qi4jRuntimeImpl
         return (ValueDescriptor) valueInstance.compositeModel();
     }
 
-    @SuppressWarnings( "unchecked" )
-    public ValueDescriptor getValueDescriptor( Class<? extends ValueComposite> valueType, Module module )
-    {
-        ModuleInstance moduleInstance = (ModuleInstance) module;
-        ValueFinder finder = new ValueFinder();
-        finder.type = valueType;
-        moduleInstance.model().visitModules( finder );
-        return finder.model;
-    }
-
     class ValueFinder
         implements ModuleVisitor
     {
@@ -334,15 +304,6 @@ public final class Qi4jRuntimeImpl
     public StateHolder getState( ValueComposite composite )
     {
         return ValueInstance.getValueInstance( composite ).state();
-    }
-
-    public ObjectDescriptor getObjectDescriptor( Class objectType, Module module )
-    {
-        ModuleInstance moduleInstance = (ModuleInstance) module;
-        ObjectFinder finder = new ObjectFinder();
-        finder.type = objectType;
-        moduleInstance.model().visitModules( finder );
-        return finder.model;
     }
 
     class ObjectFinder

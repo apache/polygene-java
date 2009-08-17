@@ -36,7 +36,7 @@ public final class MetaInfoDeclaration
     {
     }
 
-    public <T> InfoDeclaration<T> on( Class<T> mixinType )
+    public <T> MixinDeclaration<T> on( Class<T> mixinType )
     {
         InfoHolder<T> propertyDeclarationHolder = (InfoHolder<T>) mixinPropertyDeclarations.get( mixinType );
         if( propertyDeclarationHolder == null )
@@ -78,7 +78,7 @@ public final class MetaInfoDeclaration
     }
 
     private static class InfoHolder<T>
-        implements InvocationHandler, PropertyDeclarations, InfoDeclaration<T>, Serializable
+        implements InvocationHandler, PropertyDeclarations, MixinDeclaration<T>, Serializable
     {
         private final static class MethodInfo
             implements Serializable
@@ -148,28 +148,18 @@ public final class MetaInfoDeclaration
         }
 
         // DSL Interface
-        public T to()
+        public T declareDefaults()
         {
             return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, this ) );
         }
 
-        public InfoDeclaration<T> infoFor( Serializable info )
+        public MixinDeclaration<T> setMetaInfo( Object info )
         {
             if( metaInfo == null )
             {
                 metaInfo = new MetaInfo();
             }
             metaInfo.set( info );
-            return this;
-        }
-
-        public <S extends Serializable> InfoDeclaration<T> infoFor( Class<S> infoType, S info )
-        {
-            if( metaInfo == null )
-            {
-                metaInfo = new MetaInfo();
-            }
-            metaInfo.add( infoType, info );
             return this;
         }
     }

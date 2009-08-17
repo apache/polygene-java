@@ -22,7 +22,6 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.CompositeDescriptor;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
@@ -33,7 +32,7 @@ import java.lang.reflect.Proxy;
  * JAVADOC
  */
 public abstract class AbstractCompositeModel
-    implements Binder, CompositeDescriptor, Serializable
+    implements Binder, Serializable
 {
     protected final AbstractMixinsModel mixinsModel;
     protected final CompositeMethodsModel compositeMethodsModel;

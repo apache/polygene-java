@@ -12,23 +12,13 @@
  *
  */
 
-package org.qi4j.api.usecase;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.qi4j.spi.composite;
 
 /**
- * Annotation for declaring that a method implements a Usecase.
+ * JAVADOC
  */
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.METHOD } )
-public @interface ImplementsUsecase
+public interface TransientDescriptor
+    extends AbstractCompositeDescriptor
 {
-    String value(); // Name
-
-    CAP guarantees() default CAP.CA; // CAP guarantees
-
-    Class<?>[] uses();
+    StateDescriptor state();
 }

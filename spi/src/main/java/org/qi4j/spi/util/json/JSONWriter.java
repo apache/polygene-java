@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.spi.entity.helpers.json;
+package org.qi4j.spi.util.json;
 
 import java.io.IOException;
 import java.io.Writer;

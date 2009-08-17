@@ -21,7 +21,6 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Aggregated;
-import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.AssociationInfo;
@@ -31,6 +30,7 @@ import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
+import org.qi4j.runtime.unitofwork.BuilderEntityState;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
@@ -146,7 +146,7 @@ public final class AssociationModel
 
     public <T> Association<T> newInstance( ModuleUnitOfWork uow, EntityState state )
     {
-        Association<T> associationInstance = new AssociationInstance<T>( state.identity() == EntityReference.NULL ? builderInfo : this, this, uow, state );
+        Association<T> associationInstance = new AssociationInstance<T>( state instanceof BuilderEntityState ? builderInfo : this, this, uow, state );
 
         if( Composite.class.isAssignableFrom( accessor.getReturnType() ) )
         {

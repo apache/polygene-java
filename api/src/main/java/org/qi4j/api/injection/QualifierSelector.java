@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Michael Hunger. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,20 +12,16 @@
  *
  */
 
-package org.qi4j.bootstrap;
+package org.qi4j.api.injection;
 
-import java.io.Serializable;
+import org.qi4j.api.service.ServiceSelector;
+
+import java.lang.annotation.Annotation;
 
 /**
- * Fluent API for declaring information about properties
- *
- * @param <T>
+ * JAVADOC
  */
-public interface InfoDeclaration<T>
+interface QualifierSelector<QUALIFIER extends Annotation>
 {
-    T to();
-
-    InfoDeclaration<T> infoFor( Serializable info );
-
-    <S extends Serializable> InfoDeclaration<T> infoFor( Class<S> infoType, S info );
+    public <T> ServiceSelector.Selector select( QUALIFIER qualifier );
 }

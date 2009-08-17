@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,13 +12,12 @@
  *
  */
 
-package org.qi4j.spi.composite;
+package org.qi4j.api.injection;
 
 /**
  * JAVADOC
  */
-public interface CompositeDescriptor
-    extends AbstractCompositeDescriptor
+@interface Qualifier
 {
-    StateDescriptor state();
+    public abstract Class<? extends QualifierSelector> value();
 }

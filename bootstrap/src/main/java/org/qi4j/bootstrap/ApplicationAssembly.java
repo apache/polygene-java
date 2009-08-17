@@ -51,6 +51,7 @@ public interface ApplicationAssembly
      * Set the name of the application
      *
      * @param name
+     * @return
      */
     ApplicationAssembly setName(String name);
 

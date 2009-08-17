@@ -17,9 +17,6 @@
  */
 package org.qi4j.runtime.query;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.runtime.query.model.City;
@@ -30,6 +27,9 @@ import org.qi4j.runtime.query.model.Nameable;
 import org.qi4j.runtime.query.model.Person;
 import org.qi4j.runtime.query.model.entities.FemaleEntity;
 import org.qi4j.runtime.query.model.entities.MaleEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -54,38 +54,33 @@ class Network
         females = new ArrayList<Female>();
         nameables = new ArrayList<Nameable>();
 
-        EntityBuilder<Domain> domainBuilder = uow.newEntityBuilder( Domain.class );
-        Domain gaming = domainBuilder.newInstance();
+        Domain gaming = uow.newEntity(Domain.class);
         setName( gaming, "Gaming" );
         gaming.description().set( "Gaming domain" );
 
-        Domain programming = domainBuilder.newInstance();
+        Domain programming = uow.newEntity(Domain.class);
         setName( programming, "Programming" );
         programming.description().set( "Programing domain" );
 
-        Domain cooking = domainBuilder.newInstance();
+        Domain cooking = uow.newEntity(Domain.class);
         setName( cooking, "Cooking" );
         cooking.description().set( "Cooking domain" );
 
-        Domain cars = domainBuilder.newInstance();
+        Domain cars = uow.newEntity(Domain.class);
         setName( cars, "Cars" );
         cars.description().set( "Cars" );
 
-        EntityBuilder<City> cityBuilder = uow.newEntityBuilder( City.class );
-        City kualaLumpur = cityBuilder.newInstance();
+        City kualaLumpur = uow.newEntity(City.class);
         setName( kualaLumpur, "Kuala Lumpur" );
         kualaLumpur.country().set( "Malaysia" );
         kualaLumpur.county().set( "Some Jaya" );
 
-        City penang = cityBuilder.newInstance();
+        City penang = uow.newEntity(City.class);
         setName( penang, "Penang" );
         penang.country().set( "Malaysia" );
         penang.county().set( "Some Other Jaya" );
 
-        EntityBuilder<MaleEntity> maleBuilder = uow.newEntityBuilder( MaleEntity.class );
-        EntityBuilder<FemaleEntity> femaleBuilder = uow.newEntityBuilder( FemaleEntity.class );
-
-        Female vivianSmith = femaleBuilder.newInstance();
+        Female vivianSmith = uow.newEntity(FemaleEntity.class);
         setName( vivianSmith, "Vivian Smith" );
         vivianSmith.placeOfBirth().set( kualaLumpur );
         vivianSmith.yearOfBirth().set( 1992 );
@@ -98,7 +93,7 @@ class Network
         vivianTags.add( "Cool" );
         vivianSmith.tags().set( vivianTags );
 
-        Female annDoe = femaleBuilder.newInstance();
+        Female annDoe = uow.newEntity(FemaleEntity.class);
         setName( annDoe, "Ann Doe" );
         annDoe.placeOfBirth().set( kualaLumpur );
         annDoe.yearOfBirth().set( 1975 );
@@ -108,7 +103,7 @@ class Network
         annTags.add( "Pretty");
         annDoe.tags().set( annTags );
 
-        Male joeDoe = maleBuilder.newInstance();
+        Male joeDoe = uow.newEntity(MaleEntity.class);
         setName( joeDoe, "Joe Doe" );
         joeDoe.placeOfBirth().set( kualaLumpur );
         joeDoe.yearOfBirth().set( 1990 );
@@ -123,7 +118,7 @@ class Network
         joeTags.add( "Awesome" );
         joeDoe.tags().set( joeTags );
 
-        Male jackDoe = maleBuilder.newInstance();
+        Male jackDoe = uow.newEntity(MaleEntity.class);
         setName( jackDoe, "Jack Doe" );
         jackDoe.placeOfBirth().set( penang );
         jackDoe.yearOfBirth().set( 1970 );
