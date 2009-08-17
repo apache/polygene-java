@@ -18,15 +18,14 @@
 package org.qi4j.library.auth.tests;
 
 import java.util.Date;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.junit.Assert.*;
 import org.junit.Ignore;
+import org.junit.Test;
+import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.auth.AuthenticationMethod;
@@ -82,7 +81,7 @@ public class AuthTest
 
             // Create permission
             EntityBuilder<NamedPermission> entityBuilder = unit.newEntityBuilder( NamedPermission.class );
-            NamedPermission permission = entityBuilder.prototype();
+            NamedPermission permission = entityBuilder.instance();
             permission.name().set( "Enter room" );
             permission = entityBuilder.newInstance();
 
@@ -107,7 +106,7 @@ public class AuthTest
 
             // Create role assignment
             EntityBuilder<RoleAssignment> roleAssignmentEntityBuilder = unit.newEntityBuilder( RoleAssignment.class );
-            RoleAssignment roleAssignment = roleAssignmentEntityBuilder.prototype();
+            RoleAssignment roleAssignment = roleAssignmentEntityBuilder.instance();
             roleAssignment.assignee().set( user );
             roleAssignment.role().set( role );
             roleAssignment.roleType().set( RoleAssignment.RoleType.ALLOW );
@@ -124,7 +123,7 @@ public class AuthTest
 
             // Create role assignment
             EntityBuilder<RoleAssignment> assignmentEntityBuilder = unit.newEntityBuilder( RoleAssignment.class );
-            RoleAssignment groupRoleAssignment = assignmentEntityBuilder.prototype();
+            RoleAssignment groupRoleAssignment = assignmentEntityBuilder.instance();
             groupRoleAssignment.assignee().set( group );
             groupRoleAssignment.role().set( role );
             groupRoleAssignment.roleType().set( RoleAssignment.RoleType.ALLOW );

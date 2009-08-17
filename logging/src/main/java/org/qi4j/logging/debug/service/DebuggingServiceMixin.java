@@ -133,7 +133,7 @@ public class DebuggingServiceMixin
         if( composite instanceof ServiceComposite )
         {
             EntityBuilder<ServiceDebugRecordEntity> builder = uow.newEntityBuilder( ServiceDebugRecordEntity.class );
-            ServiceDebugRecordEntity state = builder.prototype();
+            ServiceDebugRecordEntity state = builder.instance();
             setStandardStuff( composite, message, state, params );
             state.source().set( ( (ServiceComposite) composite ).identity().get() );
             ServiceDebugRecordEntity slr = builder.newInstance();
@@ -141,7 +141,7 @@ public class DebuggingServiceMixin
         else if( composite instanceof EntityComposite )
         {
             EntityBuilder<EntityDebugRecordEntity> builder = uow.newEntityBuilder( EntityDebugRecordEntity.class );
-            EntityDebugRecordEntity state = builder.prototype();
+            EntityDebugRecordEntity state = builder.instance();
             setStandardStuff( composite, message, state, params );
             state.source().set( (EntityComposite) composite );
             EntityDebugRecordEntity elr = builder.newInstance();
@@ -149,7 +149,7 @@ public class DebuggingServiceMixin
         else
         {
             EntityBuilder<CompositeDebugRecordEntity> builder = uow.newEntityBuilder( CompositeDebugRecordEntity.class );
-            CompositeDebugRecordEntity state = builder.prototype();
+            CompositeDebugRecordEntity state = builder.instance();
             setStandardStuff( composite, message, state, params );
             state.source().set( composite );
             CompositeDebugRecordEntity clr = builder.newInstance();

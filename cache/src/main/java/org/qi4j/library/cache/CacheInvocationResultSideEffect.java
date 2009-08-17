@@ -20,10 +20,10 @@ public class CacheInvocationResultSideEffect extends GenericSideEffect
     {
         // Get value
         // if an exception is thrown, don't do anything
-        Object result = next.invoke( proxy, method, args );
-        if( result == null )
+        Object res = result.invoke( proxy, method, args );
+        if( res == null )
         {
-            result = Void.TYPE;
+            res = Void.TYPE;
         }
 
         String cacheName = method.getName();

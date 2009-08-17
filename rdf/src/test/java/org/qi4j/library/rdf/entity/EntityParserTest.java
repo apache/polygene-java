@@ -116,20 +116,20 @@ public class EntityParserTest
 
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class, "test1" );
-        builder.prototype().name().set( "Rickard" );
-        builder.prototype().title().set( "Developer" );
-        builder.prototype().value().set( testValue );
+        builder.instance().name().set( "Rickard" );
+        builder.instance().title().set( "Developer" );
+        builder.instance().value().set( testValue );
         TestEntity testEntity = builder.newInstance();
 
         EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( TestEntity.class, "test2" );
-        builder2.prototype().name().set( "Niclas" );
-        builder2.prototype().title().set( "Developer" );
-        builder2.prototype().association().set( testEntity );
-        builder2.prototype().manyAssoc().add( 0, testEntity );
-        builder2.prototype().group().add( 0, testEntity );
-        builder2.prototype().group().add( 0, testEntity );
-        builder2.prototype().group().add( 0, testEntity );
-        builder2.prototype().value().set( testValue );
+        builder2.instance().name().set( "Niclas" );
+        builder2.instance().title().set( "Developer" );
+        builder2.instance().association().set( testEntity );
+        builder2.instance().manyAssoc().add( 0, testEntity );
+        builder2.instance().group().add( 0, testEntity );
+        builder2.instance().group().add( 0, testEntity );
+        builder2.instance().group().add( 0, testEntity );
+        builder2.instance().value().set( testValue );
         builder2.newInstance();
         unitOfWork.complete();
     }

@@ -6,8 +6,8 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import static org.qi4j.library.struts2.util.ClassNames.classNameInDotNotation;
-import static org.qi4j.library.struts2.util.ParameterizedTypes.findTypeVariables;
+import static org.qi4j.library.struts2.util.ClassNames.*;
+import static org.qi4j.library.struts2.util.ParameterizedTypes.*;
 
 public abstract class ProvidesAddingOfMixin<T> extends ActionSupport implements ProvidesAddingOf<T>
 {
@@ -21,7 +21,7 @@ public abstract class ProvidesAddingOfMixin<T> extends ActionSupport implements 
     T entity;
 
     public T getState() {
-        return builder.prototype();
+        return builder.instance();
     }
 
     public void prepare() throws Exception

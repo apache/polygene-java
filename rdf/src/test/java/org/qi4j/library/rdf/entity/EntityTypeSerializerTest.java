@@ -69,7 +69,7 @@ public class EntityTypeSerializerTest
     public void testEntityTypeSerializer() throws RDFHandlerException
     {
 
-        EntityDescriptor entityDescriptor = spi.getEntityDescriptor( TestEntity.class, moduleInstance );
+        EntityDescriptor entityDescriptor = moduleInstance.entityDescriptor(TestEntity.class.getName());
 
         EntityType entityType = entityDescriptor.entityType();
         Iterable<Statement> graph = serializer.serialize( entityType );
@@ -94,14 +94,14 @@ public class EntityTypeSerializerTest
             TestValue testValue = valueBuilder.newInstance();
 
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class, "test1");
-            TestEntity rickardTemplate = builder.prototype();
+            TestEntity rickardTemplate = builder.instance();
             rickardTemplate.name().set( "Rickard" );
             rickardTemplate.title().set( "Mr" );
             rickardTemplate.value().set( testValue );
             TestEntity testEntity = builder.newInstance();
 
             EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder(TestEntity.class, "test2");
-            TestEntity niclasTemplate = builder2.prototype();
+            TestEntity niclasTemplate = builder2.instance();
             niclasTemplate.name().set( "Niclas" );
             niclasTemplate.title().set( "Mr" );
             niclasTemplate.association().set( testEntity );

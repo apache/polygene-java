@@ -35,8 +35,8 @@ public class TracingAssembler
         module.addServices( StandardTraceServiceComposite.class ).visibleIn( Visibility.application );
         module.addEntities( TraceServiceConfiguration.class );
         module.addTransients( LogTypes.class );
-        module.on( LogTypes.class ).to().info().set( "INFO" );
-        module.on( LogTypes.class ).to().warning().set( "WARNING" );
-        module.on( LogTypes.class ).to().error().set( "ERROR" );
+        module.forMixin(  LogTypes.class ).declareDefaults().info().set( "INFO" );
+        module.forMixin( LogTypes.class ).declareDefaults().warning().set( "WARNING" );
+        module.forMixin( LogTypes.class ).declareDefaults().error().set( "ERROR" );
     }
 }
