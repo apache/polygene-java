@@ -22,6 +22,7 @@
 
   <!-- This POM is ONLY to initiate the modules to be built. -->
   <modules>
+    <module>reindexer</module>
     <module>indexing-rdf</module>
     <module>rest</module>
     <module>entitystore-jdbm</module>
