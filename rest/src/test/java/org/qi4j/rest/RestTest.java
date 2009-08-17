@@ -95,13 +95,13 @@ public class RestTest extends AbstractQi4jTest
         try
         {
             EntityBuilder<PersonEntity> builder1 = uow.newEntityBuilder( PersonEntity.class, "P2" );
-            PersonEntity maryDoe = builder1.prototype();
+            PersonEntity maryDoe = builder1.instance();
             maryDoe.firstname().set( "Mary" );
             maryDoe.lastname().set( "Doe" );
             maryDoe = builder1.newInstance();
 
             EntityBuilder<PersonEntity> builder2 = uow.newEntityBuilder( PersonEntity.class, "P1" );
-            PersonEntity joeDoe = builder2.prototype();
+            PersonEntity joeDoe = builder2.instance();
             joeDoe.firstname().set( "Joe" );
             joeDoe.lastname().set( "Doe" );
             joeDoe.mother().set( maryDoe );

@@ -15,7 +15,6 @@
 package org.qi4j.rest;
 
 import org.qi4j.api.common.UseDefaults;
-import org.qi4j.api.entity.RDF;
 import org.qi4j.api.property.Property;
 import org.qi4j.library.rdf.DcRdf;
 
@@ -25,5 +24,5 @@ import org.qi4j.library.rdf.DcRdf;
 public interface Named
 {
     @UseDefaults
-    @RDF( DcRdf.NAMESPACE + "title" ) Property<String> name();
+    Property<String> name();
 }

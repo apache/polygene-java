@@ -90,7 +90,7 @@ public class DerbyDatabaseHandler
 
     public void initDbInitializerInfo( final ModuleAssembly module, final String schemaFile, final String dataFile )
     {
-        final DBInitializerConfiguration configuration = module.on( DBInitializerConfiguration.class ).to();
+        final DBInitializerConfiguration configuration = module.forMixin( DBInitializerConfiguration.class ).declareDefaults();
         configuration.dbUrl().set( JDBC_URL );
         configuration.connectionProperties().set( createConnectionProperties() );
         if( schemaFile != null )

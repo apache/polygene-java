@@ -61,8 +61,8 @@ public final class IBatisEntityStateTest extends AbstractQi4jTest
     {
         module.addEntities( PersonComposite.class );
 
-        module.on( HasFirstName.class ).to().firstName().set( DEFAULT_FIRST_NAME );
-        module.on( HasLastName.class ).to().lastName().set( DEFAULT_LAST_NAME );
+        module.forMixin(  HasFirstName.class ).declareDefaults().firstName().set( DEFAULT_FIRST_NAME );
+        module.forMixin( HasLastName.class ).declareDefaults().lastName().set( DEFAULT_LAST_NAME );
     }
 
     protected EntityState newPersonEntityState( final Map<QualifiedName, Object> initialValues )

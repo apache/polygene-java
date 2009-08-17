@@ -43,19 +43,19 @@ public interface DummyDataService
             {
                 {
                     EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class, "test1" );
-                    builder.prototype().name().set( "Foo bar" );
-                    builder.prototype().age().set( 42 );
+                    builder.instance().name().set( "Foo bar" );
+                    builder.instance().age().set( 42 );
                     TestEntity testEntity = builder.newInstance();
 
                     EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( TestEntity.class, "test2" );
-                    builder2.prototype().name().set( "Xyzzy" );
-                    builder2.prototype().age().set( 12 );
-                    builder2.prototype().association().set( testEntity );
-                    builder2.prototype().manyAssociation().add( 0, testEntity );
-                    builder2.prototype().manyAssociation().add( 0, testEntity );
+                    builder2.instance().name().set( "Xyzzy" );
+                    builder2.instance().age().set( 12 );
+                    builder2.instance().association().set( testEntity );
+                    builder2.instance().manyAssociation().add( 0, testEntity );
+                    builder2.instance().manyAssociation().add( 0, testEntity );
 
                     EntityBuilder<TestRole> builder3 = unitOfWork.newEntityBuilder( TestRole.class );
-                    builder3.prototype().name().set( "A role" );
+                    builder3.instance().name().set( "A role" );
                     TestRole testRole = builder3.newInstance();
 
                     builder2.newInstance();
@@ -63,7 +63,7 @@ public interface DummyDataService
 
                 {
                     EntityBuilder<TestEntity2> builder = unitOfWork.newEntityBuilder( TestEntity2.class, "test3" );
-                    builder.prototype().name().set( "Test3" );
+                    builder.instance().name().set( "Test3" );
                     builder.newInstance();
                 }
 

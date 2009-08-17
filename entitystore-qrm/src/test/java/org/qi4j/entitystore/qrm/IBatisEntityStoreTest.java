@@ -69,7 +69,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
 
         final EntityBuilder<PersonComposite> builder = uow.newEntityBuilder( PersonComposite.class );
-        PersonComposite person = builder.prototype();
+        PersonComposite person = builder.instance();
         person.firstName().set( data.get( "FIRST_NAME" ) );
         person.lastName().set( data.get( "LAST_NAME" ) );
         person = builder.newInstance();
@@ -185,7 +185,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         final ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
         config.addEntities( QrmSqlConfiguration.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
-        config.on( QrmSqlConfiguration.class ).to().sqlMapConfigURL().set( derbyDatabaseHandler.getUrlString( TestConfig.SQL_MAP_CONFIG_XML ) );
+        config.forMixin(  QrmSqlConfiguration.class ).declareDefaults().sqlMapConfigURL().set( derbyDatabaseHandler.getUrlString( TestConfig.SQL_MAP_CONFIG_XML ) );
         derbyDatabaseHandler.initDbInitializerInfo( config, TestConfig.SCHEMA_FILE, TestConfig.DATA_FILE );
     }
 

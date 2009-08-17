@@ -227,7 +227,7 @@ public abstract class CollectionBuilder<T extends Collection>
     {
         EntityBuilder<ContainedElementComposite> builder = uow
                 .newEntityBuilder(ContainedElementComposite.class, null);
-        ContainedElement prototype = builder.prototype();
+        ContainedElement prototype = builder.instance();
         prototype.index().set(index);
         return builder.newInstance();
     }

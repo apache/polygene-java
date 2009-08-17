@@ -17,7 +17,6 @@ package org.qi4j.rest;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.RDF;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
@@ -40,6 +39,6 @@ public interface TestEntity
 
     ManyAssociation<TestEntity> manyAssociation();
 
-    @RDF( "http://www.w3.org/2001/vcard-rdf/3.0#GROUP" ) ManyAssociation<TestEntity> rdfAssociation();
+    ManyAssociation<TestEntity> rdfAssociation();
 }
 

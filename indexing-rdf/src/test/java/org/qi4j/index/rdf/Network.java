@@ -57,7 +57,7 @@ class Network
         Domain gaming;
         {
             EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class );
-            gaming = domainBuilder.prototype();
+            gaming = domainBuilder.instance();
             gaming.name().set( "Gaming" );
             gaming.description().set( "Gaming domain" );
             gaming = domainBuilder.newInstance();
@@ -67,7 +67,7 @@ class Network
         Domain programming;
         {
             EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class );
-            programming = domainBuilder.prototype();
+            programming = domainBuilder.instance();
             programming.name().set( "Programming" );
             programming.description().set( "Programing domain" );
             programming = domainBuilder.newInstance();
@@ -77,7 +77,7 @@ class Network
         Domain cooking;
         {
             EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class );
-            cooking = domainBuilder.prototype();
+            cooking = domainBuilder.instance();
             cooking.name().set( "Cooking" );
             cooking.description().set( "Cooking domain" );
             cooking = domainBuilder.newInstance();
@@ -87,7 +87,7 @@ class Network
         Domain cars;
         {
             EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class );
-            cars = domainBuilder.prototype();
+            cars = domainBuilder.instance();
             cars.name().set( "Cars" );
             cars.description().set( "Cars" );
             cars = domainBuilder.newInstance();
@@ -97,7 +97,7 @@ class Network
         City kualaLumpur;
         {
             EntityBuilder<City> cityBuilder = unitOfWork.newEntityBuilder( City.class );
-            kualaLumpur = cityBuilder.prototype();
+            kualaLumpur = cityBuilder.instance();
             kualaLumpur.name().set( "Kuala Lumpur" );
             kualaLumpur.country().set( "Malaysia" );
             kualaLumpur.county().set( "Some Jaya" );
@@ -108,7 +108,7 @@ class Network
         City penang;
         {
             EntityBuilder<City> cityBuilder = unitOfWork.newEntityBuilder( City.class );
-            penang = cityBuilder.prototype();
+            penang = cityBuilder.instance();
             penang.name().set( "Penang" );
             penang.country().set( "Malaysia" );
             penang.county().set( "Some Other Jaya" );
@@ -119,7 +119,7 @@ class Network
         Account annsAccount;
         {
             EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class );
-            annsAccount = accountBuilder.prototype();
+            annsAccount = accountBuilder.instance();
             annsAccount.number().set( "accountOfAnnDoe" );
             annsAccount = accountBuilder.newInstance();
         }
@@ -127,7 +127,7 @@ class Network
         Account jacksAccount;
         {
             EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class );
-            jacksAccount = accountBuilder.prototype();
+            jacksAccount = accountBuilder.instance();
             jacksAccount.number().set( "accountOfJackDoe" );
             jacksAccount = accountBuilder.newInstance();
         }
@@ -141,7 +141,7 @@ class Network
         Female annDoe;
         {
             EntityBuilder<FemaleEntity> femaleBuilder = unitOfWork.newEntityBuilder( FemaleEntity.class );
-            annDoe = femaleBuilder.prototype();
+            annDoe = femaleBuilder.instance();
             annDoe.name().set( "Ann Doe" );
             annDoe.placeOfBirth().set( kualaLumpur );
             annDoe.yearOfBirth().set( 1975 );
@@ -158,7 +158,7 @@ class Network
         {
 
             EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder( MaleEntity.class );
-            Male joeDoe = maleBuilder.prototype();
+            Male joeDoe = maleBuilder.instance();
             joeDoe.name().set( "Joe Doe" );
             joeDoe.placeOfBirth().set( kualaLumpur );
             joeDoe.yearOfBirth().set( 1990 );
@@ -175,7 +175,7 @@ class Network
 
         {
             EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder( MaleEntity.class );
-            Male jackDoe = maleBuilder.prototype();
+            Male jackDoe = maleBuilder.instance();
             jackDoe.name().set( "Jack Doe" );
             jackDoe.placeOfBirth().set( penang );
             jackDoe.yearOfBirth().set( 1970 );
@@ -216,7 +216,7 @@ class Network
 
         {
             EntityBuilder<CatEntity> catBuilder = unitOfWork.newEntityBuilder( CatEntity.class );
-            Cat felix = catBuilder.prototype();
+            Cat felix = catBuilder.instance();
             felix.name().set( "Felix" );
             felix = catBuilder.newInstance();
             NameableAssert.trace( felix );

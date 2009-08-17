@@ -25,10 +25,10 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.qi4j.entitystore.qrm.DerbyDatabaseHandler;
 import org.qi4j.entitystore.qrm.entity.PersonComposite;
-import org.qi4j.spi.composite.CompositeDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.property.PropertyDescriptor;
+import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
 
 public abstract class AbstractTestCase extends AbstractQi4jTest
@@ -107,7 +107,7 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
         }
     }
 
-    protected static void checkEntityStateProperties( final CompositeDescriptor compositeBinding, final EntityState state, final boolean checkAll )
+    protected static void checkEntityStateProperties( final TransientDescriptor compositeBinding, final EntityState state, final boolean checkAll )
     {
 /*
         assertNotNull( "identity", state.qualifiedIdentity() );

@@ -55,7 +55,7 @@ public class DefaultIbatisEntityStoreTest
         final ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
         config.addEntities( QrmSqlConfiguration.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
-        config.on( QrmSqlConfiguration.class ).to().sqlMapConfigURL().set( derbyDatabaseHandler.getUrlString( SQLMAP_FILE ) );
+        config.forMixin(  QrmSqlConfiguration.class ).declareDefaults().sqlMapConfigURL().set( derbyDatabaseHandler.getUrlString( SQLMAP_FILE ) );
         derbyDatabaseHandler.initDbInitializerInfo( config, SCHEMA_FILE, DATA_FILE );
     }
 

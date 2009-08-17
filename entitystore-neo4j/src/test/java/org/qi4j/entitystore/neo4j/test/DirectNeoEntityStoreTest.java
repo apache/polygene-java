@@ -50,7 +50,7 @@ public class DirectNeoEntityStoreTest
             {
                 // Create entity
                 EntityBuilder<MakeBelieveEntity> builder = newEntityBuilder(MakeBelieveEntity.class);
-                MakeBelieveEntity believe = builder.prototype();
+                MakeBelieveEntity believe = builder.instance();
                 // Set up
                 believe.imaginaryName().set("George Lucas");
                 believe.imaginaryNumber().set(17);
@@ -135,7 +135,7 @@ public class DirectNeoEntityStoreTest
                 // Create entity
                 EntityBuilder<MakeBelieveEntity> builder = newEntityBuilder(MakeBelieveEntity.class);
                 {
-                    MakeBelieveEntity prototype = builder.prototype();
+                    MakeBelieveEntity prototype = builder.instance();
                     prototype.imaginaryName().set("Arne banan");
                     prototype.imaginaryNumber().set(17);
                     prototype.realNumber().set(42.0);
