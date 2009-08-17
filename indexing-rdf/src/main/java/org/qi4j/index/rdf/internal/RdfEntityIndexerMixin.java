@@ -36,7 +36,6 @@ import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.unitofwork.StateChangeListener;
 
@@ -46,7 +45,6 @@ import org.qi4j.spi.unitofwork.StateChangeListener;
 public class RdfEntityIndexerMixin
     implements StateChangeListener, Initializable
 {
-    @Service private EntityStore entityStore;
     @Service private Repository repository;
     @Uses private EntityStateSerializer stateSerializer;
     @Uses private EntityTypeSerializer typeSerializer;

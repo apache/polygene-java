@@ -30,7 +30,6 @@ public class ReindexerTest extends AbstractQi4jTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class );
         new RdfMemoryStoreAssembler().assemble( module );
     }
 
