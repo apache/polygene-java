@@ -345,7 +345,7 @@ public abstract class AbstractEntityStoreTest
             // Check values
             unitOfWork1 = unitOfWorkFactory.newUnitOfWork();
             testEntity1 = unitOfWork1.get( testEntity );
-            assertThat( "property name has not been set", testEntity1.name().get(), equalTo( "A" ) );
+            assertThat( "property name has not been set", testEntity1.name().get(), equalTo( "B" ) );
             assertThat( "version is incorrect", spi.getEntityState( testEntity1 ).version(), not( equalTo( version ) ) );
             unitOfWork1.discard();
         }
