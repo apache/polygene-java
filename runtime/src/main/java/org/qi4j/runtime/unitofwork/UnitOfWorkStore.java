@@ -91,12 +91,6 @@ public class UnitOfWorkStore
         return null;
     }
 
-
-    public void refresh( EntityReference identity )
-    {
-        unitOfWork.refresh( identity );
-    }
-
     private String newUnitOfWorkId()
     {
         return uuid + Integer.toHexString( count++ );

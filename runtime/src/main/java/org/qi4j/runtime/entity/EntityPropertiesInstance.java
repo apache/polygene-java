@@ -56,18 +56,6 @@ public class EntityPropertiesInstance
         return property;
     }
 
-    public void refresh()
-    {
-        if( properties != null )
-        {
-            for( Property<?> property : properties.values() )
-            {
-                EntityPropertyInstance entityProperty = (EntityPropertyInstance) property;
-                entityProperty.refresh();
-            }
-        }
-    }
-
     public void checkConstraints()
     {
         model.checkConstraints( this );

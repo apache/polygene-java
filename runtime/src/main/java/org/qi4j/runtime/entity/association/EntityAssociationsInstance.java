@@ -58,18 +58,6 @@ public final class EntityAssociationsInstance
         return association;
     }
 
-    public void refresh()
-    {
-        if( associations != null )
-        {
-            for( Association<?> property : associations.values() )
-            {
-                AssociationInstance entityProperty = (AssociationInstance) property;
-                entityProperty.refresh();
-            }
-        }
-    }
-
     public void checkConstraints()
     {
         model.checkConstraints( this );

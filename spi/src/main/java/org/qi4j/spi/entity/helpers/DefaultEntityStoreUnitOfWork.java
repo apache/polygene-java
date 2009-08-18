@@ -77,34 +77,4 @@ public final class DefaultEntityStoreUnitOfWork
     public void discard()
     {
     }
-
-    public void refresh( DefaultEntityState entityState )
-    {
-        DefaultEntityState refreshedEntityState = (DefaultEntityState) entityStoreSPI.getEntityState( this, entityState.identity());
-        if( refreshedEntityState.version().equals( entityState.version() ) )
-        {
-            return; // No changes
-        }
-
-        // Copy new state
-        refreshedEntityState.copyTo( entityState );
-
-/*
-        // Re-apply events for this EntityState
-        int size = events.size();
-        for( UnitOfWorkEvent event : events )
-        {
-            if (event instanceof EntityEvent)
-            {
-                EntityEvent entityEvent = (EntityEvent) event;
-                event.applyTo( this );
-            }
-        }
-        // Remove duplicate events
-        while (events.size()> size)
-        {
-            events.remove( events.size()-1 );
-        }
-*/
-    }
 }

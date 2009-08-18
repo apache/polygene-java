@@ -158,10 +158,6 @@ class UnitOfWorkEntityState
         return unitManyAssociation;
     }
 
-    public void refresh()
-    {
-    }
-
     public EntityState getParentState()
     {
         return parentState;

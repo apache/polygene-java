@@ -131,15 +131,6 @@ public final class DefaultEntityState
         return new DefaultManyAssociationState( this, manyAssociationState);
     }
 
-    public void refresh()
-    {
-        if( status == EntityStatus.LOADED || status == EntityStatus.UPDATED)
-        {
-            unitOfWork.refresh( this );
-            status = EntityStatus.LOADED;
-        }
-    }
-
     public void copyTo( DefaultEntityState entityState )
     {
         // Copy properties

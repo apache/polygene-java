@@ -181,20 +181,6 @@ public final class EntityInstance
         return method.invoke( this, args );
     }
 
-    public void refresh()
-    {
-        if( (status() == EntityStatus.LOADED || status() == EntityStatus.UPDATED) && entityState != null )
-        {
-            String oldVersion = entityState.version();
-            uow.instance().refresh( identity );
-
-            if( !oldVersion.equals( entityState.version() ) )
-            {
-                state.refresh();
-            }
-        }
-    }
-
     private void initState()
     {
         if( !uow.isOpen() )

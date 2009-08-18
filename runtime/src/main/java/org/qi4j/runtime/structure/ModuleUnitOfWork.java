@@ -237,16 +237,6 @@ public class ModuleUnitOfWork
         return uow.get( compositeInstance.identity(), this, Collections.singletonList( compositeInstance.entityModel() ), Collections.singletonList( compositeInstance.module() ), compositeInstance.type() ).<T>proxy();
     }
 
-    public void refresh( Object entity ) throws UnitOfWorkException
-    {
-        uow.refresh( entity );
-    }
-
-    public void refresh()
-    {
-        uow.refresh();
-    }
-
     public void remove( Object entity ) throws LifecycleException
     {
         uow.checkOpen();

@@ -153,30 +153,6 @@ public interface UnitOfWork
         throws EntityTypeNotFoundException;
 
     /**
-     * Refresh the state of a given Entity. Call this if you
-     * suspect that the underlying state may have been changed. If the
-     * state has not been changed, then nothing happens. Otherwise
-     * all changes to it are lost, and the updated state is used instead.
-     * Existing references to Properties and Associations of Entities
-     * in the UnitOfWork will continue to be valid.
-     *
-     * @param entity to be refreshed
-     * @throws UnitOfWorkException if the refresh fails
-     */
-    void refresh( Object entity )
-        throws UnitOfWorkException;
-
-    /**
-     * Refresh the state of all Entities in this UnitOfWork. Call this
-     * if you suspect that the underlying state of one or more Entities
-     * may have been changed. If the state has not been changed, then nothing happens.
-     * Otherwise all changes to it are lost, and the updated state is used instead.
-     * Existing references to Properties and Associations of Entities
-     * in the UnitOfWork will continue to be valid.
-     */
-    void refresh();
-
-    /**
      * Remove the given Entity.
      *
      * @param entity the Entity to be removed.
@@ -188,11 +164,6 @@ public interface UnitOfWork
     /**
      * Complete this UnitOfWork. This will send all the changes down to the underlying
      * EntityStore's.
-     * <p/>
-     * If the complete fails due to validation errors or concurrent modifications,
-     * then it is possible to refresh the Entities that were modified, and correct
-     * the validation errors, and try again. This method can be called as many times
-     * as necessary. After completion this UnitOfWork becomes invalid.
      *
      * @throws UnitOfWorkCompletionException if the UnitOfWork could not be completed
      * @throws ConcurrentEntityModificationException

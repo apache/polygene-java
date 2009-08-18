@@ -116,10 +116,6 @@ public final class BuilderEntityState
         return state;
     }
 
-    public void refresh()
-    {
-    }
-
     public void copyTo(EntityState newEntityState)
     {
         for (Map.Entry<QualifiedName, Object> stateNameStringEntry : properties.entrySet())

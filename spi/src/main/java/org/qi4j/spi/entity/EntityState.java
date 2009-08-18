@@ -77,7 +77,5 @@ public interface EntityState
 
     ManyAssociationState getManyAssociation( QualifiedName stateName );
 
-    void refresh();
-
     void hasBeenApplied();
 }

@@ -161,12 +161,6 @@ public final class EntityStateModel
             entityPropertiesInstance.visitProperties( visitor );
         }
 
-        public void refresh()
-        {
-            entityPropertiesInstance.refresh();
-            entityAssociationsInstance.refresh();
-        }
-
         public void checkConstraints()
         {
             entityPropertiesInstance.checkConstraints();

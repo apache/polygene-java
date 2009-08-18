@@ -39,7 +39,6 @@ import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
@@ -248,46 +247,6 @@ public final class UnitOfWorkInstance
         return entityInstance;
     }
 
-    public void refresh( Object entity )
-        throws UnitOfWorkException, NoSuchEntityException
-    {
-        checkOpen();
-
-        EntityComposite entityComposite = (EntityComposite) entity;
-        EntityInstance entityInstance = EntityInstance.getEntityInstance( entityComposite );
-
-        EntityStatus entityStatus = entityInstance.status();
-        if( entityStatus == EntityStatus.REMOVED )
-        {
-            throw new NoSuchEntityException( entityInstance.identity() );
-        }
-        else if( entityStatus == EntityStatus.NEW )
-        {
-            return; // Don't try to refresh newly created state
-        }
-
-        // Refresh the state
-        try
-        {
-            entityInstance.refresh();
-        }
-        catch( EntityNotFoundException e )
-        {
-            throw new NoSuchEntityException( entityInstance.identity() );
-        }
-        catch( EntityStoreException e )
-        {
-            throw new UnitOfWorkException( e );
-        }
-    }
-
-    public void refresh()
-        throws UnitOfWorkException
-    {
-        // Refresh the entire unit of work
-        // TODO Needs to be reimplemented. Btw, what does it mean to "refresh" a UoW anyway?
-    }
-
     public Usecase usecase()
     {
         return usecase;
@@ -334,20 +293,6 @@ public final class UnitOfWorkInstance
         throws UnitOfWorkCompletionException, ConcurrentEntityModificationException
     {
         complete( true );
-    }
-
-    public void refresh( EntityReference identity )
-    {
-        if( unitOfWorkStore != null )
-        {
-            unitOfWorkStore.refresh( identity );
-        }
-
-        EntityState entityState = stateCache.get( identity );
-        if( entityState != null )
-        {
-            entityState.refresh();
-        }
     }
 
     private void complete( boolean completeAndContinue )

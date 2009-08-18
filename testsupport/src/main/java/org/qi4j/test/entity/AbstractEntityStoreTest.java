@@ -337,15 +337,7 @@ public abstract class AbstractEntityStoreTest
             }
             catch( ConcurrentEntityModificationException e )
             {
-                e.refreshEntities( unitOfWork1 );
-
-                assertThat( "property name has been refreshed", testEntity1.name().get(), equalTo( "B" ) );
-                assertThat( "version is incorrect", spi.getEntityState( testEntity1 ).version(), not( equalTo( version ) ) );
-
-                // Set it again
-                testEntity1.name().set( "A" );
-
-                unitOfWork1.complete();
+                unitOfWork1.discard();
             }
         }
 

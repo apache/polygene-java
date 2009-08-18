@@ -143,9 +143,4 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
 
         return true;
     }
-
-    public void refresh()
-    {
-        value = (T) NOT_LOADED;
-    }
 }

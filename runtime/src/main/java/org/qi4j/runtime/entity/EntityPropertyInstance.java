@@ -105,9 +105,4 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
         Object value = get();
         return value == null ? "" : value.toString();
     }
-
-    public void refresh()
-    {
-        value = (T) NOT_LOADED;
-    }
 }
