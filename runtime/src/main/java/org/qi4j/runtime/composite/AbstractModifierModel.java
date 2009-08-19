@@ -14,8 +14,12 @@
 
 package org.qi4j.runtime.composite;
 
-import static org.qi4j.api.util.Classes.interfacesOf;
-import static org.qi4j.api.util.Classes.toClassArray;
+import net.sf.cglib.proxy.CallbackFilter;
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.NoOp;
+import net.sf.cglib.proxy.Factory;
+import net.sf.cglib.proxy.Callback;
+import static org.qi4j.api.util.Classes.*;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
 import org.qi4j.runtime.injection.InjectedMethodsModel;
 import org.qi4j.runtime.injection.InjectionContext;
@@ -25,7 +29,12 @@ import org.qi4j.runtime.structure.ModuleInstance;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
+import java.util.Map;
+import java.util.Collections;
+import java.util.HashMap;
 
 /**
  * JAVADOC
@@ -33,6 +42,8 @@ import java.lang.reflect.Proxy;
 public abstract class AbstractModifierModel
     implements Binder, Serializable
 {
+    private final static Map<Class, Class> enhancedClasses = Collections.synchronizedMap(new HashMap<Class, Class>());
+
     private final Class modifierClass;
 
     private ConstructorsModel constructorsModel;
@@ -41,13 +52,13 @@ public abstract class AbstractModifierModel
 
     private Class[] nextInterfaces;
 
-    public AbstractModifierModel( Class modifierClass )
+    public AbstractModifierModel( Class declaredModifierClass )
     {
-        this.modifierClass = modifierClass;
+        this.modifierClass = instantiationClass(declaredModifierClass);
         constructorsModel = new ConstructorsModel( modifierClass );
-        injectedFieldsModel = new InjectedFieldsModel( modifierClass );
-        injectedMethodsModel = new InjectedMethodsModel( modifierClass );
-        nextInterfaces = toClassArray( interfacesOf( modifierClass ) );
+        injectedFieldsModel = new InjectedFieldsModel( declaredModifierClass );
+        injectedMethodsModel = new InjectedMethodsModel( declaredModifierClass );
+        nextInterfaces = toClassArray( interfacesOf( declaredModifierClass ) );
     }
 
     public Class modifierClass()
@@ -80,6 +91,12 @@ public abstract class AbstractModifierModel
     public Object newInstance( ModuleInstance moduleInstance, Object next, ProxyReferenceInvocationHandler proxyHandler )
     {
         InjectionContext injectionContext = new InjectionContext( moduleInstance, wrapNext( next ), proxyHandler );
+        if (Factory.class.isAssignableFrom(modifierClass))
+        {
+            Enhancer.registerCallbacks(modifierClass,
+                    new Callback[]{ NoOp.INSTANCE, proxyHandler });
+        }
+
         Object mixin = constructorsModel.newInstance( injectionContext );
         injectedFieldsModel.inject( injectionContext, mixin );
         injectedMethodsModel.inject( injectionContext, mixin );
@@ -96,7 +113,7 @@ public abstract class AbstractModifierModel
             }
             else
             {
-                return new TypedFragmentInvocationHandler( next );
+                return new TypedModifierInvocationHandler( next );
             }
         }
         else
@@ -131,4 +148,38 @@ public abstract class AbstractModifierModel
     {
         return modifierClass.hashCode();
     }
+
+    private Class instantiationClass( Class fragmentClass )
+    {
+        Class instantiationClass = fragmentClass;
+        if( Modifier.isAbstract( fragmentClass.getModifiers() ) )
+        {
+            instantiationClass = enhancedClasses.get(fragmentClass);
+            if (instantiationClass == null)
+            {
+                Enhancer enhancer = createEnhancer( fragmentClass );
+                instantiationClass = enhancer.createClass();
+                enhancedClasses.put(fragmentClass, instantiationClass);
+            }
+        }
+        return instantiationClass;
+    }
+
+    private Enhancer createEnhancer( Class fragmentClass )
+    {
+        Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass( fragmentClass );
+        // TODO: make this configurable?
+        enhancer.setClassLoader( new BridgeClassLoader( fragmentClass.getClassLoader() ) );
+        enhancer.setCallbackTypes( new Class[]{ NoOp.class, net.sf.cglib.proxy.InvocationHandler.class } );
+        enhancer.setCallbackFilter( new CallbackFilter()
+        {
+            public int accept( Method method )
+            {
+                return Modifier.isAbstract(method.getModifiers()) ? 1 : 0;
+            }
+        } );
+        return enhancer;
+    }
+
 }

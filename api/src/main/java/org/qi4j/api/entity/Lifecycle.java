@@ -106,7 +106,7 @@ public interface Lifecycle
 
 
     // Default implementation
-    public final class LifecycleMixin
+    public class LifecycleMixin
         implements Lifecycle
     {
         public static final Lifecycle INSTANCE = new LifecycleMixin();

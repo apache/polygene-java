@@ -23,9 +23,14 @@ import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.ConstructorDescriptor;
 import org.qi4j.spi.composite.InvalidCompositeException;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 /**
  * JAVADOC
@@ -105,6 +110,8 @@ public final class ConstructorModel
         }
         catch( Exception e )
         {
+            System.out.println(constructor.toGenericString());
+            System.out.println(Arrays.asList(parametersInstance));
             throw new ConstructionException( "Could not instantiate " + constructor.getDeclaringClass(), e );
         }
     }

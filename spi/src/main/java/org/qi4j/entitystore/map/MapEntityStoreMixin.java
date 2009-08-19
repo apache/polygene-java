@@ -45,7 +45,7 @@ import java.util.logging.Logger;
  * MapEntityStore and add as mixin to the service using this mixin.
  * See {@link org.qi4j.entitystore.memory.MemoryMapEntityStoreMixin} for reference.
  */
-public final class MapEntityStoreMixin
+public class MapEntityStoreMixin
         implements EntityStore, EntityStoreSPI, Activatable
 {
     private

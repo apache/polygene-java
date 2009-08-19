@@ -19,14 +19,10 @@ import java.lang.reflect.Method;
 /**
  * JAVADOC
  */
-public final class TypedFragmentInvocationHandler
+public final class TypedModifierInvocationHandler
     extends FragmentInvocationHandler
 {
-    public TypedFragmentInvocationHandler()
-    {
-    }
-
-    public TypedFragmentInvocationHandler( Object fragment )
+    public TypedModifierInvocationHandler( Object fragment )
     {
         super( fragment );
     }

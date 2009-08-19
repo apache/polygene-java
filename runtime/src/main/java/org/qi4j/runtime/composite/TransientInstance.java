@@ -68,6 +68,12 @@ public class TransientInstance
         return compositeModel.newProxy( this, mixinType );
     }
 
+
+    public Object invokeProxy(Method method, Object[] args) throws Throwable
+    {
+        return compositeModel.invoke(this, proxy, method, args, moduleInstance);
+    }
+
     public MetaInfo metaInfo()
     {
         return compositeModel.metaInfo();

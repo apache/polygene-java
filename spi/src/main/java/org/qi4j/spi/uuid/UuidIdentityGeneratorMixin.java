@@ -16,11 +16,12 @@
  */
 package org.qi4j.spi.uuid;
 
-import java.util.UUID;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
 
-public final class UuidIdentityGeneratorMixin
+import java.util.UUID;
+
+public class UuidIdentityGeneratorMixin
     implements IdentityGenerator
 {
     protected String uuid;

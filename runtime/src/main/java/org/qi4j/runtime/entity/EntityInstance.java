@@ -114,6 +114,11 @@ public final class EntityInstance
         return entityModel.newProxy( this, mixinType );
     }
 
+    public Object invokeProxy(Method method, Object[] args) throws Throwable
+    {
+        return entityModel.invoke(this, proxy, method, args, moduleInstance);
+    }
+
     public MetaInfo metaInfo()
     {
         return entityModel.metaInfo();

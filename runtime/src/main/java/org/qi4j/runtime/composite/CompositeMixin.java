@@ -20,7 +20,7 @@ import org.qi4j.spi.composite.CompositeInstance;
 
 import java.lang.reflect.Proxy;
 
-public final class CompositeMixin
+public class CompositeMixin
     implements Composite
 {
     @This private Composite meAsComposite;

@@ -94,4 +94,13 @@ public final class InjectedMethodsModel
         }
     }
 
+    public boolean isInjected(Method method)
+    {
+        for (InjectedMethodModel methodModel : methodModels)
+        {
+            if (methodModel.method().equals(method))
+                return true;
+        }
+        return false;
+    }
 }

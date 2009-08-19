@@ -21,7 +21,7 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.unitofwork.UnitOfWork;
 
-public final class EntityMixin
+public class EntityMixin
     implements Entity
 {
     @This private EntityComposite meAsEntity;

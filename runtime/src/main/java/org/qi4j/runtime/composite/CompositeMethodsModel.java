@@ -32,7 +32,7 @@ import java.util.Set;
 public final class CompositeMethodsModel
     implements Binder, Serializable
 {
-    private final HashMap<Method, CompositeMethodModel> methods;
+    private HashMap<Method, CompositeMethodModel> methods;
     private final Class<? extends Composite> type;
     private final ConstraintsModel constraintsModel;
     private final ConcernsDeclaration concernsModel;
@@ -71,6 +71,35 @@ public final class CompositeMethodsModel
 
         if( compositeMethod == null )
         {
+            if (method.getDeclaringClass().equals(Object.class))
+            {
+                return mixins.invokeObject( proxy, args, method );
+            }
+
+            if (!method.getDeclaringClass().isInterface())
+            {
+                Iterable<Class> types = mixinsModel.mixinTypes();
+                for (Class aClass : types)
+                {
+                    try
+                    {
+                        Method realMethod = aClass.getMethod(method.getName(), method.getParameterTypes());
+                        compositeMethod = methods.get(realMethod);
+                        HashMap<Method, CompositeMethodModel> newMethods = new MethodKeyMap<CompositeMethodModel>();
+                        newMethods.putAll(methods);
+                        newMethods.put(method, compositeMethod); // Map mixin method to interface method
+                        methods = newMethods; // Replace old map
+                        break;
+                    } catch (NoSuchMethodException e)
+                    {
+                    } catch (SecurityException e)
+                    {
+                    }
+                }
+                if (compositeMethod != null)
+                    return compositeMethod.invoke( proxy, args, mixins, moduleInstance );
+            }
+
             return mixins.invokeObject( proxy, args, method );
         }
         else

@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * In-memory implementation of MapEntityStore.
  */
-public final class MemoryMapEntityStoreMixin
+public class MemoryMapEntityStoreMixin
     implements MapEntityStore
 {
     private final Map<EntityReference, String> store;

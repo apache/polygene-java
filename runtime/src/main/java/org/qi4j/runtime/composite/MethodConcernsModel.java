@@ -105,7 +105,7 @@ public final class MethodConcernsModel
         }
         else
         {
-            firstConcern = new TypedFragmentInvocationHandler( nextConcern );
+            firstConcern = new TypedModifierInvocationHandler( nextConcern );
         }
 
         return new MethodConcernsInstance( firstConcern, mixinInvocationHandler, proxyHandler );

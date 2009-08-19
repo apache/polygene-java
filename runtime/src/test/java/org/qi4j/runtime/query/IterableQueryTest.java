@@ -79,7 +79,7 @@ public class IterableQueryTest
     @After
     public void tearDown()
     {
-        uow.discard();
+        if (uow != null) uow.discard();
     }
 
     private static void verifyUnorderedResults( final Iterable<? extends Nameable> results,

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,29 +12,25 @@
  *
  */
 
-package org.qi4j.spi.composite;
+package org.qi4j.runtime.composite;
 
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.structure.Module;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
+import net.sf.cglib.proxy.LazyLoader;
 
 /**
  * JAVADOC
  */
-public interface CompositeInstance extends InvocationHandler
+public class CompositeLazyLoader
+    implements LazyLoader
 {
-    <T> T proxy();
+    private Object instance;
 
-    <T> T newProxy( Class<T> mixinType );
+    public CompositeLazyLoader(Object instance)
+    {
+        this.instance = instance;
+    }
 
-    Module module();
-
-    MetaInfo metaInfo();
-
-    Class<? extends Composite> type();
-
-    Object invokeProxy(Method method, Object[] args) throws Throwable;
+    public Object loadObject() throws Exception
+    {
+        return instance;
+    }
 }

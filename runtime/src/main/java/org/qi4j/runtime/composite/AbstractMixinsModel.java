@@ -257,7 +257,7 @@ public abstract class AbstractMixinsModel
 
     public FragmentInvocationHandler newInvocationHandler( final Method method )
     {
-        return mixinFor( method ).newInvocationHandler( method.getDeclaringClass() );
+        return mixinFor( method ).newInvocationHandler( method );
     }
 
     public void activate( Object[] mixins ) throws Exception

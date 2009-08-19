@@ -104,6 +104,8 @@ public abstract class FragmentInvocationHandler
             return !isJdkInternals( className );
         }
         return !( className.startsWith( "org.qi4j.runtime" ) ||
+                  className.startsWith( "net.sf.cglib" ) ||
+                  className.contains( "EnhancerByCGLIB" ) ||
                   isJdkInternals( className ) );
     }
 

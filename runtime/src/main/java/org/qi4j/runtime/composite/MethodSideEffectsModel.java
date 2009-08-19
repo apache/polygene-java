@@ -102,7 +102,7 @@ public final class MethodSideEffectsModel
             }
             else
             {
-                sideEffects.add( new TypedFragmentInvocationHandler( sideEffect ) );
+                sideEffects.add( new TypedModifierInvocationHandler( sideEffect ) );
             }
         }
         return new MethodSideEffectsInstance( sideEffects, result, proxyHandler, invoker );

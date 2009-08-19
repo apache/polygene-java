@@ -38,7 +38,7 @@ public interface Identity
     @Immutable Property<String> identity();
 
     // Default implementation
-    public final class IdentityMixin
+    public class IdentityMixin
         implements Identity
     {
         @State private Property<String> identity;

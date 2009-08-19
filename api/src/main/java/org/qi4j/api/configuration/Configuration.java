@@ -54,7 +54,7 @@ public interface Configuration<T>
     void refresh();
 
     // Implementation of Configuration
-    public final class ConfigurationMixin<T>
+    public class ConfigurationMixin<T>
         implements Configuration<T>, Activatable
     {
         private T configuration;
