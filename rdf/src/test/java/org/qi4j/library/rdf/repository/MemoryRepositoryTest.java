@@ -45,6 +45,7 @@ public class MemoryRepositoryTest
     {
         objectBuilderFactory.newObjectBuilder( MemoryRepositoryTest.class ).injectTo( this );
 
+
         RepositoryConnection conn = repository.getConnection();
 
         Assert.assertThat( "repository is open", conn.isOpen(), CoreMatchers.equalTo( true ) );

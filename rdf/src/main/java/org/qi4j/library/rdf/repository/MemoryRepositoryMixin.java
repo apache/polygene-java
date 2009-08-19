@@ -13,26 +13,65 @@
  */
 package org.qi4j.library.rdf.repository;
 
+import java.io.File;
+import org.openrdf.model.ValueFactory;
 import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryConnection;
+import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 import org.qi4j.api.service.Activatable;
 
-public class MemoryRepositoryMixin extends SailRepository
+public class MemoryRepositoryMixin
     implements Repository, Activatable
 {
+    SailRepository repo;
+
     public MemoryRepositoryMixin()
     {
-        super( new MemoryStore() );
+        repo = new SailRepository(new MemoryStore() );
     }
 
     public void activate() throws Exception
     {
-        initialize();
+        repo.initialize();
     }
 
     public void passivate() throws Exception
     {
-        shutDown();
+        repo.shutDown();
+    }
+
+    public void setDataDir( File dataDir )
+    {
+        repo.setDataDir( dataDir );
+    }
+
+    public File getDataDir()
+    {
+        return repo.getDataDir();
+    }
+
+    public void initialize() throws RepositoryException
+    {
+    }
+
+    public void shutDown() throws RepositoryException
+    {
+    }
+
+    public boolean isWritable() throws RepositoryException
+    {
+        return repo.isWritable();
+    }
+
+    public RepositoryConnection getConnection() throws RepositoryException
+    {
+        return repo.getConnection();
+    }
+
+    public ValueFactory getValueFactory()
+    {
+        return repo.getValueFactory();
     }
 }

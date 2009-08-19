@@ -16,7 +16,7 @@
     <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-spi:0.8-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-bootstrap:0.8-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-runtime:0.8-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
+    <orderEntry type="library" name="Maven: cglib:cglib-nodep:2.2" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.easymock:easymock:2.3" level="project" />
   </component>
 </module>

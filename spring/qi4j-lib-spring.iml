@@ -27,7 +27,7 @@
     <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-api:0.8-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: junit:junit:4.4" level="project" />
     <orderEntry type="library" name="Maven: org.qi4j.core:qi4j-core-runtime:0.8-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
+    <orderEntry type="library" name="Maven: cglib:cglib-nodep:2.2" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-test:2.5.6" level="project" />
   </component>
 </module>

@@ -14,7 +14,10 @@
 package org.qi4j.library.rdf.repository;
 
 import java.io.File;
+import org.openrdf.model.ValueFactory;
 import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryConnection;
+import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.Sail;
 import org.openrdf.sail.nativerdf.NativeStore;
@@ -22,19 +25,21 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
 
-public class NativeRepositoryMixin extends SailRepository
+public class NativeRepositoryMixin
     implements Repository, Activatable
 {
     @This private Configuration<NativeConfiguration> configuration;
 
+    SailRepository repo;
+
     public NativeRepositoryMixin()
     {
-        super( new NativeStore() );
+        repo = new SailRepository( new NativeStore() );
     }
 
     public void activate() throws Exception
     {
-        Sail store = getSail();
+        Sail store = repo.getSail();
         NativeStore store2 = (NativeStore) store;
         String dataDir = configuration.configuration().dataDirectory().get();
         if( dataDir == null || "".equals( dataDir ) )
@@ -61,12 +66,44 @@ public class NativeRepositoryMixin extends SailRepository
         store2.setTripleIndexes( tripleIndexes );
         boolean forceSync = configuration.configuration().forceSync().get();
         store2.setForceSync( forceSync );
-        initialize();
+        repo.initialize();
     }
 
     public void passivate()
         throws Exception
     {
-        shutDown();
+        repo.shutDown();
+    }
+
+    public void setDataDir( File dataDir )
+    {
+    }
+
+    public File getDataDir()
+    {
+        return null;
+    }
+
+    public void initialize() throws RepositoryException
+    {
+    }
+
+    public void shutDown() throws RepositoryException
+    {
+    }
+
+    public boolean isWritable() throws RepositoryException
+    {
+        return repo.isWritable();
+    }
+
+    public RepositoryConnection getConnection() throws RepositoryException
+    {
+        return repo.getConnection();
+    }
+
+    public ValueFactory getValueFactory()
+    {
+        return repo.getValueFactory();
     }
 }

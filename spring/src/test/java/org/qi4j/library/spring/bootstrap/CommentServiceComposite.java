@@ -29,7 +29,7 @@ interface CommentServiceComposite
     class CommentServiceMixin
         implements CommentService
     {
-        public final String comment( String item )
+        public String comment( String item )
         {
             if( "beer".equals( item ) || "cola".equals( item ) )
             {
