@@ -20,6 +20,8 @@ import org.qi4j.spi.util.json.JSONException;
 import org.qi4j.spi.util.json.JSONWriter;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * Number type
@@ -65,10 +67,26 @@ public final class NumberType
         {
             json.value(number.longValue());
         }
+        else if( type.isClass( BigDecimal.class ) )
+        {
+            json.value(((BigDecimal)number).toPlainString());
+        }
+        else if( type.isClass( BigInteger.class ) )
+        {
+            json.value(number.toString());
+        }
     }
 
     public Object fromJSON( Object json, Module module )
     {
+        if (type.isClass(BigDecimal.class))
+        {
+            return new BigDecimal(((String)json));
+        } else if (type.isClass(BigInteger.class))
+        {
+            return new BigInteger((String)json);
+        }
+
         Number number = (Number) json;
 
         if( type.isClass( Integer.class ) )
