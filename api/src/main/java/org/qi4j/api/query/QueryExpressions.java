@@ -20,7 +20,6 @@
  */
 package org.qi4j.api.query;
 
-import java.util.Collection;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
@@ -46,6 +45,8 @@ import org.qi4j.api.query.grammar.PropertyIsNullPredicate;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.query.grammar.SingleValueExpression;
 import org.qi4j.api.query.grammar.VariableValueExpression;
+
+import java.util.Collection;
 
 /**
  * Static factory methods for query expressions and operators.
@@ -178,7 +179,7 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.EqualsPredicate}
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> EqualsPredicate<T> eq( final Association<T> property,
+    public static <T> EqualsPredicate<String> eq( final Association<T> property,
                                              final T value )
     {
         return provider.newEqualsPredicate( asAssociationExpression( property ), asTypedValueExpression( value ) );

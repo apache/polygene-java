@@ -64,7 +64,7 @@ public interface QueryExpressionsProvider
 
     <T> EqualsPredicate<T> newEqualsPredicate( PropertyReference<T> propertyRef, VariableValueExpression<T> variableValueExpr );
 
-    <T> EqualsPredicate<T> newEqualsPredicate( AssociationReference associationRef, SingleValueExpression<T> staticValueExpr );
+    <T> EqualsPredicate<String> newEqualsPredicate( AssociationReference associationRef, SingleValueExpression<T> staticValueExpr );
 
     <T> EqualsPredicate<T> newEqualsPredicate( AssociationReference associationRef, VariableValueExpression<T> variableValueExpr );
 

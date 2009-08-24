@@ -70,12 +70,12 @@ class Network
         setName( cars, "Cars" );
         cars.description().set( "Cars" );
 
-        City kualaLumpur = uow.newEntity(City.class);
+        City kualaLumpur = uow.newEntity(City.class, "kualalumpur");
         setName( kualaLumpur, "Kuala Lumpur" );
         kualaLumpur.country().set( "Malaysia" );
         kualaLumpur.county().set( "Some Jaya" );
 
-        City penang = uow.newEntity(City.class);
+        City penang = uow.newEntity(City.class, "penang");
         setName( penang, "Penang" );
         penang.country().set( "Malaysia" );
         penang.county().set( "Some Other Jaya" );

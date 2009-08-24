@@ -178,12 +178,25 @@ public class IterableQueryTest
     }
 
     @Test
-    public void givenEqQueryOnAssociationWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenEqQueryOnAssociationAndPropertyWhenExecutedThenReturnCorrect() throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         qb.where(
             eq( person.mother().get().placeOfBirth().get().name(), "Kuala Lumpur" )
+        );
+        Query<Person> query = qb.newQuery( Network.persons() );
+        verifyUnorderedResults( query, "Joe Doe" );
+    }
+
+    @Test
+    public void givenEqQueryOnAssociationWhenExecutedThenReturnCorrect() throws EntityFinderException
+    {
+        QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        City kl = uow.get(City.class, "kualalumpur");
+        qb.where(
+            eq( person.mother().get().placeOfBirth(), kl )
         );
         Query<Person> query = qb.newQuery( Network.persons() );
         verifyUnorderedResults( query, "Joe Doe" );

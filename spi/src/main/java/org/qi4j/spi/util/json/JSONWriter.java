@@ -369,7 +369,6 @@ public class JSONWriter
         return this.append(Long.toString(l));
     }
 
-
     /**
      * Append an object value.
      *
