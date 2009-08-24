@@ -47,8 +47,8 @@ public final class InjectionProviderFactoryStrategy
         valuesProviderFactories.put( SideEffectFor.class, modifiesInjectionProviderFactory );
         valuesProviderFactories.put( State.class, new StateInjectionProviderFactory() );
 
-        generalProviderFactories.put( Structure.class, new CachingInjectionProviderFactoryDecorator( new StructureInjectionProviderFactory() ) );
-        generalProviderFactories.put( Service.class, new CachingInjectionProviderFactoryDecorator( new ServiceInjectionProviderFactory() ) );
+        valuesProviderFactories.put( Structure.class, new CachingInjectionProviderFactoryDecorator( new StructureInjectionProviderFactory() ) );
+        valuesProviderFactories.put( Service.class, new CachingInjectionProviderFactoryDecorator( new ServiceInjectionProviderFactory() ) );
         generalProviderFactories.put( Invocation.class, new InvocationInjectionProviderFactory() );
         generalProviderFactories.put( Uses.class, new UsesInjectionProviderFactory() );
     }
