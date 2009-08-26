@@ -14,18 +14,20 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.AssemblyVisitor;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Assembly of a Layer. From here you can create more ModuleAssemblies for
@@ -47,7 +49,7 @@ public final class LayerAssemblyImpl
         this.applicationAssembly = applicationAssembly;
         this.name = name;
 
-        moduleAssemblies = new HashMap<String, ModuleAssemblyImpl>();
+        moduleAssemblies = new LinkedHashMap<String, ModuleAssemblyImpl>();
         uses = new LinkedHashSet<LayerAssembly>();
     }
 

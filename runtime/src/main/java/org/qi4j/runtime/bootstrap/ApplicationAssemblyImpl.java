@@ -14,16 +14,17 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.AssemblyVisitor;
 import org.qi4j.bootstrap.LayerAssembly;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * The representation of an entire application. From
@@ -33,7 +34,7 @@ import org.qi4j.bootstrap.LayerAssembly;
 public final class ApplicationAssemblyImpl
     implements ApplicationAssembly, Serializable
 {
-    private Map<String, LayerAssemblyImpl> layerAssemblies = new HashMap<String, LayerAssemblyImpl>();
+    private Map<String, LayerAssemblyImpl> layerAssemblies = new LinkedHashMap<String, LayerAssemblyImpl>();
     private String name = "Application";
     private Application.Mode mode;
     private MetaInfo metaInfo = new MetaInfo();

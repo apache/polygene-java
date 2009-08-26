@@ -252,7 +252,10 @@ public final class MixinModel
         // Add all implemented interfaces
         if (Factory.class.isAssignableFrom(instantiationClass))
         {
-            thisDependencies.addAll(Classes.interfacesOf(mixinClass));
+            Set<Class> classes = Classes.interfacesOf(mixinClass);
+            classes.remove(Activatable.class);
+            classes.remove(Initializable.class);
+            thisDependencies.addAll(classes);
         }
     }
 
