@@ -238,6 +238,7 @@ public final class MixinModel
 
     public void addThisInjections( final Set<Class> thisDependencies )
     {
+        // Add all @This injections
         visitModel(
             new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
             {
@@ -248,15 +249,10 @@ public final class MixinModel
             }
         );
 
+        // Add all implemented interfaces
         if (Factory.class.isAssignableFrom(instantiationClass))
         {
-            for (Method method : mixinClass.getMethods())
-            {
-                if (Modifier.isAbstract(method.getModifiers()))
-                {
-                    thisDependencies.add(method.getDeclaringClass());
-                }
-            }
+            thisDependencies.addAll(Classes.interfacesOf(mixinClass));
         }
     }
 
