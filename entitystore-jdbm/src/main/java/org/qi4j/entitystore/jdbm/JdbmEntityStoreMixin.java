@@ -22,6 +22,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.io.BufferedReader;
 import java.util.Properties;
 import java.util.concurrent.locks.ReadWriteLock;
 import jdbm.RecordManager;
@@ -51,7 +52,7 @@ import org.qi4j.spi.service.ServiceDescriptor;
  * JDBM implementation of SerializationStore
  */
 public class JdbmEntityStoreMixin
-    implements Activatable, MapEntityStore, DatabaseExport
+    implements Activatable, MapEntityStore, DatabaseExport, DatabaseImport
 {
     @This private ReadWriteLock lock;
     @This private Configuration<JdbmConfiguration> config;
@@ -224,6 +225,43 @@ public class JdbmEntityStoreMixin
             String value = new String( bytes, "UTF-8" );
             out.write( value );
             out.write( '\n' );
+        }
+    }
+
+    public void importFrom( Reader in ) throws IOException
+    {
+        BufferedReader reader = new BufferedReader(in);
+        String object;
+        try
+        {
+            while ((object = reader.readLine()) != null)
+            {
+                String id = object.substring( "{\"identity\":\"".length() );
+                id = id.substring( 0, id.indexOf('"'));
+                Long stateIndex = getStateIndex( id );
+                if (stateIndex == null)
+                {
+                    // Insert
+                    byte[] stateArray = object.getBytes( "UTF-8" );
+                    stateIndex = recordManager.insert( stateArray, serializer );
+                    index.insert( id.getBytes( "UTF-8" ), stateIndex, false );
+                } else
+                {
+                    byte[] stateArray = object.getBytes( "UTF-8" );
+                    recordManager.update( stateIndex, stateArray, serializer );
+                }
+            }
+            recordManager.commit();
+        }
+        catch (IOException ex)
+        {
+            recordManager.rollback();
+            throw ex;
+        }
+        catch (Exception ex)
+        {
+            recordManager.rollback();
+            throw (IOException) new IOException("Could not import data").initCause( ex );
         }
     }
 

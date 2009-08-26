@@ -24,6 +24,8 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.index.reindexer.Reindexer;
 import org.qi4j.index.reindexer.ReindexerConfiguration;
 import org.qi4j.spi.entity.EntityState;
@@ -34,6 +36,20 @@ import org.qi4j.spi.unitofwork.StateChangeListener;
 public class ReindexerMixin
     implements Reindexer
 {
+    private static QualifiedName identityQN;
+
+    static
+    {
+        try
+        {
+            identityQN = QualifiedName.fromMethod( Identity.class.getMethod("identity" ));
+        }
+        catch( NoSuchMethodException e )
+        {
+            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: ReindexerMixin" );
+        }
+    }
+
     @This private Configuration<ReindexerConfiguration> configuration;
 
     @Service private EntityStore store;
@@ -42,6 +58,8 @@ public class ReindexerMixin
 
     public void reindex()
     {
+
+
         configuration.refresh();
         ReindexerConfiguration conf = configuration.configuration();
         Integer loadValue = conf.loadValue().get();
@@ -49,13 +67,12 @@ public class ReindexerMixin
         {
             loadValue = 50;
         }
-        store.visitEntityStates( new ReindexerVisitor( loadValue ), module );
+        new ReindexerVisitor( loadValue ).reindex( store );
     }
 
     private class ReindexerVisitor
         implements EntityStore.EntityStateVisitor
     {
-        private int count = 0;
         private int loadValue;
         private ArrayList<EntityState> states;
 
@@ -65,18 +82,30 @@ public class ReindexerMixin
             states = new ArrayList<EntityState>();
         }
 
+        public void reindex(EntityStore store)
+        {
+            store.visitEntityStates( this, module );
+            reindexState();
+        }
+
         public void visitEntityState( EntityState entityState )
         {
+            // Mark dirty
+            entityState.setProperty(identityQN, entityState.identity().identity() );
             states.add( entityState );
-            if( count++ > loadValue )
+            if( states.size() > loadValue )
             {
-                for( ServiceReference<StateChangeListener> listener : listeners )
-                {
-                    listener.get().notifyChanges( states );
-                }
-                count = 0;
-                states.clear();
+                reindexState();
             }
+        }
+
+        public void reindexState()
+        {
+            for( ServiceReference<StateChangeListener> listener : listeners )
+            {
+                listener.get().notifyChanges( states );
+            }
+            states.clear();
         }
     }
 }

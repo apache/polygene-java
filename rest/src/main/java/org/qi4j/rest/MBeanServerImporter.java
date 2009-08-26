@@ -24,7 +24,7 @@ import org.qi4j.api.service.ServiceImporterException;
 /**
  * JAVADOC
  */
-class MBeanServerImporter
+public class MBeanServerImporter
     implements ServiceImporter
 {
     public Object importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException

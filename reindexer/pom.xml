@@ -14,7 +14,7 @@
   <version>0.8-SNAPSHOT</version>
 
   <packaging>bundle</packaging>
-  <name>Qi4j Extension - Re-Inexer</name>
+  <name>Qi4j Extension - Reindexer</name>
 
   <dependencies>
     <!-- Qi4j dependencies -->

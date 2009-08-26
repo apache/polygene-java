@@ -36,7 +36,7 @@ import org.qi4j.entitystore.map.MapEntityStoreMixin;
 @Concerns({ StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class})
 @Mixins({ MapEntityStoreMixin.class, JdbmEntityStoreMixin.class})
 public interface JdbmEntityStoreService
-        extends EntityStore, EntityStateVersions, DatabaseExport, ServiceComposite, Activatable, LockingAbstractComposite, Configuration
+        extends EntityStore, EntityStateVersions, DatabaseExport, DatabaseImport, ServiceComposite, Activatable, LockingAbstractComposite, Configuration
 
 {
 }
