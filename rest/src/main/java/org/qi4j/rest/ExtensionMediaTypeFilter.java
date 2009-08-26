@@ -17,6 +17,7 @@ package org.qi4j.rest;
 import java.util.Collections;
 import org.restlet.Context;
 import org.restlet.Restlet;
+import org.restlet.service.MetadataService;
 import org.restlet.data.MediaType;
 import org.restlet.data.Metadata;
 import org.restlet.data.Preference;
@@ -58,7 +59,8 @@ public class ExtensionMediaTypeFilter
                 extensions = extensions.substring( idx + 1 );
             }
 
-            Metadata metadata = getApplication().getMetadataService().getMetadata( extensions );
+            MetadataService metadataService = getApplication().getMetadataService();
+            Metadata metadata = metadataService.getMetadata( extensions );
             if( metadata != null && metadata instanceof MediaType )
             {
                 request.getClientInfo().setAcceptedMediaTypes( Collections.singletonList( new Preference<MediaType>( (MediaType) metadata ) ) );

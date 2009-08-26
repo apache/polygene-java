@@ -20,6 +20,9 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFWriter;
+import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.Rio;
+import org.openrdf.rio.trig.TriGWriter;
 import org.openrdf.rio.rdfxml.util.RDFXMLPrettyWriter;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.index.rdf.RdfExport;
@@ -32,10 +35,10 @@ public class RdfExportMixin
 {
     @Service private Repository repository;
 
-    public void toRDF( OutputStream outputStream )
+    public void toRDF( OutputStream outputStream, RDFFormat format )
         throws IOException
     {
-        RDFWriter rdfWriter = new RDFXMLPrettyWriter( outputStream );
+        RDFWriter rdfWriter = Rio.createWriter( format, outputStream );
         try
         {
             final RepositoryConnection connection = repository.getConnection();

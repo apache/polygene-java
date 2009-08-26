@@ -26,6 +26,7 @@ import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
+import org.openrdf.rio.RDFFormat;
 
 /**
  * Show RDF index
@@ -38,7 +39,8 @@ public class IndexResource
     public IndexResource()
     {
         getVariants().put( Method.ALL, Arrays.asList(
-            MediaType.TEXT_HTML,
+            MediaType.TEXT_PLAIN,
+            MediaType.APPLICATION_RDF_TRIG,
             MediaType.APPLICATION_RDF_XML ) );
         setNegotiated( true );
     }
@@ -46,12 +48,35 @@ public class IndexResource
     @Override
     public Representation get( Variant variant ) throws ResourceException
     {
-        return new OutputRepresentation( MediaType.APPLICATION_RDF_XML )
+        if (variant.getMediaType().equals(MediaType.APPLICATION_RDF_XML))
         {
-            public void write( OutputStream outputStream ) throws IOException
+            return new OutputRepresentation( MediaType.APPLICATION_RDF_XML )
             {
-                export.toRDF( outputStream );
-            }
-        };
+                public void write( OutputStream outputStream ) throws IOException
+                {
+                    export.toRDF( outputStream, RDFFormat.RDFXML );
+                }
+            };
+        } else if (variant.getMediaType().equals(MediaType.APPLICATION_RDF_TRIG))
+        {
+            return new OutputRepresentation( MediaType.APPLICATION_RDF_TRIG )
+            {
+                public void write( OutputStream outputStream ) throws IOException
+                {
+                    export.toRDF( outputStream, RDFFormat.TRIG );
+                }
+            };
+        } else if (variant.getMediaType().equals(MediaType.TEXT_PLAIN))
+        {
+            return new OutputRepresentation( MediaType.TEXT_PLAIN )
+            {
+                public void write( OutputStream outputStream ) throws IOException
+                {
+                    export.toRDF( outputStream, RDFFormat.TRIG );
+                }
+            };
+        }
+        
+        return null;
     }
 }

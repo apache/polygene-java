@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,6 +72,7 @@ import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.test.EntityTestAssembler;
+import org.openrdf.rio.RDFFormat;
 
 public class RdfEntityFinderTest
 {
@@ -125,11 +127,11 @@ public class RdfEntityFinderTest
     }
 
     @Test
-    public void showNetwork()
+    public void showNetwork() throws IOException
     {
         final ServiceReference<RdfIndexerExporterComposite> indexerService = assembler.serviceFinder().findService( RdfIndexerExporterComposite.class );
         final RdfIndexerExporterComposite exporter = indexerService.get();
-        exporter.toRDF( System.out );
+        exporter.toRDF( System.out, RDFFormat.RDFXML );
         // todo asserts
     }
 

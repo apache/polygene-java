@@ -20,6 +20,7 @@ package org.qi4j.index.rdf;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.io.IOException;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import org.junit.After;
@@ -66,6 +67,7 @@ import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.NamedQueries;
 import org.qi4j.test.EntityTestAssembler;
+import org.openrdf.rio.RDFFormat;
 
 public class RdfNamedQueryTest
 {
@@ -140,11 +142,12 @@ public class RdfNamedQueryTest
 
     @Test
     public void showNetwork()
+        throws IOException
     {
         ServiceFinder serviceFinder = assembler.serviceFinder();
         RdfIndexerExporterComposite rdfIndexerExporter =
             serviceFinder.<RdfIndexerExporterComposite>findService( RdfIndexerExporterComposite.class ).get();
-        rdfIndexerExporter.toRDF( System.out );
+        rdfIndexerExporter.toRDF( System.out, RDFFormat.RDFXML );
     }
 
     private static void verifyUnorderedResults( final Iterable<? extends Nameable> results,

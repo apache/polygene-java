@@ -42,11 +42,13 @@ import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.openrdf.rio.RDFFormat;
+import java.io.IOException;
 
 public class RdfEntityIndexerTest
 {
     @Test
-    public void script01() throws UnitOfWorkCompletionException
+    public void script01() throws UnitOfWorkCompletionException, IOException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -80,6 +82,6 @@ public class RdfEntityIndexerTest
             }
         };
         populate( assembler );
-        assembler.serviceFinder().<RdfIndexerExporterComposite>findService( RdfIndexerExporterComposite.class ).get().toRDF( System.out );
+        assembler.serviceFinder().<RdfIndexerExporterComposite>findService( RdfIndexerExporterComposite.class ).get().toRDF( System.out, RDFFormat.RDFXML );
     }
 }

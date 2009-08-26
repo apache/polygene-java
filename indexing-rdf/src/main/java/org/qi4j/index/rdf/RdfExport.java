@@ -16,12 +16,13 @@ package org.qi4j.index.rdf;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import org.openrdf.rio.RDFFormat;
 
 /**
  * JAVADOC
  */
 public interface RdfExport
 {
-    public void toRDF( final OutputStream outputStream )
+    void toRDF( OutputStream outputStream, RDFFormat format )
         throws IOException;
 }
