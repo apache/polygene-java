@@ -17,11 +17,6 @@
  */
 package org.qi4j.test.mock;
 
-/**
- * JAVADOC Add JavaDoc.
- *
- * @author Alin Dreghiciu
- */
 public interface MockRecorder
 {
     MockResolverType useMock( Object mock );

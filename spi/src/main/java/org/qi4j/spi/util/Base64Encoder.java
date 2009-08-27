@@ -17,12 +17,6 @@
  */
 package org.qi4j.spi.util;
 
-/**
- * JAVADOC Add JavaDoc.
- *
- * @author Alin Dreghiciu (adreghiciu@gmail.com)
- * @since 0.6.0, February 19, 2009
- */
 public final class Base64Encoder
 {
 

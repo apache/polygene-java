@@ -25,11 +25,6 @@ import java.lang.reflect.Method;
 import static java.lang.reflect.Proxy.newProxyInstance;
 import java.lang.reflect.Type;
 
-/**
- * JAVADOC: Add javadoc
- *
- * @author edward.yakop@gmail.com
- */
 public class ManyAssociationReferenceProxy
     implements InvocationHandler
 {

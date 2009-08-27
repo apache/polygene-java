@@ -17,12 +17,6 @@
  */
 package org.qi4j.spi.query;
 
-/**
- * JAVADOC Add JavaDoc.
- *
- * @author Alin Dreghiciu
- * @since 0.1.0, April 02, 2008
- */
 public class EntityFinderException
     extends Exception
 {

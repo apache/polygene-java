@@ -35,8 +35,6 @@ import java.util.List;
 /**
  * JAVADOC Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since March 20, 2008
  */
 class Network
 {

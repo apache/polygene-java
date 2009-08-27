@@ -21,8 +21,6 @@ import org.qi4j.runtime.composite.ConstraintsCheck;
 /**
  * {@code PropertyInstance} represents a property.
  *
- * @author Rickard Öberg
- * @since 0.1.0
  */
 public class PropertyInstance<T> extends AbstractPropertyInstance<T>
 {
@@ -36,7 +34,6 @@ public class PropertyInstance<T> extends AbstractPropertyInstance<T>
      * @param aValue        The property value.
      * @param constraints   constraint checker for this property
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
-     * @since 0.1.0
      */
     public PropertyInstance( PropertyInfo aPropertyInfo, T aValue, ConstraintsCheck constraints )
         throws IllegalArgumentException
@@ -50,7 +47,6 @@ public class PropertyInstance<T> extends AbstractPropertyInstance<T>
      * Returns this property value.
      *
      * @return This property value.
-     * @since 0.1.0
      */
     public T get()
     {
@@ -83,7 +79,6 @@ public class PropertyInstance<T> extends AbstractPropertyInstance<T>
      * Returns the value as string.
      *
      * @return The value as string.
-     * @since 0.1.0
      */
     @Override
     public String toString()

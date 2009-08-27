@@ -22,8 +22,6 @@ package org.qi4j.api.query.grammar;
  * Constraints that a {@link org.qi4j.api.property.Property} is greater than or equal to a value
  * (as in Property<X>.get() >= X).
  *
- * @author Alin Dreghiciu
- * @since March 28, 2008
  */
 public interface GreaterOrEqualPredicate<T>
     extends ComparisonPredicate<T>

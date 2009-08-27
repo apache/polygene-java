@@ -19,7 +19,6 @@ package org.qi4j.api.query.grammar;
 /**
  * An expression related to {@link org.qi4j.api.entity.association.ManyAssociation}.
  *
- * @author edward.yakop@gmail.com
  */
 public interface ManyAssociationReference
     extends AssociationReference

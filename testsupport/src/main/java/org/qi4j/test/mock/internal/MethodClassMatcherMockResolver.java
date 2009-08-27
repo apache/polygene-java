@@ -20,11 +20,6 @@ package org.qi4j.test.mock.internal;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-/**
- * JAVADOC Add JavaDoc.
- *
- * @author Alin Dreghiciu
- */
 public class MethodClassMatcherMockResolver
     implements MockResolver, InvocationHandler
 {

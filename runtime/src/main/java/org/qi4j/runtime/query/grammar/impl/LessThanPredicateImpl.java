@@ -24,8 +24,6 @@ import org.qi4j.api.query.grammar.ValueExpression;
 /**
  * Default {@link org.qi4j.api.query.grammar.LessThanPredicate} implementation.
  *
- * @author Alin Dreghiciu
- * @since March 28, 2008
  */
 public final class LessThanPredicateImpl<T>
     extends ComparisonPredicateImpl<T>

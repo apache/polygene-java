@@ -24,8 +24,6 @@ import java.lang.reflect.Method;
 /**
  * Thrown in case that a non queryable type or accessor (marked with @Queriable(false)) is used during query building.
  *
- * @author Alin Dreghiciu (adreghiciu@gmail.com)
- * @since 0.6.0, February 16, 2009
  */
 public class NotQueryableException extends QueryException
 {

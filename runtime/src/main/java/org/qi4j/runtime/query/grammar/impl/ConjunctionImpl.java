@@ -23,8 +23,6 @@ import org.qi4j.api.query.grammar.Conjunction;
 /**
  * Default {@link org.qi4j.api.query.grammar.Conjunction} implementation.
  *
- * @author Alin Dreghiciu
- * @since March 28, 2008
  */
 public final class ConjunctionImpl
     extends JunctionImpl

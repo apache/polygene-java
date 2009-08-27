@@ -24,8 +24,6 @@ import org.qi4j.api.query.grammar.ValueExpression;
 /**
  * Default {@link org.qi4j.api.query.grammar.GreaterThanPredicate} implementation.
  *
- * @author Alin Dreghiciu
- * @since March 28, 2008
  */
 public final class GreaterThanPredicateImpl<T>
     extends ComparisonPredicateImpl<T>

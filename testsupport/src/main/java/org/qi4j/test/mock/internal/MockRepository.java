@@ -17,11 +17,6 @@
  */
 package org.qi4j.test.mock.internal;
 
-/**
- * JAVADOC Add JavaDoc.
- *
- * @author Alin Dreghiciu
- */
 public interface MockRepository
 {
     void add( MockResolver mockResolver );

@@ -23,8 +23,6 @@ import org.qi4j.api.query.grammar.Negation;
 /**
  * Default {@link org.qi4j.api.query.grammar.Negation} implementation.
  *
- * @author Alin Dreghiciu
- * @since March 25, 2008
  */
 public final class NegationImpl
     implements Negation

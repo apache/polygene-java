@@ -5,10 +5,6 @@ import static org.ops4j.pax.exam.CoreOptions.provision;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 
-/**
- * @author edward@codedragons.com
- * @since 0.1
- */
 public final class BundleLifecycleWithCglibTest extends BundleLifecycleTest
 {
     @Configuration

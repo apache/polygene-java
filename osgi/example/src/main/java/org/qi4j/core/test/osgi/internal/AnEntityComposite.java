@@ -19,9 +19,6 @@ package org.qi4j.core.test.osgi.internal;
 import org.qi4j.core.test.osgi.AnEntity;
 import org.qi4j.api.entity.EntityComposite;
 
-/**
- * @author edward.yakop@gmail.com
- */
 interface AnEntityComposite extends AnEntity, EntityComposite
 {
 }

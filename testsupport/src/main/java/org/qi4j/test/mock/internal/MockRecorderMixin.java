@@ -23,11 +23,6 @@ import org.qi4j.test.mock.MockResolverType;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/**
- * JAVADOC Add JavaDoc.
- *
- * @author Alin Dreghiciu
- */
 public class MockRecorderMixin
     implements MockRecorder, MockRepository
 {

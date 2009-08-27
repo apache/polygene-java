@@ -21,12 +21,6 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 
-/**
- * JAVADOC Add JavaDoc
- *
- * @author Alin Dreghiciu
- * @since April 09, 2008
- */
 public interface Female
     extends Person
 {

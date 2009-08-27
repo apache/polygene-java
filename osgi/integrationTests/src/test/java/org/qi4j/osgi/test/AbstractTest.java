@@ -31,10 +31,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.qi4j.api.structure.Module;
 
-/**
- * @author edward.yakop@gmail.com
- * @since 0.5
- */
 @RunWith( JUnit4TestRunner.class )
 public abstract class AbstractTest
 {

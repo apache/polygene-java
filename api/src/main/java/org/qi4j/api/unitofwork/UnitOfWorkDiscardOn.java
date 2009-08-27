@@ -45,8 +45,6 @@ package org.qi4j.api.unitofwork;
  * The unit of work will be discarded iff {@code MyBusinessException} exceptions or its subclass is thrown from within
  * {@code myBusinessMethod} method.
  *
- * @author edward.yakop@gmail.com
- * @since 0.2.0
  */
 public @interface UnitOfWorkDiscardOn
 {

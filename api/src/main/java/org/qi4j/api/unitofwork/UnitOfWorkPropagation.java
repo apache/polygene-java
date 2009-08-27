@@ -46,8 +46,6 @@ import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.*;
  * </code>
  * </pre>
  *
- * @author edward.yakop@gmail.com
- * @since 0.2.0
  */
 @Retention( RUNTIME )
 @Target( METHOD )

@@ -22,8 +22,6 @@ import org.qi4j.api.query.grammar.BooleanExpression;
 /**
  * Generic implementation of a junction (con/dis).
  *
- * @author Alin Dreghiciu
- * @since March 28, 2008
  */
 abstract class JunctionImpl
 {

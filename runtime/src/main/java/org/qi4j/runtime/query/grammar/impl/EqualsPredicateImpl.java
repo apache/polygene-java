@@ -24,8 +24,6 @@ import org.qi4j.api.query.grammar.ValueExpression;
 /**
  * Default {@link org.qi4j.api.query.grammar.EqualsPredicate} implementation.
  *
- * @author Alin Dreghiciu
- * @since March 28, 2008
  */
 public final class EqualsPredicateImpl<T>
     extends ComparisonPredicateImpl<T>

@@ -20,12 +20,6 @@ package org.qi4j.runtime.query.model;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.Property;
 
-/**
- * JAVADOC Add JavaDoc
- *
- * @author Alin Dreghiciu
- * @since March 20, 2008
- */
 public interface City
     extends Nameable
 {

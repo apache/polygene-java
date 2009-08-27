@@ -98,8 +98,6 @@ import java.util.TreeSet;
  * <code>0x-</code> <small>(hex)</small> prefix.</li>
  * </ul>
  *
- * @author JSON.org
- * @version 2009-03-06
  */
 public class JSONObject
 {

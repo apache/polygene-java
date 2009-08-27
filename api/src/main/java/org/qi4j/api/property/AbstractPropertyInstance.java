@@ -26,7 +26,6 @@ import static org.qi4j.api.util.NullArgumentException.*;
 /**
  * {@code AbstractPropertyInstance} is the base implementation of {@link org.qi4j.api.property.Property}.
  *
- * @since 0.1.0
  */
 public abstract class AbstractPropertyInstance<T>
     implements Property<T>
@@ -38,7 +37,6 @@ public abstract class AbstractPropertyInstance<T>
      *
      * @param aPropertyInfo The property info. This argument must not be {@code null}.
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} argument is {@code null}.
-     * @since 0.1.0
      */
     protected AbstractPropertyInstance( PropertyInfo aPropertyInfo )
         throws IllegalArgumentException
@@ -52,7 +50,6 @@ public abstract class AbstractPropertyInstance<T>
      *
      * @param anInfoType The info type.
      * @return Property info given {@code anInfoType} argument.
-     * @since 0.1.0
      */
     // Was it a mistake to have another T here? (I think so...)
     public final <V> V metaInfo( Class<V> anInfoType )
@@ -64,7 +61,6 @@ public abstract class AbstractPropertyInstance<T>
      * Returns the qualified name of this {@code Property}. Must not return {@code null}.
      *
      * @return The qualified name of this {@code Property}.
-     * @since 0.1.0
      */
     public final QualifiedName qualifiedName()
     {
@@ -94,7 +90,6 @@ public abstract class AbstractPropertyInstance<T>
      *
      * @param o The other object to compare.
      * @return Returns a {@code boolean} indicator whether this object is equals the other.
-     * @since 0.1.0
      */
     public boolean equals( Object o )
     {
@@ -125,7 +120,6 @@ public abstract class AbstractPropertyInstance<T>
      * Calculate hash code.
      *
      * @return the hashcode of this {@code ComputedPropertyInstance} instance.
-     * @since 0.1.0
      */
     public int hashCode()
     {

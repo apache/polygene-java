@@ -28,10 +28,6 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Module;
 import org.qi4j.core.test.osgi.AComposite;
 
-/**
- * @author edward.yakop@gmail.com
- * @since 0.5
- */
 public final class CompositeTest extends AbstractTest
 {
     @Inject

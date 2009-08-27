@@ -29,8 +29,6 @@ import java.lang.reflect.Type;
 /**
  * Default {@link AssociationReference}.
  *
- * @author Alin Dreghiciu
- * @since March 28, 2008
  */
 public class AssociationReferenceImpl
     implements AssociationReference

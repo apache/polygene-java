@@ -24,8 +24,6 @@ import org.qi4j.api.common.QualifiedName;
 /**
  * {@code ComputedPropertyInstance} is the base implementation of {@link Property}.
  *
- * @author Niclas Hedhman
- * @since 0.1.0
  */
 public abstract class ComputedPropertyInstance<T>
     extends AbstractPropertyInstance<T>
@@ -35,7 +33,6 @@ public abstract class ComputedPropertyInstance<T>
      *
      * @param aPropertyInfo The property info. This argument must not be {@code null}.
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} argument is {@code null}.
-     * @since 0.1.0
      */
     protected ComputedPropertyInstance( PropertyInfo aPropertyInfo )
         throws IllegalArgumentException
@@ -52,7 +49,6 @@ public abstract class ComputedPropertyInstance<T>
      * This is the method to implement.
      *
      * @return Returns null by default.
-     * @since 0.1.0
      */
     public abstract T get();
 
@@ -61,7 +57,6 @@ public abstract class ComputedPropertyInstance<T>
      *
      * @param anIgnoredValue This value is ignored.
      * @throws IllegalArgumentException Thrown by default.
-     * @since 0.1.0
      */
     public void set( T anIgnoredValue )
         throws IllegalArgumentException, IllegalStateException

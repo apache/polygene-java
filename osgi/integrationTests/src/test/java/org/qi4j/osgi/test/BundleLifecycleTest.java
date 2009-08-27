@@ -26,10 +26,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
 
-/**
- * @author edward.yakop@gmail.com
- * @since 0.5
- */
 public class BundleLifecycleTest extends AbstractTest
 {
 

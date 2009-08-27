@@ -16,12 +16,6 @@
 */
 package org.qi4j.spi.concern;
 
-/**
- * JAVADOC
- *
- * @author edward.yakop@gmail.com
- * @since 0.5
- */
 public interface MethodConcernsDescriptor
 {
 }

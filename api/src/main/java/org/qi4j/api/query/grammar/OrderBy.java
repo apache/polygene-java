@@ -21,9 +21,6 @@ package org.qi4j.api.query.grammar;
 /**
  * Query sorting segment.
  *
- * @author Niclas Hedhman
- * @author Alin Dreghiciu
- * @since March 25, 2008
  */
 public interface OrderBy
 {

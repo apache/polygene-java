@@ -20,12 +20,6 @@ package org.qi4j.runtime.query.model.entities;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.runtime.query.model.Domain;
 
-/**
- * JAVADOC Add JavaDoc
- *
- * @author Alin Dreghiciu
- * @since March 20, 2008
- */
 public interface DomainEntity
     extends Domain, EntityComposite
 {

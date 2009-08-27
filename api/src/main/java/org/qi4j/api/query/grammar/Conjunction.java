@@ -21,8 +21,6 @@ package org.qi4j.api.query.grammar;
 /**
  * A logical "AND" between two boolean expressions.
  *
- * @author Alin Dreghiciu
- * @since March 28, 2008
  */
 public interface Conjunction
     extends BooleanExpression
