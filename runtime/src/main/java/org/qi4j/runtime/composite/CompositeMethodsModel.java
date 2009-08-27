@@ -14,17 +14,16 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.util.MethodKeyMap;
-import org.qi4j.runtime.structure.Binder;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.runtime.structure.ModuleInstance;
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.util.MethodKeyMap;
+import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
  * Model for Composite methods. This includes both private and public methods.
@@ -71,33 +70,37 @@ public final class CompositeMethodsModel
 
         if( compositeMethod == null )
         {
-            if (method.getDeclaringClass().equals(Object.class))
+            if( method.getDeclaringClass().equals( Object.class ) )
             {
                 return mixins.invokeObject( proxy, args, method );
             }
 
-            if (!method.getDeclaringClass().isInterface())
+            if( !method.getDeclaringClass().isInterface() )
             {
                 Iterable<Class> types = mixinsModel.mixinTypes();
-                for (Class aClass : types)
+                for( Class aClass : types )
                 {
                     try
                     {
-                        Method realMethod = aClass.getMethod(method.getName(), method.getParameterTypes());
-                        compositeMethod = methods.get(realMethod);
+                        Method realMethod = aClass.getMethod( method.getName(), method.getParameterTypes() );
+                        compositeMethod = methods.get( realMethod );
                         HashMap<Method, CompositeMethodModel> newMethods = new MethodKeyMap<CompositeMethodModel>();
-                        newMethods.putAll(methods);
-                        newMethods.put(method, compositeMethod); // Map mixin method to interface method
+                        newMethods.putAll( methods );
+                        newMethods.put( method, compositeMethod ); // Map mixin method to interface method
                         methods = newMethods; // Replace old map
                         break;
-                    } catch (NoSuchMethodException e)
+                    }
+                    catch( NoSuchMethodException e )
                     {
-                    } catch (SecurityException e)
+                    }
+                    catch( SecurityException e )
                     {
                     }
                 }
-                if (compositeMethod != null)
+                if( compositeMethod != null )
+                {
                     return compositeMethod.invoke( proxy, args, mixins, moduleInstance );
+                }
             }
 
             return mixins.invokeObject( proxy, args, method );
@@ -115,18 +118,38 @@ public final class CompositeMethodsModel
         {
             if( methods.get( method ) == null )
             {
-                MethodConcernsModel methodConcernsModel = concernsModel.concernsFor( method, type );
-                MethodSideEffectsModel methodSideEffectsModel1 = sideEffectsModel.sideEffectsFor( method, type );
-
                 MixinModel mixinModel = mixinsModel.implementMethod( method );
-                MethodConcernsModel mixinMethodConcernsModel = mixinModel.concernsFor( method, type );
-                methodConcernsModel = methodConcernsModel.combineWith( mixinMethodConcernsModel );
-                MethodSideEffectsModel mixinMethodSideEffectsModel = mixinModel.sideEffectsFor( method, type );
-                methodSideEffectsModel1 = methodSideEffectsModel1.combineWith( mixinMethodSideEffectsModel );
+                MethodConcernsModel methodConcernsModel1 = concernsModel.concernsFor( method, type );
+                MethodSideEffectsModel methodSideEffectsModel1 = sideEffectsModel.sideEffectsFor( method, type );
+                Method mixinMethod = null;
+                try
+                {
+                    mixinMethod = mixinModel.mixinClass().getMethod( method.getName(), method.getParameterTypes() );
+                    MethodConcernsModel methodConcernsModel2 = concernsModel.concernsFor( mixinMethod, type );
+                    methodConcernsModel1 = methodConcernsModel1.combineWith( methodConcernsModel2 );
+                    MethodSideEffectsModel methodSideEffectsModel2 = sideEffectsModel.sideEffectsFor( mixinMethod, type );
+                    methodSideEffectsModel1 = methodSideEffectsModel1.combineWith( methodSideEffectsModel2 );
+                }
+                catch( NoSuchMethodException e )
+                {
+                    // Ignore...
+                }
+
+                MethodConcernsModel mixinMethodConcernsModel1 = mixinModel.concernsFor( method, type );
+                methodConcernsModel1 = methodConcernsModel1.combineWith( mixinMethodConcernsModel1 );
+                MethodSideEffectsModel mixinMethodSideEffectsModel1 = mixinModel.sideEffectsFor( method, type );
+                methodSideEffectsModel1 = methodSideEffectsModel1.combineWith( mixinMethodSideEffectsModel1 );
+                if( mixinMethod != null )
+                {
+                    MethodConcernsModel mixinMethodConcernsModel2 = mixinModel.concernsFor( mixinMethod, type );
+                    methodConcernsModel1 = methodConcernsModel1.combineWith( mixinMethodConcernsModel2 );
+                    MethodSideEffectsModel mixinMethodSideEffectsModel2 = mixinModel.sideEffectsFor( mixinMethod, type );
+                    methodSideEffectsModel1 = methodSideEffectsModel1.combineWith( mixinMethodSideEffectsModel2 );
+                }
                 method.setAccessible( true );
                 CompositeMethodModel methodComposite = new CompositeMethodModel( method,
                                                                                  new MethodConstraintsModel( method, constraintsModel ),
-                                                                                 methodConcernsModel,
+                                                                                 methodConcernsModel1,
                                                                                  methodSideEffectsModel1,
                                                                                  mixinsModel );
 
