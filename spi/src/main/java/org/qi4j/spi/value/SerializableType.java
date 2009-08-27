@@ -121,12 +121,6 @@ public final class SerializableType
                         }
                     }
                 }
-                else if( result instanceof String )
-                {
-                    String jsonValue = (String) result;
-                    Class valueType = module.classLoader().loadClass( type.name() );
-                    result = module.valueBuilderFactory().newValueFromJSON( valueType, jsonValue );
-                }
 
                 return result;
             }
