@@ -14,6 +14,9 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.Set;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.StateHolder;
@@ -23,10 +26,6 @@ import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
-
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.Set;
 
 /**
  * Base model for Composite state
@@ -61,7 +60,7 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
         return propertiesModel.newInstance( state );
     }
 
-    public void addStateFor(Iterable<Method> methods, Class compositeType)
+    public void addStateFor( Iterable<Method> methods, Class compositeType )
     {
         for( Method method : methods )
         {

@@ -55,8 +55,10 @@ public abstract class FragmentInvocationHandler
         StackTraceElement[] trace = throwable.getStackTrace();
 
         // Check if exception originated within Qi4j or JDK - if so then skip compaction
-        if ( ! isApplicationClass( trace[0].getClassName() ) )
+        if( !isApplicationClass( trace[ 0 ].getClassName() ) )
+        {
             return throwable;
+        }
 
         int count = 0;
         for( int i = 0; i < trace.length; i++ )

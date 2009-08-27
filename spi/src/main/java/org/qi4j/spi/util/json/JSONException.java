@@ -16,7 +16,6 @@ package org.qi4j.spi.util.json;
 
 /**
  * The JSONException is thrown by the JSON.org classes then things are amiss.
- *
  */
 public class JSONException extends Exception
 {
@@ -27,14 +26,14 @@ public class JSONException extends Exception
      *
      * @param message Detail about the reason for the exception.
      */
-    public JSONException(String message)
+    public JSONException( String message )
     {
-        super(message);
+        super( message );
     }
 
-    public JSONException(Throwable t)
+    public JSONException( Throwable t )
     {
-        super(t.getMessage());
+        super( t.getMessage() );
         this.cause = t;
     }
 

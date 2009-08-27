@@ -14,12 +14,11 @@
 
 package org.qi4j.spi.entity.helpers;
 
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.ManyAssociationState;
-
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.ManyAssociationState;
 
 /**
  * Default implementation of ManyAssociationState. Backed by ArrayList.
@@ -30,7 +29,7 @@ public final class DefaultManyAssociationState
     private DefaultEntityState entityState;
     private List<EntityReference> references;
 
-    public DefaultManyAssociationState( DefaultEntityState entityState, List<EntityReference> references)
+    public DefaultManyAssociationState( DefaultEntityState entityState, List<EntityReference> references )
     {
         this.entityState = entityState;
         this.references = references;

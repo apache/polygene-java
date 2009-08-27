@@ -17,6 +17,8 @@
  */
 package org.qi4j.runtime.query;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryExecutionException;
@@ -24,9 +26,6 @@ import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.NamedEntityFinder;
-
-import java.util.HashMap;
-import java.util.Iterator;
 
 public class NamedQueryImpl<T>
     implements Query<T>
@@ -138,7 +137,7 @@ public class NamedQueryImpl<T>
             final Iterator<EntityReference> foundEntities =
                 namedFinder.findEntities( queryName, resultType.getName(), variables,
                                           orderBySegments, firstResult, maxResults
-            ).iterator();
+                ).iterator();
 
             return new Iterator<T>()
             {

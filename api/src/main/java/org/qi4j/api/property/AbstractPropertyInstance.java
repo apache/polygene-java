@@ -25,7 +25,6 @@ import static org.qi4j.api.util.NullArgumentException.*;
 
 /**
  * {@code AbstractPropertyInstance} is the base implementation of {@link org.qi4j.api.property.Property}.
- *
  */
 public abstract class AbstractPropertyInstance<T>
     implements Property<T>

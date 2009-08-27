@@ -14,6 +14,12 @@
 
 package org.qi4j.runtime.entity.association;
 
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
@@ -31,13 +37,6 @@ import org.qi4j.runtime.util.Annotations;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationType;
-
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * JAVADOC

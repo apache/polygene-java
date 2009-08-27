@@ -21,8 +21,8 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.Value;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.spi.util.json.JSONStringer;
 import org.qi4j.spi.util.json.JSONException;
+import org.qi4j.spi.util.json.JSONStringer;
 import org.qi4j.spi.value.ValueType;
 
 /**
@@ -57,9 +57,10 @@ public class ValueMixin
         try
         {
             valueType.toJSON( thisValue, json );
-        } catch (JSONException e)
+        }
+        catch( JSONException e )
         {
-            throw new IllegalStateException("Could not JSON serialize value", e);
+            throw new IllegalStateException( "Could not JSON serialize value", e );
         }
         return json.toString();
     }

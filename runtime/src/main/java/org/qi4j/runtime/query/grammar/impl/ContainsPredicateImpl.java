@@ -17,17 +17,16 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
+import java.util.Collection;
+import org.qi4j.api.property.Property;
 import org.qi4j.api.query.grammar.ContainsPredicate;
 import org.qi4j.api.query.grammar.PropertyReference;
-import org.qi4j.api.query.grammar.ValueExpression;
 import org.qi4j.api.query.grammar.SingleValueExpression;
-import org.qi4j.api.property.Property;
+import org.qi4j.api.query.grammar.ValueExpression;
 import org.qi4j.runtime.query.QueryException;
-import java.util.Collection;
 
 /**
  * Default {@link org.qi4j.api.query.grammar.EqualsPredicate} implementation.
- *
  */
 public final class ContainsPredicateImpl<T>
     implements ContainsPredicate<T>
@@ -51,7 +50,7 @@ public final class ContainsPredicateImpl<T>
      *                                  - If value expression is null
      */
     public ContainsPredicateImpl( final PropertyReference<Collection<T>> propertyReference,
-                                final SingleValueExpression<T> valueExpression )
+                                  final SingleValueExpression<T> valueExpression )
     {
         this.propertyReference = propertyReference;
         this.valueExpression = valueExpression;

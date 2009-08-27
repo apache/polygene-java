@@ -14,6 +14,12 @@
 
 package org.qi4j.runtime.structure;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -63,13 +69,6 @@ import org.qi4j.spi.util.json.JSONException;
 import org.qi4j.spi.util.json.JSONTokener;
 import org.qi4j.spi.value.ValueDescriptor;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * JAVADOC
  */
@@ -116,7 +115,7 @@ public class ModuleInstance
         valueBuilderFactory = new ValueBuilderFactoryInstance();
         unitOfWorkFactory = new UnitOfWorkFactoryInstance();
         serviceFinder = new ServiceFinderInstance();
-        queryBuilderFactory = new QueryBuilderFactoryImpl(moduleModel.classLoader(), serviceFinder);
+        queryBuilderFactory = new QueryBuilderFactoryImpl( moduleModel.classLoader(), serviceFinder );
 
         entityFinders = new ConcurrentHashMap<Class, EntityFinder>();
         compositeFinders = new ConcurrentHashMap<Class, CompositeFinder>();
@@ -175,41 +174,46 @@ public class ModuleInstance
         return importedServices;
     }
 
-    public EntityDescriptor entityDescriptor(String name)
+    public EntityDescriptor entityDescriptor( String name )
     {
         EntityFinder finder = null;
         try
         {
-            finder = findEntityModel(classLoader().loadClass(name));
-        } catch (ClassNotFoundException e)
+            finder = findEntityModel( classLoader().loadClass( name ) );
+        }
+        catch( ClassNotFoundException e )
         {
             return null;
         }
-        if (finder.models.isEmpty())
+        if( finder.models.isEmpty() )
+        {
             return null;
-        return finder.models.get(0);
+        }
+        return finder.models.get( 0 );
     }
 
-    public TransientDescriptor transientDescriptor(String name)
+    public TransientDescriptor transientDescriptor( String name )
     {
         CompositeFinder finder = null;
         try
         {
-            finder = findTransientModel(classLoader().loadClass(name));
-        } catch (ClassNotFoundException e)
+            finder = findTransientModel( classLoader().loadClass( name ) );
+        }
+        catch( ClassNotFoundException e )
         {
             return null;
         }
         return finder.model;
     }
 
-    public ValueDescriptor valueDescriptor(String name)
+    public ValueDescriptor valueDescriptor( String name )
     {
         ValueFinder finder = null;
         try
         {
-            finder = findValueModel(classLoader().loadClass(name));
-        } catch (ClassNotFoundException e)
+            finder = findValueModel( classLoader().loadClass( name ) );
+        }
+        catch( ClassNotFoundException e )
         {
             return null;
         }
@@ -430,8 +434,8 @@ public class ModuleInstance
             }
 
             StateHolder stateHolder = finder.model.newInitialState();
-            finder.model.state().checkConstraints(stateHolder);
-            return finder.model.newCompositeInstance( finder.module, UsesInstance.NO_USES, stateHolder).<T>proxy();
+            finder.model.state().checkConstraints( stateHolder );
+            return finder.model.newCompositeInstance( finder.module, UsesInstance.NO_USES, stateHolder ).<T>proxy();
         }
     }
 
@@ -526,10 +530,11 @@ public class ModuleInstance
 
             try
             {
-                return (T) finder.model.valueType().fromJSON( new JSONTokener(jsonValue).nextValue(), finder.module );
-            } catch (JSONException e)
+                return (T) finder.model.valueType().fromJSON( new JSONTokener( jsonValue ).nextValue(), finder.module );
+            }
+            catch( JSONException e )
             {
-                throw new ConstructionException("Could not create value from JSON", e);
+                throw new ConstructionException( "Could not create value from JSON", e );
             }
         }
     }

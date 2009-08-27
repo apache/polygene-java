@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.structure;
 
+import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Layer;
@@ -22,8 +23,6 @@ import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.service.Activator;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.DescriptorVisitor;
-
-import java.util.List;
 
 /**
  * JAVADOC
@@ -36,7 +35,7 @@ public class ApplicationInstance
     private final List<LayerInstance> layerInstances;
     private final Activator layerActivator;
 
-    public ApplicationInstance( ApplicationModel model, Qi4jSPI runtime, List<LayerInstance> layerInstances)
+    public ApplicationInstance( ApplicationModel model, Qi4jSPI runtime, List<LayerInstance> layerInstances )
     {
         this.model = model;
         this.runtime = runtime;
@@ -117,16 +116,16 @@ public class ApplicationInstance
         model.visitDescriptor( visitor );
     }
 
-    public void visitInstance(InstanceVisitor visitor)
+    public void visitInstance( InstanceVisitor visitor )
     {
-        visitor.visit(this);
+        visitor.visit( this );
 
-        for (LayerInstance layerInstance : layerInstances)
+        for( LayerInstance layerInstance : layerInstances )
         {
-            visitor.visit(layerInstance);
-            for (Module module : layerInstance.modules())
+            visitor.visit( layerInstance );
+            for( Module module : layerInstance.modules() )
             {
-                visitor.visit(module);
+                visitor.visit( module );
             }
         }
     }

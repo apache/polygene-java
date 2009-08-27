@@ -14,6 +14,12 @@
 
 package org.qi4j.spi.value;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Proxy;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
@@ -26,13 +32,6 @@ import org.qi4j.spi.util.Base64Encoder;
 import org.qi4j.spi.util.json.JSONException;
 import org.qi4j.spi.util.json.JSONObject;
 import org.qi4j.spi.util.json.JSONWriter;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.lang.reflect.Proxy;
 
 /**
  * Serializable type. If the serialized object is an ValueComposite,
@@ -58,15 +57,16 @@ public final class SerializableType
         else if( value instanceof ValueComposite )
         {
             // Serialize ValueComposite JSON instead
-            CompositeInstance instance = (CompositeInstance) Proxy.getInvocationHandler(value);
+            CompositeInstance instance = (CompositeInstance) Proxy.getInvocationHandler( value );
             ValueDescriptor descriptor = (ValueDescriptor) instance.descriptor();
             ValueType valueType = descriptor.valueType();
             try
             {
                 valueType.toJSON( value, json );
-            } catch (JSONException e)
+            }
+            catch( JSONException e )
             {
-                throw new IllegalStateException("Could not JSON serialize value", e);
+                throw new IllegalStateException( "Could not JSON serialize value", e );
             }
             return;
         }
@@ -80,7 +80,7 @@ public final class SerializableType
             out.close();
             byte[] bytes = Base64Encoder.encode( bout.toByteArray(), true );
             String stringValue = new String( bytes, "UTF-8" );
-            json.value(stringValue);
+            json.value( stringValue );
         }
         catch( IOException e )
         {
@@ -93,14 +93,15 @@ public final class SerializableType
     {
         try
         {
-            if (json instanceof JSONObject)
+            if( json instanceof JSONObject )
             {
                 // ValueComposite deserialization
-                ValueDescriptor valueDescriptor = ((ModuleSPI)module).valueDescriptor(type.name());
-                return valueDescriptor.valueType().fromJSON(json, module);
-            } else
+                ValueDescriptor valueDescriptor = ( (ModuleSPI) module ).valueDescriptor( type.name() );
+                return valueDescriptor.valueType().fromJSON( json, module );
+            }
+            else
             {
-                String serializedString  = (String) json;
+                String serializedString = (String) json;
                 byte[] bytes = serializedString.getBytes( "UTF-8" );
                 bytes = Base64Encoder.decode( bytes );
                 ByteArrayInputStream bin = new ByteArrayInputStream( bytes );

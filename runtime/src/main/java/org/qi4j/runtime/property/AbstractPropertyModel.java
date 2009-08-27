@@ -14,6 +14,17 @@
 
 package org.qi4j.runtime.property;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
+import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.UseDefaults;
@@ -30,20 +41,8 @@ import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.Binder;
-import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.DefaultValues;
-
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
-import java.util.List;
+import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
  * JAVADOC

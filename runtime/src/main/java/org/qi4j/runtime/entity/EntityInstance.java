@@ -14,6 +14,10 @@
 
 package org.qi4j.runtime.entity;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.HashSet;
+import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
@@ -29,18 +33,13 @@ import org.qi4j.runtime.composite.CompositeMethodInstance;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
+import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * JAVADOC
@@ -120,9 +119,9 @@ public final class EntityInstance
         return entityModel.newProxy( this, mixinType );
     }
 
-    public Object invokeProxy(Method method, Object[] args) throws Throwable
+    public Object invokeProxy( Method method, Object[] args ) throws Throwable
     {
-        return entityModel.invoke(this, proxy, method, args, moduleInstance);
+        return entityModel.invoke( this, proxy, method, args, moduleInstance );
     }
 
     public MetaInfo metaInfo()

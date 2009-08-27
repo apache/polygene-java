@@ -15,12 +15,12 @@
 package org.qi4j.spi.structure;
 
 import org.qi4j.api.service.ImportedServiceDescriptor;
-import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
 import org.qi4j.spi.composite.ConstructorDescriptor;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
 import org.qi4j.spi.composite.InjectedMethodDescriptor;
 import org.qi4j.spi.composite.InjectedParametersDescriptor;
+import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.concern.MethodConcernDescriptor;
 import org.qi4j.spi.concern.MethodConcernsDescriptor;
 import org.qi4j.spi.constraint.ConstraintDescriptor;
@@ -51,7 +51,7 @@ public class DescriptorVisitor
     {
     }
 
-    public void visit( TransientDescriptor transientDescriptor)
+    public void visit( TransientDescriptor transientDescriptor )
     {
     }
 

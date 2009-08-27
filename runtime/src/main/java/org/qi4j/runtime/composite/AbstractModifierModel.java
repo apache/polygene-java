@@ -14,11 +14,19 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Proxy;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.CallbackFilter;
 import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.NoOp;
 import net.sf.cglib.proxy.Factory;
-import net.sf.cglib.proxy.Callback;
+import net.sf.cglib.proxy.NoOp;
 import static org.qi4j.api.util.Classes.*;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
 import org.qi4j.runtime.injection.InjectedMethodsModel;
@@ -27,22 +35,13 @@ import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Proxy;
-import java.util.Map;
-import java.util.Collections;
-import java.util.HashMap;
-
 /**
  * JAVADOC
  */
 public abstract class AbstractModifierModel
     implements Binder, Serializable
 {
-    private final static Map<Class, Class> enhancedClasses = Collections.synchronizedMap(new HashMap<Class, Class>());
+    private final static Map<Class, Class> enhancedClasses = Collections.synchronizedMap( new HashMap<Class, Class>() );
 
     private final Class modifierClass;
 
@@ -54,7 +53,7 @@ public abstract class AbstractModifierModel
 
     public AbstractModifierModel( Class declaredModifierClass )
     {
-        this.modifierClass = instantiationClass(declaredModifierClass);
+        this.modifierClass = instantiationClass( declaredModifierClass );
         constructorsModel = new ConstructorsModel( modifierClass );
         injectedFieldsModel = new InjectedFieldsModel( declaredModifierClass );
         injectedMethodsModel = new InjectedMethodsModel( declaredModifierClass );
@@ -91,10 +90,10 @@ public abstract class AbstractModifierModel
     public Object newInstance( ModuleInstance moduleInstance, Object next, ProxyReferenceInvocationHandler proxyHandler )
     {
         InjectionContext injectionContext = new InjectionContext( moduleInstance, wrapNext( next ), proxyHandler );
-        if (Factory.class.isAssignableFrom(modifierClass))
+        if( Factory.class.isAssignableFrom( modifierClass ) )
         {
-            Enhancer.registerCallbacks(modifierClass,
-                    new Callback[]{ NoOp.INSTANCE, proxyHandler });
+            Enhancer.registerCallbacks( modifierClass,
+                                        new Callback[]{ NoOp.INSTANCE, proxyHandler } );
         }
 
         Object mixin = constructorsModel.newInstance( injectionContext );
@@ -131,14 +130,23 @@ public abstract class AbstractModifierModel
     }
 
     @Override
-    public boolean equals(Object o)
+    public boolean equals( Object o )
     {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if( this == o )
+        {
+            return true;
+        }
+        if( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
 
         AbstractModifierModel that = (AbstractModifierModel) o;
 
-        if (!modifierClass.equals(that.modifierClass)) return false;
+        if( !modifierClass.equals( that.modifierClass ) )
+        {
+            return false;
+        }
 
         return true;
     }
@@ -154,12 +162,12 @@ public abstract class AbstractModifierModel
         Class instantiationClass = fragmentClass;
         if( Modifier.isAbstract( fragmentClass.getModifiers() ) )
         {
-            instantiationClass = enhancedClasses.get(fragmentClass);
-            if (instantiationClass == null)
+            instantiationClass = enhancedClasses.get( fragmentClass );
+            if( instantiationClass == null )
             {
                 Enhancer enhancer = createEnhancer( fragmentClass );
                 instantiationClass = enhancer.createClass();
-                enhancedClasses.put(fragmentClass, instantiationClass);
+                enhancedClasses.put( fragmentClass, instantiationClass );
             }
         }
         return instantiationClass;
@@ -176,7 +184,7 @@ public abstract class AbstractModifierModel
         {
             public int accept( Method method )
             {
-                return Modifier.isAbstract(method.getModifiers()) ? 1 : 0;
+                return Modifier.isAbstract( method.getModifiers() ) ? 1 : 0;
             }
         } );
         return enhancer;

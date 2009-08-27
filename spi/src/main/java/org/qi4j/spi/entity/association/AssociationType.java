@@ -14,10 +14,9 @@
 
 package org.qi4j.spi.entity.association;
 
+import java.io.Serializable;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
-
-import java.io.Serializable;
 
 /**
  * JAVADOC

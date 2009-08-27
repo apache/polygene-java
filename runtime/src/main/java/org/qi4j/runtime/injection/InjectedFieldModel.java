@@ -14,18 +14,20 @@
 
 package org.qi4j.runtime.injection;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.util.Collection;
+import static java.util.Collections.*;
 import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.Specification;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
-
-import java.io.*;
-import java.lang.reflect.Field;
-import java.util.Collection;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singleton;
 
 /**
  * JAVADOC

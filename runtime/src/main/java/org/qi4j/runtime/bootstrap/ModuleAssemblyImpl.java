@@ -14,6 +14,12 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
@@ -25,18 +31,18 @@ import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.AssemblyVisitor;
-import org.qi4j.bootstrap.TransientDeclaration;
 import org.qi4j.bootstrap.EntityDeclaration;
 import org.qi4j.bootstrap.ImportedServiceDeclaration;
-import org.qi4j.bootstrap.MixinDeclaration;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.MetaInfoDeclaration;
+import org.qi4j.bootstrap.MixinDeclaration;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ObjectDeclaration;
 import org.qi4j.bootstrap.ServiceDeclaration;
+import org.qi4j.bootstrap.TransientDeclaration;
 import org.qi4j.bootstrap.ValueDeclaration;
-import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.composite.CompositesModel;
+import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.object.ObjectsModel;
@@ -48,13 +54,6 @@ import org.qi4j.runtime.structure.EntitiesModel;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.runtime.value.ValuesModel;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Assembly of a Module. This is where you register all objects, Composites,
@@ -253,7 +252,7 @@ public final class ModuleAssemblyImpl
         }
 
         ModuleModel moduleModel = new ModuleModel( name,
-                                                   metaInfo, new CompositesModel(transientModels),
+                                                   metaInfo, new CompositesModel( transientModels ),
                                                    new EntitiesModel( entityModels ),
                                                    new ObjectsModel( objectModels ),
                                                    new ValuesModel( valueModels ),
@@ -262,7 +261,7 @@ public final class ModuleAssemblyImpl
 
         for( TransientDeclarationImpl compositeDeclaration : compositeDeclarations )
         {
-            compositeDeclaration.addComposites(transientModels, metaInfoDeclaration );
+            compositeDeclaration.addComposites( transientModels, metaInfoDeclaration );
         }
 
         for( ValueDeclarationImpl valueDeclaration : valueDeclarations )

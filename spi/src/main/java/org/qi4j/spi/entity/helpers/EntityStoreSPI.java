@@ -26,9 +26,9 @@ import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 public interface EntityStoreSPI
 {
     EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
-                                       EntityReference identity, EntityDescriptor entityDescriptor);
+                                EntityReference identity, EntityDescriptor entityDescriptor );
 
-    EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity);
+    EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity );
 
-    StateCommitter apply(Iterable<EntityState> state, String version);
+    StateCommitter apply( Iterable<EntityState> state, String version );
 }

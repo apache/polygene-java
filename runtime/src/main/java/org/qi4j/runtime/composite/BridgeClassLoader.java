@@ -18,7 +18,7 @@ import net.sf.cglib.proxy.Enhancer;
 
 /**
  * JAVADOC
-*/
+ */
 class BridgeClassLoader extends ClassLoader
 {
     private static final String CGLIB_PACKAGE_NAME = "net.sf.cglib";

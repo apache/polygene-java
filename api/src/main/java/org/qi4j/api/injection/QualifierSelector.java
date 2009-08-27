@@ -14,9 +14,8 @@
 
 package org.qi4j.api.injection;
 
-import org.qi4j.api.service.ServiceSelector;
-
 import java.lang.annotation.Annotation;
+import org.qi4j.api.service.ServiceSelector;
 
 /**
  * JAVADOC

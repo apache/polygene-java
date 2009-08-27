@@ -14,6 +14,9 @@
 
 package org.qi4j.runtime.value;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.constraint.ConstraintViolationException;
@@ -34,10 +37,6 @@ import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.value.ValueCompositeType;
 import org.qi4j.spi.value.ValueDescriptor;
 import org.qi4j.spi.value.ValueType;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Model for ValueComposites
@@ -71,7 +70,7 @@ public final class ValueModel extends AbstractCompositeModel
             new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
         stateModel.addStateFor( compositeMethodsModel.methods(), compositeType );
 
-        ValueCompositeType valueType = (ValueCompositeType) ValueType.newValueType( compositeType, compositeType, compositeType);
+        ValueCompositeType valueType = (ValueCompositeType) ValueType.newValueType( compositeType, compositeType, compositeType );
 
         return new ValueModel( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, valueType );
     }

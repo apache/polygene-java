@@ -14,6 +14,11 @@
 
 package org.qi4j.spi.value;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.property.Property;
@@ -22,17 +27,11 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.spi.property.DefaultValues;
+import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.util.json.JSONException;
 import org.qi4j.spi.util.json.JSONObject;
 import org.qi4j.spi.util.json.JSONWriter;
-import org.qi4j.spi.property.DefaultValues;
-import org.qi4j.spi.property.PropertyType;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * ValueComposite type
@@ -60,9 +59,9 @@ public final class ValueCompositeType
 
     public void toJSON( Object value, JSONWriter json ) throws JSONException
     {
-        if (value == null)
+        if( value == null )
         {
-            json.value(null);
+            json.value( null );
             return;
         }
 
@@ -80,12 +79,12 @@ public final class ValueCompositeType
 
         for( PropertyType propertyType : types )
         {
-            json.key(propertyType.qualifiedName().name());
+            json.key( propertyType.qualifiedName().name() );
 
             Object propertyValue = values.get( propertyType.qualifiedName() );
             if( propertyValue == null )
             {
-                json.value(null);
+                json.value( null );
             }
             else
             {
@@ -105,24 +104,26 @@ public final class ValueCompositeType
             Object valueJson = null;
             try
             {
-                valueJson = jsonObject.get(propertyType.qualifiedName().name());
+                valueJson = jsonObject.get( propertyType.qualifiedName().name() );
 
                 Object value = null;
-                if( valueJson != null && !valueJson.equals(JSONObject.NULL))
+                if( valueJson != null && !valueJson.equals( JSONObject.NULL ) )
                 {
                     value = propertyType.type().fromJSON( valueJson, module );
                 }
 
                 values.put( propertyType.qualifiedName(), value );
 
-            } catch (JSONException e)
+            }
+            catch( JSONException e )
             {
                 // Not found in JSON or wrong format - try defaulting it
                 try
                 {
-                    Object defaultValue = DefaultValues.getDefaultValue(module.classLoader().loadClass(propertyType.type().type().name()));
-                    values.put(propertyType.qualifiedName(), defaultValue);
-                } catch (ClassNotFoundException e1)
+                    Object defaultValue = DefaultValues.getDefaultValue( module.classLoader().loadClass( propertyType.type().type().name() ) );
+                    values.put( propertyType.qualifiedName(), defaultValue );
+                }
+                catch( ClassNotFoundException e1 )
                 {
                     // Didn't work, throw exception
                     throw e;

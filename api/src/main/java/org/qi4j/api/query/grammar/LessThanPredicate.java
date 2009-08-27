@@ -21,7 +21,6 @@ package org.qi4j.api.query.grammar;
 /**
  * Constraints that a {@link org.qi4j.api.property.Property} is less than a value
  * (as in Property<X>.get() < X).
- *
  */
 public interface LessThanPredicate<T>
     extends ComparisonPredicate<T>

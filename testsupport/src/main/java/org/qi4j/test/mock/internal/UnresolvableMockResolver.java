@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 
 /**
  * Placeholder for a not specified resolver type.
- *
  */
 public class UnresolvableMockResolver
     implements MockResolver

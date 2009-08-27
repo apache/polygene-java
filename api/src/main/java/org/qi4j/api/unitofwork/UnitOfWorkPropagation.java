@@ -45,7 +45,6 @@ import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.*;
  * }
  * </code>
  * </pre>
- *
  */
 @Retention( RUNTIME )
 @Target( METHOD )

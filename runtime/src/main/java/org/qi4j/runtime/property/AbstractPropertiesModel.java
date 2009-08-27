@@ -46,7 +46,7 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
     implements Serializable, Binder
 {
     protected final Set<T> propertyModels = new LinkedHashSet<T>();
-//    private final Map<QualifiedName, Method> accessors = new MethodValueMap<QualifiedName>();
+    //    private final Map<QualifiedName, Method> accessors = new MethodValueMap<QualifiedName>();
     protected final Map<Method, T> mapMethodPropertyModel = new MethodKeyMap<T>();
     protected final ConstraintsModel constraints;
     protected PropertyDeclarations propertyDeclarations;
@@ -59,7 +59,7 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
         this.immutable = immutable;
     }
 
-    public void addPropertyFor(Method method, Class compositeType)
+    public void addPropertyFor( Method method, Class compositeType )
     {
         if( Property.class.isAssignableFrom( method.getReturnType() ) && method.getParameterTypes().length == 0 )
         {
@@ -244,5 +244,5 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
         }
     }
 
-    protected abstract T newPropertyModel(Method method, Class compositeType);
+    protected abstract T newPropertyModel( Method method, Class compositeType );
 }

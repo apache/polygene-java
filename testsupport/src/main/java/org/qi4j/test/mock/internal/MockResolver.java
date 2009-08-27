@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 
 /**
  * Resolves the invocation handler for a registred mock. Actual matching method is specific to each implementation.
- *
  */
 public interface MockResolver
 {

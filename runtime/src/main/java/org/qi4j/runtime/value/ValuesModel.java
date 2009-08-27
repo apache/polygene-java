@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.value;
 
+import java.util.List;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.value.ValueComposite;
@@ -21,8 +22,6 @@ import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
-
-import java.util.List;
 
 /**
  * JAVADOC
@@ -58,7 +57,7 @@ public class ValuesModel
     public ValueModel getValueModelFor( Class valueType, Visibility visibility )
     {
         ValueModel foundModel = null;
-        if (ValueComposite.class.isAssignableFrom(valueType))
+        if( ValueComposite.class.isAssignableFrom( valueType ) )
         {
             for( ValueModel valueModel : valueModels )
             {
@@ -75,7 +74,8 @@ public class ValuesModel
                 }
             }
 
-        } else
+        }
+        else
         {
             for( ValueModel valueModel : valueModels )
             {

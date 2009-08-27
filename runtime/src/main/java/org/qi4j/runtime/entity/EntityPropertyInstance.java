@@ -22,7 +22,6 @@ import org.qi4j.spi.entity.EntityState;
 
 /**
  * {@code EntityPropertyInstance} represents a property whose value must be backed by an EntityState.
- *
  */
 public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
 {
@@ -40,7 +39,7 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
      * @param entityState
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
      */
-    public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState, ConstraintsCheck constraints)
+    public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState, ConstraintsCheck constraints )
         throws IllegalArgumentException
     {
         super( aPropertyInfo );

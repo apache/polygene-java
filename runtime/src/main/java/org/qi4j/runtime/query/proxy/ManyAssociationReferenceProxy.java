@@ -16,14 +16,13 @@
  */
 package org.qi4j.runtime.query.proxy;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import static java.lang.reflect.Proxy.*;
+import java.lang.reflect.Type;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.runtime.query.QueryException;
 import org.qi4j.runtime.query.grammar.impl.ManyAssociationReferenceImpl;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import static java.lang.reflect.Proxy.newProxyInstance;
-import java.lang.reflect.Type;
 
 public class ManyAssociationReferenceProxy
     implements InvocationHandler

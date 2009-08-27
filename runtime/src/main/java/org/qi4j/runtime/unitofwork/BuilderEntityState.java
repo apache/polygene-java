@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.unitofwork;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
@@ -21,9 +23,6 @@ import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * JAVADOC
@@ -37,7 +36,7 @@ public final class BuilderEntityState
     private final Map<QualifiedName, EntityReference> associations;
     private final Map<QualifiedName, ManyAssociationState> manyAssociations;
 
-    public BuilderEntityState(EntityDescriptor type, EntityReference reference)
+    public BuilderEntityState( EntityDescriptor type, EntityReference reference )
     {
         entityType = type;
         this.reference = reference;
@@ -72,7 +71,7 @@ public final class BuilderEntityState
 
     public boolean isOfType( TypeName type )
     {
-        return entityType.entityType().type().equals(type);
+        return entityType.entityType().type().equals( type );
     }
 
     public EntityDescriptor entityDescriptor()
@@ -109,30 +108,30 @@ public final class BuilderEntityState
         ManyAssociationState state = manyAssociations.get( stateName );
         if( state == null )
         {
-            state = new BuilderManyAssociationState( );
+            state = new BuilderManyAssociationState();
             manyAssociations.put( stateName, state );
         }
 
         return state;
     }
 
-    public void copyTo(EntityState newEntityState)
+    public void copyTo( EntityState newEntityState )
     {
-        for (Map.Entry<QualifiedName, Object> stateNameStringEntry : properties.entrySet())
+        for( Map.Entry<QualifiedName, Object> stateNameStringEntry : properties.entrySet() )
         {
-            newEntityState.setProperty(stateNameStringEntry.getKey(), stateNameStringEntry.getValue());
+            newEntityState.setProperty( stateNameStringEntry.getKey(), stateNameStringEntry.getValue() );
         }
-        for (Map.Entry<QualifiedName, EntityReference> stateNameEntityReferenceEntry : associations.entrySet())
+        for( Map.Entry<QualifiedName, EntityReference> stateNameEntityReferenceEntry : associations.entrySet() )
         {
-            newEntityState.setAssociation(stateNameEntityReferenceEntry.getKey(), stateNameEntityReferenceEntry.getValue());
+            newEntityState.setAssociation( stateNameEntityReferenceEntry.getKey(), stateNameEntityReferenceEntry.getValue() );
         }
-        for (Map.Entry<QualifiedName, ManyAssociationState> stateNameManyAssociationStateEntry : manyAssociations.entrySet())
+        for( Map.Entry<QualifiedName, ManyAssociationState> stateNameManyAssociationStateEntry : manyAssociations.entrySet() )
         {
-            ManyAssociationState manyAssoc = newEntityState.getManyAssociation(stateNameManyAssociationStateEntry.getKey());
+            ManyAssociationState manyAssoc = newEntityState.getManyAssociation( stateNameManyAssociationStateEntry.getKey() );
             int idx = 0;
-            for (EntityReference entityReference : stateNameManyAssociationStateEntry.getValue())
+            for( EntityReference entityReference : stateNameManyAssociationStateEntry.getValue() )
             {
-                manyAssoc.add(idx, entityReference);
+                manyAssoc.add( idx, entityReference );
             }
         }
     }

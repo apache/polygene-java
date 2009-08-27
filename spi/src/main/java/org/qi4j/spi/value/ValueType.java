@@ -14,19 +14,6 @@
 
 package org.qi4j.spi.value;
 
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.common.TypeName;
-import static org.qi4j.api.common.TypeName.*;
-import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.structure.Module;
-import org.qi4j.api.util.Classes;
-import org.qi4j.spi.util.json.JSONException;
-import org.qi4j.spi.util.json.JSONStringer;
-import org.qi4j.spi.util.json.JSONTokener;
-import org.qi4j.spi.util.json.JSONWriter;
-import org.qi4j.spi.property.PropertyType;
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -37,6 +24,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.TypeName;
+import static org.qi4j.api.common.TypeName.*;
+import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.util.Classes;
+import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.util.json.JSONException;
+import org.qi4j.spi.util.json.JSONStringer;
+import org.qi4j.spi.util.json.JSONTokener;
+import org.qi4j.spi.util.json.JSONWriter;
 
 /**
  * Base class for types of values in ValueComposites.
@@ -181,7 +180,7 @@ public abstract class ValueType
         throws JSONException;
 
     public String toQueryParameter( Object value )
-            throws IllegalArgumentException
+        throws IllegalArgumentException
     {
         if( value == null )
         {
@@ -192,25 +191,26 @@ public abstract class ValueType
         try
         {
             jsonStringer.array();
-            toJSON( value, jsonStringer);
+            toJSON( value, jsonStringer );
             jsonStringer.endArray();
-        } catch (JSONException e)
+        }
+        catch( JSONException e )
         {
-            throw new IllegalArgumentException("Query parameter value is not a proper JSON value", e);
+            throw new IllegalArgumentException( "Query parameter value is not a proper JSON value", e );
         }
         String str = jsonStringer.toString();
-        return str.substring(1, str.length()-1);
+        return str.substring( 1, str.length() - 1 );
     }
 
     public Object fromQueryParameter( String parameter, Module module )
-            throws IllegalArgumentException, JSONException
+        throws IllegalArgumentException, JSONException
     {
         if( parameter == null )
         {
             return null;
         }
 
-        return fromJSON( new JSONTokener(parameter).nextValue(), module );
+        return fromJSON( new JSONTokener( parameter ).nextValue(), module );
     }
 
     @Override public String toString()

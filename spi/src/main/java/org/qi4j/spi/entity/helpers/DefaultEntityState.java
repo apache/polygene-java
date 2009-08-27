@@ -16,6 +16,11 @@
  */
 package org.qi4j.spi.entity.helpers;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
@@ -23,12 +28,6 @@ import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Standard implementation of EntityState.
@@ -49,13 +48,13 @@ public final class DefaultEntityState
     protected final Map<QualifiedName, EntityReference> associations;
     protected final Map<QualifiedName, List<EntityReference>> manyAssociations;
 
-    public DefaultEntityState( DefaultEntityStoreUnitOfWork unitOfWork, EntityReference identity, EntityDescriptor entityDescriptor)
+    public DefaultEntityState( DefaultEntityStoreUnitOfWork unitOfWork, EntityReference identity, EntityDescriptor entityDescriptor )
     {
         this( unitOfWork, "",
               System.currentTimeMillis(),
               identity,
               EntityStatus.NEW,
-                entityDescriptor,
+              entityDescriptor,
               new HashMap<QualifiedName, Object>(),
               new HashMap<QualifiedName, EntityReference>(),
               new HashMap<QualifiedName, List<EntityReference>>() );
@@ -128,7 +127,7 @@ public final class DefaultEntityState
             manyAssociationState = new ArrayList<EntityReference>();
             manyAssociations.put( stateName, manyAssociationState );
         }
-        return new DefaultManyAssociationState( this, manyAssociationState);
+        return new DefaultManyAssociationState( this, manyAssociationState );
     }
 
     public void copyTo( DefaultEntityState entityState )
@@ -211,7 +210,9 @@ public final class DefaultEntityState
 
     public void markUpdated()
     {
-        if (status == EntityStatus.LOADED)
+        if( status == EntityStatus.LOADED )
+        {
             status = EntityStatus.UPDATED;
+        }
     }
 }

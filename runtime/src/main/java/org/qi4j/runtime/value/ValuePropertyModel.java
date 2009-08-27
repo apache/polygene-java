@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.value;
 
+import java.lang.reflect.Method;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.GenericPropertyInfo;
@@ -25,8 +26,6 @@ import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.value.ValueType;
 
-import java.lang.reflect.Method;
-
 /**
  * Property model for values
  */
@@ -36,10 +35,10 @@ public final class ValuePropertyModel extends PersistentPropertyModel
     private final PropertyType propertyType;
     private PropertyInfo propertyInfo;
 
-    public ValuePropertyModel(Method anAccessor,
-                              Class compositeType, ValueConstraintsInstance constraints,
-                              MetaInfo metaInfo,
-                              Object defaultValue)
+    public ValuePropertyModel( Method anAccessor,
+                               Class compositeType, ValueConstraintsInstance constraints,
+                               MetaInfo metaInfo,
+                               Object defaultValue )
     {
         super( anAccessor, compositeType, true, constraints, metaInfo, defaultValue );
         final Queryable queryable = anAccessor.getAnnotation( Queryable.class );

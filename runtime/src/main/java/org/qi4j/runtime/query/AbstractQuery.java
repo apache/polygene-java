@@ -18,16 +18,21 @@
  */
 package org.qi4j.runtime.query;
 
-import org.qi4j.api.query.Query;
-import org.qi4j.api.query.grammar.*;
-import org.qi4j.runtime.query.grammar.impl.VariableValueExpressionImpl;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.qi4j.api.query.Query;
+import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.api.query.grammar.ComparisonPredicate;
+import org.qi4j.api.query.grammar.Conjunction;
+import org.qi4j.api.query.grammar.Disjunction;
+import org.qi4j.api.query.grammar.Negation;
+import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.query.grammar.SingleValueExpression;
+import org.qi4j.api.query.grammar.ValueExpression;
+import org.qi4j.runtime.query.grammar.impl.VariableValueExpressionImpl;
 
 /**
  * Default implementation of {@link org.qi4j.api.query.Query}
- *
  */
 abstract class AbstractQuery<T>
     implements Query<T>

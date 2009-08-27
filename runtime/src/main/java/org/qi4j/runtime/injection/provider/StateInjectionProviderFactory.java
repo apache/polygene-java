@@ -1,5 +1,6 @@
 package org.qi4j.runtime.injection.provider;
 
+import java.io.Serializable;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.EntityStateHolder;
@@ -22,8 +23,6 @@ import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.value.ValueDescriptor;
 
-import java.io.Serializable;
-
 /**
  * JAVADOC
  */
@@ -42,14 +41,22 @@ public final class StateInjectionProviderFactory
         {
             // @State Property<String> name;
             StateDescriptor descriptor;
-            if (resolution.object() instanceof TransientDescriptor)
+            if( resolution.object() instanceof TransientDescriptor )
+            {
                 descriptor = ( (TransientDescriptor) resolution.object() ).state();
-            else if (resolution.object() instanceof ValueDescriptor)
+            }
+            else if( resolution.object() instanceof ValueDescriptor )
+            {
                 descriptor = ( (ValueDescriptor) resolution.object() ).state();
-            else if (resolution.object() instanceof ServiceDescriptor)
+            }
+            else if( resolution.object() instanceof ServiceDescriptor )
+            {
                 descriptor = ( (ServiceDescriptor) resolution.object() ).state();
+            }
             else
+            {
                 descriptor = ( (EntityDescriptor) resolution.object() ).state();
+            }
 
             State annotation = (State) dependencyModel.injectionAnnotation();
             String name;

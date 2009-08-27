@@ -14,11 +14,10 @@
  */
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.Proxy;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.spi.composite.CompositeInstance;
-
-import java.lang.reflect.Proxy;
 
 public class CompositeMixin
     implements Composite

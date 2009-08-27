@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.unitofwork;
 
+import java.util.UUID;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.usecase.Usecase;
@@ -26,8 +27,6 @@ import org.qi4j.spi.entity.helpers.DefaultEntityStoreUnitOfWork;
 import org.qi4j.spi.entity.helpers.EntityStoreSPI;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
-
-import java.util.UUID;
 
 /**
  * JAVADOC
@@ -48,10 +47,10 @@ public class UnitOfWorkStore
 
     public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, MetaInfo unitOfWorkMetaInfo, ModuleSPI module )
     {
-        return new DefaultEntityStoreUnitOfWork( this, newUnitOfWorkId(), module);
+        return new DefaultEntityStoreUnitOfWork( this, newUnitOfWorkId(), module );
     }
 
-    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity, EntityDescriptor type)
+    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity, EntityDescriptor type )
     {
         UnitOfWorkEntityState entityState = new UnitOfWorkEntityState( "",
                                                                        System.currentTimeMillis(),
@@ -59,14 +58,14 @@ public class UnitOfWorkStore
         return entityState;
     }
 
-    public EntityState getEntityState( EntityStoreUnitOfWork uow, EntityReference identity)
+    public EntityState getEntityState( EntityStoreUnitOfWork uow, EntityReference identity )
     {
         EntityState parentState = unitOfWork.getCachedState( identity );
         UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( parentState );
         return unitOfWorkEntityState;
     }
 
-    public StateCommitter apply(Iterable<EntityState> state, String identity)
+    public StateCommitter apply( Iterable<EntityState> state, String identity )
     {
         return null;
     }
@@ -85,7 +84,7 @@ public class UnitOfWorkStore
         return unitOfWorkEntityState;
     }
 
-    public EntityStoreUnitOfWork visitEntityStates(EntityStateVisitor visitor, ModuleSPI moduleInstance)
+    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI moduleInstance )
     {
         // ???
         return null;

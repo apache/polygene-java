@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.unitofwork;
 
+import java.lang.reflect.Method;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityReference;
@@ -26,8 +27,6 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
-
-import java.lang.reflect.Method;
 
 /**
  * Implementation of EntityBuilder. Maintains an instance of the entity which
@@ -76,10 +75,10 @@ public final class EntityBuilderInstance<T>
             identityStateName = QualifiedName.fromMethod( IDENTITY_METHOD );
         }
 
-        EntityReference reference = new EntityReference(identity);
+        EntityReference reference = new EntityReference( identity );
         entityState = new BuilderEntityState( entityModel, reference );
-        entityModel.initState(entityState);
-        entityState.setProperty(identityStateName, identity);
+        entityModel.initState( entityState );
+        entityState.setProperty( identityStateName, identity );
         prototypeInstance = entityModel.newInstance( uow, moduleInstance, reference, entityState );
     }
 
@@ -105,14 +104,14 @@ public final class EntityBuilderInstance<T>
 
         // Figure out whether to use given or generated identity
         identity = (String) entityState.getProperty( identityStateName );
-        EntityState newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ));
+        EntityState newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ) );
 
-        entityModel.invokeCreate(prototypeInstance);
+        entityModel.invokeCreate( prototypeInstance );
 
         // Check constraints
         prototypeInstance.checkConstraints();
 
-        entityState.copyTo(newEntityState);
+        entityState.copyTo( newEntityState );
 
         EntityInstance instance = entityModel.newInstance( uow, moduleInstance, newEntityState.identity(), newEntityState );
 
@@ -129,7 +128,9 @@ public final class EntityBuilderInstance<T>
 
     private void checkValid() throws IllegalStateException
     {
-        if (identity == null)
-            throw new IllegalStateException("EntityBuilder is not valid after call to newInstance()");
+        if( identity == null )
+        {
+            throw new IllegalStateException( "EntityBuilder is not valid after call to newInstance()" );
+        }
     }
 }

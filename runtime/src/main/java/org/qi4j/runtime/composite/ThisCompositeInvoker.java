@@ -14,27 +14,26 @@
 
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.Method;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 import org.qi4j.spi.composite.CompositeInstance;
-
-import java.lang.reflect.Method;
 
 /**
  * JAVADOC
  */
 public class ThisCompositeInvoker
-        implements MethodInterceptor
+    implements MethodInterceptor
 {
     private CompositeInstance compositeInstance;
 
-    public ThisCompositeInvoker(CompositeInstance compositeInstance)
+    public ThisCompositeInvoker( CompositeInstance compositeInstance )
     {
         this.compositeInstance = compositeInstance;
     }
 
-    public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable
+    public Object intercept( Object obj, Method method, Object[] args, MethodProxy proxy ) throws Throwable
     {
-        return compositeInstance.invokeProxy(method, args);
+        return compositeInstance.invokeProxy( method, args );
     }
 }

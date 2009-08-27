@@ -14,6 +14,8 @@
 
 package org.qi4j.spi.entity.helpers;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.concern.ConcernOf;
@@ -29,9 +31,6 @@ import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Concern that helps EntityStores do concurrent modification checks.
@@ -51,11 +50,11 @@ public abstract class ConcurrentModificationCheckConcern extends ConcernOf<Entit
     @Structure
     Qi4j api;
 
-    public EntityStoreUnitOfWork newUnitOfWork(Usecase usecase, MetaInfo unitOfWorkMetaInfo, ModuleSPI module)
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, MetaInfo unitOfWorkMetaInfo, ModuleSPI module )
     {
         final EntityStoreUnitOfWork uow = next.newUnitOfWork( usecase, unitOfWorkMetaInfo, module );
 
-        return new ConcurrentCheckingEntityStoreUnitOfWork( uow, api.dereference(versions), module );
+        return new ConcurrentCheckingEntityStoreUnitOfWork( uow, api.dereference( versions ), module );
     }
 
     private class ConcurrentCheckingEntityStoreUnitOfWork
@@ -67,7 +66,7 @@ public abstract class ConcurrentModificationCheckConcern extends ConcernOf<Entit
 
         private List<EntityState> loaded = new ArrayList<EntityState>();
 
-        public ConcurrentCheckingEntityStoreUnitOfWork(EntityStoreUnitOfWork uow, EntityStateVersions versions, ModuleSPI module)
+        public ConcurrentCheckingEntityStoreUnitOfWork( EntityStoreUnitOfWork uow, EntityStateVersions versions, ModuleSPI module )
         {
             this.uow = uow;
             this.versions = versions;
@@ -79,14 +78,14 @@ public abstract class ConcurrentModificationCheckConcern extends ConcernOf<Entit
             return uow.identity();
         }
 
-        public EntityState newEntityState(EntityReference anIdentity, EntityDescriptor entityDescriptor) throws EntityStoreException
+        public EntityState newEntityState( EntityReference anIdentity, EntityDescriptor entityDescriptor ) throws EntityStoreException
         {
             return uow.newEntityState( anIdentity, entityDescriptor );
         }
 
         public StateCommitter apply() throws EntityStoreException
         {
-            versions.checkForConcurrentModification(loaded, module );
+            versions.checkForConcurrentModification( loaded, module );
 
             final StateCommitter committer = uow.apply();
 
@@ -95,13 +94,13 @@ public abstract class ConcurrentModificationCheckConcern extends ConcernOf<Entit
                 public void commit()
                 {
                     committer.commit();
-                    versions.forgetVersions(loaded);
+                    versions.forgetVersions( loaded );
                 }
 
                 public void cancel()
                 {
                     committer.cancel();
-                    versions.forgetVersions(loaded);
+                    versions.forgetVersions( loaded );
                 }
             };
         }
@@ -111,9 +110,10 @@ public abstract class ConcurrentModificationCheckConcern extends ConcernOf<Entit
             try
             {
                 uow.discard();
-            } finally
+            }
+            finally
             {
-                versions.forgetVersions(loaded);
+                versions.forgetVersions( loaded );
             }
         }
 
@@ -122,7 +122,7 @@ public abstract class ConcurrentModificationCheckConcern extends ConcernOf<Entit
         {
             EntityState entityState = uow.getEntityState( anIdentity );
             versions.rememberVersion( entityState.identity(), entityState.version() );
-            loaded.add(entityState);
+            loaded.add( entityState );
             return entityState;
         }
 

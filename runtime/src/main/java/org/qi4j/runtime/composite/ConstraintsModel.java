@@ -14,19 +14,18 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.common.InvalidApplicationException;
-import org.qi4j.api.constraint.Constraint;
-import org.qi4j.api.constraint.ConstraintImplementationNotFoundException;
-import org.qi4j.api.constraint.Constraints;
-import static org.qi4j.api.util.Classes.*;
-import static org.qi4j.runtime.util.Annotations.*;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.qi4j.api.common.InvalidApplicationException;
+import org.qi4j.api.constraint.Constraint;
+import org.qi4j.api.constraint.ConstraintImplementationNotFoundException;
+import org.qi4j.api.constraint.Constraints;
+import static org.qi4j.api.util.Classes.*;
+import static org.qi4j.runtime.util.Annotations.*;
 
 /**
  * JAVADOC

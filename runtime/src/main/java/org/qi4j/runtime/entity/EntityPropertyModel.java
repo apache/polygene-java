@@ -14,14 +14,13 @@
 
 package org.qi4j.runtime.entity;
 
+import java.lang.reflect.Method;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PersistentPropertyModel;
 import org.qi4j.runtime.unitofwork.BuilderEntityState;
 import org.qi4j.spi.entity.EntityState;
-
-import java.lang.reflect.Method;
 
 /**
  * JAVADOC
@@ -44,7 +43,7 @@ public final class EntityPropertyModel extends PersistentPropertyModel
         return null;
     }
 
-    public <T> Property<T> newInstance( EntityState state)
+    public <T> Property<T> newInstance( EntityState state )
     {
         Property property;
         if( isComputed() )

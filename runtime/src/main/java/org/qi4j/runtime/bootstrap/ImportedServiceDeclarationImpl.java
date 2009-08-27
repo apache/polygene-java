@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.io.Serializable;
+import java.util.List;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -22,9 +24,6 @@ import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.bootstrap.ImportedServiceDeclaration;
 import org.qi4j.runtime.service.ImportedServiceModel;
 import org.qi4j.spi.service.importer.InstanceImporter;
-
-import java.io.Serializable;
-import java.util.List;
 
 /**
  * Declaration of an imported Service. Created by {@link ModuleAssemblyImpl#importServices(Class[])}.
@@ -89,7 +88,8 @@ public final class ImportedServiceDeclarationImpl
                                                                               new MetaInfo( metaInfo ).withAnnotations( serviceType ),
                                                                               moduleAssembly.name() );
                 serviceModels.add( serviceModel );
-            } catch (Exception e)
+            }
+            catch( Exception e )
             {
                 throw new InvalidApplicationException( "Could not register " + serviceType.getName(), e );
             }

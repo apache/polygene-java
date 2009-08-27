@@ -14,20 +14,19 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.TransientDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.bootstrap.TransientDeclaration;
 import org.qi4j.runtime.composite.TransientModel;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addTransients(Class[])}.
@@ -90,8 +89,9 @@ public final class TransientDeclarationImpl
                                                                          visibility,
                                                                          compositeMetaInfo,
                                                                          propertyDeclarations, concerns, sideEffects, mixins );
-                aTransients.add(transientModel);
-            } catch (Exception e)
+                aTransients.add( transientModel );
+            }
+            catch( Exception e )
             {
                 throw new InvalidApplicationException( "Could not register " + compositeType.getName(), e );
             }

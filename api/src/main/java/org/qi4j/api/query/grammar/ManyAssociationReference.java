@@ -18,7 +18,6 @@ package org.qi4j.api.query.grammar;
 
 /**
  * An expression related to {@link org.qi4j.api.entity.association.ManyAssociation}.
- *
  */
 public interface ManyAssociationReference
     extends AssociationReference

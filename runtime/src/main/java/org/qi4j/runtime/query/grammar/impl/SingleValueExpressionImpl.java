@@ -22,7 +22,6 @@ import org.qi4j.api.query.grammar.SingleValueExpression;
 
 /**
  * A simple value holder.
- *
  */
 public final class SingleValueExpressionImpl<T>
     implements SingleValueExpression<T>

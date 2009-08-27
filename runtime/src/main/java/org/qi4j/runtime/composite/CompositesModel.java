@@ -14,14 +14,13 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
+import java.util.List;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
-
-import java.io.Serializable;
-import java.util.List;
 
 /**
  * JAVADOC
@@ -59,7 +58,7 @@ public class CompositesModel
         TransientModel foundModel = null;
         for( TransientModel aTransient : compositeModels )
         {
-            if (Composite.class.isAssignableFrom(mixinType))
+            if( Composite.class.isAssignableFrom( mixinType ) )
             {
                 if( mixinType.equals( aTransient.type() ) && aTransient.visibility() == visibility )
                 {
@@ -72,7 +71,8 @@ public class CompositesModel
                         foundModel = aTransient;
                     }
                 }
-            } else
+            }
+            else
             {
                 if( mixinType.isAssignableFrom( aTransient.type() ) && aTransient.visibility() == visibility )
                 {

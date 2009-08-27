@@ -14,6 +14,14 @@
 
 package org.qi4j.runtime.entity.association;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.TransientComposite;
@@ -34,15 +42,6 @@ import org.qi4j.runtime.unitofwork.BuilderEntityState;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationType;
-
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.List;
 
 /**
  * JAVADOC
@@ -95,7 +94,7 @@ public final class ManyAssociationModel
         this.accessor = accessor;
         initialize();
         this.manyAssociationType = new ManyAssociationType( qualifiedName, getRawClass( type ).getName(), queryable );
-        this.builderInfo = new GenericAssociationInfo(accessor, metaInfo, false);
+        this.builderInfo = new GenericAssociationInfo( accessor, metaInfo, false );
     }
 
     private void initialize()

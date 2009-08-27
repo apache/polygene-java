@@ -14,19 +14,18 @@
 
 package org.qi4j.spi.value;
 
-import org.qi4j.api.common.TypeName;
-import org.qi4j.api.structure.Module;
-import org.qi4j.api.util.Classes;
-import org.qi4j.spi.util.json.JSONArray;
-import org.qi4j.spi.util.json.JSONException;
-import org.qi4j.spi.util.json.JSONWriter;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import org.qi4j.api.common.TypeName;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.util.Classes;
+import org.qi4j.spi.util.json.JSONArray;
+import org.qi4j.spi.util.json.JSONException;
+import org.qi4j.spi.util.json.JSONWriter;
 
 /**
  * Collection type
@@ -85,10 +84,10 @@ public final class CollectionType
             coll = new LinkedHashSet<Object>();
         }
 
-        for (int i = 0; i < array.length(); i++)
+        for( int i = 0; i < array.length(); i++ )
         {
-            Object value = array.get(i);
-            coll.add(collectedType.fromJSON(value, module));
+            Object value = array.get( i );
+            coll.add( collectedType.fromJSON( value, module ) );
         }
 
         return coll;

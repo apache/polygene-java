@@ -14,6 +14,14 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import net.sf.cglib.proxy.Factory;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -23,15 +31,6 @@ import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.util.Annotations;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
-
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 /**
  * JAVADOC
@@ -49,19 +48,20 @@ public final class ConstructorsModel
 
         constructorModels = new ArrayList<ConstructorModel>();
         Constructor[] realConstructors = this.fragmentClass.getDeclaredConstructors();
-        Class injectionClass = Factory.class.isAssignableFrom(fragmentClass) ? fragmentClass.getSuperclass() : this.fragmentClass;
-        for (int i = 0; i < realConstructors.length; i++)
+        Class injectionClass = Factory.class.isAssignableFrom( fragmentClass ) ? fragmentClass.getSuperclass() : this.fragmentClass;
+        for( int i = 0; i < realConstructors.length; i++ )
         {
-            Constructor constructor = realConstructors[i];
+            Constructor constructor = realConstructors[ i ];
             try
             {
-                Constructor injectionConstructor = injectionClass.getConstructor(constructor.getParameterTypes());
+                Constructor injectionConstructor = injectionClass.getConstructor( constructor.getParameterTypes() );
                 ConstructorModel constructorModel = newConstructorModel( this.fragmentClass, constructor, injectionConstructor );
                 if( constructorModel != null )
                 {
                     constructorModels.add( constructorModel );
                 }
-            } catch (NoSuchMethodException e)
+            }
+            catch( NoSuchMethodException e )
             {
                 // Ignore and continue
             }
@@ -73,7 +73,7 @@ public final class ConstructorsModel
         return fragmentClass;
     }
 
-    private ConstructorModel newConstructorModel(Class fragmentClass, Constructor realConstructor, Constructor injectedConstructor)
+    private ConstructorModel newConstructorModel( Class fragmentClass, Constructor realConstructor, Constructor injectedConstructor )
     {
         int idx = 0;
         InjectedParametersModel parameters = new InjectedParametersModel();
@@ -92,7 +92,7 @@ public final class ConstructorsModel
             parameters.addDependency( dependencyModel );
             idx++;
         }
-        return new ConstructorModel(realConstructor, parameters );
+        return new ConstructorModel( realConstructor, parameters );
     }
 
     public void visitModel( ModelVisitor modelVisitor )

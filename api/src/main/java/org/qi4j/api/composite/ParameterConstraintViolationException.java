@@ -61,6 +61,7 @@ public class ParameterConstraintViolationException extends ConstraintViolationEx
         this.instanceName = instanceName;
         this.type = type;
     }
+
     /**
      * Creates localized messages of all the constraint violations that have occurred.
      * <p/>

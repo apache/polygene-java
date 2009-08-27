@@ -14,7 +14,16 @@
 
 package org.qi4j.runtime.structure;
 
-import org.qi4j.runtime.composite.*;
+import org.qi4j.runtime.composite.AbstractConstraintModel;
+import org.qi4j.runtime.composite.CompositeMethodModel;
+import org.qi4j.runtime.composite.ConstructorModel;
+import org.qi4j.runtime.composite.MethodConcernModel;
+import org.qi4j.runtime.composite.MethodConcernsModel;
+import org.qi4j.runtime.composite.MethodConstraintsModel;
+import org.qi4j.runtime.composite.MethodSideEffectModel;
+import org.qi4j.runtime.composite.MethodSideEffectsModel;
+import org.qi4j.runtime.composite.MixinModel;
+import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;
 import org.qi4j.runtime.injection.InjectedMethodModel;
@@ -41,7 +50,7 @@ public class ModelVisitor
     {
     }
 
-    public void visit( TransientModel transientModel)
+    public void visit( TransientModel transientModel )
     {
     }
 

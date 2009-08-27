@@ -21,7 +21,6 @@ import java.math.BigDecimal;
  * numerical properties.
  *
  * add(object.number(), 5)
- *
  */
 public final class Numbers
 {

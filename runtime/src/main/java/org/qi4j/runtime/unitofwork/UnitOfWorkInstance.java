@@ -16,6 +16,13 @@
  */
 package org.qi4j.runtime.unitofwork;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.composite.AmbiguousTypeException;
@@ -42,14 +49,6 @@ import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
 
 public final class UnitOfWorkInstance
 {
@@ -144,7 +143,7 @@ public final class UnitOfWorkInstance
                     {
                         continue;
                     }
-                    
+
                     // Get the selected model
                     model = (EntityModel) entityState.entityDescriptor();
                     module = potentialModule;
@@ -344,7 +343,7 @@ public final class UnitOfWorkInstance
         // Call callbacks
         notifyAfterCompletion( currentCallbacks, DISCARDED );
 
-        for (EntityStoreUnitOfWork entityStoreUnitOfWork : storeUnitOfWork.values())
+        for( EntityStoreUnitOfWork entityStoreUnitOfWork : storeUnitOfWork.values() )
         {
             entityStoreUnitOfWork.discard();
         }
@@ -585,7 +584,6 @@ public final class UnitOfWorkInstance
     {
         return paused;
     }
-
 
 
     @Override public String toString()

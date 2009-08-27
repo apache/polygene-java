@@ -17,6 +17,8 @@
  */
 package org.qi4j.runtime.injection.provider;
 
+import java.io.Serializable;
+import java.lang.reflect.Type;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.object.ObjectBuilderFactory;
@@ -32,9 +34,6 @@ import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
-
-import java.io.Serializable;
-import java.lang.reflect.Type;
 
 public final class StructureInjectionProviderFactory
     implements InjectionProviderFactory, Serializable
@@ -93,11 +92,11 @@ public final class StructureInjectionProviderFactory
             {
                 return context.moduleInstance().layerInstance();
             }
-            else if( Application.class.isAssignableFrom( (Class<?>) type ))
+            else if( Application.class.isAssignableFrom( (Class<?>) type ) )
             {
                 return context.moduleInstance().layerInstance().applicationInstance();
             }
-            else if( Qi4j.class.isAssignableFrom((Class<?>) type))
+            else if( Qi4j.class.isAssignableFrom( (Class<?>) type ) )
             {
                 return context.moduleInstance().layerInstance().applicationInstance().runtime();
             }

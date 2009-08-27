@@ -23,7 +23,6 @@ import org.qi4j.api.common.QualifiedName;
 
 /**
  * {@code ComputedPropertyInstance} is the base implementation of {@link Property}.
- *
  */
 public abstract class ComputedPropertyInstance<T>
     extends AbstractPropertyInstance<T>

@@ -26,7 +26,6 @@ import org.qi4j.runtime.query.QueryException;
 
 /**
  * Generic {@link org.qi4j.api.query.grammar.ComparisonPredicate} implementation.
- *
  */
 abstract class ComparisonPredicateImpl<T>
     implements ComparisonPredicate<T>

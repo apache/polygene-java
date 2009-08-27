@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.property;
 
+import java.lang.reflect.Method;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.Queryable;
@@ -24,14 +25,12 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.ModuleVisitor;
 import org.qi4j.runtime.value.ValueModel;
+import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.util.json.JSONException;
 import org.qi4j.spi.util.json.JSONStringer;
 import org.qi4j.spi.util.json.JSONTokener;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.value.ValueType;
-
-import java.lang.reflect.Method;
 
 /**
  * JAVADOC
@@ -65,7 +64,7 @@ public abstract class PersistentPropertyModel
             type = PropertyType.PropertyTypeEnum.MUTABLE;
         }
 
-        propertyType = new PropertyType( qualifiedName(), ValueType.newValueType( type(), accessor.getDeclaringClass(), compositeType), this.queryable, type );
+        propertyType = new PropertyType( qualifiedName(), ValueType.newValueType( type(), accessor.getDeclaringClass(), compositeType ), this.queryable, type );
 
         propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), qualifiedName(), type() );
 
@@ -81,7 +80,7 @@ public abstract class PersistentPropertyModel
         return queryable;
     }
 
-    public String toJSON( Object value)
+    public String toJSON( Object value )
     {
         if( value == null )
         {
@@ -94,9 +93,10 @@ public abstract class PersistentPropertyModel
         {
             valueType.toJSON( value, writer );
             return writer.toString();
-        } catch (JSONException e)
+        }
+        catch( JSONException e )
         {
-            throw new IllegalStateException("Could not serialize value to JSON", e);
+            throw new IllegalStateException( "Could not serialize value to JSON", e );
         }
     }
 
@@ -104,7 +104,7 @@ public abstract class PersistentPropertyModel
     {
         try
         {
-            return (T) fromJSON(moduleInstance, new JSONTokener(value).nextValue());
+            return (T) fromJSON( moduleInstance, new JSONTokener( value ).nextValue() );
         }
         catch( Exception e )
         {
@@ -114,7 +114,7 @@ public abstract class PersistentPropertyModel
 
     public <T> T fromJSON( ModuleInstance moduleInstance, Object value )
     {
-        if( value == null)
+        if( value == null )
         {
             return null;
         }

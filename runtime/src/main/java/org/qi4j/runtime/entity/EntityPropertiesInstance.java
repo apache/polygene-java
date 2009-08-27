@@ -14,13 +14,11 @@
 
 package org.qi4j.runtime.entity;
 
-import org.qi4j.api.property.Property;
-import org.qi4j.runtime.property.PropertiesInstance;
-import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.spi.entity.EntityState;
-
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import org.qi4j.api.property.Property;
+import org.qi4j.runtime.property.PropertiesInstance;
+import org.qi4j.spi.entity.EntityState;
 
 /**
  * JAVADOC
@@ -31,7 +29,7 @@ public class EntityPropertiesInstance
     private EntityPropertiesModel model;
     private EntityState entityState;
 
-    public EntityPropertiesInstance( EntityPropertiesModel model, EntityState entityState)
+    public EntityPropertiesInstance( EntityPropertiesModel model, EntityState entityState )
     {
         super( null );
         this.model = model;
@@ -49,7 +47,7 @@ public class EntityPropertiesInstance
 
         if( property == null )
         {
-            property = model.newInstance( accessor, entityState);
+            property = model.newInstance( accessor, entityState );
             properties.put( accessor, property );
         }
 

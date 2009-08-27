@@ -29,16 +29,16 @@ public abstract class StateChangeNotificationConcern
 {
     @Service Iterable<StateChangeListener> listeners;
 
-    public StateCommitter apply(final Iterable<EntityState> state, String version)
+    public StateCommitter apply( final Iterable<EntityState> state, String version )
     {
-        final StateCommitter committer = next.apply(state, version);
+        final StateCommitter committer = next.apply( state, version );
         return new StateCommitter()
         {
             public void commit()
             {
-                for (StateChangeListener listener : listeners)
+                for( StateChangeListener listener : listeners )
                 {
-                    listener.notifyChanges(state);
+                    listener.notifyChanges( state );
                 }
                 committer.commit();
             }

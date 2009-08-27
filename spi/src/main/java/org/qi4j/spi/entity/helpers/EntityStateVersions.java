@@ -14,6 +14,10 @@
 
 package org.qi4j.spi.entity.helpers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
@@ -26,22 +30,17 @@ import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-
 /**
  * JAVADOC
  */
-@Mixins(EntityStateVersions.EntityStateVersionsMixin.class)
+@Mixins( EntityStateVersions.EntityStateVersionsMixin.class )
 public interface EntityStateVersions
 {
-    void forgetVersions( Iterable<EntityState> states);
+    void forgetVersions( Iterable<EntityState> states );
 
     void rememberVersion( EntityReference identity, String version );
 
-    void checkForConcurrentModification(Iterable<EntityState> loaded, ModuleSPI module)
+    void checkForConcurrentModification( Iterable<EntityState> loaded, ModuleSPI module )
         throws ConcurrentEntityStateModificationException;
 
     class EntityStateVersionsMixin
@@ -53,11 +52,11 @@ public interface EntityStateVersions
         private final Map<EntityReference, String> versions = new WeakHashMap<EntityReference, String>();
         private MetaInfo checkInfo;
 
-        public synchronized void forgetVersions( Iterable<EntityState> states)
+        public synchronized void forgetVersions( Iterable<EntityState> states )
         {
-            for (EntityState state : states)
+            for( EntityState state : states )
             {
-                versions.remove(state.identity());
+                versions.remove( state.identity() );
             }
         }
 
@@ -66,35 +65,41 @@ public interface EntityStateVersions
             versions.put( identity, version );
         }
 
-        public synchronized void checkForConcurrentModification(Iterable<EntityState> loaded, ModuleSPI module)
-                throws ConcurrentEntityStateModificationException
+        public synchronized void checkForConcurrentModification( Iterable<EntityState> loaded, ModuleSPI module )
+            throws ConcurrentEntityStateModificationException
         {
             List<EntityReference> changed = null;
-            for (EntityState entityState : loaded)
+            for( EntityState entityState : loaded )
             {
-                if (entityState.status().equals(EntityStatus.NEW))
+                if( entityState.status().equals( EntityStatus.NEW ) )
+                {
                     continue;
-                
-                String storeVersion = versions.get(entityState.identity());
-                if (storeVersion == null)
+                }
+
+                String storeVersion = versions.get( entityState.identity() );
+                if( storeVersion == null )
                 {
                     checkInfo = new MetaInfo();
-                    EntityStoreUnitOfWork unitOfWork = store.newUnitOfWork(Usecase.DEFAULT, checkInfo, module);
-                    EntityState state = unitOfWork.getEntityState(entityState.identity());
+                    EntityStoreUnitOfWork unitOfWork = store.newUnitOfWork( Usecase.DEFAULT, checkInfo, module );
+                    EntityState state = unitOfWork.getEntityState( entityState.identity() );
                     storeVersion = state.version();
                     unitOfWork.discard();
                 }
 
-                if (!entityState.version().equals(storeVersion))
+                if( !entityState.version().equals( storeVersion ) )
                 {
-                    if (changed == null)
+                    if( changed == null )
+                    {
                         changed = new ArrayList<EntityReference>();
-                    changed.add(entityState.identity());
+                    }
+                    changed.add( entityState.identity() );
                 }
             }
 
-            if (changed != null)
-                throw new ConcurrentEntityStateModificationException(changed);
+            if( changed != null )
+            {
+                throw new ConcurrentEntityStateModificationException( changed );
+            }
         }
     }
 }

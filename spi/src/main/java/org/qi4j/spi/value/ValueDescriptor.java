@@ -24,5 +24,6 @@ public interface ValueDescriptor
     extends AbstractCompositeDescriptor
 {
     StateDescriptor state();
+
     ValueCompositeType valueType();
 }

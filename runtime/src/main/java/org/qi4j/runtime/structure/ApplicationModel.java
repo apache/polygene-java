@@ -14,6 +14,11 @@
 
 package org.qi4j.runtime.structure;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.structure.Application;
@@ -25,12 +30,6 @@ import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationDescriptor;
 import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.spi.structure.DescriptorVisitor;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * JAVADOC
@@ -44,7 +43,7 @@ public final class ApplicationModel
     private final List<LayerModel> layers;
     private final InjectionProviderFactory ipf;
 
-    public ApplicationModel( String name, Application.Mode mode, MetaInfo metaInfo, List<LayerModel> layers)
+    public ApplicationModel( String name, Application.Mode mode, MetaInfo metaInfo, List<LayerModel> layers )
     {
         this.name = name;
         this.mode = mode;
@@ -103,7 +102,7 @@ public final class ApplicationModel
         throws InvalidApplicationException
     {
         List<LayerInstance> layerInstances = new ArrayList<LayerInstance>();
-        ApplicationInstance applicationInstance = new ApplicationInstance( this, runtime, layerInstances);
+        ApplicationInstance applicationInstance = new ApplicationInstance( this, runtime, layerInstances );
 
         // Create layer instances
         Map<LayerModel, LayerInstance> layerInstanceMap = new HashMap<LayerModel, LayerInstance>();

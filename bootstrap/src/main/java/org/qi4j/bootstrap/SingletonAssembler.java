@@ -48,7 +48,7 @@ public abstract class SingletonAssembler
      * @throws IllegalStateException Either if the model can not be created from the disk, or some inconsistency in
      *                               the programming model makes it impossible to create it.
      */
-    public SingletonAssembler( )
+    public SingletonAssembler()
         throws IllegalStateException
     {
         is = new Energy4Java();

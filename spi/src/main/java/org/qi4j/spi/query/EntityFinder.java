@@ -25,7 +25,6 @@ import org.qi4j.api.query.grammar.OrderBy;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 public interface EntityFinder
 {

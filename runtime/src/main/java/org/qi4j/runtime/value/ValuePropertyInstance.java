@@ -18,7 +18,6 @@ import org.qi4j.api.property.PropertyInfo;
 
 /**
  * {@code ValuePropertyInstance} represents a ValueComposite property. It is always immutable.
- *
  */
 public class ValuePropertyInstance<T> extends AbstractPropertyInstance<T>
 {

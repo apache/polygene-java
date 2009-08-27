@@ -18,7 +18,11 @@
  */
 package org.qi4j.runtime.query;
 
-import org.qi4j.api.query.*;
+import org.qi4j.api.query.MissingIndexingSystemException;
+import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryBuilder;
+import org.qi4j.api.query.QueryBuilderFactory;
+import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -28,7 +32,6 @@ import org.qi4j.spi.query.NamedEntityFinder;
 
 /**
  * Default implementation of {@link QueryBuilderFactory}
- *
  */
 public final class QueryBuilderFactoryImpl
     implements QueryBuilderFactory
@@ -45,7 +48,7 @@ public final class QueryBuilderFactoryImpl
      * Constructor.
      *
      * @param classLoader The classloader to use for deserialization of Serializable instances. (Not used currently)
-     * @param finder     The ServiceFinder of the Module this QueryBuilderFactory belongs to.
+     * @param finder      The ServiceFinder of the Module this QueryBuilderFactory belongs to.
      */
     public QueryBuilderFactoryImpl( ClassLoader classLoader, ServiceFinder finder )
     {

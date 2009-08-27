@@ -20,7 +20,6 @@ package org.qi4j.api.query.grammar;
 
 /**
  * A logical "AND" between two boolean expressions.
- *
  */
 public interface Conjunction
     extends BooleanExpression

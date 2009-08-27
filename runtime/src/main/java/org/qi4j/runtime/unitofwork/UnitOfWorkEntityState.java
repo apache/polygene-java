@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.unitofwork;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
@@ -21,9 +23,6 @@ import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * JAVADOC
@@ -86,7 +85,7 @@ class UnitOfWorkEntityState
 
     public boolean isOfType( TypeName type )
     {
-        return parentState.isOfType(type);
+        return parentState.isOfType( type );
     }
 
     public EntityDescriptor entityDescriptor()
@@ -153,7 +152,7 @@ class UnitOfWorkEntityState
 
         // Copy parent
         ManyAssociationState parentManyAssociation = parentState.getManyAssociation( stateName );
-        ManyAssociationState unitManyAssociation = new BuilderManyAssociationState( parentManyAssociation);
+        ManyAssociationState unitManyAssociation = new BuilderManyAssociationState( parentManyAssociation );
         manyAssociations.put( stateName, unitManyAssociation );
         return unitManyAssociation;
     }

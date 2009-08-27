@@ -14,13 +14,12 @@
 
 package org.qi4j.spi.entity;
 
+import java.io.Serializable;
+import java.util.Set;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
-
-import java.io.Serializable;
-import java.util.Set;
 
 /**
  * SPI-level description of an Entity type. This contains

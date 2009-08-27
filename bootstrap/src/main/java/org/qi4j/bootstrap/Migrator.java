@@ -21,5 +21,5 @@ import org.qi4j.spi.entity.EntityState;
  */
 public interface Migrator
 {
-    String defaultValueFor(EntityState state);
+    String defaultValueFor( EntityState state );
 }

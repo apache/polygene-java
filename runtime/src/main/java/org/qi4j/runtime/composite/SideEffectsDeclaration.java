@@ -14,12 +14,6 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.sideeffect.SideEffects;
-import static org.qi4j.api.util.Classes.*;
-import org.qi4j.api.util.MethodKeyMap;
-import org.qi4j.runtime.util.Annotations;
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -29,6 +23,11 @@ import static java.util.Collections.*;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.sideeffect.SideEffects;
+import static org.qi4j.api.util.Classes.*;
+import org.qi4j.api.util.MethodKeyMap;
+import org.qi4j.runtime.util.Annotations;
 
 /**
  * JAVADOC

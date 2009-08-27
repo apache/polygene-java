@@ -17,12 +17,11 @@
  */
 package org.qi4j.test.mock;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.test.mock.internal.MockRepository;
 import org.qi4j.test.mock.internal.MockResolver;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 
 /**
  * Generic mixin for mock composites. Overrides any generic mixins but not typed mixins, as typed mixins have precedence
@@ -31,7 +30,6 @@ import java.lang.reflect.Method;
  * {@link org.qi4j.test.mock.MockComposite}.
  * If there is no mock registered to handle the method invocation invocation will fail by throwing an
  * IllegalStateException.
- *
  */
 public class MockPlayerMixin
     implements InvocationHandler

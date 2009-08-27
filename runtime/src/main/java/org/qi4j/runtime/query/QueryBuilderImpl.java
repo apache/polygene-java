@@ -28,7 +28,6 @@ import org.qi4j.spi.query.EntityFinder;
 
 /**
  * Default implementation of {@link QueryBuilder}
- *
  */
 final class QueryBuilderImpl<T>
     implements QueryBuilder<T>
@@ -54,7 +53,7 @@ final class QueryBuilderImpl<T>
      * Constructor.
      *
      * @param entityFinder entity finder to be used to locate entities; canot be null
-     * @param classLoader The classloader to use for deserializing Serializable instances. (Not used at the moment.)
+     * @param classLoader  The classloader to use for deserializing Serializable instances. (Not used at the moment.)
      * @param resultType   type of queried entities; cannot be null
      */
     public QueryBuilderImpl( final EntityFinder entityFinder,
@@ -90,11 +89,11 @@ final class QueryBuilderImpl<T>
     /**
      * @see QueryBuilder#newQuery(org.qi4j.api.unitofwork.UnitOfWork)
      */
-    public Query<T> newQuery(UnitOfWork unitOfWork)
+    public Query<T> newQuery( UnitOfWork unitOfWork )
     {
-        if (unitOfWork == null)
+        if( unitOfWork == null )
         {
-            throw new IllegalArgumentException("UnitOfWork may not be null");
+            throw new IllegalArgumentException( "UnitOfWork may not be null" );
         }
 
         if( entityFinder == null )

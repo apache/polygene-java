@@ -1,19 +1,18 @@
 package org.qi4j.runtime.entity.association;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.AssociationInfo;
+import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
-
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
-import java.lang.reflect.InvocationHandler;
 
 /**
  * Implementation of AbstractAssociation. Includes helper methods for subclasses
@@ -60,7 +59,7 @@ public abstract class AbstractAssociationInstance<T>
 
     protected T getEntity( EntityReference entityId )
     {
-        if( entityId == null)
+        if( entityId == null )
         {
             return null;
         }
@@ -87,9 +86,9 @@ public abstract class AbstractAssociationInstance<T>
         }
 
         InvocationHandler handler = Proxy.getInvocationHandler( composite );
-        if (handler instanceof ProxyReferenceInvocationHandler)
+        if( handler instanceof ProxyReferenceInvocationHandler )
         {
-            handler = Proxy.getInvocationHandler(((ProxyReferenceInvocationHandler)handler).proxy());
+            handler = Proxy.getInvocationHandler( ( (ProxyReferenceInvocationHandler) handler ).proxy() );
         }
         EntityInstance instance = (EntityInstance) handler;
         return instance.identity();

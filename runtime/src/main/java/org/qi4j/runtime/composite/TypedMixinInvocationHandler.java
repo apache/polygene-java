@@ -11,11 +11,10 @@
 */
 package org.qi4j.runtime.composite;
 
-import net.sf.cglib.proxy.MethodProxy;
-import org.qi4j.spi.composite.InvalidCompositeException;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import net.sf.cglib.proxy.MethodProxy;
+import org.qi4j.spi.composite.InvalidCompositeException;
 
 /**
  * JAVADOC
@@ -25,8 +24,12 @@ public final class TypedMixinInvocationHandler
 {
     private MethodProxy methodProxy;
 
-    public TypedMixinInvocationHandler(MethodProxy methodProxy)
+    public TypedMixinInvocationHandler( MethodProxy methodProxy )
     {
+        if( methodProxy == null )
+        {
+            throw new NullPointerException( "MethodProxy must not be null." );
+        }
         this.methodProxy = methodProxy;
     }
 
@@ -34,7 +37,7 @@ public final class TypedMixinInvocationHandler
     {
         try
         {
-            return methodProxy.invokeSuper(fragment, args);
+            return methodProxy.invokeSuper( fragment, args );
         }
         catch( InvocationTargetException e )
         {

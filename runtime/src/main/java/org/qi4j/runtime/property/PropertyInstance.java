@@ -20,7 +20,6 @@ import org.qi4j.runtime.composite.ConstraintsCheck;
 
 /**
  * {@code PropertyInstance} represents a property.
- *
  */
 public class PropertyInstance<T> extends AbstractPropertyInstance<T>
 {
@@ -72,7 +71,6 @@ public class PropertyInstance<T> extends AbstractPropertyInstance<T>
 
         value = aNewValue;
     }
-
 
 
     /**

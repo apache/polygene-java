@@ -14,6 +14,10 @@
 
 package org.qi4j.runtime.structure;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.AmbiguousTypeException;
@@ -29,7 +33,6 @@ import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCallback;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.runtime.entity.EntityInstance;
@@ -39,11 +42,6 @@ import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityStore;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * JAVADOC
@@ -190,10 +188,10 @@ public class ModuleUnitOfWork
         EntityStore entityStore = entityModuleInstance.entities().entityStore();
 
         // Generate id if necessary
-        if (identity == null)
+        if( identity == null )
         {
             IdentityGenerator idGen = entityModuleInstance.entities().identityGenerator();
-            identity = idGen.generate(entityModel.type());
+            identity = idGen.generate( entityModel.type() );
         }
 
         EntityBuilder<T> builder;
@@ -250,7 +248,7 @@ public class ModuleUnitOfWork
             compositeInstance.remove( this );
             uow.remove( compositeInstance.identity() );
         }
-        else if( compositeInstance.status() == EntityStatus.LOADED || compositeInstance.status() == EntityStatus.UPDATED)
+        else if( compositeInstance.status() == EntityStatus.LOADED || compositeInstance.status() == EntityStatus.UPDATED )
         {
             compositeInstance.remove( this );
         }

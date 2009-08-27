@@ -28,7 +28,7 @@ public interface EntityStore
 {
     EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, MetaInfo unitOfWorkMetaInfo, ModuleSPI module );
 
-    EntityStoreUnitOfWork visitEntityStates(EntityStateVisitor visitor, ModuleSPI moduleInstance);
+    EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI moduleInstance );
 
     interface EntityStateVisitor
     {

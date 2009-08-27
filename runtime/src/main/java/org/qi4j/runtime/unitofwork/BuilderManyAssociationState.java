@@ -14,12 +14,11 @@
 
 package org.qi4j.runtime.unitofwork;
 
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.ManyAssociationState;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.ManyAssociationState;
 
 /**
  * Default implementation of ManyAssociationState that also
@@ -30,7 +29,7 @@ public final class BuilderManyAssociationState
 {
     private List<EntityReference> references;
 
-    public BuilderManyAssociationState( ManyAssociationState state)
+    public BuilderManyAssociationState( ManyAssociationState state )
     {
         // Copy
         for( int i = 0; i < state.count(); i++ )

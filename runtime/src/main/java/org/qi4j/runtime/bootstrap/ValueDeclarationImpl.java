@@ -14,18 +14,17 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.common.InvalidApplicationException;
-import org.qi4j.api.value.ValueComposite;
-import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.bootstrap.ValueDeclaration;
-import org.qi4j.runtime.value.ValueModel;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.qi4j.api.common.InvalidApplicationException;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.value.ValueComposite;
+import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.bootstrap.ValueDeclaration;
+import org.qi4j.runtime.value.ValueModel;
 
 /**
  * Declaration of a ValueComposite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addValues(Class[])}.
@@ -89,9 +88,10 @@ public final class ValueDeclarationImpl
                                                              sideEffects,
                                                              mixins );
                 values.add( valueModel );
-            } catch (Exception e)
+            }
+            catch( Exception e )
             {
-                throw new InvalidApplicationException("Could not register "+compositeType.getName(), e);
+                throw new InvalidApplicationException( "Could not register " + compositeType.getName(), e );
             }
         }
     }

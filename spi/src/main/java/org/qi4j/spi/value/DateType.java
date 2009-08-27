@@ -14,17 +14,16 @@
 
 package org.qi4j.spi.value;
 
-import static org.qi4j.api.common.TypeName.*;
-import org.qi4j.api.structure.Module;
-import org.qi4j.spi.util.json.JSONException;
-import org.qi4j.spi.util.json.JSONWriter;
-
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import static org.qi4j.api.common.TypeName.*;
+import org.qi4j.api.structure.Module;
+import org.qi4j.spi.util.json.JSONException;
+import org.qi4j.spi.util.json.JSONWriter;
 
 /**
  * Date type. Use ISO8601 format (http://www.w3.org/TR/NOTE-datetime). Assumes UTC time.
@@ -48,7 +47,7 @@ public final class DateType
         protected DateFormat initialValue()
         {
             SimpleDateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" );
-            dateFormat.setTimeZone( TimeZone.getTimeZone( "UTC" ));
+            dateFormat.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
             return dateFormat;
         }
     };
@@ -72,7 +71,7 @@ public final class DateType
     {
         Date date = (Date) value;
         String dateString = ISO8601_UTC.get().format( date );
-        json.value(dateString);
+        json.value( dateString );
     }
 
     public Object fromJSON( Object json, Module module )
@@ -88,20 +87,22 @@ public final class DateType
         {
             try
             {
-                Date date = ISO8601.get().parse(stringDate);
+                Date date = ISO8601.get().parse( stringDate );
                 return date;
-            } catch (ParseException e1)
+            }
+            catch( ParseException e1 )
             {
                 // @millis@ format
-                if (stringDate.startsWith("@") && stringDate.endsWith("@"))
+                if( stringDate.startsWith( "@" ) && stringDate.endsWith( "@" ) )
                 {
-                    long time = Long.parseLong(stringDate.substring(1, stringDate.length()-1));
-                    Date date = new Date(time);
+                    long time = Long.parseLong( stringDate.substring( 1, stringDate.length() - 1 ) );
+                    Date date = new Date( time );
                     return date;
-                } else if (stringDate.startsWith("/Date(") && stringDate.endsWith(")/")) // Microsoft format
+                }
+                else if( stringDate.startsWith( "/Date(" ) && stringDate.endsWith( ")/" ) ) // Microsoft format
                 {
-                    long time = Long.parseLong(stringDate.substring(6, stringDate.length()-2));
-                    Date date = new Date(time);
+                    long time = Long.parseLong( stringDate.substring( 6, stringDate.length() - 2 ) );
+                    Date date = new Date( time );
                     return date;
                 }
                 throw new IllegalStateException( "Illegal date:" + stringDate );

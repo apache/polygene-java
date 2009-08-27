@@ -18,12 +18,15 @@
  */
 package org.qi4j.api.query;
 
+import java.util.Collection;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.query.grammar.AssociationIsNotNullPredicate;
 import org.qi4j.api.query.grammar.AssociationIsNullPredicate;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.Conjunction;
+import org.qi4j.api.query.grammar.ContainsAllPredicate;
+import org.qi4j.api.query.grammar.ContainsPredicate;
 import org.qi4j.api.query.grammar.Disjunction;
 import org.qi4j.api.query.grammar.EqualsPredicate;
 import org.qi4j.api.query.grammar.GreaterOrEqualPredicate;
@@ -39,9 +42,6 @@ import org.qi4j.api.query.grammar.PropertyIsNullPredicate;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.query.grammar.SingleValueExpression;
 import org.qi4j.api.query.grammar.VariableValueExpression;
-import org.qi4j.api.query.grammar.ContainsAllPredicate;
-import org.qi4j.api.query.grammar.ContainsPredicate;
-import java.util.Collection;
 
 /**
  * SPI interface for QueryExpressionsProviders

@@ -20,7 +20,6 @@ package org.qi4j.api.query.grammar;
 
 /**
  * A logical "OR" between two boolean expressions.
- *
  */
 public interface Disjunction
     extends BooleanExpression

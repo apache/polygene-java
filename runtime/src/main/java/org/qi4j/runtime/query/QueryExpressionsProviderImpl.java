@@ -17,6 +17,9 @@
  */
 package org.qi4j.runtime.query;
 
+import java.lang.reflect.Method;
+import static java.lang.reflect.Proxy.*;
+import java.util.Collection;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.query.QueryExpressions;
@@ -67,10 +70,6 @@ import org.qi4j.runtime.query.grammar.impl.VariableValueExpressionImpl;
 import org.qi4j.runtime.query.proxy.ManyAssociationReferenceProxy;
 import org.qi4j.runtime.query.proxy.MixinTypeProxy;
 
-import java.lang.reflect.Method;
-import static java.lang.reflect.Proxy.*;
-import java.util.Collection;
-
 public class QueryExpressionsProviderImpl
     implements QueryExpressionsProvider
 {
@@ -80,13 +79,13 @@ public class QueryExpressionsProviderImpl
     {
         try
         {
-            identity = Identity.class.getMethod("identity");
-        } catch (NoSuchMethodException e)
+            identity = Identity.class.getMethod( "identity" );
+        }
+        catch( NoSuchMethodException e )
         {
             e.printStackTrace();
         }
     }
-
 
 
     /**
@@ -143,8 +142,8 @@ public class QueryExpressionsProviderImpl
     public <T> EqualsPredicate<String> newEqualsPredicate( AssociationReference tAssociationReference, SingleValueExpression<T> tStaticValueExpression )
     {
         Identity id = (Identity) tStaticValueExpression.value();
-        SingleValueExpression<String> idExpression = new SingleValueExpressionImpl<String>(id.identity().get());
-        return new EqualsPredicateImpl<String>(new PropertyReferenceImpl<String>(identity, tAssociationReference, null), idExpression);
+        SingleValueExpression<String> idExpression = new SingleValueExpressionImpl<String>( id.identity().get() );
+        return new EqualsPredicateImpl<String>( new PropertyReferenceImpl<String>( identity, tAssociationReference, null ), idExpression );
     }
 
     public <T> EqualsPredicate<T> newEqualsPredicate( AssociationReference tAssociationReference, VariableValueExpression<T> valueExpression )

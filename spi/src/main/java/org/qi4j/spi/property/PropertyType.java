@@ -14,10 +14,9 @@
 
 package org.qi4j.spi.property;
 
+import java.io.Serializable;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.value.ValueType;
-
-import java.io.Serializable;
 
 /**
  * JAVADOC

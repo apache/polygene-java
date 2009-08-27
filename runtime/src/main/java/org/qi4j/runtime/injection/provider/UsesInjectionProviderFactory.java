@@ -1,10 +1,11 @@
 package org.qi4j.runtime.injection.provider;
 
+import java.io.Serializable;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.runtime.composite.TransientBuilderInstance;
 import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.composite.TransientBuilderInstance;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
@@ -12,8 +13,6 @@ import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.object.ObjectBuilderInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
-
-import java.io.Serializable;
 
 /**
  * JAVADOC
@@ -70,8 +69,8 @@ public final class UsesInjectionProviderFactory
                     else
                     {
                         StateHolder stateHolder = context.state();
-                        compositeFinder.model.state().checkConstraints(stateHolder);
-                        usesObject = compositeFinder.model.newCompositeInstance( compositeFinder.module, uses, stateHolder);
+                        compositeFinder.model.state().checkConstraints( stateHolder );
+                        usesObject = compositeFinder.model.newCompositeInstance( compositeFinder.module, uses, stateHolder );
                     }
                 }
                 else

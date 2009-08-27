@@ -14,10 +14,9 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.constraint.Constraint;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import org.qi4j.api.constraint.Constraint;
 
 /**
  * JAVADOC

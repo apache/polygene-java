@@ -14,9 +14,8 @@
 
 package org.qi4j.bootstrap;
 
-import org.qi4j.api.common.MetaInfo;
-
 import java.lang.reflect.Method;
+import org.qi4j.api.common.MetaInfo;
 
 /**
  * This provides declared property information that

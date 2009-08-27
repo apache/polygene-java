@@ -14,13 +14,12 @@
 
 package org.qi4j.spi.value;
 
+import java.lang.reflect.Type;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.util.json.JSONException;
 import org.qi4j.spi.util.json.JSONWriter;
-
-import java.lang.reflect.Type;
 
 /**
  * {@link EntityReference} type
@@ -45,7 +44,7 @@ public final class EntityReferenceType
 
     public void toJSON( Object value, JSONWriter json ) throws JSONException
     {
-        json.value(value.toString());
+        json.value( value.toString() );
     }
 
     public Object fromJSON( Object json, Module module )

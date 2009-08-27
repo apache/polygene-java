@@ -14,6 +14,11 @@
 
 package org.qi4j.runtime.entity;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
@@ -53,12 +58,6 @@ import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * JAVADOC
@@ -106,7 +105,7 @@ public final class EntityModel
                                                                                  concernsDeclaration,
                                                                                  sideEffectsModel,
                                                                                  mixinsModel );
-        stateModel.addStateFor( compositeMethodsModel.methods(), type);
+        stateModel.addStateFor( compositeMethodsModel.methods(), type );
 
         return new EntityModel( type,
                                 visibility,
@@ -203,7 +202,7 @@ public final class EntityModel
         return ( (EntityMixinsModel) mixinsModel ).newMixin( entityInstance, entityState, mixins, method );
     }
 
-    public EntityComposite newProxy( InvocationHandler invocationHandler)
+    public EntityComposite newProxy( InvocationHandler invocationHandler )
     {
         // Instantiate proxy for given composite interface
         try
@@ -216,13 +215,13 @@ public final class EntityModel
         }
     }
 
-    public EntityState newEntityState(EntityStoreUnitOfWork store, EntityReference identity)
+    public EntityState newEntityState( EntityStoreUnitOfWork store, EntityReference identity )
         throws ConstraintViolationException, EntityStoreException
     {
         try
         {
             // New EntityState
-            EntityState entityState = store.newEntityState( identity, this);
+            EntityState entityState = store.newEntityState( identity, this );
 
             // Set identity property
             PropertyTypeDescriptor propertyDescriptor = state().getPropertyByQualifiedName( QualifiedName.fromMethod( IDENTITY_METHOD ) );
@@ -245,7 +244,7 @@ public final class EntityModel
         return type().getName();
     }
 
-    public void initState( EntityState entityState)
+    public void initState( EntityState entityState )
     {
         {
             // Set new properties to default value

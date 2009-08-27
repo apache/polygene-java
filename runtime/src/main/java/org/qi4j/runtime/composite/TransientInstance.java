@@ -16,15 +16,14 @@
 
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import org.qi4j.spi.composite.CompositeInstance;
 
 /**
  * InvocationHandler for proxy objects.
@@ -70,9 +69,9 @@ public class TransientInstance
     }
 
 
-    public Object invokeProxy(Method method, Object[] args) throws Throwable
+    public Object invokeProxy( Method method, Object[] args ) throws Throwable
     {
-        return compositeModel.invoke(this, proxy, method, args, moduleInstance);
+        return compositeModel.invoke( this, proxy, method, args, moduleInstance );
     }
 
     public AbstractCompositeDescriptor descriptor()

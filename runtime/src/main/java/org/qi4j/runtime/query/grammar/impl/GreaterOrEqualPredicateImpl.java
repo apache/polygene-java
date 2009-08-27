@@ -23,7 +23,6 @@ import org.qi4j.api.query.grammar.ValueExpression;
 
 /**
  * Default {@link org.qi4j.api.query.grammar.GreaterOrEqualPredicate} implementation.
- *
  */
 public final class GreaterOrEqualPredicateImpl<T>
     extends ComparisonPredicateImpl<T>

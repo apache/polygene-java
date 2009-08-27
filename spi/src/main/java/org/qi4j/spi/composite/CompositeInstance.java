@@ -14,12 +14,11 @@
 
 package org.qi4j.spi.composite;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.structure.Module;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 
 /**
  * JAVADOC
@@ -36,7 +35,7 @@ public interface CompositeInstance extends InvocationHandler
 
     Class<? extends Composite> type();
 
-    Object invokeProxy(Method method, Object[] args) throws Throwable;
+    Object invokeProxy( Method method, Object[] args ) throws Throwable;
 
     AbstractCompositeDescriptor descriptor();
 }

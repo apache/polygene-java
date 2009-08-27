@@ -22,7 +22,6 @@ import org.qi4j.api.query.grammar.AssociationReference;
 
 /**
  * Default {@link org.qi4j.api.query.grammar.AssociationIsNotNullPredicate} implementation.
- *
  */
 public final class AssociationIsNotNullPredicateImpl
     extends AssociationNullPredicateImpl

@@ -32,7 +32,7 @@ public interface ApplicationAssembly
      * @param name of the new layer
      * @return a LayerAssembly instance
      */
-    LayerAssembly layerAssembly(String name);
+    LayerAssembly layerAssembly( String name );
 
     /**
      * Get the currently set name of the application
@@ -43,6 +43,7 @@ public interface ApplicationAssembly
 
     /**
      * Get the currently set mode of the application
+     *
      * @return the application mode
      */
     Application.Mode mode();
@@ -53,7 +54,7 @@ public interface ApplicationAssembly
      * @param name
      * @return
      */
-    ApplicationAssembly setName(String name);
+    ApplicationAssembly setName( String name );
 
     /**
      * Set the application mode. This will be set to "production" by default. You can
@@ -65,10 +66,10 @@ public interface ApplicationAssembly
      * @param mode the application mode
      * @return the current application mode
      */
-    ApplicationAssembly setMode(Application.Mode mode);
+    ApplicationAssembly setMode( Application.Mode mode );
 
-    ApplicationAssembly setMetaInfo(Object info);
+    ApplicationAssembly setMetaInfo( Object info );
 
-    void visit(AssemblyVisitor visitor)
+    void visit( AssemblyVisitor visitor )
         throws AssemblyException;
 }

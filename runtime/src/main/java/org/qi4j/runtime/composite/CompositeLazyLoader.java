@@ -24,7 +24,7 @@ public class CompositeLazyLoader
 {
     private Object instance;
 
-    public CompositeLazyLoader(Object instance)
+    public CompositeLazyLoader( Object instance )
     {
         this.instance = instance;
     }

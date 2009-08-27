@@ -25,11 +25,11 @@ import org.qi4j.spi.value.ValueDescriptor;
 public interface ModuleSPI
     extends Module
 {
-    TransientDescriptor transientDescriptor(String typeName);
+    TransientDescriptor transientDescriptor( String typeName );
 
-    EntityDescriptor entityDescriptor(String typeName);
+    EntityDescriptor entityDescriptor( String typeName );
 
 //    ObjectDescriptor objectDescriptor(String typeName);
 
-    ValueDescriptor valueDescriptor(String typeName);
+    ValueDescriptor valueDescriptor( String typeName );
 }

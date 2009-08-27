@@ -14,6 +14,9 @@
 
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.InvocationHandler;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -24,13 +27,9 @@ import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
-
-import java.lang.reflect.InvocationHandler;
-import java.util.ArrayList;
-import java.util.List;
+import org.qi4j.spi.composite.TransientDescriptor;
 
 /**
  * Model for Transient Composites
@@ -60,7 +59,7 @@ public class TransientModel
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
         CompositeMethodsModel compositeMethodsModel =
             new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
-        stateModel.addStateFor( compositeMethodsModel.methods(), compositeType);
+        stateModel.addStateFor( compositeMethodsModel.methods(), compositeType );
 
         return new TransientModel(
             compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );

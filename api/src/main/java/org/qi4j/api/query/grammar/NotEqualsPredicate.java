@@ -21,7 +21,6 @@ package org.qi4j.api.query.grammar;
 /**
  * Constraints that a {@link org.qi4j.api.property.Property} is not equal to a value
  * (as in Property<X>.get() != X).
- *
  */
 public interface NotEqualsPredicate<T>
     extends ComparisonPredicate<T>

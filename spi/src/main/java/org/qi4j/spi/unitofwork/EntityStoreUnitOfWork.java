@@ -34,13 +34,13 @@ public interface EntityStoreUnitOfWork
      * This should only create the EntityState and not insert it into any database, since that should occur during
      * the {@link org.qi4j.spi.unitofwork.EntityStoreUnitOfWork#apply()} call.
      *
-     * @param anIdentity the identity of the entity
+     * @param anIdentity       the identity of the entity
      * @param entityDescriptor entity descriptor
      * @return The new entity state.
      * @throws org.qi4j.spi.entity.EntityStoreException
      *          Thrown if creational fails.
      */
-    EntityState newEntityState( EntityReference anIdentity, EntityDescriptor entityDescriptor)
+    EntityState newEntityState( EntityReference anIdentity, EntityDescriptor entityDescriptor )
         throws EntityStoreException;
 
     /**
