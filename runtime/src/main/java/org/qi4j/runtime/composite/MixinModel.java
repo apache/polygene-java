@@ -48,17 +48,17 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashMap;
 
 /**
  * JAVADOC
  */
 public final class MixinModel
-    implements Binder, MixinDescriptor, Serializable
+        implements Binder, MixinDescriptor, Serializable
 {
     private final static Map<Class, Class> enhancedClasses = Collections.synchronizedMap(new HashMap<Class, Class>());
 
@@ -72,19 +72,19 @@ public final class MixinModel
     private final Set<Class> thisMixinTypes;
     public MethodInterceptor mixinInvoker;
 
-    public MixinModel( Class declaredMixinClass )
+    public MixinModel(Class declaredMixinClass)
     {
-        injectedFieldsModel = new InjectedFieldsModel( declaredMixinClass );
-        injectedMethodsModel = new InjectedMethodsModel( declaredMixinClass );
+        injectedFieldsModel = new InjectedFieldsModel(declaredMixinClass);
+        injectedMethodsModel = new InjectedMethodsModel(declaredMixinClass);
 
         this.mixinClass = declaredMixinClass;
         this.instantiationClass = instantiationClass(declaredMixinClass);
-        constructorsModel = new ConstructorsModel( instantiationClass );
+        constructorsModel = new ConstructorsModel(instantiationClass);
 
         List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
-        ConcernsDeclaration.concernDeclarations( declaredMixinClass, concerns );
-        concernsDeclaration = new ConcernsDeclaration( concerns );
-        sideEffectsDeclaration = new SideEffectsDeclaration( declaredMixinClass, Collections.<Class<?>>emptyList() );
+        ConcernsDeclaration.concernDeclarations(declaredMixinClass, concerns);
+        concernsDeclaration = new ConcernsDeclaration(concerns);
+        sideEffectsDeclaration = new SideEffectsDeclaration(declaredMixinClass, Collections.<Class<?>>emptyList());
 
         thisMixinTypes = buildThisMixinTypes();
 
@@ -104,35 +104,35 @@ public final class MixinModel
 
     public boolean isGeneric()
     {
-        return InvocationHandler.class.isAssignableFrom( mixinClass );
+        return InvocationHandler.class.isAssignableFrom(mixinClass);
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        modelVisitor.visit( this );
+        modelVisitor.visit(this);
 
-        constructorsModel.visitModel( modelVisitor );
-        injectedFieldsModel.visitModel( modelVisitor );
-        injectedMethodsModel.visitModel( modelVisitor );
+        constructorsModel.visitModel(modelVisitor);
+        injectedFieldsModel.visitModel(modelVisitor);
+        injectedMethodsModel.visitModel(modelVisitor);
     }
 
     // Binding
-    public void bind( Resolution context ) throws BindingException
+    public void bind(Resolution context) throws BindingException
     {
-        constructorsModel.bind( context );
-        injectedFieldsModel.bind( context );
-        injectedMethodsModel.bind( context );
+        constructorsModel.bind(context);
+        injectedFieldsModel.bind(context);
+        injectedMethodsModel.bind(context);
     }
 
     // Context
-    public Object newInstance( CompositeInstance compositeInstance, StateHolder state )
+    public Object newInstance(CompositeInstance compositeInstance, StateHolder state)
     {
-        return newInstance( compositeInstance, state, UsesInstance.NO_USES );
+        return newInstance(compositeInstance, state, UsesInstance.NO_USES);
     }
 
-    public Object newInstance( CompositeInstance compositeInstance, StateHolder state, UsesInstance uses )
+    public Object newInstance(CompositeInstance compositeInstance, StateHolder state, UsesInstance uses)
     {
-        InjectionContext injectionContext = new InjectionContext( compositeInstance, uses, state );
+        InjectionContext injectionContext = new InjectionContext(compositeInstance, uses, state);
         Object mixin;
         try
         {
@@ -142,32 +142,32 @@ public final class MixinModel
                         new Callback[]{
                                 new ThisCompositeInvoker(compositeInstance), NoOp.INSTANCE});
             }
-            mixin = constructorsModel.newInstance( injectionContext );
+            mixin = constructorsModel.newInstance(injectionContext);
         }
-        catch( InvalidCompositeException e )
+        catch (InvalidCompositeException e)
         {
-            e.setMixinClass( mixinClass );
+            e.setMixinClass(mixinClass);
             throw e;
         }
-        injectedFieldsModel.inject( injectionContext, mixin );
-        injectedMethodsModel.inject( injectionContext, mixin );
-        if( mixin instanceof Initializable )
+        injectedFieldsModel.inject(injectionContext, mixin);
+        injectedMethodsModel.inject(injectionContext, mixin);
+        if (mixin instanceof Initializable)
         {
             try
             {
-                Callback callback = ((Factory)mixin).getCallback(0);
-                ((Factory)mixin).setCallback(0, mixinInvoker);
+                Callback callback = ((Factory) mixin).getCallback(0);
+                ((Factory) mixin).setCallback(0, mixinInvoker);
                 try
                 {
-                    ((Initializable)mixin).initialize();
+                    ((Initializable) mixin).initialize();
                 } finally
                 {
-                    ((Factory)mixin).setCallback(0, callback);
+                    ((Factory) mixin).setCallback(0, callback);
                 }
             }
-            catch( InitializationException e )
+            catch (InitializationException e)
             {
-                throw new ConstructionException( "Unable to initialize " + mixinClass + " in composite " + compositeInstance.type(), e );
+                throw new ConstructionException("Unable to initialize " + mixinClass + " in composite " + compositeInstance.type(), e);
             }
         }
         return mixin;
@@ -182,31 +182,29 @@ public final class MixinModel
     {
         final Set<Class> thisDependencies = new HashSet<Class>();
         visitModel(
-            new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
-            {
-                public void visitDependency( DependencyModel dependencyModel )
+                new DependencyVisitor(new DependencyModel.ScopeSpecification(This.class))
                 {
-                    thisDependencies.add( dependencyModel.rawInjectionType() );
+                    public void visitDependency(DependencyModel dependencyModel)
+                    {
+                        thisDependencies.add(dependencyModel.rawInjectionType());
+                    }
                 }
-            }
         );
-        if( thisDependencies.isEmpty() )
+        if (thisDependencies.isEmpty())
         {
             return Collections.emptySet();
-        }
-        else
+        } else
         {
             return thisDependencies;
         }
     }
 
-    protected FragmentInvocationHandler newInvocationHandler( Method method)
+    protected FragmentInvocationHandler newInvocationHandler(Method method)
     {
-        if( InvocationHandler.class.isAssignableFrom( mixinClass ) && !method.getDeclaringClass().isAssignableFrom( mixinClass ) )
+        if (InvocationHandler.class.isAssignableFrom(mixinClass) && !method.getDeclaringClass().isAssignableFrom(mixinClass))
         {
             return new GenericFragmentInvocationHandler();
-        }
-        else
+        } else
         {
             if (Factory.class.isAssignableFrom(constructorsModel.getFragmentClass()))
             {
@@ -220,33 +218,34 @@ public final class MixinModel
         }
     }
 
-    public MethodConcernsModel concernsFor( Method method, Class<? extends Composite> type )
+    public MethodConcernsModel concernsFor(Method method, Class<? extends Composite> type)
     {
-        return concernsDeclaration.concernsFor( method, type );
+        return concernsDeclaration.concernsFor(method, type);
     }
 
 
-    public MethodSideEffectsModel sideEffectsFor( Method method, Class<? extends Composite> type )
+    public MethodSideEffectsModel sideEffectsFor(Method method, Class<? extends Composite> type)
     {
-        return sideEffectsDeclaration.sideEffectsFor( method, type );
+        return sideEffectsDeclaration.sideEffectsFor(method, type);
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return mixinClass.getName();
     }
 
-    public void addThisInjections( final Set<Class> thisDependencies )
+    public void addThisInjections(final Set<Class> thisDependencies)
     {
         // Add all @This injections
         visitModel(
-            new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
-            {
-                public void visitDependency( DependencyModel dependencyModel )
+                new DependencyVisitor(new DependencyModel.ScopeSpecification(This.class))
                 {
-                    thisDependencies.add( dependencyModel.rawInjectionType() );
+                    public void visitDependency(DependencyModel dependencyModel)
+                    {
+                        thisDependencies.add(dependencyModel.rawInjectionType());
+                    }
                 }
-            }
         );
 
         // Add all implemented interfaces
@@ -259,39 +258,39 @@ public final class MixinModel
         }
     }
 
-    public void activate( Object mixin ) throws Exception
+    public void activate(Object mixin) throws Exception
     {
-        if( mixin instanceof Activatable )
+        if (mixin instanceof Activatable)
         {
-            Callback callback = ((Factory)mixin).getCallback(0);
-            ((Factory)mixin).setCallback(0, mixinInvoker);
+            Callback callback = ((Factory) mixin).getCallback(0);
+            ((Factory) mixin).setCallback(0, mixinInvoker);
             try
             {
-                ((Activatable)mixin).activate();
+                ((Activatable) mixin).activate();
             } finally
             {
-                ((Factory)mixin).setCallback(0, callback);
+                ((Factory) mixin).setCallback(0, callback);
             }
         }
     }
 
-    public void passivate( Object mixin ) throws Exception
+    public void passivate(Object mixin) throws Exception
     {
-        if( mixin instanceof Activatable )
+        if (mixin instanceof Activatable)
         {
-            Callback callback = ((Factory)mixin).getCallback(0);
-            ((Factory)mixin).setCallback(0, mixinInvoker);
+            Callback callback = ((Factory) mixin).getCallback(0);
+            ((Factory) mixin).setCallback(0, mixinInvoker);
             try
             {
-                ((Activatable)mixin).passivate();
+                ((Activatable) mixin).passivate();
             } finally
             {
-                ((Factory)mixin).setCallback(0, callback);
+                ((Factory) mixin).setCallback(0, callback);
             }
         }
     }
 
-    private Class instantiationClass( Class fragmentClass )
+    private Class instantiationClass(Class fragmentClass)
     {
         Class instantiationClass = fragmentClass;
         if (!InvocationHandler.class.isAssignableFrom(fragmentClass))
@@ -299,7 +298,7 @@ public final class MixinModel
             instantiationClass = enhancedClasses.get(fragmentClass);
             if (instantiationClass == null)
             {
-                Enhancer enhancer = createEnhancer( fragmentClass );
+                Enhancer enhancer = createEnhancer(fragmentClass);
                 instantiationClass = enhancer.createClass();
                 enhancedClasses.put(fragmentClass, instantiationClass);
             }
@@ -307,22 +306,24 @@ public final class MixinModel
         return instantiationClass;
     }
 
-    private Enhancer createEnhancer( final Class fragmentClass )
+    private Enhancer createEnhancer(final Class fragmentClass)
     {
         Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass( fragmentClass );
+        enhancer.setSuperclass(fragmentClass);
         // TODO: make this configurable?
-        enhancer.setClassLoader( new BridgeClassLoader( fragmentClass.getClassLoader() ) );
-        enhancer.setCallbackTypes( new Class[]{ ThisCompositeInvoker.class, NoOp.class } );
-        enhancer.setCallbackFilter( new CallbackFilter()
+        enhancer.setClassLoader(new BridgeClassLoader(fragmentClass.getClassLoader()));
+        enhancer.setCallbackTypes(new Class[]{ThisCompositeInvoker.class, NoOp.class});
+        enhancer.setCallbackFilter(new CallbackFilter()
         {
-            public int accept( Method method )
+            public int accept(Method method)
             {
                 if (!Modifier.isPublic(method.getModifiers()))
                 {
                     return 1; // Only proxy publich methods
                 } else if (Modifier.isFinal(method.getModifiers()))
+                {
                     return 1; // Skip final methods
+                }
 
                 if (injectedMethodsModel.isInjected(method))
                     return 1;
@@ -340,7 +341,7 @@ public final class MixinModel
 
                 return 1;
             }
-        } );
+        });
         return enhancer;
     }
 }
