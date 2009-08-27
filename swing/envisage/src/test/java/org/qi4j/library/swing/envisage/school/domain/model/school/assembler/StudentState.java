@@ -22,9 +22,6 @@ import org.qi4j.api.property.Property;
 import org.qi4j.library.swing.envisage.school.domain.model.school.School;
 import org.qi4j.library.swing.envisage.school.domain.model.school.Subject;
 
-/**
- * @author edward.yakop@gmail.com
- */
 interface StudentState
 {
     ManyAssociation<Subject> subjects();

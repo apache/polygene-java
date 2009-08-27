@@ -25,8 +25,6 @@ import org.springframework.beans.factory.InitializingBean;
 /**
  * This class responsible to handle the lifecycle of qi4j application.
  *
- * @author edward.yakop@gmail.com
- * @since 0.5
  */
 public final class Qi4jApplicationFactoryBean
     implements FactoryBean, DisposableBean, InitializingBean

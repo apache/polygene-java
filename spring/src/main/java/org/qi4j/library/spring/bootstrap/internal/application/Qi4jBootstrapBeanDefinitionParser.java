@@ -38,10 +38,6 @@ import static org.springframework.util.Assert.hasText;
 import static org.springframework.util.ClassUtils.forName;
 import org.w3c.dom.Element;
 
-/**
- * @author edward.yakop@gmail.com
- * @since 0.5
- */
 public final class Qi4jBootstrapBeanDefinitionParser
     implements BeanDefinitionParser
 

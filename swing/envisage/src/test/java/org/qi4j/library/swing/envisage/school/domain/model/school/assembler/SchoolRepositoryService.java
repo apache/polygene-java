@@ -29,9 +29,6 @@ import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceComposite;
 
-/**
- * @author edward.yakop@gmail.com
- */
 @Mixins( SchoolRepositoryService.SchoolRepositoryMixin.class )
 interface SchoolRepositoryService extends SchoolRepository, ServiceComposite
 {

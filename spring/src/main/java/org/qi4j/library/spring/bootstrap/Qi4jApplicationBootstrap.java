@@ -53,8 +53,6 @@ import org.qi4j.bootstrap.AssemblyException;
  * <p/>
  * Look at org.qi4j.library.spring.bootstrap.Qi4jExportServiceTest for sample implementation.
  *
- * @author edward.yakop@gmail.com
- * @since 0.5
  */
 public abstract class Qi4jApplicationBootstrap
 {

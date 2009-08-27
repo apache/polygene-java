@@ -16,9 +16,6 @@
  */
 package org.qi4j.library.struts2;
 
-/**
- * @author edward.yakop@gmail.com
- */
 public class Constants
 {
     public static String SERVLET_ATTRIBUTE = "qi4j.application.initializer";

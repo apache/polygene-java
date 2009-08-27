@@ -24,10 +24,6 @@ import org.qi4j.library.swing.envisage.school.domain.model.person.Role;
 import org.qi4j.library.swing.envisage.school.domain.model.person.Person;
 import org.qi4j.library.swing.envisage.school.domain.model.person.PersonId;
 
-/**
- * @author edward.yakop@gmail.com
- * @since 0.5
- */
 @Mixins( PersonEntity.PersonMixin.class )
 interface PersonEntity extends Person, EntityComposite
 {

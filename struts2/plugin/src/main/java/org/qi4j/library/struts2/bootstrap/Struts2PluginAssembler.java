@@ -24,9 +24,6 @@ import org.qi4j.library.struts2.ActionConfiguration;
 import org.qi4j.library.struts2.ActionService;
 import org.qi4j.library.struts2.UnitOfWorkInterceptor;
 
-/**
- * @author edward.yakop@gmail.com
- */
 public class Struts2PluginAssembler
     implements Assembler
 {

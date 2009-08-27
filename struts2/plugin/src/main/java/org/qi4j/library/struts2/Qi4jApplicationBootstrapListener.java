@@ -28,9 +28,6 @@ import org.qi4j.bootstrap.Energy4Java;
 import static org.qi4j.library.struts2.Constants.SERVLET_ATTRIBUTE;
 import org.qi4j.spi.structure.ApplicationSPI;
 
-/**
- * @author edward.yakop@gmail.com
- */
 public abstract class Qi4jApplicationBootstrapListener
     implements ServletContextListener
 {

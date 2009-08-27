@@ -16,9 +16,6 @@
 */
 package org.qi4j.library.spring.importer;
 
-/**
- * @author rickard.oberg@jayway.se
- */
 public class CommentServiceBean2
     implements CommentService
 {

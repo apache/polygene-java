@@ -16,10 +16,6 @@
 */
 package org.qi4j.library.spring.bootstrap;
 
-/**
- * @author edward.yakop@gmail.com
- * @since 0.5
- */
 public final class Constants
 {
     public static final String BEAN_ID_QI4J_APPLICATION = "qi4jApplication";

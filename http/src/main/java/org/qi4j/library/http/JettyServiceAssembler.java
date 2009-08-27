@@ -21,10 +21,6 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 
-/**
- * @author edward.yakop@gmail.com
- * @author rickardoberg@gmail.com
- */
 public final class JettyServiceAssembler
     implements Assembler
 {

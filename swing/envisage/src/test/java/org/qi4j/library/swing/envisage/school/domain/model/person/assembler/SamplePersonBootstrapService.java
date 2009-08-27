@@ -25,10 +25,6 @@ import org.qi4j.library.swing.envisage.school.domain.model.person.Person;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 
-/**
- * @author edward.yakop@gmail.com
- * @since 0.5
- */
 @Mixins( SamplePersonBootstrapService.SamplePersonBootstrapMixin.class )
 public interface SamplePersonBootstrapService extends Activatable, ServiceComposite
 {

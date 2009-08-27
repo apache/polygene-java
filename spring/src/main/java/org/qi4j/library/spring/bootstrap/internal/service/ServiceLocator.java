@@ -26,10 +26,6 @@ import org.qi4j.spi.structure.DescriptorVisitor;
 import org.qi4j.spi.structure.LayerDescriptor;
 import org.qi4j.spi.structure.ModuleDescriptor;
 
-/**
- * @author edward.yakop@gmail.com
- * @since 0.5
- */
 final class ServiceLocator extends DescriptorVisitor
 {
     private final String serviceId;

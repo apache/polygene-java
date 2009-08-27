@@ -33,9 +33,6 @@ import org.qi4j.library.swing.envisage.Envisage;
 import org.qi4j.spi.entity.helpers.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
-/**
- * @author Tonny Kohar (tonny.kohar@gmail.com)
- */
 public class EnvisageSample extends AbstractQi4jTest
 {
 

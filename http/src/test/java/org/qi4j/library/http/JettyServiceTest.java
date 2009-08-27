@@ -33,9 +33,6 @@ import static org.qi4j.library.http.Dispatchers.Dispatcher.*;
 import static org.qi4j.library.http.Servlets.*;
 import org.qi4j.test.AbstractQi4jTest;
 
-/**
- * @author edward.yakop@gmail.com
- */
 public final class JettyServiceTest extends AbstractQi4jTest
 {
     public final void assemble( ModuleAssembly aModule )

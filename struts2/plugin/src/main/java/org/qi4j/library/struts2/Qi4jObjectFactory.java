@@ -34,7 +34,6 @@ import static org.qi4j.library.struts2.Qi4jObjectFactory.ClassType.qi4jObject;
 /**
  * Qi4j implementation of struts object factory.
  *
- * @author edward.yakop@gmail.com
  */
 public class Qi4jObjectFactory extends ObjectFactory
     implements ObjectFactoryDestroyable

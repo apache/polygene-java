@@ -27,10 +27,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-/**
- * @author edward.yakop@gmail.com
- * @since 0.5
- */
 @RunWith( SpringJUnit4ClassRunner.class )
 @ContextConfiguration
 public final class Qi4jExportServiceTest

@@ -23,10 +23,6 @@ import org.qi4j.spi.structure.ApplicationSPI;
 import org.springframework.beans.factory.FactoryBean;
 import static org.springframework.util.Assert.notNull;
 
-/**
- * @author edward.yakop@gmail.com
- * @since 0.5
- */
 public final class ServiceFactoryBean
     implements FactoryBean
 {

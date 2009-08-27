@@ -30,10 +30,6 @@ import org.qi4j.library.constraints.NotEmptyStringConstraint;
 /**
  * Marks a property as being a string, non null, non empty.
  *
- * @author Rickard Oberg
- * @author Richard Wallace
- * @author Alin Dreghiciu
- * @since 09 May, 2008
  */
 @ConstraintDeclaration
 @Retention( RetentionPolicy.RUNTIME )

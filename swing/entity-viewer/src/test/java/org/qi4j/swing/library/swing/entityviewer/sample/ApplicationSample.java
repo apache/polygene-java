@@ -34,9 +34,6 @@ import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.junit.Test;
 
-/**
- * @author Tonny Kohar
- */
 public class ApplicationSample extends AbstractQi4jTest
 {
 

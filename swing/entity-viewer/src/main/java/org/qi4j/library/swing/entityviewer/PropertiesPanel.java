@@ -34,7 +34,6 @@ import org.qi4j.bootstrap.Energy4Java;
 
 /**
  * Entity Properties Viewer as Swing Component.
- * @author Tonny Kohar
  */
 public class PropertiesPanel extends JPanel
 {

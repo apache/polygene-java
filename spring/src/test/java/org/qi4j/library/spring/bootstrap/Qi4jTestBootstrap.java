@@ -21,10 +21,6 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 
-/**
- * @author edward.yakop@gmail.com
- * @since 0.5
- */
 public final class Qi4jTestBootstrap extends Qi4jApplicationBootstrap
 {
     private static final String LAYER = "layer";

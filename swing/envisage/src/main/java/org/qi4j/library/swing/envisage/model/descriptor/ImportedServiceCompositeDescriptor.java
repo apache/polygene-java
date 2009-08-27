@@ -29,7 +29,6 @@ import org.qi4j.spi.composite.AbstractCompositeDescriptor;
  * XXX Workaround for inconsistency in Qi4J core-api/spi
  * ImportedServiceDescriptor wrapper as composite
  *
- * @author Tonny Kohar (tonny.kohar@gmail.com)
  */
 public class ImportedServiceCompositeDescriptor implements AbstractCompositeDescriptor
 {

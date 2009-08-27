@@ -24,9 +24,6 @@ import org.qi4j.library.constraints.annotation.NotEmpty;
 /**
  * Constraints that a string is non empty.
  *
- * @author Richard Wallace
- * @author Alin Dreghiciu
- * @since 09 May, 2008
  */
 public class NotEmptyStringConstraint
     implements Constraint<NotEmpty, String>

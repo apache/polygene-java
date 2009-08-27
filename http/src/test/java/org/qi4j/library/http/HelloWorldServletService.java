@@ -20,9 +20,6 @@ import javax.servlet.Servlet;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 
-/**
- * @author edward.yakop@gmail.com
- */
 @Mixins( HelloWorldServlet.class )
 public interface HelloWorldServletService extends Servlet, ServiceComposite
 {

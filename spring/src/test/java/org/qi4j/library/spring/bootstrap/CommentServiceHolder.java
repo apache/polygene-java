@@ -16,9 +16,6 @@
 */
 package org.qi4j.library.spring.bootstrap;
 
-/**
- * @author edward.yakop@gmail.com
- */
 public class CommentServiceHolder
 {
     private final CommentService service;

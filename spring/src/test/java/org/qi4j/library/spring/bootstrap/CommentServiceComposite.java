@@ -19,9 +19,6 @@ package org.qi4j.library.spring.bootstrap;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 
-/**
- * @author edward.yakop@gmail.com
- */
 @Mixins( CommentServiceComposite.CommentServiceMixin.class )
 interface CommentServiceComposite
     extends CommentService, ServiceComposite

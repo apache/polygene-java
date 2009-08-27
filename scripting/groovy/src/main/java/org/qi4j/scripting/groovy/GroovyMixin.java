@@ -43,8 +43,6 @@ import org.qi4j.api.injection.scope.This;
  * org/qi4j/samples/hello/domain/HelloWorldSpeaker.groovy
  * org/qi4j/samples/hello/domain/HelloWorldSpeaker.sayAgain.groovy
  *
- * @author Alin Dreghiciu
- * @since 0.2.0, Aplil 18, 2008
  */
 @AppliesTo( GroovyMixin.AppliesTo.class )
 public class GroovyMixin

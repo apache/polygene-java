@@ -20,10 +20,6 @@ import org.qi4j.library.spring.bootstrap.internal.application.Qi4jBootstrapBeanD
 import org.qi4j.library.spring.bootstrap.internal.service.Qi4jServiceBeanDefinitionParser;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
-/**
- * @author edward.yakop@gmail.com
- * @since 0.5
- */
 public final class Qi4jNamespaceHandler extends NamespaceHandlerSupport
 {
     public final void init()
