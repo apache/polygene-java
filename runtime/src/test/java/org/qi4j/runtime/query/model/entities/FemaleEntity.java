@@ -20,12 +20,6 @@ package org.qi4j.runtime.query.model.entities;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.runtime.query.model.Female;
 
-/**
- * JAVADOC Add JavaDoc
- *
- * @author Alin Dreghiciu
- * @since April 09, 2008
- */
 public interface FemaleEntity
     extends Female, EntityComposite
 {

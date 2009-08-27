@@ -23,8 +23,6 @@ import org.qi4j.api.query.grammar.Disjunction;
 /**
  * Default {@link org.qi4j.api.query.grammar.Disjunction} implementation.
  *
- * @author Alin Dreghiciu
- * @since March 28, 2008
  */
 public final class DisjunctionImpl
     extends JunctionImpl

@@ -21,8 +21,6 @@ package org.qi4j.api.query.grammar;
 /**
  * Constraints that a {@link org.qi4j.api.entity.association.Association} is not null (is set).
  *
- * @author Alin Dreghiciu
- * @since April 09, 2008
  */
 public interface AssociationIsNotNullPredicate
     extends AssociationNullPredicate

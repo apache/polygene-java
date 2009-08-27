@@ -33,10 +33,6 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.core.test.osgi.AnEntity;
 
-/**
- * @author edward.yakop@gmail.com
- * @since 0.5
- */
 public final class EntityTest extends AbstractTest
 {
     @Inject

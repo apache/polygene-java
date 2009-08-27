@@ -5,11 +5,6 @@ import org.qi4j.api.concern.ConcernOf;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-/**
- * JAVADOC Add JavaDoc.
- *
- * @author Alin Dreghiciu
- */
 public class MockPlayerConcern extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {

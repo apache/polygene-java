@@ -23,8 +23,6 @@ import org.qi4j.api.query.grammar.PropertyReference;
 /**
  * Generic {@link org.qi4j.api.query.grammar.PropertyNullPredicate} implementation.
  *
- * @author Alin Dreghiciu
- * @since March 28, 2008
  */
 abstract class PropertyNullPredicateImpl<T>
     implements PropertyNullPredicate<T>

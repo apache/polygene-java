@@ -24,8 +24,6 @@ import org.qi4j.api.query.grammar.PropertyReference;
 /**
  * Default {@link org.qi4j.api.query.grammar.PropertyIsNullPredicate} implementation.
  *
- * @author Alin Dreghiciu
- * @since March 28, 2008
  */
 public final class PropertyIsNullPredicateImpl<T>
     extends PropertyNullPredicateImpl<T>

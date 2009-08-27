@@ -25,10 +25,8 @@ import org.qi4j.api.injection.scope.Structure;
 /**
  * {@code UnitOfWorkConcern} manages the unit of work complete and discard policy.
  *
- * @author edward.yakop@gmail.com
  * @See org.qi4j.entity.UnitOfWorkPropagation
  * @see UnitOfWorkDiscardOn
- * @since 0.2.0
  */
 @AppliesTo( UnitOfWorkPropagation.class )
 public final class UnitOfWorkConcern extends GenericConcern
@@ -46,7 +44,6 @@ public final class UnitOfWorkConcern extends GenericConcern
      * @param args   The method arguments.
      * @return The returned value of method invocation.
      * @throws Throwable Thrown if the method invocation throw exception.
-     * @since 0.2.0
      */
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
@@ -111,7 +108,6 @@ public final class UnitOfWorkConcern extends GenericConcern
      * @param aMethod     The invoked method. This argument must not be {@code null}.
      * @param aUnitOfWork The current unit of work. This argument must not be {@code null}.
      * @param aThrowable  The exception thrown. This argument must not be {@code null}.
-     * @since 0.2.0
      */
     private void discardIfRequired( Method aMethod, UnitOfWork aUnitOfWork, Throwable aThrowable )
     {

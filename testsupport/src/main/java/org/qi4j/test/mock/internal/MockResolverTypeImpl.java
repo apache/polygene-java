@@ -19,11 +19,6 @@ package org.qi4j.test.mock.internal;
 
 import org.qi4j.test.mock.MockResolverType;
 
-/**
- * JAVADOC Add JavaDoc.
- *
- * @author Alin Dreghiciu
- */
 public class MockResolverTypeImpl
     implements MockResolverType
 {

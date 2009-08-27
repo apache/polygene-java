@@ -19,9 +19,6 @@ package org.qi4j.core.test.osgi;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.common.Optional;
 
-/**
- * @author edward.yakop@gmail.com
- */
 public interface AnEntity
 {
     @Optional Property<String> property();

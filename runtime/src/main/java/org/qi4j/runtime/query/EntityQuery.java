@@ -31,8 +31,6 @@ import java.util.Iterator;
 /**
  * Default implementation of {@link Query}.
  *
- * @author Alin Dreghiciu
- * @since 0.2.0, April 14, 2008
  */
 final class EntityQuery<T>
     extends AbstractQuery<T>

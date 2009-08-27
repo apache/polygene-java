@@ -26,7 +26,6 @@ import java.lang.reflect.Method;
  * Proxy to another mock resolver that can be set/changed over time. This allows
  * {@link org.qi4j.test.mock.MockResolverType} to change the mock resolver for a mock.
  *
- * @author Alin Dreghiciu
  */
 public class MockResolverProxy
     implements MockResolver

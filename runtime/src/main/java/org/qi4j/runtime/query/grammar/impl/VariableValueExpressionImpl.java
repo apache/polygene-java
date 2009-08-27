@@ -23,8 +23,6 @@ import org.qi4j.api.query.grammar.VariableValueExpression;
  * A variable value epression, whois value can be set at runtime before query invocation, via
  * {@link org.qi4j.api.query.Query#setVariable(String, Object)}.
  *
- * @author Alin Dreghiciu
- * @since March 25, 2008
  */
 public final class VariableValueExpressionImpl<T>
     implements VariableValueExpression<T>

@@ -99,43 +99,41 @@ public abstract class AbstractMixinsModel
 
     public MixinModel implementMethod( Method method )
     {
-        if( !methodImplementation.containsKey( method ) )
+        MixinModel implementationModel = methodImplementation.get( method );
+        if( implementationModel != null )
         {
-            Class mixinClass = findTypedImplementation( method, mixins );
-            if( mixinClass != null )
-            {
-                return implementMethodWithClass( method, mixinClass );
-            }
-
-            // Check declaring interface of method
-            Set<MixinDeclaration> interfaceDeclarations = new LinkedHashSet<MixinDeclaration>();
-            addMixinDeclarations( method.getDeclaringClass(), interfaceDeclarations );
-            mixinClass = findTypedImplementation( method, interfaceDeclarations );
-            if( mixinClass != null )
-            {
-                return implementMethodWithClass( method, mixinClass );
-            }
-
-            // Check generic implementations
-            mixinClass = findGenericImplementation( method, mixins );
-            if( mixinClass != null )
-            {
-                return implementMethodWithClass( method, mixinClass );
-            }
-
-            // Check declaring interface of method
-            mixinClass = findGenericImplementation( method, interfaceDeclarations );
-            if( mixinClass != null )
-            {
-                return implementMethodWithClass( method, mixinClass );
-            }
-
-            throw new InvalidCompositeException( "No implementation found for method " + method.toGenericString(), compositeType );
+            return implementationModel;
         }
-        else
+        Class mixinClass = findTypedImplementation( method, mixins );
+        if( mixinClass != null )
         {
-            return methodImplementation.get( method );
+            return implementMethodWithClass( method, mixinClass );
         }
+
+        // Check declaring interface of method
+        Set<MixinDeclaration> interfaceDeclarations = new LinkedHashSet<MixinDeclaration>();
+        addMixinDeclarations( method.getDeclaringClass(), interfaceDeclarations );
+        mixinClass = findTypedImplementation( method, interfaceDeclarations );
+        if( mixinClass != null )
+        {
+            return implementMethodWithClass( method, mixinClass );
+        }
+
+        // Check generic implementations
+        mixinClass = findGenericImplementation( method, mixins );
+        if( mixinClass != null )
+        {
+            return implementMethodWithClass( method, mixinClass );
+        }
+
+        // Check declaring interface of method
+        mixinClass = findGenericImplementation( method, interfaceDeclarations );
+        if( mixinClass != null )
+        {
+            return implementMethodWithClass( method, mixinClass );
+        }
+
+        throw new InvalidCompositeException( "No implementation found for method " + method.toGenericString(), compositeType );
     }
 
     public void addMixinType( Class mixinType )

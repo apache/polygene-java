@@ -42,7 +42,7 @@ public final class MixinDeclaration
         this.generic = InvocationHandler.class.isAssignableFrom( mixinClass );
         this.declaredIn = declaredIn;
 
-        if( !InvocationHandler.class.isAssignableFrom( mixinClass ) )
+        if( !this.generic )
         {
             appliesToFilter = new TypedFragmentAppliesToFilter();
 

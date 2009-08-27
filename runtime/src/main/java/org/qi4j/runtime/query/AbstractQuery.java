@@ -28,8 +28,6 @@ import java.util.Map;
 /**
  * Default implementation of {@link org.qi4j.api.query.Query}
  *
- * @author Alin Dreghiciu
- * @since 0.2.0, April 14, 2008
  */
 abstract class AbstractQuery<T>
     implements Query<T>

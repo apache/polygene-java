@@ -24,8 +24,6 @@ import org.qi4j.api.query.grammar.ValueExpression;
 /**
  * Default {@link org.qi4j.api.query.grammar.NotEqualsPredicate} implementation.
  *
- * @author Alin Dreghiciu
- * @since March 25, 2008
  */
 public final class NotEqualsPredicateImpl<T>
     extends ComparisonPredicateImpl<T>

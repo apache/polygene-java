@@ -8,10 +8,6 @@ import org.junit.Test;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.sideeffect.SideEffects;
 
-/**
- * @author mh14 @ jexp.de
- * @since 15.06.2008 00:58:32 (c) 2008 jexp.de
- */
 public class AnnotationsTest
 {
     @Mixins( value = AnnotatedClass.class )

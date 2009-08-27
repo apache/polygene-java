@@ -21,8 +21,6 @@ package org.qi4j.api.query.grammar;
 /**
  * Constraints that a {@link org.qi4j.api.property.Property} matches a regular expression.
  *
- * @author Alin Dreghiciu
- * @since 0.2.0, April 11, 2008
  */
 public interface MatchesPredicate
     extends ComparisonPredicate<String>

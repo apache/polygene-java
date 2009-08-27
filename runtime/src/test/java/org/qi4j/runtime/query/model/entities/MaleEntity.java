@@ -20,12 +20,6 @@ package org.qi4j.runtime.query.model.entities;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.runtime.query.model.Male;
 
-/**
- * JAVADOC Add JavaDoc
- *
- * @author Alin Dreghiciu
- * @since April 09, 2008
- */
 public interface MaleEntity
     extends Male, EntityComposite
 {

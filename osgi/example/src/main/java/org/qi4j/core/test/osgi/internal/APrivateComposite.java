@@ -21,9 +21,6 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.core.test.osgi.AComposite;
 import org.qi4j.api.injection.scope.This;
 
-/**
- * @author edward.yakop@gmail.com
- */
 @Mixins( APrivateComposite.ACompositeMixin.class )
 interface APrivateComposite extends AComposite, Composite
 {

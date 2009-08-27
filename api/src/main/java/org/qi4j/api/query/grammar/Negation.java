@@ -21,8 +21,6 @@ package org.qi4j.api.query.grammar;
 /**
  * A logical "NOT" on a boolean expression.
  *
- * @author Alin Dreghiciu
- * @since March 28, 2008
  */
 public interface Negation
     extends BooleanExpression

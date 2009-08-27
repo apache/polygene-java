@@ -19,12 +19,6 @@ package org.qi4j.spi.composite;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
-/**
- * JAVADOC Javadoc
- *
- * @author edward.yakop@gmail.com
- * @since 0.5
- */
 public interface DependencyDescriptor
 {
     Annotation injectionAnnotation();

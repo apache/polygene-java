@@ -32,7 +32,6 @@ import java.lang.reflect.Type;
 /**
  * Default {@link org.qi4j.api.query.grammar.PropertyReference} implementation.
  *
- * @since March 28, 2008
  */
 public final class PropertyReferenceImpl<T>
     implements PropertyReference<T>

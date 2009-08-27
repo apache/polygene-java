@@ -21,9 +21,6 @@ import org.qi4j.api.query.grammar.ManyAssociationReference;
 
 import java.lang.reflect.Method;
 
-/**
- * @author edward.yakop@gmail.com
- */
 public class ManyAssociationReferenceImpl
     extends AssociationReferenceImpl
     implements ManyAssociationReference

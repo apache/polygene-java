@@ -122,6 +122,10 @@ public final class MethodConcernsModel
 
     public MethodConcernsModel combineWith( MethodConcernsModel mixinMethodConcernsModel )
     {
+        if( mixinMethodConcernsModel == null )
+        {
+            return this;
+        }
         List<MethodConcernModel> combinedModels = new ArrayList<MethodConcernModel>( concernsForMethod.size() + mixinMethodConcernsModel.concernsForMethod.size() );
         combinedModels.addAll( concernsForMethod );
         combinedModels.removeAll(mixinMethodConcernsModel.concernsForMethod); // Remove duplicates

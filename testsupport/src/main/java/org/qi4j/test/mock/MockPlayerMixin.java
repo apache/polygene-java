@@ -32,7 +32,6 @@ import java.lang.reflect.Method;
  * If there is no mock registered to handle the method invocation invocation will fail by throwing an
  * IllegalStateException.
  *
- * @author Alin Dreghiciu
  */
 public class MockPlayerMixin
     implements InvocationHandler

@@ -23,8 +23,6 @@ import org.qi4j.spi.entity.EntityState;
 /**
  * {@code EntityPropertyInstance} represents a property whose value must be backed by an EntityState.
  *
- * @author Rickard Öberg
- * @since 0.1.0
  */
 public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
 {
@@ -41,7 +39,6 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
      * @param aPropertyInfo The property info. This argument must not be {@code null}.
      * @param entityState
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
-     * @since 0.1.0
      */
     public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState, ConstraintsCheck constraints)
         throws IllegalArgumentException
@@ -59,7 +56,6 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
      * Returns this property value.
      *
      * @return This property value.
-     * @since 0.1.0
      */
     public T get()
     {
@@ -97,7 +93,6 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
      * Returns the value as string.
      *
      * @return The value as string.
-     * @since 0.1.0
      */
     @Override
     public String toString()
