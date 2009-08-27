@@ -320,8 +320,9 @@ public final class MixinModel
             {
                 if (!Modifier.isPublic(method.getModifiers()))
                 {
-                    return 1;
-                }
+                    return 1; // Only proxy publich methods
+                } else if (Modifier.isFinal(method.getModifiers()))
+                    return 1; // Skip final methods
 
                 if (injectedMethodsModel.isInjected(method))
                     return 1;
