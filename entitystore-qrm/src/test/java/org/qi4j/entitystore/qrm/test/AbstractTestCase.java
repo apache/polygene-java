@@ -41,7 +41,6 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
      *
      * @return The jdbc connection to test db.
      * @throws SQLException Thrown if initializing connection failed.
-     * @since 0.1.0
      */
     final Connection getJDBCConnection()
         throws SQLException

@@ -22,9 +22,6 @@ import org.junit.Ignore;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.entitystore.neo4j.Configuration;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 @Ignore("Until Neo4j is upgraded")
 public class DirectNeoEntityStoreTest
         extends TestBase

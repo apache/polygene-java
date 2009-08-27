@@ -18,9 +18,6 @@ package org.qi4j.entitystore.neo4j.state;
 
 import java.util.Collection;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public interface BackendFactory
 {
     <E> Collection<E> createBackend( Class<E> elementType );

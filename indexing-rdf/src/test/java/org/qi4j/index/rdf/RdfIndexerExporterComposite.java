@@ -24,8 +24,6 @@ import org.qi4j.index.rdf.assembly.RdfQueryService;
 /**
  * JAVADOC Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since March 24, 2008
  */
 @Mixins( RdfIndexerExporterMixin.class )
 public interface RdfIndexerExporterComposite

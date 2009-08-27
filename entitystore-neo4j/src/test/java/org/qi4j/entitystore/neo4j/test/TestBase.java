@@ -30,9 +30,6 @@ import org.qi4j.entitystore.neo4j.Configuration;
 import org.qi4j.entitystore.neo4j.NeoTransactionService;
 import org.qi4j.test.AbstractQi4jTest;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public abstract class TestBase extends AbstractQi4jTest
 {
 

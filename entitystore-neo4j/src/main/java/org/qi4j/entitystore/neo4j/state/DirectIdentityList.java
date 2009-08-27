@@ -26,9 +26,6 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public class DirectIdentityList implements ManyAssociationState
 {
     private final DirectEntityState state;

@@ -25,9 +25,6 @@ import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.service.Activatable;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public class NeoIdentityGeneratorMixin implements NeoIdentityGenerator, Activatable, PassivationListener
 {
     // Dependancies

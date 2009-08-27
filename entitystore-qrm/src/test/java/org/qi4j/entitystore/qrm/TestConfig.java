@@ -1,9 +1,5 @@
 package org.qi4j.entitystore.qrm;
 
-/**
- * @author mh14 @ jexp.de
- * @since 10.06.2008 11:35:24 (c) 2008 jexp.de
- */
 public class TestConfig
 {
     public static final String SCHEMA_FILE = "testDbSchema.sql";

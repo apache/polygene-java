@@ -23,8 +23,6 @@ import org.qi4j.index.rdf.model.Person;
 /**
  * JAVADOC Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since March 20, 2008
  */
 public interface PersonEntity
     extends Person, EntityComposite

@@ -22,9 +22,6 @@ import org.junit.Test;
 import org.junit.Ignore;
 import org.qi4j.entitystore.neo4j.Configuration;
 
-/**
- * @author Peter Neubauer (peter@neubauer.se)
- */
 @Ignore("Until Neo4j is upgraded")
 public class IndirectNeoEntityStorePerformanceTest extends TestBase
 {

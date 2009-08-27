@@ -20,9 +20,6 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.property.Property;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public interface MakeBelieve
 {
     @Optional Property<String> imaginaryName();

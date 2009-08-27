@@ -18,9 +18,6 @@ package org.qi4j.entitystore.neo4j.state;
 
 import org.qi4j.spi.entity.ManyAssociationState;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public interface IndirectCollection extends ManyAssociationState
 {
     void prepareCommit();

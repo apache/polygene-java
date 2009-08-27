@@ -65,7 +65,6 @@ public class QrmSqlEntityStore
      * @param identity The identity. This argument must not be {@code null}.
      * @return The new entity state given the arguments.
      * @throws EntityStoreException Thrown if this service is not active.
-     * @since 0.2.0
      */
     public final EntityState newEntityState( final QualifiedIdentity identity )
         throws EntityStoreException
@@ -82,7 +81,6 @@ public class QrmSqlEntityStore
      * Throws {@link EntityStoreException} if this service is not active.
      *
      * @throws EntityStoreException Thrown if this service instance is not active.
-     * @since 0.1.0
      */
     private void checkActivation()
         throws EntityStoreException
@@ -101,7 +99,6 @@ public class QrmSqlEntityStore
      * @return The entity state given the descriptor and identity.
      * @throws EntityStoreException    Thrown if retrieval failed.
      * @throws EntityNotFoundException Thrown if the entity does not exists.
-     * @since 0.2.0
      */
     public final EntityState getEntityState( final QualifiedIdentity anIdentity )
         throws EntityStoreException, EntityNotFoundException
@@ -130,7 +127,6 @@ public class QrmSqlEntityStore
      * @param anIdentity The identity. This argument must not be {@code null}.
      * @return The raw data given input.
      * @throws EntityStoreException Thrown if retrieval failed.
-     * @since 0.1.0
      */
     private Map<QualifiedName, Object> getRawData( final QualifiedIdentity anIdentity )
         throws EntityStoreException
@@ -243,7 +239,6 @@ public class QrmSqlEntityStore
      *
      * @throws IOException  If reading sql map configuration failed.
      * @throws SQLException Thrown if database initialization failed.
-     * @since 0.1.0
      */
     public final void activate()
         throws Exception
@@ -271,7 +266,6 @@ public class QrmSqlEntityStore
      * Passivate this service.
      *
      * @throws Exception Thrown if there is any passivation problem.
-     * @since 0.1.0
      */
     public final void passivate()
         throws Exception

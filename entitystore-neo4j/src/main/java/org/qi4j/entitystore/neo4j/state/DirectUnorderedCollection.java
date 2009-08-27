@@ -29,9 +29,6 @@ import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public class DirectUnorderedCollection extends AbstractCollection<EntityReference> implements ManyAssociationState
 {
     private final DirectEntityState state;

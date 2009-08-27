@@ -23,8 +23,6 @@ import org.qi4j.index.rdf.model.City;
 /**
  * JAVADOC Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since March 18, 2008
  */
 public interface CityEntity
     extends City, EntityComposite

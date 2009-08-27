@@ -23,9 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public class IndirectIdentityList implements IndirectCollection
 {
     private final List<ListElement> backend;

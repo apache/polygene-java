@@ -18,9 +18,6 @@ package org.qi4j.entitystore.neo4j;
 
 import org.neo4j.api.core.Node;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public interface NeoIdentityIndex
 {
     Node getNode( String identity );

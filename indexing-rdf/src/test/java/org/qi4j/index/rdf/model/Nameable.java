@@ -22,8 +22,6 @@ import org.qi4j.api.property.Property;
 /**
  * JAVADOC Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since March 20, 2008
  */
 public interface Nameable
 {

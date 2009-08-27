@@ -22,9 +22,6 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.entitystore.neo4j.state.DirectEntityState;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public class NeoIdentityIndexMixin implements NeoIdentityIndex
 {
     private static final String TYPE_INDEX = "<ENTITY TYPES>";

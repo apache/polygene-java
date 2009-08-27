@@ -23,8 +23,6 @@ import org.qi4j.api.entity.association.Association;
 /**
  * JAVADOC Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since April 09, 2008
  */
 public interface Male
     extends Person

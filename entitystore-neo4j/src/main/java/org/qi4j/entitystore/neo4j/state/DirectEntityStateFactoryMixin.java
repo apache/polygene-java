@@ -26,9 +26,6 @@ import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.StateCommitter;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public class DirectEntityStateFactoryMixin implements NodeEntityStateFactory
 {
     private

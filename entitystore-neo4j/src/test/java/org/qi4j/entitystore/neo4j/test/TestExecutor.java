@@ -20,9 +20,6 @@ import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public abstract class TestExecutor
 {
     protected abstract void setup() throws Exception;

@@ -40,10 +40,6 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.qrm.dbInitializer.DBInitializerConfiguration;
 import org.qi4j.entitystore.qrm.test.TestProperty;
 
-/**
- * @author edward.yakop@gmail.com
- * @since 0.1.0
- */
 public class DerbyDatabaseHandler
 {
     private static final String JDBC_URL = "jdbc:derby://localhost/testdb;create=true";
@@ -180,7 +176,6 @@ public class DerbyDatabaseHandler
      * Check data initialization.
      *
      * @throws java.sql.SQLException Thrown if closing connection failed.
-     * @since 0.1.0
      */
     public final void checkDataInitialization()
         throws SQLException
@@ -210,7 +205,6 @@ public class DerbyDatabaseHandler
      *
      * @return The jdbc connection to test db.
      * @throws java.sql.SQLException Thrown if initializing connection failed.
-     * @since 0.1.0
      */
     public final Connection getJDBCConnection()
         throws SQLException
@@ -223,7 +217,6 @@ public class DerbyDatabaseHandler
      * Wait until derby started.
      *
      * @throws InterruptedException Thrown if sleep fails.
-     * @since 0.1.0
      */
     private void waitForStart()
         throws Exception
@@ -344,10 +337,6 @@ public class DerbyDatabaseHandler
         }
     }
 
-    /**
-     * @autor Michael Hunger
-     * @since 19.05.2008
-     */
     public static interface ResultSetCallback
     {
         void row( ResultSet rs ) throws SQLException;

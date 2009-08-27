@@ -18,9 +18,6 @@ package org.qi4j.entitystore.neo4j.state;
 
 import org.qi4j.api.entity.EntityReference;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public interface DuplicationChecker
 {
     boolean goodToAdd(Iterable<EntityReference> iterable, EntityReference entityReference);

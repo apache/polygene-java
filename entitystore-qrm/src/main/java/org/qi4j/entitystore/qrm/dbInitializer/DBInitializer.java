@@ -45,7 +45,6 @@ public final class DBInitializer
      * @param connectionProperties Properties to be used in the SQL Connection.
      * @throws java.sql.SQLException Thrown if db initialization failed.
      * @throws java.io.IOException   Thrown if reading schema or data sql resources failed.
-     * @since 0.1.0
      *        todo handle exceptions
      */
     public final void initialize( String schemaUrl, String dataUrl, String dbUrl, Properties connectionProperties )
@@ -102,7 +101,6 @@ public final class DBInitializer
      *
      * @return The sql connection.
      * @throws SQLException Thrown if sql connection failed.
-     * @since 0.1.0
      */
     private Connection getSqlConnection( String dbURL, Properties connectionProperties )
         throws SQLException

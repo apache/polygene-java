@@ -18,9 +18,6 @@ package org.qi4j.entitystore.neo4j;
 
 import org.neo4j.api.core.Transaction;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public interface NeoTransactionService
 {
     Transaction beginTx();

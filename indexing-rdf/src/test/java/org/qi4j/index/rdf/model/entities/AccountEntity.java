@@ -23,8 +23,6 @@ import org.qi4j.index.rdf.model.Account;
 /**
  * JAVADOC Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since 0.4.0, August 28, 2008
  */
 public interface AccountEntity
     extends Account, EntityComposite

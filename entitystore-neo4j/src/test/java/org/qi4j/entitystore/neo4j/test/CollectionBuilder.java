@@ -32,9 +32,6 @@ import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.unitofwork.UnitOfWork;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public abstract class CollectionBuilder<T extends Collection>
 {
     private final String name;

@@ -19,9 +19,6 @@ package org.qi4j.entitystore.neo4j;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 @Mixins( NeoIdentityGeneratorMixin.class )
 public interface NeoIdentityGeneratorService
     extends NeoIdentityGenerator, ServiceComposite

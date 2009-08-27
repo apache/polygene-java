@@ -28,9 +28,6 @@ import org.qi4j.spi.entity.association.ManyAssociationType;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 class ManyAssociationFactory
 {
     private static final Map<QualifiedName, ManyAssociationFactory> cache = new HashMap<QualifiedName, ManyAssociationFactory>();

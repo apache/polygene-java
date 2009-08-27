@@ -23,8 +23,6 @@ import org.qi4j.index.rdf.model.Pet;
 /**
  * JAVADOC Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since March 31, 2008
  */
 public interface PetEntity
     extends Pet, EntityComposite

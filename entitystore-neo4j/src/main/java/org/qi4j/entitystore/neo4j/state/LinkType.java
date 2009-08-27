@@ -19,9 +19,6 @@ package org.qi4j.entitystore.neo4j.state;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public enum LinkType
 {
     UNQUALIFIED

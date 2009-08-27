@@ -18,9 +18,6 @@ package org.qi4j.entitystore.neo4j.test;
 
 import org.qi4j.api.entity.EntityComposite;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public interface ContainedElementComposite
     extends ContainedElement, EntityComposite
 {

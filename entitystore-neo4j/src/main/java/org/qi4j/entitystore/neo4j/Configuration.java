@@ -6,9 +6,6 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.neo4j.state.DirectEntityStateFactory;
 import org.qi4j.entitystore.neo4j.state.IndirectEntityStateFactory;
 
-/**
- * @author tobias
- */
 public enum Configuration implements Assembler
 {
     DIRECT

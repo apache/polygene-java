@@ -22,9 +22,6 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 @Mixins( EmbeddedNeoMixin.class )
 public interface NeoCoreService
     extends NeoService, IndexService, NeoTransactionService, PassivationBroadcaster, Activatable,/* Configuration,*/ ServiceComposite

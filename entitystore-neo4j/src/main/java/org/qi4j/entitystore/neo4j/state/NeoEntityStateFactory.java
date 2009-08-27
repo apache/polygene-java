@@ -24,9 +24,6 @@ import org.qi4j.spi.entity.StateCommitter;
 
 import java.util.Iterator;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public interface NeoEntityStateFactory
 {
     CommittableEntityState createEntityState(NeoIdentityIndex idIndex, LoadedDescriptor descriptor, EntityReference reference, EntityStatus status);

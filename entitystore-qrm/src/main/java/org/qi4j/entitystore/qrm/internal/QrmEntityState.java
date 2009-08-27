@@ -177,7 +177,6 @@ public final class QrmEntityState
      * Returns the identity of the entity that this EntityState represents.
      *
      * @return the identity of the entity that this EntityState represents.
-     * @since 0.2.0
      */
     public QualifiedIdentity qualifiedIdentity()
     {
@@ -203,7 +202,6 @@ public final class QrmEntityState
      * Returns the status of entity represented by this entity state.
      *
      * @return The status of entity represented by this entity state.
-     * @since 0.2.0
      */
     public final EntityStatus status()
     {
@@ -220,7 +218,6 @@ public final class QrmEntityState
      *
      * @param qualifiedName The property qualified name. This argument must not be {@code null}.
      * @return The property value given qualified name.
-     * @since 0.2.0
      */
     public final Object getProperty( final QualifiedName qualifiedName )
     {

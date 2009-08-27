@@ -28,8 +28,6 @@ import org.qi4j.api.injection.scope.Service;
 /**
  * JAVADOC Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since March 18, 2008
  */
 public abstract class RdfIndexerExporterMixin
     implements RdfIndexerExporterComposite

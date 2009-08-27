@@ -23,8 +23,6 @@ import org.qi4j.index.rdf.model.Dog;
 /**
  * JAVADOC Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since March 31, 2008
  */
 public interface DogEntity
     extends Dog, EntityComposite

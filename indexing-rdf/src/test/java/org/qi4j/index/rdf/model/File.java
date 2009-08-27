@@ -24,8 +24,6 @@ import org.qi4j.api.value.ValueComposite;
 /**
  * JAVADOC Add JavaDoc.
  *
- * @author Alin Dreghiciu (adreghiciu@gmail.com)
- * @since 0.6.0, February 16, 2009
  */
 @Queryable( false )
 public interface File extends ValueComposite

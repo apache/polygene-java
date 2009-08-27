@@ -23,8 +23,6 @@ import org.qi4j.index.rdf.model.Male;
 /**
  * JAVADOC Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since April 09, 2008
  */
 public interface MaleEntity
     extends Male, EntityComposite

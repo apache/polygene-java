@@ -23,8 +23,6 @@ import org.qi4j.api.mixin.Mixins;
 /**
  * JAVADOC Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since March 20, 2008
  */
 @Mixins( GoogleMixin.class )
 public interface GoogleComposite

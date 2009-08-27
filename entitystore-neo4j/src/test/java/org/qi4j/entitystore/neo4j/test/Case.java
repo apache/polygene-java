@@ -16,9 +16,6 @@
  */
 package org.qi4j.entitystore.neo4j.test;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public interface Case<T>
 {
 }

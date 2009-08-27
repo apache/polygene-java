@@ -21,9 +21,6 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.EntityStatus;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public interface NodeEntityStateFactory extends NeoEntityStateFactory
 {
     CommittableEntityState createEntityState(NeoIdentityIndex idIndex, Node node, LoadedDescriptor descriptor, EntityReference reference, EntityStatus status);

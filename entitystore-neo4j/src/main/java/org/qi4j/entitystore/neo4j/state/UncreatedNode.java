@@ -32,9 +32,6 @@ import org.neo4j.api.core.StopEvaluator;
 import org.neo4j.api.core.TraversalPosition;
 import org.neo4j.api.core.Traverser;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public class UncreatedNode implements Node
 {
     private static final Map<String, UncreatedNode> uncreated = new ConcurrentHashMap<String, UncreatedNode>();

@@ -28,9 +28,6 @@ import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.api.common.QualifiedName;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public class LoadedDescriptor
 {
     private static final Map<Node, LoadedDescriptor> cache = new ConcurrentHashMap<Node, LoadedDescriptor>();

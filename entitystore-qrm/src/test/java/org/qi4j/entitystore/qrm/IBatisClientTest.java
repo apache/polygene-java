@@ -18,10 +18,6 @@ import org.junit.Ignore;
 import org.qi4j.entitystore.qrm.entity.PersonComposite;
 import org.qi4j.spi.entity.QualifiedIdentity;
 
-/**
- * @author mh14 @ jexp.de
- * @since 10.06.2008 11:30:49 (c) 2008 jexp.de
- */
 public class IBatisClientTest
 {
     private DerbyDatabaseHandler databaseHandler;

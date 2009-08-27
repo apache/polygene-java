@@ -24,9 +24,6 @@ import org.qi4j.spi.entity.ManyAssociationState;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 enum CollectionFactory implements BackendFactory
 {
     LIST(Duplicates.NOT_ALLOWED)

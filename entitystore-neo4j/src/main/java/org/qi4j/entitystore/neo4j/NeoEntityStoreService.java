@@ -20,9 +20,6 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.spi.entity.EntityStore;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 @Mixins( NeoEntityStoreMixin.class )
 public interface NeoEntityStoreService
     extends EntityStore, ServiceComposite

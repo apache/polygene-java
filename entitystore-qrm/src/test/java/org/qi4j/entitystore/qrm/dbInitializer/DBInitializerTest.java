@@ -39,7 +39,6 @@ public final class DBInitializerTest
      * Tests the initializer.
      *
      * @throws Exception Thrown if initialization failed.
-     * @since 0.1.0
      */
     @Test
     @Ignore( "The entire QRM is buggered.")

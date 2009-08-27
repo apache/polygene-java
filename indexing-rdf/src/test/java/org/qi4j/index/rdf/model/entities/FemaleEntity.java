@@ -23,8 +23,6 @@ import org.qi4j.index.rdf.model.Female;
 /**
  * JAVADOC Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since April 09, 2008
  */
 public interface FemaleEntity
     extends Female, EntityComposite

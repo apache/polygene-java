@@ -34,9 +34,6 @@ import org.neo4j.util.index.LuceneIndexService;
 import org.neo4j.util.index.NeoIndexService;
 import org.qi4j.api.service.Activatable;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public class EmbeddedNeoMixin implements Activatable, NeoService, IndexService, PassivationBroadcaster, NeoTransactionService
 {
     // Internal state

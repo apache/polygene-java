@@ -6,10 +6,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.qi4j.api.common.QualifiedName;
 
-/**
- * @author mh14 @ jexp.de
- * @since 11.06.2008 03:18:24 (c) 2008 jexp.de
- */
 public class CapitalizingIdentifierConverterTest
 {
     private final CapitalizingIdentifierConverter converter = new CapitalizingIdentifierConverter();

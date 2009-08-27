@@ -22,8 +22,6 @@ import org.qi4j.api.property.Property;
 /**
  * JAVADOC Add JavaDoc
  *
- * @author Alin Dreghiciu
- * @since 0.4.0, August 28, 2008
  */
 public interface Account
 {

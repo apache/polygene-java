@@ -16,9 +16,6 @@
  */
 package org.qi4j.entitystore.neo4j;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public interface PassivationBroadcaster
 {
     void addPassivationListener( PassivationListener listener );

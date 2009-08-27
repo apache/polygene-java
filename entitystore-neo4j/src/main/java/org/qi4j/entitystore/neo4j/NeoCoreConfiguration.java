@@ -24,7 +24,6 @@ import org.qi4j.library.constraints.annotation.NotEmpty;
 /**
  * JAVADOC: Find out the apropriate way to set up configurations for an EntityStore, then use this in EmbeddedNeoMixin.
  *
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
  */
 public interface NeoCoreConfiguration extends ConfigurationComposite
 {

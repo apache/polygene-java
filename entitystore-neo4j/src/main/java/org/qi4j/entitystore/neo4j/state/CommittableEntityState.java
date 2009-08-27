@@ -18,9 +18,6 @@ package org.qi4j.entitystore.neo4j.state;
 
 import org.qi4j.spi.entity.EntityState;
 
-/**
- * @author Tobias Ivarsson (tobias.ivarsson@neotechnology.com)
- */
 public interface CommittableEntityState extends EntityState
 {
     void preloadState();
