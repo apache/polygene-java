@@ -30,6 +30,7 @@ import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.composite.CompositeInstance;
+import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.EntityStatus;
@@ -107,6 +108,11 @@ public final class EntityInstance
     public <T> T proxy()
     {
         return (T) proxy;
+    }
+
+    public AbstractCompositeDescriptor descriptor()
+    {
+        return entityModel;
     }
 
     public <T> T newProxy( Class<T> mixinType )

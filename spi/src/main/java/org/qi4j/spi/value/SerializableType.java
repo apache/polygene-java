@@ -20,8 +20,11 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.spi.composite.CompositeInstance;
+import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.util.Base64Encoder;
 import org.qi4j.spi.util.json.JSONException;
+import org.qi4j.spi.util.json.JSONObject;
 import org.qi4j.spi.util.json.JSONWriter;
 
 import java.io.ByteArrayInputStream;
@@ -29,6 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Proxy;
 
 /**
  * Serializable type. If the serialized object is an ValueComposite,
@@ -53,7 +57,18 @@ public final class SerializableType
         }
         else if( value instanceof ValueComposite )
         {
-            value = ( (ValueComposite) value ).toJSON();
+            // Serialize ValueComposite JSON instead
+            CompositeInstance instance = (CompositeInstance) Proxy.getInvocationHandler(value);
+            ValueDescriptor descriptor = (ValueDescriptor) instance.descriptor();
+            ValueType valueType = descriptor.valueType();
+            try
+            {
+                valueType.toJSON( value, json );
+            } catch (JSONException e)
+            {
+                throw new IllegalStateException("Could not JSON serialize value", e);
+            }
+            return;
         }
 
         // Serialize value
@@ -74,39 +89,47 @@ public final class SerializableType
 
     }
 
-    public Object fromJSON( Object json, Module module )
+    public Object fromJSON( Object json, Module module ) throws JSONException
     {
         try
         {
-            String serializedString  = (String) json;
-            byte[] bytes = serializedString.getBytes( "UTF-8" );
-            bytes = Base64Encoder.decode( bytes );
-            ByteArrayInputStream bin = new ByteArrayInputStream( bytes );
-            ObjectInputStream oin = new ObjectInputStream( bin );
-            Object result = oin.readObject();
-            oin.close();
-
-            if( result instanceof EntityReference )
+            if (json instanceof JSONObject)
             {
-                EntityReference ref = (EntityReference) result;
-                if( !type.isClass( EntityReference.class ) )
+                // ValueComposite deserialization
+                ValueDescriptor valueDescriptor = ((ModuleSPI)module).valueDescriptor(type.name());
+                return valueDescriptor.valueType().fromJSON(json, module);
+            } else
+            {
+                String serializedString  = (String) json;
+                byte[] bytes = serializedString.getBytes( "UTF-8" );
+                bytes = Base64Encoder.decode( bytes );
+                ByteArrayInputStream bin = new ByteArrayInputStream( bytes );
+                ObjectInputStream oin = new ObjectInputStream( bin );
+                Object result = oin.readObject();
+                oin.close();
+
+                if( result instanceof EntityReference )
                 {
-                    Class mixinType = module.classLoader().loadClass( type.name() );
-                    UnitOfWork unitOfWork = module.unitOfWorkFactory().currentUnitOfWork();
-                    if( unitOfWork != null )
+                    EntityReference ref = (EntityReference) result;
+                    if( !type.isClass( EntityReference.class ) )
                     {
-                        result = unitOfWork.get( mixinType, ref.identity() );
+                        Class mixinType = module.classLoader().loadClass( type.name() );
+                        UnitOfWork unitOfWork = module.unitOfWorkFactory().currentUnitOfWork();
+                        if( unitOfWork != null )
+                        {
+                            result = unitOfWork.get( mixinType, ref.identity() );
+                        }
                     }
                 }
-            }
-            else if( result instanceof String )
-            {
-                String jsonValue = (String) result;
-                Class valueType = module.classLoader().loadClass( type.name() );
-                result = module.valueBuilderFactory().newValueFromJSON( valueType, jsonValue );
-            }
+                else if( result instanceof String )
+                {
+                    String jsonValue = (String) result;
+                    Class valueType = module.classLoader().loadClass( type.name() );
+                    result = module.valueBuilderFactory().newValueFromJSON( valueType, jsonValue );
+                }
 
-            return result;
+                return result;
+            }
         }
         catch( IOException e )
         {
@@ -126,7 +149,7 @@ public final class SerializableType
     }
 
     @Override
-    public Object fromQueryParameter( String parameter, Module module )
+    public Object fromQueryParameter( String parameter, Module module ) throws JSONException
     {
         String json = "\"" + parameter + "\"";
 

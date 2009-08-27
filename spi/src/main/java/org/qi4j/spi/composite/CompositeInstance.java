@@ -37,4 +37,6 @@ public interface CompositeInstance extends InvocationHandler
     Class<? extends Composite> type();
 
     Object invokeProxy(Method method, Object[] args) throws Throwable;
+
+    AbstractCompositeDescriptor descriptor();
 }

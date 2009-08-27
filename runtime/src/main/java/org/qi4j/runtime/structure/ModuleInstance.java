@@ -36,10 +36,10 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.composite.CompositesInstance;
 import org.qi4j.runtime.composite.CompositesModel;
 import org.qi4j.runtime.composite.TransientBuilderInstance;
+import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.object.ObjectBuilderInstance;
 import org.qi4j.runtime.object.ObjectModel;
@@ -58,9 +58,10 @@ import org.qi4j.runtime.value.ValuesInstance;
 import org.qi4j.runtime.value.ValuesModel;
 import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.util.json.JSONException;
 import org.qi4j.spi.util.json.JSONTokener;
-import org.qi4j.spi.structure.ModuleSPI;
+import org.qi4j.spi.value.ValueDescriptor;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -195,6 +196,19 @@ public class ModuleInstance
         try
         {
             finder = findTransientModel(classLoader().loadClass(name));
+        } catch (ClassNotFoundException e)
+        {
+            return null;
+        }
+        return finder.model;
+    }
+
+    public ValueDescriptor valueDescriptor(String name)
+    {
+        ValueFinder finder = null;
+        try
+        {
+            finder = findValueModel(classLoader().loadClass(name));
         } catch (ClassNotFoundException e)
         {
             return null;
