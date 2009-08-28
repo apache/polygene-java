@@ -137,7 +137,8 @@ public final class EntityModel
         return (Class<? extends EntityComposite>) super.type();
     }
 
-    @Override public EntityStateModel state()
+    @Override
+    public EntityStateModel state()
     {
         return (EntityStateModel) super.state();
     }
@@ -239,7 +240,8 @@ public final class EntityModel
         }
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return type().getName();
     }

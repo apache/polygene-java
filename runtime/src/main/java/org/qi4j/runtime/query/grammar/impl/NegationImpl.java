@@ -59,7 +59,8 @@ public final class NegationImpl
         return !expression().eval( target );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return new StringBuilder()
             .append( "NOT ( " )

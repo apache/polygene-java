@@ -49,7 +49,8 @@ public final class PropertyIsNotNullPredicateImpl<T>
         return prop != null && prop.get() != null;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return new StringBuilder()
             .append( "( " )

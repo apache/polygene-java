@@ -82,6 +82,11 @@ public final class QueryExpressions
         return provider.templateFor( mixinType );
     }
 
+    public static <T> T templateFor( final Class<T> mixinType, Object associatedEntity )
+    {
+        return provider.templateFor( mixinType, associatedEntity );
+    }
+
     /**
      * {@link org.qi4j.api.query.grammar.VariableValueExpression} factory method.
      *

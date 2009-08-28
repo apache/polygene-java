@@ -47,7 +47,8 @@ public final class AssociationIsNullPredicateImpl
         return associationReference().eval( target ) == null;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return new StringBuilder()
             .append( "( " )

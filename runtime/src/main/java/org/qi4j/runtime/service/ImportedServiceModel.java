@@ -67,7 +67,7 @@ public final class ImportedServiceModel
         return visibility;
     }
 
-    public <T>  T metaInfo( Class<T> infoType )
+    public <T> T metaInfo( Class<T> infoType )
     {
         return metaInfo.get( infoType );
     }
@@ -179,7 +179,8 @@ public final class ImportedServiceModel
 
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return type.getName() + ":" + identity;
     }

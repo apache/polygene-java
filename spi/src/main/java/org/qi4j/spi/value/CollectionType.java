@@ -52,7 +52,8 @@ public final class CollectionType
         return collectedType;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return type() + "<" + collectedType + ">";
     }

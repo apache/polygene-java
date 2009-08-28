@@ -50,6 +50,8 @@ public interface QueryExpressionsProvider
 {
     <T> T templateFor( Class<T> mixinType );
 
+    <T> T templateFor( Class<T> mixinType, Object associatedEntity );
+
     <T> VariableValueExpression<T> newVariableValueExpression( String name );
 
     <T> PropertyIsNullPredicate<T> newPropertyIsNullPredicate( PropertyReference<T> propertyRef );

@@ -56,7 +56,8 @@ public final class MatchesPredicateImpl
         return stringValue.matches( expressionValue );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return new StringBuilder()
             .append( "( " )

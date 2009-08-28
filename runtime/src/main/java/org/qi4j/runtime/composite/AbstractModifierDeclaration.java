@@ -113,7 +113,8 @@ public abstract class AbstractModifierDeclaration
         }
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return modifierClass.getName() + ( declaredIn == null ? "" : " declared in " + declaredIn );
     }

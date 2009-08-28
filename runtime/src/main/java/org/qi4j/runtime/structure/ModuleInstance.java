@@ -128,7 +128,7 @@ public class ModuleInstance
         return moduleModel.name();
     }
 
-    public <T>  T metaInfo( Class<T> infoType )
+    public <T> T metaInfo( Class<T> infoType )
     {
         return moduleModel.metaInfo( infoType );
     }
@@ -279,7 +279,8 @@ public class ModuleInstance
         services.passivate();
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return moduleModel.toString();
     }

@@ -76,7 +76,8 @@ final class PropertyReferenceProxy
         throw new QueryException( "Only property methods can be used. Not " + method.getName() + "()." );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return propertyReference.toString();
     }

@@ -33,7 +33,7 @@ import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 
 /**
  * Concern that helps EntityStores do concurrent modification checks.
- *
+ * <p/>
  * It caches the versions of state that it loads, and forgets them when
  * the state is committed. For normal operation this means that it does
  * not have to go down to the underlying store to get the current version.
@@ -43,11 +43,8 @@ import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 public abstract class ConcurrentModificationCheckConcern extends ConcernOf<EntityStore>
     implements EntityStore
 {
-    @This
-    EntityStateVersions versions;
-
-    @Structure
-    Qi4j api;
+    @This private EntityStateVersions versions;
+    @Structure private Qi4j api;
 
     public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
     {

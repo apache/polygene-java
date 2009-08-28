@@ -51,7 +51,8 @@ public final class GreaterOrEqualPredicateImpl<T>
         return propertyValue.compareTo( expressionValue ) >= 0;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return new StringBuilder()
             .append( "( " )

@@ -73,7 +73,7 @@ public abstract class AbstractCompositeModel
         return stateModel;
     }
 
-    public <T>  T metaInfo( Class<T> infoType )
+    public <T> T metaInfo( Class<T> infoType )
     {
         return metaInfo.get( infoType );
     }
@@ -155,7 +155,8 @@ public abstract class AbstractCompositeModel
         return stateModel.newInstance( state );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return compositeType.getName();
     }

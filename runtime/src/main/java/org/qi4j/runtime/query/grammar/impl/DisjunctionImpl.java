@@ -50,7 +50,8 @@ public final class DisjunctionImpl
         return leftSideExpression().eval( target ) || rightSideExpression().eval( target );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return new StringBuilder()
             .append( "( " )

@@ -213,7 +213,8 @@ public abstract class ValueType
         return fromJSON( new JSONTokener( parameter ).nextValue(), module );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return type.toString();
     }

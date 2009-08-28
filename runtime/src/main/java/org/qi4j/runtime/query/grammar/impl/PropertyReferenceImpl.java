@@ -21,12 +21,14 @@ package org.qi4j.runtime.query.grammar.impl;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.runtime.query.NotQueryableException;
 import org.qi4j.runtime.query.QueryException;
+import org.qi4j.spi.composite.CompositeInstance;
 
 /**
  * Default {@link org.qi4j.api.query.grammar.PropertyReference} implementation.
@@ -167,9 +169,10 @@ public final class PropertyReferenceImpl<T>
         {
             try
             {
-                return (Property) propertyAccessor().invoke( actual );
+                CompositeInstance handler = (CompositeInstance) Proxy.getInvocationHandler( actual );
+                return (Property) handler.invokeProxy( propertyAccessor(), new Object[0] );
             }
-            catch( Exception e )
+            catch( Throwable e )
             {
                 return null;
             }

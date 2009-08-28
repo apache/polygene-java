@@ -220,7 +220,8 @@ public final class AssociationModel
         return accessor.hashCode();
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return accessor.toGenericString();
     }

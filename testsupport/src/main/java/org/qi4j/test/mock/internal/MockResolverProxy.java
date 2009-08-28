@@ -19,6 +19,7 @@ package org.qi4j.test.mock.internal;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+
 import org.qi4j.api.util.NullArgumentException;
 
 /**
@@ -26,7 +27,7 @@ import org.qi4j.api.util.NullArgumentException;
  * {@link org.qi4j.test.mock.MockResolverType} to change the mock resolver for a mock.
  */
 public class MockResolverProxy
-    implements MockResolver
+        implements MockResolver
 {
     /**
      * Registered mock. Cannot be null.
@@ -45,10 +46,10 @@ public class MockResolverProxy
      * @throws NullArgumentException - If registred mock is null
      *                               - If mock resolver is null
      */
-    MockResolverProxy( final Object registeredMock, final MockResolver mockResolver )
+    MockResolverProxy(final Object registeredMock, final MockResolver mockResolver)
     {
-        NullArgumentException.validateNotNull( "Registered mock", registeredMock );
-        NullArgumentException.validateNotNull( "Mock resolver delegate", mockResolver );
+        NullArgumentException.validateNotNull("Registered mock", registeredMock);
+        NullArgumentException.validateNotNull("Mock resolver delegate", mockResolver);
         this.registeredMock = registeredMock;
         this.mockResolver = mockResolver;
     }
@@ -60,9 +61,9 @@ public class MockResolverProxy
      * @return itself
      * @throws NullArgumentException - If mock resolver is null
      */
-    MockResolverProxy setMock( final MockResolver mockResolver )
+    MockResolverProxy setMock(final MockResolver mockResolver)
     {
-        NullArgumentException.validateNotNull( "Mock resolver delegate", mockResolver );
+        NullArgumentException.validateNotNull("Mock resolver delegate", mockResolver);
         this.mockResolver = mockResolver;
         return this;
     }
@@ -82,8 +83,8 @@ public class MockResolverProxy
      *
      * @see MockResolver#getInvocationHandler(Object,java.lang.reflect.Method,Object[])
      */
-    public InvocationHandler getInvocationHandler( final Object proxy, final Method method, final Object[] args )
+    public InvocationHandler getInvocationHandler(final Object proxy, final Method method, final Object[] args)
     {
-        return mockResolver.getInvocationHandler( proxy, method, args );
+        return mockResolver.getInvocationHandler(proxy, method, args);
     }
 }

@@ -165,7 +165,8 @@ public class IterableQuery<T>
         return list;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return "Iterable query of type " + resultType.getName();
     }

@@ -58,7 +58,7 @@ public class LayerInstance
         return model.name();
     }
 
-    public <T>  T metaInfo( Class<T> infoType )
+    public <T> T metaInfo( Class<T> infoType )
     {
         return model.metaInfo( infoType );
     }

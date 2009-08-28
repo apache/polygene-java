@@ -29,7 +29,7 @@ public interface Application
 
     Mode mode();
 
-    <T>  T metaInfo( Class<T> infoType );
+    <T> T metaInfo( Class<T> infoType );
 
     Layer findLayer( String layerName );
 

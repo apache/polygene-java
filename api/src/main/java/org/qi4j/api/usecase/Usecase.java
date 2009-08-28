@@ -52,7 +52,7 @@ public final class Usecase
      * @param infoType the MetaInfo type to retrieve.
      * @return the previously stored metaInfo of the given type for the usecase.
      */
-    public <T>  T metaInfo( Class<T> infoType )
+    public <T> T metaInfo( Class<T> infoType )
     {
         return metaInfo.get( infoType );
     }

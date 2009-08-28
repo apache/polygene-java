@@ -21,8 +21,10 @@ package org.qi4j.runtime.query.grammar.impl;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.query.grammar.AssociationReference;
+import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.query.QueryException;
 
 /**
@@ -136,10 +138,10 @@ public class AssociationReferenceImpl
         {
             try
             {
-                Association assoc = (Association) associationAccessor().invoke( actual );
+                Association assoc = (Association) EntityInstance.getEntityInstance( (EntityComposite) actual ).invokeProxy( associationAccessor(), new Object[0] );
                 return assoc.get();
             }
-            catch( Exception e )
+            catch( Throwable e )
             {
                 return null;
             }

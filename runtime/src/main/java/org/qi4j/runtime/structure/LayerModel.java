@@ -53,7 +53,7 @@ public final class LayerModel
         return name;
     }
 
-    public <T>  T metaInfo( Class<T> infoType )
+    public <T> T metaInfo( Class<T> infoType )
     {
         return metaInfo.get( infoType );
     }
@@ -141,7 +141,8 @@ public final class LayerModel
         return layerInstance;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return name;
     }

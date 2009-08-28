@@ -83,7 +83,7 @@ public abstract class AbstractPropertyInstance<T>
 
     /**
      * Perform equals with {@code o} argument.
-     *
+     * <p/>
      * The definition of equals() for the ComputedProperty is that if the Value, subclass and all the metaInfo are
      * equal, then th
      *

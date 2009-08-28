@@ -85,7 +85,8 @@ public final class OrderByImpl
         return order;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return new StringBuilder()
             .append( propertyReference )

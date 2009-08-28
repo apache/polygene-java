@@ -72,7 +72,7 @@ public class ModuleModel
         return name;
     }
 
-    public <T>  T metaInfo( Class<T> infoType )
+    public <T> T metaInfo( Class<T> infoType )
     {
         return metaInfo.get( infoType );
     }
@@ -156,7 +156,8 @@ public class ModuleModel
         return new ModuleInstance( this, layerInstance, compositesModel, entitiesModel, objectsModel, valuesModel, servicesModel, importedServicesModel );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return name;
     }
@@ -179,7 +180,8 @@ public class ModuleModel
             super( classLoader );
         }
 
-        @Override protected Class<?> findClass( String name ) throws ClassNotFoundException
+        @Override
+        protected Class<?> findClass( String name ) throws ClassNotFoundException
         {
             Class clazz = classes.get( name );
             if( clazz == null )

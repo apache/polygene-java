@@ -32,9 +32,11 @@ import org.qi4j.spi.value.ValueType;
 public class ValueMixin
     implements Value
 {
-    @This Value thisValue;
+    @This
+    Value thisValue;
 
-    @State StateHolder state;
+    @State
+    StateHolder state;
 
     public StateHolder state()
     {

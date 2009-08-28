@@ -31,7 +31,7 @@ public interface Module
 {
     String name();
 
-    <T>  T metaInfo( Class<T> infoType );
+    <T> T metaInfo( Class<T> infoType );
 
     TransientBuilderFactory transientBuilderFactory();
 

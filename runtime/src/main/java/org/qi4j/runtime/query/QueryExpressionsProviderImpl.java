@@ -18,6 +18,7 @@
 package org.qi4j.runtime.query;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import static java.lang.reflect.Proxy.*;
 import java.util.Collection;
 import org.qi4j.api.entity.Identity;
@@ -102,6 +103,17 @@ public class QueryExpressionsProviderImpl
             new Class[]{ mixinType },
             new MixinTypeProxy( mixinType )
         );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public <T> T templateFor( Class<T> mixinType, Object associatedEntity )
+    {
+        MixinTypeProxy proxy = (MixinTypeProxy) Proxy.getInvocationHandler( associatedEntity );
+
+        return (T) newProxyInstance(
+            QueryExpressions.class.getClassLoader(),
+            new Class[]{ mixinType },
+            new MixinTypeProxy( mixinType, proxy.traversedAssociation() ) );
     }
 
     public <T> VariableValueExpression<T> newVariableValueExpression( String name )

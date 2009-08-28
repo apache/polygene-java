@@ -108,7 +108,7 @@ public class ParameterConstraintViolationException extends ConstraintViolationEx
      * <td>toString() of value passed as the argument, or "null" text if argument was null.</td>
      * </tr>
      * </table>
-     *
+     * <p/>
      * <b>NOTE!!!</b> This class is still under construction and will be modified further.
      *
      * @param bundle The ResourceBundle for Localization, or null if default formatting and locale to be used.

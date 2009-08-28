@@ -120,7 +120,8 @@ public final class ObjectModel
         injectedMethodsModel.inject( injectionContext, instance );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return objectType.getName();
     }

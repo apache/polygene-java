@@ -374,7 +374,8 @@ public final class DependencyModel
         return injectionAnnotation.annotationType();
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return injectionAnnotation + " for " + injectionType + " in " + injectedClass.getName();
     }

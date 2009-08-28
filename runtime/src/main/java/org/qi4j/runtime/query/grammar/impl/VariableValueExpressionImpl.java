@@ -91,7 +91,8 @@ public final class VariableValueExpressionImpl<T>
         this.value = value;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return value == null ? "$" + name : value.toString();
     }

@@ -62,7 +62,8 @@ public final class EntityStateModel
                                         manyAssociationsModel.newInstance( entityState, uow ) );
     }
 
-    @Override public void addStateFor( Iterable<Method> methods, Class compositeType )
+    @Override
+    public void addStateFor( Iterable<Method> methods, Class compositeType )
     {
         super.addStateFor( methods, compositeType );
         for( Method method : methods )

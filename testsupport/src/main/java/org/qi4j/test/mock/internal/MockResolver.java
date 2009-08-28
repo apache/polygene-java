@@ -33,5 +33,5 @@ public interface MockResolver
      * @param args   invocation arguments
      * @return invocation handler if this resolved can handle the call or null otherwise.
      */
-    InvocationHandler getInvocationHandler( Object proxy, Method method, Object[] args );
+    InvocationHandler getInvocationHandler(Object proxy, Method method, Object[] args);
 }

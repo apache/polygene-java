@@ -48,7 +48,7 @@ public interface EntityStoreUnitOfWork
      *
      * @param anIdentity The entity identity. This argument must not be {@code null}.
      * @return Entity state given the composite descriptor and identity.
-     * @throws EntityStoreException thrown if retrieval failed.
+     * @throws EntityStoreException    thrown if retrieval failed.
      * @throws EntityNotFoundException if requested entity does not exist
      */
     EntityState getEntityState( EntityReference anIdentity )

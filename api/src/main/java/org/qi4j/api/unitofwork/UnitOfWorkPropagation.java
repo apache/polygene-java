@@ -23,23 +23,23 @@ import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.*;
 
 /**
  * Annotation to denote the unit of work propagation.
- *
+ * <p/>
  * <p/>
  * Usage example:
  * <pre>
  * <code>
- *
+ * <p/>
  * &#64;Concerns( UnitOfWorkConcern.class )
  * public class MyBusinessServiceMixin implements BusinessService
  * {
  *   &#64;Structure UnitOfWorkFactory uowf;
- *
+ * <p/>
  *   &#64;UnitOfWorkPropagation
  *   public void myBusinessMethod()
  *   {
  *     // Must invoke current unit of work.
  *     UnitOfWork uow = uowf.currentUnitOfWork();
- *
+ * <p/>
  *     // Perform business logic
  *   }
  * }

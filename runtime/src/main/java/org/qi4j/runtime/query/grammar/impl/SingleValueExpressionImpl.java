@@ -49,7 +49,8 @@ public final class SingleValueExpressionImpl<T>
         return value;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return value.toString();
     }

@@ -90,7 +90,8 @@ public final class EntityType
         return manyAssociations;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return type.toString();
     }

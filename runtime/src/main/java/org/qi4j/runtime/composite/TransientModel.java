@@ -142,7 +142,8 @@ public class TransientModel
         return stateModel.newInstance( state );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return type().getName();
     }

@@ -44,7 +44,7 @@ public final class ImportedServiceReferenceInstance<T>
         return serviceModel.identity();
     }
 
-    public <T>  T metaInfo( Class<T> infoType )
+    public <T> T metaInfo( Class<T> infoType )
     {
         return serviceModel.metaInfo( infoType );
     }

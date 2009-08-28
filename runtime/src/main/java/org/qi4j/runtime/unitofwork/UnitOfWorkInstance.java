@@ -280,7 +280,7 @@ public final class UnitOfWorkInstance
     }
 
     public void apply()
-        throws UnitOfWorkCompletionException
+        throws UnitOfWorkCompletionException, ConcurrentEntityModificationException
     {
         complete( true );
     }

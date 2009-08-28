@@ -98,7 +98,8 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
         return value;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         if( value == null )
         {
@@ -110,7 +111,8 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
         }
     }
 
-    @Override public int hashCode()
+    @Override
+    public int hashCode()
     {
         if( value == null )
         {
@@ -122,7 +124,8 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
         }
     }
 
-    @Override public boolean equals( Object o )
+    @Override
+    public boolean equals( Object o )
     {
         if( this == o )
         {

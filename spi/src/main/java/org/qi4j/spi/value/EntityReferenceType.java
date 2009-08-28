@@ -54,12 +54,14 @@ public final class EntityReferenceType
         return EntityReference.parseEntityReference( result );
     }
 
-    @Override public String toQueryParameter( Object value )
+    @Override
+    public String toQueryParameter( Object value )
     {
         return value == null ? null : value.toString();
     }
 
-    @Override public Object fromQueryParameter( String parameter, Module module )
+    @Override
+    public Object fromQueryParameter( String parameter, Module module )
     {
         return EntityReference.parseEntityReference( parameter );
     }

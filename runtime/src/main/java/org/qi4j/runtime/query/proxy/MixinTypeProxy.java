@@ -98,6 +98,16 @@ public final class MixinTypeProxy
         this.traversedProperty = traversedProperty;
     }
 
+    public AssociationReference traversedAssociation()
+    {
+        return traversedAssociation;
+    }
+
+    public PropertyReference traversedProperty()
+    {
+        return traversedProperty;
+    }
+
     public Object invoke( final Object proxy,
                           final Method method,
                           final Object[] args )

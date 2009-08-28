@@ -110,13 +110,15 @@ public final class DateType
         }
     }
 
-    @Override public String toQueryParameter( Object value )
+    @Override
+    public String toQueryParameter( Object value )
         throws IllegalArgumentException
     {
         return value == null ? null : ISO8601_UTC.get().format( (Date) value );
     }
 
-    @Override public Object fromQueryParameter( String parameter, Module module )
+    @Override
+    public Object fromQueryParameter( String parameter, Module module )
         throws IllegalArgumentException
     {
         try

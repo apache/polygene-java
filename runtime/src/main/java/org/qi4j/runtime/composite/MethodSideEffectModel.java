@@ -29,7 +29,8 @@ public final class MethodSideEffectModel extends AbstractModifierModel
         super( sideEffectClass );
     }
 
-    @Override public void visitModel( ModelVisitor modelVisitor )
+    @Override
+    public void visitModel( ModelVisitor modelVisitor )
     {
         modelVisitor.visit( this );
 

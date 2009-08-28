@@ -113,7 +113,8 @@ public final class ValueConstraintsInstance
             return Optional.class;
         }
 
-        @Override public String toString()
+        @Override
+        public String toString()
         {
             return "not optional";
         }

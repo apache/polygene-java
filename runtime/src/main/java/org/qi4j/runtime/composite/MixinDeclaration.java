@@ -122,7 +122,8 @@ public final class MixinDeclaration
         return appliesToFilter.appliesTo( method, mixinClass, compositeType, mixinClass );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return "Mixin " + mixinClass.getName() + " declared in " + declaredIn;
     }

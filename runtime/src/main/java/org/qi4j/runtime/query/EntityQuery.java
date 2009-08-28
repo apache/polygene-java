@@ -135,7 +135,8 @@ final class EntityQuery<T>
         }
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return "Find all " + resultType.getName() +
                ( whereClause != null ? " where " + whereClause.toString() : "" );

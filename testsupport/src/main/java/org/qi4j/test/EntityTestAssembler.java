@@ -25,23 +25,23 @@ import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
  * Helper assembler that adds an in-memory EntityStore, a UUID generator, and an Entity type registry to the module
  */
 public class EntityTestAssembler
-    implements Assembler
+        implements Assembler
 {
     Visibility visibility;
 
-    public EntityTestAssembler( Visibility visibility )
+    public EntityTestAssembler(Visibility visibility)
     {
         this.visibility = visibility;
     }
 
     public EntityTestAssembler()
     {
-        this( Visibility.application );
+        this(Visibility.application);
     }
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble(ModuleAssembly module) throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class ).visibleIn( visibility );
-        module.addServices( UuidIdentityGeneratorService.class ).visibleIn( Visibility.application );
+        module.addServices(MemoryEntityStoreService.class).visibleIn(visibility);
+        module.addServices(UuidIdentityGeneratorService.class).visibleIn(Visibility.application);
     }
 }

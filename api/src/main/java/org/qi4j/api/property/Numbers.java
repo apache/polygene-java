@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 /**
  * Convenience class for mathematical operations on
  * numerical properties.
- *
+ * <p/>
  * add(object.number(), 5)
  */
 public final class Numbers

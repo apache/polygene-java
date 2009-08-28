@@ -175,7 +175,8 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
         }
     }
 
-    @Override protected void checkType( Object instance )
+    @Override
+    protected void checkType( Object instance )
     {
         if( instance == null )
         {

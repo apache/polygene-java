@@ -62,7 +62,7 @@ public class ApplicationInstance
         return model.mode();
     }
 
-    public <T>  T metaInfo( Class<T> infoType )
+    public <T> T metaInfo( Class<T> infoType )
     {
         return model.metaInfo( infoType );
     }

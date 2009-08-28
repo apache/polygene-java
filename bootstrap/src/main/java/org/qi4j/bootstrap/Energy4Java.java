@@ -28,7 +28,7 @@ import org.qi4j.spi.structure.ApplicationSPI;
 /**
  * Main bootstrap class for starting Qi4j and creating new applications. Instantiate this
  * and call one of the factory methods to get started.
- *
+ * <p/>
  * This class will use the Service Loader mechanism in Java to try to locate a runtime that implements
  * the Qi4jRuntime interface. This avoids a direct dependency from the bootstrap to the runtime.
  */

@@ -115,7 +115,8 @@ public final class ConstructorModel
         }
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return constructor.toGenericString();
     }

@@ -232,7 +232,8 @@ public final class MixinModel
         return sideEffectsDeclaration.sideEffectsFor( method, type );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return mixinClass.getName();
     }

@@ -65,7 +65,8 @@ public final class PropertyType
         return queryable;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return qualifiedName + "(" + type + ")";
     }

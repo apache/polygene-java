@@ -21,5 +21,5 @@ public interface Layer
 {
     String name();
 
-    <T>  T metaInfo( Class<T> infoType );
+    <T> T metaInfo( Class<T> infoType );
 }
