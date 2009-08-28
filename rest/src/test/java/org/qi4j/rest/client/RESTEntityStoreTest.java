@@ -55,14 +55,16 @@ public class RESTEntityStoreTest
         store.addServices( MemoryEntityStoreService.class );
         store.addServices( RESTEntityStoreService.class).visibleIn( Visibility.layer );
         store.importServices( Uniform.class );
-    }
-
-    @Override
-    protected void initApplication( Application app ) throws Exception
-    {
-        Client client = new Client( Protocol.HTTP );
-        client.start();
-        app.metaInfo().set( client );
+        try
+        {
+            Client client = new Client( Protocol.HTTP );
+            client.start();
+            module.layerAssembly().applicationAssembly().setMetaInfo( client );
+        }
+        catch( Exception e )
+        {
+            throw new AssemblyException( "Problem to start Sparql client.", e );
+        }
     }
 
     @Override
