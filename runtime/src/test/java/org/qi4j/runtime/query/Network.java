@@ -27,6 +27,7 @@ import org.qi4j.runtime.query.model.Nameable;
 import org.qi4j.runtime.query.model.Person;
 import org.qi4j.runtime.query.model.entities.FemaleEntity;
 import org.qi4j.runtime.query.model.entities.MaleEntity;
+import org.qi4j.runtime.query.model.entities.PetEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,6 @@ import java.util.List;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 class Network
 {
@@ -42,119 +42,132 @@ class Network
     private static List<Person> persons;
     private static List<Male> males;
     private static List<Female> females;
+    private static List<PetEntity> pets;
     private static List<Nameable> nameables;
 
-    static void populate( final UnitOfWork uow ) throws UnitOfWorkCompletionException
+    static void populate(final UnitOfWork uow) throws UnitOfWorkCompletionException
     {
         domains = new ArrayList<Domain>();
         persons = new ArrayList<Person>();
         males = new ArrayList<Male>();
         females = new ArrayList<Female>();
+        pets = new ArrayList<PetEntity>();
         nameables = new ArrayList<Nameable>();
 
         Domain gaming = uow.newEntity(Domain.class);
-        setName( gaming, "Gaming" );
-        gaming.description().set( "Gaming domain" );
+        setName(gaming, "Gaming");
+        gaming.description().set("Gaming domain");
 
         Domain programming = uow.newEntity(Domain.class);
-        setName( programming, "Programming" );
-        programming.description().set( "Programing domain" );
+        setName(programming, "Programming");
+        programming.description().set("Programing domain");
 
         Domain cooking = uow.newEntity(Domain.class);
-        setName( cooking, "Cooking" );
-        cooking.description().set( "Cooking domain" );
+        setName(cooking, "Cooking");
+        cooking.description().set("Cooking domain");
 
         Domain cars = uow.newEntity(Domain.class);
-        setName( cars, "Cars" );
-        cars.description().set( "Cars" );
+        setName(cars, "Cars");
+        cars.description().set("Cars");
 
         City kualaLumpur = uow.newEntity(City.class, "kualalumpur");
-        setName( kualaLumpur, "Kuala Lumpur" );
-        kualaLumpur.country().set( "Malaysia" );
-        kualaLumpur.county().set( "Some Jaya" );
+        setName(kualaLumpur, "Kuala Lumpur");
+        kualaLumpur.country().set("Malaysia");
+        kualaLumpur.county().set("Some Jaya");
 
         City penang = uow.newEntity(City.class, "penang");
-        setName( penang, "Penang" );
-        penang.country().set( "Malaysia" );
-        penang.county().set( "Some Other Jaya" );
+        setName(penang, "Penang");
+        penang.country().set("Malaysia");
+        penang.county().set("Some Other Jaya");
 
         Female vivianSmith = uow.newEntity(FemaleEntity.class);
-        setName( vivianSmith, "Vivian Smith" );
-        vivianSmith.placeOfBirth().set( kualaLumpur );
-        vivianSmith.yearOfBirth().set( 1992 );
-        vivianSmith.interests().add( 0, gaming );
-        vivianSmith.interests().add( 0, programming );
-        vivianSmith.email().set( "viv@smith.edu" );
+        setName(vivianSmith, "Vivian Smith");
+        vivianSmith.placeOfBirth().set(kualaLumpur);
+        vivianSmith.yearOfBirth().set(1992);
+        vivianSmith.interests().add(0, gaming);
+        vivianSmith.interests().add(0, programming);
+        vivianSmith.email().set("viv@smith.edu");
         List<String> vivianTags = new ArrayList<String>();
-        vivianTags.add( "Awesome" );
-        vivianTags.add( "Pretty" );
-        vivianTags.add( "Cool" );
-        vivianSmith.tags().set( vivianTags );
+        vivianTags.add("Awesome");
+        vivianTags.add("Pretty");
+        vivianTags.add("Cool");
+        vivianSmith.tags().set(vivianTags);
 
         Female annDoe = uow.newEntity(FemaleEntity.class);
-        setName( annDoe, "Ann Doe" );
-        annDoe.placeOfBirth().set( kualaLumpur );
-        annDoe.yearOfBirth().set( 1975 );
-        annDoe.interests().add( 0, cooking );
+        setName(annDoe, "Ann Doe");
+        annDoe.placeOfBirth().set(kualaLumpur);
+        annDoe.yearOfBirth().set(1975);
+        annDoe.interests().add(0, cooking);
         List<String> annTags = new ArrayList<String>();
-        annTags.add( "Conservative" );
-        annTags.add( "Pretty");
-        annDoe.tags().set( annTags );
+        annTags.add("Conservative");
+        annTags.add("Pretty");
+        annDoe.tags().set(annTags);
 
         Male joeDoe = uow.newEntity(MaleEntity.class);
-        setName( joeDoe, "Joe Doe" );
-        joeDoe.placeOfBirth().set( kualaLumpur );
-        joeDoe.yearOfBirth().set( 1990 );
-        joeDoe.mother().set( annDoe );
-        joeDoe.pastGirlFriends().add( 0, annDoe  );
-        joeDoe.interests().add( 0, programming );
-        joeDoe.interests().add( 0, gaming );
-        joeDoe.email().set( "joe@thedoes.net" );
+        setName(joeDoe, "Joe Doe");
+        joeDoe.placeOfBirth().set(kualaLumpur);
+        joeDoe.yearOfBirth().set(1990);
+        joeDoe.mother().set(annDoe);
+        joeDoe.pastGirlFriends().add(0, annDoe);
+        joeDoe.interests().add(0, programming);
+        joeDoe.interests().add(0, gaming);
+        joeDoe.email().set("joe@thedoes.net");
         List<String> joeTags = new ArrayList<String>();
-        joeTags.add( "Cool" );
-        joeTags.add( "Hunk" );
-        joeTags.add( "Awesome" );
-        joeDoe.tags().set( joeTags );
+        joeTags.add("Cool");
+        joeTags.add("Hunk");
+        joeTags.add("Awesome");
+        joeDoe.tags().set(joeTags);
 
         Male jackDoe = uow.newEntity(MaleEntity.class);
-        setName( jackDoe, "Jack Doe" );
-        jackDoe.placeOfBirth().set( penang );
-        jackDoe.yearOfBirth().set( 1970 );
-        jackDoe.interests().add( 0, cars );
-        jackDoe.wife().set( annDoe );
+        setName(jackDoe, "Jack Doe");
+        jackDoe.placeOfBirth().set(penang);
+        jackDoe.yearOfBirth().set(1970);
+        jackDoe.interests().add(0, cars);
+        jackDoe.wife().set(annDoe);
         List<String> jackTags = new ArrayList<String>();
-        jackTags.add( "Conservative" );
-        jackTags.add( "Awesome");
-        jackDoe.tags().set( jackTags );
+        jackTags.add("Conservative");
+        jackTags.add("Awesome");
+        jackDoe.tags().set(jackTags);
 
-        annDoe.husband().set( jackDoe );
+        annDoe.husband().set(jackDoe);
 
-        domains.add( gaming );
-        domains.add( programming );
-        domains.add( cooking );
-        domains.add( cars );
+        PetEntity rex = uow.newEntity(PetEntity.class);
+        setName(rex, "Rex");
+        rex.changeOwner(jackDoe);
 
-        persons.add( annDoe );
-        persons.add( joeDoe );
-        persons.add( jackDoe );
-        persons.add( vivianSmith );
+        PetEntity kitty = uow.newEntity(PetEntity.class);
+        setName(kitty, "Kitty");
+        kitty.changeOwner(annDoe);
 
-        females.add( annDoe );
-        females.add( vivianSmith );
+        domains.add(gaming);
+        domains.add(programming);
+        domains.add(cooking);
+        domains.add(cars);
 
-        males.add( joeDoe );
-        males.add( jackDoe );
+        persons.add(annDoe);
+        persons.add(joeDoe);
+        persons.add(jackDoe);
+        persons.add(vivianSmith);
 
-        nameables.add( gaming );
-        nameables.add( programming );
-        nameables.add( cooking );
-        nameables.add( cars );
-        nameables.add( kualaLumpur );
-        nameables.add( penang );
-        nameables.add( annDoe );
-        nameables.add( joeDoe );
-        nameables.add( jackDoe );
-        nameables.add( vivianSmith );
+        females.add(annDoe);
+        females.add(vivianSmith);
+
+        males.add(joeDoe);
+        males.add(jackDoe);
+
+        pets.add(rex);
+        pets.add(kitty);
+
+        nameables.add(gaming);
+        nameables.add(programming);
+        nameables.add(cooking);
+        nameables.add(cars);
+        nameables.add(kualaLumpur);
+        nameables.add(penang);
+        nameables.add(annDoe);
+        nameables.add(joeDoe);
+        nameables.add(jackDoe);
+        nameables.add(vivianSmith);
     }
 
     static Iterable<Domain> domains()
@@ -182,9 +195,14 @@ class Network
         return females;
     }
 
-    private static void setName( Nameable nameable, String name )
+    static Iterable<PetEntity> pets()
     {
-        nameable.name().set( name );
+        return pets;
+    }
+
+    private static void setName(Nameable nameable, String name)
+    {
+        nameable.name().set(name);
     }
 
 }

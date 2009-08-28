@@ -61,14 +61,14 @@ public final class QueryExpressions
      *
      * @param provider the QueryExpressionsProvider
      */
-    public static void setProvider( QueryExpressionsProvider provider )
+    public static void setProvider(QueryExpressionsProvider provider)
     {
         QueryExpressions.provider = provider;
     }
 
-    public static <T> T oneOf( final ManyAssociation<T> association )
+    public static <T> T oneOf(final ManyAssociation<T> association)
     {
-        return provider.oneOf( association );
+        return provider.oneOf(association);
     }
 
     /**
@@ -77,10 +77,15 @@ public final class QueryExpressions
      * @param mixinType mixin type
      * @return template instance
      */
-    @SuppressWarnings( "unchecked" )
-    public static <T> T templateFor( final Class<T> mixinType )
+    @SuppressWarnings("unchecked")
+    public static <T> T templateFor(final Class<T> mixinType)
     {
-        return provider.templateFor( mixinType );
+        return provider.templateFor(mixinType);
+    }
+
+    public static <T> T templateFor(final Class<T> mixinType, Object associatedEntity)
+    {
+        return provider.templateFor(mixinType, associatedEntity);
     }
 
     /**
@@ -90,9 +95,9 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.VariableValueExpression} expression
      * @throws IllegalArgumentException - If name is null or empty
      */
-    public static <T> VariableValueExpression<T> variable( final String name )
+    public static <T> VariableValueExpression<T> variable(final String name)
     {
-        return provider.newVariableValueExpression( name );
+        return provider.newVariableValueExpression(name);
     }
 
     /**
@@ -102,9 +107,9 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.PropertyIsNullPredicate} expression
      * @throws IllegalArgumentException - If property is null
      */
-    public static <T> PropertyIsNullPredicate<T> isNull( final Property<T> property )
+    public static <T> PropertyIsNullPredicate<T> isNull(final Property<T> property)
     {
-        return provider.newPropertyIsNullPredicate( asPropertyExpression( property ) );
+        return provider.newPropertyIsNullPredicate(asPropertyExpression(property));
     }
 
     /**
@@ -114,9 +119,9 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.AssociationIsNullPredicate} expression
      * @throws IllegalArgumentException - If association is null
      */
-    public static AssociationIsNullPredicate isNull( final Association<?> association )
+    public static AssociationIsNullPredicate isNull(final Association<?> association)
     {
-        return provider.newAssociationIsNullPredicate( asAssociationExpression( association ) );
+        return provider.newAssociationIsNullPredicate(asAssociationExpression(association));
     }
 
     /**
@@ -126,9 +131,9 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.PropertyIsNotNullPredicate} expression
      * @throws IllegalArgumentException - If property is null
      */
-    public static <T> PropertyIsNotNullPredicate<T> isNotNull( final Property<T> property )
+    public static <T> PropertyIsNotNullPredicate<T> isNotNull(final Property<T> property)
     {
-        return provider.newPropertyIsNotNullPredicate( asPropertyExpression( property ) );
+        return provider.newPropertyIsNotNullPredicate(asPropertyExpression(property));
     }
 
     /**
@@ -138,9 +143,9 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.AssociationIsNotNullPredicate} expression
      * @throws IllegalArgumentException - If association is null
      */
-    public static AssociationIsNotNullPredicate isNotNull( final Association<?> association )
+    public static AssociationIsNotNullPredicate isNotNull(final Association<?> association)
     {
-        return provider.newAssociationIsNotNullPredicate( asAssociationExpression( association ) );
+        return provider.newAssociationIsNotNullPredicate(asAssociationExpression(association));
     }
 
     /**
@@ -151,10 +156,10 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.EqualsPredicate}
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> EqualsPredicate<T> eq( final Property<T> property,
-                                             final T value )
+    public static <T> EqualsPredicate<T> eq(final Property<T> property,
+                                            final T value)
     {
-        return provider.newEqualsPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
+        return provider.newEqualsPredicate(asPropertyExpression(property), asTypedValueExpression(value));
     }
 
     /**
@@ -165,10 +170,10 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.EqualsPredicate}
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> EqualsPredicate<T> eq( final Property<T> property,
-                                             final VariableValueExpression<T> valueExpression )
+    public static <T> EqualsPredicate<T> eq(final Property<T> property,
+                                            final VariableValueExpression<T> valueExpression)
     {
-        return provider.newEqualsPredicate( asPropertyExpression( property ), valueExpression );
+        return provider.newEqualsPredicate(asPropertyExpression(property), valueExpression);
     }
 
     /**
@@ -179,10 +184,10 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.EqualsPredicate}
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> EqualsPredicate<String> eq( final Association<T> property,
-                                             final T value )
+    public static <T> EqualsPredicate<String> eq(final Association<T> property,
+                                                 final T value)
     {
-        return provider.newEqualsPredicate( asAssociationExpression( property ), asTypedValueExpression( value ) );
+        return provider.newEqualsPredicate(asAssociationExpression(property), asTypedValueExpression(value));
     }
 
     /**
@@ -193,10 +198,10 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.EqualsPredicate}
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> EqualsPredicate<T> eq( final Association<T> property,
-                                             final VariableValueExpression<T> valueExpression )
+    public static <T> EqualsPredicate<T> eq(final Association<T> property,
+                                            final VariableValueExpression<T> valueExpression)
     {
-        return provider.newEqualsPredicate( asAssociationExpression( property ), valueExpression );
+        return provider.newEqualsPredicate(asAssociationExpression(property), valueExpression);
     }
 
     /**
@@ -207,10 +212,10 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.NotEqualsPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> NotEqualsPredicate<T> notEq( final Property<T> property,
-                                                   final T value )
+    public static <T> NotEqualsPredicate<T> notEq(final Property<T> property,
+                                                  final T value)
     {
-        return provider.newNotEqualsPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
+        return provider.newNotEqualsPredicate(asPropertyExpression(property), asTypedValueExpression(value));
     }
 
     /**
@@ -221,10 +226,10 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.NotEqualsPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> NotEqualsPredicate<T> notEq( final Property<T> property,
-                                                   final VariableValueExpression<T> valueExpression )
+    public static <T> NotEqualsPredicate<T> notEq(final Property<T> property,
+                                                  final VariableValueExpression<T> valueExpression)
     {
-        return provider.newNotEqualsPredicate( asPropertyExpression( property ), valueExpression );
+        return provider.newNotEqualsPredicate(asPropertyExpression(property), valueExpression);
     }
 
 
@@ -236,10 +241,10 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.LessThanPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> LessThanPredicate<T> lt( final Property<T> property,
-                                               final T value )
+    public static <T> LessThanPredicate<T> lt(final Property<T> property,
+                                              final T value)
     {
-        return provider.newLessThanPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
+        return provider.newLessThanPredicate(asPropertyExpression(property), asTypedValueExpression(value));
     }
 
     /**
@@ -250,10 +255,10 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.LessThanPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> LessThanPredicate<T> lt( final Property<T> property,
-                                               final VariableValueExpression<T> valueExpression )
+    public static <T> LessThanPredicate<T> lt(final Property<T> property,
+                                              final VariableValueExpression<T> valueExpression)
     {
-        return provider.newLessThanPredicate( asPropertyExpression( property ), valueExpression );
+        return provider.newLessThanPredicate(asPropertyExpression(property), valueExpression);
     }
 
     /**
@@ -264,10 +269,10 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.LessOrEqualPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> LessOrEqualPredicate<T> le( final Property<T> property,
-                                                  final T value )
+    public static <T> LessOrEqualPredicate<T> le(final Property<T> property,
+                                                 final T value)
     {
-        return provider.newLessOrEqualPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
+        return provider.newLessOrEqualPredicate(asPropertyExpression(property), asTypedValueExpression(value));
     }
 
     /**
@@ -278,10 +283,10 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.LessOrEqualPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> LessOrEqualPredicate<T> le( final Property<T> property,
-                                                  final VariableValueExpression<T> valueExpression )
+    public static <T> LessOrEqualPredicate<T> le(final Property<T> property,
+                                                 final VariableValueExpression<T> valueExpression)
     {
-        return provider.newLessOrEqualPredicate( asPropertyExpression( property ), valueExpression );
+        return provider.newLessOrEqualPredicate(asPropertyExpression(property), valueExpression);
     }
 
     /**
@@ -292,10 +297,10 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.GreaterThanPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> GreaterThanPredicate<T> gt( final Property<T> property,
-                                                  final T value )
+    public static <T> GreaterThanPredicate<T> gt(final Property<T> property,
+                                                 final T value)
     {
-        return provider.newGreaterThanPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
+        return provider.newGreaterThanPredicate(asPropertyExpression(property), asTypedValueExpression(value));
     }
 
     /**
@@ -306,10 +311,10 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.GreaterThanPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> GreaterThanPredicate<T> gt( final Property<T> property,
-                                                  final VariableValueExpression<T> valueExpression )
+    public static <T> GreaterThanPredicate<T> gt(final Property<T> property,
+                                                 final VariableValueExpression<T> valueExpression)
     {
-        return provider.newGreaterThanPredicate( asPropertyExpression( property ), valueExpression );
+        return provider.newGreaterThanPredicate(asPropertyExpression(property), valueExpression);
     }
 
     /**
@@ -320,10 +325,10 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.GreaterOrEqualPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> GreaterOrEqualPredicate<T> ge( final Property<T> property,
-                                                     final T value )
+    public static <T> GreaterOrEqualPredicate<T> ge(final Property<T> property,
+                                                    final T value)
     {
-        return provider.newGreaterOrEqualPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
+        return provider.newGreaterOrEqualPredicate(asPropertyExpression(property), asTypedValueExpression(value));
     }
 
     /**
@@ -334,10 +339,10 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.GreaterOrEqualPredicate} expression
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static <T> GreaterOrEqualPredicate<T> ge( final Property<T> property,
-                                                     final VariableValueExpression<T> valueExpression )
+    public static <T> GreaterOrEqualPredicate<T> ge(final Property<T> property,
+                                                    final VariableValueExpression<T> valueExpression)
     {
-        return provider.newGreaterOrEqualPredicate( asPropertyExpression( property ), valueExpression );
+        return provider.newGreaterOrEqualPredicate(asPropertyExpression(property), valueExpression);
     }
 
     /**
@@ -348,10 +353,10 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.MatchesPredicate}
      * @throws IllegalArgumentException - If property or value are null
      */
-    public static MatchesPredicate matches( final Property<String> property,
-                                            final String regexp )
+    public static MatchesPredicate matches(final Property<String> property,
+                                           final String regexp)
     {
-        return provider.newMatchesPredicate( asPropertyExpression( property ), asTypedValueExpression( regexp ) );
+        return provider.newMatchesPredicate(asPropertyExpression(property), asTypedValueExpression(regexp));
     }
 
     /**
@@ -363,18 +368,18 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.Conjunction} operator
      * @throws IllegalArgumentException - If left or right expressions are null
      */
-    public static Conjunction and( final BooleanExpression left,
-                                   final BooleanExpression right,
-                                   final BooleanExpression... optionalRight )
+    public static Conjunction and(final BooleanExpression left,
+                                  final BooleanExpression right,
+                                  final BooleanExpression... optionalRight)
     {
         BooleanExpression leftExpr = left;
         BooleanExpression rightExpr = right;
-        Conjunction conjunction = provider.newConjunction( leftExpr, rightExpr );
-        for( BooleanExpression anOptionalRight : optionalRight )
+        Conjunction conjunction = provider.newConjunction(leftExpr, rightExpr);
+        for (BooleanExpression anOptionalRight : optionalRight)
         {
             leftExpr = conjunction;
             rightExpr = anOptionalRight;
-            conjunction = provider.newConjunction( leftExpr, rightExpr );
+            conjunction = provider.newConjunction(leftExpr, rightExpr);
         }
 
         return conjunction;
@@ -389,18 +394,18 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.Disjunction} operator
      * @throws IllegalArgumentException - If left or right expressions are null
      */
-    public static Disjunction or( final BooleanExpression left,
-                                  final BooleanExpression right,
-                                  final BooleanExpression... optionalRight )
+    public static Disjunction or(final BooleanExpression left,
+                                 final BooleanExpression right,
+                                 final BooleanExpression... optionalRight)
     {
         BooleanExpression leftExpr = left;
         BooleanExpression rightExpr = right;
-        Disjunction disjunction = provider.newDisjunction( leftExpr, rightExpr );
-        for( BooleanExpression anOptionalRight : optionalRight )
+        Disjunction disjunction = provider.newDisjunction(leftExpr, rightExpr);
+        for (BooleanExpression anOptionalRight : optionalRight)
         {
             leftExpr = disjunction;
             rightExpr = anOptionalRight;
-            disjunction = provider.newDisjunction( leftExpr, rightExpr );
+            disjunction = provider.newDisjunction(leftExpr, rightExpr);
         }
 
         return disjunction;
@@ -413,19 +418,19 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.Negation} operator
      * @throws IllegalArgumentException - If expression is null
      */
-    public static Negation not( final BooleanExpression expression )
+    public static Negation not(final BooleanExpression expression)
     {
-        return provider.newNegation( expression );
+        return provider.newNegation(expression);
     }
 
-    public static <T> ContainsPredicate<T> contains( Property<Collection<T>> property, T value )
+    public static <T> ContainsPredicate<T> contains(Property<Collection<T>> property, T value)
     {
-        return provider.newContainsPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
+        return provider.newContainsPredicate(asPropertyExpression(property), asTypedValueExpression(value));
     }
 
-    public static <T> ContainsAllPredicate<T> containsAll( Property<Collection<T>> property, Collection<T> value )
+    public static <T> ContainsAllPredicate<T> containsAll(Property<Collection<T>> property, Collection<T> value)
     {
-        return provider.newContainsAllPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
+        return provider.newContainsAllPredicate(asPropertyExpression(property), asTypedValueExpression(value));
     }
 
     /**
@@ -435,9 +440,9 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.OrderBy}
      * @throws IllegalArgumentException - If property is null
      */
-    public static <T> OrderBy orderBy( final Property<T> property )
+    public static <T> OrderBy orderBy(final Property<T> property)
     {
-        return orderBy( property, null );
+        return orderBy(property, null);
     }
 
     /**
@@ -448,10 +453,10 @@ public final class QueryExpressions
      * @return an {@link org.qi4j.api.query.grammar.OrderBy}
      * @throws IllegalArgumentException - If property is null
      */
-    public static <T> OrderBy orderBy( final Property<T> property,
-                                       final OrderBy.Order order )
+    public static <T> OrderBy orderBy(final Property<T> property,
+                                      final OrderBy.Order order)
     {
-        return provider.newOrderBy( asPropertyExpression( property ), order );
+        return provider.newOrderBy(asPropertyExpression(property), order);
     }
 
     /**
@@ -461,17 +466,17 @@ public final class QueryExpressions
      * @return adapted property expression
      * @throws IllegalArgumentException - If property is null or is not an property expression
      */
-    @SuppressWarnings( "unchecked" )
-    private static <T> PropertyReference<T> asPropertyExpression( final Property<T> property )
+    @SuppressWarnings("unchecked")
+    private static <T> PropertyReference<T> asPropertyExpression(final Property<T> property)
     {
-        if( property == null )
+        if (property == null)
         {
-            throw new IllegalArgumentException( "Property cannot be null" );
+            throw new IllegalArgumentException("Property cannot be null");
         }
-        if( !( property instanceof PropertyReference ) )
+        if (!(property instanceof PropertyReference))
         {
             throw new IllegalArgumentException(
-                "Invalid property. Properties used in queries must be a result of using QueryBuilder.templateFor(...)."
+                    "Invalid property. Properties used in queries must be a result of using QueryBuilder.templateFor(...)."
             );
         }
         return (PropertyReference<T>) property;
@@ -484,16 +489,16 @@ public final class QueryExpressions
      * @return adapted association expression
      * @throws IllegalArgumentException - If association is null or is not an association expression
      */
-    private static AssociationReference asAssociationExpression( final Association<?> association )
+    private static AssociationReference asAssociationExpression(final Association<?> association)
     {
-        if( association == null )
+        if (association == null)
         {
-            throw new IllegalArgumentException( "Association cannot be null" );
+            throw new IllegalArgumentException("Association cannot be null");
         }
-        if( !( association instanceof AssociationReference ) )
+        if (!(association instanceof AssociationReference))
         {
             throw new IllegalArgumentException(
-                "Invalid property. Association used in queries must be a result of using QueryBuilder.templateFor(...)."
+                    "Invalid property. Association used in queries must be a result of using QueryBuilder.templateFor(...)."
             );
         }
         return (AssociationReference) association;
@@ -506,13 +511,13 @@ public final class QueryExpressions
      * @return created expression
      * @throws IllegalArgumentException - If value is null
      */
-    private static <T> SingleValueExpression<T> asTypedValueExpression( final T value )
+    private static <T> SingleValueExpression<T> asTypedValueExpression(final T value)
     {
-        if( value == null )
+        if (value == null)
         {
-            throw new IllegalArgumentException( "Value cannot be null" );
+            throw new IllegalArgumentException("Value cannot be null");
         }
-        return provider.newSingleValueExpression( value );
+        return provider.newSingleValueExpression(value);
     }
 
 

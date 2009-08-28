@@ -17,31 +17,39 @@
  */
 package org.qi4j.runtime.query.model;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 public interface Person
-    extends Nameable, Alive
+        extends Nameable, Alive
 {
-    @Optional Association<City> placeOfBirth();
+    @Optional
+    Association<City> placeOfBirth();
 
-    @Optional Property<Integer> yearOfBirth();
+    @Optional
+    Property<Integer> yearOfBirth();
 
-    @Optional Association<Female> mother();
+    @Optional
+    Association<Female> mother();
 
-    @Optional Association<Male> father();
+    @Optional
+    Association<Male> father();
 
-    @Optional ManyAssociation<Domain> interests();
+    @Optional
+    ManyAssociation<Domain> interests();
 
-    @Optional Property<String> email();
+    @Optional
+    Property<String> email();
 
-    @Optional Property<Map<Date,String>> datesToRemember();
+    @Optional
+    Property<Map<Date, String>> datesToRemember();
 
-    @Optional Property<List<String>> tags();
-    
+    @Optional
+    Property<List<String>> tags();
 }

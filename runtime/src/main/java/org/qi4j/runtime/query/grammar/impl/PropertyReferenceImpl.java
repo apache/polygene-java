@@ -24,17 +24,18 @@ import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.runtime.query.NotQueryableException;
 import org.qi4j.runtime.query.QueryException;
+import org.qi4j.spi.composite.CompositeInstance;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 
 /**
  * Default {@link org.qi4j.api.query.grammar.PropertyReference} implementation.
- *
  */
 public final class PropertyReferenceImpl<T>
-    implements PropertyReference<T>
+        implements PropertyReference<T>
 {
 
     /**
@@ -69,35 +70,35 @@ public final class PropertyReferenceImpl<T>
      * @param traversedAssociation traversed association
      * @param traversedProperty    traversed property
      */
-    @SuppressWarnings( "unchecked" )
-    public PropertyReferenceImpl( final Method accessor,
-                                  final AssociationReference traversedAssociation,
-                                  final PropertyReference traversedProperty )
+    @SuppressWarnings("unchecked")
+    public PropertyReferenceImpl(final Method accessor,
+                                 final AssociationReference traversedAssociation,
+                                 final PropertyReference traversedProperty)
     {
-        if( traversedAssociation != null
-            && traversedProperty != null )
+        if (traversedAssociation != null
+                && traversedProperty != null)
         {
-            throw new IllegalArgumentException( "Only one of association or property can be set" );
+            throw new IllegalArgumentException("Only one of association or property can be set");
         }
         this.accessor = accessor;
         name = accessor.getName();
         declaringType = accessor.getDeclaringClass();
         Type returnType = accessor.getGenericReturnType();
-        if( !( returnType instanceof ParameterizedType ) )
+        if (!(returnType instanceof ParameterizedType))
         {
-            throw new QueryException( "Unsupported property type:" + returnType );
+            throw new QueryException("Unsupported property type:" + returnType);
         }
-        Type propertyTypeAsType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
-        if( !( propertyTypeAsType instanceof Class ) )
+        Type propertyTypeAsType = ((ParameterizedType) returnType).getActualTypeArguments()[0];
+        if (!(propertyTypeAsType instanceof Class))
         {
-            throw new QueryException( "Unsupported property type:" + propertyTypeAsType );
+            throw new QueryException("Unsupported property type:" + propertyTypeAsType);
         }
         type = (Class<T>) propertyTypeAsType;
 
         // verify that the property accessor is not marked as non queryable
-        NotQueryableException.throwIfNotQueryable( accessor );
+        NotQueryableException.throwIfNotQueryable(accessor);
         // verify that the property type itself (value composites) is not marked as non queryable
-        NotQueryableException.throwIfNotQueryable( type );
+        NotQueryableException.throwIfNotQueryable(type);
 
         this.traversedAssociation = traversedAssociation;
         this.traversedProperty = traversedProperty;
@@ -154,24 +155,24 @@ public final class PropertyReferenceImpl<T>
     /**
      * @see org.qi4j.api.query.grammar.PropertyReference#eval(Object)
      */
-    public Property<T> eval( final Object target )
+    public Property<T> eval(final Object target)
     {
         Object actual = target;
-        if( traversedAssociation() != null )
+        if (traversedAssociation() != null)
         {
-            actual = traversedAssociation().eval( target );
-        }
-        else if( traversedProperty() != null )
+            actual = traversedAssociation().eval(target);
+        } else if (traversedProperty() != null)
         {
-            actual = traversedProperty().eval( target );
+            actual = traversedProperty().eval(target);
         }
-        if( actual != null )
+        if (actual != null)
         {
             try
             {
-                return (Property) propertyAccessor().invoke( actual );
+                CompositeInstance handler = (CompositeInstance) Proxy.getInvocationHandler(actual);
+                return (Property) handler.invokeProxy(propertyAccessor(), new Object[0]);
             }
-            catch( Exception e )
+            catch (Throwable e)
             {
                 return null;
             }
@@ -183,12 +184,12 @@ public final class PropertyReferenceImpl<T>
     public String toString()
     {
         return new StringBuilder()
-            .append( traversedAssociation == null ? "" : traversedAssociation.toString() + "." )
-            .append( traversedProperty == null ? "" : traversedProperty.toString() + "." )
-            .append( declaringType.getSimpleName() )
-            .append( ":" )
-            .append( name )
-            .toString();
+                .append(traversedAssociation == null ? "" : traversedAssociation.toString() + ".")
+                .append(traversedProperty == null ? "" : traversedProperty.toString() + ".")
+                .append(declaringType.getSimpleName())
+                .append(":")
+                .append(name)
+                .toString();
     }
 
 }

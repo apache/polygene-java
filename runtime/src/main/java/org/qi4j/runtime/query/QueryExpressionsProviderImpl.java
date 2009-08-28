@@ -68,11 +68,12 @@ import org.qi4j.runtime.query.proxy.ManyAssociationReferenceProxy;
 import org.qi4j.runtime.query.proxy.MixinTypeProxy;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import static java.lang.reflect.Proxy.*;
 import java.util.Collection;
 
 public class QueryExpressionsProviderImpl
-    implements QueryExpressionsProvider
+        implements QueryExpressionsProvider
 {
     private static Method identity;
 
@@ -88,174 +89,184 @@ public class QueryExpressionsProviderImpl
     }
 
 
-
     /**
      * Creates a template for the a mixin type to be used to access properties in type safe fashion.
      *
      * @param mixinType mixin type
      * @return template instance
      */
-    @SuppressWarnings( "unchecked" )
-    public <T> T templateFor( final Class<T> mixinType )
+    @SuppressWarnings("unchecked")
+    public <T> T templateFor(final Class<T> mixinType)
     {
         return (T) newProxyInstance(
-            QueryExpressions.class.getClassLoader(),
-            new Class[]{ mixinType },
-            new MixinTypeProxy( mixinType )
+                QueryExpressions.class.getClassLoader(),
+                new Class[]{mixinType},
+                new MixinTypeProxy(mixinType)
         );
     }
 
-    public <T> VariableValueExpression<T> newVariableValueExpression( String name )
+    @SuppressWarnings("unchecked")
+    public <T> T templateFor(Class<T> mixinType, Object associatedEntity)
     {
-        return new VariableValueExpressionImpl<T>( name );
+        MixinTypeProxy proxy = (MixinTypeProxy) Proxy.getInvocationHandler(associatedEntity);
+
+        return (T) newProxyInstance(
+                QueryExpressions.class.getClassLoader(),
+                new Class[]{mixinType},
+                new MixinTypeProxy(mixinType, proxy.traversedAssociation()));
     }
 
-    public <T> PropertyIsNullPredicate<T> newPropertyIsNullPredicate( PropertyReference<T> tPropertyReference )
+    public <T> VariableValueExpression<T> newVariableValueExpression(String name)
     {
-        return new PropertyIsNullPredicateImpl<T>( tPropertyReference );
+        return new VariableValueExpressionImpl<T>(name);
     }
 
-    public AssociationIsNullPredicate newAssociationIsNullPredicate( AssociationReference associationReference )
+    public <T> PropertyIsNullPredicate<T> newPropertyIsNullPredicate(PropertyReference<T> tPropertyReference)
     {
-        return new AssociationIsNullPredicateImpl( associationReference );
+        return new PropertyIsNullPredicateImpl<T>(tPropertyReference);
     }
 
-    public <T> PropertyIsNotNullPredicate<T> newPropertyIsNotNullPredicate( PropertyReference<T> tPropertyReference )
+    public AssociationIsNullPredicate newAssociationIsNullPredicate(AssociationReference associationReference)
     {
-        return new PropertyIsNotNullPredicateImpl<T>( tPropertyReference );
+        return new AssociationIsNullPredicateImpl(associationReference);
     }
 
-    public AssociationIsNotNullPredicate newAssociationIsNotNullPredicate( AssociationReference associationReference )
+    public <T> PropertyIsNotNullPredicate<T> newPropertyIsNotNullPredicate(PropertyReference<T> tPropertyReference)
     {
-        return new AssociationIsNotNullPredicateImpl( associationReference );
+        return new PropertyIsNotNullPredicateImpl<T>(tPropertyReference);
     }
 
-    public <T> EqualsPredicate<T> newEqualsPredicate( PropertyReference<T> tPropertyReference, SingleValueExpression<T> tStaticValueExpression )
+    public AssociationIsNotNullPredicate newAssociationIsNotNullPredicate(AssociationReference associationReference)
     {
-        return new EqualsPredicateImpl<T>( tPropertyReference, tStaticValueExpression );
+        return new AssociationIsNotNullPredicateImpl(associationReference);
     }
 
-    public <T> EqualsPredicate<T> newEqualsPredicate( PropertyReference<T> tPropertyReference, VariableValueExpression<T> valueExpression )
+    public <T> EqualsPredicate<T> newEqualsPredicate(PropertyReference<T> tPropertyReference, SingleValueExpression<T> tStaticValueExpression)
     {
-        return new EqualsPredicateImpl<T>( tPropertyReference, valueExpression );
+        return new EqualsPredicateImpl<T>(tPropertyReference, tStaticValueExpression);
     }
 
-    public <T> EqualsPredicate<String> newEqualsPredicate( AssociationReference tAssociationReference, SingleValueExpression<T> tStaticValueExpression )
+    public <T> EqualsPredicate<T> newEqualsPredicate(PropertyReference<T> tPropertyReference, VariableValueExpression<T> valueExpression)
+    {
+        return new EqualsPredicateImpl<T>(tPropertyReference, valueExpression);
+    }
+
+    public <T> EqualsPredicate<String> newEqualsPredicate(AssociationReference tAssociationReference, SingleValueExpression<T> tStaticValueExpression)
     {
         Identity id = (Identity) tStaticValueExpression.value();
         SingleValueExpression<String> idExpression = new SingleValueExpressionImpl<String>(id.identity().get());
         return new EqualsPredicateImpl<String>(new PropertyReferenceImpl<String>(identity, tAssociationReference, null), idExpression);
     }
 
-    public <T> EqualsPredicate<T> newEqualsPredicate( AssociationReference tAssociationReference, VariableValueExpression<T> valueExpression )
+    public <T> EqualsPredicate<T> newEqualsPredicate(AssociationReference tAssociationReference, VariableValueExpression<T> valueExpression)
     {
         return null; // TODO
     }
 
-    public <T> NotEqualsPredicate<T> newNotEqualsPredicate( PropertyReference<T> tPropertyReference, SingleValueExpression<T> tStaticValueExpression )
+    public <T> NotEqualsPredicate<T> newNotEqualsPredicate(PropertyReference<T> tPropertyReference, SingleValueExpression<T> tStaticValueExpression)
     {
-        return new NotEqualsPredicateImpl<T>( tPropertyReference, tStaticValueExpression );
+        return new NotEqualsPredicateImpl<T>(tPropertyReference, tStaticValueExpression);
     }
 
-    public <T> NotEqualsPredicate<T> newNotEqualsPredicate( PropertyReference<T> tPropertyReference, VariableValueExpression<T> valueExpression )
+    public <T> NotEqualsPredicate<T> newNotEqualsPredicate(PropertyReference<T> tPropertyReference, VariableValueExpression<T> valueExpression)
     {
-        return new NotEqualsPredicateImpl<T>( tPropertyReference, valueExpression );
+        return new NotEqualsPredicateImpl<T>(tPropertyReference, valueExpression);
     }
 
-    public <T> LessThanPredicate<T> newLessThanPredicate( PropertyReference<T> tPropertyReference, SingleValueExpression<T> tStaticValueExpression )
+    public <T> LessThanPredicate<T> newLessThanPredicate(PropertyReference<T> tPropertyReference, SingleValueExpression<T> tStaticValueExpression)
     {
-        return new LessThanPredicateImpl<T>( tPropertyReference, tStaticValueExpression );
+        return new LessThanPredicateImpl<T>(tPropertyReference, tStaticValueExpression);
     }
 
-    public <T> LessThanPredicate<T> newLessThanPredicate( PropertyReference<T> tPropertyReference, VariableValueExpression<T> valueExpression )
+    public <T> LessThanPredicate<T> newLessThanPredicate(PropertyReference<T> tPropertyReference, VariableValueExpression<T> valueExpression)
     {
-        return new LessThanPredicateImpl<T>( tPropertyReference, valueExpression );
+        return new LessThanPredicateImpl<T>(tPropertyReference, valueExpression);
     }
 
-    public <T> LessOrEqualPredicate<T> newLessOrEqualPredicate( PropertyReference<T> tPropertyReference, SingleValueExpression<T> tStaticValueExpression )
+    public <T> LessOrEqualPredicate<T> newLessOrEqualPredicate(PropertyReference<T> tPropertyReference, SingleValueExpression<T> tStaticValueExpression)
     {
-        return new LessOrEqualPredicateImpl<T>( tPropertyReference, tStaticValueExpression );
+        return new LessOrEqualPredicateImpl<T>(tPropertyReference, tStaticValueExpression);
     }
 
-    public <T> LessOrEqualPredicate<T> newLessOrEqualPredicate( PropertyReference<T> tPropertyReference, VariableValueExpression<T> valueExpression )
+    public <T> LessOrEqualPredicate<T> newLessOrEqualPredicate(PropertyReference<T> tPropertyReference, VariableValueExpression<T> valueExpression)
     {
-        return new LessOrEqualPredicateImpl<T>( tPropertyReference, valueExpression );
+        return new LessOrEqualPredicateImpl<T>(tPropertyReference, valueExpression);
     }
 
-    public <T> GreaterThanPredicate<T> newGreaterThanPredicate( PropertyReference<T> tPropertyReference, SingleValueExpression<T> tStaticValueExpression )
+    public <T> GreaterThanPredicate<T> newGreaterThanPredicate(PropertyReference<T> tPropertyReference, SingleValueExpression<T> tStaticValueExpression)
     {
-        return new GreaterThanPredicateImpl<T>( tPropertyReference, tStaticValueExpression );
+        return new GreaterThanPredicateImpl<T>(tPropertyReference, tStaticValueExpression);
     }
 
-    public <T> GreaterThanPredicate<T> newGreaterThanPredicate( PropertyReference<T> tPropertyReference, VariableValueExpression<T> valueExpression )
+    public <T> GreaterThanPredicate<T> newGreaterThanPredicate(PropertyReference<T> tPropertyReference, VariableValueExpression<T> valueExpression)
     {
-        return new GreaterThanPredicateImpl<T>( tPropertyReference, valueExpression );
+        return new GreaterThanPredicateImpl<T>(tPropertyReference, valueExpression);
     }
 
-    public <T> GreaterOrEqualPredicate<T> newGreaterOrEqualPredicate( PropertyReference<T> tPropertyReference, SingleValueExpression<T> tStaticValueExpression )
+    public <T> GreaterOrEqualPredicate<T> newGreaterOrEqualPredicate(PropertyReference<T> tPropertyReference, SingleValueExpression<T> tStaticValueExpression)
     {
-        return new GreaterOrEqualPredicateImpl<T>( tPropertyReference, tStaticValueExpression );
+        return new GreaterOrEqualPredicateImpl<T>(tPropertyReference, tStaticValueExpression);
     }
 
-    public <T> GreaterOrEqualPredicate<T> newGreaterOrEqualPredicate( PropertyReference<T> tPropertyReference, VariableValueExpression<T> valueExpression )
+    public <T> GreaterOrEqualPredicate<T> newGreaterOrEqualPredicate(PropertyReference<T> tPropertyReference, VariableValueExpression<T> valueExpression)
     {
-        return new GreaterOrEqualPredicateImpl<T>( tPropertyReference, valueExpression );
+        return new GreaterOrEqualPredicateImpl<T>(tPropertyReference, valueExpression);
     }
 
-    public MatchesPredicate newMatchesPredicate( PropertyReference<String> stringPropertyReference, SingleValueExpression<String> stringSingleValueExpression )
+    public MatchesPredicate newMatchesPredicate(PropertyReference<String> stringPropertyReference, SingleValueExpression<String> stringSingleValueExpression)
     {
-        return new MatchesPredicateImpl( stringPropertyReference, stringSingleValueExpression );
+        return new MatchesPredicateImpl(stringPropertyReference, stringSingleValueExpression);
     }
 
-    public Conjunction newConjunction( BooleanExpression left, BooleanExpression right )
+    public Conjunction newConjunction(BooleanExpression left, BooleanExpression right)
     {
-        return new ConjunctionImpl( left, right );
+        return new ConjunctionImpl(left, right);
     }
 
-    public Disjunction newDisjunction( BooleanExpression left, BooleanExpression right )
+    public Disjunction newDisjunction(BooleanExpression left, BooleanExpression right)
     {
-        return new DisjunctionImpl( left, right );
+        return new DisjunctionImpl(left, right);
     }
 
-    public Negation newNegation( BooleanExpression expression )
+    public Negation newNegation(BooleanExpression expression)
     {
-        return new NegationImpl( expression );
+        return new NegationImpl(expression);
     }
 
-    public OrderBy newOrderBy( PropertyReference<?> tPropertyReference, OrderBy.Order order )
+    public OrderBy newOrderBy(PropertyReference<?> tPropertyReference, OrderBy.Order order)
     {
-        return new OrderByImpl( tPropertyReference, order );
+        return new OrderByImpl(tPropertyReference, order);
     }
 
-    public <T> SingleValueExpression<T> newSingleValueExpression( T value )
+    public <T> SingleValueExpression<T> newSingleValueExpression(T value)
     {
-        return new SingleValueExpressionImpl<T>( value );
+        return new SingleValueExpressionImpl<T>(value);
     }
 
-    @SuppressWarnings( "unchecked" )
-    public <T> T oneOf( ManyAssociation<T> association )
+    @SuppressWarnings("unchecked")
+    public <T> T oneOf(ManyAssociation<T> association)
     {
-        validateNotNull( "association", association );
+        validateNotNull("association", association);
 
         Class<? extends ManyAssociation> associationClass = association.getClass();
-        if( !isProxyClass( associationClass ) )
+        if (!isProxyClass(associationClass))
         {
-            throw new IllegalArgumentException( "Argument [association] is not a proxy." );
+            throw new IllegalArgumentException("Argument [association] is not a proxy.");
         }
 
         ManyAssociationReferenceProxy manyAssociationReferenceProxy =
-            (ManyAssociationReferenceProxy) getInvocationHandler( association );
+                (ManyAssociationReferenceProxy) getInvocationHandler(association);
 
         return (T) manyAssociationReferenceProxy.getAnyProxy();
     }
 
-    public <T> ContainsAllPredicate<T> newContainsAllPredicate( PropertyReference<Collection<T>> propertyRef, SingleValueExpression<Collection<T>> collectionValues )
+    public <T> ContainsAllPredicate<T> newContainsAllPredicate(PropertyReference<Collection<T>> propertyRef, SingleValueExpression<Collection<T>> collectionValues)
     {
-        return new ContainsAllPredicateImpl( propertyRef, collectionValues );
+        return new ContainsAllPredicateImpl(propertyRef, collectionValues);
     }
 
-    public <T> ContainsPredicate<T> newContainsPredicate( PropertyReference<Collection<T>> propertyRef, SingleValueExpression<T> singleValueExpression )
+    public <T> ContainsPredicate<T> newContainsPredicate(PropertyReference<Collection<T>> propertyRef, SingleValueExpression<T> singleValueExpression)
     {
-        return new ContainsPredicateImpl( propertyRef, singleValueExpression );
+        return new ContainsPredicateImpl(propertyRef, singleValueExpression);
     }
 }

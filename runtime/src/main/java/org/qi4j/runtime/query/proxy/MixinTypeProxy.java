@@ -33,7 +33,7 @@ import static java.lang.reflect.Proxy.newProxyInstance;
  * JAVADOC Add JavaDoc
  */
 public final class MixinTypeProxy
-    implements InvocationHandler
+        implements InvocationHandler
 {
 
     /**
@@ -54,9 +54,9 @@ public final class MixinTypeProxy
      *
      * @param templateClass class of template this proxy is for
      */
-    public MixinTypeProxy( final Class templateClass )
+    public MixinTypeProxy(final Class templateClass)
     {
-        this( templateClass, null, null );
+        this(templateClass, null, null);
     }
 
     /**
@@ -65,10 +65,10 @@ public final class MixinTypeProxy
      * @param templateClass        class of template this proxy is for
      * @param traversedAssociation traversed association
      */
-    public MixinTypeProxy( final Class templateClass,
-                           final AssociationReference traversedAssociation )
+    public MixinTypeProxy(final Class templateClass,
+                          final AssociationReference traversedAssociation)
     {
-        this( templateClass, traversedAssociation, null );
+        this(templateClass, traversedAssociation, null);
     }
 
     /**
@@ -77,10 +77,10 @@ public final class MixinTypeProxy
      * @param templateClass     class of template this proxy is for
      * @param traversedProperty traversed property
      */
-    public MixinTypeProxy( final Class templateClass,
-                           final PropertyReference traversedProperty )
+    public MixinTypeProxy(final Class templateClass,
+                          final PropertyReference traversedProperty)
     {
-        this( templateClass, null, traversedProperty );
+        this(templateClass, null, traversedProperty);
     }
 
     /**
@@ -90,50 +90,58 @@ public final class MixinTypeProxy
      * @param traversedAssociation traversed association
      * @param traversedProperty    traversed property
      */
-    private MixinTypeProxy( final Class templateClass,
-                            final AssociationReference traversedAssociation,
-                            final PropertyReference traversedProperty )
+    private MixinTypeProxy(final Class templateClass,
+                           final AssociationReference traversedAssociation,
+                           final PropertyReference traversedProperty)
     {
         this.templateClass = templateClass;
         this.traversedAssociation = traversedAssociation;
         this.traversedProperty = traversedProperty;
     }
 
-    public Object invoke( final Object proxy,
-                          final Method method,
-                          final Object[] args )
+    public AssociationReference traversedAssociation()
     {
-        if( args == null )
+        return traversedAssociation;
+    }
+
+    public PropertyReference traversedProperty()
+    {
+        return traversedProperty;
+    }
+
+    public Object invoke(final Object proxy,
+                         final Method method,
+                         final Object[] args)
+    {
+        if (args == null)
         {
             Class<?> methodReturnType = method.getReturnType();
-            if( Property.class.isAssignableFrom( methodReturnType ) )
+            if (Property.class.isAssignableFrom(methodReturnType))
             {
                 return newProxyInstance(
-                    getClass().getClassLoader(),
-                    new Class[]{ methodReturnType, PropertyReference.class },
-                    new PropertyReferenceProxy( method, traversedAssociation, traversedProperty )
+                        getClass().getClassLoader(),
+                        new Class[]{methodReturnType, PropertyReference.class},
+                        new PropertyReferenceProxy(method, traversedAssociation, traversedProperty)
                 );
-            }
-            else if( Association.class.isAssignableFrom( methodReturnType ) )
+            } else if (Association.class.isAssignableFrom(methodReturnType))
             {
                 return newProxyInstance(
-                    getClass().getClassLoader(),
-                    new Class[]{ methodReturnType, AssociationReference.class },
-                    new AssociationReferenceProxy( method, traversedAssociation )
+                        getClass().getClassLoader(),
+                        new Class[]{methodReturnType, AssociationReference.class},
+                        new AssociationReferenceProxy(method, traversedAssociation)
                 );
-            }
-            else if( ManyAssociation.class.isAssignableFrom( methodReturnType ) )
+            } else if (ManyAssociation.class.isAssignableFrom(methodReturnType))
             {
                 return newProxyInstance(
-                    getClass().getClassLoader(),
-                    new Class[]{ methodReturnType, AssociationReference.class },
-                    new ManyAssociationReferenceProxy( method, traversedAssociation )
+                        getClass().getClassLoader(),
+                        new Class[]{methodReturnType, AssociationReference.class},
+                        new ManyAssociationReferenceProxy(method, traversedAssociation)
                 );
             }
         }
 
         throw new QueryException(
-            "Only property, association and many manyAssociations methods can be used" );
+                "Only property, association and many manyAssociations methods can be used");
     }
 
     @Override

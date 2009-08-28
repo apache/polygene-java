@@ -19,8 +19,10 @@
 package org.qi4j.runtime.query.grammar.impl;
 
 import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.runtime.query.QueryException;
+import org.qi4j.runtime.entity.EntityInstance;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -28,10 +30,9 @@ import java.lang.reflect.Type;
 
 /**
  * Default {@link AssociationReference}.
- *
  */
 public class AssociationReferenceImpl
-    implements AssociationReference
+        implements AssociationReference
 {
 
     /**
@@ -63,22 +64,22 @@ public class AssociationReferenceImpl
      * @param accessor  method that acts as association
      * @param traversed traversed association
      */
-    public AssociationReferenceImpl( final Method accessor,
-                                     final AssociationReference traversed
+    public AssociationReferenceImpl(final Method accessor,
+                                    final AssociationReference traversed
     )
     {
         this.accessor = accessor;
         name = accessor.getName();
         declaringType = accessor.getDeclaringClass();
         Type returnType = accessor.getGenericReturnType();
-        if( !( returnType instanceof ParameterizedType ) )
+        if (!(returnType instanceof ParameterizedType))
         {
-            throw new QueryException( "Unsupported association type:" + returnType );
+            throw new QueryException("Unsupported association type:" + returnType);
         }
-        Type associationTypeAsType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
-        if( !( associationTypeAsType instanceof Class ) )
+        Type associationTypeAsType = ((ParameterizedType) returnType).getActualTypeArguments()[0];
+        if (!(associationTypeAsType instanceof Class))
         {
-            throw new QueryException( "Unsupported association type:" + associationTypeAsType );
+            throw new QueryException("Unsupported association type:" + associationTypeAsType);
         }
         type = associationTypeAsType;
         this.traversed = traversed;
@@ -127,21 +128,21 @@ public class AssociationReferenceImpl
     /**
      * @see AssociationReference#eval(Object)
      */
-    public Object eval( final Object target )
+    public Object eval(final Object target)
     {
         Object actual = target;
-        if( traversedAssociation() != null )
+        if (traversedAssociation() != null)
         {
-            actual = traversedAssociation().eval( target );
+            actual = traversedAssociation().eval(target);
         }
-        if( actual != null )
+        if (actual != null)
         {
             try
             {
-                Association assoc = (Association) associationAccessor().invoke( actual );
+                Association assoc = (Association) EntityInstance.getEntityInstance((EntityComposite) actual).invokeProxy(associationAccessor(), new Object[0]);
                 return assoc.get();
             }
-            catch( Exception e )
+            catch (Throwable e)
             {
                 return null;
             }
@@ -153,13 +154,13 @@ public class AssociationReferenceImpl
     public String toString()
     {
         StringBuilder fragment = new StringBuilder();
-        if( traversed != null )
+        if (traversed != null)
         {
-            fragment.append( traversed.toString() ).append( "." );
+            fragment.append(traversed.toString()).append(".");
         }
-        fragment.append( declaringType.getSimpleName() );
-        fragment.append( ":" );
-        fragment.append( name );
+        fragment.append(declaringType.getSimpleName());
+        fragment.append(":");
+        fragment.append(name);
         return fragment.toString();
     }
 
