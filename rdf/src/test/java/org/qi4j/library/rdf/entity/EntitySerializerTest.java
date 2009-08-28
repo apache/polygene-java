@@ -69,7 +69,7 @@ public class EntitySerializerTest
     public void testEntitySerializer() throws RDFHandlerException
     {
         EntityReference entityReference = new EntityReference( "test2" );
-        EntityState entityState = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase("Test" ), new MetaInfo(), moduleInstance).getEntityState(entityReference);
+        EntityState entityState = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase("Test" ), moduleInstance).getEntityState(entityReference);
 
         Iterable<Statement> graph = serializer.serialize( entityState );
 

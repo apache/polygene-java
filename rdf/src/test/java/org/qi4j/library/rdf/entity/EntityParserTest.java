@@ -71,8 +71,7 @@ public class EntityParserTest
 
         EntityReference entityReference = new EntityReference( "test2" );
         Usecase usecase = UsecaseBuilder.newUsecase( "Test" );
-        MetaInfo info = new MetaInfo();
-        EntityStoreUnitOfWork work = entityStore.newUnitOfWork( usecase, info, moduleInstance );
+        EntityStoreUnitOfWork work = entityStore.newUnitOfWork( usecase, moduleInstance );
         EntityState entityState = work.getEntityState( entityReference );
 
         Iterable<Statement> graph = serializer.serialize( entityState );

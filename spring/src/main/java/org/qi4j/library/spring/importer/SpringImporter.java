@@ -39,8 +39,7 @@ public class SpringImporter
         try
         {
             return serviceDescriptor.
-                metaInfo().
-                get( ApplicationContext.class ).
+                metaInfo( ApplicationContext.class ).
                 getBean( serviceDescriptor.identity(), serviceDescriptor.type() );
         }
         catch( Throwable e )
