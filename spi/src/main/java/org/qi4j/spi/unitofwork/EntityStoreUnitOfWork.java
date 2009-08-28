@@ -37,8 +37,7 @@ public interface EntityStoreUnitOfWork
      * @param anIdentity       the identity of the entity
      * @param entityDescriptor entity descriptor
      * @return The new entity state.
-     * @throws org.qi4j.spi.entity.EntityStoreException
-     *          Thrown if creational fails.
+     * @throws EntityStoreException Thrown if creational fails.
      */
     EntityState newEntityState( EntityReference anIdentity, EntityDescriptor entityDescriptor )
         throws EntityStoreException;
@@ -50,8 +49,7 @@ public interface EntityStoreUnitOfWork
      * @param anIdentity The entity identity. This argument must not be {@code null}.
      * @return Entity state given the composite descriptor and identity.
      * @throws EntityStoreException thrown if retrieval failed.
-     * @throws org.qi4j.spi.entity.EntityNotFoundException
-     *                              thrown if wanted entity does not exist
+     * @throws EntityNotFoundException if requested entity does not exist
      */
     EntityState getEntityState( EntityReference anIdentity )
         throws EntityStoreException, EntityNotFoundException;

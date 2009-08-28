@@ -33,7 +33,6 @@ public final class DefaultEntityStoreUnitOfWork
     private EntityStoreSPI entityStoreSPI;
     private String identity;
     private ModuleSPI module;
-
     private LinkedList<EntityState> states = new LinkedList<EntityState>();
 
     public DefaultEntityStoreUnitOfWork( EntityStoreSPI entityStoreSPI, String identity, ModuleSPI module )

@@ -15,7 +15,6 @@
 package org.qi4j.runtime.unitofwork;
 
 import java.util.UUID;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -45,7 +44,7 @@ public class UnitOfWorkStore
 
     }
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, MetaInfo unitOfWorkMetaInfo, ModuleSPI module )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
     {
         return new DefaultEntityStoreUnitOfWork( this, newUnitOfWorkId(), module );
     }

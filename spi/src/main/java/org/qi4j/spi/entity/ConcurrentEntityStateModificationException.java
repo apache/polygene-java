@@ -20,8 +20,8 @@ import java.util.Collection;
 import org.qi4j.api.entity.EntityReference;
 
 /**
- * This exception should be thrown from {@link EntityStore#apply(String, Iterable, org.qi4j.api.usecase.Usecase, org.qi4j.api.common.MetaInfo)}  if the EntityStore
- * detects that the entities being saved have been changed since they were created.
+ * This exception should be thrown if the EntityStore detects that the entities being saved have been changed
+ * since they were created.
  */
 public class ConcurrentEntityStateModificationException extends EntityStoreException
 {

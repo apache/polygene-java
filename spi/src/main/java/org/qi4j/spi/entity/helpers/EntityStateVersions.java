@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -46,11 +45,9 @@ public interface EntityStateVersions
     class EntityStateVersionsMixin
         implements EntityStateVersions
     {
-        @This
-        EntityStore store;
+        @This private EntityStore store;
 
         private final Map<EntityReference, String> versions = new WeakHashMap<EntityReference, String>();
-        private MetaInfo checkInfo;
 
         public synchronized void forgetVersions( Iterable<EntityState> states )
         {
@@ -79,8 +76,7 @@ public interface EntityStateVersions
                 String storeVersion = versions.get( entityState.identity() );
                 if( storeVersion == null )
                 {
-                    checkInfo = new MetaInfo();
-                    EntityStoreUnitOfWork unitOfWork = store.newUnitOfWork( Usecase.DEFAULT, checkInfo, module );
+                    EntityStoreUnitOfWork unitOfWork = store.newUnitOfWork( Usecase.DEFAULT, module );
                     EntityState state = unitOfWork.getEntityState( entityState.identity() );
                     storeVersion = state.version();
                     unitOfWork.discard();

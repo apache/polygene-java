@@ -16,7 +16,6 @@ package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
@@ -59,9 +58,9 @@ public class LayerInstance
         return model.name();
     }
 
-    public MetaInfo metaInfo()
+    public <T>  T metaInfo( Class<T> infoType )
     {
-        return model.metaInfo();
+        return model.metaInfo( infoType );
     }
 
     public List<Module> modules()
@@ -100,7 +99,6 @@ public class LayerInstance
     public boolean visitModules( ModuleVisitor visitor, Visibility visibility )
     {
         // Visit modules in this layer
-        ModuleInstance foundModule = null;
         for( ModuleInstance moduleInstance : moduleInstances )
         {
             if( !visitor.visitModule( moduleInstance, moduleInstance.model(), visibility ) )

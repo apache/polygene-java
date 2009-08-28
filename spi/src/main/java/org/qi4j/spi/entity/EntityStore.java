@@ -16,7 +16,6 @@
  */
 package org.qi4j.spi.entity;
 
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
@@ -26,7 +25,7 @@ import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
  */
 public interface EntityStore
 {
-    EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, MetaInfo unitOfWorkMetaInfo, ModuleSPI module );
+    EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module );
 
     EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI moduleInstance );
 

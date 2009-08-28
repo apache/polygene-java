@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.service;
 
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
@@ -45,9 +44,9 @@ public final class ImportedServiceReferenceInstance<T>
         return serviceModel.identity();
     }
 
-    public MetaInfo metaInfo()
+    public <T>  T metaInfo( Class<T> infoType )
     {
-        return serviceModel.metaInfo();
+        return serviceModel.metaInfo( infoType );
     }
 
     public synchronized T get()

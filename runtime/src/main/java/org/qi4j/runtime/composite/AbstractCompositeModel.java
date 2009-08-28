@@ -73,9 +73,9 @@ public abstract class AbstractCompositeModel
         return stateModel;
     }
 
-    public MetaInfo metaInfo()
+    public <T>  T metaInfo( Class<T> infoType )
     {
-        return metaInfo;
+        return metaInfo.get( infoType );
     }
 
     public Visibility visibility()

@@ -62,9 +62,9 @@ public final class ApplicationModel
         return mode;
     }
 
-    public MetaInfo metaInfo()
+    public <T>  T metaInfo( Class<T> infoType )
     {
-        return metaInfo;
+        return metaInfo.get( infoType );
     }
 
     public String toURI()

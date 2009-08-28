@@ -41,13 +41,13 @@ public final class ServiceSelectorImporter
 
     public Object importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
     {
-        ServiceSelector.Selector selector = serviceDescriptor.metaInfo().get( ServiceSelector.Selector.class );
+        ServiceSelector.Selector selector = serviceDescriptor.metaInfo( ServiceSelector.Selector.class );
         Class serviceType = serviceDescriptor.type();
         Iterable<ServiceReference<Object>> services = locator.findServices( serviceType );
         List<ServiceReference<Object>> filteredServices = new ArrayList<ServiceReference<Object>>();
         for( ServiceReference<Object> service : services )
         {
-            ServiceSelector.Selector selector1 = service.metaInfo().get( ServiceSelector.Selector.class );
+            ServiceSelector.Selector selector1 = service.metaInfo( ServiceSelector.Selector.class );
             if( selector1 != null && selector1 == selector )
             {
                 continue;

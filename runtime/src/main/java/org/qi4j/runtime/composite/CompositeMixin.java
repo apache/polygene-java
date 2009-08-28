@@ -27,7 +27,7 @@ public class CompositeMixin
     public <T> T metaInfo( Class<T> infoType )
     {
         CompositeInstance compositeInstance = (CompositeInstance) Proxy.getInvocationHandler( meAsComposite );
-        return compositeInstance.metaInfo().get( infoType );
+        return compositeInstance.metaInfo( infoType );
     }
 
     public Class<? extends Composite> type()

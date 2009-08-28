@@ -14,7 +14,6 @@
  */
 package org.qi4j.api.unitofwork;
 
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.usecase.Usecase;
@@ -59,8 +58,6 @@ public interface UnitOfWork
      * @return the Usecase
      */
     Usecase usecase();
-
-    MetaInfo metaInfo();
 
     /**
      * Create a new Entity which implements the given mixin type. An EntityComposite

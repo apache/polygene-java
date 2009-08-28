@@ -18,7 +18,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashSet;
 import java.util.Set;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
@@ -124,9 +123,9 @@ public final class EntityInstance
         return entityModel.invoke( this, proxy, method, args, moduleInstance );
     }
 
-    public MetaInfo metaInfo()
+    public <T> T metaInfo( Class<T> infoType )
     {
-        return entityModel.metaInfo();
+        return entityModel.metaInfo( infoType );
     }
 
     public EntityModel entityModel()

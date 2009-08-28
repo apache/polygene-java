@@ -14,8 +14,6 @@
 
 package org.qi4j.api.structure;
 
-import org.qi4j.api.common.MetaInfo;
-
 /**
  * The Layer represents a single layer in a Qi4j application.
  */
@@ -23,5 +21,5 @@ public interface Layer
 {
     String name();
 
-    MetaInfo metaInfo();
+    <T>  T metaInfo( Class<T> infoType );
 }

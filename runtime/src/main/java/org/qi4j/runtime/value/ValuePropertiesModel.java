@@ -31,8 +31,7 @@ import org.qi4j.spi.property.PropertyType;
 /**
  * Properties model for values
  */
-public final class ValuePropertiesModel
-    extends AbstractPropertiesModel<ValuePropertyModel>
+public final class ValuePropertiesModel extends AbstractPropertiesModel<ValuePropertyModel>
 {
     public ValuePropertiesModel( ConstraintsModel constraints, PropertyDeclarations propertyDeclarations )
     {

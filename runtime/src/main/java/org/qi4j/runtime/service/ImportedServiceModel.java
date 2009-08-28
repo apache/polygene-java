@@ -67,9 +67,9 @@ public final class ImportedServiceModel
         return visibility;
     }
 
-    public MetaInfo metaInfo()
+    public <T>  T metaInfo( Class<T> infoType )
     {
-        return metaInfo;
+        return metaInfo.get( infoType );
     }
 
     public Class<? extends ServiceImporter> serviceImporter()

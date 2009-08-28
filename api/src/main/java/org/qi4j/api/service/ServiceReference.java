@@ -14,8 +14,6 @@
 
 package org.qi4j.api.service;
 
-import org.qi4j.api.common.MetaInfo;
-
 /**
  * From a ServiceReference you can access and modify metadata about a service.
  * You can also access the actual service through get(), that can then be invoked.
@@ -24,7 +22,7 @@ public interface ServiceReference<T>
 {
     String identity();
 
-    MetaInfo metaInfo();
+    <T>  T metaInfo( Class<T> infoType );
 
     T get();
 

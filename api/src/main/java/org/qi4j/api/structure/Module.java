@@ -14,7 +14,6 @@
 
 package org.qi4j.api.structure;
 
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.object.ObjectBuilderFactory;
@@ -32,7 +31,7 @@ public interface Module
 {
     String name();
 
-    MetaInfo metaInfo();
+    <T>  T metaInfo( Class<T> infoType );
 
     TransientBuilderFactory transientBuilderFactory();
 

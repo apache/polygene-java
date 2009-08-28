@@ -16,7 +16,6 @@ package org.qi4j.spi.composite;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.structure.Module;
 
@@ -31,7 +30,7 @@ public interface CompositeInstance extends InvocationHandler
 
     Module module();
 
-    MetaInfo metaInfo();
+    <T> T metaInfo( Class<T> infoType );
 
     Class<? extends Composite> type();
 

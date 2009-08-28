@@ -22,8 +22,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
 /**
  * JAVADOC
  */
-public class ServiceInstance
-    extends TransientInstance
+public class ServiceInstance extends TransientInstance
     implements Activatable
 {
     public ServiceInstance( ServiceModel compositeModel, ModuleInstance moduleInstance, Object[] mixins, StateHolder state )

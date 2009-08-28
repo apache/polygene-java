@@ -14,8 +14,6 @@
 
 package org.qi4j.api.structure;
 
-import org.qi4j.api.common.MetaInfo;
-
 /**
  * The Application represents a whole Qi4j application.
  */
@@ -31,7 +29,7 @@ public interface Application
 
     Mode mode();
 
-    MetaInfo metaInfo();
+    <T>  T metaInfo( Class<T> infoType );
 
     Layer findLayer( String layerName );
 

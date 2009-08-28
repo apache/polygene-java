@@ -186,7 +186,7 @@ public final class TransientBuilderInstance<T>
             }
             else if( method.equals( METAINFO_METHOD ) )
             {
-                return transientModel.metaInfo().get( (Class<? extends Object>) objects[ 0 ] );
+                return transientModel.metaInfo( (Class<? extends Object>) objects[ 0 ] );
             }
             else
             {

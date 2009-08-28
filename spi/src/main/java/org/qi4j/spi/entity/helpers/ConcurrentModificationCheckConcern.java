@@ -17,7 +17,6 @@ package org.qi4j.spi.entity.helpers;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.Qi4j;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Structure;
@@ -50,10 +49,9 @@ public abstract class ConcurrentModificationCheckConcern extends ConcernOf<Entit
     @Structure
     Qi4j api;
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, MetaInfo unitOfWorkMetaInfo, ModuleSPI module )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
     {
-        final EntityStoreUnitOfWork uow = next.newUnitOfWork( usecase, unitOfWorkMetaInfo, module );
-
+        final EntityStoreUnitOfWork uow = next.newUnitOfWork( usecase, module );
         return new ConcurrentCheckingEntityStoreUnitOfWork( uow, api.dereference( versions ), module );
     }
 

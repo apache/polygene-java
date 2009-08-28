@@ -14,7 +14,6 @@
 
 package org.qi4j.api.service;
 
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 
 /**
@@ -30,5 +29,5 @@ public interface ImportedServiceDescriptor
 
     Visibility visibility();
 
-    MetaInfo metaInfo();
+    <T> T metaInfo( Class<T> infoType );
 }

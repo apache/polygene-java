@@ -68,9 +68,9 @@ public final class ObjectModel
         return visibility;
     }
 
-    public MetaInfo metaInfo()
+    public <T> T metaInfo( Class<T> infoType )
     {
-        return metaInfo;
+        return metaInfo.get( infoType );
     }
 
     public void visitModel( ModelVisitor modelVisitor )

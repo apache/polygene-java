@@ -35,16 +35,24 @@ import org.qi4j.api.util.Classes;
 public final class MetaInfo
     implements Serializable
 {
-    private final static Collection<Class> ignored = new HashSet<Class>( asList( Mixins.class, Concerns.class, SideEffects.class ) );
+    private final static Collection<Class> ignored;
 
-    private final Map<Class<?>, Object> metaInfoMap = new LinkedHashMap<Class<?>, Object>();
+    static
+    {
+        ignored = new HashSet<Class>( 4, 0.8f ); // Optimize size used.
+        ignored.addAll( asList( Mixins.class, Concerns.class, SideEffects.class ) );
+    }
+
+    private final Map<Class<?>, Object> metaInfoMap;
 
     public MetaInfo()
     {
+        metaInfoMap = new LinkedHashMap<Class<?>, Object>();
     }
 
     public MetaInfo( MetaInfo metaInfo )
     {
+        metaInfoMap = new LinkedHashMap<Class<?>, Object>();
         metaInfoMap.putAll( metaInfo.metaInfoMap );
     }
 

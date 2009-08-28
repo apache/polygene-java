@@ -36,18 +36,18 @@ public final class InstanceImporter
     public Object importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {
-        Object instance = serviceDescriptor.metaInfo().get( serviceDescriptor.type() );
+        Object instance = serviceDescriptor.metaInfo( serviceDescriptor.type() );
         if( instance == null )
         {
-            instance = module.metaInfo().get( serviceDescriptor.type() );
+            instance = module.metaInfo( serviceDescriptor.type() );
             if( instance == null )
             {
-                instance = layer.metaInfo().get( serviceDescriptor.type() );
+                instance = layer.metaInfo( serviceDescriptor.type() );
             }
             {
                 if( instance == null )
                 {
-                    instance = application.metaInfo().get( serviceDescriptor.type() );
+                    instance = application.metaInfo( serviceDescriptor.type() );
                 }
             }
         }

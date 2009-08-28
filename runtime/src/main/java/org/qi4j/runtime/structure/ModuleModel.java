@@ -72,9 +72,9 @@ public class ModuleModel
         return name;
     }
 
-    public MetaInfo metaInfo()
+    public <T>  T metaInfo( Class<T> infoType )
     {
-        return metaInfo;
+        return metaInfo.get( infoType );
     }
 
     public CompositesModel composites()

@@ -14,7 +14,6 @@
 
 package org.qi4j.spi.object;
 
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 
 /**
@@ -24,7 +23,7 @@ public interface ObjectDescriptor
 {
     Class<?> type();
 
-    MetaInfo metaInfo();
+    <T> T metaInfo( Class<T> infoType );
 
     Visibility visibility();
 }

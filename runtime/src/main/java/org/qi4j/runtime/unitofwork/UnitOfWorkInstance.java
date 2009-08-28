@@ -21,9 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.entity.EntityComposite;
@@ -69,7 +67,6 @@ public final class UnitOfWorkInstance
 
     private List<UnitOfWorkCallback> callbacks;
     private UnitOfWorkStore unitOfWorkStore;
-    private MetaInfo metaInfo = new MetaInfo();
 
     static
     {
@@ -106,7 +103,7 @@ public final class UnitOfWorkInstance
         EntityStoreUnitOfWork uow = storeUnitOfWork.get( store );
         if( uow == null )
         {
-            uow = store.newUnitOfWork( usecase, metaInfo(), module );
+            uow = store.newUnitOfWork( usecase, module );
             storeUnitOfWork.put( store, uow );
         }
         return uow;
@@ -130,9 +127,8 @@ public final class UnitOfWorkInstance
             if( unitOfWorkStore == null || entityState == null )
             {
                 // Figure out what EntityStore to use
-                for( int i = 0; i < potentialModules.size(); i++ )
+                for( ModuleInstance potentialModule : potentialModules )
                 {
-                    ModuleInstance potentialModule = potentialModules.get( i );
                     EntityStore store = potentialModule.entities().entityStore();
                     EntityStoreUnitOfWork storeUow = getEntityStoreUnitOfWork( store, potentialModule );
                     try
@@ -251,11 +247,6 @@ public final class UnitOfWorkInstance
         return usecase;
     }
 
-    public MetaInfo metaInfo()
-    {
-        return metaInfo;
-    }
-
     public void pause()
     {
         if( !paused )
@@ -289,7 +280,7 @@ public final class UnitOfWorkInstance
     }
 
     public void apply()
-        throws UnitOfWorkCompletionException, ConcurrentEntityModificationException
+        throws UnitOfWorkCompletionException
     {
         complete( true );
     }
@@ -403,11 +394,8 @@ public final class UnitOfWorkInstance
         throws UnitOfWorkCompletionException
     {
         List<StateCommitter> committers = new ArrayList<StateCommitter>();
-        for( Map.Entry<EntityStore, EntityStoreUnitOfWork> entry : storeUnitOfWork.entrySet() )
+        for( EntityStoreUnitOfWork entityStoreUnitOfWork : storeUnitOfWork.values() )
         {
-            EntityStore entityStore = entry.getKey();
-            EntityStoreUnitOfWork entityStoreUnitOfWork = entry.getValue();
-
             try
             {
                 StateCommitter committer = entityStoreUnitOfWork.apply();
@@ -593,7 +581,7 @@ public final class UnitOfWorkInstance
 
     public void remove( EntityReference entityReference )
     {
-        stateCache.remove( entityReference.identity() );
+        stateCache.remove( entityReference );
     }
 
     abstract class ForEachEntity
@@ -653,17 +641,11 @@ public final class UnitOfWorkInstance
             }
 
             InstanceKey that = (InstanceKey) o;
-
             if( !entityReference.equals( that.entityReference ) )
             {
                 return false;
             }
-            if( !typeName.equals( that.typeName ) )
-            {
-                return false;
-            }
-
-            return true;
+            return typeName.equals( that.typeName );
         }
 
         @Override

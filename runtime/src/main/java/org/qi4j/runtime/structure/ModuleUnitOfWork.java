@@ -18,7 +18,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.entity.EntityBuilder;
@@ -64,7 +63,6 @@ public class ModuleUnitOfWork
         }
     }
 
-
     private UnitOfWorkInstance uow;
     private ModuleInstance moduleInstance;
 
@@ -92,11 +90,6 @@ public class ModuleUnitOfWork
     public Usecase usecase()
     {
         return uow.usecase();
-    }
-
-    public MetaInfo metaInfo()
-    {
-        return uow.metaInfo();
     }
 
     public <T> T newEntity( Class<T> type ) throws EntityTypeNotFoundException, LifecycleException

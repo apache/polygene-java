@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.composite.NoSuchCompositeException;
@@ -129,9 +128,9 @@ public class ModuleInstance
         return moduleModel.name();
     }
 
-    public MetaInfo metaInfo()
+    public <T>  T metaInfo( Class<T> infoType )
     {
-        return moduleModel.metaInfo();
+        return moduleModel.metaInfo( infoType );
     }
 
     public ModuleModel model()

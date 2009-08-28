@@ -15,7 +15,6 @@
 package org.qi4j.runtime.structure;
 
 import java.util.List;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
@@ -63,9 +62,9 @@ public class ApplicationInstance
         return model.mode();
     }
 
-    public MetaInfo metaInfo()
+    public <T>  T metaInfo( Class<T> infoType )
     {
-        return model.metaInfo();
+        return model.metaInfo( infoType );
     }
 
     public List<LayerInstance> layers()
