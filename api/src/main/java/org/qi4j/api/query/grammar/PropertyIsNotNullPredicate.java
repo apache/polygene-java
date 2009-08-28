@@ -20,9 +20,8 @@ package org.qi4j.api.query.grammar;
 
 /**
  * Constraints that a {@link org.qi4j.api.property.Property} is not null (is set).
- *
  */
 public interface PropertyIsNotNullPredicate<T>
-    extends PropertyNullPredicate<T>
+        extends PropertyNullPredicate<T>
 {
 }

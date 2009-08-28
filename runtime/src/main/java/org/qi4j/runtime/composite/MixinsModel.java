@@ -14,31 +14,31 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
+import java.util.List;
+
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.spi.composite.CompositeInstance;
-
-import java.io.Serializable;
-import java.util.List;
 
 /**
  * Model for Composite mixins
  */
 public final class MixinsModel extends AbstractMixinsModel
-    implements Serializable
+        implements Serializable
 {
-    public MixinsModel( Class<? extends Composite> compositeType, List<Class<?>> assemblyMixins )
+    public MixinsModel(Class<? extends Composite> compositeType, List<Class<?>> assemblyMixins)
     {
-        super( compositeType, assemblyMixins );
+        super(compositeType, assemblyMixins);
     }
 
     // Context
-    public void newMixins( CompositeInstance compositeInstance, UsesInstance uses, StateHolder state, Object[] mixins )
+    public void newMixins(CompositeInstance compositeInstance, UsesInstance uses, StateHolder state, Object[] mixins)
     {
         int i = 0;
-        for( MixinModel mixinModel : mixinModels )
+        for (MixinModel mixinModel : mixinModels)
         {
-            mixins[ i++ ] = mixinModel.newInstance( compositeInstance, state, uses );
+            mixins[i++] = mixinModel.newInstance(compositeInstance, state, uses);
         }
     }
 }

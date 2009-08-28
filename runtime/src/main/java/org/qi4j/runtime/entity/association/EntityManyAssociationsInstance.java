@@ -14,14 +14,14 @@
 
 package org.qi4j.runtime.entity.association;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
-
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Collection of Property instances.
@@ -33,26 +33,26 @@ public final class EntityManyAssociationsInstance
     private EntityState entityState;
     private ModuleUnitOfWork uow;
 
-    public EntityManyAssociationsInstance( EntityManyAssociationsModel model, EntityState entityState, ModuleUnitOfWork uow )
+    public EntityManyAssociationsInstance(EntityManyAssociationsModel model, EntityState entityState, ModuleUnitOfWork uow)
     {
         this.model = model;
         this.entityState = entityState;
         this.uow = uow;
     }
 
-    public <T> ManyAssociation<T> manyAssociationFor( Method accessor )
+    public <T> ManyAssociation<T> manyAssociationFor(Method accessor)
     {
-        if( manyAssociations == null )
+        if (manyAssociations == null)
         {
             manyAssociations = new HashMap<Method, ManyAssociation<?>>();
         }
 
-        ManyAssociation<T> association = (ManyAssociation<T>) manyAssociations.get( accessor );
+        ManyAssociation<T> association = (ManyAssociation<T>) manyAssociations.get(accessor);
 
-        if( association == null )
+        if (association == null)
         {
-            association = model.newInstance( accessor, entityState, uow );
-            manyAssociations.put( accessor, association );
+            association = model.newInstance(accessor, entityState, uow);
+            manyAssociations.put(accessor, association);
         }
 
         return association;
@@ -60,14 +60,14 @@ public final class EntityManyAssociationsInstance
 
     public void checkConstraints()
     {
-        model.checkConstraints( this );
+        model.checkConstraints(this);
     }
 
-    public void visitManyAssociations( EntityStateHolder.EntityStateVisitor visitor )
+    public void visitManyAssociations(EntityStateHolder.EntityStateVisitor visitor)
     {
-        for( ManyAssociation<?> manyAssociation : manyAssociations.values() )
+        for (ManyAssociation<?> manyAssociation : manyAssociations.values())
         {
-            visitor.visitManyAssociation( manyAssociation.qualifiedName(), manyAssociation );
+            visitor.visitManyAssociation(manyAssociation.qualifiedName(), manyAssociation);
         }
     }
 }

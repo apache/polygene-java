@@ -14,6 +14,15 @@
 
 package org.qi4j.runtime.entity.association;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.List;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.TransientComposite;
@@ -35,20 +44,11 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.List;
-
 /**
  * JAVADOC
  */
 public final class ManyAssociationModel
-    implements ManyAssociationDescriptor, ConstraintsCheck, Serializable
+        implements ManyAssociationDescriptor, ConstraintsCheck, Serializable
 {
     private ValueConstraintsInstance associationConstraints;
     private MetaInfo metaInfo;
@@ -62,56 +62,56 @@ public final class ManyAssociationModel
     private ManyAssociationType manyAssociationType;
     private AssociationInfo builderInfo;
 
-    private void writeObject( ObjectOutputStream out )
-        throws IOException
+    private void writeObject(ObjectOutputStream out)
+            throws IOException
     {
         try
         {
-            out.writeObject( metaInfo );
-            SerializationUtil.writeMethod( out, accessor );
-            out.writeObject( constraints );
+            out.writeObject(metaInfo);
+            SerializationUtil.writeMethod(out, accessor);
+            out.writeObject(constraints);
         }
-        catch( NotSerializableException e )
+        catch (NotSerializableException e)
         {
-            System.err.println( "NotSerializable in " + getClass() );
+            System.err.println("NotSerializable in " + getClass());
             throw e;
         }
     }
 
-    private void readObject( ObjectInputStream in ) throws IOException, ClassNotFoundException
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
     {
         metaInfo = (MetaInfo) in.readObject();
-        accessor = SerializationUtil.readMethod( in );
+        accessor = SerializationUtil.readMethod(in);
         constraints = (ValueConstraintsInstance) in.readObject();
         initialize();
     }
 
 
-    public ManyAssociationModel( Method accessor, ValueConstraintsInstance valueConstraintsInstance, ValueConstraintsInstance associationConstraintsInstance, MetaInfo metaInfo )
+    public ManyAssociationModel(Method accessor, ValueConstraintsInstance valueConstraintsInstance, ValueConstraintsInstance associationConstraintsInstance, MetaInfo metaInfo)
     {
         this.metaInfo = metaInfo;
         this.constraints = valueConstraintsInstance;
         this.associationConstraints = associationConstraintsInstance;
         this.accessor = accessor;
         initialize();
-        this.manyAssociationType = new ManyAssociationType( qualifiedName, getRawClass( type ).getName(), queryable );
+        this.manyAssociationType = new ManyAssociationType(qualifiedName, getRawClass(type).getName(), queryable);
         this.builderInfo = new GenericAssociationInfo(accessor, metaInfo, false);
     }
 
     private void initialize()
     {
-        this.type = GenericAssociationInfo.getAssociationType( accessor );
-        this.qualifiedName = QualifiedName.fromMethod( accessor );
-        this.immutable = metaInfo.get( Immutable.class ) != null;
-        this.aggregated = metaInfo.get( Aggregated.class ) != null;
+        this.type = GenericAssociationInfo.getAssociationType(accessor);
+        this.qualifiedName = QualifiedName.fromMethod(accessor);
+        this.immutable = metaInfo.get(Immutable.class) != null;
+        this.aggregated = metaInfo.get(Aggregated.class) != null;
 
-        final Queryable queryable = accessor.getAnnotation( Queryable.class );
+        final Queryable queryable = accessor.getAnnotation(Queryable.class);
         this.queryable = queryable == null || queryable.value();
     }
 
-    public <T> T metaInfo( Class<T> infoType )
+    public <T> T metaInfo(Class<T> infoType)
     {
-        return metaInfo.get( infoType );
+        return metaInfo.get(infoType);
     }
 
     public QualifiedName qualifiedName()
@@ -144,59 +144,59 @@ public final class ManyAssociationModel
         return manyAssociationType;
     }
 
-    public <T> ManyAssociation<T> newInstance( ModuleUnitOfWork uow, EntityState state )
+    public <T> ManyAssociation<T> newInstance(ModuleUnitOfWork uow, EntityState state)
     {
-        ManyAssociation<T> associationInstance = new ManyAssociationInstance<T>( state instanceof BuilderEntityState ? builderInfo : this, this, uow, state );
+        ManyAssociation<T> associationInstance = new ManyAssociationInstance<T>(state instanceof BuilderEntityState ? builderInfo : this, this, uow, state);
 
-        if( TransientComposite.class.isAssignableFrom( accessor.getReturnType() ) )
+        if (TransientComposite.class.isAssignableFrom(accessor.getReturnType()))
         {
-            associationInstance = (ManyAssociation<T>) uow.module().transientBuilderFactory().newTransientBuilder( accessor.getReturnType() ).use( associationInstance ).newInstance();
+            associationInstance = (ManyAssociation<T>) uow.module().transientBuilderFactory().newTransientBuilder(accessor.getReturnType()).use(associationInstance).newInstance();
         }
 
         return associationInstance;
     }
 
-    public void checkConstraints( Object composite )
-        throws ConstraintViolationException
+    public void checkConstraints(Object composite)
+            throws ConstraintViolationException
     {
-        if( constraints != null )
+        if (constraints != null)
         {
 
-            List<ConstraintViolation> violations = constraints.checkConstraints( composite );
-            if( !violations.isEmpty() )
+            List<ConstraintViolation> violations = constraints.checkConstraints(composite);
+            if (!violations.isEmpty())
             {
-                throw new ConstraintViolationException( accessor, violations );
+                throw new ConstraintViolationException(accessor, violations);
             }
         }
     }
 
-    public void checkAssociationConstraints( ManyAssociation manyAssociation )
-        throws ConstraintViolationException
+    public void checkAssociationConstraints(ManyAssociation manyAssociation)
+            throws ConstraintViolationException
     {
-        if( associationConstraints != null )
+        if (associationConstraints != null)
         {
-            List<ConstraintViolation> violations = associationConstraints.checkConstraints( manyAssociation );
-            if( !violations.isEmpty() )
+            List<ConstraintViolation> violations = associationConstraints.checkConstraints(manyAssociation);
+            if (!violations.isEmpty())
             {
-                throw new ConstraintViolationException( accessor, violations );
+                throw new ConstraintViolationException(accessor, violations);
             }
         }
     }
 
-    public boolean equals( Object o )
+    public boolean equals(Object o)
     {
-        if( this == o )
+        if (this == o)
         {
             return true;
         }
-        if( o == null || getClass() != o.getClass() )
+        if (o == null || getClass() != o.getClass())
         {
             return false;
         }
 
         ManyAssociationModel that = (ManyAssociationModel) o;
 
-        return accessor.equals( that.accessor );
+        return accessor.equals(that.accessor);
     }
 
     public int hashCode()
@@ -204,7 +204,8 @@ public final class ManyAssociationModel
         return accessor.hashCode();
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return accessor.toGenericString();
     }

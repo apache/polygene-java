@@ -14,69 +14,69 @@
 
 package org.qi4j.runtime.injection;
 
-import static org.qi4j.api.util.Classes.fieldsOf;
-import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.composite.Resolution;
-import org.qi4j.runtime.structure.Binder;
-import org.qi4j.runtime.structure.ModelVisitor;
-import static org.qi4j.runtime.util.Annotations.getInjectionAnnotation;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.qi4j.api.util.Classes.*;
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
+import static org.qi4j.runtime.util.Annotations.*;
+
 /**
  * JAVADOC
  */
 public final class InjectedFieldsModel
-    implements Binder, Serializable
+        implements Binder, Serializable
 {
     private final List<InjectedFieldModel> fields = new ArrayList<InjectedFieldModel>();
 
-    public InjectedFieldsModel( Class fragmentClass )
+    public InjectedFieldsModel(Class fragmentClass)
     {
-        for( Field field : fieldsOf( fragmentClass ) )
+        for (Field field : fieldsOf(fragmentClass))
         {
-            Annotation injectionAnnotation = getInjectionAnnotation( field.getAnnotations() );
-            if( injectionAnnotation != null )
+            Annotation injectionAnnotation = getInjectionAnnotation(field.getAnnotations());
+            if (injectionAnnotation != null)
             {
-                addModel( fragmentClass, field, injectionAnnotation );
+                addModel(fragmentClass, field, injectionAnnotation);
             }
         }
     }
 
-    private void addModel( Class fragmentClass, Field field, Annotation injectionAnnotation )
+    private void addModel(Class fragmentClass, Field field, Annotation injectionAnnotation)
     {
-        boolean optional = DependencyModel.isOptional( injectionAnnotation, field.getAnnotations() );
-        DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, field.getGenericType(), fragmentClass, optional );
-        InjectedFieldModel injectedFieldModel = new InjectedFieldModel( field, dependencyModel );
-        this.fields.add( injectedFieldModel );
+        boolean optional = DependencyModel.isOptional(injectionAnnotation, field.getAnnotations());
+        DependencyModel dependencyModel = new DependencyModel(injectionAnnotation, field.getGenericType(), fragmentClass, optional);
+        InjectedFieldModel injectedFieldModel = new InjectedFieldModel(field, dependencyModel);
+        this.fields.add(injectedFieldModel);
     }
 
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        for( InjectedFieldModel field : fields )
+        for (InjectedFieldModel field : fields)
         {
-            field.visitModel( modelVisitor );
+            field.visitModel(modelVisitor);
         }
     }
 
-    public void bind( Resolution context ) throws BindingException
+    public void bind(Resolution context) throws BindingException
     {
-        for( InjectedFieldModel field : fields )
+        for (InjectedFieldModel field : fields)
         {
-            field.bind( context );
+            field.bind(context);
         }
     }
 
-    public void inject( InjectionContext context, Object instance )
+    public void inject(InjectionContext context, Object instance)
     {
-        for( InjectedFieldModel field : fields )
+        for (InjectedFieldModel field : fields)
         {
-            field.inject( context, instance );
+            field.inject(context, instance);
         }
     }
 }

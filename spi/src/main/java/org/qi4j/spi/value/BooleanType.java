@@ -14,41 +14,41 @@
 
 package org.qi4j.spi.value;
 
+import java.lang.reflect.Type;
+
 import static org.qi4j.api.common.TypeName.*;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.util.json.JSONException;
 import org.qi4j.spi.util.json.JSONWriter;
 
-import java.lang.reflect.Type;
-
 /**
  * Boolean type
  */
 public final class BooleanType
-    extends ValueType
+        extends ValueType
 {
-    public static boolean isBoolean( Type type )
+    public static boolean isBoolean(Type type)
     {
-        if( type instanceof Class )
+        if (type instanceof Class)
         {
             Class typeClass = (Class) type;
-            return ( typeClass.equals( Boolean.class ) );
+            return (typeClass.equals(Boolean.class));
         }
         return false;
     }
 
     public BooleanType()
     {
-        super( nameOf( Boolean.class ) );
+        super(nameOf(Boolean.class));
     }
 
-    public void toJSON( Object value, JSONWriter json ) throws JSONException
+    public void toJSON(Object value, JSONWriter json) throws JSONException
     {
-        json.value(( (Boolean) value ).booleanValue());
+        json.value(((Boolean) value).booleanValue());
     }
 
-    public Object fromJSON( Object json, Module module ) throws JSONException
+    public Object fromJSON(Object json, Module module) throws JSONException
     {
-        return (Boolean)json;
+        return (Boolean) json;
     }
 }

@@ -14,10 +14,6 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.common.AppliesTo;
-import org.qi4j.api.common.AppliesToFilter;
-import org.qi4j.api.common.ConstructionException;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
@@ -25,22 +21,26 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
+import org.qi4j.api.common.AppliesTo;
+import org.qi4j.api.common.AppliesToFilter;
+import org.qi4j.api.common.ConstructionException;
+
 /**
  * JAVADOC
  */
 public abstract class AbstractModifierDeclaration
-    implements Serializable
+        implements Serializable
 {
     private final Class modifierClass;
     private final Class declaredIn;
 
     private AppliesToFilter appliesToFilter;
 
-    public AbstractModifierDeclaration( Class modifierClass, Class declaredIn )
+    public AbstractModifierDeclaration(Class modifierClass, Class declaredIn)
     {
         this.modifierClass = modifierClass;
         this.declaredIn = declaredIn;
-        createAppliesToFilter( modifierClass );
+        createAppliesToFilter(modifierClass);
     }
 
     public Class type()
@@ -53,70 +53,68 @@ public abstract class AbstractModifierDeclaration
         return declaredIn;
     }
 
-    public boolean appliesTo( Method method, Class<?> compositeType )
+    public boolean appliesTo(Method method, Class<?> compositeType)
     {
-        return appliesToFilter.appliesTo( method, modifierClass, compositeType, modifierClass );
+        return appliesToFilter.appliesTo(method, modifierClass, compositeType, modifierClass);
     }
 
-    private void createAppliesToFilter( Class<?> modifierClass )
+    private void createAppliesToFilter(Class<?> modifierClass)
     {
-        if( !InvocationHandler.class.isAssignableFrom( modifierClass ) )
+        if (!InvocationHandler.class.isAssignableFrom(modifierClass))
         {
             appliesToFilter = new TypedModifierAppliesToFilter();
 
-            if( Modifier.isAbstract( modifierClass.getModifiers() ) )
+            if (Modifier.isAbstract(modifierClass.getModifiers()))
             {
-                appliesToFilter = new AndAppliesToFilter( appliesToFilter, new ImplementsMethodAppliesToFilter() );
+                appliesToFilter = new AndAppliesToFilter(appliesToFilter, new ImplementsMethodAppliesToFilter());
             }
         }
 
-        AppliesTo appliesTo = modifierClass.getAnnotation( AppliesTo.class );
-        if( appliesTo != null )
+        AppliesTo appliesTo = modifierClass.getAnnotation(AppliesTo.class);
+        if (appliesTo != null)
         {
-            for( Class<?> appliesToClass : appliesTo.value() )
+            for (Class<?> appliesToClass : appliesTo.value())
             {
                 AppliesToFilter filter;
-                if( AppliesToFilter.class.isAssignableFrom( appliesToClass ) )
+                if (AppliesToFilter.class.isAssignableFrom(appliesToClass))
                 {
                     try
                     {
                         filter = (AppliesToFilter) appliesToClass.newInstance();
                     }
-                    catch( Exception e )
+                    catch (Exception e)
                     {
-                        throw new ConstructionException( e );
+                        throw new ConstructionException(e);
                     }
-                }
-                else if( Annotation.class.isAssignableFrom( appliesToClass ) )
+                } else if (Annotation.class.isAssignableFrom(appliesToClass))
                 {
-                    filter = new AnnotationAppliesToFilter( appliesToClass );
-                }
-                else // Type check
+                    filter = new AnnotationAppliesToFilter(appliesToClass);
+                } else // Type check
                 {
-                    filter = new TypeCheckAppliesToFilter( appliesToClass );
+                    filter = new TypeCheckAppliesToFilter(appliesToClass);
                 }
 
-                if( appliesToFilter == null )
+                if (appliesToFilter == null)
                 {
                     appliesToFilter = filter;
-                }
-                else
+                } else
                 {
-                    appliesToFilter = new AndAppliesToFilter( appliesToFilter, filter );
+                    appliesToFilter = new AndAppliesToFilter(appliesToFilter, filter);
                 }
             }
 
         }
 
-        if( appliesToFilter == null )
+        if (appliesToFilter == null)
         {
             appliesToFilter = AppliesToFilter.ALWAYS;
         }
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
-        return modifierClass.getName() + ( declaredIn == null ? "" : " declared in " + declaredIn );
+        return modifierClass.getName() + (declaredIn == null ? "" : " declared in " + declaredIn);
     }
 
 }

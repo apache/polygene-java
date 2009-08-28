@@ -14,55 +14,59 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.concern.Concerns;
-import static org.qi4j.api.util.Classes.genericInterfacesOf;
-import org.qi4j.api.util.MethodKeyMap;
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.concern.Concerns;
+import static org.qi4j.api.util.Classes.*;
+import org.qi4j.api.util.MethodKeyMap;
 
 /**
  * JAVADOC
  */
 public final class ConcernsDeclaration
-    implements Serializable
+        implements Serializable
 {
-    public static void concernDeclarations( Class type, List<ConcernDeclaration> concerns )
+    public static void concernDeclarations(Class type, List<ConcernDeclaration> concerns)
     {
         // Find concern declarations
-        Set<Type> types = ( type.isInterface() ? genericInterfacesOf( type ) : Collections.singleton( (Type) type ) );
+        Set<Type> types = (type.isInterface() ? genericInterfacesOf(type) : Collections.singleton((Type) type));
 
-        for( Type aType : types )
+        for (Type aType : types)
         {
-            addConcernDeclarations( aType, concerns );
+            addConcernDeclarations(aType, concerns);
         }
 
     }
 
-    public static void concernDeclarations( Iterable<Class<?>> concernclasses, List<ConcernDeclaration> concerns )
+    public static void concernDeclarations(Iterable<Class<?>> concernclasses, List<ConcernDeclaration> concerns)
     {
         // Add concerns from assembly
-        for( Class<?> concern : concernclasses )
+        for (Class<?> concern : concernclasses)
         {
-            concerns.add( new ConcernDeclaration( concern, null ) );
+            concerns.add(new ConcernDeclaration(concern, null));
         }
     }
 
-    private static void addConcernDeclarations( Type type, List<ConcernDeclaration> concerns )
+    private static void addConcernDeclarations(Type type, List<ConcernDeclaration> concerns)
     {
-        if( type instanceof Class )
+        if (type instanceof Class)
         {
             final Class clazz = (Class) type;
-            Concerns annotation = Concerns.class.cast( clazz.getAnnotation( Concerns.class ) );
-            if( annotation != null )
+            Concerns annotation = Concerns.class.cast(clazz.getAnnotation(Concerns.class));
+            if (annotation != null)
             {
                 Class[] concernClasses = annotation.value();
-                for( Class concernClass : concernClasses )
+                for (Class concernClass : concernClasses)
                 {
-                    concerns.add( new ConcernDeclaration( concernClass, clazz ) );
+                    concerns.add(new ConcernDeclaration(concernClass, clazz));
                 }
             }
         }
@@ -71,33 +75,32 @@ public final class ConcernsDeclaration
     private final List<ConcernDeclaration> concerns;
     private final Map<Method, MethodConcernsModel> methodConcernsModels = new MethodKeyMap<MethodConcernsModel>();
 
-    public ConcernsDeclaration( List<ConcernDeclaration> concerns )
+    public ConcernsDeclaration(List<ConcernDeclaration> concerns)
     {
         this.concerns = concerns;
     }
 
     // Model
-    public MethodConcernsModel concernsFor( Method method, Class<? extends Composite> type )
+    public MethodConcernsModel concernsFor(Method method, Class<? extends Composite> type)
     {
-        if( !methodConcernsModels.containsKey( method ) )
+        if (!methodConcernsModels.containsKey(method))
         {
             List<MethodConcernModel> concernsForMethod = new ArrayList<MethodConcernModel>();
-            for( ConcernDeclaration concern : concerns )
+            for (ConcernDeclaration concern : concerns)
             {
-                if( concern.appliesTo( method, type ) )
+                if (concern.appliesTo(method, type))
                 {
                     Class concernClass = concern.type();
-                    concernsForMethod.add( new MethodConcernModel( concernClass ) );
+                    concernsForMethod.add(new MethodConcernModel(concernClass));
                 }
             }
 
-            MethodConcernsModel methodConcerns = new MethodConcernsModel( method, concernsForMethod );
-            methodConcernsModels.put( method, methodConcerns );
+            MethodConcernsModel methodConcerns = new MethodConcernsModel(method, concernsForMethod);
+            methodConcernsModels.put(method, methodConcerns);
             return methodConcerns;
-        }
-        else
+        } else
         {
-            return methodConcernsModels.get( method );
+            return methodConcernsModels.get(method);
         }
     }
 

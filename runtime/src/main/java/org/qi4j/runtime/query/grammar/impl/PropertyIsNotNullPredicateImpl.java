@@ -23,11 +23,10 @@ import org.qi4j.api.query.grammar.PropertyReference;
 
 /**
  * Default {@link org.qi4j.api.query.grammar.PropertyIsNotNullPredicate} implementation.
- *
  */
 public final class PropertyIsNotNullPredicateImpl<T>
-    extends PropertyNullPredicateImpl<T>
-    implements PropertyIsNotNullPredicate<T>
+        extends PropertyNullPredicateImpl<T>
+        implements PropertyIsNotNullPredicate<T>
 {
 
     /**
@@ -36,27 +35,28 @@ public final class PropertyIsNotNullPredicateImpl<T>
      * @param propertyReference property reference; cannot be null
      * @throws IllegalArgumentException - If property reference is null
      */
-    public PropertyIsNotNullPredicateImpl( final PropertyReference<T> propertyReference )
+    public PropertyIsNotNullPredicateImpl(final PropertyReference<T> propertyReference)
     {
-        super( propertyReference );
+        super(propertyReference);
     }
 
     /**
      * @see org.qi4j.api.query.grammar.BooleanExpression#eval(Object)
      */
-    public boolean eval( final Object target )
+    public boolean eval(final Object target)
     {
-        final Property<T> prop = propertyReference().eval( target );
+        final Property<T> prop = propertyReference().eval(target);
         return prop != null && prop.get() != null;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return new StringBuilder()
-            .append( "( " )
-            .append( propertyReference() )
-            .append( " IS NOT NULL )" )
-            .toString();
+                .append("( ")
+                .append(propertyReference())
+                .append(" IS NOT NULL )")
+                .toString();
     }
 
 }

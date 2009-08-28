@@ -14,6 +14,15 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import net.sf.cglib.proxy.Factory;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -24,26 +33,17 @@ import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.util.Annotations;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 /**
  * JAVADOC
  */
 public final class ConstructorsModel
-    implements Binder, Serializable
+        implements Binder, Serializable
 {
     private final Class fragmentClass;
     private final List<ConstructorModel> constructorModels;
     private List<ConstructorModel> boundConstructors;
 
-    public ConstructorsModel( Class fragmentClass )
+    public ConstructorsModel(Class fragmentClass)
     {
         this.fragmentClass = fragmentClass;
 
@@ -56,12 +56,13 @@ public final class ConstructorsModel
             try
             {
                 Constructor injectionConstructor = injectionClass.getConstructor(constructor.getParameterTypes());
-                ConstructorModel constructorModel = newConstructorModel( this.fragmentClass, constructor, injectionConstructor );
-                if( constructorModel != null )
+                ConstructorModel constructorModel = newConstructorModel(this.fragmentClass, constructor, injectionConstructor);
+                if (constructorModel != null)
                 {
-                    constructorModels.add( constructorModel );
+                    constructorModels.add(constructorModel);
                 }
-            } catch (NoSuchMethodException e)
+            }
+            catch (NoSuchMethodException e)
             {
                 // Ignore and continue
             }
@@ -78,105 +79,103 @@ public final class ConstructorsModel
         int idx = 0;
         InjectedParametersModel parameters = new InjectedParametersModel();
         Annotation[][] parameterAnnotations = injectedConstructor.getParameterAnnotations();
-        for( Type type : injectedConstructor.getGenericParameterTypes() )
+        for (Type type : injectedConstructor.getGenericParameterTypes())
         {
-            final Annotation injectionAnnotation = Annotations.getInjectionAnnotation( parameterAnnotations[ idx ] );
-            if( injectionAnnotation == null )
+            final Annotation injectionAnnotation = Annotations.getInjectionAnnotation(parameterAnnotations[idx]);
+            if (injectionAnnotation == null)
             {
                 return null; // invalid constructor parameter
             }
 
-            boolean optional = DependencyModel.isOptional( injectionAnnotation, parameterAnnotations[ idx ] );
+            boolean optional = DependencyModel.isOptional(injectionAnnotation, parameterAnnotations[idx]);
 
-            DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, type, fragmentClass, optional );
-            parameters.addDependency( dependencyModel );
+            DependencyModel dependencyModel = new DependencyModel(injectionAnnotation, type, fragmentClass, optional);
+            parameters.addDependency(dependencyModel);
             idx++;
         }
-        return new ConstructorModel(realConstructor, parameters );
+        return new ConstructorModel(realConstructor, parameters);
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        if( boundConstructors != null )
+        if (boundConstructors != null)
         {
-            for( ConstructorModel constructorModel : boundConstructors )
+            for (ConstructorModel constructorModel : boundConstructors)
             {
-                constructorModel.visitModel( modelVisitor );
+                constructorModel.visitModel(modelVisitor);
             }
-        }
-        else
+        } else
         {
-            for( ConstructorModel constructorModel : constructorModels )
+            for (ConstructorModel constructorModel : constructorModels)
             {
-                constructorModel.visitModel( modelVisitor );
+                constructorModel.visitModel(modelVisitor);
             }
         }
     }
 
     // Binding
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind(Resolution resolution) throws BindingException
     {
         boundConstructors = new ArrayList<ConstructorModel>();
-        for( ConstructorModel constructorModel : constructorModels )
+        for (ConstructorModel constructorModel : constructorModels)
         {
             try
             {
-                constructorModel.bind( resolution );
-                boundConstructors.add( constructorModel );
+                constructorModel.bind(resolution);
+                boundConstructors.add(constructorModel);
             }
-            catch( Exception e )
+            catch (Exception e)
             {
                 // Ignore
                 e.printStackTrace();
             }
         }
 
-        if( boundConstructors.size() == 0 )
+        if (boundConstructors.size() == 0)
         {
-            StringBuilder messageBuilder = new StringBuilder( "Found no constructor that could be bound: " );
-            if( resolution.object() instanceof AbstractCompositeDescriptor )
+            StringBuilder messageBuilder = new StringBuilder("Found no constructor that could be bound: ");
+            if (resolution.object() instanceof AbstractCompositeDescriptor)
             {
-                messageBuilder.append( fragmentClass.getName() )
-                    .append( " in " )
-                    .append( resolution.object().toString() );
-            }
-            else
+                messageBuilder.append(fragmentClass.getName())
+                        .append(" in ")
+                        .append(resolution.object().toString());
+            } else
             {
-                messageBuilder.append( resolution.object().toString() );
+                messageBuilder.append(resolution.object().toString());
             }
 
-            if( messageBuilder.indexOf( "$" ) >= 0 )
+            if (messageBuilder.indexOf("$") >= 0)
             {
-                messageBuilder.append( "\nNon-static inner classes can not be used." );
+                messageBuilder.append("\nNon-static inner classes can not be used.");
             }
 
             String message = messageBuilder.toString();
-            throw new BindingException( message );
+            throw new BindingException(message);
         }
 
         // Sort based on parameter count
-        Collections.sort( boundConstructors, new Comparator<ConstructorModel>()
+        Collections.sort(boundConstructors, new Comparator<ConstructorModel>()
         {
-            public int compare( ConstructorModel o1, ConstructorModel o2 )
+            public int compare(ConstructorModel o1, ConstructorModel o2)
             {
                 Integer model2ParametersCount = o2.constructor().getParameterTypes().length;
                 int model1ParametersCount = o1.constructor().getParameterTypes().length;
-                return model2ParametersCount.compareTo( model1ParametersCount );
+                return model2ParametersCount.compareTo(model1ParametersCount);
             }
-        } );
+        });
     }
 
-    public Object newInstance( InjectionContext injectionContext )
+    public Object newInstance(InjectionContext injectionContext)
     {
         // Try all bound constructors, in order
         ConstructionException exception = null;
-        for( ConstructorModel constructorModel : boundConstructors )
+        for (ConstructorModel constructorModel : boundConstructors)
         {
             try
             {
-                return constructorModel.newInstance( injectionContext );
+                return constructorModel.newInstance(injectionContext);
             }
-            catch( ConstructionException e )
+            catch (ConstructionException e)
             {
                 exception = e;
             }
@@ -185,25 +184,24 @@ public final class ConstructorsModel
         throw exception;
     }
 
-    private Annotation[][] getConstrucxtorAnnotations( Class fragmentClass, Constructor constructor )
+    private Annotation[][] getConstrucxtorAnnotations(Class fragmentClass, Constructor constructor)
     {
         Annotation[][] parameterAnnotations;
-        if( Factory.class.isAssignableFrom( fragmentClass ) )
+        if (Factory.class.isAssignableFrom(fragmentClass))
         {
             try
             {
                 Class[] constructorParameterTypes = constructor.getParameterTypes();
                 Class fragmentSuperClass = fragmentClass.getSuperclass();
-                Constructor realConstructor = fragmentSuperClass.getDeclaredConstructor( constructorParameterTypes );
+                Constructor realConstructor = fragmentSuperClass.getDeclaredConstructor(constructorParameterTypes);
                 parameterAnnotations = realConstructor.getParameterAnnotations();
             }
-            catch( NoSuchMethodException e )
+            catch (NoSuchMethodException e)
             {
                 // Shouldn't happen
-                throw new InternalError( "Could not get real constructor of class " + fragmentClass.getName() );
+                throw new InternalError("Could not get real constructor of class " + fragmentClass.getName());
             }
-        }
-        else
+        } else
         {
             parameterAnnotations = constructor.getParameterAnnotations();
         }

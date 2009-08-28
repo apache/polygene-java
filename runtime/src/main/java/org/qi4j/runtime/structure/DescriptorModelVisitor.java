@@ -14,7 +14,16 @@
 
 package org.qi4j.runtime.structure;
 
-import org.qi4j.runtime.composite.*;
+import org.qi4j.runtime.composite.AbstractConstraintModel;
+import org.qi4j.runtime.composite.CompositeMethodModel;
+import org.qi4j.runtime.composite.ConstructorModel;
+import org.qi4j.runtime.composite.MethodConcernModel;
+import org.qi4j.runtime.composite.MethodConcernsModel;
+import org.qi4j.runtime.composite.MethodConstraintsModel;
+import org.qi4j.runtime.composite.MethodSideEffectModel;
+import org.qi4j.runtime.composite.MethodSideEffectsModel;
+import org.qi4j.runtime.composite.MixinModel;
+import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.injection.InjectedFieldModel;
 import org.qi4j.runtime.injection.InjectedMethodModel;
@@ -33,114 +42,134 @@ public class DescriptorModelVisitor extends ModelVisitor
 {
     private DescriptorVisitor visitor;
 
-    public DescriptorModelVisitor( DescriptorVisitor visitor )
+    public DescriptorModelVisitor(DescriptorVisitor visitor)
     {
         super();
         this.visitor = visitor;
     }
 
-    @Override public void visit( ApplicationModel applicationModel )
+    @Override
+    public void visit(ApplicationModel applicationModel)
     {
-        visitor.visit( applicationModel );
+        visitor.visit(applicationModel);
     }
 
-    @Override public void visit( LayerModel layerModel )
+    @Override
+    public void visit(LayerModel layerModel)
     {
-        visitor.visit( layerModel );
+        visitor.visit(layerModel);
     }
 
-    @Override public void visit( ModuleModel moduleModel )
+    @Override
+    public void visit(ModuleModel moduleModel)
     {
-        visitor.visit( moduleModel );
+        visitor.visit(moduleModel);
     }
 
-    @Override public void visit( TransientModel transientModel)
+    @Override
+    public void visit(TransientModel transientModel)
     {
         visitor.visit(transientModel);
     }
 
-    @Override public void visit( EntityModel entityModel )
+    @Override
+    public void visit(EntityModel entityModel)
     {
-        visitor.visit( entityModel );
+        visitor.visit(entityModel);
     }
 
-    @Override public void visit( ValueModel valueModel )
+    @Override
+    public void visit(ValueModel valueModel)
     {
-        visitor.visit( valueModel );
+        visitor.visit(valueModel);
     }
 
-    @Override public void visit( ServiceModel serviceModel )
+    @Override
+    public void visit(ServiceModel serviceModel)
     {
-        visitor.visit( (ServiceDescriptor) serviceModel );
+        visitor.visit((ServiceDescriptor) serviceModel);
     }
 
-    @Override public void visit( ImportedServiceModel serviceModel )
+    @Override
+    public void visit(ImportedServiceModel serviceModel)
     {
-        visitor.visit( serviceModel );
+        visitor.visit(serviceModel);
     }
 
-    @Override public void visit( ObjectModel objectModel )
+    @Override
+    public void visit(ObjectModel objectModel)
     {
-        visitor.visit( objectModel );
+        visitor.visit(objectModel);
     }
 
-    @Override public void visit( CompositeMethodModel compositeMethodModel )
+    @Override
+    public void visit(CompositeMethodModel compositeMethodModel)
     {
-        visitor.visit( compositeMethodModel );
+        visitor.visit(compositeMethodModel);
     }
 
-    @Override public void visit( MethodConstraintsModel methodConstraintsModel )
+    @Override
+    public void visit(MethodConstraintsModel methodConstraintsModel)
     {
-        visitor.visit( methodConstraintsModel );
+        visitor.visit(methodConstraintsModel);
     }
 
-    @Override public void visit( AbstractConstraintModel constraintModel )
+    @Override
+    public void visit(AbstractConstraintModel constraintModel)
     {
-        visitor.visit( constraintModel );
+        visitor.visit(constraintModel);
     }
 
-    @Override public void visit( MethodConcernsModel methodConcernsModel )
+    @Override
+    public void visit(MethodConcernsModel methodConcernsModel)
     {
-        visitor.visit( methodConcernsModel );
+        visitor.visit(methodConcernsModel);
     }
 
-    @Override public void visit( MethodConcernModel methodConcernModel )
+    @Override
+    public void visit(MethodConcernModel methodConcernModel)
     {
-        visitor.visit( methodConcernModel );
+        visitor.visit(methodConcernModel);
     }
 
-    public void visit( MethodSideEffectsModel methodSideEffectsModel )
+    public void visit(MethodSideEffectsModel methodSideEffectsModel)
     {
-        visitor.visit( methodSideEffectsModel );
+        visitor.visit(methodSideEffectsModel);
     }
 
-    @Override public void visit( MethodSideEffectModel methodSideEffectModel )
+    @Override
+    public void visit(MethodSideEffectModel methodSideEffectModel)
     {
-        visitor.visit( methodSideEffectModel );
+        visitor.visit(methodSideEffectModel);
     }
 
-    @Override public void visit( ConstructorModel constructorModel )
+    @Override
+    public void visit(ConstructorModel constructorModel)
     {
-        visitor.visit( constructorModel );
+        visitor.visit(constructorModel);
     }
 
-    @Override public void visit( InjectedParametersModel injectedParametersModel )
+    @Override
+    public void visit(InjectedParametersModel injectedParametersModel)
     {
-        visitor.visit( injectedParametersModel );
+        visitor.visit(injectedParametersModel);
     }
 
-    @Override public void visit( InjectedFieldModel injectedFieldModel )
+    @Override
+    public void visit(InjectedFieldModel injectedFieldModel)
     {
-        visitor.visit( injectedFieldModel );
+        visitor.visit(injectedFieldModel);
     }
 
-    @Override public void visit( InjectedMethodModel injectedMethodModel )
+    @Override
+    public void visit(InjectedMethodModel injectedMethodModel)
     {
-        visitor.visit( injectedMethodModel );
+        visitor.visit(injectedMethodModel);
     }
 
-    @Override public void visit( MixinModel mixinModel )
+    @Override
+    public void visit(MixinModel mixinModel)
     {
-        visitor.visit( mixinModel );
+        visitor.visit(mixinModel);
     }
 }

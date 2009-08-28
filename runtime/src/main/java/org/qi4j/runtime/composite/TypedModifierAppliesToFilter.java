@@ -14,19 +14,19 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.common.AppliesToFilter;
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
+
+import org.qi4j.api.common.AppliesToFilter;
 
 /**
  * JAVADOC
  */
 final class TypedModifierAppliesToFilter
-    implements AppliesToFilter, Serializable
+        implements AppliesToFilter, Serializable
 {
-    public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
+    public boolean appliesTo(Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass)
     {
-        return method.getDeclaringClass().isAssignableFrom( fragmentClass );
+        return method.getDeclaringClass().isAssignableFrom(fragmentClass);
     }
 }

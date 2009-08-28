@@ -67,7 +67,6 @@ SOFTWARE.
  * you. Objects and arrays can be nested up to 20 levels deep.
  * <p/>
  * This can sometimes be easier than using a JSONObject to build a string.
- *
  */
 public class JSONWriter
 {
@@ -138,7 +137,8 @@ public class JSONWriter
                     this.writer.write(',');
                 }
                 this.writer.write(s);
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
                 throw new JSONException(e);
             }
@@ -193,7 +193,8 @@ public class JSONWriter
         try
         {
             this.writer.write(c);
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             throw new JSONException(e);
         }
@@ -254,7 +255,8 @@ public class JSONWriter
                 this.comma = false;
                 this.mode = 'o';
                 return this;
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
                 throw new JSONException(e);
             }
@@ -383,6 +385,7 @@ public class JSONWriter
 
     /**
      * Append JSON formatted string as-is
+     *
      * @param json
      * @return
      * @throws JSONException

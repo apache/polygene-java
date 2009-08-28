@@ -22,10 +22,9 @@ import org.qi4j.api.query.grammar.AssociationReference;
 
 /**
  * Generic {@link org.qi4j.api.query.grammar.AssociationNullPredicate} implementation.
- *
  */
 abstract class AssociationNullPredicateImpl
-    implements AssociationNullPredicate
+        implements AssociationNullPredicate
 {
 
     /**
@@ -39,11 +38,11 @@ abstract class AssociationNullPredicateImpl
      * @param associationReference association reference; cannot be null
      * @throws IllegalArgumentException - If association reference is null
      */
-    AssociationNullPredicateImpl( final AssociationReference associationReference )
+    AssociationNullPredicateImpl(final AssociationReference associationReference)
     {
-        if( associationReference == null )
+        if (associationReference == null)
         {
-            throw new IllegalArgumentException( "Association reference cannot be null" );
+            throw new IllegalArgumentException("Association reference cannot be null");
         }
         this.associationReference = associationReference;
     }

@@ -17,20 +17,20 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
+import java.util.Collection;
+
+import org.qi4j.api.property.Property;
 import org.qi4j.api.query.grammar.ContainsPredicate;
 import org.qi4j.api.query.grammar.PropertyReference;
-import org.qi4j.api.query.grammar.ValueExpression;
 import org.qi4j.api.query.grammar.SingleValueExpression;
-import org.qi4j.api.property.Property;
+import org.qi4j.api.query.grammar.ValueExpression;
 import org.qi4j.runtime.query.QueryException;
-import java.util.Collection;
 
 /**
  * Default {@link org.qi4j.api.query.grammar.EqualsPredicate} implementation.
- *
  */
 public final class ContainsPredicateImpl<T>
-    implements ContainsPredicate<T>
+        implements ContainsPredicate<T>
 {
 
     /**
@@ -50,8 +50,8 @@ public final class ContainsPredicateImpl<T>
      * @throws IllegalArgumentException - If property reference is null
      *                                  - If value expression is null
      */
-    public ContainsPredicateImpl( final PropertyReference<Collection<T>> propertyReference,
-                                final SingleValueExpression<T> valueExpression )
+    public ContainsPredicateImpl(final PropertyReference<Collection<T>> propertyReference,
+                                 final SingleValueExpression<T> valueExpression)
     {
         this.propertyReference = propertyReference;
         this.valueExpression = valueExpression;
@@ -67,37 +67,37 @@ public final class ContainsPredicateImpl<T>
         return valueExpression;
     }
 
-    public boolean eval( Object target )
+    public boolean eval(Object target)
     {
         final T value = valueExpression.value();
-        final Property<Collection<T>> prop = propertyReference().eval( target );
-        if( prop == null )
+        final Property<Collection<T>> prop = propertyReference().eval(target);
+        if (prop == null)
         {
             return value == null;
         }
         final Collection<T> propValue = prop.get();
-        if( propValue == null )
+        if (propValue == null)
         {
             return value == null;
         }
-        if( !( propValue instanceof Comparable ) )
+        if (!(propValue instanceof Comparable))
         {
-            throw new QueryException( "Cannot use type " + value.getClass().getSimpleName() + " for comparisons" );
+            throw new QueryException("Cannot use type " + value.getClass().getSimpleName() + " for comparisons");
         }
-        return propValue.contains( value );
+        return propValue.contains(value);
     }
 
     @Override
     public String toString()
     {
         return new StringBuilder()
-            .append( "( " )
-            .append( propertyReference() )
-            .append( ".contains( " )
-            .append( valueExpression() )
-            .append( " )^^" )
-            .append( propertyReference().propertyType().getSimpleName() )
-            .append( " )" )
-            .toString();
+                .append("( ")
+                .append(propertyReference())
+                .append(".contains( ")
+                .append(valueExpression())
+                .append(" )^^")
+                .append(propertyReference().propertyType().getSimpleName())
+                .append(" )")
+                .toString();
     }
 }

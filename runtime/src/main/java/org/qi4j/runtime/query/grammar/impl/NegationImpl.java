@@ -22,10 +22,9 @@ import org.qi4j.api.query.grammar.Negation;
 
 /**
  * Default {@link org.qi4j.api.query.grammar.Negation} implementation.
- *
  */
 public final class NegationImpl
-    implements Negation
+        implements Negation
 {
 
     /**
@@ -39,7 +38,7 @@ public final class NegationImpl
      * @param expression boolean expression; canot be null
      * @throws IllegalArgumentException - If expression is null
      */
-    public NegationImpl( final BooleanExpression expression )
+    public NegationImpl(final BooleanExpression expression)
     {
         this.expression = expression;
     }
@@ -55,18 +54,19 @@ public final class NegationImpl
     /**
      * @see org.qi4j.api.query.grammar.BooleanExpression#eval(Object)
      */
-    public boolean eval( final Object target )
+    public boolean eval(final Object target)
     {
-        return !expression().eval( target );
+        return !expression().eval(target);
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return new StringBuilder()
-            .append( "NOT ( " )
-            .append( expression )
-            .append( " )" )
-            .toString();
+                .append("NOT ( ")
+                .append(expression)
+                .append(" )")
+                .toString();
     }
 
 }

@@ -23,10 +23,9 @@ import org.qi4j.api.query.grammar.PropertyReference;
 
 /**
  * Query sorting segment.
- *
  */
 public final class OrderByImpl
-    implements OrderBy
+        implements OrderBy
 {
     /**
      * Order.
@@ -43,9 +42,9 @@ public final class OrderByImpl
      * @param propertyReference property that determines the order; cannot be null
      * @throws IllegalArgumentException - If property is null
      */
-    public OrderByImpl( final PropertyReference<?> propertyReference )
+    public OrderByImpl(final PropertyReference<?> propertyReference)
     {
-        this( propertyReference, null );
+        this(propertyReference, null);
     }
 
     /**
@@ -55,12 +54,12 @@ public final class OrderByImpl
      * @param order             direction
      * @throws IllegalArgumentException - If property is null
      */
-    public OrderByImpl( final PropertyReference<?> propertyReference,
-                        final Order order )
+    public OrderByImpl(final PropertyReference<?> propertyReference,
+                       final Order order)
     {
-        if( propertyReference == null )
+        if (propertyReference == null)
         {
-            throw new IllegalArgumentException( "Ordering property cannot be null" );
+            throw new IllegalArgumentException("Ordering property cannot be null");
         }
         this.propertyReference = propertyReference;
         this.order = order == null ? Order.ASCENDING : order;
@@ -86,13 +85,14 @@ public final class OrderByImpl
         return order;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return new StringBuilder()
-            .append( propertyReference )
-            .append( " " )
-            .append( order )
-            .toString();
+                .append(propertyReference)
+                .append(" ")
+                .append(order)
+                .toString();
     }
 
 }

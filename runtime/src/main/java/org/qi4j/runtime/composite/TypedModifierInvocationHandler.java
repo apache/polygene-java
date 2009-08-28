@@ -11,45 +11,45 @@
 */
 package org.qi4j.runtime.composite;
 
-import org.qi4j.spi.composite.InvalidCompositeException;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import org.qi4j.spi.composite.InvalidCompositeException;
 
 /**
  * JAVADOC
  */
 public final class TypedModifierInvocationHandler
-    extends FragmentInvocationHandler
+        extends FragmentInvocationHandler
 {
-    public TypedModifierInvocationHandler( Object fragment )
+    public TypedModifierInvocationHandler(Object fragment)
     {
-        super( fragment );
+        super(fragment);
     }
 
-    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
     {
         try
         {
             // Remove this, and run InvocationInjectionTest to verify
-            if( !method.isAccessible() )
+            if (!method.isAccessible())
             {
-                method.setAccessible( true );       // TODO: This is a massive Performance Killer. Needs to be taken care of.
+                method.setAccessible(true);       // TODO: This is a massive Performance Killer. Needs to be taken care of.
             }
 
-            return method.invoke( fragment, args );
+            return method.invoke(fragment, args);
         }
-        catch( InvocationTargetException e )
+        catch (InvocationTargetException e)
         {
-            throw cleanStackTrace( e.getTargetException(), proxy, method );
+            throw cleanStackTrace(e.getTargetException(), proxy, method);
         }
-        catch( Throwable e )
+        catch (Throwable e)
         {
-            if( fragment == null )
+            if (fragment == null)
             {
                 throw new InvalidCompositeException();
             }
-            throw cleanStackTrace( e, proxy, method );
+            throw cleanStackTrace(e, proxy, method);
         }
     }
 }

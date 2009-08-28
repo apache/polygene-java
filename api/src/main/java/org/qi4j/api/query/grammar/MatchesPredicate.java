@@ -20,9 +20,8 @@ package org.qi4j.api.query.grammar;
 
 /**
  * Constraints that a {@link org.qi4j.api.property.Property} matches a regular expression.
- *
  */
 public interface MatchesPredicate
-    extends ComparisonPredicate<String>
+        extends ComparisonPredicate<String>
 {
 }

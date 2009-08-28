@@ -14,6 +14,11 @@
 
 package org.qi4j.runtime.entity;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.GenericPropertyInfo;
@@ -28,56 +33,51 @@ import org.qi4j.runtime.util.Annotations;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.PropertyType;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 /**
  * Model for Properties in Entities
  */
 public final class EntityPropertiesModel
-    extends AbstractPropertiesModel<EntityPropertyModel>
+        extends AbstractPropertiesModel<EntityPropertyModel>
 {
-    public EntityPropertiesModel( ConstraintsModel constraints, PropertyDeclarations propertyDeclarations, boolean immutable )
+    public EntityPropertiesModel(ConstraintsModel constraints, PropertyDeclarations propertyDeclarations, boolean immutable)
     {
-        super( constraints, propertyDeclarations, immutable );
+        super(constraints, propertyDeclarations, immutable);
     }
 
     public Set<PropertyType> propertyTypes()
     {
         Set<PropertyType> propertyTypes = new LinkedHashSet<PropertyType>();
-        for( EntityPropertyModel propertyModel : properties() )
+        for (EntityPropertyModel propertyModel : properties())
         {
-            propertyTypes.add( propertyModel.propertyType() );
+            propertyTypes.add(propertyModel.propertyType());
         }
         return propertyTypes;
     }
 
-    public <T> Property<T> newInstance( Method accessor, EntityState entityState)
+    public <T> Property<T> newInstance(Method accessor, EntityState entityState)
     {
-        return mapMethodPropertyModel.get( accessor ).newInstance( entityState);
+        return mapMethodPropertyModel.get(accessor).newInstance(entityState);
     }
 
     protected EntityPropertyModel newPropertyModel(Method method, Class compositeType)
     {
-        Annotation[] annotations = Annotations.getMethodAndTypeAnnotations( method );
-        boolean optional = Annotations.getAnnotationOfType( annotations, Optional.class ) != null;
-        ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericPropertyInfo.getPropertyType( method ), method.getName(), optional );
+        Annotation[] annotations = Annotations.getMethodAndTypeAnnotations(method);
+        boolean optional = Annotations.getAnnotationOfType(annotations, Optional.class) != null;
+        ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor(annotations, GenericPropertyInfo.getPropertyType(method), method.getName(), optional);
         ValueConstraintsInstance valueConstraintsInstance = null;
-        if( valueConstraintsModel.isConstrained() )
+        if (valueConstraintsModel.isConstrained())
         {
             valueConstraintsInstance = valueConstraintsModel.newInstance();
         }
-        MetaInfo metaInfo = propertyDeclarations.getMetaInfo( method );
-        Object defaultValue = propertyDeclarations.getInitialValue( method );
-        boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
-        EntityPropertyModel propertyModel = new EntityPropertyModel( method, compositeType, immutable, valueConstraintsInstance, metaInfo, defaultValue );
+        MetaInfo metaInfo = propertyDeclarations.getMetaInfo(method);
+        Object defaultValue = propertyDeclarations.getInitialValue(method);
+        boolean immutable = this.immutable || metaInfo.get(Immutable.class) != null;
+        EntityPropertyModel propertyModel = new EntityPropertyModel(method, compositeType, immutable, valueConstraintsInstance, metaInfo, defaultValue);
         return propertyModel;
     }
 
-    public EntityPropertiesInstance newInstance( EntityState entityState)
+    public EntityPropertiesInstance newInstance(EntityState entityState)
     {
-        return new EntityPropertiesInstance( this, entityState );
+        return new EntityPropertiesInstance(this, entityState);
     }
 }

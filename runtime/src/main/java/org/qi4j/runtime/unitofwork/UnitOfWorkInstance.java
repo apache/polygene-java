@@ -16,6 +16,14 @@
  */
 package org.qi4j.runtime.unitofwork;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.composite.AmbiguousTypeException;
@@ -42,14 +50,6 @@ import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
 
 public final class UnitOfWorkInstance
 {
@@ -84,88 +84,87 @@ public final class UnitOfWorkInstance
         QueryBuilderFactoryImpl.initialize();
     }
 
-    public UnitOfWorkInstance( Usecase usecase )
+    public UnitOfWorkInstance(Usecase usecase)
     {
         this.open = true;
         stateCache = new HashMap<EntityReference, EntityState>();
         instanceCache = new HashMap<InstanceKey, EntityInstance>();
         storeUnitOfWork = new HashMap<EntityStore, EntityStoreUnitOfWork>();
-        current.get().push( this );
+        current.get().push(this);
         paused = false;
         this.usecase = usecase;
     }
 
     // Nested unit of work
-    public UnitOfWorkInstance( Usecase nestedUsecase, UnitOfWorkStore unitOfWorkStore )
+    public UnitOfWorkInstance(Usecase nestedUsecase, UnitOfWorkStore unitOfWorkStore)
     {
-        this( nestedUsecase );
+        this(nestedUsecase);
         this.unitOfWorkStore = unitOfWorkStore;
     }
 
-    public EntityStoreUnitOfWork getEntityStoreUnitOfWork( EntityStore store, ModuleSPI module )
+    public EntityStoreUnitOfWork getEntityStoreUnitOfWork(EntityStore store, ModuleSPI module)
     {
-        EntityStoreUnitOfWork uow = storeUnitOfWork.get( store );
-        if( uow == null )
+        EntityStoreUnitOfWork uow = storeUnitOfWork.get(store);
+        if (uow == null)
         {
-            uow = store.newUnitOfWork( usecase, metaInfo(), module );
-            storeUnitOfWork.put( store, uow );
+            uow = store.newUnitOfWork(usecase, metaInfo(), module);
+            storeUnitOfWork.put(store, uow);
         }
         return uow;
     }
 
-    public EntityInstance get( EntityReference identity, ModuleUnitOfWork uow, List<EntityModel> potentialModels, List<ModuleInstance> potentialModules, Class mixinType )
-        throws EntityTypeNotFoundException, NoSuchEntityException
+    public EntityInstance get(EntityReference identity, ModuleUnitOfWork uow, List<EntityModel> potentialModels, List<ModuleInstance> potentialModules, Class mixinType)
+            throws EntityTypeNotFoundException, NoSuchEntityException
     {
         checkOpen();
 
-        EntityState entityState = stateCache.get( identity );
+        EntityState entityState = stateCache.get(identity);
         EntityInstance entityInstance;
-        if( entityState == null )
+        if (entityState == null)
         {   // Not yet in cache
 
-            entityState = getParentEntityState( identity );
+            entityState = getParentEntityState(identity);
 
             // Check if this is a root UoW, or if no parent UoW knows about this entity
             EntityModel model = null;
             ModuleInstance module = null;
-            if( unitOfWorkStore == null || entityState == null )
+            if (unitOfWorkStore == null || entityState == null)
             {
                 // Figure out what EntityStore to use
-                for( int i = 0; i < potentialModules.size(); i++ )
+                for (int i = 0; i < potentialModules.size(); i++)
                 {
-                    ModuleInstance potentialModule = potentialModules.get( i );
+                    ModuleInstance potentialModule = potentialModules.get(i);
                     EntityStore store = potentialModule.entities().entityStore();
-                    EntityStoreUnitOfWork storeUow = getEntityStoreUnitOfWork( store, potentialModule );
+                    EntityStoreUnitOfWork storeUow = getEntityStoreUnitOfWork(store, potentialModule);
                     try
                     {
-                        entityState = storeUow.getEntityState( identity );
+                        entityState = storeUow.getEntityState(identity);
                     }
-                    catch( EntityNotFoundException e )
+                    catch (EntityNotFoundException e)
                     {
                         continue;
                     }
-                    
+
                     // Get the selected model
                     model = (EntityModel) entityState.entityDescriptor();
                     module = potentialModule;
                 }
-            }
-            else
+            } else
             {
                 // Nested UnitOfWork and we found state in parent
                 // See if any types match
-                for( int i = 0; i < potentialModules.size(); i++ )
+                for (int i = 0; i < potentialModules.size(); i++)
                 {
-                    ModuleInstance potentialModule = potentialModules.get( i );
-                    EntityModel potentialModel = potentialModels.get( i );
+                    ModuleInstance potentialModule = potentialModules.get(i);
+                    EntityModel potentialModel = potentialModels.get(i);
                     TypeName typeRef = potentialModel.entityType().type();
-                    if( entityState.isOfType( typeRef ) )
+                    if (entityState.isOfType(typeRef))
                     {
                         // Found it!
                         // Check for ambiguity
-                        if( model != null )
+                        if (model != null)
                         {
-                            throw new AmbiguousTypeException( mixinType, model.type(), potentialModel.type() );
+                            throw new AmbiguousTypeException(mixinType, model.type(), potentialModel.type());
                         }
 
                         model = potentialModel;
@@ -175,41 +174,39 @@ public final class UnitOfWorkInstance
             }
 
             // Check if model was found
-            if( model == null )
+            if (model == null)
             {
                 // Check if state was found
-                if( entityState == null )
+                if (entityState == null)
                 {
-                    throw new NoSuchEntityException( identity );
-                }
-                else
+                    throw new NoSuchEntityException(identity);
+                } else
                 {
-                    throw new EntityTypeNotFoundException( mixinType.getName() );
+                    throw new EntityTypeNotFoundException(mixinType.getName());
                 }
             }
 
             // Create instance
-            entityInstance = new EntityInstance( uow, module, model, identity, entityState );
+            entityInstance = new EntityInstance(uow, module, model, identity, entityState);
 
-            stateCache.put( identity, entityState );
-            InstanceKey instanceKey = new InstanceKey( model.entityType().type(), identity );
-            instanceCache.put( instanceKey, entityInstance );
-        }
-        else
+            stateCache.put(identity, entityState);
+            InstanceKey instanceKey = new InstanceKey(model.entityType().type(), identity);
+            instanceCache.put(instanceKey, entityInstance);
+        } else
         {
             // Check if it has been removed
-            if( entityState.status() == EntityStatus.REMOVED )
+            if (entityState.status() == EntityStatus.REMOVED)
             {
-                throw new NoSuchEntityException( identity );
+                throw new NoSuchEntityException(identity);
             }
 
             // Find instance in cache
             InstanceKey instanceKey = new InstanceKey();
-            for( EntityModel potentialModel : potentialModels )
+            for (EntityModel potentialModel : potentialModels)
             {
-                instanceKey.update( potentialModel.entityType().type(), identity );
-                EntityInstance instance = instanceCache.get( instanceKey );
-                if( instance != null )
+                instanceKey.update(potentialModel.entityType().type(), identity);
+                EntityInstance instance = instanceCache.get(instanceKey);
+                if (instance != null)
                 {
                     return instance; // Found it!
                 }
@@ -219,29 +216,29 @@ public final class UnitOfWorkInstance
             // See if any types match
             EntityModel model = null;
             ModuleInstance module = null;
-            for( int i = 0; i < potentialModels.size(); i++ )
+            for (int i = 0; i < potentialModels.size(); i++)
             {
-                EntityModel potentialModel = potentialModels.get( i );
+                EntityModel potentialModel = potentialModels.get(i);
                 TypeName typeRef = potentialModel.entityType().type();
-                if( entityState.isOfType( typeRef ) )
+                if (entityState.isOfType(typeRef))
                 {
                     // Found it!
                     // Check for ambiguity
-                    if( model != null )
+                    if (model != null)
                     {
-                        throw new AmbiguousTypeException( mixinType, model.type(), potentialModel.type() );
+                        throw new AmbiguousTypeException(mixinType, model.type(), potentialModel.type());
                     }
 
                     model = potentialModel;
-                    module = potentialModules.get( i );
+                    module = potentialModules.get(i);
                 }
             }
 
             // Create instance
-            entityInstance = new EntityInstance( uow, module, model, identity, entityState );
+            entityInstance = new EntityInstance(uow, module, model, identity, entityState);
 
-            instanceKey.update( model.entityType().type(), identity );
-            instanceCache.put( instanceKey, entityInstance );
+            instanceKey.update(model.entityType().type(), identity);
+            instanceCache.put(instanceKey, entityInstance);
         }
 
         return entityInstance;
@@ -259,90 +256,87 @@ public final class UnitOfWorkInstance
 
     public void pause()
     {
-        if( !paused )
+        if (!paused)
         {
             paused = true;
             current.get().pop();
-        }
-        else
+        } else
         {
-            throw new UnitOfWorkException( "Unit of work is not active" );
+            throw new UnitOfWorkException("Unit of work is not active");
         }
     }
 
     public void resume()
     {
-        if( paused )
+        if (paused)
         {
             paused = false;
-            current.get().push( this );
-        }
-        else
+            current.get().push(this);
+        } else
         {
-            throw new UnitOfWorkException( "Unit of work has not been paused" );
+            throw new UnitOfWorkException("Unit of work has not been paused");
         }
     }
 
     public void complete()
-        throws UnitOfWorkCompletionException
+            throws UnitOfWorkCompletionException
     {
-        complete( false );
+        complete(false);
     }
 
     public void apply()
-        throws UnitOfWorkCompletionException, ConcurrentEntityModificationException
+            throws UnitOfWorkCompletionException, ConcurrentEntityModificationException
     {
-        complete( true );
+        complete(true);
     }
 
-    private void complete( boolean completeAndContinue )
-        throws UnitOfWorkCompletionException
+    private void complete(boolean completeAndContinue)
+            throws UnitOfWorkCompletionException
     {
         checkOpen();
 
         // Copy list so that it cannot be modified during completion
-        List<UnitOfWorkCallback> currentCallbacks = callbacks == null ? null : new ArrayList<UnitOfWorkCallback>( callbacks );
+        List<UnitOfWorkCallback> currentCallbacks = callbacks == null ? null : new ArrayList<UnitOfWorkCallback>(callbacks);
 
         // Check callbacks
-        notifyBeforeCompletion( currentCallbacks );
+        notifyBeforeCompletion(currentCallbacks);
 
         // Commit state to EntityStores
         List<StateCommitter> committers = applyChanges();
 
         // Commit all changes
-        for( StateCommitter committer : committers )
+        for (StateCommitter committer : committers)
         {
             committer.commit();
         }
 
-        if( completeAndContinue )
+        if (completeAndContinue)
         {
             continueWithState();
-        }
-        else
+        } else
         {
             close();
         }
 
         // Call callbacks
-        notifyAfterCompletion( currentCallbacks, COMPLETED );
+        notifyAfterCompletion(currentCallbacks, COMPLETED);
 
         callbacks = currentCallbacks;
     }
 
     public void discard()
     {
-        if( !isOpen() )
+        if (!isOpen())
         {
             return;
         }
         close();
 
         // Copy list so that it cannot be modified during completion
-        List<UnitOfWorkCallback> currentCallbacks = callbacks == null ? null : new ArrayList<UnitOfWorkCallback>( callbacks );
+        List<UnitOfWorkCallback> currentCallbacks = callbacks == null ? null : new ArrayList<UnitOfWorkCallback>(callbacks);
 
         // Call callbacks
-        notifyAfterCompletion( currentCallbacks, DISCARDED );
+        notifyAfterCompletion(currentCallbacks, DISCARDED);
 
         for (EntityStoreUnitOfWork entityStoreUnitOfWork : storeUnitOfWork.values())
         {
@@ -356,13 +350,13 @@ public final class UnitOfWorkInstance
     {
         checkOpen();
 
-        if( !isPaused() )
+        if (!isPaused())
         {
             current.get().pop();
         }
         open = false;
 
-        for( EntityInstance entityInstance : instanceCache.values() )
+        for (EntityInstance entityInstance : instanceCache.values())
         {
             entityInstance.discard();
         }
@@ -375,36 +369,36 @@ public final class UnitOfWorkInstance
         return open;
     }
 
-    public void addUnitOfWorkCallback( UnitOfWorkCallback callback )
+    public void addUnitOfWorkCallback(UnitOfWorkCallback callback)
     {
-        if( callbacks == null )
+        if (callbacks == null)
         {
             callbacks = new ArrayList<UnitOfWorkCallback>();
         }
 
-        callbacks.add( callback );
+        callbacks.add(callback);
     }
 
-    public void removeUnitOfWorkCallback( UnitOfWorkCallback callback )
+    public void removeUnitOfWorkCallback(UnitOfWorkCallback callback)
     {
-        if( callbacks != null )
+        if (callbacks != null)
         {
-            callbacks.remove( callback );
+            callbacks.remove(callback);
         }
     }
 
-    public void createEntity( EntityInstance instance )
+    public void createEntity(EntityInstance instance)
     {
-        stateCache.put( instance.identity(), instance.entityState() );
-        InstanceKey instanceKey = new InstanceKey( instance.entityModel().entityType().type(), instance.identity() );
-        instanceCache.put( instanceKey, instance );
+        stateCache.put(instance.identity(), instance.entityState());
+        InstanceKey instanceKey = new InstanceKey(instance.entityModel().entityType().type(), instance.identity());
+        instanceCache.put(instanceKey, instance);
     }
 
     private List<StateCommitter> applyChanges()
-        throws UnitOfWorkCompletionException
+            throws UnitOfWorkCompletionException
     {
         List<StateCommitter> committers = new ArrayList<StateCommitter>();
-        for( Map.Entry<EntityStore, EntityStoreUnitOfWork> entry : storeUnitOfWork.entrySet() )
+        for (Map.Entry<EntityStore, EntityStoreUnitOfWork> entry : storeUnitOfWork.entrySet())
         {
             EntityStore entityStore = entry.getKey();
             EntityStoreUnitOfWork entityStoreUnitOfWork = entry.getValue();
@@ -412,38 +406,37 @@ public final class UnitOfWorkInstance
             try
             {
                 StateCommitter committer = entityStoreUnitOfWork.apply();
-                committers.add( committer );
+                committers.add(committer);
             }
-            catch( Exception e )
+            catch (Exception e)
             {
                 // Cancel all previously prepared stores
-                for( StateCommitter committer : committers )
+                for (StateCommitter committer : committers)
                 {
                     committer.cancel();
                 }
 
-                if( e instanceof ConcurrentEntityStateModificationException )
+                if (e instanceof ConcurrentEntityStateModificationException)
                 {
                     // If we cancelled due to concurrent modification, then create the proper exception for it!
                     ConcurrentEntityStateModificationException mee = (ConcurrentEntityStateModificationException) e;
                     Collection<EntityReference> modifiedEntityIdentities = mee.modifiedEntities();
                     Collection<EntityComposite> modifiedEntities = new ArrayList<EntityComposite>();
-                    for( EntityReference modifiedEntityIdentity : modifiedEntityIdentities )
+                    for (EntityReference modifiedEntityIdentity : modifiedEntityIdentities)
                     {
                         Collection<EntityInstance> instances = instanceCache.values();
-                        for( EntityInstance instance : instances )
+                        for (EntityInstance instance : instances)
                         {
-                            if( instance.identity().equals( modifiedEntityIdentity ) )
+                            if (instance.identity().equals(modifiedEntityIdentity))
                             {
-                                modifiedEntities.add( instance.<EntityComposite>proxy() );
+                                modifiedEntities.add(instance.<EntityComposite>proxy());
                             }
                         }
                     }
-                    throw new ConcurrentEntityModificationException( modifiedEntities );
-                }
-                else
+                    throw new ConcurrentEntityModificationException(modifiedEntities);
+                } else
                 {
-                    throw new UnitOfWorkCompletionException( e );
+                    throw new UnitOfWorkCompletionException(e);
                 }
             }
         }
@@ -453,10 +446,10 @@ public final class UnitOfWorkInstance
     private void continueWithState()
     {
         Iterator<EntityInstance> entityInstances = instanceCache.values().iterator();
-        while( entityInstances.hasNext() )
+        while (entityInstances.hasNext())
         {
             EntityInstance entityInstance = entityInstances.next();
-            if( entityInstance.status() == EntityStatus.REMOVED )
+            if (entityInstance.status() == EntityStatus.REMOVED)
             {
                 entityInstances.remove();
             }
@@ -464,27 +457,26 @@ public final class UnitOfWorkInstance
         }
 
         Iterator<EntityState> stateStores = stateCache.values().iterator();
-        while( stateStores.hasNext() )
+        while (stateStores.hasNext())
         {
             EntityState entityState = stateStores.next();
-            if( entityState.status() != EntityStatus.REMOVED )
+            if (entityState.status() != EntityStatus.REMOVED)
             {
                 entityState.hasBeenApplied();
-            }
-            else
+            } else
             {
                 stateStores.remove();
             }
         }
     }
 
-    private void notifyBeforeCompletion( List<UnitOfWorkCallback> callbacks )
-        throws UnitOfWorkCompletionException
+    private void notifyBeforeCompletion(List<UnitOfWorkCallback> callbacks)
+            throws UnitOfWorkCompletionException
     {
         // Notify explicitly registered callbacks
-        if( callbacks != null )
+        if (callbacks != null)
         {
-            for( UnitOfWorkCallback callback : callbacks )
+            for (UnitOfWorkCallback callback : callbacks)
             {
                 callback.beforeCompletion();
             }
@@ -495,38 +487,38 @@ public final class UnitOfWorkInstance
         {
             new ForEachEntity()
             {
-                protected void execute( EntityInstance instance )
-                    throws Exception
+                protected void execute(EntityInstance instance)
+                        throws Exception
                 {
-                    if( instance.<Object>proxy() instanceof UnitOfWorkCallback )
+                    if (instance.<Object>proxy() instanceof UnitOfWorkCallback)
                     {
-                        UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast( instance.proxy() );
+                        UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast(instance.proxy());
                         callback.beforeCompletion();
                     }
                 }
             }.execute();
         }
-        catch( UnitOfWorkCompletionException e )
+        catch (UnitOfWorkCompletionException e)
         {
             throw e;
         }
-        catch( Exception e )
+        catch (Exception e)
         {
-            throw new UnitOfWorkCompletionException( e );
+            throw new UnitOfWorkCompletionException(e);
         }
     }
 
-    private void notifyAfterCompletion( List<UnitOfWorkCallback> callbacks, final UnitOfWorkCallback.UnitOfWorkStatus status )
+    private void notifyAfterCompletion(List<UnitOfWorkCallback> callbacks, final UnitOfWorkCallback.UnitOfWorkStatus status)
     {
-        if( callbacks != null )
+        if (callbacks != null)
         {
-            for( UnitOfWorkCallback callback : callbacks )
+            for (UnitOfWorkCallback callback : callbacks)
             {
                 try
                 {
-                    callback.afterCompletion( status );
+                    callback.afterCompletion(status);
                 }
-                catch( Exception e )
+                catch (Exception e)
                 {
                     // Ignore
                 }
@@ -538,36 +530,35 @@ public final class UnitOfWorkInstance
         {
             new ForEachEntity()
             {
-                protected void execute( EntityInstance instance )
-                    throws Exception
+                protected void execute(EntityInstance instance)
+                        throws Exception
                 {
-                    if( instance.<Object>proxy() instanceof UnitOfWorkCallback )
+                    if (instance.<Object>proxy() instanceof UnitOfWorkCallback)
                     {
-                        UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast( instance.proxy() );
-                        callback.afterCompletion( status );
+                        UnitOfWorkCallback callback = UnitOfWorkCallback.class.cast(instance.proxy());
+                        callback.afterCompletion(status);
                     }
                 }
             }.execute();
         }
-        catch( Exception e )
+        catch (Exception e)
         {
             // Ignore
         }
 
     }
 
-    EntityState getCachedState( EntityReference entityId )
+    EntityState getCachedState(EntityReference entityId)
     {
-        return stateCache.get( entityId );
+        return stateCache.get(entityId);
     }
 
-    EntityState getParentEntityState( EntityReference identity )
+    EntityState getParentEntityState(EntityReference identity)
     {
-        if( unitOfWorkStore != null )
+        if (unitOfWorkStore != null)
         {
-            return unitOfWorkStore.getParentEntityState( identity );
-        }
-        else
+            return unitOfWorkStore.getParentEntityState(identity);
+        } else
         {
             return null;
         }
@@ -575,9 +566,9 @@ public final class UnitOfWorkInstance
 
     public void checkOpen()
     {
-        if( !isOpen() )
+        if (!isOpen())
         {
-            throw new UnitOfWorkException( "Unit of work has been closed" );
+            throw new UnitOfWorkException("Unit of work has been closed");
         }
     }
 
@@ -587,28 +578,28 @@ public final class UnitOfWorkInstance
     }
 
 
-
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return "UnitOfWork " + hashCode() + "(" + usecase + "): entities:" + stateCache.size();
     }
 
-    public void remove( EntityReference entityReference )
+    public void remove(EntityReference entityReference)
     {
-        stateCache.remove( entityReference.identity() );
+        stateCache.remove(entityReference.identity());
     }
 
     abstract class ForEachEntity
     {
         public void execute() throws Exception
         {
-            for( EntityInstance entityInstance : instanceCache.values() )
+            for (EntityInstance entityInstance : instanceCache.values())
             {
-                execute( entityInstance );
+                execute(entityInstance);
             }
         }
 
-        protected abstract void execute( EntityInstance instance ) throws Exception;
+        protected abstract void execute(EntityInstance instance) throws Exception;
     }
 
     private static class InstanceKey
@@ -620,7 +611,7 @@ public final class UnitOfWorkInstance
         {
         }
 
-        private InstanceKey( TypeName typeName, EntityReference entityReference )
+        private InstanceKey(TypeName typeName, EntityReference entityReference)
         {
             this.typeName = typeName;
             this.entityReference = entityReference;
@@ -636,31 +627,31 @@ public final class UnitOfWorkInstance
             return entityReference;
         }
 
-        public void update( TypeName typeName, EntityReference entityReference )
+        public void update(TypeName typeName, EntityReference entityReference)
         {
             this.typeName = typeName;
             this.entityReference = entityReference;
         }
 
         @Override
-        public boolean equals( Object o )
+        public boolean equals(Object o)
         {
-            if( this == o )
+            if (this == o)
             {
                 return true;
             }
-            if( o == null || getClass() != o.getClass() )
+            if (o == null || getClass() != o.getClass())
             {
                 return false;
             }
 
             InstanceKey that = (InstanceKey) o;
 
-            if( !entityReference.equals( that.entityReference ) )
+            if (!entityReference.equals(that.entityReference))
             {
                 return false;
             }
-            if( !typeName.equals( that.typeName ) )
+            if (!typeName.equals(that.typeName))
             {
                 return false;
             }

@@ -14,6 +14,13 @@
 
 package org.qi4j.runtime.entity.association;
 
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
@@ -32,18 +39,11 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * JAVADOC
  */
 public final class EntityManyAssociationsModel
-    implements Serializable
+        implements Serializable
 {
     private final Set<Method> methods = new MethodSet();
     private final Set<ManyAssociationModel> manyAssociationModels = new LinkedHashSet<ManyAssociationModel>();
@@ -52,46 +52,46 @@ public final class EntityManyAssociationsModel
     private final ConstraintsModel constraints;
     private final ManyAssociationDeclarations manyAssociationDeclarations;
 
-    public EntityManyAssociationsModel( ConstraintsModel constraints, ManyAssociationDeclarations manyAssociationDeclarations )
+    public EntityManyAssociationsModel(ConstraintsModel constraints, ManyAssociationDeclarations manyAssociationDeclarations)
     {
         this.constraints = constraints;
         this.manyAssociationDeclarations = manyAssociationDeclarations;
     }
 
-    public void addManyAssociationFor( Method method )
+    public void addManyAssociationFor(Method method)
     {
-        if( !methods.contains( method ) )
+        if (!methods.contains(method))
         {
-            if( ManyAssociation.class.isAssignableFrom( method.getReturnType() ) )
+            if (ManyAssociation.class.isAssignableFrom(method.getReturnType()))
             {
-                Annotation[] annotations = Annotations.getMethodAndTypeAnnotations( method );
-                boolean optional = Annotations.getAnnotationOfType( annotations, Optional.class ) != null;
+                Annotation[] annotations = Annotations.getMethodAndTypeAnnotations(method);
+                boolean optional = Annotations.getAnnotationOfType(annotations, Optional.class) != null;
 
                 // Constraints for entities in ManyAssociation
-                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor( annotations, GenericAssociationInfo.getAssociationType( method ), method.getName(), optional );
+                ValueConstraintsModel valueConstraintsModel = constraints.constraintsFor(annotations, GenericAssociationInfo.getAssociationType(method), method.getName(), optional);
                 ValueConstraintsInstance valueConstraintsInstance = null;
-                if( valueConstraintsModel.isConstrained() )
+                if (valueConstraintsModel.isConstrained())
                 {
                     valueConstraintsInstance = valueConstraintsModel.newInstance();
                 }
 
                 // Constraints for the ManyAssociation itself
-                valueConstraintsModel = constraints.constraintsFor( annotations, ManyAssociation.class, method.getName(), optional );
+                valueConstraintsModel = constraints.constraintsFor(annotations, ManyAssociation.class, method.getName(), optional);
                 ValueConstraintsInstance manyValueConstraintsInstance = null;
-                if( valueConstraintsModel.isConstrained() )
+                if (valueConstraintsModel.isConstrained())
                 {
                     manyValueConstraintsInstance = valueConstraintsModel.newInstance();
                 }
-                MetaInfo metaInfo = manyAssociationDeclarations.getMetaInfo( method );
-                ManyAssociationModel associationModel = new ManyAssociationModel( method, valueConstraintsInstance, manyValueConstraintsInstance, metaInfo );
-                if( !accessors.containsKey( associationModel.qualifiedName() ) )
+                MetaInfo metaInfo = manyAssociationDeclarations.getMetaInfo(method);
+                ManyAssociationModel associationModel = new ManyAssociationModel(method, valueConstraintsInstance, manyValueConstraintsInstance, metaInfo);
+                if (!accessors.containsKey(associationModel.qualifiedName()))
                 {
-                    manyAssociationModels.add( associationModel );
-                    mapMethodAssociationModel.put( method, associationModel );
-                    accessors.put( associationModel.qualifiedName(), associationModel.accessor() );
+                    manyAssociationModels.add(associationModel);
+                    mapMethodAssociationModel.put(method, associationModel);
+                    accessors.put(associationModel.qualifiedName(), associationModel.accessor());
                 }
             }
-            methods.add( method );
+            methods.add(method);
         }
     }
 
@@ -100,16 +100,16 @@ public final class EntityManyAssociationsModel
         return (Set<T>) manyAssociationModels;
     }
 
-    public <T> ManyAssociation<T> newInstance( Method accessor, EntityState entityState, ModuleUnitOfWork uow )
+    public <T> ManyAssociation<T> newInstance(Method accessor, EntityState entityState, ModuleUnitOfWork uow)
     {
-        return mapMethodAssociationModel.get( accessor ).newInstance( uow, entityState );
+        return mapMethodAssociationModel.get(accessor).newInstance(uow, entityState);
     }
 
-    public ManyAssociationDescriptor getManyAssociationByName( String name )
+    public ManyAssociationDescriptor getManyAssociationByName(String name)
     {
-        for( ManyAssociationModel associationModel : manyAssociationModels )
+        for (ManyAssociationModel associationModel : manyAssociationModels)
         {
-            if( associationModel.qualifiedName().name().equals( name ) )
+            if (associationModel.qualifiedName().name().equals(name))
             {
                 return associationModel;
             }
@@ -121,24 +121,24 @@ public final class EntityManyAssociationsModel
     public Set<ManyAssociationType> manyAssociationTypes()
     {
         Set<ManyAssociationType> associationTypes = new LinkedHashSet<ManyAssociationType>();
-        for( ManyAssociationModel associationModel : manyAssociationModels )
+        for (ManyAssociationModel associationModel : manyAssociationModels)
         {
-            associationTypes.add( associationModel.manyAssociationType() );
+            associationTypes.add(associationModel.manyAssociationType());
         }
         return associationTypes;
     }
 
-    public void checkConstraints( EntityManyAssociationsInstance entityManyAssociationsInstance )
+    public void checkConstraints(EntityManyAssociationsInstance entityManyAssociationsInstance)
     {
-        for( ManyAssociationModel manyAssociationModel : manyAssociationModels )
+        for (ManyAssociationModel manyAssociationModel : manyAssociationModels)
         {
-            ManyAssociation manyAssociation = entityManyAssociationsInstance.manyAssociationFor( manyAssociationModel.accessor() );
-            manyAssociationModel.checkAssociationConstraints( manyAssociation );
+            ManyAssociation manyAssociation = entityManyAssociationsInstance.manyAssociationFor(manyAssociationModel.accessor());
+            manyAssociationModel.checkAssociationConstraints(manyAssociation);
         }
     }
 
-    public EntityManyAssociationsInstance newInstance( EntityState entityState, ModuleUnitOfWork uow )
+    public EntityManyAssociationsInstance newInstance(EntityState entityState, ModuleUnitOfWork uow)
     {
-        return new EntityManyAssociationsInstance( this, entityState, uow );
+        return new EntityManyAssociationsInstance(this, entityState, uow);
     }
 }

@@ -19,14 +19,14 @@
 package org.qi4j.api.property;
 
 import java.lang.reflect.Method;
+
 import org.qi4j.api.common.QualifiedName;
 
 /**
  * {@code ComputedPropertyInstance} is the base implementation of {@link Property}.
- *
  */
 public abstract class ComputedPropertyInstance<T>
-    extends AbstractPropertyInstance<T>
+        extends AbstractPropertyInstance<T>
 {
     /**
      * Construct an instance of {@code ComputedPropertyInstance}.
@@ -34,15 +34,15 @@ public abstract class ComputedPropertyInstance<T>
      * @param aPropertyInfo The property info. This argument must not be {@code null}.
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} argument is {@code null}.
      */
-    protected ComputedPropertyInstance( PropertyInfo aPropertyInfo )
-        throws IllegalArgumentException
+    protected ComputedPropertyInstance(PropertyInfo aPropertyInfo)
+            throws IllegalArgumentException
     {
-        super( aPropertyInfo );
+        super(aPropertyInfo);
     }
 
-    protected ComputedPropertyInstance( Method accessor )
+    protected ComputedPropertyInstance(Method accessor)
     {
-        super( new GenericPropertyInfo( accessor ) );
+        super(new GenericPropertyInfo(accessor));
     }
 
     /**
@@ -58,10 +58,10 @@ public abstract class ComputedPropertyInstance<T>
      * @param anIgnoredValue This value is ignored.
      * @throws IllegalArgumentException Thrown by default.
      */
-    public void set( T anIgnoredValue )
-        throws IllegalArgumentException, IllegalStateException
+    public void set(T anIgnoredValue)
+            throws IllegalArgumentException, IllegalStateException
     {
         QualifiedName qualifiedName = qualifiedName();
-        throw new IllegalStateException( "Property [" + qualifiedName + "] is read-only" );
+        throw new IllegalStateException("Property [" + qualifiedName + "] is read-only");
     }
 }

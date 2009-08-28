@@ -14,12 +14,6 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.util.SerializationUtil;
-import org.qi4j.runtime.structure.Binder;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.concern.MethodConcernsDescriptor;
-
 import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
@@ -30,38 +24,44 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.qi4j.api.util.SerializationUtil;
+import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.concern.MethodConcernsDescriptor;
+
 /**
  * JAVADOC
  */
 public final class MethodConcernsModel
-    implements Binder, MethodConcernsDescriptor, Serializable
+        implements Binder, MethodConcernsDescriptor, Serializable
 {
     private List<MethodConcernModel> concernsForMethod;
     private Method method;
 
-    private void writeObject( ObjectOutputStream out )
-        throws IOException
+    private void writeObject(ObjectOutputStream out)
+            throws IOException
     {
         try
         {
-            SerializationUtil.writeMethod( out, method );
-            out.writeObject( concernsForMethod );
+            SerializationUtil.writeMethod(out, method);
+            out.writeObject(concernsForMethod);
         }
-        catch( NotSerializableException e )
+        catch (NotSerializableException e)
         {
-            System.err.println( "NotSerializable in " + getClass() );
+            System.err.println("NotSerializable in " + getClass());
             throw e;
         }
     }
 
-    private void readObject( ObjectInputStream in )
-        throws IOException, ClassNotFoundException
+    private void readObject(ObjectInputStream in)
+            throws IOException, ClassNotFoundException
     {
-        method = SerializationUtil.readMethod( in );
+        method = SerializationUtil.readMethod(in);
         concernsForMethod = (List<MethodConcernModel>) in.readObject();
     }
 
-    public MethodConcernsModel( Method method, List<MethodConcernModel> concernsForMethod )
+    public MethodConcernsModel(Method method, List<MethodConcernModel> concernsForMethod)
     {
         this.method = method;
         this.concernsForMethod = concernsForMethod;
@@ -78,58 +78,57 @@ public final class MethodConcernsModel
     }
 
     // Binding
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind(Resolution resolution) throws BindingException
     {
-        for( MethodConcernModel concernModel : concernsForMethod )
+        for (MethodConcernModel concernModel : concernsForMethod)
         {
-            concernModel.bind( resolution );
+            concernModel.bind(resolution);
         }
     }
 
     // Context
-    public MethodConcernsInstance newInstance( ModuleInstance moduleInstance, FragmentInvocationHandler mixinInvocationHandler )
+    public MethodConcernsInstance newInstance(ModuleInstance moduleInstance, FragmentInvocationHandler mixinInvocationHandler)
     {
         ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
         Object nextConcern = mixinInvocationHandler;
-        for( int i = concernsForMethod.size() - 1; i >= 0; i-- )
+        for (int i = concernsForMethod.size() - 1; i >= 0; i--)
         {
-            MethodConcernModel concernModel = concernsForMethod.get( i );
+            MethodConcernModel concernModel = concernsForMethod.get(i);
 
-            nextConcern = concernModel.newInstance( moduleInstance, nextConcern, proxyHandler );
+            nextConcern = concernModel.newInstance(moduleInstance, nextConcern, proxyHandler);
         }
 
         InvocationHandler firstConcern;
-        if( nextConcern instanceof InvocationHandler )
+        if (nextConcern instanceof InvocationHandler)
         {
             firstConcern = (InvocationHandler) nextConcern;
-        }
-        else
+        } else
         {
-            firstConcern = new TypedModifierInvocationHandler( nextConcern );
+            firstConcern = new TypedModifierInvocationHandler(nextConcern);
         }
 
-        return new MethodConcernsInstance( firstConcern, mixinInvocationHandler, proxyHandler );
+        return new MethodConcernsInstance(firstConcern, mixinInvocationHandler, proxyHandler);
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        modelVisitor.visit( this );
-        for( MethodConcernModel methodConcernModel : concernsForMethod )
+        modelVisitor.visit(this);
+        for (MethodConcernModel methodConcernModel : concernsForMethod)
         {
-            methodConcernModel.visitModel( modelVisitor );
+            methodConcernModel.visitModel(modelVisitor);
         }
     }
 
-    public MethodConcernsModel combineWith( MethodConcernsModel mixinMethodConcernsModel )
+    public MethodConcernsModel combineWith(MethodConcernsModel mixinMethodConcernsModel)
     {
-        if( mixinMethodConcernsModel == null )
+        if (mixinMethodConcernsModel == null)
         {
             return this;
         }
-        List<MethodConcernModel> combinedModels = new ArrayList<MethodConcernModel>( concernsForMethod.size() + mixinMethodConcernsModel.concernsForMethod.size() );
-        combinedModels.addAll( concernsForMethod );
+        List<MethodConcernModel> combinedModels = new ArrayList<MethodConcernModel>(concernsForMethod.size() + mixinMethodConcernsModel.concernsForMethod.size());
+        combinedModels.addAll(concernsForMethod);
         combinedModels.removeAll(mixinMethodConcernsModel.concernsForMethod); // Remove duplicates
-        combinedModels.addAll( mixinMethodConcernsModel.concernsForMethod );
-        return new MethodConcernsModel( method, combinedModels );
+        combinedModels.addAll(mixinMethodConcernsModel.concernsForMethod);
+        return new MethodConcernsModel(method, combinedModels);
     }
 }

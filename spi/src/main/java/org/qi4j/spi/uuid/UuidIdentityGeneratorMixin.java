@@ -16,13 +16,13 @@
  */
 package org.qi4j.spi.uuid;
 
+import java.util.UUID;
+
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
 
-import java.util.UUID;
-
 public class UuidIdentityGeneratorMixin
-    implements IdentityGenerator
+        implements IdentityGenerator
 {
     protected String uuid;
     private int count;
@@ -32,8 +32,8 @@ public class UuidIdentityGeneratorMixin
         uuid = UUID.randomUUID().toString() + "-";
     }
 
-    public String generate( Class<? extends Identity> compositeType )
+    public String generate(Class<? extends Identity> compositeType)
     {
-        return uuid + Integer.toHexString( count++ );
+        return uuid + Integer.toHexString(count++);
     }
 }

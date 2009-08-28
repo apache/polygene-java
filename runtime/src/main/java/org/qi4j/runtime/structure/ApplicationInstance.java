@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.structure;
 
+import java.util.List;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Layer;
@@ -23,20 +25,18 @@ import org.qi4j.spi.service.Activator;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.DescriptorVisitor;
 
-import java.util.List;
-
 /**
  * JAVADOC
  */
 public class ApplicationInstance
-    implements Application, ApplicationSPI
+        implements Application, ApplicationSPI
 {
     private final ApplicationModel model;
     private final Qi4jSPI runtime;
     private final List<LayerInstance> layerInstances;
     private final Activator layerActivator;
 
-    public ApplicationInstance( ApplicationModel model, Qi4jSPI runtime, List<LayerInstance> layerInstances)
+    public ApplicationInstance(ApplicationModel model, Qi4jSPI runtime, List<LayerInstance> layerInstances)
     {
         this.model = model;
         this.runtime = runtime;
@@ -74,11 +74,11 @@ public class ApplicationInstance
         return layerInstances;
     }
 
-    public Layer findLayer( String layerName )
+    public Layer findLayer(String layerName)
     {
-        for( LayerInstance layerInstance : layerInstances )
+        for (LayerInstance layerInstance : layerInstances)
         {
-            if( layerInstance.model().name().equals( layerName ) )
+            if (layerInstance.model().name().equals(layerName))
             {
                 return layerInstance;
             }
@@ -87,13 +87,13 @@ public class ApplicationInstance
         return null;
     }
 
-    public Module findModule( String layerName, String moduleName )
+    public Module findModule(String layerName, String moduleName)
     {
-        for( LayerInstance layerInstance : layerInstances )
+        for (LayerInstance layerInstance : layerInstances)
         {
-            if( layerInstance.model().name().equals( layerName ) )
+            if (layerInstance.model().name().equals(layerName))
             {
-                return layerInstance.findModule( moduleName );
+                return layerInstance.findModule(moduleName);
             }
         }
 
@@ -101,20 +101,20 @@ public class ApplicationInstance
     }
 
     public void activate()
-        throws Exception
+            throws Exception
     {
-        layerActivator.activate( layerInstances );
+        layerActivator.activate(layerInstances);
     }
 
     public void passivate()
-        throws Exception
+            throws Exception
     {
         layerActivator.passivate();
     }
 
-    public void visitDescriptor( DescriptorVisitor visitor )
+    public void visitDescriptor(DescriptorVisitor visitor)
     {
-        model.visitDescriptor( visitor );
+        model.visitDescriptor(visitor);
     }
 
     public void visitInstance(InstanceVisitor visitor)

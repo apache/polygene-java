@@ -14,102 +14,92 @@
 
 package org.qi4j.spi.value;
 
+import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.util.json.JSONException;
 import org.qi4j.spi.util.json.JSONWriter;
 
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 /**
  * Number type
  */
 public final class NumberType
-    extends ValueType
+        extends ValueType
 {
-    public static boolean isNumber( Type type )
+    public static boolean isNumber(Type type)
     {
-        if( type instanceof Class )
+        if (type instanceof Class)
         {
             Class typeClass = (Class) type;
-            return ( Number.class.isAssignableFrom( typeClass ) );
+            return (Number.class.isAssignableFrom(typeClass));
         }
         return false;
     }
 
-    public NumberType( TypeName type )
+    public NumberType(TypeName type)
     {
-        super( type );
+        super(type);
     }
 
-    public void toJSON( Object value, JSONWriter json ) throws JSONException
+    public void toJSON(Object value, JSONWriter json) throws JSONException
     {
         Number number = (Number) value;
-        if( type.isClass( Integer.class ) )
+        if (type.isClass(Integer.class))
         {
             json.value(number.longValue());
-        }
-        else if( type.isClass( Long.class ) )
+        } else if (type.isClass(Long.class))
         {
             json.value(number.longValue());
-        }
-        else if( type.isClass( Double.class ) )
+        } else if (type.isClass(Double.class))
         {
             json.value(number.doubleValue());
-        }
-        else if( type.isClass( Float.class ) )
+        } else if (type.isClass(Float.class))
         {
             json.value(number.doubleValue());
-        }
-        else if( type.isClass( Short.class ) )
+        } else if (type.isClass(Short.class))
         {
             json.value(number.longValue());
-        }
-        else if( type.isClass( BigDecimal.class ) )
+        } else if (type.isClass(BigDecimal.class))
         {
-            json.value(((BigDecimal)number).toPlainString());
-        }
-        else if( type.isClass( BigInteger.class ) )
+            json.value(((BigDecimal) number).toPlainString());
+        } else if (type.isClass(BigInteger.class))
         {
             json.value(number.toString());
         }
     }
 
-    public Object fromJSON( Object json, Module module )
+    public Object fromJSON(Object json, Module module)
     {
         if (type.isClass(BigDecimal.class))
         {
-            return new BigDecimal(((String)json));
+            return new BigDecimal(((String) json));
         } else if (type.isClass(BigInteger.class))
         {
-            return new BigInteger((String)json);
+            return new BigInteger((String) json);
         }
 
         Number number = (Number) json;
 
-        if( type.isClass( Integer.class ) )
+        if (type.isClass(Integer.class))
         {
             return number.intValue();
-        }
-        else if( type.isClass( Long.class ) )
+        } else if (type.isClass(Long.class))
         {
             return number.longValue();
-        }
-        else if( type.isClass( Double.class ) )
+        } else if (type.isClass(Double.class))
         {
             return number.doubleValue();
-        }
-        else if( type.isClass( Float.class ) )
+        } else if (type.isClass(Float.class))
         {
             return number.floatValue();
-        }
-        else if( type.isClass( Short.class ) )
+        } else if (type.isClass(Short.class))
         {
             return number.shortValue();
         }
 
-        throw new IllegalStateException( "Unknown number type:" + type );
+        throw new IllegalStateException("Unknown number type:" + type);
     }
 }

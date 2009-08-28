@@ -75,7 +75,6 @@ import java.util.Map;
  * <li>Numbers may have the <code>0-</code> <small>(octal)</small> or
  * <code>0x-</code> <small>(hex)</small> prefix.</li>
  * </ul>
- *
  */
 public class JSONArray
 {
@@ -327,7 +326,8 @@ public class JSONArray
             return o instanceof Number ?
                     ((Number) o).doubleValue() :
                     Double.valueOf((String) o).doubleValue();
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             throw new JSONException("JSONArray[" + index +
                     "] is not a number.");
@@ -512,7 +512,8 @@ public class JSONArray
         try
         {
             return getBoolean(index);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             return defaultValue;
         }
@@ -547,7 +548,8 @@ public class JSONArray
         try
         {
             return getDouble(index);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             return defaultValue;
         }
@@ -582,7 +584,8 @@ public class JSONArray
         try
         {
             return getInt(index);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             return defaultValue;
         }
@@ -646,7 +649,8 @@ public class JSONArray
         try
         {
             return getLong(index);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             return defaultValue;
         }
@@ -974,7 +978,8 @@ public class JSONArray
         try
         {
             return '[' + join(",") + ']';
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             return null;
         }
@@ -1090,7 +1095,8 @@ public class JSONArray
             }
             writer.write(']');
             return writer;
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             throw new JSONException(e);
         }

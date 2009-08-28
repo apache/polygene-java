@@ -18,33 +18,33 @@ import net.sf.cglib.proxy.Enhancer;
 
 /**
  * JAVADOC
-*/
+ */
 class BridgeClassLoader extends ClassLoader
 {
     private static final String CGLIB_PACKAGE_NAME = "net.sf.cglib";
     private static final ClassLoader CGLIB_CLASS_LOADER = Enhancer.class.getClassLoader();
 
-    BridgeClassLoader( ClassLoader mixinClassLoader )
+    BridgeClassLoader(ClassLoader mixinClassLoader)
     {
-        super( mixinClassLoader );
+        super(mixinClassLoader);
     }
 
     @Override
-    protected Class<?> loadClass( String aClassName, boolean isResolve )
-        throws ClassNotFoundException
+    protected Class<?> loadClass(String aClassName, boolean isResolve)
+            throws ClassNotFoundException
     {
-        if( aClassName.startsWith( CGLIB_PACKAGE_NAME ) )
+        if (aClassName.startsWith(CGLIB_PACKAGE_NAME))
         {
-            Class<?> clazz = CGLIB_CLASS_LOADER.loadClass( aClassName );
+            Class<?> clazz = CGLIB_CLASS_LOADER.loadClass(aClassName);
 
-            if( isResolve )
+            if (isResolve)
             {
-                resolveClass( clazz );
+                resolveClass(clazz);
             }
 
             return clazz;
         }
 
-        return super.loadClass( aClassName, isResolve );
+        return super.loadClass(aClassName, isResolve);
     }
 }

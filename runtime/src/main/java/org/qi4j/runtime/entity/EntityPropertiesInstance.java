@@ -14,43 +14,42 @@
 
 package org.qi4j.runtime.entity;
 
-import org.qi4j.api.property.Property;
-import org.qi4j.runtime.property.PropertiesInstance;
-import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.spi.entity.EntityState;
-
 import java.lang.reflect.Method;
 import java.util.HashMap;
+
+import org.qi4j.api.property.Property;
+import org.qi4j.runtime.property.PropertiesInstance;
+import org.qi4j.spi.entity.EntityState;
 
 /**
  * JAVADOC
  */
 public class EntityPropertiesInstance
-    extends PropertiesInstance
+        extends PropertiesInstance
 {
     private EntityPropertiesModel model;
     private EntityState entityState;
 
-    public EntityPropertiesInstance( EntityPropertiesModel model, EntityState entityState)
+    public EntityPropertiesInstance(EntityPropertiesModel model, EntityState entityState)
     {
-        super( null );
+        super(null);
         this.model = model;
         this.entityState = entityState;
     }
 
-    public <T> Property<T> getProperty( Method accessor )
+    public <T> Property<T> getProperty(Method accessor)
     {
-        if( properties == null )
+        if (properties == null)
         {
             properties = new HashMap<Method, Property<?>>();
         }
 
-        Property<T> property = (Property<T>) properties.get( accessor );
+        Property<T> property = (Property<T>) properties.get(accessor);
 
-        if( property == null )
+        if (property == null)
         {
-            property = model.newInstance( accessor, entityState);
-            properties.put( accessor, property );
+            property = model.newInstance(accessor, entityState);
+            properties.put(accessor, property);
         }
 
         return property;
@@ -58,6 +57,6 @@ public class EntityPropertiesInstance
 
     public void checkConstraints()
     {
-        model.checkConstraints( this );
+        model.checkConstraints(this);
     }
 }

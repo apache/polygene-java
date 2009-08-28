@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.object;
 
+import java.io.Serializable;
+
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -31,13 +33,11 @@ import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.object.ObjectDescriptor;
 
-import java.io.Serializable;
-
 /**
  * JAVADOC
  */
 public final class ObjectModel
-    implements Binder, ObjectDescriptor, Serializable
+        implements Binder, ObjectDescriptor, Serializable
 {
     private final Class<?> objectType;
     private final Visibility visibility;
@@ -46,17 +46,17 @@ public final class ObjectModel
     private final InjectedFieldsModel injectedFieldsModel;
     private final InjectedMethodsModel injectedMethodsModel;
 
-    public ObjectModel( Class<?> objectType,
-                        Visibility visibility,
-                        MetaInfo metaInfo )
+    public ObjectModel(Class<?> objectType,
+                       Visibility visibility,
+                       MetaInfo metaInfo)
     {
         this.objectType = objectType;
         this.visibility = visibility;
         this.metaInfo = metaInfo;
 
-        constructorsModel = new ConstructorsModel( objectType );
-        injectedFieldsModel = new InjectedFieldsModel( objectType );
-        injectedMethodsModel = new InjectedMethodsModel( objectType );
+        constructorsModel = new ConstructorsModel(objectType);
+        injectedFieldsModel = new InjectedFieldsModel(objectType);
+        injectedMethodsModel = new InjectedMethodsModel(objectType);
     }
 
     public Class<?> type()
@@ -74,54 +74,55 @@ public final class ObjectModel
         return metaInfo;
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        modelVisitor.visit( this );
+        modelVisitor.visit(this);
 
-        constructorsModel.visitModel( modelVisitor );
-        injectedFieldsModel.visitModel( modelVisitor );
-        injectedMethodsModel.visitModel( modelVisitor );
+        constructorsModel.visitModel(modelVisitor);
+        injectedFieldsModel.visitModel(modelVisitor);
+        injectedMethodsModel.visitModel(modelVisitor);
     }
 
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind(Resolution resolution) throws BindingException
     {
-        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
+        resolution = new Resolution(resolution.application(), resolution.layer(), resolution.module(), this, null, null);
 
-        constructorsModel.bind( resolution );
-        injectedFieldsModel.bind( resolution );
-        injectedMethodsModel.bind( resolution );
+        constructorsModel.bind(resolution);
+        injectedFieldsModel.bind(resolution);
+        injectedMethodsModel.bind(resolution);
     }
 
-    public Object newInstance( ModuleInstance moduleInstance, UsesInstance uses )
+    public Object newInstance(ModuleInstance moduleInstance, UsesInstance uses)
     {
-        InjectionContext injectionContext = new InjectionContext( moduleInstance, uses );
-        Object instance = constructorsModel.newInstance( injectionContext );
-        injectedFieldsModel.inject( injectionContext, instance );
-        injectedMethodsModel.inject( injectionContext, instance );
+        InjectionContext injectionContext = new InjectionContext(moduleInstance, uses);
+        Object instance = constructorsModel.newInstance(injectionContext);
+        injectedFieldsModel.inject(injectionContext, instance);
+        injectedMethodsModel.inject(injectionContext, instance);
 
-        if( instance instanceof Initializable )
+        if (instance instanceof Initializable)
         {
             try
             {
-                ( (Initializable) instance ).initialize();
+                ((Initializable) instance).initialize();
             }
-            catch( InitializationException e )
+            catch (InitializationException e)
             {
-                throw new ConstructionException( "Unable to initialize " + objectType, e );
+                throw new ConstructionException("Unable to initialize " + objectType, e);
             }
         }
 
         return instance;
     }
 
-    public void inject( ModuleInstance moduleInstance, UsesInstance uses, Object instance )
+    public void inject(ModuleInstance moduleInstance, UsesInstance uses, Object instance)
     {
-        InjectionContext injectionContext = new InjectionContext( moduleInstance, uses );
-        injectedFieldsModel.inject( injectionContext, instance );
-        injectedMethodsModel.inject( injectionContext, instance );
+        InjectionContext injectionContext = new InjectionContext(moduleInstance, uses);
+        injectedFieldsModel.inject(injectionContext, instance);
+        injectedMethodsModel.inject(injectionContext, instance);
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return objectType.getName();
     }

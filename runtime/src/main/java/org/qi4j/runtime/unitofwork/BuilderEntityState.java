@@ -14,6 +14,9 @@
 
 package org.qi4j.runtime.unitofwork;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
@@ -22,14 +25,11 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * JAVADOC
  */
 public final class BuilderEntityState
-    implements EntityState
+        implements EntityState
 {
     private final EntityDescriptor entityType;
     private EntityReference reference;
@@ -70,7 +70,7 @@ public final class BuilderEntityState
         return EntityStatus.NEW;
     }
 
-    public boolean isOfType( TypeName type )
+    public boolean isOfType(TypeName type)
     {
         return entityType.entityType().type().equals(type);
     }
@@ -80,37 +80,37 @@ public final class BuilderEntityState
         return entityType;
     }
 
-    public Object getProperty( QualifiedName stateName )
+    public Object getProperty(QualifiedName stateName)
     {
-        return properties.get( stateName );
+        return properties.get(stateName);
     }
 
-    public EntityReference getAssociation( QualifiedName stateName )
+    public EntityReference getAssociation(QualifiedName stateName)
     {
-        return associations.get( stateName );
+        return associations.get(stateName);
     }
 
     public void hasBeenApplied()
     {
     }
 
-    public void setProperty( QualifiedName stateName, Object newValue )
+    public void setProperty(QualifiedName stateName, Object newValue)
     {
-        properties.put( stateName, newValue );
+        properties.put(stateName, newValue);
     }
 
-    public void setAssociation( QualifiedName stateName, EntityReference newEntity )
+    public void setAssociation(QualifiedName stateName, EntityReference newEntity)
     {
-        associations.put( stateName, newEntity );
+        associations.put(stateName, newEntity);
     }
 
-    public ManyAssociationState getManyAssociation( QualifiedName stateName )
+    public ManyAssociationState getManyAssociation(QualifiedName stateName)
     {
-        ManyAssociationState state = manyAssociations.get( stateName );
-        if( state == null )
+        ManyAssociationState state = manyAssociations.get(stateName);
+        if (state == null)
         {
-            state = new BuilderManyAssociationState( );
-            manyAssociations.put( stateName, state );
+            state = new BuilderManyAssociationState();
+            manyAssociations.put(stateName, state);
         }
 
         return state;

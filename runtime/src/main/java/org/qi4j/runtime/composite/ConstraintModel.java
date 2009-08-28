@@ -14,24 +14,24 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.constraint.Constraint;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+
+import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.constraint.Constraint;
 
 /**
  * JAVADOC
  */
 public final class ConstraintModel extends AbstractConstraintModel
-    implements Serializable
+        implements Serializable
 
 {
     private final Class<? extends Constraint<?, ?>> constraintClass;
 
-    public ConstraintModel( Annotation annotation, Class<? extends Constraint<?, ?>> constraintClass )
+    public ConstraintModel(Annotation annotation, Class<? extends Constraint<?, ?>> constraintClass)
     {
-        super( annotation );
+        super(annotation);
         this.constraintClass = constraintClass;
     }
 
@@ -40,11 +40,11 @@ public final class ConstraintModel extends AbstractConstraintModel
         try
         {
             Constraint<?, ?> constraint = constraintClass.newInstance();
-            return new ConstraintInstance( constraint, annotation );
+            return new ConstraintInstance(constraint, annotation);
         }
-        catch( Exception e )
+        catch (Exception e)
         {
-            throw new ConstructionException( "Could not instantiate constraint implementation", e );
+            throw new ConstructionException("Could not instantiate constraint implementation", e);
         }
     }
 }

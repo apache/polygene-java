@@ -20,15 +20,15 @@
 package org.qi4j.api.property;
 
 import java.lang.reflect.Type;
+
 import org.qi4j.api.common.QualifiedName;
 import static org.qi4j.api.util.NullArgumentException.*;
 
 /**
  * {@code AbstractPropertyInstance} is the base implementation of {@link org.qi4j.api.property.Property}.
- *
  */
 public abstract class AbstractPropertyInstance<T>
-    implements Property<T>
+        implements Property<T>
 {
     protected final PropertyInfo propertyInfo;
 
@@ -38,10 +38,10 @@ public abstract class AbstractPropertyInstance<T>
      * @param aPropertyInfo The property info. This argument must not be {@code null}.
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} argument is {@code null}.
      */
-    protected AbstractPropertyInstance( PropertyInfo aPropertyInfo )
-        throws IllegalArgumentException
+    protected AbstractPropertyInstance(PropertyInfo aPropertyInfo)
+            throws IllegalArgumentException
     {
-        validateNotNull( "aPropertyInfo", aPropertyInfo );
+        validateNotNull("aPropertyInfo", aPropertyInfo);
         propertyInfo = aPropertyInfo;
     }
 
@@ -52,9 +52,9 @@ public abstract class AbstractPropertyInstance<T>
      * @return Property info given {@code anInfoType} argument.
      */
     // Was it a mistake to have another T here? (I think so...)
-    public final <V> V metaInfo( Class<V> anInfoType )
+    public final <V> V metaInfo(Class<V> anInfoType)
     {
-        return propertyInfo.metaInfo( anInfoType );
+        return propertyInfo.metaInfo(anInfoType);
     }
 
     /**
@@ -84,36 +84,36 @@ public abstract class AbstractPropertyInstance<T>
 
     /**
      * Perform equals with {@code o} argument.
-     *
+     * <p/>
      * The definition of equals() for the ComputedProperty is that if the Value, subclass and all the metaInfo are
      * equal, then th
      *
      * @param o The other object to compare.
      * @return Returns a {@code boolean} indicator whether this object is equals the other.
      */
-    public boolean equals( Object o )
+    public boolean equals(Object o)
     {
-        if( this == o )
+        if (this == o)
         {
             return true;
         }
-        if( o == null || getClass() != o.getClass() )
+        if (o == null || getClass() != o.getClass())
         {
             return false;
         }
 
         Property<?> that = (Property<?>) o;
 
-        if( !type().equals( that.type() ) )
+        if (!type().equals(that.type()))
         {
             return false;
         }
         T value = get();
-        if( value == null )
+        if (value == null)
         {
             return that.get() == null;
         }
-        return value.equals( that.get() );
+        return value.equals(that.get());
     }
 
     /**
@@ -124,13 +124,13 @@ public abstract class AbstractPropertyInstance<T>
     public int hashCode()
     {
         int hash = getClass().hashCode();
-        if( propertyInfo != null )
+        if (propertyInfo != null)
         {
             hash = propertyInfo.type().hashCode();
         }
         hash = hash * 19;
         T value = get();
-        if( value != null )
+        if (value != null)
         {
             hash = hash + value.hashCode() * 13;
         }

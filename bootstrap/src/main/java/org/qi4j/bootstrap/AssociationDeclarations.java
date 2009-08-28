@@ -14,14 +14,14 @@
 
 package org.qi4j.bootstrap;
 
-import org.qi4j.api.common.MetaInfo;
-
 import java.lang.reflect.Method;
+
+import org.qi4j.api.common.MetaInfo;
 
 /**
  * JAVADOC
  */
 public interface AssociationDeclarations
 {
-    MetaInfo getMetaInfo( Method accessor );
+    MetaInfo getMetaInfo(Method accessor);
 }

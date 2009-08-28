@@ -14,9 +14,9 @@
 
 package org.qi4j.api.entity.association;
 
-import org.qi4j.api.common.QualifiedName;
-
 import java.lang.reflect.Type;
+
+import org.qi4j.api.common.QualifiedName;
 
 /**
  * Metadata about an Association.
@@ -30,7 +30,7 @@ public interface AssociationInfo
      * @return the metadata for the given type, or <code>null</code> if
      *         no such metadata has been registered
      */
-    <T> T metaInfo( Class<T> infoType );
+    <T> T metaInfo(Class<T> infoType);
 
     /**
      * Get the qualified name of the association. This is constructed by

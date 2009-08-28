@@ -22,11 +22,10 @@ import org.qi4j.api.query.grammar.AssociationReference;
 
 /**
  * Default {@link org.qi4j.api.query.grammar.AssociationIsNotNullPredicate} implementation.
- *
  */
 public final class AssociationIsNotNullPredicateImpl
-    extends AssociationNullPredicateImpl
-    implements AssociationIsNotNullPredicate
+        extends AssociationNullPredicateImpl
+        implements AssociationIsNotNullPredicate
 {
 
     /**
@@ -35,26 +34,27 @@ public final class AssociationIsNotNullPredicateImpl
      * @param associationReference association reference; cannot be null
      * @throws IllegalArgumentException - If association reference is null
      */
-    public AssociationIsNotNullPredicateImpl( final AssociationReference associationReference )
+    public AssociationIsNotNullPredicateImpl(final AssociationReference associationReference)
     {
-        super( associationReference );
+        super(associationReference);
     }
 
     /**
      * @see org.qi4j.api.query.grammar.BooleanExpression#eval(Object)
      */
-    public boolean eval( final Object target )
+    public boolean eval(final Object target)
     {
-        return associationReference().eval( target ) != null;
+        return associationReference().eval(target) != null;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return new StringBuilder()
-            .append( "( " )
-            .append( associationReference() )
-            .append( " IS NOT NULL )" )
-            .toString();
+                .append("( ")
+                .append(associationReference())
+                .append(" IS NOT NULL )")
+                .toString();
     }
 
 }

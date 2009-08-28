@@ -14,25 +14,25 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.common.AppliesToFilter;
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+
+import org.qi4j.api.common.AppliesToFilter;
 
 /**
  * JAVADOC
  */
 final class ImplementsMethodAppliesToFilter
-    implements AppliesToFilter, Serializable
+        implements AppliesToFilter, Serializable
 {
-    public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
+    public boolean appliesTo(Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass)
     {
         try
         {
-            return !Modifier.isAbstract( fragmentClass.getMethod( method.getName(), method.getParameterTypes() ).getModifiers() );
+            return !Modifier.isAbstract(fragmentClass.getMethod(method.getName(), method.getParameterTypes()).getModifiers());
         }
-        catch( NoSuchMethodException e )
+        catch (NoSuchMethodException e)
         {
             return false;
         }

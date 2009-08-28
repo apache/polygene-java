@@ -22,17 +22,16 @@ import java.lang.reflect.Method;
 
 /**
  * Placeholder for a not specified resolver type.
- *
  */
 public class UnresolvableMockResolver
-    implements MockResolver
+        implements MockResolver
 {
     /**
      * Does not match any method invocation. Always returns null.
      *
      * @see MockResolver#getInvocationHandler(Object,java.lang.reflect.Method,Object[])
      */
-    public InvocationHandler getInvocationHandler( final Object proxy, final Method method, final Object[] args )
+    public InvocationHandler getInvocationHandler(final Object proxy, final Method method, final Object[] args)
     {
         return null;
     }

@@ -14,6 +14,11 @@
 
 package org.qi4j.runtime.entity;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
@@ -29,24 +34,19 @@ import org.qi4j.runtime.composite.CompositeMethodInstance;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
+import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStateDescriptor;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * JAVADOC
  */
 public final class EntityInstance
-    implements CompositeInstance, MixinsInstance
+        implements CompositeInstance, MixinsInstance
 {
     private static final Method REMOVE_METHOD;
 
@@ -55,18 +55,18 @@ public final class EntityInstance
     {
         try
         {
-            REMOVE_METHOD = Lifecycle.class.getMethod( "remove" );
+            REMOVE_METHOD = Lifecycle.class.getMethod("remove");
         }
-        catch( NoSuchMethodException e )
+        catch (NoSuchMethodException e)
         {
-            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: EntityInstance" );
+            throw new InternalError("Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: EntityInstance");
         }
     }
 
 
-    public static EntityInstance getEntityInstance( EntityComposite composite )
+    public static EntityInstance getEntityInstance(EntityComposite composite)
     {
-        return (EntityInstance) Proxy.getInvocationHandler( composite );
+        return (EntityInstance) Proxy.getInvocationHandler(composite);
     }
 
     private final EntityComposite proxy;
@@ -79,11 +79,11 @@ public final class EntityInstance
     private EntityState entityState;
     private EntityStateModel.EntityStateInstance state;
 
-    public EntityInstance( ModuleUnitOfWork uow,
-                           ModuleInstance moduleInstance,
-                           EntityModel entityModel,
-                           EntityReference identity,
-                           EntityState entityState )
+    public EntityInstance(ModuleUnitOfWork uow,
+                          ModuleInstance moduleInstance,
+                          EntityModel entityModel,
+                          EntityReference identity,
+                          EntityState entityState)
     {
         this.uow = uow;
         this.moduleInstance = moduleInstance;
@@ -91,13 +91,13 @@ public final class EntityInstance
         this.identity = identity;
         this.entityState = entityState;
 
-        proxy = entityModel.newProxy( this );
+        proxy = entityModel.newProxy(this);
     }
 
-    public Object invoke( Object proxy, Method method, Object[] args )
-        throws Throwable
+    public Object invoke(Object proxy, Method method, Object[] args)
+            throws Throwable
     {
-        return entityModel.invoke( this, this.proxy, method, args, uow.module() );
+        return entityModel.invoke(this, this.proxy, method, args, uow.module());
     }
 
     public EntityReference identity()
@@ -115,9 +115,9 @@ public final class EntityInstance
         return entityModel;
     }
 
-    public <T> T newProxy( Class<T> mixinType )
+    public <T> T newProxy(Class<T> mixinType)
     {
-        return entityModel.newProxy( this, mixinType );
+        return entityModel.newProxy(this, mixinType);
     }
 
     public Object invokeProxy(Method method, Object[] args) throws Throwable
@@ -157,7 +157,7 @@ public final class EntityInstance
 
     public EntityStateModel.EntityStateInstance state()
     {
-        if( state == null )
+        if (state == null)
         {
             initState();
         }
@@ -170,74 +170,77 @@ public final class EntityInstance
         return entityState.status();
     }
 
-    public Object invoke( Object composite, Object[] params, CompositeMethodInstance methodInstance ) throws Throwable
+    public Object invoke(Object composite, Object[] params, CompositeMethodInstance methodInstance) throws Throwable
     {
-        if( mixins == null )
+        if (mixins == null)
         {
             initState();
         }
 
-        Object mixin = methodInstance.getMixin( mixins );
+        Object mixin = methodInstance.getMixin(mixins);
 
-        if( mixin == null )
+        if (mixin == null)
         {
-            mixin = entityModel.newMixin( mixins, state, this, methodInstance.method() );
+            mixin = entityModel.newMixin(mixins, state, this, methodInstance.method());
         }
 
-        return methodInstance.invoke( composite, params, mixin );
+        return methodInstance.invoke(composite, params, mixin);
     }
 
-    public Object invokeObject( Object proxy, Object[] args, Method method ) throws Throwable
+    public Object invokeObject(Object proxy, Object[] args, Method method) throws Throwable
     {
-        return method.invoke( this, args );
+        return method.invoke(this, args);
     }
 
     private void initState()
     {
-        if( !uow.isOpen() )
+        if (!uow.isOpen())
         {
-            throw new UnitOfWorkException( "Unit of work has been closed" );
+            throw new UnitOfWorkException("Unit of work has been closed");
         }
 
-        if( status() == EntityStatus.REMOVED )
+        if (status() == EntityStatus.REMOVED)
         {
-            throw new NoSuchEntityException( identity );
+            throw new NoSuchEntityException(identity);
         }
 
         mixins = entityModel.newMixinHolder();
-        state = entityModel.newStateHolder( uow, entityState );
+        state = entityModel.newStateHolder(uow, entityState);
     }
 
 
-    @Override public int hashCode()
+    @Override
+    public int hashCode()
     {
         return identity.hashCode();
     }
 
-    @Override public boolean equals( Object o )
+    @Override
+    public boolean equals(Object o)
     {
         try
         {
-            Identity other = ( (Identity) o );
-            return other != null && other.identity().get().equals( identity.identity() );
+            Identity other = ((Identity) o);
+            return other != null && other.identity().get().equals(identity.identity());
         }
-        catch( ClassCastException e )
+        catch (ClassCastException e)
         {
             return false;
         }
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return identity.toString();
     }
 
-    public void remove( UnitOfWork unitOfWork )
-        throws LifecycleException
+    public void remove(UnitOfWork unitOfWork)
+            throws LifecycleException
     {
         invokeRemove();
 
-        removeAggregatedEntities( unitOfWork );
+        removeAggregatedEntities(unitOfWork);
 
         entityState.remove();
         mixins = null;
@@ -245,58 +248,58 @@ public final class EntityInstance
 
     private void invokeRemove()
     {
-        if( entityModel.hasMixinType( Lifecycle.class ) )
+        if (entityModel.hasMixinType(Lifecycle.class))
         {
             try
             {
-                invoke( proxy, REMOVE_METHOD, new Object[0] );
+                invoke(proxy, REMOVE_METHOD, new Object[0]);
             }
-            catch( LifecycleException throwable )
+            catch (LifecycleException throwable)
             {
                 throw throwable;
             }
-            catch( Throwable throwable )
+            catch (Throwable throwable)
             {
-                throw new LifecycleException( throwable );
+                throw new LifecycleException(throwable);
             }
         }
     }
 
-    private void removeAggregatedEntities( UnitOfWork unitOfWork )
+    private void removeAggregatedEntities(UnitOfWork unitOfWork)
     {
         // Calculate aggregated Entities
         EntityStateDescriptor stateDescriptor = entityModel.state();
         Set<Object> aggregatedEntities = new HashSet<Object>();
         Set<AssociationDescriptor> associations = stateDescriptor.associations();
-        for( AssociationDescriptor association : associations )
+        for (AssociationDescriptor association : associations)
         {
-            if( association.isAggregated() )
+            if (association.isAggregated())
             {
-                Association assoc = state.getAssociation( association.accessor() );
-                Object aggregatedEntity = ( (Association) assoc ).get();
-                if( aggregatedEntity != null )
+                Association assoc = state.getAssociation(association.accessor());
+                Object aggregatedEntity = ((Association) assoc).get();
+                if (aggregatedEntity != null)
                 {
-                    aggregatedEntities.add( aggregatedEntity );
+                    aggregatedEntities.add(aggregatedEntity);
                 }
             }
         }
         Set<ManyAssociationDescriptor> manyAssociations = stateDescriptor.manyAssociations();
-        for( ManyAssociationDescriptor association : manyAssociations )
+        for (ManyAssociationDescriptor association : manyAssociations)
         {
-            if( association.isAggregated() )
+            if (association.isAggregated())
             {
-                ManyAssociation manyAssoc = state.getManyAssociation( association.accessor() );
-                for( Object entity : manyAssoc )
+                ManyAssociation manyAssoc = state.getManyAssociation(association.accessor());
+                for (Object entity : manyAssoc)
                 {
-                    aggregatedEntities.add( entity );
+                    aggregatedEntities.add(entity);
                 }
             }
         }
 
         // Remove aggregated Entities
-        for( Object aggregatedEntity : aggregatedEntities )
+        for (Object aggregatedEntity : aggregatedEntities)
         {
-            unitOfWork.remove( aggregatedEntity );
+            unitOfWork.remove(aggregatedEntity);
         }
     }
 

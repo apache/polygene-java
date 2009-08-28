@@ -14,6 +14,13 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
@@ -25,18 +32,18 @@ import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.AssemblyVisitor;
-import org.qi4j.bootstrap.TransientDeclaration;
 import org.qi4j.bootstrap.EntityDeclaration;
 import org.qi4j.bootstrap.ImportedServiceDeclaration;
-import org.qi4j.bootstrap.MixinDeclaration;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.MetaInfoDeclaration;
+import org.qi4j.bootstrap.MixinDeclaration;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ObjectDeclaration;
 import org.qi4j.bootstrap.ServiceDeclaration;
+import org.qi4j.bootstrap.TransientDeclaration;
 import org.qi4j.bootstrap.ValueDeclaration;
-import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.composite.CompositesModel;
+import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.object.ObjectsModel;
@@ -49,13 +56,6 @@ import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.runtime.value.ValuesModel;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 /**
  * Assembly of a Module. This is where you register all objects, Composites,
  * Services. Each "add" method returns a declaration that you can use to add
@@ -64,7 +64,7 @@ import java.util.Set;
  * call.
  */
 public final class ModuleAssemblyImpl
-    implements ModuleAssembly, Serializable
+        implements ModuleAssembly, Serializable
 {
     private LayerAssembly layerAssembly;
     private String name;
@@ -77,7 +77,7 @@ public final class ModuleAssemblyImpl
     private final List<ImportedServiceDeclarationImpl> importedServiceDeclarations = new ArrayList<ImportedServiceDeclarationImpl>();
     private final MetaInfoDeclaration metaInfoDeclaration = new MetaInfoDeclaration();
 
-    public ModuleAssemblyImpl( LayerAssembly layerAssembly, String name )
+    public ModuleAssemblyImpl(LayerAssembly layerAssembly, String name)
     {
         this.layerAssembly = layerAssembly;
         this.name = name;
@@ -88,7 +88,7 @@ public final class ModuleAssemblyImpl
         return layerAssembly;
     }
 
-    public ModuleAssembly setName( String name )
+    public ModuleAssembly setName(String name)
     {
         this.name = name;
         return this;
@@ -99,146 +99,144 @@ public final class ModuleAssemblyImpl
         return name;
     }
 
-    public ModuleAssembly setMetaInfo( Object info )
+    public ModuleAssembly setMetaInfo(Object info)
     {
-        metaInfo.set( info );
+        metaInfo.set(info);
         return this;
     }
 
-    public ValueDeclaration addValues( Class<? extends ValueComposite>... compositeTypes )
+    public ValueDeclaration addValues(Class<? extends ValueComposite>... compositeTypes)
     {
-        ValueDeclarationImpl valueDeclaration = new ValueDeclarationImpl( compositeTypes );
-        valueDeclarations.add( valueDeclaration );
+        ValueDeclarationImpl valueDeclaration = new ValueDeclarationImpl(compositeTypes);
+        valueDeclarations.add(valueDeclaration);
         return valueDeclaration;
 
     }
 
-    public TransientDeclaration addTransients( Class<? extends TransientComposite>... compositeTypes )
-        throws AssemblyException
+    public TransientDeclaration addTransients(Class<? extends TransientComposite>... compositeTypes)
+            throws AssemblyException
     {
-        for( Class<? extends TransientComposite> compositeType : compositeTypes )
+        for (Class<? extends TransientComposite> compositeType : compositeTypes)
         {
             // May not register ServiceComposites
-            if( ServiceComposite.class.isAssignableFrom( compositeType ) )
+            if (ServiceComposite.class.isAssignableFrom(compositeType))
             {
-                throw new AssemblyException( "May not register ServiceComposites as a Composite:" + compositeType.getName() );
-            }
-            else if( EntityComposite.class.isAssignableFrom( compositeType ) )
+                throw new AssemblyException("May not register ServiceComposites as a Composite:" + compositeType.getName());
+            } else if (EntityComposite.class.isAssignableFrom(compositeType))
             {
-                throw new AssemblyException( "May not register EntityComposites as a Composite:" + compositeType.getName() );
-            }
-            else if( ValueComposite.class.isAssignableFrom( compositeType ) )
+                throw new AssemblyException("May not register EntityComposites as a Composite:" + compositeType.getName());
+            } else if (ValueComposite.class.isAssignableFrom(compositeType))
             {
-                throw new AssemblyException( "May not register ValueComposites as a Composite:" + compositeType.getName() );
+                throw new AssemblyException("May not register ValueComposites as a Composite:" + compositeType.getName());
             }
         }
 
-        TransientDeclarationImpl compositeDeclaration = new TransientDeclarationImpl( compositeTypes );
-        compositeDeclarations.add( compositeDeclaration );
+        TransientDeclarationImpl compositeDeclaration = new TransientDeclarationImpl(compositeTypes);
+        compositeDeclarations.add(compositeDeclaration);
         return compositeDeclaration;
     }
 
-    public EntityDeclaration addEntities( Class<? extends EntityComposite>... compositeTypes )
-        throws AssemblyException
+    public EntityDeclaration addEntities(Class<? extends EntityComposite>... compositeTypes)
+            throws AssemblyException
     {
-        EntityDeclarationImpl entityDeclaration = new EntityDeclarationImpl( compositeTypes );
-        entityDeclarations.add( entityDeclaration );
+        EntityDeclarationImpl entityDeclaration = new EntityDeclarationImpl(compositeTypes);
+        entityDeclarations.add(entityDeclaration);
         return entityDeclaration;
     }
 
-    public ObjectDeclaration addObjects( Class... objectTypes )
-        throws AssemblyException
+    public ObjectDeclaration addObjects(Class... objectTypes)
+            throws AssemblyException
     {
-        for( Class objectType : objectTypes )
+        for (Class objectType : objectTypes)
         {
-            if( objectType.isPrimitive() )
+            if (objectType.isPrimitive())
             {
-                throw new AssemblyException( "May not register primitives as objects" );
+                throw new AssemblyException("May not register primitives as objects");
             }
-            if( objectType.isInterface() )
+            if (objectType.isInterface())
             {
-                throw new AssemblyException( "May not register interfaces as objects" );
+                throw new AssemblyException("May not register interfaces as objects");
             }
         }
 
-        ObjectDeclarationImpl objectDeclaration = new ObjectDeclarationImpl( Arrays.asList( objectTypes ) );
-        objectDeclarations.add( objectDeclaration );
+        ObjectDeclarationImpl objectDeclaration = new ObjectDeclarationImpl(Arrays.asList(objectTypes));
+        objectDeclarations.add(objectDeclaration);
         return objectDeclaration;
     }
 
-    public ServiceDeclaration addServices( Class<? extends ServiceComposite>... serviceTypes )
-        throws AssemblyException
+    public ServiceDeclaration addServices(Class<? extends ServiceComposite>... serviceTypes)
+            throws AssemblyException
     {
-        for( Class serviceType : serviceTypes )
+        for (Class serviceType : serviceTypes)
         {
-            if( !serviceType.isInterface() )
+            if (!serviceType.isInterface())
             {
-                throw new AssemblyException( "May not register classes as service types" );
+                throw new AssemblyException("May not register classes as service types");
             }
 
-            if( Composite.class.isAssignableFrom( serviceType ) && !ServiceComposite.class.isAssignableFrom( serviceType ) )
+            if (Composite.class.isAssignableFrom(serviceType) && !ServiceComposite.class.isAssignableFrom(serviceType))
             {
-                throw new AssemblyException( "May not register Composites which are not ServiceComposites" );
+                throw new AssemblyException("May not register Composites which are not ServiceComposites");
             }
         }
 
-        List<Class<? extends ServiceComposite>> classes = Arrays.asList( serviceTypes );
-        ServiceDeclarationImpl serviceDeclaration = new ServiceDeclarationImpl( classes, this );
-        serviceDeclarations.add( serviceDeclaration );
+        List<Class<? extends ServiceComposite>> classes = Arrays.asList(serviceTypes);
+        ServiceDeclarationImpl serviceDeclaration = new ServiceDeclarationImpl(classes, this);
+        serviceDeclarations.add(serviceDeclaration);
         return serviceDeclaration;
     }
 
-    public ImportedServiceDeclaration importServices( Class... serviceTypes )
-        throws AssemblyException
+    public ImportedServiceDeclaration importServices(Class... serviceTypes)
+            throws AssemblyException
     {
-        List<Class> classes = Arrays.asList( serviceTypes );
-        ImportedServiceDeclarationImpl serviceDeclaration = new ImportedServiceDeclarationImpl( classes, this );
-        importedServiceDeclarations.add( serviceDeclaration );
+        List<Class> classes = Arrays.asList(serviceTypes);
+        ImportedServiceDeclarationImpl serviceDeclaration = new ImportedServiceDeclarationImpl(classes, this);
+        importedServiceDeclarations.add(serviceDeclaration);
         return serviceDeclaration;
     }
 
-    public <T> MixinDeclaration<T> forMixin( Class<T> mixinType )
+    public <T> MixinDeclaration<T> forMixin(Class<T> mixinType)
     {
-        return metaInfoDeclaration.on( mixinType );
+        return metaInfoDeclaration.on(mixinType);
     }
 
-    public void visit( AssemblyVisitor visitor ) throws AssemblyException
+    public void visit(AssemblyVisitor visitor) throws AssemblyException
     {
-        visitor.visitModule( this );
+        visitor.visitModule(this);
 
-        for( TransientDeclarationImpl compositeDeclaration : compositeDeclarations )
+        for (TransientDeclarationImpl compositeDeclaration : compositeDeclarations)
         {
-            visitor.visitComposite( compositeDeclaration );
+            visitor.visitComposite(compositeDeclaration);
         }
 
-        for( EntityDeclarationImpl entityDeclaration : entityDeclarations )
+        for (EntityDeclarationImpl entityDeclaration : entityDeclarations)
         {
-            visitor.visitEntity( entityDeclaration );
+            visitor.visitEntity(entityDeclaration);
         }
 
-        for( ObjectDeclarationImpl objectDeclaration : objectDeclarations )
+        for (ObjectDeclarationImpl objectDeclaration : objectDeclarations)
         {
-            visitor.visitObject( objectDeclaration );
+            visitor.visitObject(objectDeclaration);
         }
 
-        for( ServiceDeclarationImpl serviceDeclaration : serviceDeclarations )
+        for (ServiceDeclarationImpl serviceDeclaration : serviceDeclarations)
         {
-            visitor.visitService( serviceDeclaration );
+            visitor.visitService(serviceDeclaration);
         }
 
-        for( ImportedServiceDeclarationImpl importedServiceDeclaration : importedServiceDeclarations )
+        for (ImportedServiceDeclarationImpl importedServiceDeclaration : importedServiceDeclarations)
         {
-            visitor.visitImportedService( importedServiceDeclaration );
+            visitor.visitImportedService(importedServiceDeclaration);
         }
 
-        for( ValueDeclarationImpl valueDeclaration : valueDeclarations )
+        for (ValueDeclarationImpl valueDeclaration : valueDeclarations)
         {
-            visitor.visitValue( valueDeclaration );
+            visitor.visitValue(valueDeclaration);
         }
     }
 
     ModuleModel assembleModule()
-        throws AssemblyException
+            throws AssemblyException
     {
         List<TransientModel> transientModels = new ArrayList<TransientModel>();
         List<EntityModel> entityModels = new ArrayList<EntityModel>();
@@ -247,90 +245,90 @@ public final class ModuleAssemblyImpl
         List<ServiceModel> serviceModels = new ArrayList<ServiceModel>();
         List<ImportedServiceModel> importedServiceModels = new ArrayList<ImportedServiceModel>();
 
-        if( name == null )
+        if (name == null)
         {
-            throw new AssemblyException( "Module must have name set" );
+            throw new AssemblyException("Module must have name set");
         }
 
-        ModuleModel moduleModel = new ModuleModel( name,
-                                                   metaInfo, new CompositesModel(transientModels),
-                                                   new EntitiesModel( entityModels ),
-                                                   new ObjectsModel( objectModels ),
-                                                   new ValuesModel( valueModels ),
-                                                   new ServicesModel( serviceModels ),
-                                                   new ImportedServicesModel( importedServiceModels ) );
+        ModuleModel moduleModel = new ModuleModel(name,
+                metaInfo, new CompositesModel(transientModels),
+                new EntitiesModel(entityModels),
+                new ObjectsModel(objectModels),
+                new ValuesModel(valueModels),
+                new ServicesModel(serviceModels),
+                new ImportedServicesModel(importedServiceModels));
 
-        for( TransientDeclarationImpl compositeDeclaration : compositeDeclarations )
+        for (TransientDeclarationImpl compositeDeclaration : compositeDeclarations)
         {
-            compositeDeclaration.addComposites(transientModels, metaInfoDeclaration );
+            compositeDeclaration.addComposites(transientModels, metaInfoDeclaration);
         }
 
-        for( ValueDeclarationImpl valueDeclaration : valueDeclarations )
+        for (ValueDeclarationImpl valueDeclaration : valueDeclarations)
         {
-            valueDeclaration.addValues( valueModels, metaInfoDeclaration );
+            valueDeclaration.addValues(valueModels, metaInfoDeclaration);
         }
 
-        for( EntityDeclarationImpl entityDeclaration : entityDeclarations )
+        for (EntityDeclarationImpl entityDeclaration : entityDeclarations)
         {
-            entityDeclaration.addEntities( entityModels, metaInfoDeclaration, metaInfoDeclaration, metaInfoDeclaration );
+            entityDeclaration.addEntities(entityModels, metaInfoDeclaration, metaInfoDeclaration, metaInfoDeclaration);
         }
 
-        for( ObjectDeclarationImpl objectDeclaration : objectDeclarations )
+        for (ObjectDeclarationImpl objectDeclaration : objectDeclarations)
         {
-            objectDeclaration.addObjects( objectModels );
+            objectDeclaration.addObjects(objectModels);
         }
 
-        for( ServiceDeclarationImpl serviceDeclaration : serviceDeclarations )
+        for (ServiceDeclarationImpl serviceDeclaration : serviceDeclarations)
         {
-            serviceDeclaration.addServices( serviceModels );
+            serviceDeclaration.addServices(serviceModels);
         }
 
-        for( ImportedServiceDeclarationImpl importedServiceDeclaration : importedServiceDeclarations )
+        for (ImportedServiceDeclarationImpl importedServiceDeclaration : importedServiceDeclarations)
         {
-            importedServiceDeclaration.addServices( importedServiceModels );
+            importedServiceDeclaration.addServices(importedServiceModels);
         }
 
         // Check for duplicate service identities
         Set<String> identities = new HashSet<String>();
-        for( ServiceModel serviceModel : serviceModels )
+        for (ServiceModel serviceModel : serviceModels)
         {
             String identity = serviceModel.identity();
-            if( identities.contains( identity ) )
+            if (identities.contains(identity))
             {
                 throw new DuplicateServiceIdentityException(
-                    "Duplicated service identity: " + identity + " in module " + moduleModel.name()
+                        "Duplicated service identity: " + identity + " in module " + moduleModel.name()
                 );
             }
-            identities.add( identity );
+            identities.add(identity);
         }
-        for( ImportedServiceModel serviceModel : importedServiceModels )
+        for (ImportedServiceModel serviceModel : importedServiceModels)
         {
             String identity = serviceModel.identity();
-            if( identities.contains( identity ) )
+            if (identities.contains(identity))
             {
                 throw new DuplicateServiceIdentityException(
-                    "Duplicated service identity: " + identity + " in module " + moduleModel.name()
+                        "Duplicated service identity: " + identity + " in module " + moduleModel.name()
                 );
             }
-            identities.add( identity );
+            identities.add(identity);
         }
 
-        for( ImportedServiceModel importedServiceModel : importedServiceModels )
+        for (ImportedServiceModel importedServiceModel : importedServiceModels)
         {
             boolean found = false;
-            for( ObjectModel objectModel : objectModels )
+            for (ObjectModel objectModel : objectModels)
             {
-                if( objectModel.type().equals( importedServiceModel.serviceImporter() ) )
+                if (objectModel.type().equals(importedServiceModel.serviceImporter()))
                 {
                     found = true;
                     break;
                 }
             }
-            if( !found )
+            if (!found)
             {
                 Class<? extends ServiceImporter> serviceFactoryType = importedServiceModel.serviceImporter();
-                ObjectModel objectModel = new ObjectModel( serviceFactoryType, Visibility.module, new MetaInfo() );
-                objectModels.add( objectModel );
+                ObjectModel objectModel = new ObjectModel(serviceFactoryType, Visibility.module, new MetaInfo());
+                objectModels.add(objectModel);
             }
         }
 

@@ -14,45 +14,50 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import org.qi4j.bootstrap.*;
+import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.ApplicationAssemblyFactory;
+import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.LayerAssembly;
+import org.qi4j.bootstrap.ModuleAssembly;
 
 /**
  * Factory for ApplicationAssembly.
  */
 public final class ApplicationAssemblyFactoryImpl
-    implements ApplicationAssemblyFactory
+        implements ApplicationAssemblyFactory
 {
-    public ApplicationAssembly newApplicationAssembly( Assembler assembler )
-        throws AssemblyException
+    public ApplicationAssembly newApplicationAssembly(Assembler assembler)
+            throws AssemblyException
     {
-        return newApplicationAssembly( new Assembler[][][]{ { { assembler } } } );
+        return newApplicationAssembly(new Assembler[][][]{{{assembler}}});
     }
 
-    public ApplicationAssembly newApplicationAssembly( Assembler[][][] assemblers )
-        throws AssemblyException
+    public ApplicationAssembly newApplicationAssembly(Assembler[][][] assemblers)
+            throws AssemblyException
     {
         ApplicationAssembly applicationAssembly = newApplicationAssembly();
-        applicationAssembly.setName( "Application" );
+        applicationAssembly.setName("Application");
 
         // Build all layers bottom-up
         LayerAssembly below = null;
-        for( int layer = assemblers.length - 1; layer >= 0; layer-- )
+        for (int layer = assemblers.length - 1; layer >= 0; layer--)
         {
             // Create Layer
-            LayerAssembly layerAssembly = applicationAssembly.layerAssembly( "Layer " + ( layer + 1 ) );
-            for( int module = 0; module < assemblers[ layer ].length; module++ )
+            LayerAssembly layerAssembly = applicationAssembly.layerAssembly("Layer " + (layer + 1));
+            for (int module = 0; module < assemblers[layer].length; module++)
             {
                 // Create Module
-                ModuleAssembly moduleAssembly = layerAssembly.moduleAssembly( "Module " + ( module + 1 ) );
-                for( int assembly = 0; assembly < assemblers[ layer ][ module ].length; assembly++ )
+                ModuleAssembly moduleAssembly = layerAssembly.moduleAssembly("Module " + (module + 1));
+                for (int assembly = 0; assembly < assemblers[layer][module].length; assembly++)
                 {
                     // Register Assembler
-                    assemblers[ layer ][ module ][ assembly ].assemble(moduleAssembly);
+                    assemblers[layer][module][assembly].assemble(moduleAssembly);
                 }
             }
-            if( below != null )
+            if (below != null)
             {
-                layerAssembly.uses( below ); // Link layers
+                layerAssembly.uses(below); // Link layers
             }
             below = layerAssembly;
         }

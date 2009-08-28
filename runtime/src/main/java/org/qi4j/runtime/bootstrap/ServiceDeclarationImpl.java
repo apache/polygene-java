@@ -14,6 +14,11 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -21,16 +26,11 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.runtime.service.ServiceModel;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Declaration of a Service. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#addServices(Class[])}.
  */
 public final class ServiceDeclarationImpl
-    implements ServiceDeclaration, Serializable
+        implements ServiceDeclaration, Serializable
 {
     private Iterable<Class<? extends ServiceComposite>> serviceTypes;
     private List<Class<?>> concerns = new ArrayList<Class<?>>();
@@ -42,19 +42,19 @@ public final class ServiceDeclarationImpl
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
-    public ServiceDeclarationImpl( Iterable<Class<? extends ServiceComposite>> serviceTypes, ModuleAssemblyImpl moduleAssembly )
+    public ServiceDeclarationImpl(Iterable<Class<? extends ServiceComposite>> serviceTypes, ModuleAssemblyImpl moduleAssembly)
     {
         this.serviceTypes = serviceTypes;
         this.moduleAssembly = moduleAssembly;
     }
 
-    public ServiceDeclaration visibleIn( Visibility visibility )
+    public ServiceDeclaration visibleIn(Visibility visibility)
     {
         this.visibility = visibility;
         return this;
     }
 
-    public ServiceDeclaration identifiedBy( String identity )
+    public ServiceDeclaration identifiedBy(String identity)
     {
         this.identity = identity;
         return this;
@@ -66,61 +66,61 @@ public final class ServiceDeclarationImpl
         return this;
     }
 
-    public ServiceDeclaration setMetaInfo( Object serviceAttribute )
+    public ServiceDeclaration setMetaInfo(Object serviceAttribute)
     {
-        metaInfo.set( serviceAttribute );
+        metaInfo.set(serviceAttribute);
         return this;
     }
 
-    public ServiceDeclaration withConcerns( Class<?>... concerns )
+    public ServiceDeclaration withConcerns(Class<?>... concerns)
     {
-        this.concerns.addAll( Arrays.asList( concerns ) );
+        this.concerns.addAll(Arrays.asList(concerns));
         return this;
     }
 
-    public ServiceDeclaration withSideEffects( Class<?>... sideEffects )
+    public ServiceDeclaration withSideEffects(Class<?>... sideEffects)
     {
-        this.sideEffects.addAll( Arrays.asList( sideEffects ) );
+        this.sideEffects.addAll(Arrays.asList(sideEffects));
         return this;
     }
 
-    public ServiceDeclaration withMixins( Class<?>... mixins )
+    public ServiceDeclaration withMixins(Class<?>... mixins)
     {
-        this.mixins.addAll( Arrays.asList( mixins ) );
+        this.mixins.addAll(Arrays.asList(mixins));
         return this;
     }
 
-    void addServices( List<ServiceModel> serviceModels )
+    void addServices(List<ServiceModel> serviceModels)
     {
-        for( Class<? extends ServiceComposite> serviceType : serviceTypes )
+        for (Class<? extends ServiceComposite> serviceType : serviceTypes)
         {
             try
             {
                 String id = identity;
-                if( id == null )
+                if (id == null)
                 {
-                    id = generateId( serviceModels, serviceType );
+                    id = generateId(serviceModels, serviceType);
                 }
 
-                ServiceModel serviceModel = ServiceModel.newModel( serviceType,
-                                                                   visibility,
-                                                                   metaInfo,
-                                                                   concerns,
-                                                                   sideEffects,
-                                                                   mixins,
-                                                                   moduleAssembly.name(),
-                                                                   id,
-                                                                   instantiateOnStartup );
-                serviceModels.add( serviceModel );
+                ServiceModel serviceModel = ServiceModel.newModel(serviceType,
+                        visibility,
+                        metaInfo,
+                        concerns,
+                        sideEffects,
+                        mixins,
+                        moduleAssembly.name(),
+                        id,
+                        instantiateOnStartup);
+                serviceModels.add(serviceModel);
             }
-            catch( Exception e )
+            catch (Exception e)
             {
-                throw new InvalidApplicationException( "Could not register " + serviceType.getName(), e );
+                throw new InvalidApplicationException("Could not register " + serviceType.getName(), e);
             }
         }
     }
 
-    private String generateId( List<ServiceModel> serviceModels, Class serviceType )
+    private String generateId(List<ServiceModel> serviceModels, Class serviceType)
     {
         // Find identity that is not yet used
         int idx = 0;
@@ -129,9 +129,9 @@ public final class ServiceDeclarationImpl
         do
         {
             invalid = false;
-            for( ServiceModel serviceModel : serviceModels )
+            for (ServiceModel serviceModel : serviceModels)
             {
-                if( serviceModel.identity().equals( id ) )
+                if (serviceModel.identity().equals(id))
                 {
                     idx++;
                     id = serviceType.getSimpleName() + "_" + idx;
@@ -140,7 +140,7 @@ public final class ServiceDeclarationImpl
                 }
             }
         }
-        while( invalid );
+        while (invalid);
         return id;
     }
 }

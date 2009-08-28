@@ -23,11 +23,10 @@ import org.qi4j.api.query.grammar.ValueExpression;
 
 /**
  * Default {@link org.qi4j.api.query.grammar.NotEqualsPredicate} implementation.
- *
  */
 public final class NotEqualsPredicateImpl<T>
-    extends ComparisonPredicateImpl<T>
-    implements NotEqualsPredicate<T>
+        extends ComparisonPredicateImpl<T>
+        implements NotEqualsPredicate<T>
 {
 
     /**
@@ -38,29 +37,30 @@ public final class NotEqualsPredicateImpl<T>
      * @throws IllegalArgumentException - If property reference is null
      *                                  - If value expression is null
      */
-    public NotEqualsPredicateImpl( final PropertyReference<T> propertyReference,
-                                   final ValueExpression<T> valueExpression )
+    public NotEqualsPredicateImpl(final PropertyReference<T> propertyReference,
+                                  final ValueExpression<T> valueExpression)
     {
-        super( propertyReference, valueExpression );
+        super(propertyReference, valueExpression);
     }
 
-    protected boolean eval( final Comparable<T> propertyValue, final T expressionValue )
+    protected boolean eval(final Comparable<T> propertyValue, final T expressionValue)
     {
-        return propertyValue.compareTo( expressionValue ) != 0;
+        return propertyValue.compareTo(expressionValue) != 0;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return new StringBuilder()
-            .append( "( " )
-            .append( propertyReference() )
-            .append( " != " )
-            .append( "\"" )
-            .append( valueExpression() )
-            .append( "\"^^" )
-            .append( propertyReference().propertyType().getSimpleName() )
-            .append( " )" )
-            .toString();
+                .append("( ")
+                .append(propertyReference())
+                .append(" != ")
+                .append("\"")
+                .append(valueExpression())
+                .append("\"^^")
+                .append(propertyReference().propertyType().getSimpleName())
+                .append(" )")
+                .toString();
     }
 
 }

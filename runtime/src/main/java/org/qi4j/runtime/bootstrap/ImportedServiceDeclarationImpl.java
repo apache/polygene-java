@@ -14,6 +14,9 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.io.Serializable;
+import java.util.List;
+
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -23,14 +26,11 @@ import org.qi4j.bootstrap.ImportedServiceDeclaration;
 import org.qi4j.runtime.service.ImportedServiceModel;
 import org.qi4j.spi.service.importer.InstanceImporter;
 
-import java.io.Serializable;
-import java.util.List;
-
 /**
  * Declaration of an imported Service. Created by {@link ModuleAssemblyImpl#importServices(Class[])}.
  */
 public final class ImportedServiceDeclarationImpl
-    implements ImportedServiceDeclaration, Serializable
+        implements ImportedServiceDeclaration, Serializable
 {
     private Class<? extends ServiceImporter> serviceProvider = InstanceImporter.class;
     private Iterable<Class> serviceTypes;
@@ -39,64 +39,65 @@ public final class ImportedServiceDeclarationImpl
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
-    public ImportedServiceDeclarationImpl( Iterable<Class> serviceTypes,
-                                           ModuleAssemblyImpl moduleAssembly )
+    public ImportedServiceDeclarationImpl(Iterable<Class> serviceTypes,
+                                          ModuleAssemblyImpl moduleAssembly)
     {
         this.serviceTypes = serviceTypes;
         this.moduleAssembly = moduleAssembly;
     }
 
-    public ImportedServiceDeclaration visibleIn( Visibility visibility )
+    public ImportedServiceDeclaration visibleIn(Visibility visibility)
     {
         this.visibility = visibility;
         return this;
     }
 
-    public ImportedServiceDeclaration importedBy( Class<? extends ServiceImporter> sip )
+    public ImportedServiceDeclaration importedBy(Class<? extends ServiceImporter> sip)
     {
         serviceProvider = sip;
         return this;
     }
 
-    public ImportedServiceDeclaration identifiedBy( String identity )
+    public ImportedServiceDeclaration identifiedBy(String identity)
     {
         this.identity = identity;
         return this;
     }
 
-    public ImportedServiceDeclaration setMetaInfo( Object serviceAttribute )
+    public ImportedServiceDeclaration setMetaInfo(Object serviceAttribute)
     {
-        metaInfo.set( serviceAttribute );
+        metaInfo.set(serviceAttribute);
         return this;
     }
 
-    void addServices( List<ImportedServiceModel> serviceModels )
+    void addServices(List<ImportedServiceModel> serviceModels)
     {
-        for( Class<? extends ServiceComposite> serviceType : serviceTypes )
+        for (Class<? extends ServiceComposite> serviceType : serviceTypes)
         {
             try
             {
                 String id = identity;
-                if( id == null )
+                if (id == null)
                 {
-                    id = generateId( serviceModels, serviceType );
+                    id = generateId(serviceModels, serviceType);
                 }
 
-                ImportedServiceModel serviceModel = new ImportedServiceModel( serviceType,
-                                                                              visibility,
-                                                                              serviceProvider,
-                                                                              id,
-                                                                              new MetaInfo( metaInfo ).withAnnotations( serviceType ),
-                                                                              moduleAssembly.name() );
-                serviceModels.add( serviceModel );
-            } catch (Exception e)
+                ImportedServiceModel serviceModel = new ImportedServiceModel(serviceType,
+                        visibility,
+                        serviceProvider,
+                        id,
+                        new MetaInfo(metaInfo).withAnnotations(serviceType),
+                        moduleAssembly.name());
+                serviceModels.add(serviceModel);
+            }
+            catch (Exception e)
             {
-                throw new InvalidApplicationException( "Could not register " + serviceType.getName(), e );
+                throw new InvalidApplicationException("Could not register " + serviceType.getName(), e);
             }
         }
     }
 
-    private String generateId( List<ImportedServiceModel> serviceModels, Class serviceType )
+    private String generateId(List<ImportedServiceModel> serviceModels, Class serviceType)
     {
         // Find identity that is not yet used
         int idx = 0;
@@ -105,9 +106,9 @@ public final class ImportedServiceDeclarationImpl
         do
         {
             invalid = false;
-            for( ImportedServiceModel serviceModel : serviceModels )
+            for (ImportedServiceModel serviceModel : serviceModels)
             {
-                if( serviceModel.identity().equals( id ) )
+                if (serviceModel.identity().equals(id))
                 {
                     idx++;
                     id = serviceType.getSimpleName() + "_" + idx;
@@ -116,7 +117,7 @@ public final class ImportedServiceDeclarationImpl
                 }
             }
         }
-        while( invalid );
+        while (invalid);
         return id;
     }
 }

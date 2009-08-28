@@ -16,17 +16,17 @@
  */
 package org.qi4j.runtime.query.proxy;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import static java.lang.reflect.Proxy.*;
+import java.lang.reflect.Type;
+
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.runtime.query.QueryException;
 import org.qi4j.runtime.query.grammar.impl.ManyAssociationReferenceImpl;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import static java.lang.reflect.Proxy.newProxyInstance;
-import java.lang.reflect.Type;
-
 public class ManyAssociationReferenceProxy
-    implements InvocationHandler
+        implements InvocationHandler
 {
     private Object anyproxy;
 
@@ -35,9 +35,9 @@ public class ManyAssociationReferenceProxy
      *
      * @param accessor association accessor method
      */
-    ManyAssociationReferenceProxy( final Method accessor )
+    ManyAssociationReferenceProxy(final Method accessor)
     {
-        this( accessor, null );
+        this(accessor, null);
     }
 
     /**
@@ -46,28 +46,28 @@ public class ManyAssociationReferenceProxy
      * @param accessor             association accessor method
      * @param traversedAssociation traversed association
      */
-    ManyAssociationReferenceProxy( final Method accessor,
-                                   final AssociationReference traversedAssociation )
+    ManyAssociationReferenceProxy(final Method accessor,
+                                  final AssociationReference traversedAssociation)
     {
         ManyAssociationReferenceImpl associationReference =
-            new ManyAssociationReferenceImpl( accessor, traversedAssociation );
+                new ManyAssociationReferenceImpl(accessor, traversedAssociation);
 
         // Create any proxy
         ClassLoader loader = ManyAssociationReferenceProxy.class.getClassLoader();
         Type associationType = associationReference.associationType();
 
         Class<?> associationClass = (Class<?>) associationType;
-        MixinTypeProxy mixinTypeProxy = new MixinTypeProxy( associationClass, associationReference );
-        anyproxy = newProxyInstance( loader, new Class[]{ associationClass }, mixinTypeProxy );
+        MixinTypeProxy mixinTypeProxy = new MixinTypeProxy(associationClass, associationReference);
+        anyproxy = newProxyInstance(loader, new Class[]{associationClass}, mixinTypeProxy);
     }
 
-    public Object invoke( Object proxy, Method method, Object[] args )
-        throws Throwable
+    public Object invoke(Object proxy, Method method, Object[] args)
+            throws Throwable
     {
-        throw new QueryException( "No methods can be used" );
+        throw new QueryException("No methods can be used");
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public Object getAnyProxy()
     {
         return anyproxy;

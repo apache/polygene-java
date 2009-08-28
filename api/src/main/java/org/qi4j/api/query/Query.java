@@ -20,9 +20,9 @@
  */
 package org.qi4j.api.query;
 
-import org.qi4j.api.query.grammar.OrderBy;
-
 import java.io.Serializable;
+
+import org.qi4j.api.query.grammar.OrderBy;
 
 /**
  * This represents a Query in an indexing system. It is created from a
@@ -35,7 +35,7 @@ import java.io.Serializable;
  * which sets the order and paging before executing it.
  */
 public interface Query<T>
-    extends Iterable<T>, Serializable
+        extends Iterable<T>, Serializable
 {
     /**
      * Set the ordering rules. If many segments are used for ordering
@@ -44,7 +44,7 @@ public interface Query<T>
      * @param segments the segments to order by
      * @return the Query
      */
-    Query<T> orderBy( OrderBy... segments );
+    Query<T> orderBy(OrderBy... segments);
 
     /**
      * Set the index of the first result. Default is 0 (zero).
@@ -52,7 +52,7 @@ public interface Query<T>
      * @param firstResult which index to use as the first one
      * @return the Query
      */
-    Query<T> firstResult( int firstResult );
+    Query<T> firstResult(int firstResult);
 
     /**
      * Set how many results should be returned. Default is that
@@ -61,7 +61,7 @@ public interface Query<T>
      * @param maxResults that shouldbe returned
      * @return the query
      */
-    Query<T> maxResults( int maxResults );
+    Query<T> maxResults(int maxResults);
 
     /**
      * Get the first Entity that matches the criteria. This
@@ -71,7 +71,7 @@ public interface Query<T>
      * @throws QueryExecutionException if the query fails
      */
     T find()
-        throws QueryExecutionException;
+            throws QueryExecutionException;
 
     /**
      * Set the value of a named variable.
@@ -80,7 +80,7 @@ public interface Query<T>
      * @param value of the variable
      * @return the query
      */
-    Query<T> setVariable( String name, Object value );
+    Query<T> setVariable(String name, Object value);
 
     /**
      * Get the value of a named variable.
@@ -88,7 +88,7 @@ public interface Query<T>
      * @param name of the variable
      * @return value of the variable
      */
-    <V> V getVariable( String name );
+    <V> V getVariable(String name);
 
     /**
      * Get the result type of this Query
@@ -105,5 +105,5 @@ public interface Query<T>
      * @throws QueryExecutionException if the query fails
      */
     long count()
-        throws QueryExecutionException;
+            throws QueryExecutionException;
 }

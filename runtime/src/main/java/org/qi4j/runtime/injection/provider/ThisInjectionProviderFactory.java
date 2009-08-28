@@ -1,5 +1,14 @@
 package org.qi4j.runtime.injection.provider;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+
 import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -8,108 +17,101 @@ import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 
-import java.io.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
-
 /**
  * JAVADOC
  */
 public final class ThisInjectionProviderFactory
-    implements InjectionProviderFactory, Serializable
+        implements InjectionProviderFactory, Serializable
 {
-    public InjectionProvider newInjectionProvider( Resolution bindingContext, DependencyModel dependencyModel )
-        throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider(Resolution bindingContext, DependencyModel dependencyModel)
+            throws InvalidInjectionException
     {
-        if( bindingContext.object() instanceof AbstractCompositeDescriptor )
+        if (bindingContext.object() instanceof AbstractCompositeDescriptor)
         {
             // If Composite type then return real type, otherwise use the specified one
             Class thisType = dependencyModel.rawInjectionType();
 
-            if( thisType.isAssignableFrom( bindingContext.object().type() ) )
+            if (thisType.isAssignableFrom(bindingContext.object().type()))
             {
                 thisType = bindingContext.object().type();
-            }
-            else
+            } else
             {
-                AbstractCompositeDescriptor acd = ( (AbstractCompositeDescriptor) bindingContext.object() );
+                AbstractCompositeDescriptor acd = ((AbstractCompositeDescriptor) bindingContext.object());
                 boolean ok = false;
-                for( Class mixinType : acd.mixinTypes() )
+                for (Class mixinType : acd.mixinTypes())
                 {
-                    if( thisType.isAssignableFrom( mixinType ) )
+                    if (thisType.isAssignableFrom(mixinType))
                     {
                         ok = true;
                         break;
                     }
                 }
 
-                if( !ok )
+                if (!ok)
                 {
-                    throw new InvalidInjectionException( "Composite " + bindingContext.object().type().getName() + " does not implement @This type " + thisType.getName() + " in fragment " + dependencyModel.injectedClass().getName() );
+                    throw new InvalidInjectionException("Composite " + bindingContext.object().type().getName() + " does not implement @This type " + thisType.getName() + " in fragment " + dependencyModel.injectedClass().getName());
                 }
             }
 
-            return new ThisInjectionProvider( thisType );
-        }
-        else
+            return new ThisInjectionProvider(thisType);
+        } else
         {
-            throw new InvalidInjectionException( "Object " + dependencyModel.injectedClass() + " may not use @This" );
+            throw new InvalidInjectionException("Object " + dependencyModel.injectedClass() + " may not use @This");
         }
     }
 
     private class ThisInjectionProvider
-        implements InjectionProvider, Serializable
+            implements InjectionProvider, Serializable
     {
         Constructor proxyConstructor;
 
-        public ThisInjectionProvider( Class type )
+        public ThisInjectionProvider(Class type)
         {
             try
             {
-                proxyConstructor = Proxy.getProxyClass( type.getClassLoader(), new Class[]{ type } ).getConstructor( InvocationHandler.class );
+                proxyConstructor = Proxy.getProxyClass(type.getClassLoader(), new Class[]{type}).getConstructor(InvocationHandler.class);
             }
-            catch( Exception e )
+            catch (Exception e)
             {
                 // Ignore
                 e.printStackTrace();
             }
         }
 
-        public Object provideInjection( InjectionContext context )
+        public Object provideInjection(InjectionContext context)
         {
             try
             {
                 InvocationHandler handler = context.compositeInstance();
-                if( handler == null )
+                if (handler == null)
                 {
                     handler = context.proxyHandler();
                 }
-                return proxyConstructor.newInstance( handler );
+                return proxyConstructor.newInstance(handler);
             }
-            catch( Exception e )
+            catch (Exception e)
             {
-                throw new InjectionProviderException( "Could not instantiate @This proxy", e );
+                throw new InjectionProviderException("Could not instantiate @This proxy", e);
             }
         }
 
-        private void writeObject( ObjectOutputStream out )
-            throws IOException
+        private void writeObject(ObjectOutputStream out)
+                throws IOException
         {
             try
             {
-                SerializationUtil.writeConstructor( out, proxyConstructor );
+                SerializationUtil.writeConstructor(out, proxyConstructor);
             }
-            catch( NotSerializableException e )
+            catch (NotSerializableException e)
             {
-                System.err.println( "NotSerializable in " + getClass() );
+                System.err.println("NotSerializable in " + getClass());
                 throw e;
             }
         }
 
-        private void readObject( ObjectInputStream in ) throws IOException, ClassNotFoundException
+        private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
         {
-            proxyConstructor = SerializationUtil.readConstructor( in );
+            proxyConstructor = SerializationUtil.readConstructor(in);
         }
     }
 }

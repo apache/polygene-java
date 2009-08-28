@@ -14,22 +14,22 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.runtime.structure.ModelVisitor;
-
 import java.io.Serializable;
 import java.util.List;
+
+import org.qi4j.runtime.structure.ModelVisitor;
 
 /**
  * JAVADOC
  */
 public final class ValueConstraintsModel
-    implements Serializable
+        implements Serializable
 {
     private final List<AbstractConstraintModel> constraintModels;
     private String name;
     private boolean optional;
 
-    public ValueConstraintsModel( List<AbstractConstraintModel> constraintModels, String name, boolean optional )
+    public ValueConstraintsModel(List<AbstractConstraintModel> constraintModels, String name, boolean optional)
     {
         this.constraintModels = constraintModels;
         this.name = name;
@@ -38,12 +38,12 @@ public final class ValueConstraintsModel
 
     public ValueConstraintsInstance newInstance()
     {
-        return new ValueConstraintsInstance( constraintModels, name, optional );
+        return new ValueConstraintsInstance(constraintModels, name, optional);
     }
 
     public boolean isConstrained()
     {
-        if( !constraintModels.isEmpty() )
+        if (!constraintModels.isEmpty())
         {
             return true;
         }
@@ -51,11 +51,11 @@ public final class ValueConstraintsModel
         return !optional;
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        for( AbstractConstraintModel constraintModel : constraintModels )
+        for (AbstractConstraintModel constraintModel : constraintModels)
         {
-            constraintModel.visitModel( modelVisitor );
+            constraintModel.visitModel(modelVisitor);
         }
     }
 }

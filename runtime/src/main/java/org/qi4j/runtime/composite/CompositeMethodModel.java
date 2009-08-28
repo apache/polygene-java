@@ -14,6 +14,19 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.util.SerializationUtil;
@@ -24,20 +37,11 @@ import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
 
-import java.io.*;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 /**
  * JAVADOC
  */
 public final class CompositeMethodModel
-    implements Binder, CompositeMethodDescriptor, Serializable
+        implements Binder, CompositeMethodDescriptor, Serializable
 {
     // Model
     private Method method;
@@ -53,28 +57,28 @@ public final class CompositeMethodModel
     //    private final CompositeMethodInstancePool instancePool = new ThreadLocalCompositeMethodInstancePool();
     private MethodConstraintsInstance methodConstraintsInstance;
 
-    private void writeObject( ObjectOutputStream out )
-        throws IOException
+    private void writeObject(ObjectOutputStream out)
+            throws IOException
     {
         try
         {
-            SerializationUtil.writeMethod( out, method );
-            out.writeObject( mixins );
-            out.writeObject( methodConcerns );
-            out.writeObject( methodSideEffects );
-            out.writeObject( methodConstraints );
+            SerializationUtil.writeMethod(out, method);
+            out.writeObject(mixins);
+            out.writeObject(methodConcerns);
+            out.writeObject(methodSideEffects);
+            out.writeObject(methodConstraints);
         }
-        catch( NotSerializableException e )
+        catch (NotSerializableException e)
         {
-            System.err.println( "NotSerializable in " + getClass() );
+            System.err.println("NotSerializable in " + getClass());
             throw e;
         }
     }
 
-    private void readObject( ObjectInputStream in )
-        throws IOException, ClassNotFoundException
+    private void readObject(ObjectInputStream in)
+            throws IOException, ClassNotFoundException
     {
-        this.method = SerializationUtil.readMethod( in );
+        this.method = SerializationUtil.readMethod(in);
         mixins = (AbstractMixinsModel) in.readObject();
         methodConcerns = (MethodConcernsModel) in.readObject();
         methodSideEffects = (MethodSideEffectsModel) in.readObject();
@@ -82,11 +86,11 @@ public final class CompositeMethodModel
         initialize();
     }
 
-    public CompositeMethodModel( Method method,
-                                 MethodConstraintsModel methodConstraintsModel,
-                                 MethodConcernsModel methodConcernsModel,
-                                 MethodSideEffectsModel methodSideEffectsModel,
-                                 AbstractMixinsModel mixinsModel )
+    public CompositeMethodModel(Method method,
+                                MethodConstraintsModel methodConstraintsModel,
+                                MethodConcernsModel methodConcernsModel,
+                                MethodSideEffectsModel methodSideEffectsModel,
+                                AbstractMixinsModel mixinsModel)
     {
         this.method = method;
         mixins = mixinsModel;
@@ -99,7 +103,7 @@ public final class CompositeMethodModel
     private void initialize()
     {
         annotations = new CompositeMethodAnnotatedElement();
-        this.method.setAccessible( true );
+        this.method.setAccessible(true);
         instancePool = new SynchronizedCompositeMethodInstancePool();
     }
 
@@ -111,71 +115,71 @@ public final class CompositeMethodModel
 
     public MixinModel mixin()
     {
-        return mixins.mixinFor( method );
+        return mixins.mixinFor(method);
     }
 
     // Binding
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind(Resolution resolution) throws BindingException
     {
-        resolution = new Resolution( resolution.application(),
-                                     resolution.layer(),
-                                     resolution.module(),
-                                     resolution.object(),
-                                     this,
-                                     null //no field
+        resolution = new Resolution(resolution.application(),
+                resolution.layer(),
+                resolution.module(),
+                resolution.object(),
+                this,
+                null //no field
         );
 
-        methodConcerns.bind( resolution );
-        methodSideEffects.bind( resolution );
+        methodConcerns.bind(resolution);
+        methodSideEffects.bind(resolution);
 
         methodConstraintsInstance = methodConstraints.newInstance();
     }
 
     // Context
-    public Object invoke( Object composite, Object[] params, MixinsInstance mixins, ModuleInstance moduleInstance )
-        throws Throwable
+    public Object invoke(Object composite, Object[] params, MixinsInstance mixins, ModuleInstance moduleInstance)
+            throws Throwable
     {
-        methodConstraintsInstance.checkValid( composite, params );
+        methodConstraintsInstance.checkValid(composite, params);
 
-        CompositeMethodInstance methodInstance = getInstance( moduleInstance );
+        CompositeMethodInstance methodInstance = getInstance(moduleInstance);
         try
         {
-            return mixins.invoke( composite, params, methodInstance );
+            return mixins.invoke(composite, params, methodInstance);
         }
         finally
         {
-            instancePool.returnInstance( methodInstance );
+            instancePool.returnInstance(methodInstance);
         }
     }
 
-    private CompositeMethodInstance getInstance( ModuleInstance moduleInstance )
+    private CompositeMethodInstance getInstance(ModuleInstance moduleInstance)
     {
         CompositeMethodInstance methodInstance = instancePool.getInstance();
-        if( methodInstance == null )
+        if (methodInstance == null)
         {
-            methodInstance = newCompositeMethodInstance( moduleInstance );
+            methodInstance = newCompositeMethodInstance(moduleInstance);
         }
 
         return methodInstance;
     }
 
-    private CompositeMethodInstance newCompositeMethodInstance( ModuleInstance moduleInstance )
-        throws ConstructionException
+    private CompositeMethodInstance newCompositeMethodInstance(ModuleInstance moduleInstance)
+            throws ConstructionException
     {
-        FragmentInvocationHandler mixinInvocationHandler = mixins.newInvocationHandler( method );
+        FragmentInvocationHandler mixinInvocationHandler = mixins.newInvocationHandler(method);
         InvocationHandler invoker = mixinInvocationHandler;
-        if( methodConcerns.hasConcerns() )
+        if (methodConcerns.hasConcerns())
         {
-            MethodConcernsInstance concernsInstance = methodConcerns.newInstance( moduleInstance, mixinInvocationHandler );
+            MethodConcernsInstance concernsInstance = methodConcerns.newInstance(moduleInstance, mixinInvocationHandler);
             invoker = concernsInstance;
         }
-        if( methodSideEffects.hasSideEffects() )
+        if (methodSideEffects.hasSideEffects())
         {
-            MethodSideEffectsInstance sideEffectsInstance = methodSideEffects.newInstance( moduleInstance, invoker );
+            MethodSideEffectsInstance sideEffectsInstance = methodSideEffects.newInstance(moduleInstance, invoker);
             invoker = sideEffectsInstance;
         }
 
-        return new CompositeMethodInstance( invoker, mixinInvocationHandler, method, mixins.methodIndex.get( method ) );
+        return new CompositeMethodInstance(invoker, mixinInvocationHandler, method, mixins.methodIndex.get(method));
     }
 
     public AnnotatedElement annotatedElement()
@@ -183,40 +187,41 @@ public final class CompositeMethodModel
         return annotations;
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        modelVisitor.visit( this );
+        modelVisitor.visit(this);
 
-        methodConstraints.visitModel( modelVisitor );
-        methodConcerns.visitModel( modelVisitor );
-        methodSideEffects.visitModel( modelVisitor );
+        methodConstraints.visitModel(modelVisitor);
+        methodConcerns.visitModel(modelVisitor);
+        methodSideEffects.visitModel(modelVisitor);
     }
 
-    public void addThisInjections( final Set<Class> thisDependencies )
+    public void addThisInjections(final Set<Class> thisDependencies)
     {
         visitModel(
-            new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
-            {
-                public void visitDependency( DependencyModel dependencyModel )
+                new DependencyVisitor(new DependencyModel.ScopeSpecification(This.class))
                 {
-                    thisDependencies.add( dependencyModel.rawInjectionType() );
+                    public void visitDependency(DependencyModel dependencyModel)
+                    {
+                        thisDependencies.add(dependencyModel.rawInjectionType());
+                    }
                 }
-            }
         );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return method.toGenericString();
     }
 
     public class CompositeMethodAnnotatedElement
-        implements AnnotatedElement, Serializable
+            implements AnnotatedElement, Serializable
     {
-        public boolean isAnnotationPresent( Class<? extends Annotation> annotationClass )
+        public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass)
         {
             // Check method
-            if( method.isAnnotationPresent( annotationClass ) )
+            if (method.isAnnotationPresent(annotationClass))
             {
                 return true;
             }
@@ -224,75 +229,75 @@ public final class CompositeMethodModel
             // Check mixin
             try
             {
-                MixinModel model = mixins.mixinFor( method );
-                if( model.isGeneric() )
+                MixinModel model = mixins.mixinFor(method);
+                if (model.isGeneric())
                 {
                     return false;
                 }
-                return ( model.mixinClass().getMethod( method.getName(), method.getParameterTypes() ).isAnnotationPresent( annotationClass ) );
+                return (model.mixinClass().getMethod(method.getName(), method.getParameterTypes()).isAnnotationPresent(annotationClass));
             }
-            catch( NoSuchMethodException e )
+            catch (NoSuchMethodException e)
             {
                 return false;
             }
         }
 
-        public <T extends Annotation> T getAnnotation( Class<T> annotationClass )
+        public <T extends Annotation> T getAnnotation(Class<T> annotationClass)
         {
             // Check mixin
             try
             {
-                MixinModel model = mixins.mixinFor( method );
-                if( !model.isGeneric() )
+                MixinModel model = mixins.mixinFor(method);
+                if (!model.isGeneric())
                 {
-                    T annotation = annotationClass.cast( model.mixinClass().getMethod( method.getName(), method.getParameterTypes() ).getAnnotation( annotationClass ) );
-                    if( annotation != null )
+                    T annotation = annotationClass.cast(model.mixinClass().getMethod(method.getName(), method.getParameterTypes()).getAnnotation(annotationClass));
+                    if (annotation != null)
                     {
                         return annotation;
                     }
                 }
             }
-            catch( NoSuchMethodException e )
+            catch (NoSuchMethodException e)
             {
                 // Ignore
             }
 
             // Check method
-            return method.getAnnotation( annotationClass );
+            return method.getAnnotation(annotationClass);
         }
 
         public Annotation[] getAnnotations()
         {
             // Add mixin annotations
             List<Annotation> annotations = new ArrayList<Annotation>();
-            MixinModel model = mixins.mixinFor( method );
+            MixinModel model = mixins.mixinFor(method);
             Annotation[] mixinAnnotations = new Annotation[0];
-            if( !model.isGeneric() )
+            if (!model.isGeneric())
             {
                 mixinAnnotations = model.mixinClass().getAnnotations();
-                for( int i = 0; i < mixinAnnotations.length; i++ )
+                for (int i = 0; i < mixinAnnotations.length; i++)
                 {
-                    annotations.add( mixinAnnotations[ i ] );
+                    annotations.add(mixinAnnotations[i]);
                 }
             }
 
             // Add method annotations, but don't include duplicates
             Annotation[] methodAnnotations = method.getAnnotations();
             next:
-            for( Annotation methodAnnotation : methodAnnotations )
+            for (Annotation methodAnnotation : methodAnnotations)
             {
-                for( int i = 0; i < mixinAnnotations.length; i++ )
+                for (int i = 0; i < mixinAnnotations.length; i++)
                 {
-                    if( annotations.get( i ).annotationType().equals( methodAnnotation.annotationType() ) )
+                    if (annotations.get(i).annotationType().equals(methodAnnotation.annotationType()))
                     {
                         continue next;
                     }
                 }
 
-                annotations.add( methodAnnotation );
+                annotations.add(methodAnnotation);
             }
 
-            return annotations.toArray( new Annotation[annotations.size()] );
+            return annotations.toArray(new Annotation[annotations.size()]);
         }
 
         public Annotation[] getDeclaredAnnotations()

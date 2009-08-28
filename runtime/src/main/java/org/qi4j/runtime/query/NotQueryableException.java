@@ -17,13 +17,12 @@
  */
 package org.qi4j.runtime.query;
 
-import org.qi4j.api.entity.Queryable;
-
 import java.lang.reflect.Method;
+
+import org.qi4j.api.entity.Queryable;
 
 /**
  * Thrown in case that a non queryable type or accessor (marked with @Queriable(false)) is used during query building.
- *
  */
 public class NotQueryableException extends QueryException
 {
@@ -33,9 +32,9 @@ public class NotQueryableException extends QueryException
      *
      * @param message exception message
      */
-    private NotQueryableException( final String message )
+    private NotQueryableException(final String message)
     {
-        super( message );
+        super(message);
     }
 
     /**
@@ -44,18 +43,18 @@ public class NotQueryableException extends QueryException
      * @param accessor accessor method
      * @throws NotQueryableException - If accessor method has been marked as not queryable
      */
-    public static void throwIfNotQueryable( final Method accessor )
+    public static void throwIfNotQueryable(final Method accessor)
     {
-        Queryable queryable = accessor.getAnnotation( Queryable.class );
-        if( queryable != null && !queryable.value() )
+        Queryable queryable = accessor.getAnnotation(Queryable.class);
+        if (queryable != null && !queryable.value())
         {
             throw new NotQueryableException(
-                String.format(
-                    "%1$s \"%2$s\" (%3$s) is not queryable as has been marked with @Queryable(false)",
-                    accessor.getReturnType().getSimpleName(),
-                    accessor.getName(),
-                    accessor.getDeclaringClass().getName()
-                )
+                    String.format(
+                            "%1$s \"%2$s\" (%3$s) is not queryable as has been marked with @Queryable(false)",
+                            accessor.getReturnType().getSimpleName(),
+                            accessor.getName(),
+                            accessor.getDeclaringClass().getName()
+                    )
             );
         }
     }
@@ -66,16 +65,16 @@ public class NotQueryableException extends QueryException
      * @param type a type
      * @throws NotQueryableException - If type has been marked as not queryable
      */
-    public static void throwIfNotQueryable( final Class<?> type )
+    public static void throwIfNotQueryable(final Class<?> type)
     {
-        Queryable queryable = type.getAnnotation( Queryable.class );
-        if( queryable != null && !queryable.value() )
+        Queryable queryable = type.getAnnotation(Queryable.class);
+        if (queryable != null && !queryable.value())
         {
             throw new NotQueryableException(
-                String.format(
-                    "Type \"%1$s\" is not queryable as has been marked with @Queryable(false)",
-                    type.getName()
-                )
+                    String.format(
+                            "Type \"%1$s\" is not queryable as has been marked with @Queryable(false)",
+                            type.getName()
+                    )
             );
         }
     }

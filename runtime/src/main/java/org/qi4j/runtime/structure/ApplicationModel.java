@@ -14,6 +14,12 @@
 
 package org.qi4j.runtime.structure;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.structure.Application;
@@ -26,17 +32,11 @@ import org.qi4j.spi.structure.ApplicationDescriptor;
 import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.spi.structure.DescriptorVisitor;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * JAVADOC
  */
 public final class ApplicationModel
-    implements ApplicationModelSPI, ApplicationDescriptor, Serializable
+        implements ApplicationModelSPI, ApplicationDescriptor, Serializable
 {
     private final String name;
     private Application.Mode mode;
@@ -44,7 +44,7 @@ public final class ApplicationModel
     private final List<LayerModel> layers;
     private final InjectionProviderFactory ipf;
 
-    public ApplicationModel( String name, Application.Mode mode, MetaInfo metaInfo, List<LayerModel> layers)
+    public ApplicationModel(String name, Application.Mode mode, MetaInfo metaInfo, List<LayerModel> layers)
     {
         this.name = name;
         this.mode = mode;
@@ -73,63 +73,63 @@ public final class ApplicationModel
         return "urn:qi4j:model:application:" + name;
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        modelVisitor.visit( this );
+        modelVisitor.visit(this);
 
-        for( LayerModel layer : layers )
+        for (LayerModel layer : layers)
         {
-            layer.visitModel( modelVisitor );
+            layer.visitModel(modelVisitor);
         }
     }
 
     // Binding
     public void bind() throws BindingException
     {
-        Resolution resolution = new Resolution( this, null, null, null, null, null );
-        for( LayerModel layer : layers )
+        Resolution resolution = new Resolution(this, null, null, null, null, null);
+        for (LayerModel layer : layers)
         {
-            layer.bind( resolution );
+            layer.bind(resolution);
         }
     }
 
     // SPI
-    public void visitDescriptor( DescriptorVisitor visitor )
+    public void visitDescriptor(DescriptorVisitor visitor)
     {
-        visitModel( new DescriptorModelVisitor( visitor ) );
+        visitModel(new DescriptorModelVisitor(visitor));
     }
 
-    public ApplicationInstance newInstance( Qi4jSPI runtime )
-        throws InvalidApplicationException
+    public ApplicationInstance newInstance(Qi4jSPI runtime)
+            throws InvalidApplicationException
     {
         List<LayerInstance> layerInstances = new ArrayList<LayerInstance>();
-        ApplicationInstance applicationInstance = new ApplicationInstance( this, runtime, layerInstances);
+        ApplicationInstance applicationInstance = new ApplicationInstance(this, runtime, layerInstances);
 
         // Create layer instances
         Map<LayerModel, LayerInstance> layerInstanceMap = new HashMap<LayerModel, LayerInstance>();
         Map<LayerModel, List<LayerInstance>> usedLayers = new HashMap<LayerModel, List<LayerInstance>>();
-        for( LayerModel layer : layers )
+        for (LayerModel layer : layers)
         {
             List<LayerInstance> usedLayerInstances = new ArrayList<LayerInstance>();
-            usedLayers.put( layer, usedLayerInstances );
-            UsedLayersInstance usedLayersInstance = layer.usedLayers().newInstance( usedLayerInstances );
-            LayerInstance layerInstance = layer.newInstance( applicationInstance, usedLayersInstance );
-            layerInstances.add( layerInstance );
-            layerInstanceMap.put( layer, layerInstance );
+            usedLayers.put(layer, usedLayerInstances);
+            UsedLayersInstance usedLayersInstance = layer.usedLayers().newInstance(usedLayerInstances);
+            LayerInstance layerInstance = layer.newInstance(applicationInstance, usedLayersInstance);
+            layerInstances.add(layerInstance);
+            layerInstanceMap.put(layer, layerInstance);
         }
 
         // Resolve used layer instances
-        for( LayerModel layer : layers )
+        for (LayerModel layer : layers)
         {
-            List<LayerInstance> usedLayerInstances = usedLayers.get( layer );
-            for( LayerModel usedLayer : layer.usedLayers().layers() )
+            List<LayerInstance> usedLayerInstances = usedLayers.get(layer);
+            for (LayerModel usedLayer : layer.usedLayers().layers())
             {
-                LayerInstance layerInstance = layerInstanceMap.get( usedLayer );
-                if( layerInstance == null )
+                LayerInstance layerInstance = layerInstanceMap.get(usedLayer);
+                if (layerInstance == null)
                 {
-                    throw new InvalidApplicationException( "Could not find used layer:" + usedLayer.name() );
+                    throw new InvalidApplicationException("Could not find used layer:" + usedLayer.name());
                 }
-                usedLayerInstances.add( layerInstance );
+                usedLayerInstances.add(layerInstance);
             }
         }
 

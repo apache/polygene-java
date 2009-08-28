@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.entity.association;
 
+import java.lang.reflect.Type;
+
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.Association;
@@ -22,48 +24,46 @@ import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 
-import java.lang.reflect.Type;
-
 /**
  * Implementation of Association to a single Entity.
  */
 public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
-    implements Association<T>
+        implements Association<T>
 {
     private static final Object NOT_LOADED = new Object();
 
     private T value = (T) NOT_LOADED;
     private ConstraintsCheck constraints;
 
-    public AssociationInstance( AssociationInfo associationInfo, ConstraintsCheck constraints, ModuleUnitOfWork unitOfWork, EntityState entityState )
+    public AssociationInstance(AssociationInfo associationInfo, ConstraintsCheck constraints, ModuleUnitOfWork unitOfWork, EntityState entityState)
     {
-        super( associationInfo, unitOfWork, entityState );
+        super(associationInfo, unitOfWork, entityState);
         this.constraints = constraints;
     }
 
     // Association implementation
     public T get()
     {
-        if( !isSet() )
+        if (!isSet())
         {
-            EntityReference entityId = entityState.getAssociation( qualifiedName() );
-            value = getEntity( entityId );
+            EntityReference entityId = entityState.getAssociation(qualifiedName());
+            value = getEntity(entityId);
         }
         return value;
     }
 
-    public void set( T newValue )
-        throws IllegalArgumentException
+    public void set(T newValue)
+            throws IllegalArgumentException
     {
         checkImmutable();
-        checkType( newValue );
+        checkType(newValue);
 
-        constraints.checkConstraints( newValue );
+        constraints.checkConstraints(newValue);
 
         // Change association
-        if( entityState != null )
+        if (entityState != null)
         {
-            entityState.setAssociation( qualifiedName(), getEntityReference( newValue ) );
+            entityState.setAssociation(qualifiedName(), getEntityReference(newValue));
         }
         this.value = newValue;
     }
@@ -74,9 +74,9 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
     }
 
     // AssociationInfo implementation
-    public <T> T metaInfo( Class<T> infoType )
+    public <T> T metaInfo(Class<T> infoType)
     {
-        return associationInfo.metaInfo( infoType );
+        return associationInfo.metaInfo(infoType);
     }
 
     public QualifiedName qualifiedName()
@@ -89,7 +89,7 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
         return associationInfo.type();
     }
 
-    public void write( T value )
+    public void write(T value)
     {
         this.value = value;
     }
@@ -99,44 +99,45 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
         return value;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
-        if( value == null )
+        if (value == null)
         {
             return "";
-        }
-        else
+        } else
         {
             return value.toString();
         }
     }
 
-    @Override public int hashCode()
+    @Override
+    public int hashCode()
     {
-        if( value == null )
+        if (value == null)
         {
             return 0;
-        }
-        else
+        } else
         {
             return value.hashCode();
         }
     }
 
-    @Override public boolean equals( Object o )
+    @Override
+    public boolean equals(Object o)
     {
-        if( this == o )
+        if (this == o)
         {
             return true;
         }
-        if( o == null || getClass() != o.getClass() )
+        if (o == null || getClass() != o.getClass())
         {
             return false;
         }
 
         AssociationInstance that = (AssociationInstance) o;
 
-        if( value != null ? !value.equals( that.value ) : that.value != null )
+        if (value != null ? !value.equals(that.value) : that.value != null)
         {
             return false;
         }

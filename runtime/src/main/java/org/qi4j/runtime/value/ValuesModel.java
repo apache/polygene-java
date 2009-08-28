@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.value;
 
+import java.util.List;
+
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.value.ValueComposite;
@@ -22,53 +24,50 @@ import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 
-import java.util.List;
-
 /**
  * JAVADOC
  */
 public class ValuesModel
-    implements Binder
+        implements Binder
 {
     private final List<? extends ValueModel> valueModels;
 
-    public ValuesModel( List<? extends ValueModel> valueModels )
+    public ValuesModel(List<? extends ValueModel> valueModels)
     {
         this.valueModels = valueModels;
     }
 
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        for( ValueModel valueModel : valueModels )
+        for (ValueModel valueModel : valueModels)
         {
-            valueModel.visitModel( modelVisitor );
+            valueModel.visitModel(modelVisitor);
         }
     }
 
-    public void bind( Resolution resolution )
-        throws BindingException
+    public void bind(Resolution resolution)
+            throws BindingException
     {
-        for( ValueModel valueModel : valueModels )
+        for (ValueModel valueModel : valueModels)
         {
-            valueModel.bind( resolution );
+            valueModel.bind(resolution);
         }
     }
 
-    public ValueModel getValueModelFor( Class valueType, Visibility visibility )
+    public ValueModel getValueModelFor(Class valueType, Visibility visibility)
     {
         ValueModel foundModel = null;
         if (ValueComposite.class.isAssignableFrom(valueType))
         {
-            for( ValueModel valueModel : valueModels )
+            for (ValueModel valueModel : valueModels)
             {
-                if( valueType.equals( valueModel.type() ) && valueModel.visibility() == visibility )
+                if (valueType.equals(valueModel.type()) && valueModel.visibility() == visibility)
                 {
-                    if( foundModel != null )
+                    if (foundModel != null)
                     {
-                        throw new AmbiguousTypeException( valueType, foundModel.type(), valueModel.type() );
-                    }
-                    else
+                        throw new AmbiguousTypeException(valueType, foundModel.type(), valueModel.type());
+                    } else
                     {
                         foundModel = valueModel;
                     }
@@ -77,15 +76,14 @@ public class ValuesModel
 
         } else
         {
-            for( ValueModel valueModel : valueModels )
+            for (ValueModel valueModel : valueModels)
             {
-                if( valueType.isAssignableFrom( valueModel.type() ) && valueModel.visibility() == visibility )
+                if (valueType.isAssignableFrom(valueModel.type()) && valueModel.visibility() == visibility)
                 {
-                    if( foundModel != null )
+                    if (foundModel != null)
                     {
-                        throw new AmbiguousTypeException( valueType, foundModel.type(), valueModel.type() );
-                    }
-                    else
+                        throw new AmbiguousTypeException(valueType, foundModel.type(), valueModel.type());
+                    } else
                     {
                         foundModel = valueModel;
                     }
@@ -96,11 +94,11 @@ public class ValuesModel
         return foundModel;
     }
 
-    public Class getClassForName( String type )
+    public Class getClassForName(String type)
     {
-        for( ValueModel valueModel : valueModels )
+        for (ValueModel valueModel : valueModels)
         {
-            if( valueModel.type().getName().equals( type ) )
+            if (valueModel.type().getName().equals(type))
             {
                 return valueModel.type();
             }

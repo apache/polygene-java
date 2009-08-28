@@ -14,24 +14,24 @@
 
 package org.qi4j.runtime.injection;
 
-import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.composite.Resolution;
-import org.qi4j.runtime.structure.Binder;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.runtime.structure.Specification;
-import static org.qi4j.runtime.structure.Specification.CollectionFilter.filterBy;
-import org.qi4j.spi.composite.InjectedParametersDescriptor;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.runtime.structure.Specification;
+import static org.qi4j.runtime.structure.Specification.CollectionFilter.*;
+import org.qi4j.spi.composite.InjectedParametersDescriptor;
+
 /**
  * JAVADOC
  */
 public final class InjectedParametersModel
-    implements Binder, InjectedParametersDescriptor, Serializable
+        implements Binder, InjectedParametersDescriptor, Serializable
 {
     private final List<DependencyModel> parameterDependencies;
 
@@ -46,43 +46,43 @@ public final class InjectedParametersModel
     }
 
     // Binding
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind(Resolution resolution) throws BindingException
     {
-        for( DependencyModel parameterDependency : parameterDependencies )
+        for (DependencyModel parameterDependency : parameterDependencies)
         {
-            parameterDependency.bind( resolution );
+            parameterDependency.bind(resolution);
         }
     }
 
     // Context
-    public Object[] newParametersInstance( InjectionContext context )
+    public Object[] newParametersInstance(InjectionContext context)
     {
         Object[] parametersInstance = new Object[parameterDependencies.size()];
 
         // Inject parameterDependencies
-        for( int j = 0; j < parameterDependencies.size(); j++ )
+        for (int j = 0; j < parameterDependencies.size(); j++)
         {
-            DependencyModel dependencyModel = parameterDependencies.get( j );
-            Object parameter = dependencyModel.inject( context );
-            parametersInstance[ j ] = parameter;
+            DependencyModel dependencyModel = parameterDependencies.get(j);
+            Object parameter = dependencyModel.inject(context);
+            parametersInstance[j] = parameter;
         }
 
         return parametersInstance;
     }
 
-    public void addDependency( DependencyModel dependency )
+    public void addDependency(DependencyModel dependency)
     {
-        parameterDependencies.add( dependency );
+        parameterDependencies.add(dependency);
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        modelVisitor.visit( this );
+        modelVisitor.visit(this);
     }
 
-    public Collection<DependencyModel> filter( Specification<DependencyModel> specification )
+    public Collection<DependencyModel> filter(Specification<DependencyModel> specification)
     {
-        return filterBy( parameterDependencies, specification );
+        return filterBy(parameterDependencies, specification);
     }
 
 }

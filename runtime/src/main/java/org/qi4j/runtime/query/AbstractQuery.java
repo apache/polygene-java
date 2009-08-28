@@ -18,19 +18,25 @@
  */
 package org.qi4j.runtime.query;
 
-import org.qi4j.api.query.Query;
-import org.qi4j.api.query.grammar.*;
-import org.qi4j.runtime.query.grammar.impl.VariableValueExpressionImpl;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import org.qi4j.api.query.Query;
+import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.api.query.grammar.ComparisonPredicate;
+import org.qi4j.api.query.grammar.Conjunction;
+import org.qi4j.api.query.grammar.Disjunction;
+import org.qi4j.api.query.grammar.Negation;
+import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.query.grammar.SingleValueExpression;
+import org.qi4j.api.query.grammar.ValueExpression;
+import org.qi4j.runtime.query.grammar.impl.VariableValueExpressionImpl;
+
 /**
  * Default implementation of {@link org.qi4j.api.query.Query}
- *
  */
 abstract class AbstractQuery<T>
-    implements Query<T>
+        implements Query<T>
 {
     private static final long serialVersionUID = 1L;
 
@@ -65,43 +71,40 @@ abstract class AbstractQuery<T>
      * @param resultType  type of queried entities; cannot be null
      * @param whereClause where clause
      */
-    AbstractQuery( final Class<T> resultType,
-                   final BooleanExpression whereClause )
+    AbstractQuery(final Class<T> resultType,
+                  final BooleanExpression whereClause)
     {
         this.resultType = resultType;
         this.whereClause = whereClause;
         this.variables = new HashMap<String, SingleValueExpression>();
-        initializeVariables( whereClause );
+        initializeVariables(whereClause);
     }
 
-    private void initializeVariables( BooleanExpression anExpression )
+    private void initializeVariables(BooleanExpression anExpression)
     {
-        if( anExpression instanceof Negation )
+        if (anExpression instanceof Negation)
         {
             Negation negation = (Negation) anExpression;
-            initializeVariables( negation.expression() );
-        }
-        else if( anExpression instanceof Disjunction )
+            initializeVariables(negation.expression());
+        } else if (anExpression instanceof Disjunction)
         {
             Disjunction disjunction = (Disjunction) anExpression;
-            initializeVariables( disjunction.leftSideExpression() );
-            initializeVariables( disjunction.rightSideExpression() );
-        }
-        else if( anExpression instanceof Conjunction )
+            initializeVariables(disjunction.leftSideExpression());
+            initializeVariables(disjunction.rightSideExpression());
+        } else if (anExpression instanceof Conjunction)
         {
             Conjunction conjunction = (Conjunction) anExpression;
-            initializeVariables( conjunction.leftSideExpression() );
-            initializeVariables( conjunction.rightSideExpression() );
-        }
-        else if( anExpression instanceof ComparisonPredicate )
+            initializeVariables(conjunction.leftSideExpression());
+            initializeVariables(conjunction.rightSideExpression());
+        } else if (anExpression instanceof ComparisonPredicate)
         {
             ComparisonPredicate predicate = (ComparisonPredicate) anExpression;
             ValueExpression valueExpression = predicate.valueExpression();
 
-            if( valueExpression instanceof VariableValueExpressionImpl )
+            if (valueExpression instanceof VariableValueExpressionImpl)
             {
                 VariableValueExpressionImpl variableValueExpression = (VariableValueExpressionImpl) valueExpression;
-                variables.put( variableValueExpression.name(), variableValueExpression );
+                variables.put(variableValueExpression.name(), variableValueExpression);
             }
         }
     }
@@ -109,7 +112,7 @@ abstract class AbstractQuery<T>
     /**
      * @see org.qi4j.api.query.Query#orderBy(org.qi4j.api.query.grammar.OrderBy[])
      */
-    public Query<T> orderBy( final OrderBy... segments )
+    public Query<T> orderBy(final OrderBy... segments)
     {
         orderBySegments = segments;
         return this;
@@ -118,7 +121,7 @@ abstract class AbstractQuery<T>
     /**
      * @see org.qi4j.api.query.Query#firstResult(int)
      */
-    public Query<T> firstResult( int firstResult )
+    public Query<T> firstResult(int firstResult)
     {
         this.firstResult = firstResult;
         return this;
@@ -127,7 +130,7 @@ abstract class AbstractQuery<T>
     /**
      * @see org.qi4j.api.query.Query#maxResults(int)
      */
-    public Query<T> maxResults( int maxResults )
+    public Query<T> maxResults(int maxResults)
     {
         this.maxResults = maxResults;
         return this;
@@ -137,16 +140,16 @@ abstract class AbstractQuery<T>
     /**
      * @see org.qi4j.api.query.Query#setVariable(String, Object)
      */
-    @SuppressWarnings( "unchecked" )
-    public Query<T> setVariable( final String name, final Object value )
+    @SuppressWarnings("unchecked")
+    public Query<T> setVariable(final String name, final Object value)
     {
         // TODO: Casting to VariableValueExpression
-        VariableValueExpressionImpl variable = getVariable( name );
-        if( variable == null )
+        VariableValueExpressionImpl variable = getVariable(name);
+        if (variable == null)
         {
-            throw new IllegalArgumentException( "Variable [" + name + "] is not found." );
+            throw new IllegalArgumentException("Variable [" + name + "] is not found.");
         }
-        variable.setValue( value );
+        variable.setValue(value);
 
         return this;
     }
@@ -154,10 +157,10 @@ abstract class AbstractQuery<T>
     /**
      * @see org.qi4j.api.query.Query#getVariable(String)
      */
-    @SuppressWarnings( "unchecked" )
-    public <V> V getVariable( final String name )
+    @SuppressWarnings("unchecked")
+    public <V> V getVariable(final String name)
     {
-        return (V) variables.get( name );
+        return (V) variables.get(name);
     }
 
     public Class<T> resultType()

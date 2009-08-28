@@ -14,19 +14,6 @@
 
 package org.qi4j.spi.value;
 
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.common.TypeName;
-import static org.qi4j.api.common.TypeName.*;
-import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.structure.Module;
-import org.qi4j.api.util.Classes;
-import org.qi4j.spi.util.json.JSONException;
-import org.qi4j.spi.util.json.JSONStringer;
-import org.qi4j.spi.util.json.JSONTokener;
-import org.qi4j.spi.util.json.JSONWriter;
-import org.qi4j.spi.property.PropertyType;
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -38,133 +25,136 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.TypeName;
+import static org.qi4j.api.common.TypeName.*;
+import org.qi4j.api.entity.Queryable;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.util.Classes;
+import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.util.json.JSONException;
+import org.qi4j.spi.util.json.JSONStringer;
+import org.qi4j.spi.util.json.JSONTokener;
+import org.qi4j.spi.util.json.JSONWriter;
+
 /**
  * Base class for types of values in ValueComposites.
  */
 public abstract class ValueType
-    implements Serializable
+        implements Serializable
 {
-    public static ValueType newValueType( Type type, Class declaringClass, Class compositeType )
+    public static ValueType newValueType(Type type, Class declaringClass, Class compositeType)
     {
-        return newValueType( null, type, declaringClass, compositeType );
+        return newValueType(null, type, declaringClass, compositeType);
     }
 
-    private static ValueType newValueType( Map<Type, ValueType> typeMap, Type type, Class declaringClass, Class compositeType )
+    private static ValueType newValueType(Map<Type, ValueType> typeMap, Type type, Class declaringClass, Class compositeType)
     {
         ValueType valueType = null;
-        if( CollectionType.isCollection( type ) )
+        if (CollectionType.isCollection(type))
         {
-            if( type instanceof ParameterizedType )
+            if (type instanceof ParameterizedType)
             {
                 ParameterizedType pt = (ParameterizedType) type;
-                Type collectionType = pt.getActualTypeArguments()[ 0 ];
-                if( collectionType instanceof TypeVariable )
+                Type collectionType = pt.getActualTypeArguments()[0];
+                if (collectionType instanceof TypeVariable)
                 {
                     TypeVariable collectionTypeVariable = (TypeVariable) collectionType;
-                    collectionType = Classes.resolveTypeVariable( collectionTypeVariable, declaringClass, compositeType );
+                    collectionType = Classes.resolveTypeVariable(collectionTypeVariable, declaringClass, compositeType);
                 }
-                ValueType collectedType = newValueType( typeMap, collectionType, declaringClass, compositeType );
-                valueType = new CollectionType( nameOf( type ), collectedType );
-            }
-            else
+                ValueType collectedType = newValueType(typeMap, collectionType, declaringClass, compositeType);
+                valueType = new CollectionType(nameOf(type), collectedType);
+            } else
             {
-                valueType = new CollectionType( nameOf( type ), newValueType( typeMap, Object.class, declaringClass, compositeType ) );
+                valueType = new CollectionType(nameOf(type), newValueType(typeMap, Object.class, declaringClass, compositeType));
             }
-        }
-        else if( ValueCompositeType.isValueComposite( type ) )
+        } else if (ValueCompositeType.isValueComposite(type))
         {
-            if( typeMap != null )
+            if (typeMap != null)
             {
-                valueType = typeMap.get( type );
+                valueType = typeMap.get(type);
             }
 
-            if( valueType == null )
+            if (valueType == null)
             {
-                Class valueTypeClass = Classes.getRawClass( type );
+                Class valueTypeClass = Classes.getRawClass(type);
 
                 List<PropertyType> types = new ArrayList<PropertyType>();
-                valueType = new ValueCompositeType( nameOf( valueTypeClass ), types );
-                if( typeMap == null )
+                valueType = new ValueCompositeType(nameOf(valueTypeClass), types);
+                if (typeMap == null)
                 {
                     typeMap = new HashMap<Type, ValueType>();
                 }
-                typeMap.put( type, valueType );
+                typeMap.put(type, valueType);
 
-                addProperties( typeMap, valueTypeClass, compositeType, types );
+                addProperties(typeMap, valueTypeClass, compositeType, types);
 
-                Collections.sort( types ); // Sort by property name
+                Collections.sort(types); // Sort by property name
             }
-        }
-        else if( EnumType.isEnum( type ) )
+        } else if (EnumType.isEnum(type))
         {
-            valueType = new EnumType( nameOf( type ) );
-        }
-        else if( StringType.isString( type ) )
+            valueType = new EnumType(nameOf(type));
+        } else if (StringType.isString(type))
         {
             valueType = new StringType();
-        }
-        else if( NumberType.isNumber( type ) )
+        } else if (NumberType.isNumber(type))
         {
-            valueType = new NumberType( nameOf( type ) );
-        }
-        else if( BooleanType.isBoolean( type ) )
+            valueType = new NumberType(nameOf(type));
+        } else if (BooleanType.isBoolean(type))
         {
             valueType = new BooleanType();
-        }
-        else if( DateType.isDate( type ) )
+        } else if (DateType.isDate(type))
         {
             valueType = new DateType();
-        }
-        else if( EntityReferenceType.isEntityReference( type ) )
+        } else if (EntityReferenceType.isEntityReference(type))
         {
-            valueType = new EntityReferenceType( nameOf( type ) );
-        }
-        else
+            valueType = new EntityReferenceType(nameOf(type));
+        } else
         {
             // TODO: shouldn't we check that the type is a Serializable?
-            valueType = new SerializableType( nameOf( type ) );
+            valueType = new SerializableType(nameOf(type));
         }
 
         return valueType;
     }
 
-    private static void addProperties( Map<Type, ValueType> typeMap, Class valueTypeClass, Class compositeType, List<PropertyType> types )
+    private static void addProperties(Map<Type, ValueType> typeMap, Class valueTypeClass, Class compositeType, List<PropertyType> types)
     {
-        for( Method method : valueTypeClass.getDeclaredMethods() )
+        for (Method method : valueTypeClass.getDeclaredMethods())
         {
             Type returnType = method.getGenericReturnType();
-            if( returnType instanceof ParameterizedType && ( (ParameterizedType) returnType ).getRawType().equals( Property.class ) )
+            if (returnType instanceof ParameterizedType && ((ParameterizedType) returnType).getRawType().equals(Property.class))
             {
-                Type propType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
-                Queryable queryableAnnotation = method.getAnnotation( Queryable.class );
+                Type propType = ((ParameterizedType) returnType).getActualTypeArguments()[0];
+                Queryable queryableAnnotation = method.getAnnotation(Queryable.class);
                 boolean queryable = queryableAnnotation == null || queryableAnnotation.value();
-                ValueType propValueType = newValueType( typeMap, propType, valueTypeClass, compositeType );
-                PropertyType propertyType = new PropertyType( QualifiedName.fromMethod( method ), propValueType, queryable, PropertyType.PropertyTypeEnum.IMMUTABLE );
-                types.add( propertyType );
+                ValueType propValueType = newValueType(typeMap, propType, valueTypeClass, compositeType);
+                PropertyType propertyType = new PropertyType(QualifiedName.fromMethod(method), propValueType, queryable, PropertyType.PropertyTypeEnum.IMMUTABLE);
+                types.add(propertyType);
             }
         }
 
         // Add methods from subinterface
-        for( Type subType : valueTypeClass.getGenericInterfaces() )
+        for (Type subType : valueTypeClass.getGenericInterfaces())
         {
             // Handles generic type variables
             Class subClass;
-            if( subType instanceof ParameterizedType )
+            if (subType instanceof ParameterizedType)
             {
-                subClass = (Class) ( (ParameterizedType) subType ).getRawType();
-            }
-            else
+                subClass = (Class) ((ParameterizedType) subType).getRawType();
+            } else
             {
                 subClass = (Class) subType;
             }
 
-            addProperties( typeMap, subClass, valueTypeClass, types );
+            addProperties(typeMap, subClass, valueTypeClass, types);
         }
     }
 
     protected final TypeName type;
 
-    protected ValueType( TypeName type )
+    protected ValueType(TypeName type)
     {
         this.type = type;
     }
@@ -174,16 +164,16 @@ public abstract class ValueType
         return type;
     }
 
-    public abstract void toJSON( Object value, JSONWriter json )
-        throws JSONException;
+    public abstract void toJSON(Object value, JSONWriter json)
+            throws JSONException;
 
-    public abstract Object fromJSON( Object object, Module module )
-        throws JSONException;
+    public abstract Object fromJSON(Object object, Module module)
+            throws JSONException;
 
-    public String toQueryParameter( Object value )
+    public String toQueryParameter(Object value)
             throws IllegalArgumentException
     {
-        if( value == null )
+        if (value == null)
         {
             return null;
         }
@@ -192,28 +182,30 @@ public abstract class ValueType
         try
         {
             jsonStringer.array();
-            toJSON( value, jsonStringer);
+            toJSON(value, jsonStringer);
             jsonStringer.endArray();
-        } catch (JSONException e)
+        }
+        catch (JSONException e)
         {
             throw new IllegalArgumentException("Query parameter value is not a proper JSON value", e);
         }
         String str = jsonStringer.toString();
-        return str.substring(1, str.length()-1);
+        return str.substring(1, str.length() - 1);
     }
 
-    public Object fromQueryParameter( String parameter, Module module )
+    public Object fromQueryParameter(String parameter, Module module)
             throws IllegalArgumentException, JSONException
     {
-        if( parameter == null )
+        if (parameter == null)
         {
             return null;
         }
 
-        return fromJSON( new JSONTokener(parameter).nextValue(), module );
+        return fromJSON(new JSONTokener(parameter).nextValue(), module);
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return type.toString();
     }

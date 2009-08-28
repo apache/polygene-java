@@ -14,6 +14,10 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.Set;
+
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.StateHolder;
@@ -24,19 +28,15 @@ import org.qi4j.runtime.structure.Binder;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.Set;
-
 /**
  * Base model for Composite state
  */
 public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
-    implements StateDescriptor, Serializable, Binder
+        implements StateDescriptor, Serializable, Binder
 {
     protected final T propertiesModel;
 
-    public AbstractStateModel( T propertiesModel )
+    public AbstractStateModel(T propertiesModel)
     {
         this.propertiesModel = propertiesModel;
     }
@@ -51,32 +51,32 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
         return propertiesModel.newBuilderInstance();
     }
 
-    public StateHolder newBuilderInstance( StateHolder state )
+    public StateHolder newBuilderInstance(StateHolder state)
     {
-        return propertiesModel.newBuilderInstance( state );
+        return propertiesModel.newBuilderInstance(state);
     }
 
-    public StateHolder newInstance( StateHolder state )
+    public StateHolder newInstance(StateHolder state)
     {
-        return propertiesModel.newInstance( state );
+        return propertiesModel.newInstance(state);
     }
 
     public void addStateFor(Iterable<Method> methods, Class compositeType)
     {
-        for( Method method : methods )
+        for (Method method : methods)
         {
-            propertiesModel.addPropertyFor( method, compositeType );
+            propertiesModel.addPropertyFor(method, compositeType);
         }
     }
 
-    public <T extends PropertyDescriptor> T getPropertyByName( String name )
+    public <T extends PropertyDescriptor> T getPropertyByName(String name)
     {
-        return (T) propertiesModel.getPropertyByName( name );
+        return (T) propertiesModel.getPropertyByName(name);
     }
 
-    public <T extends PropertyDescriptor> T getPropertyByQualifiedName( QualifiedName name )
+    public <T extends PropertyDescriptor> T getPropertyByQualifiedName(QualifiedName name)
     {
-        return (T) propertiesModel.getPropertyByQualifiedName( name );
+        return (T) propertiesModel.getPropertyByQualifiedName(name);
     }
 
     public <T extends PropertyDescriptor> Set<T> properties()
@@ -84,21 +84,21 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
         return propertiesModel.properties();
     }
 
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind(Resolution resolution) throws BindingException
     {
-        propertiesModel.bind( resolution );
+        propertiesModel.bind(resolution);
     }
 
-    public void checkConstraints( StateHolder state )
-        throws ConstraintViolationException
+    public void checkConstraints(StateHolder state)
+            throws ConstraintViolationException
     {
         PropertiesInstance stateInstance = (PropertiesInstance) state;
-        propertiesModel.checkConstraints( stateInstance );
+        propertiesModel.checkConstraints(stateInstance);
     }
 
-    public void setProperty( QualifiedName name, Object value, StateHolder valueState )
+    public void setProperty(QualifiedName name, Object value, StateHolder valueState)
     {
-        AbstractPropertyModel model = propertiesModel.getPropertyByQualifiedName( name );
-        valueState.getProperty( model.accessor() ).set( value );
+        AbstractPropertyModel model = propertiesModel.getPropertyByQualifiedName(name);
+        valueState.getProperty(model.accessor()).set(value);
     }
 }

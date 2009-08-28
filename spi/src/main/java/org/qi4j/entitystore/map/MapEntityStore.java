@@ -14,48 +14,48 @@
 
 package org.qi4j.entitystore.map;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 
 /**
  * JAVADOC
  */
 public interface MapEntityStore
 {
-    Reader get( EntityReference entityReference)
-        throws EntityStoreException;
+    Reader get(EntityReference entityReference)
+            throws EntityStoreException;
 
-    void visitMap( MapEntityStoreVisitor visitor);
+    void visitMap(MapEntityStoreVisitor visitor);
 
     interface MapEntityStoreVisitor
     {
-        void visitEntity( Reader entityState );
+        void visitEntity(Reader entityState);
     }
 
-    void applyChanges( MapChanges changes)
-        throws IOException;
+    void applyChanges(MapChanges changes)
+            throws IOException;
 
     interface MapChanges
     {
-        void visitMap( MapChanger changer)
-            throws IOException;
+        void visitMap(MapChanger changer)
+                throws IOException;
     }
 
     interface MapChanger
     {
-        Writer newEntity( EntityReference ref, EntityType entityType )
-            throws IOException;
+        Writer newEntity(EntityReference ref, EntityType entityType)
+                throws IOException;
 
-        Writer updateEntity( EntityReference ref, EntityType entityType )
-            throws IOException;
+        Writer updateEntity(EntityReference ref, EntityType entityType)
+                throws IOException;
 
-        void removeEntity( EntityReference ref, EntityType entityType )
-            throws EntityNotFoundException;
+        void removeEntity(EntityReference ref, EntityType entityType)
+                throws EntityNotFoundException;
     }
 }

@@ -14,9 +14,9 @@
 
 package org.qi4j.runtime.structure;
 
-import org.qi4j.api.common.Visibility;
-
 import java.util.List;
+
+import org.qi4j.api.common.Visibility;
 
 /**
  * JAVADOC
@@ -25,16 +25,16 @@ public final class UsedLayersInstance
 {
     private final List<LayerInstance> usedLayerInstances;
 
-    public UsedLayersInstance( List<LayerInstance> usedLayerInstances )
+    public UsedLayersInstance(List<LayerInstance> usedLayerInstances)
     {
         this.usedLayerInstances = usedLayerInstances;
     }
 
-    public boolean visitModules( ModuleVisitor visitor )
+    public boolean visitModules(ModuleVisitor visitor)
     {
-        for( LayerInstance usedLayerInstance : usedLayerInstances )
+        for (LayerInstance usedLayerInstance : usedLayerInstances)
         {
-            if( !usedLayerInstance.visitModules( visitor, Visibility.application ) )
+            if (!usedLayerInstance.visitModules(visitor, Visibility.application))
             {
                 return false;
             }

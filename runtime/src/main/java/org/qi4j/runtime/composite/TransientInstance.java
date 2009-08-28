@@ -16,25 +16,25 @@
 
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import org.qi4j.spi.composite.CompositeInstance;
 
 /**
  * InvocationHandler for proxy objects.
  */
 public class TransientInstance
-    implements CompositeInstance, MixinsInstance
+        implements CompositeInstance, MixinsInstance
 {
-    public static TransientInstance getCompositeInstance( Composite composite )
+    public static TransientInstance getCompositeInstance(Composite composite)
     {
-        return (TransientInstance) Proxy.getInvocationHandler( composite );
+        return (TransientInstance) Proxy.getInvocationHandler(composite);
     }
 
     private final Composite proxy;
@@ -43,20 +43,20 @@ public class TransientInstance
     protected final AbstractCompositeModel compositeModel;
     private final ModuleInstance moduleInstance;
 
-    public TransientInstance( AbstractCompositeModel compositeModel, ModuleInstance moduleInstance, Object[] mixins, StateHolder state )
+    public TransientInstance(AbstractCompositeModel compositeModel, ModuleInstance moduleInstance, Object[] mixins, StateHolder state)
     {
         this.compositeModel = compositeModel;
         this.moduleInstance = moduleInstance;
         this.mixins = mixins;
         this.state = state;
 
-        proxy = compositeModel.newProxy( this );
+        proxy = compositeModel.newProxy(this);
     }
 
-    public Object invoke( Object proxy, Method method, Object[] args )
-        throws Throwable
+    public Object invoke(Object proxy, Method method, Object[] args)
+            throws Throwable
     {
-        return compositeModel.invoke( this, proxy, method, args, moduleInstance );
+        return compositeModel.invoke(this, proxy, method, args, moduleInstance);
     }
 
     public <T> T proxy()
@@ -64,9 +64,9 @@ public class TransientInstance
         return (T) proxy;
     }
 
-    public <T> T newProxy( Class<T> mixinType )
+    public <T> T newProxy(Class<T> mixinType)
     {
-        return compositeModel.newProxy( this, mixinType );
+        return compositeModel.newProxy(this, mixinType);
     }
 
 
@@ -100,17 +100,17 @@ public class TransientInstance
         return compositeModel;
     }
 
-    public void setMixins( Object[] newMixins )
+    public void setMixins(Object[] newMixins)
     {
         // Use any mixins that match the ones we already have
-        for( int i = 0; i < mixins.length; i++ )
+        for (int i = 0; i < mixins.length; i++)
         {
-            Object oldMixin = mixins[ i ];
-            for( Object newMixin : newMixins )
+            Object oldMixin = mixins[i];
+            for (Object newMixin : newMixins)
             {
-                if( oldMixin.getClass().equals( newMixin.getClass() ) )
+                if (oldMixin.getClass().equals(newMixin.getClass()))
                 {
-                    mixins[ i ] = newMixin;
+                    mixins[i] = newMixin;
                     break;
                 }
             }
@@ -122,16 +122,16 @@ public class TransientInstance
         return state;
     }
 
-    public Object invoke( Object composite, Object[] params, CompositeMethodInstance methodInstance )
-        throws Throwable
+    public Object invoke(Object composite, Object[] params, CompositeMethodInstance methodInstance)
+            throws Throwable
     {
-        Object mixin = methodInstance.getMixin( mixins );
-        return methodInstance.invoke( composite, params, mixin );
+        Object mixin = methodInstance.getMixin(mixins);
+        return methodInstance.invoke(composite, params, mixin);
     }
 
-    public Object invokeObject( Object proxy, Object[] args, Method method )
-        throws Throwable
+    public Object invokeObject(Object proxy, Object[] args, Method method)
+            throws Throwable
     {
-        return method.invoke( this, args );
+        return method.invoke(this, args);
     }
 }

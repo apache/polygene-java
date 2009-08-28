@@ -14,29 +14,29 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.common.AppliesToFilter;
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
+
+import org.qi4j.api.common.AppliesToFilter;
 
 /**
  * JAVADOC
  */
 final class OrAppliesToFilter
-    implements AppliesToFilter, Serializable
+        implements AppliesToFilter, Serializable
 {
     private final AppliesToFilter left;
     private final AppliesToFilter right;
 
-    OrAppliesToFilter( AppliesToFilter left, AppliesToFilter right )
+    OrAppliesToFilter(AppliesToFilter left, AppliesToFilter right)
     {
         this.left = left;
         this.right = right;
     }
 
-    public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
+    public boolean appliesTo(Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass)
     {
-        return left.appliesTo( method, mixin, compositeType, fragmentClass ) ||
-               right.appliesTo( method, mixin, compositeType, fragmentClass );
+        return left.appliesTo(method, mixin, compositeType, fragmentClass) ||
+                right.appliesTo(method, mixin, compositeType, fragmentClass);
     }
 }

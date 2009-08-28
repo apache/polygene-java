@@ -14,28 +14,28 @@
 
 package org.qi4j.runtime.unitofwork;
 
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.ManyAssociationState;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.ManyAssociationState;
 
 /**
  * Default implementation of ManyAssociationState that also
  * keeps a list of changes that can be extracted at any time.
  */
 public final class BuilderManyAssociationState
-    implements ManyAssociationState
+        implements ManyAssociationState
 {
     private List<EntityReference> references;
 
-    public BuilderManyAssociationState( ManyAssociationState state)
+    public BuilderManyAssociationState(ManyAssociationState state)
     {
         // Copy
-        for( int i = 0; i < state.count(); i++ )
+        for (int i = 0; i < state.count(); i++)
         {
-            references.add( state.get( i ) );
+            references.add(state.get(i));
         }
     }
 
@@ -49,30 +49,30 @@ public final class BuilderManyAssociationState
         return references.size();
     }
 
-    public boolean contains( EntityReference entityReference )
+    public boolean contains(EntityReference entityReference)
     {
-        return references.contains( entityReference );
+        return references.contains(entityReference);
     }
 
-    public boolean add( int i, EntityReference entityReference )
+    public boolean add(int i, EntityReference entityReference)
     {
-        if( references.contains( entityReference ) )
+        if (references.contains(entityReference))
         {
             return false;
         }
 
-        references.add( i, entityReference );
+        references.add(i, entityReference);
         return true;
     }
 
-    public boolean remove( EntityReference entityReference )
+    public boolean remove(EntityReference entityReference)
     {
-        return references.remove( entityReference );
+        return references.remove(entityReference);
     }
 
-    public EntityReference get( int i )
+    public EntityReference get(int i)
     {
-        return references.get( i );
+        return references.get(i);
     }
 
     public Iterator<EntityReference> iterator()

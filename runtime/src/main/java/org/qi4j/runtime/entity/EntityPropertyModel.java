@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.entity;
 
+import java.lang.reflect.Method;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
@@ -21,41 +23,38 @@ import org.qi4j.runtime.property.PersistentPropertyModel;
 import org.qi4j.runtime.unitofwork.BuilderEntityState;
 import org.qi4j.spi.entity.EntityState;
 
-import java.lang.reflect.Method;
-
 /**
  * JAVADOC
  */
 public final class EntityPropertyModel extends PersistentPropertyModel
 {
-    public EntityPropertyModel( Method anAccessor,
-                                Class compositeType,
-                                boolean immutable,
-                                ValueConstraintsInstance constraints,
-                                MetaInfo metaInfo,
-                                Object defaultValue )
+    public EntityPropertyModel(Method anAccessor,
+                               Class compositeType,
+                               boolean immutable,
+                               ValueConstraintsInstance constraints,
+                               MetaInfo metaInfo,
+                               Object defaultValue)
     {
-        super( anAccessor, compositeType, immutable, constraints, metaInfo, defaultValue );
+        super(anAccessor, compositeType, immutable, constraints, metaInfo, defaultValue);
     }
 
-    public Property<?> newInstance( Object value )
+    public Property<?> newInstance(Object value)
     {
         // Unused
         return null;
     }
 
-    public <T> Property<T> newInstance( EntityState state)
+    public <T> Property<T> newInstance(EntityState state)
     {
         Property property;
-        if( isComputed() )
+        if (isComputed())
         {
-            property = new ComputedPropertyInfo<Object>( propertyInfo );
-        }
-        else
+            property = new ComputedPropertyInfo<Object>(propertyInfo);
+        } else
         {
-            property = new EntityPropertyInstance( state instanceof BuilderEntityState ? builderInfo : this, state, this );
+            property = new EntityPropertyInstance(state instanceof BuilderEntityState ? builderInfo : this, state, this);
         }
 
-        return wrapProperty( property );
+        return wrapProperty(property);
     }
 }

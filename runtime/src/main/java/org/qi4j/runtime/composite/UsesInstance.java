@@ -14,11 +14,11 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.runtime.object.ObjectBuilderInstance;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.qi4j.runtime.object.ObjectBuilderInstance;
 
 /**
  * JAVADOC
@@ -29,49 +29,48 @@ public final class UsesInstance
 
     private final Set<Object> uses = new HashSet<Object>();
 
-    public void use( Object... objects )
+    public void use(Object... objects)
     {
-        if( !uses.isEmpty() )
+        if (!uses.isEmpty())
         {
-            for( Object object : objects )
+            for (Object object : objects)
             {
-                Object oldUseForType = useForType( object.getClass() );
-                if( oldUseForType != null )
+                Object oldUseForType = useForType(object.getClass());
+                if (oldUseForType != null)
                 {
-                    uses.remove( oldUseForType );
+                    uses.remove(oldUseForType);
                 }
             }
         }
 
-        uses.addAll( Arrays.asList( objects ) );
+        uses.addAll(Arrays.asList(objects));
     }
 
-    public Object useForType( Class<?> type )
+    public Object useForType(Class<?> type)
     {
         // Check instances first
-        for( Object use : uses )
+        for (Object use : uses)
         {
-            if( type.isInstance( use ) )
+            if (type.isInstance(use))
             {
                 return use;
             }
         }
 
         // Check builders
-        for( Object use : uses )
+        for (Object use : uses)
         {
-            if( use instanceof TransientBuilderInstance )
+            if (use instanceof TransientBuilderInstance)
             {
                 TransientBuilderInstance builder = (TransientBuilderInstance) use;
-                if( type.isAssignableFrom( builder.compositeType() ) )
+                if (type.isAssignableFrom(builder.compositeType()))
                 {
                     return builder.newInstance();
                 }
-            }
-            else if( use instanceof ObjectBuilderInstance )
+            } else if (use instanceof ObjectBuilderInstance)
             {
                 ObjectBuilderInstance builder = (ObjectBuilderInstance) use;
-                if( type.isAssignableFrom( builder.objectType() ) )
+                if (type.isAssignableFrom(builder.objectType()))
                 {
                     return builder.newInstance();
                 }

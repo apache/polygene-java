@@ -14,26 +14,30 @@
 
 package org.qi4j.runtime.util;
 
-import org.qi4j.api.constraint.ConstraintDeclaration;
-import org.qi4j.api.injection.InjectionScope;
-import org.qi4j.api.util.Classes;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.qi4j.api.constraint.ConstraintDeclaration;
+import org.qi4j.api.injection.InjectionScope;
+import org.qi4j.api.util.Classes;
 
 /**
  * Useful methods for handling Annotations.
  */
 public class Annotations
 {
-    public static Annotation getInjectionAnnotation( Annotation[] parameterAnnotation )
+    public static Annotation getInjectionAnnotation(Annotation[] parameterAnnotation)
     {
-        for( Annotation annotation : parameterAnnotation )
+        for (Annotation annotation : parameterAnnotation)
         {
-            if( isDependencyAnnotation( annotation ) )
+            if (isDependencyAnnotation(annotation))
             {
                 return annotation;
             }
@@ -41,33 +45,33 @@ public class Annotations
         return null;
     }
 
-    public static <T extends Annotation> T getAnnotationOfType( Annotation[] annotations, Class<T> annotationType )
+    public static <T extends Annotation> T getAnnotationOfType(Annotation[] annotations, Class<T> annotationType)
     {
-        for( Annotation annotation : annotations )
+        for (Annotation annotation : annotations)
         {
-            if( annotationType.equals( annotation.annotationType() ) )
+            if (annotationType.equals(annotation.annotationType()))
             {
-                return annotationType.cast( annotation );
+                return annotationType.cast(annotation);
             }
         }
         return null;
     }
 
-    public static boolean isDependencyAnnotation( Annotation annotation )
+    public static boolean isDependencyAnnotation(Annotation annotation)
     {
-        return annotation.annotationType().getAnnotation( InjectionScope.class ) != null;
+        return annotation.annotationType().getAnnotation(InjectionScope.class) != null;
     }
 
-    public static boolean isConstraintAnnotation( Annotation annotation )
+    public static boolean isConstraintAnnotation(Annotation annotation)
     {
-        return annotation.annotationType().getAnnotation( ConstraintDeclaration.class ) != null;
+        return annotation.annotationType().getAnnotation(ConstraintDeclaration.class) != null;
     }
 
-    public static boolean isCompositeConstraintAnnotation( Annotation annotation )
+    public static boolean isCompositeConstraintAnnotation(Annotation annotation)
     {
-        for( Annotation annotation1 : annotation.annotationType().getAnnotations() )
+        for (Annotation annotation1 : annotation.annotationType().getAnnotations())
         {
-            if( isConstraintAnnotation( annotation1 ) )
+            if (isConstraintAnnotation(annotation1))
             {
                 return true;
             }
@@ -75,17 +79,17 @@ public class Annotations
         return false;
     }
 
-    public static Set<Field> fieldsWithAnnotation( Set<Field> fields, Class<? extends Annotation> annotationType )
+    public static Set<Field> fieldsWithAnnotation(Set<Field> fields, Class<? extends Annotation> annotationType)
     {
         Set<Field> newFields = new HashSet<Field>();
-        for( Field field : fields )
+        for (Field field : fields)
         {
             Annotation[] annotations = field.getAnnotations();
-            for( Annotation annotation : annotations )
+            for (Annotation annotation : annotations)
             {
-                if( isOfAnnotationType( annotation, annotationType ) )
+                if (isOfAnnotationType(annotation, annotationType))
                 {
-                    newFields.add( field );
+                    newFields.add(field);
                     break;
                 }
             }
@@ -94,17 +98,17 @@ public class Annotations
         return newFields;
     }
 
-    private static boolean isOfAnnotationType( Annotation annotation, Class<? extends Annotation> annotationType )
+    private static boolean isOfAnnotationType(Annotation annotation, Class<? extends Annotation> annotationType)
     {
-        if( annotationType.equals( annotation.getClass() ) )
+        if (annotationType.equals(annotation.getClass()))
         {
             return true;
         }
 
         // Check annotations of this annotation
-        for( Annotation annotation1 : annotation.annotationType().getAnnotations() )
+        for (Annotation annotation1 : annotation.annotationType().getAnnotations())
         {
-            if( isOfAnnotationType( annotation1, annotationType ) )
+            if (isOfAnnotationType(annotation1, annotationType))
             {
                 return true;
             }
@@ -113,24 +117,24 @@ public class Annotations
         return false;
     }
 
-    public static <T extends Annotation> T getAnnotation( Type type, Class<T> annotationType )
+    public static <T extends Annotation> T getAnnotation(Type type, Class<T> annotationType)
     {
-        if( !( type instanceof Class ) )
+        if (!(type instanceof Class))
         {
             return null;
         }
-        return annotationType.cast( ( (Class<?>) type ).getAnnotation( annotationType ) );
+        return annotationType.cast(((Class<?>) type).getAnnotation(annotationType));
     }
 
-    public static Annotation[] getMethodAndTypeAnnotations( Method method )
+    public static Annotation[] getMethodAndTypeAnnotations(Method method)
     {
-        List<Annotation> annotationList = new ArrayList<Annotation>( Arrays.asList( method.getAnnotations() ) );
-        Set<Class> interfaces = Classes.interfacesOf( method.getReturnType() );
-        for( Class anInterface : interfaces )
+        List<Annotation> annotationList = new ArrayList<Annotation>(Arrays.asList(method.getAnnotations()));
+        Set<Class> interfaces = Classes.interfacesOf(method.getReturnType());
+        for (Class anInterface : interfaces)
         {
-            annotationList.addAll( Arrays.asList( anInterface.getAnnotations() ) );
+            annotationList.addAll(Arrays.asList(anInterface.getAnnotations()));
         }
-        Annotation[] annotations = annotationList.toArray( new Annotation[annotationList.size()] );
+        Annotation[] annotations = annotationList.toArray(new Annotation[annotationList.size()]);
 
         return annotations;
     }

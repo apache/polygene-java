@@ -17,6 +17,9 @@
  */
 package org.qi4j.runtime.injection.provider;
 
+import java.io.Serializable;
+import java.lang.reflect.Type;
+
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.object.ObjectBuilderFactory;
@@ -33,71 +36,59 @@ import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 
-import java.io.Serializable;
-import java.lang.reflect.Type;
-
 public final class StructureInjectionProviderFactory
-    implements InjectionProviderFactory, Serializable
+        implements InjectionProviderFactory, Serializable
 {
-    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
-        throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider(Resolution resolution, DependencyModel dependencyModel)
+            throws InvalidInjectionException
     {
-        return new StructureInjectionProvider( resolution, dependencyModel );
+        return new StructureInjectionProvider(resolution, dependencyModel);
     }
 
     private static class StructureInjectionProvider
-        implements InjectionProvider, Serializable
+            implements InjectionProvider, Serializable
     {
         final Resolution resolution;
         private final DependencyModel dependencyModel;
 
-        private StructureInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
+        private StructureInjectionProvider(Resolution resolution, DependencyModel dependencyModel)
         {
             this.resolution = resolution;
             this.dependencyModel = dependencyModel;
         }
 
-        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        public Object provideInjection(InjectionContext context) throws InjectionProviderException
         {
             Type type = dependencyModel.injectionType();
 
-            if( type.equals( TransientBuilderFactory.class ) )
+            if (type.equals(TransientBuilderFactory.class))
             {
                 return context.moduleInstance().transientBuilderFactory();
-            }
-            else if( type.equals( ObjectBuilderFactory.class ) )
+            } else if (type.equals(ObjectBuilderFactory.class))
             {
                 return context.moduleInstance().objectBuilderFactory();
-            }
-            else if( type.equals( ValueBuilderFactory.class ) )
+            } else if (type.equals(ValueBuilderFactory.class))
             {
                 return context.moduleInstance().valueBuilderFactory();
-            }
-            else if( type.equals( UnitOfWorkFactory.class ) )
+            } else if (type.equals(UnitOfWorkFactory.class))
             {
                 return context.moduleInstance().unitOfWorkFactory();
-            }
-            else if( type.equals( QueryBuilderFactory.class ) )
+            } else if (type.equals(QueryBuilderFactory.class))
             {
                 return context.moduleInstance().queryBuilderFactory();
-            }
-            else if( type.equals( ServiceFinder.class ) )
+            } else if (type.equals(ServiceFinder.class))
             {
                 return context.moduleInstance().serviceFinder();
-            }
-            else if( Module.class.isAssignableFrom( (Class<?>) type ) )
+            } else if (Module.class.isAssignableFrom((Class<?>) type))
             {
                 return context.moduleInstance();
-            }
-            else if( Layer.class.isAssignableFrom( (Class<?>) type ) )
+            } else if (Layer.class.isAssignableFrom((Class<?>) type))
             {
                 return context.moduleInstance().layerInstance();
-            }
-            else if( Application.class.isAssignableFrom( (Class<?>) type ))
+            } else if (Application.class.isAssignableFrom((Class<?>) type))
             {
                 return context.moduleInstance().layerInstance().applicationInstance();
-            }
-            else if( Qi4j.class.isAssignableFrom((Class<?>) type))
+            } else if (Qi4j.class.isAssignableFrom((Class<?>) type))
             {
                 return context.moduleInstance().layerInstance().applicationInstance().runtime();
             }

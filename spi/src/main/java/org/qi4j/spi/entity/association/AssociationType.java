@@ -14,24 +14,24 @@
 
 package org.qi4j.spi.entity.association;
 
+import java.io.Serializable;
+
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
-
-import java.io.Serializable;
 
 /**
  * JAVADOC
  */
 public final class AssociationType
-    implements Serializable
+        implements Serializable
 {
     private final QualifiedName qualifiedName;
     private final TypeName type;
     private final boolean queryable;
 
-    public AssociationType( final QualifiedName qualifiedName,
-                            final TypeName type,
-                            final boolean queryable )
+    public AssociationType(final QualifiedName qualifiedName,
+                           final TypeName type,
+                           final boolean queryable)
     {
         this.qualifiedName = qualifiedName;
         this.type = type;
@@ -53,7 +53,8 @@ public final class AssociationType
         return queryable;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return qualifiedName + "(" + type + ")";
     }

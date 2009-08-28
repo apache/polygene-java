@@ -22,10 +22,9 @@ import org.qi4j.api.query.grammar.SingleValueExpression;
 
 /**
  * A simple value holder.
- *
  */
 public final class SingleValueExpressionImpl<T>
-    implements SingleValueExpression<T>
+        implements SingleValueExpression<T>
 {
 
     private final T value;
@@ -35,7 +34,7 @@ public final class SingleValueExpressionImpl<T>
      *
      * @param value value
      */
-    public SingleValueExpressionImpl( final T value )
+    public SingleValueExpressionImpl(final T value)
     {
         this.value = value;
     }
@@ -50,7 +49,8 @@ public final class SingleValueExpressionImpl<T>
         return value;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return value.toString();
     }

@@ -14,6 +14,10 @@
 
 package org.qi4j.runtime.bootstrap;
 
+import java.io.Serializable;
+import java.lang.reflect.Modifier;
+import java.util.List;
+
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -21,59 +25,55 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.bootstrap.ObjectDeclaration;
 import org.qi4j.runtime.object.ObjectModel;
 
-import java.io.Serializable;
-import java.lang.reflect.Modifier;
-import java.util.List;
-
 /**
  * Declaration of an Object. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#addObjects(Class[])}.
  */
 public final class ObjectDeclarationImpl
-    implements ObjectDeclaration, Serializable
+        implements ObjectDeclaration, Serializable
 {
     private Iterable<Class> objectTypes;
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
-    public ObjectDeclarationImpl( Iterable<Class> classes )
+    public ObjectDeclarationImpl(Iterable<Class> classes)
     {
-        for( Class clazz : classes )
+        for (Class clazz : classes)
         {
             // best try to find out if the class is a concrete class
-            if( clazz.isEnum() ||
-                ( !Composite.class.isAssignableFrom( clazz ) && Modifier.isAbstract( clazz.getModifiers() ) ) )
+            if (clazz.isEnum() ||
+                    (!Composite.class.isAssignableFrom(clazz) && Modifier.isAbstract(clazz.getModifiers())))
             {
-                throw new IllegalArgumentException( "Declared objects must be concrete classes: " + clazz );
+                throw new IllegalArgumentException("Declared objects must be concrete classes: " + clazz);
             }
         }
         this.objectTypes = classes;
     }
 
-    public ObjectDeclaration setMetaInfo( Object info )
+    public ObjectDeclaration setMetaInfo(Object info)
     {
-        metaInfo.set( info );
+        metaInfo.set(info);
         return this;
     }
 
-    public ObjectDeclaration visibleIn( Visibility visibility )
-        throws IllegalStateException
+    public ObjectDeclaration visibleIn(Visibility visibility)
+            throws IllegalStateException
     {
         this.visibility = visibility;
         return this;
     }
 
-    public void addObjects( List<ObjectModel> objectModels )
+    public void addObjects(List<ObjectModel> objectModels)
     {
-        for( Class objectType : objectTypes )
+        for (Class objectType : objectTypes)
         {
             try
             {
-                ObjectModel objectModel = new ObjectModel( objectType, visibility, metaInfo );
-                objectModels.add( objectModel );
+                ObjectModel objectModel = new ObjectModel(objectType, visibility, metaInfo);
+                objectModels.add(objectModel);
             }
-            catch( Throwable e )
+            catch (Throwable e)
             {
-                throw new InvalidApplicationException( "Could not register " + objectType.getName(), e );
+                throw new InvalidApplicationException("Could not register " + objectType.getName(), e);
             }
         }
     }

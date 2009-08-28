@@ -21,8 +21,9 @@ import org.qi4j.spi.composite.StateDescriptor;
  * Descriptor for ValueComposites.
  */
 public interface ValueDescriptor
-    extends AbstractCompositeDescriptor
+        extends AbstractCompositeDescriptor
 {
     StateDescriptor state();
+
     ValueCompositeType valueType();
 }

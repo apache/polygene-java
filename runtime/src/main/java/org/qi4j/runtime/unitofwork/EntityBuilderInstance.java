@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.unitofwork;
 
+import java.lang.reflect.Method;
+
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityReference;
@@ -27,14 +29,12 @@ import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 
-import java.lang.reflect.Method;
-
 /**
  * Implementation of EntityBuilder. Maintains an instance of the entity which
  * will not have its state validated until it is created by calling newInstance().
  */
 public final class EntityBuilderInstance<T>
-    implements EntityBuilder<T>
+        implements EntityBuilder<T>
 {
     private static final Method IDENTITY_METHOD;
     private static final Method CREATE_METHOD;
@@ -53,17 +53,17 @@ public final class EntityBuilderInstance<T>
     {
         try
         {
-            IDENTITY_METHOD = Identity.class.getMethod( "identity" );
-            CREATE_METHOD = Lifecycle.class.getMethod( "create" );
+            IDENTITY_METHOD = Identity.class.getMethod("identity");
+            CREATE_METHOD = Lifecycle.class.getMethod("create");
         }
-        catch( NoSuchMethodException e )
+        catch (NoSuchMethodException e)
         {
-            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: EntityBuilderInstance" );
+            throw new InternalError("Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: EntityBuilderInstance");
         }
     }
 
     public EntityBuilderInstance(
-        ModuleInstance moduleInstance, EntityModel entityModel, ModuleUnitOfWork uow, EntityStoreUnitOfWork store, String identity )
+            ModuleInstance moduleInstance, EntityModel entityModel, ModuleUnitOfWork uow, EntityStoreUnitOfWork store, String identity)
     {
         this.moduleInstance = moduleInstance;
         this.entityModel = entityModel;
@@ -71,41 +71,41 @@ public final class EntityBuilderInstance<T>
         this.store = store;
         this.identity = identity;
 
-        if( identityStateName == null )
+        if (identityStateName == null)
         {
-            identityStateName = QualifiedName.fromMethod( IDENTITY_METHOD );
+            identityStateName = QualifiedName.fromMethod(IDENTITY_METHOD);
         }
 
         EntityReference reference = new EntityReference(identity);
-        entityState = new BuilderEntityState( entityModel, reference );
+        entityState = new BuilderEntityState(entityModel, reference);
         entityModel.initState(entityState);
         entityState.setProperty(identityStateName, identity);
-        prototypeInstance = entityModel.newInstance( uow, moduleInstance, reference, entityState );
+        prototypeInstance = entityModel.newInstance(uow, moduleInstance, reference, entityState);
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public T instance()
     {
         checkValid();
         return prototypeInstance.<T>proxy();
     }
 
-    public <K> K instanceFor( Class<K> mixinType )
+    public <K> K instanceFor(Class<K> mixinType)
     {
         checkValid();
-        return prototypeInstance.newProxy( mixinType );
+        return prototypeInstance.newProxy(mixinType);
     }
 
     public T newInstance()
-        throws LifecycleException
+            throws LifecycleException
     {
         checkValid();
 
         String identity;
 
         // Figure out whether to use given or generated identity
-        identity = (String) entityState.getProperty( identityStateName );
-        EntityState newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ));
+        identity = (String) entityState.getProperty(identityStateName);
+        EntityState newEntityState = entityModel.newEntityState(store, EntityReference.parseEntityReference(identity));
 
         entityModel.invokeCreate(prototypeInstance);
 
@@ -114,12 +114,12 @@ public final class EntityBuilderInstance<T>
 
         entityState.copyTo(newEntityState);
 
-        EntityInstance instance = entityModel.newInstance( uow, moduleInstance, newEntityState.identity(), newEntityState );
+        EntityInstance instance = entityModel.newInstance(uow, moduleInstance, newEntityState.identity(), newEntityState);
 
         Object proxy = instance.proxy();
 
         // Add entity in UOW
-        uow.addEntity( instance );
+        uow.addEntity(instance);
 
         // Invalidate builder
         this.identity = null;
@@ -130,6 +130,8 @@ public final class EntityBuilderInstance<T>
     private void checkValid() throws IllegalStateException
     {
         if (identity == null)
+        {
             throw new IllegalStateException("EntityBuilder is not valid after call to newInstance()");
+        }
     }
 }

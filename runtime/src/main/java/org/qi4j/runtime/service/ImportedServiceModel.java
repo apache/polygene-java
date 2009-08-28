@@ -14,6 +14,13 @@
 
 package org.qi4j.runtime.service;
 
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
+import java.util.Set;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ImportedServiceDescriptor;
@@ -24,18 +31,11 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.structure.ModelVisitor;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
-import java.util.Set;
-
 /**
  * JAVADOC
  */
 public final class ImportedServiceModel
-    implements ImportedServiceDescriptor, Serializable
+        implements ImportedServiceDescriptor, Serializable
 {
     private final Class<? extends ServiceComposite> type;
     private final Visibility visibility;
@@ -44,11 +44,11 @@ public final class ImportedServiceModel
     private final MetaInfo metaInfo;
     private String moduleName;
 
-    public ImportedServiceModel( Class<? extends ServiceComposite> serviceType,
-                                 Visibility visibility,
-                                 Class<? extends ServiceImporter> serviceImporter,
-                                 String identity,
-                                 MetaInfo metaInfo, String moduleName )
+    public ImportedServiceModel(Class<? extends ServiceComposite> serviceType,
+                                Visibility visibility,
+                                Class<? extends ServiceImporter> serviceImporter,
+                                String identity,
+                                MetaInfo metaInfo, String moduleName)
     {
         type = serviceType;
         this.visibility = visibility;
@@ -88,48 +88,47 @@ public final class ImportedServiceModel
         return moduleName;
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        modelVisitor.visit( this );
+        modelVisitor.visit(this);
     }
 
 
-    public boolean isServiceFor( Type serviceType, Visibility visibility )
+    public boolean isServiceFor(Type serviceType, Visibility visibility)
     {
         // Check visibility
-        if( visibility != this.visibility )
+        if (visibility != this.visibility)
         {
             return false;
         }
 
         // Check types
-        if( serviceType instanceof Class )
+        if (serviceType instanceof Class)
         {
             // Plain class check
             Class serviceClass = (Class) serviceType;
-            return serviceClass.isAssignableFrom( type );
-        }
-        else if( serviceType instanceof ParameterizedType )
+            return serviceClass.isAssignableFrom(type);
+        } else if (serviceType instanceof ParameterizedType)
         {
             // Parameterized type check. This is useful for example Wrapper<Foo> usages
             ParameterizedType paramType = (ParameterizedType) serviceType;
             Class rawClass = (Class) paramType.getRawType();
-            Set<Type> types = Classes.genericInterfacesOf( type );
-            for( Type type1 : types )
+            Set<Type> types = Classes.genericInterfacesOf(type);
+            for (Type type1 : types)
             {
-                if( type1 instanceof ParameterizedType && rawClass.isAssignableFrom( Classes.getRawClass( type1 ) ) )
+                if (type1 instanceof ParameterizedType && rawClass.isAssignableFrom(Classes.getRawClass(type1)))
                 {
                     // Check params
                     Type[] actualTypes = paramType.getActualTypeArguments();
-                    Type[] actualServiceTypes = ( (ParameterizedType) type1 ).getActualTypeArguments();
-                    for( int i = 0; i < actualTypes.length; i++ )
+                    Type[] actualServiceTypes = ((ParameterizedType) type1).getActualTypeArguments();
+                    for (int i = 0; i < actualTypes.length; i++)
                     {
-                        Type actualType = actualTypes[ i ];
-                        if( actualType instanceof Class )
+                        Type actualType = actualTypes[i];
+                        if (actualType instanceof Class)
                         {
                             Class actualClass = (Class) actualType;
-                            Class actualServiceType = (Class) actualServiceTypes[ i ];
-                            if( !actualClass.isAssignableFrom( actualServiceType ) )
+                            Class actualServiceType = (Class) actualServiceTypes[i];
+                            if (!actualClass.isAssignableFrom(actualServiceType))
                             {
                                 return false;
                             }
@@ -144,43 +143,43 @@ public final class ImportedServiceModel
         return false;
     }
 
-    public <T> ImportedServiceInstance<T> importInstance( Module module )
+    public <T> ImportedServiceInstance<T> importInstance(Module module)
     {
-        ServiceImporter importer = module.objectBuilderFactory().newObject( serviceImporter );
+        ServiceImporter importer = module.objectBuilderFactory().newObject(serviceImporter);
         try
         {
-            T instance = (T) importer.importService( this );
-            return new ImportedServiceInstance<T>( instance, importer );
+            T instance = (T) importer.importService(this);
+            return new ImportedServiceInstance<T>(instance, importer);
         }
-        catch( ServiceImporterException e )
+        catch (ServiceImporterException e)
         {
             throw e;
         }
-        catch( Exception e )
+        catch (Exception e)
         {
-            throw new ServiceImporterException( "Could not import service " + identity, e );
+            throw new ServiceImporterException("Could not import service " + identity, e);
         }
     }
 
-    public Object newProxy( InvocationHandler serviceInvocationHandler )
+    public Object newProxy(InvocationHandler serviceInvocationHandler)
     {
-        if( type.isInterface() )
+        if (type.isInterface())
         {
-            return Proxy.newProxyInstance( type.getClassLoader(),
-                                           new Class[]{ type },
-                                           serviceInvocationHandler );
-        }
-        else
+            return Proxy.newProxyInstance(type.getClassLoader(),
+                    new Class[]{type},
+                    serviceInvocationHandler);
+        } else
         {
             Class[] interfaces = type.getInterfaces();
-            return Proxy.newProxyInstance( type.getClassLoader(),
-                                           interfaces,
-                                           serviceInvocationHandler );
+            return Proxy.newProxyInstance(type.getClassLoader(),
+                    interfaces,
+                    serviceInvocationHandler);
         }
 
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return type.getName() + ":" + identity;
     }

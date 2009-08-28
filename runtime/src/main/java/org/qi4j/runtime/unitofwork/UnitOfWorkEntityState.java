@@ -14,6 +14,9 @@
 
 package org.qi4j.runtime.unitofwork;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
@@ -22,14 +25,11 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * JAVADOC
  */
 class UnitOfWorkEntityState
-    implements EntityState
+        implements EntityState
 {
     private String entityVersion;
     private long lastModified;
@@ -39,7 +39,7 @@ class UnitOfWorkEntityState
     private Map<QualifiedName, EntityReference> associations;
     private Map<QualifiedName, ManyAssociationState> manyAssociations;
 
-    UnitOfWorkEntityState( EntityState parentState )
+    UnitOfWorkEntityState(EntityState parentState)
     {
         this.entityVersion = parentState.version();
         this.lastModified = parentState.lastModified();
@@ -47,8 +47,8 @@ class UnitOfWorkEntityState
         this.parentState = parentState;
     }
 
-    UnitOfWorkEntityState( String entityVersion, long lastModified,
-                           EntityStatus status )
+    UnitOfWorkEntityState(String entityVersion, long lastModified,
+                          EntityStatus status)
     {
         this.entityVersion = entityVersion;
         this.lastModified = lastModified;
@@ -84,7 +84,7 @@ class UnitOfWorkEntityState
         return status;
     }
 
-    public boolean isOfType( TypeName type )
+    public boolean isOfType(TypeName type)
     {
         return parentState.isOfType(type);
     }
@@ -99,62 +99,62 @@ class UnitOfWorkEntityState
         status = EntityStatus.LOADED;
     }
 
-    public Object getProperty( QualifiedName stateName )
+    public Object getProperty(QualifiedName stateName)
     {
-        if( properties != null && properties.containsKey( stateName ) )
+        if (properties != null && properties.containsKey(stateName))
         {
-            return properties.get( stateName );
+            return properties.get(stateName);
         }
 
         // Get from parent state
-        return parentState.getProperty( stateName );
+        return parentState.getProperty(stateName);
     }
 
-    public void setProperty( QualifiedName stateName, Object newValue )
+    public void setProperty(QualifiedName stateName, Object newValue)
     {
-        if( properties == null )
+        if (properties == null)
         {
             properties = new HashMap<QualifiedName, Object>();
         }
 
-        properties.put( stateName, newValue );
+        properties.put(stateName, newValue);
     }
 
-    public EntityReference getAssociation( QualifiedName stateName )
+    public EntityReference getAssociation(QualifiedName stateName)
     {
-        if( associations != null && associations.containsKey( stateName ) )
+        if (associations != null && associations.containsKey(stateName))
         {
-            return associations.get( stateName );
+            return associations.get(stateName);
         }
 
-        return parentState.getAssociation( stateName );
+        return parentState.getAssociation(stateName);
     }
 
-    public void setAssociation( QualifiedName stateName, EntityReference newEntity )
+    public void setAssociation(QualifiedName stateName, EntityReference newEntity)
     {
-        if( associations == null )
+        if (associations == null)
         {
             associations = new HashMap<QualifiedName, EntityReference>();
         }
-        associations.put( stateName, newEntity );
+        associations.put(stateName, newEntity);
     }
 
-    public ManyAssociationState getManyAssociation( QualifiedName stateName )
+    public ManyAssociationState getManyAssociation(QualifiedName stateName)
     {
-        if( manyAssociations != null && manyAssociations.containsKey( stateName ) )
+        if (manyAssociations != null && manyAssociations.containsKey(stateName))
         {
-            return manyAssociations.get( stateName );
+            return manyAssociations.get(stateName);
         }
 
-        if( parentState == null )
+        if (parentState == null)
         {
             return null;
         }
 
         // Copy parent
-        ManyAssociationState parentManyAssociation = parentState.getManyAssociation( stateName );
-        ManyAssociationState unitManyAssociation = new BuilderManyAssociationState( parentManyAssociation);
-        manyAssociations.put( stateName, unitManyAssociation );
+        ManyAssociationState parentManyAssociation = parentState.getManyAssociation(stateName);
+        ManyAssociationState unitManyAssociation = new BuilderManyAssociationState(parentManyAssociation);
+        manyAssociations.put(stateName, unitManyAssociation);
         return unitManyAssociation;
     }
 

@@ -21,9 +21,8 @@ package org.qi4j.api.query.grammar;
 /**
  * Constraints that a {@link org.qi4j.api.property.Property} is equal to a value
  * (as in Property<X>.get() = X).
- *
  */
 public interface EqualsPredicate<T>
-    extends ComparisonPredicate<T>
+        extends ComparisonPredicate<T>
 {
 }

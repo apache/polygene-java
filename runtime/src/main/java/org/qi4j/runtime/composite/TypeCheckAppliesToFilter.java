@@ -14,26 +14,26 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.common.AppliesToFilter;
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
+
+import org.qi4j.api.common.AppliesToFilter;
 
 /**
  * JAVADOC
  */
 final class TypeCheckAppliesToFilter
-    implements AppliesToFilter, Serializable
+        implements AppliesToFilter, Serializable
 {
     private final Class type;
 
-    TypeCheckAppliesToFilter( Class type )
+    TypeCheckAppliesToFilter(Class type)
     {
         this.type = type;
     }
 
-    public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
+    public boolean appliesTo(Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass)
     {
-        return type.isAssignableFrom( compositeType );
+        return type.isAssignableFrom(compositeType);
     }
 }

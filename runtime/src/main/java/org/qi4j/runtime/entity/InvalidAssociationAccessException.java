@@ -13,17 +13,17 @@
  */
 package org.qi4j.runtime.entity;
 
-import org.qi4j.api.common.InvalidApplicationException;
-
 import java.lang.reflect.Method;
+
+import org.qi4j.api.common.InvalidApplicationException;
 
 public class InvalidAssociationAccessException extends InvalidApplicationException
 {
     private final Method accessor;
 
-    public InvalidAssociationAccessException( Method accessor )
+    public InvalidAssociationAccessException(Method accessor)
     {
-        super( "May not use Associations in Composites that are not accessed through a UnitOfWork: " + accessor.getName() );
+        super("May not use Associations in Composites that are not accessed through a UnitOfWork: " + accessor.getName());
         this.accessor = accessor;
     }
 

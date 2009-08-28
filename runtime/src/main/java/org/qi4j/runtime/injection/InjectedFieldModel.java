@@ -14,6 +14,15 @@
 
 package org.qi4j.runtime.injection;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.util.Collection;
+import static java.util.Collections.*;
+
 import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
@@ -21,46 +30,40 @@ import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.Specification;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
 
-import java.io.*;
-import java.lang.reflect.Field;
-import java.util.Collection;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singleton;
-
 /**
  * JAVADOC
  */
 public final class InjectedFieldModel
-    implements InjectedFieldDescriptor, Serializable
+        implements InjectedFieldDescriptor, Serializable
 {
     private DependencyModel dependencyModel;
     private Field injectedField;
 
 
-    private void writeObject( ObjectOutputStream out )
-        throws IOException
+    private void writeObject(ObjectOutputStream out)
+            throws IOException
     {
         try
         {
-            out.writeObject( dependencyModel );
-            SerializationUtil.writeField( out, injectedField );
+            out.writeObject(dependencyModel);
+            SerializationUtil.writeField(out, injectedField);
         }
-        catch( NotSerializableException e )
+        catch (NotSerializableException e)
         {
-            System.err.println( "NotSerializable in " + getClass() );
+            System.err.println("NotSerializable in " + getClass());
             throw e;
         }
     }
 
-    private void readObject( ObjectInputStream in ) throws IOException, ClassNotFoundException
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
     {
         dependencyModel = (DependencyModel) in.readObject();
-        injectedField = SerializationUtil.readField( in );
+        injectedField = SerializationUtil.readField(in);
     }
 
-    public InjectedFieldModel( Field injectedField, DependencyModel dependencyModel )
+    public InjectedFieldModel(Field injectedField, DependencyModel dependencyModel)
     {
-        injectedField.setAccessible( true );
+        injectedField.setAccessible(true);
         this.injectedField = injectedField;
         this.dependencyModel = dependencyModel;
     }
@@ -75,44 +78,43 @@ public final class InjectedFieldModel
         return injectedField;
     }
 
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind(Resolution resolution) throws BindingException
     {
-        dependencyModel.bind( resolution.forField( injectedField ) );
+        dependencyModel.bind(resolution.forField(injectedField));
     }
 
-    public void inject( InjectionContext context, Object instance )
+    public void inject(InjectionContext context, Object instance)
     {
-        Object value = dependencyModel.inject( context );
+        Object value = dependencyModel.inject(context);
         try
         {
-            injectedField.set( instance, value );
+            injectedField.set(instance, value);
         }
-        catch( IllegalAccessException e )
+        catch (IllegalAccessException e)
         {
-            throw new InjectionException( e );
+            throw new InjectionException(e);
         }
-        catch( IllegalArgumentException e )
+        catch (IllegalArgumentException e)
         {
             String fieldClassName = injectedField.getType().getName();
             String valueClassName = value.getClass().getName();
             String message = "Cannot inject field of type " + fieldClassName + " with value '" + value +
-                             "' of type " + valueClassName;
-            throw new InjectionException( message, e );
+                    "' of type " + valueClassName;
+            throw new InjectionException(message, e);
         }
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        modelVisitor.visit( this );
+        modelVisitor.visit(this);
     }
 
-    public Collection<DependencyModel> filter( Specification<DependencyModel> specification )
+    public Collection<DependencyModel> filter(Specification<DependencyModel> specification)
     {
-        if( specification.matches( dependencyModel ) )
+        if (specification.matches(dependencyModel))
         {
-            return singleton( dependencyModel );
-        }
-        else
+            return singleton(dependencyModel);
+        } else
         {
             return emptyList();
         }

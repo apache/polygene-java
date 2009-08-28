@@ -14,6 +14,19 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.util.Classes;
@@ -24,17 +37,12 @@ import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.InvalidCompositeException;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.*;
-
 /**
  * Base implementation of model for mixins. This records the mapping between methods in the Composite
  * and mixin implementations.
  */
 public abstract class AbstractMixinsModel
-    implements Serializable, Binder
+        implements Serializable, Binder
 {
     protected final Set<MixinDeclaration> mixins = new LinkedHashSet<MixinDeclaration>();
 
@@ -46,24 +54,24 @@ public abstract class AbstractMixinsModel
     private final Map<Class, Integer> mixinIndex = new HashMap<Class, Integer>();
     private final Set<Class> mixinTypes = new HashSet<Class>();
 
-    public AbstractMixinsModel( Class<? extends Composite> compositeType, List<Class<?>> assemblyMixins )
+    public AbstractMixinsModel(Class<? extends Composite> compositeType, List<Class<?>> assemblyMixins)
     {
         this.compositeType = compositeType;
 
         // Add assembly mixins
-        for( Class<?> assemblyMixin : assemblyMixins )
+        for (Class<?> assemblyMixin : assemblyMixins)
         {
-            this.mixins.add( new MixinDeclaration( assemblyMixin, Assembler.class ) );
+            this.mixins.add(new MixinDeclaration(assemblyMixin, Assembler.class));
         }
 
         // Find mixin declarations
-        this.mixins.add( new MixinDeclaration( CompositeMixin.class, Composite.class ) );
-        Set<Class> interfaces = Classes.interfacesOf( compositeType );
+        this.mixins.add(new MixinDeclaration(CompositeMixin.class, Composite.class));
+        Set<Class> interfaces = Classes.interfacesOf(compositeType);
 
-        for( Class anInterface : interfaces )
+        for (Class anInterface : interfaces)
         {
-            addMixinDeclarations( anInterface, this.mixins );
-            mixinTypes.add( anInterface );
+            addMixinDeclarations(anInterface, this.mixins);
+            mixinTypes.add(anInterface);
         }
     }
 
@@ -75,14 +83,14 @@ public abstract class AbstractMixinsModel
 
     public Iterable<Method> mixinMethods()
     {
-        return Collections.unmodifiableSet( methodImplementation.keySet() );
+        return Collections.unmodifiableSet(methodImplementation.keySet());
     }
 
-    public boolean hasMixinType( Class<?> mixinType )
+    public boolean hasMixinType(Class<?> mixinType)
     {
-        for( Class type : mixinTypes )
+        for (Class type : mixinTypes)
         {
-            if( mixinType.isAssignableFrom( type ) )
+            if (mixinType.isAssignableFrom(type))
             {
                 return true;
             }
@@ -91,61 +99,61 @@ public abstract class AbstractMixinsModel
         return false;
     }
 
-    public MixinModel mixinFor( Method method )
+    public MixinModel mixinFor(Method method)
     {
-        Integer integer = methodIndex.get( method );
-        return mixinModels.get( integer );
+        Integer integer = methodIndex.get(method);
+        return mixinModels.get(integer);
     }
 
-    public MixinModel implementMethod( Method method )
+    public MixinModel implementMethod(Method method)
     {
-        MixinModel implementationModel = methodImplementation.get( method );
-        if( implementationModel != null )
+        MixinModel implementationModel = methodImplementation.get(method);
+        if (implementationModel != null)
         {
             return implementationModel;
         }
-        Class mixinClass = findTypedImplementation( method, mixins );
-        if( mixinClass != null )
+        Class mixinClass = findTypedImplementation(method, mixins);
+        if (mixinClass != null)
         {
-            return implementMethodWithClass( method, mixinClass );
+            return implementMethodWithClass(method, mixinClass);
         }
 
         // Check declaring interface of method
         Set<MixinDeclaration> interfaceDeclarations = new LinkedHashSet<MixinDeclaration>();
-        addMixinDeclarations( method.getDeclaringClass(), interfaceDeclarations );
-        mixinClass = findTypedImplementation( method, interfaceDeclarations );
-        if( mixinClass != null )
+        addMixinDeclarations(method.getDeclaringClass(), interfaceDeclarations);
+        mixinClass = findTypedImplementation(method, interfaceDeclarations);
+        if (mixinClass != null)
         {
-            return implementMethodWithClass( method, mixinClass );
+            return implementMethodWithClass(method, mixinClass);
         }
 
         // Check generic implementations
-        mixinClass = findGenericImplementation( method, mixins );
-        if( mixinClass != null )
+        mixinClass = findGenericImplementation(method, mixins);
+        if (mixinClass != null)
         {
-            return implementMethodWithClass( method, mixinClass );
+            return implementMethodWithClass(method, mixinClass);
         }
 
         // Check declaring interface of method
-        mixinClass = findGenericImplementation( method, interfaceDeclarations );
-        if( mixinClass != null )
+        mixinClass = findGenericImplementation(method, interfaceDeclarations);
+        if (mixinClass != null)
         {
-            return implementMethodWithClass( method, mixinClass );
+            return implementMethodWithClass(method, mixinClass);
         }
 
-        throw new InvalidCompositeException( "No implementation found for method " + method.toGenericString(), compositeType );
+        throw new InvalidCompositeException("No implementation found for method " + method.toGenericString(), compositeType);
     }
 
-    public void addMixinType( Class mixinType )
+    public void addMixinType(Class mixinType)
     {
-        mixinTypes.add( mixinType );
+        mixinTypes.add(mixinType);
     }
 
-    private Class findTypedImplementation( Method method, Set<MixinDeclaration> mixins )
+    private Class findTypedImplementation(Method method, Set<MixinDeclaration> mixins)
     {
-        for( MixinDeclaration mixin : mixins )
+        for (MixinDeclaration mixin : mixins)
         {
-            if( !mixin.isGeneric() && mixin.appliesTo( method, compositeType ) )
+            if (!mixin.isGeneric() && mixin.appliesTo(method, compositeType))
             {
                 Class mixinClass = mixin.mixinClass();
                 return mixinClass;
@@ -154,11 +162,11 @@ public abstract class AbstractMixinsModel
         return null;
     }
 
-    private Class findGenericImplementation( Method method, Set<MixinDeclaration> mixins )
+    private Class findGenericImplementation(Method method, Set<MixinDeclaration> mixins)
     {
-        for( MixinDeclaration mixin : mixins )
+        for (MixinDeclaration mixin : mixins)
         {
-            if( mixin.isGeneric() && mixin.appliesTo( method, compositeType ) )
+            if (mixin.isGeneric() && mixin.appliesTo(method, compositeType))
             {
                 Class mixinClass = mixin.mixinClass();
                 return mixinClass;
@@ -167,78 +175,78 @@ public abstract class AbstractMixinsModel
         return null;
     }
 
-    private MixinModel implementMethodWithClass( Method method, Class mixinClass )
+    private MixinModel implementMethodWithClass(Method method, Class mixinClass)
     {
         MixinModel foundMixinModel = null;
 
-        for( MixinModel mixinModel : mixinModels )
+        for (MixinModel mixinModel : mixinModels)
         {
-            if( mixinModel.mixinClass().equals( mixinClass ) )
+            if (mixinModel.mixinClass().equals(mixinClass))
             {
                 foundMixinModel = mixinModel;
                 break;
             }
         }
 
-        if( foundMixinModel == null )
+        if (foundMixinModel == null)
         {
-            foundMixinModel = new MixinModel( mixinClass );
-            mixinModels.add( foundMixinModel );
+            foundMixinModel = new MixinModel(mixinClass);
+            mixinModels.add(foundMixinModel);
         }
 
-        methodImplementation.put( method, foundMixinModel );
+        methodImplementation.put(method, foundMixinModel);
 
         return foundMixinModel;
     }
 
-    private void addMixinDeclarations( Type type, Set<MixinDeclaration> declarations )
+    private void addMixinDeclarations(Type type, Set<MixinDeclaration> declarations)
     {
-        if( type instanceof Class )
+        if (type instanceof Class)
         {
             final Class clazz = (Class) type;
-            Mixins annotation = Mixins.class.cast( clazz.getAnnotation( Mixins.class ) );
-            if( annotation != null )
+            Mixins annotation = Mixins.class.cast(clazz.getAnnotation(Mixins.class));
+            if (annotation != null)
             {
                 Class[] mixinClasses = annotation.value();
-                for( Class mixinClass : mixinClasses )
+                for (Class mixinClass : mixinClasses)
                 {
-                    declarations.add( new MixinDeclaration( mixinClass, clazz ) );
+                    declarations.add(new MixinDeclaration(mixinClass, clazz));
                 }
             }
         }
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        for( MixinModel mixinModel : mixinModels )
+        for (MixinModel mixinModel : mixinModels)
         {
-            mixinModel.visitModel( modelVisitor );
+            mixinModel.visitModel(modelVisitor);
         }
     }
 
     // Binding
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind(Resolution resolution) throws BindingException
     {
         // Order mixins based on @This usages
-        UsageGraph<MixinModel> deps = new UsageGraph<MixinModel>( mixinModels, new Uses(), true );
+        UsageGraph<MixinModel> deps = new UsageGraph<MixinModel>(mixinModels, new Uses(), true);
         mixinModels = deps.resolveOrder();
 
         // Populate mappings
-        for( int i = 0; i < mixinModels.size(); i++ )
+        for (int i = 0; i < mixinModels.size(); i++)
         {
-            MixinModel mixinModel = mixinModels.get( i );
-            mixinIndex.put( mixinModel.mixinClass(), i );
+            MixinModel mixinModel = mixinModels.get(i);
+            mixinIndex.put(mixinModel.mixinClass(), i);
         }
 
-        for( Map.Entry<Method, MixinModel> methodClassEntry : methodImplementation.entrySet() )
+        for (Map.Entry<Method, MixinModel> methodClassEntry : methodImplementation.entrySet())
         {
-            methodIndex.put( methodClassEntry.getKey(), mixinIndex.get( methodClassEntry.getValue().mixinClass() ) );
+            methodIndex.put(methodClassEntry.getKey(), mixinIndex.get(methodClassEntry.getValue().mixinClass()));
         }
 
 
-        for( MixinModel mixinComposite : mixinModels )
+        for (MixinModel mixinComposite : mixinModels)
         {
-            mixinComposite.bind( resolution );
+            mixinComposite.bind(resolution);
         }
     }
 
@@ -248,37 +256,37 @@ public abstract class AbstractMixinsModel
         return new Object[mixinIndex.size()];
     }
 
-    public Object getMixin( Object[] mixins, Method method )
+    public Object getMixin(Object[] mixins, Method method)
     {
-        return mixins[ methodIndex.get( method ) ];
+        return mixins[methodIndex.get(method)];
     }
 
-    public FragmentInvocationHandler newInvocationHandler( final Method method )
+    public FragmentInvocationHandler newInvocationHandler(final Method method)
     {
-        return mixinFor( method ).newInvocationHandler( method );
+        return mixinFor(method).newInvocationHandler(method);
     }
 
-    public void activate( Object[] mixins ) throws Exception
+    public void activate(Object[] mixins) throws Exception
     {
         int idx = 0;
         try
         {
-            for( MixinModel mixinModel : mixinModels )
+            for (MixinModel mixinModel : mixinModels)
             {
-                mixinModel.activate( mixins[ idx ] );
+                mixinModel.activate(mixins[idx]);
                 idx++;
             }
         }
-        catch( Exception e )
+        catch (Exception e)
         {
             // Passivate activated mixins
-            for( int i = idx - 1; i >= 0; i-- )
+            for (int i = idx - 1; i >= 0; i--)
             {
                 try
                 {
-                    mixinModels.get( i ).passivate( i );
+                    mixinModels.get(i).passivate(i);
                 }
-                catch( Exception e1 )
+                catch (Exception e1)
                 {
                     // Ignore
                 }
@@ -288,39 +296,39 @@ public abstract class AbstractMixinsModel
         }
     }
 
-    public void passivate( Object[] mixins ) throws Exception
+    public void passivate(Object[] mixins) throws Exception
     {
         int idx = 0;
         Exception ex = null;
-        for( MixinModel mixinModel : mixinModels )
+        for (MixinModel mixinModel : mixinModels)
         {
             try
             {
-                mixinModel.passivate( mixins[ idx++ ] );
+                mixinModel.passivate(mixins[idx++]);
             }
-            catch( Exception e )
+            catch (Exception e)
             {
                 ex = e;
             }
         }
-        if( ex != null )
+        if (ex != null)
         {
             throw ex;
         }
     }
 
     private class Uses
-        implements UsageGraph.Use<MixinModel>
+            implements UsageGraph.Use<MixinModel>
     {
-        public Collection<MixinModel> uses( MixinModel source )
+        public Collection<MixinModel> uses(MixinModel source)
         {
             Set<Class> thisMixinTypes = source.thisMixinTypes();
             List<MixinModel> usedMixinClasses = new ArrayList<MixinModel>();
-            for( Class thisMixinType : thisMixinTypes )
+            for (Class thisMixinType : thisMixinTypes)
             {
-                for( Method method : thisMixinType.getMethods() )
+                for (Method method : thisMixinType.getMethods())
                 {
-                    usedMixinClasses.add( methodImplementation.get( method ) );
+                    usedMixinClasses.add(methodImplementation.get(method));
                 }
             }
             return usedMixinClasses;

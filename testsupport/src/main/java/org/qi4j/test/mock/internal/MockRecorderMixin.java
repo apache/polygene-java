@@ -17,14 +17,14 @@
  */
 package org.qi4j.test.mock.internal;
 
-import org.qi4j.test.mock.MockRecorder;
-import org.qi4j.test.mock.MockResolverType;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.qi4j.test.mock.MockRecorder;
+import org.qi4j.test.mock.MockResolverType;
+
 public class MockRecorderMixin
-    implements MockRecorder, MockRepository
+        implements MockRecorder, MockRepository
 {
 
     private final Collection<MockResolver> mockResolvers;
@@ -35,17 +35,17 @@ public class MockRecorderMixin
     }
 
 
-    public MockResolverType useMock( Object mock )
+    public MockResolverType useMock(Object mock)
     {
-        System.out.println( "Recorded " + mock );
-        MockResolverProxy proxy = new MockResolverProxy( mock, new UnresolvableMockResolver() );
-        add( proxy );
-        return new MockResolverTypeImpl( proxy );
+        System.out.println("Recorded " + mock);
+        MockResolverProxy proxy = new MockResolverProxy(mock, new UnresolvableMockResolver());
+        add(proxy);
+        return new MockResolverTypeImpl(proxy);
     }
 
-    public void add( MockResolver mockResolver )
+    public void add(MockResolver mockResolver)
     {
-        mockResolvers.add( mockResolver );
+        mockResolvers.add(mockResolver);
     }
 
     public Iterable<MockResolver> getAll()

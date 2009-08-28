@@ -22,10 +22,9 @@ import org.qi4j.api.query.grammar.VariableValueExpression;
 /**
  * A variable value epression, whois value can be set at runtime before query invocation, via
  * {@link org.qi4j.api.query.Query#setVariable(String, Object)}.
- *
  */
 public final class VariableValueExpressionImpl<T>
-    implements VariableValueExpression<T>
+        implements VariableValueExpression<T>
 {
 
     /**
@@ -43,11 +42,11 @@ public final class VariableValueExpressionImpl<T>
      * @param name variable name; cannot be null or empty
      * @throws IllegalArgumentException - If name is null or empty
      */
-    public VariableValueExpressionImpl( final String name )
+    public VariableValueExpressionImpl(final String name)
     {
-        if( name == null || name.trim().length() == 0 )
+        if (name == null || name.trim().length() == 0)
         {
-            throw new IllegalArgumentException( "Variable name cannot be null or empty" );
+            throw new IllegalArgumentException("Variable name cannot be null or empty");
         }
         this.name = name;
     }
@@ -70,9 +69,9 @@ public final class VariableValueExpressionImpl<T>
      */
     public T value()
     {
-        if( value == null )
+        if (value == null)
         {
-            throw new IllegalStateException( "Value of variable [" + name + "] is not set" );
+            throw new IllegalStateException("Value of variable [" + name + "] is not set");
         }
         return value;
     }
@@ -83,16 +82,17 @@ public final class VariableValueExpressionImpl<T>
      * @param value variable value; cannot be null
      * @throws IllegalArgumentException - If value is null
      */
-    public void setValue( T value )
+    public void setValue(T value)
     {
-        if( value == null )
+        if (value == null)
         {
-            throw new IllegalArgumentException( "Value of variable [" + name + "] cannot be null" );
+            throw new IllegalArgumentException("Value of variable [" + name + "] cannot be null");
         }
         this.value = value;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return value == null ? "$" + name : value.toString();
     }

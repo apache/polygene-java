@@ -14,23 +14,23 @@
 
 package org.qi4j.runtime.structure;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.spi.structure.LayerDescriptor;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * JAVADOC
  */
 public final class LayerModel
-    implements Binder, LayerDescriptor, Serializable
+        implements Binder, LayerDescriptor, Serializable
 {
     // Model
     private final String name;
@@ -38,10 +38,10 @@ public final class LayerModel
     private final UsedLayersModel usedLayersModel;
     private final List<ModuleModel> modules;
 
-    public LayerModel( String name,
-                       MetaInfo metaInfo,
-                       UsedLayersModel usedLayersModel,
-                       List<ModuleModel> modules )
+    public LayerModel(String name,
+                      MetaInfo metaInfo,
+                      UsedLayersModel usedLayersModel,
+                      List<ModuleModel> modules)
     {
         this.name = name;
         this.metaInfo = metaInfo;
@@ -65,111 +65,109 @@ public final class LayerModel
         return usedLayersModel;
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        modelVisitor.visit( this );
+        modelVisitor.visit(this);
 
-        for( ModuleModel module : modules )
+        for (ModuleModel module : modules)
         {
-            module.visitModel( modelVisitor );
+            module.visitModel(modelVisitor);
         }
     }
 
     // Binding
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind(Resolution resolution) throws BindingException
     {
-        resolution = new Resolution( resolution.application(), this, null, null, null, null );
-        for( ModuleModel module : modules )
+        resolution = new Resolution(resolution.application(), this, null, null, null, null);
+        for (ModuleModel module : modules)
         {
-            module.bind( resolution );
+            module.bind(resolution);
         }
     }
 
     // Context
-    public TransientModel findCompositeFor( Class mixinType, Visibility visibility )
+    public TransientModel findCompositeFor(Class mixinType, Visibility visibility)
     {
         // Check this layer
         TransientModel foundModel = null;
-        for( ModuleModel model : modules )
+        for (ModuleModel model : modules)
         {
-            TransientModel transientModel = model.composites().getCompositeModelFor( mixinType, visibility );
-            if( transientModel != null )
+            TransientModel transientModel = model.composites().getCompositeModelFor(mixinType, visibility);
+            if (transientModel != null)
             {
-                if( foundModel != null )
+                if (foundModel != null)
                 {
-                    throw new AmbiguousTypeException( mixinType, foundModel.type(), transientModel.type() );
-                }
-                else
+                    throw new AmbiguousTypeException(mixinType, foundModel.type(), transientModel.type());
+                } else
                 {
                     foundModel = transientModel;
                 }
             }
         }
 
-        if( foundModel != null )
+        if (foundModel != null)
         {
             return foundModel;
         }
 
-        if( visibility == Visibility.layer )
+        if (visibility == Visibility.layer)
         {
             // Check application scope
-            foundModel = findCompositeFor( mixinType, Visibility.application );
-            if( foundModel != null )
+            foundModel = findCompositeFor(mixinType, Visibility.application);
+            if (foundModel != null)
             {
                 return foundModel;
-            }
-            else
+            } else
             {
-                return usedLayersModel.findCompositeFor( mixinType );
+                return usedLayersModel.findCompositeFor(mixinType);
             }
-        }
-        else
+        } else
         {
             return null;
         }
     }
 
-    public LayerInstance newInstance( ApplicationInstance applicationInstance, UsedLayersInstance usedLayerInstance )
+    public LayerInstance newInstance(ApplicationInstance applicationInstance, UsedLayersInstance usedLayerInstance)
     {
         List<ModuleInstance> moduleInstances = new ArrayList<ModuleInstance>();
-        LayerInstance layerInstance = new LayerInstance( this, applicationInstance, moduleInstances, usedLayerInstance );
-        for( ModuleModel module : modules )
+        LayerInstance layerInstance = new LayerInstance(this, applicationInstance, moduleInstances, usedLayerInstance);
+        for (ModuleModel module : modules)
         {
-            ModuleInstance moduleInstance = module.newInstance( layerInstance );
-            moduleInstances.add( moduleInstance );
+            ModuleInstance moduleInstance = module.newInstance(layerInstance);
+            moduleInstances.add(moduleInstance);
         }
 
         return layerInstance;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return name;
     }
 
-    public boolean visitModules( ModuleVisitor visitor, Visibility visibility )
+    public boolean visitModules(ModuleVisitor visitor, Visibility visibility)
     {
         // Visit modules in this layer
         ModuleInstance foundModule = null;
-        for( ModuleModel moduleModel : modules )
+        for (ModuleModel moduleModel : modules)
         {
-            if( !visitor.visitModule( null, moduleModel, visibility ) )
+            if (!visitor.visitModule(null, moduleModel, visibility))
             {
                 return false;
             }
         }
 
-        if( visibility == Visibility.layer )
+        if (visibility == Visibility.layer)
         {
             // Visit modules in this layer
-            if( !visitModules( visitor, Visibility.application ) )
+            if (!visitModules(visitor, Visibility.application))
             {
                 return false;
             }
 
             // Visit modules in used layers
-            return usedLayersModel.visitModules( visitor );
+            return usedLayersModel.visitModules(visitor);
         }
 
         return true;

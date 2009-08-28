@@ -25,20 +25,19 @@ import org.qi4j.api.query.grammar.OrderBy;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 public interface EntityFinder
 {
-    Iterable<EntityReference> findEntities( String resultType,
-                                            @Optional BooleanExpression whereClause,
-                                            @Optional OrderBy[] orderBySegments,
-                                            @Optional Integer firstResult,
-                                            @Optional Integer maxResults )
-        throws EntityFinderException;
+    Iterable<EntityReference> findEntities(String resultType,
+                                           @Optional BooleanExpression whereClause,
+                                           @Optional OrderBy[] orderBySegments,
+                                           @Optional Integer firstResult,
+                                           @Optional Integer maxResults)
+            throws EntityFinderException;
 
-    EntityReference findEntity( String resultType, @Optional BooleanExpression whereClause )
-        throws EntityFinderException;
+    EntityReference findEntity(String resultType, @Optional BooleanExpression whereClause)
+            throws EntityFinderException;
 
-    long countEntities( String resultType, @Optional BooleanExpression whereClause )
-        throws EntityFinderException;
+    long countEntities(String resultType, @Optional BooleanExpression whereClause)
+            throws EntityFinderException;
 }

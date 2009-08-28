@@ -14,21 +14,21 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.common.AppliesTo;
-import org.qi4j.api.common.AppliesToFilter;
-import org.qi4j.api.common.ConstructionException;
-
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
+import org.qi4j.api.common.AppliesTo;
+import org.qi4j.api.common.AppliesToFilter;
+import org.qi4j.api.common.ConstructionException;
+
 /**
  * JAVADOC
  */
 public final class MixinDeclaration
-    implements Serializable
+        implements Serializable
 {
     private final Class mixinClass;
     private final Class declaredIn;
@@ -36,68 +36,65 @@ public final class MixinDeclaration
     private AppliesToFilter appliesToFilter;
     private final boolean generic;
 
-    public MixinDeclaration( Class mixinClass, Class declaredIn )
+    public MixinDeclaration(Class mixinClass, Class declaredIn)
     {
         this.mixinClass = mixinClass;
-        this.generic = InvocationHandler.class.isAssignableFrom( mixinClass );
+        this.generic = InvocationHandler.class.isAssignableFrom(mixinClass);
         this.declaredIn = declaredIn;
 
-        if( !this.generic )
+        if (!this.generic)
         {
             appliesToFilter = new TypedFragmentAppliesToFilter();
 
-            if( Modifier.isAbstract( mixinClass.getModifiers() ) )
+            if (Modifier.isAbstract(mixinClass.getModifiers()))
             {
-                appliesToFilter = new AndAppliesToFilter( appliesToFilter, new ImplementsMethodAppliesToFilter() );
+                appliesToFilter = new AndAppliesToFilter(appliesToFilter, new ImplementsMethodAppliesToFilter());
             }
         }
 
-        AppliesTo appliesTo = (AppliesTo) mixinClass.getAnnotation( AppliesTo.class );
-        if( appliesTo != null )
+        AppliesTo appliesTo = (AppliesTo) mixinClass.getAnnotation(AppliesTo.class);
+        if (appliesTo != null)
         {
             // Use "or" for all filters specified in the annotation
             AppliesToFilter appliesToAnnotation = null;
-            for( Class<?> appliesToClass : appliesTo.value() )
+            for (Class<?> appliesToClass : appliesTo.value())
             {
                 AppliesToFilter filter;
-                if( AppliesToFilter.class.isAssignableFrom( appliesToClass ) )
+                if (AppliesToFilter.class.isAssignableFrom(appliesToClass))
                 {
                     try
                     {
                         filter = (AppliesToFilter) appliesToClass.newInstance();
                     }
-                    catch( Exception e )
+                    catch (Exception e)
                     {
-                        throw new ConstructionException( e );
+                        throw new ConstructionException(e);
                     }
-                }
-                else // Type check
+                } else // Type check
                 {
-                    filter = new TypeCheckAppliesToFilter( appliesToClass );
+                    filter = new TypeCheckAppliesToFilter(appliesToClass);
                 }
 
-                if( appliesToAnnotation == null )
+                if (appliesToAnnotation == null)
                 {
                     appliesToAnnotation = filter;
-                }
-                else
+                } else
                 {
-                    appliesToAnnotation = new OrAppliesToFilter( appliesToAnnotation, filter );
+                    appliesToAnnotation = new OrAppliesToFilter(appliesToAnnotation, filter);
                 }
             }
 
             // Add to the rest of the rules using "and"
-            if( appliesToFilter == null )
+            if (appliesToFilter == null)
             {
                 appliesToFilter = appliesToAnnotation;
-            }
-            else
+            } else
             {
-                appliesToFilter = new AndAppliesToFilter( appliesToFilter, appliesToAnnotation );
+                appliesToFilter = new AndAppliesToFilter(appliesToFilter, appliesToAnnotation);
             }
         }
 
-        if( appliesToFilter == null )
+        if (appliesToFilter == null)
         {
             appliesToFilter = AppliesToFilter.ALWAYS;
         }
@@ -118,12 +115,13 @@ public final class MixinDeclaration
         return generic;
     }
 
-    public boolean appliesTo( Method method, Class<?> compositeType )
+    public boolean appliesTo(Method method, Class<?> compositeType)
     {
-        return appliesToFilter.appliesTo( method, mixinClass, compositeType, mixinClass );
+        return appliesToFilter.appliesTo(method, mixinClass, compositeType, mixinClass);
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return "Mixin " + mixinClass.getName() + " declared in " + declaredIn;
     }

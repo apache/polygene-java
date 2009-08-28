@@ -14,12 +14,6 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.sideeffect.SideEffects;
-import static org.qi4j.api.util.Classes.*;
-import org.qi4j.api.util.MethodKeyMap;
-import org.qi4j.runtime.util.Annotations;
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -30,86 +24,91 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.sideeffect.SideEffects;
+import static org.qi4j.api.util.Classes.*;
+import org.qi4j.api.util.MethodKeyMap;
+import org.qi4j.runtime.util.Annotations;
+
 /**
  * JAVADOC
  */
 public final class SideEffectsDeclaration
-    implements Serializable
+        implements Serializable
 {
     private final List<SideEffectDeclaration> sideEffectDeclarations = new ArrayList<SideEffectDeclaration>();
     private final Map<Method, MethodSideEffectsModel> methodSideEffects = new MethodKeyMap<MethodSideEffectsModel>();
 
-    public SideEffectsDeclaration( Class type, Iterable<Class<?>> sideEffects )
+    public SideEffectsDeclaration(Class type, Iterable<Class<?>> sideEffects)
     {
-        Collection<Type> types = asSideEffectsTargetTypes( type );
+        Collection<Type> types = asSideEffectsTargetTypes(type);
 
 
-        for( Type aType : types )
+        for (Type aType : types)
         {
-            addSideEffectDeclaration( aType );
+            addSideEffectDeclaration(aType);
         }
 
         // Add sideeffects from assembly
-        for( Class<?> sideEffect : sideEffects )
+        for (Class<?> sideEffect : sideEffects)
         {
-            this.sideEffectDeclarations.add( new SideEffectDeclaration( sideEffect, null ) );
+            this.sideEffectDeclarations.add(new SideEffectDeclaration(sideEffect, null));
         }
     }
 
-    private Collection<Type> asSideEffectsTargetTypes( Class type )
+    private Collection<Type> asSideEffectsTargetTypes(Class type)
     {
         // Find side-effect declarations
-        if( type.isInterface() )
+        if (type.isInterface())
         {
-            return genericInterfacesOf( type );
-        }
-        else
+            return genericInterfacesOf(type);
+        } else
         {
-            return singleton( (Type) type );
+            return singleton((Type) type);
         }
     }
 
     // Model
-    public MethodSideEffectsModel sideEffectsFor( Method method, Class<? extends Composite> compositeType )
+    public MethodSideEffectsModel sideEffectsFor(Method method, Class<? extends Composite> compositeType)
     {
-        if( methodSideEffects.containsKey( method ) )
+        if (methodSideEffects.containsKey(method))
         {
-            return methodSideEffects.get( method );
+            return methodSideEffects.get(method);
         }
 
 
-        final Collection<Class> matchingSideEffects = matchingSideEffectClasses( method, compositeType );
-        MethodSideEffectsModel methodConcerns = MethodSideEffectsModel.createForMethod( method, matchingSideEffects );
-        methodSideEffects.put( method, methodConcerns );
+        final Collection<Class> matchingSideEffects = matchingSideEffectClasses(method, compositeType);
+        MethodSideEffectsModel methodConcerns = MethodSideEffectsModel.createForMethod(method, matchingSideEffects);
+        methodSideEffects.put(method, methodConcerns);
         return methodConcerns;
     }
 
-    private Collection<Class> matchingSideEffectClasses( Method method, Class<? extends Composite> compositeType )
+    private Collection<Class> matchingSideEffectClasses(Method method, Class<? extends Composite> compositeType)
     {
-        Collection<Class> result = new LinkedHashSet<Class>( sideEffectDeclarations.size() );
+        Collection<Class> result = new LinkedHashSet<Class>(sideEffectDeclarations.size());
 
-        for( SideEffectDeclaration sideEffectDeclaration : sideEffectDeclarations )
+        for (SideEffectDeclaration sideEffectDeclaration : sideEffectDeclarations)
         {
-            if( sideEffectDeclaration.appliesTo( method, compositeType ) )
+            if (sideEffectDeclaration.appliesTo(method, compositeType))
             {
-                result.add( sideEffectDeclaration.type() );
+                result.add(sideEffectDeclaration.type());
             }
         }
         return result;
     }
 
-    private void addSideEffectDeclaration( Type type )
+    private void addSideEffectDeclaration(Type type)
     {
-        if( type instanceof Class )
+        if (type instanceof Class)
         {
             final Class clazz = (Class) type;
-            SideEffects annotation = Annotations.getAnnotation( type, SideEffects.class );
-            if( annotation != null )
+            SideEffects annotation = Annotations.getAnnotation(type, SideEffects.class);
+            if (annotation != null)
             {
                 Class[] sideEffectClasses = annotation.value();
-                for( Class sideEffectClass : sideEffectClasses )
+                for (Class sideEffectClass : sideEffectClasses)
                 {
-                    sideEffectDeclarations.add( new SideEffectDeclaration( sideEffectClass, clazz ) );
+                    sideEffectDeclarations.add(new SideEffectDeclaration(sideEffectClass, clazz));
                 }
             }
         }

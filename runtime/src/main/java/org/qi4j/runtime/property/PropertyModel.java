@@ -14,43 +14,42 @@
 
 package org.qi4j.runtime.property;
 
+import java.lang.reflect.Method;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 
-import java.lang.reflect.Method;
-
 /**
  * Implementation of Properties for Transient Composites
  */
 public class PropertyModel
-    extends AbstractPropertyModel
+        extends AbstractPropertyModel
 {
     private PropertyInfo propertyInfo;
 
-    public PropertyModel( Method anAccessor, boolean immutable, ValueConstraintsInstance constraints,
-                          MetaInfo metaInfo, Object anInitialValue )
+    public PropertyModel(Method anAccessor, boolean immutable, ValueConstraintsInstance constraints,
+                         MetaInfo metaInfo, Object anInitialValue)
     {
-        super( anAccessor, immutable, constraints, metaInfo, anInitialValue );
-        propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), qualifiedName(), type() );
+        super(anAccessor, immutable, constraints, metaInfo, anInitialValue);
+        propertyInfo = new GenericPropertyInfo(metaInfo, isImmutable(), isComputed(), qualifiedName(), type());
     }
 
-    @SuppressWarnings( "unchecked" )
-    public <T> Property<T> newInstance( Object value )
+    @SuppressWarnings("unchecked")
+    public <T> Property<T> newInstance(Object value)
     {
         // Property was constructed using a builder
 
         Property property;
-        if( isComputed() )
+        if (isComputed())
         {
-            property = new ComputedPropertyInfo<Object>( propertyInfo );
-        }
-        else
+            property = new ComputedPropertyInfo<Object>(propertyInfo);
+        } else
         {
-            property = new PropertyInstance<Object>( propertyInfo, value, this );
+            property = new PropertyInstance<Object>(propertyInfo, value, this);
         }
-        return wrapProperty( property );
+        return wrapProperty(property);
     }
 }

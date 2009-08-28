@@ -14,6 +14,10 @@
 
 package org.qi4j.runtime.value;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.constraint.ConstraintViolationException;
@@ -35,50 +39,46 @@ import org.qi4j.spi.value.ValueCompositeType;
 import org.qi4j.spi.value.ValueDescriptor;
 import org.qi4j.spi.value.ValueType;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Model for ValueComposites
  */
 public final class ValueModel extends AbstractCompositeModel
-    implements ValueDescriptor, Serializable
+        implements ValueDescriptor, Serializable
 {
     private ValueCompositeType valueType;
 
-    public static ValueModel newModel( final Class<? extends ValueComposite> compositeType,
-                                       final Visibility visibility,
-                                       final MetaInfo metaInfo,
-                                       final PropertyDeclarations propertyDeclarations,
-                                       final List<Class<?>> assemblyConcerns,
-                                       final List<Class<?>> sideEffects,
-                                       final List<Class<?>> mixins )
+    public static ValueModel newModel(final Class<? extends ValueComposite> compositeType,
+                                      final Visibility visibility,
+                                      final MetaInfo metaInfo,
+                                      final PropertyDeclarations propertyDeclarations,
+                                      final List<Class<?>> assemblyConcerns,
+                                      final List<Class<?>> sideEffects,
+                                      final List<Class<?>> mixins)
     {
-        ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
-        ValuePropertiesModel propertiesModel = new ValuePropertiesModel( constraintsModel, propertyDeclarations );
+        ConstraintsModel constraintsModel = new ConstraintsModel(compositeType);
+        ValuePropertiesModel propertiesModel = new ValuePropertiesModel(constraintsModel, propertyDeclarations);
 
-        ValueStateModel stateModel = new ValueStateModel( propertiesModel );
-        ValueMixinsModel mixinsModel = new ValueMixinsModel( compositeType, mixins );
+        ValueStateModel stateModel = new ValueStateModel(propertiesModel);
+        ValueMixinsModel mixinsModel = new ValueMixinsModel(compositeType, mixins);
 
         List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
-        ConcernsDeclaration.concernDeclarations( assemblyConcerns, concerns );
-        ConcernsDeclaration.concernDeclarations( compositeType, concerns );
-        ConcernsDeclaration concernsModel = new ConcernsDeclaration( concerns );
-        SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
+        ConcernsDeclaration.concernDeclarations(assemblyConcerns, concerns);
+        ConcernsDeclaration.concernDeclarations(compositeType, concerns);
+        ConcernsDeclaration concernsModel = new ConcernsDeclaration(concerns);
+        SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration(compositeType, sideEffects);
         // TODO: Disable constraints, concerns and sideeffects??
         CompositeMethodsModel compositeMethodsModel =
-            new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
-        stateModel.addStateFor( compositeMethodsModel.methods(), compositeType );
+                new CompositeMethodsModel(compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel);
+        stateModel.addStateFor(compositeMethodsModel.methods(), compositeType);
 
-        ValueCompositeType valueType = (ValueCompositeType) ValueType.newValueType( compositeType, compositeType, compositeType);
+        ValueCompositeType valueType = (ValueCompositeType) ValueType.newValueType(compositeType, compositeType, compositeType);
 
-        return new ValueModel( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, valueType );
+        return new ValueModel(compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, valueType);
     }
 
-    private ValueModel( final Class<? extends ValueComposite> compositeType, final Visibility visibility, final MetaInfo metaInfo, final ValueMixinsModel mixinsModel, final ValueStateModel stateModel, final CompositeMethodsModel compositeMethodsModel, ValueCompositeType valueType )
+    private ValueModel(final Class<? extends ValueComposite> compositeType, final Visibility visibility, final MetaInfo metaInfo, final ValueMixinsModel mixinsModel, final ValueStateModel stateModel, final CompositeMethodsModel compositeMethodsModel, ValueCompositeType valueType)
     {
-        super( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
+        super(compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel);
 
         this.valueType = valueType;
     }
@@ -88,47 +88,47 @@ public final class ValueModel extends AbstractCompositeModel
         return valueType;
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        modelVisitor.visit( this );
+        modelVisitor.visit(this);
 
-        compositeMethodsModel.visitModel( modelVisitor );
-        mixinsModel.visitModel( modelVisitor );
+        compositeMethodsModel.visitModel(modelVisitor);
+        mixinsModel.visitModel(modelVisitor);
     }
 
-    public void bind( Resolution resolution )
-        throws BindingException
+    public void bind(Resolution resolution)
+            throws BindingException
     {
-        resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
-        compositeMethodsModel.bind( resolution );
-        mixinsModel.bind( resolution );
+        resolution = new Resolution(resolution.application(), resolution.layer(), resolution.module(), this, null, null);
+        compositeMethodsModel.bind(resolution);
+        mixinsModel.bind(resolution);
     }
 
-    public void checkConstraints( StateHolder state )
-        throws ConstraintViolationException
+    public void checkConstraints(StateHolder state)
+            throws ConstraintViolationException
     {
-        stateModel.checkConstraints( state );
+        stateModel.checkConstraints(state);
     }
 
-    public ValueInstance newValueInstance( ModuleInstance moduleInstance,
-                                           StateHolder state )
+    public ValueInstance newValueInstance(ModuleInstance moduleInstance,
+                                          StateHolder state)
     {
         Object[] mixins = mixinsModel.newMixinHolder();
 
-        ValueInstance instance = new ValueInstance( this, moduleInstance, mixins, state );
+        ValueInstance instance = new ValueInstance(this, moduleInstance, mixins, state);
 
         try
         {
             // Instantiate all mixins
-            ( (ValueMixinsModel) mixinsModel ).newMixins( instance,
-                                                          state,
-                                                          mixins );
+            ((ValueMixinsModel) mixinsModel).newMixins(instance,
+                    state,
+                    mixins);
 
         }
-        catch( InvalidCompositeException e )
+        catch (InvalidCompositeException e)
         {
-            e.setFailingCompositeType( type() );
-            e.setMessage( "Invalid Cyclic Mixin usage dependency" );
+            e.setFailingCompositeType(type());
+            e.setMessage("Invalid Cyclic Mixin usage dependency");
             throw e;
         }
         // Return

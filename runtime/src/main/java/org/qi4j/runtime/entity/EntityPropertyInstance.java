@@ -22,7 +22,6 @@ import org.qi4j.spi.entity.EntityState;
 
 /**
  * {@code EntityPropertyInstance} represents a property whose value must be backed by an EntityState.
- *
  */
 public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
 {
@@ -40,12 +39,12 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
      * @param entityState
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
      */
-    public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState, ConstraintsCheck constraints)
-        throws IllegalArgumentException
+    public EntityPropertyInstance(PropertyInfo aPropertyInfo, EntityState entityState, ConstraintsCheck constraints)
+            throws IllegalArgumentException
     {
-        super( aPropertyInfo );
+        super(aPropertyInfo);
 
-        validateNotNull( "entitystate", entityState );
+        validateNotNull("entitystate", entityState);
 
         this.constraints = constraints;
         this.value = (T) NOT_LOADED;
@@ -59,9 +58,9 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
      */
     public T get()
     {
-        if( value == NOT_LOADED )
+        if (value == NOT_LOADED)
         {
-            value = (T) entityState.getProperty( propertyInfo.qualifiedName() );
+            value = (T) entityState.getProperty(propertyInfo.qualifiedName());
         }
 
         return value;
@@ -72,20 +71,20 @@ public class EntityPropertyInstance<T> extends AbstractPropertyInstance<T>
      *
      * @param aNewValue The new value.
      */
-    public void set( T aNewValue )
+    public void set(T aNewValue)
     {
-        if( isImmutable() )
+        if (isImmutable())
         {
-            throw new IllegalStateException( "Property [" + qualifiedName() + "] is immutable" );
+            throw new IllegalStateException("Property [" + qualifiedName() + "] is immutable");
         }
 
-        if( constraints != null )
+        if (constraints != null)
         {
-            constraints.checkConstraints( aNewValue );
+            constraints.checkConstraints(aNewValue);
         }
 
         // Change property
-        entityState.setProperty( propertyInfo.qualifiedName(), aNewValue );
+        entityState.setProperty(propertyInfo.qualifiedName(), aNewValue);
         value = aNewValue;
     }
 

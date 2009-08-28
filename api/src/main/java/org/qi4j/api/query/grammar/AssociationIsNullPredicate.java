@@ -20,9 +20,8 @@ package org.qi4j.api.query.grammar;
 
 /**
  * Constraints that an {@link org.qi4j.api.entity.association.Association} is null (not set).
- *
  */
 public interface AssociationIsNullPredicate
-    extends AssociationNullPredicate
+        extends AssociationNullPredicate
 {
 }

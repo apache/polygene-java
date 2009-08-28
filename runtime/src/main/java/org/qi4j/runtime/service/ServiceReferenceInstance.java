@@ -14,6 +14,9 @@
 
 package org.qi4j.runtime.service;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceException;
@@ -23,9 +26,6 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.service.Activator;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-
 /**
  * Implementation of ServiceReference. This manages the actual instance of the service
  * and implements the invocation of the Activatable interface on the service.
@@ -34,7 +34,7 @@ import java.lang.reflect.Method;
  * that the instance can be passivated even though a client is holding on to a service proxy.
  */
 public final class ServiceReferenceInstance<T>
-    implements ServiceReference<T>, Activatable
+        implements ServiceReference<T>, Activatable
 {
     private volatile ServiceInstance instance;
     private final T serviceProxy;
@@ -42,7 +42,7 @@ public final class ServiceReferenceInstance<T>
     private final ServiceModel serviceModel;
     private final Activator activator = new Activator();
 
-    public ServiceReferenceInstance( ServiceModel serviceModel, ModuleInstance module )
+    public ServiceReferenceInstance(ServiceModel serviceModel, ModuleInstance module)
     {
         this.module = module;
         this.serviceModel = serviceModel;
@@ -71,18 +71,18 @@ public final class ServiceReferenceInstance<T>
     }
 
     public void activate()
-        throws Exception
+            throws Exception
     {
-        if( serviceModel.isInstantiateOnStartup() )
+        if (serviceModel.isInstantiateOnStartup())
         {
             getInstance();
         }
     }
 
     public void passivate()
-        throws Exception
+            throws Exception
     {
-        if( instance != null )
+        if (instance != null)
         {
 //            Logger disabled, as the framework itself shouldn't emit that much information, and the calls are fairly expensive.
 //            Logger.getLogger( getClass().getName() ).info( "Passivating service for " + serviceModel.identity() + " " + this.hashCode() );
@@ -92,27 +92,27 @@ public final class ServiceReferenceInstance<T>
     }
 
     private CompositeInstance getInstance()
-        throws ServiceImporterException
+            throws ServiceImporterException
     {
         // DCL that works with Java 1.5 volatile semantics
-        if( instance == null )
+        if (instance == null)
         {
-            synchronized( this )
+            synchronized (this)
             {
-                if( instance == null )
+                if (instance == null)
                 {
 //                    Logger disabled, as the framework itself shouldn't emit that much information, and the calls are fairly expensive.            
 //                    Logger.getLogger( getClass().getName() ).info( "Activating service for " + serviceModel.identity() + " " + this.hashCode() );
-                    instance = serviceModel.newInstance( module );
+                    instance = serviceModel.newInstance(module);
 
                     try
                     {
-                        activator.activate( instance );
+                        activator.activate(instance);
                     }
-                    catch( Exception e )
+                    catch (Exception e)
                     {
                         instance = null;
-                        throw new ServiceException( "Could not activate service " + serviceModel.identity(), e );
+                        throw new ServiceException("Could not activate service " + serviceModel.identity(), e);
                     }
                 }
             }
@@ -121,7 +121,8 @@ public final class ServiceReferenceInstance<T>
         return instance;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return serviceModel.identity() + ", active=" + isActive() + ", module='" + serviceModel.moduleName() + "'";
     }
@@ -129,24 +130,25 @@ public final class ServiceReferenceInstance<T>
 
     public T newProxy()
     {
-        return (T) serviceModel.newProxy( new ServiceReferenceInstance.ServiceInvocationHandler() );
+        return (T) serviceModel.newProxy(new ServiceReferenceInstance.ServiceInvocationHandler());
     }
 
     public final class ServiceInvocationHandler
-        implements InvocationHandler
+            implements InvocationHandler
     {
-        public Object invoke( Object object, Method method, Object[] objects ) throws Throwable
+        public Object invoke(Object object, Method method, Object[] objects) throws Throwable
         {
-            if( method.getName().equals( "toString" ) )
+            if (method.getName().equals("toString"))
             {
                 return serviceModel.toString();
             }
             CompositeInstance instance = getInstance();
 
-            return instance.invoke( object, method, objects );
+            return instance.invoke(object, method, objects);
         }
 
-        @Override public String toString()
+        @Override
+        public String toString()
         {
             return serviceModel.toString();
         }

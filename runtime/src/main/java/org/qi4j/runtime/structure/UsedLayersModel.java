@@ -14,23 +14,23 @@
 
 package org.qi4j.runtime.structure;
 
+import java.io.Serializable;
+import java.util.List;
+
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.spi.structure.UsedLayersDescriptor;
 
-import java.io.Serializable;
-import java.util.List;
-
 /**
  * JAVADOC
  */
 public final class UsedLayersModel
-    implements UsedLayersDescriptor, Serializable
+        implements UsedLayersDescriptor, Serializable
 {
     private final List<LayerModel> usedLayers;
 
-    public UsedLayersModel( List<LayerModel> usedLayers )
+    public UsedLayersModel(List<LayerModel> usedLayers)
     {
         this.usedLayers = usedLayers;
     }
@@ -40,17 +40,17 @@ public final class UsedLayersModel
         return usedLayers;
     }
 
-    public TransientModel findCompositeFor( Class mixinType )
+    public TransientModel findCompositeFor(Class mixinType)
     {
         TransientModel foundModel = null;
-        for( LayerModel usedLayer : usedLayers )
+        for (LayerModel usedLayer : usedLayers)
         {
-            TransientModel transientModel = usedLayer.findCompositeFor( mixinType, Visibility.application );
-            if( transientModel != null )
+            TransientModel transientModel = usedLayer.findCompositeFor(mixinType, Visibility.application);
+            if (transientModel != null)
             {
-                if( foundModel != null )
+                if (foundModel != null)
                 {
-                    throw new AmbiguousTypeException( mixinType, foundModel.type(), transientModel.type() );
+                    throw new AmbiguousTypeException(mixinType, foundModel.type(), transientModel.type());
                 }
                 foundModel = transientModel;
             }
@@ -59,16 +59,16 @@ public final class UsedLayersModel
         return foundModel;
     }
 
-    public UsedLayersInstance newInstance( List<LayerInstance> usedLayerInstances )
+    public UsedLayersInstance newInstance(List<LayerInstance> usedLayerInstances)
     {
-        return new UsedLayersInstance( usedLayerInstances );
+        return new UsedLayersInstance(usedLayerInstances);
     }
 
-    public boolean visitModules( ModuleVisitor visitor )
+    public boolean visitModules(ModuleVisitor visitor)
     {
-        for( LayerModel usedLayerModel : usedLayers )
+        for (LayerModel usedLayerModel : usedLayers)
         {
-            if( !usedLayerModel.visitModules( visitor, Visibility.application ) )
+            if (!usedLayerModel.visitModules(visitor, Visibility.application))
             {
                 return false;
             }

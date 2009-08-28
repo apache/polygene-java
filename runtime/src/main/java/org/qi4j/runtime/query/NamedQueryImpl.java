@@ -17,6 +17,9 @@
  */
 package org.qi4j.runtime.query;
 
+import java.util.HashMap;
+import java.util.Iterator;
+
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryExecutionException;
@@ -25,11 +28,8 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.NamedEntityFinder;
 
-import java.util.HashMap;
-import java.util.Iterator;
-
 public class NamedQueryImpl<T>
-    implements Query<T>
+        implements Query<T>
 {
     private OrderBy[] orderBySegments;
     private int firstResult;
@@ -40,8 +40,8 @@ public class NamedQueryImpl<T>
     private UnitOfWork unitOfWork;
     private NamedEntityFinder namedFinder;
 
-    public NamedQueryImpl( NamedEntityFinder namedFinder, UnitOfWork unitOfWork,
-                           String queryName, Class<T> resultType )
+    public NamedQueryImpl(NamedEntityFinder namedFinder, UnitOfWork unitOfWork,
+                          String queryName, Class<T> resultType)
     {
         this.namedFinder = namedFinder;
         this.unitOfWork = unitOfWork;
@@ -50,42 +50,42 @@ public class NamedQueryImpl<T>
         this.variables = new HashMap<String, Object>();
     }
 
-    public Query<T> orderBy( OrderBy... segments )
+    public Query<T> orderBy(OrderBy... segments)
     {
         orderBySegments = segments;
         return this;
     }
 
-    public Query<T> firstResult( int firstResult )
+    public Query<T> firstResult(int firstResult)
     {
         this.firstResult = firstResult;
         return this;
     }
 
-    public Query<T> maxResults( int maxResults )
+    public Query<T> maxResults(int maxResults)
     {
         this.maxResults = maxResults;
         return this;
     }
 
-    public Query<T> setVariable( String name, Object value )
+    public Query<T> setVariable(String name, Object value)
     {
-        Object oldvalue = variables.put( name, value );
-        if( oldvalue == null )
+        Object oldvalue = variables.put(name, value);
+        if (oldvalue == null)
         {
-            variables.remove( name );
-            throw new IllegalArgumentException( "Variable [" + name + "] is not found." );
+            variables.remove(name);
+            throw new IllegalArgumentException("Variable [" + name + "] is not found.");
         }
 
         return this;
     }
 
-    public <V> V getVariable( String name )
+    public <V> V getVariable(String name)
     {
-        Object value = variables.get( name );
-        if( value == null )
+        Object value = variables.get(name);
+        if (value == null)
         {
-            throw new IllegalArgumentException( "Variable [" + name + "] is not found." );
+            throw new IllegalArgumentException("Variable [" + name + "] is not found.");
         }
         return (V) value;
     }
@@ -100,18 +100,17 @@ public class NamedQueryImpl<T>
         EntityReference foundEntity;
         try
         {
-            foundEntity = namedFinder.findEntity( queryName, resultType.getName(), variables );
+            foundEntity = namedFinder.findEntity(queryName, resultType.getName(), variables);
         }
-        catch( EntityFinderException e )
+        catch (EntityFinderException e)
         {
-            throw new QueryExecutionException( "Finder caused exception", e );
+            throw new QueryExecutionException("Finder caused exception", e);
         }
 
-        if( foundEntity != null )
+        if (foundEntity != null)
         {
-            return unitOfWork.get( resultType, foundEntity.identity() );
-        }
-        else
+            return unitOfWork.get(resultType, foundEntity.identity());
+        } else
         {
             // No entity was found
             return null;
@@ -122,9 +121,9 @@ public class NamedQueryImpl<T>
     {
         try
         {
-            return namedFinder.countEntities( queryName, resultType.getName(), variables );
+            return namedFinder.countEntities(queryName, resultType.getName(), variables);
         }
-        catch( EntityFinderException e )
+        catch (EntityFinderException e)
         {
             e.printStackTrace();
             return 0;
@@ -136,9 +135,9 @@ public class NamedQueryImpl<T>
         try
         {
             final Iterator<EntityReference> foundEntities =
-                namedFinder.findEntities( queryName, resultType.getName(), variables,
-                                          orderBySegments, firstResult, maxResults
-            ).iterator();
+                    namedFinder.findEntities(queryName, resultType.getName(), variables,
+                            orderBySegments, firstResult, maxResults
+                    ).iterator();
 
             return new Iterator<T>()
             {
@@ -150,7 +149,7 @@ public class NamedQueryImpl<T>
                 public T next()
                 {
                     EntityReference foundEntity = foundEntities.next();
-                    return unitOfWork.get( resultType, foundEntity.identity() );
+                    return unitOfWork.get(resultType, foundEntity.identity());
                 }
 
                 public void remove()
@@ -158,14 +157,14 @@ public class NamedQueryImpl<T>
                 }
             };
         }
-        catch( EntityFinderException e )
+        catch (EntityFinderException e)
         {
-            throw (QueryExecutionException) new QueryExecutionException( "Query '" + toString() + "' could not be executed" ).initCause( e );
+            throw (QueryExecutionException) new QueryExecutionException("Query '" + toString() + "' could not be executed").initCause(e);
         }
     }
 
     public String toString()
     {
-        return queryName + " : [" + namedFinder.showQuery( queryName ) + " ]";
+        return queryName + " : [" + namedFinder.showQuery(queryName) + " ]";
     }
 }

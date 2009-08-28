@@ -11,42 +11,46 @@
 */
 package org.qi4j.runtime.composite;
 
-import net.sf.cglib.proxy.MethodProxy;
-import org.qi4j.spi.composite.InvalidCompositeException;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import net.sf.cglib.proxy.MethodProxy;
+import org.qi4j.spi.composite.InvalidCompositeException;
 
 /**
  * JAVADOC
  */
 public final class TypedMixinInvocationHandler
-    extends FragmentInvocationHandler
+        extends FragmentInvocationHandler
 {
     private MethodProxy methodProxy;
 
     public TypedMixinInvocationHandler(MethodProxy methodProxy)
     {
+        if (methodProxy == null)
+        {
+            throw new NullPointerException("MethodProxy must not be null.");
+        }
         this.methodProxy = methodProxy;
     }
 
-    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
     {
         try
         {
             return methodProxy.invokeSuper(fragment, args);
         }
-        catch( InvocationTargetException e )
+        catch (InvocationTargetException e)
         {
-            throw cleanStackTrace( e.getTargetException(), proxy, method );
+            throw cleanStackTrace(e.getTargetException(), proxy, method);
         }
-        catch( Throwable e )
+        catch (Throwable e)
         {
-            if( fragment == null )
+            if (fragment == null)
             {
                 throw new InvalidCompositeException();
             }
-            throw cleanStackTrace( e, proxy, method );
+            throw cleanStackTrace(e, proxy, method);
         }
     }
 }

@@ -14,16 +14,16 @@
 
 package org.qi4j.spi.property;
 
+import java.io.Serializable;
+
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.spi.value.ValueType;
-
-import java.io.Serializable;
 
 /**
  * JAVADOC
  */
 public final class PropertyType
-    implements Serializable, Comparable<PropertyType>
+        implements Serializable, Comparable<PropertyType>
 {
     public enum PropertyTypeEnum
     {
@@ -35,10 +35,10 @@ public final class PropertyType
     private final boolean queryable;
     private final PropertyTypeEnum propertyType;
 
-    public PropertyType( final QualifiedName qualifiedName,
-                         final ValueType type,
-                         final boolean queryable,
-                         final PropertyTypeEnum propertyType )
+    public PropertyType(final QualifiedName qualifiedName,
+                        final ValueType type,
+                        final boolean queryable,
+                        final PropertyTypeEnum propertyType)
     {
         this.qualifiedName = qualifiedName;
         this.type = type;
@@ -66,13 +66,14 @@ public final class PropertyType
         return queryable;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return qualifiedName + "(" + type + ")";
     }
 
-    public int compareTo( PropertyType pt )
+    public int compareTo(PropertyType pt)
     {
-        return qualifiedName.compareTo( pt.qualifiedName );
+        return qualifiedName.compareTo(pt.qualifiedName);
     }
 }

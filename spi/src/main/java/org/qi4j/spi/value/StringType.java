@@ -14,52 +14,52 @@
 
 package org.qi4j.spi.value;
 
+import java.lang.reflect.Type;
+
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.util.json.JSONException;
 import org.qi4j.spi.util.json.JSONWriter;
 
-import java.lang.reflect.Type;
-
 /**
  * String type
  */
 public final class StringType
-    extends AbstractStringType
+        extends AbstractStringType
 {
-    public static boolean isString( Type type )
+    public static boolean isString(Type type)
     {
-        if( type instanceof Class )
+        if (type instanceof Class)
         {
             Class typeClass = (Class) type;
-            return ( typeClass.equals( String.class ) );
+            return (typeClass.equals(String.class));
         }
         return false;
     }
 
     public StringType()
     {
-        super( TypeName.nameOf( String.class ) );
+        super(TypeName.nameOf(String.class));
     }
 
-    public void toJSON( Object value, JSONWriter json ) throws JSONException
+    public void toJSON(Object value, JSONWriter json) throws JSONException
     {
         json.value(value);
     }
 
-    public Object fromJSON( Object json, Module module )
+    public Object fromJSON(Object json, Module module)
     {
         return json;
     }
 
     @Override
-    public String toQueryParameter( Object value )
+    public String toQueryParameter(Object value)
     {
         return value == null ? null : value.toString();
     }
 
     @Override
-    public Object fromQueryParameter( String parameter, Module module )
+    public Object fromQueryParameter(String parameter, Module module)
     {
         return parameter;
     }

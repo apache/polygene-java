@@ -15,12 +15,12 @@
 package org.qi4j.spi.structure;
 
 import org.qi4j.api.service.ImportedServiceDescriptor;
-import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
 import org.qi4j.spi.composite.ConstructorDescriptor;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
 import org.qi4j.spi.composite.InjectedMethodDescriptor;
 import org.qi4j.spi.composite.InjectedParametersDescriptor;
+import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.concern.MethodConcernDescriptor;
 import org.qi4j.spi.concern.MethodConcernsDescriptor;
 import org.qi4j.spi.constraint.ConstraintDescriptor;
@@ -39,87 +39,87 @@ import org.qi4j.spi.value.ValueDescriptor;
  */
 public class DescriptorVisitor
 {
-    public void visit( ApplicationDescriptor applicationDescriptor )
+    public void visit(ApplicationDescriptor applicationDescriptor)
     {
     }
 
-    public void visit( LayerDescriptor layerDescriptor )
+    public void visit(LayerDescriptor layerDescriptor)
     {
     }
 
-    public void visit( ModuleDescriptor moduleDescriptor )
+    public void visit(ModuleDescriptor moduleDescriptor)
     {
     }
 
-    public void visit( TransientDescriptor transientDescriptor)
+    public void visit(TransientDescriptor transientDescriptor)
     {
     }
 
-    public void visit( EntityDescriptor entityDescriptor )
+    public void visit(EntityDescriptor entityDescriptor)
     {
     }
 
-    public void visit( ServiceDescriptor serviceDescriptor )
+    public void visit(ServiceDescriptor serviceDescriptor)
     {
     }
 
-    public void visit( ImportedServiceDescriptor importedServiceDescriptor )
+    public void visit(ImportedServiceDescriptor importedServiceDescriptor)
     {
     }
 
-    public void visit( ObjectDescriptor objectDescriptor )
+    public void visit(ObjectDescriptor objectDescriptor)
     {
     }
 
-    public void visit( ValueDescriptor valueDescriptor )
+    public void visit(ValueDescriptor valueDescriptor)
     {
     }
 
-    public void visit( CompositeMethodDescriptor compositeMethodDescriptor )
+    public void visit(CompositeMethodDescriptor compositeMethodDescriptor)
     {
     }
 
-    public void visit( MethodConstraintsDescriptor methodConstraintsDescriptor )
+    public void visit(MethodConstraintsDescriptor methodConstraintsDescriptor)
     {
     }
 
-    public void visit( ConstraintDescriptor constraintDescriptor )
+    public void visit(ConstraintDescriptor constraintDescriptor)
     {
     }
 
-    public void visit( MethodConcernsDescriptor methodConcernsDescriptor )
+    public void visit(MethodConcernsDescriptor methodConcernsDescriptor)
     {
     }
 
-    public void visit( MethodConcernDescriptor methodConcernDescriptor )
+    public void visit(MethodConcernDescriptor methodConcernDescriptor)
     {
     }
 
-    public void visit( MethodSideEffectsDescriptor methodSideEffectsDescriptor )
+    public void visit(MethodSideEffectsDescriptor methodSideEffectsDescriptor)
     {
     }
 
-    public void visit( MethodSideEffectDescriptor methodSideEffectDescriptor )
+    public void visit(MethodSideEffectDescriptor methodSideEffectDescriptor)
     {
     }
 
-    public void visit( ConstructorDescriptor constructorDescriptor )
+    public void visit(ConstructorDescriptor constructorDescriptor)
     {
     }
 
-    public void visit( InjectedParametersDescriptor injectedParametersDescriptor )
+    public void visit(InjectedParametersDescriptor injectedParametersDescriptor)
     {
     }
 
-    public void visit( InjectedFieldDescriptor injectedFieldDescriptor )
+    public void visit(InjectedFieldDescriptor injectedFieldDescriptor)
     {
     }
 
-    public void visit( InjectedMethodDescriptor injectedMethodDescriptor )
+    public void visit(InjectedMethodDescriptor injectedMethodDescriptor)
     {
     }
 
-    public void visit( MixinDescriptor mixinDescriptor )
+    public void visit(MixinDescriptor mixinDescriptor)
     {
     }
 }

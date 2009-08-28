@@ -14,24 +14,24 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.common.InvalidApplicationException;
-import org.qi4j.api.value.ValueComposite;
-import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.bootstrap.ValueDeclaration;
-import org.qi4j.runtime.value.ValueModel;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.qi4j.api.common.InvalidApplicationException;
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.value.ValueComposite;
+import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.bootstrap.ValueDeclaration;
+import org.qi4j.runtime.value.ValueModel;
+
 /**
  * Declaration of a ValueComposite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addValues(Class[])}.
  */
 public final class ValueDeclarationImpl
-    implements ValueDeclaration, Serializable
+        implements ValueDeclaration, Serializable
 {
     private Class<? extends ValueComposite>[] compositeTypes;
     private List<Class<?>> concerns = new ArrayList<Class<?>>();
@@ -40,58 +40,59 @@ public final class ValueDeclarationImpl
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
-    public ValueDeclarationImpl( Class<? extends ValueComposite>... compositeTypes )
+    public ValueDeclarationImpl(Class<? extends ValueComposite>... compositeTypes)
     {
         this.compositeTypes = compositeTypes;
     }
 
-    public ValueDeclaration setMetaInfo( Object info )
+    public ValueDeclaration setMetaInfo(Object info)
     {
-        metaInfo.set( info );
+        metaInfo.set(info);
         return this;
     }
 
-    public ValueDeclaration visibleIn( Visibility visibility )
+    public ValueDeclaration visibleIn(Visibility visibility)
     {
         this.visibility = visibility;
         return this;
     }
 
-    public ValueDeclaration withConcerns( Class<?>... concerns )
+    public ValueDeclaration withConcerns(Class<?>... concerns)
     {
-        this.concerns.addAll( Arrays.asList( concerns ) );
+        this.concerns.addAll(Arrays.asList(concerns));
         return this;
     }
 
-    public ValueDeclaration withSideEffects( Class<?>... sideEffects )
+    public ValueDeclaration withSideEffects(Class<?>... sideEffects)
     {
-        this.sideEffects.addAll( Arrays.asList( sideEffects ) );
+        this.sideEffects.addAll(Arrays.asList(sideEffects));
         return this;
     }
 
-    public ValueDeclaration withMixins( Class<?>... mixins )
+    public ValueDeclaration withMixins(Class<?>... mixins)
     {
-        this.mixins.addAll( Arrays.asList( mixins ) );
+        this.mixins.addAll(Arrays.asList(mixins));
         return this;
     }
 
-    void addValues( List<ValueModel> values, PropertyDeclarations propertyDecs )
+    void addValues(List<ValueModel> values, PropertyDeclarations propertyDecs)
     {
-        for( Class<? extends ValueComposite> compositeType : compositeTypes )
+        for (Class<? extends ValueComposite> compositeType : compositeTypes)
         {
             try
             {
-                ValueModel valueModel = ValueModel.newModel( compositeType,
-                                                             visibility,
-                                                             new MetaInfo( metaInfo ).withAnnotations( compositeType ),
-                                                             propertyDecs,
-                                                             concerns,
-                                                             sideEffects,
-                                                             mixins );
-                values.add( valueModel );
-            } catch (Exception e)
+                ValueModel valueModel = ValueModel.newModel(compositeType,
+                        visibility,
+                        new MetaInfo(metaInfo).withAnnotations(compositeType),
+                        propertyDecs,
+                        concerns,
+                        sideEffects,
+                        mixins);
+                values.add(valueModel);
+            }
+            catch (Exception e)
             {
-                throw new InvalidApplicationException("Could not register "+compositeType.getName(), e);
+                throw new InvalidApplicationException("Could not register " + compositeType.getName(), e);
             }
         }
     }

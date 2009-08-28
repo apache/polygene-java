@@ -14,6 +14,11 @@
 
 package org.qi4j.runtime.structure;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.runtime.composite.BindingException;
@@ -25,16 +30,11 @@ import org.qi4j.runtime.service.ServicesModel;
 import org.qi4j.runtime.value.ValuesModel;
 import org.qi4j.spi.structure.ModuleDescriptor;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * JAVADOC
  */
 public class ModuleModel
-    implements Binder, ModuleDescriptor, Serializable
+        implements Binder, ModuleDescriptor, Serializable
 {
     private LayerModel layerModel;
     private final CompositesModel compositesModel;
@@ -48,13 +48,13 @@ public class ModuleModel
     private final String name;
     private MetaInfo metaInfo;
 
-    public ModuleModel( String name,
-                        MetaInfo metaInfo, CompositesModel compositesModel,
-                        EntitiesModel entitiesModel,
-                        ObjectsModel objectsModel,
-                        ValuesModel valuesModel,
-                        ServicesModel servicesModel,
-                        ImportedServicesModel importedServicesModel )
+    public ModuleModel(String name,
+                       MetaInfo metaInfo, CompositesModel compositesModel,
+                       EntitiesModel entitiesModel,
+                       ObjectsModel objectsModel,
+                       ValuesModel valuesModel,
+                       ServicesModel servicesModel,
+                       ImportedServicesModel importedServicesModel)
     {
         this.name = name;
         this.metaInfo = metaInfo;
@@ -65,7 +65,7 @@ public class ModuleModel
         this.servicesModel = servicesModel;
         this.importedServicesModel = importedServicesModel;
 
-        this.classLoader = new ModuleClassLoader( Thread.currentThread().getContextClassLoader() );
+        this.classLoader = new ModuleClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
     public String name()
@@ -113,88 +113,90 @@ public class ModuleModel
         return classLoader;
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        modelVisitor.visit( this );
+        modelVisitor.visit(this);
 
-        compositesModel.visitModel( modelVisitor );
-        entitiesModel.visitModel( modelVisitor );
-        servicesModel.visitModel( modelVisitor );
-        importedServicesModel.visitModel( modelVisitor );
-        objectsModel.visitModel( modelVisitor );
-        valuesModel.visitModel( modelVisitor );
+        compositesModel.visitModel(modelVisitor);
+        entitiesModel.visitModel(modelVisitor);
+        servicesModel.visitModel(modelVisitor);
+        importedServicesModel.visitModel(modelVisitor);
+        objectsModel.visitModel(modelVisitor);
+        valuesModel.visitModel(modelVisitor);
     }
 
-    public void visitModules( ModuleVisitor visitor )
+    public void visitModules(ModuleVisitor visitor)
     {
         // Visit this module
-        if( !visitor.visitModule( null, this, Visibility.module ) )
+        if (!visitor.visitModule(null, this, Visibility.module))
         {
             return;
         }
 
         // Visit layer
-        layerModel.visitModules( visitor, Visibility.layer );
+        layerModel.visitModules(visitor, Visibility.layer);
     }
 
     // Binding
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind(Resolution resolution) throws BindingException
     {
         layerModel = resolution.layer();
 
-        resolution = new Resolution( resolution.application(), resolution.layer(), this, null, null, null );
+        resolution = new Resolution(resolution.application(), resolution.layer(), this, null, null, null);
 
-        compositesModel.bind( resolution );
-        entitiesModel.bind( resolution );
-        servicesModel.bind( resolution );
-        objectsModel.bind( resolution );
-        valuesModel.bind( resolution );
+        compositesModel.bind(resolution);
+        entitiesModel.bind(resolution);
+        servicesModel.bind(resolution);
+        objectsModel.bind(resolution);
+        valuesModel.bind(resolution);
     }
 
     // Context
-    public ModuleInstance newInstance( LayerInstance layerInstance )
+    public ModuleInstance newInstance(LayerInstance layerInstance)
     {
-        return new ModuleInstance( this, layerInstance, compositesModel, entitiesModel, objectsModel, valuesModel, servicesModel, importedServicesModel );
+        return new ModuleInstance(this, layerInstance, compositesModel, entitiesModel, objectsModel, valuesModel, servicesModel, importedServicesModel);
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return name;
     }
 
-    private void readObject( java.io.ObjectInputStream in )
-        throws IOException, ClassNotFoundException
+    private void readObject(java.io.ObjectInputStream in)
+            throws IOException, ClassNotFoundException
     {
         in.defaultReadObject();
 
-        classLoader = new ModuleClassLoader( Thread.currentThread().getContextClassLoader() );
+        classLoader = new ModuleClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
     private class ModuleClassLoader
-        extends ClassLoader
+            extends ClassLoader
     {
         Map<String, Class> classes = new ConcurrentHashMap<String, Class>();
 
-        private ModuleClassLoader( ClassLoader classLoader )
+        private ModuleClassLoader(ClassLoader classLoader)
         {
-            super( classLoader );
+            super(classLoader);
         }
 
-        @Override protected Class<?> findClass( String name ) throws ClassNotFoundException
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException
         {
-            Class clazz = classes.get( name );
-            if( clazz == null )
+            Class clazz = classes.get(name);
+            if (clazz == null)
             {
                 ClassFinder finder = new ClassFinder();
                 finder.type = name;
-                visitModules( finder );
+                visitModules(finder);
 
-                if( finder.clazz == null )
+                if (finder.clazz == null)
                 {
-                    throw new ClassNotFoundException( name );
+                    throw new ClassNotFoundException(name);
                 }
                 clazz = finder.clazz;
-                classes.put( name, clazz );
+                classes.put(name, clazz);
             }
 
             return clazz;
@@ -203,25 +205,25 @@ public class ModuleModel
 
 
     static class ClassFinder
-        implements ModuleVisitor
+            implements ModuleVisitor
     {
         public String type;
         public Class clazz;
 
-        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
+        public boolean visitModule(ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility)
         {
-            clazz = moduleModel.objects().getClassForName( type );
-            if( clazz == null )
+            clazz = moduleModel.objects().getClassForName(type);
+            if (clazz == null)
             {
-                clazz = moduleModel.composites().getClassForName( type );
+                clazz = moduleModel.composites().getClassForName(type);
             }
-            if( clazz == null )
+            if (clazz == null)
             {
-                clazz = moduleModel.entities().getClassForName( type );
+                clazz = moduleModel.entities().getClassForName(type);
             }
-            if( clazz == null )
+            if (clazz == null)
             {
-                clazz = moduleModel.values().getClassForName( type );
+                clazz = moduleModel.values().getClassForName(type);
             }
 
             return clazz == null;

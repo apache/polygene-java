@@ -14,6 +14,14 @@
 
 package org.qi4j.runtime;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import static java.lang.reflect.Proxy.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.PropertyMapper;
@@ -34,9 +42,9 @@ import org.qi4j.bootstrap.spi.ApplicationModelFactory;
 import org.qi4j.bootstrap.spi.Qi4jRuntime;
 import org.qi4j.runtime.bootstrap.ApplicationAssemblyFactoryImpl;
 import org.qi4j.runtime.bootstrap.ApplicationModelFactoryImpl;
+import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.TransientInstance;
 import static org.qi4j.runtime.composite.TransientInstance.*;
-import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
@@ -58,19 +66,11 @@ import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.value.ValueDescriptor;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import static java.lang.reflect.Proxy.*;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Incarnation of Qi4j.
  */
 public final class Qi4jRuntimeImpl
-    implements Qi4jSPI, Qi4jRuntime, Serializable
+        implements Qi4jSPI, Qi4jRuntime, Serializable
 {
     ApplicationAssemblyFactory applicationAssemblyFactory;
     ApplicationModelFactory applicationModelFactory;
@@ -97,31 +97,31 @@ public final class Qi4jRuntimeImpl
     }
 
     // API
-    public <T> T dereference( T composite )
+    public <T> T dereference(T composite)
     {
-        InvocationHandler handler = getInvocationHandler( composite );
-        if( handler instanceof ProxyReferenceInvocationHandler )
+        InvocationHandler handler = getInvocationHandler(composite);
+        if (handler instanceof ProxyReferenceInvocationHandler)
         {
-            return (T) ( (ProxyReferenceInvocationHandler) handler ).proxy();
+            return (T) ((ProxyReferenceInvocationHandler) handler).proxy();
         }
-        if( handler instanceof CompositeInstance )
+        if (handler instanceof CompositeInstance)
         {
             return composite;
         }
         return null;
     }
 
-    @SuppressWarnings( "unchecked" )
-    public <S extends Composite, T extends S> Class<S> getSuperComposite( Class<T> compositeClass )
+    @SuppressWarnings("unchecked")
+    public <S extends Composite, T extends S> Class<S> getSuperComposite(Class<T> compositeClass)
     {
         Class<?>[] extendedInterfaces = compositeClass.getInterfaces();
-        for( Class<?> extendedInterface : extendedInterfaces )
+        for (Class<?> extendedInterface : extendedInterfaces)
         {
-            if( Composite.class.isAssignableFrom( extendedInterface ) &&
-                !Composite.class.equals( extendedInterface ) &&
-                !EntityComposite.class.equals( extendedInterface ) &&
-                !ServiceComposite.class.equals( extendedInterface )
-                )
+            if (Composite.class.isAssignableFrom(extendedInterface) &&
+                    !Composite.class.equals(extendedInterface) &&
+                    !EntityComposite.class.equals(extendedInterface) &&
+                    !ServiceComposite.class.equals(extendedInterface)
+                    )
             {
                 return (Class<S>) extendedInterface;
             }
@@ -129,39 +129,39 @@ public final class Qi4jRuntimeImpl
         return null; // No super Composite type found
     }
 
-    public <T> T getConfigurationInstance( ServiceComposite serviceComposite, UnitOfWork uow )
-        throws InstantiationException
+    public <T> T getConfigurationInstance(ServiceComposite serviceComposite, UnitOfWork uow)
+            throws InstantiationException
     {
-        ServiceModel serviceModel = (ServiceModel) TransientInstance.getCompositeInstance( serviceComposite ).compositeModel();
+        ServiceModel serviceModel = (ServiceModel) TransientInstance.getCompositeInstance(serviceComposite).compositeModel();
 
         String identity = serviceComposite.identity().get();
         T configuration;
         try
         {
-            configuration = uow.get( serviceModel.<T>configurationType(), identity );
+            configuration = uow.get(serviceModel.<T>configurationType(), identity);
             uow.pause();
         }
-        catch( NoSuchEntityException e )
+        catch (NoSuchEntityException e)
         {
 
             Module module = ServiceInstance.getCompositeInstance(serviceComposite).module();
             UnitOfWork buildUow = module.unitOfWorkFactory().newUnitOfWork();
 
-            EntityBuilder<T> configBuilder = buildUow.newEntityBuilder( serviceModel.<T>configurationType(), identity );
+            EntityBuilder<T> configBuilder = buildUow.newEntityBuilder(serviceModel.<T>configurationType(), identity);
 
             // Check for defaults
             String s = identity + ".properties";
-            InputStream asStream = serviceComposite.type().getResourceAsStream( s );
-            if( asStream != null )
+            InputStream asStream = serviceComposite.type().getResourceAsStream(s);
+            if (asStream != null)
             {
                 try
                 {
-                    PropertyMapper.map( asStream, (Composite) configBuilder.instance() );
+                    PropertyMapper.map(asStream, (Composite) configBuilder.instance());
                 }
-                catch( IOException e1 )
+                catch (IOException e1)
                 {
-                    InstantiationException exception = new InstantiationException( "Could not read underlying Properties file." );
-                    exception.initCause( e1 );
+                    InstantiationException exception = new InstantiationException("Could not read underlying Properties file.");
+                    exception.initCause(e1);
                     throw exception;
                 }
             }
@@ -174,41 +174,40 @@ public final class Qi4jRuntimeImpl
                 // Try again
                 return (T) getConfigurationInstance(serviceComposite, uow);
             }
-            catch( Exception e1 )
+            catch (Exception e1)
             {
-                InstantiationException ex = new InstantiationException( "Could not instantiate configuration, and no Properties file was found (" + s + ")" );
-                ex.initCause( e1 );
+                InstantiationException ex = new InstantiationException("Could not instantiate configuration, and no Properties file was found (" + s + ")");
+                ex.initCause(e1);
                 throw ex;
             }
         }
         return (T) configuration;
     }
 
-    public Class<?> getConfigurationType( Composite serviceComposite )
+    public Class<?> getConfigurationType(Composite serviceComposite)
     {
-        ServiceModel descriptor = (ServiceModel) ServiceInstance.getCompositeInstance(serviceComposite ).compositeModel();
+        ServiceModel descriptor = (ServiceModel) ServiceInstance.getCompositeInstance(serviceComposite).compositeModel();
         final List<DependencyModel> dependencyModels = new ArrayList<DependencyModel>();
-        descriptor.visitModel( new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
+        descriptor.visitModel(new DependencyVisitor(new DependencyModel.ScopeSpecification(This.class))
         {
             @Override
-            public void visitDependency( DependencyModel dependencyModel )
+            public void visitDependency(DependencyModel dependencyModel)
             {
-                dependencyModels.add( dependencyModel );
+                dependencyModels.add(dependencyModel);
             }
-        } );
+        });
 
         Class injectionClass = null;
-        for( DependencyModel dependencyModel : dependencyModels )
+        for (DependencyModel dependencyModel : dependencyModels)
         {
-            if( dependencyModel.rawInjectionType().equals( Configuration.class ) )
+            if (dependencyModel.rawInjectionType().equals(Configuration.class))
             {
-                if( injectionClass == null )
+                if (injectionClass == null)
                 {
                     injectionClass = dependencyModel.injectionClass();
-                }
-                else
+                } else
                 {
-                    if( injectionClass.isAssignableFrom( dependencyModel.injectionClass() ) )
+                    if (injectionClass.isAssignableFrom(dependencyModel.injectionClass()))
                     {
                         injectionClass = dependencyModel.injectionClass();
                     }
@@ -219,102 +218,103 @@ public final class Qi4jRuntimeImpl
         return injectionClass;
     }
 
-    public Module getModule( UnitOfWork uow )
+    public Module getModule(UnitOfWork uow)
     {
-        return ( (ModuleUnitOfWork) uow ).module();
+        return ((ModuleUnitOfWork) uow).module();
     }
 
-    public Module getModule( Composite composite )
+    public Module getModule(Composite composite)
     {
-        return ( (CompositeInstance) composite ).module();
+        return ((CompositeInstance) composite).module();
     }
 
     // SPI
-    public TransientDescriptor getTransientDescriptor( TransientComposite composite )
+    public TransientDescriptor getTransientDescriptor(TransientComposite composite)
     {
-        TransientInstance transientInstance = getCompositeInstance( composite );
+        TransientInstance transientInstance = getCompositeInstance(composite);
         return (TransientDescriptor) transientInstance.compositeModel();
     }
 
     class CompositeFinder
-        implements ModuleVisitor
+            implements ModuleVisitor
     {
         Class type;
         TransientModel model;
 
-        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
+        public boolean visitModule(ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility)
         {
-            model = moduleModel.composites().getCompositeModelFor( type, visibility );
+            model = moduleModel.composites().getCompositeModelFor(type, visibility);
             return model == null;
         }
     }
 
-    public StateHolder getState( TransientComposite composite )
+    public StateHolder getState(TransientComposite composite)
     {
-        return TransientInstance.getCompositeInstance( composite ).state();
+        return TransientInstance.getCompositeInstance(composite).state();
     }
 
-    public EntityDescriptor getEntityDescriptor( EntityComposite composite )
+    public EntityDescriptor getEntityDescriptor(EntityComposite composite)
     {
-        EntityInstance entityInstance = (EntityInstance) getInvocationHandler( composite );
+        EntityInstance entityInstance = (EntityInstance) getInvocationHandler(composite);
         return entityInstance.entityModel();
     }
 
     class EntityFinder
-        implements ModuleVisitor
+            implements ModuleVisitor
     {
         Class type;
         EntityModel model;
 
-        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
+        public boolean visitModule(ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility)
         {
-            model = moduleModel.entities().getEntityModelFor( type, visibility );
+            model = moduleModel.entities().getEntityModelFor(type, visibility);
             return model == null;
         }
     }
 
-    public EntityState getEntityState( EntityComposite composite )
+    public EntityState getEntityState(EntityComposite composite)
     {
-        return EntityInstance.getEntityInstance( composite ).entityState();
+        return EntityInstance.getEntityInstance(composite).entityState();
     }
 
-    public EntityStateHolder getState( EntityComposite composite )
+    public EntityStateHolder getState(EntityComposite composite)
     {
-        return EntityInstance.getEntityInstance( composite ).state();
+        return EntityInstance.getEntityInstance(composite).state();
     }
-    public ValueDescriptor getValueDescriptor( ValueComposite value )
+
+    public ValueDescriptor getValueDescriptor(ValueComposite value)
     {
-        ValueInstance valueInstance = ValueInstance.getValueInstance( value );
+        ValueInstance valueInstance = ValueInstance.getValueInstance(value);
         return (ValueDescriptor) valueInstance.compositeModel();
     }
 
     class ValueFinder
-        implements ModuleVisitor
+            implements ModuleVisitor
     {
         Class type;
         ValueModel model;
 
-        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
+        public boolean visitModule(ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility)
         {
-            model = moduleModel.values().getValueModelFor(type, visibility );
+            model = moduleModel.values().getValueModelFor(type, visibility);
             return model == null;
         }
     }
 
-    public StateHolder getState( ValueComposite composite )
+    public StateHolder getState(ValueComposite composite)
     {
-        return ValueInstance.getValueInstance( composite ).state();
+        return ValueInstance.getValueInstance(composite).state();
     }
 
     class ObjectFinder
-        implements ModuleVisitor
+            implements ModuleVisitor
     {
         Class type;
         ObjectModel model;
 
-        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
+        public boolean visitModule(ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility)
         {
-            model = moduleModel.objects().getObjectModelFor( type, visibility );
+            model = moduleModel.objects().getObjectModelFor(type, visibility);
             return model == null;
         }
     }

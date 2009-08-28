@@ -14,18 +14,18 @@
 
 package org.qi4j.runtime.object;
 
+import java.util.Iterator;
+
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 
-import java.util.Iterator;
-
 /**
  * JAVADOC
  */
 public final class ObjectBuilderInstance<T>
-    implements ObjectBuilder<T>
+        implements ObjectBuilder<T>
 {
 
     protected final ModuleInstance moduleInstance;
@@ -33,13 +33,13 @@ public final class ObjectBuilderInstance<T>
     private UsesInstance uses;
     private final Class<T> objectType;
 
-    public ObjectBuilderInstance( ModuleInstance moduleInstance, ObjectModel objectModel, UsesInstance uses )
+    public ObjectBuilderInstance(ModuleInstance moduleInstance, ObjectModel objectModel, UsesInstance uses)
     {
-        this( moduleInstance, objectModel );
+        this(moduleInstance, objectModel);
         this.uses = uses;
     }
 
-    public ObjectBuilderInstance( ModuleInstance moduleInstance, ObjectModel objectModel )
+    public ObjectBuilderInstance(ModuleInstance moduleInstance, ObjectModel objectModel)
     {
         this.moduleInstance = moduleInstance;
 
@@ -52,29 +52,28 @@ public final class ObjectBuilderInstance<T>
         return objectType;
     }
 
-    public ObjectBuilder<T> use( Object... usedObjects )
+    public ObjectBuilder<T> use(Object... usedObjects)
     {
-        getUses().use( usedObjects );
+        getUses().use(usedObjects);
 
         return this;
     }
 
     public T newInstance() throws ConstructionException
     {
-        Object instance = objectModel.newInstance( moduleInstance, uses == null ? UsesInstance.NO_USES : uses );
-        return objectType.cast( instance );
+        Object instance = objectModel.newInstance(moduleInstance, uses == null ? UsesInstance.NO_USES : uses);
+        return objectType.cast(instance);
     }
 
-    public void injectTo( T instance )
-        throws ConstructionException
+    public void injectTo(T instance)
+            throws ConstructionException
     {
-        if( uses == null )
+        if (uses == null)
         {
-            objectModel.inject( moduleInstance, UsesInstance.NO_USES, instance );
-        }
-        else
+            objectModel.inject(moduleInstance, UsesInstance.NO_USES, instance);
+        } else
         {
-            objectModel.inject( moduleInstance, uses, instance );
+            objectModel.inject(moduleInstance, uses, instance);
         }
     }
 
@@ -101,7 +100,7 @@ public final class ObjectBuilderInstance<T>
 
     protected UsesInstance getUses()
     {
-        if( uses == null )
+        if (uses == null)
         {
             uses = new UsesInstance();
         }

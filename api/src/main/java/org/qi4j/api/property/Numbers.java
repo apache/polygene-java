@@ -19,134 +19,133 @@ import java.math.BigDecimal;
 /**
  * Convenience class for mathematical operations on
  * numerical properties.
- *
+ * <p/>
  * add(object.number(), 5)
- *
  */
 public final class Numbers
 {
     // Integer operations
-    public static Property<Integer> add( Property<Integer> property, int amount )
+    public static Property<Integer> add(Property<Integer> property, int amount)
     {
-        property.set( property.get() + amount );
+        property.set(property.get() + amount);
         return property;
     }
 
-    public static Property<Integer> mult( Property<Integer> property, int amount )
+    public static Property<Integer> mult(Property<Integer> property, int amount)
     {
-        property.set( property.get() * amount );
+        property.set(property.get() * amount);
         return property;
     }
 
-    public static Property<Integer> sub( Property<Integer> property, int amount )
+    public static Property<Integer> sub(Property<Integer> property, int amount)
     {
-        property.set( property.get() - amount );
+        property.set(property.get() - amount);
         return property;
     }
 
-    public static Property<Integer> div( Property<Integer> property, int amount )
+    public static Property<Integer> div(Property<Integer> property, int amount)
     {
-        property.set( property.get() / amount );
+        property.set(property.get() / amount);
         return property;
     }
 
     // Long operations
-    public static Property<Long> add( Property<Long> property, long amount )
+    public static Property<Long> add(Property<Long> property, long amount)
     {
-        property.set( property.get() + amount );
+        property.set(property.get() + amount);
         return property;
     }
 
-    public static Property<Long> mult( Property<Long> property, long amount )
+    public static Property<Long> mult(Property<Long> property, long amount)
     {
-        property.set( property.get() * amount );
+        property.set(property.get() * amount);
         return property;
     }
 
-    public static Property<Long> sub( Property<Long> property, long amount )
+    public static Property<Long> sub(Property<Long> property, long amount)
     {
-        property.set( property.get() - amount );
+        property.set(property.get() - amount);
         return property;
     }
 
-    public static Property<Long> div( Property<Long> property, long amount )
+    public static Property<Long> div(Property<Long> property, long amount)
     {
-        property.set( property.get() / amount );
+        property.set(property.get() / amount);
         return property;
     }
 
     // Double operations
-    public static Property<Double> add( Property<Double> property, double amount )
+    public static Property<Double> add(Property<Double> property, double amount)
     {
-        property.set( property.get() + amount );
+        property.set(property.get() + amount);
         return property;
     }
 
-    public static Property<Double> mult( Property<Double> property, double amount )
+    public static Property<Double> mult(Property<Double> property, double amount)
     {
-        property.set( property.get() * amount );
+        property.set(property.get() * amount);
         return property;
     }
 
-    public static Property<Double> sub( Property<Double> property, double amount )
+    public static Property<Double> sub(Property<Double> property, double amount)
     {
-        property.set( property.get() - amount );
+        property.set(property.get() - amount);
         return property;
     }
 
-    public static Property<Double> div( Property<Double> property, double amount )
+    public static Property<Double> div(Property<Double> property, double amount)
     {
-        property.set( property.get() / amount );
+        property.set(property.get() / amount);
         return property;
     }
 
     // Float operations
-    public static Property<Float> add( Property<Float> property, float amount )
+    public static Property<Float> add(Property<Float> property, float amount)
     {
-        property.set( property.get() + amount );
+        property.set(property.get() + amount);
         return property;
     }
 
-    public static Property<Float> mult( Property<Float> property, float amount )
+    public static Property<Float> mult(Property<Float> property, float amount)
     {
-        property.set( property.get() * amount );
+        property.set(property.get() * amount);
         return property;
     }
 
-    public static Property<Float> sub( Property<Float> property, float amount )
+    public static Property<Float> sub(Property<Float> property, float amount)
     {
-        property.set( property.get() - amount );
+        property.set(property.get() - amount);
         return property;
     }
 
-    public static Property<Float> div( Property<Float> property, float amount )
+    public static Property<Float> div(Property<Float> property, float amount)
     {
-        property.set( property.get() / amount );
+        property.set(property.get() / amount);
         return property;
     }
 
     // BigDecimal operations
-    public static Property<BigDecimal> add( Property<BigDecimal> property, BigDecimal amount )
+    public static Property<BigDecimal> add(Property<BigDecimal> property, BigDecimal amount)
     {
-        property.set( property.get().add( amount ) );
+        property.set(property.get().add(amount));
         return property;
     }
 
-    public static Property<BigDecimal> mult( Property<BigDecimal> property, BigDecimal amount )
+    public static Property<BigDecimal> mult(Property<BigDecimal> property, BigDecimal amount)
     {
-        property.set( property.get().multiply( amount ) );
+        property.set(property.get().multiply(amount));
         return property;
     }
 
-    public static Property<BigDecimal> sub( Property<BigDecimal> property, BigDecimal amount )
+    public static Property<BigDecimal> sub(Property<BigDecimal> property, BigDecimal amount)
     {
-        property.set( property.get().subtract( amount ) );
+        property.set(property.get().subtract(amount));
         return property;
     }
 
-    public static Property<BigDecimal> div( Property<BigDecimal> property, BigDecimal amount )
+    public static Property<BigDecimal> div(Property<BigDecimal> property, BigDecimal amount)
     {
-        property.set( property.get().divide( amount ) );
+        property.set(property.get().divide(amount));
         return property;
     }
 }

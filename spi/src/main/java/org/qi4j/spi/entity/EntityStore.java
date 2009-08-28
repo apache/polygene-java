@@ -26,12 +26,12 @@ import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
  */
 public interface EntityStore
 {
-    EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, MetaInfo unitOfWorkMetaInfo, ModuleSPI module );
+    EntityStoreUnitOfWork newUnitOfWork(Usecase usecase, MetaInfo unitOfWorkMetaInfo, ModuleSPI module);
 
     EntityStoreUnitOfWork visitEntityStates(EntityStateVisitor visitor, ModuleSPI moduleInstance);
 
     interface EntityStateVisitor
     {
-        void visitEntityState( EntityState entityState );
+        void visitEntityState(EntityState entityState);
     }
 }

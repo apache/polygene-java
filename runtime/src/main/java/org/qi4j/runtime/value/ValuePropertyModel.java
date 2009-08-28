@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.value;
 
+import java.lang.reflect.Method;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.GenericPropertyInfo;
@@ -25,13 +27,11 @@ import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.value.ValueType;
 
-import java.lang.reflect.Method;
-
 /**
  * Property model for values
  */
 public final class ValuePropertyModel extends PersistentPropertyModel
-    implements PropertyTypeDescriptor
+        implements PropertyTypeDescriptor
 {
     private final PropertyType propertyType;
     private PropertyInfo propertyInfo;
@@ -41,17 +41,17 @@ public final class ValuePropertyModel extends PersistentPropertyModel
                               MetaInfo metaInfo,
                               Object defaultValue)
     {
-        super( anAccessor, compositeType, true, constraints, metaInfo, defaultValue );
-        final Queryable queryable = anAccessor.getAnnotation( Queryable.class );
+        super(anAccessor, compositeType, true, constraints, metaInfo, defaultValue);
+        final Queryable queryable = anAccessor.getAnnotation(Queryable.class);
         boolean isQueryable = queryable == null || queryable.value();
 
         PropertyType.PropertyTypeEnum type;
         type = PropertyType.PropertyTypeEnum.IMMUTABLE;
 
-        ValueType valueType = ValueType.newValueType( type(), anAccessor.getDeclaringClass(), compositeType );
+        ValueType valueType = ValueType.newValueType(type(), anAccessor.getDeclaringClass(), compositeType);
 
-        propertyType = new PropertyType( qualifiedName(), valueType, isQueryable, type );
-        propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), qualifiedName(), type() );
+        propertyType = new PropertyType(qualifiedName(), valueType, isQueryable, type);
+        propertyInfo = new GenericPropertyInfo(metaInfo, isImmutable(), isComputed(), qualifiedName(), type());
     }
 
     public PropertyType propertyType()
@@ -59,19 +59,18 @@ public final class ValuePropertyModel extends PersistentPropertyModel
         return propertyType;
     }
 
-    public Property<?> newInstance( Object value )
+    public Property<?> newInstance(Object value)
     {
         // Property was constructed using a builder
 
         Property property;
-        if( isComputed() )
+        if (isComputed())
         {
-            property = new ComputedPropertyInfo<Object>( propertyInfo );
-        }
-        else
+            property = new ComputedPropertyInfo<Object>(propertyInfo);
+        } else
         {
-            property = new ValuePropertyInstance<Object>( propertyInfo, value );
+            property = new ValuePropertyInstance<Object>(propertyInfo, value);
         }
-        return wrapProperty( property );
+        return wrapProperty(property);
     }
 }

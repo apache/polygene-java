@@ -43,6 +43,7 @@ public interface ApplicationAssembly
 
     /**
      * Get the currently set mode of the application
+     *
      * @return the application mode
      */
     Application.Mode mode();
@@ -70,5 +71,5 @@ public interface ApplicationAssembly
     ApplicationAssembly setMetaInfo(Object info);
 
     void visit(AssemblyVisitor visitor)
-        throws AssemblyException;
+            throws AssemblyException;
 }

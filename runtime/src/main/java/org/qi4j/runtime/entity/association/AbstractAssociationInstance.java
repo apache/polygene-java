@@ -1,31 +1,31 @@
 package org.qi4j.runtime.entity.association;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
+
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.association.AbstractAssociation;
 import org.qi4j.api.entity.association.AssociationInfo;
+import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
-
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
-import java.lang.reflect.InvocationHandler;
 
 /**
  * Implementation of AbstractAssociation. Includes helper methods for subclasses
  */
 public abstract class AbstractAssociationInstance<T>
-    implements AbstractAssociation
+        implements AbstractAssociation
 {
     protected final AssociationInfo associationInfo;
     protected final ModuleUnitOfWork unitOfWork;
     protected EntityState entityState;
 
-    public AbstractAssociationInstance( AssociationInfo associationInfo, ModuleUnitOfWork unitOfWork, EntityState entityState )
+    public AbstractAssociationInstance(AssociationInfo associationInfo, ModuleUnitOfWork unitOfWork, EntityState entityState)
     {
         this.associationInfo = associationInfo;
         this.unitOfWork = unitOfWork;
@@ -33,9 +33,9 @@ public abstract class AbstractAssociationInstance<T>
     }
 
     // AssociationInfo implementation
-    public <T> T metaInfo( Class<T> infoType )
+    public <T> T metaInfo(Class<T> infoType)
     {
-        return associationInfo.metaInfo( infoType );
+        return associationInfo.metaInfo(infoType);
     }
 
     public QualifiedName qualifiedName()
@@ -58,68 +58,68 @@ public abstract class AbstractAssociationInstance<T>
         return associationInfo.isAggregated();
     }
 
-    protected T getEntity( EntityReference entityId )
+    protected T getEntity(EntityReference entityId)
     {
-        if( entityId == null)
+        if (entityId == null)
         {
             return null;
         }
 
-        return (T) unitOfWork.get( (Class<? extends Object>) type(), entityId.identity() );
+        return (T) unitOfWork.get((Class<? extends Object>) type(), entityId.identity());
     }
 
-    protected QualifiedIdentity getEntityId( Object composite )
+    protected QualifiedIdentity getEntityId(Object composite)
     {
-        if( composite == null )
+        if (composite == null)
         {
             return null;
         }
 
         EntityComposite entityComposite = (EntityComposite) composite;
-        return new QualifiedIdentity( entityComposite );
+        return new QualifiedIdentity(entityComposite);
     }
 
-    protected EntityReference getEntityReference( Object composite )
+    protected EntityReference getEntityReference(Object composite)
     {
-        if( composite == null )
+        if (composite == null)
         {
             return null;
         }
 
-        InvocationHandler handler = Proxy.getInvocationHandler( composite );
+        InvocationHandler handler = Proxy.getInvocationHandler(composite);
         if (handler instanceof ProxyReferenceInvocationHandler)
         {
-            handler = Proxy.getInvocationHandler(((ProxyReferenceInvocationHandler)handler).proxy());
+            handler = Proxy.getInvocationHandler(((ProxyReferenceInvocationHandler) handler).proxy());
         }
         EntityInstance instance = (EntityInstance) handler;
         return instance.identity();
     }
 
 
-    protected void checkType( Object instance )
+    protected void checkType(Object instance)
     {
-        if( instance != null )
+        if (instance != null)
         {
-            if( !( instance instanceof EntityComposite ) )
+            if (!(instance instanceof EntityComposite))
             {
-                if( instance instanceof Proxy )
+                if (instance instanceof Proxy)
                 {
-                    if( Proxy.getInvocationHandler( instance ) instanceof EntityInstance )
+                    if (Proxy.getInvocationHandler(instance) instanceof EntityInstance)
                     {
                         return; // It's fine
                     }
                 }
 
-                throw new IllegalArgumentException( "Object must be an EntityComposite" );
+                throw new IllegalArgumentException("Object must be an EntityComposite");
             }
         }
     }
 
     protected void checkImmutable()
     {
-        if( isImmutable() )
+        if (isImmutable())
         {
-            throw new IllegalStateException( "Association [" + qualifiedName() + "] is immutable." );
+            throw new IllegalStateException("Association [" + qualifiedName() + "] is immutable.");
         }
     }
 

@@ -16,7 +16,12 @@ package org.qi4j.spi.property;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Default values for various property types
@@ -28,47 +33,47 @@ public final class DefaultValues
     private static Map<Type, Object> createDefaultValues()
     {
         Map<Type, Object> defaultValues = new HashMap<Type, Object>();
-        defaultValues.put( Byte.class, 0 );
-        defaultValues.put( Short.class, 0 );
-        defaultValues.put( Character.class, 0 );
-        defaultValues.put( Integer.class, 0 );
-        defaultValues.put( Long.class, 0L );
-        defaultValues.put( Double.class, 0D );
-        defaultValues.put( Float.class, 0F );
-        defaultValues.put( Boolean.class, false );
-        defaultValues.put( String.class, "" );
+        defaultValues.put(Byte.class, 0);
+        defaultValues.put(Short.class, 0);
+        defaultValues.put(Character.class, 0);
+        defaultValues.put(Integer.class, 0);
+        defaultValues.put(Long.class, 0L);
+        defaultValues.put(Double.class, 0D);
+        defaultValues.put(Float.class, 0F);
+        defaultValues.put(Boolean.class, false);
+        defaultValues.put(String.class, "");
         return defaultValues;
     }
 
-    public static Object getDefaultValue( Type type )
+    public static Object getDefaultValue(Type type)
     {
-        Object value = defaultValues.get( type );
-        if( value != null )
+        Object value = defaultValues.get(type);
+        if (value != null)
         {
             return value;
         }
-        if( type instanceof ParameterizedType )
+        if (type instanceof ParameterizedType)
         {
             // List<Foo> -> List
-            type = ( (ParameterizedType) type ).getRawType();
+            type = ((ParameterizedType) type).getRawType();
         }
 
-        if( type instanceof Class )
+        if (type instanceof Class)
         {
             Class typeAsClass = (Class) type;
-            if( Set.class.isAssignableFrom( typeAsClass ) )
+            if (Set.class.isAssignableFrom(typeAsClass))
             {
                 return new HashSet();
             }
-            if( Collection.class.isAssignableFrom( typeAsClass ) )
+            if (Collection.class.isAssignableFrom(typeAsClass))
             {
                 return new ArrayList();
             }
-            if( typeAsClass.isEnum() )
+            if (typeAsClass.isEnum())
             {
-                return ( (Class) type ).getEnumConstants()[ 0 ];
+                return ((Class) type).getEnumConstants()[0];
             }
         }
-        throw new IllegalArgumentException( "Cannot use @UseDefaults with type " + type.toString() );
+        throw new IllegalArgumentException("Cannot use @UseDefaults with type " + type.toString());
     }
 }

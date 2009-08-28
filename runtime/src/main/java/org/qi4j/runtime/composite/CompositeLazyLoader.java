@@ -20,7 +20,7 @@ import net.sf.cglib.proxy.LazyLoader;
  * JAVADOC
  */
 public class CompositeLazyLoader
-    implements LazyLoader
+        implements LazyLoader
 {
     private Object instance;
 

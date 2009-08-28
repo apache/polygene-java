@@ -22,11 +22,10 @@ import org.qi4j.api.query.grammar.Disjunction;
 
 /**
  * Default {@link org.qi4j.api.query.grammar.Disjunction} implementation.
- *
  */
 public final class DisjunctionImpl
-    extends JunctionImpl
-    implements Disjunction
+        extends JunctionImpl
+        implements Disjunction
 {
 
     /**
@@ -37,29 +36,30 @@ public final class DisjunctionImpl
      * @throws IllegalArgumentException - If left side expression is null
      *                                  - If right side expression is null
      */
-    public DisjunctionImpl( final BooleanExpression leftSideExpression,
-                            final BooleanExpression rightSideExpression )
+    public DisjunctionImpl(final BooleanExpression leftSideExpression,
+                           final BooleanExpression rightSideExpression)
     {
-        super( leftSideExpression, rightSideExpression );
+        super(leftSideExpression, rightSideExpression);
     }
 
     /**
      * @see org.qi4j.api.query.grammar.BooleanExpression#eval(Object)
      */
-    public boolean eval( final Object target )
+    public boolean eval(final Object target)
     {
-        return leftSideExpression().eval( target ) || rightSideExpression().eval( target );
+        return leftSideExpression().eval(target) || rightSideExpression().eval(target);
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return new StringBuilder()
-            .append( "( " )
-            .append( leftSideExpression() )
-            .append( " OR " )
-            .append( rightSideExpression() )
-            .append( " )" )
-            .toString();
+                .append("( ")
+                .append(leftSideExpression())
+                .append(" OR ")
+                .append(rightSideExpression())
+                .append(" )")
+                .toString();
     }
 
 }

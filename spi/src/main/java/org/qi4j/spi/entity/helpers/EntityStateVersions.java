@@ -14,6 +14,11 @@
 
 package org.qi4j.spi.entity.helpers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
@@ -26,26 +31,21 @@ import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-
 /**
  * JAVADOC
  */
 @Mixins(EntityStateVersions.EntityStateVersionsMixin.class)
 public interface EntityStateVersions
 {
-    void forgetVersions( Iterable<EntityState> states);
+    void forgetVersions(Iterable<EntityState> states);
 
-    void rememberVersion( EntityReference identity, String version );
+    void rememberVersion(EntityReference identity, String version);
 
     void checkForConcurrentModification(Iterable<EntityState> loaded, ModuleSPI module)
-        throws ConcurrentEntityStateModificationException;
+            throws ConcurrentEntityStateModificationException;
 
     class EntityStateVersionsMixin
-        implements EntityStateVersions
+            implements EntityStateVersions
     {
         @This
         EntityStore store;
@@ -53,7 +53,7 @@ public interface EntityStateVersions
         private final Map<EntityReference, String> versions = new WeakHashMap<EntityReference, String>();
         private MetaInfo checkInfo;
 
-        public synchronized void forgetVersions( Iterable<EntityState> states)
+        public synchronized void forgetVersions(Iterable<EntityState> states)
         {
             for (EntityState state : states)
             {
@@ -61,9 +61,9 @@ public interface EntityStateVersions
             }
         }
 
-        public synchronized void rememberVersion( EntityReference identity, String version )
+        public synchronized void rememberVersion(EntityReference identity, String version)
         {
-            versions.put( identity, version );
+            versions.put(identity, version);
         }
 
         public synchronized void checkForConcurrentModification(Iterable<EntityState> loaded, ModuleSPI module)
@@ -73,8 +73,10 @@ public interface EntityStateVersions
             for (EntityState entityState : loaded)
             {
                 if (entityState.status().equals(EntityStatus.NEW))
+                {
                     continue;
-                
+                }
+
                 String storeVersion = versions.get(entityState.identity());
                 if (storeVersion == null)
                 {
@@ -88,13 +90,17 @@ public interface EntityStateVersions
                 if (!entityState.version().equals(storeVersion))
                 {
                     if (changed == null)
+                    {
                         changed = new ArrayList<EntityReference>();
+                    }
                     changed.add(entityState.identity());
                 }
             }
 
             if (changed != null)
+            {
                 throw new ConcurrentEntityStateModificationException(changed);
+            }
         }
     }
 }

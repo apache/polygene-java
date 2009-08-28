@@ -14,54 +14,56 @@
 
 package org.qi4j.spi.value;
 
+import java.lang.reflect.Type;
+
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.util.json.JSONException;
 import org.qi4j.spi.util.json.JSONWriter;
 
-import java.lang.reflect.Type;
-
 /**
  * {@link EntityReference} type
  */
 public final class EntityReferenceType
-    extends AbstractStringType
+        extends AbstractStringType
 {
-    public static boolean isEntityReference( Type type )
+    public static boolean isEntityReference(Type type)
     {
-        if( type instanceof Class )
+        if (type instanceof Class)
         {
             Class typeClass = (Class) type;
-            return ( typeClass.equals( EntityReference.class ) );
+            return (typeClass.equals(EntityReference.class));
         }
         return false;
     }
 
-    public EntityReferenceType( TypeName type )
+    public EntityReferenceType(TypeName type)
     {
-        super( type );
+        super(type);
     }
 
-    public void toJSON( Object value, JSONWriter json ) throws JSONException
+    public void toJSON(Object value, JSONWriter json) throws JSONException
     {
         json.value(value.toString());
     }
 
-    public Object fromJSON( Object json, Module module )
+    public Object fromJSON(Object json, Module module)
     {
         String result = (String) json;
 
-        return EntityReference.parseEntityReference( result );
+        return EntityReference.parseEntityReference(result);
     }
 
-    @Override public String toQueryParameter( Object value )
+    @Override
+    public String toQueryParameter(Object value)
     {
         return value == null ? null : value.toString();
     }
 
-    @Override public Object fromQueryParameter( String parameter, Module module )
+    @Override
+    public Object fromQueryParameter(String parameter, Module module)
     {
-        return EntityReference.parseEntityReference( parameter );
+        return EntityReference.parseEntityReference(parameter);
     }
 }

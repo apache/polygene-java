@@ -26,10 +26,9 @@ import org.qi4j.runtime.query.QueryException;
 
 /**
  * Generic {@link org.qi4j.api.query.grammar.ComparisonPredicate} implementation.
- *
  */
 abstract class ComparisonPredicateImpl<T>
-    implements ComparisonPredicate<T>
+        implements ComparisonPredicate<T>
 {
 
     /**
@@ -49,16 +48,16 @@ abstract class ComparisonPredicateImpl<T>
      * @throws IllegalArgumentException - If property reference is null
      *                                  - If value expression is null
      */
-    ComparisonPredicateImpl( final PropertyReference<T> propertyReference,
-                             final ValueExpression<T> valueExpression )
+    ComparisonPredicateImpl(final PropertyReference<T> propertyReference,
+                            final ValueExpression<T> valueExpression)
     {
-        if( propertyReference == null )
+        if (propertyReference == null)
         {
-            throw new IllegalArgumentException( "Property reference cannot be null" );
+            throw new IllegalArgumentException("Property reference cannot be null");
         }
-        if( valueExpression == null )
+        if (valueExpression == null)
         {
-            throw new IllegalArgumentException( "Value expression cannot be null" );
+            throw new IllegalArgumentException("Value expression cannot be null");
         }
         this.propertyReference = propertyReference;
         this.valueExpression = valueExpression;
@@ -83,30 +82,30 @@ abstract class ComparisonPredicateImpl<T>
     /**
      * @see org.qi4j.api.query.grammar.BooleanExpression#eval(Object)
      */
-    public boolean eval( final Object target )
+    public boolean eval(final Object target)
     {
-        if( !( valueExpression() instanceof SingleValueExpression ) )
+        if (!(valueExpression() instanceof SingleValueExpression))
         {
-            throw new QueryException( "Value " + valueExpression() + " is not supported" );
+            throw new QueryException("Value " + valueExpression() + " is not supported");
         }
-        final T value = ( (SingleValueExpression<T>) valueExpression() ).value();
-        final Property<T> prop = propertyReference().eval( target );
-        if( prop == null )
+        final T value = ((SingleValueExpression<T>) valueExpression()).value();
+        final Property<T> prop = propertyReference().eval(target);
+        if (prop == null)
         {
             return value == null;
         }
         final T propValue = prop.get();
-        if( propValue == null )
+        if (propValue == null)
         {
             return value == null;
         }
-        if( !( propValue instanceof Comparable ) )
+        if (!(propValue instanceof Comparable))
         {
             throw new QueryException(
-                "Cannot use type " + value.getClass().getSimpleName() + " for comparations"
+                    "Cannot use type " + value.getClass().getSimpleName() + " for comparations"
             );
         }
-        return eval( (Comparable<T>) propValue, value );
+        return eval((Comparable<T>) propValue, value);
     }
 
     /**
@@ -116,6 +115,6 @@ abstract class ComparisonPredicateImpl<T>
      * @param expressionValue expression value
      * @return true if the comparison is TRUE
      */
-    abstract protected boolean eval( final Comparable<T> propertyValue, final T expressionValue );
+    abstract protected boolean eval(final Comparable<T> propertyValue, final T expressionValue);
 
 }

@@ -14,93 +14,94 @@
 
 package org.qi4j.runtime.service;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.service.Activatable;
-import org.qi4j.api.service.ServiceReference;
-import org.qi4j.spi.service.Activator;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.spi.service.Activator;
+
 /**
  * JAVADOC
  */
 public class ServicesInstance
-    implements Activatable
+        implements Activatable
 {
     private final ServicesModel servicesModel;
     private final List<ServiceReference> serviceReferences;
     private final Activator activator;
     private final Map<String, ServiceReference> mapIdentityServiceReference = new HashMap<String, ServiceReference>();
 
-    public ServicesInstance( ServicesModel servicesModel, List<ServiceReference> serviceReferences )
+    public ServicesInstance(ServicesModel servicesModel, List<ServiceReference> serviceReferences)
     {
         this.servicesModel = servicesModel;
         this.serviceReferences = serviceReferences;
 
-        for( ServiceReference serviceReference : serviceReferences )
+        for (ServiceReference serviceReference : serviceReferences)
         {
-            mapIdentityServiceReference.put( serviceReference.identity(), serviceReference );
+            mapIdentityServiceReference.put(serviceReference.identity(), serviceReference);
         }
 
         activator = new Activator();
     }
 
     public void activate()
-        throws Exception
+            throws Exception
     {
-        for( ServiceReference serviceReference : serviceReferences )
+        for (ServiceReference serviceReference : serviceReferences)
         {
-            if( serviceReference instanceof Activatable )
+            if (serviceReference instanceof Activatable)
             {
-                activator.activate( (Activatable) serviceReference );
+                activator.activate((Activatable) serviceReference);
             }
         }
     }
 
     public void passivate()
-        throws Exception
+            throws Exception
     {
         activator.passivate();
     }
 
-    public <T> ServiceReference<T> getServiceWithIdentity( String serviceIdentity )
+    public <T> ServiceReference<T> getServiceWithIdentity(String serviceIdentity)
     {
-        return mapIdentityServiceReference.get( serviceIdentity );
+        return mapIdentityServiceReference.get(serviceIdentity);
     }
 
-    public <T> ServiceReference<T> getServiceFor( Type type, Visibility visibility )
+    public <T> ServiceReference<T> getServiceFor(Type type, Visibility visibility)
     {
-        ServiceModel serviceModel = servicesModel.getServiceFor( type, visibility );
+        ServiceModel serviceModel = servicesModel.getServiceFor(type, visibility);
 
         ServiceReference<T> serviceRef = null;
-        if( serviceModel != null )
+        if (serviceModel != null)
         {
-            serviceRef = mapIdentityServiceReference.get( serviceModel.identity() );
+            serviceRef = mapIdentityServiceReference.get(serviceModel.identity());
         }
 
         return serviceRef;
     }
 
 
-    public <T> void getServicesFor( Type type, Visibility visibility, List<ServiceReference<T>> serviceReferences )
+    public <T> void getServicesFor(Type type, Visibility visibility, List<ServiceReference<T>> serviceReferences)
     {
         List<ServiceModel> serviceModels = new ArrayList<ServiceModel>();
-        servicesModel.getServicesFor( type, visibility, serviceModels );
-        for( ServiceModel serviceModel : serviceModels )
+        servicesModel.getServicesFor(type, visibility, serviceModels);
+        for (ServiceModel serviceModel : serviceModels)
         {
-            serviceReferences.add( mapIdentityServiceReference.get( serviceModel.identity() ) );
+            serviceReferences.add(mapIdentityServiceReference.get(serviceModel.identity()));
         }
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         String str = "{";
         String sep = "";
-        for( ServiceReference serviceReference : serviceReferences )
+        for (ServiceReference serviceReference : serviceReferences)
         {
             str += sep + serviceReference.identity() + ",active=" + serviceReference.isActive();
             sep = ", ";

@@ -21,7 +21,6 @@ import org.qi4j.api.query.grammar.BooleanExpression;
 
 /**
  * Generic implementation of a junction (con/dis).
- *
  */
 abstract class JunctionImpl
 {
@@ -43,16 +42,16 @@ abstract class JunctionImpl
      * @throws IllegalArgumentException - If left side expression is null
      *                                  - If right side expression is null
      */
-    JunctionImpl( final BooleanExpression leftSideExpression,
-                  final BooleanExpression rightSideExpression )
+    JunctionImpl(final BooleanExpression leftSideExpression,
+                 final BooleanExpression rightSideExpression)
     {
-        if( leftSideExpression == null )
+        if (leftSideExpression == null)
         {
-            throw new IllegalArgumentException( "Left side boolean expression cannot be null" );
+            throw new IllegalArgumentException("Left side boolean expression cannot be null");
         }
-        if( rightSideExpression == null )
+        if (rightSideExpression == null)
         {
-            throw new IllegalArgumentException( "Right side boolean expression cannot be null" );
+            throw new IllegalArgumentException("Right side boolean expression cannot be null");
         }
         this.leftSideExpression = leftSideExpression;
         this.rightSideExpression = rightSideExpression;

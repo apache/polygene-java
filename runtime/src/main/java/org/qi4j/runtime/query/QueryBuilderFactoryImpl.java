@@ -18,7 +18,11 @@
  */
 package org.qi4j.runtime.query;
 
-import org.qi4j.api.query.*;
+import org.qi4j.api.query.MissingIndexingSystemException;
+import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryBuilder;
+import org.qi4j.api.query.QueryBuilderFactory;
+import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -28,28 +32,27 @@ import org.qi4j.spi.query.NamedEntityFinder;
 
 /**
  * Default implementation of {@link QueryBuilderFactory}
- *
  */
 public final class QueryBuilderFactoryImpl
-    implements QueryBuilderFactory
+        implements QueryBuilderFactory
 {
     private ServiceFinder finder;
     private ClassLoader classLoader;
 
     public static void initialize()
     {
-        QueryExpressions.setProvider( new QueryExpressionsProviderImpl() );
+        QueryExpressions.setProvider(new QueryExpressionsProviderImpl());
     }
 
     /**
      * Constructor.
      *
      * @param classLoader The classloader to use for deserialization of Serializable instances. (Not used currently)
-     * @param finder     The ServiceFinder of the Module this QueryBuilderFactory belongs to.
+     * @param finder      The ServiceFinder of the Module this QueryBuilderFactory belongs to.
      */
-    public QueryBuilderFactoryImpl( ClassLoader classLoader, ServiceFinder finder )
+    public QueryBuilderFactoryImpl(ClassLoader classLoader, ServiceFinder finder)
     {
-        NullArgumentException.validateNotNull( "ServiceFinder", finder );
+        NullArgumentException.validateNotNull("ServiceFinder", finder);
         this.finder = finder;
         this.classLoader = classLoader;
     }
@@ -57,25 +60,25 @@ public final class QueryBuilderFactoryImpl
     /**
      * @see QueryBuilderFactory#newQueryBuilder(Class)
      */
-    public <T> QueryBuilder<T> newQueryBuilder( final Class<T> resultType )
+    public <T> QueryBuilder<T> newQueryBuilder(final Class<T> resultType)
     {
-        NotQueryableException.throwIfNotQueryable( resultType );
+        NotQueryableException.throwIfNotQueryable(resultType);
 
-        final ServiceReference<EntityFinder> serviceReference = finder.findService( EntityFinder.class );
-        if( serviceReference == null )
+        final ServiceReference<EntityFinder> serviceReference = finder.findService(EntityFinder.class);
+        if (serviceReference == null)
         {
-            return new QueryBuilderImpl<T>( null, classLoader, resultType );
+            return new QueryBuilderImpl<T>(null, classLoader, resultType);
         }
-        return new QueryBuilderImpl<T>( serviceReference.get(), classLoader, resultType );
+        return new QueryBuilderImpl<T>(serviceReference.get(), classLoader, resultType);
     }
 
-    public <T> Query<T> newNamedQuery( Class<T> resultType, UnitOfWork unitOfWork, String name )
+    public <T> Query<T> newNamedQuery(Class<T> resultType, UnitOfWork unitOfWork, String name)
     {
-        final ServiceReference<NamedEntityFinder> serviceReference = finder.findService( NamedEntityFinder.class );
-        if( serviceReference == null )
+        final ServiceReference<NamedEntityFinder> serviceReference = finder.findService(NamedEntityFinder.class);
+        if (serviceReference == null)
         {
             throw new MissingIndexingSystemException();
         }
-        return new NamedQueryImpl<T>( serviceReference.get(), unitOfWork, name, resultType );
+        return new NamedQueryImpl<T>(serviceReference.get(), unitOfWork, name, resultType);
     }
 }

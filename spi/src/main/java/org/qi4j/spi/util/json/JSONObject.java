@@ -97,7 +97,6 @@ import java.util.TreeSet;
  * <li>Numbers may have the <code>0-</code> <small>(octal)</small> or
  * <code>0x-</code> <small>(hex)</small> prefix.</li>
  * </ul>
- *
  */
 public class JSONObject
 {
@@ -422,7 +421,8 @@ public class JSONObject
                         }
                     }
                 }
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 throw new RuntimeException(e);
             }
@@ -467,7 +467,8 @@ public class JSONObject
             try
             {
                 putOpt(name, c.getField(name).get(object));
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 /* forget about it */
             }
@@ -650,7 +651,8 @@ public class JSONObject
             return o instanceof Number ?
                     ((Number) o).doubleValue() :
                     Double.valueOf((String) o).doubleValue();
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             throw new JSONException("JSONObject[" + quote(key) +
                     "] is not a number.");
@@ -936,7 +938,8 @@ public class JSONObject
         try
         {
             return getBoolean(key);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             return defaultValue;
         }
@@ -991,7 +994,8 @@ public class JSONObject
             Object o = opt(key);
             return o instanceof Number ? ((Number) o).doubleValue() :
                     new Double((String) o).doubleValue();
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             return defaultValue;
         }
@@ -1028,7 +1032,8 @@ public class JSONObject
         try
         {
             return getInt(key);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             return defaultValue;
         }
@@ -1095,7 +1100,8 @@ public class JSONObject
         try
         {
             return getLong(key);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             return defaultValue;
         }
@@ -1424,7 +1430,8 @@ public class JSONObject
                     {
                         return new Integer(Integer.parseInt(s.substring(2),
                                 16));
-                    } catch (Exception e)
+                    }
+                    catch (Exception e)
                     {
                         /* Ignore the error */
                     }
@@ -1433,7 +1440,8 @@ public class JSONObject
                     try
                     {
                         return new Integer(Integer.parseInt(s, 8));
-                    } catch (Exception e)
+                    }
+                    catch (Exception e)
                     {
                         /* Ignore the error */
                     }
@@ -1455,7 +1463,8 @@ public class JSONObject
                         return myLong;
                     }
                 }
-            } catch (Exception f)
+            }
+            catch (Exception f)
             {
                 /* Ignore the error */
             }
@@ -1548,7 +1557,8 @@ public class JSONObject
             }
             sb.append('}');
             return sb.toString();
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             return null;
         }
@@ -1676,7 +1686,8 @@ public class JSONObject
             try
             {
                 o = ((JSONString) value).toJSONString();
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 throw new JSONException(e);
             }
@@ -1743,7 +1754,8 @@ public class JSONObject
                     return (String) o;
                 }
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             /* forget about it */
         }
@@ -1820,7 +1832,8 @@ public class JSONObject
             }
             writer.write('}');
             return writer;
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             throw new JSONException(e);
         }

@@ -14,57 +14,56 @@
 
 package org.qi4j.runtime.structure;
 
+import java.io.Serializable;
+import java.util.List;
+
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.entity.EntityModel;
 
-import java.io.Serializable;
-import java.util.List;
-
 /**
  * JAVADOC
  */
 public class EntitiesModel
-    implements Binder, Serializable
+        implements Binder, Serializable
 {
     private final List<EntityModel> entityModels;
 
-    public EntitiesModel( List<EntityModel> entityModels )
+    public EntitiesModel(List<EntityModel> entityModels)
     {
         this.entityModels = entityModels;
     }
 
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        for( EntityModel entityModel : entityModels )
+        for (EntityModel entityModel : entityModels)
         {
-            entityModel.visitModel( modelVisitor );
+            entityModel.visitModel(modelVisitor);
         }
     }
 
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind(Resolution resolution) throws BindingException
     {
-        for( EntityModel entityModel : entityModels )
+        for (EntityModel entityModel : entityModels)
         {
-            entityModel.bind( resolution );
+            entityModel.bind(resolution);
         }
     }
 
-    public EntityModel getEntityModelFor( Class mixinType, Visibility visibility ) throws AmbiguousTypeException
+    public EntityModel getEntityModelFor(Class mixinType, Visibility visibility) throws AmbiguousTypeException
     {
         EntityModel foundModel = null;
-        for( EntityModel entityModel : entityModels )
+        for (EntityModel entityModel : entityModels)
         {
-            if( mixinType.isAssignableFrom( entityModel.type() ) && entityModel.visibility() == visibility )
+            if (mixinType.isAssignableFrom(entityModel.type()) && entityModel.visibility() == visibility)
             {
-                if( foundModel != null )
+                if (foundModel != null)
                 {
-                    throw new AmbiguousTypeException( mixinType, foundModel.type(), entityModel.type() );
-                }
-                else
+                    throw new AmbiguousTypeException(mixinType, foundModel.type(), entityModel.type());
+                } else
                 {
                     foundModel = entityModel;
                 }
@@ -74,11 +73,11 @@ public class EntitiesModel
         return foundModel;
     }
 
-    public Class getClassForName( String type )
+    public Class getClassForName(String type)
     {
-        for( EntityModel entityModel : entityModels )
+        for (EntityModel entityModel : entityModels)
         {
-            if( entityModel.type().getName().equals( type ) )
+            if (entityModel.type().getName().equals(type))
             {
                 return entityModel.type();
             }

@@ -14,32 +14,32 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.constraint.Constraint;
-import static org.qi4j.api.util.Classes.getRawClass;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import org.qi4j.api.constraint.Constraint;
+import static org.qi4j.api.util.Classes.*;
+
 /**
  * JAVADOC
  */
 public final class ConstraintDeclaration
-    implements Serializable
+        implements Serializable
 {
     private final Class<? extends Constraint<?, ?>> constraintClass;
     private final Type declaredIn;
     private final Class constraintAnnotationType;
     private final Type constraintValueType;
 
-    public ConstraintDeclaration( Class<? extends Constraint<?, ?>> constraintClass, Type type )
+    public ConstraintDeclaration(Class<? extends Constraint<?, ?>> constraintClass, Type type)
     {
         this.constraintClass = constraintClass;
         declaredIn = type;
 
-        constraintAnnotationType = (Class<? extends Annotation>) ( (ParameterizedType) constraintClass.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 0 ];
-        constraintValueType = ( (ParameterizedType) constraintClass.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 1 ];
+        constraintAnnotationType = (Class<? extends Annotation>) ((ParameterizedType) constraintClass.getGenericInterfaces()[0]).getActualTypeArguments()[0];
+        constraintValueType = ((ParameterizedType) constraintClass.getGenericInterfaces()[0]).getActualTypeArguments()[1];
     }
 
     public Class<? extends Constraint<?, ?>> constraintClass()
@@ -52,22 +52,20 @@ public final class ConstraintDeclaration
         return declaredIn;
     }
 
-    public boolean appliesTo( Class annotationType, Type valueType )
+    public boolean appliesTo(Class annotationType, Type valueType)
     {
-        if( constraintValueType instanceof Class )
+        if (constraintValueType instanceof Class)
         {
             Class constraintValueClass = (Class) constraintValueType;
-            Class valueClass = getRawClass( valueType );
-            return constraintAnnotationType.equals( annotationType ) && constraintValueClass.isAssignableFrom( valueClass );
-        }
-        else if( constraintValueType instanceof ParameterizedType )
+            Class valueClass = getRawClass(valueType);
+            return constraintAnnotationType.equals(annotationType) && constraintValueClass.isAssignableFrom(valueClass);
+        } else if (constraintValueType instanceof ParameterizedType)
         {
             // TODO Handle nested generics
-            Class constraintValueClass = getRawClass( constraintValueType );
-            Class valueClass = getRawClass( valueType );
-            return constraintAnnotationType.equals( annotationType ) && constraintValueClass.isAssignableFrom( valueClass );
-        }
-        else
+            Class constraintValueClass = getRawClass(constraintValueType);
+            Class valueClass = getRawClass(valueType);
+            return constraintAnnotationType.equals(annotationType) && constraintValueClass.isAssignableFrom(valueClass);
+        } else
         {
             return false; // TODO Handles more cases. What are they?
         }

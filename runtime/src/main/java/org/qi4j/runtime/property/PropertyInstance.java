@@ -20,7 +20,6 @@ import org.qi4j.runtime.composite.ConstraintsCheck;
 
 /**
  * {@code PropertyInstance} represents a property.
- *
  */
 public class PropertyInstance<T> extends AbstractPropertyInstance<T>
 {
@@ -35,10 +34,10 @@ public class PropertyInstance<T> extends AbstractPropertyInstance<T>
      * @param constraints   constraint checker for this property
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
      */
-    public PropertyInstance( PropertyInfo aPropertyInfo, T aValue, ConstraintsCheck constraints )
-        throws IllegalArgumentException
+    public PropertyInstance(PropertyInfo aPropertyInfo, T aValue, ConstraintsCheck constraints)
+            throws IllegalArgumentException
     {
-        super( aPropertyInfo );
+        super(aPropertyInfo);
         value = aValue;
         this.constraints = constraints;
     }
@@ -58,21 +57,20 @@ public class PropertyInstance<T> extends AbstractPropertyInstance<T>
      *
      * @param aNewValue The new value.
      */
-    public void set( T aNewValue )
+    public void set(T aNewValue)
     {
-        if( isImmutable() )
+        if (isImmutable())
         {
-            throw new IllegalStateException( "Property [" + qualifiedName() + "] is immutable." );
+            throw new IllegalStateException("Property [" + qualifiedName() + "] is immutable.");
         }
 
-        if( constraints != null )
+        if (constraints != null)
         {
-            constraints.checkConstraints( aNewValue );
+            constraints.checkConstraints(aNewValue);
         }
 
         value = aNewValue;
     }
-
 
 
     /**

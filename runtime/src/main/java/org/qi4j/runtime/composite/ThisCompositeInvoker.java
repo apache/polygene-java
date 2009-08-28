@@ -14,11 +14,11 @@
 
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.Method;
+
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 import org.qi4j.spi.composite.CompositeInstance;
-
-import java.lang.reflect.Method;
 
 /**
  * JAVADOC

@@ -160,7 +160,8 @@ public final class MixinModel
                 try
                 {
                     ((Initializable) mixin).initialize();
-                } finally
+                }
+                finally
                 {
                     ((Factory) mixin).setCallback(0, callback);
                 }
@@ -267,7 +268,8 @@ public final class MixinModel
             try
             {
                 ((Activatable) mixin).activate();
-            } finally
+            }
+            finally
             {
                 ((Factory) mixin).setCallback(0, callback);
             }
@@ -283,7 +285,8 @@ public final class MixinModel
             try
             {
                 ((Activatable) mixin).passivate();
-            } finally
+            }
+            finally
             {
                 ((Factory) mixin).setCallback(0, callback);
             }
@@ -319,14 +322,16 @@ public final class MixinModel
             {
                 if (!Modifier.isPublic(method.getModifiers()))
                 {
-                    return 1; // Only proxy public methods
+                    return 1; // Only proxy publich methods
                 } else if (Modifier.isFinal(method.getModifiers()))
                 {
                     return 1; // Skip final methods
                 }
 
                 if (injectedMethodsModel.isInjected(method))
+                {
                     return 1;
+                }
 
                 for (Class aClass : Classes.interfacesOf(fragmentClass))
                 {
@@ -334,7 +339,8 @@ public final class MixinModel
                     {
                         aClass.getMethod(method.getName(), method.getParameterTypes());
                         return 0; // This method comes from an interface - try invoking the proxy
-                    } catch (NoSuchMethodException e)
+                    }
+                    catch (NoSuchMethodException e)
                     {
                     }
                 }

@@ -14,52 +14,56 @@
 
 package org.qi4j.runtime.injection;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import org.qi4j.api.util.SerializationUtil;
 import org.qi4j.runtime.composite.BindingException;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.InjectedMethodDescriptor;
 
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 /**
  * JAVADOC
  */
 public final class InjectedMethodModel
-    implements InjectedMethodDescriptor, Serializable
+        implements InjectedMethodDescriptor, Serializable
 {
     // Model
     private Method method;
     private InjectedParametersModel parameters;
 
-    private void writeObject( ObjectOutputStream out )
-        throws IOException
+    private void writeObject(ObjectOutputStream out)
+            throws IOException
     {
         try
         {
-            SerializationUtil.writeMethod( out, method );
-            out.writeObject( parameters );
+            SerializationUtil.writeMethod(out, method);
+            out.writeObject(parameters);
         }
-        catch( NotSerializableException e )
+        catch (NotSerializableException e)
         {
-            System.err.println( "NotSerializable in " + getClass() );
+            System.err.println("NotSerializable in " + getClass());
             throw e;
         }
     }
 
-    private void readObject( ObjectInputStream in )
-        throws IOException, ClassNotFoundException
+    private void readObject(ObjectInputStream in)
+            throws IOException, ClassNotFoundException
     {
-        method = SerializationUtil.readMethod( in );
+        method = SerializationUtil.readMethod(in);
         parameters = (InjectedParametersModel) in.readObject();
     }
 
-    public InjectedMethodModel( Method method, InjectedParametersModel parameters )
+    public InjectedMethodModel(Method method, InjectedParametersModel parameters)
     {
         this.method = method;
-        this.method.setAccessible( true );
+        this.method.setAccessible(true);
         this.parameters = parameters;
     }
 
@@ -69,38 +73,38 @@ public final class InjectedMethodModel
     }
 
     // Binding
-    public void bind( Resolution resolution )
-        throws BindingException
+    public void bind(Resolution resolution)
+            throws BindingException
     {
-        parameters.bind( resolution );
+        parameters.bind(resolution);
     }
 
     // Context
-    public void inject( InjectionContext context, Object instance )
-        throws InjectionException
+    public void inject(InjectionContext context, Object instance)
+            throws InjectionException
     {
-        Object[] params = parameters.newParametersInstance( context );
+        Object[] params = parameters.newParametersInstance(context);
         try
         {
-            if( !method.isAccessible() )
+            if (!method.isAccessible())
             {
-                method.setAccessible( true );
+                method.setAccessible(true);
             }
-            method.invoke( instance, params );
+            method.invoke(instance, params);
         }
-        catch( IllegalAccessException e )
+        catch (IllegalAccessException e)
         {
-            throw new InjectionException( e );
+            throw new InjectionException(e);
         }
-        catch( InvocationTargetException e )
+        catch (InvocationTargetException e)
         {
-            throw new InjectionException( e.getTargetException() );
+            throw new InjectionException(e.getTargetException());
         }
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        modelVisitor.visit( this );
-        parameters.visitModel( modelVisitor );
+        modelVisitor.visit(this);
+        parameters.visitModel(modelVisitor);
     }
 }

@@ -14,15 +14,6 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.util.SerializationUtil;
-import org.qi4j.runtime.injection.InjectedParametersModel;
-import org.qi4j.runtime.injection.InjectionContext;
-import org.qi4j.runtime.structure.Binder;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.spi.composite.ConstructorDescriptor;
-import org.qi4j.spi.composite.InvalidCompositeException;
-
 import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
@@ -32,42 +23,51 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
+import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.util.SerializationUtil;
+import org.qi4j.runtime.injection.InjectedParametersModel;
+import org.qi4j.runtime.injection.InjectionContext;
+import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.spi.composite.ConstructorDescriptor;
+import org.qi4j.spi.composite.InvalidCompositeException;
+
 /**
  * JAVADOC
  */
 public final class ConstructorModel
-    implements Binder, ConstructorDescriptor, Serializable
+        implements Binder, ConstructorDescriptor, Serializable
 {
     private Constructor constructor;
 
     private InjectedParametersModel parameters;
 
-    private void writeObject( ObjectOutputStream out )
-        throws IOException
+    private void writeObject(ObjectOutputStream out)
+            throws IOException
     {
         try
         {
-            SerializationUtil.writeConstructor( out, constructor );
-            out.writeObject( parameters );
+            SerializationUtil.writeConstructor(out, constructor);
+            out.writeObject(parameters);
         }
-        catch( NotSerializableException e )
+        catch (NotSerializableException e)
         {
-            System.err.println( "NotSerializable in " + getClass() );
+            System.err.println("NotSerializable in " + getClass());
             throw e;
         }
     }
 
-    private void readObject( ObjectInputStream in ) throws IOException, ClassNotFoundException
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
     {
-        constructor = SerializationUtil.readConstructor( in );
+        constructor = SerializationUtil.readConstructor(in);
         parameters = (InjectedParametersModel) in.readObject();
     }
 
-    public ConstructorModel( Constructor constructor, InjectedParametersModel parameters )
+    public ConstructorModel(Constructor constructor, InjectedParametersModel parameters)
     {
-        constructor.setAccessible( true );
+        constructor.setAccessible(true);
         this.constructor = constructor;
-        constructor.setAccessible( true );
+        constructor.setAccessible(true);
         this.parameters = parameters;
     }
 
@@ -76,47 +76,48 @@ public final class ConstructorModel
         return constructor;
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        modelVisitor.visit( this );
-        parameters.visitModel( modelVisitor );
+        modelVisitor.visit(this);
+        parameters.visitModel(modelVisitor);
     }
 
     // Binding
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind(Resolution resolution) throws BindingException
     {
-        parameters.bind( resolution );
+        parameters.bind(resolution);
     }
 
     // Context
-    public Object newInstance( InjectionContext context )
-        throws ConstructionException
+    public Object newInstance(InjectionContext context)
+            throws ConstructionException
     {
         // Create parameters
-        Object[] parametersInstance = parameters.newParametersInstance( context );
+        Object[] parametersInstance = parameters.newParametersInstance(context);
 
         // Invoke constructor
         try
         {
-            return constructor.newInstance( parametersInstance );
+            return constructor.newInstance(parametersInstance);
         }
-        catch( InvocationTargetException e )
+        catch (InvocationTargetException e)
         {
-            if( e.getTargetException() instanceof InvalidCompositeException )
+            if (e.getTargetException() instanceof InvalidCompositeException)
             {
                 throw (InvalidCompositeException) e.getTargetException();
             }
-            throw new ConstructionException( "Could not instantiate " + constructor.getDeclaringClass(), e.getTargetException() );
+            throw new ConstructionException("Could not instantiate " + constructor.getDeclaringClass(), e.getTargetException());
         }
-        catch( Exception e )
+        catch (Exception e)
         {
             System.out.println(constructor.toGenericString());
             System.out.println(Arrays.asList(parametersInstance));
-            throw new ConstructionException( "Could not instantiate " + constructor.getDeclaringClass(), e );
+            throw new ConstructionException("Could not instantiate " + constructor.getDeclaringClass(), e);
         }
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return constructor.toGenericString();
     }

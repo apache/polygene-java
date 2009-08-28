@@ -18,11 +18,11 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.query.grammar.AssociationReference;
-import org.qi4j.runtime.query.QueryException;
 import org.qi4j.runtime.entity.EntityInstance;
+import org.qi4j.runtime.query.QueryException;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;

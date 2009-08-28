@@ -33,7 +33,7 @@ import org.qi4j.spi.structure.ApplicationSPI;
  * You can also easily access any resources specific for the single Module, such as the TransientBuilderFactory.
  */
 public abstract class SingletonAssembler
-    implements Assembler
+        implements Assembler
 {
     private Energy4Java is;
     private ApplicationSPI applicationInstance;
@@ -48,35 +48,35 @@ public abstract class SingletonAssembler
      * @throws IllegalStateException Either if the model can not be created from the disk, or some inconsistency in
      *                               the programming model makes it impossible to create it.
      */
-    public SingletonAssembler( )
-        throws IllegalStateException
+    public SingletonAssembler()
+            throws IllegalStateException
     {
         is = new Energy4Java();
         try
         {
-            applicationInstance = is.newApplication( new ApplicationAssembler()
+            applicationInstance = is.newApplication(new ApplicationAssembler()
             {
-                public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
+                public ApplicationAssembly assemble(ApplicationAssemblyFactory applicationFactory) throws AssemblyException
                 {
-                    return applicationFactory.newApplicationAssembly( SingletonAssembler.this );
+                    return applicationFactory.newApplicationAssembly(SingletonAssembler.this);
                 }
-            } );
+            });
         }
-        catch( AssemblyException e )
+        catch (AssemblyException e)
         {
-            throw new IllegalStateException( "Could not instantiate application", e );
+            throw new IllegalStateException("Could not instantiate application", e);
         }
 
         try
         {
             applicationInstance.activate();
         }
-        catch( Exception e )
+        catch (Exception e)
         {
-            throw new IllegalStateException( "Could not activate application", e );
+            throw new IllegalStateException("Could not activate application", e);
         }
 
-        moduleInstance = applicationInstance.findModule( "Layer 1", "Module 1" );
+        moduleInstance = applicationInstance.findModule("Layer 1", "Module 1");
     }
 
     public final Qi4j runtime()

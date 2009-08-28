@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.unitofwork;
 
+import java.util.UUID;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.usecase.Usecase;
@@ -27,42 +29,40 @@ import org.qi4j.spi.entity.helpers.EntityStoreSPI;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 
-import java.util.UUID;
-
 /**
  * JAVADOC
  */
 public class UnitOfWorkStore
-    implements EntityStore, EntityStoreSPI
+        implements EntityStore, EntityStoreSPI
 {
     private UnitOfWorkInstance unitOfWork;
     private String uuid;
     private int count;
 
-    public UnitOfWorkStore( UnitOfWorkInstance unitOfWork )
+    public UnitOfWorkStore(UnitOfWorkInstance unitOfWork)
     {
         this.unitOfWork = unitOfWork;
         uuid = UUID.randomUUID().toString() + "-";
 
     }
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, MetaInfo unitOfWorkMetaInfo, ModuleSPI module )
+    public EntityStoreUnitOfWork newUnitOfWork(Usecase usecase, MetaInfo unitOfWorkMetaInfo, ModuleSPI module)
     {
-        return new DefaultEntityStoreUnitOfWork( this, newUnitOfWorkId(), module);
+        return new DefaultEntityStoreUnitOfWork(this, newUnitOfWorkId(), module);
     }
 
-    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity, EntityDescriptor type)
+    public EntityState newEntityState(EntityStoreUnitOfWork unitOfWork, EntityReference identity, EntityDescriptor type)
     {
-        UnitOfWorkEntityState entityState = new UnitOfWorkEntityState( "",
-                                                                       System.currentTimeMillis(),
-                                                                       EntityStatus.NEW );
+        UnitOfWorkEntityState entityState = new UnitOfWorkEntityState("",
+                System.currentTimeMillis(),
+                EntityStatus.NEW);
         return entityState;
     }
 
-    public EntityState getEntityState( EntityStoreUnitOfWork uow, EntityReference identity)
+    public EntityState getEntityState(EntityStoreUnitOfWork uow, EntityReference identity)
     {
-        EntityState parentState = unitOfWork.getCachedState( identity );
-        UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( parentState );
+        EntityState parentState = unitOfWork.getCachedState(identity);
+        UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState(parentState);
         return unitOfWorkEntityState;
     }
 
@@ -71,16 +71,16 @@ public class UnitOfWorkStore
         return null;
     }
 
-    public EntityState getParentEntityState( EntityReference identity )
+    public EntityState getParentEntityState(EntityReference identity)
     {
-        EntityState parentState = unitOfWork.getParentEntityState( identity );
-        if( parentState == null )
+        EntityState parentState = unitOfWork.getParentEntityState(identity);
+        if (parentState == null)
         {
             return null;
         }
 
         // TODO Needs to be fixed
-        UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState( parentState );
+        UnitOfWorkEntityState unitOfWorkEntityState = new UnitOfWorkEntityState(parentState);
 
         return unitOfWorkEntityState;
     }
@@ -93,7 +93,7 @@ public class UnitOfWorkStore
 
     private String newUnitOfWorkId()
     {
-        return uuid + Integer.toHexString( count++ );
+        return uuid + Integer.toHexString(count++);
     }
 
 }

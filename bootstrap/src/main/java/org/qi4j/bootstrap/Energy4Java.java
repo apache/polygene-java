@@ -18,18 +18,18 @@
 
 package org.qi4j.bootstrap;
 
+import java.io.IOException;
+
 import org.qi4j.bootstrap.internal.ServiceLoader;
 import org.qi4j.bootstrap.spi.Qi4jRuntime;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.spi.structure.ApplicationSPI;
 
-import java.io.IOException;
-
 /**
  * Main bootstrap class for starting Qi4j and creating new applications. Instantiate this
  * and call one of the factory methods to get started.
- *
+ * <p/>
  * This class will use the Service Loader mechanism in Java to try to locate a runtime that implements
  * the Qi4jRuntime interface. This avoids a direct dependency from the bootstrap to the runtime.
  */
@@ -49,32 +49,32 @@ public final class Energy4Java
         return serviceLoader;
     }
 
-    public static void setServiceLoader( ServiceLoader aServiceLoader )
+    public static void setServiceLoader(ServiceLoader aServiceLoader)
     {
         serviceLoader = aServiceLoader;
     }
 
     public Energy4Java()
     {
-        this( findQi4jRuntime() );
+        this(findQi4jRuntime());
     }
 
-    public Energy4Java( Qi4jRuntime runtime )
+    public Energy4Java(Qi4jRuntime runtime)
     {
         this.runtime = runtime;
     }
 
-    public ApplicationModelSPI newApplicationModel( ApplicationAssembler assembler ) throws AssemblyException
+    public ApplicationModelSPI newApplicationModel(ApplicationAssembler assembler) throws AssemblyException
     {
-        ApplicationAssembly assembly = assembler.assemble( runtime.applicationAssemblyFactory() );
-        return runtime.applicationModelFactory().newApplicationModel( assembly );
+        ApplicationAssembly assembly = assembler.assemble(runtime.applicationAssemblyFactory());
+        return runtime.applicationModelFactory().newApplicationModel(assembly);
     }
 
-    public ApplicationSPI newApplication( ApplicationAssembler assembler )
-        throws AssemblyException
+    public ApplicationSPI newApplication(ApplicationAssembler assembler)
+            throws AssemblyException
     {
-        ApplicationModelSPI model = newApplicationModel( assembler );
-        return model.newInstance( runtime.spi() );
+        ApplicationModelSPI model = newApplicationModel(assembler);
+        return model.newInstance(runtime.spi());
     }
 
     public Qi4jSPI spi()
@@ -83,21 +83,21 @@ public final class Energy4Java
     }
 
     private static Qi4jRuntime findQi4jRuntime()
-        throws BootstrapException
+            throws BootstrapException
     {
 
         try
         {
-            final Qi4jRuntime runtime = serviceLoader.firstProvider( Qi4jRuntime.class );
-            if( runtime != null )
+            final Qi4jRuntime runtime = serviceLoader.firstProvider(Qi4jRuntime.class);
+            if (runtime != null)
             {
                 return runtime;
             }
-            throw new BootstrapException( "No Qi4j runtime providers found." );
+            throw new BootstrapException("No Qi4j runtime providers found.");
         }
-        catch( IOException e )
+        catch (IOException e)
         {
-            throw new BootstrapException( "Unable to load a Qi4j runtime provider.", e );
+            throw new BootstrapException("Unable to load a Qi4j runtime provider.", e);
         }
     }
 

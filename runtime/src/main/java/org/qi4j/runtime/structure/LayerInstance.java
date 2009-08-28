@@ -14,6 +14,9 @@
 
 package org.qi4j.runtime.structure;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Layer;
@@ -21,14 +24,11 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.spi.service.Activator;
 import org.qi4j.spi.structure.LayerSPI;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * JAVADOC
  */
 public class LayerInstance
-    implements Layer, LayerSPI
+        implements Layer, LayerSPI
 {
     private final LayerModel model;
     private final ApplicationInstance applicationInstance;
@@ -36,7 +36,7 @@ public class LayerInstance
     private final Activator moduleActivator;
     private final UsedLayersInstance usedLayersInstance;
 
-    public LayerInstance( LayerModel model, ApplicationInstance applicationInstance, List<ModuleInstance> moduleInstances, UsedLayersInstance usedLayersInstance )
+    public LayerInstance(LayerModel model, ApplicationInstance applicationInstance, List<ModuleInstance> moduleInstances, UsedLayersInstance usedLayersInstance)
     {
         this.model = model;
         this.applicationInstance = applicationInstance;
@@ -68,9 +68,9 @@ public class LayerInstance
     public List<Module> modules()
     {
         List<Module> result = new ArrayList<Module>();
-        for( ModuleInstance moduleInstance : moduleInstances )
+        for (ModuleInstance moduleInstance : moduleInstances)
         {
-            result.add( moduleInstance );
+            result.add(moduleInstance);
         }
         return result;
     }
@@ -80,11 +80,11 @@ public class LayerInstance
         return usedLayersInstance;
     }
 
-    public ModuleInstance findModule( String moduleName )
+    public ModuleInstance findModule(String moduleName)
     {
-        for( ModuleInstance moduleInstance : moduleInstances )
+        for (ModuleInstance moduleInstance : moduleInstances)
         {
-            if( moduleInstance.model().name().equals( moduleName ) )
+            if (moduleInstance.model().name().equals(moduleName))
             {
                 return moduleInstance;
             }
@@ -95,31 +95,31 @@ public class LayerInstance
 
     public void activate() throws Exception
     {
-        moduleActivator.activate( moduleInstances );
+        moduleActivator.activate(moduleInstances);
     }
 
-    public boolean visitModules( ModuleVisitor visitor, Visibility visibility )
+    public boolean visitModules(ModuleVisitor visitor, Visibility visibility)
     {
         // Visit modules in this layer
         ModuleInstance foundModule = null;
-        for( ModuleInstance moduleInstance : moduleInstances )
+        for (ModuleInstance moduleInstance : moduleInstances)
         {
-            if( !visitor.visitModule( moduleInstance, moduleInstance.model(), visibility ) )
+            if (!visitor.visitModule(moduleInstance, moduleInstance.model(), visibility))
             {
                 return false;
             }
         }
 
-        if( visibility == Visibility.layer )
+        if (visibility == Visibility.layer)
         {
             // Visit modules in this layer
-            if( !visitModules( visitor, Visibility.application ) )
+            if (!visitModules(visitor, Visibility.application))
             {
                 return false;
             }
 
             // Visit modules in used layers
-            return usedLayersInstance.visitModules( visitor );
+            return usedLayersInstance.visitModules(visitor);
         }
 
         return true;
@@ -130,7 +130,8 @@ public class LayerInstance
         moduleActivator.passivate();
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return model.toString();
     }

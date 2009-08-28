@@ -14,33 +14,34 @@
 
 package org.qi4j.api.entity.association;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
 import org.qi4j.api.injection.scope.State;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-
 /**
  * Generic mixin for associations.
  */
-@AppliesTo( { ManyAssociationMixin.AssociationFilter.class } )
+@AppliesTo({ManyAssociationMixin.AssociationFilter.class})
 public final class ManyAssociationMixin
-    implements InvocationHandler
+        implements InvocationHandler
 {
-    @State private EntityStateHolder associations;
+    @State
+    private EntityStateHolder associations;
 
-    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
     {
-        return associations.getManyAssociation( method );
+        return associations.getManyAssociation(method);
     }
 
     public static class AssociationFilter
-        implements AppliesToFilter
+            implements AppliesToFilter
     {
-        public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> modifierClass )
+        public boolean appliesTo(Method method, Class<?> mixin, Class<?> compositeType, Class<?> modifierClass)
         {
-            return ManyAssociation.class.isAssignableFrom( method.getReturnType() );
+            return ManyAssociation.class.isAssignableFrom(method.getReturnType());
         }
     }
 }

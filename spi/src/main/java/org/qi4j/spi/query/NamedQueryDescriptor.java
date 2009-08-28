@@ -18,24 +18,27 @@
 package org.qi4j.spi.query;
 
 import java.util.Map;
+
 import org.qi4j.api.query.grammar.OrderBy;
 
 public interface NamedQueryDescriptor
 {
-    /** Creates a valid Query string.
+    /**
+     * Creates a valid Query string.
      *
-     * @param variables The variables used, and their values.
+     * @param variables       The variables used, and their values.
      * @param orderBySegments The list of OrderBy instrctions.
-     * @param firstResult The offset into the resultset.
-     * @param maxResults The maximum number of results to be returned.
+     * @param firstResult     The offset into the resultset.
+     * @param maxResults      The maximum number of results to be returned.
      * @return A valid query in the language given.
      */
-    String compose( Map<String, Object> variables,
-                    OrderBy[] orderBySegments,
-                    Integer firstResult,
-                    Integer maxResults );
+    String compose(Map<String, Object> variables,
+                   OrderBy[] orderBySegments,
+                   Integer firstResult,
+                   Integer maxResults);
 
-    /** Returns the name of the query language.
+    /**
+     * Returns the name of the query language.
      *
      * @return The formal name of the query language.
      */

@@ -18,20 +18,20 @@
  */
 package org.qi4j.runtime.query.proxy;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import static java.lang.reflect.Proxy.*;
+import java.lang.reflect.Type;
+
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.runtime.query.QueryException;
 import org.qi4j.runtime.query.grammar.impl.AssociationReferenceImpl;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import static java.lang.reflect.Proxy.newProxyInstance;
-import java.lang.reflect.Type;
 
 /**
  * JAVADOC Add JavaDoc
  */
 public final class AssociationReferenceProxy
-    implements InvocationHandler
+        implements InvocationHandler
 {
 
     /**
@@ -44,9 +44,9 @@ public final class AssociationReferenceProxy
      *
      * @param accessor association accessor method
      */
-    AssociationReferenceProxy( final Method accessor )
+    AssociationReferenceProxy(final Method accessor)
     {
-        this( accessor, null );
+        this(accessor, null);
     }
 
     /**
@@ -55,38 +55,38 @@ public final class AssociationReferenceProxy
      * @param accessor             association accessor method
      * @param traversedAssociation traversed association
      */
-    AssociationReferenceProxy( final Method accessor,
-                               final AssociationReference traversedAssociation )
+    AssociationReferenceProxy(final Method accessor,
+                              final AssociationReference traversedAssociation)
     {
-        associationReference = new AssociationReferenceImpl( accessor, traversedAssociation );
+        associationReference = new AssociationReferenceImpl(accessor, traversedAssociation);
     }
 
-    public Object invoke( final Object proxy,
-                          final Method method,
-                          final Object[] args )
-        throws Throwable
+    public Object invoke(final Object proxy,
+                         final Method method,
+                         final Object[] args)
+            throws Throwable
     {
-        if( method.getDeclaringClass().equals( AssociationReference.class ) )
+        if (method.getDeclaringClass().equals(AssociationReference.class))
         {
             // TODO Shall we handle reflection exceptions here?
-            return method.invoke( associationReference, args );
+            return method.invoke(associationReference, args);
         }
-        if( args == null && "get".equals( method.getName() ) )
+        if (args == null && "get".equals(method.getName()))
         {
             Type associationType = associationReference.associationType();
             Class<?> associationClass = (Class<?>) associationType;
             return newProxyInstance(
-                this.getClass().getClassLoader(),
-                new Class[]{ associationClass },
-                new MixinTypeProxy( associationClass, associationReference )
+                    this.getClass().getClassLoader(),
+                    new Class[]{associationClass},
+                    new MixinTypeProxy(associationClass, associationReference)
             );
         }
-        if( "toString".equals( method.getName() ) )
+        if ("toString".equals(method.getName()))
         {
             return associationReference.toString();
         }
         // TODO handle equals/hashcode?
-        throw new QueryException( "Only association methods can be used" );
+        throw new QueryException("Only association methods can be used");
     }
 
     @Override

@@ -18,7 +18,6 @@ import org.qi4j.api.property.PropertyInfo;
 
 /**
  * {@code ValuePropertyInstance} represents a ValueComposite property. It is always immutable.
- *
  */
 public class ValuePropertyInstance<T> extends AbstractPropertyInstance<T>
 {
@@ -31,10 +30,10 @@ public class ValuePropertyInstance<T> extends AbstractPropertyInstance<T>
      * @param aValue        The property value.
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
      */
-    public ValuePropertyInstance( PropertyInfo aPropertyInfo, T aValue )
-        throws IllegalArgumentException
+    public ValuePropertyInstance(PropertyInfo aPropertyInfo, T aValue)
+            throws IllegalArgumentException
     {
-        super( aPropertyInfo );
+        super(aPropertyInfo);
         value = aValue;
     }
 
@@ -53,9 +52,9 @@ public class ValuePropertyInstance<T> extends AbstractPropertyInstance<T>
      *
      * @param aNewValue The new value.
      */
-    public void set( T aNewValue )
+    public void set(T aNewValue)
     {
-        throw new IllegalStateException( "Property [" + qualifiedName() + "] is immutable." );
+        throw new IllegalStateException("Property [" + qualifiedName() + "] is immutable.");
     }
 
     /**

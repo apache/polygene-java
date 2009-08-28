@@ -14,6 +14,18 @@
 
 package org.qi4j.runtime.property;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
+import java.util.List;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.UseDefaults;
@@ -30,26 +42,14 @@ import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.Binder;
-import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.DefaultValues;
-
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
-import java.util.List;
+import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
  * JAVADOC
  */
 public abstract class AbstractPropertyModel
-    implements Serializable, PropertyDescriptor, ConstraintsCheck, Binder
+        implements Serializable, PropertyDescriptor, ConstraintsCheck, Binder
 {
     private static final long serialVersionUID = 1L;
 
@@ -75,31 +75,31 @@ public abstract class AbstractPropertyModel
 
     protected final PropertyInfo builderInfo;
 
-    public AbstractPropertyModel( Method accessor, boolean immutable, ValueConstraintsInstance constraints,
-                                  MetaInfo metaInfo, Object initialValue )
+    public AbstractPropertyModel(Method accessor, boolean immutable, ValueConstraintsInstance constraints,
+                                 MetaInfo metaInfo, Object initialValue)
     {
         this.immutable = immutable;
         this.metaInfo = metaInfo;
-        type = GenericPropertyInfo.getPropertyType( accessor );
+        type = GenericPropertyInfo.getPropertyType(accessor);
         this.accessor = accessor;
-        qualifiedName = QualifiedName.fromMethod( accessor );
+        qualifiedName = QualifiedName.fromMethod(accessor);
 
         // Check for @UseDefaults annotation
-        useDefaults = this.metaInfo.get( UseDefaults.class ) != null;
+        useDefaults = this.metaInfo.get(UseDefaults.class) != null;
 
         this.initialValue = initialValue;
 
         this.constraints = constraints;
 
-        computed = this.metaInfo.get( Computed.class ) != null;
-        needsWrapper = !this.accessor.getReturnType().equals( Property.class );
+        computed = this.metaInfo.get(Computed.class) != null;
+        needsWrapper = !this.accessor.getReturnType().equals(Property.class);
 
-        builderInfo = new GenericPropertyInfo( this.metaInfo, false, computed, qualifiedName, type );
+        builderInfo = new GenericPropertyInfo(this.metaInfo, false, computed, qualifiedName, type);
     }
 
-    public <T> T metaInfo( Class<T> infoType )
+    public <T> T metaInfo(Class<T> infoType)
     {
-        return metaInfo.get( infoType );
+        return metaInfo.get(infoType);
     }
 
     public String name()
@@ -137,15 +137,15 @@ public abstract class AbstractPropertyModel
         Object value = initialValue;
 
         // Check for @UseDefaults annotation
-        if( value == null && useDefaults )
+        if (value == null && useDefaults)
         {
-            value = DefaultValues.getDefaultValue( type );
+            value = DefaultValues.getDefaultValue(type);
         }
 
         return value;
     }
 
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind(Resolution resolution) throws BindingException
     {
         // TODO Select ValueComposite type
     }
@@ -155,82 +155,80 @@ public abstract class AbstractPropertyModel
         // Properties cannot be immutable during construction
 
         Property<?> property;
-        if( computed )
+        if (computed)
         {
-            property = new ComputedPropertyInfo<Object>( builderInfo );
-        }
-        else
+            property = new ComputedPropertyInfo<Object>(builderInfo);
+        } else
         {
-            property = new PropertyInstance<Object>( builderInfo, initialValue(), this );
+            property = new PropertyInstance<Object>(builderInfo, initialValue(), this);
         }
 
-        return wrapProperty( property );
+        return wrapProperty(property);
     }
 
-    public Property<?> newBuilderInstance( Object initialValue )
+    public Property<?> newBuilderInstance(Object initialValue)
     {
         // Properties cannot be immutable during construction
 
         Property<?> property;
-        if( computed )
+        if (computed)
         {
-            property = new ComputedPropertyInfo<Object>( builderInfo );
-        }
-        else
+            property = new ComputedPropertyInfo<Object>(builderInfo);
+        } else
         {
-            property = new PropertyInstance<Object>( builderInfo, initialValue, this );
+            property = new PropertyInstance<Object>(builderInfo, initialValue, this);
         }
 
-        return wrapProperty( property );
+        return wrapProperty(property);
     }
 
     public Property<?> newInitialInstance()
     {
         // Construct instance without using a builder
 
-        return newInstance( initialValue() );
+        return newInstance(initialValue());
     }
 
-    public abstract <T> Property<T> newInstance( Object value );
+    public abstract <T> Property<T> newInstance(Object value);
 
-    public void checkConstraints( Object value ) throws ConstraintViolationException
+    public void checkConstraints(Object value) throws ConstraintViolationException
     {
-        if( constraints != null )
+        if (constraints != null)
         {
-            List<ConstraintViolation> violations = constraints.checkConstraints( value );
-            if( !violations.isEmpty() )
+            List<ConstraintViolation> violations = constraints.checkConstraints(value);
+            if (!violations.isEmpty())
             {
-                throw new ConstraintViolationException( accessor, violations );
+                throw new ConstraintViolationException(accessor, violations);
             }
         }
     }
 
-    public void checkConstraints( PropertiesInstance properties )
-        throws ConstraintViolationException
+    public void checkConstraints(PropertiesInstance properties)
+            throws ConstraintViolationException
     {
-        if( constraints != null )
+        if (constraints != null)
         {
-            Object value = properties.getProperty( accessor ).get();
+            Object value = properties.getProperty(accessor).get();
 
-            checkConstraints( value );
+            checkConstraints(value);
         }
     }
 
     @Override
-    public boolean equals( Object o )
+    public boolean equals(Object o)
     {
-        if( this == o )
+        if (this == o)
         {
             return true;
         }
-        if( o == null || getClass() != o.getClass() )
+        if (o == null || getClass() != o.getClass())
         {
             return false;
         }
 
         AbstractPropertyModel that = (AbstractPropertyModel) o;
 
-        if( !accessor.equals( that.accessor ) )
+        if (!accessor.equals(that.accessor))
         {
             return false;
         }
@@ -250,72 +248,72 @@ public abstract class AbstractPropertyModel
         return accessor.toGenericString();
     }
 
-    protected <T> Property<T> wrapProperty( Property<T> property )
+    protected <T> Property<T> wrapProperty(Property<T> property)
     {
-        if( needsWrapper && !accessor.getReturnType().isInstance( property ) )
+        if (needsWrapper && !accessor.getReturnType().isInstance(property))
         {
             // Create proxy
             final ClassLoader loader = accessor.getReturnType().getClassLoader();
-            final Class[] type = { accessor.getReturnType() };
-            property = (Property<T>) Proxy.newProxyInstance( loader, type, new PropertyHandler( property ) );
+            final Class[] type = {accessor.getReturnType()};
+            property = (Property<T>) Proxy.newProxyInstance(loader, type, new PropertyHandler(property));
         }
         return property;
     }
 
-    private void writeObject( ObjectOutputStream out )
-        throws IOException
+    private void writeObject(ObjectOutputStream out)
+            throws IOException
     {
         out.defaultWriteObject();
         try
         {
-            SerializationUtil.writeMethod( out, accessor );
+            SerializationUtil.writeMethod(out, accessor);
         }
-        catch( NotSerializableException e )
+        catch (NotSerializableException e)
         {
-            System.err.println( "NotSerializable in " + getClass() );
+            System.err.println("NotSerializable in " + getClass());
             throw e;
         }
     }
 
-    private void readObject( ObjectInputStream in ) throws IOException, ClassNotFoundException
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
     {
         in.defaultReadObject();
-        accessor = SerializationUtil.readMethod( in );
+        accessor = SerializationUtil.readMethod(in);
     }
 
     protected static class ComputedPropertyInfo<T>
-        extends ComputedPropertyInstance<T>
+            extends ComputedPropertyInstance<T>
     {
-        public ComputedPropertyInfo( PropertyInfo aPropertyInfo )
-            throws IllegalArgumentException
+        public ComputedPropertyInfo(PropertyInfo aPropertyInfo)
+                throws IllegalArgumentException
         {
-            super( aPropertyInfo );
+            super(aPropertyInfo);
         }
 
         public T get()
         {
-            throw new IllegalStateException( "Property [" + qualifiedName().name() + "] must be computed" );
+            throw new IllegalStateException("Property [" + qualifiedName().name() + "] must be computed");
         }
     }
 
     static class PropertyHandler
-        implements InvocationHandler
+            implements InvocationHandler
     {
         Property p;
 
-        public PropertyHandler( Property<?> property )
+        public PropertyHandler(Property<?> property)
         {
             p = property;
         }
 
-        public Object invoke( Object proxy, Method method, Object[] args )
-            throws Throwable
+        public Object invoke(Object proxy, Method method, Object[] args)
+                throws Throwable
         {
             try
             {
-                return method.invoke( p, args );
+                return method.invoke(p, args);
             }
-            catch( InvocationTargetException e )
+            catch (InvocationTargetException e)
             {
                 throw e.getCause();
             }

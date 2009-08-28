@@ -14,6 +14,16 @@
 
 package org.qi4j.runtime.injection.provider;
 
+import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.runtime.composite.Resolution;
@@ -27,33 +37,27 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.ModuleVisitor;
 
-import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.*;
-
 public final class ServiceInjectionProviderFactory
-    implements InjectionProviderFactory, Serializable
+        implements InjectionProviderFactory, Serializable
 {
-    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
-        throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider(Resolution resolution, DependencyModel dependencyModel)
+            throws InvalidInjectionException
     {
-        if( dependencyModel.rawInjectionType().equals( Iterable.class ) )
+        if (dependencyModel.rawInjectionType().equals(Iterable.class))
         {
-            if( dependencyModel.injectionClass().equals( ServiceReference.class ) )
+            if (dependencyModel.injectionClass().equals(ServiceReference.class))
             {
                 // @Service Iterable<ServiceReference<MyService>> serviceRefs
-                Type[] arguments = ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments();
-                Type serviceType = ( (ParameterizedType) arguments[ 0 ] ).getActualTypeArguments()[ 0 ];
+                Type[] arguments = ((ParameterizedType) dependencyModel.injectionType()).getActualTypeArguments();
+                Type serviceType = ((ParameterizedType) arguments[0]).getActualTypeArguments()[0];
 
                 ServicesFinder servicesFinder = new ServicesFinder();
                 servicesFinder.serviceType = serviceType;
 
-                resolution.module().visitModules( servicesFinder );
+                resolution.module().visitModules(servicesFinder);
 
-                return new IterableServiceReferenceProvider( servicesFinder );
-            }
-            else
+                return new IterableServiceReferenceProvider(servicesFinder);
+            } else
             {
                 // @Service Iterable<MyService> services
                 Class serviceType = dependencyModel.injectionClass();
@@ -61,41 +65,39 @@ public final class ServiceInjectionProviderFactory
                 ServicesFinder servicesFinder = new ServicesFinder();
                 servicesFinder.serviceType = serviceType;
 
-                resolution.module().visitModules( servicesFinder );
+                resolution.module().visitModules(servicesFinder);
 
-                return new IterableServiceProvider( servicesFinder );
+                return new IterableServiceProvider(servicesFinder);
             }
 
-        }
-        else if( dependencyModel.rawInjectionType().equals( ServiceReference.class ) )
+        } else if (dependencyModel.rawInjectionType().equals(ServiceReference.class))
         {
             // @Service ServiceReference<MyService> serviceRef
             Type serviceType = dependencyModel.injectionClass();
             ServiceFinder serviceFinder = new ServiceFinder();
             serviceFinder.serviceType = serviceType;
-            resolution.module().visitModules( serviceFinder );
+            resolution.module().visitModules(serviceFinder);
 
-            if( serviceFinder.identity == null )
+            if (serviceFinder.identity == null)
             {
                 return null;
             }
 
-            return new ServiceReferenceProvider( serviceFinder );
-        }
-        else
+            return new ServiceReferenceProvider(serviceFinder);
+        } else
         {
             // @Service MyService service
             Type serviceType = dependencyModel.injectionType();
             ServiceFinder serviceFinder = new ServiceFinder();
             serviceFinder.serviceType = serviceType;
-            resolution.module().visitModules( serviceFinder );
+            resolution.module().visitModules(serviceFinder);
 
-            if( serviceFinder.identity == null )
+            if (serviceFinder.identity == null)
             {
                 return null;
             }
 
-            return new ServiceProvider( serviceFinder );
+            return new ServiceProvider(serviceFinder);
         }
     }
 
@@ -105,37 +107,37 @@ public final class ServiceInjectionProviderFactory
     }
 
     private static class IterableServiceReferenceProvider
-        implements InjectionProvider, ServiceInjector, Serializable
+            implements InjectionProvider, ServiceInjector, Serializable
     {
         private final ServicesFinder servicesFinder;
 
-        public IterableServiceReferenceProvider( ServicesFinder servicesFinder )
+        public IterableServiceReferenceProvider(ServicesFinder servicesFinder)
         {
             this.servicesFinder = servicesFinder;
         }
 
-        public synchronized Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        public synchronized Object provideInjection(InjectionContext context) throws InjectionProviderException
         {
             List<ServiceReference<Object>> serviceReferences;
 
             ModuleMapper mapper = new ModuleMapper();
-            context.moduleInstance().visitModules( mapper );
+            context.moduleInstance().visitModules(mapper);
 
             serviceReferences = new ArrayList<ServiceReference<Object>>();
-            for( Map.Entry<ModuleModel, List<String>> entry : servicesFinder.serviceIdentities.entrySet() )
+            for (Map.Entry<ModuleModel, List<String>> entry : servicesFinder.serviceIdentities.entrySet())
             {
-                ModuleInstance moduleInstance = mapper.modules.get( entry.getKey() );
-                for( String identity : entry.getValue() )
+                ModuleInstance moduleInstance = mapper.modules.get(entry.getKey());
+                for (String identity : entry.getValue())
                 {
-                    serviceReferences.add( moduleInstance.services().getServiceWithIdentity( identity ) );
+                    serviceReferences.add(moduleInstance.services().getServiceWithIdentity(identity));
                 }
             }
-            for( Map.Entry<ModuleModel, List<String>> entry : servicesFinder.importedServiceIdentities.entrySet() )
+            for (Map.Entry<ModuleModel, List<String>> entry : servicesFinder.importedServiceIdentities.entrySet())
             {
-                ModuleInstance moduleInstance = mapper.modules.get( entry.getKey() );
-                for( String identity : entry.getValue() )
+                ModuleInstance moduleInstance = mapper.modules.get(entry.getKey());
+                for (String identity : entry.getValue())
                 {
-                    serviceReferences.add( moduleInstance.importedServices().getServiceWithIdentity( identity ) );
+                    serviceReferences.add(moduleInstance.importedServices().getServiceWithIdentity(identity));
                 }
             }
 
@@ -146,51 +148,51 @@ public final class ServiceInjectionProviderFactory
         {
             List<String> services = new ArrayList<String>();
             Collection<List<String>> stringLists = servicesFinder.serviceIdentities.values();
-            for( List<String> stringList : stringLists )
+            for (List<String> stringList : stringLists)
             {
-                services.addAll( stringList );
+                services.addAll(stringList);
             }
             stringLists = servicesFinder.importedServiceIdentities.values();
-            for( List<String> stringList : stringLists )
+            for (List<String> stringList : stringLists)
             {
-                services.addAll( stringList );
+                services.addAll(stringList);
             }
             return services;
         }
     }
 
     private static class IterableServiceProvider
-        implements InjectionProvider, ServiceInjector, Serializable
+            implements InjectionProvider, ServiceInjector, Serializable
     {
         private final ServicesFinder servicesFinder;
 
 
-        private IterableServiceProvider( ServicesFinder servicesFinder )
+        private IterableServiceProvider(ServicesFinder servicesFinder)
         {
             this.servicesFinder = servicesFinder;
         }
 
-        public synchronized Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        public synchronized Object provideInjection(InjectionContext context) throws InjectionProviderException
         {
             List<Object> serviceInstances;
             ModuleMapper mapper = new ModuleMapper();
-            context.moduleInstance().visitModules( mapper );
+            context.moduleInstance().visitModules(mapper);
 
             serviceInstances = new ArrayList<Object>();
-            for( Map.Entry<ModuleModel, List<String>> entry : servicesFinder.serviceIdentities.entrySet() )
+            for (Map.Entry<ModuleModel, List<String>> entry : servicesFinder.serviceIdentities.entrySet())
             {
-                ModuleInstance moduleInstance = mapper.modules.get( entry.getKey() );
-                for( String identity : entry.getValue() )
+                ModuleInstance moduleInstance = mapper.modules.get(entry.getKey());
+                for (String identity : entry.getValue())
                 {
-                    serviceInstances.add( moduleInstance.services().getServiceWithIdentity( identity ).get() );
+                    serviceInstances.add(moduleInstance.services().getServiceWithIdentity(identity).get());
                 }
             }
-            for( Map.Entry<ModuleModel, List<String>> entry : servicesFinder.importedServiceIdentities.entrySet() )
+            for (Map.Entry<ModuleModel, List<String>> entry : servicesFinder.importedServiceIdentities.entrySet())
             {
-                ModuleInstance moduleInstance = mapper.modules.get( entry.getKey() );
-                for( String identity : entry.getValue() )
+                ModuleInstance moduleInstance = mapper.modules.get(entry.getKey());
+                for (String identity : entry.getValue())
                 {
-                    serviceInstances.add( moduleInstance.importedServices().getServiceWithIdentity( identity ).get() );
+                    serviceInstances.add(moduleInstance.importedServices().getServiceWithIdentity(identity).get());
                 }
             }
 
@@ -201,45 +203,44 @@ public final class ServiceInjectionProviderFactory
         {
             List<String> services = new ArrayList<String>();
             Collection<List<String>> stringLists = servicesFinder.serviceIdentities.values();
-            for( List<String> stringList : stringLists )
+            for (List<String> stringList : stringLists)
             {
-                services.addAll( stringList );
+                services.addAll(stringList);
             }
             stringLists = servicesFinder.importedServiceIdentities.values();
-            for( List<String> stringList : stringLists )
+            for (List<String> stringList : stringLists)
             {
-                services.addAll( stringList );
+                services.addAll(stringList);
             }
             return services;
         }
     }
 
     private static class ServiceReferenceProvider
-        implements InjectionProvider, ServiceInjector, Serializable
+            implements InjectionProvider, ServiceInjector, Serializable
     {
         private final ServiceFinder serviceFinder;
 
-        private ServiceReferenceProvider( ServiceFinder serviceFinder )
+        private ServiceReferenceProvider(ServiceFinder serviceFinder)
         {
             this.serviceFinder = serviceFinder;
         }
 
-        public synchronized Object provideInjection( InjectionContext context )
-            throws InjectionProviderException
+        public synchronized Object provideInjection(InjectionContext context)
+                throws InjectionProviderException
         {
             ServiceReference reference = null;
 
-            if( serviceFinder.identity != null )
+            if (serviceFinder.identity != null)
             {
                 ModuleMapper mapper = new ModuleMapper();
-                context.moduleInstance().visitModules( mapper );
-                if( serviceFinder.imported )
+                context.moduleInstance().visitModules(mapper);
+                if (serviceFinder.imported)
                 {
-                    reference = mapper.modules.get( serviceFinder.module ).importedServices().getServiceWithIdentity( serviceFinder.identity );
-                }
-                else
+                    reference = mapper.modules.get(serviceFinder.module).importedServices().getServiceWithIdentity(serviceFinder.identity);
+                } else
                 {
-                    reference = mapper.modules.get( serviceFinder.module ).services().getServiceWithIdentity( serviceFinder.identity );
+                    reference = mapper.modules.get(serviceFinder.module).services().getServiceWithIdentity(serviceFinder.identity);
                 }
             }
 
@@ -249,39 +250,38 @@ public final class ServiceInjectionProviderFactory
         public List<String> injectedServices()
         {
             List<String> services = new ArrayList<String>();
-            if( serviceFinder.identity != null )
+            if (serviceFinder.identity != null)
             {
-                services.add( serviceFinder.identity );
+                services.add(serviceFinder.identity);
             }
             return services;
         }
     }
 
     private static class ServiceProvider
-        implements InjectionProvider, ServiceInjector, Serializable
+            implements InjectionProvider, ServiceInjector, Serializable
     {
         private final ServiceFinder serviceFinder;
 
-        private ServiceProvider( ServiceFinder serviceFinder )
+        private ServiceProvider(ServiceFinder serviceFinder)
         {
             this.serviceFinder = serviceFinder;
         }
 
-        public synchronized Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        public synchronized Object provideInjection(InjectionContext context) throws InjectionProviderException
         {
             Object instance = null;
-            if( serviceFinder.identity != null )
+            if (serviceFinder.identity != null)
             {
                 ModuleMapper mapper = new ModuleMapper();
-                context.moduleInstance().visitModules( mapper );
+                context.moduleInstance().visitModules(mapper);
 
-                if( serviceFinder.imported )
+                if (serviceFinder.imported)
                 {
-                    instance = mapper.modules.get( serviceFinder.module ).importedServices().getServiceWithIdentity( serviceFinder.identity ).get();
-                }
-                else
+                    instance = mapper.modules.get(serviceFinder.module).importedServices().getServiceWithIdentity(serviceFinder.identity).get();
+                } else
                 {
-                    instance = mapper.modules.get( serviceFinder.module ).services().getServiceWithIdentity( serviceFinder.identity ).get();
+                    instance = mapper.modules.get(serviceFinder.module).services().getServiceWithIdentity(serviceFinder.identity).get();
                 }
             }
 
@@ -292,16 +292,16 @@ public final class ServiceInjectionProviderFactory
         public List<String> injectedServices()
         {
             List<String> services = new ArrayList<String>();
-            if( serviceFinder.identity != null )
+            if (serviceFinder.identity != null)
             {
-                services.add( serviceFinder.identity );
+                services.add(serviceFinder.identity);
             }
             return services;
         }
     }
 
     static class ServiceFinder
-        implements ModuleVisitor
+            implements ModuleVisitor
     {
         public Type serviceType;
 
@@ -309,17 +309,17 @@ public final class ServiceInjectionProviderFactory
         public String identity;
         public ModuleModel module;
 
-        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
+        public boolean visitModule(ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility)
         {
-            ServiceModel model = moduleModel.services().getServiceFor( serviceType, visibility );
-            if( model != null )
+            ServiceModel model = moduleModel.services().getServiceFor(serviceType, visibility);
+            if (model != null)
             {
                 identity = model.identity();
                 module = moduleModel;
             }
 
-            ImportedServiceModel importedServiceModel = moduleModel.importedServicesModel().getServiceFor( serviceType, visibility );
-            if( importedServiceModel != null )
+            ImportedServiceModel importedServiceModel = moduleModel.importedServicesModel().getServiceFor(serviceType, visibility);
+            if (importedServiceModel != null)
             {
                 identity = importedServiceModel.identity();
                 module = moduleModel;
@@ -331,7 +331,7 @@ public final class ServiceInjectionProviderFactory
     }
 
     static class ServicesFinder
-        implements ModuleVisitor, Serializable
+            implements ModuleVisitor, Serializable
     {
         public Type serviceType;
 
@@ -341,33 +341,33 @@ public final class ServiceInjectionProviderFactory
         private List<ServiceModel> services = new ArrayList<ServiceModel>();
         private List<ImportedServiceModel> importedServices = new ArrayList<ImportedServiceModel>();
 
-        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
+        public boolean visitModule(ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility)
         {
-            moduleModel.services().getServicesFor( serviceType, visibility, services );
-            if( !services.isEmpty() )
+            moduleModel.services().getServicesFor(serviceType, visibility, services);
+            if (!services.isEmpty())
             {
-                List<String> identities = serviceIdentities.get( moduleModel );
-                if( identities == null )
+                List<String> identities = serviceIdentities.get(moduleModel);
+                if (identities == null)
                 {
-                    serviceIdentities.put( moduleModel, identities = new ArrayList<String>( services.size() ) );
+                    serviceIdentities.put(moduleModel, identities = new ArrayList<String>(services.size()));
                 }
-                for( ServiceModel service : services )
+                for (ServiceModel service : services)
                 {
-                    identities.add( service.identity() );
+                    identities.add(service.identity());
                 }
             }
 
-            moduleModel.importedServicesModel().getServicesFor( serviceType, visibility, importedServices );
-            if( !importedServices.isEmpty() )
+            moduleModel.importedServicesModel().getServicesFor(serviceType, visibility, importedServices);
+            if (!importedServices.isEmpty())
             {
-                List<String> identities = importedServiceIdentities.get( moduleModel );
-                if( identities == null )
+                List<String> identities = importedServiceIdentities.get(moduleModel);
+                if (identities == null)
                 {
-                    importedServiceIdentities.put( moduleModel, identities = new ArrayList<String>( importedServices.size() ) );
+                    importedServiceIdentities.put(moduleModel, identities = new ArrayList<String>(importedServices.size()));
                 }
-                for( ImportedServiceModel service : importedServices )
+                for (ImportedServiceModel service : importedServices)
                 {
-                    identities.add( service.identity() );
+                    identities.add(service.identity());
                 }
             }
 
@@ -379,13 +379,13 @@ public final class ServiceInjectionProviderFactory
     }
 
     static class ModuleMapper
-        implements ModuleVisitor
+            implements ModuleVisitor
     {
         public Map<ModuleModel, ModuleInstance> modules = new HashMap<ModuleModel, ModuleInstance>();
 
-        public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
+        public boolean visitModule(ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility)
         {
-            modules.put( moduleModel, moduleInstance );
+            modules.put(moduleModel, moduleInstance);
 
             return true;
         }

@@ -14,19 +14,19 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
+import java.lang.reflect.Field;
+
 import org.qi4j.runtime.structure.ApplicationModel;
 import org.qi4j.runtime.structure.LayerModel;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.spi.object.ObjectDescriptor;
 
-import java.io.Serializable;
-import java.lang.reflect.Field;
-
 /**
  * JAVADOC
  */
 public final class Resolution
-    implements Serializable
+        implements Serializable
 {
     private final ApplicationModel application;
     private final LayerModel layer;
@@ -35,12 +35,12 @@ public final class Resolution
     private final CompositeMethodModel method;
     private final Field field;
 
-    public Resolution( ApplicationModel application,
-                       LayerModel layer,
-                       ModuleModel module,
-                       ObjectDescriptor objectDescriptor,
-                       CompositeMethodModel method,
-                       Field field )
+    public Resolution(ApplicationModel application,
+                      LayerModel layer,
+                      ModuleModel module,
+                      ObjectDescriptor objectDescriptor,
+                      CompositeMethodModel method,
+                      Field field)
     {
         this.application = application;
         this.layer = layer;
@@ -80,8 +80,8 @@ public final class Resolution
         return field;
     }
 
-    public Resolution forField( final Field injectedField )
+    public Resolution forField(final Field injectedField)
     {
-        return new Resolution( application, layer, module, objectDescriptor, method, injectedField );
+        return new Resolution(application, layer, module, objectDescriptor, method, injectedField);
     }
 }

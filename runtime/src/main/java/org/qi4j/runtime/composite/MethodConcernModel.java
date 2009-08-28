@@ -14,26 +14,26 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
+
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.concern.MethodConcernDescriptor;
-
-import java.io.Serializable;
 
 /**
  * JAVADOC
  */
 public final class MethodConcernModel extends AbstractModifierModel
-    implements MethodConcernDescriptor, Serializable
+        implements MethodConcernDescriptor, Serializable
 {
-    public MethodConcernModel( Class concernClass )
+    public MethodConcernModel(Class concernClass)
     {
-        super( concernClass );
+        super(concernClass);
     }
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        modelVisitor.visit( this );
+        modelVisitor.visit(this);
 
-        super.visitModel( modelVisitor );
+        super.visitModel(modelVisitor);
     }
 }

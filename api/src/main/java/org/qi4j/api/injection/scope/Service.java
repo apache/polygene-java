@@ -14,13 +14,13 @@
  */
 package org.qi4j.api.injection.scope;
 
-import org.qi4j.api.injection.InjectionScope;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import org.qi4j.api.injection.InjectionScope;
 
 /**
  * Annotation to denote the injection of a service dependency into a Fragment.
@@ -33,8 +33,8 @@ import java.lang.annotation.Target;
  * &#64;Service Iterable<ServiceReference<MyService>> serviceRefs
  * </pre></code>
  */
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD, ElementType.PARAMETER } )
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 @Documented
 @InjectionScope
 public @interface Service

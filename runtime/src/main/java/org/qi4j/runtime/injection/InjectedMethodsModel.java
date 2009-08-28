@@ -14,12 +14,6 @@
 
 package org.qi4j.runtime.injection;
 
-import org.qi4j.api.util.Classes;
-import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.composite.Resolution;
-import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.runtime.util.Annotations;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -27,70 +21,76 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.qi4j.api.util.Classes;
+import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.runtime.util.Annotations;
+
 /**
  * JAVADOC
  */
 public final class InjectedMethodsModel
-    implements Serializable
+        implements Serializable
 {
     // Model
     private final List<InjectedMethodModel> methodModels = new ArrayList<InjectedMethodModel>();
 
-    public InjectedMethodsModel( Class fragmentClass )
+    public InjectedMethodsModel(Class fragmentClass)
     {
-        List<Method> methods = Classes.methodsOf( fragmentClass );
+        List<Method> methods = Classes.methodsOf(fragmentClass);
         nextMethod:
-        for( Method method : methods )
+        for (Method method : methods)
         {
             Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-            if( parameterAnnotations.length > 0 )
+            if (parameterAnnotations.length > 0)
             {
                 InjectedParametersModel parametersModel = new InjectedParametersModel();
                 final Type[] genericParameterTypes = method.getGenericParameterTypes();
-                for( int i = 0; i < parameterAnnotations.length; i++ )
+                for (int i = 0; i < parameterAnnotations.length; i++)
                 {
-                    Annotation injectionAnnotation = Annotations.getInjectionAnnotation( parameterAnnotations[ i ] );
-                    if( injectionAnnotation == null )
+                    Annotation injectionAnnotation = Annotations.getInjectionAnnotation(parameterAnnotations[i]);
+                    if (injectionAnnotation == null)
                     {
                         continue nextMethod;
                     }
 
-                    Type type = genericParameterTypes[ i ];
+                    Type type = genericParameterTypes[i];
 
-                    boolean optional = DependencyModel.isOptional( injectionAnnotation, parameterAnnotations[ i ] );
-                    DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, type, fragmentClass, optional );
-                    parametersModel.addDependency( dependencyModel );
+                    boolean optional = DependencyModel.isOptional(injectionAnnotation, parameterAnnotations[i]);
+                    DependencyModel dependencyModel = new DependencyModel(injectionAnnotation, type, fragmentClass, optional);
+                    parametersModel.addDependency(dependencyModel);
                 }
-                InjectedMethodModel methodModel = new InjectedMethodModel( method, parametersModel );
-                methodModels.add( methodModel );
+                InjectedMethodModel methodModel = new InjectedMethodModel(method, parametersModel);
+                methodModels.add(methodModel);
             }
         }
     }
 
     // Binding
-    public void bind( Resolution context ) throws BindingException
+    public void bind(Resolution context) throws BindingException
     {
-        for( InjectedMethodModel methodModel : methodModels )
+        for (InjectedMethodModel methodModel : methodModels)
         {
-            methodModel.bind( context );
+            methodModel.bind(context);
         }
     }
 
     // Context
-    public void inject( InjectionContext context, Object instance )
+    public void inject(InjectionContext context, Object instance)
     {
-        for( InjectedMethodModel methodModel : methodModels )
+        for (InjectedMethodModel methodModel : methodModels)
         {
-            methodModel.inject( context, instance );
+            methodModel.inject(context, instance);
         }
     }
 
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        for( InjectedMethodModel methodModel : methodModels )
+        for (InjectedMethodModel methodModel : methodModels)
         {
-            methodModel.visitModel( modelVisitor );
+            methodModel.visitModel(modelVisitor);
         }
     }
 
@@ -99,7 +99,9 @@ public final class InjectedMethodsModel
         for (InjectedMethodModel methodModel : methodModels)
         {
             if (methodModel.method().equals(method))
+            {
                 return true;
+            }
         }
         return false;
     }

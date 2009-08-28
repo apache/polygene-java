@@ -82,7 +82,8 @@ public class QueryExpressionsProviderImpl
         try
         {
             identity = Identity.class.getMethod("identity");
-        } catch (NoSuchMethodException e)
+        }
+        catch (NoSuchMethodException e)
         {
             e.printStackTrace();
         }

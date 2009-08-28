@@ -14,6 +14,10 @@
 
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.Iterator;
+
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.TransientBuilder;
@@ -22,15 +26,11 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.Iterator;
-
 /**
  * JAVADOC
  */
 public final class TransientBuilderInstance<T>
-    implements TransientBuilder<T>
+        implements TransientBuilder<T>
 {
     private static final Method TYPE_METHOD;
     private static final Method METAINFO_METHOD;
@@ -39,12 +39,12 @@ public final class TransientBuilderInstance<T>
     {
         try
         {
-            TYPE_METHOD = Composite.class.getMethod( "type" );
-            METAINFO_METHOD = Composite.class.getMethod( "metaInfo", Class.class );
+            TYPE_METHOD = Composite.class.getMethod("type");
+            METAINFO_METHOD = Composite.class.getMethod("metaInfo", Class.class);
         }
-        catch( NoSuchMethodException e )
+        catch (NoSuchMethodException e)
         {
-            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: TransientBuilderInstance" );
+            throw new InternalError("Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: TransientBuilderInstance");
         }
     }
 
@@ -61,13 +61,13 @@ public final class TransientBuilderInstance<T>
     // lazy initialized in accessor
     private StateHolder state;
 
-    public TransientBuilderInstance( ModuleInstance moduleInstance, TransientModel transientModel, UsesInstance uses )
+    public TransientBuilderInstance(ModuleInstance moduleInstance, TransientModel transientModel, UsesInstance uses)
     {
-        this( moduleInstance, transientModel);
+        this(moduleInstance, transientModel);
         this.uses = uses;
     }
 
-    public TransientBuilderInstance( ModuleInstance moduleInstance, TransientModel transientModel)
+    public TransientBuilderInstance(ModuleInstance moduleInstance, TransientModel transientModel)
     {
         this.moduleInstance = moduleInstance;
 
@@ -79,9 +79,9 @@ public final class TransientBuilderInstance<T>
         return (Class<T>) transientModel.type();
     }
 
-    public TransientBuilder<T> use( Object... usedObjects )
+    public TransientBuilder<T> use(Object... usedObjects)
     {
-        getUses().use( usedObjects );
+        getUses().use(usedObjects);
 
         return this;
     }
@@ -89,41 +89,40 @@ public final class TransientBuilderInstance<T>
     public T prototype()
     {
         // Instantiate given value type
-        if( prototypeInstance == null )
+        if (prototypeInstance == null)
         {
-            prototypeInstance = transientModel.newCompositeInstance( moduleInstance, getUses(), getState() );
+            prototypeInstance = transientModel.newCompositeInstance(moduleInstance, getUses(), getState());
         }
 
         return prototypeInstance.<T>proxy();
     }
 
-    public <K> K prototypeFor( Class<K> mixinType )
+    public <K> K prototypeFor(Class<K> mixinType)
     {
         // Instantiate given value type
-        if( prototypeInstance == null )
+        if (prototypeInstance == null)
         {
-            prototypeInstance = transientModel.newCompositeInstance( moduleInstance, getUses(), getState() );
+            prototypeInstance = transientModel.newCompositeInstance(moduleInstance, getUses(), getState());
         }
 
-        return prototypeInstance.newProxy( mixinType );
+        return prototypeInstance.newProxy(mixinType);
     }
 
     public T newInstance() throws ConstructionException
     {
         StateHolder instanceState;
-        if( state == null )
+        if (state == null)
         {
             instanceState = transientModel.newInitialState();
-        }
-        else
+        } else
         {
-            instanceState = transientModel.newState( state );
+            instanceState = transientModel.newState(state);
         }
 
-        transientModel.state().checkConstraints( instanceState );
+        transientModel.state().checkConstraints(instanceState);
 
         CompositeInstance compositeInstance =
-            transientModel.newCompositeInstance( moduleInstance, uses, instanceState );
+                transientModel.newCompositeInstance(moduleInstance, uses, instanceState);
         return compositeInstance.<T>proxy();
     }
 
@@ -150,7 +149,7 @@ public final class TransientBuilderInstance<T>
 
     protected UsesInstance getUses()
     {
-        if( uses == null )
+        if (uses == null)
         {
             uses = new UsesInstance();
         }
@@ -159,7 +158,7 @@ public final class TransientBuilderInstance<T>
 
     private StateHolder getState()
     {
-        if( state == null )
+        if (state == null)
         {
             state = transientModel.newBuilderState();
         }
@@ -168,30 +167,27 @@ public final class TransientBuilderInstance<T>
     }
 
     protected class StateInvocationHandler
-        implements InvocationHandler
+            implements InvocationHandler
     {
         public StateInvocationHandler()
         {
         }
 
-        public Object invoke( Object o, Method method, Object[] objects )
-            throws Throwable
+        public Object invoke(Object o, Method method, Object[] objects)
+                throws Throwable
         {
-            if( Property.class.isAssignableFrom( method.getReturnType() ) )
+            if (Property.class.isAssignableFrom(method.getReturnType()))
             {
-                return getState().getProperty( method );
-            }
-            else if( method.equals( TYPE_METHOD ) )
+                return getState().getProperty(method);
+            } else if (method.equals(TYPE_METHOD))
             {
                 return transientModel.type();
-            }
-            else if( method.equals( METAINFO_METHOD ) )
+            } else if (method.equals(METAINFO_METHOD))
             {
-                return transientModel.metaInfo().get( (Class<? extends Object>) objects[ 0 ] );
-            }
-            else
+                return transientModel.metaInfo().get((Class<? extends Object>) objects[0]);
+            } else
             {
-                throw new IllegalArgumentException( "Method does not represent state: " + method );
+                throw new IllegalArgumentException("Method does not represent state: " + method);
             }
         }
     }

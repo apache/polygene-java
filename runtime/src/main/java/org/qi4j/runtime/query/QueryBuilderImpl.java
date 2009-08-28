@@ -28,10 +28,9 @@ import org.qi4j.spi.query.EntityFinder;
 
 /**
  * Default implementation of {@link QueryBuilder}
- *
  */
 final class QueryBuilderImpl<T>
-    implements QueryBuilder<T>
+        implements QueryBuilder<T>
 {
 
     /**
@@ -54,12 +53,12 @@ final class QueryBuilderImpl<T>
      * Constructor.
      *
      * @param entityFinder entity finder to be used to locate entities; canot be null
-     * @param classLoader The classloader to use for deserializing Serializable instances. (Not used at the moment.)
+     * @param classLoader  The classloader to use for deserializing Serializable instances. (Not used at the moment.)
      * @param resultType   type of queried entities; cannot be null
      */
-    public QueryBuilderImpl( final EntityFinder entityFinder,
-                             final ClassLoader classLoader,
-                             final Class<T> resultType )
+    public QueryBuilderImpl(final EntityFinder entityFinder,
+                            final ClassLoader classLoader,
+                            final Class<T> resultType)
     {
         this.entityFinder = entityFinder;
         this.classLoader = classLoader;
@@ -70,19 +69,18 @@ final class QueryBuilderImpl<T>
     /**
      * @see QueryBuilder#where(BooleanExpression)
      */
-    public QueryBuilder<T> where( final BooleanExpression whereClause )
+    public QueryBuilder<T> where(final BooleanExpression whereClause)
     {
-        if( whereClause == null )
+        if (whereClause == null)
         {
-            throw new IllegalArgumentException( "Where clause cannot be null" );
+            throw new IllegalArgumentException("Where clause cannot be null");
         }
-        if( this.whereClause == null )
+        if (this.whereClause == null)
         {
             this.whereClause = whereClause;
-        }
-        else
+        } else
         {
-            this.whereClause = QueryExpressions.and( this.whereClause, whereClause );
+            this.whereClause = QueryExpressions.and(this.whereClause, whereClause);
         }
         return this;
     }
@@ -97,19 +95,19 @@ final class QueryBuilderImpl<T>
             throw new IllegalArgumentException("UnitOfWork may not be null");
         }
 
-        if( entityFinder == null )
+        if (entityFinder == null)
         {
             throw new MissingIndexingSystemException();
         }
-        return new EntityQuery<T>( unitOfWork, entityFinder, resultType, whereClause );
+        return new EntityQuery<T>(unitOfWork, entityFinder, resultType, whereClause);
     }
 
     /**
      * @see QueryBuilder#newQuery(Iterable)
      */
-    public Query<T> newQuery( Iterable<T> iterable )
+    public Query<T> newQuery(Iterable<T> iterable)
     {
-        return new IterableQuery<T>( iterable, resultType, whereClause );
+        return new IterableQuery<T>(iterable, resultType, whereClause);
     }
 
 }

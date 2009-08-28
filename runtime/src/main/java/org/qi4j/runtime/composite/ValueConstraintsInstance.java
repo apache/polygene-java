@@ -14,14 +14,14 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.common.Optional;
-import org.qi4j.api.constraint.ConstraintViolation;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.constraint.ConstraintViolation;
 
 /**
  * JAVADOC
@@ -39,67 +39,66 @@ public final class ValueConstraintsInstance
     private String name;
     private boolean optional;
 
-    public ValueConstraintsInstance( List<AbstractConstraintModel> constraintModels, String name, boolean optional )
+    public ValueConstraintsInstance(List<AbstractConstraintModel> constraintModels, String name, boolean optional)
     {
         this.name = name;
         this.optional = optional;
         constraints = new ArrayList<ConstraintInstance>();
-        for( AbstractConstraintModel constraintModel : constraintModels )
+        for (AbstractConstraintModel constraintModel : constraintModels)
         {
             ConstraintInstance instance = constraintModel.newInstance();
-            constraints.add( instance );
+            constraints.add(instance);
         }
     }
 
-    public List<ConstraintViolation> checkConstraints( Object value )
+    public List<ConstraintViolation> checkConstraints(Object value)
     {
         List<ConstraintViolation> violations = null;
 
         // Check optional first - this avoids NPE's in constraints
-        if( optional )
+        if (optional)
         {
-            if( value == null )
+            if (value == null)
             {
                 violations = Collections.emptyList();
             }
-        }
-        else
+        } else
         {
-            if( value == null )
+            if (value == null)
             {
                 violations = new ArrayList<ConstraintViolation>();
-                violations.add( new ConstraintViolation( name, OPTIONAL, null ) );
+                violations.add(new ConstraintViolation(name, OPTIONAL, null));
             }
         }
 
-        if( violations == null && value != null )
+        if (violations == null && value != null)
         {
-            for( ConstraintInstance constraint : constraints )
+            for (ConstraintInstance constraint : constraints)
             {
                 boolean valid;
                 try
                 {
-                    valid = constraint.isValid( value );
+                    valid = constraint.isValid(value);
                 }
-                catch( NullPointerException e )
+                catch (NullPointerException e)
                 {
                     // A NPE is the same as a failing constraint
                     valid = false;
                 }
 
-                if( !valid )
+                if (!valid)
                 {
-                    if( violations == null )
+                    if (violations == null)
                     {
                         violations = new ArrayList<ConstraintViolation>();
                     }
-                    ConstraintViolation violation = new ConstraintViolation( name, constraint.annotation(), value );
-                    violations.add( violation );
+                    ConstraintViolation violation = new ConstraintViolation(name, constraint.annotation(), value);
+                    violations.add(violation);
                 }
             }
         }
 
-        if( violations == null )
+        if (violations == null)
         {
             violations = Collections.emptyList();
         }
@@ -114,7 +113,8 @@ public final class ValueConstraintsInstance
             return Optional.class;
         }
 
-        @Override public String toString()
+        @Override
+        public String toString()
         {
             return "not optional";
         }

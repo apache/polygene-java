@@ -14,23 +14,23 @@
 
 package org.qi4j.runtime.composite;
 
-import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.constraint.Constraint;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+
+import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.constraint.Constraint;
 
 /**
  * JAVADOC
  */
 public final class CompositeConstraintModel extends AbstractConstraintModel
-    implements Serializable
+        implements Serializable
 {
     private ValueConstraintsModel constraintsModel;
 
-    public CompositeConstraintModel( Annotation annotation, ValueConstraintsModel constraintsModel )
+    public CompositeConstraintModel(Annotation annotation, ValueConstraintsModel constraintsModel)
     {
-        super( annotation );
+        super(annotation);
         this.constraintsModel = constraintsModel;
     }
 
@@ -39,28 +39,28 @@ public final class CompositeConstraintModel extends AbstractConstraintModel
         try
         {
             ValueConstraintsInstance compositeConstraintsInstance = constraintsModel.newInstance();
-            Constraint<?, ?> constraint = new CompositeConstraintInstance( compositeConstraintsInstance );
-            return new ConstraintInstance( constraint, annotation );
+            Constraint<?, ?> constraint = new CompositeConstraintInstance(compositeConstraintsInstance);
+            return new ConstraintInstance(constraint, annotation);
         }
-        catch( Exception e )
+        catch (Exception e)
         {
-            throw new ConstructionException( "Could not instantiate constraint implementation", e );
+            throw new ConstructionException("Could not instantiate constraint implementation", e);
         }
     }
 
     private static class CompositeConstraintInstance
-        implements Constraint<Annotation, Object>
+            implements Constraint<Annotation, Object>
     {
         private ValueConstraintsInstance valueConstraintsInstance;
 
-        private CompositeConstraintInstance( ValueConstraintsInstance valueConstraintsInstance )
+        private CompositeConstraintInstance(ValueConstraintsInstance valueConstraintsInstance)
         {
             this.valueConstraintsInstance = valueConstraintsInstance;
         }
 
-        public boolean isValid( Annotation annotation, Object value ) throws NullPointerException
+        public boolean isValid(Annotation annotation, Object value) throws NullPointerException
         {
-            return valueConstraintsInstance.checkConstraints( value ).size() == 0;
+            return valueConstraintsInstance.checkConstraints(value).size() == 0;
         }
     }
 }

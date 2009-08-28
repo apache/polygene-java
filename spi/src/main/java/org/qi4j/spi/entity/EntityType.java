@@ -14,13 +14,13 @@
 
 package org.qi4j.spi.entity;
 
+import java.io.Serializable;
+import java.util.Set;
+
 import org.qi4j.api.common.TypeName;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
-
-import java.io.Serializable;
-import java.util.Set;
 
 /**
  * SPI-level description of an Entity type. This contains
@@ -30,7 +30,7 @@ import java.util.Set;
  * safely.
  */
 public final class EntityType
-    implements Serializable
+        implements Serializable
 {
     private final TypeName type;
     private final String uri;
@@ -40,12 +40,12 @@ public final class EntityType
     private final Set<ManyAssociationType> manyAssociations;
     private final Set<String> mixinTypes;
 
-    public EntityType( final TypeName entityType,
-                       final boolean queryable,
-                       final Set<String> mixinTypes,
-                       final Set<PropertyType> properties,
-                       final Set<AssociationType> associations,
-                       final Set<ManyAssociationType> manyAssociations )
+    public EntityType(final TypeName entityType,
+                      final boolean queryable,
+                      final Set<String> mixinTypes,
+                      final Set<PropertyType> properties,
+                      final Set<AssociationType> associations,
+                      final Set<ManyAssociationType> manyAssociations)
     {
         this.type = entityType;
         this.queryable = queryable;
@@ -91,7 +91,8 @@ public final class EntityType
         return manyAssociations;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return type.toString();
     }
@@ -102,18 +103,18 @@ public final class EntityType
 
     }
 
-    public boolean equals( Object o )
+    public boolean equals(Object o)
     {
-        if( this == o )
+        if (this == o)
         {
             return true;
         }
-        if( o == null || getClass() != o.getClass() )
+        if (o == null || getClass() != o.getClass())
         {
             return false;
         }
 
         EntityType that = (EntityType) o;
-        return type.equals( that.type );
+        return type.equals(that.type);
     }
 }

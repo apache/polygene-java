@@ -17,12 +17,12 @@
  */
 package org.qi4j.test.mock;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.test.mock.internal.MockRepository;
 import org.qi4j.test.mock.internal.MockResolver;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 
 /**
  * Generic mixin for mock composites. Overrides any generic mixins but not typed mixins, as typed mixins have precedence
@@ -31,16 +31,16 @@ import java.lang.reflect.Method;
  * {@link org.qi4j.test.mock.MockComposite}.
  * If there is no mock registered to handle the method invocation invocation will fail by throwing an
  * IllegalStateException.
- *
  */
 public class MockPlayerMixin
-    implements InvocationHandler
+        implements InvocationHandler
 {
 
     /**
      * MockResolver repository. Holds all registred mocks.
      */
-    @This MockRepository mockRepository;
+    @This
+    MockRepository mockRepository;
 
     /**
      * Finds a registered mock that can handle the method invocation and delegate to it. If there is no such mock throws
@@ -48,19 +48,19 @@ public class MockPlayerMixin
      *
      * @see java.lang.reflect.InvocationHandler#invoke(Object,java.lang.reflect.Method,Object[])
      */
-    public Object invoke( final Object proxy, final Method method, final Object[] args )
-        throws Throwable
+    public Object invoke(final Object proxy, final Method method, final Object[] args)
+            throws Throwable
     {
-        System.out.println( "Play mock for " + method );
-        for( MockResolver mockResolver : mockRepository.getAll() )
+        System.out.println("Play mock for " + method);
+        for (MockResolver mockResolver : mockRepository.getAll())
         {
-            InvocationHandler handler = mockResolver.getInvocationHandler( proxy, method, args );
-            if( handler != null )
+            InvocationHandler handler = mockResolver.getInvocationHandler(proxy, method, args);
+            if (handler != null)
             {
-                return handler.invoke( mockResolver, method, args );
+                return handler.invoke(mockResolver, method, args);
             }
         }
-        throw new IllegalStateException( "There is no mock registered that can handle " + method );
+        throw new IllegalStateException("There is no mock registered that can handle " + method);
     }
 
 }

@@ -14,73 +14,71 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
+import java.util.List;
+
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 
-import java.io.Serializable;
-import java.util.List;
-
 /**
  * JAVADOC
  */
 public class CompositesModel
-    implements Binder, Serializable
+        implements Binder, Serializable
 {
     private final List<? extends TransientModel> compositeModels;
 
-    public CompositesModel( List<? extends TransientModel> compositeModels )
+    public CompositesModel(List<? extends TransientModel> compositeModels)
     {
         this.compositeModels = compositeModels;
     }
 
 
-    public void visitModel( ModelVisitor modelVisitor )
+    public void visitModel(ModelVisitor modelVisitor)
     {
-        for( TransientModel transientModel : compositeModels )
+        for (TransientModel transientModel : compositeModels)
         {
-            transientModel.visitModel( modelVisitor );
+            transientModel.visitModel(modelVisitor);
         }
     }
 
-    public void bind( Resolution resolution )
-        throws BindingException
+    public void bind(Resolution resolution)
+            throws BindingException
     {
-        for( TransientModel transientModel : compositeModels )
+        for (TransientModel transientModel : compositeModels)
         {
-            transientModel.bind( resolution );
+            transientModel.bind(resolution);
         }
     }
 
-    public TransientModel getCompositeModelFor( Class mixinType, Visibility visibility )
+    public TransientModel getCompositeModelFor(Class mixinType, Visibility visibility)
     {
         TransientModel foundModel = null;
-        for( TransientModel aTransient : compositeModels )
+        for (TransientModel aTransient : compositeModels)
         {
             if (Composite.class.isAssignableFrom(mixinType))
             {
-                if( mixinType.equals( aTransient.type() ) && aTransient.visibility() == visibility )
+                if (mixinType.equals(aTransient.type()) && aTransient.visibility() == visibility)
                 {
-                    if( foundModel != null )
+                    if (foundModel != null)
                     {
-                        throw new AmbiguousTypeException( mixinType, foundModel.type(), aTransient.type() );
-                    }
-                    else
+                        throw new AmbiguousTypeException(mixinType, foundModel.type(), aTransient.type());
+                    } else
                     {
                         foundModel = aTransient;
                     }
                 }
             } else
             {
-                if( mixinType.isAssignableFrom( aTransient.type() ) && aTransient.visibility() == visibility )
+                if (mixinType.isAssignableFrom(aTransient.type()) && aTransient.visibility() == visibility)
                 {
-                    if( foundModel != null )
+                    if (foundModel != null)
                     {
-                        throw new AmbiguousTypeException( mixinType, foundModel.type(), aTransient.type() );
-                    }
-                    else
+                        throw new AmbiguousTypeException(mixinType, foundModel.type(), aTransient.type());
+                    } else
                     {
                         foundModel = aTransient;
                     }
@@ -92,11 +90,11 @@ public class CompositesModel
         return foundModel;
     }
 
-    public Class getClassForName( String type )
+    public Class getClassForName(String type)
     {
-        for( TransientModel transientModel : compositeModels )
+        for (TransientModel transientModel : compositeModels)
         {
-            if( transientModel.type().getName().equals( type ) )
+            if (transientModel.type().getName().equals(type))
             {
                 return transientModel.type();
             }

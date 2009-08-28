@@ -18,6 +18,8 @@
  */
 package org.qi4j.runtime.query;
 
+import java.util.Iterator;
+
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryExecutionException;
@@ -26,14 +28,11 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 
-import java.util.Iterator;
-
 /**
  * Default implementation of {@link Query}.
- *
  */
 final class EntityQuery<T>
-    extends AbstractQuery<T>
+        extends AbstractQuery<T>
 {
     private static final long serialVersionUID = 1L;
 
@@ -54,12 +53,12 @@ final class EntityQuery<T>
      * @param resultType         type of queried entities; cannot be null
      * @param whereClause        where clause
      */
-    EntityQuery( final UnitOfWork unitOfWorkInstance,
-                 final EntityFinder entityFinder,
-                 final Class<T> resultType,
-                 final BooleanExpression whereClause )
+    EntityQuery(final UnitOfWork unitOfWorkInstance,
+                final EntityFinder entityFinder,
+                final Class<T> resultType,
+                final BooleanExpression whereClause)
     {
-        super( resultType, whereClause );
+        super(resultType, whereClause);
         this.unitOfWorkInstance = unitOfWorkInstance;
         this.entityFinder = entityFinder;
     }
@@ -71,17 +70,17 @@ final class EntityQuery<T>
     {
         try
         {
-            final EntityReference foundEntity = entityFinder.findEntity( resultType.getName(), whereClause );
-            if( foundEntity != null )
+            final EntityReference foundEntity = entityFinder.findEntity(resultType.getName(), whereClause);
+            if (foundEntity != null)
             {
-                return loadEntity( foundEntity );
+                return loadEntity(foundEntity);
             }
             // No entity was found
             return null;
         }
-        catch( EntityFinderException e )
+        catch (EntityFinderException e)
         {
-            throw new QueryExecutionException( "Finder caused exception", e );
+            throw new QueryExecutionException("Finder caused exception", e);
         }
     }
 
@@ -93,7 +92,7 @@ final class EntityQuery<T>
         try
         {
             final Iterator<EntityReference> foundEntities = entityFinder.findEntities(
-                resultType.getName(), whereClause, orderBySegments, firstResult, maxResults
+                    resultType.getName(), whereClause, orderBySegments, firstResult, maxResults
             ).iterator();
 
             return new Iterator<T>()
@@ -106,7 +105,7 @@ final class EntityQuery<T>
                 public T next()
                 {
                     final EntityReference foundEntity = foundEntities.next();
-                    return loadEntity( foundEntity );
+                    return loadEntity(foundEntity);
                 }
 
                 public void remove()
@@ -115,9 +114,9 @@ final class EntityQuery<T>
                 }
             };
         }
-        catch( EntityFinderException e )
+        catch (EntityFinderException e)
         {
-            throw (QueryExecutionException) new QueryExecutionException( "Query '" + toString() + "' could not be executed" ).initCause( e );
+            throw (QueryExecutionException) new QueryExecutionException("Query '" + toString() + "' could not be executed").initCause(e);
         }
     }
 
@@ -128,19 +127,20 @@ final class EntityQuery<T>
     {
         try
         {
-            return entityFinder.countEntities( resultType.getName(), whereClause );
+            return entityFinder.countEntities(resultType.getName(), whereClause);
         }
-        catch( EntityFinderException e )
+        catch (EntityFinderException e)
         {
             e.printStackTrace();
             return 0;
         }
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return "Find all " + resultType.getName() +
-               ( whereClause != null ? " where " + whereClause.toString() : "" );
+                (whereClause != null ? " where " + whereClause.toString() : "");
     }
 
     /**
@@ -149,9 +149,9 @@ final class EntityQuery<T>
      * @param entityReference to be loaded
      * @return corresponding entity
      */
-    private T loadEntity( final EntityReference entityReference )
+    private T loadEntity(final EntityReference entityReference)
     {
-        return unitOfWorkInstance.get( resultType, entityReference.identity() );
+        return unitOfWorkInstance.get(resultType, entityReference.identity());
     }
 
 }

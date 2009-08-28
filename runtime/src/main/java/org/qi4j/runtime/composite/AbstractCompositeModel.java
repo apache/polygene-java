@@ -14,6 +14,11 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -23,16 +28,11 @@ import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-
 /**
  * JAVADOC
  */
 public abstract class AbstractCompositeModel
-    implements Binder, Serializable
+        implements Binder, Serializable
 {
     protected final AbstractMixinsModel mixinsModel;
     protected final CompositeMethodsModel compositeMethodsModel;
@@ -42,12 +42,12 @@ public abstract class AbstractCompositeModel
     protected final AbstractStateModel stateModel;
     protected final Class<? extends Composite> proxyClass;
 
-    protected AbstractCompositeModel( final Class<? extends Composite> compositeType,
-                                      final Visibility visibility,
-                                      final MetaInfo metaInfo,
-                                      final AbstractMixinsModel mixinsModel,
-                                      final AbstractStateModel stateModel,
-                                      final CompositeMethodsModel compositeMethodsModel
+    protected AbstractCompositeModel(final Class<? extends Composite> compositeType,
+                                     final Visibility visibility,
+                                     final MetaInfo metaInfo,
+                                     final AbstractMixinsModel mixinsModel,
+                                     final AbstractStateModel stateModel,
+                                     final CompositeMethodsModel compositeMethodsModel
     )
     {
         this.compositeType = compositeType;
@@ -56,7 +56,7 @@ public abstract class AbstractCompositeModel
         this.stateModel = stateModel;
 
         // Create proxy class
-        this.proxyClass = createProxyClass( compositeType );
+        this.proxyClass = createProxyClass(compositeType);
 
         this.mixinsModel = mixinsModel;
 
@@ -94,46 +94,46 @@ public abstract class AbstractCompositeModel
         return mixinsModel.mixinTypes();
     }
 
-    @SuppressWarnings( "unchecked" )
-    private Class<? extends Composite> createProxyClass( Class<? extends Composite> compositeType )
+    @SuppressWarnings("unchecked")
+    private Class<? extends Composite> createProxyClass(Class<? extends Composite> compositeType)
     {
         ClassLoader proxyClassloader = compositeType.getClassLoader();
-        Class[] interfaces = new Class[]{ compositeType };
-        return (Class<? extends Composite>) Proxy.getProxyClass( proxyClassloader, interfaces );
+        Class[] interfaces = new Class[]{compositeType};
+        return (Class<? extends Composite>) Proxy.getProxyClass(proxyClassloader, interfaces);
     }
 
-    public abstract void visitModel( ModelVisitor modelVisitor );
+    public abstract void visitModel(ModelVisitor modelVisitor);
 
     // Context
-    public final Object invoke( MixinsInstance mixins, Object proxy, Method method, Object[] args, ModuleInstance moduleInstance )
-        throws Throwable
+    public final Object invoke(MixinsInstance mixins, Object proxy, Method method, Object[] args, ModuleInstance moduleInstance)
+            throws Throwable
     {
-        return compositeMethodsModel.invoke( mixins, proxy, method, args, moduleInstance );
+        return compositeMethodsModel.invoke(mixins, proxy, method, args, moduleInstance);
     }
 
-    public final Object getMixin( Object[] mixins, Method method )
+    public final Object getMixin(Object[] mixins, Method method)
     {
-        return mixinsModel.getMixin( mixins, method );
+        return mixinsModel.getMixin(mixins, method);
     }
 
-    public Composite newProxy( InvocationHandler invocationHandler )
-        throws ConstructionException
+    public Composite newProxy(InvocationHandler invocationHandler)
+            throws ConstructionException
     {
         // Instantiate proxy for given composite interface
         try
         {
-            return Composite.class.cast( proxyClass.getConstructor( InvocationHandler.class ).newInstance( invocationHandler ) );
+            return Composite.class.cast(proxyClass.getConstructor(InvocationHandler.class).newInstance(invocationHandler));
         }
-        catch( Exception e )
+        catch (Exception e)
         {
-            throw new ConstructionException( e );
+            throw new ConstructionException(e);
         }
     }
 
-    public <T> T newProxy( InvocationHandler invocationHandler, Class<T> mixinType )
+    public <T> T newProxy(InvocationHandler invocationHandler, Class<T> mixinType)
     {
         // Instantiate proxy for given mixin interface
-        return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, invocationHandler ) );
+        return mixinType.cast(Proxy.newProxyInstance(mixinType.getClassLoader(), new Class[]{mixinType}, invocationHandler));
     }
 
     public StateHolder newBuilderState()
@@ -141,9 +141,9 @@ public abstract class AbstractCompositeModel
         return stateModel.newBuilderInstance();
     }
 
-    public StateHolder newBuilderState( StateHolder state )
+    public StateHolder newBuilderState(StateHolder state)
     {
-        return stateModel.newBuilderInstance( state );
+        return stateModel.newBuilderInstance(state);
     }
 
     public StateHolder newInitialState()
@@ -151,12 +151,13 @@ public abstract class AbstractCompositeModel
         return stateModel.newInitialInstance();
     }
 
-    public StateHolder newState( StateHolder state )
+    public StateHolder newState(StateHolder state)
     {
-        return stateModel.newInstance( state );
+        return stateModel.newInstance(state);
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return compositeType.getName();
     }

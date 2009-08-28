@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.value;
 
+import java.util.Iterator;
+
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.property.StateHolder;
@@ -21,13 +23,11 @@ import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.structure.ModuleInstance;
 
-import java.util.Iterator;
-
 /**
  * Implementation of ValueBuilder
  */
 public final class ValueBuilderInstance<T>
-    implements ValueBuilder<T>
+        implements ValueBuilder<T>
 {
     private final ModuleInstance moduleInstance;
     private final ValueModel valueModel;
@@ -38,72 +38,71 @@ public final class ValueBuilderInstance<T>
     // lazy initialized in accessor
     private StateHolder state;
 
-    public ValueBuilderInstance( ModuleInstance moduleInstance, ValueModel valueModel )
+    public ValueBuilderInstance(ModuleInstance moduleInstance, ValueModel valueModel)
     {
         this.moduleInstance = moduleInstance;
 
         this.valueModel = valueModel;
     }
 
-    public ValueBuilder<T> withPrototype( T value )
+    public ValueBuilder<T> withPrototype(T value)
     {
-        ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) value );
+        ValueInstance valueInstance = ValueInstance.getValueInstance((ValueComposite) value);
         StateHolder state = valueInstance.state();
-        this.state = valueModel.newBuilderState( state );
+        this.state = valueModel.newBuilderState(state);
         prototypeInstance = null;
 
         return this;
     }
 
-    public ValueBuilder<T> withState( StateHolder state )
+    public ValueBuilder<T> withState(StateHolder state)
     {
         final StateHolder valueState = getState();
-        state.visitProperties( new StateHolder.StateVisitor()
+        state.visitProperties(new StateHolder.StateVisitor()
         {
-            public void visitProperty( QualifiedName name, Object value )
+            public void visitProperty(QualifiedName name, Object value)
             {
-                valueModel.state().setProperty( name, value, valueState );
+                valueModel.state().setProperty(name, value, valueState);
             }
-        } );
+        });
         return this;
     }
 
     public T prototype()
     {
         // Instantiate given value type
-        if( prototypeInstance == null )
+        if (prototypeInstance == null)
         {
-            prototypeInstance = valueModel.newValueInstance( moduleInstance, getState() );
+            prototypeInstance = valueModel.newValueInstance(moduleInstance, getState());
         }
 
         return prototypeInstance.<T>proxy();
     }
 
-    public <K> K prototypeFor( Class<K> mixinType )
+    public <K> K prototypeFor(Class<K> mixinType)
     {
         // Instantiate given value type
-        if( prototypeInstance == null )
+        if (prototypeInstance == null)
         {
-            prototypeInstance = valueModel.newValueInstance( moduleInstance, getState() );
+            prototypeInstance = valueModel.newValueInstance(moduleInstance, getState());
         }
 
-        return prototypeInstance.newProxy( mixinType );
+        return prototypeInstance.newProxy(mixinType);
     }
 
     public T newInstance() throws ConstructionException
     {
         StateHolder instanceState;
-        if( state == null )
+        if (state == null)
         {
             instanceState = valueModel.newInitialState();
-        }
-        else
+        } else
         {
-            instanceState = valueModel.newState( state );
+            instanceState = valueModel.newState(state);
         }
 
-        valueModel.checkConstraints( instanceState );
-        ValueInstance valueInstance = valueModel.newValueInstance( moduleInstance, instanceState );
+        valueModel.checkConstraints(instanceState);
+        ValueInstance valueInstance = valueModel.newValueInstance(moduleInstance, instanceState);
         return valueInstance.<T>proxy();
     }
 
@@ -130,7 +129,7 @@ public final class ValueBuilderInstance<T>
 
     private StateHolder getState()
     {
-        if( state == null )
+        if (state == null)
         {
             state = valueModel.newBuilderState();
         }

@@ -21,8 +21,8 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.Value;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.spi.util.json.JSONStringer;
 import org.qi4j.spi.util.json.JSONException;
+import org.qi4j.spi.util.json.JSONStringer;
 import org.qi4j.spi.value.ValueType;
 
 /**
@@ -30,11 +30,13 @@ import org.qi4j.spi.value.ValueType;
  */
 
 public class ValueMixin
-    implements Value
+        implements Value
 {
-    @This Value thisValue;
+    @This
+    Value thisValue;
 
-    @State StateHolder state;
+    @State
+    StateHolder state;
 
     public StateHolder state()
     {
@@ -43,21 +45,22 @@ public class ValueMixin
 
     public <T> ValueBuilder<T> buildWith()
     {
-        ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) thisValue );
+        ValueInstance valueInstance = ValueInstance.getValueInstance((ValueComposite) thisValue);
         Class<Composite> valueType = (Class<Composite>) valueInstance.type();
-        return (ValueBuilder<T>) valueInstance.module().valueBuilderFactory().newValueBuilder( valueType ).withPrototype( (Composite) thisValue );
+        return (ValueBuilder<T>) valueInstance.module().valueBuilderFactory().newValueBuilder(valueType).withPrototype((Composite) thisValue);
     }
 
     public String toJSON()
     {
-        ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) thisValue );
+        ValueInstance valueInstance = ValueInstance.getValueInstance((ValueComposite) thisValue);
 
-        ValueType valueType = ( (ValueModel) valueInstance.compositeModel() ).valueType();
+        ValueType valueType = ((ValueModel) valueInstance.compositeModel()).valueType();
         JSONStringer json = new JSONStringer();
         try
         {
-            valueType.toJSON( thisValue, json );
-        } catch (JSONException e)
+            valueType.toJSON(thisValue, json);
+        }
+        catch (JSONException e)
         {
             throw new IllegalStateException("Could not JSON serialize value", e);
         }

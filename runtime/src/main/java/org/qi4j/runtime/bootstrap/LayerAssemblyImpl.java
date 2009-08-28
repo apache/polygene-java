@@ -14,13 +14,6 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.AssemblyVisitor;
-import org.qi4j.bootstrap.LayerAssembly;
-import org.qi4j.bootstrap.ModuleAssembly;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,13 +22,20 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.qi4j.api.common.MetaInfo;
+import org.qi4j.bootstrap.ApplicationAssembly;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.AssemblyVisitor;
+import org.qi4j.bootstrap.LayerAssembly;
+import org.qi4j.bootstrap.ModuleAssembly;
+
 /**
  * Assembly of a Layer. From here you can create more ModuleAssemblies for
  * the Layer that is being assembled. It is also here that you define
  * what other Layers this Layer is using by calling {@link LayerAssemblyImpl#uses(org.qi4j.bootstrap.LayerAssembly[])} .
  */
 public final class LayerAssemblyImpl
-    implements LayerAssembly, Serializable
+        implements LayerAssembly, Serializable
 {
     private ApplicationAssembly applicationAssembly;
     private HashMap<String, ModuleAssemblyImpl> moduleAssemblies;
@@ -44,7 +44,7 @@ public final class LayerAssemblyImpl
     private String name;
     private MetaInfo metaInfo = new MetaInfo();
 
-    public LayerAssemblyImpl( ApplicationAssembly applicationAssembly, String name )
+    public LayerAssemblyImpl(ApplicationAssembly applicationAssembly, String name)
     {
         this.applicationAssembly = applicationAssembly;
         this.name = name;
@@ -53,18 +53,18 @@ public final class LayerAssemblyImpl
         uses = new LinkedHashSet<LayerAssembly>();
     }
 
-    public ModuleAssembly moduleAssembly( String name )
+    public ModuleAssembly moduleAssembly(String name)
     {
-        if( name != null )
+        if (name != null)
         {
-            ModuleAssemblyImpl existing = moduleAssemblies.get( name );
-            if( existing != null )
+            ModuleAssemblyImpl existing = moduleAssemblies.get(name);
+            if (existing != null)
             {
                 return existing;
             }
         }
-        ModuleAssemblyImpl moduleAssembly = new ModuleAssemblyImpl( this, name );
-        moduleAssemblies.put( name, moduleAssembly );
+        ModuleAssemblyImpl moduleAssembly = new ModuleAssemblyImpl(this, name);
+        moduleAssemblies.put(name, moduleAssembly);
         return moduleAssembly;
     }
 
@@ -73,31 +73,31 @@ public final class LayerAssemblyImpl
         return applicationAssembly;
     }
 
-    public LayerAssembly setName( String name )
+    public LayerAssembly setName(String name)
     {
         this.name = name;
         return this;
     }
 
-    public LayerAssembly setMetaInfo( Object info )
+    public LayerAssembly setMetaInfo(Object info)
     {
-        metaInfo.set( info );
+        metaInfo.set(info);
         return this;
     }
 
-    public LayerAssembly uses( LayerAssembly... layerAssembly )
-        throws IllegalArgumentException
+    public LayerAssembly uses(LayerAssembly... layerAssembly)
+            throws IllegalArgumentException
     {
-        uses.addAll( Arrays.asList( layerAssembly ) );
+        uses.addAll(Arrays.asList(layerAssembly));
         return this;
     }
 
-    public void visit( AssemblyVisitor visitor ) throws AssemblyException
+    public void visit(AssemblyVisitor visitor) throws AssemblyException
     {
-        visitor.visitLayer( this );
-        for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
+        visitor.visitLayer(this);
+        for (ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values())
         {
-            moduleAssembly.visit( visitor );
+            moduleAssembly.visit(visitor);
         }
     }
 

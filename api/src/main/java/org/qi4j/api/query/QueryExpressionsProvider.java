@@ -24,6 +24,8 @@ import org.qi4j.api.query.grammar.AssociationIsNullPredicate;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.Conjunction;
+import org.qi4j.api.query.grammar.ContainsAllPredicate;
+import org.qi4j.api.query.grammar.ContainsPredicate;
 import org.qi4j.api.query.grammar.Disjunction;
 import org.qi4j.api.query.grammar.EqualsPredicate;
 import org.qi4j.api.query.grammar.GreaterOrEqualPredicate;

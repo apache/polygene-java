@@ -20,7 +20,6 @@ package org.qi4j.api.query.grammar;
 
 /**
  * Query sorting segment.
- *
  */
 public interface OrderBy
 {

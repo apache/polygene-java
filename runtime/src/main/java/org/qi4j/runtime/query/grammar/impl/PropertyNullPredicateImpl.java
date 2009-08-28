@@ -22,10 +22,9 @@ import org.qi4j.api.query.grammar.PropertyReference;
 
 /**
  * Generic {@link org.qi4j.api.query.grammar.PropertyNullPredicate} implementation.
- *
  */
 abstract class PropertyNullPredicateImpl<T>
-    implements PropertyNullPredicate<T>
+        implements PropertyNullPredicate<T>
 {
 
     /**
@@ -39,11 +38,11 @@ abstract class PropertyNullPredicateImpl<T>
      * @param propertyReference property reference; cannot be null
      * @throws IllegalArgumentException - If property reference is null
      */
-    PropertyNullPredicateImpl( final PropertyReference<T> propertyReference )
+    PropertyNullPredicateImpl(final PropertyReference<T> propertyReference)
     {
-        if( propertyReference == null )
+        if (propertyReference == null)
         {
-            throw new IllegalArgumentException( "Property reference cannot be null" );
+            throw new IllegalArgumentException("Property reference cannot be null");
         }
         this.propertyReference = propertyReference;
     }
