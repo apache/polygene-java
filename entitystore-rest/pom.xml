@@ -1,15 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <groupId>org.qi4j</groupId>
     <artifactId>qi4j-extensions</artifactId>
-    <version>0.8-SNAPSHOT</version>
+    <version>1.0-RC1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extension</groupId>
   <artifactId>qi4j-entitystore-rest</artifactId>
   <name>Qi4j Extension - REST Interface</name>
-  <version>0.8-SNAPSHOT</version>
+  <version>1.0-RC1</version>
   <packaging>bundle</packaging>
 
   <properties>
@@ -33,7 +32,7 @@
     <dependency>
       <groupId>org.qi4j.extension</groupId>
       <artifactId>qi4j-indexing-rdf</artifactId>
-      <version>0.8-SNAPSHOT</version>
+      <version>1.0-RC1</version>
     </dependency>
     <dependency>
       <groupId>org.restlet</groupId>
