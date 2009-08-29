@@ -209,6 +209,11 @@
         <artifactId>maven-release-plugin</artifactId>
         <dependencies>
           <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <version>1.5.6</version>
+          </dependency>
+          <dependency>
             <groupId>org.apache.maven.scm</groupId>
             <artifactId>maven-scm-provider-gitexe</artifactId>
             <version>1.2</version>
