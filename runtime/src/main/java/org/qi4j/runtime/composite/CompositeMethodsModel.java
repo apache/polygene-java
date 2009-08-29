@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.composite.MissingMethodException;
 import org.qi4j.api.util.MethodKeyMap;
 import org.qi4j.runtime.structure.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -102,8 +103,8 @@ public final class CompositeMethodsModel
                     return compositeMethod.invoke( proxy, args, mixins, moduleInstance );
                 }
             }
-
-            return mixins.invokeObject( proxy, args, method );
+//            return mixins.invokeObject( proxy, args, method );
+            throw new MissingMethodException( "Method '" + method + "' is not present in composite " + type.getName(), method );
         }
         else
         {
