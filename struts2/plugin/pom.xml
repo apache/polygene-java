@@ -6,12 +6,12 @@
   <parent>
     <groupId>org.qi4j.library</groupId>
     <artifactId>qi4j-struts2</artifactId>
-    <version>1.0-RC1</version>
+    <version>1.0-RC2-SNAPSHOT</version>
   </parent>
 
   <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-struts2-plugin</artifactId>
-  <version>1.0-RC1</version>
+  <version>1.0-RC2-SNAPSHOT</version>
   <name>Qi4j Library - Struts Plugin</name>
   <dependencies>
     <dependency>
