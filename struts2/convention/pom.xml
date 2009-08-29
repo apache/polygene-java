@@ -5,9 +5,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.qi4j.library.struts2</groupId>
+    <groupId>org.qi4j.library</groupId>
     <artifactId>qi4j-struts2</artifactId>
-    <version>0.7-SNAPSHOT</version>
+    <version>0.8-SNAPSHOT</version>
   </parent>
 
   <artifactId>qi4j-struts2-convention-plugin</artifactId>

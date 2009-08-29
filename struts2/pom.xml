@@ -9,7 +9,7 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.qi4j.library.struts2</groupId>
+  <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-struts2</artifactId>
   <version>0.8-SNAPSHOT</version>
   <packaging>pom</packaging>
