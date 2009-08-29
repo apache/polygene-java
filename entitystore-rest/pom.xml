@@ -7,7 +7,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extension</groupId>
-  <artifactId>qi4j-rest</artifactId>
+  <artifactId>qi4j-entitystore-rest</artifactId>
   <name>Qi4j Extension - REST Interface</name>
   <version>0.8-SNAPSHOT</version>
   <packaging>bundle</packaging>

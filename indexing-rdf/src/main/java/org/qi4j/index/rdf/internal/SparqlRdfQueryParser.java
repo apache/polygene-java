@@ -106,7 +106,7 @@ public class SparqlRdfQueryParser
             query.append( "\nLIMIT " ).append( maxResults );
         }
 
-        Logger.getLogger( getClass().getName() ).info( "Query:\n" + query );
+        Logger.getLogger( getClass().getName() ).fine( "Query:\n" + query );
         return query.toString();
     }
 

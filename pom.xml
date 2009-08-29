@@ -24,9 +24,9 @@
   <modules>
     <module>reindexer</module>
     <module>indexing-rdf</module>
-    <module>rest</module>
     <module>entitystore-jdbm</module>
     <module>entitystore-neo4j</module>
+    <module>entitystore-rest</module>
     <module>entitystore-qrm</module>
   </modules>
 
