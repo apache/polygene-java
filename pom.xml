@@ -1,11 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j</groupId>
   <artifactId>qi4j-library</artifactId>
   <name>Qi4j Library (Build POM)</name>
-  <version>0.8-SNAPSHOT</version>
+  <version>1.0-RC1</version>
   <packaging>pom</packaging>
   <inceptionYear>2007</inceptionYear>
   <url>http://www.qi4j.org/</url>
@@ -101,7 +100,7 @@
     <developer>
       <id>mesirii</id>
       <name>Michael Hunger</name>
-      <organization/>
+      <organization />
       <email>qi4j@jexp.de</email>
       <timezone>CET</timezone>
     </developer>
@@ -129,14 +128,14 @@
     <developer>
       <id>ragaller</id>
       <name>Georg Ragaller</name>
-      <organization/>
+      <organization />
       <email>qi4j@dev.ragaller.org</email>
       <timezone>CET</timezone>
     </developer>
     <developer>
       <id>rwallace</id>
       <name>Richard Wallace</name>
-      <organization/>
+      <organization />
       <email>rwallace@thewallacepack.net</email>
       <timezone>UTC-7</timezone>
     </developer>
@@ -157,7 +156,7 @@
     <developer>
       <id>taowen</id>
       <name>Tao Wen</name>
-      <organization/>
+      <organization />
       <email>taowen@gmail.com</email>
       <timezone>UTC+8</timezone>
     </developer>
