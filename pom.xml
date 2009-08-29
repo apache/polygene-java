@@ -1,0 +1,204 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.qi4j</groupId>
+  <artifactId>qi4j-sdk</artifactId>
+  <version>0.8-SNAPSHOT</version>
+  <name>Qi4j SDK</name>
+
+  <properties>
+    <version.qi4j-core>0.8-SNAPSHOT</version.qi4j-core>
+    <version.qi4j-lib>0.8-SNAPSHOT</version.qi4j-lib>
+    <version.qi4j-ext>0.8-SNAPSHOT</version.qi4j-ext>
+    <version.qi4j-samples>0.8-SNAPSHOT</version.qi4j-samples>
+    <version.qi4j-tutorials>0.8-SNAPSHOT</version.qi4j-tutorials>
+    <version.struts2>2.1.2</version.struts2>
+    <version.jetty>6.1.11</version.jetty>
+    <version.junit>4.4</version.junit>
+  </properties>
+  
+  <repositories>
+    <repository>
+      <id>ops4j-repository</id>
+      <url>http://repository.ops4j.org/maven2</url>
+    </repository>
+    <repository>
+      <id>ops4j-snapshot</id>
+      <url>http://repository.ops4j.org/mvn-snapshots</url>
+    </repository>
+  </repositories>
+
+  <inceptionYear>2007</inceptionYear>
+  <url>http://www.qi4j.org/</url>
+
+  <scm>
+    <connection>scm:git://dscm.ops4j.org/qi4j-sdk.git</connection>
+    <developerConnection>scm:git:git@dscm.ops4j.org:qi4j-sdk.git</developerConnection>
+  </scm>
+
+
+  <developers>
+    <developer>
+      <id>niclas@hedhman.org</id>
+      <name>Niclas Hedhman</name>
+      <email>niclas@codedragons.com</email>
+      <url>http://www.codedragons.com</url>
+      <organization>CodeDragons</organization>
+      <organizationUrl>http://www.codedragons.com</organizationUrl>
+      <timezone>UTC+8</timezone>
+    </developer>
+    <developer>
+      <id>rickardoberg</id>
+      <name>Rickard Öberg</name>
+      <email>rickard.oberg@jayway.se</email>
+      <url>http://www.jayway.se</url>
+      <organization>Jayway</organization>
+      <organizationUrl>http://www.jayway.se</organizationUrl>
+      <timezone>UTC+1</timezone>
+    </developer>
+    <developer>
+      <id>edward.yakop@gmail.com</id>
+      <name>Edward Yakop</name>
+      <email>efy@codedragons.com</email>
+      <url>http://www.codedragons.com</url>
+      <organization>CodeDragons</organization>
+      <organizationUrl>http://www.codedragons.com</organizationUrl>
+      <timezone>UTC+8</timezone>
+    </developer>
+    <developer>
+      <id>adreghiciu@gmail.com</id>
+      <name>Alin Dreghiciu</name>
+      <email>adreghiciu@codedragons.com</email>
+      <url>http://www.codedragons.com</url>
+      <organization>CodeDragons</organization>
+      <organizationUrl>http://www.codedragons.com</organizationUrl>
+      <timezone>UTC+2</timezone>
+    </developer>
+    <developer>
+      <id>mesirii</id>
+      <name>Michael Hunger</name>
+      <organization />
+      <email>qi4j@jexp.de</email>
+      <timezone>CET</timezone>
+    </developer>
+  </developers>
+
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-external</artifactId>
+        <version>1.0-alpha-6</version>
+      </extension>
+    </extensions>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.0.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-DocURL>${pom.url}</Bundle-DocURL>
+            <_include>-osgi.bundle</_include>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.scm</groupId>
+            <artifactId>maven-scm-provider-gitexe</artifactId>
+            <version>1.2</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkMode>once</forkMode>
+          <includes>
+            <include>**/*Test.java</include>
+            <include>**/*TestCase.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.atlassian.maven.plugins</groupId>
+        <artifactId>maven-clover2-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <distributionManagement>
+    <repository>
+      <id>ops4j.releases.deploy</id>
+      <url>scpexe://repository.ops4j.org/var/http/repository.ops4j.org/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <id>ops4j.snapshots.deploy</id>
+      <url>scpexe://repository.ops4j.org/var/http/repository.ops4j.org/mvn-snapshots</url>
+    </snapshotRepository>
+    <site>
+      <id>ops4j.website.deploy</id>
+      <url>scpexe://www.ops4j.org/var/http/www.ops4j.org/projects/qi4j/sdk</url>
+    </site>
+  </distributionManagement>
+
+  <licenses>
+    <license>
+      <name>Apache License v2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+      <comments>Copyrights retained by each developer.</comments>
+    </license>
+  </licenses>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <configLocation>etc/qi4j-checkstyle.xml</configLocation>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <configuration>
+          <targetJdk>1.5</targetJdk>
+          <sourceEncoding>utf-8</sourceEncoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </reporting>
+  
+</project>
