@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j</groupId>
   <artifactId>qi4j-sdk</artifactId>
@@ -11,11 +12,145 @@
     <version.qi4j-ext>0.8-SNAPSHOT</version.qi4j-ext>
     <version.qi4j-samples>0.8-SNAPSHOT</version.qi4j-samples>
     <version.qi4j-tutorials>0.8-SNAPSHOT</version.qi4j-tutorials>
+    <version.qi4j-tools>0.8-SNAPSHOT</version.qi4j-tools>
     <version.struts2>2.1.2</version.struts2>
     <version.jetty>6.1.11</version.jetty>
     <version.junit>4.4</version.junit>
   </properties>
-  
+
+  <dependencies>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-api</artifactId>
+      <version>${version.qi4j-core}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-spi</artifactId>
+      <version>${version.qi4j-core}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-bootstrap</artifactId>
+      <version>${version.qi4j-core}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-runtime</artifactId>
+      <version>${version.qi4j-core}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-testsupport</artifactId>
+      <version>${version.qi4j-core}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-lib-auth</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-lib-cache</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-lib-constraints</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-lib-http</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-lib-locking</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-lib-logging</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-lib-rdf</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-lib-spring</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-lib-uid</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-script-beanshell</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-script-common</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-script-groovy</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-script-javascript</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-script-jruby</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-struts2-plugin</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.library</groupId>
+      <artifactId>qi4j-struts2-codebehind-plugin</artifactId>
+      <version>${version.qi4j-lib}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.extension</groupId>
+      <artifactId>qi4j-entitystore-jdbm</artifactId>
+      <version>${version.qi4j-ext}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.extension</groupId>
+      <artifactId>qi4j-indexing-rdf</artifactId>
+      <version>${version.qi4j-ext}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.extension</groupId>
+      <artifactId>qi4j-reindexer</artifactId>
+      <version>${version.qi4j-ext}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.extension</groupId>
+      <artifactId>qi4j-entitystore-rest</artifactId>
+      <version>${version.qi4j-ext}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.swing</groupId>
+      <artifactId>qi4j-swing-envisage</artifactId>
+      <version>${version.qi4j-tools}</version>
+    </dependency>
+
+  </dependencies>
   <repositories>
     <repository>
       <id>ops4j-repository</id>
@@ -76,7 +211,7 @@
     <developer>
       <id>mesirii</id>
       <name>Michael Hunger</name>
-      <organization />
+      <organization/>
       <email>qi4j@jexp.de</email>
       <timezone>CET</timezone>
     </developer>
@@ -91,6 +226,26 @@
       </extension>
     </extensions>
     <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2-beta-2</version>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+            <configuration>
+              <finalName>qi4j-sdk-${version}</finalName>
+              <descriptors>
+                <descriptor>src/assembly/zip.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
@@ -200,5 +355,5 @@
       </plugin>
     </plugins>
   </reporting>
-  
+
 </project>

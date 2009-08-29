@@ -1,0 +1,52 @@
+<assembly>
+  <includeBaseDirectory>true</includeBaseDirectory>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <fileSets>
+    <fileSet>
+      <!--
+       | Unix/Linux shell-scripts
+      -->
+      <directory>${basedir}/target/bin</directory>
+      <outputDirectory>bin</outputDirectory>
+      <lineEnding>unix</lineEnding>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+      <includes>
+        <include>pax-*</include>
+      </includes>
+      <excludes>
+        <exclude>*.*</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <!--
+       | Windows batch-files
+      -->
+      <directory>${basedir}/target/bin</directory>
+      <outputDirectory>bin</outputDirectory>
+      <lineEnding>dos</lineEnding>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+      <includes>
+        <include>pax-*.bat</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <!--
+       | Non-executable files
+      -->
+      <directory>${basedir}/target/bin</directory>
+      <outputDirectory>bin</outputDirectory>
+      <lineEnding>dos</lineEnding>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0644</fileMode>
+      <includes>
+        <include>pax-bootstrap-pom.xml</include>
+        <include>LICENSE</include>
+        <include>NOTICE</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+</assembly>
