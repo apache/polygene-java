@@ -7,12 +7,12 @@
   <name>Qi4j SDK</name>
 
   <properties>
-    <version.qi4j-core>0.8-SNAPSHOT</version.qi4j-core>
-    <version.qi4j-lib>0.8-SNAPSHOT</version.qi4j-lib>
-    <version.qi4j-ext>0.8-SNAPSHOT</version.qi4j-ext>
-    <version.qi4j-samples>0.8-SNAPSHOT</version.qi4j-samples>
-    <version.qi4j-tutorials>0.8-SNAPSHOT</version.qi4j-tutorials>
-    <version.qi4j-tools>0.8-SNAPSHOT</version.qi4j-tools>
+    <version.qi4j-core>1.0-RC1</version.qi4j-core>
+    <version.qi4j-lib>1.0-RC1</version.qi4j-lib>
+    <version.qi4j-ext>1.0-RC1</version.qi4j-ext>
+    <version.qi4j-samples>1.0-RC1</version.qi4j-samples>
+    <version.qi4j-tutorials>1.0-RC1</version.qi4j-tutorials>
+    <version.qi4j-tools>1.0-RC1</version.qi4j-tools>
     <version.struts2>2.1.2</version.struts2>
     <version.jetty>6.1.11</version.jetty>
     <version.junit>4.4</version.junit>
@@ -166,7 +166,7 @@
   <url>http://www.qi4j.org/</url>
 
   <scm>
-    <connection>scm:git://dscm.ops4j.org/qi4j-sdk.git</connection>
+    <connection>scm:git:git://dscm.ops4j.org/qi4j-sdk.git</connection>
     <developerConnection>scm:git:git@dscm.ops4j.org:qi4j-sdk.git</developerConnection>
   </scm>
 
@@ -260,6 +260,16 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.qi4j.core</groupId>
+                  <artifactId>qi4j-core-bootstrap</artifactId>
+                  <version>${qi4j.version}</version>
+                  <type>jar</type>
+                  <classifier>javadoc</classifier>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/javadoc/bootstrap</outputDirectory>
+                  <includes>**</includes>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.qi4j.sample</groupId>
                   <artifactId>qi4j-core-bootstrap</artifactId>
                   <version>${qi4j.version}</version>
                   <type>jar</type>
