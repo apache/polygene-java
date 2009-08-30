@@ -249,7 +249,7 @@
     </snapshotRepository>
     <site>
       <id>ops4j.website.deploy</id>
-      <url>scpexe://www.ops4j.org/var/http/www.ops4j.org/projects/qi4j</url>
+      <url>scpexe://www.ops4j.org/var/http/www.ops4j.org/projects/qi4j/library</url>
     </site>
   </distributionManagement>
 
