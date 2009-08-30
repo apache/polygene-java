@@ -1,52 +1,38 @@
-<assembly>
-  <includeBaseDirectory>true</includeBaseDirectory>
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.1"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.1 http://maven.apache.org/xsd/assembly-1.1.1.xsd">
+  <id>default</id>
   <formats>
+    <format>tar.gz</format>
+    <format>tar.bz2</format>
     <format>zip</format>
   </formats>
   <fileSets>
     <fileSet>
-      <!--
-       | Unix/Linux shell-scripts
-      -->
-      <directory>${basedir}/target/bin</directory>
-      <outputDirectory>bin</outputDirectory>
-      <lineEnding>unix</lineEnding>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0755</fileMode>
-      <includes>
-        <include>pax-*</include>
-      </includes>
-      <excludes>
-        <exclude>*.*</exclude>
-      </excludes>
+      <directory>${project.basedir}/src/etc</directory>
+      <outputDirectory>etc</outputDirectory>
     </fileSet>
     <fileSet>
-      <!--
-       | Windows batch-files
-      -->
-      <directory>${basedir}/target/bin</directory>
-      <outputDirectory>bin</outputDirectory>
-      <lineEnding>dos</lineEnding>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0755</fileMode>
+      <directory>${project.build.directory}/javadoc</directory>
+      <outputDirectory>javadoc</outputDirectory>
       <includes>
-        <include>pax-*.bat</include>
+        <include>**</include>
       </includes>
     </fileSet>
     <fileSet>
-      <!--
-       | Non-executable files
-      -->
-      <directory>${basedir}/target/bin</directory>
-      <outputDirectory>bin</outputDirectory>
-      <lineEnding>dos</lineEnding>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0644</fileMode>
+      <directory>${project.basedir}</directory>
       <includes>
-        <include>pax-bootstrap-pom.xml</include>
         <include>LICENSE</include>
         <include>NOTICE</include>
       </includes>
     </fileSet>
   </fileSets>
+  <!--<dependencySets>-->
+    <!--<dependencySet>-->
+      <!--<outputDirectory>lib/</outputDirectory>-->
+      <!--<scope>runtime</scope>-->
+      <!--<useTransitiveDependencies>true</useTransitiveDependencies>-->
+    <!--</dependencySet>-->
+  <!--</dependencySets>-->
 </assembly>
+  

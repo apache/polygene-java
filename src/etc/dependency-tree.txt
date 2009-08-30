@@ -1,0 +1,119 @@
+[INFO] org.qi4j:qi4j-sdk:jar:0.8-SNAPSHOT
+[INFO] +- org.qi4j.core:qi4j-core-api:jar:0.8-SNAPSHOT:compile
+[INFO] |  \- junit:junit:jar:4.4:compile
+[INFO] +- org.qi4j.core:qi4j-core-spi:jar:0.8-SNAPSHOT:compile
+[INFO] +- org.qi4j.core:qi4j-core-bootstrap:jar:0.8-SNAPSHOT:compile
+[INFO] +- org.qi4j.core:qi4j-core-runtime:jar:0.8-SNAPSHOT:compile
+[INFO] |  \- cglib:cglib-nodep:jar:2.2:compile
+[INFO] +- org.qi4j.core:qi4j-core-testsupport:jar:0.8-SNAPSHOT:compile
+[INFO] +- org.qi4j.library:qi4j-lib-auth:jar:0.8-SNAPSHOT:compile
+[INFO] |  \- org.easymock:easymock:jar:2.3:compile
+[INFO] +- org.qi4j.library:qi4j-lib-cache:jar:0.8-SNAPSHOT:compile
+[INFO] +- org.qi4j.library:qi4j-lib-constraints:jar:0.8-SNAPSHOT:compile
+[INFO] +- org.qi4j.library:qi4j-lib-http:jar:0.8-SNAPSHOT:compile
+[INFO] |  +- org.mortbay.jetty:jetty:jar:6.1.11:compile
+[INFO] |  |  \- org.mortbay.jetty:servlet-api-2.5:jar:6.1.11:compile
+[INFO] |  +- org.mortbay.jetty:jetty-util:jar:6.1.11:compile
+[INFO] |  \- javax.servlet:servlet-api:jar:2.4:compile
+[INFO] +- org.qi4j.library:qi4j-lib-locking:jar:0.8-SNAPSHOT:compile
+[INFO] +- org.qi4j.library:qi4j-lib-logging:jar:0.8-SNAPSHOT:compile
+[INFO] +- org.qi4j.library:qi4j-lib-rdf:jar:0.8-SNAPSHOT:compile
+[INFO] |  +- org.openrdf.sesame:sesame-model:jar:2.3-pr1:compile
+[INFO] |  |  +- info.aduna.commons:aduna-commons-collections:jar:2.5.0:compile
+[INFO] |  |  \- info.aduna.commons:aduna-commons-i18n:jar:1.1.0:compile
+[INFO] |  +- org.openrdf.sesame:sesame-rio-n3:jar:2.3-pr1:compile
+[INFO] |  |  +- org.openrdf.sesame:sesame-rio-api:jar:2.3-pr1:compile
+[INFO] |  |  |  \- info.aduna.commons:aduna-commons-lang:jar:2.6.0:compile
+[INFO] |  |  \- org.openrdf.sesame:sesame-rio-turtle:jar:2.3-pr1:compile
+[INFO] |  +- org.openrdf.sesame:sesame-runtime:pom:2.3-pr1:compile
+[INFO] |  |  +- org.openrdf.sesame:sesame-query:jar:2.3-pr1:compile
+[INFO] |  |  +- org.openrdf.sesame:sesame-queryalgebra-model:jar:2.3-pr1:compile
+[INFO] |  |  +- org.openrdf.sesame:sesame-queryparser-api:jar:2.3-pr1:compile
+[INFO] |  |  +- org.openrdf.sesame:sesame-queryparser-serql:jar:2.3-pr1:runtime
+[INFO] |  |  +- org.openrdf.sesame:sesame-queryparser-sparql:jar:2.3-pr1:runtime
+[INFO] |  |  +- org.openrdf.sesame:sesame-queryresultio-api:jar:2.3-pr1:compile
+[INFO] |  |  +- org.openrdf.sesame:sesame-queryresultio-binary:jar:2.3-pr1:runtime
+[INFO] |  |  +- org.openrdf.sesame:sesame-queryresultio-text:jar:2.3-pr1:runtime
+[INFO] |  |  +- org.openrdf.sesame:sesame-repository-api:jar:2.3-pr1:compile
+[INFO] |  |  +- org.openrdf.sesame:sesame-repository-manager:jar:2.3-pr1:compile
+[INFO] |  |  |  +- org.openrdf.sesame:sesame-repository-event:jar:2.3-pr1:compile
+[INFO] |  |  |  \- org.openrdf.sesame:sesame-sail-memory:jar:2.3-pr1:compile
+[INFO] |  |  +- org.openrdf.sesame:sesame-repository-contextaware:jar:2.3-pr1:compile
+[INFO] |  |  +- org.openrdf.sesame:sesame-http-protocol:jar:2.3-pr1:compile
+[INFO] |  |  |  \- org.openrdf.sesame:sesame-rio-ntriples:jar:2.3-pr1:compile
+[INFO] |  |  +- org.openrdf.sesame:sesame-rio-trix:jar:2.3-pr1:runtime
+[INFO] |  |  +- org.openrdf.sesame:sesame-rio-trig:jar:2.3-pr1:runtime
+[INFO] |  |  +- org.openrdf.sesame:sesame-sail-api:jar:2.3-pr1:compile
+[INFO] |  |  +- org.openrdf.sesame:sesame-sail-rdbms:jar:2.3-pr1:runtime
+[INFO] |  |  |  \- commons-dbcp:commons-dbcp:jar:1.2.2:runtime
+[INFO] |  |  |     \- commons-pool:commons-pool:jar:1.3:runtime
+[INFO] |  |  \- org.slf4j:slf4j-api:jar:1.5.6:compile
+[INFO] |  +- org.openrdf.sesame:sesame-sail-nativerdf:jar:2.3-pr1:compile
+[INFO] |  |  +- org.openrdf.sesame:sesame-sail-inferencer:jar:2.3-pr1:compile
+[INFO] |  |  +- org.openrdf.sesame:sesame-queryalgebra-evaluation:jar:2.3-pr1:compile
+[INFO] |  |  +- info.aduna.commons:aduna-commons-io:jar:2.6.0:compile
+[INFO] |  |  +- info.aduna.commons:aduna-commons-iteration:jar:2.5.0:compile
+[INFO] |  |  \- info.aduna.commons:aduna-commons-concurrent:jar:2.4.0:compile
+[INFO] |  +- org.openrdf.sesame:sesame-repository-http:jar:2.3-pr1:compile
+[INFO] |  |  \- org.openrdf.sesame:sesame-http-client:jar:2.3-pr1:compile
+[INFO] |  |     +- commons-httpclient:commons-httpclient:jar:3.1:compile
+[INFO] |  |     +- commons-codec:commons-codec:jar:1.3:runtime
+[INFO] |  |     \- org.slf4j:jcl-over-slf4j:jar:1.5.6:runtime
+[INFO] |  +- org.openrdf.sesame:sesame-repository-dataset:jar:2.3-pr1:compile
+[INFO] |  |  \- org.openrdf.sesame:sesame-repository-sail:jar:2.3-pr1:compile
+[INFO] |  +- org.openrdf.sesame:sesame-rio-rdfxml:jar:2.3-pr1:compile
+[INFO] |  |  +- info.aduna.commons:aduna-commons-net:jar:2.4.0:compile
+[INFO] |  |  \- info.aduna.commons:aduna-commons-xml:jar:2.4.0:compile
+[INFO] |  \- org.slf4j:slf4j-simple:jar:1.4.2:compile
+[INFO] +- org.qi4j.library:qi4j-lib-spring:jar:0.8-SNAPSHOT:compile
+[INFO] |  +- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO] |  |  +- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] |  |  \- org.springframework:spring-core:jar:2.5.6:compile
+[INFO] |  \- org.springframework:spring-context:jar:2.5.6:compile
+[INFO] |     \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] +- org.qi4j.library:qi4j-lib-uid:jar:0.8-SNAPSHOT:compile
+[INFO] +- org.qi4j.library:qi4j-script-beanshell:jar:0.8-SNAPSHOT:compile
+[INFO] |  +- org.beanshell:bsh-core:jar:2.0b4:compile
+[INFO] |  +- org.beanshell:bsh-classpath:jar:2.0b4:compile
+[INFO] |  +- org.beanshell:bsh-classgen:jar:2.0b4:compile
+[INFO] |  \- org.beanshell:bsh-reflect:jar:2.0b4:compile
+[INFO] +- org.qi4j.library:qi4j-script-common:jar:0.8-SNAPSHOT:compile
+[INFO] +- org.qi4j.library:qi4j-script-groovy:jar:0.8-SNAPSHOT:compile
+[INFO] |  \- org.codehaus.groovy:groovy-all:jar:1.5.6:compile
+[INFO] |     +- org.apache.ant:ant:jar:1.7.0:compile
+[INFO] |     |  \- org.apache.ant:ant-launcher:jar:1.7.0:compile
+[INFO] |     \- jline:jline:jar:0.9.94:compile
+[INFO] +- org.qi4j.library:qi4j-script-javascript:jar:0.8-SNAPSHOT:compile
+[INFO] |  \- rhino:js:jar:1.6R5:compile
+[INFO] +- org.qi4j.library:qi4j-script-jruby:jar:0.8-SNAPSHOT:compile
+[INFO] |  \- org.jruby:jruby:jar:1.1.6:compile
+[INFO] +- org.qi4j.library:qi4j-struts2-plugin:jar:0.8-SNAPSHOT:compile
+[INFO] |  \- org.apache.struts:struts2-core:jar:2.1.2:compile
+[INFO] |     +- com.opensymphony:xwork:jar:2.1.1:compile
+[INFO] |     +- org.freemarker:freemarker:jar:2.3.12:compile
+[INFO] |     +- opensymphony:ognl:jar:2.6.11:compile
+[INFO] |     +- commons-fileupload:commons-fileupload:jar:1.2.1:compile
+[INFO] |     \- commons-io:commons-io:jar:1.3.2:compile
+[INFO] +- org.qi4j.library:qi4j-struts2-codebehind-plugin:jar:0.8-SNAPSHOT:compile
+[INFO] |  \- org.apache.struts:struts2-codebehind-plugin:jar:2.1.2:compile
+[INFO] +- org.qi4j.extension:qi4j-entitystore-jdbm:jar:0.8-SNAPSHOT:compile
+[INFO] |  \- jdbm:jdbm:jar:1.0:compile
+[INFO] +- org.qi4j.extension:qi4j-indexing-rdf:jar:0.8-SNAPSHOT:compile
+[INFO] +- org.qi4j.extension:qi4j-reindexer:jar:0.8-SNAPSHOT:compile
+[INFO] +- org.qi4j.extension:qi4j-entitystore-rest:jar:0.8-SNAPSHOT:compile
+[INFO] |  +- org.restlet:org.restlet:jar:2.0-M3:compile
+[INFO] |  |  \- org.osgi:osgi_R4_core:jar:1.0:compile
+[INFO] |  +- org.restlet:org.restlet.ext.xml:jar:2.0-M3:compile
+[INFO] |  +- org.restlet:org.restlet.ext.atom:jar:2.0-M3:compile
+[INFO] |  +- org.restlet:org.restlet.ext.servlet:jar:2.0-M3:compile
+[INFO] |  +- org.openrdf.sesame:sesame-queryresultio-sparqlxml:jar:2.2.1:compile
+[INFO] |  \- org.openrdf.sesame:sesame-queryresultio-sparqljson:jar:2.2.1:compile
+[INFO] |     \- info.aduna.commons:aduna-commons-text:jar:2.1:compile
+[INFO] \- org.qi4j.swing:qi4j-swing-envisage:jar:0.8-SNAPSHOT:compile
+[INFO]    +- org.prefuse:prefuse:jar:20071021:compile
+[INFO]    +- com.jgoodies:looks:jar:2.2.0:compile
+[INFO]    \- pdfbox:pdfbox:jar:0.7.3:compile
+[INFO]       +- org.fontbox:fontbox:jar:0.1.0:compile
+[INFO]       +- org.jempbox:jempbox:jar:0.2.0:compile
+[INFO]       +- bouncycastle:bcmail-jdk14:jar:136:compile
+[INFO]       \- bouncycastle:bcprov-jdk14:jar:136:compile

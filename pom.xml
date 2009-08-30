@@ -227,6 +227,54 @@
     </extensions>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>package</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.qi4j.core</groupId>
+                  <artifactId>qi4j-core-api</artifactId>
+                  <version>${qi4j.version}</version>
+                  <type>jar</type>
+                  <classifier>javadoc</classifier>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/javadoc/api</outputDirectory>
+                  <includes>**</includes>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.qi4j.core</groupId>
+                  <artifactId>qi4j-core-spi</artifactId>
+                  <version>${qi4j.version}</version>
+                  <type>jar</type>
+                  <classifier>javadoc</classifier>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/javadoc/spi</outputDirectory>
+                  <includes>**</includes>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.qi4j.core</groupId>
+                  <artifactId>qi4j-core-bootstrap</artifactId>
+                  <version>${qi4j.version}</version>
+                  <type>jar</type>
+                  <classifier>javadoc</classifier>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/javadoc/bootstrap</outputDirectory>
+                  <includes>**</includes>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <version>2.2-beta-2</version>
         <executions>
