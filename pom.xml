@@ -15,7 +15,7 @@
   </properties>
 
   <scm>
-    <connection>scm:git://dscm.ops4j.org/qi4j-extensions.git</connection>
+    <connection>scm:git:git://dscm.ops4j.org/qi4j-extensions.git</connection>
     <developerConnection>scm:git:git@dscm.ops4j.org:qi4j-extensions.git</developerConnection>
   </scm>
 
