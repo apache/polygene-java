@@ -19,8 +19,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.ParameterConstraintViolationException;
 import org.qi4j.api.constraint.ConstraintViolation;
+import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.spi.composite.CompositeInstance;
 
 /**
@@ -47,7 +47,7 @@ public final class MethodConstraintsInstance
     }
 
     public void checkValid( Object instance, Object[] params )
-        throws ParameterConstraintViolationException
+        throws ConstraintViolationException
     {
         if( valueConstraintsInstances == null )
         {
@@ -73,13 +73,13 @@ public final class MethodConstraintsInstance
         {
             if( instance instanceof Composite )
             {
-                throw new ParameterConstraintViolationException( (Composite) instance, method, violations );
+                throw new ConstraintViolationException( (Composite) instance, method, violations );
             }
             if( instance instanceof CompositeInstance )
             {
-                throw new ParameterConstraintViolationException( (Composite) ( (CompositeInstance) instance ).proxy(), method, violations );
+                throw new ConstraintViolationException( (Composite) ( (CompositeInstance) instance ).proxy(), method, violations );
             }
-            throw new ParameterConstraintViolationException( instance.toString(), instance.getClass().getName(), method, violations );
+            throw new ConstraintViolationException( instance.toString(), instance.getClass().getName(), method, violations );
         }
     }
 }

@@ -160,11 +160,10 @@ public final class ManyAssociationModel
     {
         if( constraints != null )
         {
-
             List<ConstraintViolation> violations = constraints.checkConstraints( composite );
             if( !violations.isEmpty() )
             {
-                throw new ConstraintViolationException( accessor, violations );
+                throw new ConstraintViolationException( "", "<unknown>", accessor, violations );
             }
         }
     }
@@ -177,7 +176,7 @@ public final class ManyAssociationModel
             List<ConstraintViolation> violations = associationConstraints.checkConstraints( manyAssociation );
             if( !violations.isEmpty() )
             {
-                throw new ConstraintViolationException( accessor, violations );
+                throw new ConstraintViolationException( "", "<unknown>", accessor, violations );
             }
         }
     }

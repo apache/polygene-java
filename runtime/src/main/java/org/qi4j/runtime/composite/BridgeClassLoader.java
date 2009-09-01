@@ -36,7 +36,6 @@ class BridgeClassLoader extends ClassLoader
         if( aClassName.startsWith( CGLIB_PACKAGE_NAME ) )
         {
             Class<?> clazz = CGLIB_CLASS_LOADER.loadClass( aClassName );
-
             if( isResolve )
             {
                 resolveClass( clazz );
