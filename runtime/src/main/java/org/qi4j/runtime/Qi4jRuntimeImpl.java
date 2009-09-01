@@ -19,17 +19,13 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import static java.lang.reflect.Proxy.*;
-import java.util.ArrayList;
-import java.util.List;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.PropertyMapper;
 import org.qi4j.api.composite.TransientComposite;
-import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.EntityStateHolder;
-import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.structure.Module;
@@ -47,11 +43,9 @@ import static org.qi4j.runtime.composite.TransientInstance.*;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
-import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.service.ServiceInstance;
 import org.qi4j.runtime.service.ServiceModel;
-import org.qi4j.runtime.structure.DependencyVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
@@ -186,36 +180,7 @@ public final class Qi4jRuntimeImpl
     public Class<?> getConfigurationType( Composite serviceComposite )
     {
         ServiceModel descriptor = (ServiceModel) ServiceInstance.getCompositeInstance( serviceComposite ).compositeModel();
-        final List<DependencyModel> dependencyModels = new ArrayList<DependencyModel>();
-        descriptor.visitModel( new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
-        {
-            @Override
-            public void visitDependency( DependencyModel dependencyModel )
-            {
-                dependencyModels.add( dependencyModel );
-            }
-        } );
-
-        Class injectionClass = null;
-        for( DependencyModel dependencyModel : dependencyModels )
-        {
-            if( dependencyModel.rawInjectionType().equals( Configuration.class ) )
-            {
-                if( injectionClass == null )
-                {
-                    injectionClass = dependencyModel.injectionClass();
-                }
-                else
-                {
-                    if( injectionClass.isAssignableFrom( dependencyModel.injectionClass() ) )
-                    {
-                        injectionClass = dependencyModel.injectionClass();
-                    }
-                }
-            }
-        }
-
-        return injectionClass;
+        return descriptor.calculateConfigurationType();
     }
 
     public Module getModule( UnitOfWork uow )
