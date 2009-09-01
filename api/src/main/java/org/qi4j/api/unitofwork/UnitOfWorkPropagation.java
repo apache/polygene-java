@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Edward Yakop. All Rights Reserved.
+ * Copyright (c) 2009, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,5 +78,12 @@ public @interface UnitOfWorkPropagation
          * If there is a current transaction: suspend the current transaction and create a new transaction.
          */
         REQUIRES_NEW,
+
+        /**
+         * Behavior: <br>
+         * If no current transaction: creates a new transaction <br>
+         * If there is a current transaction: create a nested transaction on top of the current one.
+         */
+        REQUIRES_NESTED
     }
 }

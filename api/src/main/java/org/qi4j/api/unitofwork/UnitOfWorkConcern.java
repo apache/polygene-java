@@ -1,4 +1,5 @@
 /*  Copyright 2008 Edward Yakop.
+ *  Copyright 2009 Niclas Hedhman.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +26,7 @@ import org.qi4j.api.injection.scope.Structure;
 /**
  * {@code UnitOfWorkConcern} manages the unit of work complete and discard policy.
  *
- * @See org.qi4j.entity.UnitOfWorkPropagation
+ * @see UnitOfWorkPropagation
  * @see UnitOfWorkDiscardOn
  */
 @AppliesTo( UnitOfWorkPropagation.class )
@@ -51,55 +52,53 @@ public final class UnitOfWorkConcern extends GenericConcern
         UnitOfWork currentUnitOfWork = uowf.currentUnitOfWork();
 
         UnitOfWorkPropagation.Propagation propagationPolicy = propagation.value();
-        switch( propagationPolicy )
-        {
-        case REQUIRED:
+        if( propagationPolicy == UnitOfWorkPropagation.Propagation.REQUIRED )
         {
             if( currentUnitOfWork == null )
             {
                 currentUnitOfWork = uowf.newUnitOfWork();
-
-                try
-                {
-                    Object result = next.invoke( proxy, method, args );
-                    currentUnitOfWork.complete();
-                    return result;
-                }
-                catch( Throwable throwable )
-                {
-                    // Discard only if this concern create a unit of work
-                    discardIfRequired( method, currentUnitOfWork, throwable );
-                    throw throwable;
-                }
+                return invokeWithCommit( proxy, method, args, currentUnitOfWork );
+            }
+            else
+            {
+                return next.invoke( proxy, method, args );
             }
         }
-
-        case MANDATORY:
+        else if( propagationPolicy == UnitOfWorkPropagation.Propagation.MANDATORY )
         {
             if( currentUnitOfWork == null )
             {
                 throw new IllegalStateException( "[UnitOfWork] was required but there is no available unit of work." );
             }
         }
-
-        case REQUIRES_NEW:
+        else if( propagationPolicy == UnitOfWorkPropagation.Propagation.REQUIRES_NEW )
         {
             currentUnitOfWork = uowf.newUnitOfWork();
-            try
-            {
-                Object result = next.invoke( proxy, method, args );
-                currentUnitOfWork.complete();
-                return result;
-            }
-            catch( Throwable throwable )
-            {
-                discardIfRequired( method, currentUnitOfWork, throwable );
-                throw throwable;
-            }
+            return invokeWithCommit( proxy, method, args, currentUnitOfWork );
         }
+        else if( propagationPolicy == UnitOfWorkPropagation.Propagation.REQUIRES_NESTED )
+        {
+            currentUnitOfWork = uowf.nestedUnitOfWork();
+            return invokeWithCommit( proxy, method, args, currentUnitOfWork );
         }
-
         return next.invoke( proxy, method, args );
+    }
+
+    private Object invokeWithCommit( Object proxy, Method method, Object[] args, UnitOfWork currentUnitOfWork )
+        throws Throwable
+    {
+        try
+        {
+            Object result = next.invoke( proxy, method, args );
+            currentUnitOfWork.complete();
+            return result;
+        }
+        catch( Throwable throwable )
+        {
+            // Discard only if this concern create a unit of work
+            discardIfRequired( method, currentUnitOfWork, throwable );
+            throw throwable;
+        }
     }
 
     /**
