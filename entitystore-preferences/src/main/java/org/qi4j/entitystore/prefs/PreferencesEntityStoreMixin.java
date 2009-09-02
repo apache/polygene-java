@@ -173,16 +173,23 @@ public class PreferencesEntityStoreMixin
                 Preferences propsPrefs = entityPrefs.node( "properties" );
                 for( PropertyTypeDescriptor propertyDescriptor : entityDescriptor.state().<PropertyTypeDescriptor>properties() )
                 {
+                    if (propertyDescriptor.qualifiedName().name().equals("identity"))
+                    {
+                        // Fake identity property
+                        properties.put( propertyDescriptor.qualifiedName(), identity.identity() );
+                        continue;
+                    }
+
                     ValueType propertyType = propertyDescriptor.propertyType().type();
                     if ( propertyType instanceof NumberType )
                     {
-                        if (propertyType.type().name().equals("Long"))
+                        if (propertyType.type().name().equals("java.lang.Long"))
                             properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getLong( propertyDescriptor.qualifiedName().name(), (Long) propertyDescriptor.initialValue() ));
-                        else if (propertyType.type().name().equals("Integer"))
+                        else if (propertyType.type().name().equals("java.lang.Integer"))
                             properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getInt( propertyDescriptor.qualifiedName().name(), (Integer) propertyDescriptor.initialValue() ));
-                        else if (propertyType.type().name().equals("Double"))
+                        else if (propertyType.type().name().equals("java.lang.Double"))
                             properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getDouble( propertyDescriptor.qualifiedName().name(), (Double) propertyDescriptor.initialValue() ));
-                        else if (propertyType.type().name().equals("Float"))
+                        else if (propertyType.type().name().equals("java.lang.Float"))
                             properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getFloat( propertyDescriptor.qualifiedName().name(), (Float) propertyDescriptor.initialValue() ));
                         else
                         {
@@ -192,7 +199,11 @@ public class PreferencesEntityStoreMixin
                             JSONTokener tokener = new JSONTokener(json);
                             JSONArray array = (JSONArray) tokener.nextValue();
                             Object jsonValue = array.get( 0 );
-                            Object value = propertyDescriptor.propertyType().type().fromJSON( jsonValue, module );
+                            Object value;
+                            if (jsonValue == JSONObject.NULL)
+                                value = null;
+                            else
+                                value = propertyDescriptor.propertyType().type().fromJSON( jsonValue, module );
                             properties.put(propertyDescriptor.qualifiedName(), value);
                         }
                     } else if (propertyType instanceof BooleanType )
@@ -330,6 +341,9 @@ public class PreferencesEntityStoreMixin
             Preferences propsPrefs = entityPrefs.node( "properties" );
             for( PropertyType propertyType : entityType.properties() )
             {
+                if (propertyType.qualifiedName().name().equals("identity"))
+                    continue; // Skip Identity.identity()
+
                 Object value = state.properties().get( propertyType.qualifiedName() );
 
                 if (value == null)

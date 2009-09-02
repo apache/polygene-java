@@ -20,6 +20,10 @@ package org.qi4j.index.rdf.internal;
 
 import static java.lang.String.format;
 import java.util.logging.Logger;
+import java.util.Date;
+import java.util.TimeZone;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import org.qi4j.api.query.grammar.AssociationIsNullPredicate;
 import org.qi4j.api.query.grammar.AssociationNullPredicate;
 import org.qi4j.api.query.grammar.BooleanExpression;
@@ -41,6 +45,17 @@ import org.qi4j.index.rdf.RdfQueryParser;
 public class SparqlRdfQueryParser
     implements RdfQueryParser
 {
+    private static ThreadLocal<DateFormat> ISO8601_UTC = new ThreadLocal<DateFormat>()
+    {
+        @Override
+        protected DateFormat initialValue()
+        {
+            SimpleDateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" );
+            dateFormat.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
+            return dateFormat;
+        }
+    };
+
     private Namespaces namespaces = new Namespaces();
     private Triples triples = new Triples( namespaces );
 
@@ -176,7 +191,7 @@ public class SparqlRdfQueryParser
             String valueVariable = triples.addTriple( predicate.propertyReference(), false ).getValue();
             final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
             return String.format( "(%s %s \"%s\")", valueVariable, Operators.getOperator( predicate.getClass() ),
-                                  singleValueExpression.value() );
+                                  toString(singleValueExpression.value()) );
         }
         else
         {
@@ -233,5 +248,19 @@ public class SparqlRdfQueryParser
             return orderBy.length() > 0 ? orderBy.toString() : null;
         }
         return null;
+    }
+
+    private String toString(Object value)
+    {
+        if (value == null)
+            return null;
+
+        if (value instanceof Date )
+        {
+            return ISO8601_UTC.get().format( (Date) value);
+        } else
+        {
+            return value.toString();
+        }
     }
 }
