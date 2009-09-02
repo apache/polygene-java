@@ -1,9 +1,5 @@
 package org.qi4j.test.entity;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static org.hamcrest.CoreMatchers.*;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -30,6 +26,10 @@ import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Abstract test with tests for the EntityStore interface.
@@ -357,6 +357,21 @@ public abstract class AbstractEntityStoreTest
     public interface TestEntity
             extends EntityComposite
     {
+        @UseDefaults
+        Property<Integer> intValue();
+
+        @UseDefaults
+        Property<Long> longValue();
+
+        @UseDefaults
+        Property<Double> doubleValue();
+
+        @UseDefaults
+        Property<Float> floatValue();
+
+        @UseDefaults
+        Property<Boolean> booleanValue();
+
         @Optional
         Property<String> name();
 

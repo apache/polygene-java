@@ -14,7 +14,6 @@
 
 package org.qi4j.spi.entity.helpers;
 
-import java.util.LinkedList;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityNotFoundException;
@@ -24,18 +23,20 @@ import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 
+import java.util.LinkedList;
+
 /**
  * JAVADOC
  */
 public final class DefaultEntityStoreUnitOfWork
-    implements EntityStoreUnitOfWork
+        implements EntityStoreUnitOfWork
 {
     private EntityStoreSPI entityStoreSPI;
     private String identity;
     private ModuleSPI module;
     private LinkedList<EntityState> states = new LinkedList<EntityState>();
 
-    public DefaultEntityStoreUnitOfWork( EntityStoreSPI entityStoreSPI, String identity, ModuleSPI module )
+    public DefaultEntityStoreUnitOfWork(EntityStoreSPI entityStoreSPI, String identity, ModuleSPI module)
     {
         this.entityStoreSPI = entityStoreSPI;
         this.identity = identity;
@@ -53,26 +54,31 @@ public final class DefaultEntityStoreUnitOfWork
     }
 
     // EntityStore
-    public EntityState newEntityState( EntityReference anIdentity, EntityDescriptor descriptor ) throws EntityStoreException
+    public EntityState newEntityState(EntityReference anIdentity, EntityDescriptor descriptor) throws EntityStoreException
     {
-        EntityState state = entityStoreSPI.newEntityState( this, anIdentity, descriptor );
-        states.add( state );
+        EntityState state = entityStoreSPI.newEntityState(this, anIdentity, descriptor);
+        states.add(state);
         return state;
     }
 
-    public EntityState getEntityState( EntityReference anIdentity ) throws EntityStoreException, EntityNotFoundException
+    public EntityState getEntityState(EntityReference anIdentity) throws EntityStoreException, EntityNotFoundException
     {
-        EntityState entityState = entityStoreSPI.getEntityState( this, anIdentity );
-        states.add( entityState );
+        EntityState entityState = entityStoreSPI.getEntityState(this, anIdentity);
+        states.add(entityState);
         return entityState;
     }
 
     public StateCommitter apply() throws EntityStoreException
     {
-        return entityStoreSPI.apply( states, identity );
+        return entityStoreSPI.apply(states, identity);
     }
 
     public void discard()
     {
+    }
+
+    public void registerEntityState(EntityState state)
+    {
+        states.add(state);
     }
 }
