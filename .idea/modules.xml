@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/entitystore-jdbm/qi4j-entitystore-jdbm.iml" filepath="$PROJECT_DIR$/entitystore-jdbm/qi4j-entitystore-jdbm.iml" />
       <module fileurl="file://$PROJECT_DIR$/entitystore-neo4j/qi4j-entitystore-neo4j.iml" filepath="$PROJECT_DIR$/entitystore-neo4j/qi4j-entitystore-neo4j.iml" />
+      <module fileurl="file://$PROJECT_DIR$/entitystore-preferences/qi4j-entitystore-preferences.iml" filepath="$PROJECT_DIR$/entitystore-preferences/qi4j-entitystore-preferences.iml" />
       <module fileurl="file://$PROJECT_DIR$/entitystore-qrm/qi4j-entitystore-qrm.iml" filepath="$PROJECT_DIR$/entitystore-qrm/qi4j-entitystore-qrm.iml" />
       <module fileurl="file://$PROJECT_DIR$/entitystore-rest/qi4j-entitystore-rest.iml" filepath="$PROJECT_DIR$/entitystore-rest/qi4j-entitystore-rest.iml" />
       <module fileurl="file://$PROJECT_DIR$/qi4j-extensions.iml" filepath="$PROJECT_DIR$/qi4j-extensions.iml" />
