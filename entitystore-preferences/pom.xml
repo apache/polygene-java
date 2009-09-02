@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.qi4j</groupId>
+    <artifactId>qi4j-extensions</artifactId>
+    <version>1.0-RC2-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.qi4j.extension</groupId>
+  <artifactId>qi4j-entitystore-preferences</artifactId>
+  <version>1.0-RC2-SNAPSHOT</version>
+  <name>Qi4j Extension - Preferences Entity Store</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-api</artifactId>
+      <version>1.0-RC2-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-spi</artifactId>
+      <version>1.0-RC2-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-bootstrap</artifactId>
+      <version>1.0-RC2-SNAPSHOT</version>
+    </dependency>
+
+    <!-- For Tests -->
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-runtime</artifactId>
+      <version>1.0-RC2-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.qi4j.core</groupId>
+      <artifactId>qi4j-core-testsupport</artifactId>
+      <version>1.0-RC2-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

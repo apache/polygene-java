@@ -25,6 +25,7 @@
     <module>indexing-rdf</module>
     <module>entitystore-jdbm</module>
     <module>entitystore-neo4j</module>
+    <module>entitystore-preferences</module>
     <module>entitystore-rest</module>
     <module>entitystore-qrm</module>
   </modules>
