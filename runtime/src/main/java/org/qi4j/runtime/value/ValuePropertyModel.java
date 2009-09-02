@@ -16,10 +16,10 @@ package org.qi4j.runtime.value;
 
 import java.lang.reflect.Method;
 import org.qi4j.api.common.MetaInfo;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.property.PropertyInfo;
+import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PersistentPropertyModel;
 import org.qi4j.spi.property.PropertyType;
@@ -32,30 +32,25 @@ import org.qi4j.spi.value.ValueType;
 public final class ValuePropertyModel extends PersistentPropertyModel
     implements PropertyTypeDescriptor
 {
-    private final PropertyType propertyType;
-    private PropertyInfo propertyInfo;
-
     public ValuePropertyModel( Method anAccessor,
                                Class compositeType, ValueConstraintsInstance constraints,
                                MetaInfo metaInfo,
                                Object defaultValue )
     {
-        super( anAccessor, compositeType, true, constraints, metaInfo, defaultValue );
-        final Queryable queryable = anAccessor.getAnnotation( Queryable.class );
-        boolean isQueryable = queryable == null || queryable.value();
-
-        PropertyType.PropertyTypeEnum type;
-        type = PropertyType.PropertyTypeEnum.IMMUTABLE;
-
-        ValueType valueType = ValueType.newValueType( type(), anAccessor.getDeclaringClass(), compositeType );
-
-        propertyType = new PropertyType( qualifiedName(), valueType, isQueryable, type );
-        propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), qualifiedName(), type() );
+        super( createPropertyType( anAccessor, compositeType ), anAccessor, true, constraints, metaInfo, defaultValue );
     }
 
-    public PropertyType propertyType()
+    private static PropertyType createPropertyType( Method anAccessor, Class compositeType )
     {
-        return propertyType;
+        final Queryable queryable = anAccessor.getAnnotation( Queryable.class );
+        boolean isQueryable = queryable == null || queryable.value();
+        ValueType valueType = ValueType.newValueType( GenericPropertyInfo.getPropertyType( anAccessor ),
+                                                      anAccessor.getDeclaringClass(),
+                                                      compositeType );
+        return new PropertyType( QualifiedName.fromMethod( anAccessor ),
+                                 valueType,
+                                 isQueryable,
+                                 PropertyType.PropertyTypeEnum.IMMUTABLE );
     }
 
     public Property<?> newInstance( Object value )

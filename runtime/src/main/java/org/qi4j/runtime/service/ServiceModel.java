@@ -300,7 +300,7 @@ public final class ServiceModel
         return type().getName() + ":" + identity;
     }
 
-    private Class calculateConfigurationType()
+    public Class calculateConfigurationType()
     {
         final List<DependencyModel> dependencyModels = new ArrayList<DependencyModel>();
         visitModel( new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )

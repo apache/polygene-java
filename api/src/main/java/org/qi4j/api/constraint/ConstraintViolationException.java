@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import org.qi4j.api.composite.Composite;
 
 /**
  * This Exception is thrown when there is one or more Constraint Violations in a method
@@ -43,15 +44,26 @@ public class ConstraintViolationException extends IllegalArgumentException
 {
     private static final long serialVersionUID = 1L;
 
-    // TODO: Method is not serializable, so this won't work.
-    private final Method method;
     private final Collection<ConstraintViolation> constraintViolations;
+    private String methodName;
+    private String mixinTypeName;
+    private String instanceToString;
+    private String instanceTypeName;
 
-    public ConstraintViolationException( Method method,
+
+    public ConstraintViolationException( Composite instance, Method method,
                                          Collection<ConstraintViolation> constraintViolations )
     {
-        this.method = method;
-        this.constraintViolations = constraintViolations;
+        this( instance.toString(), instance.type().getName(), method, constraintViolations );
+    }
+
+    public ConstraintViolationException( String instanceToString, String instanceTypeName, Method method, Collection<ConstraintViolation> violations )
+    {
+        this.instanceToString = instanceToString;
+        this.instanceTypeName = instanceTypeName;
+        mixinTypeName = method.getDeclaringClass().getName();
+        methodName = method.getName();
+        this.constraintViolations = violations;
     }
 
     public Collection<ConstraintViolation> constraintViolations()
@@ -123,7 +135,7 @@ public class ConstraintViolationException extends IllegalArgumentException
             {
                 try
                 {
-                    pattern = bundle.getString( "qi4j.constraint." + method.getDeclaringClass().getName() + "." + method.getName() );
+                    pattern = bundle.getString( "qi4j.constraint." + mixinTypeName + "." + methodName );
                 }
                 catch( MissingResourceException e1 )
                 {
@@ -148,8 +160,10 @@ public class ConstraintViolationException extends IllegalArgumentException
             Object value = violation.value();
             Object[] args = new String[]
                 {
-                    method.getDeclaringClass().getName(),
-                    method.getName(),
+                    instanceToString,
+                    instanceTypeName,
+                    mixinTypeName,
+                    methodName,
                     annotation.toString(),
                     "" + value
                 };
@@ -189,8 +203,13 @@ public class ConstraintViolationException extends IllegalArgumentException
         return localizedMessage();
     }
 
-    public Method method()
+    public String methodName()
     {
-        return method;
+        return methodName;
+    }
+
+    public String compositeTypeName()
+    {
+        return mixinTypeName;
     }
 }

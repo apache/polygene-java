@@ -192,14 +192,15 @@ public abstract class AbstractPropertyModel
 
     public abstract <T> Property<T> newInstance( Object value );
 
-    public void checkConstraints( Object value ) throws ConstraintViolationException
+    public void checkConstraints( Object value )
+        throws ConstraintViolationException
     {
         if( constraints != null )
         {
             List<ConstraintViolation> violations = constraints.checkConstraints( value );
             if( !violations.isEmpty() )
             {
-                throw new ConstraintViolationException( accessor, violations );
+                throw new ConstraintViolationException( "", "<unknown>", accessor, violations );
             }
         }
     }

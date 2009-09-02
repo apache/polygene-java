@@ -163,7 +163,7 @@ public final class AssociationModel
             List<ConstraintViolation> violations = constraints.checkConstraints( value );
             if( !violations.isEmpty() )
             {
-                throw new ConstraintViolationException( accessor, violations );
+                throw new ConstraintViolationException( "", "<unknown>", accessor, violations );
             }
         }
     }
@@ -188,7 +188,7 @@ public final class AssociationModel
             List<ConstraintViolation> violations = associationConstraints.checkConstraints( association );
             if( !violations.isEmpty() )
             {
-                throw new ConstraintViolationException( accessor, violations );
+                throw new ConstraintViolationException( (Composite) association.get(), accessor, violations );
             }
         }
     }

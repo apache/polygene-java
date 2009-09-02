@@ -43,7 +43,17 @@ public abstract class PersistentPropertyModel
     private final PropertyType propertyType;
     protected final PropertyInfo propertyInfo;
 
-    public PersistentPropertyModel( Method accessor, Class compositeType, boolean immutable, ValueConstraintsInstance constraints, MetaInfo metaInfo, Object initialValue )
+    public PersistentPropertyModel( PropertyType propertyType, Method accessor, boolean immutable,
+                                    ValueConstraintsInstance constraints, MetaInfo metaInfo, Object initialValue )
+    {
+        super( accessor, immutable, constraints, metaInfo, initialValue );
+        this.propertyType = propertyType;
+        this.queryable = propertyType.queryable();
+        propertyInfo = new GenericPropertyInfo( metaInfo, immutable, isComputed(), qualifiedName(), type() );
+    }
+
+    public PersistentPropertyModel( Method accessor, Class compositeType, boolean immutable,
+                                    ValueConstraintsInstance constraints, MetaInfo metaInfo, Object initialValue )
     {
         super( accessor, immutable, constraints, metaInfo, initialValue );
 
