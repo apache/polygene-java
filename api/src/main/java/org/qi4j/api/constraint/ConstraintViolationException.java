@@ -17,6 +17,8 @@
  */
 package org.qi4j.api.constraint;
 
+import org.qi4j.api.composite.Composite;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
@@ -25,7 +27,6 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import org.qi4j.api.composite.Composite;
 
 /**
  * This Exception is thrown when there is one or more Constraint Violations in a method
@@ -117,7 +118,7 @@ public class ConstraintViolationException extends IllegalArgumentException
      * <td>toString() of value passed as the argument, or "null" text if argument was null.</td>
      * </tr>
      * </table>
-     *
+     * <p/>
      * <b>NOTE!!!</b> This class is still under construction and will be modified further.
      *
      * @param bundle The ResourceBundle for Localization, or null if default formatting and locale to be used.
@@ -128,29 +129,28 @@ public class ConstraintViolationException extends IllegalArgumentException
         String pattern = "Constraint violation in {0}.{1} with constraint {2}, for value ''{3}''";
 
         ArrayList<String> list = new ArrayList<String>();
-        for( ConstraintViolation violation : constraintViolations )
+        for (ConstraintViolation violation : constraintViolations)
         {
             Locale locale;
-            if( bundle != null )
+            if (bundle != null)
             {
                 try
                 {
                     pattern = bundle.getString( "qi4j.constraint." + mixinTypeName + "." + methodName );
                 }
-                catch( MissingResourceException e1 )
+                catch (MissingResourceException e1)
                 {
                     try
                     {
                         pattern = bundle.getString( "qi4j.constraint" );
                     }
-                    catch( MissingResourceException e2 )
+                    catch (MissingResourceException e2)
                     {
                         // ignore. The default pattern will be used.
                     }
                 }
                 locale = bundle.getLocale();
-            }
-            else
+            } else
             {
                 locale = Locale.getDefault();
             }
@@ -159,14 +159,14 @@ public class ConstraintViolationException extends IllegalArgumentException
             Annotation annotation = violation.constraint();
             Object value = violation.value();
             Object[] args = new String[]
-                {
-                    instanceToString,
-                    instanceTypeName,
-                    mixinTypeName,
-                    methodName,
-                    annotation.toString(),
-                    "" + value
-                };
+                    {
+                            instanceToString,
+                            instanceTypeName,
+                            mixinTypeName,
+                            methodName,
+                            annotation.toString(),
+                            "" + value
+                    };
             StringBuffer text = new StringBuffer();
             format.format( args, text, null );
             list.add( text.toString() );
@@ -181,9 +181,9 @@ public class ConstraintViolationException extends IllegalArgumentException
         String[] messages = getLocalizedMessages( null );
         StringBuffer result = new StringBuffer();
         boolean first = true;
-        for( String message : messages )
+        for (String message : messages)
         {
-            if( !first )
+            if (!first)
             {
                 result.append( ',' );
             }
@@ -193,12 +193,14 @@ public class ConstraintViolationException extends IllegalArgumentException
         return result.toString();
     }
 
-    @Override public String getLocalizedMessage()
+    @Override
+    public String getLocalizedMessage()
     {
         return localizedMessage();
     }
 
-    @Override public String getMessage()
+    @Override
+    public String getMessage()
     {
         return localizedMessage();
     }
@@ -208,7 +210,7 @@ public class ConstraintViolationException extends IllegalArgumentException
         return methodName;
     }
 
-    public String compositeTypeName()
+    public String mixinTypeName()
     {
         return mixinTypeName;
     }

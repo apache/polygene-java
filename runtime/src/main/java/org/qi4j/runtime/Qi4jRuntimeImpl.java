@@ -14,11 +14,6 @@
 
 package org.qi4j.runtime;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import static java.lang.reflect.Proxy.*;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.PropertyMapper;
@@ -28,6 +23,7 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -46,6 +42,7 @@ import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.service.ServiceInstance;
 import org.qi4j.runtime.service.ServiceModel;
+import org.qi4j.runtime.service.ServiceReferenceInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
@@ -57,13 +54,20 @@ import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.value.ValueDescriptor;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import static java.lang.reflect.Proxy.*;
 
 /**
  * Incarnation of Qi4j.
  */
 public final class Qi4jRuntimeImpl
-    implements Qi4jSPI, Qi4jRuntime, Serializable
+        implements Qi4jSPI, Qi4jRuntime, Serializable
 {
     ApplicationAssemblyFactory applicationAssemblyFactory;
     ApplicationModelFactory applicationModelFactory;
@@ -93,28 +97,28 @@ public final class Qi4jRuntimeImpl
     public <T> T dereference( T composite )
     {
         InvocationHandler handler = getInvocationHandler( composite );
-        if( handler instanceof ProxyReferenceInvocationHandler )
+        if (handler instanceof ProxyReferenceInvocationHandler)
         {
-            return (T) ( (ProxyReferenceInvocationHandler) handler ).proxy();
+            return (T) ((ProxyReferenceInvocationHandler) handler).proxy();
         }
-        if( handler instanceof CompositeInstance )
+        if (handler instanceof CompositeInstance)
         {
             return composite;
         }
         return null;
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public <S extends Composite, T extends S> Class<S> getSuperComposite( Class<T> compositeClass )
     {
         Class<?>[] extendedInterfaces = compositeClass.getInterfaces();
-        for( Class<?> extendedInterface : extendedInterfaces )
+        for (Class<?> extendedInterface : extendedInterfaces)
         {
-            if( Composite.class.isAssignableFrom( extendedInterface ) &&
-                !Composite.class.equals( extendedInterface ) &&
-                !EntityComposite.class.equals( extendedInterface ) &&
-                !ServiceComposite.class.equals( extendedInterface )
-                )
+            if (Composite.class.isAssignableFrom( extendedInterface ) &&
+                    !Composite.class.equals( extendedInterface ) &&
+                    !EntityComposite.class.equals( extendedInterface ) &&
+                    !ServiceComposite.class.equals( extendedInterface )
+                    )
             {
                 return (Class<S>) extendedInterface;
             }
@@ -123,7 +127,7 @@ public final class Qi4jRuntimeImpl
     }
 
     public <T> T getConfigurationInstance( ServiceComposite serviceComposite, UnitOfWork uow )
-        throws InstantiationException
+            throws InstantiationException
     {
         ServiceModel serviceModel = (ServiceModel) TransientInstance.getCompositeInstance( serviceComposite ).compositeModel();
 
@@ -134,7 +138,7 @@ public final class Qi4jRuntimeImpl
             configuration = uow.get( serviceModel.<T>configurationType(), identity );
             uow.pause();
         }
-        catch( NoSuchEntityException e )
+        catch (NoSuchEntityException e)
         {
 
             Module module = ServiceInstance.getCompositeInstance( serviceComposite ).module();
@@ -145,13 +149,13 @@ public final class Qi4jRuntimeImpl
             // Check for defaults
             String s = identity + ".properties";
             InputStream asStream = serviceComposite.type().getResourceAsStream( s );
-            if( asStream != null )
+            if (asStream != null)
             {
                 try
                 {
                     PropertyMapper.map( asStream, (Composite) configBuilder.instance() );
                 }
-                catch( IOException e1 )
+                catch (IOException e1)
                 {
                     InstantiationException exception = new InstantiationException( "Could not read underlying Properties file." );
                     exception.initCause( e1 );
@@ -167,7 +171,7 @@ public final class Qi4jRuntimeImpl
                 // Try again
                 return (T) getConfigurationInstance( serviceComposite, uow );
             }
-            catch( Exception e1 )
+            catch (Exception e1)
             {
                 InstantiationException ex = new InstantiationException( "Could not instantiate configuration, and no Properties file was found (" + s + ")" );
                 ex.initCause( e1 );
@@ -185,12 +189,19 @@ public final class Qi4jRuntimeImpl
 
     public Module getModule( UnitOfWork uow )
     {
-        return ( (ModuleUnitOfWork) uow ).module();
+        return ((ModuleUnitOfWork) uow).module();
     }
 
     public Module getModule( Composite composite )
     {
-        return ( (CompositeInstance) composite ).module();
+        if (composite instanceof TransientComposite)
+            return TransientInstance.getCompositeInstance( composite ).module();
+        else if (composite instanceof EntityComposite)
+            return EntityInstance.getEntityInstance( (EntityComposite) composite ).module();
+        else if (composite instanceof ValueComposite)
+            return ValueInstance.getValueInstance( (ValueComposite) composite ).module();
+        else
+            return null;
     }
 
     // SPI
@@ -201,7 +212,7 @@ public final class Qi4jRuntimeImpl
     }
 
     class CompositeFinder
-        implements ModuleVisitor
+            implements ModuleVisitor
     {
         Class type;
         TransientModel model;
@@ -225,7 +236,7 @@ public final class Qi4jRuntimeImpl
     }
 
     class EntityFinder
-        implements ModuleVisitor
+            implements ModuleVisitor
     {
         Class type;
         EntityModel model;
@@ -254,7 +265,7 @@ public final class Qi4jRuntimeImpl
     }
 
     class ValueFinder
-        implements ModuleVisitor
+            implements ModuleVisitor
     {
         Class type;
         ValueModel model;
@@ -271,8 +282,18 @@ public final class Qi4jRuntimeImpl
         return ValueInstance.getValueInstance( composite ).state();
     }
 
+    public ServiceDescriptor getServiceDescriptor( ServiceReference service )
+    {
+        if (service instanceof ServiceReferenceInstance)
+        {
+            ServiceReferenceInstance ref = (ServiceReferenceInstance) service;
+            return ref.serviceDescriptor();
+        } else
+            return null;
+    }
+
     class ObjectFinder
-        implements ModuleVisitor
+            implements ModuleVisitor
     {
         Class type;
         ObjectModel model;
