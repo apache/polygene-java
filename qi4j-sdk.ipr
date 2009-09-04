@@ -1458,6 +1458,83 @@
         <root url="jar://$M2_REPO$/org/qi4j/swing/qi4j-swing-envisage/1.0-RC1/qi4j-swing-envisage-1.0-RC1-sources.jar!/" />
       </SOURCES>
     </library>
+    <library name="Maven: org.prefuse:prefuse:20071021">
+      <CLASSES>
+        <root url="jar://$M2_REPO$/org/prefuse/prefuse/20071021/prefuse-20071021.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$M2_REPO$/org/prefuse/prefuse/20071021/prefuse-20071021-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$M2_REPO$/org/prefuse/prefuse/20071021/prefuse-20071021-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: com.jgoodies:looks:2.2.0">
+      <CLASSES>
+        <root url="jar://$M2_REPO$/com/jgoodies/looks/2.2.0/looks-2.2.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$M2_REPO$/com/jgoodies/looks/2.2.0/looks-2.2.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$M2_REPO$/com/jgoodies/looks/2.2.0/looks-2.2.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: pdfbox:pdfbox:0.7.3">
+      <CLASSES>
+        <root url="jar://$M2_REPO$/pdfbox/pdfbox/0.7.3/pdfbox-0.7.3.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$M2_REPO$/pdfbox/pdfbox/0.7.3/pdfbox-0.7.3-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$M2_REPO$/pdfbox/pdfbox/0.7.3/pdfbox-0.7.3-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.fontbox:fontbox:0.1.0">
+      <CLASSES>
+        <root url="jar://$M2_REPO$/org/fontbox/fontbox/0.1.0/fontbox-0.1.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$M2_REPO$/org/fontbox/fontbox/0.1.0/fontbox-0.1.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$M2_REPO$/org/fontbox/fontbox/0.1.0/fontbox-0.1.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.jempbox:jempbox:0.2.0">
+      <CLASSES>
+        <root url="jar://$M2_REPO$/org/jempbox/jempbox/0.2.0/jempbox-0.2.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$M2_REPO$/org/jempbox/jempbox/0.2.0/jempbox-0.2.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$M2_REPO$/org/jempbox/jempbox/0.2.0/jempbox-0.2.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: bouncycastle:bcmail-jdk14:136">
+      <CLASSES>
+        <root url="jar://$M2_REPO$/bouncycastle/bcmail-jdk14/136/bcmail-jdk14-136.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$M2_REPO$/bouncycastle/bcmail-jdk14/136/bcmail-jdk14-136-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$M2_REPO$/bouncycastle/bcmail-jdk14/136/bcmail-jdk14-136-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: bouncycastle:bcprov-jdk14:136">
+      <CLASSES>
+        <root url="jar://$M2_REPO$/bouncycastle/bcprov-jdk14/136/bcprov-jdk14-136.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$M2_REPO$/bouncycastle/bcprov-jdk14/136/bcprov-jdk14-136-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$M2_REPO$/bouncycastle/bcprov-jdk14/136/bcprov-jdk14-136-sources.jar!/" />
+      </SOURCES>
+    </library>
   </component>
   <UsedPathMacros>
     <macro name="M2_REPO" description="" />

@@ -119,6 +119,13 @@
     <orderEntry type="library" exported="" name="Maven: org.restlet:org.restlet.ext.atom:2.0-M3" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.restlet:org.restlet.ext.servlet:2.0-M3" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.qi4j.swing:qi4j-swing-envisage:1.0-RC1" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.prefuse:prefuse:20071021" level="project" />
+    <orderEntry type="library" exported="" name="Maven: com.jgoodies:looks:2.2.0" level="project" />
+    <orderEntry type="library" exported="" name="Maven: pdfbox:pdfbox:0.7.3" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.fontbox:fontbox:0.1.0" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.jempbox:jempbox:0.2.0" level="project" />
+    <orderEntry type="library" exported="" name="Maven: bouncycastle:bcmail-jdk14:136" level="project" />
+    <orderEntry type="library" exported="" name="Maven: bouncycastle:bcprov-jdk14:136" level="project" />
   </component>
 </module>
 

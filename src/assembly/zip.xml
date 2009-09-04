@@ -1,7 +1,7 @@
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.1"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.1 http://maven.apache.org/xsd/assembly-1.1.1.xsd">
-  <id>default</id>
+  <id>RC1</id>
   <formats>
     <format>tar.gz</format>
     <format>tar.bz2</format>
@@ -22,17 +22,73 @@
     <fileSet>
       <directory>${project.basedir}</directory>
       <includes>
+        <include>README</include>
         <include>LICENSE</include>
         <include>NOTICE</include>
       </includes>
     </fileSet>
+    <fileSet>
+      <directory>${project.basedir}/../qi4j-samples/dddsample/src</directory>
+      <outputDirectory>samples/dddsample/src</outputDirectory>
+      <includes>
+        <include>**</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${project.basedir}/../qi4j-samples/rental/src</directory>
+      <outputDirectory>samples/rental/src</outputDirectory>
+      <includes>
+        <include>**</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${project.basedir}/../qi4j-samples/struts2/src</directory>
+      <outputDirectory>samples/struts2/src</outputDirectory>
+      <includes>
+        <include>**</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${project.basedir}/../qi4j-tutorials/composites/src</directory>
+      <outputDirectory>tutorials/composites/src</outputDirectory>
+      <includes>
+        <include>**</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${project.basedir}/../qi4j-tutorials/introduction/twominutes/src</directory>
+      <outputDirectory>tutorials/introduction/twominutes/src</outputDirectory>
+      <includes>
+        <include>**</include>
+      </includes>
+    </fileSet>
   </fileSets>
-  <!--<dependencySets>-->
-    <!--<dependencySet>-->
-      <!--<outputDirectory>lib/</outputDirectory>-->
-      <!--<scope>runtime</scope>-->
-      <!--<useTransitiveDependencies>true</useTransitiveDependencies>-->
-    <!--</dependencySet>-->
-  <!--</dependencySets>-->
+
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>lib/</outputDirectory>
+      <scope>runtime</scope>
+      <directoryMode>true</directoryMode>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useTransitiveDependencies>true</useTransitiveDependencies>
+      <excludes>
+        <exclude>org.springframework:*</exclude>
+        <exclude>org.codehaus.groovy:*</exclude>
+        <exclude>org.jruby:*</exclude>
+        <exclude>org.beanshell:*</exclude>
+        <exclude>rhino:*</exclude>
+        <exclude>org.apache.ant:*</exclude>
+        <exclude>org.apache.struts:*</exclude>
+        <exclude>com.opensymphony:xwork:*</exclude>
+        <exclude>org.freemarker:*</exclude>
+        <exclude>opensymphony:ognl:*</exclude>
+        <exclude>commons-fileupload:*</exclude>
+        <exclude>commons-io:commons-io:*</exclude>
+        <exclude>org.osgi:*</exclude>
+        <exclude>org.junit:*</exclude>
+        <exclude>junit:*</exclude>
+      </excludes>
+    </dependencySet>
+  </dependencySets>
 </assembly>
   
