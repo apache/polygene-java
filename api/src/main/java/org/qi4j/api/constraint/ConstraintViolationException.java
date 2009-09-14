@@ -126,7 +126,7 @@ public class ConstraintViolationException extends IllegalArgumentException
      */
     public String[] getLocalizedMessages( ResourceBundle bundle )
     {
-        String pattern = "Constraint violation in {0}.{1} with constraint {4}, for value ''{5}''";
+        String pattern = "Constraint violation in {0}.{1} for method {3} with constraint {4}, for value ''{5}''";
 
         ArrayList<String> list = new ArrayList<String>();
         for (ConstraintViolation violation : constraintViolations)
