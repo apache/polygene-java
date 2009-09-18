@@ -38,6 +38,9 @@ spaces/bootstrap/target/
 spaces/javaspaces/target/
 spaces/tests/target/
 spring/target/
+spring/.project
+spring/.classpath
+spring/.settings/
 struts2/codebehind/target/
 struts2/example/target/
 struts2/plugin/target/
