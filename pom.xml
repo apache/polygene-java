@@ -10,8 +10,8 @@
   <url>http://www.qi4j.org/</url>
 
   <properties>
-    <version.qi4j-core>1.0-RC1</version.qi4j-core>
-    <version.qi4j-libraries>1.0-RC1</version.qi4j-libraries>
+    <version.qi4j-core>1.0-RC2-SNAPSHOT</version.qi4j-core>
+    <version.qi4j-libraries>1.0-RC2-SNAPSHOT</version.qi4j-libraries>
   </properties>
 
   <scm>
@@ -34,6 +34,13 @@
     <repository>
       <id>ops4j-repository</id>
       <url>http://repository.ops4j.org/maven2</url>
+    </repository>
+    <repository>
+      <id>aduna</id>
+      <url>http://repo.aduna-software.org/maven2/releases/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
   </repositories>
 
