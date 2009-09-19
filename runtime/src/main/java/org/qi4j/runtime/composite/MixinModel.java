@@ -36,6 +36,7 @@ import net.sf.cglib.proxy.MethodProxy;
 import net.sf.cglib.proxy.NoOp;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
@@ -257,6 +258,7 @@ public final class MixinModel
             Set<Class> classes = Classes.interfacesOf( mixinClass );
             classes.remove( Activatable.class );
             classes.remove( Initializable.class );
+            classes.remove( Lifecycle.class );
             thisDependencies.addAll( classes );
         }
     }
