@@ -586,7 +586,8 @@ public final class UnitOfWorkInstance
 
     abstract class ForEachEntity
     {
-        public void execute() throws Exception
+        void execute()
+            throws Exception
         {
             for( EntityInstance entityInstance : instanceCache.values() )
             {
