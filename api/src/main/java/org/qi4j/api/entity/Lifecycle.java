@@ -27,26 +27,7 @@ import org.qi4j.api.mixin.Mixins;
  * <code><pre>
  * public interface System
  * {
- *     User getAdmin();
- *
- *     void setAdmin( User admin );
- *
- * }
- *
- * public class SystemImpl
- *     implements System
- * {
- *     private User admin;
- *
- *     public User getAdmin()
- *     {
- *         return admin;
- *     }
- *
- *     public void setAdmin( User admin )
- *     {
- *         this.admin = admin;
- *     }
+ *     Property&lt;User&gt; admin();
  * }
  *
  * public class SystemAdminLifecycleConcern extends ConcernOf<LifeCycle>
@@ -73,7 +54,7 @@ import org.qi4j.api.mixin.Mixins;
  * }
  *
  * &#64;Concerns( SystemAdminLifecycleModifier.class )
- * public interface SystemComposite extends System, Composite
+ * public interface SystemEntity extends System, EntityComposite
  * {}
  *
  * </pre></code>
