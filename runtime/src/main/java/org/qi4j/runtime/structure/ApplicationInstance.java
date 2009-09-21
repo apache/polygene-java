@@ -57,6 +57,11 @@ public class ApplicationInstance
         return model.name();
     }
 
+    public String version()
+    {
+        return model.version();
+    }
+
     public Mode mode()
     {
         return model.mode();

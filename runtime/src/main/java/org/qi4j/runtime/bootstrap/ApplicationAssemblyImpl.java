@@ -35,6 +35,7 @@ public final class ApplicationAssemblyImpl
 {
     private Map<String, LayerAssemblyImpl> layerAssemblies = new LinkedHashMap<String, LayerAssemblyImpl>();
     private String name = "Application";
+    private String version = "1.0"; // Default version
     private Application.Mode mode;
     private MetaInfo metaInfo = new MetaInfo();
 
@@ -61,6 +62,12 @@ public final class ApplicationAssemblyImpl
     public ApplicationAssembly setName( String name )
     {
         this.name = name;
+        return this;
+    }
+
+    public ApplicationAssembly setVersion( String version )
+    {
+        this.version = version;
         return this;
     }
 
@@ -98,6 +105,11 @@ public final class ApplicationAssemblyImpl
     public String name()
     {
         return name;
+    }
+
+    public String version()
+    {
+        return version;
     }
 
     public Application.Mode mode()

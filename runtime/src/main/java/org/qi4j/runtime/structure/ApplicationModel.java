@@ -38,14 +38,16 @@ public final class ApplicationModel
     implements ApplicationModelSPI, ApplicationDescriptor, Serializable
 {
     private final String name;
+    private final String version;
     private Application.Mode mode;
     private MetaInfo metaInfo;
     private final List<LayerModel> layers;
     private final InjectionProviderFactory ipf;
 
-    public ApplicationModel( String name, Application.Mode mode, MetaInfo metaInfo, List<LayerModel> layers )
+    public ApplicationModel( String name, String version, Application.Mode mode, MetaInfo metaInfo, List<LayerModel> layers )
     {
         this.name = name;
+        this.version = version;
         this.mode = mode;
         this.metaInfo = metaInfo;
         this.layers = layers;
@@ -55,6 +57,11 @@ public final class ApplicationModel
     public String name()
     {
         return name;
+    }
+
+    public String version()
+    {
+        return version;
     }
 
     public Application.Mode mode()
