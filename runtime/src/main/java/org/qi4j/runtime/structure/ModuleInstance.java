@@ -105,7 +105,7 @@ public class ModuleInstance
         composites = new CompositesInstance( compositesModel, this );
         entities = new EntitiesInstance( entitiesModel, this );
         objects = new ObjectsInstance( objectsModel, this );
-        values = new ValuesInstance( valuesModel, this );
+        values = new ValuesInstance( valuesModel );
         services = servicesModel.newInstance( this );
         importedServices = importedServicesModel.newInstance( this );
 

@@ -30,7 +30,7 @@ import org.qi4j.api.util.Classes;
 /**
  * Useful methods for handling Annotations.
  */
-public class Annotations
+public final class Annotations
 {
     public static Annotation getInjectionAnnotation( Annotation[] parameterAnnotation )
     {
