@@ -27,6 +27,14 @@ public interface Application
 
     String name();
 
+    /**
+     * The version of the application. This can be in any format, but
+     * most likely will follow the Dewey format, i.e. x.y.z.
+     *
+     * @return the version of the application
+     */
+    String version();
+
     Mode mode();
 
     <T> T metaInfo( Class<T> infoType );

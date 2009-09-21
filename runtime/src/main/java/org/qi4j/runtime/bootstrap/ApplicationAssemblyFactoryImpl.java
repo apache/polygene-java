@@ -37,7 +37,6 @@ public final class ApplicationAssemblyFactoryImpl
         throws AssemblyException
     {
         ApplicationAssembly applicationAssembly = newApplicationAssembly();
-        applicationAssembly.setName( "Application" );
 
         // Build all layers bottom-up
         LayerAssembly below = null;
