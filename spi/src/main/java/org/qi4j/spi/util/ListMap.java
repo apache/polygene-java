@@ -20,7 +20,8 @@ import java.util.List;
 
 /**
  * Map whose values are Lists of things. Create
- * one ArrayList for each key that is added
+ * one ArrayList for each key that is added. The list does not allow
+ * duplicates.
  */
 public final class ListMap<K, V>
     extends HashMap<K, List<V>>
@@ -33,6 +34,9 @@ public final class ListMap<K, V>
             list = new ArrayList<V>();
             put( key, list );
         }
-        list.add( value );
+        if( !list.contains( value ) )
+        {
+            list.add( value );
+        }
     }
 }
