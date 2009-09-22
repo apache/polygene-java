@@ -80,13 +80,12 @@ public final class EntityInstance
     public EntityInstance( ModuleUnitOfWork uow,
                            ModuleInstance moduleInstance,
                            EntityModel entityModel,
-                           EntityReference identity,
                            EntityState entityState )
     {
         this.uow = uow;
         this.moduleInstance = moduleInstance;
         this.entityModel = entityModel;
-        this.identity = identity;
+        this.identity = entityState.identity();
         this.entityState = entityState;
 
         proxy = entityModel.newProxy( this );

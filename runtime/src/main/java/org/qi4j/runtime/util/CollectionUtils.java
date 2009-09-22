@@ -2,7 +2,7 @@ package org.qi4j.runtime.util;
 
 import java.util.Iterator;
 
-public class CollectionUtils
+public final class CollectionUtils
 {
     public static <K> Object firstElementOrNull( Iterable iterable )
     {

@@ -140,7 +140,7 @@ public class ModuleUnitOfWork
         }
         entityState.setProperty( identityStateName, identity );
 
-        EntityInstance instance = new EntityInstance( this, moduleInstance, entityModel, entityState.identity(), entityState );
+        EntityInstance instance = new EntityInstance( this, moduleInstance, entityModel, entityState );
 
         entityModel.invokeCreate( instance );
 

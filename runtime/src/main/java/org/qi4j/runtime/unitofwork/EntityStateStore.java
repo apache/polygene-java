@@ -20,7 +20,7 @@ import org.qi4j.spi.entity.EntityState;
 /**
  * JAVADOC
  */
-class EntityStateStore
+final class EntityStateStore
 {
     EntityStateHolder stateHolder;
     EntityState state;

@@ -26,7 +26,7 @@ import org.qi4j.runtime.structure.ModelVisitor;
 /**
  * JAVADOC
  */
-public class ValuesModel
+public final class ValuesModel
     implements Binder
 {
     private final List<? extends ValueModel> valueModels;

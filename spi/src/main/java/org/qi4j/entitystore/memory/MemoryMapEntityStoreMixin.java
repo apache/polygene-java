@@ -137,10 +137,12 @@ public class MemoryMapEntityStoreMixin
             throws EntityNotFoundException
         {
             String state = store.remove( ref );
-            if( state == null )
-            {
-                throw new EntityNotFoundException( ref );
-            }
+            // Ignore if the entity didn't already exist, as that can happen if it is both created and removed
+            // within the same UnitOfWork.
+//            if( state == null )
+//            {
+//                throw new EntityNotFoundException( ref );
+//            }
         }
     }
 }

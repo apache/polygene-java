@@ -14,20 +14,16 @@
 
 package org.qi4j.runtime.value;
 
-import org.qi4j.runtime.structure.ModuleInstance;
-
 /**
  * JAVADOC
  */
-public class ValuesInstance
+public final class ValuesInstance
 {
     private final ValuesModel values;
-    private final ModuleInstance moduleInstance;
 
-    public ValuesInstance( ValuesModel values, ModuleInstance moduleInstance )
+    public ValuesInstance( ValuesModel values )
     {
         this.values = values;
-        this.moduleInstance = moduleInstance;
     }
 
     public ValuesModel model()
