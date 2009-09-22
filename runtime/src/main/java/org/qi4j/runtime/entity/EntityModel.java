@@ -181,9 +181,9 @@ public final class EntityModel
         stateModel.bind( resolution );
     }
 
-    public EntityInstance newInstance( ModuleUnitOfWork uow, ModuleInstance moduleInstance, EntityReference identity, EntityState state )
+    public EntityInstance newInstance( ModuleUnitOfWork uow, ModuleInstance moduleInstance, EntityState state )
     {
-        EntityInstance instance = new EntityInstance( uow, moduleInstance, this, identity, state );
+        EntityInstance instance = new EntityInstance( uow, moduleInstance, this, state );
         return instance;
     }
 

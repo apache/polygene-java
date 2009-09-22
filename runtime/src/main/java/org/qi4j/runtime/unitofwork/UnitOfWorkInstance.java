@@ -184,7 +184,7 @@ public final class UnitOfWorkInstance
             }
 
             // Create instance
-            entityInstance = new EntityInstance( uow, module, model, identity, entityState );
+            entityInstance = new EntityInstance( uow, module, model, entityState );
 
             stateCache.put( identity, entityState );
             InstanceKey instanceKey = new InstanceKey( model.entityType().type(), identity );
@@ -233,7 +233,7 @@ public final class UnitOfWorkInstance
             }
 
             // Create instance
-            entityInstance = new EntityInstance( uow, module, model, identity, entityState );
+            entityInstance = new EntityInstance( uow, module, model, entityState );
 
             instanceKey.update( model.entityType().type(), identity );
             instanceCache.put( instanceKey, entityInstance );

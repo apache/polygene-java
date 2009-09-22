@@ -47,7 +47,7 @@ public final class BuilderEntityState
 
     public EntityReference identity()
     {
-        return identity();
+        return reference;
     }
 
     public String version()

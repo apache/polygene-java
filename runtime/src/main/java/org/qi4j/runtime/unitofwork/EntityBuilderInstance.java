@@ -14,12 +14,10 @@
 
 package org.qi4j.runtime.unitofwork;
 
-import java.lang.reflect.Method;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
-import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
@@ -35,9 +33,7 @@ import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
 public final class EntityBuilderInstance<T>
     implements EntityBuilder<T>
 {
-    private static final Method IDENTITY_METHOD;
-    private static final Method CREATE_METHOD;
-    private static QualifiedName identityStateName;
+    private static final QualifiedName identityStateName;
 
     private final ModuleInstance moduleInstance;
     private final EntityModel entityModel;
@@ -52,8 +48,7 @@ public final class EntityBuilderInstance<T>
     {
         try
         {
-            IDENTITY_METHOD = Identity.class.getMethod( "identity" );
-            CREATE_METHOD = Lifecycle.class.getMethod( "create" );
+            identityStateName = QualifiedName.fromMethod( Identity.class.getMethod( "identity" ) );
         }
         catch( NoSuchMethodException e )
         {
@@ -69,17 +64,11 @@ public final class EntityBuilderInstance<T>
         this.uow = uow;
         this.store = store;
         this.identity = identity;
-
-        if( identityStateName == null )
-        {
-            identityStateName = QualifiedName.fromMethod( IDENTITY_METHOD );
-        }
-
         EntityReference reference = new EntityReference( identity );
         entityState = new BuilderEntityState( entityModel, reference );
         entityModel.initState( entityState );
         entityState.setProperty( identityStateName, identity );
-        prototypeInstance = entityModel.newInstance( uow, moduleInstance, reference, entityState );
+        prototypeInstance = entityModel.newInstance( uow, moduleInstance, entityState );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -113,7 +102,7 @@ public final class EntityBuilderInstance<T>
 
         entityState.copyTo( newEntityState );
 
-        EntityInstance instance = entityModel.newInstance( uow, moduleInstance, newEntityState.identity(), newEntityState );
+        EntityInstance instance = entityModel.newInstance( uow, moduleInstance, newEntityState );
 
         Object proxy = instance.proxy();
 
