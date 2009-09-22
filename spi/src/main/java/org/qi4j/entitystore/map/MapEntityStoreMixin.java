@@ -223,6 +223,8 @@ public class MapEntityStoreMixin
                 assocs.endArray();
             }
             manyAssociations.endObject().endObject();
+
+            state.hasBeenApplied();
         }
         catch( JSONException e )
         {
@@ -240,7 +242,7 @@ public class MapEntityStoreMixin
             EntityStatus status = EntityStatus.LOADED;
 
             // Check if version is correct
-            if( !jsonObject.getString( MapEntityStore.JSONKeys.application_version.name() ).equals( application.version() ) )
+            if( !jsonObject.optString( MapEntityStore.JSONKeys.application_version.name(), "1.0" ).equals( application.version() ) )
             {
                 if( migration != null )
                 {
