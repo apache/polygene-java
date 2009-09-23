@@ -38,6 +38,7 @@ Import-Package: org.apache.commons.logging, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.entity, \
                 org.qi4j.spi.entity.association, \
+                org.qi4j.spi.entitystore, \
                 org.qi4j.spi.mixin, \
                 org.qi4j.spi.object, \
                 org.qi4j.spi.property, \

@@ -24,7 +24,7 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.entitystore.neo4j.NeoCoreService;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.entitystore.StateCommitter;
 
 public class DirectEntityStateFactoryMixin implements NodeEntityStateFactory
 {

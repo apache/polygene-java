@@ -2,8 +2,7 @@ Export-Package: org.qi4j.rest;version="${pom.version}", \
                 org.qi4j.rest.assembly;version="${pom.version}", \
                 org.qi4j.rest.client;version="${pom.version}", \
                 org.qi4j.rest.entity;version="${pom.version}", \
-                org.qi4j.rest.query;version="${pom.version}", \
-                org.qi4j.rest.type;version="${pom.version}"
+                org.qi4j.rest.query;version="${pom.version}"
 
 Import-Package: javax.servlet, \
                 org.openrdf.rio, \
@@ -53,11 +52,11 @@ Import-Package: javax.servlet, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.entity, \
                 org.qi4j.spi.entity.association, \
-                org.qi4j.spi.entity.helpers, \
+                org.qi4j.spi.entitystore.helpers, \
+                org.qi4j.spi.entitystore, \
                 org.qi4j.spi.property, \
                 org.qi4j.spi.query, \
                 org.qi4j.spi.service, \
-                org.qi4j.spi.serialization, \
                 org.qi4j.spi.structure, \
                 org.qi4j.spi.unitofwork, \
                 org.qi4j.spi.value, \

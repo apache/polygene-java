@@ -14,19 +14,14 @@
 package org.qi4j.rest.entity;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.Entity;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.usecase.Usecase;
-import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
-import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.restlet.data.CharacterSet;
@@ -54,10 +49,8 @@ import org.w3c.dom.Element;
  */
 public class EntitiesResource extends ServerResource
 {
-    @Service
-    private EntityFinder entityFinder;
-    @Service
-    private EntityStore entityStore;
+    @Service private EntityFinder entityFinder;
+    @Service private EntityStore entityStore;
 
     public EntitiesResource()
     {

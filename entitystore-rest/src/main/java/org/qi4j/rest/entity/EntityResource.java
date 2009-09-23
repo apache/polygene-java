@@ -17,58 +17,6 @@
  */
 package org.qi4j.rest.entity;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.openrdf.model.Statement;
-import org.openrdf.rio.RDFHandlerException;
-import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.common.TypeName;
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.usecase.Usecase;
-import org.qi4j.api.usecase.UsecaseBuilder;
-import org.qi4j.library.rdf.entity.EntityStateSerializer;
-import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.entity.ConcurrentEntityStateModificationException;
-import org.qi4j.spi.entity.EntityNotFoundException;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.ManyAssociationState;
-import org.qi4j.spi.entity.UnknownEntityTypeException;
-import org.qi4j.spi.entity.association.AssociationType;
-import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
-import org.restlet.data.CharacterSet;
-import org.restlet.data.Form;
-import org.restlet.data.Language;
-import org.restlet.data.MediaType;
-import org.restlet.data.Method;
-import org.restlet.data.Status;
-import org.restlet.data.Tag;
-import org.restlet.representation.EmptyRepresentation;
-import org.restlet.representation.OutputRepresentation;
-import org.restlet.representation.Representation;
-import org.restlet.representation.Variant;
-import org.restlet.representation.WriterRepresentation;
-import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 public class EntityResource extends ServerResource
@@ -395,8 +343,8 @@ public class EntityResource extends ServerResource
     }
 
     *//**
-     * Handle PUT requests.
-     *//*
+ * Handle PUT requests.
+ *//*
     @Override
     public Representation post( Representation entityRepresentation, Variant variant )
         throws ResourceException

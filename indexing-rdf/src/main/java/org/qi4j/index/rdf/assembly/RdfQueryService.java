@@ -27,7 +27,7 @@ import org.qi4j.index.rdf.internal.RdfExportMixin;
 import org.qi4j.index.rdf.RdfExport;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.NamedEntityFinder;
-import org.qi4j.spi.unitofwork.StateChangeListener;
+import org.qi4j.spi.entitystore.StateChangeListener;
 
 /**
  * JAVADOC Add JavaDoc

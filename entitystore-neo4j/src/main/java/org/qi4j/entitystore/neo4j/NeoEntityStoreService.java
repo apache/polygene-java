@@ -18,7 +18,7 @@ package org.qi4j.entitystore.neo4j;
 
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entitystore.EntityStore;
 
 @Mixins( NeoEntityStoreMixin.class )
 public interface NeoEntityStoreService

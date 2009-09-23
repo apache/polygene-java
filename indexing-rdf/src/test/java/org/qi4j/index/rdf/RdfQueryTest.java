@@ -18,12 +18,12 @@
  */
 package org.qi4j.index.rdf;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.IOException;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import org.junit.After;
@@ -33,6 +33,8 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openrdf.rio.RDFFormat;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
@@ -52,11 +54,12 @@ import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.assembly.RdfFactoryService;
+import org.qi4j.index.rdf.model.Address;
 import org.qi4j.index.rdf.model.City;
 import org.qi4j.index.rdf.model.Domain;
 import org.qi4j.index.rdf.model.Female;
@@ -69,7 +72,6 @@ import org.qi4j.index.rdf.model.Port;
 import org.qi4j.index.rdf.model.Protocol;
 import org.qi4j.index.rdf.model.QueryParam;
 import org.qi4j.index.rdf.model.URL;
-import org.qi4j.index.rdf.model.Address;
 import org.qi4j.index.rdf.model.entities.AccountEntity;
 import org.qi4j.index.rdf.model.entities.CatEntity;
 import org.qi4j.index.rdf.model.entities.CityEntity;
@@ -78,14 +80,12 @@ import org.qi4j.index.rdf.model.entities.FemaleEntity;
 import org.qi4j.index.rdf.model.entities.MaleEntity;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
-import org.qi4j.library.rdf.repository.MemoryRepositoryService;
-import org.qi4j.library.rdf.repository.NativeRepositoryService;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
+import org.qi4j.library.rdf.repository.NativeRepositoryService;
 import org.qi4j.runtime.query.NotQueryableException;
 import org.qi4j.spi.query.EntityFinderException;
+import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.test.EntityTestAssembler;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.openrdf.rio.RDFFormat;
 
 public class RdfQueryTest
 {
@@ -99,7 +99,8 @@ public class RdfQueryTest
     {
         assembler = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
                 module.addEntities(
                     MaleEntity.class,
@@ -140,31 +141,41 @@ public class RdfQueryTest
     @After
     public void tearDown() throws Exception
     {
-        NativeConfiguration conf = unitOfWork.get( NativeConfiguration.class, "NativeRepositoryService" );
-        java.io.File data = new java.io.File(conf.dataDirectory().get());
 
+        java.io.File data = null;
         if( unitOfWork != null )
         {
+            NativeConfiguration conf = unitOfWork.get( NativeConfiguration.class, "NativeRepositoryService" );
+            data = new java.io.File( conf.dataDirectory().get() );
             unitOfWork.discard();
         }
+        if( assembler != null )
+        {
+            ApplicationSPI app = assembler.application();
+            app.passivate();
+        }
+        if( data != null )
+        {
+            remove( data );
+        }
 
-        assembler.application().passivate();
-
-        remove(data);
     }
 
     private void remove( java.io.File data )
     {
-        if (data.isDirectory())
+        if( data.isDirectory() )
         {
             for( java.io.File file : data.listFiles() )
             {
-                remove(file);
+                remove( file );
             }
 
             data.delete();
-        } else
+        }
+        else
+        {
             data.delete();
+        }
     }
 
     @Test

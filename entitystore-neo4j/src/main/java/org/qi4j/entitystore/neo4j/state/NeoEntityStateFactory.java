@@ -19,8 +19,8 @@ package org.qi4j.entitystore.neo4j.state;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.spi.entitystore.EntityStoreException;
 
 import java.util.Iterator;
 
