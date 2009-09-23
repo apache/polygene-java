@@ -51,10 +51,19 @@ public interface ApplicationAssembly
     /**
      * Set the name of the application
      *
-     * @param name
-     * @return
+     * @param name of the application
+     * @return the assembly
      */
     ApplicationAssembly setName( String name );
+
+    /**
+     * Set the version of the application. This can be in any format, but
+     * most likely will follow the Dewey format, i.e. x.y.z.
+     *
+     * @param version of the application
+     * @return the assembly
+     */
+    ApplicationAssembly setVersion( String version );
 
     /**
      * Set the application mode. This will be set to "production" by default. You can

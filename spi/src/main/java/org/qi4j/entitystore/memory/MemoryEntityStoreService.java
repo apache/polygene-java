@@ -29,6 +29,6 @@ import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
  */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
 @Mixins( { MapEntityStoreMixin.class, MemoryMapEntityStoreMixin.class } )
-public interface MemoryEntityStoreService extends EntityStore, EntityStateVersions, ServiceComposite
+public interface MemoryEntityStoreService extends EntityStore, EntityStateVersions, TestData, ServiceComposite
 {
 }

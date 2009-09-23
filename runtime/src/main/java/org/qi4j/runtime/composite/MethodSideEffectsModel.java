@@ -121,11 +121,18 @@ public final class MethodSideEffectsModel
 
     public MethodSideEffectsModel combineWith( MethodSideEffectsModel mixinMethodSideEffectsModel )
     {
-        List<MethodSideEffectModel> combinedModels = new ArrayList<MethodSideEffectModel>( sideEffectModels.size() + mixinMethodSideEffectsModel.sideEffectModels.size() );
-        combinedModels.addAll( sideEffectModels );
-        combinedModels.remove( mixinMethodSideEffectsModel.sideEffectModels );
-        combinedModels.addAll( mixinMethodSideEffectsModel.sideEffectModels );
-        return new MethodSideEffectsModel( method, combinedModels );
+        if( mixinMethodSideEffectsModel.sideEffectModels.size() > 0 )
+        {
+            List<MethodSideEffectModel> combinedModels = new ArrayList<MethodSideEffectModel>( sideEffectModels.size() + mixinMethodSideEffectsModel.sideEffectModels.size() );
+            combinedModels.addAll( sideEffectModels );
+            combinedModels.removeAll( mixinMethodSideEffectsModel.sideEffectModels );
+            combinedModels.addAll( mixinMethodSideEffectsModel.sideEffectModels );
+            return new MethodSideEffectsModel( method, combinedModels );
+        }
+        else
+        {
+            return this;
+        }
     }
 
     static MethodSideEffectsModel createForMethod( Method method, Collection<Class> sideEffectClasses )

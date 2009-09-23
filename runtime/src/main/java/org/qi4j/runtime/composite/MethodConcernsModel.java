@@ -127,10 +127,17 @@ public final class MethodConcernsModel
         {
             return this;
         }
-        List<MethodConcernModel> combinedModels = new ArrayList<MethodConcernModel>( concernsForMethod.size() + mixinMethodConcernsModel.concernsForMethod.size() );
-        combinedModels.addAll( concernsForMethod );
-        combinedModels.removeAll( mixinMethodConcernsModel.concernsForMethod ); // Remove duplicates
-        combinedModels.addAll( mixinMethodConcernsModel.concernsForMethod );
-        return new MethodConcernsModel( method, combinedModels );
+        else if( mixinMethodConcernsModel.concernsForMethod.size() > 0 )
+        {
+            List<MethodConcernModel> combinedModels = new ArrayList<MethodConcernModel>( concernsForMethod.size() + mixinMethodConcernsModel.concernsForMethod.size() );
+            combinedModels.addAll( concernsForMethod );
+            combinedModels.removeAll( mixinMethodConcernsModel.concernsForMethod ); // Remove duplicates
+            combinedModels.addAll( mixinMethodConcernsModel.concernsForMethod );
+            return new MethodConcernsModel( method, combinedModels );
+        }
+        else
+        {
+            return this;
+        }
     }
 }

@@ -9,35 +9,39 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+import org.json.JSONWriter;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entitystore.EntityStore;
-import org.qi4j.spi.entitystore.EntityStoreException;
-import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entitystore.StateCommitter;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
-import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreSPI;
+import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.json.JSONWriter;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore. Implement
@@ -45,12 +49,15 @@ import org.json.JSONWriter;
  * See {@link org.qi4j.entitystore.memory.MemoryMapEntityStoreMixin} for reference.
  */
 public class MapEntityStoreMixin
-    implements EntityStore, EntityStoreSPI, Activatable
+    implements EntityStore, EntityStoreSPI, StateStore, Activatable
 {
-    @This
-    private MapEntityStore mapEntityStore;
-    @This
-    private EntityStoreSPI entityStoreSpi;
+    @This private MapEntityStore mapEntityStore;
+    @This private EntityStoreSPI entityStoreSpi;
+
+    @Structure private Application application;
+
+    @Optional
+    @Service private Migration migration;
 
     protected String uuid;
     private int count;
@@ -174,6 +181,7 @@ public class MapEntityStoreMixin
             JSONWriter json = new JSONWriter( writer );
             JSONWriter properties = json.object().
                 key( "identity" ).value( state.identity().identity() ).
+                key( "application_version" ).value( application.version() ).
                 key( "type" ).value( state.entityDescriptor().entityType().type().name() ).
                 key( "version" ).value( identity ).
                 key( "modified" ).value( state.lastModified() ).
@@ -212,6 +220,8 @@ public class MapEntityStoreMixin
                 assocs.endArray();
             }
             manyAssociations.endObject().endObject();
+
+            state.hasBeenApplied();
         }
         catch( JSONException e )
         {
@@ -226,8 +236,28 @@ public class MapEntityStoreMixin
         {
             ModuleSPI module = (ModuleSPI) unitOfWork.module();
             JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
-            String type = jsonObject.getString( "type" );
             EntityStatus status = EntityStatus.LOADED;
+
+            // Check if version is correct
+            if( !jsonObject.optString( MapEntityStore.JSONKeys.application_version.name(), "1.0" ).equals( application.version() ) )
+            {
+                if( migration != null )
+                {
+                    if( migration.migrate( jsonObject, application.version(), this ) )
+                    {
+                        // State changed
+                        status = EntityStatus.UPDATED;
+                    }
+                }
+                else
+                {
+                    // Do nothing - set version to be correct
+                    jsonObject.put( MapEntityStore.JSONKeys.application_version.name(), application.version() );
+                }
+            }
+
+
+            String type = jsonObject.getString( "type" );
 
             EntityDescriptor entityDescriptor = module.entityDescriptor( type );
             if( entityDescriptor == null )
@@ -322,5 +352,21 @@ public class MapEntityStoreMixin
         {
             throw new EntityStoreException( e );
         }
+    }
+
+    public JSONObject getState( String id ) throws IOException
+    {
+        Reader reader = mapEntityStore.get( EntityReference.parseEntityReference( id ) );
+        JSONObject jsonObject = null;
+        try
+        {
+            jsonObject = new JSONObject( new JSONTokener( reader ) );
+        }
+        catch( JSONException e )
+        {
+            throw (IOException) new IOException().initCause( e );
+        }
+        reader.close();
+        return jsonObject;
     }
 }

@@ -17,45 +17,57 @@ package org.qi4j.entitystore.map;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
-import org.qi4j.spi.entity.EntityType;
 
 /**
  * JAVADOC
  */
 public interface MapEntityStore
 {
-    Reader get(EntityReference entityReference)
-            throws EntityStoreException;
+    // JSON keys for values in the stored data
+    enum JSONKeys
+    {
+        identity, // Identity of the entity
+        application_version, // Version of the application which last updated the entity
+        type, // Type of the entity
+        version, // Version of the entity
+        modified, // When entity was last modified according to System.currentTimeMillis()
+        properties, // Map of properties
+        associations, // Map of associations
+        manyassociations // Map of manyassociations
+    }
 
-    void visitMap(MapEntityStoreVisitor visitor);
+    Reader get( EntityReference entityReference )
+        throws EntityStoreException;
+
+    void visitMap( MapEntityStoreVisitor visitor );
 
     interface MapEntityStoreVisitor
     {
-        void visitEntity(Reader entityState);
+        void visitEntity( Reader entityState );
     }
 
-    void applyChanges(MapChanges changes)
-            throws IOException;
+    void applyChanges( MapChanges changes )
+        throws IOException;
 
     interface MapChanges
     {
-        void visitMap(MapChanger changer)
-                throws IOException;
+        void visitMap( MapChanger changer )
+            throws IOException;
     }
 
     interface MapChanger
     {
-        Writer newEntity(EntityReference ref, EntityType entityType)
-                throws IOException;
+        Writer newEntity( EntityReference ref, EntityType entityType )
+            throws IOException;
 
-        Writer updateEntity(EntityReference ref, EntityType entityType)
-                throws IOException;
+        Writer updateEntity( EntityReference ref, EntityType entityType )
+            throws IOException;
 
-        void removeEntity(EntityReference ref, EntityType entityType)
-                throws EntityNotFoundException;
+        void removeEntity( EntityReference ref, EntityType entityType )
+            throws EntityNotFoundException;
     }
 }
