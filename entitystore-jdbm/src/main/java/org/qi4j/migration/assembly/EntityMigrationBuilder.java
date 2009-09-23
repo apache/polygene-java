@@ -1,0 +1,115 @@
+/*
+ * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package org.qi4j.migration.assembly;
+
+import org.qi4j.migration.operation.RenameProperty;
+import org.qi4j.migration.operation.AddProperty;
+import org.qi4j.migration.operation.RemoveProperty;
+
+/**
+ * Fluent API for creating migration rules for specific entity types.
+ */
+public class EntityMigrationBuilder
+{
+    private VersionMigrationBuilder migrationBuilder;
+    private String[] entityTypes;
+
+    public EntityMigrationBuilder( VersionMigrationBuilder migrationBuilder, String[] entityTypes )
+    {
+        this.migrationBuilder = migrationBuilder;
+        this.entityTypes = entityTypes;
+    }
+
+    /**
+     * Create a new migration builder to continue with specifying rules
+     * for another version of the application.
+     *
+     * @param toVersion of the application
+     * @return new builder
+     */
+    public VersionMigrationBuilder toVersion(String toVersion)
+    {
+        return new VersionMigrationBuilder(migrationBuilder.rules, migrationBuilder.toVersion, toVersion);
+    }
+
+    // Operations on entities
+    /**
+     * Add rule to rename an Entity property.
+     *
+     * @param from property name
+     * @param to property name
+     * @return the builder
+     */
+    public EntityMigrationBuilder renameProperty(String from, String to)
+    {
+        migrationBuilder.rules.addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
+                                                        migrationBuilder.toVersion,
+                                                        entityTypes,
+                                                        new RenameProperty(from, to)));
+
+        return this;
+    }
+
+    /**
+     * Add rule to add an Entity property.
+     *
+     * @param property to be added
+     * @param defaultValue default value
+     * @return the builder
+     */
+    public EntityMigrationBuilder addProperty(String property, Object defaultValue)
+    {
+        migrationBuilder.rules.addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
+                                                        migrationBuilder.toVersion,
+                                                        entityTypes,
+                                                        new AddProperty(property, defaultValue)));
+
+        return this;
+    }
+
+    /**
+     * Add rule to remove an Entity property
+     *
+     * @param property to be removed
+     * @param defaultValue default value (used for downgrading)
+     * @return the builder
+     */
+    public EntityMigrationBuilder removeProperty(String property, Object defaultValue)
+    {
+        migrationBuilder.rules.addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
+                                                        migrationBuilder.toVersion,
+                                                        entityTypes,
+                                                        new RemoveProperty(property, defaultValue)));
+
+        return this;
+    }
+
+    /**
+     * Add rule to perform a custom operation
+     *
+     * @param operation the custom operation to be performed during migration
+     * @return the builder
+     */
+    public EntityMigrationBuilder custom(MigrationOperation operation)
+    {
+        migrationBuilder.rules.addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
+                                                        migrationBuilder.toVersion,
+                                                        entityTypes,
+                                                        operation));
+
+        return this;
+    }
+
+}
