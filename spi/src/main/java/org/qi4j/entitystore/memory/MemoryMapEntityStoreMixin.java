@@ -2,9 +2,9 @@ package org.qi4j.entitystore.memory;
 
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.entitystore.map.MapEntityStore;
-import org.qi4j.spi.entity.EntityAlreadyExistsException;
-import org.qi4j.spi.entity.EntityNotFoundException;
-import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
+import org.qi4j.spi.entitystore.EntityNotFoundException;
+import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
 
 import java.io.IOException;

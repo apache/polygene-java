@@ -35,7 +35,7 @@ import org.qi4j.spi.structure.ApplicationSPI;
 public abstract class SingletonAssembler
     implements Assembler
 {
-    private Energy4Java is;
+    private Energy4Java qi4j;
     private ApplicationSPI applicationInstance;
     private Module moduleInstance;
 
@@ -51,10 +51,10 @@ public abstract class SingletonAssembler
     public SingletonAssembler()
         throws IllegalStateException
     {
-        is = new Energy4Java();
+        qi4j = new Energy4Java();
         try
         {
-            applicationInstance = is.newApplication( new ApplicationAssembler()
+            applicationInstance = qi4j.newApplication( new ApplicationAssembler()
             {
                 public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
                 {
@@ -81,7 +81,7 @@ public abstract class SingletonAssembler
 
     public final Qi4j runtime()
     {
-        return is.spi();
+        return qi4j.spi();
     }
 
     public final ApplicationSPI application()

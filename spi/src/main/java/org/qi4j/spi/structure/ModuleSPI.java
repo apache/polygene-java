@@ -22,14 +22,13 @@ import org.qi4j.spi.value.ValueDescriptor;
 /**
  * JAVADOC
  */
-public interface ModuleSPI
-    extends Module
+public interface ModuleSPI extends Module
 {
     TransientDescriptor transientDescriptor( String typeName );
 
     EntityDescriptor entityDescriptor( String typeName );
 
-//    ObjectDescriptor objectDescriptor(String typeName);
+//    ObjectDescriptor objectDescriptor( String typeName );
 
     ValueDescriptor valueDescriptor( String typeName );
 }

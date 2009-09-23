@@ -15,7 +15,9 @@
 package org.qi4j.api;
 
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 
@@ -76,4 +78,21 @@ public interface Qi4j
      * @return The Module instance where the Composite belongs.
      */
     Module getModule( Composite composite );
+
+    /**
+     * Returns the Module where the service is located.
+     *
+     * @param service The service to be checked.
+     * @return The Module instance where the Composite belongs.
+     */
+    Module getModule( ServiceReference service );
+
+    /**
+     * Returns the UnitOfWork that the EntityComposite is bound to.
+     *
+     * @param entity the entity to be checked.
+     * @return The UnitOfWork instance that the Entity is bound to, or null if the entity is not associated with
+     *         any UnitOfWork.
+     */
+    UnitOfWork getUnitOfWork( EntityComposite entity );
 }

@@ -16,16 +16,16 @@ package org.qi4j.runtime.unitofwork;
 
 import java.util.UUID;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.helpers.DefaultEntityStoreUnitOfWork;
-import org.qi4j.spi.entity.helpers.EntityStoreSPI;
-import org.qi4j.spi.structure.ModuleSPI;
-import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.EntityStoreSPI;
 
 /**
  * JAVADOC
@@ -44,7 +44,7 @@ public class UnitOfWorkStore
 
     }
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module )
     {
         return new DefaultEntityStoreUnitOfWork( this, newUnitOfWorkId(), module );
     }
@@ -83,7 +83,7 @@ public class UnitOfWorkStore
         return unitOfWorkEntityState;
     }
 
-    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI moduleInstance )
+    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, Module moduleInstance )
     {
         // ???
         return null;

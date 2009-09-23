@@ -18,7 +18,7 @@ import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
-import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entitystore.EntityStore;
 
 /**
  * JAVADOC

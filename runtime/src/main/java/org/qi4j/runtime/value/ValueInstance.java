@@ -22,8 +22,8 @@ import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
-import org.qi4j.spi.util.json.JSONStringer;
-import org.qi4j.spi.util.json.JSONException;
+import org.json.JSONStringer;
+import org.json.JSONException;
 import org.qi4j.spi.value.ValueDescriptor;
 
 import java.lang.reflect.Proxy;
@@ -87,7 +87,7 @@ public final class ValueInstance extends TransientInstance
             JSONStringer stringer = new JSONStringer();
             ((ValueModel) compositeModel).valueType().toJSON( proxy(), stringer );
             return stringer.toString();
-        } catch (JSONException e)
+        } catch ( JSONException e)
         {
             return super.toString();
         }

@@ -37,11 +37,11 @@ import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.ManyAssociationDeclarations;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.AbstractCompositeModel;
-import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.model.BindingException;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.composite.CompositeMethodsModel;
 import org.qi4j.runtime.composite.ConcernsDeclaration;
 import org.qi4j.runtime.composite.ConstraintsModel;
-import org.qi4j.runtime.composite.Resolution;
 import org.qi4j.runtime.composite.SideEffectsDeclaration;
 import org.qi4j.runtime.entity.association.EntityAssociationsModel;
 import org.qi4j.runtime.entity.association.EntityManyAssociationsModel;
@@ -49,15 +49,15 @@ import org.qi4j.runtime.property.PersistentPropertyModel;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.spi.entity.EntityAlreadyExistsException;
+import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStoreException;
+import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
-import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 
 /**
  * JAVADOC

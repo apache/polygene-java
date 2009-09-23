@@ -24,19 +24,19 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.AbstractCompositeModel;
-import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.model.BindingException;
 import org.qi4j.runtime.composite.CompositeMethodsModel;
 import org.qi4j.runtime.composite.ConcernDeclaration;
 import org.qi4j.runtime.composite.ConcernsDeclaration;
 import org.qi4j.runtime.composite.ConstraintsModel;
-import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.composite.SideEffectsDeclaration;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.types.ValueCompositeType;
+import org.qi4j.runtime.types.ValueTypeFactory;
 import org.qi4j.spi.composite.InvalidCompositeException;
-import org.qi4j.spi.value.ValueCompositeType;
 import org.qi4j.spi.value.ValueDescriptor;
-import org.qi4j.spi.value.ValueType;
 
 /**
  * Model for ValueComposites
@@ -70,7 +70,7 @@ public final class ValueModel extends AbstractCompositeModel
             new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
         stateModel.addStateFor( compositeMethodsModel.methods(), compositeType );
 
-        ValueCompositeType valueType = (ValueCompositeType) ValueType.newValueType( compositeType, compositeType, compositeType );
+        ValueCompositeType valueType = (ValueCompositeType) ValueTypeFactory.instance().newValueType( compositeType, compositeType, compositeType );
 
         return new ValueModel( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, valueType );
     }

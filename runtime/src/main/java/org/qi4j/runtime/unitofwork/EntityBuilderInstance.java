@@ -24,7 +24,7 @@ import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 
 /**
  * Implementation of EntityBuilder. Maintains an instance of the entity which

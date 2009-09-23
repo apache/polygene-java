@@ -20,7 +20,6 @@ package org.qi4j.bootstrap;
 
 import java.io.IOException;
 import org.qi4j.bootstrap.internal.ServiceLoader;
-import org.qi4j.bootstrap.spi.Qi4jRuntime;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.spi.structure.ApplicationSPI;
@@ -66,7 +65,8 @@ public final class Energy4Java
     public ApplicationModelSPI newApplicationModel( ApplicationAssembler assembler ) throws AssemblyException
     {
         ApplicationAssembly assembly = assembler.assemble( runtime.applicationAssemblyFactory() );
-        return runtime.applicationModelFactory().newApplicationModel( assembly );
+        ApplicationModelFactory modelFactory = runtime.applicationModelFactory();
+        return modelFactory.newApplicationModel( assembly );
     }
 
     public ApplicationSPI newApplication( ApplicationAssembler assembler )

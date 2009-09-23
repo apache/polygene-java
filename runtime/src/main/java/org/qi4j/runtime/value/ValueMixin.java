@@ -21,9 +21,9 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.Value;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.spi.util.json.JSONException;
-import org.qi4j.spi.util.json.JSONStringer;
-import org.qi4j.spi.value.ValueType;
+import org.json.JSONException;
+import org.json.JSONStringer;
+import org.qi4j.spi.property.ValueType;
 
 /**
  * Implementation of Value

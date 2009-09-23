@@ -24,6 +24,8 @@ import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.model.BindingException;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.composite.TransientDescriptor;

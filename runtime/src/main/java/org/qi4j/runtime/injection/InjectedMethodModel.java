@@ -22,8 +22,8 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import org.qi4j.api.util.SerializationUtil;
-import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.model.BindingException;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.InjectedMethodDescriptor;
 

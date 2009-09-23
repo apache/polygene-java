@@ -26,7 +26,7 @@ import org.qi4j.api.util.Classes;
  * </pre>
  * where "com.mycompany.mydomain.SomeEntity" is the Composite type, and "123456" is the identity.
  */
-public class QualifiedIdentity
+public final class QualifiedIdentity
     implements Serializable
 {
     public static QualifiedIdentity parseURI( String uri )

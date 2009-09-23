@@ -36,11 +36,11 @@ import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
 import org.qi4j.api.util.SerializationUtil;
-import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.model.BindingException;
 import org.qi4j.runtime.composite.ConstraintsCheck;
-import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
-import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.model.Binder;
 import org.qi4j.spi.property.DefaultValues;
 import org.qi4j.spi.property.PropertyDescriptor;
 
