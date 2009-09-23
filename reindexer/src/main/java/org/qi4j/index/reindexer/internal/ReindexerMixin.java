@@ -29,9 +29,9 @@ import org.qi4j.api.entity.Identity;
 import org.qi4j.index.reindexer.Reindexer;
 import org.qi4j.index.reindexer.ReindexerConfiguration;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.structure.ModuleSPI;
-import org.qi4j.spi.unitofwork.StateChangeListener;
+import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.StateChangeListener;
 
 public class ReindexerMixin
     implements Reindexer

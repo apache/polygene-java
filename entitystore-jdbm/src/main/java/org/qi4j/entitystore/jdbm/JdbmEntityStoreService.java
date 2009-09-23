@@ -22,11 +22,10 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.library.locking.LockingAbstractComposite;
-import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.helpers.ConcurrentModificationCheckConcern;
-import org.qi4j.spi.entity.helpers.StateChangeNotificationConcern;
-import org.qi4j.spi.entity.helpers.EntityStoreSPI;
-import org.qi4j.spi.entity.helpers.EntityStateVersions;
+import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
+import org.qi4j.spi.entitystore.ConcurrentModificationCheckConcern;
+import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStateVersions;
 import org.qi4j.entitystore.map.MapEntityStoreMixin;
 
 /**

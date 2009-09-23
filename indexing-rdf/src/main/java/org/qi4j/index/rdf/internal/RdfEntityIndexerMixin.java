@@ -37,7 +37,7 @@ import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.unitofwork.StateChangeListener;
+import org.qi4j.spi.entitystore.StateChangeListener;
 
 /**
  * JAVADOC Add JavaDoc

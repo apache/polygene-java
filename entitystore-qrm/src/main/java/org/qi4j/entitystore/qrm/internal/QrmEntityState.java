@@ -25,7 +25,6 @@ import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.entitystore.qrm.IdentifierConverter;
-import org.qi4j.spi.entity.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityStatus;
 import static org.qi4j.spi.entity.EntityStatus.REMOVED;
 import org.qi4j.spi.entity.EntityType;
@@ -35,6 +34,7 @@ import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.entitystore.EntityNotFoundException;
 
 /**
  * {@code IBatisEntityState} represents {@code IBatis} version of {@link org.qi4j.spi.entity.EntityState}.

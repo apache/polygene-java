@@ -22,9 +22,9 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
-import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.spi.entitystore.EntityStoreException;
 
 public class QrmSqlClient
     implements Serializable, StateCommitter

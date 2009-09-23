@@ -26,7 +26,8 @@ Import-Package: javax.transaction,\
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.entity, \
                 org.qi4j.spi.entity.association, \
-                org.qi4j.spi.entity.helpers, \
+                org.qi4j.spi.entitystore.helpers, \
+                org.qi4j.spi.entitystore, \
                 org.qi4j.spi.property, \
                 org.qi4j.spi.uuid, \
                 org.qi4j.spi.value, \

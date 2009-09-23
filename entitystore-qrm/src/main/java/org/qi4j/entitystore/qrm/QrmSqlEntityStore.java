@@ -16,48 +16,25 @@
  */
 package org.qi4j.entitystore.qrm;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.configuration.Configuration;
-import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.structure.Module;
-import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
-import org.qi4j.entitystore.qrm.dbInitializer.DBInitializer;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.structure.ModuleSPI;
-import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
-import org.qi4j.spi.entity.EntityNotFoundException;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entity.StateCommitter;
-import org.qi4j.spi.entity.UnknownEntityTypeException;
-import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 
 /**
  * JAVADOC: Figure out how does transaction supposed to work for all EntityStore methods.
  * JAVADOC: identity is a keyword in SQL. We need to have an alias for this identity property for query purposes.
  */
 public class QrmSqlEntityStore
-     implements EntityStore, Activatable
+    implements EntityStore, Activatable
 {
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module )
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI moduleInstance )
+    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, Module moduleInstance )
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }

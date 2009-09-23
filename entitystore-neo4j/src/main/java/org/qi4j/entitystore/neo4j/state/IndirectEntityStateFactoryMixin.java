@@ -28,8 +28,8 @@ import org.qi4j.entitystore.neo4j.NeoCoreService;
 import org.qi4j.entitystore.neo4j.NeoIdentityIndex;
 import org.qi4j.entitystore.neo4j.NeoTransactionService;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.StateCommitter;
+import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.spi.entitystore.EntityStoreException;
 
 public class IndirectEntityStateFactoryMixin implements NeoEntityStateFactory
 {

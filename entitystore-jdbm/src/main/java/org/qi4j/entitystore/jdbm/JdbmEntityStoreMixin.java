@@ -43,10 +43,10 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.entitystore.map.MapEntityStore;
-import org.qi4j.spi.entity.EntityNotFoundException;
-import org.qi4j.spi.entity.EntityStoreException;
-import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.service.ServiceDescriptor;
+import org.qi4j.spi.entitystore.EntityStoreException;
+import org.qi4j.spi.entitystore.EntityNotFoundException;
+import org.qi4j.spi.entity.EntityType;
 
 /**
  * JDBM implementation of SerializationStore

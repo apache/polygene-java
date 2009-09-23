@@ -23,10 +23,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
@@ -37,9 +36,9 @@ import org.qi4j.entitystore.qrm.entity.Person;
 import org.qi4j.entitystore.qrm.entity.PersonComposite;
 import org.qi4j.entitystore.qrm.test.AbstractTestCase;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.QualifiedIdentity;
+import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 /**
@@ -185,7 +184,7 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         final ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
         config.addEntities( QrmSqlConfiguration.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
-        config.forMixin(  QrmSqlConfiguration.class ).declareDefaults().sqlMapConfigURL().set( derbyDatabaseHandler.getUrlString( TestConfig.SQL_MAP_CONFIG_XML ) );
+        config.forMixin( QrmSqlConfiguration.class ).declareDefaults().sqlMapConfigURL().set( derbyDatabaseHandler.getUrlString( TestConfig.SQL_MAP_CONFIG_XML ) );
         derbyDatabaseHandler.initDbInitializerInfo( config, TestConfig.SCHEMA_FILE, TestConfig.DATA_FILE );
     }
 
