@@ -1,12 +1,9 @@
-Export-Package: org.qi4j.library.rdf.*;version="1"
+Export-Package: org.qi4j.library.rdf.*;version="${pom.version}"
 
-Import-Package: javax.*, \
-                org.qi4j.*, \
+Import-Package: org.qi4j.*, \
+                org.json, \
                 org.slf4j;version="1.3", \
                 org.w3c.dom, \
-                org.xml.* \
-                org.apache.commons.logging, \
-                org.apache.commons.logging, \
                 org.xml.sax, \
                 org.xml.sax.helpers, \
                 org.openrdf.model, \

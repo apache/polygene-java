@@ -33,8 +33,8 @@ import org.qi4j.library.rdf.Qi4jEntityType;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.entity.EntityStore;
 import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.test.AbstractQi4jTest;
 
 

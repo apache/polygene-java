@@ -19,7 +19,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
@@ -35,7 +34,7 @@ import org.qi4j.library.rdf.DcRdf;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.test.AbstractQi4jTest;
 
 /**
@@ -49,7 +48,7 @@ public class EntitySerializerTest
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class);
+        module.addServices( MemoryEntityStoreService.class );
         module.addEntities( TestEntity.class );
         module.addValues( TestValue.class, Test2Value.class );
         module.addObjects( EntityStateSerializer.class, EntitySerializerTest.class );
@@ -69,7 +68,7 @@ public class EntitySerializerTest
     public void testEntitySerializer() throws RDFHandlerException
     {
         EntityReference entityReference = new EntityReference( "test2" );
-        EntityState entityState = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase("Test" ), moduleInstance).getEntityState(entityReference);
+        EntityState entityState = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase( "Test" ), moduleInstance ).getEntityState( entityReference );
 
         Iterable<Statement> graph = serializer.serialize( entityState );
 
@@ -92,14 +91,14 @@ public class EntitySerializerTest
             valueBuilder.prototype().test3().set( valueBuilder2.newInstance() );
             TestValue testValue = valueBuilder.newInstance();
 
-            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class, "test1");
+            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class, "test1" );
             TestEntity rickardTemplate = builder.instance();
             rickardTemplate.name().set( "Rickard" );
             rickardTemplate.title().set( "Mr" );
             rickardTemplate.value().set( testValue );
             TestEntity testEntity = builder.newInstance();
 
-            EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder(TestEntity.class, "test2");
+            EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( TestEntity.class, "test2" );
             TestEntity niclasTemplate = builder2.instance();
             niclasTemplate.name().set( "Niclas" );
             niclasTemplate.title().set( "Mr" );
@@ -112,7 +111,7 @@ public class EntitySerializerTest
             valueBuilder.prototype().test1().set( 5L );
             testValue = valueBuilder.newInstance();
             niclasTemplate.value().set( testValue );
-            TestEntity testEntity2 = builder2.newInstance();
+            builder2.newInstance();
             unitOfWork.complete();
         }
         catch( RuntimeException e )

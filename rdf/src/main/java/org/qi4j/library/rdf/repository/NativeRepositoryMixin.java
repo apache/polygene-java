@@ -23,14 +23,16 @@ import org.openrdf.sail.Sail;
 import org.openrdf.sail.nativerdf.NativeStore;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.Qi4j;
 
 public class NativeRepositoryMixin
     implements Repository, Activatable
 {
     @This private Configuration<NativeConfiguration> configuration;
-
-    SailRepository repo;
+    @Structure private Qi4j api;
+    private SailRepository repo;
 
     public NativeRepositoryMixin()
     {
@@ -54,7 +56,7 @@ public class NativeRepositoryMixin
                 dataDir = "./rdf/repositories/" + id;
             }
             configuration.configuration().dataDirectory().set( dataDir );
-            configuration.configuration().unitOfWork().apply();
+            api.getUnitOfWork( configuration.configuration() ).apply();
         }
         store2.setDataDir( new File( dataDir ) );
         String tripleIndexes = configuration.configuration().tripleIndexes().get();

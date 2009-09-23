@@ -11,10 +11,9 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="qi4j-struts2-plugin" exported="" />
-    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-api:0.8-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: junit:junit:4.4" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-bootstrap:0.8-SNAPSHOT" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-spi:0.8-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-api:1.0-RC2-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-bootstrap:1.0-RC2-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.qi4j.core:qi4j-core-spi:1.0-RC2-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.apache.struts:struts2-core:2.1.2" level="project" />
     <orderEntry type="library" exported="" name="Maven: com.opensymphony:xwork:2.1.1" level="project" />
     <orderEntry type="library" exported="" name="Maven: opensymphony:ognl:2.6.11" level="project" />

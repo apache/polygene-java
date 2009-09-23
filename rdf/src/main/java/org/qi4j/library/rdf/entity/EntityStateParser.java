@@ -33,8 +33,6 @@ import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.value.EnumType;
-import org.qi4j.spi.value.StringType;
 
 /**
  * JAVADOC
@@ -113,8 +111,8 @@ public class EntityStateParser
         {
             String json = propertyValues.get( propertyType.qualifiedName().toURI() );
 
-            if( propertyType.type() instanceof StringType ||
-                propertyType.type() instanceof EnumType )
+            if( propertyType.type().isString() ||
+                propertyType.type().isEnum() )
             {
                 // Add "" around string
                 json = "\"" + json + "\"";
