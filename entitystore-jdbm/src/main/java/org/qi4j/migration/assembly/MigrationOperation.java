@@ -14,15 +14,18 @@
 
 package org.qi4j.migration.assembly;
 
-import org.qi4j.spi.util.json.JSONObject;
-import org.qi4j.spi.util.json.JSONException;
 import org.qi4j.entitystore.map.StateStore;
+import org.json.JSONObject;
+import org.json.JSONException;
 
 /**
  * JAVADOC
  */
 public interface MigrationOperation
 {
-    boolean upgrade( JSONObject state, StateStore stateStore ) throws JSONException;
-    boolean downgrade( JSONObject state, StateStore stateStore ) throws JSONException;
+    boolean upgrade( JSONObject state, StateStore stateStore )
+        throws JSONException;
+
+    boolean downgrade( JSONObject state, StateStore stateStore )
+        throws JSONException;
 }

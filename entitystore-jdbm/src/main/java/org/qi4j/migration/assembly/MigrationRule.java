@@ -14,9 +14,9 @@
 
 package org.qi4j.migration.assembly;
 
-import org.qi4j.spi.util.json.JSONObject;
-import org.qi4j.spi.util.json.JSONException;
 import org.qi4j.entitystore.map.StateStore;
+import org.json.JSONObject;
+import org.json.JSONException;
 
 /**
  * JAVADOC
@@ -44,12 +44,14 @@ public class MigrationRule
         return toVersion;
     }
 
-    public boolean upgrade( JSONObject state, StateStore stateStore) throws JSONException
+    public boolean upgrade( JSONObject state, StateStore stateStore)
+        throws JSONException
     {
         return operation.upgrade( state, stateStore );
     }
 
-    public boolean downgrade( JSONObject state, StateStore stateStore) throws JSONException
+    public boolean downgrade( JSONObject state, StateStore stateStore)
+        throws JSONException
     {
         return operation.downgrade( state, stateStore );
     }

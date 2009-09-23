@@ -14,10 +14,10 @@
 
 package org.qi4j.migration.assembly;
 
-import org.qi4j.spi.util.json.JSONObject;
-import org.qi4j.spi.util.json.JSONException;
-import org.qi4j.entitystore.map.StateStore;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.qi4j.entitystore.map.MapEntityStore;
+import org.qi4j.entitystore.map.StateStore;
 
 /**
  * JAVADOC
@@ -27,7 +27,7 @@ public class EntityMigrationRule
 {
     private String[] entityTypes;
 
-    public EntityMigrationRule( String fromVersion, String toVersion, String[] entityTypes , MigrationOperation operation)
+    public EntityMigrationRule( String fromVersion, String toVersion, String[] entityTypes, MigrationOperation operation )
     {
         super( fromVersion, toVersion, operation );
         this.entityTypes = entityTypes;
@@ -40,26 +40,36 @@ public class EntityMigrationRule
 
     @Override public boolean upgrade( JSONObject state, StateStore stateStore ) throws JSONException
     {
-        if (appliesTo( state.getString( MapEntityStore.JSONKeys.type.name() )))
+        if( appliesTo( state.getString( MapEntityStore.JSONKeys.type.name() ) ) )
+        {
             return super.upgrade( state, stateStore );
+        }
         else
+        {
             return false;
+        }
     }
 
     @Override public boolean downgrade( JSONObject state, StateStore stateStore ) throws JSONException
     {
-        if (appliesTo( state.getString( MapEntityStore.JSONKeys.type.name() )))
+        if( appliesTo( state.getString( MapEntityStore.JSONKeys.type.name() ) ) )
+        {
             return super.downgrade( state, stateStore );
+        }
         else
+        {
             return false;
+        }
     }
 
     public boolean appliesTo( String entityType )
     {
         for( String type : entityTypes )
         {
-            if (entityType.equals( type ))
+            if( entityType.equals( type ) )
+            {
                 return true;
+            }
         }
         return false;
     }

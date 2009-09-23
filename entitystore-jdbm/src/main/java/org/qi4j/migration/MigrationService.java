@@ -14,16 +14,16 @@
 
 package org.qi4j.migration;
 
-import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.service.Activatable;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.spi.util.json.JSONObject;
-import org.qi4j.spi.util.json.JSONException;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.map.Migration;
 import org.qi4j.entitystore.map.StateStore;
-import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.migration.assembly.MigrationRule;
 import org.qi4j.migration.assembly.MigrationRules;
 
@@ -32,9 +32,8 @@ import org.qi4j.migration.assembly.MigrationRules;
  * migrate JSON state for Entities. To use it register the service so that the EntityStore
  * can access it, and then create MigrationRules during the assembly of your application,
  * which is registered as metainfo for this service.
- *
  */
-@Mixins( MigrationService.MigrationMixin.class)
+@Mixins( MigrationService.MigrationMixin.class )
 public interface MigrationService
     extends Migration, Activatable, ServiceComposite
 {
@@ -50,7 +49,7 @@ public interface MigrationService
             // Get current version
             String fromVersion = state.getString( MapEntityStore.JSONKeys.application_version.name() );
 
-            Iterable<MigrationRule> matchedRules = rules.getRules( fromVersion, toVersion);
+            Iterable<MigrationRule> matchedRules = rules.getRules( fromVersion, toVersion );
 
             boolean changed = false;
             for( MigrationRule matchedRule : matchedRules )

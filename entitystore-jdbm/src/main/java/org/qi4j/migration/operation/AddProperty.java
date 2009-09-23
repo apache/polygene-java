@@ -14,11 +14,11 @@
 
 package org.qi4j.migration.operation;
 
-import org.qi4j.migration.assembly.MigrationOperation;
-import org.qi4j.spi.util.json.JSONObject;
-import org.qi4j.spi.util.json.JSONException;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.map.StateStore;
+import org.qi4j.migration.assembly.MigrationOperation;
 
 /**
  * Add a property
@@ -35,26 +35,24 @@ public class AddProperty
         this.defaultValue = defaultValue;
     }
 
-    public boolean upgrade( JSONObject state, StateStore stateStore ) throws JSONException
+    public boolean upgrade( JSONObject state, StateStore stateStore )
+        throws JSONException
     {
         JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );
-
         properties.put( property, defaultValue );
-
         return true;
     }
 
-    public boolean downgrade( JSONObject state, StateStore stateStore ) throws JSONException
+    public boolean downgrade( JSONObject state, StateStore stateStore )
+        throws JSONException
     {
         JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );
-
         properties.remove( property );
-
         return true;
     }
 
     @Override public String toString()
     {
-        return "Add property "+property+", default:"+defaultValue;
+        return "Add property " + property + ", default:" + defaultValue;
     }
 }

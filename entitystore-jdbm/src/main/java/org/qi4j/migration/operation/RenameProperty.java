@@ -14,11 +14,11 @@
 
 package org.qi4j.migration.operation;
 
-import org.qi4j.migration.assembly.MigrationOperation;
-import org.qi4j.spi.util.json.JSONObject;
-import org.qi4j.spi.util.json.JSONException;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.map.StateStore;
+import org.qi4j.migration.assembly.MigrationOperation;
 
 /**
  * Rename a property
@@ -35,7 +35,8 @@ public class RenameProperty
         this.toProperty = toProperty;
     }
 
-    public boolean upgrade( JSONObject state, StateStore stateStore ) throws JSONException
+    public boolean upgrade( JSONObject state, StateStore stateStore )
+        throws JSONException
     {
         JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );
 
@@ -45,7 +46,8 @@ public class RenameProperty
         return true;
     }
 
-    public boolean downgrade( JSONObject state, StateStore stateStore ) throws JSONException
+    public boolean downgrade( JSONObject state, StateStore stateStore )
+        throws JSONException
     {
         JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );
 
@@ -57,6 +59,6 @@ public class RenameProperty
 
     @Override public String toString()
     {
-        return "Rename property "+fromProperty+" to "+toProperty;
+        return "Rename property " + fromProperty + " to " + toProperty;
     }
 }

@@ -15,9 +15,9 @@
 package org.qi4j.migration.assembly;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collections;
-import org.qi4j.spi.util.ListMap;
+import java.util.List;
+import org.qi4j.api.util.ListMap;
 
 /**
  * JAVADOC
@@ -30,45 +30,50 @@ public class MigrationRules
     // key=fromversion->toversion value=list of rules for that transition
     ListMap<String, MigrationRule> rules = new ListMap<String, MigrationRule>();
 
-    public MigrationBuilder fromVersion(String fromVersion)
+    public MigrationBuilder fromVersion( String fromVersion )
     {
-        return new MigrationBuilder(this, fromVersion);
+        return new MigrationBuilder( this, fromVersion );
     }
 
     public void addRule( MigrationRule migrationRule )
     {
         versionChanges.add( migrationRule.toVersion(), migrationRule.fromVersion() );
-        rules.add( migrationRule.fromVersion()+"->"+migrationRule.toVersion(), migrationRule );
+        rules.add( migrationRule.fromVersion() + "->" + migrationRule.toVersion(), migrationRule );
     }
 
     public Iterable<MigrationRule> getRules( String fromVersion, String toVersion )
     {
         String ruleToVersion = findHighestToVersion( toVersion );
 
-        return getMigrationRules(fromVersion, ruleToVersion);
+        return getMigrationRules( fromVersion, ruleToVersion );
     }
 
     private List<MigrationRule> getMigrationRules( String fromVersion, String toVersion )
     {
         List<String> list = versionChanges.get( toVersion );
 
-        if (toVersion == null)
+        if( toVersion == null )
+        {
             return null; // No possible rules for this transition
+        }
 
         for( String possibleFromVersion : list )
         {
-            if (fromVersion.equals(possibleFromVersion))
+            if( fromVersion.equals( possibleFromVersion ) )
             {
                 // We found the end of the version transitions - return rules, but filter on entity type
-                return (List<MigrationRule>) getEntityRules(fromVersion, toVersion).clone();
-            } else
+                return new ArrayList<MigrationRule>( getEntityRules( fromVersion, toVersion ) );
+            }
+            else
             {
                 List<MigrationRule> migrationRules = getMigrationRules( fromVersion, possibleFromVersion );
-                if (migrationRules == null)
+                if( migrationRules == null )
+                {
                     continue; // Wrong transition - try another one
+                }
 
                 // Add entity-filtered rules from this part of the version transition
-                migrationRules.addAll( getEntityRules( possibleFromVersion, toVersion ));
+                migrationRules.addAll( getEntityRules( possibleFromVersion, toVersion ) );
                 return migrationRules;
             }
         }
@@ -78,32 +83,33 @@ public class MigrationRules
     /**
      * Find highest version below the given to-version for which there are rules registered.
      *
-     * @param toVersion
-     * @return
+     * @param toVersion The ending toVersion in the search.
+     * @return The highest version below the given version for which there are rules registered.
      */
     private String findHighestToVersion( String toVersion )
     {
-        if (versionChanges.get( toVersion ) == null)
+        if( versionChanges.get( toVersion ) == null )
         {
-            List<String> toVersions = new ArrayList<String>(versionChanges.keySet());
+            List<String> toVersions = new ArrayList<String>( versionChanges.keySet() );
             Collections.sort( toVersions );
             for( String version : toVersions )
             {
-                if (version.compareTo( toVersion ) <= 0)
+                if( version.compareTo( toVersion ) <= 0 )
                 {
                     // Found version to change to
                     return version;
                 }
             }
-            throw new IllegalArgumentException("No version found in rules that matches the given to-version:"+toVersion);
-        } else
+            throw new IllegalArgumentException( "No version found in rules that matches the given to-version:" + toVersion );
+        }
+        else
         {
             return toVersion;
         }
     }
 
-    private ArrayList<MigrationRule> getEntityRules(String fromVersion, String toVersion)
+    private List<MigrationRule> getEntityRules( String fromVersion, String toVersion )
     {
-        return (ArrayList<MigrationRule>) rules.get( fromVersion+"->"+toVersion );
+        return rules.get( fromVersion + "->" + toVersion );
     }
 }
