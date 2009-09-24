@@ -25,13 +25,13 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.Qi4j;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
 public class NativeRepositoryMixin
     implements Repository, Activatable
 {
     @This private Configuration<NativeConfiguration> configuration;
-    @Structure private Qi4j api;
+    @Structure private UnitOfWorkFactory uowf;
     private SailRepository repo;
 
     public NativeRepositoryMixin()
@@ -56,7 +56,7 @@ public class NativeRepositoryMixin
                 dataDir = "./rdf/repositories/" + id;
             }
             configuration.configuration().dataDirectory().set( dataDir );
-            api.getUnitOfWork( configuration.configuration() ).apply();
+            uowf.getUnitOfWork( configuration.configuration() ).apply();
         }
         store2.setDataDir( new File( dataDir ) );
         String tripleIndexes = configuration.configuration().tripleIndexes().get();
