@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.runtime.injection.provider.InjectionProviderException;
+import org.qi4j.runtime.injection.provider.InvalidInjectionException;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;

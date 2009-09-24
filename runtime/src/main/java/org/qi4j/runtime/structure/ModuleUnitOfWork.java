@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.structure;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,14 +47,13 @@ import org.qi4j.spi.entitystore.EntityStore;
 public class ModuleUnitOfWork
     implements UnitOfWork
 {
-    private static final Method IDENTITY_METHOD;
-    private static QualifiedName identityStateName;
+    private static final QualifiedName IDENTITY_STATE_NAME;
 
     static
     {
         try
         {
-            IDENTITY_METHOD = Identity.class.getMethod( "identity" );
+            IDENTITY_STATE_NAME = QualifiedName.fromMethod( Identity.class.getMethod( "identity" ) );
         }
         catch( NoSuchMethodException e )
         {
@@ -134,11 +132,7 @@ public class ModuleUnitOfWork
         // Init state
         entityModel.initState( entityState );
 
-        if( identityStateName == null )
-        {
-            identityStateName = QualifiedName.fromMethod( IDENTITY_METHOD );
-        }
-        entityState.setProperty( identityStateName, identity );
+        entityState.setProperty( IDENTITY_STATE_NAME, identity );
 
         EntityInstance instance = new EntityInstance( this, moduleInstance, entityModel, entityState );
 

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.runtime.injection.provider.InjectionProviderException;
+import org.qi4j.runtime.injection.provider.InvalidInjectionException;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.composite.TransientBuilderInstance;
 import org.qi4j.runtime.composite.UsesInstance;

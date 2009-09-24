@@ -8,11 +8,13 @@ import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.runtime.model.Resolution;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -36,6 +38,14 @@ public final class StateInjectionProviderFactory
         {
             // @State StateHolder properties;
             return new StateInjectionProvider();
+        }
+        else if( UnitOfWork.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
+        {
+            if( !( resolution.object() instanceof EntityDescriptor ) )
+            {
+                throw new InvalidInjectionException( "Only EntityComposites can be injected with '@State UnitOfWork'" );
+            }
+            return new UnitOfWorkInjectionProvider();
         }
         else if( Property.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
         {
@@ -206,9 +216,20 @@ public final class StateInjectionProviderFactory
     static private class StateInjectionProvider
         implements InjectionProvider, Serializable
     {
-        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        public Object provideInjection( InjectionContext context )
+            throws InjectionProviderException
         {
             return context.state();
+        }
+    }
+
+    static private class UnitOfWorkInjectionProvider
+        implements InjectionProvider, Serializable
+    {
+
+        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        {
+            return ( (EntityInstance) context.compositeInstance() ).unitOfWork();
         }
     }
 }
