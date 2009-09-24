@@ -62,6 +62,11 @@ public abstract class AbstractQi4jTest
     {
         qi4j = new Energy4Java();
         applicationModel = newApplication();
+        if( applicationModel == null )
+        {
+            // An AssemblyException has occurred that the Test wants to check for.
+            return;
+        }
         application = applicationModel.newInstance( qi4j.spi() );
         initApplication( application );
         api = spi = qi4j.spi();
@@ -80,13 +85,36 @@ public abstract class AbstractQi4jTest
     protected ApplicationModelSPI newApplication()
         throws AssemblyException
     {
-        return qi4j.newApplicationModel( new ApplicationAssembler()
+        ApplicationAssembler assembler = new ApplicationAssembler()
         {
-            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
+            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
+                throws AssemblyException
             {
                 return applicationFactory.newApplicationAssembly( AbstractQi4jTest.this );
             }
-        } );
+        };
+        try
+        {
+            return qi4j.newApplicationModel( assembler );
+        }
+        catch( AssemblyException e )
+        {
+            assemblyException( e );
+            return null;
+        }
+    }
+
+    /**
+     * This method is called when there was an AssemblyException in the creation of the Qi4j application model.
+     * <p>Override this method to catch valid failures to place into test suites.
+     *
+     * @param exception the exception thrown.
+     * @throws AssemblyException The default implementation of this method will simply re-throw the exception.
+     */
+    protected void assemblyException( AssemblyException exception )
+        throws AssemblyException
+    {
+        throw exception;
     }
 
     protected void initApplication( Application app ) throws Exception
