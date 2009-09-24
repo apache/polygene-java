@@ -16,7 +16,6 @@ Private-Package: org.qi4j.runtime, \
                  org.qi4j.runtime.structure, \
                  org.qi4j.runtime.types, \
                  org.qi4j.runtime.unitofwork, \
-                 org.qi4j.runtime.util, \
                  org.qi4j.runtime.value
 
 Import-Package: net.sf.cglib.asm;version=2.2, \
