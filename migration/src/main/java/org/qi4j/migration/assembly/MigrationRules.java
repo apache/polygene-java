@@ -52,7 +52,7 @@ public class MigrationRules
     {
         List<String> list = versionChanges.get( toVersion );
 
-        if( toVersion == null )
+        if( list == null )
         {
             return null; // No possible rules for this transition
         }

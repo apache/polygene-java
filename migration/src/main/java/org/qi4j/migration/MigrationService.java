@@ -26,6 +26,7 @@ import org.qi4j.entitystore.map.Migration;
 import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.migration.assembly.MigrationRule;
 import org.qi4j.migration.assembly.MigrationRules;
+import java.util.logging.Logger;
 
 /**
  * Migration service. This is used by MapEntityStore EntityStore implementations to
@@ -43,21 +44,30 @@ public interface MigrationService
         @This
         Composite composite;
         public MigrationRules rules;
+        public Logger log;
 
         public boolean migrate( JSONObject state, String toVersion, StateStore stateStore ) throws JSONException
         {
             // Get current version
-            String fromVersion = state.getString( MapEntityStore.JSONKeys.application_version.name() );
+            String fromVersion = state.optString( MapEntityStore.JSONKeys.application_version.name() , "0.0");
 
             Iterable<MigrationRule> matchedRules = rules.getRules( fromVersion, toVersion );
 
             boolean changed = false;
-            for( MigrationRule matchedRule : matchedRules )
+            if (matchedRules != null)
             {
-                changed = matchedRule.upgrade( state, stateStore ) || changed;
+                for( MigrationRule matchedRule : matchedRules )
+                {
+                    changed = matchedRule.upgrade( state, stateStore ) || changed;
+                }
             }
 
             state.put( MapEntityStore.JSONKeys.application_version.name(), toVersion );
+
+            if (changed)
+            {
+                log.info( "Migrated "+state.getString(MapEntityStore.JSONKeys.identity.name() )+" from "+fromVersion+" to "+toVersion);
+            }
 
             return changed;
         }
@@ -65,6 +75,8 @@ public interface MigrationService
         public void activate() throws Exception
         {
             rules = composite.metaInfo( MigrationRules.class );
+
+            log = Logger.getLogger( MigrationService.class.getName() );
         }
 
         public void passivate() throws Exception

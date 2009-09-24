@@ -4,7 +4,13 @@ Export-Package: org.qi4j.rest;version="${pom.version}", \
                 org.qi4j.rest.entity;version="${pom.version}", \
                 org.qi4j.rest.query;version="${pom.version}"
 
-Import-Package: org.qi4j.api.entity
+Import-Package: org.qi4j.api.entity, org.json, \
+                org.qi4j.api.composite, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.mixin, \
+                org.qi4j.api.service, \
+                org.qi4j.api.util, \
+                org.qi4j.entitystore.map
 
 Embed-Dependency: \
     *;scope=compile|runtime;groupId=!org.qi4j.*|org.restlet|com.noelios.*
