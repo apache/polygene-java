@@ -25,7 +25,7 @@ import java.util.Set;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.concern.Concerns;
 import static org.qi4j.api.util.Classes.*;
-import org.qi4j.api.util.MethodKeyMap;
+import org.qi4j.spi.util.MethodKeyMap;
 
 /**
  * JAVADOC

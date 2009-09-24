@@ -25,7 +25,7 @@ import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.constraint.ConstraintImplementationNotFoundException;
 import org.qi4j.api.constraint.Constraints;
 import static org.qi4j.api.util.Classes.*;
-import static org.qi4j.api.util.Annotations.*;
+import static org.qi4j.spi.util.Annotations.*;
 
 /**
  * JAVADOC

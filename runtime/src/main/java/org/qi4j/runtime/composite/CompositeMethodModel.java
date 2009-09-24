@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Set;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.util.SerializationUtil;
+import org.qi4j.spi.util.SerializationUtil;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.BindingException;

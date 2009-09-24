@@ -41,6 +41,7 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.runtime.composite.CompositesInstance;
 import org.qi4j.runtime.composite.CompositesModel;
 import org.qi4j.runtime.composite.TransientBuilderInstance;
@@ -61,6 +62,7 @@ import org.qi4j.runtime.value.ValueBuilderInstance;
 import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.runtime.value.ValuesInstance;
 import org.qi4j.runtime.value.ValuesModel;
+import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
@@ -590,6 +592,12 @@ public class ModuleInstance
                 return null;
             }
             return new ModuleUnitOfWork( ModuleInstance.this, stack.peek() );
+        }
+
+        public UnitOfWork getUnitOfWork( EntityComposite entity )
+        {
+            EntityInstance instance = EntityInstance.getEntityInstance( entity );
+            return instance.unitOfWork();
         }
     }
 

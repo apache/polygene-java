@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.api.util;
+package org.qi4j.spi.util;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -23,6 +23,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import org.qi4j.spi.util.SerializationUtil;
 
 public final class MethodSet extends HashSet<Method>
     implements Externalizable

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.api.util;
+package org.qi4j.spi.util;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -24,6 +24,7 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import org.qi4j.spi.util.SerializationUtil;
 
 /**
  * This is a HashMap subtype where the Value is a Method, for the pure purpose of being Serializable.

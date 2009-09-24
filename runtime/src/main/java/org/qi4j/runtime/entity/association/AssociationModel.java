@@ -34,7 +34,7 @@ import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.property.Immutable;
-import org.qi4j.api.util.SerializationUtil;
+import org.qi4j.spi.util.SerializationUtil;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;

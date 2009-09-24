@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.api.util;
+package org.qi4j.spi.util;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,37 +25,37 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class MethodKeyMapTest
+public class MethodValueMapTest
 {
     @Test
-    public void whenStoringFiveMethodsInMethodKeyMapThenItCanBeRetrieved()
+    public void whenStoringFiveMethodsInMethodValueMapThenItCanBeRetrieved()
         throws Exception
     {
-        MethodKeyMap<Integer> map = new MethodKeyMap<Integer>();
+        MethodValueMap<Integer> map = new MethodValueMap<Integer>();
         final Method method1 = getMethod( ArrayList.class, "add" );
         final Method method2 = getMethod( System.class, "currentTimeMillis" );
         final Method method3 = getMethod( String.class, "replace" );
-        final Method method4 = getMethod( MethodKeyMapTest.class, "whenStoringFiveMethodsInMethodKeyMapThenItCanBeRetrieved" );
+        final Method method4 = getMethod( MethodValueMapTest.class, "whenStoringFiveMethodsInMethodValueMapThenItCanBeRetrieved" );
         final Method method5 = getMethod( Date.class, "toString" );
-        map.put( method1, 1 );
-        map.put( method2, 2 );
-        map.put( method3, 3 );
-        map.put( method4, 4 );
-        map.put( method5, 5 );
-        MethodKeyMap resultMap = saveMapAndReloadIt( map );
-        Assert.assertTrue( resultMap.containsKey( method1 ) );
-        Assert.assertTrue( resultMap.containsKey( method2 ) );
-        Assert.assertTrue( resultMap.containsKey( method3 ) );
-        Assert.assertTrue( resultMap.containsKey( method4 ) );
-        Assert.assertTrue( resultMap.containsKey( method5 ) );
+        map.put( 1, method1 );
+        map.put( 2, method2 );
+        map.put( 3, method3 );
+        map.put( 4, method4 );
+        map.put( 5, method5 );
+        MethodValueMap resultMap = saveMapAndReloadIt( map );
+        Assert.assertTrue( resultMap.containsValue( method1 ) );
+        Assert.assertTrue( resultMap.containsValue( method2 ) );
+        Assert.assertTrue( resultMap.containsValue( method3 ) );
+        Assert.assertTrue( resultMap.containsValue( method4 ) );
+        Assert.assertTrue( resultMap.containsValue( method5 ) );
 
     }
 
     @Test
-    public void whenStoringOverloadedMethodsInMethodKeyMapThenItCanBeRetrieved()
+    public void whenStoringOverloadedMethodsInMethodValueMapThenItCanBeRetrieved()
         throws Exception
     {
-        MethodKeyMap<Integer> map = new MethodKeyMap<Integer>();
+        MethodValueMap<Integer> map = new MethodValueMap<Integer>();
         Method method1 = getMethod( StringBuffer.class, "append", Boolean.TYPE );
         Method method2 = getMethod( StringBuffer.class, "append", Integer.TYPE );
         Method method3 = getMethod( StringBuffer.class, "append", Object.class );
@@ -64,23 +64,23 @@ public class MethodKeyMapTest
         Method method6 = getMethod( StringBuffer.class, "append", ( new char[0] ).getClass(), Integer.TYPE, Integer.TYPE );
         Method method7 = getMethod( StringBuffer.class, "append", Long.TYPE );
         Method method8 = getMethod( StringBuffer.class, "append", Double.TYPE );
-        map.put( method1, 1 );
-        map.put( method2, 2 );
-        map.put( method3, 3 );
-        map.put( method4, 4 );
-        map.put( method5, 5 );
-        map.put( method6, 6 );
-        map.put( method7, 7 );
-        map.put( method8, 8 );
-        MethodKeyMap resultMap = saveMapAndReloadIt( map );
-        Assert.assertTrue( resultMap.containsKey( method1 ) );
-        Assert.assertTrue( resultMap.containsKey( method2 ) );
-        Assert.assertTrue( resultMap.containsKey( method3 ) );
-        Assert.assertTrue( resultMap.containsKey( method4 ) );
-        Assert.assertTrue( resultMap.containsKey( method5 ) );
-        Assert.assertTrue( resultMap.containsKey( method6 ) );
-        Assert.assertTrue( resultMap.containsKey( method7 ) );
-        Assert.assertTrue( resultMap.containsKey( method8 ) );
+        map.put( 1, method1 );
+        map.put( 2, method2 );
+        map.put( 3, method3 );
+        map.put( 4, method4 );
+        map.put( 5, method5 );
+        map.put( 6, method6 );
+        map.put( 7, method7 );
+        map.put( 8, method8 );
+        MethodValueMap resultMap = saveMapAndReloadIt( map );
+        Assert.assertTrue( resultMap.containsValue( method1 ) );
+        Assert.assertTrue( resultMap.containsValue( method2 ) );
+        Assert.assertTrue( resultMap.containsValue( method3 ) );
+        Assert.assertTrue( resultMap.containsValue( method4 ) );
+        Assert.assertTrue( resultMap.containsValue( method5 ) );
+        Assert.assertTrue( resultMap.containsValue( method6 ) );
+        Assert.assertTrue( resultMap.containsValue( method7 ) );
+        Assert.assertTrue( resultMap.containsValue( method8 ) );
     }
 
     private Method getMethod( Class clazz, String methodName, Class... parameterTypes )
@@ -101,7 +101,7 @@ public class MethodKeyMapTest
         throw new InternalError( "Error in testcase." );
     }
 
-    private MethodKeyMap saveMapAndReloadIt( MethodKeyMap map )
+    private MethodValueMap saveMapAndReloadIt( MethodValueMap map )
         throws IOException, ClassNotFoundException
     {
         ByteArrayOutputStream bas = new ByteArrayOutputStream();
@@ -110,7 +110,7 @@ public class MethodKeyMapTest
         oos.flush();
         ByteArrayInputStream in = new ByteArrayInputStream( bas.toByteArray() );
         ObjectInputStream ois = new ObjectInputStream( in );
-        MethodKeyMap resultSet = (MethodKeyMap) ois.readObject();
+        MethodValueMap resultSet = (MethodValueMap) ois.readObject();
         return resultSet;
     }
 }

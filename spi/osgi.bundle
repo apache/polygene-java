@@ -5,6 +5,7 @@ Import-Package: org.qi4j.api, \
                 org.qi4j.api.common, \
                 org.qi4j.api.composite, \
                 org.qi4j.api.concern, \
+                org.qi4j.api.constraint, \
                 org.qi4j.api.entity, \
                 org.qi4j.api.entity.association, \
                 org.qi4j.api.injection, \
@@ -43,6 +44,7 @@ Export-Package: org.json, \
                 org.qi4j.spi.sideeffect;version=${pom.version}, \
                 org.qi4j.spi.structure;version=${pom.version}, \
                 org.qi4j.spi.uuid;version=${pom.version}, \
+                org.qi4j.spi.util;version=${pom.version}, \
                 org.qi4j.spi.value;version=${pom.version}, \
                 org.qi4j.entitystore.memory;version=${pom.version}, \
                 org.qi4j.entitystore.map;version=${pom.version}

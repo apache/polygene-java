@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * Assembler that delegates to a collection of Assemblies.
+ * Assembler that delegates to a collection of Assemblers.
  * <p/>
  * Makes it easy to collect and compose assemblers into bigger assemblers.
  */

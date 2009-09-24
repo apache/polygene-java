@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import static java.util.Collections.*;
-import org.qi4j.api.util.SerializationUtil;
+import org.qi4j.spi.util.SerializationUtil;
 import org.qi4j.runtime.model.BindingException;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;

@@ -15,7 +15,6 @@
 package org.qi4j.api;
 
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
@@ -37,21 +36,30 @@ public interface Qi4j
     <T> T dereference( T composite );
 
     /**
-     * Get the super Composite of the given Composite. If one Composite
+     * Get the super Composite of the given Composite. <p>If one Composite
      * type MyComposite is extended by CustomMyComposite interface,
-     * the CustomMyComposite is considered to be the super Composite
-     * of MyComposite. A Composite may only extend one other Composite,
+     * then the MyComposite is considered to be the super Composite
+     * of CustomMyComposite. A Composite may only extend one other Composite,
      * but may extend any number of other interfaces which do not in turn
-     * extend Composite.
+     * extend Composite.</p>
      *
+     * <p>If there are multiple super composites, this method will only return the first
+     * one found.</p>
+     * 
      * @param compositeClass the Composite type whose super Composite should be returned
      * @return the super Composite of the given Composite, or null if it does not have one
      */
     <S extends Composite, T extends S> Class<S> getSuperComposite( Class<T> compositeClass );
 
-    /**
-     * This is used by ConfigurationMixin to figure out the configuration instance used by
-     * a Service using {@link org.qi4j.api.configuration.Configuration}.
+    /** Finds the Configuration instance of a service.
+     * <p>This is used by ConfigurationMixin to figure out the configuration instance used by
+     * a Service using {@link org.qi4j.api.configuration.Configuration}, and should not be
+     * used directly by client code.</p>
+     *
+     * <p>If the Configuration entity doesn't exist in the visible EntityStore, then a properties
+     * file with the name of the service identifier will be located on the classpath, and the
+     * values used to create the Configuration instance, which will then be saved to the EntityStore
+     * for future use. That means that the properties file is <b>only</b> used 
      *
      * @param serviceComposite the service instance
      * @param uow              the UnitOfWork from which the configuration will be loaded
@@ -87,12 +95,4 @@ public interface Qi4j
      */
     Module getModule( ServiceReference service );
 
-    /**
-     * Returns the UnitOfWork that the EntityComposite is bound to.
-     *
-     * @param entity the entity to be checked.
-     * @return The UnitOfWork instance that the Entity is bound to, or null if the entity is not associated with
-     *         any UnitOfWork.
-     */
-    UnitOfWork getUnitOfWork( EntityComposite entity );
 }
