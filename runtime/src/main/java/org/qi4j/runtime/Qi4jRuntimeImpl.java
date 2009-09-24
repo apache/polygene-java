@@ -209,12 +209,6 @@ public final class Qi4jRuntimeImpl
         }
     }
 
-    public UnitOfWork getUnitOfWork( EntityComposite entity )
-    {
-        EntityInstance instance = EntityInstance.getEntityInstance( entity );
-        return instance.unitOfWork();
-    }
-
     public Module getModule( Composite composite )
     {
         if( composite instanceof TransientComposite )
