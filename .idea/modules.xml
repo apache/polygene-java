@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/entitystore-rest/qi4j-entitystore-rest.iml" filepath="$PROJECT_DIR$/entitystore-rest/qi4j-entitystore-rest.iml" />
       <module fileurl="file://$PROJECT_DIR$/qi4j-extensions.iml" filepath="$PROJECT_DIR$/qi4j-extensions.iml" />
       <module fileurl="file://$PROJECT_DIR$/indexing-rdf/qi4j-indexing-rdf.iml" filepath="$PROJECT_DIR$/indexing-rdf/qi4j-indexing-rdf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/migration/qi4j-migration.iml" filepath="$PROJECT_DIR$/migration/qi4j-migration.iml" />
       <module fileurl="file://$PROJECT_DIR$/reindexer/qi4j-reindexer.iml" filepath="$PROJECT_DIR$/reindexer/qi4j-reindexer.iml" />
     </modules>
   </component>

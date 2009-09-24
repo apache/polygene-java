@@ -1,0 +1,12 @@
+Export-Package: org.qi4j.rest;version="${pom.version}", \
+                org.qi4j.rest.assembly;version="${pom.version}", \
+                org.qi4j.rest.client;version="${pom.version}", \
+                org.qi4j.rest.entity;version="${pom.version}", \
+                org.qi4j.rest.query;version="${pom.version}"
+
+Import-Package: org.qi4j.api.entity
+
+Embed-Dependency: \
+    *;scope=compile|runtime;groupId=!org.qi4j.*|org.restlet|com.noelios.*
+
+Ignore-Package:

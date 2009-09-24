@@ -36,7 +36,7 @@ public class MBeanServerImporter
         }
         else
         {
-            return MBeanServerFactory.createMBeanServer();
+            return MBeanServerFactory.createMBeanServer("StreamFlow");
         }
     }
 

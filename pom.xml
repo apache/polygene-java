@@ -28,6 +28,7 @@
     <module>entitystore-preferences</module>
     <module>entitystore-rest</module>
     <module>entitystore-qrm</module>
+    <module>migration</module>
   </modules>
 
   <repositories>
