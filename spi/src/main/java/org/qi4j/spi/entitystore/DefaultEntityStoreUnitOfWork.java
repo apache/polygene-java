@@ -29,14 +29,14 @@ import org.qi4j.spi.entitystore.EntityStoreSPI;
  * JAVADOC
  */
 public final class DefaultEntityStoreUnitOfWork
-        implements EntityStoreUnitOfWork
+    implements EntityStoreUnitOfWork
 {
     private EntityStoreSPI entityStoreSPI;
     private String identity;
     private Module module;
     private LinkedList<EntityState> states = new LinkedList<EntityState>();
 
-    public DefaultEntityStoreUnitOfWork( EntityStoreSPI entityStoreSPI, String identity, Module module)
+    public DefaultEntityStoreUnitOfWork( EntityStoreSPI entityStoreSPI, String identity, Module module )
     {
         this.entityStoreSPI = entityStoreSPI;
         this.identity = identity;
@@ -54,31 +54,31 @@ public final class DefaultEntityStoreUnitOfWork
     }
 
     // EntityStore
-    public EntityState newEntityState(EntityReference anIdentity, EntityDescriptor descriptor) throws EntityStoreException
+    public EntityState newEntityState( EntityReference anIdentity, EntityDescriptor descriptor ) throws EntityStoreException
     {
-        EntityState state = entityStoreSPI.newEntityState(this, anIdentity, descriptor);
-        states.add(state);
+        EntityState state = entityStoreSPI.newEntityState( this, anIdentity, descriptor );
+        states.add( state );
         return state;
     }
 
-    public EntityState getEntityState(EntityReference anIdentity) throws EntityStoreException, EntityNotFoundException
+    public EntityState getEntityState( EntityReference anIdentity ) throws EntityStoreException, EntityNotFoundException
     {
-        EntityState entityState = entityStoreSPI.getEntityState(this, anIdentity);
-        states.add(entityState);
+        EntityState entityState = entityStoreSPI.getEntityState( this, anIdentity );
+        states.add( entityState );
         return entityState;
     }
 
     public StateCommitter apply() throws EntityStoreException
     {
-        return entityStoreSPI.apply(states, identity);
+        return entityStoreSPI.apply( states, identity );
     }
 
     public void discard()
     {
     }
 
-    public void registerEntityState(EntityState state)
+    public void registerEntityState( EntityState state )
     {
-        states.add(state);
+        states.add( state );
     }
 }

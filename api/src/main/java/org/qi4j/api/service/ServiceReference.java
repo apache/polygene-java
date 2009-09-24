@@ -27,6 +27,4 @@ public interface ServiceReference<T>
     T get();
 
     boolean isActive();
-
-//    Module module();
 }

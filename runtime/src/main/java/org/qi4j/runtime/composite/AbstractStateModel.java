@@ -35,7 +35,7 @@ import java.util.Set;
  * Base model for Composite state
  */
 public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
-        implements StateDescriptor, Serializable, Binder
+    implements StateDescriptor, Serializable, Binder
 {
     protected final T propertiesModel;
 
@@ -66,7 +66,7 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
 
     public void addStateFor( Iterable<Method> methods, Class compositeType )
     {
-        for (Method method : methods)
+        for( Method method : methods )
         {
             propertiesModel.addPropertyFor( method, compositeType );
         }
@@ -93,7 +93,7 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
     }
 
     public void checkConstraints( StateHolder state )
-            throws ConstraintViolationException
+        throws ConstraintViolationException
     {
         PropertiesInstance stateInstance = (PropertiesInstance) state;
         propertiesModel.checkConstraints( stateInstance );

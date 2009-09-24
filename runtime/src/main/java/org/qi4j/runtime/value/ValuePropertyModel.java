@@ -49,9 +49,9 @@ public final class ValuePropertyModel extends PersistentPropertyModel
                                                                         anAccessor.getDeclaringClass(),
                                                                         compositeType );
         return new PropertyTypeImpl( QualifiedName.fromMethod( anAccessor ),
-                                 valueType,
-                                 isQueryable,
-                                 PropertyTypeImpl.PropertyTypeEnum.IMMUTABLE );
+                                     valueType,
+                                     isQueryable,
+                                     PropertyTypeImpl.PropertyTypeEnum.IMMUTABLE );
     }
 
     public Property<?> newInstance( Object value )

@@ -32,9 +32,9 @@ public final class PropertyTypeImpl
     private final PropertyTypeEnum propertyType;
 
     public PropertyTypeImpl( final QualifiedName qualifiedName,
-                         final ValueType type,
-                         final boolean queryable,
-                         final PropertyTypeEnum propertyType )
+                             final ValueType type,
+                             final boolean queryable,
+                             final PropertyTypeEnum propertyType )
     {
         this.qualifiedName = qualifiedName;
         this.type = type;
