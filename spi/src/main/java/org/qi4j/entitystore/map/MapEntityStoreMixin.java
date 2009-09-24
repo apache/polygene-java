@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -160,7 +161,7 @@ public class MapEntityStoreMixin
                 }
                 catch( Exception e )
                 {
-                    Logger.getLogger( getClass().getName() ).throwing( getClass().getName(), "visitEntityStates", e );
+                    Logger.getLogger( getClass().getName() ).log( Level.SEVERE, "visitEntityStates", e );
                 }
             }
         } );
@@ -238,22 +239,28 @@ public class MapEntityStoreMixin
             JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
             EntityStatus status = EntityStatus.LOADED;
 
+            String version = jsonObject.getString( "version" );
+            long modified = jsonObject.getLong( "modified" );
+            String identity = jsonObject.getString( "identity" );
+
             // Check if version is correct
-            if( !jsonObject.optString( MapEntityStore.JSONKeys.application_version.name(), "1.0" ).equals( application.version() ) )
+            String currentAppVersion = jsonObject.optString( MapEntityStore.JSONKeys.application_version.name(), "0.0" );
+            if( !currentAppVersion.equals( application.version() ) )
             {
                 if( migration != null )
                 {
-                    if( migration.migrate( jsonObject, application.version(), this ) )
-                    {
-                        // State changed
-                        status = EntityStatus.UPDATED;
-                    }
+                    migration.migrate( jsonObject, application.version(), this );
                 }
                 else
                 {
                     // Do nothing - set version to be correct
                     jsonObject.put( MapEntityStore.JSONKeys.application_version.name(), application.version() );
                 }
+
+                Logger.getLogger( getClass().getName() ).info( "Updated version nr on " + identity + " from " + currentAppVersion + " to " + application.version() );
+
+                // State changed
+                status = EntityStatus.UPDATED;
             }
 
 
@@ -334,9 +341,6 @@ public class MapEntityStoreMixin
                 }
             }
 
-            String version = jsonObject.getString( "version" );
-            long modified = jsonObject.getLong( "modified" );
-            String identity = jsonObject.getString( "identity" );
             return new DefaultEntityState( unitOfWork,
                                            version,
                                            modified,
