@@ -21,7 +21,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.common.MetaInfo;
-import org.qi4j.api.util.MethodKeyMap;
+import org.qi4j.spi.util.MethodKeyMap;
 
 /**
  * Declaration of a Property or Association.

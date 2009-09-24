@@ -28,7 +28,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.structure.ModuleSPI;
-import org.qi4j.api.util.Base64Encoder;
+import org.qi4j.spi.util.Base64Encoder;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONWriter;

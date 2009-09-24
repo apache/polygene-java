@@ -23,8 +23,8 @@ import org.junit.Assert;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.qi4j.api.util.CyclicUsageException;
-import org.qi4j.api.util.UsageGraph;
+import org.qi4j.spi.util.CyclicUsageException;
+import org.qi4j.spi.util.UsageGraph;
 
 
 public class UsageGraphTest

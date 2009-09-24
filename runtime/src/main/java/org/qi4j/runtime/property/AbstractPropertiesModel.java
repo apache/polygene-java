@@ -18,7 +18,7 @@ import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.util.MethodKeyMap;
+import org.qi4j.spi.util.MethodKeyMap;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.model.BindingException;

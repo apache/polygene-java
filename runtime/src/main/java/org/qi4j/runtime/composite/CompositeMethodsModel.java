@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.MissingMethodException;
-import org.qi4j.api.util.MethodKeyMap;
+import org.qi4j.spi.util.MethodKeyMap;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.BindingException;
 import org.qi4j.runtime.model.Resolution;

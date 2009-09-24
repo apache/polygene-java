@@ -23,7 +23,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import org.qi4j.api.common.ConstructionException;
-import org.qi4j.api.util.SerializationUtil;
+import org.qi4j.spi.util.SerializationUtil;
 import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.model.Binder;
