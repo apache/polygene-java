@@ -17,6 +17,8 @@ package org.qi4j.migration.assembly;
 import org.qi4j.migration.operation.RenameProperty;
 import org.qi4j.migration.operation.AddProperty;
 import org.qi4j.migration.operation.RemoveProperty;
+import org.qi4j.migration.operation.RenameManyAssociation;
+import org.qi4j.migration.operation.RenameAssociation;
 
 /**
  * Fluent API for creating migration rules for specific entity types.
@@ -92,6 +94,40 @@ public class EntityMigrationBuilder
                                                         migrationBuilder.toVersion,
                                                         entityTypes,
                                                         new RemoveProperty(property, defaultValue)));
+
+        return this;
+    }
+
+    /**
+     * Add rule to rename an Entity many-association.
+     *
+     * @param from many-assocation name
+     * @param to many-association name
+     * @return the builder
+     */
+    public EntityMigrationBuilder renameManyAssociation(String from, String to)
+    {
+        migrationBuilder.rules.addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
+                                                        migrationBuilder.toVersion,
+                                                        entityTypes,
+                                                        new RenameManyAssociation(from, to)));
+
+        return this;
+    }
+
+    /**
+     * Add rule to rename an Entity association.
+     *
+     * @param from assocation name
+     * @param to association name
+     * @return the builder
+     */
+    public EntityMigrationBuilder renameAssociation(String from, String to)
+    {
+        migrationBuilder.rules.addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
+                                                        migrationBuilder.toVersion,
+                                                        entityTypes,
+                                                        new RenameAssociation(from, to)));
 
         return this;
     }

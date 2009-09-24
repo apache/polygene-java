@@ -49,6 +49,8 @@ public class MigrationTest
                 renameEntity(TestEntity1_0.class.getName(), TestEntity1_1.class.getName()).
                 forEntities(TestEntity1_1.class.getName()).
                     renameProperty( "foo", "newFoo").
+                    renameManyAssociation( "fooManyAssoc", "newFooManyAssoc" ).
+                    renameAssociation( "fooAssoc", "newFooAssoc" ).
 
             toVersion( "2.0" ).
                 renameEntity(TestEntity1_1.class.getName(), TestEntity2_0.class.getName()).
@@ -78,6 +80,8 @@ public class MigrationTest
             UnitOfWork uow = v1.unitOfWorkFactory().newUnitOfWork();
             TestEntity1_0 entity = uow.newEntity( TestEntity1_0.class );
             entity.foo().set( "Some value" );
+            entity.fooManyAssoc().add( entity );
+            entity.fooAssoc().set( entity );
             id = entity.identity().get();
             uow.complete();
 
@@ -103,6 +107,8 @@ public class MigrationTest
             UnitOfWork uow = v1_1.unitOfWorkFactory().newUnitOfWork();
             TestEntity1_1 entity = uow.get( TestEntity1_1.class, id );
             assertThat( "Property has been renamed", entity.newFoo().get(), CoreMatchers.equalTo("Some value" ));
+            assertThat( "ManyAssociation has been renamed", entity.newFooManyAssoc().count(), CoreMatchers.equalTo(1 ));
+            assertThat( "Association has been renamed", entity.newFooAssoc().get(), CoreMatchers.equalTo(entity ));
             uow.complete();
 
             data_v1_1 = testData.exportData();
@@ -122,19 +128,14 @@ public class MigrationTest
             TestData testData = (TestData) v2_0.serviceFinder().findService( TestData.class ).get();
             testData.importData( data_v1_1 );
 
-            {
-                UnitOfWork uow = v2_0.unitOfWorkFactory().newUnitOfWork();
-                TestEntity2_0 entity = uow.get( TestEntity2_0.class, id );
-                assertThat( "Property has been created", entity.bar().get(), CoreMatchers.equalTo("Some value" ));
-                uow.complete();
-            }
-
             // Test migration from 1.0 -> 2.0
             {
                 testData.importData( data_v1 );
                 UnitOfWork uow = v2_0.unitOfWorkFactory().newUnitOfWork();
                 TestEntity2_0 entity = uow.get( TestEntity2_0.class, id );
                 assertThat( "Property has been created", entity.bar().get(), CoreMatchers.equalTo("Some value" ));
+                assertThat( "ManyAssociation has been renamed", entity.newFooManyAssoc().count(), CoreMatchers.equalTo(1 ));
+                assertThat( "Association has been renamed", entity.newFooAssoc().get(), CoreMatchers.equalTo(entity ));
                 uow.complete();
             }
         }

@@ -16,7 +16,10 @@ package org.qi4j.migration;
 
 import org.qi4j.api.property.Property;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.common.Optional;
 
 /**
  * JAVADOC
@@ -26,4 +29,9 @@ public interface TestEntity2_0
 {
     @UseDefaults
     Property<String> bar();
+
+    ManyAssociation<TestEntity2_0> newFooManyAssoc();
+
+    @Optional
+    Association<TestEntity2_0> newFooAssoc();
 }
