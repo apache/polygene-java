@@ -23,6 +23,7 @@ import java.lang.reflect.WildcardType;
 import java.util.Collections;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.util.Annotations;
 import org.qi4j.runtime.model.BindingException;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.injection.provider.CachingInjectionProviderDecorator;
@@ -30,8 +31,7 @@ import org.qi4j.runtime.injection.provider.InvalidInjectionException;
 import org.qi4j.runtime.injection.provider.ServiceInjectionProviderFactory;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.structure.Specification;
-import org.qi4j.runtime.util.Annotations;
-import static org.qi4j.runtime.util.CollectionUtils.*;
+import static org.qi4j.api.util.CollectionUtils.*;
 import org.qi4j.spi.composite.DependencyDescriptor;
 
 /**

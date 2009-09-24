@@ -1,4 +1,4 @@
-package org.qi4j.runtime.util;
+package org.qi4j.api.util;
 
 import java.util.Iterator;
 
