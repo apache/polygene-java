@@ -20,60 +20,50 @@ package org.qi4j.runtime.injection;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.usecase.Usecase;
-import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.AbstractQi4jTest;
 
-public class UnitOfWorkInjectionTest extends AbstractQi4jTest
+public class IllegalUnitOfWorkInjectionTest extends AbstractQi4jTest
 {
+    private boolean failed = false;
+
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.addEntities( TrialEntity.class );
-        module.addServices( MemoryEntityStoreService.class );
+            module.addTransients( TrialTransient.class );
+            module.addServices( MemoryEntityStoreService.class );
+    }
+
+    @Override
+    protected void assemblyException( AssemblyException exception ) throws AssemblyException
+    {
+        failed = true;
     }
 
     @Test
-    public void givenEntityInOneUnitOfWorkWhenCurrentUnitOfWorkHasChangedThenUnitOfWorkInjectionInEntityPointsToCorrectUow()
+    public void givenTransientCompositeWhenInjectingUnitOfWorkThenExpectAnInjectionException()
         throws Exception
     {
-        Usecase usecase = UsecaseBuilder.newUsecase( "usecase1" );
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( usecase );
-        try
+        if( !failed )
         {
-            Trial trial = uow.newEntity( Trial.class, "123" );
-            trial.doSomething();
-            uow.apply();
-            usecase = UsecaseBuilder.newUsecase( "usecase2" );
-            uow = unitOfWorkFactory.newUnitOfWork( usecase );
-            assertEquals( "123", ((EntityComposite) trial).identity().get() );
-            assertEquals( "usecase1", trial.usecaseName() );
+            fail( "Transients should not be allowed to have @State UnitOfWork injections." );
         }
-        finally
-        {
-            while( uow != null )
-            {
-                uow.discard();
-                uow = unitOfWorkFactory.currentUnitOfWork();
-            }
-        }
-
     }
 
     interface Trial
     {
         void doSomething();
+
         String usecaseName();
     }
 
     @Mixins( TrialMixin.class )
-    interface TrialEntity extends Trial, EntityComposite
+    interface TrialTransient extends Trial, TransientComposite
     {
     }
 
