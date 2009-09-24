@@ -28,7 +28,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.qi4j.bootstrap.internal.ServiceLoader;
-import org.qi4j.bootstrap.spi.Qi4jRuntime;
+import org.qi4j.bootstrap.Qi4jRuntime;
 
 public final class Activator
     implements BundleActivator

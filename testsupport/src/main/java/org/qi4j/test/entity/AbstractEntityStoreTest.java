@@ -22,8 +22,8 @@ import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -35,108 +35,108 @@ import java.util.Map;
  * Abstract test with tests for the EntityStore interface.
  */
 public abstract class AbstractEntityStoreTest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
     @Service
     EntityStore store;
 
-    public void assemble(ModuleAssembly module)
-            throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
-        module.addServices(UuidIdentityGeneratorService.class);
-        module.addEntities(TestEntity.class);
-        module.addValues(TestValue.class, TestValue2.class, TjabbaValue.class);
-        module.addObjects(getClass());
+        module.addServices( UuidIdentityGeneratorService.class );
+        module.addEntities( TestEntity.class );
+        module.addValues( TestValue.class, TestValue2.class, TjabbaValue.class );
+        module.addObjects( getClass() );
     }
 
     @Before
     public void init()
     {
-        objectBuilderFactory.newObjectBuilder(AbstractEntityStoreTest.class).injectTo(this);
+        objectBuilderFactory.newObjectBuilder( AbstractEntityStoreTest.class ).injectTo( this );
     }
 
     @Override
     @After
     public void tearDown()
-            throws Exception
+        throws Exception
     {
         try
         {
-            EntityStoreUnitOfWork uow = store.visitEntityStates(new EntityStore.EntityStateVisitor()
+            EntityStoreUnitOfWork uow = store.visitEntityStates( new EntityStore.EntityStateVisitor()
             {
-                public void visitEntityState(EntityState entityState)
+                public void visitEntityState( EntityState entityState )
                 {
                     entityState.remove();
                 }
-            }, moduleInstance);
+            }, moduleInstance );
             uow.apply().commit();
 
             super.tearDown();
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             e.printStackTrace();
         }
     }
 
-    protected TestEntity createEntity(UnitOfWork unitOfWork)
-            throws UnitOfWorkCompletionException
+    protected TestEntity createEntity( UnitOfWork unitOfWork )
+        throws UnitOfWorkCompletionException
     {
         // Create entity
-        EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class);
+        EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
         TestEntity instance = builder.newInstance();
 
-        instance.name().set("Test");
-        instance.association().set(instance);
+        instance.name().set( "Test" );
+        instance.association().set( instance );
 
-        ValueBuilder<Tjabba> valueBuilder4 = valueBuilderFactory.newValueBuilder(Tjabba.class);
+        ValueBuilder<Tjabba> valueBuilder4 = valueBuilderFactory.newValueBuilder( Tjabba.class );
         final Tjabba prototype4 = valueBuilder4.prototype();
-        prototype4.bling().set("BlinkLjus");
+        prototype4.bling().set( "BlinkLjus" );
 
         // Set value
-        ValueBuilder<TestValue2> valueBuilder2 = valueBuilderFactory.newValueBuilder(TestValue2.class);
+        ValueBuilder<TestValue2> valueBuilder2 = valueBuilderFactory.newValueBuilder( TestValue2.class );
         TestValue2 prototype2 = valueBuilder2.prototype();
-        prototype2.stringValue().set("Bar");
+        prototype2.stringValue().set( "Bar" );
         // prototype2.anotherValue().set( valueBuilder4.newInstance() );
 
-        ValueBuilder<Tjabba> valueBuilder3 = valueBuilderFactory.newValueBuilder(Tjabba.class);
+        ValueBuilder<Tjabba> valueBuilder3 = valueBuilderFactory.newValueBuilder( Tjabba.class );
         final Tjabba prototype3 = valueBuilder3.prototype();
-        prototype3.bling().set("Brakfis");
+        prototype3.bling().set( "Brakfis" );
 
-        ValueBuilder<TestValue> valueBuilder1 = valueBuilderFactory.newValueBuilder(TestValue.class);
+        ValueBuilder<TestValue> valueBuilder1 = valueBuilderFactory.newValueBuilder( TestValue.class );
         TestValue prototype = valueBuilder1.prototype();
-        prototype.listProperty().get().add("Foo");
-        prototype.valueProperty().set(valueBuilder2.newInstance());
-        prototype.tjabbaProperty().set(valueBuilder3.newInstance());
+        prototype.listProperty().get().add( "Foo" );
+        prototype.valueProperty().set( valueBuilder2.newInstance() );
+        prototype.tjabbaProperty().set( valueBuilder3.newInstance() );
         Map<String, String> mapValue = new HashMap<String, String>();
-        mapValue.put("foo", "bar");
-        prototype.serializableProperty().set(mapValue);
-        instance.valueProperty().set(valueBuilder1.newInstance());
+        mapValue.put( "foo", "bar" );
+        prototype.serializableProperty().set( mapValue );
+        instance.valueProperty().set( valueBuilder1.newInstance() );
 
 
-        instance.manyAssociation().add(0, instance);
+        instance.manyAssociation().add( 0, instance );
 
         return instance;
     }
 
     @Test
     public void whenNewEntityThenCanFindEntity()
-            throws Exception
+        throws Exception
     {
         UnitOfWork unitOfWork = null;
         try
         {
             unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            TestEntity instance = createEntity(unitOfWork);
+            TestEntity instance = createEntity( unitOfWork );
             unitOfWork.complete();
 
             // Find entity
             unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            instance = unitOfWork.get(instance);
+            instance = unitOfWork.get( instance );
 
             // Check state
-            assertThat("property has correct value", instance.name().get(), equalTo("Test"));
-            assertThat("property has correct value", instance.unsetName().get(), equalTo(null));
+            assertThat( "property has correct value", instance.name().get(), equalTo( "Test" ) );
+            assertThat( "property has correct value", instance.unsetName().get(), equalTo( null ) );
 /*
             assertThat( "property has correct value", instance.valueProperty().get().valueProperty().get().stringValue().get(), equalTo( "Bar" ) );
             assertThat( "association has correct value", instance.association().get(), equalTo( instance ) );
@@ -149,7 +149,7 @@ public abstract class AbstractEntityStoreTest
 
             unitOfWork.discard();
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             unitOfWork.discard();
             throw e;
@@ -158,27 +158,27 @@ public abstract class AbstractEntityStoreTest
 
     @Test
     public void whenRemovedEntityThenCannotFindEntity()
-            throws Exception
+        throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        TestEntity newInstance = createEntity(unitOfWork);
+        TestEntity newInstance = createEntity( unitOfWork );
         String identity = newInstance.identity().get();
         unitOfWork.complete();
 
         // Remove entity
         unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        TestEntity instance = unitOfWork.get(newInstance);
-        unitOfWork.remove(instance);
+        TestEntity instance = unitOfWork.get( newInstance );
+        unitOfWork.remove( instance );
         unitOfWork.complete();
 
         // Find entity
         unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            unitOfWork.get(TestEntity.class, identity);
-            fail("Should not be able to find entity");
+            unitOfWork.get( TestEntity.class, identity );
+            fail( "Should not be able to find entity" );
         }
-        catch (NoSuchEntityException e)
+        catch( NoSuchEntityException e )
         {
             // Ok!
         }
@@ -196,7 +196,7 @@ public abstract class AbstractEntityStoreTest
 
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class);
+            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
 
             testEntity = builder.newInstance();
             unitOfWork.complete();
@@ -205,8 +205,8 @@ public abstract class AbstractEntityStoreTest
 
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            testEntity = unitOfWork.get(testEntity);
-            version = spi.getEntityState(testEntity).version();
+            testEntity = unitOfWork.get( testEntity );
+            version = spi.getEntityState( testEntity ).version();
 
             unitOfWork.complete();
 
@@ -214,9 +214,9 @@ public abstract class AbstractEntityStoreTest
 
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            testEntity = unitOfWork.get(testEntity);
-            String newVersion = spi.getEntityState(testEntity).version();
-            assertThat("version has not changed", newVersion, equalTo(version));
+            testEntity = unitOfWork.get( testEntity );
+            String newVersion = spi.getEntityState( testEntity ).version();
+            assertThat( "version has not changed", newVersion, equalTo( version ) );
 
             unitOfWork.complete();
         }
@@ -230,7 +230,7 @@ public abstract class AbstractEntityStoreTest
 
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class);
+            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
 
             testEntity = builder.newInstance();
             unitOfWork.complete();
@@ -239,9 +239,9 @@ public abstract class AbstractEntityStoreTest
 
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            testEntity = unitOfWork.get(testEntity);
-            testEntity.name().set("Rickard");
-            version = spi.getEntityState(testEntity).version();
+            testEntity = unitOfWork.get( testEntity );
+            testEntity.name().set( "Rickard" );
+            version = spi.getEntityState( testEntity ).version();
 
             unitOfWork.complete();
 
@@ -249,9 +249,9 @@ public abstract class AbstractEntityStoreTest
 
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            testEntity = unitOfWork.get(testEntity);
-            String newVersion = spi.getEntityState(testEntity).version();
-            assertThat("version has changed", newVersion, not(equalTo(version)));
+            testEntity = unitOfWork.get( testEntity );
+            String newVersion = spi.getEntityState( testEntity ).version();
+            assertThat( "version has changed", newVersion, not( equalTo( version ) ) );
 
             unitOfWork.complete();
         }
@@ -265,7 +265,7 @@ public abstract class AbstractEntityStoreTest
 
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class);
+            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
 
             testEntity = builder.newInstance();
             unitOfWork.complete();
@@ -274,9 +274,9 @@ public abstract class AbstractEntityStoreTest
 
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            testEntity = unitOfWork.get(testEntity);
-            testEntity.manyAssociation().add(0, testEntity);
-            version = spi.getEntityState(testEntity).version();
+            testEntity = unitOfWork.get( testEntity );
+            testEntity.manyAssociation().add( 0, testEntity );
+            version = spi.getEntityState( testEntity ).version();
 
             unitOfWork.complete();
 
@@ -284,9 +284,9 @@ public abstract class AbstractEntityStoreTest
 
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            testEntity = unitOfWork.get(testEntity);
-            String newVersion = spi.getEntityState(testEntity).version();
-            assertThat("version has changed", newVersion, not(equalTo(version)));
+            testEntity = unitOfWork.get( testEntity );
+            String newVersion = spi.getEntityState( testEntity ).version();
+            assertThat( "version has changed", newVersion, not( equalTo( version ) ) );
 
             unitOfWork.complete();
         }
@@ -294,12 +294,12 @@ public abstract class AbstractEntityStoreTest
 
     @Test
     public void givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification()
-            throws UnitOfWorkCompletionException
+        throws UnitOfWorkCompletionException
     {
         TestEntity testEntity;
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class);
+            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
 
             testEntity = builder.newInstance();
             unitOfWork.complete();
@@ -311,23 +311,23 @@ public abstract class AbstractEntityStoreTest
         {
             // Start working with Entity in one UoW
             unitOfWork1 = unitOfWorkFactory.newUnitOfWork();
-            testEntity1 = unitOfWork1.get(testEntity);
-            version = spi.getEntityState(testEntity1).version();
-            if (version.equals(""))
+            testEntity1 = unitOfWork1.get( testEntity );
+            version = spi.getEntityState( testEntity1 ).version();
+            if( version.equals( "" ) )
             {
                 unitOfWork1.discard();
                 return; // Store doesn't track versions - no point in testing it
             }
-            testEntity1.name().set("A");
-            testEntity1.unsetName().set("A");
+            testEntity1.name().set( "A" );
+            testEntity1.unsetName().set( "A" );
         }
 
         {
             // Start working with same Entity in another UoW, and complete it
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-            TestEntity testEntity2 = unitOfWork.get(testEntity);
-            assertThat("version is correct", spi.getEntityState(testEntity1).version(), equalTo(version));
-            testEntity2.name().set("B");
+            TestEntity testEntity2 = unitOfWork.get( testEntity );
+            assertThat( "version is correct", spi.getEntityState( testEntity1 ).version(), equalTo( version ) );
+            testEntity2.name().set( "B" );
             unitOfWork.complete();
         }
 
@@ -336,9 +336,9 @@ public abstract class AbstractEntityStoreTest
             try
             {
                 unitOfWork1.complete();
-                fail("Should have thrown concurrent modification exception");
+                fail( "Should have thrown concurrent modification exception" );
             }
-            catch (ConcurrentEntityModificationException e)
+            catch( ConcurrentEntityModificationException e )
             {
                 unitOfWork1.discard();
             }
@@ -347,45 +347,35 @@ public abstract class AbstractEntityStoreTest
         {
             // Check values
             unitOfWork1 = unitOfWorkFactory.newUnitOfWork();
-            testEntity1 = unitOfWork1.get(testEntity);
-            assertThat("property name has not been set", testEntity1.name().get(), equalTo("B"));
-            assertThat("version is incorrect", spi.getEntityState(testEntity1).version(), not(equalTo(version)));
+            testEntity1 = unitOfWork1.get( testEntity );
+            assertThat( "property name has not been set", testEntity1.name().get(), equalTo( "B" ) );
+            assertThat( "version is incorrect", spi.getEntityState( testEntity1 ).version(), not( equalTo( version ) ) );
             unitOfWork1.discard();
         }
     }
 
     public interface TestEntity
-            extends EntityComposite
+        extends EntityComposite
     {
-        @UseDefaults
-        Property<Integer> intValue();
+        @UseDefaults Property<Integer> intValue();
 
-        @UseDefaults
-        Property<Long> longValue();
+        @UseDefaults Property<Long> longValue();
 
-        @UseDefaults
-        Property<Double> doubleValue();
+        @UseDefaults Property<Double> doubleValue();
 
-        @UseDefaults
-        Property<Float> floatValue();
+        @UseDefaults Property<Float> floatValue();
 
-        @UseDefaults
-        Property<Boolean> booleanValue();
+        @UseDefaults Property<Boolean> booleanValue();
 
-        @Optional
-        Property<String> name();
+        @Optional Property<String> name();
 
-        @Optional
-        Property<String> unsetName();
+        @Optional Property<String> unsetName();
 
-        @Optional
-        Property<TestValue> valueProperty();
+        @Optional Property<TestValue> valueProperty();
 
-        @Optional
-        Association<TestEntity> association();
+        @Optional Association<TestEntity> association();
 
-        @Optional
-        Association<TestEntity> unsetAssociation();
+        @Optional Association<TestEntity> unsetAssociation();
 
         ManyAssociation<TestEntity> manyAssociation();
     }
@@ -402,17 +392,13 @@ public abstract class AbstractEntityStoreTest
 
     public interface TestValue extends ValueComposite
     {
-        @UseDefaults
-        Property<String> stringProperty();
+        @UseDefaults Property<String> stringProperty();
 
-        @UseDefaults
-        Property<Integer> intProperty();
+        @UseDefaults Property<Integer> intProperty();
 
-        @UseDefaults
-        Property<TestEnum> enumProperty();
+        @UseDefaults Property<TestEnum> enumProperty();
 
-        @UseDefaults
-        Property<List<String>> listProperty();
+        @UseDefaults Property<List<String>> listProperty();
 
         Property<TestValue2> valueProperty();
 
@@ -424,7 +410,7 @@ public abstract class AbstractEntityStoreTest
     }
 
     public interface TestValue2
-            extends ValueComposite
+        extends ValueComposite
     {
         Property<String> stringValue();
 

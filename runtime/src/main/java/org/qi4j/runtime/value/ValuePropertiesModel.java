@@ -25,7 +25,7 @@ import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.property.AbstractPropertiesModel;
-import org.qi4j.runtime.util.Annotations;
+import org.qi4j.api.util.Annotations;
 import org.qi4j.spi.property.PropertyType;
 
 /**

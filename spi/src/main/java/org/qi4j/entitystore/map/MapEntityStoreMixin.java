@@ -9,6 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+import org.json.JSONWriter;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityReference;
@@ -17,30 +22,26 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStore;
-import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.entity.StateCommitter;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
-import org.qi4j.spi.entity.helpers.DefaultEntityState;
-import org.qi4j.spi.entity.helpers.DefaultEntityStoreUnitOfWork;
-import org.qi4j.spi.entity.helpers.EntityStoreSPI;
+import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStoreException;
+import org.qi4j.spi.entitystore.EntityStoreSPI;
+import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
-import org.qi4j.spi.unitofwork.EntityStoreUnitOfWork;
-import org.qi4j.spi.util.json.JSONArray;
-import org.qi4j.spi.util.json.JSONException;
-import org.qi4j.spi.util.json.JSONObject;
-import org.qi4j.spi.util.json.JSONTokener;
-import org.qi4j.spi.util.json.JSONWriter;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore. Implement
@@ -50,17 +51,13 @@ import org.qi4j.spi.util.json.JSONWriter;
 public class MapEntityStoreMixin
     implements EntityStore, EntityStoreSPI, StateStore, Activatable
 {
-    @This
-    private MapEntityStore mapEntityStore;
-    @This
-    private EntityStoreSPI entityStoreSpi;
+    @This private MapEntityStore mapEntityStore;
+    @This private EntityStoreSPI entityStoreSpi;
 
-    @Structure
-    Application application;
+    @Structure private Application application;
 
     @Optional
-    @Service
-    Migration migration;
+    @Service private Migration migration;
 
     protected String uuid;
     private int count;
@@ -76,7 +73,7 @@ public class MapEntityStoreMixin
     }
 
     // EntityStore
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, ModuleSPI module )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, Module module )
     {
         return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module );
     }
@@ -145,7 +142,7 @@ public class MapEntityStoreMixin
         };
     }
 
-    public EntityStoreUnitOfWork visitEntityStates( final EntityStateVisitor visitor, ModuleSPI moduleInstance )
+    public EntityStoreUnitOfWork visitEntityStates( final EntityStateVisitor visitor, Module moduleInstance )
     {
         // TODO This can be used for reading state, but not for modifying (e.g. removing all entities)
         final DefaultEntityStoreUnitOfWork uow =
@@ -237,7 +234,7 @@ public class MapEntityStoreMixin
     {
         try
         {
-            ModuleSPI module = unitOfWork.module();
+            ModuleSPI module = (ModuleSPI) unitOfWork.module();
             JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
             EntityStatus status = EntityStatus.LOADED;
 

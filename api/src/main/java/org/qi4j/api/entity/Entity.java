@@ -16,13 +16,9 @@
  */
 package org.qi4j.api.entity;
 
-import org.qi4j.api.unitofwork.UnitOfWork;
-
 /**
- * Interface that all Entities implement. It contains methods
- * that are specific for Entities.
+ * Interface that all Entities implement.
  */
 public interface Entity
 {
-    UnitOfWork unitOfWork();
 }

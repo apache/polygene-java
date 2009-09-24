@@ -40,7 +40,7 @@ import org.qi4j.runtime.unitofwork.EntityBuilderInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
-import org.qi4j.spi.entity.EntityStore;
+import org.qi4j.spi.entitystore.EntityStore;
 
 /**
  * JAVADOC

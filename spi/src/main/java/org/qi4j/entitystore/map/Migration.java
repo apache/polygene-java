@@ -14,8 +14,8 @@
 
 package org.qi4j.entitystore.map;
 
-import org.qi4j.spi.util.json.JSONException;
-import org.qi4j.spi.util.json.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * JAVADOC

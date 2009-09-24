@@ -18,9 +18,9 @@ import java.util.List;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.composite.Resolution;
-import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.model.BindingException;
+import org.qi4j.runtime.model.Resolution;
+import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 
 /**

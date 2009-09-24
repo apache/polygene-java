@@ -21,10 +21,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.util.Classes;
-import org.qi4j.runtime.composite.BindingException;
-import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.api.util.Annotations;
+import org.qi4j.runtime.model.BindingException;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.runtime.util.Annotations;
 
 /**
  * JAVADOC

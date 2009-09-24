@@ -16,6 +16,7 @@ package org.qi4j.spi.value;
 
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
 import org.qi4j.spi.composite.StateDescriptor;
+import org.qi4j.spi.property.ValueType;
 
 /**
  * Descriptor for ValueComposites.
@@ -25,5 +26,5 @@ public interface ValueDescriptor
 {
     StateDescriptor state();
 
-    ValueCompositeType valueType();
+    ValueType valueType();
 }

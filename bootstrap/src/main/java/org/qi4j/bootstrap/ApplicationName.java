@@ -29,7 +29,8 @@ public final class ApplicationName
         this.name = name;
     }
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.layerAssembly().applicationAssembly().setName( name );
     }

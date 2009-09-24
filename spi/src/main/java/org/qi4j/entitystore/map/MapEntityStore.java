@@ -17,11 +17,10 @@ package org.qi4j.entitystore.map;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.EntityNotFoundException;
-import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entitystore.EntityNotFoundException;
+import org.qi4j.spi.entitystore.EntityStoreException;
 
 /**
  * JAVADOC

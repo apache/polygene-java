@@ -64,8 +64,8 @@ import org.qi4j.runtime.value.ValuesModel;
 import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
-import org.qi4j.spi.util.json.JSONException;
-import org.qi4j.spi.util.json.JSONTokener;
+import org.json.JSONException;
+import org.json.JSONTokener;
 import org.qi4j.spi.value.ValueDescriptor;
 
 /**

@@ -8,15 +8,15 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.entitystore.map.MapEntityStore;
-import org.qi4j.spi.entity.EntityAlreadyExistsException;
-import org.qi4j.spi.entity.EntityNotFoundException;
-import org.qi4j.spi.entity.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
-import org.qi4j.spi.util.json.JSONObject;
-import org.qi4j.spi.util.json.JSONTokener;
-import org.qi4j.spi.util.json.JSONException;
+import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
+import org.qi4j.spi.entitystore.EntityNotFoundException;
+import org.qi4j.spi.entitystore.EntityStoreException;
 
 /**
  * In-memory implementation of MapEntityStore.

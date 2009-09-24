@@ -20,13 +20,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.runtime.composite.BindingException;
+import org.qi4j.runtime.model.BindingException;
 import org.qi4j.runtime.composite.CompositesModel;
-import org.qi4j.runtime.composite.Resolution;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.object.ObjectsModel;
 import org.qi4j.runtime.service.ImportedServicesModel;
 import org.qi4j.runtime.service.ServicesModel;
 import org.qi4j.runtime.value.ValuesModel;
+import org.qi4j.runtime.model.Binder;
 import org.qi4j.spi.structure.ModuleDescriptor;
 
 /**

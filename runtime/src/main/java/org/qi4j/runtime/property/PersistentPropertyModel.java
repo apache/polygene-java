@@ -25,12 +25,13 @@ import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.ModuleVisitor;
 import org.qi4j.runtime.value.ValueModel;
-import org.qi4j.spi.property.PropertyType;
+import org.qi4j.runtime.types.ValueTypeFactory;
+import org.qi4j.runtime.types.PropertyTypeImpl;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
-import org.qi4j.spi.util.json.JSONException;
-import org.qi4j.spi.util.json.JSONStringer;
-import org.qi4j.spi.util.json.JSONTokener;
-import org.qi4j.spi.value.ValueType;
+import org.qi4j.spi.property.ValueType;
+import org.json.JSONException;
+import org.json.JSONStringer;
+import org.json.JSONTokener;
 
 /**
  * JAVADOC
@@ -40,10 +41,10 @@ public abstract class PersistentPropertyModel
     implements PropertyTypeDescriptor
 {
     private final boolean queryable;
-    private final PropertyType propertyType;
+    private final PropertyTypeImpl propertyType;
     protected final PropertyInfo propertyInfo;
 
-    public PersistentPropertyModel( PropertyType propertyType, Method accessor, boolean immutable,
+    public PersistentPropertyModel( PropertyTypeImpl propertyType, Method accessor, boolean immutable,
                                     ValueConstraintsInstance constraints, MetaInfo metaInfo, Object initialValue )
     {
         super( accessor, immutable, constraints, metaInfo, initialValue );
@@ -60,27 +61,28 @@ public abstract class PersistentPropertyModel
         final Queryable queryable = accessor.getAnnotation( Queryable.class );
         this.queryable = queryable == null || queryable.value();
 
-        PropertyType.PropertyTypeEnum type;
+        PropertyTypeImpl.PropertyTypeEnum type;
         if( isComputed() )
         {
-            type = PropertyType.PropertyTypeEnum.COMPUTED;
+            type = PropertyTypeImpl.PropertyTypeEnum.COMPUTED;
         }
         else if( isImmutable() )
         {
-            type = PropertyType.PropertyTypeEnum.IMMUTABLE;
+            type = PropertyTypeImpl.PropertyTypeEnum.IMMUTABLE;
         }
         else
         {
-            type = PropertyType.PropertyTypeEnum.MUTABLE;
+            type = PropertyTypeImpl.PropertyTypeEnum.MUTABLE;
         }
 
-        propertyType = new PropertyType( qualifiedName(), ValueType.newValueType( type(), accessor.getDeclaringClass(), compositeType ), this.queryable, type );
+        ValueType valueType = ValueTypeFactory.instance().newValueType( type(), accessor.getDeclaringClass(), compositeType );
+        propertyType = new PropertyTypeImpl( qualifiedName(), valueType, this.queryable, type );
 
         propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), qualifiedName(), type() );
 
     }
 
-    public PropertyType propertyType()
+    public PropertyTypeImpl propertyType()
     {
         return propertyType;
     }

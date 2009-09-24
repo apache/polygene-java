@@ -17,18 +17,8 @@
 package org.qi4j.runtime.entity;
 
 import org.qi4j.api.entity.Entity;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.unitofwork.UnitOfWork;
 
 public class EntityMixin
     implements Entity
 {
-    @This private EntityComposite meAsEntity;
-
-    public UnitOfWork unitOfWork()
-    {
-        EntityInstance instance = EntityInstance.getEntityInstance( meAsEntity );
-        return instance.unitOfWork();
-    }
 }

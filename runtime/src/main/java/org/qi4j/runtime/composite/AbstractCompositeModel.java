@@ -23,7 +23,7 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.runtime.structure.Binder;
+import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 

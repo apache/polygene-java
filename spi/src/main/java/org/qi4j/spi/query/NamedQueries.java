@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class NamedQueries
+public final class NamedQueries
     implements Iterable<String>, Serializable
 {
     private HashMap<String, NamedQueryDescriptor> queriesByName;

@@ -23,12 +23,12 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.util.Annotations;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.property.AbstractPropertiesModel;
-import org.qi4j.runtime.util.Annotations;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.PropertyType;
 
