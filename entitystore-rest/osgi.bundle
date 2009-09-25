@@ -67,7 +67,22 @@ Import-Package: javax.servlet, \
                 info.aduna.text, \
                 org.openrdf.http.protocol, \
                 info.aduna.net, \
-                org.openrdf.model.vocabulary
+                org.openrdf.model.vocabulary, \
+                javax.crypto, \
+                javax.crypto.spec, \
+                javax.net, \
+                javax.net.ssl, \
+                javax.security.auth, \
+                javax.security.auth.callback, \
+                javax.security.auth.login, \
+                javax.xml.namespace, \
+                javax.xml.transform, \
+                javax.xml.transform.dom, \
+                javax.xml.transform.sax, \
+                javax.xml.transform.stream, \
+                javax.xml.validation, \
+                javax.xml.xpath, \
+                org.w3c.dom.ls                
 
 Embed-Dependency: \
     *;scope=compile|runtime;groupId=!org.qi4j.*|org.restlet|com.noelios.*

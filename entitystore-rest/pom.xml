@@ -12,7 +12,7 @@
   <packaging>bundle</packaging>
 
   <properties>
-    <version.restlet>2.0-M3</version.restlet>
+    <version.restlet>2.0-SNAPSHOT</version.restlet>
     <version.openrdf>2.2.1</version.openrdf>
   </properties>
 
@@ -35,24 +35,29 @@
       <version>1.0-RC2-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.restlet</groupId>
+      <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet</artifactId>
       <version>${version.restlet}</version>
     </dependency>
     <dependency>
-      <groupId>org.restlet</groupId>
+      <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet.ext.xml</artifactId>
       <version>${version.restlet}</version>
     </dependency>
     <dependency>
-      <groupId>org.restlet</groupId>
+      <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet.ext.atom</artifactId>
       <version>${version.restlet}</version>
     </dependency>
     <dependency>
-      <groupId>org.restlet</groupId>
+      <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet.ext.servlet</artifactId>
       <version>${version.restlet}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>osgi_R4_core</artifactId>
+        <version>1.0</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
