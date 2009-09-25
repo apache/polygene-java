@@ -17,12 +17,12 @@ package org.qi4j.rest;
 import java.util.Collections;
 import org.restlet.Context;
 import org.restlet.Restlet;
+import org.restlet.Request;
+import org.restlet.Response;
 import org.restlet.service.MetadataService;
 import org.restlet.data.MediaType;
 import org.restlet.data.Metadata;
 import org.restlet.data.Preference;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
 import org.restlet.routing.Filter;
 
 /**

@@ -37,12 +37,12 @@ import org.qi4j.spi.entitystore.EntityStoreSPI;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
 import org.restlet.Uniform;
+import org.restlet.Request;
+import org.restlet.Response;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Preference;
 import org.restlet.data.Reference;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 
@@ -96,7 +96,8 @@ public class RESTEntityStoreServiceMixin
             Reference ref = entityStoreUrl.clone().addSegment( identity.identity() );
             Request request = new Request( Method.GET, ref );
             request.getClientInfo().getAcceptedMediaTypes().add( new Preference<MediaType>( MediaType.APPLICATION_JAVA_OBJECT ) );
-            Response response = client.handle( request );
+            Response response = new Response(request);
+            client.handle( request, response );
             if( response.getStatus().isSuccess() )
             {
                 if( response.isEntityAvailable() )

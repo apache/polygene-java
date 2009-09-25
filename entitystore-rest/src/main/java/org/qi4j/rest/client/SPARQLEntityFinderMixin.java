@@ -33,8 +33,10 @@ import org.qi4j.index.rdf.callback.SingleQualifiedIdentityResultCallback;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.restlet.Uniform;
+import org.restlet.Response;
+import org.restlet.Request;
 import org.restlet.data.Reference;
-import org.restlet.data.Response;
+import org.restlet.data.Method;
 import org.restlet.ext.xml.SaxRepresentation;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -151,7 +153,9 @@ public class SPARQLEntityFinderMixin
 
             Reference queryReference = sparqlQueryRef.clone();
             queryReference.addQueryParameter( "query", query );
-            Response response = client.get( queryReference );
+            Request request = new Request( Method.GET, queryReference);
+            Response response = new Response(request);
+            client.handle( request, response );
             if( !response.getStatus().isSuccess() )
             {
                 throw new SPARQLEntityFinderException( response.getRequest().getResourceRef(), response.getStatus() );

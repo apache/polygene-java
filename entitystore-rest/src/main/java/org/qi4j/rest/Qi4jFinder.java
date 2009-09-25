@@ -15,10 +15,10 @@ package org.qi4j.rest;
 
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.object.ObjectBuilderFactory;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
 import org.restlet.resource.Finder;
 import org.restlet.resource.ServerResource;
+import org.restlet.Request;
+import org.restlet.Response;
 
 public class Qi4jFinder extends Finder
 {
