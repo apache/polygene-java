@@ -22,6 +22,7 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 
 /**
  * Provide Configurations for Services. A Service that wants to be configurable
@@ -52,6 +53,8 @@ public interface Configuration<T>
     T configuration();
 
     void refresh();
+
+    void save();
 
     // Implementation of Configuration
     public class ConfigurationMixin<T>
@@ -93,6 +96,22 @@ public interface Configuration<T>
                 configuration = null;
                 uow.discard();
                 uow = null;
+            }
+        }
+
+        public void save()
+        {
+            if( uow != null )
+            {
+                try
+                {
+                    uow.apply();
+                }
+                catch( UnitOfWorkCompletionException e )
+                {
+                    // Should be impossible
+                    e.printStackTrace();
+                }
             }
         }
 
