@@ -25,13 +25,11 @@ import java.util.List;
 import java.util.Map;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.runtime.injection.provider.InjectionProviderException;
-import org.qi4j.runtime.injection.provider.InvalidInjectionException;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.service.ImportedServiceModel;
 import org.qi4j.runtime.service.ServiceModel;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -188,7 +186,11 @@ public final class ServiceInjectionProviderFactory
                 ModuleInstance moduleInstance = mapper.modules.get( entry.getKey() );
                 for( String identity : entry.getValue() )
                 {
-                    serviceInstances.add( moduleInstance.services().getServiceWithIdentity( identity ).get() );
+                    Object service = moduleInstance.services().getServiceWithIdentity( identity ).get();
+                    if( service != null )
+                    {
+                        serviceInstances.add( service );
+                    }
                 }
             }
             for( Map.Entry<ModuleModel, List<String>> entry : servicesFinder.importedServiceIdentities.entrySet() )
@@ -196,7 +198,11 @@ public final class ServiceInjectionProviderFactory
                 ModuleInstance moduleInstance = mapper.modules.get( entry.getKey() );
                 for( String identity : entry.getValue() )
                 {
-                    serviceInstances.add( moduleInstance.importedServices().getServiceWithIdentity( identity ).get() );
+                    Object service = moduleInstance.importedServices().getServiceWithIdentity( identity ).get();
+                    if( service != null )
+                    {
+                        serviceInstances.add( service );
+                    }
                 }
             }
 
