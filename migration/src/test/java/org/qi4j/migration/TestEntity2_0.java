@@ -34,4 +34,6 @@ public interface TestEntity2_0
 
     @Optional
     Association<TestEntity2_0> newFooAssoc();
+
+    Property<String> customBar();
 }

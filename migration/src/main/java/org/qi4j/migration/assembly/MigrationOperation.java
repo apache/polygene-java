@@ -15,6 +15,7 @@
 package org.qi4j.migration.assembly;
 
 import org.qi4j.entitystore.map.StateStore;
+import org.qi4j.migration.Migrator;
 import org.json.JSONObject;
 import org.json.JSONException;
 
@@ -23,9 +24,9 @@ import org.json.JSONException;
  */
 public interface MigrationOperation
 {
-    boolean upgrade( JSONObject state, StateStore stateStore )
+    boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException;
 
-    boolean downgrade( JSONObject state, StateStore stateStore )
+    boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException;
 }

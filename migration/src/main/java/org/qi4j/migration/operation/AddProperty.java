@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.migration.assembly.MigrationOperation;
+import org.qi4j.migration.Migrator;
 
 /**
  * Add a property
@@ -27,28 +28,24 @@ public class AddProperty
     implements MigrationOperation
 {
     private String property;
-    private Object defaultValue;
+    private String defaultValue;
 
-    public AddProperty( String property, Object defaultValue )
+    public AddProperty( String property, String defaultValue )
     {
         this.property = property;
         this.defaultValue = defaultValue;
     }
 
-    public boolean upgrade( JSONObject state, StateStore stateStore )
+    public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
-        JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );
-        properties.put( property, defaultValue );
-        return true;
+        return migrator.addProperty( state, property, defaultValue );
     }
 
-    public boolean downgrade( JSONObject state, StateStore stateStore )
+    public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
-        JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );
-        properties.remove( property );
-        return true;
+        return migrator.removeProperty( state, property );
     }
 
     @Override public String toString()

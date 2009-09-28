@@ -25,7 +25,13 @@ import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.entitystore.memory.TestData;
+import org.qi4j.entitystore.map.StateStore;
+import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.migration.assembly.MigrationRules;
+import org.qi4j.migration.assembly.MigrationOperation;
+import org.qi4j.spi.service.importer.NewObjectImporter;
+import org.json.JSONObject;
+import org.json.JSONException;
 import java.io.IOException;
 
 /**
@@ -37,6 +43,9 @@ public class MigrationTest
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
+
+        module.addObjects( MigrationEventLogger.class );
+        module.importServices( MigrationEventLogger.class ).importedBy( NewObjectImporter.class );
 
         module.addEntities( TestEntity1_0.class,
                             TestEntity1_1.class,
@@ -56,7 +65,8 @@ public class MigrationTest
                 renameEntity(TestEntity1_1.class.getName(), TestEntity2_0.class.getName()).
                 forEntities( TestEntity2_0.class.getName() ).
                     addProperty("bar", "Some value").
-                    removeProperty( "newFoo", "Some value" );
+                    removeProperty( "newFoo", "Some value" ).
+                    custom( new CustomBarOperation() );
 
         module.addServices( MigrationService.class ).setMetaInfo( migration );
     }
@@ -134,11 +144,27 @@ public class MigrationTest
                 UnitOfWork uow = v2_0.unitOfWorkFactory().newUnitOfWork();
                 TestEntity2_0 entity = uow.get( TestEntity2_0.class, id );
                 assertThat( "Property has been created", entity.bar().get(), CoreMatchers.equalTo("Some value" ));
+                assertThat( "Custom Property has been created", entity.customBar().get(), CoreMatchers.equalTo("Hello Some value" ));
                 assertThat( "ManyAssociation has been renamed", entity.newFooManyAssoc().count(), CoreMatchers.equalTo(1 ));
                 assertThat( "Association has been renamed", entity.newFooAssoc().get(), CoreMatchers.equalTo(entity ));
                 uow.complete();
             }
         }
 
+    }
+
+    private static class CustomBarOperation implements MigrationOperation
+    {
+        public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator ) throws JSONException
+        {
+            JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );
+
+            return migrator.addProperty( state, "customBar", "Hello "+ properties.getString("bar" ));
+        }
+
+        public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator ) throws JSONException
+        {
+            return migrator.removeProperty( state, "customBar" );
+        }
     }
 }

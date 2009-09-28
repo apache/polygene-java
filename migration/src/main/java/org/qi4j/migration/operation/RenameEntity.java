@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.migration.assembly.MigrationOperation;
+import org.qi4j.migration.Migrator;
 
 /**
  * Rename an Entity type
@@ -35,13 +36,13 @@ public class RenameEntity
         this.toName = toName;
     }
 
-    public boolean upgrade( JSONObject state, StateStore stateStore ) throws JSONException
+    public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator ) throws JSONException
     {
         String type = state.getString( MapEntityStore.JSONKeys.type.name() );
 
         if( type.equals( fromName ) )
         {
-            state.put( MapEntityStore.JSONKeys.type.name(), toName );
+            migrator.changeEntityType(state, toName);
             return true;
         }
         else
@@ -50,13 +51,13 @@ public class RenameEntity
         }
     }
 
-    public boolean downgrade( JSONObject state, StateStore stateStore ) throws JSONException
+    public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator ) throws JSONException
     {
         String type = state.getString( MapEntityStore.JSONKeys.type.name() );
 
         if( type.equals( toName ) )
         {
-            state.put( MapEntityStore.JSONKeys.type.name(), fromName );
+            migrator.changeEntityType(state, fromName);
             return true;
         }
         else

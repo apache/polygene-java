@@ -15,6 +15,7 @@
 package org.qi4j.migration.assembly;
 
 import org.qi4j.entitystore.map.StateStore;
+import org.qi4j.migration.Migrator;
 import org.json.JSONObject;
 import org.json.JSONException;
 
@@ -44,16 +45,16 @@ public class MigrationRule
         return toVersion;
     }
 
-    public boolean upgrade( JSONObject state, StateStore stateStore)
+    public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator)
         throws JSONException
     {
-        return operation.upgrade( state, stateStore );
+        return operation.upgrade( state, stateStore, migrator );
     }
 
-    public boolean downgrade( JSONObject state, StateStore stateStore)
+    public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator)
         throws JSONException
     {
-        return operation.downgrade( state, stateStore );
+        return operation.downgrade( state, stateStore, migrator );
     }
 
     @Override public String toString()

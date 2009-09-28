@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.migration.assembly.MigrationOperation;
+import org.qi4j.migration.Migrator;
 
 /**
  * Rename a ManyAssociation
@@ -35,26 +36,16 @@ public class RenameManyAssociation
         this.to = to;
     }
 
-    public boolean upgrade( JSONObject state, StateStore stateStore )
+    public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
-        JSONObject manyAssociations = (JSONObject) state.get( MapEntityStore.JSONKeys.manyassociations.name() );
-
-        Object value = manyAssociations.remove( from );
-        manyAssociations.put( to, value );
-
-        return true;
+        return migrator.renameManyAssociation( state, from, to );
     }
 
-    public boolean downgrade( JSONObject state, StateStore stateStore )
+    public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
-        JSONObject manyAssociations = (JSONObject) state.get( MapEntityStore.JSONKeys.manyassociations.name() );
-
-        Object value = manyAssociations.remove( to );
-        manyAssociations.put( from, value );
-
-        return true;
+        return migrator.renameManyAssociation( state, to, from);
     }
 
     @Override public String toString()

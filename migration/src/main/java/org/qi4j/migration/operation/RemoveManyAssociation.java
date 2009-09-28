@@ -16,42 +16,40 @@ package org.qi4j.migration.operation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.migration.assembly.MigrationOperation;
 import org.qi4j.migration.Migrator;
+import java.util.Arrays;
 
 /**
- * Remove a property. Downgrading this operation will reset
- * the property to the default value.
+ * Add a many-association
  */
-public class RemoveProperty
+public class RemoveManyAssociation
     implements MigrationOperation
 {
-    private String property;
-    private String defaultValue;
+    private String association;
+    private String[] defaultReferences;
 
-    public RemoveProperty( String property, String defaultValue )
+    public RemoveManyAssociation( String association, String... defaultReferences )
     {
-        this.property = property;
-        this.defaultValue = defaultValue;
+        this.association = association;
+        this.defaultReferences = defaultReferences;
     }
 
     public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
-        return migrator.removeProperty( state, property );
+        return migrator.removeManyAssociation( state, association );
     }
 
     public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
-        return migrator.addProperty( state, property, defaultValue );
+        return migrator.addManyAssociation( state, association, defaultReferences );
     }
 
     @Override public String toString()
     {
-        return "Remove property " + property + ", default:" + defaultValue;
+        return "Remove many-association " + association + ", default:" + Arrays.asList( defaultReferences );
     }
-
 }

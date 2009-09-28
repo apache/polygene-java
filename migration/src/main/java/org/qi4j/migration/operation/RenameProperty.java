@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.migration.assembly.MigrationOperation;
+import org.qi4j.migration.Migrator;
 
 /**
  * Rename a property
@@ -35,26 +36,16 @@ public class RenameProperty
         this.toProperty = toProperty;
     }
 
-    public boolean upgrade( JSONObject state, StateStore stateStore )
+    public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
-        JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );
-
-        Object value = properties.remove( fromProperty );
-        properties.put( toProperty, value );
-
-        return true;
+        return migrator.renameProperty( state, fromProperty, toProperty );
     }
 
-    public boolean downgrade( JSONObject state, StateStore stateStore )
+    public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
-        JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );
-
-        Object value = properties.remove( toProperty );
-        properties.put( fromProperty, value );
-
-        return true;
+        return migrator.renameProperty( state, toProperty, fromProperty );
     }
 
     @Override public String toString()

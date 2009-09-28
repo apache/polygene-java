@@ -18,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.map.StateStore;
+import org.qi4j.migration.Migrator;
 
 /**
  * JAVADOC
@@ -38,11 +39,11 @@ public class EntityMigrationRule
         return entityTypes;
     }
 
-    @Override public boolean upgrade( JSONObject state, StateStore stateStore ) throws JSONException
+    @Override public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator ) throws JSONException
     {
         if( appliesTo( state.getString( MapEntityStore.JSONKeys.type.name() ) ) )
         {
-            return super.upgrade( state, stateStore );
+            return super.upgrade( state, stateStore, migrator );
         }
         else
         {
@@ -50,11 +51,11 @@ public class EntityMigrationRule
         }
     }
 
-    @Override public boolean downgrade( JSONObject state, StateStore stateStore ) throws JSONException
+    @Override public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator ) throws JSONException
     {
         if( appliesTo( state.getString( MapEntityStore.JSONKeys.type.name() ) ) )
         {
-            return super.downgrade( state, stateStore );
+            return super.downgrade( state, stateStore, migrator );
         }
         else
         {
