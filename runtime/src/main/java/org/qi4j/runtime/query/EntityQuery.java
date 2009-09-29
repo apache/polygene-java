@@ -24,6 +24,7 @@ import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryExecutionException;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 
@@ -72,7 +73,14 @@ final class EntityQuery<T>
             final EntityReference foundEntity = entityFinder.findEntity( resultType.getName(), whereClause );
             if( foundEntity != null )
             {
-                return loadEntity( foundEntity );
+                try
+                {
+                    return loadEntity( foundEntity );
+                }
+                catch( NoSuchEntityException e )
+                {
+                    return null; // Index is out of sync - entity has been removed
+                }
             }
             // No entity was found
             return null;
@@ -96,15 +104,30 @@ final class EntityQuery<T>
 
             return new Iterator<T>()
             {
+                T next;
+
                 public boolean hasNext()
                 {
-                    return foundEntities.hasNext();
+                    while( foundEntities.hasNext() )
+                    {
+                        final EntityReference foundEntity = foundEntities.next();
+                        try
+                        {
+                            next = loadEntity( foundEntity );
+                            return true;
+                        }
+                        catch( NoSuchEntityException e )
+                        {
+                            // Index is out of sync - entity has been removed
+                        }
+                    }
+
+                    return false;
                 }
 
                 public T next()
                 {
-                    final EntityReference foundEntity = foundEntities.next();
-                    return loadEntity( foundEntity );
+                    return next;
                 }
 
                 public void remove()
@@ -149,6 +172,7 @@ final class EntityQuery<T>
      * @return corresponding entity
      */
     private T loadEntity( final EntityReference entityReference )
+        throws NoSuchEntityException
     {
         return unitOfWorkInstance.get( resultType, entityReference.identity() );
     }
