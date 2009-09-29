@@ -30,7 +30,7 @@ import org.qi4j.api.injection.scope.Structure;
  * @see UnitOfWorkDiscardOn
  */
 @AppliesTo( UnitOfWorkPropagation.class )
-public final class UnitOfWorkConcern extends GenericConcern
+public class UnitOfWorkConcern extends GenericConcern
 {
     private static final Class<?>[] DEFAULT_DISCARD_CLASSES = new Class[]{ Throwable.class };
 
@@ -84,7 +84,7 @@ public final class UnitOfWorkConcern extends GenericConcern
         return next.invoke( proxy, method, args );
     }
 
-    private Object invokeWithCommit( Object proxy, Method method, Object[] args, UnitOfWork currentUnitOfWork )
+    protected Object invokeWithCommit( Object proxy, Method method, Object[] args, UnitOfWork currentUnitOfWork )
         throws Throwable
     {
         try
@@ -108,7 +108,7 @@ public final class UnitOfWorkConcern extends GenericConcern
      * @param aUnitOfWork The current unit of work. This argument must not be {@code null}.
      * @param aThrowable  The exception thrown. This argument must not be {@code null}.
      */
-    private void discardIfRequired( Method aMethod, UnitOfWork aUnitOfWork, Throwable aThrowable )
+    protected void discardIfRequired( Method aMethod, UnitOfWork aUnitOfWork, Throwable aThrowable )
     {
         UnitOfWorkDiscardOn discardPolicy = aMethod.getAnnotation( UnitOfWorkDiscardOn.class );
         Class<?>[] discardClasses;
