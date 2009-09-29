@@ -1,8 +1,6 @@
-Export-Package: org.qi4j.rest;version="${pom.version}", \
-                org.qi4j.rest.assembly;version="${pom.version}", \
-                org.qi4j.rest.client;version="${pom.version}", \
-                org.qi4j.rest.entity;version="${pom.version}", \
-                org.qi4j.rest.query;version="${pom.version}"
+Export-Package: org.qi4j.migration;version="${pom.version}", \
+                org.qi4j.migration.assembly;version="${pom.version}", \
+                org.qi4j.migration.operation;version="${pom.version}"
 
 Import-Package: org.qi4j.api.entity, org.json, \
                 org.qi4j.api.composite, \
@@ -10,7 +8,13 @@ Import-Package: org.qi4j.api.entity, org.json, \
                 org.qi4j.api.mixin, \
                 org.qi4j.api.service, \
                 org.qi4j.api.util, \
-                org.qi4j.entitystore.map
+                org.qi4j.entitystore.map, \
+                org.qi4j.api.common, \
+                org.qi4j.api.configuration, \
+                org.qi4j.api.property, \
+                org.qi4j.api.structure, \
+                org.qi4j.api.unitofwork, \
+                org.qi4j.spi.entitystore
 
 Embed-Dependency: \
     *;scope=compile|runtime;groupId=!org.qi4j.*|org.restlet|com.noelios.*
