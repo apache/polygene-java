@@ -18,14 +18,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.map.StateStore;
-import org.qi4j.migration.assembly.MigrationOperation;
+import org.qi4j.migration.assembly.EntityMigrationOperation;
 import org.qi4j.migration.Migrator;
 
 /**
  * Rename an Entity type
  */
 public class RenameEntity
-    implements MigrationOperation
+    implements EntityMigrationOperation
 {
     String fromName;
     String toName;

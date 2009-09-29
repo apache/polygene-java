@@ -19,19 +19,22 @@ import org.json.JSONObject;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.migration.Migrator;
+import java.util.Arrays;
 
 /**
- * JAVADOC
+ * Migration rule for a specific set of entity types
  */
 public class EntityMigrationRule
-    extends MigrationRule
+    extends AbstractMigrationRule
 {
     private String[] entityTypes;
+    private EntityMigrationOperation operationEntity;
 
-    public EntityMigrationRule( String fromVersion, String toVersion, String[] entityTypes, MigrationOperation operation )
+    public EntityMigrationRule( String fromVersion, String toVersion, String[] entityTypes, EntityMigrationOperation operationEntity )
     {
-        super( fromVersion, toVersion, operation );
+        super( fromVersion, toVersion );
         this.entityTypes = entityTypes;
+        this.operationEntity = operationEntity;
     }
 
     public String[] getEntityTypes()
@@ -39,11 +42,11 @@ public class EntityMigrationRule
         return entityTypes;
     }
 
-    @Override public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator ) throws JSONException
+    public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator ) throws JSONException
     {
         if( appliesTo( state.getString( MapEntityStore.JSONKeys.type.name() ) ) )
         {
-            return super.upgrade( state, stateStore, migrator );
+            return operationEntity.upgrade( state, stateStore, migrator );
         }
         else
         {
@@ -51,11 +54,11 @@ public class EntityMigrationRule
         }
     }
 
-    @Override public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator ) throws JSONException
+    public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator ) throws JSONException
     {
         if( appliesTo( state.getString( MapEntityStore.JSONKeys.type.name() ) ) )
         {
-            return super.downgrade( state, stateStore, migrator );
+            return operationEntity.downgrade( state, stateStore, migrator );
         }
         else
         {
@@ -73,5 +76,10 @@ public class EntityMigrationRule
             }
         }
         return false;
+    }
+
+    @Override public String toString()
+    {
+        return fromVersion+"->"+toVersion+": on "+ Arrays.asList( entityTypes )+" do "+operationEntity;
     }
 }

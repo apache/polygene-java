@@ -20,15 +20,29 @@ import org.json.JSONArray;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.usecase.UsecaseBuilder;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.map.Migration;
 import org.qi4j.entitystore.map.StateStore;
-import org.qi4j.migration.assembly.MigrationRule;
+import org.qi4j.migration.assembly.MigrationBuilder;
+import org.qi4j.migration.assembly.EntityMigrationRule;
 import org.qi4j.migration.assembly.MigrationRules;
+import org.qi4j.migration.assembly.MigrationRule;
+import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entity.EntityState;
 import java.util.logging.Logger;
+import java.util.logging.Level;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Migration service. This is used by MapEntityStore EntityStore implementations to
@@ -48,9 +62,21 @@ public interface MigrationService
     class MigrationMixin
         implements Migration, Migrator, Activatable
     {
+        @Structure
+        Application app;
+
+        @This
+        Configuration<MigrationConfiguration> config;
+
         @This
         Composite composite;
-        public MigrationRules rules;
+
+        @Service StateStore store;
+        @Service EntityStore entityStore;
+        @Structure
+        UnitOfWorkFactory uowf;
+
+        public MigrationBuilder builder;
         public Logger log;
 
         @Service
@@ -61,12 +87,12 @@ public interface MigrationService
             // Get current version
             String fromVersion = state.optString( MapEntityStore.JSONKeys.application_version.name() , "0.0");
 
-            Iterable<MigrationRule> matchedRules = rules.getRules( fromVersion, toVersion );
+            Iterable<EntityMigrationRule> matchedRules = builder.getEntityRules().getRules( fromVersion, toVersion );
 
             boolean changed = false;
             if (matchedRules != null)
             {
-                for( MigrationRule matchedRule : matchedRules )
+                for( EntityMigrationRule matchedRule : matchedRules )
                 {
                     changed = matchedRule.upgrade( state, stateStore, this ) || changed;
                 }
@@ -84,9 +110,45 @@ public interface MigrationService
 
         public void activate() throws Exception
         {
-            rules = composite.metaInfo( MigrationRules.class );
+            builder = composite.metaInfo( MigrationBuilder.class );
 
             log = Logger.getLogger( MigrationService.class.getName() );
+
+            String version = app.version();
+            String lastVersion = config.configuration().lastStartupVersion().get();
+
+            // Run general rules if version has changed
+            if (!app.version().equals( lastVersion ))
+            {
+                Iterable<MigrationRule> rules = builder.getRules().getRules( lastVersion, version );
+                List<MigrationRule> executedRules = new ArrayList<MigrationRule>( );
+                try
+                {
+                    if (rules != null)
+                    {
+                        for( MigrationRule rule : rules )
+                        {
+                            rule.upgrade( store, this );
+                            executedRules.add( rule );
+                        }
+
+                        log.info( "Migrated to " +version);
+                    }
+
+                    config.configuration().lastStartupVersion().set( version );
+                    config.save();
+                }
+                catch( Exception e )
+                {
+                    log.log( Level.SEVERE, "Upgrade failed", e);
+
+                    // Downgrade the migrated rules
+                    for( MigrationRule executedRule : executedRules )
+                    {
+                        executedRule.downgrade( store, this );
+                    }
+                }
+            }
         }
 
         public void passivate() throws Exception

@@ -17,33 +17,41 @@ package org.qi4j.migration.assembly;
 import org.qi4j.migration.operation.RenameEntity;
 
 /**
- * JAVADOC
+ * Migration builder for a specific to-version.
  */
 public class VersionMigrationBuilder
 {
-    MigrationRules rules;
+    MigrationBuilder builder;
 
     String fromVersion;
     String toVersion;
 
-    public VersionMigrationBuilder( MigrationRules rules, String fromVersion, String toVersion )
+    public VersionMigrationBuilder( MigrationBuilder builder, String fromVersion, String toVersion )
     {
-        this.rules = rules;
+        this.builder = builder;
         this.fromVersion = fromVersion;
         this.toVersion = toVersion;
     }
 
     public VersionMigrationBuilder toVersion( String toVersion )
     {
-        return new VersionMigrationBuilder( rules, toVersion, toVersion);
+        return new VersionMigrationBuilder( builder, toVersion, toVersion);
     }
 
     public VersionMigrationBuilder renameEntity( String fromName, String toName )
     {
-        rules.addRule( new MigrationRule(fromVersion, toVersion, new RenameEntity(fromName, toName) ));
+        builder.getEntityRules().addRule( new EntityMigrationRule(fromVersion, toVersion, new String[] {fromName}, new RenameEntity(fromName, toName) ));
 
         return this;
     }
+
+    public VersionMigrationBuilder atStartup(MigrationOperation operation)
+    {
+        builder.getRules().addRule( new MigrationRule(fromVersion, toVersion,  operation) );
+
+        return this;
+    }
+
     public EntityMigrationBuilder forEntities(String... entityTypes)
     {
         return new EntityMigrationBuilder(this, entityTypes);

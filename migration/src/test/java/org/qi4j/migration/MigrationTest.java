@@ -27,7 +27,8 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.entitystore.memory.TestData;
 import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.entitystore.map.MapEntityStore;
-import org.qi4j.migration.assembly.MigrationRules;
+import org.qi4j.migration.assembly.EntityMigrationOperation;
+import org.qi4j.migration.assembly.MigrationBuilder;
 import org.qi4j.migration.assembly.MigrationOperation;
 import org.qi4j.spi.service.importer.NewObjectImporter;
 import org.json.JSONObject;
@@ -51,11 +52,11 @@ public class MigrationTest
                             TestEntity1_1.class,
                             TestEntity2_0.class);
 
-        MigrationRules migration = new MigrationRules();
-        migration.fromVersion("1.0").
-
+        MigrationBuilder migration = new MigrationBuilder("1.0");
+        migration.
             toVersion("1.1").
                 renameEntity(TestEntity1_0.class.getName(), TestEntity1_1.class.getName()).
+                atStartup( new CustomFixOperation("Fix for 1.1") ).
                 forEntities(TestEntity1_1.class.getName()).
                     renameProperty( "foo", "newFoo").
                     renameManyAssociation( "fooManyAssoc", "newFooManyAssoc" ).
@@ -63,12 +64,16 @@ public class MigrationTest
 
             toVersion( "2.0" ).
                 renameEntity(TestEntity1_1.class.getName(), TestEntity2_0.class.getName()).
+                atStartup( new CustomFixOperation("Fix for 2.0, 1") ).
+                atStartup( new CustomFixOperation("Fix for 2.0, 2") ).
                 forEntities( TestEntity2_0.class.getName() ).
                     addProperty("bar", "Some value").
                     removeProperty( "newFoo", "Some value" ).
                     custom( new CustomBarOperation() );
 
         module.addServices( MigrationService.class ).setMetaInfo( migration );
+        module.addEntities( MigrationConfiguration.class );
+        module.forMixin( MigrationConfiguration.class ).declareDefaults().lastStartupVersion().set( "1.0" );
     }
 
     @Test
@@ -153,7 +158,7 @@ public class MigrationTest
 
     }
 
-    private static class CustomBarOperation implements MigrationOperation
+    private static class CustomBarOperation implements EntityMigrationOperation
     {
         public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator ) throws JSONException
         {
@@ -165,6 +170,26 @@ public class MigrationTest
         public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator ) throws JSONException
         {
             return migrator.removeProperty( state, "customBar" );
+        }
+    }
+
+    private static class CustomFixOperation implements MigrationOperation
+    {
+        String msg;
+
+        private CustomFixOperation( String msg )
+        {
+            this.msg = msg;
+        }
+
+        public void upgrade( StateStore stateStore, Migrator migrator ) throws IOException
+        {
+            System.out.println(msg);
+        }
+
+        public void downgrade( StateStore stateStore, Migrator migrator ) throws IOException
+        {
+            System.out.println(msg);
         }
     }
 }

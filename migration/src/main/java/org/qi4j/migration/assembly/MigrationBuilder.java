@@ -15,22 +15,34 @@
 package org.qi4j.migration.assembly;
 
 /**
- * JAVADOC
+ * Builder for set of migration rules. This needs to be passed in as metadata to the MigrationService.
  */
 public class MigrationBuilder
 {
-    MigrationRules rules;
+    MigrationRules<EntityMigrationRule> entityRules;
+    MigrationRules<MigrationRule> rules;
 
     String fromVersion;
 
-    public MigrationBuilder( MigrationRules rules, String fromVersion )
+    public MigrationBuilder( String fromVersion )
     {
-        this.rules = rules;
+        this.entityRules = new MigrationRules<EntityMigrationRule>();
+        this.rules = new MigrationRules<MigrationRule>();
         this.fromVersion = fromVersion;
     }
 
     public VersionMigrationBuilder toVersion( String toVersion )
     {
-        return new VersionMigrationBuilder( rules, fromVersion, toVersion);
+        return new VersionMigrationBuilder( this, fromVersion, toVersion);
+    }
+
+    public MigrationRules<EntityMigrationRule> getEntityRules()
+    {
+        return entityRules;
+    }
+
+    public MigrationRules<MigrationRule> getRules()
+    {
+        return rules;
     }
 }

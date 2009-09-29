@@ -20,35 +20,30 @@ import java.util.List;
 import org.qi4j.api.util.ListMap;
 
 /**
- * JAVADOC
+ * Set of migration rules.
  */
-public class MigrationRules
+public class MigrationRules<T extends AbstractMigrationRule>
 {
     // to-version -> List of from-versions
     ListMap<String, String> versionChanges = new ListMap<String, String>();
 
     // key=fromversion->toversion value=list of rules for that transition
-    ListMap<String, MigrationRule> rules = new ListMap<String, MigrationRule>();
+    ListMap<String, T> rules = new ListMap<String, T>();
 
-    public MigrationBuilder fromVersion( String fromVersion )
-    {
-        return new MigrationBuilder( this, fromVersion );
-    }
-
-    public void addRule( MigrationRule migrationRule )
+    public void addRule( T migrationRule )
     {
         versionChanges.add( migrationRule.toVersion(), migrationRule.fromVersion() );
         rules.add( migrationRule.fromVersion() + "->" + migrationRule.toVersion(), migrationRule );
     }
 
-    public Iterable<MigrationRule> getRules( String fromVersion, String toVersion )
+    public Iterable<T> getRules( String fromVersion, String toVersion )
     {
         String ruleToVersion = findHighestToVersion( toVersion );
 
         return getMigrationRules( fromVersion, ruleToVersion );
     }
 
-    private List<MigrationRule> getMigrationRules( String fromVersion, String toVersion )
+    private List<T> getMigrationRules( String fromVersion, String toVersion )
     {
         List<String> list = versionChanges.get( toVersion );
 
@@ -62,18 +57,18 @@ public class MigrationRules
             if( fromVersion.equals( possibleFromVersion ) )
             {
                 // We found the end of the version transitions - return rules, but filter on entity type
-                return new ArrayList<MigrationRule>( getEntityRules( fromVersion, toVersion ) );
+                return new ArrayList<T>( getRulesForTransition( fromVersion, toVersion ) );
             }
             else
             {
-                List<MigrationRule> migrationRules = getMigrationRules( fromVersion, possibleFromVersion );
+                List<T> migrationRules = getMigrationRules( fromVersion, possibleFromVersion );
                 if( migrationRules == null )
                 {
                     continue; // Wrong transition - try another one
                 }
 
                 // Add entity-filtered rules from this part of the version transition
-                migrationRules.addAll( getEntityRules( possibleFromVersion, toVersion ) );
+                migrationRules.addAll( getRulesForTransition( possibleFromVersion, toVersion ) );
                 return migrationRules;
             }
         }
@@ -108,7 +103,7 @@ public class MigrationRules
         }
     }
 
-    private List<MigrationRule> getEntityRules( String fromVersion, String toVersion )
+    private List<T> getRulesForTransition( String fromVersion, String toVersion )
     {
         return rules.get( fromVersion + "->" + toVersion );
     }

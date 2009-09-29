@@ -18,36 +18,28 @@ import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.migration.Migrator;
 import org.json.JSONObject;
 import org.json.JSONException;
-import java.io.IOException;
 
 /**
- * Migration rule that does not apply to a specific entity type
+ * Base class for migration rules.
  */
-public class MigrationRule
-    extends AbstractMigrationRule
+public class AbstractMigrationRule
 {
-    private MigrationOperation operation;
+    protected String fromVersion;
+    protected String toVersion;
 
-    public MigrationRule( String fromVersion, String toVersion, MigrationOperation operation )
+    public AbstractMigrationRule( String fromVersion, String toVersion)
     {
-        super(fromVersion,  toVersion);
-        this.operation = operation;
+        this.fromVersion = fromVersion;
+        this.toVersion = toVersion;
     }
 
-    public void upgrade( StateStore stateStore, Migrator migrator)
-        throws IOException
+    public String fromVersion()
     {
-        operation.upgrade( stateStore, migrator );
+        return fromVersion;
     }
 
-    public void downgrade( StateStore stateStore, Migrator migrator)
-        throws IOException
+    public String toVersion()
     {
-        operation.downgrade( stateStore, migrator );
-    }
-
-    @Override public String toString()
-    {
-        return fromVersion+"->"+toVersion+":"+ operation;
+        return toVersion;
     }
 }

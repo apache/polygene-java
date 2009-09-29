@@ -17,14 +17,14 @@ package org.qi4j.migration.operation;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.entitystore.map.StateStore;
-import org.qi4j.migration.assembly.MigrationOperation;
+import org.qi4j.migration.assembly.EntityMigrationOperation;
 import org.qi4j.migration.Migrator;
 
 /**
  * Add an association
  */
 public class AddAssociation
-    implements MigrationOperation
+    implements EntityMigrationOperation
 {
     private String association;
     private String defaultValue;

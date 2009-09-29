@@ -49,5 +49,8 @@
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
+  <UsedPathMacros>
+    <macro name="MAVEN_REPOSITORY" description="Maven Local Repostiry" />
+  </UsedPathMacros>
 </project>
 

@@ -16,16 +16,15 @@ package org.qi4j.migration.operation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.map.StateStore;
-import org.qi4j.migration.assembly.MigrationOperation;
+import org.qi4j.migration.assembly.EntityMigrationOperation;
 import org.qi4j.migration.Migrator;
 
 /**
  * Rename a ManyAssociation
  */
 public class RenameManyAssociation
-    implements MigrationOperation
+    implements EntityMigrationOperation
 {
     String from;
     String to;

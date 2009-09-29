@@ -47,7 +47,7 @@ public class EntityMigrationBuilder
      */
     public VersionMigrationBuilder toVersion(String toVersion)
     {
-        return new VersionMigrationBuilder(migrationBuilder.rules, migrationBuilder.toVersion, toVersion);
+        return new VersionMigrationBuilder(migrationBuilder.builder, migrationBuilder.toVersion, toVersion);
     }
 
     // Operations on entities
@@ -60,7 +60,7 @@ public class EntityMigrationBuilder
      */
     public EntityMigrationBuilder renameProperty(String from, String to)
     {
-        migrationBuilder.rules.addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
+        migrationBuilder.builder.getEntityRules().addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
                                                         migrationBuilder.toVersion,
                                                         entityTypes,
                                                         new RenameProperty(from, to)));
@@ -77,7 +77,7 @@ public class EntityMigrationBuilder
      */
     public EntityMigrationBuilder addProperty(String property, String defaultValue)
     {
-        migrationBuilder.rules.addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
+        migrationBuilder.builder.getEntityRules().addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
                                                         migrationBuilder.toVersion,
                                                         entityTypes,
                                                         new AddProperty(property, defaultValue)));
@@ -94,7 +94,7 @@ public class EntityMigrationBuilder
      */
     public EntityMigrationBuilder removeProperty(String property, String defaultValue)
     {
-        migrationBuilder.rules.addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
+        migrationBuilder.builder.getEntityRules().addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
                                                         migrationBuilder.toVersion,
                                                         entityTypes,
                                                         new RemoveProperty(property, defaultValue)));
@@ -111,7 +111,7 @@ public class EntityMigrationBuilder
      */
     public EntityMigrationBuilder renameAssociation(String from, String to)
     {
-        migrationBuilder.rules.addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
+        migrationBuilder.builder.getEntityRules().addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
                                                         migrationBuilder.toVersion,
                                                         entityTypes,
                                                         new RenameAssociation(from, to)));
@@ -128,7 +128,7 @@ public class EntityMigrationBuilder
      */
     public EntityMigrationBuilder addAssociation(String association, String defaultReference)
     {
-        migrationBuilder.rules.addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
+        migrationBuilder.builder.getEntityRules().addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
                                                         migrationBuilder.toVersion,
                                                         entityTypes,
                                                         new AddAssociation(association, defaultReference)));
@@ -145,7 +145,7 @@ public class EntityMigrationBuilder
      */
     public EntityMigrationBuilder removeAssociation(String association, String defaultReference)
     {
-        migrationBuilder.rules.addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
+        migrationBuilder.builder.getEntityRules().addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
                                                         migrationBuilder.toVersion,
                                                         entityTypes,
                                                         new RemoveAssociation(association, defaultReference)));
@@ -162,7 +162,7 @@ public class EntityMigrationBuilder
      */
     public EntityMigrationBuilder addManyAssociation(String association, String... defaultReferences)
     {
-        migrationBuilder.rules.addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
+        migrationBuilder.builder.getEntityRules().addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
                                                         migrationBuilder.toVersion,
                                                         entityTypes,
                                                         new AddManyAssociation(association, defaultReferences)));
@@ -179,7 +179,7 @@ public class EntityMigrationBuilder
      */
     public EntityMigrationBuilder removeManyAssociation(String association, String... defaultReferences)
     {
-        migrationBuilder.rules.addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
+        migrationBuilder.builder.getEntityRules().addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
                                                         migrationBuilder.toVersion,
                                                         entityTypes,
                                                         new RemoveManyAssociation(association, defaultReferences)));
@@ -196,7 +196,7 @@ public class EntityMigrationBuilder
      */
     public EntityMigrationBuilder renameManyAssociation(String from, String to)
     {
-        migrationBuilder.rules.addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
+        migrationBuilder.builder.getEntityRules().addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
                                                         migrationBuilder.toVersion,
                                                         entityTypes,
                                                         new RenameManyAssociation(from, to)));
@@ -209,15 +209,15 @@ public class EntityMigrationBuilder
     /**
      * Add rule to perform a custom operation
      *
-     * @param operation the custom operation to be performed during migration
+     * @param operationEntity the custom operation to be performed during migration
      * @return the builder
      */
-    public EntityMigrationBuilder custom(MigrationOperation operation)
+    public EntityMigrationBuilder custom( EntityMigrationOperation operationEntity )
     {
-        migrationBuilder.rules.addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
+        migrationBuilder.builder.getEntityRules().addRule(new EntityMigrationRule(migrationBuilder.fromVersion,
                                                         migrationBuilder.toVersion,
                                                         entityTypes,
-                                                        operation));
+                                                        operationEntity ));
 
         return this;
     }

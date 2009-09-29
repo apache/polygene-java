@@ -18,19 +18,15 @@ import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.migration.Migrator;
 import org.json.JSONObject;
 import org.json.JSONException;
-import java.io.IOException;
 
 /**
- * Non-entity specific migration operation. These operations
- * may perform anything necessary to migrate the application. This
- * could include performing disk operations and other non-entity related
- * tasks.
+ * Migration operation for a specific entity.
  */
-public interface MigrationOperation
+public interface EntityMigrationOperation
 {
-    void upgrade( StateStore stateStore, Migrator migrator )
-        throws IOException;
+    boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
+        throws JSONException;
 
-    void downgrade( StateStore stateStore, Migrator migrator )
-        throws IOException;
+    boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
+        throws JSONException;
 }
