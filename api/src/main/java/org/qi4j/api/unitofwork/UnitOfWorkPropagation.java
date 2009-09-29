@@ -60,29 +60,29 @@ public @interface UnitOfWorkPropagation
         /**
          * Default propagation behavior.
          * Behavior: <br>
-         * If no current transaction: creates a new transaction <br>
-         * If there is a current transaction: use the current transaction.
+         * If no current transaction: creates a new UnitOfWork <br>
+         * If there is a current UnitOfWork: use the current UnitOfWork.
          */
         REQUIRED,
 
         /**
          * Behavior: <br>
-         * If no current transaction: throw an exception <br>
-         * If there is a current transaction: use the current transaction.
+         * If no current UnitOfWork: throw an exception <br>
+         * If there is a current UnitOfWork: use the current UnitOfWork.
          */
         MANDATORY,
 
         /**
          * Behavior: <br>
-         * If no current transaction: creates a new transaction <br>
-         * If there is a current transaction: suspend the current transaction and create a new transaction.
+         * If no current UnitOfWork: creates a new UnitOfWork <br>
+         * If there is a current UnitOfWork: suspend the current UnitOfWork and create a new UnitOfWork.
          */
         REQUIRES_NEW,
 
         /**
          * Behavior: <br>
-         * If no current transaction: creates a new transaction <br>
-         * If there is a current transaction: create a nested transaction on top of the current one.
+         * If no current UnitOfWork: creates a new UnitOfWork <br>
+         * If there is a current UnitOfWork: create a nested UnitOfWork on top of the current one.
          */
         REQUIRES_NESTED
     }
