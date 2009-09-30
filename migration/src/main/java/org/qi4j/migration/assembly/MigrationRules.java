@@ -38,9 +38,16 @@ public class MigrationRules<T extends AbstractMigrationRule>
 
     public Iterable<T> getRules( String fromVersion, String toVersion )
     {
-        String ruleToVersion = findHighestToVersion( toVersion );
+        try
+        {
+            String ruleToVersion = findHighestToVersion( toVersion );
 
-        return getMigrationRules( fromVersion, ruleToVersion );
+            return getMigrationRules( fromVersion, ruleToVersion );
+        }
+        catch( IllegalArgumentException e )
+        {
+            return null;
+        }
     }
 
     private List<T> getMigrationRules( String fromVersion, String toVersion )

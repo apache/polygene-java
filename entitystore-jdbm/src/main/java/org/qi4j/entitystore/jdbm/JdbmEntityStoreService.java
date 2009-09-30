@@ -27,6 +27,7 @@ import org.qi4j.spi.entitystore.ConcurrentModificationCheckConcern;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStateVersions;
 import org.qi4j.entitystore.map.MapEntityStoreMixin;
+import org.qi4j.entitystore.map.StateStore;
 
 /**
  * EntityStore service backed by JDBM store.
@@ -35,7 +36,7 @@ import org.qi4j.entitystore.map.MapEntityStoreMixin;
 @Concerns({ StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class})
 @Mixins({ MapEntityStoreMixin.class, JdbmEntityStoreMixin.class})
 public interface JdbmEntityStoreService
-        extends EntityStore, EntityStateVersions, DatabaseExport, DatabaseImport, ServiceComposite, Activatable, LockingAbstractComposite, Configuration
+        extends EntityStore, EntityStateVersions, StateStore, DatabaseExport, DatabaseImport, ServiceComposite, Activatable, LockingAbstractComposite, Configuration
 
 {
 }
