@@ -116,7 +116,7 @@ public class ModuleInstance
         valueBuilderFactory = new ValueBuilderFactoryInstance();
         unitOfWorkFactory = new UnitOfWorkFactoryInstance();
         serviceFinder = new ServiceFinderInstance();
-        queryBuilderFactory = new QueryBuilderFactoryImpl( moduleModel.classLoader(), serviceFinder );
+        queryBuilderFactory = new QueryBuilderFactoryImpl( serviceFinder );
 
         entityFinders = new ConcurrentHashMap<Class, EntityFinder>();
         compositeFinders = new ConcurrentHashMap<Class, CompositeFinder>();

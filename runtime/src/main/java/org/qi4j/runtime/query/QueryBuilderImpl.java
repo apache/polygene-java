@@ -38,8 +38,6 @@ final class QueryBuilderImpl<T>
      */
     private final EntityFinder entityFinder;
 
-    private final ClassLoader classLoader;
-
     /**
      * Type of queried entities.
      */
@@ -53,15 +51,12 @@ final class QueryBuilderImpl<T>
      * Constructor.
      *
      * @param entityFinder entity finder to be used to locate entities; canot be null
-     * @param classLoader  The classloader to use for deserializing Serializable instances. (Not used at the moment.)
      * @param resultType   type of queried entities; cannot be null
      */
     public QueryBuilderImpl( final EntityFinder entityFinder,
-                             final ClassLoader classLoader,
                              final Class<T> resultType )
     {
         this.entityFinder = entityFinder;
-        this.classLoader = classLoader;
         this.resultType = resultType;
         this.whereClause = null;
     }
