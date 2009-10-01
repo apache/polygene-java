@@ -16,6 +16,12 @@
  */
 package org.qi4j.entitystore.qrm.entity;
 
+import java.math.BigDecimal;
+import org.qi4j.api.property.Property;
+
 public interface Account extends HasPrimaryContactPerson, HasName
 {
+    
+    Property<BigDecimal> balance();
+
 }

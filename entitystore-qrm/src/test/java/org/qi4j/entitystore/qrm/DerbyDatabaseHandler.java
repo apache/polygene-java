@@ -40,6 +40,10 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.qrm.dbInitializer.DBInitializerConfiguration;
 import org.qi4j.entitystore.qrm.test.TestProperty;
 
+/**
+ * @author edward.yakop@gmail.com
+ * @since 0.1.0
+ */
 public class DerbyDatabaseHandler
 {
     private static final String JDBC_URL = "jdbc:derby://localhost/testdb;create=true";
@@ -86,17 +90,17 @@ public class DerbyDatabaseHandler
 
     public void initDbInitializerInfo( final ModuleAssembly module, final String schemaFile, final String dataFile )
     {
-        final DBInitializerConfiguration configuration = module.forMixin( DBInitializerConfiguration.class ).declareDefaults();
-        configuration.dbUrl().set( JDBC_URL );
-        configuration.connectionProperties().set( createConnectionProperties() );
-        if( schemaFile != null )
-        {
-            configuration.schemaUrl().set( getUrlString( schemaFile ) );
-        }
-        if( dataFile != null )
-        {
-            configuration.dataUrl().set( getUrlString( dataFile ) );
-        }
+//        final DBInitializerConfiguration configuration = module.on( DBInitializerConfiguration.class ).to();
+//        configuration.dbUrl().set( JDBC_URL );
+//        configuration.connectionProperties().set( createConnectionProperties() );
+//        if( schemaFile != null )
+//        {
+//            configuration.schemaUrl().set( getUrlString( schemaFile ) );
+//        }
+//        if( dataFile != null )
+//        {
+//            configuration.dataUrl().set( getUrlString( dataFile ) );
+//        }
     }
 
     public String getUrlString( final String file )
@@ -176,6 +180,7 @@ public class DerbyDatabaseHandler
      * Check data initialization.
      *
      * @throws java.sql.SQLException Thrown if closing connection failed.
+     * @since 0.1.0
      */
     public final void checkDataInitialization()
         throws SQLException
@@ -205,6 +210,7 @@ public class DerbyDatabaseHandler
      *
      * @return The jdbc connection to test db.
      * @throws java.sql.SQLException Thrown if initializing connection failed.
+     * @since 0.1.0
      */
     public final Connection getJDBCConnection()
         throws SQLException
@@ -217,6 +223,7 @@ public class DerbyDatabaseHandler
      * Wait until derby started.
      *
      * @throws InterruptedException Thrown if sleep fails.
+     * @since 0.1.0
      */
     private void waitForStart()
         throws Exception
@@ -308,6 +315,30 @@ public class DerbyDatabaseHandler
         }
     }
 
+    public int executeUpdate( final String sql )
+    {
+        Connection connection = null;
+        Statement statement = null;
+        int result = -1;
+        try
+        {
+            connection = getJDBCConnection();
+            statement = connection.createStatement();
+            result = statement.executeUpdate( sql );
+            return result;
+        }
+        catch( SQLException sqle )
+        {
+            throw new RuntimeException( "Error executing update: " + sql, sqle );
+        }
+        finally
+        {
+            closeIt( statement );
+            closeIt( connection );
+        }
+    }
+
+
     private void closeIt( final Object jdbcHandle )
     {
         if( jdbcHandle == null )
@@ -337,6 +368,10 @@ public class DerbyDatabaseHandler
         }
     }
 
+    /**
+     * @autor Michael Hunger
+     * @since 19.05.2008
+     */
     public static interface ResultSetCallback
     {
         void row( ResultSet rs ) throws SQLException;
