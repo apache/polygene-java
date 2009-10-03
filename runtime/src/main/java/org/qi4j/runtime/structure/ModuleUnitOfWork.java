@@ -37,7 +37,6 @@ import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.unitofwork.EntityBuilderInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.EntityStore;
 
@@ -97,52 +96,54 @@ public class ModuleUnitOfWork
 
     public <T> T newEntity( Class<T> type, String identity ) throws EntityTypeNotFoundException, LifecycleException
     {
-        EntityFinder finder = moduleInstance.findEntityModel( type );
-
-        if( finder.models.isEmpty() )
-        {
-            throw new EntityTypeNotFoundException( type.getName() );
-        }
-
-        if( finder.models.size() > 1 )
-        {
-            List<Class<?>> ambiguousTypes = new ArrayList<Class<?>>();
-            for( EntityModel model : finder.models )
-            {
-                ambiguousTypes.add( model.type() );
-            }
-            throw new AmbiguousTypeException( type, ambiguousTypes );
-        }
-
-        // Transfer state
-        EntityModel entityModel = finder.models.get( 0 );
-        ModuleInstance entityModuleInstance = finder.modules.get( 0 );
-
-        // Generate id
-        if( identity == null )
-        {
-            identity = entityModuleInstance.entities().identityGenerator().generate( entityModel.type() );
-        }
-
-        EntityStore entityStore = entityModuleInstance.entities().entityStore();
-
-        EntityState entityState = entityModel.newEntityState( uow.getEntityStoreUnitOfWork( entityStore, module() ),
-                                                              parseEntityReference( identity ) );
-
-        // Init state
-        entityModel.initState( entityState );
-
-        entityState.setProperty( IDENTITY_STATE_NAME, identity );
-
-        EntityInstance instance = new EntityInstance( this, moduleInstance, entityModel, entityState );
-
-        entityModel.invokeCreate( instance );
-
-        instance.checkConstraints();
-
-        addEntity( instance );
-
-        return instance.<T>proxy();
+        return newEntityBuilder( type, identity ).newInstance();
+        
+//        EntityFinder finder = moduleInstance.findEntityModel( type );
+//
+//        if( finder.models.isEmpty() )
+//        {
+//            throw new EntityTypeNotFoundException( type.getName() );
+//        }
+//
+//        if( finder.models.size() > 1 )
+//        {
+//            List<Class<?>> ambiguousTypes = new ArrayList<Class<?>>();
+//            for( EntityModel model : finder.models )
+//            {
+//                ambiguousTypes.add( model.type() );
+//            }
+//            throw new AmbiguousTypeException( type, ambiguousTypes );
+//        }
+//
+//        // Transfer state
+//        EntityModel entityModel = finder.models.get( 0 );
+//        ModuleInstance entityModuleInstance = finder.modules.get( 0 );
+//
+//        // Generate id
+//        if( identity == null )
+//        {
+//            identity = entityModuleInstance.entities().identityGenerator().generate( entityModel.type() );
+//        }
+//
+//        EntityStore entityStore = entityModuleInstance.entities().entityStore();
+//
+//        EntityState entityState = entityModel.newEntityState( uow.getEntityStoreUnitOfWork( entityStore, module() ),
+//                                                              parseEntityReference( identity ) );
+//
+//        // Init state
+//        entityModel.initState( entityState );
+//
+//        entityState.setProperty( IDENTITY_STATE_NAME, identity );
+//
+//        EntityInstance instance = new EntityInstance( this, moduleInstance, entityModel, entityState );
+//
+//        instance.invokeCreate();
+//
+//        instance.checkConstraints();
+//
+//        addEntity( instance );
+//
+//        return instance.<T>proxy();
     }
 
     public <T> EntityBuilder<T> newEntityBuilder( Class<T> type ) throws EntityTypeNotFoundException

@@ -14,14 +14,14 @@
  */
 package org.qi4j.api.entity;
 
-import org.qi4j.api.mixin.Mixins;
-
 /**
  * Lifecycle interface for all Composites.
  * <p/>
- * This Lifecycle interface is a built-in feature of the Qi4j runtime, which will establish
- * any Invocation stack against Lifecycle.class, but the Composite interface should never expose
- * it to client code.
+ * This Lifecycle interface is a built-in feature of the Qi4j runtime, similar to the Initializable interface.
+ * Any Mixin that implements this interface AND is part of an EntityComposite will have these two methods called
+ * upon creation/removal of the EntityComposite instance to/from the EntityStore. Meaning, the create method is called
+ * only when the identifiable EntityComposite is created the first time, and not when it is read from its persisted
+ * state and created into memory.
  * <p/>
  * Example;
  * <code><pre>
@@ -30,44 +30,40 @@ import org.qi4j.api.mixin.Mixins;
  *     Property&lt;User&gt; admin();
  * }
  *
- * public class SystemAdminLifecycleConcern extends ConcernOf<LifeCycle>
- *     implements Lifecyle
+ * public class SystemAdminMixin<LifeCycle>
+ *     implements System, Lifecyle, ...
  * {
- *      &#64;Structure private UnitOfWork unit;
+ *      &#64;Structure private UnitOfWork uow;
  *      &#64;This private Identity meAsIdentity;
- *      &#64;This private System meAsSystem;
  *
  *      public void create()
  *      {
  *          String thisId = meAsIdentity.identity().get();
- *          EntityBuilder builder = unit.newEntityBuilder( thisId + ":1", UserComposite.class );
+ *          EntityBuilder builder = uow.newEntityBuilder( thisId + ":1", UserComposite.class );
  *          User admin = builder.newInstance();
- *          meAsSystem.setAdmin( admin );
- *          next.create();
+ *          admin.set( admin );
  *      }
  *
  *      public void remove()
  *      {
- *          next.remove();
- *          repository.deleteInstance( meAsSystem.getAdmin() );
+ *          uow.remove( admin.get() );
  *      }
  * }
  *
- * &#64;Concerns( SystemAdminLifecycleModifier.class )
+ * &#64;Mixins( SystemAdminMixin.class )
  * public interface SystemEntity extends System, EntityComposite
  * {}
  *
  * </pre></code>
  */
-@Mixins( Lifecycle.LifecycleMixin.class )
 public interface Lifecycle
 {
 
     /**
      * Creation callback method.
      * <p/>
-     * Called by the Qi4j runtime before the newInstance of the entity completes, allowing
-     * for additional initialization.
+     * Called by the Qi4j runtime before the newInstance of the entity completes, before the constraints are checked,
+     * allowing for additional initialization.
      *
      * @throws LifecycleException if the entity could not be created
      */
@@ -84,22 +80,4 @@ public interface Lifecycle
      */
     void remove()
         throws LifecycleException;
-
-
-    // Default implementation
-    public class LifecycleMixin
-        implements Lifecycle
-    {
-        public static final Lifecycle INSTANCE = new LifecycleMixin();
-
-        public void create()
-            throws LifecycleException
-        {
-        }
-
-        public void remove()
-            throws LifecycleException
-        {
-        }
-    }
 }

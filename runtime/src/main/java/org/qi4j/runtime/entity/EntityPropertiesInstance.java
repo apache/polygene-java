@@ -79,7 +79,6 @@ public class EntityPropertiesInstance
         return property;
     }
 
-
     @Override
     public void visitProperties( StateVisitor visitor )
     {

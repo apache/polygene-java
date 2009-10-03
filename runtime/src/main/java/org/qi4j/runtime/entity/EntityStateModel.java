@@ -47,13 +47,13 @@ public final class EntityStateModel
 
     public EntityStateModel( EntityPropertiesModel propertiesModel,
                              EntityAssociationsModel associationsModel,
-                             EntityManyAssociationsModel manyAssociationsModel )
+                             EntityManyAssociationsModel manyAssociationsModel
+    )
     {
         super( propertiesModel );
         this.associationsModel = associationsModel;
         this.manyAssociationsModel = manyAssociationsModel;
     }
-
 
     public EntityStateModel.EntityStateInstance newInstance( ModuleUnitOfWork uow, EntityState entityState )
     {
@@ -121,7 +121,8 @@ public final class EntityStateModel
         private EntityStateInstance(
             EntityPropertiesInstance entityPropertiesInstance,
             EntityAssociationsInstance entityAssociationsInstance,
-            EntityManyAssociationsInstance entityManyAssociationsInstance )
+            EntityManyAssociationsInstance entityManyAssociationsInstance
+        )
         {
             this.entityPropertiesInstance = entityPropertiesInstance;
             this.entityAssociationsInstance = entityAssociationsInstance;
@@ -168,5 +169,4 @@ public final class EntityStateModel
             entityManyAssociationsInstance.checkConstraints();
         }
     }
-
 }

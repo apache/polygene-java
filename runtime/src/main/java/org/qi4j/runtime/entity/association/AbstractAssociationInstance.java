@@ -24,7 +24,10 @@ public abstract class AbstractAssociationInstance<T>
     protected final ModuleUnitOfWork unitOfWork;
     protected EntityState entityState;
 
-    public AbstractAssociationInstance( AssociationInfo associationInfo, ModuleUnitOfWork unitOfWork, EntityState entityState )
+    public AbstractAssociationInstance( AssociationInfo associationInfo,
+                                        ModuleUnitOfWork unitOfWork,
+                                        EntityState entityState
+    )
     {
         this.associationInfo = associationInfo;
         this.unitOfWork = unitOfWork;
@@ -93,7 +96,6 @@ public abstract class AbstractAssociationInstance<T>
         EntityInstance instance = (EntityInstance) handler;
         return instance.identity();
     }
-
 
     protected void checkType( Object instance )
     {

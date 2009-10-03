@@ -7,5 +7,5 @@ bootstrap/target/
 runtime/target/
 spi/target/
 testsupport/target/
-.idea/workspace.xml
-.idea/misc.xml
+.idea
+.idea/*

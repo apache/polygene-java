@@ -32,7 +32,10 @@ public final class EntityManyAssociationsInstance
     private EntityState entityState;
     private ModuleUnitOfWork uow;
 
-    public EntityManyAssociationsInstance( EntityManyAssociationsModel model, EntityState entityState, ModuleUnitOfWork uow )
+    public EntityManyAssociationsInstance( EntityManyAssociationsModel model,
+                                           EntityState entityState,
+                                           ModuleUnitOfWork uow
+    )
     {
         this.model = model;
         this.entityState = entityState;

@@ -28,8 +28,6 @@ import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
-import org.qi4j.api.entity.Lifecycle;
-import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.unitofwork.EntityCompositeAlreadyExistsException;
@@ -37,27 +35,27 @@ import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.ManyAssociationDeclarations;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.AbstractCompositeModel;
-import org.qi4j.runtime.model.BindingException;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.composite.CompositeMethodsModel;
 import org.qi4j.runtime.composite.ConcernsDeclaration;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.SideEffectsDeclaration;
 import org.qi4j.runtime.entity.association.EntityAssociationsModel;
 import org.qi4j.runtime.entity.association.EntityManyAssociationsModel;
+import org.qi4j.runtime.model.BindingException;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.property.PersistentPropertyModel;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
-import org.qi4j.spi.property.PropertyTypeDescriptor;
+import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
+import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.property.PropertyTypeDescriptor;
 
 /**
  * JAVADOC
@@ -66,7 +64,6 @@ public final class EntityModel
     extends AbstractCompositeModel
     implements EntityDescriptor
 {
-    private static final Method CREATE_METHOD;
     private static final Method IDENTITY_METHOD;
 
     static
@@ -74,7 +71,6 @@ public final class EntityModel
         try
         {
             IDENTITY_METHOD = Identity.class.getMethod( "identity" );
-            CREATE_METHOD = Lifecycle.class.getMethod( "create" );
         }
         catch( NoSuchMethodException e )
         {
@@ -90,7 +86,8 @@ public final class EntityModel
                                         ManyAssociationDeclarations manyAssociationDecs,
                                         ConcernsDeclaration concernsDeclaration,
                                         Iterable<Class<?>> sideEffects,
-                                        List<Class<?>> mixins )
+                                        List<Class<?>> mixins
+    )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( type );
         boolean immutable = metaInfo.get( Immutable.class ) != null;
@@ -161,7 +158,8 @@ public final class EntityModel
         mixinsModel.visitModel( modelVisitor );
     }
 
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         Set<String> mixinTypes = new LinkedHashSet<String>();
         for( Class mixinType : mixinsModel.mixinTypes() )
@@ -197,8 +195,11 @@ public final class EntityModel
         return ( (EntityStateModel) stateModel ).newInstance( uow, entityState );
     }
 
-
-    public Object newMixin( Object[] mixins, EntityStateModel.EntityStateInstance entityState, EntityInstance entityInstance, Method method )
+    public Object newMixin( Object[] mixins,
+                            EntityStateModel.EntityStateInstance entityState,
+                            EntityInstance entityInstance,
+                            Method method
+    )
     {
         return ( (EntityMixinsModel) mixinsModel ).newMixin( entityInstance, entityState, mixins, method );
     }
@@ -279,26 +280,5 @@ public final class EntityModel
     boolean hasEntityType( EntityModel entityModel, EntityState entityState )
     {
         return entityState.isOfType( entityModel.entityType().type() );
-    }
-
-    public void invokeCreate( EntityInstance instance )
-    {
-        // Invoke lifecycle create() method
-        if( hasMixinType( Lifecycle.class ) )
-        {
-            try
-            {
-                instance.invoke( null, CREATE_METHOD, new Object[0] );
-            }
-            catch( LifecycleException throwable )
-            {
-                throw throwable;
-            }
-            catch( Throwable throwable )
-            {
-                throw new LifecycleException( throwable );
-            }
-        }
-
     }
 }

@@ -93,6 +93,11 @@ public abstract class AbstractCompositeModel
         return mixinsModel.mixinTypes();
     }
 
+    public CompositeMethodsModel compositeMethodsModel()
+    {
+        return compositeMethodsModel;    
+    }
+
     @SuppressWarnings( "unchecked" )
     private Class<? extends Composite> createProxyClass( Class<? extends Composite> compositeType )
     {
