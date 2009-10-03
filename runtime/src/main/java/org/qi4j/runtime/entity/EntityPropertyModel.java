@@ -25,14 +25,16 @@ import org.qi4j.spi.entity.EntityState;
 /**
  * JAVADOC
  */
-public final class EntityPropertyModel extends PersistentPropertyModel
+public final class EntityPropertyModel
+    extends PersistentPropertyModel
 {
     public EntityPropertyModel( Method anAccessor,
                                 Class compositeType,
                                 boolean immutable,
                                 ValueConstraintsInstance constraints,
                                 MetaInfo metaInfo,
-                                Object defaultValue )
+                                Object defaultValue
+    )
     {
         super( anAccessor, compositeType, immutable, constraints, metaInfo, defaultValue );
     }

@@ -17,12 +17,17 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 /**
  * JAVADOC
  */
-public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
+public class ManyAssociationInstance<T>
+    extends AbstractAssociationInstance<T>
     implements ManyAssociation<T>
 {
     private ManyAssociationModel model;
 
-    public ManyAssociationInstance( AssociationInfo associationInfo, ManyAssociationModel constraints, ModuleUnitOfWork unitOfWork, EntityState entityState )
+    public ManyAssociationInstance( AssociationInfo associationInfo,
+                                    ManyAssociationModel constraints,
+                                    ModuleUnitOfWork unitOfWork,
+                                    EntityState entityState
+    )
     {
         super( associationInfo, unitOfWork, entityState );
         this.model = constraints;
@@ -128,7 +133,6 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
         ManyAssociationInstance that = (ManyAssociationInstance) o;
 
         return associated().equals( that.associated() );
-
     }
 
     public int hashCode()

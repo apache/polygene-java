@@ -41,7 +41,7 @@ public final class EntityBuilderInstance<T>
     private final EntityStoreUnitOfWork store;
     private String identity;
 
-    private final BuilderEntityState entityState;
+    private final EntityState entityState;
     private final EntityInstance prototypeInstance;
 
     static
@@ -65,7 +65,8 @@ public final class EntityBuilderInstance<T>
         this.store = store;
         this.identity = identity;
         EntityReference reference = new EntityReference( identity );
-        entityState = new BuilderEntityState( entityModel, reference );
+        entityState  = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ) );
+//        entityState = new BuilderEntityState( entityModel, reference );
         entityModel.initState( entityState );
         entityState.setProperty( identityStateName, identity );
         prototypeInstance = entityModel.newInstance( uow, moduleInstance, entityState );
@@ -89,20 +90,18 @@ public final class EntityBuilderInstance<T>
     {
         checkValid();
 
-        String identity;
+//        entityModel.invokeCreate( prototypeInstance );
 
-        // Figure out whether to use given or generated identity
-        identity = (String) entityState.getProperty( identityStateName );
-        EntityState newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ) );
+//        prototypeInstance.checkConstraints();
 
-        entityModel.invokeCreate( prototypeInstance );
+//        entityState.copyTo( newEntityState );
+
+        EntityInstance instance = entityModel.newInstance( uow, moduleInstance, entityState );
+
+        instance.invokeCreate();
 
         // Check constraints
-        prototypeInstance.checkConstraints();
-
-        entityState.copyTo( newEntityState );
-
-        EntityInstance instance = entityModel.newInstance( uow, moduleInstance, newEntityState );
+        instance.checkConstraints();
 
         Object proxy = instance.proxy();
 

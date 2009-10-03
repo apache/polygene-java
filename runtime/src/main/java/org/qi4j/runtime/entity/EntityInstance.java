@@ -46,22 +46,6 @@ import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 public final class EntityInstance
     implements CompositeInstance, MixinsInstance
 {
-    private static final Method REMOVE_METHOD;
-
-
-    static
-    {
-        try
-        {
-            REMOVE_METHOD = Lifecycle.class.getMethod( "remove" );
-        }
-        catch( NoSuchMethodException e )
-        {
-            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: EntityInstance" );
-        }
-    }
-
-
     public static EntityInstance getEntityInstance( EntityComposite composite )
     {
         return (EntityInstance) Proxy.getInvocationHandler( composite );
@@ -69,18 +53,19 @@ public final class EntityInstance
 
     private final EntityComposite proxy;
     private final ModuleUnitOfWork uow;
-    private ModuleInstance moduleInstance;
+    private final ModuleInstance moduleInstance;
     private final EntityModel entityModel;
     private final EntityReference identity;
+    private final EntityState entityState;
 
     private Object[] mixins;
-    private EntityState entityState;
     private EntityStateModel.EntityStateInstance state;
 
     public EntityInstance( ModuleUnitOfWork uow,
                            ModuleInstance moduleInstance,
                            EntityModel entityModel,
-                           EntityState entityState )
+                           EntityState entityState
+    )
     {
         this.uow = uow;
         this.moduleInstance = moduleInstance;
@@ -117,7 +102,8 @@ public final class EntityInstance
         return entityModel.newProxy( this, mixinType );
     }
 
-    public Object invokeProxy( Method method, Object[] args ) throws Throwable
+    public Object invokeProxy( Method method, Object[] args )
+        throws Throwable
     {
         return entityModel.invoke( this, proxy, method, args, moduleInstance );
     }
@@ -167,7 +153,8 @@ public final class EntityInstance
         return entityState.status();
     }
 
-    public Object invoke( Object composite, Object[] params, CompositeMethodInstance methodInstance ) throws Throwable
+    public Object invoke( Object composite, Object[] params, CompositeMethodInstance methodInstance )
+        throws Throwable
     {
         if( mixins == null )
         {
@@ -184,7 +171,8 @@ public final class EntityInstance
         return methodInstance.invoke( composite, params, mixin );
     }
 
-    public Object invokeObject( Object proxy, Object[] args, Method method ) throws Throwable
+    public Object invokeObject( Object proxy, Object[] args, Method method )
+        throws Throwable
     {
         return method.invoke( this, args );
     }
@@ -205,13 +193,14 @@ public final class EntityInstance
         state = entityModel.newStateHolder( uow, entityState );
     }
 
-
-    @Override public int hashCode()
+    @Override
+    public int hashCode()
     {
         return identity.hashCode();
     }
 
-    @Override public boolean equals( Object o )
+    @Override
+    public boolean equals( Object o )
     {
         try
         {
@@ -224,7 +213,8 @@ public final class EntityInstance
         }
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return identity.toString();
     }
@@ -240,21 +230,40 @@ public final class EntityInstance
         mixins = null;
     }
 
+    public void invokeCreate()
+    {
+        lifecyleInvoke( true );
+    }
+
     private void invokeRemove()
     {
-        if( entityModel.hasMixinType( Lifecycle.class ) )
+        lifecyleInvoke( false );
+    }
+
+    private void lifecyleInvoke( boolean create )
+    {
+        if( mixins == null )
         {
-            try
+            initState();
+        }
+        for( Method method : entityModel.compositeMethodsModel().methods() )
+        {
+            Object mixin = entityModel.getMixin( mixins, method );
+            if( mixin == null )
             {
-                invoke( proxy, REMOVE_METHOD, new Object[0] );
+                mixin = entityModel.newMixin( mixins, state, this, method );
             }
-            catch( LifecycleException throwable )
+            if( mixin instanceof Lifecycle )
             {
-                throw throwable;
-            }
-            catch( Throwable throwable )
-            {
-                throw new LifecycleException( throwable );
+                Lifecycle lifecycle = (Lifecycle) mixin;
+                if( create )
+                {
+                    lifecycle.create();
+                }
+                else
+                {
+                    lifecycle.remove();
+                }
             }
         }
     }
@@ -270,7 +279,7 @@ public final class EntityInstance
             if( association.isAggregated() )
             {
                 Association assoc = state.getAssociation( association.accessor() );
-                Object aggregatedEntity = ( (Association) assoc ).get();
+                Object aggregatedEntity = assoc.get();
                 if( aggregatedEntity != null )
                 {
                     aggregatedEntities.add( aggregatedEntity );

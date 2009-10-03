@@ -30,7 +30,7 @@ import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
 import static org.qi4j.api.common.TypeName.*;
 import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.property.Property;
+import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.util.Classes;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.ValueType;
@@ -43,7 +43,6 @@ public class ValueTypeFactory
     {
         return instance;
     }
-
 
     public ValueType newValueType( Type type, Class declaringClass, Class compositeType )
     {
@@ -129,15 +128,17 @@ public class ValueTypeFactory
         return valueType;
     }
 
-
-    private void addProperties( Map<Type, ValueType> typeMap, Class valueTypeClass, Class compositeType, List<PropertyType> types )
+    private void addProperties( Map<Type, ValueType> typeMap,
+                                Class valueTypeClass,
+                                Class compositeType,
+                                List<PropertyType> types
+    )
     {
         for( Method method : valueTypeClass.getDeclaredMethods() )
         {
-            Type returnType = method.getGenericReturnType();
-            if( returnType instanceof ParameterizedType && ( (ParameterizedType) returnType ).getRawType().equals( Property.class ) )
+            Type propType = GenericPropertyInfo.getPropertyType( method );
+            if( propType != null )
             {
-                Type propType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
                 Queryable queryableAnnotation = method.getAnnotation( Queryable.class );
                 boolean queryable = queryableAnnotation == null || queryableAnnotation.value();
                 ValueType propValueType = newValueType( typeMap, propType, valueTypeClass, compositeType );

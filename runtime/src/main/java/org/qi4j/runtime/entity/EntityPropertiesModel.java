@@ -23,7 +23,6 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
-import org.qi4j.spi.util.Annotations;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
@@ -31,6 +30,7 @@ import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.property.AbstractPropertiesModel;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.util.Annotations;
 
 /**
  * Model for Properties in Entities
@@ -38,7 +38,10 @@ import org.qi4j.spi.property.PropertyType;
 public final class EntityPropertiesModel
     extends AbstractPropertiesModel<EntityPropertyModel>
 {
-    public EntityPropertiesModel( ConstraintsModel constraints, PropertyDeclarations propertyDeclarations, boolean immutable )
+    public EntityPropertiesModel( ConstraintsModel constraints,
+                                  PropertyDeclarations propertyDeclarations,
+                                  boolean immutable
+    )
     {
         super( constraints, propertyDeclarations, immutable );
     }

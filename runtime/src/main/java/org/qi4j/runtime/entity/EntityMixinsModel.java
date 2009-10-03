@@ -28,7 +28,8 @@ import org.qi4j.runtime.composite.UsesInstance;
 /**
  * JAVADOC
  */
-public final class EntityMixinsModel extends AbstractMixinsModel
+public final class EntityMixinsModel
+    extends AbstractMixinsModel
     implements Serializable
 {
     public EntityMixinsModel( Class<? extends EntityComposite> compositeType, List<Class<?>> assemblyMixins )

@@ -15,7 +15,8 @@ package org.qi4j.runtime.entity;
 
 import org.qi4j.api.common.InvalidApplicationException;
 
-public class ObjectAccessException extends InvalidApplicationException
+public class ObjectAccessException
+    extends InvalidApplicationException
 {
     public ObjectAccessException( String message )
     {
