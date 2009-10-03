@@ -104,7 +104,7 @@ public final class EntityBuilderInstance<T>
 
         EntityInstance instance = entityModel.newInstance( uow, moduleInstance, newEntityState );
 
-        Object proxy = instance.proxy();
+        T proxy = instance.proxy();
 
         // Add entity in UOW
         uow.addEntity( instance );
@@ -112,7 +112,7 @@ public final class EntityBuilderInstance<T>
         // Invalidate builder
         this.identity = null;
 
-        return (T) proxy;
+        return proxy;
     }
 
     private void checkValid() throws IllegalStateException
