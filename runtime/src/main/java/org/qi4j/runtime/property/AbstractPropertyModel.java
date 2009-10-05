@@ -231,13 +231,7 @@ public abstract class AbstractPropertyModel
         }
 
         AbstractPropertyModel that = (AbstractPropertyModel) o;
-
-        if( !accessor.equals( that.accessor ) )
-        {
-            return false;
-        }
-
-        return true;
+        return accessor.equals( that.accessor );
     }
 
     @Override
@@ -318,7 +312,7 @@ public abstract class AbstractPropertyModel
             {
                 if( method.getDeclaringClass() == Object.class )
                 {
-                    return invokeObject( proxy, method, args );
+                    return invokeObject( method, args );
                 }
                 return method.invoke( p, args );
             }
@@ -328,7 +322,7 @@ public abstract class AbstractPropertyModel
             }
         }
 
-        private Object invokeObject( Object proxy, Method method, Object[] args )
+        private Object invokeObject( Method method, Object[] args )
             throws Throwable
         {
             String methodName = method.getName();
