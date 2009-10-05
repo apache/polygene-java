@@ -35,14 +35,14 @@ import org.qi4j.api.property.ComputedPropertyInstance;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyInfo;
-import org.qi4j.spi.util.SerializationUtil;
-import org.qi4j.runtime.model.BindingException;
 import org.qi4j.runtime.composite.ConstraintsCheck;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.model.Binder;
+import org.qi4j.runtime.model.BindingException;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.property.DefaultValues;
 import org.qi4j.spi.property.PropertyDescriptor;
+import org.qi4j.spi.util.SerializationUtil;
 
 /**
  * JAVADOC
@@ -75,7 +75,8 @@ public abstract class AbstractPropertyModel
     protected final PropertyInfo builderInfo;
 
     public AbstractPropertyModel( Method accessor, boolean immutable, ValueConstraintsInstance constraints,
-                                  MetaInfo metaInfo, Object initialValue )
+                                  MetaInfo metaInfo, Object initialValue
+    )
     {
         this.immutable = immutable;
         this.metaInfo = metaInfo;
@@ -144,7 +145,8 @@ public abstract class AbstractPropertyModel
         return value;
     }
 
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         // TODO Select ValueComposite type
     }
@@ -277,7 +279,8 @@ public abstract class AbstractPropertyModel
         }
     }
 
-    private void readObject( ObjectInputStream in ) throws IOException, ClassNotFoundException
+    private void readObject( ObjectInputStream in )
+        throws IOException, ClassNotFoundException
     {
         in.defaultReadObject();
         accessor = SerializationUtil.readMethod( in );
@@ -313,12 +316,75 @@ public abstract class AbstractPropertyModel
         {
             try
             {
+                if( method.getDeclaringClass() == Object.class )
+                {
+                    return invokeObject( proxy, method, args );
+                }
                 return method.invoke( p, args );
             }
             catch( InvocationTargetException e )
             {
                 throw e.getCause();
             }
+        }
+
+        private Object invokeObject( Object proxy, Method method, Object[] args )
+            throws Throwable
+        {
+            String methodName = method.getName();
+            if( "equals".equals( methodName ) )
+            {
+                Object arg = args[ 0 ];
+                if( Proxy.isProxyClass( arg.getClass() ) )
+                {
+                    arg = Proxy.getInvocationHandler( arg );
+                    if( arg instanceof PropertyHandler )
+                    {
+                        arg = ( (PropertyHandler) arg ).p;
+                    }
+                }
+                return p.equals( arg );
+            }
+            else if( "hashCode".equals( methodName ) )
+            {
+                return p.hashCode();
+            }
+            else if( "toString".equals( methodName ) )
+            {
+                return p.toString();
+            }
+            else if( "wait".equals( methodName ) )
+            {
+                if( args.length == 0 )
+                {
+                    p.wait();
+                }
+                else if( args.length == 1 )
+                {
+                    p.wait( (Long) args[ 0 ] );
+                }
+                else
+                {
+                    p.wait( (Long) args[ 0 ], (Integer) args[ 1 ] );
+                }
+            }
+            else if( "getClass".equals( methodName ) )
+            {
+                return p.getClass();
+            }
+            else if( "clone".equals( methodName ) )
+            {
+                throw new CloneNotSupportedException();
+            }
+            else if( "notifyAll".equals( methodName ) )
+            {
+                p.notifyAll();
+            }
+            else if( "notify".equals( methodName ) )
+            {
+                p.notify();
+            }
+            return null;
         }
     }
 }
