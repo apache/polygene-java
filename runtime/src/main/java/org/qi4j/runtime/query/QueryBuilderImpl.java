@@ -38,8 +38,6 @@ final class QueryBuilderImpl<T>
      */
     private final EntityFinder entityFinder;
 
-    private final ClassLoader classLoader;
-
     /**
      * Type of queried entities.
      */
@@ -53,37 +51,32 @@ final class QueryBuilderImpl<T>
      * Constructor.
      *
      * @param entityFinder entity finder to be used to locate entities; canot be null
-     * @param classLoader  The classloader to use for deserializing Serializable instances. (Not used at the moment.)
      * @param resultType   type of queried entities; cannot be null
+     * @param whereClause  current where-clause
      */
     public QueryBuilderImpl( final EntityFinder entityFinder,
-                             final ClassLoader classLoader,
-                             final Class<T> resultType )
+                             final Class<T> resultType,
+                             final BooleanExpression whereClause )
     {
         this.entityFinder = entityFinder;
-        this.classLoader = classLoader;
         this.resultType = resultType;
-        this.whereClause = null;
+        this.whereClause = whereClause;
     }
 
     /**
      * @see QueryBuilder#where(BooleanExpression)
      */
-    public QueryBuilder<T> where( final BooleanExpression whereClause )
+    public QueryBuilder<T> where( BooleanExpression whereClause )
     {
         if( whereClause == null )
         {
             throw new IllegalArgumentException( "Where clause cannot be null" );
         }
-        if( this.whereClause == null )
+        if( this.whereClause != null )
         {
-            this.whereClause = whereClause;
+            whereClause = QueryExpressions.and( this.whereClause, whereClause );
         }
-        else
-        {
-            this.whereClause = QueryExpressions.and( this.whereClause, whereClause );
-        }
-        return this;
+        return new QueryBuilderImpl<T>( entityFinder, resultType, whereClause );
     }
 
     /**

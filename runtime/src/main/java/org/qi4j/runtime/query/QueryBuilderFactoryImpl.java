@@ -37,7 +37,6 @@ public final class QueryBuilderFactoryImpl
     implements QueryBuilderFactory
 {
     private ServiceFinder finder;
-    private ClassLoader classLoader;
 
     public static void initialize()
     {
@@ -47,14 +46,12 @@ public final class QueryBuilderFactoryImpl
     /**
      * Constructor.
      *
-     * @param classLoader The classloader to use for deserialization of Serializable instances. (Not used currently)
-     * @param finder      The ServiceFinder of the Module this QueryBuilderFactory belongs to.
+     * @param finder The ServiceFinder of the Module this QueryBuilderFactory belongs to.
      */
-    public QueryBuilderFactoryImpl( ClassLoader classLoader, ServiceFinder finder )
+    public QueryBuilderFactoryImpl( ServiceFinder finder )
     {
         NullArgumentException.validateNotNull( "ServiceFinder", finder );
         this.finder = finder;
-        this.classLoader = classLoader;
     }
 
     /**
@@ -67,9 +64,9 @@ public final class QueryBuilderFactoryImpl
         final ServiceReference<EntityFinder> serviceReference = finder.findService( EntityFinder.class );
         if( serviceReference == null )
         {
-            return new QueryBuilderImpl<T>( null, classLoader, resultType );
+            return new QueryBuilderImpl<T>( null, resultType, null );
         }
-        return new QueryBuilderImpl<T>( serviceReference.get(), classLoader, resultType );
+        return new QueryBuilderImpl<T>( serviceReference.get(), resultType, null );
     }
 
     public <T> Query<T> newNamedQuery( Class<T> resultType, UnitOfWork unitOfWork, String name )

@@ -26,6 +26,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
  * QueryBuilders are used to create {@link Query} instances.
  * Iteratively add where() clauses to the query, and then use
  * {@link QueryBuilder#newQuery(org.qi4j.api.unitofwork.UnitOfWork)} to instantiate the Query.
+ * QueryBuilders are immutable, so when adding new where-clauses you get new instances. This
  *
  * DDD tip: Query objects are not executed immediately, so they
  * should be constructed in the domain model and handed over to
@@ -39,7 +40,7 @@ public interface QueryBuilder<T>
      * to create the expression.
      *
      * @param expressions the where clause
-     * @return the builder itself
+     * @return a new builder with the added where-clause
      */
     QueryBuilder<T> where( BooleanExpression expressions );
 
