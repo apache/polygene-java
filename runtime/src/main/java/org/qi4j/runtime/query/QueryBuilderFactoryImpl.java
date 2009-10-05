@@ -64,9 +64,9 @@ public final class QueryBuilderFactoryImpl
         final ServiceReference<EntityFinder> serviceReference = finder.findService( EntityFinder.class );
         if( serviceReference == null )
         {
-            return new QueryBuilderImpl<T>( null, resultType );
+            return new QueryBuilderImpl<T>( null, resultType, null );
         }
-        return new QueryBuilderImpl<T>( serviceReference.get(), resultType );
+        return new QueryBuilderImpl<T>( serviceReference.get(), resultType, null );
     }
 
     public <T> Query<T> newNamedQuery( Class<T> resultType, UnitOfWork unitOfWork, String name )
