@@ -95,7 +95,7 @@ public final class EntityBuilderInstance<T>
         identity = (String) entityState.getProperty( identityStateName );
         EntityState newEntityState = entityModel.newEntityState( store, EntityReference.parseEntityReference( identity ) );
 
-        entityModel.invokeCreate( prototypeInstance );
+        prototypeInstance.invokeCreate();
 
         // Check constraints
         prototypeInstance.checkConstraints();

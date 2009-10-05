@@ -34,7 +34,6 @@ import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.property.Immutable;
-import org.qi4j.spi.util.SerializationUtil;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
@@ -42,6 +41,7 @@ import org.qi4j.runtime.unitofwork.BuilderEntityState;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
+import org.qi4j.spi.util.SerializationUtil;
 
 /**
  * JAVADOC
@@ -77,7 +77,8 @@ public final class AssociationModel
         }
     }
 
-    private void readObject( ObjectInputStream in ) throws IOException, ClassNotFoundException
+    private void readObject( ObjectInputStream in )
+        throws IOException, ClassNotFoundException
     {
         metaInfo = (MetaInfo) in.readObject();
         accessor = SerializationUtil.readMethod( in );
@@ -85,8 +86,11 @@ public final class AssociationModel
         initialize();
     }
 
-
-    public AssociationModel( Method accessor, ValueConstraintsInstance valueConstraintsInstance, ValueConstraintsInstance associationConstraintsInstance, MetaInfo metaInfo )
+    public AssociationModel( Method accessor,
+                             ValueConstraintsInstance valueConstraintsInstance,
+                             ValueConstraintsInstance associationConstraintsInstance,
+                             MetaInfo metaInfo
+    )
     {
         this.metaInfo = metaInfo;
         this.constraints = valueConstraintsInstance;
@@ -149,7 +153,11 @@ public final class AssociationModel
 
         if( Composite.class.isAssignableFrom( accessor.getReturnType() ) )
         {
-            associationInstance = (Association<T>) uow.module().transientBuilderFactory().newTransientBuilder( accessor.getReturnType() ).use( associationInstance ).newInstance();
+            associationInstance = (Association<T>) uow.module()
+                .transientBuilderFactory()
+                .newTransientBuilder( accessor.getReturnType() )
+                .use( associationInstance )
+                .newInstance();
         }
 
         return associationInstance;
@@ -192,7 +200,6 @@ public final class AssociationModel
             }
         }
     }
-
 
     public boolean equals( Object o )
     {

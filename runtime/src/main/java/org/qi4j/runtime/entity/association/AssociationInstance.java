@@ -26,7 +26,8 @@ import org.qi4j.spi.entity.EntityState;
 /**
  * Implementation of Association to a single Entity.
  */
-public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
+public final class AssociationInstance<T>
+    extends AbstractAssociationInstance<T>
     implements Association<T>
 {
     private static final Object NOT_LOADED = new Object();
@@ -34,7 +35,11 @@ public final class AssociationInstance<T> extends AbstractAssociationInstance<T>
     private T value = (T) NOT_LOADED;
     private ConstraintsCheck constraints;
 
-    public AssociationInstance( AssociationInfo associationInfo, ConstraintsCheck constraints, ModuleUnitOfWork unitOfWork, EntityState entityState )
+    public AssociationInstance( AssociationInfo associationInfo,
+                                ConstraintsCheck constraints,
+                                ModuleUnitOfWork unitOfWork,
+                                EntityState entityState
+    )
     {
         super( associationInfo, unitOfWork, entityState );
         this.constraints = constraints;

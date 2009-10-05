@@ -25,10 +25,6 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
-import org.qi4j.spi.util.MethodKeyMap;
-import org.qi4j.spi.util.MethodSet;
-import org.qi4j.spi.util.MethodValueMap;
-import org.qi4j.spi.util.Annotations;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
@@ -37,6 +33,10 @@ import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
+import org.qi4j.spi.util.Annotations;
+import org.qi4j.spi.util.MethodKeyMap;
+import org.qi4j.spi.util.MethodSet;
+import org.qi4j.spi.util.MethodValueMap;
 
 /**
  * JAVADOC

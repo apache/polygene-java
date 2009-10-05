@@ -92,7 +92,8 @@ public final class MixinModel
 
         mixinInvoker = new MethodInterceptor()
         {
-            public Object intercept( Object obj, Method method, Object[] args, MethodProxy proxy ) throws Throwable
+            public Object intercept( Object obj, Method method, Object[] args, MethodProxy proxy )
+                throws Throwable
             {
                 return proxy.invokeSuper( obj, args );
             }
@@ -119,7 +120,8 @@ public final class MixinModel
     }
 
     // Binding
-    public void bind( Resolution context ) throws BindingException
+    public void bind( Resolution context )
+        throws BindingException
     {
         constructorsModel.bind( context );
         injectedFieldsModel.bind( context );
@@ -142,7 +144,8 @@ public final class MixinModel
             {
                 Enhancer.registerCallbacks( instantiationClass,
                                             new Callback[]{
-                                                new ThisCompositeInvoker( compositeInstance ), NoOp.INSTANCE } );
+                                                new ThisCompositeInvoker( compositeInstance ), NoOp.INSTANCE
+                                            } );
             }
             mixin = constructorsModel.newInstance( injectionContext );
         }
@@ -170,7 +173,8 @@ public final class MixinModel
             }
             catch( InitializationException e )
             {
-                throw new ConstructionException( "Unable to initialize " + mixinClass + " in composite " + compositeInstance.type(), e );
+                throw new ConstructionException( "Unable to initialize " + mixinClass + " in composite " + compositeInstance
+                    .type(), e );
             }
         }
         return mixin;
@@ -205,7 +209,8 @@ public final class MixinModel
 
     protected FragmentInvocationHandler newInvocationHandler( Method method )
     {
-        if( InvocationHandler.class.isAssignableFrom( mixinClass ) && !method.getDeclaringClass().isAssignableFrom( mixinClass ) )
+        if( InvocationHandler.class.isAssignableFrom( mixinClass ) && !method.getDeclaringClass()
+            .isAssignableFrom( mixinClass ) )
         {
             return new GenericFragmentInvocationHandler();
         }
@@ -228,7 +233,6 @@ public final class MixinModel
     {
         return concernsDeclaration.concernsFor( method, type );
     }
-
 
     public MethodSideEffectsModel sideEffectsFor( Method method, Class<? extends Composite> type )
     {
@@ -265,7 +269,8 @@ public final class MixinModel
         }
     }
 
-    public void activate( Object mixin ) throws Exception
+    public void activate( Object mixin )
+        throws Exception
     {
         if( mixin instanceof Activatable )
         {
@@ -282,7 +287,8 @@ public final class MixinModel
         }
     }
 
-    public void passivate( Object mixin ) throws Exception
+    public void passivate( Object mixin )
+        throws Exception
     {
         if( mixin instanceof Activatable )
         {
@@ -326,6 +332,15 @@ public final class MixinModel
         {
             public int accept( Method method )
             {
+                if( Lifecycle.class.isAssignableFrom( method.getDeclaringClass() )
+                    && ( "create".equals( method.getName() )
+                         || "remove".equals( method.getName() )
+                )
+                    && method.getParameterTypes().length == 0
+                    )
+                {
+                    return 1; // Lifecycle methods must not be proxied.
+                }
                 if( !Modifier.isPublic( method.getModifiers() ) )
                 {
                     return 1; // Only proxy publich methods

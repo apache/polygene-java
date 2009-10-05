@@ -90,12 +90,14 @@ public class ModuleUnitOfWork
         return uow.usecase();
     }
 
-    public <T> T newEntity( Class<T> type ) throws EntityTypeNotFoundException, LifecycleException
+    public <T> T newEntity( Class<T> type )
+        throws EntityTypeNotFoundException, LifecycleException
     {
         return newEntity( type, null );
     }
 
-    public <T> T newEntity( Class<T> type, String identity ) throws EntityTypeNotFoundException, LifecycleException
+    public <T> T newEntity( Class<T> type, String identity )
+        throws EntityTypeNotFoundException, LifecycleException
     {
         EntityFinder finder = moduleInstance.findEntityModel( type );
 
@@ -136,7 +138,7 @@ public class ModuleUnitOfWork
 
         EntityInstance instance = new EntityInstance( this, moduleInstance, entityModel, entityState );
 
-        entityModel.invokeCreate( instance );
+        instance.invokeCreate();
 
         instance.checkConstraints();
 
@@ -145,7 +147,8 @@ public class ModuleUnitOfWork
         return instance.<T>proxy();
     }
 
-    public <T> EntityBuilder<T> newEntityBuilder( Class<T> type ) throws EntityTypeNotFoundException
+    public <T> EntityBuilder<T> newEntityBuilder( Class<T> type )
+        throws EntityTypeNotFoundException
     {
         return newEntityBuilder( type, null );
     }
@@ -215,14 +218,17 @@ public class ModuleUnitOfWork
         return uow.get( parseEntityReference( identity ), this, finder.models, finder.modules, type ).<T>proxy();
     }
 
-    public <T> T get( T entity ) throws EntityTypeNotFoundException
+    public <T> T get( T entity )
+        throws EntityTypeNotFoundException
     {
         EntityComposite entityComposite = (EntityComposite) entity;
         EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
-        return uow.get( compositeInstance.identity(), this, Collections.singletonList( compositeInstance.entityModel() ), Collections.singletonList( compositeInstance.module() ), compositeInstance.type() ).<T>proxy();
+        return uow.get( compositeInstance.identity(), this, Collections.singletonList( compositeInstance.entityModel() ), Collections.singletonList( compositeInstance.module() ), compositeInstance.type() )
+            .<T>proxy();
     }
 
-    public void remove( Object entity ) throws LifecycleException
+    public void remove( Object entity )
+        throws LifecycleException
     {
         uow.checkOpen();
 
@@ -243,15 +249,16 @@ public class ModuleUnitOfWork
         {
             throw new NoSuchEntityException( compositeInstance.identity() );
         }
-
     }
 
-    public void complete() throws UnitOfWorkCompletionException, ConcurrentEntityModificationException
+    public void complete()
+        throws UnitOfWorkCompletionException, ConcurrentEntityModificationException
     {
         uow.complete();
     }
 
-    public void apply() throws UnitOfWorkCompletionException, ConcurrentEntityModificationException
+    public void apply()
+        throws UnitOfWorkCompletionException, ConcurrentEntityModificationException
     {
         uow.apply();
     }
@@ -319,7 +326,8 @@ public class ModuleUnitOfWork
         return uow.hashCode();
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return uow.toString();
     }
