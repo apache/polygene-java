@@ -38,10 +38,11 @@ public class IndexResource
 
     public IndexResource()
     {
-        getVariants().put( Method.ALL, Arrays.asList(
-            MediaType.TEXT_PLAIN,
-            MediaType.APPLICATION_RDF_TRIG,
-            MediaType.APPLICATION_RDF_XML ) );
+        getVariants().addAll(Arrays.asList(
+            new Variant(MediaType.TEXT_PLAIN),
+            new Variant(MediaType.APPLICATION_RDF_TRIG),
+            new Variant(MediaType.APPLICATION_RDF_XML)));
+
         setNegotiated( true );
     }
 

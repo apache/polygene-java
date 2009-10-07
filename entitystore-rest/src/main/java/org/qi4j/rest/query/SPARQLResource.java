@@ -67,10 +67,10 @@ public class SPARQLResource
 
     public SPARQLResource()
     {
-        getVariants().put( Method.ALL, Arrays.asList(
-            MediaType.TEXT_HTML,
-            MediaType.APPLICATION_RDF_XML,
-            RestApplication.APPLICATION_SPARQL_JSON ) );
+        getVariants().addAll( Arrays.asList(
+            new Variant(MediaType.TEXT_HTML),
+            new Variant(MediaType.APPLICATION_RDF_XML),
+            new Variant(RestApplication.APPLICATION_SPARQL_JSON )) );
         setNegotiated( true );
     }
 
