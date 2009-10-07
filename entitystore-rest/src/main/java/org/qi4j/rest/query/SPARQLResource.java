@@ -86,7 +86,7 @@ public class SPARQLResource
         try
         {
             // TODO There's probably a helper somewhere that can do this more nicely
-            if( getRequest().getResourceRef().getLastSegment().equals( "sparqlhtml.xsl" ) )
+            if( getRequest().getOriginalRef().getLastSegment().equals( "sparqlhtml.xsl" ) )
             {
                 return new InputRepresentation( getClass().getResourceAsStream( "sparqlhtml.xsl" ), MediaType.TEXT_XML );
             }
