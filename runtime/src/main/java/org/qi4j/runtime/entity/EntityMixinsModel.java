@@ -14,35 +14,85 @@
 
 package org.qi4j.runtime.entity;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.List;
 import org.qi4j.api.entity.Entity;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.composite.AbstractMixinsModel;
 import org.qi4j.runtime.composite.MixinDeclaration;
 import org.qi4j.runtime.composite.MixinModel;
 import org.qi4j.runtime.composite.UsesInstance;
+import org.qi4j.runtime.model.BindingException;
+import org.qi4j.runtime.model.Resolution;
+import org.qi4j.spi.composite.CompositeInstance;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * JAVADOC
  */
 public final class EntityMixinsModel
-    extends AbstractMixinsModel
-    implements Serializable
+        extends AbstractMixinsModel
+        implements Serializable
 {
+    List<Integer> lifecycleMixins;
+
     public EntityMixinsModel( Class<? extends EntityComposite> compositeType, List<Class<?>> assemblyMixins )
     {
         super( compositeType, assemblyMixins );
         mixins.add( new MixinDeclaration( EntityMixin.class, Entity.class ) );
+
+
+    }
+
+    @Override
+    public void bind( Resolution resolution ) throws BindingException
+    {
+        super.bind( resolution );
+
+        // Find what mixins implement Lifecycle
+        for (int i = 0; i < mixinModels.size(); i++)
+        {
+            MixinModel mixinModel = mixinModels.get( i );
+            if (Lifecycle.class.isAssignableFrom( mixinModel.mixinClass() ))
+            {
+                if (lifecycleMixins == null)
+                    lifecycleMixins = new ArrayList<Integer>();
+
+                lifecycleMixins.add( i );
+            }
+        }
     }
 
     public Object newMixin( EntityInstance entityInstance, StateHolder state, Object[] mixins, Method method )
     {
         MixinModel model = methodImplementation.get( method );
         Object mixin = model.newInstance( entityInstance, state, UsesInstance.NO_USES );
-        mixins[ methodIndex.get( method ) ] = mixin;
+        mixins[methodIndex.get( method )] = mixin;
         return mixin;
+    }
+
+    public void invokeLifecycle( boolean create, Object[] mixins, CompositeInstance instance, StateHolder state )
+    {
+        if (lifecycleMixins != null)
+        {
+            for (Integer lifecycleMixin : lifecycleMixins)
+            {
+                Lifecycle lifecycle = (Lifecycle) mixins[lifecycleMixin];
+
+                if (lifecycle == null)
+                {
+                    lifecycle = (Lifecycle) mixinModels.get( lifecycleMixin ).newInstance( instance, state );
+                }
+
+                if (create)
+                    lifecycle.create();
+                else
+                    lifecycle.remove();
+            }
+        }
     }
 }
