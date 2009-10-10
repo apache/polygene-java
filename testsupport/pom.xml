@@ -2,28 +2,28 @@
   <parent>
     <groupId>org.qi4j</groupId>
     <artifactId>qi4j-core</artifactId>
-    <version>1.0-RC2</version>
+    <version>1.0-RC2-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.core</groupId>
   <artifactId>qi4j-core-testsupport</artifactId>
   <name>Qi4j Core - Test Support</name>
-  <version>1.0-RC2</version>
+  <version>1.0-RC2-SNAPSHOT</version>
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-api</artifactId>
-      <version>1.0-RC2</version>
+      <version>1.0-RC2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-spi</artifactId>
-      <version>1.0-RC2</version>
+      <version>1.0-RC2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-bootstrap</artifactId>
-      <version>1.0-RC2</version>
+      <version>1.0-RC2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
