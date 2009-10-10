@@ -12,7 +12,7 @@
   <packaging>bundle</packaging>
 
   <properties>
-    <version.restlet>2.0-SNAPSHOT</version.restlet>
+    <version.restlet>2.0-M5</version.restlet>
     <version.openrdf>2.2.1</version.openrdf>
   </properties>
 
