@@ -58,8 +58,6 @@ public class ReindexerMixin
 
     public void reindex()
     {
-
-
         configuration.refresh();
         ReindexerConfiguration conf = configuration.configuration();
         Integer loadValue = conf.loadValue().get();

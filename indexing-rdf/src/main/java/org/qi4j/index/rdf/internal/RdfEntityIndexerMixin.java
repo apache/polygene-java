@@ -43,7 +43,7 @@ import org.qi4j.spi.entitystore.StateChangeListener;
  * JAVADOC Add JavaDoc
  */
 public class RdfEntityIndexerMixin
-    implements StateChangeListener, Initializable
+    implements StateChangeListener
 {
     @Service private Repository repository;
     @Uses private EntityStateSerializer stateSerializer;
@@ -55,11 +55,6 @@ public class RdfEntityIndexerMixin
     public RdfEntityIndexerMixin()
     {
         indexedEntityTypes = new HashSet<EntityType>();
-    }
-
-    public void initialize()
-        throws ConstructionException
-    {
     }
 
     public void notifyChanges( Iterable<EntityState> entityStates )
