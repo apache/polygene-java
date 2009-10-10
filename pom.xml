@@ -3,7 +3,7 @@
   <groupId>org.qi4j</groupId>
   <artifactId>qi4j-core</artifactId>
   <name>Qi4j Core (Build POM)</name>
-  <version>1.0-RC2</version>
+  <version>1.0-RC3-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <!-- This POM is ONLY to initiate the modules to be built. -->
