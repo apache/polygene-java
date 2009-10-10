@@ -19,6 +19,7 @@ package org.qi4j.index.rdf.assembly;
 
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.Activatable;
 import org.qi4j.index.rdf.internal.RdfEntityFinderMixin;
 import org.qi4j.index.rdf.internal.RdfEntityIndexerMixin;
 import org.qi4j.index.rdf.internal.RdfNamedEntityFinderMixin;
@@ -34,6 +35,6 @@ import org.qi4j.spi.entitystore.StateChangeListener;
  */
 @Mixins( { RdfEntityIndexerMixin.class, RdfEntityFinderMixin.class, RdfNamedEntityFinderMixin.class, RdfExportMixin.class, TupleQueryExecutorMixin.class } )
 public interface RdfQueryService
-    extends StateChangeListener, EntityFinder, NamedEntityFinder, RdfExport, ServiceComposite
+    extends StateChangeListener, EntityFinder, NamedEntityFinder, RdfExport, Activatable, ServiceComposite
 {
 }

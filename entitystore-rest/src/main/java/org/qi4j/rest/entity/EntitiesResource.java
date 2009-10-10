@@ -57,11 +57,11 @@ public class EntitiesResource extends ServerResource
         super();
 
         // Define the supported variants.
-        getVariants().put( Method.ALL, Arrays.asList(
-            MediaType.TEXT_HTML,
-            MediaType.APPLICATION_RDF_XML,
-            MediaType.APPLICATION_JAVA_OBJECT,
-            MediaType.APPLICATION_ATOM ) );
+        getVariants().addAll( Arrays.asList(
+            new Variant(MediaType.TEXT_HTML),
+            new Variant(MediaType.APPLICATION_RDF_XML),
+            new Variant(MediaType.APPLICATION_JAVA_OBJECT),
+            new Variant(MediaType.APPLICATION_ATOM )) );
 
         setNegotiated( true );
     }

@@ -34,6 +34,14 @@ public abstract class RdfIndexerExporterMixin
 {
     @Service Repository repository;
 
+    public void activate() throws Exception
+    {
+    }
+
+    public void passivate() throws Exception
+    {
+    }
+
     public void toRDF( final OutputStream outputStream )
     {
         RDFWriter rdfWriter = new RDFXMLPrettyWriter( outputStream );

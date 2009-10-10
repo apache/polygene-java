@@ -32,6 +32,7 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Initializable;
+import org.qi4j.api.service.Activatable;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.spi.entity.EntityState;
@@ -43,7 +44,7 @@ import org.qi4j.spi.entitystore.StateChangeListener;
  * JAVADOC Add JavaDoc
  */
 public class RdfEntityIndexerMixin
-    implements StateChangeListener
+    implements StateChangeListener, Activatable
 {
     @Service private Repository repository;
     @Uses private EntityStateSerializer stateSerializer;
@@ -52,9 +53,13 @@ public class RdfEntityIndexerMixin
     private Set<EntityType> indexedEntityTypes;
     private ValueFactory valueFactory;
 
-    public RdfEntityIndexerMixin()
+    public void activate() throws Exception
     {
         indexedEntityTypes = new HashSet<EntityType>();
+    }
+
+    public void passivate() throws Exception
+    {
     }
 
     public void notifyChanges( Iterable<EntityState> entityStates )
