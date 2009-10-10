@@ -2,13 +2,13 @@
   <parent>
     <groupId>org.qi4j</groupId>
     <artifactId>qi4j-extensions</artifactId>
-    <version>1.0-RC2-SNAPSHOT</version>
+    <version>1.0-RC2</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j.extension</groupId>
   <artifactId>qi4j-entitystore-rest</artifactId>
   <name>Qi4j Extension - REST Interface</name>
-  <version>1.0-RC2-SNAPSHOT</version>
+  <version>1.0-RC2</version>
   <packaging>bundle</packaging>
 
   <properties>
@@ -32,7 +32,7 @@
     <dependency>
       <groupId>org.qi4j.extension</groupId>
       <artifactId>qi4j-indexing-rdf</artifactId>
-      <version>1.0-RC2-SNAPSHOT</version>
+      <version>1.0-RC2</version>
     </dependency>
     <dependency>
       <groupId>org.restlet.jee</groupId>
