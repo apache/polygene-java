@@ -35,7 +35,7 @@ public class ConfigurationTest
     {
         module.addObjects( this.getClass() );
         module.addEntities( HelloWorldConfiguration.class );
-        module.addServices( HelloWorldService.class );
+        module.addServices( HelloWorldService.class ).identifiedBy( "HelloWorldService" );
         module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
     }
 
