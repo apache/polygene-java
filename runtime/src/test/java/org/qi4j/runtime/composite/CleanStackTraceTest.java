@@ -73,7 +73,8 @@ public class CleanStackTraceTest
     }
 
     @Mixins( DoStuffMixin.class )
-    public interface TestComposite extends TransientComposite
+    public interface TestComposite
+        extends TransientComposite
     {
         void doStuff();
     }
