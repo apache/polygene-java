@@ -43,7 +43,8 @@ public class IterableQuery<T>
      */
     IterableQuery( final Iterable<T> iterable,
                    final Class<T> resultType,
-                   final BooleanExpression whereClause )
+                   final BooleanExpression whereClause
+    )
     {
         super( resultType, whereClause );
         this.iterable = iterable;
@@ -152,7 +153,6 @@ public class IterableQuery<T>
         if( iterable instanceof List )
         {
             list = (List<T>) iterable;
-
         }
         else
         {
@@ -237,5 +237,4 @@ public class IterableQuery<T>
             return 0;
         }
     }
-
 }

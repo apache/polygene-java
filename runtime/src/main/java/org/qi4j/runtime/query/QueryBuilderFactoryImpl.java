@@ -38,7 +38,7 @@ public final class QueryBuilderFactoryImpl
 {
     private ServiceFinder finder;
 
-    public static void initialize()
+    static
     {
         QueryExpressions.setProvider( new QueryExpressionsProviderImpl() );
     }

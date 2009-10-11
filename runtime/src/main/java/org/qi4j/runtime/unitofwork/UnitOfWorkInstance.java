@@ -36,17 +36,16 @@ import org.qi4j.api.unitofwork.UnitOfWorkException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
-import org.qi4j.runtime.query.QueryBuilderFactoryImpl;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.spi.entitystore.ConcurrentEntityStateModificationException;
-import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entitystore.ConcurrentEntityStateModificationException;
+import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
 import org.qi4j.spi.structure.ModuleSPI;
-import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 
 public final class UnitOfWorkInstance
 {
@@ -77,7 +76,6 @@ public final class UnitOfWorkInstance
                 return new Stack<UnitOfWorkInstance>();
             }
         };
-        QueryBuilderFactoryImpl.initialize();
     }
 
     public UnitOfWorkInstance( Usecase usecase )
