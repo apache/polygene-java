@@ -72,21 +72,25 @@ public class ValueComposite2Test
     public interface Some
     {
         DummyService service();
+
         Module module();
 
         Property<String> other();
     }
 
     @Mixins( SomeMixin.class )
-    public interface SomeValue extends Some, ValueComposite
+    public interface SomeValue
+        extends Some, ValueComposite
     {
     }
 
     public static abstract class SomeMixin
         implements Some
     {
-        @Service DummyService service;
-        @Structure Module module;
+        @Service
+        DummyService service;
+        @Structure
+        Module module;
 
         public DummyService service()
         {
@@ -100,14 +104,16 @@ public class ValueComposite2Test
     }
 
     @Mixins( SomeMixin2.class )
-    public interface SomeValue2 extends Some, ValueComposite
+    public interface SomeValue2
+        extends Some, ValueComposite
     {
     }
 
     public static abstract class SomeMixin2
         implements Some
     {
-        @Uses Guard illegal;
+        @Uses
+        Guard illegal;
 
         public DummyService service()
         {
@@ -120,8 +126,10 @@ public class ValueComposite2Test
         }
     }
 
-    public static interface DummyService extends ServiceComposite
-    {}
+    public static interface DummyService
+        extends ServiceComposite
+    {
+    }
 }
 
 

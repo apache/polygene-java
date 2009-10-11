@@ -34,7 +34,8 @@ import org.qi4j.test.AbstractQi4jTest;
 /**
  * Tests for ValueComposites
  */
-public class ValueTypeSerializationTest extends AbstractQi4jTest
+public class ValueTypeSerializationTest
+    extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module )
@@ -110,33 +111,42 @@ public class ValueTypeSerializationTest extends AbstractQi4jTest
         somevalue, anothervalue
     }
 
-    public interface ExplicitPropertyType extends Property<String>
+    public interface ExplicitPropertyType
+        extends Property<String>
     {
     }
 
-    public interface SomeValue extends ValueComposite
+    public interface SomeValue
+        extends ValueComposite
     {
         Property<String> string();
 
         Property<String> string2();
 
-        @Optional Property<String> nullString();
+        @Optional
+        Property<String> nullString();
 
-        @UseDefaults Property<String> emptyString();
+        @UseDefaults
+        Property<String> emptyString();
 
-        @UseDefaults Property<Long> number();
+        @UseDefaults
+        Property<Long> number();
 
         Property<Date> date();
 
         Property<EntityReference> entityReference();
 
-        @UseDefaults Property<List<String>> stringList();
+        @UseDefaults
+        Property<List<String>> stringList();
 
-        @Optional Property<AnotherValue> another();
+        @Optional
+        Property<AnotherValue> another();
 
-        @UseDefaults Property<List<AnotherValue>> anotherList();
+        @UseDefaults
+        Property<List<AnotherValue>> anotherList();
 
-        @UseDefaults Property<TestEnum> testEnum();
+        @UseDefaults
+        Property<TestEnum> testEnum();
 
         Property<Object> serializable();
 
@@ -175,14 +185,17 @@ public class ValueTypeSerializationTest extends AbstractQi4jTest
     }
 */
 
-    public interface AnotherValue extends ValueComposite
+    public interface AnotherValue
+        extends ValueComposite
     {
-        @UseDefaults Property<String> val1();
+        @UseDefaults
+        Property<String> val1();
     }
 
     public interface Foo
     {
-        @UseDefaults Property<String> bar();
+        @UseDefaults
+        Property<String> bar();
     }
 
     public interface FooValue

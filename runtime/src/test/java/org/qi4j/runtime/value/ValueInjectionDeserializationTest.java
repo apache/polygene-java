@@ -37,7 +37,8 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
-public class ValueInjectionDeserializationTest extends AbstractQi4jTest
+public class ValueInjectionDeserializationTest
+    extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module )
@@ -48,7 +49,6 @@ public class ValueInjectionDeserializationTest extends AbstractQi4jTest
         module.addServices( DummyService.class );
         module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
     }
-
 
     @Test
     public void testThatServiceAndStructureInjectionWorkForValueWhenEntityRetrievedFromStore()
@@ -84,7 +84,8 @@ public class ValueInjectionDeserializationTest extends AbstractQi4jTest
         }
     }
 
-    public interface Niclas extends EntityComposite
+    public interface Niclas
+        extends EntityComposite
     {
         Property<Some> value();
     }
@@ -99,15 +100,18 @@ public class ValueInjectionDeserializationTest extends AbstractQi4jTest
     }
 
     @Mixins( SomeMixin.class )
-    public interface SomeValue extends Some, ValueComposite
+    public interface SomeValue
+        extends Some, ValueComposite
     {
     }
 
     public static abstract class SomeMixin
         implements Some
     {
-        @Service DummyService service;
-        @Structure Module module;
+        @Service
+        DummyService service;
+        @Structure
+        Module module;
 
         public DummyService service()
         {
@@ -120,7 +124,8 @@ public class ValueInjectionDeserializationTest extends AbstractQi4jTest
         }
     }
 
-    public interface DummyService extends ServiceComposite
+    public interface DummyService
+        extends ServiceComposite
     {
     }
 }
