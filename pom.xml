@@ -3,18 +3,18 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j</groupId>
   <artifactId>qi4j-sdk</artifactId>
-  <version>1.0</version>
+  <version>1.0-RC2-SNAPSHOT</version>
   <name>Qi4j SDK</name>
 
   <properties>
-    <version.qi4j-core>1.0-RC1</version.qi4j-core>
-    <version.qi4j-lib>1.0-RC1</version.qi4j-lib>
-    <version.qi4j-ext>1.0-RC1</version.qi4j-ext>
-    <version.qi4j-samples>1.0-RC1</version.qi4j-samples>
-    <version.qi4j-tutorials>1.0-RC1</version.qi4j-tutorials>
-    <version.qi4j-tools>1.0-RC1</version.qi4j-tools>
+    <version.qi4j-core>1.0-RC2</version.qi4j-core>
+    <version.qi4j-lib>1.0-RC2</version.qi4j-lib>
+    <version.qi4j-ext>1.0-RC2</version.qi4j-ext>
+    <version.qi4j-samples>1.0-RC2</version.qi4j-samples>
+    <version.qi4j-tutorials>1.0-RC2</version.qi4j-tutorials>
+    <version.qi4j-tools>1.0-RC2</version.qi4j-tools>
     <version.struts2>2.1.2</version.struts2>
-    <version.jetty>6.1.11</version.jetty>
+    <version.jetty>6.1.21</version.jetty>
     <version.junit>4.4</version.junit>
   </properties>
 
@@ -271,6 +271,30 @@
               </artifactItems>
             </configuration>
           </execution>
+          <execution>
+            <id>sources</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/src</outputDirectory>
+              <classifier>sources</classifier>
+              <includeGroupIds>org.qi4j.core</includeGroupIds>
+              <includeScope>runtime</includeScope>
+            </configuration>
+          </execution>
+          <execution>
+            <id>tree</id>
+            <phase>package</phase>
+            <goals>
+              <goal>tree</goal>
+            </goals>
+            <configuration>
+              <outputFile>${project.build.directory}/etc/dependency-tree.txt</outputFile>
+              <scope>runtime</scope>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 
@@ -287,7 +311,8 @@
             <configuration>
               <finalName>qi4j-sdk-${version}</finalName>
               <descriptors>
-                <descriptor>src/assembly/zip.xml</descriptor>
+                <descriptor>src/assembly/binary-assembly.xml</descriptor>
+                <descriptor>src/assembly/source-assembly.xml</descriptor>
               </descriptors>
             </configuration>
           </execution>
@@ -305,6 +330,11 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
         <dependencies>
+          <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <version>1.5.6</version>
+          </dependency>
           <dependency>
             <groupId>org.apache.maven.scm</groupId>
             <artifactId>maven-scm-provider-gitexe</artifactId>
