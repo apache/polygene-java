@@ -49,6 +49,9 @@ Likewise, if you want to use the Spring Support Library or the Struts
 Support Library, these must be downloaded separately from SpringFramework
 and Apache Struts projects respectively.
 
+Finally, Qi4j TestSupport depends on JUnit 4.x and its dependencies, which
+is also not included in the SDK itself, as it is present among most Java
+developers.
 
 
 Thank you for trying out Qi4j and Composite Oriented Programming.
