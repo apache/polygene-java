@@ -15,10 +15,10 @@ package org.qi4j.library.constraints;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import org.junit.Test;
-import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.composite.TransientBuilder;
+import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
@@ -232,6 +232,13 @@ public class ConstraintTest extends AbstractQi4jTest
         cb.prototype().range().set( 0 );
         cb.prototype().range().set( 50 );
         cb.prototype().range().set( 100 );
+    }
+
+    @Test
+    public void testMethodParameters()
+    {
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
+        cb.prototype().testParameters( 15 );
     }
 
 }

@@ -15,6 +15,7 @@ package org.qi4j.library.constraints;
 import java.util.Collection;
 import java.util.List;
 import org.qi4j.api.composite.TransientComposite;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.library.constraints.annotation.Contains;
 import org.qi4j.library.constraints.annotation.Email;
@@ -31,6 +32,7 @@ import org.qi4j.library.constraints.annotation.Range;
 /**
  * Test composite with all the constraints
  */
+@Mixins( TestCaseComposite.TestCaseMixin.class)
 public interface TestCaseComposite extends TransientComposite
 {
     @Contains( "foo" ) Property<String> containsString();
@@ -58,4 +60,14 @@ public interface TestCaseComposite extends TransientComposite
     @Range( min = 0, max = 100 ) Property<Integer> range();
 
     @OneOf( { "Bar", "Xyzzy" } ) Property<String> oneOf();
+
+    void testParameters(@GreaterThan(10) Integer greaterThan);
+
+    abstract class TestCaseMixin
+        implements TestCaseComposite
+    {
+        public void testParameters( @GreaterThan( 10 ) Integer greaterThan )
+        {
+        }
+    }
 }
