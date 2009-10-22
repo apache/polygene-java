@@ -27,6 +27,7 @@ import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,13 +36,13 @@ import java.util.Map;
  * Abstract test with tests for the EntityStore interface.
  */
 public abstract class AbstractEntityStoreTest
-    extends AbstractQi4jTest
+        extends AbstractQi4jTest
 {
     @Service
     EntityStore store;
 
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+            throws AssemblyException
     {
         module.addServices( UuidIdentityGeneratorService.class );
         module.addEntities( TestEntity.class );
@@ -58,7 +59,7 @@ public abstract class AbstractEntityStoreTest
     @Override
     @After
     public void tearDown()
-        throws Exception
+            throws Exception
     {
         try
         {
@@ -73,17 +74,18 @@ public abstract class AbstractEntityStoreTest
 
             super.tearDown();
         }
-        catch( Exception e )
+        catch (Exception e)
         {
             e.printStackTrace();
         }
     }
 
     protected TestEntity createEntity( UnitOfWork unitOfWork )
-        throws UnitOfWorkCompletionException
+            throws UnitOfWorkCompletionException
     {
         // Create entity
         EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
+        builder.instance().dateValue().set( new Date() );
         TestEntity instance = builder.newInstance();
 
         instance.name().set( "Test" );
@@ -121,7 +123,7 @@ public abstract class AbstractEntityStoreTest
 
     @Test
     public void whenNewEntityThenCanFindEntity()
-        throws Exception
+            throws Exception
     {
         UnitOfWork unitOfWork = null;
         try
@@ -149,7 +151,7 @@ public abstract class AbstractEntityStoreTest
 
             unitOfWork.discard();
         }
-        catch( Exception e )
+        catch (Exception e)
         {
             unitOfWork.discard();
             throw e;
@@ -158,7 +160,7 @@ public abstract class AbstractEntityStoreTest
 
     @Test
     public void whenRemovedEntityThenCannotFindEntity()
-        throws Exception
+            throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         TestEntity newInstance = createEntity( unitOfWork );
@@ -178,7 +180,7 @@ public abstract class AbstractEntityStoreTest
             unitOfWork.get( TestEntity.class, identity );
             fail( "Should not be able to find entity" );
         }
-        catch( NoSuchEntityException e )
+        catch (NoSuchEntityException e)
         {
             // Ok!
         }
@@ -294,7 +296,7 @@ public abstract class AbstractEntityStoreTest
 
     @Test
     public void givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification()
-        throws UnitOfWorkCompletionException
+            throws UnitOfWorkCompletionException
     {
         TestEntity testEntity;
         {
@@ -313,7 +315,7 @@ public abstract class AbstractEntityStoreTest
             unitOfWork1 = unitOfWorkFactory.newUnitOfWork();
             testEntity1 = unitOfWork1.get( testEntity );
             version = spi.getEntityState( testEntity1 ).version();
-            if( version.equals( "" ) )
+            if (version.equals( "" ))
             {
                 unitOfWork1.discard();
                 return; // Store doesn't track versions - no point in testing it
@@ -338,7 +340,7 @@ public abstract class AbstractEntityStoreTest
                 unitOfWork1.complete();
                 fail( "Should have thrown concurrent modification exception" );
             }
-            catch( ConcurrentEntityModificationException e )
+            catch (ConcurrentEntityModificationException e)
             {
                 unitOfWork1.discard();
             }
@@ -355,27 +357,40 @@ public abstract class AbstractEntityStoreTest
     }
 
     public interface TestEntity
-        extends EntityComposite
+            extends EntityComposite
     {
-        @UseDefaults Property<Integer> intValue();
+        @UseDefaults
+        Property<Integer> intValue();
 
-        @UseDefaults Property<Long> longValue();
+        @UseDefaults
+        Property<Long> longValue();
 
-        @UseDefaults Property<Double> doubleValue();
+        @UseDefaults
+        Property<Double> doubleValue();
 
-        @UseDefaults Property<Float> floatValue();
+        @UseDefaults
+        Property<Float> floatValue();
 
-        @UseDefaults Property<Boolean> booleanValue();
+        @UseDefaults
+        Property<Boolean> booleanValue();
 
-        @Optional Property<String> name();
+        @Optional
+        Property<Date> dateValue();
 
-        @Optional Property<String> unsetName();
+        @Optional
+        Property<String> name();
 
-        @Optional Property<TestValue> valueProperty();
+        @Optional
+        Property<String> unsetName();
 
-        @Optional Association<TestEntity> association();
+        @Optional
+        Property<TestValue> valueProperty();
 
-        @Optional Association<TestEntity> unsetAssociation();
+        @Optional
+        Association<TestEntity> association();
+
+        @Optional
+        Association<TestEntity> unsetAssociation();
 
         ManyAssociation<TestEntity> manyAssociation();
     }
@@ -392,13 +407,20 @@ public abstract class AbstractEntityStoreTest
 
     public interface TestValue extends ValueComposite
     {
-        @UseDefaults Property<String> stringProperty();
+        @UseDefaults
+        Property<String> stringProperty();
 
-        @UseDefaults Property<Integer> intProperty();
+        @UseDefaults
+        Property<Integer> intProperty();
 
-        @UseDefaults Property<TestEnum> enumProperty();
+        @UseDefaults
+        Property<TestEnum> enumProperty();
 
-        @UseDefaults Property<List<String>> listProperty();
+        @UseDefaults
+        Property<List<String>> listProperty();
+
+        @UseDefaults
+        Property<Map<String, Tjabba>> mapProperty();
 
         Property<TestValue2> valueProperty();
 
@@ -410,7 +432,7 @@ public abstract class AbstractEntityStoreTest
     }
 
     public interface TestValue2
-        extends ValueComposite
+            extends ValueComposite
     {
         Property<String> stringValue();
 

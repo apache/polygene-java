@@ -17,10 +17,6 @@
  */
 package org.qi4j.runtime.query;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import static java.lang.reflect.Proxy.*;
-import java.util.Collection;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.query.QueryExpressions;
@@ -38,6 +34,8 @@ import org.qi4j.api.query.grammar.GreaterOrEqualPredicate;
 import org.qi4j.api.query.grammar.GreaterThanPredicate;
 import org.qi4j.api.query.grammar.LessOrEqualPredicate;
 import org.qi4j.api.query.grammar.LessThanPredicate;
+import org.qi4j.api.query.grammar.ManyAssociationContainsPredicate;
+import org.qi4j.api.query.grammar.ManyAssociationReference;
 import org.qi4j.api.query.grammar.MatchesPredicate;
 import org.qi4j.api.query.grammar.Negation;
 import org.qi4j.api.query.grammar.NotEqualsPredicate;
@@ -59,6 +57,7 @@ import org.qi4j.runtime.query.grammar.impl.GreaterOrEqualPredicateImpl;
 import org.qi4j.runtime.query.grammar.impl.GreaterThanPredicateImpl;
 import org.qi4j.runtime.query.grammar.impl.LessOrEqualPredicateImpl;
 import org.qi4j.runtime.query.grammar.impl.LessThanPredicateImpl;
+import org.qi4j.runtime.query.grammar.impl.ManyAssociationContainsPredicateImpl;
 import org.qi4j.runtime.query.grammar.impl.MatchesPredicateImpl;
 import org.qi4j.runtime.query.grammar.impl.NegationImpl;
 import org.qi4j.runtime.query.grammar.impl.NotEqualsPredicateImpl;
@@ -71,8 +70,13 @@ import org.qi4j.runtime.query.grammar.impl.VariableValueExpressionImpl;
 import org.qi4j.runtime.query.proxy.ManyAssociationReferenceProxy;
 import org.qi4j.runtime.query.proxy.MixinTypeProxy;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import static java.lang.reflect.Proxy.*;
+import java.util.Collection;
+
 public class QueryExpressionsProviderImpl
-    implements QueryExpressionsProvider
+        implements QueryExpressionsProvider
 {
     private static Method identity;
 
@@ -82,7 +86,7 @@ public class QueryExpressionsProviderImpl
         {
             identity = Identity.class.getMethod( "identity" );
         }
-        catch( NoSuchMethodException e )
+        catch (NoSuchMethodException e)
         {
             e.printStackTrace();
         }
@@ -95,25 +99,25 @@ public class QueryExpressionsProviderImpl
      * @param mixinType mixin type
      * @return template instance
      */
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public <T> T templateFor( final Class<T> mixinType )
     {
         return (T) newProxyInstance(
-            QueryExpressions.class.getClassLoader(),
-            new Class[]{ mixinType },
-            new MixinTypeProxy( mixinType )
+                QueryExpressions.class.getClassLoader(),
+                new Class[]{mixinType},
+                new MixinTypeProxy( mixinType )
         );
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public <T> T templateFor( Class<T> mixinType, Object associatedEntity )
     {
         MixinTypeProxy proxy = (MixinTypeProxy) Proxy.getInvocationHandler( associatedEntity );
 
         return (T) newProxyInstance(
-            QueryExpressions.class.getClassLoader(),
-            new Class[]{ mixinType },
-            new MixinTypeProxy( mixinType, proxy.traversedAssociation() ) );
+                QueryExpressions.class.getClassLoader(),
+                new Class[]{mixinType},
+                new MixinTypeProxy( mixinType, proxy.traversedAssociation() ) );
     }
 
     public <T> VariableValueExpression<T> newVariableValueExpression( String name )
@@ -243,30 +247,35 @@ public class QueryExpressionsProviderImpl
         return new SingleValueExpressionImpl<T>( value );
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public <T> T oneOf( ManyAssociation<T> association )
     {
         validateNotNull( "association", association );
 
         Class<? extends ManyAssociation> associationClass = association.getClass();
-        if( !isProxyClass( associationClass ) )
+        if (!isProxyClass( associationClass ))
         {
             throw new IllegalArgumentException( "Argument [association] is not a proxy." );
         }
 
         ManyAssociationReferenceProxy manyAssociationReferenceProxy =
-            (ManyAssociationReferenceProxy) getInvocationHandler( association );
+                (ManyAssociationReferenceProxy) getInvocationHandler( association );
 
         return (T) manyAssociationReferenceProxy.getAnyProxy();
     }
 
     public <T> ContainsAllPredicate<T> newContainsAllPredicate( PropertyReference<Collection<T>> propertyRef, SingleValueExpression<Collection<T>> collectionValues )
     {
-        return new ContainsAllPredicateImpl( propertyRef, collectionValues );
+        return new ContainsAllPredicateImpl<T>( propertyRef, collectionValues );
     }
 
     public <T> ContainsPredicate<T> newContainsPredicate( PropertyReference<Collection<T>> propertyRef, SingleValueExpression<T> singleValueExpression )
     {
-        return new ContainsPredicateImpl( propertyRef, singleValueExpression );
+        return new ContainsPredicateImpl<T>( propertyRef, singleValueExpression );
+    }
+
+    public <T> ManyAssociationContainsPredicate<T> newManyAssociationContainsPredicate( ManyAssociationReference associationReference, SingleValueExpression<T> singleValueExpression )
+    {
+        return new ManyAssociationContainsPredicateImpl<T>( associationReference, singleValueExpression );
     }
 }

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,30 +49,31 @@ public final class DefaultValues
     public static Object getDefaultValue( Type type )
     {
         Object value = defaultValues.get( type );
-        if( value != null )
+        if (value != null)
         {
             return value;
         }
-        if( type instanceof ParameterizedType )
+        if (type instanceof ParameterizedType)
         {
             // List<Foo> -> List
-            type = ( (ParameterizedType) type ).getRawType();
+            type = ((ParameterizedType) type).getRawType();
         }
 
-        if( type instanceof Class )
+        if (type instanceof Class)
         {
             Class typeAsClass = (Class) type;
-            if( Set.class.isAssignableFrom( typeAsClass ) )
+            if (Set.class.isAssignableFrom( typeAsClass ))
             {
                 return new HashSet();
-            }
-            if( Collection.class.isAssignableFrom( typeAsClass ) )
+            } else if (Map.class.isAssignableFrom( typeAsClass ))
+            {
+                return new LinkedHashMap();
+            } else if (Collection.class.isAssignableFrom( typeAsClass ))
             {
                 return new ArrayList();
-            }
-            if( typeAsClass.isEnum() )
+            } else if (typeAsClass.isEnum())
             {
-                return ( (Class) type ).getEnumConstants()[ 0 ];
+                return ((Class) type).getEnumConstants()[0];
             }
         }
         throw new IllegalArgumentException( "Cannot use @UseDefaults with type " + type.toString() );
