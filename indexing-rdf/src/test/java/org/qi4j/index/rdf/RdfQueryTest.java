@@ -642,11 +642,6 @@ public class RdfQueryTest
         ).newQuery( unitOfWork );
         System.out.println( "*** script33: " + query );
 
-        for (Person person1 : query)
-        {
-            System.out.println(person1.name());
-        }
-
         verifyUnorderedResults( query, "Joe Doe" );
     }
 }
