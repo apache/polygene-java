@@ -17,8 +17,6 @@
  */
 package org.qi4j.index.rdf;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
@@ -26,6 +24,7 @@ import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.index.rdf.model.Account;
+import org.qi4j.index.rdf.model.Address;
 import org.qi4j.index.rdf.model.Cat;
 import org.qi4j.index.rdf.model.City;
 import org.qi4j.index.rdf.model.Domain;
@@ -34,10 +33,12 @@ import org.qi4j.index.rdf.model.Male;
 import org.qi4j.index.rdf.model.Protocol;
 import org.qi4j.index.rdf.model.QueryParam;
 import org.qi4j.index.rdf.model.URL;
-import org.qi4j.index.rdf.model.Address;
 import org.qi4j.index.rdf.model.entities.CatEntity;
 import org.qi4j.index.rdf.model.entities.FemaleEntity;
 import org.qi4j.index.rdf.model.entities.MaleEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * JAVADOC Add JavaDoc
@@ -54,7 +55,7 @@ class Network
         NameableAssert.clear();
         Domain gaming;
         {
-            EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class );
+            EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class, "Gaming" );
             gaming = domainBuilder.instance();
             gaming.name().set( "Gaming" );
             gaming.description().set( "Gaming domain" );

@@ -18,18 +18,9 @@
  */
 package org.qi4j.index.rdf;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import org.junit.After;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -38,18 +29,8 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
-import static org.qi4j.api.query.QueryExpressions.and;
-import static org.qi4j.api.query.QueryExpressions.eq;
-import static org.qi4j.api.query.QueryExpressions.ge;
-import static org.qi4j.api.query.QueryExpressions.gt;
-import static org.qi4j.api.query.QueryExpressions.isNotNull;
-import static org.qi4j.api.query.QueryExpressions.isNull;
-import static org.qi4j.api.query.QueryExpressions.matches;
+import static org.qi4j.api.query.QueryExpressions.*;
 import static org.qi4j.api.query.QueryExpressions.not;
-import static org.qi4j.api.query.QueryExpressions.oneOf;
-import static org.qi4j.api.query.QueryExpressions.or;
-import static org.qi4j.api.query.QueryExpressions.orderBy;
-import static org.qi4j.api.query.QueryExpressions.templateFor;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -86,6 +67,13 @@ import org.qi4j.runtime.query.NotQueryableException;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.test.EntityTestAssembler;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RdfQueryTest
 {
@@ -640,6 +628,25 @@ public class RdfQueryTest
             eq( person.address().get().line2(), "Qi Alley 4j" )
         ).newQuery( unitOfWork );
         System.out.println( "*** script32: " + query );
+        verifyUnorderedResults( query, "Joe Doe" );
+    }
+
+    @Test
+    public void script33()
+    {
+        QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Domain gaming = unitOfWork.get( Domain.class, "Gaming" );
+        Query<Person> query = qb.where(
+            contains( person.interests(), gaming)
+        ).newQuery( unitOfWork );
+        System.out.println( "*** script33: " + query );
+
+        for (Person person1 : query)
+        {
+            System.out.println(person1.name());
+        }
+
         verifyUnorderedResults( query, "Joe Doe" );
     }
 }

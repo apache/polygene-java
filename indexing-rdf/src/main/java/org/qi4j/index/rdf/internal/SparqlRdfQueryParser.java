@@ -18,18 +18,14 @@
  */
 package org.qi4j.index.rdf.internal;
 
-import static java.lang.String.format;
-import java.util.logging.Logger;
-import java.util.Date;
-import java.util.TimeZone;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import org.qi4j.api.entity.Entity;
 import org.qi4j.api.query.grammar.AssociationIsNullPredicate;
 import org.qi4j.api.query.grammar.AssociationNullPredicate;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.ComparisonPredicate;
 import org.qi4j.api.query.grammar.Conjunction;
 import org.qi4j.api.query.grammar.Disjunction;
+import org.qi4j.api.query.grammar.ManyAssociationContainsPredicate;
 import org.qi4j.api.query.grammar.MatchesPredicate;
 import org.qi4j.api.query.grammar.Negation;
 import org.qi4j.api.query.grammar.OrderBy;
@@ -38,6 +34,13 @@ import org.qi4j.api.query.grammar.PropertyNullPredicate;
 import org.qi4j.api.query.grammar.SingleValueExpression;
 import org.qi4j.api.query.grammar.ValueExpression;
 import org.qi4j.index.rdf.RdfQueryParser;
+
+import static java.lang.String.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.logging.Logger;
 
 /**
  * JAVADOC Add JavaDoc
@@ -121,7 +124,7 @@ public class SparqlRdfQueryParser
             query.append( "\nLIMIT " ).append( maxResults );
         }
 
-        Logger.getLogger( getClass().getName() ).fine( "Query:\n" + query );
+        Logger.getLogger( getClass().getName() ).info( "Query:\n" + query );
         return query.toString();
     }
 
@@ -157,6 +160,10 @@ public class SparqlRdfQueryParser
         {
             return processComparisonPredicate( (ComparisonPredicate) expression );
         }
+        if( expression instanceof ManyAssociationContainsPredicate)
+        {
+            return processManyAssociationContainsPredicate( (ManyAssociationContainsPredicate) expression );
+        }
         if( expression instanceof PropertyNullPredicate )
         {
             return processNullPredicate( (PropertyNullPredicate) expression );
@@ -191,6 +198,22 @@ public class SparqlRdfQueryParser
             String valueVariable = triples.addTriple( predicate.propertyReference(), false ).getValue();
             final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
             return String.format( "(%s %s \"%s\")", valueVariable, Operators.getOperator( predicate.getClass() ),
+                                  toString(singleValueExpression.value()) );
+        }
+        else
+        {
+            throw new UnsupportedOperationException( "Value " + valueExpression + " is not supported" );
+        }
+    }
+
+    private String processManyAssociationContainsPredicate( ManyAssociationContainsPredicate predicate )
+    {
+        ValueExpression valueExpression = predicate.valueExpression();
+        if( valueExpression instanceof SingleValueExpression )
+        {
+            String valueVariable = triples.addTriple( predicate.associationReference(), false ).getValue();
+            final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
+            return String.format( "(%s %s <%s>)", valueVariable, Operators.getOperator( predicate.getClass() ),
                                   toString(singleValueExpression.value()) );
         }
         else
@@ -258,6 +281,9 @@ public class SparqlRdfQueryParser
         if (value instanceof Date )
         {
             return ISO8601_UTC.get().format( (Date) value);
+        } else if (value instanceof Entity)
+        {
+            return "urn:qi4j:entity:"+value.toString();
         } else
         {
             return value.toString();
