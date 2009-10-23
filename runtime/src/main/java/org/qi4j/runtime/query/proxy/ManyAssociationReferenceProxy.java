@@ -69,6 +69,10 @@ public class ManyAssociationReferenceProxy
             // TODO Shall we handle reflection exceptions here?
             return method.invoke( associationReference, args );
         }
+        if ("toString".equals( method.getName() ))
+        {
+            return associationReference.toString();
+        }
 
         throw new QueryException( "No methods can be used" );
     }
