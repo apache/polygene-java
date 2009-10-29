@@ -18,7 +18,6 @@
  */
 package org.qi4j.api.query;
 
-import java.util.Collection;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.query.grammar.AssociationIsNotNullPredicate;
 import org.qi4j.api.query.grammar.AssociationIsNullPredicate;
@@ -33,6 +32,8 @@ import org.qi4j.api.query.grammar.GreaterOrEqualPredicate;
 import org.qi4j.api.query.grammar.GreaterThanPredicate;
 import org.qi4j.api.query.grammar.LessOrEqualPredicate;
 import org.qi4j.api.query.grammar.LessThanPredicate;
+import org.qi4j.api.query.grammar.ManyAssociationContainsPredicate;
+import org.qi4j.api.query.grammar.ManyAssociationReference;
 import org.qi4j.api.query.grammar.MatchesPredicate;
 import org.qi4j.api.query.grammar.Negation;
 import org.qi4j.api.query.grammar.NotEqualsPredicate;
@@ -42,6 +43,8 @@ import org.qi4j.api.query.grammar.PropertyIsNullPredicate;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.query.grammar.SingleValueExpression;
 import org.qi4j.api.query.grammar.VariableValueExpression;
+
+import java.util.Collection;
 
 /**
  * SPI interface for QueryExpressionsProviders
@@ -107,5 +110,7 @@ public interface QueryExpressionsProvider
     <T> ContainsAllPredicate<T> newContainsAllPredicate( PropertyReference<Collection<T>> propertyRef, SingleValueExpression<Collection<T>> collectionValues );
 
     <T> ContainsPredicate<T> newContainsPredicate( PropertyReference<Collection<T>> propertyRef, SingleValueExpression<T> singleValueExpression );
+
+    <T> ManyAssociationContainsPredicate<T> newManyAssociationContainsPredicate( ManyAssociationReference associationRef, SingleValueExpression<T> singleValueExpression );
 }
 

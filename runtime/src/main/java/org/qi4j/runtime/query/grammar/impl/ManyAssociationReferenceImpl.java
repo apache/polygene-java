@@ -16,18 +16,44 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
-import java.lang.reflect.Method;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.ManyAssociationReference;
+import org.qi4j.runtime.entity.EntityInstance;
+
+import java.lang.reflect.Method;
 
 public class ManyAssociationReferenceImpl
-    extends AssociationReferenceImpl
-    implements ManyAssociationReference
+        extends AssociationReferenceImpl
+        implements ManyAssociationReference
 {
     public ManyAssociationReferenceImpl( final Method accessor,
                                          final AssociationReference traversed
     )
     {
         super( accessor, traversed );
+    }
+
+    public Object eval( final Object target )
+    {
+        Object actual = target;
+        if (traversedAssociation() != null)
+        {
+            actual = traversedAssociation().eval( target );
+        }
+        if (actual != null)
+        {
+            try
+            {
+                ManyAssociation assoc = (ManyAssociation) EntityInstance.getEntityInstance( (EntityComposite) actual ).invokeProxy( associationAccessor(), new Object[0] );
+                return assoc;
+            }
+            catch (Throwable e)
+            {
+                return null;
+            }
+        }
+        return null;
     }
 }

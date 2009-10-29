@@ -20,7 +20,6 @@
  */
 package org.qi4j.api.query;
 
-import java.util.Collection;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
@@ -37,6 +36,8 @@ import org.qi4j.api.query.grammar.GreaterOrEqualPredicate;
 import org.qi4j.api.query.grammar.GreaterThanPredicate;
 import org.qi4j.api.query.grammar.LessOrEqualPredicate;
 import org.qi4j.api.query.grammar.LessThanPredicate;
+import org.qi4j.api.query.grammar.ManyAssociationContainsPredicate;
+import org.qi4j.api.query.grammar.ManyAssociationReference;
 import org.qi4j.api.query.grammar.MatchesPredicate;
 import org.qi4j.api.query.grammar.Negation;
 import org.qi4j.api.query.grammar.NotEqualsPredicate;
@@ -46,6 +47,8 @@ import org.qi4j.api.query.grammar.PropertyIsNullPredicate;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.query.grammar.SingleValueExpression;
 import org.qi4j.api.query.grammar.VariableValueExpression;
+
+import java.util.Collection;
 
 /**
  * Static factory methods for query expressions and operators.
@@ -76,7 +79,7 @@ public final class QueryExpressions
      * @param mixinType mixin type
      * @return template instance
      */
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public static <T> T templateFor( final Class<T> mixinType )
     {
         return provider.templateFor( mixinType );
@@ -374,7 +377,7 @@ public final class QueryExpressions
         BooleanExpression leftExpr = left;
         BooleanExpression rightExpr = right;
         Conjunction conjunction = provider.newConjunction( leftExpr, rightExpr );
-        for( BooleanExpression anOptionalRight : optionalRight )
+        for (BooleanExpression anOptionalRight : optionalRight)
         {
             leftExpr = conjunction;
             rightExpr = anOptionalRight;
@@ -400,7 +403,7 @@ public final class QueryExpressions
         BooleanExpression leftExpr = left;
         BooleanExpression rightExpr = right;
         Disjunction disjunction = provider.newDisjunction( leftExpr, rightExpr );
-        for( BooleanExpression anOptionalRight : optionalRight )
+        for (BooleanExpression anOptionalRight : optionalRight)
         {
             leftExpr = disjunction;
             rightExpr = anOptionalRight;
@@ -425,6 +428,11 @@ public final class QueryExpressions
     public static <T> ContainsPredicate<T> contains( Property<Collection<T>> property, T value )
     {
         return provider.newContainsPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
+    }
+
+    public static <T> ManyAssociationContainsPredicate<T> contains( ManyAssociation<T> manyAssoc, T value )
+    {
+        return provider.newManyAssociationContainsPredicate( asManyAssociationExpression( manyAssoc ), asTypedValueExpression( value ) );
     }
 
     public static <T> ContainsAllPredicate<T> containsAll( Property<Collection<T>> property, Collection<T> value )
@@ -465,17 +473,17 @@ public final class QueryExpressions
      * @return adapted property expression
      * @throws IllegalArgumentException - If property is null or is not an property expression
      */
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     private static <T> PropertyReference<T> asPropertyExpression( final Property<T> property )
     {
-        if( property == null )
+        if (property == null)
         {
             throw new IllegalArgumentException( "Property cannot be null" );
         }
-        if( !( property instanceof PropertyReference ) )
+        if (!(property instanceof PropertyReference))
         {
             throw new IllegalArgumentException(
-                "Invalid property. Properties used in queries must be a result of using QueryBuilder.templateFor(...)."
+                    "Invalid property. Properties used in queries must be a result of using QueryBuilder.templateFor(...)."
             );
         }
         return (PropertyReference<T>) property;
@@ -490,17 +498,39 @@ public final class QueryExpressions
      */
     private static AssociationReference asAssociationExpression( final Association<?> association )
     {
-        if( association == null )
+        if (association == null)
         {
             throw new IllegalArgumentException( "Association cannot be null" );
         }
-        if( !( association instanceof AssociationReference ) )
+        if (!(association instanceof AssociationReference))
         {
             throw new IllegalArgumentException(
-                "Invalid property. Association used in queries must be a result of using QueryBuilder.templateFor(...)."
+                    "Invalid property. Association used in queries must be a result of using QueryBuilder.templateFor(...)."
             );
         }
         return (AssociationReference) association;
+    }
+
+    /**
+     * Adapts an {@link ManyAssociation} to a {@link org.qi4j.api.query.grammar.ManyAssociationReference}.
+     *
+     * @param association to be adapted; cannot be null
+     * @return adapted association expression
+     * @throws IllegalArgumentException - If association is null or is not an association expression
+     */
+    private static ManyAssociationReference asManyAssociationExpression( final ManyAssociation<?> association )
+    {
+        if (association == null)
+        {
+            throw new IllegalArgumentException( "ManyAssociation cannot be null" );
+        }
+        if (!(association instanceof ManyAssociationReference))
+        {
+            throw new IllegalArgumentException(
+                    "Invalid property. Association used in queries must be a result of using QueryBuilder.templateFor(...)."
+            );
+        }
+        return (ManyAssociationReference) association;
     }
 
     /**
@@ -512,7 +542,7 @@ public final class QueryExpressions
      */
     private static <T> SingleValueExpression<T> asTypedValueExpression( final T value )
     {
-        if( value == null )
+        if (value == null)
         {
             throw new IllegalArgumentException( "Value cannot be null" );
         }
