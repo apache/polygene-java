@@ -21,6 +21,7 @@ package org.qi4j.runtime.mixin;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
@@ -28,6 +29,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
+@Ignore
 public class Qi228Test
     extends AbstractQi4jTest
 {
