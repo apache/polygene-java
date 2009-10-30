@@ -14,7 +14,8 @@
 
 package org.qi4j.runtime.service;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
@@ -28,19 +29,20 @@ import org.qi4j.bootstrap.SingletonAssembler;
  * Test of activatable services
  */
 public class ActivatableServiceTest
-    extends TestCase
 {
     @Service
     ServiceReference<Activatable> service;
 
     public static boolean isActive;
 
+    @Test
     public void testActivatable()
         throws Exception
     {
         SingletonAssembler assembly = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
                 module.addObjects( ActivatableServiceTest.class );
                 module.addServices( ActivatableComposite.class ).instantiateOnStartup();
@@ -71,12 +73,14 @@ public class ActivatableServiceTest
     public static class ActivatableMixin
         implements Activatable
     {
-        public void activate() throws Exception
+        public void activate()
+            throws Exception
         {
             isActive = true;
         }
 
-        public void passivate() throws Exception
+        public void passivate()
+            throws Exception
         {
             if( !isActive )
             {

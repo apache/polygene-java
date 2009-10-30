@@ -22,7 +22,6 @@ import java.util.Map;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.spi.service.Activator;
 
 /**
  * JAVADOC
@@ -44,7 +43,6 @@ public class ServicesInstance
         {
             mapIdentityServiceReference.put( serviceReference.identity(), serviceReference );
         }
-
         activator = new Activator();
     }
 

@@ -41,7 +41,7 @@ import org.qi4j.spi.property.ValueType;
  * EntityReference, then use JSON format for EntityReferences.
  */
 public final class SerializableType
-    extends AbstractStringType
+    extends AbstractValueType
 {
     public SerializableType( TypeName type )
     {

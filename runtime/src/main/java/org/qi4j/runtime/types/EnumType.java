@@ -24,7 +24,7 @@ import org.json.JSONWriter;
  * Enumeration type
  */
 public final class EnumType
-    extends AbstractStringType
+    extends AbstractValueType
 {
     public static boolean isEnum( Type type )
     {

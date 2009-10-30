@@ -29,7 +29,7 @@ import org.json.JSONWriter;
  * Date type. Use ISO8601 format (http://www.w3.org/TR/NOTE-datetime). Assumes UTC time.
  */
 public final class DateType
-    extends AbstractStringType
+    extends AbstractValueType
 {
     // Formatters are not thread-safe. Create one per thread
     private static ThreadLocal<DateFormat> ISO8601 = new ThreadLocal<DateFormat>()
@@ -65,6 +65,12 @@ public final class DateType
     public DateType()
     {
         super( nameOf( Date.class ) );
+    }
+
+    @Override
+    public boolean isDate()
+    {
+        return true;
     }
 
     public void toJSON( Object value, JSONWriter json ) throws JSONException

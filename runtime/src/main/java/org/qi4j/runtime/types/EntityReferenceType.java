@@ -25,7 +25,7 @@ import org.json.JSONWriter;
  * {@link EntityReference} type
  */
 public final class EntityReferenceType
-    extends AbstractStringType
+    extends AbstractValueType
 {
     public static boolean isEntityReference( Type type )
     {

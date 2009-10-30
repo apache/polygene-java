@@ -12,14 +12,17 @@
  *
  */
 
-package org.qi4j.spi.service;
+package org.qi4j.runtime.service;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Arrays;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.PassivationException;
 
 /**
- * JAVADOC
+ * This class will manage a set of Activatable instances.
  */
 public final class Activator
 {
@@ -56,10 +59,39 @@ public final class Activator
     public void passivate()
         throws Exception
     {
+        ArrayList<Exception> exceptions = new ArrayList<Exception>();
         while( !active.isEmpty() )
         {
-            Activatable activatable = active.removeFirst();
+            passivate( exceptions );
+        }
+        if( exceptions.isEmpty() )
+        {
+            return;
+        }
+        if( exceptions.size() == 1 )
+        {
+            throw exceptions.get( 0 );
+        }
+        throw new PassivationException( exceptions );
+    }
+
+    private void passivate( ArrayList<Exception> exceptions )
+    {
+        Activatable activatable = active.removeFirst();
+        try
+        {
             activatable.passivate();
+        }
+        catch( Exception e )
+        {
+            if( e instanceof PassivationException )
+            {
+                exceptions.addAll( Arrays.asList( ( (PassivationException) e ).causes() ) );
+            }
+            else
+            {
+                exceptions.add( e );
+            }
         }
     }
 
@@ -67,5 +99,4 @@ public final class Activator
     {
         return !active.isEmpty();
     }
-
 }

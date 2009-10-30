@@ -61,6 +61,11 @@ public abstract class AbstractValueType
         return false;
     }
 
+    public boolean isDate()
+    {
+        return false;
+    }
+
     public boolean isValue()
     {
         return false;

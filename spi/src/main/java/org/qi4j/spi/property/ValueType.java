@@ -35,6 +35,8 @@ public interface ValueType
 
     boolean isValue();
 
+    boolean isDate();
+
     boolean isEnum();
 
     List<PropertyType> types();

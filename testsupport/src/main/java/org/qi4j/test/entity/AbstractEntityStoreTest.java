@@ -1,5 +1,9 @@
 package org.qi4j.test.entity;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import static org.hamcrest.CoreMatchers.*;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -27,22 +31,17 @@ import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Abstract test with tests for the EntityStore interface.
  */
 public abstract class AbstractEntityStoreTest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
     @Service
     EntityStore store;
 
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.addServices( UuidIdentityGeneratorService.class );
         module.addEntities( TestEntity.class );
@@ -59,7 +58,7 @@ public abstract class AbstractEntityStoreTest
     @Override
     @After
     public void tearDown()
-            throws Exception
+        throws Exception
     {
         try
         {
@@ -71,17 +70,19 @@ public abstract class AbstractEntityStoreTest
                 }
             }, moduleInstance );
             uow.apply().commit();
-
-            super.tearDown();
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             e.printStackTrace();
+        }
+        finally
+        {
+            super.tearDown();
         }
     }
 
     protected TestEntity createEntity( UnitOfWork unitOfWork )
-            throws UnitOfWorkCompletionException
+        throws UnitOfWorkCompletionException
     {
         // Create entity
         EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
@@ -99,7 +100,8 @@ public abstract class AbstractEntityStoreTest
         ValueBuilder<TestValue2> valueBuilder2 = valueBuilderFactory.newValueBuilder( TestValue2.class );
         TestValue2 prototype2 = valueBuilder2.prototype();
         prototype2.stringValue().set( "Bar" );
-        // prototype2.anotherValue().set( valueBuilder4.newInstance() );
+        prototype2.anotherValue().set( valueBuilder4.newInstance() );
+        prototype2.anotherValue().set( valueBuilder4.newInstance() );
 
         ValueBuilder<Tjabba> valueBuilder3 = valueBuilderFactory.newValueBuilder( Tjabba.class );
         final Tjabba prototype3 = valueBuilder3.prototype();
@@ -115,7 +117,6 @@ public abstract class AbstractEntityStoreTest
         prototype.serializableProperty().set( mapValue );
         instance.valueProperty().set( valueBuilder1.newInstance() );
 
-
         instance.manyAssociation().add( 0, instance );
 
         return instance;
@@ -123,12 +124,11 @@ public abstract class AbstractEntityStoreTest
 
     @Test
     public void whenNewEntityThenCanFindEntity()
-            throws Exception
+        throws Exception
     {
-        UnitOfWork unitOfWork = null;
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            unitOfWork = unitOfWorkFactory.newUnitOfWork();
             TestEntity instance = createEntity( unitOfWork );
             unitOfWork.complete();
 
@@ -139,19 +139,12 @@ public abstract class AbstractEntityStoreTest
             // Check state
             assertThat( "property has correct value", instance.name().get(), equalTo( "Test" ) );
             assertThat( "property has correct value", instance.unsetName().get(), equalTo( null ) );
-/*
             assertThat( "property has correct value", instance.valueProperty().get().valueProperty().get().stringValue().get(), equalTo( "Bar" ) );
             assertThat( "association has correct value", instance.association().get(), equalTo( instance ) );
             assertThat( "manyAssociation has correct value", instance.manyAssociation().iterator().next(), equalTo( instance ) );
-            assertThat( "listAssociation has correct value", instance.listAssociation().iterator().next(), equalTo( instance ) );
-            assertThat( "setAssociation has correct value", instance.setAssociation().iterator().next(), equalTo( instance ) );
-            assertThat( "setAssociation has correct size", instance.setAssociation().size(), equalTo( 1 ) );
-            assertThat( "listAssociation has correct size", instance.listAssociation().size(), equalTo( 3 ) );
-*/
-
             unitOfWork.discard();
         }
-        catch (Exception e)
+        catch( Exception e )
         {
             unitOfWork.discard();
             throw e;
@@ -160,7 +153,7 @@ public abstract class AbstractEntityStoreTest
 
     @Test
     public void whenRemovedEntityThenCannotFindEntity()
-            throws Exception
+        throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         TestEntity newInstance = createEntity( unitOfWork );
@@ -180,7 +173,7 @@ public abstract class AbstractEntityStoreTest
             unitOfWork.get( TestEntity.class, identity );
             fail( "Should not be able to find entity" );
         }
-        catch (NoSuchEntityException e)
+        catch( NoSuchEntityException e )
         {
             // Ok!
         }
@@ -191,7 +184,8 @@ public abstract class AbstractEntityStoreTest
     }
 
     @Test
-    public void givenEntityIsNotModifiedWhenUnitOfWorkCompletesThenDontStoreState() throws UnitOfWorkCompletionException
+    public void givenEntityIsNotModifiedWhenUnitOfWorkCompletesThenDontStoreState()
+        throws UnitOfWorkCompletionException
     {
         TestEntity testEntity;
         String version;
@@ -204,14 +198,12 @@ public abstract class AbstractEntityStoreTest
             unitOfWork.complete();
         }
 
-
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             version = spi.getEntityState( testEntity ).version();
 
             unitOfWork.complete();
-
         }
 
         {
@@ -225,7 +217,8 @@ public abstract class AbstractEntityStoreTest
     }
 
     @Test
-    public void givenPropertyIsModifiedWhenUnitOfWorkCompletesThenStoreState() throws UnitOfWorkCompletionException
+    public void givenPropertyIsModifiedWhenUnitOfWorkCompletesThenStoreState()
+        throws UnitOfWorkCompletionException
     {
         TestEntity testEntity;
         String version;
@@ -238,7 +231,6 @@ public abstract class AbstractEntityStoreTest
             unitOfWork.complete();
         }
 
-
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
@@ -246,7 +238,6 @@ public abstract class AbstractEntityStoreTest
             version = spi.getEntityState( testEntity ).version();
 
             unitOfWork.complete();
-
         }
 
         {
@@ -260,7 +251,8 @@ public abstract class AbstractEntityStoreTest
     }
 
     @Test
-    public void givenManyAssociationIsModifiedWhenUnitOfWorkCompletesThenStoreState() throws UnitOfWorkCompletionException
+    public void givenManyAssociationIsModifiedWhenUnitOfWorkCompletesThenStoreState()
+        throws UnitOfWorkCompletionException
     {
         TestEntity testEntity;
         String version;
@@ -273,7 +265,6 @@ public abstract class AbstractEntityStoreTest
             unitOfWork.complete();
         }
 
-
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
@@ -281,7 +272,6 @@ public abstract class AbstractEntityStoreTest
             version = spi.getEntityState( testEntity ).version();
 
             unitOfWork.complete();
-
         }
 
         {
@@ -296,7 +286,7 @@ public abstract class AbstractEntityStoreTest
 
     @Test
     public void givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification()
-            throws UnitOfWorkCompletionException
+        throws UnitOfWorkCompletionException
     {
         TestEntity testEntity;
         {
@@ -315,7 +305,7 @@ public abstract class AbstractEntityStoreTest
             unitOfWork1 = unitOfWorkFactory.newUnitOfWork();
             testEntity1 = unitOfWork1.get( testEntity );
             version = spi.getEntityState( testEntity1 ).version();
-            if (version.equals( "" ))
+            if( version.equals( "" ) )
             {
                 unitOfWork1.discard();
                 return; // Store doesn't track versions - no point in testing it
@@ -340,7 +330,7 @@ public abstract class AbstractEntityStoreTest
                 unitOfWork1.complete();
                 fail( "Should have thrown concurrent modification exception" );
             }
-            catch (ConcurrentEntityModificationException e)
+            catch( ConcurrentEntityModificationException e )
             {
                 unitOfWork1.discard();
             }
@@ -357,7 +347,7 @@ public abstract class AbstractEntityStoreTest
     }
 
     public interface TestEntity
-            extends EntityComposite
+        extends EntityComposite
     {
         @UseDefaults
         Property<Integer> intValue();
@@ -395,7 +385,8 @@ public abstract class AbstractEntityStoreTest
         ManyAssociation<TestEntity> manyAssociation();
     }
 
-    public interface TjabbaValue extends Tjabba, ValueComposite
+    public interface TjabbaValue
+        extends Tjabba, ValueComposite
     {
 
     }
@@ -405,7 +396,8 @@ public abstract class AbstractEntityStoreTest
         Property<String> bling();
     }
 
-    public interface TestValue extends ValueComposite
+    public interface TestValue
+        extends ValueComposite
     {
         @UseDefaults
         Property<String> stringProperty();
@@ -424,19 +416,17 @@ public abstract class AbstractEntityStoreTest
 
         Property<TestValue2> valueProperty();
 
-        // TODO Doesn't work
-
         Property<Tjabba> tjabbaProperty();
 
         Property<Map<String, String>> serializableProperty();
     }
 
     public interface TestValue2
-            extends ValueComposite
+        extends ValueComposite
     {
         Property<String> stringValue();
 
-        // Property<Tjabba> anotherValue();
+        Property<Tjabba> anotherValue();
     }
 
     public enum TestEnum

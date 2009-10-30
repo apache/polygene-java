@@ -19,7 +19,7 @@ import java.util.List;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
-import org.qi4j.spi.service.Activator;
+import org.qi4j.runtime.service.Activator;
 import org.qi4j.spi.structure.LayerSPI;
 
 /**
