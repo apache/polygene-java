@@ -325,7 +325,7 @@
     </plugins>
   </reporting>
 
-  `<dependencyManagement>
+  <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.qi4j.core</groupId>

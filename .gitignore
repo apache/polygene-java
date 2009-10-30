@@ -1,5 +1,5 @@
 target/
-.idea
+.idea/
 derby.log
 qi4j.data.db
 qi4j.data.lg
