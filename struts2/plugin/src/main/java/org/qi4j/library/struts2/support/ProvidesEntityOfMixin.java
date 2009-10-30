@@ -5,15 +5,17 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import static org.qi4j.library.struts2.util.ParameterizedTypes.findTypeVariables;
+import static org.qi4j.library.struts2.util.ParameterizedTypes.*;
 
-public abstract class ProvidesEntityOfMixin<T> implements ProvidesEntityOf<T>, StrutsAction
+public abstract class ProvidesEntityOfMixin<T>
+    implements ProvidesEntityOf<T>, StrutsAction
 {
 
-    @This ProvidesEntityOf<T> entityProvider;
-    @Structure UnitOfWorkFactory uowf;
+    @This
+    private ProvidesEntityOf<T> entityProvider;
 
-    UnitOfWork uow;
+    @Structure
+    private UnitOfWorkFactory uowf;
 
     private String id;
     private T entity;
@@ -35,10 +37,10 @@ public abstract class ProvidesEntityOfMixin<T> implements ProvidesEntityOf<T>, S
 
     protected void loadEntity()
     {
-        uow = uowf.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         try
         {
-            entity = uow.get(typeToLoad(), entityProvider.getId());
+            entity = uow.get( typeToLoad(), entityProvider.getId() );
         }
         catch( NoSuchEntityException e )
         {

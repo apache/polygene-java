@@ -1,8 +1,6 @@
 package org.qi4j.library.struts2.util;
 
-import static java.lang.Character.isLowerCase;
-import static java.lang.Character.toLowerCase;
-
+import static java.lang.Character.*;
 
 public final class ClassNames
 {

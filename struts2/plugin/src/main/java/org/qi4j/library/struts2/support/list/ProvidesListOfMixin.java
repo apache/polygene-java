@@ -9,14 +9,21 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import static org.qi4j.library.struts2.util.ParameterizedTypes.*;
 
-public abstract class ProvidesListOfMixin<T> extends ActionSupport implements ProvidesListOf<T>
+public abstract class ProvidesListOfMixin<T>
+    extends ActionSupport
+    implements ProvidesListOf<T>
 {
 
-    @This ProvidesListOf<T> action;
-    @Structure UnitOfWorkFactory uowf;
-    @Structure QueryBuilderFactory qbf;
+    @This
+    private ProvidesListOf<T> action;
 
-    Iterable<T> results;
+    @Structure
+    private UnitOfWorkFactory uowf;
+
+    @Structure
+    private QueryBuilderFactory qbf;
+
+    private Iterable<T> results;
 
     public Iterable<T> list()
     {

@@ -1,6 +1,6 @@
 package org.qi4j.library.struts2;
 
-import static com.opensymphony.xwork2.conversion.impl.XWorkConverter.CONVERSION_PROPERTY_FULLNAME;
+import static com.opensymphony.xwork2.conversion.impl.XWorkConverter.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,15 +10,13 @@ import ognl.ObjectPropertyAccessor;
 import ognl.OgnlContext;
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
-import static ognl.OgnlRuntime.getConvertedType;
-import static ognl.OgnlRuntime.getFieldValue;
+import static ognl.OgnlRuntime.*;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
-import static org.qi4j.library.struts2.ConstraintViolationInterceptor.CONTEXT_CONSTRAINT_VIOLATIONS;
-import org.qi4j.library.struts2.ConstraintViolationInterceptor.FieldConstraintViolations;
+import static org.qi4j.library.struts2.ConstraintViolationInterceptor.*;
 
 /**
  * <p>An implementation of the ObjectPropertyAccessor that provides conversion for Qi4j properties.  The typical way that
@@ -42,7 +40,8 @@ import org.qi4j.library.struts2.ConstraintViolationInterceptor.FieldConstraintVi
  *
  * <p>TODO: Doesn't yet handle ManyAssociations, but these shouldn't be too hard to add</p>
  */
-public class Qi4jPropertyAccessor extends ObjectPropertyAccessor
+public class Qi4jPropertyAccessor
+    extends ObjectPropertyAccessor
 {
     private static final Object[] BLANK_ARGUMENTS = new Object[0];
 
@@ -106,7 +105,6 @@ public class Qi4jPropertyAccessor extends ObjectPropertyAccessor
 
         return null;
     }
-
 
     @Override
     @SuppressWarnings( "unchecked" )
@@ -175,7 +173,8 @@ public class Qi4jPropertyAccessor extends ObjectPropertyAccessor
     @SuppressWarnings( "unchecked" )
     protected final void handleConstraintViolation(
         Map aContext, Object aTarget, String aPropertyName, Object aPropertyValue,
-        Collection<ConstraintViolation> violations )
+        Collection<ConstraintViolation> violations
+    )
     {
         Map<String, FieldConstraintViolations> allPropertyConstraintViolations =
             (Map<String, FieldConstraintViolations>) aContext.get( CONTEXT_CONSTRAINT_VIOLATIONS );

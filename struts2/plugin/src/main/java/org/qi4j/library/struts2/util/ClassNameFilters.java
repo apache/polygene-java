@@ -31,6 +31,4 @@ public final class ClassNameFilters
             }
         };
     }
-
-
 }

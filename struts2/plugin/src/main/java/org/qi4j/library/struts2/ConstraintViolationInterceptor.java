@@ -7,17 +7,17 @@ import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
 import com.opensymphony.xwork2.util.ValueStack;
 import java.util.Collection;
-import static java.util.Collections.emptyMap;
+import static java.util.Collections.*;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.library.struts2.util.ClassNameFilter;
-import static org.qi4j.library.struts2.util.ClassNameFilters.removeSuffixes;
-import static org.qi4j.library.struts2.util.ClassNames.classNameInDotNotation;
+import static org.qi4j.library.struts2.util.ClassNameFilters.*;
+import static org.qi4j.library.struts2.util.ClassNames.*;
 
 /**
- * <p>ConstrqaintViolationInterceptor adds constraint violations from the ActionContext to the Action's field errors.</p>
+ * <p>ConstraintViolationInterceptor adds constraint violations from the ActionContext to the Action's field errors.</p>
  *
  * <p>This interceptor adds any error found in the {@link ActionContext}'s constraint violations map as a field error
  * (provided that the action implements {@link ValidationAware}). In addition, any field that contains a constraint
@@ -28,10 +28,10 @@ import static org.qi4j.library.struts2.util.ClassNames.classNameInDotNotation;
  *
  * <p>This is similar, in principle, to the XWork ConversionErrorInterceptor and much of the code is reflects that.</p>
  */
-public class ConstraintViolationInterceptor extends AbstractInterceptor
+public class ConstraintViolationInterceptor
+    extends AbstractInterceptor
 {
-
-    private static final long serialVersionUID = 1L;
+    static final long serialVersionUID = 1L;
 
     public static final String CONTEXT_CONSTRAINT_VIOLATIONS = ConstraintViolationInterceptor.class.getName() + ".constraintViolations";
 
@@ -41,7 +41,8 @@ public class ConstraintViolationInterceptor extends AbstractInterceptor
     }
 
     @Override
-    public String intercept( ActionInvocation invocation ) throws Exception
+    public String intercept( ActionInvocation invocation )
+        throws Exception
     {
         ActionContext invocationContext = invocation.getInvocationContext();
         ValueStack stack = invocationContext.getValueStack();
@@ -51,7 +52,8 @@ public class ConstraintViolationInterceptor extends AbstractInterceptor
         {
             ValidationAware va = (ValidationAware) action;
             HashMap<Object, Object> propertyOverrides = new HashMap<Object, Object>();
-            for( Map.Entry<String, FieldConstraintViolations> fieldViolations : fieldConstraintViolations( invocationContext ).entrySet() )
+            for( Map.Entry<String, FieldConstraintViolations> fieldViolations : fieldConstraintViolations( invocationContext )
+                .entrySet() )
             {
                 addConstraintViolationFieldErrors( stack, va, fieldViolations.getKey(), fieldViolations.getValue() );
                 propertyOverrides.put( fieldViolations.getKey(), getOverrideExpr( invocation, fieldViolations.getValue() ) );
@@ -67,7 +69,8 @@ public class ConstraintViolationInterceptor extends AbstractInterceptor
     }
 
     private void overrideActionValues(
-        ActionInvocation invocation, ValueStack stack, final HashMap<Object, Object> propertyOverrides )
+        ActionInvocation invocation, ValueStack stack, final HashMap<Object, Object> propertyOverrides
+    )
     {
         invocation.addPreResultListener( new PreResultListener()
         {
@@ -79,7 +82,8 @@ public class ConstraintViolationInterceptor extends AbstractInterceptor
     }
 
     private void addConstraintViolationFieldErrors(
-        ValueStack stack, ValidationAware va, String fieldName, FieldConstraintViolations violations )
+        ValueStack stack, ValidationAware va, String fieldName, FieldConstraintViolations violations
+    )
     {
         for( ConstraintViolation constraintViolation : violations.constraintViolations() )
         {
@@ -102,7 +106,11 @@ public class ConstraintViolationInterceptor extends AbstractInterceptor
         return violations;
     }
 
-    protected String message( Object target, String propertyName, ConstraintViolation constraintViolation, ValueStack stack )
+    protected String message( Object target,
+                              String propertyName,
+                              ConstraintViolation constraintViolation,
+                              ValueStack stack
+    )
     {
         String messageKey = messageKey( target, propertyName, constraintViolation );
         String getTextExpression = "getText('" + messageKey + "')";
@@ -125,6 +133,10 @@ public class ConstraintViolationInterceptor extends AbstractInterceptor
      * <p>Note that if the type name of the target ends with 'Composite' or 'Entity', those will be removed and the
      * rest of the name will be converted from camel-case to a dot notation.  This is true of the constraint types as
      * well.  So a constraint named NotEmpty will be converted to not.empty as in the example above.</p>
+     * @param target JAVADOC
+     * @param propertyName JAVADOC
+     * @param violation JAVADOC
+     * @return JAVADOC
      */
     protected String messageKey( Object target, String propertyName, ConstraintViolation violation )
     {
@@ -163,7 +175,8 @@ public class ConstraintViolationInterceptor extends AbstractInterceptor
             Object aTarget,
             String aPropertyName,
             Object aValue,
-            Collection<ConstraintViolation> constraintViolations )
+            Collection<ConstraintViolation> constraintViolations
+        )
         {
             target = aTarget;
             propertyName = aPropertyName;

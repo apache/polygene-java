@@ -15,7 +15,7 @@
   </scm>
 
   <properties>
-    <version.qi4j-core>1.0-RC2</version.qi4j-core>
+    <version.qi4j-core>1.0-RC3-SNAPSHOT</version.qi4j-core>
     <version.jetty>6.1.21</version.jetty>
   </properties>
 

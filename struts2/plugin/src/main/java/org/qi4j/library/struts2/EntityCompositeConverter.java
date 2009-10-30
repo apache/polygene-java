@@ -16,7 +16,8 @@ import org.qi4j.api.unitofwork.UnitOfWorkFactory;
  *
  * <p>Conversion to a String is done using the EntityComposites identity and and returning just the uuid portion.</p>
  */
-public class EntityCompositeConverter extends StrutsTypeConverter
+public class EntityCompositeConverter
+    extends StrutsTypeConverter
 {
     private UnitOfWorkFactory uowf;
 
@@ -31,7 +32,7 @@ public class EntityCompositeConverter extends StrutsTypeConverter
     {
         String identity = extractIdentity( values );
         UnitOfWork uow = uowf.currentUnitOfWork();
-        return uow.get(toClass, identity);
+        return uow.get( toClass, identity );
     }
 
     @Override

@@ -25,7 +25,7 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
-import static org.qi4j.library.struts2.Constants.SERVLET_ATTRIBUTE;
+import static org.qi4j.library.struts2.Constants.*;
 import org.qi4j.spi.structure.ApplicationSPI;
 
 public abstract class Qi4jApplicationBootstrapListener
@@ -44,7 +44,7 @@ public abstract class Qi4jApplicationBootstrapListener
 
         if( application != null )
         {
-            Module module = getQi4jStrutsModule( application );
+            Module module = qi4jStrutsModule( application );
             context.setAttribute( SERVLET_ATTRIBUTE, module );
 
             try
@@ -64,15 +64,15 @@ public abstract class Qi4jApplicationBootstrapListener
     }
 
     /**
-     * @param anApplication Qi4j application.
+     * @param application Qi4j application.
+     *
      * @return Qi4j struts module.
      */
-    protected abstract Module getQi4jStrutsModule( Application anApplication );
+    protected abstract Module qi4jStrutsModule( Application application );
 
-
-    private ApplicationSPI createNewApplication( ServletContext aContext )
+    private ApplicationSPI createNewApplication( ServletContext context )
     {
-        Energy4Java is = new Energy4Java();
+        Energy4Java qi4j = new Energy4Java();
 
         // Try create assembler
         final ApplicationAssembler assembler = createAssembler();
@@ -80,7 +80,7 @@ public abstract class Qi4jApplicationBootstrapListener
         {
             try
             {
-                return is.newApplication( assembler );
+                return qi4j.newApplication( assembler );
             }
             catch( AssemblyException e )
             {

@@ -27,15 +27,13 @@ import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectBuilderFactory;
-import static org.qi4j.library.struts2.Qi4jObjectFactory.ClassType.object;
-import static org.qi4j.library.struts2.Qi4jObjectFactory.ClassType.qi4jComposite;
-import static org.qi4j.library.struts2.Qi4jObjectFactory.ClassType.qi4jObject;
+import static org.qi4j.library.struts2.Qi4jObjectFactory.ClassType.*;
 
 /**
  * Qi4j implementation of struts object factory.
- *
  */
-public class Qi4jObjectFactory extends ObjectFactory
+public class Qi4jObjectFactory
+    extends ObjectFactory
     implements ObjectFactoryDestroyable
 {
     private static final long serialVersionUID = 1L;
@@ -72,39 +70,39 @@ public class Qi4jObjectFactory extends ObjectFactory
     /**
      * Build a generic Java object of the given type.
      *
-     * @param aClass       Type of Object to build
+     * @param classType    Type of Object to build
      * @param extraContext A map of extra context which uses the same keys as the {@link ActionContext}
      */
     @Override
     @SuppressWarnings( "unchecked" )
-    public Object buildBean( Class aClass, Map extraContext )
+    public Object buildBean( Class classType, Map extraContext )
         throws Exception
     {
         // TODO: What to do with extraContext
 
-        ClassType type = types.get( aClass );
+        ClassType type = types.get( classType );
         if( type != null )
         {
             switch( type )
             {
             case object:
-                return createStandardObject( aClass, false );
+                return createStandardObject( classType, false );
             case qi4jComposite:
-                return createQi4jComposite( aClass, false );
+                return createQi4jComposite( classType, false );
             case qi4jObject:
-                return createQi4jObject( aClass, false );
+                return createQi4jObject( classType, false );
             }
         }
 
         // Figure out what kind of object is this.
-        Object object = createQi4jComposite( aClass, true );
+        Object object = createQi4jComposite( classType, true );
         if( object == null )
         {
-            object = createQi4jObject( aClass, true );
+            object = createQi4jObject( classType, true );
 
             if( object == null )
             {
-                object = createStandardObject( aClass, true );
+                object = createStandardObject( classType, true );
             }
         }
 

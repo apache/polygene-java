@@ -11,12 +11,22 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 
-public class ActionConfiguration implements Assembler, Serializable
+public class ActionConfiguration
+    implements Assembler, Serializable
 {
-    private final Set<Class> objectTypes = new HashSet<Class>();
-    private final Set<Class<? extends Composite>> compositeTypes = new HashSet<Class<? extends Composite>>();
+    static final long serialVersionUID = 1L;
 
-    public void addObjects( Class... objectTypes ) throws AssemblyException
+    private final Set<Class> objectTypes;
+    private final Set<Class<? extends Composite>> compositeTypes;
+
+    public ActionConfiguration()
+    {
+        compositeTypes = new HashSet<Class<? extends Composite>>();
+        objectTypes = new HashSet<Class>();
+    }
+
+    public void addObjects( Class... objectTypes )
+        throws AssemblyException
     {
         for( Class objectType : objectTypes )
         {
@@ -24,7 +34,8 @@ public class ActionConfiguration implements Assembler, Serializable
         }
     }
 
-    public void addComposites( Class<? extends Composite>... compositeTypes ) throws AssemblyException
+    public void addComposites( Class<? extends Composite>... compositeTypes )
+        throws AssemblyException
     {
         for( Class<? extends Composite> compositeType : compositeTypes )
         {
@@ -39,9 +50,11 @@ public class ActionConfiguration implements Assembler, Serializable
         return Collections.unmodifiableSet( classes );
     }
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addObjects( objectTypes.toArray( new Class[]{ } ) ).visibleIn( Visibility.module );
-        module.addTransients( (Class<? extends TransientComposite>[]) compositeTypes.toArray( new Class[]{ } ) ).visibleIn( Visibility.module );
+        module.addTransients( (Class<? extends TransientComposite>[]) compositeTypes.toArray( new Class[]{ } ) )
+            .visibleIn( Visibility.module );
     }
 }
