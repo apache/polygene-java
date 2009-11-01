@@ -14,37 +14,43 @@
 
 package org.qi4j.runtime.service;
 
+import java.lang.reflect.Proxy;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 
-import java.lang.reflect.Proxy;
-
 /**
  * JAVADOC
  */
-public class ServiceInstance extends TransientInstance
-        implements Activatable
+public class ServiceInstance
+    extends TransientInstance
+    implements Activatable
 {
     public static TransientInstance getCompositeInstance( ServiceComposite composite )
     {
         return (TransientInstance) Proxy.getInvocationHandler( composite );
     }
 
-    public ServiceInstance( ServiceModel compositeModel, ModuleInstance moduleInstance, Object[] mixins, StateHolder state )
+    public ServiceInstance( ServiceModel compositeModel,
+                            ModuleInstance moduleInstance,
+                            Object[] mixins,
+                            StateHolder state
+    )
     {
         super( compositeModel, moduleInstance, mixins, state );
     }
 
-    public void activate() throws Exception
+    public void activate()
+        throws Exception
     {
-        ((ServiceModel) compositeModel).activate( mixins );
+        ( (ServiceModel) compositeModel ).activate( mixins );
     }
 
-    public void passivate() throws Exception
+    public void passivate()
+        throws Exception
     {
-        ((ServiceModel) compositeModel).passivate( mixins );
+        ( (ServiceModel) compositeModel ).passivate( mixins );
     }
 }

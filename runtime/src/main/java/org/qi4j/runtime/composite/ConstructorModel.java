@@ -111,8 +111,8 @@ public final class ConstructorModel
         }
         catch( Exception e )
         {
-            System.out.println( constructor.toGenericString() );
-            System.out.println( Arrays.asList( parametersInstance ) );
+            System.err.println( constructor.toGenericString() );
+            System.err.println( Arrays.asList( parametersInstance ) );
             throw new ConstructionException( "Could not instantiate " + constructor.getDeclaringClass(), e );
         }
     }

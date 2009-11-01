@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
 /**
  * JAVADOC
  */
-public abstract class FragmentInvocationHandler
+abstract class FragmentInvocationHandler
     implements InvocationHandler
 {
     private static final String COMPACT_TRACE = "qi4j.compacttrace";
@@ -31,16 +31,16 @@ public abstract class FragmentInvocationHandler
 
     protected Object fragment;
 
-    public FragmentInvocationHandler()
+    FragmentInvocationHandler()
     {
     }
 
-    public FragmentInvocationHandler( Object fragment )
+    FragmentInvocationHandler( Object fragment )
     {
         this.fragment = fragment;
     }
 
-    public void setFragment( Object fragment )
+    void setFragment( Object fragment )
     {
         this.fragment = fragment;
     }

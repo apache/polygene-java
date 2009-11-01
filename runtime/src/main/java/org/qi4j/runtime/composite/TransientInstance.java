@@ -98,22 +98,23 @@ public class TransientInstance
         return compositeModel;
     }
 
-    public void setMixins( Object[] newMixins )
-    {
-        // Use any mixins that match the ones we already have
-        for( int i = 0; i < mixins.length; i++ )
-        {
-            Object oldMixin = mixins[ i ];
-            for( Object newMixin : newMixins )
-            {
-                if( oldMixin.getClass().equals( newMixin.getClass() ) )
-                {
-                    mixins[ i ] = newMixin;
-                    break;
-                }
-            }
-        }
-    }
+// Niclas: Not used anymore it seems...
+//    public void setMixins( Object[] newMixins )
+//    {
+//        // Use any mixins that match the ones we already have
+//        for( int i = 0; i < mixins.length; i++ )
+//        {
+//            Object oldMixin = mixins[ i ];
+//            for( Object newMixin : newMixins )
+//            {
+//                if( oldMixin.getClass().equals( newMixin.getClass() ) )
+//                {
+//                    mixins[ i ] = newMixin;
+//                    break;
+//                }
+//            }
+//        }
+//    }
 
     public StateHolder state()
     {

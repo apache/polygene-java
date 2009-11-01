@@ -21,7 +21,6 @@ package org.qi4j.runtime.mixin;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
@@ -29,7 +28,6 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-@Ignore
 public class Qi228Test
     extends AbstractQi4jTest
 {
@@ -44,7 +42,15 @@ public class Qi228Test
         throws Exception
     {
         SomeLogic service = (SomeLogic) serviceLocator.findService( SomeLogic.class ).get();
-        service.getNumbers();
+        try
+        {
+            service.getNumbers();
+            // Either should succeed.
+        }
+        catch( Exception e )
+        {
+            // Or fail with a decent Excpetion.
+        }
     }
 
     public interface SomeLogic

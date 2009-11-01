@@ -15,10 +15,29 @@
     <orderEntry type="module" module-name="qi4j-core-api" exported="" />
     <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
     <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
-    <orderEntry type="library" exported="" name="Maven: cglib:cglib-nodep:2.2" level="project" />
     <orderEntry type="module" module-name="qi4j-core-testsupport" />
     <orderEntry type="library" name="Maven: junit:junit:4.4" level="project" />
     <orderEntry type="library" name="Maven: org.easymock:easymock:2.3" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../../maven-repository/repository/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../../../../maven-repository/repository/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../../maven-repository/repository/asm/asm/3.1/asm-3.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
 
