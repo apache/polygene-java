@@ -9,6 +9,7 @@
   <groupId>org.qi4j.extension</groupId>
   <artifactId>qi4j-entitystore-preferences</artifactId>
   <version>1.0-RC3-SNAPSHOT</version>
+  <packaging>bundle</packaging>
   <name>Qi4j Extension - Preferences Entity Store</name>
 
   <dependencies>
