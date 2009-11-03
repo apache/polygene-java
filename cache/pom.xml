@@ -9,6 +9,8 @@
   <artifactId>qi4j-lib-cache</artifactId>
   <name>Qi4j Library - Cache</name>
   <version>1.0-RC3-SNAPSHOT</version>
+  <packaging>bundle</packaging>
+  
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>

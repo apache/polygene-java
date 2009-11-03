@@ -1,0 +1,22 @@
+Bundle-Activator:
+
+Private-Package:
+
+Ignore-Package: com_cenqua_clover
+
+Export-Package:  org.qi4j.library.http;version="${pom.version}"
+
+Import-Package: javax.servlet, \
+                javax.servlet.http, \
+                org.mortbay.jetty, \
+                org.mortbay.jetty.servlet, \
+                org.qi4j.api.common, \
+                org.qi4j.api.configuration, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.mixin, \
+                org.qi4j.api.property, \
+                org.qi4j.api.service, \
+                org.qi4j.api.unitofwork, \
+                org.qi4j.bootstrap, \
+                org.qi4j.library.constraints.annotation, \
+                org.qi4j.spi.service

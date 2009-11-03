@@ -9,6 +9,8 @@
   <artifactId>qi4j-lib-locking</artifactId>
   <name>Qi4j Library - Locking</name>
   <version>1.0-RC3-SNAPSHOT</version>
+  <packaging>bundle</packaging>
+  
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>

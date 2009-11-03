@@ -9,6 +9,7 @@
   <artifactId>qi4j-lib-logging</artifactId>
   <name>Qi4j Library - Logging</name>
   <version>1.0-RC3-SNAPSHOT</version>
+  <packaging>bundle</packaging>
 
   <dependencies>
     <dependency>

@@ -1,0 +1,13 @@
+Bundle-Activator:
+
+Private-Package:
+
+Ignore-Package: com_cenqua_clover
+
+Export-Package:  org.qi4j.library.cache;version="${pom.version}"
+
+Import-Package: org.qi4j.api.common, \
+                org.qi4j.api.concern, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.mixin, \
+                org.qi4j.api.sideeffect

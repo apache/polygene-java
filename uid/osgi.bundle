@@ -1,0 +1,20 @@
+Bundle-Activator:
+
+Private-Package:
+
+Ignore-Package: com_cenqua_clover
+
+Export-Package: org.qi4j.library.uid.sequence;version="${pom.version}", \
+                org.qi4j.library.uid.sequence.assembly;version="${pom.version}", \
+                org.qi4j.library.uid.uuid;version="${pom.version}", \
+                org.qi4j.library.uid.uuid.assembly;version="${pom.version}"
+
+Import-Package: org.qi4j.api.common, \
+                org.qi4j.api.configuration, \
+                org.qi4j.api.entity, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.mixin, \
+                org.qi4j.api.property, \
+                org.qi4j.api.service, \
+                org.qi4j.api.unitofwork, \
+                org.qi4j.bootstrap

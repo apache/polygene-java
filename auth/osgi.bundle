@@ -1,0 +1,21 @@
+Bundle-Activator:
+
+Private-Package:
+
+Ignore-Package: com_cenqua_clover
+
+Export-Package:  org.qi4j.library.auth;version="${pom.version}"
+
+Import-Package: javax.security.auth, \
+                org.qi4j.api.common, \
+                org.qi4j.api.composite, \
+                org.qi4j.api.concern, \
+                org.qi4j.api.entity, \
+                org.qi4j.api.entity.association, \
+                org.qi4j.api.injection, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.mixin, \
+                org.qi4j.api.property, \
+                org.qi4j.api.service
+
+                
