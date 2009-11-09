@@ -3,14 +3,14 @@
   <parent>
     <groupId>org.qi4j</groupId>
     <artifactId>qi4j-library</artifactId>
-    <version>1.0-RC2-SNAPSHOT</version>
+    <version>1.0-RC3-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-struts2</artifactId>
-  <version>1.0-RC2-SNAPSHOT</version>
+  <version>1.0-RC3-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Qi4j Library - Struts Support</name>
 

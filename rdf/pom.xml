@@ -3,12 +3,12 @@
   <parent>
     <groupId>org.qi4j</groupId>
     <artifactId>qi4j-library</artifactId>
-    <version>1.0-RC2-SNAPSHOT</version>
+    <version>1.0-RC3-SNAPSHOT</version>
   </parent>
   <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-lib-rdf</artifactId>
   <name>Qi4j Library - RDF</name>
-  <version>1.0-RC2-SNAPSHOT</version>
+  <version>1.0-RC3-SNAPSHOT</version>
   <packaging>bundle</packaging>
 
   <properties>
@@ -42,7 +42,7 @@
     <dependency>
       <groupId>org.qi4j.library</groupId>
       <artifactId>qi4j-lib-constraints</artifactId>
-      <version>1.0-RC2-SNAPSHOT</version>
+      <version>1.0-RC3-SNAPSHOT</version>
     </dependency>
 
     <dependency>

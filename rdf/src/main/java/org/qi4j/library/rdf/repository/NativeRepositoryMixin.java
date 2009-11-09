@@ -19,16 +19,16 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.sail.Sail;
 import org.openrdf.sail.nativerdf.NativeStore;
 import org.qi4j.api.configuration.Configuration;
-import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
 public class NativeRepositoryMixin
-    implements Repository, Activatable
+    implements Repository, ResetableRepository, Activatable
 {
     @This private Configuration<NativeConfiguration> configuration;
     @Structure private UnitOfWorkFactory uowf;
@@ -39,10 +39,9 @@ public class NativeRepositoryMixin
         repo = new SailRepository( new NativeStore() );
     }
 
-    public void activate() throws Exception
+    public void activate()
+        throws UnitOfWorkCompletionException, RepositoryException
     {
-        Sail store = repo.getSail();
-        NativeStore store2 = (NativeStore) store;
         String dataDir = configuration.configuration().dataDirectory().get();
         if( dataDir == null || "".equals( dataDir ) )
         {
@@ -58,17 +57,7 @@ public class NativeRepositoryMixin
             configuration.configuration().dataDirectory().set( dataDir );
             uowf.getUnitOfWork( configuration.configuration() ).apply();
         }
-        store2.setDataDir( new File( dataDir ) );
-        String tripleIndexes = configuration.configuration().tripleIndexes().get();
-        if( tripleIndexes == null )
-        {
-            tripleIndexes = "";
-            configuration.configuration().tripleIndexes().set( tripleIndexes );
-        }
-        store2.setTripleIndexes( tripleIndexes );
-        boolean forceSync = configuration.configuration().forceSync().get();
-        store2.setForceSync( forceSync );
-        repo.initialize();
+        initializeRepository( new File( dataDir ) );
     }
 
     public void passivate()
@@ -86,11 +75,13 @@ public class NativeRepositoryMixin
         return null;
     }
 
-    public void initialize() throws RepositoryException
+    public void initialize()
+        throws RepositoryException
     {
     }
 
-    public void shutDown() throws RepositoryException
+    public void shutDown()
+        throws RepositoryException
     {
     }
 
@@ -107,5 +98,48 @@ public class NativeRepositoryMixin
     public ValueFactory getValueFactory()
     {
         return repo.getValueFactory();
+    }
+
+    public void discardEntireRepository()
+        throws RepositoryException
+    {
+        File dataDir = repo.getDataDir();
+        repo.shutDown();
+        delete( dataDir );
+        initializeRepository( dataDir );
+    }
+
+    private void delete( File dataDir )
+    {
+        File[] children = dataDir.listFiles();
+        for( File child : children )
+        {
+            if( child.isDirectory() )
+            {
+                delete( child );
+            }
+            else
+            {
+                child.delete();
+            }
+        }
+    }
+
+    private void initializeRepository( File dataDir )
+        throws RepositoryException
+    {
+        String tripleIndexes = configuration.configuration().tripleIndexes().get();
+        if( tripleIndexes == null )
+        {
+            tripleIndexes = "";
+            configuration.configuration().tripleIndexes().set( tripleIndexes );
+        }
+        boolean forceSync = configuration.configuration().forceSync().get();
+
+        NativeStore store = (NativeStore) repo.getSail();
+        store.setDataDir( dataDir );
+        store.setTripleIndexes( tripleIndexes );
+        store.setForceSync( forceSync );
+        repo.initialize();
     }
 }

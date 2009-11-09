@@ -1,4 +1,7 @@
-.idea/workspace.xml
+.idea
+*.iws
+*.ipr
+*.iml
 scripting/target/
 struts2/target/
 swing/target/
