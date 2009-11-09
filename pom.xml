@@ -172,6 +172,14 @@
   </build>
 
   <distributionManagement>
+    <repository>
+      <id>ops4j.releases.deploy</id>
+      <url>scpexe://repository.ops4j.org/var/http/repository.ops4j.org/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <id>ops4j.snapshots.deploy</id>
+      <url>scpexe://repository.ops4j.org/var/http/repository.ops4j.org/mvn-snapshots</url>
+    </snapshotRepository>
     <site>
       <id>ops4j.website.deploy</id>
       <url>scpexe://www.ops4j.org/var/http/www.ops4j.org/projects/qi4j/core</url>

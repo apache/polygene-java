@@ -12,12 +12,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="qi4j-core-api" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
-    <orderEntry type="module" module-name="qi4j-core-testsupport" />
-    <orderEntry type="library" name="Maven: junit:junit:4.4" level="project" />
-    <orderEntry type="library" name="Maven: org.easymock:easymock:2.3" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -38,6 +32,13 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="qi4j-core-api" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-spi" exported="" />
+    <orderEntry type="module" module-name="qi4j-core-bootstrap" exported="" />
+    <orderEntry type="library" exported="" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
+    <orderEntry type="module" module-name="qi4j-core-testsupport" />
+    <orderEntry type="library" name="Maven: junit:junit:4.4" level="project" />
+    <orderEntry type="library" name="Maven: org.easymock:easymock:2.3" level="project" />
   </component>
 </module>
 
