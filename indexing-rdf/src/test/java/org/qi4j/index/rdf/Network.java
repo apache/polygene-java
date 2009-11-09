@@ -30,6 +30,7 @@ import org.qi4j.index.rdf.model.City;
 import org.qi4j.index.rdf.model.Domain;
 import org.qi4j.index.rdf.model.Female;
 import org.qi4j.index.rdf.model.Male;
+import org.qi4j.index.rdf.model.Person;
 import org.qi4j.index.rdf.model.Protocol;
 import org.qi4j.index.rdf.model.QueryParam;
 import org.qi4j.index.rdf.model.URL;
@@ -142,6 +143,7 @@ class Network
             EntityBuilder<FemaleEntity> femaleBuilder = unitOfWork.newEntityBuilder( FemaleEntity.class );
             annDoe = femaleBuilder.instance();
             annDoe.name().set( "Ann Doe" );
+            annDoe.title().set( Person.Title.MRS );
             annDoe.placeOfBirth().set( kualaLumpur );
             annDoe.yearOfBirth().set( 1975 );
             annDoe.interests().add( 0, cooking );
@@ -159,6 +161,7 @@ class Network
             EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder( MaleEntity.class );
             Male joeDoe = maleBuilder.instance();
             joeDoe.name().set( "Joe Doe" );
+            joeDoe.title().set( Person.Title.MR );
             joeDoe.placeOfBirth().set( kualaLumpur );
             joeDoe.yearOfBirth().set( 1990 );
             joeDoe.mother().set( annDoe );
@@ -176,6 +179,7 @@ class Network
             EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder( MaleEntity.class );
             Male jackDoe = maleBuilder.instance();
             jackDoe.name().set( "Jack Doe" );
+            jackDoe.title().set( Person.Title.DR );
             jackDoe.placeOfBirth().set( penang );
             jackDoe.yearOfBirth().set( 1970 );
             jackDoe.interests().add( 0, cars );

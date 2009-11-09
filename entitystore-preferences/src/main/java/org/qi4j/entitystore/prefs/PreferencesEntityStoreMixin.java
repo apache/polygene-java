@@ -14,14 +14,6 @@
 
 package org.qi4j.entitystore.prefs;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.logging.Logger;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,18 +39,27 @@ import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationType;
-import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreSPI;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.property.ValueType;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 /**
  * Implementation of EntityStore that is backed by the Preferences API.
@@ -220,10 +221,30 @@ public class PreferencesEntityStoreMixin
                     else if( propertyType.isBoolean() )
                     {
                         properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getBoolean( propertyDescriptor.qualifiedName().name(), (Boolean) propertyDescriptor.initialValue() ) );
+                    } else if (propertyType.isValue())
+                    {
+                        String json = propsPrefs.get( propertyDescriptor.qualifiedName().name(), "null" );
+                        JSONTokener tokener = new JSONTokener( json );
+                        Object composite = tokener.nextValue();
+                        if (composite.equals(JSONObject.NULL))
+                        {
+                            properties.put( propertyDescriptor.qualifiedName(), null );
+                        } else
+                        {
+                            Object value = propertyType.fromJSON( composite, module );
+                            properties.put( propertyDescriptor.qualifiedName(), value );
+                        }
                     }
                     else if( propertyType.isString() )
                     {
-                        properties.put( propertyDescriptor.qualifiedName(), propsPrefs.get( propertyDescriptor.qualifiedName().name(), (String) propertyDescriptor.initialValue() ) );
+                        String json = propsPrefs.get( propertyDescriptor.qualifiedName().name(), (String) propertyDescriptor.initialValue() );
+                        if (json == null)
+                            properties.put( propertyDescriptor.qualifiedName(), null );
+                        else
+                        {
+                            Object value = propertyType.fromJSON( json, module );
+                            properties.put( propertyDescriptor.qualifiedName(), value );
+                        }
                     }
                     else
                     {
@@ -409,9 +430,22 @@ public class PreferencesEntityStoreMixin
                     {
                         propsPrefs.putBoolean( propertyType.qualifiedName().name(), (Boolean) value );
                     }
+                    else if( propertyType.type().isValue())
+                    {
+                        JSONStringer json = new JSONStringer();
+                        propertyType.type().toJSON( value, json );
+                        String jsonString = json.toString();
+                        propsPrefs.put( propertyType.qualifiedName().name(), jsonString );
+                    }
                     else if( propertyType.type().isString() )
                     {
-                        propsPrefs.put( propertyType.qualifiedName().name(), (String) value );
+                        JSONStringer json = new JSONStringer();
+                        json.array();
+                        propertyType.type().toJSON( value, json );
+                        json.endArray();
+                        String jsonString = json.toString();
+                        jsonString = jsonString.substring( 2, jsonString.length() - 2 );
+                        propsPrefs.put( propertyType.qualifiedName().name(), jsonString );
                     }
                     else
                     {

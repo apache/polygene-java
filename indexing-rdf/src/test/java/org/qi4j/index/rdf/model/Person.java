@@ -17,12 +17,13 @@
  */
 package org.qi4j.index.rdf.model;
 
-import java.util.Map;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
+
+import java.util.Map;
 
 /**
  * JAVADOC Add JavaDoc
@@ -31,6 +32,13 @@ import org.qi4j.api.property.Property;
 public interface Person
     extends Nameable, Alive
 {
+    enum Title
+    {
+        MR, MS, MRS, DR
+    }
+
+    Property<Title> title();
+
     @Optional Association<City> placeOfBirth();
 
     Property<Integer> yearOfBirth();
