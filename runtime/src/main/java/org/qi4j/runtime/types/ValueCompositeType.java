@@ -14,11 +14,9 @@
 
 package org.qi4j.runtime.types;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONWriter;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.property.Property;
@@ -29,15 +27,18 @@ import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.spi.property.DefaultValues;
 import org.qi4j.spi.property.PropertyType;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONWriter;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ValueComposite type
  */
 public final class ValueCompositeType
-    extends AbstractValueType
+        extends AbstractStringType
 {
     public static boolean isValueComposite( Type type )
     {
@@ -57,14 +58,15 @@ public final class ValueCompositeType
         return types;
     }
 
-    @Override public boolean isValue()
+    @Override
+    public boolean isValue()
     {
         return true;
     }
 
     public void toJSON( Object value, JSONWriter json ) throws JSONException
     {
-        if( value == null )
+        if (value == null)
         {
             json.value( null );
             return;
@@ -82,16 +84,15 @@ public final class ValueCompositeType
             }
         } );
 
-        for( PropertyType propertyType : types )
+        for (PropertyType propertyType : types)
         {
             json.key( propertyType.qualifiedName().name() );
 
             Object propertyValue = values.get( propertyType.qualifiedName() );
-            if( propertyValue == null )
+            if (propertyValue == null)
             {
                 json.value( null );
-            }
-            else
+            } else
             {
                 propertyType.type().toJSON( propertyValue, json );
             }
@@ -104,7 +105,7 @@ public final class ValueCompositeType
         JSONObject jsonObject = (JSONObject) json;
 
         final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
-        for( PropertyType propertyType : types )
+        for (PropertyType propertyType : types)
         {
             Object valueJson = null;
             try
@@ -112,7 +113,7 @@ public final class ValueCompositeType
                 valueJson = jsonObject.get( propertyType.qualifiedName().name() );
 
                 Object value = null;
-                if( valueJson != null && !valueJson.equals( JSONObject.NULL ) )
+                if (valueJson != null && !valueJson.equals( JSONObject.NULL ))
                 {
                     value = propertyType.type().fromJSON( valueJson, module );
                 }
@@ -120,7 +121,7 @@ public final class ValueCompositeType
                 values.put( propertyType.qualifiedName(), value );
 
             }
-            catch( JSONException e )
+            catch (JSONException e)
             {
                 // Not found in JSON or wrong format - try defaulting it
                 try
@@ -128,7 +129,7 @@ public final class ValueCompositeType
                     Object defaultValue = DefaultValues.getDefaultValue( module.classLoader().loadClass( propertyType.type().type().name() ) );
                     values.put( propertyType.qualifiedName(), defaultValue );
                 }
-                catch( ClassNotFoundException e1 )
+                catch (ClassNotFoundException e1)
                 {
                     // Didn't work, throw exception
                     throw e;
@@ -153,7 +154,7 @@ public final class ValueCompositeType
 
                 public void visitProperties( StateVisitor visitor )
                 {
-                    for( Map.Entry<QualifiedName, Object> qualifiedNameObjectEntry : values.entrySet() )
+                    for (Map.Entry<QualifiedName, Object> qualifiedNameObjectEntry : values.entrySet())
                     {
                         visitor.visitProperty( qualifiedNameObjectEntry.getKey(), qualifiedNameObjectEntry.getValue() );
                     }
@@ -162,7 +163,7 @@ public final class ValueCompositeType
 
             return valueBuilder.newInstance();
         }
-        catch( ClassNotFoundException e )
+        catch (ClassNotFoundException e)
         {
             throw new IllegalStateException( "Could not deserialize value", e );
         }

@@ -14,25 +14,26 @@
 
 package org.qi4j.runtime.types;
 
-import java.lang.reflect.Type;
+import org.json.JSONException;
+import org.json.JSONWriter;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
-import org.json.JSONException;
-import org.json.JSONWriter;
+
+import java.lang.reflect.Type;
 
 /**
  * {@link EntityReference} type
  */
 public final class EntityReferenceType
-    extends AbstractValueType
+        extends AbstractStringType
 {
     public static boolean isEntityReference( Type type )
     {
-        if( type instanceof Class )
+        if (type instanceof Class)
         {
             Class typeClass = (Class) type;
-            return ( typeClass.equals( EntityReference.class ) );
+            return (typeClass.equals( EntityReference.class ));
         }
         return false;
     }

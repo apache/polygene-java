@@ -14,24 +14,25 @@
 
 package org.qi4j.runtime.types;
 
-import java.lang.reflect.Type;
-import org.qi4j.api.common.TypeName;
-import org.qi4j.api.structure.Module;
 import org.json.JSONException;
 import org.json.JSONWriter;
+import org.qi4j.api.common.TypeName;
+import org.qi4j.api.structure.Module;
+
+import java.lang.reflect.Type;
 
 /**
  * Enumeration type
  */
 public final class EnumType
-    extends AbstractValueType
+        extends AbstractStringType
 {
     public static boolean isEnum( Type type )
     {
-        if( type instanceof Class )
+        if (type instanceof Class)
         {
             Class typeClass = (Class) type;
-            return ( typeClass.isEnum() );
+            return (typeClass.isEnum());
         }
         return false;
     }
@@ -75,7 +76,7 @@ public final class EnumType
             // Get enum value
             return Enum.valueOf( enumType, parameter );
         }
-        catch( Exception e )
+        catch (Exception e)
         {
             throw new IllegalArgumentException( e );
         }
