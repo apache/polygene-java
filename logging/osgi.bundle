@@ -1,0 +1,36 @@
+Bundle-Activator:
+
+Private-Package:
+
+Ignore-Package: com_cenqua_clover
+
+Export-Package: org.qi4j.logging.debug;version="${pom.version}", \
+                org.qi4j.logging.debug.records;version="${pom.version}", \
+                org.qi4j.logging.debug.service;version="${pom.version}", \
+                org.qi4j.logging.log;version="${pom.version}", \
+                org.qi4j.logging.log.assemblies;version="${pom.version}", \
+                org.qi4j.logging.log.records;version="${pom.version}", \
+                org.qi4j.logging.log.service;version="${pom.version}", \
+                org.qi4j.logging.trace;version="${pom.version}", \
+                org.qi4j.logging.trace.assemblies;version="${pom.version}", \
+                org.qi4j.logging.trace.records;version="${pom.version}", \
+                org.qi4j.logging.trace.service;version="${pom.version}", \
+                org.qi4j.logging.view;version="${pom.version}"
+
+Import-Package: javax.swing, \
+                org.qi4j.api, \
+                org.qi4j.api.common, \
+                org.qi4j.api.composite, \
+                org.qi4j.api.concern, \
+                org.qi4j.api.configuration, \
+                org.qi4j.api.entity, \
+                org.qi4j.api.entity.association, \
+                org.qi4j.api.injection, \
+                org.qi4j.api.injection.scope, \
+                org.qi4j.api.mixin, \
+                org.qi4j.api.property, \
+                org.qi4j.api.service, \
+                org.qi4j.api.sideeffect, \
+                org.qi4j.api.unitofwork, \
+                org.qi4j.bootstrap, \
+                org.qi4j.library.constraints.annotation

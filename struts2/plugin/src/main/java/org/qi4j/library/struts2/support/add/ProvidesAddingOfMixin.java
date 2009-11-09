@@ -9,22 +9,26 @@ import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import static org.qi4j.library.struts2.util.ClassNames.*;
 import static org.qi4j.library.struts2.util.ParameterizedTypes.*;
 
-public abstract class ProvidesAddingOfMixin<T> extends ActionSupport implements ProvidesAddingOf<T>
+public abstract class ProvidesAddingOfMixin<T>
+    extends ActionSupport
+    implements ProvidesAddingOf<T>
 {
 
-    @This ProvidesAddingOf<T> action;
-    @Structure UnitOfWorkFactory uowf;
+    @This
+    private ProvidesAddingOf<T> action;
 
-    UnitOfWork uow;
-    EntityBuilder<T> builder;
+    @Structure
+    private UnitOfWorkFactory uowf;
 
-    T entity;
+    private EntityBuilder<T> builder;
 
-    public T getState() {
+    public T getState()
+    {
         return builder.instance();
     }
 
-    public void prepare() throws Exception
+    public void prepare()
+        throws Exception
     {
         prepareEntityBuilder();
     }
@@ -35,9 +39,9 @@ public abstract class ProvidesAddingOfMixin<T> extends ActionSupport implements 
     }
 
     @Override
-    public String execute() throws Exception
+    public String execute()
+        throws Exception
     {
-        entity = builder.newInstance();
         addSuccessMessage();
         return SUCCESS;
     }
@@ -53,9 +57,10 @@ public abstract class ProvidesAddingOfMixin<T> extends ActionSupport implements 
         addActionMessage( getText( classNameInDotNotation( typeToAdd() ) + ".successfully.added" ) );
     }
 
-    protected void prepareEntityBuilder() throws Exception
+    protected void prepareEntityBuilder()
+        throws Exception
     {
-        uow = uowf.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         builder = uow.newEntityBuilder( typeToAdd() );
     }
 }

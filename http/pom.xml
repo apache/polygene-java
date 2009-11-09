@@ -9,6 +9,8 @@
   <artifactId>qi4j-lib-http</artifactId>
   <name>Qi4j Library - Http Service</name>
   <version>1.0-RC3-SNAPSHOT</version>
+  <packaging>bundle</packaging>
+  
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>

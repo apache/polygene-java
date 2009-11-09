@@ -9,6 +9,8 @@
   <artifactId>qi4j-lib-constraints</artifactId>
   <version>1.0-RC3-SNAPSHOT</version>
   <name>Qi4j Library - Constraints</name>
+  <packaging>bundle</packaging>
+  
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>

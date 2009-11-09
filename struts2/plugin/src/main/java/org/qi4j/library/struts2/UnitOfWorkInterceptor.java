@@ -22,7 +22,8 @@ import org.qi4j.api.unitofwork.UnitOfWorkFactory;
  * to the action invocation we could also do something with annotations on the method to be executed to allow user to
  * specify more specifically for that method what results should result in discards or completions.</p>
  */
-public class UnitOfWorkInterceptor extends AbstractInterceptor
+public class UnitOfWorkInterceptor
+    extends AbstractInterceptor
 {
 
     private static final long serialVersionUID = 1L;
@@ -31,7 +32,8 @@ public class UnitOfWorkInterceptor extends AbstractInterceptor
     private UnitOfWorkFactory uowf;
 
     @Override
-    public String intercept( ActionInvocation invocation ) throws Exception
+    public String intercept( ActionInvocation invocation )
+        throws Exception
     {
         boolean createdUnitOfWork = false;
         UnitOfWork uow = uowf.currentUnitOfWork();

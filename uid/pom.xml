@@ -9,6 +9,8 @@
   <artifactId>qi4j-lib-uid</artifactId>
   <name>Qi4j Library - UID</name>
   <version>1.0-RC3-SNAPSHOT</version>
+  <packaging>bundle</packaging>
+
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>

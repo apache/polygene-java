@@ -12,13 +12,14 @@ import javax.servlet.FilterConfig;
 import org.apache.struts2.config.BeanSelectionProvider;
 import org.apache.struts2.dispatcher.Dispatcher;
 import org.apache.struts2.dispatcher.FilterDispatcher;
+import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.object.ObjectBuilderFactory;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.api.composite.TransientBuilderFactory;
 import static org.qi4j.library.struts2.Constants.*;
 
-public class Qi4jFilterDispatcher extends FilterDispatcher
+public class Qi4jFilterDispatcher
+    extends FilterDispatcher
 {
     @Override
     protected Dispatcher createDispatcher( final FilterConfig filterConfig )
@@ -41,7 +42,8 @@ public class Qi4jFilterDispatcher extends FilterDispatcher
         return (Module) filterConfig.getServletContext().getAttribute( SERVLET_ATTRIBUTE );
     }
 
-    class Qi4jContainerProvider implements ContainerProvider
+    class Qi4jContainerProvider
+        implements ContainerProvider
     {
         private final Module module;
         private boolean registered = false;
@@ -51,7 +53,8 @@ public class Qi4jFilterDispatcher extends FilterDispatcher
             module = aModule;
         }
 
-        public void register( ContainerBuilder builder, LocatableProperties props ) throws ConfigurationException
+        public void register( ContainerBuilder builder, LocatableProperties props )
+            throws ConfigurationException
         {
             factory( builder, UnitOfWorkFactory.class, module.unitOfWorkFactory() );
             factory( builder, ObjectBuilderFactory.class, module.objectBuilderFactory() );
@@ -65,7 +68,8 @@ public class Qi4jFilterDispatcher extends FilterDispatcher
             return !registered;
         }
 
-        public void init( Configuration configuration ) throws ConfigurationException
+        public void init( Configuration configuration )
+            throws ConfigurationException
         {
         }
 

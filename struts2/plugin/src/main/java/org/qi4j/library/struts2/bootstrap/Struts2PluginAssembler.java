@@ -34,13 +34,13 @@ public class Struts2PluginAssembler
         this.actionConfiguration = actionConfiguration;
     }
 
-    public void assemble( ModuleAssembly aModuleAssembly )
+    public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        aModuleAssembly.addObjects(
-            UnitOfWorkInterceptor.class
-        ).visibleIn( Visibility.module );
-        aModuleAssembly.addServices( ActionService.class ).setMetaInfo( actionConfiguration ).visibleIn( Visibility.module );
-        actionConfiguration.assemble( aModuleAssembly );
+        module.addObjects( UnitOfWorkInterceptor.class ).visibleIn( Visibility.module );
+        module.addServices( ActionService.class )
+            .setMetaInfo( actionConfiguration )
+            .visibleIn( Visibility.module );
+        actionConfiguration.assemble( module );
     }
 }

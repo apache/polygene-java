@@ -2,19 +2,24 @@ package org.qi4j.library.struts2.support.edit;
 
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.library.struts2.support.ProvidesEntityOfMixin;
-import static org.qi4j.library.struts2.util.ParameterizedTypes.findTypeVariables;
+import static org.qi4j.library.struts2.util.ParameterizedTypes.*;
 
-public abstract class ProvidesEditingOfMixin<T> extends ProvidesEntityOfMixin<T> implements ProvidesEditingOf<T>
+public abstract class ProvidesEditingOfMixin<T>
+    extends ProvidesEntityOfMixin<T>
+    implements ProvidesEditingOf<T>
 {
 
-    @This ProvidesEditingOf<T> action;
+    @This
+    private ProvidesEditingOf<T> action;
 
-    public void prepare() throws Exception
+    public void prepare()
+        throws Exception
     {
         loadEntity();
     }
 
-    public void prepareInput() throws Exception
+    public void prepareInput()
+        throws Exception
     {
 
     }
