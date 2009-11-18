@@ -1,133 +1,105 @@
-/* Copyright 2008 Neo Technology, http://neotechnology.com.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
- * implied.
- *
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.qi4j.entitystore.neo4j;
 
-import org.neo4j.api.core.Transaction;
-import org.qi4j.api.common.Optional;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.neo4j.api.core.Direction;
+import org.neo4j.api.core.EmbeddedNeo;
+import org.neo4j.api.core.Node;
+import org.neo4j.api.core.Relationship;
+import org.neo4j.util.index.IndexService;
+import org.neo4j.util.index.LuceneIndexService;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.entitystore.neo4j.state.*;
-import org.qi4j.spi.entity.*;
-import org.qi4j.spi.entitystore.EntityStoreException;
-import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.usecase.Usecase;
+import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStoreSPI;
+import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.StateCommitter;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-public class NeoEntityStoreMixin
-      //   implements EntityStore
+public class NeoEntityStoreMixin 
+    implements Activatable, EntityStore, EntityStoreSPI
 {
-    // Dependancies
-    private
-    @Service
-    NeoIdentityIndexService idService;
-    private
-    @Service
-    DirectEntityStateFactory directFactory;
-    private
-    @Optional
-    @Service
-    IndirectEntityStateFactory indirectFactory;
-    private
-    @Service
-    NeoCoreService neo;
+    private EmbeddedNeo neo;
+    private IndexService indexService;
 
-    // EntityStore implementation
-
-    public EntityState newEntityState(EntityReference reference) throws EntityStoreException
+    private AtomicInteger count = new AtomicInteger( 0 );
+    private String uuid;
+    
+    public void activate() throws Exception
     {
-/*
-        EntityType type = getEntityType( reference.type() );
-        CommittableEntityState state = factory().createEntityState( idService, load( type, reference), reference, EntityStatus.NEW );
-        state.preloadState();
-        return state;
-*/
-        return null;
+        // TODO: use a Qi4j specific way of passing configuration parameters.
+        //neoImpl = new EmbeddedNeo(config.configuration().path());
+        String path = System.getProperty( "neo.nodestore.path", "target/neodb" );
+        neo = new EmbeddedNeo( path );
+        indexService = new LuceneIndexService( neo );
+        uuid = UUID.randomUUID().toString() + "-";
     }
 
-    public EntityState getEntityState(EntityReference reference) throws EntityStoreException
+    public void passivate() throws Exception
     {
-/*
-        EntityType type = getEntityType( reference.type() );
-        CommittableEntityState state = factory().createEntityState( idService, load( type, reference), reference, EntityStatus.LOADED );
-        state.preloadState();
-        return state;
-*/
-        return null;
+        indexService.shutdown();
+        neo.shutdown();
     }
 
-    public StateCommitter prepare(Iterable<EntityState> newStates, Iterable<EntityState> loadedStates, Iterable<EntityReference> removedStates) throws EntityStoreException
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module )
     {
-        List<CommittableEntityState> updated = new ArrayList<CommittableEntityState>();
-        for (EntityState state : newStates)
+        return new NeoEntityStoreUnitOfWork( neo, indexService, 
+            newUnitOfWorkId(), module );
+    }
+
+    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, 
+        Module module )
+    {
+        NeoEntityStoreUnitOfWork uow = new NeoEntityStoreUnitOfWork( neo, 
+            indexService, newUnitOfWorkId(), module );
+        for ( Relationship entityTypeRel : 
+            neo.getReferenceNode().getRelationships( 
+                RelTypes.ENTITY_TYPE_REF, Direction.OUTGOING ) )
         {
-            updated.add((CommittableEntityState) state);
-        }
-        for (EntityState state : loadedStates)
-        {
-            CommittableEntityState neoState = (CommittableEntityState) state;
-            if (neoState.isUpdated())
+            Node entityType = entityTypeRel.getEndNode();
+            for ( Relationship entityRel : entityType.getRelationships( 
+                RelTypes.IS_OF_TYPE, Direction.INCOMING ))
             {
-                updated.add(neoState);
+                Node entityNode = entityRel.getStartNode();
+                NeoEntityState entityState = new NeoEntityState( uow, 
+                    entityNode, EntityStatus.LOADED );
+                visitor.visitEntityState( entityState );
             }
         }
-        return factory().prepareCommit(idService, updated, removedStates);
+        return uow;
     }
 
-    public void visitEntityStates( EntityStore.EntityStateVisitor visitor)
+    public StateCommitter apply( Iterable<EntityState> state, String version )
     {
-        final Iterator<CommittableEntityState> iter = factory().iterator(idService);
-        while (iter.hasNext())
+        for ( EntityState firstState : state )
         {
-            CommittableEntityState state = iter.next();
-            visitor.visitEntityState(state);
+            if ( firstState instanceof NeoEntityState )
+            {
+                return ((NeoEntityState) firstState).getUnitOfWork().apply();
+            }
         }
+        return null;
     }
 
-    // Implementation details
-
-    private LoadedDescriptor load(EntityType entityType, EntityReference reference)
+    public EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, 
+        EntityReference identity )
     {
-        Transaction tx = neo.beginTx();
-        try
-        {
-// TODO           LoadedDescriptor descriptor = LoadedDescriptor.loadDescriptor( entityType, idService.getTypeNode( reference.type() ) );
-            tx.success();
-            return null;
-        }
-        finally
-        {
-            tx.finish();
-        }
+        return unitOfWork.getEntityState( identity );
     }
 
-    private NeoEntityStateFactory factory()
+    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, 
+        EntityReference identity, EntityDescriptor entityDescriptor )
     {
-        if (neo.inTransaction())
-        {
-            return directFactory;
-        } else if (indirectFactory != null)
-        {
-            return indirectFactory;
-        } else
-        {
-            return directFactory;
-        }
+        return unitOfWork.newEntityState( identity, entityDescriptor );
+    }
+
+    private String newUnitOfWorkId()
+    {
+        return uuid + Integer.toHexString( count.incrementAndGet() );
     }
 }

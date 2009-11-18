@@ -69,17 +69,17 @@ limitations under the License.
     <dependency>
       <groupId>org.neo4j</groupId>
       <artifactId>index-util</artifactId>
-      <version>0.5</version>
+      <version>0.8</version>
     </dependency>
     <dependency>
       <groupId>org.neo4j</groupId>
       <artifactId>neo</artifactId>
-      <version>1.0-b7-pre1</version>
+      <version>1.0-b10</version>
     </dependency>
     <dependency>
       <groupId>org.neo4j</groupId>
       <artifactId>shell</artifactId>
-      <version>1.0-b7-pre1</version>
+      <version>1.0-b10</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
