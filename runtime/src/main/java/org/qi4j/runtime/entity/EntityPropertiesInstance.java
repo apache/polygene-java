@@ -14,18 +14,19 @@
 
 package org.qi4j.runtime.entity;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.property.Property;
 import org.qi4j.runtime.property.PropertiesInstance;
 import org.qi4j.spi.entity.EntityState;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+
 /**
  * JAVADOC
  */
 public class EntityPropertiesInstance
-    extends PropertiesInstance
+        extends PropertiesInstance
 {
     private EntityPropertiesModel model;
     private EntityState entityState;
@@ -39,14 +40,14 @@ public class EntityPropertiesInstance
 
     public <T> Property<T> getProperty( Method accessor )
     {
-        if( properties == null )
+        if (properties == null)
         {
             properties = new HashMap<Method, Property<?>>();
         }
 
         Property<T> property = (Property<T>) properties.get( accessor );
 
-        if( property == null )
+        if (property == null)
         {
             property = model.newInstance( accessor, entityState );
             properties.put( accessor, property );
@@ -58,18 +59,18 @@ public class EntityPropertiesInstance
     @Override
     public <T> Property<T> getProperty( QualifiedName name )
     {
-        if( properties == null )
+        if (properties == null)
         {
             properties = new HashMap<Method, Property<?>>();
         }
 
         Property<T> property = super.getProperty( name );
 
-        if( property == null )
+        if (property == null)
         {
-            for( EntityPropertyModel propertyType : model.properties() )
+            for (EntityPropertyModel propertyType : model.properties())
             {
-                if( propertyType.qualifiedName().equals( name ) )
+                if (propertyType.qualifiedName().equals( name ))
                 {
                     property = getProperty( propertyType.accessor() );
                 }
@@ -82,12 +83,12 @@ public class EntityPropertiesInstance
     @Override
     public void visitProperties( StateVisitor visitor )
     {
-        for( EntityPropertyModel propertyModel : model.properties() )
+        for (EntityPropertyModel propertyModel : model.properties())
         {
             QualifiedName qualifiedName = propertyModel.qualifiedName();
 
             // Should this.getProperty( qualifiedName ) be called instead??
-            Object value = entityState.getProperty( qualifiedName );
+            Object value = getProperty( propertyModel.accessor() );
             visitor.visitProperty( qualifiedName, value );
         }
     }
