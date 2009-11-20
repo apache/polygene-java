@@ -6,8 +6,10 @@ Import-Package: javax.transaction,\
                 org.apache.lucene.analysis, \
                 org.apache.lucene.document, \
                 org.apache.lucene.index, \
+                org.apache.lucene.queryParser, \
                 org.apache.lucene.search, \
                 org.apache.lucene.store, \
+                org.json, \
                 org.qi4j.api.composite, \
                 org.qi4j.api.common, \
                 org.qi4j.api.configuration, \
@@ -18,6 +20,7 @@ Import-Package: javax.transaction,\
                 org.qi4j.api.property, \
                 org.qi4j.api.service, \
                 org.qi4j.api.structure, \
+                org.qi4j.api.usecase, \
                 org.qi4j.bootstrap, \
                 org.qi4j.entity, \
                 org.qi4j.entity.association, \
@@ -29,11 +32,12 @@ Import-Package: javax.transaction,\
                 org.qi4j.spi.entitystore.helpers, \
                 org.qi4j.spi.entitystore, \
                 org.qi4j.spi.property, \
+                org.qi4j.spi.structure, \
                 org.qi4j.spi.uuid, \
                 org.qi4j.spi.value, \
                 org.w3c.dom, \
                 org.xml.sax
 
-Export-Package: org.qi4j.entitystore.neo4j,org.qi4j.entitystore.neo4j.state
+Export-Package: org.qi4j.entitystore.neo4j
 
 Embed-Dependency: *;groupId=org.neo4j
