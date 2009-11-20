@@ -21,27 +21,29 @@ import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.property.PropertyType;
 
-public class NeoEntityState implements EntityState
+public class NeoEntityState
+    implements EntityState
 {
     static final String ENTITY_ID = "entity_id";
     static final String VERSION = "version";
-    
+
     private final Node underlyingNode;
     private final NeoEntityStoreUnitOfWork uow;
-    
+
     private EntityStatus status;
-    
-    NeoEntityState( NeoEntityStoreUnitOfWork work, Node node, 
-        EntityStatus status )
+
+    NeoEntityState( NeoEntityStoreUnitOfWork work, Node node,
+                    EntityStatus status
+    )
     {
         this.underlyingNode = node;
         this.uow = work;
         this.status = status;
     }
-    
+
     protected void setUpdated()
     {
-        if ( status == EntityStatus.LOADED )
+        if( status == EntityStatus.LOADED )
         {
             status = EntityStatus.UPDATED;
             Long version = (Long) underlyingNode.getProperty( VERSION );
@@ -51,25 +53,21 @@ public class NeoEntityState implements EntityState
 
     static RelationshipType manyAssociation( QualifiedName stateName )
     {
-        return DynamicRelationshipType.withName( "many_association::" + 
-            stateName.toString() );
+        return DynamicRelationshipType.withName( "many_association::" + stateName.toString() );
     }
-    
+
     static RelationshipType association( QualifiedName stateName )
     {
-        return DynamicRelationshipType.withName( "association::" + 
-            stateName.toString() );
+        return DynamicRelationshipType.withName( "association::" + stateName.toString() );
     }
-    
+
     public ManyAssociationState getManyAssociation( QualifiedName stateName )
     {
-        RelationshipType manyAssociation = manyAssociation( stateName ); 
-        Relationship rel = underlyingNode.getSingleRelationship( 
-            manyAssociation, Direction.OUTGOING );
-        if ( rel != null )
+        RelationshipType manyAssociation = manyAssociation( stateName );
+        Relationship rel = underlyingNode.getSingleRelationship( manyAssociation, Direction.OUTGOING );
+        if( rel != null )
         {
-            return new NeoManyAssociationState( uow, this, 
-                rel.getEndNode() );
+            return new NeoManyAssociationState( uow, this, rel.getEndNode() );
         }
         Node node = uow.getNeo().createNode();
         node.setProperty( NeoManyAssociationState.COUNT, 0 );
@@ -79,38 +77,32 @@ public class NeoEntityState implements EntityState
 
     public EntityReference getAssociation( QualifiedName stateName )
     {
-        Relationship rel = underlyingNode.getSingleRelationship( 
-            association( stateName ), Direction.OUTGOING );
-        if ( rel != null )
+        Relationship rel = underlyingNode.getSingleRelationship( association( stateName ), Direction.OUTGOING );
+        if( rel != null )
         {
-            String entityId = 
-                (String) rel.getEndNode().getProperty( ENTITY_ID );
+            String entityId = (String) rel.getEndNode().getProperty( ENTITY_ID );
             return new EntityReference( entityId );
         }
         return null;
     }
-    
-    public void setAssociation( QualifiedName stateName, 
-        EntityReference newEntity )
+
+    public void setAssociation( QualifiedName stateName, EntityReference newEntity )
     {
-        RelationshipType association = association( stateName ); 
-        Relationship rel = underlyingNode.getSingleRelationship( 
-            association, Direction.OUTGOING );
-        if ( rel != null )
+        RelationshipType association = association( stateName );
+        Relationship rel = underlyingNode.getSingleRelationship( association, Direction.OUTGOING );
+        if( rel != null )
         {
             Node otherNode = rel.getEndNode();
-            if ( otherNode.getProperty( ENTITY_ID ).equals( 
-                identity().identity() ) )
+            if( otherNode.getProperty( ENTITY_ID ).equals( identity().identity() ) )
             {
                 otherNode.delete();
             }
             rel.delete();
-            
         }
-        if ( newEntity != null )
+        if( newEntity != null )
         {
             Node otherNode = uow.getEntityStateNode( newEntity );
-            if ( otherNode.equals( underlyingNode ) )
+            if( otherNode.equals( underlyingNode ) )
             {
                 // create a blank node for self reference
                 otherNode = uow.getNeo().createNode();
@@ -119,56 +111,45 @@ public class NeoEntityState implements EntityState
             underlyingNode.createRelationshipTo( otherNode, association );
         }
     }
-    
+
     public Object getProperty( QualifiedName stateName )
     {
         try
         {
-            Object prop = underlyingNode.getProperty( 
-                "prop::" + stateName.toString(), null );
-            if ( prop == null )
+            Object prop = underlyingNode.getProperty( "prop::" + stateName.toString(), null );
+            if( prop == null )
             {
                 return null;
             }
-            else if ( isPrimitiveType( prop ) )
+            else if( isPrimitiveType( prop ) )
             {
                 return prop;
             }
             else
             {
                 // why is it a set and not a Map?
-                for ( PropertyType propertyType : 
-                    entityDescriptor().entityType().properties() )
+                for( PropertyType propertyType : entityDescriptor().entityType().properties() )
                 {
-                    if ( propertyType.qualifiedName().equals( stateName ) )
+                    if( propertyType.qualifiedName().equals( stateName ) )
                     {
-                        if ( propertyType.type().isString() )
+                        String json = "[" + prop + "]";
+                        JSONTokener tokener = new JSONTokener( json );
+                        JSONArray array = (JSONArray) tokener.nextValue();
+                        Object jsonValue = array.get( 0 );
+                        if( jsonValue == JSONObject.NULL )
                         {
-                            return prop;
+                            return null;
                         }
                         else
                         {
-                            String json = "[" + prop + "]";
-                            JSONTokener tokener = new JSONTokener( json );
-                            JSONArray array = (JSONArray) tokener.nextValue();
-                            Object jsonValue = array.get( 0 );
-                            if( jsonValue == JSONObject.NULL )
-                            {
-                                return null;
-                            }
-                            else
-                            {
-                                return propertyType.type().fromJSON( jsonValue, 
-                                    uow.getModule() );
-                            }
+                            return propertyType.type().fromJSON( jsonValue, uow.getModule() );
                         }
                     }
                 }
             }
-            return underlyingNode.getProperty( "prop::" +
-                stateName.toString() ).toString();
+            return underlyingNode.getProperty( "prop::" + stateName.toString() ).toString();
         }
-        catch ( JSONException e )
+        catch( JSONException e )
         {
             throw new EntityStoreException( e );
         }
@@ -178,25 +159,22 @@ public class NeoEntityState implements EntityState
     {
         try
         {
-            if ( prop != null )
+            if( prop != null )
             {
-                if ( isPrimitiveType( prop ) )
+                if( isPrimitiveType( prop ) )
                 {
-                    underlyingNode.setProperty( "prop::" + stateName.toString(), 
-                        prop );
+                    underlyingNode.setProperty( "prop::" + stateName.toString(), prop );
                 }
                 else
                 {
                     // why is it a set and not a Map?
-                    for ( PropertyType propertyType : 
-                        entityDescriptor().entityType().properties() )
+                    for( PropertyType propertyType : entityDescriptor().entityType().properties() )
                     {
-                        if ( propertyType.qualifiedName().equals( stateName ) )
+                        if( propertyType.qualifiedName().equals( stateName ) )
                         {
-                            if ( prop instanceof String && propertyType.type().isString() )
+                            if( prop instanceof String && propertyType.type().isString() )
                             {
-                                underlyingNode.setProperty( "prop::" + 
-                                    stateName.toString(), prop );
+                                underlyingNode.setProperty( "prop::" + stateName.toString(), prop );
                             }
                             else
                             {
@@ -205,10 +183,8 @@ public class NeoEntityState implements EntityState
                                 propertyType.type().toJSON( prop, json );
                                 json.endArray();
                                 String jsonString = json.toString();
-                                jsonString = jsonString.substring( 1, 
-                                    jsonString.length() - 1 );
-                                underlyingNode.setProperty( "prop::" + 
-                                    stateName.toString(), jsonString );
+                                jsonString = jsonString.substring( 1, jsonString.length() - 1 );
+                                underlyingNode.setProperty( "prop::" + stateName.toString(), jsonString );
                             }
                             break;
                         }
@@ -221,43 +197,42 @@ public class NeoEntityState implements EntityState
             }
             setUpdated();
         }
-        catch ( JSONException e )
+        catch( JSONException e )
         {
             throw new EntityStoreException( e );
         }
     }
-    
+
     private boolean isPrimitiveType( Object prop )
     {
-        if ( prop instanceof Number || prop instanceof Character || 
-            prop instanceof Boolean )
+        if( prop instanceof Number || prop instanceof Character || prop instanceof Boolean )
         {
             return true;
         }
-        if ( prop.getClass().isArray() )
+        if( prop.getClass().isArray() )
         {
             return isPrimitiveArrayType( prop );
         }
         return false;
     }
-    
+
     private boolean isPrimitiveArrayType( Object array )
     {
-        if ( array instanceof int[] || array instanceof Integer[] ||
+        if( array instanceof int[] || array instanceof Integer[] ||
             array instanceof String[] || array instanceof boolean[] ||
             array instanceof Boolean[] || array instanceof double[] ||
-            array instanceof Double[] || array instanceof float[] || 
-            array instanceof Float[] || array instanceof long[] || 
-            array instanceof Long[] || array instanceof byte[] || 
-            array instanceof Byte[] || array instanceof char[] || 
+            array instanceof Double[] || array instanceof float[] ||
+            array instanceof Float[] || array instanceof long[] ||
+            array instanceof Long[] || array instanceof byte[] ||
+            array instanceof Byte[] || array instanceof char[] ||
             array instanceof Character[] || array instanceof short[] ||
-            array instanceof Short[] ) 
+            array instanceof Short[] )
         {
             return true;
         }
         return false;
     }
-    
+
     public void remove()
     {
         // Apparently remove should just force remove associations instead
@@ -269,26 +244,24 @@ public class NeoEntityState implements EntityState
 //                    + ". It has incoming associtaions.");
 //            }
         // remove of all incomming associations
-        for ( Relationship rel : underlyingNode.getRelationships( 
-            Direction.INCOMING ) )
+        for( Relationship rel : underlyingNode.getRelationships( Direction.INCOMING ) )
         {
             rel.delete();
         }
-        uow.getIndexService().removeIndex( underlyingNode, 
-            NeoEntityStoreUnitOfWork.ENTITY_STATE_ID, 
-            underlyingNode.getProperty( ENTITY_ID ) );
-        for ( Relationship rel : 
-            underlyingNode.getRelationships( Direction.OUTGOING ))
+        uow.getIndexService().removeIndex( underlyingNode,
+                                           NeoEntityStoreUnitOfWork.ENTITY_STATE_ID,
+                                           underlyingNode.getProperty( ENTITY_ID ) );
+
+        for( Relationship rel : underlyingNode.getRelationships( Direction.OUTGOING ) )
         {
             Node endNode = rel.getEndNode();
             boolean manyAssocNode = false;
-            for ( Relationship manyRel : endNode.getRelationships( 
-                RelTypes.MANY_ASSOCIATION, Direction.OUTGOING ))
+            for( Relationship manyRel : endNode.getRelationships( RelTypes.MANY_ASSOCIATION, Direction.OUTGOING ) )
             {
                 manyRel.delete();
                 manyAssocNode = true;
             }
-            if ( manyAssocNode )
+            if( manyAssocNode )
             {
                 endNode.delete();
             }
@@ -297,13 +270,11 @@ public class NeoEntityState implements EntityState
         underlyingNode.delete();
         status = EntityStatus.REMOVED;
     }
-    
+
     public EntityDescriptor entityDescriptor()
     {
-        Node typeNode = underlyingNode.getSingleRelationship( 
-            RelTypes.IS_OF_TYPE, Direction.OUTGOING ).getEndNode();
-        String type = (String) typeNode.getProperty( 
-            NeoEntityStoreUnitOfWork.ENTITY_TYPE );
+        Node typeNode = underlyingNode.getSingleRelationship( RelTypes.IS_OF_TYPE, Direction.OUTGOING ).getEndNode();
+        String type = (String) typeNode.getProperty( NeoEntityStoreUnitOfWork.ENTITY_TYPE );
         return uow.getEntityDescriptor( type );
     }
 
@@ -314,16 +285,13 @@ public class NeoEntityState implements EntityState
 
     public EntityReference identity()
     {
-        return new EntityReference( 
-            (String) underlyingNode.getProperty( ENTITY_ID ) );
+        return new EntityReference( (String) underlyingNode.getProperty( ENTITY_ID ) );
     }
 
     public boolean isOfType( TypeName type )
     {
-        Node typeNode = underlyingNode.getSingleRelationship( 
-            RelTypes.IS_OF_TYPE, Direction.OUTGOING ).getEndNode();
-        String typeName = (String) typeNode.getProperty( 
-            NeoEntityStoreUnitOfWork.ENTITY_TYPE );
+        Node typeNode = underlyingNode.getSingleRelationship( RelTypes.IS_OF_TYPE, Direction.OUTGOING ).getEndNode();
+        String typeName = (String) typeNode.getProperty( NeoEntityStoreUnitOfWork.ENTITY_TYPE );
         return typeName.equals( type.name() );
     }
 
@@ -340,7 +308,7 @@ public class NeoEntityState implements EntityState
     public String version()
     {
         long version = (Long) underlyingNode.getProperty( VERSION );
-        if ( status == EntityStatus.UPDATED )
+        if( status == EntityStatus.UPDATED )
         {
             version--;
         }
