@@ -16,6 +16,8 @@ Import-Package: javax.security.auth, \
                 org.qi4j.api.injection.scope, \
                 org.qi4j.api.mixin, \
                 org.qi4j.api.property, \
-                org.qi4j.api.service
+                org.qi4j.api.service, \
+                org.qi4j.api.unitofwork, \
+                org.qi4j.api.value
 
                 

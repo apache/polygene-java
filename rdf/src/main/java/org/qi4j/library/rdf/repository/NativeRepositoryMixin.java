@@ -30,12 +30,16 @@ import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 public class NativeRepositoryMixin
     implements Repository, ResetableRepository, Activatable
 {
-    @This private Configuration<NativeConfiguration> configuration;
-    @Structure private UnitOfWorkFactory uowf;
+    @This
+    private Configuration<NativeConfiguration> configuration;
+    @Structure
+    private UnitOfWorkFactory uowf;
     private SailRepository repo;
+    private boolean isNotInitialized;
 
     public NativeRepositoryMixin()
     {
+        isNotInitialized = true;
         repo = new SailRepository( new NativeStore() );
     }
 
@@ -85,13 +89,19 @@ public class NativeRepositoryMixin
     {
     }
 
-    public boolean isWritable() throws RepositoryException
+    public boolean isWritable()
+        throws RepositoryException
     {
         return repo.isWritable();
     }
 
-    public RepositoryConnection getConnection() throws RepositoryException
+    public RepositoryConnection getConnection()
+        throws RepositoryException
     {
+        if( isNotInitialized )
+        {
+            return null;
+        }
         return repo.getConnection();
     }
 
@@ -141,5 +151,6 @@ public class NativeRepositoryMixin
         store.setTripleIndexes( tripleIndexes );
         store.setForceSync( forceSync );
         repo.initialize();
+        isNotInitialized = false;
     }
 }

@@ -20,8 +20,10 @@ package org.qi4j.logging;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.mixin.NoopMixin;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -30,6 +32,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.logging.debug.Debug;
+import org.qi4j.logging.debug.DebugConcern;
 import org.qi4j.logging.debug.records.ServiceDebugRecordEntity;
 import org.qi4j.logging.debug.service.DebugServiceConfiguration;
 import org.qi4j.logging.debug.service.DebuggingServiceComposite;
@@ -46,20 +49,22 @@ public class DebuggingTest
     {
         module.addServices( DebuggingServiceComposite.class );
         module.addServices( MemoryEntityStoreService.class );
-        module.addServices( SomeService.class );
+        module.addServices( SomeService.class ).withMixins( Debug.class ).withConcerns( DebugConcern.class );
         module.addEntities( DebugServiceConfiguration.class );
         module.addEntities( ServiceDebugRecordEntity.class );
         module.addServices( UuidIdentityGeneratorService.class );
     }
 
     @Test
+    @Ignore( "Needs QI-230 to be resolved." )
     public void whenCallingMethodThenExpectDebugEntityCreated()
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
             // There is no Query capability available for Libraries, since that sits in Extensions.
-            // Obtaining the EntityStore directly is a very ugly hack to get around this problem.
+            // Obtaining the EntityStore directly is a very ugly hack to get around this problem, and only related
+            // to the test sitting in qi4j-libraries source repository.
 
 //            QueryBuilder<DebugRecord> builder = queryBuilderFactory.newQueryBuilder( DebugRecord.class );
 //            Query<DebugRecord> query = builder.newQuery( uow );
@@ -112,7 +117,7 @@ public class DebuggingTest
 
     @Mixins( { SomeMixin.class } )
     public interface SomeService
-        extends Some, Debug, ServiceComposite
+        extends Some, ServiceComposite
     {
     }
 

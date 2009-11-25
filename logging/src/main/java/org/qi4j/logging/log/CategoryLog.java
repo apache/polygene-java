@@ -19,8 +19,10 @@ package org.qi4j.logging.log;
 
 import java.io.Serializable;
 import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.mixin.Mixins;
 
-@Concerns( { SimpleLogConcern.class } )
+@Concerns( { CategoryLogConcern.class } )
+@Mixins( { CategoryLogMixin.class } )
 public interface CategoryLog
 {
     void info( String category, String message );
