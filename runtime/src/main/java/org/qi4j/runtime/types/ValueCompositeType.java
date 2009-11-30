@@ -25,8 +25,11 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.runtime.value.ValueInstance;
+import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.property.DefaultValues;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.structure.ModuleSPI;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -84,7 +87,17 @@ public final class ValueCompositeType
             }
         } );
 
-        for (PropertyType propertyType : types)
+        List<PropertyType> actualTypes = types;
+        if (!value.getClass().getInterfaces()[0].getName().equals( type.name() ))
+        {
+            // Actual value is a subtype - use it instead
+            ValueModel valueModel = (ValueModel) ValueInstance.getValueInstance( (ValueComposite) value ).compositeModel();
+
+            actualTypes = valueModel.valueType().types();
+            json.key( "_type" ).value( valueModel.valueType().type().name() );
+        }
+
+        for (PropertyType propertyType : actualTypes)
         {
             json.key( propertyType.qualifiedName().name() );
 
@@ -104,8 +117,17 @@ public final class ValueCompositeType
     {
         JSONObject jsonObject = (JSONObject) json;
 
+        ValueCompositeType actualValueType = this;
+        List<PropertyType> actualTypes = types;
+        String actualType = jsonObject.optString( "_type" );
+        if (!actualType.equals( "" ))
+        {
+            actualValueType = (ValueCompositeType) ((ModuleSPI) module).valueDescriptor( actualType ).valueType();
+            actualTypes = actualValueType.types();
+        }
+
         final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
-        for (PropertyType propertyType : types)
+        for (PropertyType propertyType : actualTypes)
         {
             Object valueJson = null;
             try
@@ -139,7 +161,7 @@ public final class ValueCompositeType
 
         try
         {
-            ValueBuilder valueBuilder = module.valueBuilderFactory().newValueBuilder( module.classLoader().loadClass( type.name() ) );
+            ValueBuilder valueBuilder = module.valueBuilderFactory().newValueBuilder( module.classLoader().loadClass( actualValueType.type().name() ) );
             valueBuilder.withState( new StateHolder()
             {
                 public <T> Property<T> getProperty( Method propertyMethod )
