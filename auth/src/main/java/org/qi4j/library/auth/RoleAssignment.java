@@ -17,12 +17,13 @@ package org.qi4j.library.auth;
 
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
 
 /**
  * JAVADOC
  */
-public interface RoleAssignment
+public interface RoleAssignment extends EntityComposite
 {
     Association<Role> role();
 

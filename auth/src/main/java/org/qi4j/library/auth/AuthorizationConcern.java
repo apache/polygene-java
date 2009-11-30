@@ -24,34 +24,49 @@ import java.security.AccessController;
 import java.util.Date;
 import javax.security.auth.Subject;
 import org.qi4j.api.common.AppliesTo;
-import org.qi4j.api.composite.TransientBuilder;
-import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.concern.ConcernOf;
+import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Invocation;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.api.value.ValueBuilderFactory;
 
 @AppliesTo( RequiresPermission.class )
-public class AuthorizationConcern extends ConcernOf<InvocationHandler>
+public class AuthorizationConcern
+    extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
-    @Invocation private RequiresPermission requiresPermission;
+    @Invocation
+    private RequiresPermission requiresPermission;
 
-    @Service private Authorization authorizor;
-    @This private ProtectedResource roleAssignments;
-    @Structure private TransientBuilderFactory cbf;
+    @Service
+    private AuthorizationService authorizor;
+    
+    @This
+    private ProtectedResource roleAssignments;
+    
+    @Structure
+    private UnitOfWorkFactory uowf;
 
-    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+    @Structure
+    private ValueBuilderFactory vbf;
+
+    public Object invoke( Object proxy, Method method, Object[] args )
+        throws Throwable
     {
-        TransientBuilder<NamedPermission> cb = cbf.newTransientBuilder( NamedPermission.class );
-        cb.prototype().name().set( requiresPermission.value() );
-        Permission permission = cb.newInstance();
+        UnitOfWork uow = uowf.currentUnitOfWork();
+        EntityBuilder<NamedPermission> entityBuilder = uow.newEntityBuilder( NamedPermission.class );
+        entityBuilder.instance().name().set( requiresPermission.value() );
+        Permission permission = entityBuilder.newInstance();
 
         Subject subject = Subject.getSubject( AccessController.getContext() );
         User user = subject.getPrincipals( UserPrincipal.class ).iterator().next().getUser();
 
-        TransientBuilder<AuthorizationContext> authBuilder = cbf.newTransientBuilder( AuthorizationContext.class );
+        ValueBuilder<AuthorizationContext> authBuilder = vbf.newValueBuilder( AuthorizationContext.class );
         AuthorizationContext authProps = authBuilder.prototypeFor( AuthorizationContext.class );
         authProps.user().set( user );
         authProps.time().set( new Date() );
@@ -59,7 +74,8 @@ public class AuthorizationConcern extends ConcernOf<InvocationHandler>
         AuthorizationContext context = authBuilder.newInstance();
         if( !authorizor.hasPermission( permission, roleAssignments, context ) )
         {
-            throw new SecurityException( "User " + user + " does not have the required permission " + requiresPermission.value() );
+            String message = "User " + user + " does not have the required permission " + requiresPermission.value();
+            throw new SecurityException( message );
         }
         return next.invoke( proxy, method, args );
     }

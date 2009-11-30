@@ -28,9 +28,9 @@ import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.auth.AuthenticationMethod;
-import org.qi4j.library.auth.AuthorizationService;
 import org.qi4j.library.auth.AuthorizationContext;
 import org.qi4j.library.auth.AuthorizationContextValue;
+import org.qi4j.library.auth.AuthorizationService;
 import org.qi4j.library.auth.Group;
 import org.qi4j.library.auth.NamedPermission;
 import org.qi4j.library.auth.ProtectedResource;
@@ -44,7 +44,8 @@ public class AuthTest
     extends AbstractQi4jTest
 {
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addEntities( User.class,
                             Group.class,
@@ -53,7 +54,7 @@ public class AuthTest
                             RoleAssignment.class,
                             SecuredRoom.class );
         module.addValues( AuthorizationContextValue.class );
-        module.addServices( AuthorizationService.class);
+        module.addServices( AuthorizationService.class );
 
         new EntityTestAssembler().assemble( module );
     }
@@ -83,7 +84,8 @@ public class AuthTest
             role.permissions().add( 0, permission );
 
             // Find authorization service
-            AuthorizationService authorization = serviceLocator.<AuthorizationService>findService( AuthorizationService.class ).get();
+            AuthorizationService authorization = serviceLocator.<AuthorizationService>findService( AuthorizationService.class )
+                .get();
 
             // Create authorization context
             ValueBuilder<AuthorizationContext> accb = valueBuilderFactory.newValueBuilder( AuthorizationContext.class );

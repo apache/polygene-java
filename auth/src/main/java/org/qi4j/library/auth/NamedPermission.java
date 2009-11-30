@@ -19,8 +19,9 @@
 package org.qi4j.library.auth;
 
 import org.qi4j.api.property.Property;
+import org.qi4j.api.entity.EntityComposite;
 
-public interface NamedPermission extends Permission
+public interface NamedPermission extends Permission, EntityComposite
 {
     Property<String> name();
 }

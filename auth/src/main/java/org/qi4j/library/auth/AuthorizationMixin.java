@@ -20,8 +20,8 @@ import org.qi4j.api.entity.association.ManyAssociation;
 /**
  * JAVADOC
  */
-public class AuthorizationMixin
-    implements Authorization
+public abstract class AuthorizationMixin
+    implements AuthorizationService
 {
     public boolean hasPermission( Permission requiredPermission, ProtectedResource resource, AuthorizationContext context )
     {
@@ -57,14 +57,7 @@ public class AuthorizationMixin
             {
                 if( permission.equals( requiredPermission ) )
                 {
-                    if( roleAssignment.roleType().get().equals( RoleAssignment.RoleType.ALLOW ) )
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    return roleAssignment.roleType().get().equals( RoleAssignment.RoleType.ALLOW );
                 }
             }
         }

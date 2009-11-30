@@ -18,6 +18,8 @@
  */
 package org.qi4j.library.auth;
 
-public interface User extends Groups, RoleAssignee
+import org.qi4j.api.entity.EntityComposite;
+
+public interface User extends Securable, Groups, RoleAssignee, EntityComposite
 {
 }
