@@ -14,6 +14,12 @@
 
 package org.qi4j.runtime.types;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONWriter;
@@ -22,18 +28,11 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
 import org.qi4j.spi.property.ValueType;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
 /**
  * Collection type. This handles Collection, List and Set types
  */
 public final class CollectionType
-        extends AbstractValueType
+    extends AbstractValueType
 {
     public static boolean isCollection( Type type )
     {
@@ -60,12 +59,13 @@ public final class CollectionType
         return type() + "<" + collectedType + ">";
     }
 
-    public void toJSON( Object value, JSONWriter json ) throws JSONException
+    public void toJSON( Object value, JSONWriter json )
+        throws JSONException
     {
         json.array();
 
         Collection collection = (Collection) value;
-        for (Object collectionValue : collection)
+        for( Object collectionValue : collection )
         {
             collectedType.toJSON( collectionValue, json );
         }
@@ -73,20 +73,22 @@ public final class CollectionType
         json.endArray();
     }
 
-    public Object fromJSON( Object json, Module module ) throws JSONException
+    public Object fromJSON( Object json, Module module )
+        throws JSONException
     {
         JSONArray array = (JSONArray) json;
 
         Collection<Object> coll;
-        if (type().isClass( List.class ))
+        if( type().isClass( List.class ) )
         {
             coll = new ArrayList<Object>();
-        } else
+        }
+        else
         {
             coll = new LinkedHashSet<Object>();
         }
 
-        for (int i = 0; i < array.length(); i++)
+        for( int i = 0; i < array.length(); i++ )
         {
             Object value = array.get( i );
             coll.add( collectedType.fromJSON( value, module ) );

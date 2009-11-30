@@ -27,7 +27,8 @@ public abstract class AbstractStringType
         super( type );
     }
 
-    @Override public boolean isString()
+    @Override
+    public boolean isString()
     {
         return true;
     }

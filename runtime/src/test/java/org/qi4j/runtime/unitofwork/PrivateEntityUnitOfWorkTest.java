@@ -16,20 +16,22 @@ package org.qi4j.runtime.unitofwork;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import org.qi4j.api.common.UseDefaults;
 import static org.qi4j.api.common.Visibility.*;
+import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.api.value.ValueBuilderFactory;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
@@ -45,8 +47,8 @@ import org.qi4j.test.EntityTestAssembler;
  */
 public class PrivateEntityUnitOfWorkTest
 {
-    @Service
-    ProductRepositoryService repo;
+    @Structure
+    private UnitOfWorkFactory uowf;
 
     @Test
     public void givenAppWithPrivateEntityWhenUnitOfWorkCanSeeItThenCanCommit()
@@ -71,7 +73,9 @@ public class PrivateEntityUnitOfWorkTest
                                     module.addObjects( PrivateEntityUnitOfWorkTest.class );
                                 }
                             }
-                        },
+                        }
+                    },
+                    {
                         {
                             new Assembler()
                             {
@@ -79,7 +83,8 @@ public class PrivateEntityUnitOfWorkTest
                                     throws AssemblyException
                                 {
                                     module.addEntities( ProductEntity.class );
-                                    module.addServices( ProductRepositoryService.class ).visibleIn( layer );
+                                    module.addEntities( ProductCatalogEntity.class ).visibleIn( application );
+                                    module.addValues( ProductInfo.class );
                                     new EntityTestAssembler().assemble( module );
                                 }
                             }
@@ -93,7 +98,7 @@ public class PrivateEntityUnitOfWorkTest
         Module module = app.findModule( "Layer 1", "Module 1" );
         module.objectBuilderFactory().newObjectBuilder( PrivateEntityUnitOfWorkTest.class ).injectTo( this );
 
-        UnitOfWork unitOfWork = module.unitOfWorkFactory().newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
 
         try
         {
@@ -103,12 +108,16 @@ public class PrivateEntityUnitOfWorkTest
         catch( EntityTypeNotFoundException e )
         {
             // Ok
+            ProductCatalog catalog = unitOfWork.newEntity( ProductCatalog.class, "1" );
+            unitOfWork.complete();
         }
+        unitOfWork = uowf.newUnitOfWork();
 
         String id;
         try
         {
-            id = repo.newProduct().identity().get();
+            ProductCatalog catalog = unitOfWork.get( ProductCatalog.class, "1" );
+            id = ( (Identity) catalog.newProduct() ).identity().get();
             unitOfWork.complete();
         }
         catch( Exception e )
@@ -120,7 +129,8 @@ public class PrivateEntityUnitOfWorkTest
         unitOfWork = module.unitOfWorkFactory().newUnitOfWork();
         try
         {
-            ProductEntity product = repo.findProduct( id );
+            ProductCatalog catalog = unitOfWork.get( ProductCatalog.class, "1" );
+            Product product = catalog.findProduct( id );
             product.price().set( 100 );
             unitOfWork.complete();
         }
@@ -131,30 +141,45 @@ public class PrivateEntityUnitOfWorkTest
         }
     }
 
-    @Mixins( ProductRepositoryService.ProductRepositoryMixin.class )
-    interface ProductRepositoryService
-        extends ServiceComposite
+    interface ProductCatalog
     {
-        ProductEntity newProduct();
+        Product newProduct();
 
-        ProductEntity findProduct( String id );
+        Product findProduct( String id );
+    }
 
+    @Mixins( ProductCatalogEntity.ProductRepositoryMixin.class )
+    interface ProductCatalogEntity
+        extends ProductCatalog, EntityComposite
+    {
         abstract class ProductRepositoryMixin
-            implements ProductRepositoryService
+            implements ProductCatalog
         {
             @Structure
-            UnitOfWorkFactory uowf;
+            private UnitOfWorkFactory uowf;
 
-            public ProductEntity newProduct()
+            @Structure
+            private ValueBuilderFactory vbf;
+
+            public Product newProduct()
             {
+                ValueBuilder<ProductInfo> vb = vbf.newValueBuilder( ProductInfo.class );
+                vb.prototype().description().set( "Some mundane description" );
+                vb.prototype().weight().set( 1.0f );
+                ProductInfo info = vb.newInstance();
+
                 UnitOfWork uow = uowf.currentUnitOfWork();
-                return uow.newEntity( ProductEntity.class );
+                EntityBuilder<Product> eb = uow.newEntityBuilder( Product.class );
+                eb.instance().name().set( "Product Name" );
+                eb.instance().price().set( 100 );
+                eb.instance().productInfo().set( info );
+                return eb.newInstance();
             }
 
-            public ProductEntity findProduct( String id )
+            public Product findProduct( String id )
             {
                 UnitOfWork uow = uowf.currentUnitOfWork();
-                return uow.get( ProductEntity.class, id );
+                return uow.get( Product.class, id );
             }
         }
     }
@@ -227,13 +252,21 @@ public class PrivateEntityUnitOfWorkTest
     {
     }
 
+    public interface ProductInfo
+        extends ValueComposite
+    {
+        Property<String> description();
+
+        Property<Float> weight();
+    }
+
     public interface Product
     {
-        @UseDefaults
         Property<String> name();
 
-        @UseDefaults
         Property<Integer> price();
+
+        Property<ProductInfo> productInfo();
     }
 
     public interface ProductEntity

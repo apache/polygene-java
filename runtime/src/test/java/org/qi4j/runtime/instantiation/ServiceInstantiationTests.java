@@ -67,7 +67,7 @@ public class ServiceInstantiationTests extends AbstractQi4jTest
         Property<String> data();
     }
 
-    private static class MyMixin
+    public static class MyMixin
         implements My
     {
         @This Configuration<MyConfiguration> config;

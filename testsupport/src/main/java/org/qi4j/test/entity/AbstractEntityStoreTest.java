@@ -110,6 +110,7 @@ public abstract class AbstractEntityStoreTest
         ValueBuilder<TestValue> valueBuilder1 = valueBuilderFactory.newValueBuilder( TestValue.class );
         TestValue prototype = valueBuilder1.prototype();
         prototype.listProperty().get().add( "Foo" );
+
         prototype.valueProperty().set( valueBuilder2.newInstance() );
         prototype.tjabbaProperty().set( valueBuilder3.newInstance() );
         Map<String, String> mapValue = new HashMap<String, String>();
@@ -123,7 +124,7 @@ public abstract class AbstractEntityStoreTest
     }
 
     @Test
-    public void whenNewEntityThenCanFindEntity()
+    public void whenNewEntityThenCanFindEntityAndCorrectValues()
         throws Exception
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
@@ -137,9 +138,17 @@ public abstract class AbstractEntityStoreTest
             instance = unitOfWork.get( instance );
 
             // Check state
-            assertThat( "property has correct value", instance.name().get(), equalTo( "Test" ) );
-            assertThat( "property has correct value", instance.unsetName().get(), equalTo( null ) );
+            assertThat( "property 'name' has correct value", instance.name().get(), equalTo( "Test" ) );
+            assertThat( "property 'unsetName' has correct value", instance.unsetName().get(), equalTo( null ) );
+
             assertThat( "property has correct value", instance.valueProperty().get().valueProperty().get().stringValue().get(), equalTo( "Bar" ) );
+            assertThat( "property has correct value", instance.valueProperty().get().listProperty().get().get( 0 ), equalTo( "Foo" ) );
+            assertThat( "property has correct value", instance.valueProperty().get().valueProperty().get().anotherValue().get().bling().get(), equalTo( "BlinkLjus" ) );
+            assertThat( "property has correct value", instance.valueProperty().get().tjabbaProperty().get().bling().get(), equalTo( "Brakfis" ) );
+            Map<String, String> mapValue = new HashMap<String, String>();
+            mapValue.put( "foo", "bar" );
+            assertThat( "property has correct value", instance.valueProperty().get().serializableProperty().get(), equalTo( mapValue ) );
+
             assertThat( "association has correct value", instance.association().get(), equalTo( instance ) );
             assertThat( "manyAssociation has correct value", instance.manyAssociation().iterator().next(), equalTo( instance ) );
             unitOfWork.discard();

@@ -15,10 +15,10 @@
 package org.qi4j.runtime.types;
 
 import java.lang.reflect.Type;
-import static org.qi4j.api.common.TypeName.*;
-import org.qi4j.api.structure.Module;
 import org.json.JSONException;
 import org.json.JSONWriter;
+import static org.qi4j.api.common.TypeName.*;
+import org.qi4j.api.structure.Module;
 
 /**
  * Boolean type
@@ -41,17 +41,20 @@ public final class BooleanType
         super( nameOf( Boolean.class ) );
     }
 
-    @Override public boolean isBoolean()
+    @Override
+    public boolean isBoolean()
     {
         return true;
     }
 
-    public void toJSON( Object value, JSONWriter json ) throws JSONException
+    public void toJSON( Object value, JSONWriter json )
+        throws JSONException
     {
         json.value( ( (Boolean) value ).booleanValue() );
     }
 
-    public Object fromJSON( Object json, Module module ) throws JSONException
+    public Object fromJSON( Object json, Module module )
+        throws JSONException
     {
         return (Boolean) json;
     }

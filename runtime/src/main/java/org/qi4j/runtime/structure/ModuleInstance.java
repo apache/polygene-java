@@ -186,11 +186,11 @@ public class ModuleInstance
         {
             return null;
         }
-        if( finder.models.isEmpty() )
+        if( finder.noModelExist() )
         {
             return null;
         }
-        return finder.models.get( 0 );
+        return finder.getFoundModel();
     }
 
     public TransientDescriptor transientDescriptor( String name )
@@ -310,8 +310,7 @@ public class ModuleInstance
         EntityFinder finder = entityFinders.get( type );
         if( finder == null )
         {
-            finder = new EntityFinder();
-            finder.mixinType = type;
+            finder = new EntityFinder( type );
             visitModules( finder );
             entityFinders.put( type, finder );
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2008, Rickard ï¿½berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  *
  */
 
-package org.qi4j.runtime.composite;
+package org.qi4j.test.composite;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -26,6 +26,8 @@ import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * Test if the stacktrace is cleaned up properly.
+ *
+ * NOTE: This test MUST NOT be inside package org.qi4j.runtime, or it will fail.
  */
 public class CleanStackTraceTest
     extends AbstractQi4jTest
@@ -63,11 +65,18 @@ public class CleanStackTraceTest
 
             String separator = System.getProperty( "line.separator" );
             String correctTrace = "java.lang.RuntimeException" + separator +
-                                  "\tat org.qi4j.api.composite.CleanStacktraceTest$DoStuffMixin.doStuff(CleanStacktraceTest.java:87)" + separator +
-                                  "\tat org.qi4j.api.composite.CleanStacktraceTest$TestComposite.doStuff(Unknown Source)" + separator +
-                                  "\tat org.qi4j.api.composite.CleanStacktraceTest.cleanStackTraceOnApplicationException(CleanStacktraceTest.java:57)";
+                                  "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:97)" + separator +
+                                  "\tat org.qi4j.test.composite.CleanStackTraceTest$TestComposite.doStuff(Unknown Source)" + separator +
+                                  "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:59)";
             String actual = actualTrace.toString();
             boolean isStartWith = actual.startsWith( correctTrace );
+//            for( int i = 0; i < correctTrace.length(); i++ )
+//            {
+//                assertEquals( "Char pos: " + i,
+//                              new String( new char[] { correctTrace.charAt( i )} ) + ":" +  Integer.toHexString( correctTrace.charAt( i ) ),
+//                              new String( new char[] { actual.charAt( i )} ) + ":" +  Integer.toHexString( actual.charAt( i ) )
+//                );
+//            }
             assertTrue( "Trace should have been:\n" + correctTrace + "\nbut was:\n" + actualTrace, isStartWith );
         }
     }

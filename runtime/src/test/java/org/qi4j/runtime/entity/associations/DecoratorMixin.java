@@ -17,11 +17,11 @@
  */
 package org.qi4j.runtime.entity.associations;
 
-import org.qi4j.api.injection.scope.Uses;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import org.qi4j.api.injection.scope.Uses;
 
 /**
  * Generic decorator mixin that allows a Composite to wrap
@@ -36,11 +36,10 @@ public class DecoratorMixin
 {
     private Object delegate;
 
-    public DecoratorMixin(@Uses Object delegate)
+    public DecoratorMixin( @Uses Object delegate )
     {
         this.delegate = delegate;
     }
-
 
     public Object invoke( Object object, Method method, Object[] args )
         throws Throwable
@@ -84,7 +83,15 @@ public class DecoratorMixin
         for( Object arg : args )
         {
             builder.append( "    " );
-            builder.append( arg.getClass().getName() );
+            Class argClass = arg.getClass();
+            if( Proxy.isProxyClass( argClass ) )
+            {
+                builder.append( Proxy.getInvocationHandler( arg ).getClass().getName() );
+            }
+            else
+            {
+                builder.append( argClass.getName() );
+            }
             builder.append( '\n' );
         }
         return builder.toString();

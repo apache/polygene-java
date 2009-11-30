@@ -17,10 +17,10 @@ package org.qi4j.runtime.types;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import org.qi4j.api.common.TypeName;
-import org.qi4j.api.structure.Module;
 import org.json.JSONException;
 import org.json.JSONWriter;
+import org.qi4j.api.common.TypeName;
+import org.qi4j.api.structure.Module;
 
 /**
  * Number type
@@ -43,12 +43,14 @@ public final class NumberType
         super( type );
     }
 
-    @Override public boolean isNumber()
+    @Override
+    public boolean isNumber()
     {
         return true;
     }
 
-    public void toJSON( Object value, JSONWriter json ) throws JSONException
+    public void toJSON( Object value, JSONWriter json )
+        throws JSONException
     {
         Number number = (Number) value;
         if( type.isClass( Integer.class ) )

@@ -15,16 +15,16 @@
 package org.qi4j.runtime.types;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.ArrayList;
-import org.qi4j.api.common.TypeName;
-import org.qi4j.api.structure.Module;
+import java.util.List;
 import org.json.JSONException;
 import org.json.JSONStringer;
 import org.json.JSONTokener;
 import org.json.JSONWriter;
-import org.qi4j.spi.property.ValueType;
+import org.qi4j.api.common.TypeName;
+import org.qi4j.api.structure.Module;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.property.ValueType;
 
 /**
  * Base class for types of values in ValueComposites.
@@ -126,5 +126,4 @@ public abstract class AbstractValueType
     {
         return type.toString();
     }
-
 }

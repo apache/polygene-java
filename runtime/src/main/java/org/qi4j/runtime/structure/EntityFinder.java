@@ -19,6 +19,7 @@ import java.util.List;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.runtime.entity.EntityModel;
+import org.qi4j.spi.entity.EntityDescriptor;
 
 /**
  * JAVADOC
@@ -26,11 +27,21 @@ import org.qi4j.runtime.entity.EntityModel;
 class EntityFinder
     implements ModuleVisitor
 {
-    Class mixinType;
-    List<ModuleInstance> modules = new ArrayList<ModuleInstance>();
-    List<EntityModel> models = new ArrayList<EntityModel>();
+    private final Class mixinType;
+    private final List<ModuleInstance> modules;
+    private final List<EntityModel> models;
 
-    public boolean visitModule( final ModuleInstance moduleInstance, ModuleModel moduleModel, final Visibility visibility )
+    public EntityFinder( Class type )
+    {
+        mixinType = type;
+        models = new ArrayList<EntityModel>();
+        modules = new ArrayList<ModuleInstance>();
+    }
+
+    public boolean visitModule( final ModuleInstance moduleInstance,
+                                ModuleModel moduleModel,
+                                final Visibility visibility
+    )
     {
         moduleModel.entities().visitModel( new ModelVisitor()
         {
@@ -57,5 +68,45 @@ class EntityFinder
         } );
 
         return true;
+    }
+
+    EntityModel getFoundModel()
+    {
+        return models.get(0);
+    }
+
+    boolean noModelExist()
+    {
+        return models.isEmpty();
+    }
+
+    boolean multipleModelsExists()
+    {
+        return models.size() > 1;
+    }
+
+    List<Class<?>> ambigousTypes()
+    {
+        List<Class<?>> ambiguousTypes = new ArrayList<Class<?>>();
+        for( EntityModel model : models )
+        {
+            ambiguousTypes.add( model.type() );
+        }
+        return ambiguousTypes;
+    }
+
+    public ModuleInstance getFoundModule()
+    {
+        return modules.get( 0 );
+    }
+
+    public List<ModuleInstance> modules()
+    {
+        return modules;
+    }
+
+    public List<EntityModel> models()
+    {
+        return models;
     }
 }

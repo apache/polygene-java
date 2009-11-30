@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.structure;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.qi4j.api.common.QualifiedName;
@@ -101,24 +100,20 @@ public class ModuleUnitOfWork
     {
         EntityFinder finder = moduleInstance.findEntityModel( type );
 
-        if( finder.models.isEmpty() )
+        if( finder.noModelExist() )
         {
             throw new EntityTypeNotFoundException( type.getName() );
         }
 
-        if( finder.models.size() > 1 )
+        if( finder.multipleModelsExists() )
         {
-            List<Class<?>> ambiguousTypes = new ArrayList<Class<?>>();
-            for( EntityModel model : finder.models )
-            {
-                ambiguousTypes.add( model.type() );
-            }
+            List<Class<?>> ambiguousTypes = finder.ambigousTypes();
             throw new AmbiguousTypeException( type, ambiguousTypes );
         }
 
         // Transfer state
-        EntityModel entityModel = finder.models.get( 0 );
-        ModuleInstance entityModuleInstance = finder.modules.get( 0 );
+        EntityModel entityModel = finder.getFoundModel();
+        ModuleInstance entityModuleInstance = finder.getFoundModule();
 
         // Generate id
         if( identity == null )
@@ -158,23 +153,19 @@ public class ModuleUnitOfWork
     {
         EntityFinder finder = moduleInstance.findEntityModel( type );
 
-        if( finder.models.isEmpty() )
+        if( finder.noModelExist() )
         {
             throw new EntityTypeNotFoundException( type.getName() );
         }
 
-        if( finder.models.size() > 1 )
+        if( finder.multipleModelsExists() )
         {
-            List<Class<?>> ambiguousTypes = new ArrayList<Class<?>>();
-            for( EntityModel model : finder.models )
-            {
-                ambiguousTypes.add( model.type() );
-            }
+            List<Class<?>> ambiguousTypes = finder.ambigousTypes();
             throw new AmbiguousTypeException( type, ambiguousTypes );
         }
 
-        EntityModel entityModel = finder.models.get( 0 );
-        ModuleInstance entityModuleInstance = finder.modules.get( 0 );
+        EntityModel entityModel = finder.getFoundModel();
+        ModuleInstance entityModuleInstance = finder.getFoundModule();
         EntityStore entityStore = entityModuleInstance.entities().entityStore();
 
         // Generate id if necessary
@@ -210,12 +201,12 @@ public class ModuleUnitOfWork
     {
         EntityFinder finder = moduleInstance.findEntityModel( type );
 
-        if( finder.models.isEmpty() )
+        if( finder.noModelExist() )
         {
             throw new EntityTypeNotFoundException( type.getName() );
         }
 
-        return uow.get( parseEntityReference( identity ), this, finder.models, finder.modules, type ).<T>proxy();
+        return uow.get( parseEntityReference( identity ), this, finder.models(), finder.modules(), type ).<T>proxy();
     }
 
     public <T> T get( T entity )
@@ -223,8 +214,10 @@ public class ModuleUnitOfWork
     {
         EntityComposite entityComposite = (EntityComposite) entity;
         EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
-        return uow.get( compositeInstance.identity(), this, Collections.singletonList( compositeInstance.entityModel() ), Collections.singletonList( compositeInstance.module() ), compositeInstance.type() )
-            .<T>proxy();
+        List<EntityModel> model = Collections.singletonList( compositeInstance.entityModel() );
+        List<ModuleInstance> module = Collections.singletonList( compositeInstance.module() );
+        Class<? extends EntityComposite> type = compositeInstance.type();
+        return uow.get( compositeInstance.identity(), this, model, module, type ).<T>proxy();
     }
 
     public void remove( Object entity )

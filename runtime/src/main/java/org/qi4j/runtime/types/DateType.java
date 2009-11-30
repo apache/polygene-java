@@ -14,20 +14,19 @@
 
 package org.qi4j.runtime.types;
 
+import java.lang.reflect.Type;
+import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONWriter;
 import static org.qi4j.api.common.TypeName.*;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.DateFunctions;
 
-import java.lang.reflect.Type;
-import java.util.Date;
-
 /**
  * Date type. Use ISO8601 format (http://www.w3.org/TR/NOTE-datetime). Assumes UTC time.
  */
 public final class DateType
-        extends AbstractStringType
+    extends AbstractStringType
 {
     public DateType()
     {
@@ -41,7 +40,7 @@ public final class DateType
     }
 
     public void toJSON( Object value, JSONWriter json )
-            throws JSONException
+        throws JSONException
     {
         Date date = (Date) value;
 
@@ -55,14 +54,14 @@ public final class DateType
 
     @Override
     public String toQueryParameter( Object value )
-            throws IllegalArgumentException
+        throws IllegalArgumentException
     {
         return value == null ? null : DateFunctions.toUtcString( (Date) value );
     }
 
     @Override
     public Object fromQueryParameter( String parameter, Module module )
-            throws IllegalArgumentException
+        throws IllegalArgumentException
     {
         return DateFunctions.fromString( parameter );
     }

@@ -14,6 +14,12 @@
 
 package org.qi4j.runtime.types;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Proxy;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONWriter;
@@ -29,34 +35,29 @@ import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.util.Base64Encoder;
 import org.qi4j.spi.value.ValueDescriptor;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.lang.reflect.Proxy;
-
 /**
  * Serializable type. If the serialized object is an ValueComposite,
  * then use JSON format for VC's. If the serialized object is an
  * EntityReference, then use JSON format for EntityReferences.
  */
 public final class SerializableType
-        extends AbstractStringType
+    extends AbstractStringType
 {
     public SerializableType( TypeName type )
     {
         super( type );
     }
 
-    public void toJSON( Object value, JSONWriter json ) throws JSONException
+    public void toJSON( Object value, JSONWriter json )
+        throws JSONException
     {
         // Check if we are serializing an Entity
-        if (value instanceof EntityComposite)
+        if( value instanceof EntityComposite )
         {
             // Store reference instead
             value = EntityReference.getEntityReference( value );
-        } else if (value instanceof ValueComposite)
+        }
+        else if( value instanceof ValueComposite )
         {
             // Serialize ValueComposite JSON instead
             CompositeInstance instance = (CompositeInstance) Proxy.getInvocationHandler( value );
@@ -66,7 +67,7 @@ public final class SerializableType
             {
                 valueType.toJSON( value, json );
             }
-            catch (JSONException e)
+            catch( JSONException e )
             {
                 throw new IllegalStateException( "Could not JSON serialize value", e );
             }
@@ -84,23 +85,24 @@ public final class SerializableType
             String stringValue = new String( bytes, "UTF-8" );
             json.value( stringValue );
         }
-        catch (IOException e)
+        catch( IOException e )
         {
             throw new IllegalArgumentException( "Could not serialize value", e );
         }
-
     }
 
-    public Object fromJSON( Object json, Module module ) throws JSONException
+    public Object fromJSON( Object json, Module module )
+        throws JSONException
     {
         try
         {
-            if (json instanceof JSONObject)
+            if( json instanceof JSONObject )
             {
                 // ValueComposite deserialization
-                ValueDescriptor valueDescriptor = ((ModuleSPI) module).valueDescriptor( type.name() );
+                ValueDescriptor valueDescriptor = ( (ModuleSPI) module ).valueDescriptor( type.name() );
                 return valueDescriptor.valueType().fromJSON( json, module );
-            } else
+            }
+            else
             {
                 String serializedString = (String) json;
                 byte[] bytes = serializedString.getBytes( "UTF-8" );
@@ -110,14 +112,14 @@ public final class SerializableType
                 Object result = oin.readObject();
                 oin.close();
 
-                if (result instanceof EntityReference)
+                if( result instanceof EntityReference )
                 {
                     EntityReference ref = (EntityReference) result;
-                    if (!type.isClass( EntityReference.class ))
+                    if( !type.isClass( EntityReference.class ) )
                     {
                         Class mixinType = module.classLoader().loadClass( type.name() );
                         UnitOfWork unitOfWork = module.unitOfWorkFactory().currentUnitOfWork();
-                        if (unitOfWork != null)
+                        if( unitOfWork != null )
                         {
                             result = unitOfWork.get( mixinType, ref.identity() );
                         }
@@ -127,11 +129,11 @@ public final class SerializableType
                 return result;
             }
         }
-        catch (IOException e)
+        catch( IOException e )
         {
             throw new IllegalStateException( "Could not deserialize value", e );
         }
-        catch (ClassNotFoundException e)
+        catch( ClassNotFoundException e )
         {
             throw new IllegalStateException( "Could not find class for serialized value", e );
         }
@@ -145,7 +147,8 @@ public final class SerializableType
     }
 
     @Override
-    public Object fromQueryParameter( String parameter, Module module ) throws JSONException
+    public Object fromQueryParameter( String parameter, Module module )
+        throws JSONException
     {
         String json = "\"" + parameter + "\"";
 
