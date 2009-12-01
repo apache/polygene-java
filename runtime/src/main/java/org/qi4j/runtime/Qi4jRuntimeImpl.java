@@ -33,6 +33,7 @@ import org.qi4j.api.service.UnknownServiceReferenceType;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.Qi4jRuntime;
@@ -141,45 +142,59 @@ public final class Qi4jRuntimeImpl
         }
         catch( NoSuchEntityException e )
         {
-
-            Module module = ServiceInstance.getCompositeInstance( serviceComposite ).module();
-            UnitOfWork buildUow = module.unitOfWorkFactory().newUnitOfWork();
-
-            EntityBuilder<T> configBuilder = buildUow.newEntityBuilder( serviceModel.<T>configurationType(), identity );
-
-            // Check for defaults
-            String s = identity + ".properties";
-            InputStream asStream = serviceComposite.type().getResourceAsStream( s );
-            if( asStream != null )
-            {
-                try
-                {
-                    PropertyMapper.map( asStream, (Composite) configBuilder.instance() );
-                }
-                catch( IOException e1 )
-                {
-                    InstantiationException exception = new InstantiationException( "Could not read underlying Properties file." );
-                    exception.initCause( e1 );
-                    throw exception;
-                }
-            }
-
-            try
-            {
-                configuration = configBuilder.newInstance();
-                buildUow.complete();
-
-                // Try again
-                return (T) getConfigurationInstance( serviceComposite, uow );
-            }
-            catch( Exception e1 )
-            {
-                InstantiationException ex = new InstantiationException( "Could not instantiate configuration, and no Properties file was found (" + s + ")" );
-                ex.initCause( e1 );
-                throw ex;
-            }
+            return (T) initializeConfigurationInstance( serviceComposite, uow, serviceModel, identity );
+        }
+        catch( EntityTypeNotFoundException e )
+        {
+            return (T) initializeConfigurationInstance( serviceComposite, uow, serviceModel, identity );
         }
         return (T) configuration;
+    }
+
+    private <T> T initializeConfigurationInstance( ServiceComposite serviceComposite,
+                                                   UnitOfWork uow,
+                                                   ServiceModel serviceModel,
+                                                   String identity
+    )
+        throws InstantiationException
+    {
+        T configuration;
+        Module module = ServiceInstance.getCompositeInstance( serviceComposite ).module();
+        UnitOfWork buildUow = module.unitOfWorkFactory().newUnitOfWork();
+
+        EntityBuilder<T> configBuilder = buildUow.newEntityBuilder( serviceModel.<T>configurationType(), identity );
+
+        // Check for defaults
+        String s = identity + ".properties";
+        InputStream asStream = serviceComposite.type().getResourceAsStream( s );
+        if( asStream != null )
+        {
+            try
+            {
+                PropertyMapper.map( asStream, (Composite) configBuilder.instance() );
+            }
+            catch( IOException e1 )
+            {
+                InstantiationException exception = new InstantiationException( "Could not read underlying Properties file." );
+                exception.initCause( e1 );
+                throw exception;
+            }
+        }
+
+        try
+            {
+                configuration = configBuilder.newInstance();
+            buildUow.complete();
+
+            // Try again
+            return (T) getConfigurationInstance( serviceComposite, uow );
+        }
+        catch( Exception e1 )
+        {
+            InstantiationException ex = new InstantiationException( "Could not instantiate configuration, and no Properties file was found (" + s + ")" );
+            ex.initCause( e1 );
+            throw ex;
+        }
     }
 
     public Class<?> getConfigurationType( Composite serviceComposite )
