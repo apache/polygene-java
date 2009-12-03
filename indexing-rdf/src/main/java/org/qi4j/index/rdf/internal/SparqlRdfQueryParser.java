@@ -25,6 +25,7 @@ import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.ComparisonPredicate;
 import org.qi4j.api.query.grammar.Conjunction;
 import org.qi4j.api.query.grammar.Disjunction;
+import org.qi4j.api.query.grammar.EqualsPredicate;
 import org.qi4j.api.query.grammar.ManyAssociationContainsPredicate;
 import org.qi4j.api.query.grammar.MatchesPredicate;
 import org.qi4j.api.query.grammar.Negation;
@@ -75,7 +76,7 @@ public class SparqlRdfQueryParser
         triples.addDefaultTriples( resultType );
 
         // and collect namespaces
-        final String filter = processFilter( whereClause );
+        final String filter = processFilter( whereClause, true );
         final String orderBy = processOrderBy( orderBySegments );
 
         StringBuilder query = new StringBuilder();
@@ -128,7 +129,7 @@ public class SparqlRdfQueryParser
         return query.toString();
     }
 
-    private String processFilter( final BooleanExpression expression )
+    private String processFilter( final BooleanExpression expression, boolean allowInline )
     {
         if( expression == null )
         {
@@ -137,20 +138,35 @@ public class SparqlRdfQueryParser
         if( expression instanceof Conjunction )
         {
             final Conjunction conjunction = (Conjunction) expression;
-            return format( "(%s && %s)",
-                           processFilter( conjunction.leftSideExpression() ),
-                           processFilter( conjunction.rightSideExpression() ) );
+            String left = processFilter( conjunction.leftSideExpression(), allowInline );
+            String right = processFilter( conjunction.rightSideExpression(), allowInline );
+
+            if (left.equals(""))
+                return right;
+            else if (right.equals(""))
+                return left;
+            else
+                return format( "(%s && %s)",
+                        left,
+                        right );
         }
         if( expression instanceof Disjunction )
         {
             final Disjunction disjunction = (Disjunction) expression;
-            return format( "(%s || %s)",
-                           processFilter( disjunction.leftSideExpression() ),
-                           processFilter( disjunction.rightSideExpression() ) );
+            String left = processFilter( disjunction.leftSideExpression(), false );
+            String right = processFilter( disjunction.rightSideExpression(), false );
+            if (left.equals(""))
+                return right;
+            else if (right.equals(""))
+                return left;
+            else
+                return format( "(%s || %s)",
+                    left,
+                    right );
         }
         if( expression instanceof Negation )
         {
-            return format( "(!%s)", processFilter( ( (Negation) expression ).expression() ) );
+            return format( "(!%s)", processFilter( ( (Negation) expression ).expression(), false ) );
         }
         if( expression instanceof MatchesPredicate )
         {
@@ -158,11 +174,11 @@ public class SparqlRdfQueryParser
         }
         if( expression instanceof ComparisonPredicate )
         {
-            return processComparisonPredicate( (ComparisonPredicate) expression );
+            return processComparisonPredicate( (ComparisonPredicate) expression, allowInline );
         }
         if( expression instanceof ManyAssociationContainsPredicate)
         {
-            return processManyAssociationContainsPredicate( (ManyAssociationContainsPredicate) expression );
+            return processManyAssociationContainsPredicate( (ManyAssociationContainsPredicate) expression, allowInline );
         }
         if( expression instanceof PropertyNullPredicate )
         {
@@ -190,15 +206,26 @@ public class SparqlRdfQueryParser
         }
     }
 
-    private String processComparisonPredicate( final ComparisonPredicate predicate )
+    private String processComparisonPredicate( final ComparisonPredicate predicate, boolean allowInline )
     {
         ValueExpression valueExpression = predicate.valueExpression();
         if( valueExpression instanceof SingleValueExpression )
         {
-            String valueVariable = triples.addTriple( predicate.propertyReference(), false ).getValue();
-            final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
-            return String.format( "(%s %s \"%s\")", valueVariable, Operators.getOperator( predicate.getClass() ),
-                                  toString(singleValueExpression.value()) );
+            Triples.Triple triple = triples.addTriple( predicate.propertyReference(), false );
+
+            // Don't use FILTER for equals-comparison. Do direct match instead
+            if (predicate instanceof EqualsPredicate && allowInline)
+            {
+                final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
+                triple.setValue( "\""+toString(singleValueExpression.value())+"\"" );
+                return "";
+            } else
+            {
+                String valueVariable = triple.getValue();
+                final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
+                return String.format( "(%s %s \"%s\")", valueVariable, Operators.getOperator( predicate.getClass() ),
+                                      toString(singleValueExpression.value()) );
+            }
         }
         else
         {
@@ -206,15 +233,25 @@ public class SparqlRdfQueryParser
         }
     }
 
-    private String processManyAssociationContainsPredicate( ManyAssociationContainsPredicate predicate )
+    private String processManyAssociationContainsPredicate( ManyAssociationContainsPredicate predicate, boolean allowInline )
     {
         ValueExpression valueExpression = predicate.valueExpression();
         if( valueExpression instanceof SingleValueExpression )
         {
-            String valueVariable = triples.addTriple( predicate.associationReference(), false ).getValue();
-            final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
-            return String.format( "(%s %s <%s>)", valueVariable, Operators.getOperator( predicate.getClass() ),
-                                  toString(singleValueExpression.value()) );
+            Triples.Triple triple = triples.addTriple( predicate.associationReference(), false );
+
+            if (allowInline)
+            {
+                final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
+                triple.setValue( "<"+toString(singleValueExpression.value())+">" );
+                return "";
+            } else
+            {
+                String valueVariable = triple.getValue();
+                final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
+                return String.format( "(%s %s <%s>)", valueVariable, Operators.getOperator( predicate.getClass() ),
+                                      toString(singleValueExpression.value()) );
+            }
         }
         else
         {

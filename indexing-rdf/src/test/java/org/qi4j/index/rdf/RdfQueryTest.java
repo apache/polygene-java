@@ -644,4 +644,16 @@ public class RdfQueryTest
 
         verifyUnorderedResults( query, "Joe Doe" );
     }
+
+    @Test
+    public void script34()
+    {
+        QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
+        Person person = templateFor(Person.class);
+        Female annDoe = unitOfWork.get( Female.class, "anndoe" );
+        Query<Person> query = qb.where( eq(person.mother(), annDoe) ).
+                newQuery( unitOfWork );
+
+        verifyUnorderedResults( query, "Joe Doe" );
+    }
 }

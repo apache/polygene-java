@@ -17,16 +17,17 @@
  */
 package org.qi4j.index.rdf.internal;
 
-import static java.lang.String.format;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.ManyAssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.util.Classes;
+
+import static java.lang.String.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class Triples
     implements Iterable<Triples.Triple>
@@ -185,7 +186,7 @@ public class Triples
     {
         private final String subject;
         private final String predicate;
-        private final String value;
+        private String value;
         private boolean optional;
 
         private Triple( final String subject,
@@ -269,6 +270,11 @@ public class Triples
         public String getValue()
         {
             return value;
+        }
+
+        public void setValue( String value )
+        {
+            this.value = value;
         }
 
         public boolean isOptional()
