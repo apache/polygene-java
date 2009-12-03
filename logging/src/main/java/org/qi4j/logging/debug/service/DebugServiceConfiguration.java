@@ -17,10 +17,11 @@
  */
 package org.qi4j.logging.debug.service;
 
+import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
 
 public interface DebugServiceConfiguration
+    extends ConfigurationComposite
 {
     Property<Integer> debugLevel();
-
 }

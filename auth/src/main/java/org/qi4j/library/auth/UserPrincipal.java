@@ -25,6 +25,11 @@ public class UserPrincipal
 {
     private User user;
 
+    public UserPrincipal( User user )
+    {
+        this.user = user;
+    }
+
     public String getName()
     {
         return user.toString();

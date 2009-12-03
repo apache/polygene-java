@@ -33,6 +33,11 @@ public final class DebugConcern
     @Optional @Service private DebuggingService loggingService;
     @This private Composite composite;
 
+    public DebugConcern()
+    {
+        System.out.println( "DebugConcern created." );
+    }
+
     public Integer debugLevel()
     {
         if( loggingService != null )
@@ -44,13 +49,15 @@ public final class DebugConcern
 
     public void debug( int priority, String message )
     {
+        System.out.println( "L:" + composite );
         if( loggingService == null )
         {
             return;
         }
         if( priority >= loggingService.debugLevel() )
         {
-            loggingService.debug( api.dereference( composite ), message );
+            Composite derefed = api.dereference( composite );
+            loggingService.debug( derefed, message );
         }
     }
 

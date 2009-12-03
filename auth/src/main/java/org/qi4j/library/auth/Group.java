@@ -18,6 +18,8 @@
  */
 package org.qi4j.library.auth;
 
-public interface Group extends Members, RoleAssignee
+import org.qi4j.api.entity.EntityComposite;
+
+public interface Group extends Members, RoleAssignee, EntityComposite
 {
 }

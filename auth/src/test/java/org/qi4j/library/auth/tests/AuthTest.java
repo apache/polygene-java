@@ -19,31 +19,24 @@ package org.qi4j.library.auth.tests;
 
 import java.util.Date;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.auth.AuthenticationMethod;
-import org.qi4j.library.auth.Authorization;
 import org.qi4j.library.auth.AuthorizationContext;
-import org.qi4j.library.auth.AuthorizationContextComposite;
+import org.qi4j.library.auth.AuthorizationContextValue;
 import org.qi4j.library.auth.AuthorizationService;
 import org.qi4j.library.auth.Group;
-import org.qi4j.library.auth.GroupEntity;
 import org.qi4j.library.auth.NamedPermission;
-import org.qi4j.library.auth.NamedPermissionEntity;
 import org.qi4j.library.auth.ProtectedResource;
 import org.qi4j.library.auth.Role;
 import org.qi4j.library.auth.RoleAssignment;
-import org.qi4j.library.auth.RoleAssignmentEntity;
-import org.qi4j.library.auth.RoleEntity;
 import org.qi4j.library.auth.User;
-import org.qi4j.library.auth.UserComposite;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
@@ -51,22 +44,22 @@ public class AuthTest
     extends AbstractQi4jTest
 {
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
-        module.addEntities( UserComposite.class,
-                            GroupEntity.class,
-                            RoleEntity.class,
-                            NamedPermissionEntity.class,
-                            RoleAssignmentEntity.class,
+        module.addEntities( User.class,
+                            Group.class,
+                            Role.class,
+                            NamedPermission.class,
+                            RoleAssignment.class,
                             SecuredRoom.class );
-        module.addTransients( AuthorizationContextComposite.class );
-        module.addServices( AuthorizationService.class);
+        module.addValues( AuthorizationContextValue.class );
+        module.addServices( AuthorizationService.class );
 
         new EntityTestAssembler().assemble( module );
     }
 
     @Test
-    @Ignore("Wait for role resolution in UoW to work")
     public void testAuth()
         throws Exception
     {
@@ -91,10 +84,11 @@ public class AuthTest
             role.permissions().add( 0, permission );
 
             // Find authorization service
-            Authorization authorization = serviceLocator.<Authorization>findService( Authorization.class ).get();
+            AuthorizationService authorization = serviceLocator.<AuthorizationService>findService( AuthorizationService.class )
+                .get();
 
             // Create authorization context
-            TransientBuilder<AuthorizationContext> accb = transientBuilderFactory.newTransientBuilder( AuthorizationContext.class );
+            ValueBuilder<AuthorizationContext> accb = valueBuilderFactory.newValueBuilder( AuthorizationContext.class );
             AuthorizationContext context = accb.prototype();
             context.user().set( user );
             context.time().set( new Date() );
@@ -150,6 +144,7 @@ public class AuthTest
 
     public class PojoRunner
     {
-        @Service Authorization auth;
+        @Service
+        AuthorizationService auth;
     }
 }

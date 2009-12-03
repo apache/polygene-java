@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2007-2008, Niclas Hedhman. All Rights Reserved.
- * Copyright (c) 2007-2008, Rickard Öberg. All Rights Reserved.
+ * Copyright 2009 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -14,11 +13,16 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
+
 package org.qi4j.library.auth;
 
-public interface Authorization
+import org.qi4j.api.property.Property;
+import org.qi4j.api.common.Optional;
+
+public interface Securable
 {
-    boolean hasPermission( Permission requiredPermission, ProtectedResource resource, AuthorizationContext context );
+    @Optional
+    Property<String> hashedSecret();
 }
