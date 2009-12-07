@@ -14,26 +14,27 @@
 
 package org.qi4j.runtime.types;
 
+import org.json.JSONException;
+import org.json.JSONWriter;
+import org.qi4j.api.common.TypeName;
+import org.qi4j.api.structure.Module;
+
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import org.qi4j.api.common.TypeName;
-import org.qi4j.api.structure.Module;
-import org.json.JSONException;
-import org.json.JSONWriter;
 
 /**
  * Number type
  */
 public final class NumberType
-    extends AbstractValueType
+        extends AbstractValueType
 {
     public static boolean isNumber( Type type )
     {
-        if( type instanceof Class )
+        if (type instanceof Class)
         {
             Class typeClass = (Class) type;
-            return ( Number.class.isAssignableFrom( typeClass ) );
+            return (Number.class.isAssignableFrom( typeClass ));
         }
         return false;
     }
@@ -43,74 +44,69 @@ public final class NumberType
         super( type );
     }
 
-    @Override public boolean isNumber()
+    @Override
+    public boolean isNumber()
     {
         return true;
     }
 
     public void toJSON( Object value, JSONWriter json ) throws JSONException
     {
+        json.value( toJSON( value ) );
+    }
+
+    public Object toJSON( Object value ) throws JSONException
+    {
         Number number = (Number) value;
-        if( type.isClass( Integer.class ) )
+        if (type.isClass( Integer.class ))
         {
-            json.value( number.longValue() );
-        }
-        else if( type.isClass( Long.class ) )
+            return number.longValue();
+        } else if (type.isClass( Long.class ))
         {
-            json.value( number.longValue() );
-        }
-        else if( type.isClass( Double.class ) )
+            return number.longValue();
+        } else if (type.isClass( Double.class ))
         {
-            json.value( number.doubleValue() );
-        }
-        else if( type.isClass( Float.class ) )
+            return number.doubleValue();
+        } else if (type.isClass( Float.class ))
         {
-            json.value( number.doubleValue() );
-        }
-        else if( type.isClass( Short.class ) )
+            return number.doubleValue();
+        } else if (type.isClass( Short.class ))
         {
-            json.value( number.longValue() );
-        }
-        else if( type.isClass( BigDecimal.class ) )
+            return number.longValue();
+        } else if (type.isClass( BigDecimal.class ))
         {
-            json.value( ( (BigDecimal) number ).toPlainString() );
-        }
-        else if( type.isClass( BigInteger.class ) )
+            return ((BigDecimal) number).toPlainString();
+        } else if (type.isClass( BigInteger.class ))
         {
-            json.value( number.toString() );
-        }
+            return number.toString();
+        } else throw new IllegalArgumentException( "Value is not a number:" + value );
     }
 
     public Object fromJSON( Object json, Module module )
     {
-        if( type.isClass( BigDecimal.class ) )
+        if (type.isClass( BigDecimal.class ))
         {
-            return new BigDecimal( ( (String) json ) );
-        }
-        else if( type.isClass( BigInteger.class ) )
+            return new BigDecimal( ((String) json) );
+        } else if (type.isClass( BigInteger.class ))
         {
             return new BigInteger( (String) json );
         }
 
         Number number = (Number) json;
 
-        if( type.isClass( Integer.class ) )
+        if (type.isClass( Integer.class ))
         {
             return number.intValue();
-        }
-        else if( type.isClass( Long.class ) )
+        } else if (type.isClass( Long.class ))
         {
             return number.longValue();
-        }
-        else if( type.isClass( Double.class ) )
+        } else if (type.isClass( Double.class ))
         {
             return number.doubleValue();
-        }
-        else if( type.isClass( Float.class ) )
+        } else if (type.isClass( Float.class ))
         {
             return number.floatValue();
-        }
-        else if( type.isClass( Short.class ) )
+        } else if (type.isClass( Short.class ))
         {
             return number.shortValue();
         }

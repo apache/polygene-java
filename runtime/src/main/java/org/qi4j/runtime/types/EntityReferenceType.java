@@ -48,6 +48,11 @@ public final class EntityReferenceType
         json.value( value.toString() );
     }
 
+    public Object toJSON( Object value ) throws JSONException
+    {
+        return value.toString();
+    }
+
     public Object fromJSON( Object json, Module module )
     {
         String result = (String) json;

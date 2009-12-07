@@ -73,6 +73,20 @@ public final class CollectionType
         json.endArray();
     }
 
+    public Object toJSON( Object value ) throws JSONException
+    {
+        JSONArray array = new JSONArray();
+
+        Collection collection = (Collection) value;
+        int idx = 0;
+        for (Object collectionValue : collection)
+        {
+            array.put( idx++, collectedType.toJSON( collectionValue ) );
+        }
+
+        return array;
+    }
+
     public Object fromJSON( Object json, Module module ) throws JSONException
     {
         JSONArray array = (JSONArray) json;

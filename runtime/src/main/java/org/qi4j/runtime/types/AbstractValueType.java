@@ -14,23 +14,24 @@
 
 package org.qi4j.runtime.types;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.ArrayList;
-import org.qi4j.api.common.TypeName;
-import org.qi4j.api.structure.Module;
 import org.json.JSONException;
 import org.json.JSONStringer;
 import org.json.JSONTokener;
 import org.json.JSONWriter;
-import org.qi4j.spi.property.ValueType;
+import org.qi4j.api.common.TypeName;
+import org.qi4j.api.structure.Module;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.property.ValueType;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Base class for types of values in ValueComposites.
  */
 public abstract class AbstractValueType
-    implements Serializable, ValueType
+        implements Serializable, ValueType
 {
     private static final List<PropertyType> EMPTY_LIST = new ArrayList<PropertyType>();
 
@@ -82,15 +83,17 @@ public abstract class AbstractValueType
     }
 
     public abstract void toJSON( Object value, JSONWriter json )
-        throws JSONException;
+            throws JSONException;
+
+    public abstract Object toJSON( Object value ) throws JSONException;
 
     public abstract Object fromJSON( Object object, Module module )
-        throws JSONException;
+            throws JSONException;
 
     public String toQueryParameter( Object value )
-        throws IllegalArgumentException
+            throws IllegalArgumentException
     {
-        if( value == null )
+        if (value == null)
         {
             return null;
         }
@@ -102,7 +105,7 @@ public abstract class AbstractValueType
             toJSON( value, jsonStringer );
             jsonStringer.endArray();
         }
-        catch( JSONException e )
+        catch (JSONException e)
         {
             throw new IllegalArgumentException( "Query parameter value is not a proper JSON value", e );
         }
@@ -111,9 +114,9 @@ public abstract class AbstractValueType
     }
 
     public Object fromQueryParameter( String parameter, Module module )
-        throws IllegalArgumentException, JSONException
+            throws IllegalArgumentException, JSONException
     {
-        if( parameter == null )
+        if (parameter == null)
         {
             return null;
         }

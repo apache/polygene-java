@@ -14,24 +14,25 @@
 
 package org.qi4j.runtime.types;
 
-import java.lang.reflect.Type;
-import org.qi4j.api.common.TypeName;
-import org.qi4j.api.structure.Module;
 import org.json.JSONException;
 import org.json.JSONWriter;
+import org.qi4j.api.common.TypeName;
+import org.qi4j.api.structure.Module;
+
+import java.lang.reflect.Type;
 
 /**
  * String type
  */
 public final class StringType
-    extends AbstractStringType
+        extends AbstractStringType
 {
     public static boolean isString( Type type )
     {
-        if( type instanceof Class )
+        if (type instanceof Class)
         {
             Class typeClass = (Class) type;
-            return ( typeClass.equals( String.class ) );
+            return (typeClass.equals( String.class ));
         }
         return false;
     }
@@ -44,6 +45,11 @@ public final class StringType
     public void toJSON( Object value, JSONWriter json ) throws JSONException
     {
         json.value( value );
+    }
+
+    public Object toJSON( Object value ) throws JSONException
+    {
+        return value;
     }
 
     public Object fromJSON( Object json, Module module )

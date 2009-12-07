@@ -113,6 +113,50 @@ public final class ValueCompositeType
         json.endObject();
     }
 
+    public Object toJSON( Object value ) throws JSONException
+    {
+        if (value == null)
+        {
+            return null;
+        }
+
+        JSONObject object = new JSONObject();
+        ValueComposite valueComposite = (ValueComposite) value;
+        StateHolder state = valueComposite.state();
+        final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
+        state.visitProperties( new StateHolder.StateVisitor()
+        {
+            public void visitProperty( QualifiedName name, Object value )
+            {
+                values.put( name, value );
+            }
+        } );
+
+        List<PropertyType> actualTypes = types;
+        if (!value.getClass().getInterfaces()[0].getName().equals( type.name() ))
+        {
+            // Actual value is a subtype - use it instead
+            ValueModel valueModel = (ValueModel) ValueInstance.getValueInstance( (ValueComposite) value ).compositeModel();
+
+            actualTypes = valueModel.valueType().types();
+            object.put( "_type", valueModel.valueType().type().name() );
+        }
+
+        for (PropertyType propertyType : actualTypes)
+        {
+
+            Object propertyValue = values.get( propertyType.qualifiedName() );
+            if (propertyValue == null)
+            {
+                object.put( propertyType.qualifiedName().name(), JSONObject.NULL );
+            } else
+            {
+                object.put( propertyType.qualifiedName().name(), propertyType.type().toJSON( propertyValue ) );
+            }
+        }
+        return object;
+    }
+
     public Object fromJSON( Object json, Module module ) throws JSONException
     {
         JSONObject jsonObject = (JSONObject) json;

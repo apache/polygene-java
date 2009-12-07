@@ -48,6 +48,13 @@ public final class DateType
         json.value( DateFunctions.toUtcString( date ) );
     }
 
+    public Object toJSON( Object value ) throws JSONException
+    {
+        Date date = (Date) value;
+
+        return DateFunctions.toUtcString( date );
+    }
+
     public Object fromJSON( Object json, Module module )
     {
         return DateFunctions.fromString( (String) json );
