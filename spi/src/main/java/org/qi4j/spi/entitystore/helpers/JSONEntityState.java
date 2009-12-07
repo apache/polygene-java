@@ -97,8 +97,8 @@ public final class JSONEntityState
     {
         try
         {
-            Object jsonValue = state.getJSONObject( "properties" ).get( stateName.name() );
-            if (jsonValue == JSONObject.NULL)
+            Object jsonValue = state.getJSONObject( "properties" ).opt( stateName.name() );
+            if (jsonValue == null || jsonValue == JSONObject.NULL)
             {
                 return null;
             } else
@@ -138,7 +138,10 @@ public final class JSONEntityState
     {
         try
         {
-            Object jsonValue = state.getJSONObject( "associations" ).get( stateName.name() );
+            Object jsonValue = state.getJSONObject( "associations" ).opt( stateName.name() );
+            if (jsonValue == null)
+                return null;
+
             EntityReference value = jsonValue == JSONObject.NULL ? null : EntityReference.parseEntityReference( (String) jsonValue );
             return value;
         } catch (JSONException e)
@@ -169,7 +172,6 @@ public final class JSONEntityState
             {
                 jsonValues = new JSONArray();
                 manyAssociations.put( stateName.name(), jsonValues );
-
             }
             return new JSONManyAssociationState( this, jsonValues );
         } catch (JSONException e)
