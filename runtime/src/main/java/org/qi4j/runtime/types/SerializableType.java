@@ -69,7 +69,9 @@ public final class SerializableType
             ValueType valueType = descriptor.valueType();
             try
             {
-                return valueType.toJSON( value );
+                JSONObject object = (JSONObject) valueType.toJSON( value );
+                object.put( "_type", descriptor.type().getName() );
+                return object;
             }
             catch (JSONException e)
             {
@@ -101,7 +103,10 @@ public final class SerializableType
             if (json instanceof JSONObject)
             {
                 // ValueComposite deserialization
-                ValueDescriptor valueDescriptor = ((ModuleSPI) module).valueDescriptor( type.name() );
+                JSONObject jsonObject = (JSONObject) json;
+                String type = jsonObject.getString( "_type" );
+
+                ValueDescriptor valueDescriptor = ((ModuleSPI) module).valueDescriptor( type );
                 return valueDescriptor.valueType().fromJSON( json, module );
             } else
             {
