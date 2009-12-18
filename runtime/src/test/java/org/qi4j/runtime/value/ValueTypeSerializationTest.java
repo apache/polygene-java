@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard …berg. All Rights Reserved.
+ * Copyright (c) 2007, Rickard ï¿½berg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,6 @@
 
 package org.qi4j.runtime.value;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Logger;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -31,17 +27,22 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Logger;
+
 /**
  * Tests for ValueComposites
  */
 public class ValueTypeSerializationTest
-    extends AbstractQi4jTest
+        extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+            throws AssemblyException
     {
-        module.addValues( SomeValue.class, AnotherValue.class, FooValue.class );
+        module.addValues( SomeValue.class, AnotherValue.class, FooValue.class, CustomFooValue.class );
         //, SpecificCollection.class, SpecificValue.class, GenericValue.class);
     }
 
@@ -69,7 +70,10 @@ public class ValueTypeSerializationTest
         proto.entityReference().set( EntityReference.parseEntityReference( "12345" ) );
         proto.another().set( valueBuilder.newInstance() );
         proto.serializable().set( new SerializableObject() );
+        proto.foo().set( valueBuilderFactory.newValue( FooValue.class ) );
         proto.fooValue().set( valueBuilderFactory.newValue( FooValue.class ) );
+        proto.customFoo().set( valueBuilderFactory.newValue( CustomFooValue.class ) );
+        proto.customFooValue().set( valueBuilderFactory.newValue( CustomFooValue.class ) );
         proto.explicit().set( "foobar" );
         SomeValue some = builder.newInstance();
 
@@ -104,6 +108,8 @@ public class ValueTypeSerializationTest
         assertThat( "Same value", some.toString(), equalTo( some2.toString() ) );
         assertThat( "Same value", some, equalTo( some2 ) );
         assertThat( "Same JSON value", json, equalTo( some2.toJSON() ) );
+        assertThat( "Same JSON value", some.customFoo().get() instanceof CustomFooValue, is( true ) );
+        assertThat( "Same JSON value", some.customFooValue().get() instanceof CustomFooValue, is( true ) );
     }
 
     public enum TestEnum
@@ -112,12 +118,12 @@ public class ValueTypeSerializationTest
     }
 
     public interface ExplicitPropertyType
-        extends Property<String>
+            extends Property<String>
     {
     }
 
     public interface SomeValue
-        extends ValueComposite
+            extends ValueComposite
     {
         Property<String> string();
 
@@ -150,7 +156,13 @@ public class ValueTypeSerializationTest
 
         Property<Object> serializable();
 
-        Property<Foo> fooValue();
+        Property<Foo> foo();
+
+        Property<FooValue> fooValue();
+
+        Property<Foo> customFoo();
+
+        Property<FooValue> customFooValue();
 
         ExplicitPropertyType explicit();
 
@@ -186,7 +198,7 @@ public class ValueTypeSerializationTest
 */
 
     public interface AnotherValue
-        extends ValueComposite
+            extends ValueComposite
     {
         @UseDefaults
         Property<String> val1();
@@ -199,12 +211,19 @@ public class ValueTypeSerializationTest
     }
 
     public interface FooValue
-        extends Foo, ValueComposite
+            extends Foo, ValueComposite
     {
     }
 
+    public interface CustomFooValue
+            extends FooValue
+    {
+        @UseDefaults
+        Property<String> custom();
+    }
+
     public static class SerializableObject
-        implements Serializable
+            implements Serializable
     {
         String foo = "Foo";
         int val = 35;
@@ -212,11 +231,11 @@ public class ValueTypeSerializationTest
         @Override
         public boolean equals( Object o )
         {
-            if( this == o )
+            if (this == o)
             {
                 return true;
             }
-            if( o == null || getClass() != o.getClass() )
+            if (o == null || getClass() != o.getClass())
             {
                 return false;
             }

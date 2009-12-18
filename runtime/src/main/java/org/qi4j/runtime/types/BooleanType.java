@@ -17,8 +17,9 @@ package org.qi4j.runtime.types;
 import java.lang.reflect.Type;
 import org.json.JSONException;
 import org.json.JSONWriter;
-import static org.qi4j.api.common.TypeName.*;
 import org.qi4j.api.structure.Module;
+
+import static org.qi4j.api.common.TypeName.*;
 
 /**
  * Boolean type
@@ -51,6 +52,12 @@ public final class BooleanType
         throws JSONException
     {
         json.value( ( (Boolean) value ).booleanValue() );
+    }
+
+    public Object toJSON( Object value )
+        throws JSONException
+    {
+        return value;
     }
 
     public Object fromJSON( Object json, Module module )

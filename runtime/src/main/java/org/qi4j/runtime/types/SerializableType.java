@@ -51,6 +51,12 @@ public final class SerializableType
     public void toJSON( Object value, JSONWriter json )
         throws JSONException
     {
+        json.value( toJSON( value ) );
+    }
+
+    public Object toJSON( Object value )
+        throws JSONException
+    {
         // Check if we are serializing an Entity
         if( value instanceof EntityComposite )
         {
@@ -65,13 +71,14 @@ public final class SerializableType
             ValueType valueType = descriptor.valueType();
             try
             {
-                valueType.toJSON( value, json );
+                JSONObject object = (JSONObject) valueType.toJSON( value );
+                object.put( "_type", descriptor.type().getName() );
+                return object;
             }
             catch( JSONException e )
             {
                 throw new IllegalStateException( "Could not JSON serialize value", e );
             }
-            return;
         }
 
         // Serialize value
@@ -83,7 +90,7 @@ public final class SerializableType
             out.close();
             byte[] bytes = Base64Encoder.encode( bout.toByteArray(), true );
             String stringValue = new String( bytes, "UTF-8" );
-            json.value( stringValue );
+            return stringValue;
         }
         catch( IOException e )
         {
@@ -99,7 +106,10 @@ public final class SerializableType
             if( json instanceof JSONObject )
             {
                 // ValueComposite deserialization
-                ValueDescriptor valueDescriptor = ( (ModuleSPI) module ).valueDescriptor( type.name() );
+                JSONObject jsonObject = (JSONObject) json;
+                String type = jsonObject.getString( "_type" );
+
+                ValueDescriptor valueDescriptor = ( (ModuleSPI) module ).valueDescriptor( type );
                 return valueDescriptor.valueType().fromJSON( json, module );
             }
             else

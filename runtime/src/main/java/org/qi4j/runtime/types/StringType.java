@@ -47,6 +47,12 @@ public final class StringType
         json.value( value );
     }
 
+    public Object toJSON( Object value )
+        throws JSONException
+    {
+        return value;
+    }
+
     public Object fromJSON( Object json, Module module )
     {
         return json;

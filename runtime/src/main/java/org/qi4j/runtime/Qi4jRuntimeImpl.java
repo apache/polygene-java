@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
-import static java.lang.reflect.Proxy.*;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.PropertyMapper;
@@ -31,18 +30,17 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.UnknownServiceReferenceType;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
-import org.qi4j.bootstrap.Qi4jRuntime;
 import org.qi4j.bootstrap.ApplicationModelFactory;
+import org.qi4j.bootstrap.Qi4jRuntime;
 import org.qi4j.runtime.bootstrap.ApplicationAssemblyFactoryImpl;
 import org.qi4j.runtime.bootstrap.ApplicationModelFactoryImpl;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.TransientInstance;
-import static org.qi4j.runtime.composite.TransientInstance.*;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
@@ -64,6 +62,9 @@ import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.value.ValueDescriptor;
+
+import static java.lang.reflect.Proxy.*;
+import static org.qi4j.runtime.composite.TransientInstance.*;
 
 /**
  * Incarnation of Qi4j.
@@ -131,7 +132,8 @@ public final class Qi4jRuntimeImpl
     public <T> T getConfigurationInstance( ServiceComposite serviceComposite, UnitOfWork uow )
         throws InstantiationException
     {
-        ServiceModel serviceModel = (ServiceModel) TransientInstance.getCompositeInstance( serviceComposite ).compositeModel();
+        ServiceModel serviceModel = (ServiceModel) TransientInstance.getCompositeInstance( serviceComposite )
+            .compositeModel();
 
         String identity = serviceComposite.identity().get();
         T configuration;
@@ -182,8 +184,8 @@ public final class Qi4jRuntimeImpl
         }
 
         try
-            {
-                configuration = configBuilder.newInstance();
+        {
+            configuration = configBuilder.newInstance();
             buildUow.complete();
 
             // Try again
@@ -199,7 +201,8 @@ public final class Qi4jRuntimeImpl
 
     public Class<?> getConfigurationType( Composite serviceComposite )
     {
-        ServiceModel descriptor = (ServiceModel) ServiceInstance.getCompositeInstance( serviceComposite ).compositeModel();
+        ServiceModel descriptor = (ServiceModel) ServiceInstance.getCompositeInstance( serviceComposite )
+            .compositeModel();
         return descriptor.calculateConfigurationType();
     }
 
@@ -351,6 +354,4 @@ public final class Qi4jRuntimeImpl
             return model == null;
         }
     }
-
-
 }

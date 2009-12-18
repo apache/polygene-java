@@ -18,9 +18,10 @@ import java.lang.reflect.Type;
 import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONWriter;
-import static org.qi4j.api.common.TypeName.*;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.DateFunctions;
+
+import static org.qi4j.api.common.TypeName.*;
 
 /**
  * Date type. Use ISO8601 format (http://www.w3.org/TR/NOTE-datetime). Assumes UTC time.
@@ -45,6 +46,14 @@ public final class DateType
         Date date = (Date) value;
 
         json.value( DateFunctions.toUtcString( date ) );
+    }
+
+    public Object toJSON( Object value )
+        throws JSONException
+    {
+        Date date = (Date) value;
+
+        return DateFunctions.toUtcString( date );
     }
 
     public Object fromJSON( Object json, Module module )

@@ -84,6 +84,9 @@ public abstract class AbstractValueType
     public abstract void toJSON( Object value, JSONWriter json )
         throws JSONException;
 
+    public abstract Object toJSON( Object value )
+        throws JSONException;
+
     public abstract Object fromJSON( Object object, Module module )
         throws JSONException;
 

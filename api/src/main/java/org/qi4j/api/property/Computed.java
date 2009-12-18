@@ -21,10 +21,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation adds Immutability to Types, Properties and Associations
+ * This annotation dones a Property as being Computed. The Composite that contains
+ * the Property must have an implementation of the Property method and return
+ * an instance of ComputedPropertyInstance.
  */
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.TYPE, ElementType.METHOD } )
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Documented
 public @interface Computed
 {

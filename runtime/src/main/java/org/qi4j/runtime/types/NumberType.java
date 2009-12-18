@@ -52,34 +52,44 @@ public final class NumberType
     public void toJSON( Object value, JSONWriter json )
         throws JSONException
     {
+        json.value( toJSON( value ) );
+    }
+
+    public Object toJSON( Object value )
+        throws JSONException
+    {
         Number number = (Number) value;
         if( type.isClass( Integer.class ) )
         {
-            json.value( number.longValue() );
+            return number.longValue();
         }
         else if( type.isClass( Long.class ) )
         {
-            json.value( number.longValue() );
+            return number.longValue();
         }
         else if( type.isClass( Double.class ) )
         {
-            json.value( number.doubleValue() );
+            return number.doubleValue();
         }
         else if( type.isClass( Float.class ) )
         {
-            json.value( number.doubleValue() );
+            return number.doubleValue();
         }
         else if( type.isClass( Short.class ) )
         {
-            json.value( number.longValue() );
+            return number.longValue();
         }
         else if( type.isClass( BigDecimal.class ) )
         {
-            json.value( ( (BigDecimal) number ).toPlainString() );
+            return ( (BigDecimal) number ).toPlainString();
         }
         else if( type.isClass( BigInteger.class ) )
         {
-            json.value( number.toString() );
+            return number.toString();
+        }
+        else
+        {
+            throw new IllegalArgumentException( "Value is not a number:" + value );
         }
     }
 

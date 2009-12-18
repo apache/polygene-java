@@ -28,12 +28,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
-import static org.qi4j.api.common.TypeName.*;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.util.Classes;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.ValueType;
+
+import static org.qi4j.api.common.TypeName.*;
 
 public class ValueTypeFactory
 {
