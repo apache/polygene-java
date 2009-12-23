@@ -29,6 +29,8 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.NamedEntityFinder;
+import org.qi4j.spi.query.NamedQueries;
+import org.qi4j.spi.query.NamedQueryDescriptor;
 
 /**
  * Default implementation of {@link QueryBuilderFactory}
@@ -76,6 +78,7 @@ public final class QueryBuilderFactoryImpl
         {
             throw new MissingIndexingSystemException();
         }
+        NamedQueryDescriptor query = serviceReference.metaInfo( NamedQueries.class ).getQuery( name );
         return new NamedQueryImpl<T>( serviceReference.get(), unitOfWork, name, resultType );
     }
 }

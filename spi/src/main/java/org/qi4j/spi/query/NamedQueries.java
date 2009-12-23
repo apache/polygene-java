@@ -21,6 +21,13 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 
+/** Named Queries aggregation class.
+ * <p>
+ * Named queries are aggregated into this class, via {@link #addQuery(String, NamedQueryDescriptor)} method, and then
+ * set as the metaInfo of the EntityFinder. See {@link NamedQueryDescriptor} for more details.
+ * </p>
+ *
+ */
 public final class NamedQueries
     implements Iterable<String>, Serializable
 {

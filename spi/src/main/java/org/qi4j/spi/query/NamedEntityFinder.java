@@ -24,7 +24,7 @@ import org.qi4j.api.query.grammar.OrderBy;
 
 public interface NamedEntityFinder
 {
-    Iterable<EntityReference> findEntities( String name,
+    Iterable<EntityReference> findEntities( NamedQueryDescriptor descriptor,
                                             String resultType,
                                             @Optional Map<String, Object> variables,
                                             @Optional OrderBy[] orderBySegments,
@@ -32,11 +32,11 @@ public interface NamedEntityFinder
                                             @Optional Integer maxResults )
         throws EntityFinderException;
 
-    EntityReference findEntity( String name, String resultType, Map<String, Object> variables )
+    EntityReference findEntity( NamedQueryDescriptor descriptor, String resultType, Map<String, Object> variables )
         throws EntityFinderException;
 
-    long countEntities( String name, String resultType, @Optional Map<String, Object> variables )
+    long countEntities( NamedQueryDescriptor descriptor, String resultType, @Optional Map<String, Object> variables )
         throws EntityFinderException;
 
-    String showQuery( String queryName );
+    String showQuery( NamedQueryDescriptor descriptor );
 }

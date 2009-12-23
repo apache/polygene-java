@@ -26,27 +26,34 @@ import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.NamedEntityFinder;
+import org.qi4j.spi.query.NamedQueryDescriptor;
 
 public class NamedQueryImpl<T>
     implements Query<T>
 {
+    private static final Object VARIABLE_NOT_SET = new Object();
+
     private OrderBy[] orderBySegments;
     private int firstResult;
     private int maxResults;
     private HashMap<String, Object> variables;
+    private NamedQueryDescriptor query;
     private Class<T> resultType;
-    private String queryName;
     private UnitOfWork unitOfWork;
     private NamedEntityFinder namedFinder;
 
     public NamedQueryImpl( NamedEntityFinder namedFinder, UnitOfWork unitOfWork,
-                           String queryName, Class<T> resultType )
+                           NamedQueryDescriptor query, Class<T> resultType )
     {
         this.namedFinder = namedFinder;
         this.unitOfWork = unitOfWork;
-        this.queryName = queryName;
+        this.query = query;
         this.resultType = resultType;
         this.variables = new HashMap<String, Object>();
+        for( String variableName : query.variableNames() )
+        {
+            this.variables.put( variableName, VARIABLE_NOT_SET );
+        }
     }
 
     public Query<T> orderBy( OrderBy... segments )
@@ -99,7 +106,7 @@ public class NamedQueryImpl<T>
         EntityReference foundEntity;
         try
         {
-            foundEntity = namedFinder.findEntity( queryName, resultType.getName(), variables );
+            foundEntity = namedFinder.findEntity( query, resultType.getName(), variables );
         }
         catch( EntityFinderException e )
         {
@@ -121,7 +128,7 @@ public class NamedQueryImpl<T>
     {
         try
         {
-            return namedFinder.countEntities( queryName, resultType.getName(), variables );
+            return namedFinder.countEntities( query, resultType.getName(), variables );
         }
         catch( EntityFinderException e )
         {
@@ -135,7 +142,7 @@ public class NamedQueryImpl<T>
         try
         {
             final Iterator<EntityReference> foundEntities =
-                namedFinder.findEntities( queryName, resultType.getName(), variables,
+                namedFinder.findEntities( query, resultType.getName(), variables,
                                           orderBySegments, firstResult, maxResults
                 ).iterator();
 
@@ -165,6 +172,6 @@ public class NamedQueryImpl<T>
 
     public String toString()
     {
-        return queryName + " : [" + namedFinder.showQuery( queryName ) + " ]";
+        return query.name() + " : [" + namedFinder.showQuery( query ) + " ]";
     }
 }
