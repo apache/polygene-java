@@ -23,7 +23,7 @@ import java.util.Iterator;
 
 /** Named Queries aggregation class.
  * <p>
- * Named queries are aggregated into this class, via {@link #addQuery(String, NamedQueryDescriptor)} method, and then
+ * Named queries are aggregated into this class, via {@link #addQuery(NamedQueryDescriptor)} method, and then
  * set as the metaInfo of the EntityFinder. See {@link NamedQueryDescriptor} for more details.
  * </p>
  *
@@ -48,9 +48,9 @@ public final class NamedQueries
         return queriesByName.keySet().iterator();
     }
 
-    public NamedQueries addQuery( String name, NamedQueryDescriptor query )
+    public NamedQueries addQuery( NamedQueryDescriptor query )
     {
-        queriesByName.put( name, query );
+        queriesByName.put( query.name(), query );
         return this;
     }
 
