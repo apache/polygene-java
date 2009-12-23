@@ -140,7 +140,7 @@ class Network
 
         Female annDoe;
         {
-            EntityBuilder<FemaleEntity> femaleBuilder = unitOfWork.newEntityBuilder( FemaleEntity.class );
+            EntityBuilder<FemaleEntity> femaleBuilder = unitOfWork.newEntityBuilder( FemaleEntity.class, "anndoe" );
             annDoe = femaleBuilder.instance();
             annDoe.name().set( "Ann Doe" );
             annDoe.title().set( Person.Title.MRS );
