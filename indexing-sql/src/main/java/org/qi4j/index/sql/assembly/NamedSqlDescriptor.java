@@ -15,21 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.index.rdf.assembly;
+package org.qi4j.index.sql.assembly;
 
-import java.util.List;
 import java.util.Map;
 import java.io.Serializable;
-import org.openrdf.query.QueryLanguage;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.spi.query.NamedQueryDescriptor;
 
-public class NamedSparqlDescriptor
+public class NamedSqlDescriptor
     implements NamedQueryDescriptor, Serializable
 {
     private String query;
 
-    public NamedSparqlDescriptor( String query )
+    public NamedSqlDescriptor( String query )
     {
         if( query == null )
         {
@@ -58,7 +56,7 @@ public class NamedSparqlDescriptor
 
     public String language()
     {
-        return QueryLanguage.SPARQL.getName();
+        return "SQL";
     }
 
     private String range( Integer firstResult, Integer maxResults )
