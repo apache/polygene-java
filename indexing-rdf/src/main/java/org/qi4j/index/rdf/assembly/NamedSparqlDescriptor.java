@@ -17,6 +17,8 @@
  */
 package org.qi4j.index.rdf.assembly;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.io.Serializable;
 import org.openrdf.query.QueryLanguage;
@@ -26,10 +28,17 @@ import org.qi4j.spi.query.NamedQueryDescriptor;
 public class NamedSparqlDescriptor
     implements NamedQueryDescriptor, Serializable
 {
+    private static final List<String> EMPTY_LIST = new ArrayList<String>();
+    
     private String query;
+    private String name;
 
-    public NamedSparqlDescriptor( String query )
+    public NamedSparqlDescriptor( String name, String query )
     {
+        if( name == null )
+        {
+            throw new NullPointerException( "Queries must have a name" );
+        }
         if( query == null )
         {
             throw new NullPointerException( "Null queries are not allowed" );
@@ -38,7 +47,13 @@ public class NamedSparqlDescriptor
         {
             throw new IllegalArgumentException( "Empty query strings are not allowed." );
         }
+        this.name = name;
         this.query = query;
+    }
+
+    public String name()
+    {
+        return name;
     }
 
     public String compose( Map<String, Object> variables,
@@ -58,6 +73,11 @@ public class NamedSparqlDescriptor
     public String language()
     {
         return QueryLanguage.SPARQL.getName();
+    }
+
+    public List<String> variableNames()
+    {
+        return EMPTY_LIST;
     }
 
     private String range( Integer firstResult, Integer maxResults )

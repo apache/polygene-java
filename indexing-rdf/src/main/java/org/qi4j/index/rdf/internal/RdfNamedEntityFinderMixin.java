@@ -46,7 +46,7 @@ public class RdfNamedEntityFinderMixin
         queriesAvailable = me.metaInfo( NamedQueries.class );
     }
 
-    public Iterable<EntityReference> findEntities( String name,
+    public Iterable<EntityReference> findEntities( NamedQueryDescriptor descriptor,
                                                    String resultType,
                                                    Map<String, Object> variables,
                                                    OrderBy[] orderBySegments,
@@ -54,36 +54,34 @@ public class RdfNamedEntityFinderMixin
                                                    Integer maxResults )
         throws EntityFinderException
     {
-        NamedQueryDescriptor decl = queriesAvailable.getQuery( name );
-        QueryLanguage queryLanguage = QueryLanguage.valueOf( decl.language() );
-        String query = decl.compose( variables, orderBySegments, firstResult, maxResults );
+        QueryLanguage queryLanguage = QueryLanguage.valueOf( descriptor.language() );
+        String query = descriptor.compose( variables, orderBySegments, firstResult, maxResults );
         CollectingQualifiedIdentityResultCallback callback = new CollectingQualifiedIdentityResultCallback();
         tupleExecutor.performTupleQuery( queryLanguage, query, callback );
         return callback.getEntities();
     }
 
-    public EntityReference findEntity( String name, String resultType, Map<String, Object> variables )
+    public EntityReference findEntity( NamedQueryDescriptor descriptor,
+                                       String resultType,
+                                       Map<String, Object> variables )
         throws EntityFinderException
     {
-        NamedQueryDescriptor decl = queriesAvailable.getQuery( name );
-        QueryLanguage queryLanguage = QueryLanguage.valueOf( decl.language() );
-        String query = decl.compose( variables, null, null, 1 );
+        QueryLanguage queryLanguage = QueryLanguage.valueOf( descriptor.language() );
+        String query = descriptor.compose( variables, null, null, 1 );
         SingleQualifiedIdentityResultCallback callback = new SingleQualifiedIdentityResultCallback();
         tupleExecutor.performTupleQuery( queryLanguage, query, callback );
         return callback.getQualifiedIdentity();
     }
 
-    public long countEntities( String name, String resultType, Map<String, Object> variables )
+    public long countEntities( NamedQueryDescriptor descriptor, String resultType, Map<String, Object> variables )
         throws EntityFinderException
     {
-        NamedQueryDescriptor decl = queriesAvailable.getQuery( name );
-        QueryLanguage queryLanguage = QueryLanguage.valueOf( decl.language() );
-        return tupleExecutor.performTupleQuery( queryLanguage, decl.compose( null, null, null, null ), null );
+        QueryLanguage queryLanguage = QueryLanguage.valueOf( descriptor.language() );
+        return tupleExecutor.performTupleQuery( queryLanguage, descriptor.compose( null, null, null, null ), null );
     }
 
-    public String showQuery( String queryName )
+    public String showQuery( NamedQueryDescriptor descriptor )
     {
-        NamedQueryDescriptor decl = queriesAvailable.getQuery( queryName );
-        return decl.compose( null, null, null, null );
+        return descriptor.compose( null, null, null, null );
     }
 }

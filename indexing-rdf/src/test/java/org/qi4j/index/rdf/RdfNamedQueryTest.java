@@ -122,7 +122,9 @@ public class RdfNamedQueryTest
                     return;
                 }
                 String queryName = String.format( "script%02d", index + 1 );
-                namedQueries.addQuery( queryName, new NamedSparqlDescriptor( query[ index ] ) );
+                String queryString = query[ index ];
+                NamedSparqlDescriptor descriptor = new NamedSparqlDescriptor( queryName, queryString );
+                namedQueries.addQuery( descriptor );
             }
 
         };
