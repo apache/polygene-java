@@ -18,7 +18,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.qi4j.runtime.model.BindingException;
+import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -84,5 +84,12 @@ public final class InjectedParametersModel
         return filterBy( parameterDependencies, specification );
     }
 
+    @Override
+    public String toString()
+    {
+        return "InjectedParametersModel{" +
+               "parameterDependencies=" + parameterDependencies +
+               '}';
+    }
 }
 

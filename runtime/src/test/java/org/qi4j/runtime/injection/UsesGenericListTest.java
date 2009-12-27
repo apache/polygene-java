@@ -1,5 +1,5 @@
 /*
- * Copyright 2007 Rickard …berg.
+ * Copyright 2007 Rickard Ã–berg.
  * Copyright 2009 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");

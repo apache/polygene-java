@@ -23,16 +23,18 @@ import java.lang.reflect.WildcardType;
 import java.util.Collections;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
-import org.qi4j.spi.util.Annotations;
-import org.qi4j.runtime.model.BindingException;
-import org.qi4j.runtime.model.Resolution;
+import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.injection.provider.CachingInjectionProviderDecorator;
-import org.qi4j.runtime.injection.provider.InvalidInjectionException;
+import org.qi4j.runtime.injection.provider.InjectionProviderException;
+import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.injection.provider.ServiceInjectionProviderFactory;
 import org.qi4j.runtime.model.Binder;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.Specification;
-import static org.qi4j.spi.util.CollectionUtils.*;
 import org.qi4j.spi.composite.DependencyDescriptor;
+import org.qi4j.spi.util.Annotations;
+
+import static org.qi4j.spi.util.CollectionUtils.*;
 
 /**
  * JAVADOC
@@ -121,6 +123,7 @@ public final class DependencyModel
     }
 
     // todo continue refactoring
+
     private Type getActualType( Class<?> injectedClass, int index )
     {
         // Type index found - map it to actual type
@@ -201,6 +204,7 @@ public final class DependencyModel
     }
 
     // Model
+
     public Annotation injectionAnnotation()
     {
         return injectionAnnotation;
@@ -266,6 +270,7 @@ public final class DependencyModel
     }
 
     // Binding
+
     public void bind( Resolution resolution )
         throws BindingException
     {
@@ -277,7 +282,9 @@ public final class DependencyModel
 
             if( injectionProvider == null && !optional )
             {
-                throw new ConstructionException( "Non-optional @" + rawInjectionClass.getName() + " was not bound in " + injectedClass.getName() );
+                String message =
+                    "Non-optional @" + rawInjectionClass.getName() + " was not bound in " + injectedClass.getName();
+                throw new ConstructionException( message );
             }
         }
         catch( InvalidInjectionException e )
@@ -287,20 +294,29 @@ public final class DependencyModel
     }
 
     // Context
+
     public Object inject( InjectionContext context )
     {
         if( injectionProvider == null )
         {
             return null;
         }
-
-        Object injectedValue = injectionProvider.provideInjection( context );
-
+        Object injectedValue;
+        try
+        {
+            injectedValue = injectionProvider.provideInjection( context );
+        }
+        catch( InjectionProviderException e )
+        {
+            String cause = e.getMessage();
+            String message = "InjectionProvider unable to resolve @" + rawInjectionClass.getName() + " : " + cause;
+            throw new ConstructionException( message );
+        }
         if( injectedValue == null && !optional )
         {
-            throw new ConstructionException( "Non-optional @" + rawInjectionClass.getName() + " was null in " + injectedClass.getName() );
+            String message = "Non-optional @" + rawInjectionClass.getName() + " was null in " + injectedClass.getName();
+            throw new ConstructionException( message );
         }
-
         return getInjectedValue( injectedValue );
     }
 
@@ -355,7 +371,6 @@ public final class DependencyModel
             {
                 return primitiveTypeMapping[ i + 1 ];
             }
-
         }
         return rawInjectionType;
     }

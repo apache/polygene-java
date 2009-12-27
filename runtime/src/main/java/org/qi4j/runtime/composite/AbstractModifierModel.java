@@ -28,11 +28,12 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.Factory;
 import net.sf.cglib.proxy.NoOp;
 import static org.qi4j.api.util.Classes.*;
+
+import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
 import org.qi4j.runtime.injection.InjectedMethodsModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.BindingException;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;

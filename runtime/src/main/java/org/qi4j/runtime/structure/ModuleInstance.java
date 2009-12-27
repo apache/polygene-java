@@ -47,6 +47,7 @@ import org.qi4j.runtime.composite.CompositesModel;
 import org.qi4j.runtime.composite.TransientBuilderInstance;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.composite.UsesInstance;
+import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.object.ObjectBuilderInstance;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.object.ObjectsInstance;
@@ -436,7 +437,7 @@ public class ModuleInstance
 
             StateHolder stateHolder = finder.model.newInitialState();
             finder.model.state().checkConstraints( stateHolder );
-            return finder.model.newCompositeInstance( finder.module, UsesInstance.NO_USES, stateHolder ).<T>proxy();
+            return finder.model.newCompositeInstance( finder.module, UsesInstance.EMPTY_USES, stateHolder ).<T>proxy();
         }
     }
 
@@ -461,8 +462,8 @@ public class ModuleInstance
             {
                 throw new NoSuchObjectException( type.getName(), name() );
             }
-
-            return new ObjectBuilderInstance<T>( finder.module, finder.model );
+            InjectionContext injectionContext = new InjectionContext( finder.module, UsesInstance.EMPTY_USES );
+            return new ObjectBuilderInstance<T>( injectionContext, finder.model );
         }
 
         public <T> T newObject( Class<T> type )
@@ -475,7 +476,8 @@ public class ModuleInstance
                 throw new NoSuchObjectException( type.getName(), name() );
             }
 
-            return type.cast( finder.model.newInstance( finder.module, new UsesInstance() ) );
+            InjectionContext injectionContext = new InjectionContext( finder.module, UsesInstance.EMPTY_USES );
+            return type.cast( finder.model.newInstance( injectionContext ) );
         }
 
     }

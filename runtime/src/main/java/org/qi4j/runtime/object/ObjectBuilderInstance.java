@@ -17,8 +17,7 @@ package org.qi4j.runtime.object;
 import java.util.Iterator;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.object.ObjectBuilder;
-import org.qi4j.runtime.composite.UsesInstance;
-import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.injection.InjectionContext;
 
 /**
  * JAVADOC
@@ -26,22 +25,13 @@ import org.qi4j.runtime.structure.ModuleInstance;
 public final class ObjectBuilderInstance<T>
     implements ObjectBuilder<T>
 {
-
-    protected final ModuleInstance moduleInstance;
     protected final ObjectModel objectModel;
-    private UsesInstance uses;
     private final Class<T> objectType;
+    private InjectionContext injectionContext;
 
-    public ObjectBuilderInstance( ModuleInstance moduleInstance, ObjectModel objectModel, UsesInstance uses )
+    public ObjectBuilderInstance( InjectionContext injectionContext, ObjectModel objectModel )
     {
-        this( moduleInstance, objectModel );
-        this.uses = uses;
-    }
-
-    public ObjectBuilderInstance( ModuleInstance moduleInstance, ObjectModel objectModel )
-    {
-        this.moduleInstance = moduleInstance;
-
+        this.injectionContext = injectionContext;
         this.objectModel = objectModel;
         objectType = (Class<T>) objectModel.type();
     }
@@ -53,28 +43,21 @@ public final class ObjectBuilderInstance<T>
 
     public ObjectBuilder<T> use( Object... usedObjects )
     {
-        getUses().use( usedObjects );
-
+        injectionContext.setUses( injectionContext.uses().use( usedObjects ) );
         return this;
     }
 
-    public T newInstance() throws ConstructionException
+    public T newInstance()
+        throws ConstructionException
     {
-        Object instance = objectModel.newInstance( moduleInstance, uses == null ? UsesInstance.NO_USES : uses );
+        Object instance = objectModel.newInstance( injectionContext );
         return objectType.cast( instance );
     }
 
     public void injectTo( T instance )
         throws ConstructionException
     {
-        if( uses == null )
-        {
-            objectModel.inject( moduleInstance, UsesInstance.NO_USES, instance );
-        }
-        else
-        {
-            objectModel.inject( moduleInstance, uses, instance );
-        }
+        objectModel.inject( injectionContext, instance );
     }
 
     public Iterator<T> iterator()
@@ -96,14 +79,5 @@ public final class ObjectBuilderInstance<T>
                 throw new UnsupportedOperationException();
             }
         };
-    }
-
-    protected UsesInstance getUses()
-    {
-        if( uses == null )
-        {
-            uses = new UsesInstance();
-        }
-        return uses;
     }
 }

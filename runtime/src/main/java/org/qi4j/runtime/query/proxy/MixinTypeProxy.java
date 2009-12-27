@@ -21,10 +21,11 @@ package org.qi4j.runtime.query.proxy;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.query.NotQueryableException;
+import org.qi4j.api.query.QueryException;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.ManyAssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
-import org.qi4j.runtime.query.QueryException;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -141,7 +142,7 @@ public final class MixinTypeProxy
             }
         }
 
-        throw new QueryException(
+        throw new NotQueryableException(
                 "Only property, association and many manyAssociations methods can be used" );
     }
 

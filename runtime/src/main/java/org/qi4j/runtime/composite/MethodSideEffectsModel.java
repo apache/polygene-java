@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import org.qi4j.spi.util.SerializationUtil;
 import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.BindingException;
+import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;

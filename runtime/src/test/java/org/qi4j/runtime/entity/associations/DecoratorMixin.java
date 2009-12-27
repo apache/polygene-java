@@ -38,6 +38,8 @@ public class DecoratorMixin
 
     public DecoratorMixin( @Uses Object delegate )
     {
+        if( delegate instanceof Class )
+            Thread.dumpStack();
         this.delegate = delegate;
     }
 
@@ -71,7 +73,7 @@ public class DecoratorMixin
     private String constructMessage( Method method, Object[] args )
     {
         StringBuilder builder = new StringBuilder();
-        builder.append( "method: " );
+        builder.append( "\nmethod: " );
         builder.append( method.getDeclaringClass().getName() );
         builder.append( "." );
         builder.append( method.getName() );

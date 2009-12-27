@@ -21,9 +21,10 @@ package org.qi4j.runtime.query.proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import static java.lang.reflect.Proxy.*;
+
+import org.qi4j.api.query.QueryExpressionException;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
-import org.qi4j.runtime.query.QueryException;
 import org.qi4j.runtime.query.grammar.impl.PropertyReferenceImpl;
 
 /**
@@ -73,7 +74,7 @@ final class PropertyReferenceProxy
             );
         }
         // TODO handle equals/hashcode?
-        throw new QueryException( "Only property methods can be used. Not " + method.getName() + "()." );
+        throw new QueryExpressionException( "Only property methods can be used. Not " + method.getName() + "()." );
     }
 
     @Override

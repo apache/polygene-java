@@ -23,7 +23,7 @@ import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ApplicationModelFactory;
-import org.qi4j.runtime.model.BindingException;
+import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.structure.ApplicationModel;
 import org.qi4j.runtime.structure.LayerModel;
 import org.qi4j.runtime.structure.ModuleModel;

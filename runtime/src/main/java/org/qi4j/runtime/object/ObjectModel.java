@@ -20,7 +20,7 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
-import org.qi4j.runtime.model.BindingException;
+import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.composite.ConstructorsModel;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.composite.UsesInstance;
@@ -91,9 +91,8 @@ public final class ObjectModel
         injectedMethodsModel.bind( resolution );
     }
 
-    public Object newInstance( ModuleInstance moduleInstance, UsesInstance uses )
+    public Object newInstance( InjectionContext injectionContext )
     {
-        InjectionContext injectionContext = new InjectionContext( moduleInstance, uses );
         Object instance = constructorsModel.newInstance( injectionContext );
         injectedFieldsModel.inject( injectionContext, instance );
         injectedMethodsModel.inject( injectionContext, instance );
@@ -113,9 +112,8 @@ public final class ObjectModel
         return instance;
     }
 
-    public void inject( ModuleInstance moduleInstance, UsesInstance uses, Object instance )
+    public void inject( InjectionContext injectionContext, Object instance )
     {
-        InjectionContext injectionContext = new InjectionContext( moduleInstance, uses );
         injectedFieldsModel.inject( injectionContext, instance );
         injectedMethodsModel.inject( injectionContext, instance );
     }

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.util.Classes;
 import org.qi4j.spi.util.Annotations;
-import org.qi4j.runtime.model.BindingException;
+import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 

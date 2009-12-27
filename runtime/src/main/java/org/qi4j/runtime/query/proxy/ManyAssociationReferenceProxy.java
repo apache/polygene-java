@@ -16,8 +16,8 @@
  */
 package org.qi4j.runtime.query.proxy;
 
+import org.qi4j.api.query.QueryExpressionException;
 import org.qi4j.api.query.grammar.AssociationReference;
-import org.qi4j.runtime.query.QueryException;
 import org.qi4j.runtime.query.grammar.impl.ManyAssociationReferenceImpl;
 
 import java.lang.reflect.InvocationHandler;
@@ -74,7 +74,7 @@ public class ManyAssociationReferenceProxy
             return associationReference.toString();
         }
 
-        throw new QueryException( "No methods can be used" );
+        throw new QueryExpressionException( "No methods can be used" );
     }
 
     @SuppressWarnings("unchecked")

@@ -14,7 +14,7 @@
 
 package org.qi4j.runtime.model;
 
-import org.qi4j.runtime.model.BindingException;
+import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.model.Resolution;
 
 /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,23 +12,25 @@
  *
  */
 
-package org.qi4j.runtime.model;
-
-import org.qi4j.runtime.injection.provider.InvalidInjectionException;
+package org.qi4j.bootstrap;
 
 /**
  * JAVADOC
  */
-public class BindingException
-    extends Exception
+public class InjectionException extends RuntimeException
 {
-    public BindingException( String s )
+    public InjectionException( String s )
     {
         super( s );
     }
 
-    public BindingException( String s, InvalidInjectionException ex )
+    public InjectionException( String s, Throwable throwable )
     {
-        super( s, ex );
+        super( s, throwable );
+    }
+
+    public InjectionException( Throwable throwable )
+    {
+        super( throwable );
     }
 }

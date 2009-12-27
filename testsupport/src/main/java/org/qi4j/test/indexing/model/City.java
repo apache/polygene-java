@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Niclas Hedhman.
+ * Copyright 2008 Alin Dreghiciu.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -15,17 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.runtime.query;
+package org.qi4j.test.indexing.model;
 
-public class QueryException extends RuntimeException
+import org.qi4j.api.property.Property;
+
+/**
+ * JAVADOC Add JavaDoc
+ *
+ */
+public interface City
+    extends Nameable
 {
-    public QueryException( String message )
-    {
-        super( message );
-    }
+    Property<String> country();
 
-    public QueryException( String message, Throwable cause )
-    {
-        super( message, cause );
-    }
+    Property<String> county();
 }

@@ -15,6 +15,7 @@
 package org.qi4j.runtime.composite;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.qi4j.runtime.object.ObjectBuilderInstance;
@@ -24,25 +25,36 @@ import org.qi4j.runtime.object.ObjectBuilderInstance;
  */
 public final class UsesInstance
 {
-    public static final UsesInstance NO_USES = new UsesInstance();
+    public static final UsesInstance EMPTY_USES;
+    private final Set<Object> uses;
 
-    private final Set<Object> uses = new HashSet<Object>();
-
-    public void use( Object... objects )
+    static
     {
+        EMPTY_USES = new UsesInstance( new HashSet<Object>() );
+    }
+
+    private UsesInstance( HashSet<Object> uses )
+    {
+        this.uses = Collections.unmodifiableSet( uses );
+    }
+
+    public UsesInstance use( Object... objects )
+    {
+        HashSet<Object> useObjects = new HashSet<Object>();
         if( !uses.isEmpty() )
         {
+            useObjects.addAll( uses );
             for( Object object : objects )
             {
                 Object oldUseForType = useForType( object.getClass() );
                 if( oldUseForType != null )
                 {
-                    uses.remove( oldUseForType );
+                    useObjects.remove( oldUseForType );
                 }
             }
         }
-
-        uses.addAll( Arrays.asList( objects ) );
+        useObjects.addAll( Arrays.asList( objects ) );
+        return new UsesInstance( useObjects );
     }
 
     public Object useForType( Class<?> type )
@@ -78,5 +90,34 @@ public final class UsesInstance
         }
 
         return null;
+    }
+
+    @Override
+    public boolean equals( Object o )
+    {
+        if( this == o )
+        {
+            return true;
+        }
+        if( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+        UsesInstance that = (UsesInstance) o;
+        return uses.equals( that.uses );
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return uses.hashCode();
+    }
+
+    @Override
+    public String toString()
+    {
+        return "UsesInstance{" +
+               "uses=" + uses +
+               '}';
     }
 }

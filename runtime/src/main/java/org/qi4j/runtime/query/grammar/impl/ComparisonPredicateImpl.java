@@ -18,11 +18,12 @@
 package org.qi4j.runtime.query.grammar.impl;
 
 import org.qi4j.api.property.Property;
+import org.qi4j.api.query.QueryExecutionException;
+import org.qi4j.api.query.QueryExpressionException;
 import org.qi4j.api.query.grammar.ComparisonPredicate;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.query.grammar.SingleValueExpression;
 import org.qi4j.api.query.grammar.ValueExpression;
-import org.qi4j.runtime.query.QueryException;
 
 /**
  * Generic {@link org.qi4j.api.query.grammar.ComparisonPredicate} implementation.
@@ -86,7 +87,7 @@ abstract class ComparisonPredicateImpl<T>
     {
         if( !( valueExpression() instanceof SingleValueExpression ) )
         {
-            throw new QueryException( "Value " + valueExpression() + " is not supported" );
+            throw new QueryExecutionException( "Value " + valueExpression() + " is not supported" );
         }
         final T value = ( (SingleValueExpression<T>) valueExpression() ).value();
         final Property<T> prop = propertyReference().eval( target );
@@ -101,9 +102,9 @@ abstract class ComparisonPredicateImpl<T>
         }
         if( !( propValue instanceof Comparable ) )
         {
-            throw new QueryException(
-                "Cannot use type " + value.getClass().getSimpleName() + " for comparations"
-            );
+            String clazz = value.getClass().getSimpleName();
+            String message = "Cannot use type " + clazz + " for comparisons. Must implement Comparable.";
+            throw new QueryExpressionException( message );
         }
         return eval( (Comparable<T>) propValue, value );
     }

@@ -37,10 +37,10 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.util.Classes;
+import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.MetaInfoDeclaration;
 import org.qi4j.bootstrap.PropertyDeclarations;
 import org.qi4j.runtime.composite.AbstractCompositeModel;
-import org.qi4j.runtime.model.BindingException;
 import org.qi4j.runtime.composite.CompositeMethodsModel;
 import org.qi4j.runtime.composite.ConcernDeclaration;
 import org.qi4j.runtime.composite.ConcernsDeclaration;
@@ -255,14 +255,11 @@ public final class ServiceModel
         stateHolder = stateModel.newInstance( stateHolder );
         ServiceInstance compositeInstance = new ServiceInstance( this, module, mixins, stateHolder );
 
-        UsesInstance uses = new UsesInstance();
-        uses.use( this );
-
         try
         {
             // Instantiate all mixins
             ( (MixinsModel) mixinsModel ).newMixins( compositeInstance,
-                                                     uses,
+                                                     UsesInstance.EMPTY_USES.use( this ),
                                                      stateHolder,
                                                      mixins );
 

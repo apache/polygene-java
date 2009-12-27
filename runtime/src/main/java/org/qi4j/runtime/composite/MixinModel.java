@@ -44,12 +44,12 @@ import org.qi4j.api.mixin.InvalidMixinException;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.util.Classes;
+import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
 import org.qi4j.runtime.injection.InjectedMethodsModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.BindingException;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.DependencyVisitor;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -130,22 +130,25 @@ public final class MixinModel
     }
 
     // Context
-    public Object newInstance( CompositeInstance compositeInstance, StateHolder state )
-    {
-        return newInstance( compositeInstance, state, UsesInstance.NO_USES );
-    }
 
     public Object newInstance( CompositeInstance compositeInstance, StateHolder state, UsesInstance uses )
     {
         InjectionContext injectionContext = new InjectionContext( compositeInstance, uses, state );
+        return newInstance( injectionContext );
+    }
+
+    public Object newInstance( InjectionContext injectionContext )
+    {
         Object mixin;
+        CompositeInstance compositeInstance = injectionContext.compositeInstance();
         try
         {
             if( Factory.class.isAssignableFrom( instantiationClass ) )
             {
                 Enhancer.registerCallbacks( instantiationClass,
                                             new Callback[]{
-                                                new ThisCompositeInvoker( compositeInstance ), NoOp.INSTANCE
+                                                new ThisCompositeInvoker( compositeInstance ),
+                                                NoOp.INSTANCE
                                             } );
             }
             mixin = constructorsModel.newInstance( injectionContext );
@@ -174,8 +177,9 @@ public final class MixinModel
             }
             catch( InitializationException e )
             {
-                throw new ConstructionException( "Unable to initialize " + mixinClass + " in composite " + compositeInstance
-                    .type(), e );
+                Class<? extends Composite> compositeType = compositeInstance.type();
+                String message = "Unable to initialize " + mixinClass + " in composite " + compositeType;
+                throw new ConstructionException( message, e );
             }
         }
         return mixin;

@@ -4,15 +4,14 @@ import java.io.Serializable;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.runtime.injection.provider.InjectionProviderException;
-import org.qi4j.runtime.injection.provider.InvalidInjectionException;
-import org.qi4j.runtime.model.Resolution;
+import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.composite.TransientBuilderInstance;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.object.ObjectBuilderInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 
@@ -50,7 +49,8 @@ public final class UsesInjectionProviderFactory
 
             Class injectionType = dependency.rawInjectionType();
             Object usesObject = null;
-            if( !Iterable.class.equals( injectionType ) && !ObjectBuilder.class.equals( injectionType ) && !TransientBuilder.class.equals( injectionType ) )
+            if( !Iterable.class.equals( injectionType ) && !ObjectBuilder.class.equals( injectionType ) && !TransientBuilder.class
+                .equals( injectionType ) )
             {
                 usesObject = uses.useForType( injectionType );
             }
@@ -82,23 +82,18 @@ public final class UsesInjectionProviderFactory
                     {
                         if( Iterable.class.equals( injectionType ) || ObjectBuilder.class.equals( injectionType ) )
                         {
-                            usesObject = new ObjectBuilderInstance( objectFinder.module, objectFinder.model, uses );
+                            usesObject = new ObjectBuilderInstance( context, objectFinder.model );
                         }
                         else
                         {
-                            usesObject = objectFinder.model.newInstance( objectFinder.module, uses );
+                            usesObject = objectFinder.model.newInstance( context );
                         }
                     }
                 }
 
                 if( usesObject != null )
                 {
-                    if( uses == UsesInstance.NO_USES )
-                    {
-                        uses = new UsesInstance();
-                        context.setUses( uses );
-                    }
-                    uses.use( usesObject ); // Use this for other injections in same graph
+                    context.setUses( context.uses().use( usesObject ) ); // Use this for other injections in same graph
                 }
 
                 return usesObject;

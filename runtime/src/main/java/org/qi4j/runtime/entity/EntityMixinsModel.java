@@ -22,7 +22,8 @@ import org.qi4j.runtime.composite.AbstractMixinsModel;
 import org.qi4j.runtime.composite.MixinDeclaration;
 import org.qi4j.runtime.composite.MixinModel;
 import org.qi4j.runtime.composite.UsesInstance;
-import org.qi4j.runtime.model.BindingException;
+import org.qi4j.bootstrap.BindingException;
+import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.composite.CompositeInstance;
 
@@ -70,7 +71,8 @@ public final class EntityMixinsModel
     public Object newMixin( EntityInstance entityInstance, StateHolder state, Object[] mixins, Method method )
     {
         MixinModel model = methodImplementation.get( method );
-        Object mixin = model.newInstance( entityInstance, state, UsesInstance.NO_USES );
+        InjectionContext injectionContext = new InjectionContext( entityInstance, UsesInstance.EMPTY_USES, state );
+        Object mixin = model.newInstance( injectionContext );
         mixins[methodIndex.get( method )] = mixin;
         return mixin;
     }
@@ -79,13 +81,14 @@ public final class EntityMixinsModel
     {
         if (lifecycleMixins != null)
         {
+            InjectionContext injectionContext = new InjectionContext( instance, UsesInstance.EMPTY_USES, state );
             for (Integer lifecycleMixin : lifecycleMixins)
             {
                 Lifecycle lifecycle = (Lifecycle) mixins[lifecycleMixin];
 
                 if (lifecycle == null)
                 {
-                    lifecycle = (Lifecycle) mixinModels.get( lifecycleMixin ).newInstance( instance, state );
+                    lifecycle = (Lifecycle) mixinModels.get( lifecycleMixin ).newInstance( injectionContext );
                 }
 
                 if (create)

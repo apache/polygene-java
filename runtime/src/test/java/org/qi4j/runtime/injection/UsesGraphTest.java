@@ -40,8 +40,8 @@ public class UsesGraphTest
     {
         A a = objectBuilderFactory.newObject( A.class );
 
-        Assert.assertThat( "Same reference", a.c, equalTo( a.b.c ) );
-        Assert.assertThat( "Same reference", a.d, equalTo( a.b.c.d ) );
+        Assert.assertThat( "Same reference expected", a.c, equalTo( a.b.c ) );
+        Assert.assertThat( "Same reference expected", a.d, equalTo( a.b.c.d ) );
     }
 
     @Test
@@ -50,8 +50,8 @@ public class UsesGraphTest
         ObjectBuilder<A> builder = objectBuilderFactory.newObjectBuilder( A.class );
         builder.use( objectBuilderFactory.newObjectBuilder( C.class ) );
         A a = builder.newInstance();
-        Assert.assertThat( "Not same reference", a.c, not( equalTo( a.b.c ) ) );
-        Assert.assertThat( "Not same reference", a.d, not( equalTo( a.b.c.d ) ) );
+        Assert.assertThat( "Same reference not expected", a.c, not( equalTo( a.b.c ) ) );
+        Assert.assertThat( "Same reference not expected", a.d, not( equalTo( a.b.c.d ) ) );
     }
 
     static public class A
@@ -80,6 +80,5 @@ public class UsesGraphTest
 
     static public class D
     {
-
     }
 }

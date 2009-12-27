@@ -32,12 +32,6 @@ public final class AtomicCompositeMethodInstancePool
         if( instance != null )
         {
             CompositeMethodInstance next = instance.getNext();
-/*
-            if( next != null )
-            {
-                System.out.println( "Set first" );
-            }
-*/
             first.set( next );
         }
         return instance;
@@ -48,9 +42,6 @@ public final class AtomicCompositeMethodInstancePool
         CompositeMethodInstance previous = first.getAndSet( compositeMethodInstance );
         if( previous != null )
         {
-/*
-            System.out.println( "Link" );
-*/
             compositeMethodInstance.setNext( previous );
         }
     }

@@ -9,6 +9,7 @@ import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;

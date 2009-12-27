@@ -25,6 +25,8 @@ import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
 import static org.qi4j.api.query.QueryExpressions.eq;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
+
+import org.qi4j.api.query.QueryException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;

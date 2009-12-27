@@ -24,10 +24,10 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.query.NotQueryableException;
+import org.qi4j.api.query.QueryExpressionException;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
-import org.qi4j.runtime.query.NotQueryableException;
-import org.qi4j.runtime.query.QueryException;
 import org.qi4j.spi.composite.CompositeInstance;
 
 /**
@@ -85,12 +85,12 @@ public final class PropertyReferenceImpl<T>
         Type returnType = accessor.getGenericReturnType();
         if( !( returnType instanceof ParameterizedType ) )
         {
-            throw new QueryException( "Unsupported property type:" + returnType );
+            throw new QueryExpressionException( "Unsupported property type:" + returnType );
         }
         Type propertyTypeAsType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
         if( !( propertyTypeAsType instanceof Class ) )
         {
-            throw new QueryException( "Unsupported property type:" + propertyTypeAsType );
+            throw new QueryExpressionException( "Unsupported property type:" + propertyTypeAsType );
         }
         type = (Class<T>) propertyTypeAsType;
 

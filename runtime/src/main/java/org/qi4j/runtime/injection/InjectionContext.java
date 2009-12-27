@@ -98,4 +98,17 @@ public final class InjectionContext
     {
         this.uses = uses;
     }
+
+    @Override
+    public String toString()
+    {
+        return "InjectionContext{" +
+               "compositeInstance=" + compositeInstance +
+               ", moduleInstance=" + moduleInstance +
+               ", uses=" + uses +
+               ", state=" + state +
+               ", next=" + next +
+               ", proxyHandler=" + proxyHandler +
+               '}';
+    }
 }

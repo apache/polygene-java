@@ -26,7 +26,7 @@ import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.runtime.injection.provider.InvalidInjectionException;
+import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.api.sideeffect.internal.SideEffectFor;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.model.Resolution;

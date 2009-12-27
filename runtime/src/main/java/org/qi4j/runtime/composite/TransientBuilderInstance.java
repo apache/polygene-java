@@ -51,7 +51,7 @@ public final class TransientBuilderInstance<T>
     private final TransientModel transientModel;
 
     // lazy initialized in accessor
-    private UsesInstance uses = UsesInstance.NO_USES;
+    private UsesInstance uses = UsesInstance.EMPTY_USES;
 
 
     // lazy initialized in accessor
@@ -80,7 +80,7 @@ public final class TransientBuilderInstance<T>
 
     public TransientBuilder<T> use( Object... usedObjects )
     {
-        getUses().use( usedObjects );
+        uses = uses.use( usedObjects );
 
         return this;
     }
@@ -90,7 +90,7 @@ public final class TransientBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = transientModel.newCompositeInstance( moduleInstance, getUses(), getState() );
+            prototypeInstance = transientModel.newCompositeInstance( moduleInstance, uses, getState() );
         }
 
         return prototypeInstance.<T>proxy();
@@ -101,7 +101,7 @@ public final class TransientBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = transientModel.newCompositeInstance( moduleInstance, getUses(), getState() );
+            prototypeInstance = transientModel.newCompositeInstance( moduleInstance, uses, getState() );
         }
 
         return prototypeInstance.newProxy( mixinType );
@@ -145,15 +145,6 @@ public final class TransientBuilderInstance<T>
                 throw new UnsupportedOperationException();
             }
         };
-    }
-
-    protected UsesInstance getUses()
-    {
-        if( uses == null )
-        {
-            uses = new UsesInstance();
-        }
-        return uses;
     }
 
     private StateHolder getState()

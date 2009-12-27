@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,15 +11,24 @@
  * limitations under the License.
  *
  */
-package org.qi4j.runtime.entity;
 
-import org.qi4j.api.common.InvalidApplicationException;
+package org.qi4j.bootstrap;
 
-public class ObjectAccessException
-    extends InvalidApplicationException
+import org.qi4j.bootstrap.InvalidInjectionException;
+
+/**
+ * JAVADOC
+ */
+public class BindingException
+    extends Exception
 {
-    public ObjectAccessException( String message )
+    public BindingException( String s )
     {
-        super( message );
+        super( s );
+    }
+
+    public BindingException( String s, InvalidInjectionException ex )
+    {
+        super( s, ex );
     }
 }

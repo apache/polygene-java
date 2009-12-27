@@ -19,11 +19,11 @@ package org.qi4j.runtime.query.grammar.impl;
 
 import java.util.Collection;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.query.QueryExpressionException;
 import org.qi4j.api.query.grammar.ContainsAllPredicate;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.query.grammar.SingleValueExpression;
 import org.qi4j.api.query.grammar.ValueExpression;
-import org.qi4j.runtime.query.QueryException;
 
 public final class ContainsAllPredicateImpl<T>
     implements ContainsAllPredicate<T>
@@ -78,9 +78,9 @@ public final class ContainsAllPredicateImpl<T>
         }
         if( !( propValue instanceof Comparable ) )
         {
-            throw new QueryException(
-                "Cannot use type " + value.getClass().getSimpleName() + " for comparations"
-            );
+            String clazz = value.getClass().getSimpleName();
+            String message = "Cannot use type " + clazz + " for comparisons. Must implement java.lang.Comparable";
+            throw new QueryExpressionException( message );
         }
         return propValue.containsAll( value );
     }

@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.util.List;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.spi.composite.CompositeInstance;
 
 /**
@@ -35,9 +36,10 @@ public final class MixinsModel extends AbstractMixinsModel
     public void newMixins( CompositeInstance compositeInstance, UsesInstance uses, StateHolder state, Object[] mixins )
     {
         int i = 0;
+        InjectionContext injectionContext = new InjectionContext( compositeInstance, uses, state );
         for( MixinModel mixinModel : mixinModels )
         {
-            mixins[ i++ ] = mixinModel.newInstance( compositeInstance, state, uses );
+            mixins[ i++ ] = mixinModel.newInstance( injectionContext );
         }
     }
 }

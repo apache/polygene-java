@@ -23,9 +23,9 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.query.QueryExpressionException;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.runtime.entity.EntityInstance;
-import org.qi4j.runtime.query.QueryException;
 
 /**
  * Default {@link AssociationReference}.
@@ -73,12 +73,12 @@ public class AssociationReferenceImpl
         Type returnType = accessor.getGenericReturnType();
         if( !( returnType instanceof ParameterizedType ) )
         {
-            throw new QueryException( "Unsupported association type:" + returnType );
+            throw new QueryExpressionException( "Unsupported association type:" + returnType );
         }
         Type associationTypeAsType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
         if( !( associationTypeAsType instanceof Class ) )
         {
-            throw new QueryException( "Unsupported association type:" + associationTypeAsType );
+            throw new QueryExpressionException( "Unsupported association type:" + associationTypeAsType );
         }
         type = associationTypeAsType;
         this.traversed = traversed;
