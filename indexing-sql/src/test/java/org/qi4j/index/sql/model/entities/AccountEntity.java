@@ -22,7 +22,6 @@ import org.qi4j.index.sql.model.Account;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 public interface AccountEntity
     extends Account, EntityComposite

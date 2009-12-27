@@ -26,6 +26,6 @@ public class SqlFactoryMixin
 
     public SqlQueryParser newQueryParser()
     {
-        return new SparqlSqlQueryParser();
+        return new SqlQueryParserImpl();
     }
 }

@@ -23,9 +23,10 @@ import org.qi4j.api.value.ValueComposite;
 
 /**
  * JAVADOC Add JavaDoc.
- *
  */
-public interface Port extends ValueComposite
+public interface Port
+    extends ValueComposite
 {
-    @Queryable( false ) Property<Integer> value();
+    @Queryable( false )
+    Property<Integer> value();
 }

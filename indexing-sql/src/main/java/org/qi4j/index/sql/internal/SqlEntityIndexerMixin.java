@@ -1,5 +1,5 @@
 /*
- * Copyright 2008 Alin Dreghiciu.
+ * Copyright 2009 Niclas Hedhman
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -18,12 +18,17 @@
 package org.qi4j.index.sql.internal;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
+import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.index.sql.jdbc.ConnectionPool;
+import org.qi4j.index.sql.IndexingConfiguration;
+import org.qi4j.library.jdbc.ConnectionPool;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.EntityType;
@@ -40,9 +45,28 @@ public class SqlEntityIndexerMixin
 
     private Set<EntityType> indexedEntityTypes;
 
+    @This
+    private Configuration<IndexingConfiguration> config;
+
     public void activate()
-        throws Exception
+        throws SQLException
     {
+        IndexingConfiguration conf = config.configuration();
+        Connection conn = connectionPool.obtainConnection();
+        try
+        {
+            Statement st = conn.createStatement();
+            checkAndCreateAssociationsTable( conf, st );
+
+            checkAndCreateValuesTable( conf, st );
+
+            checkAndCreatePropertiesTable( conf, st );
+            conn.commit();
+        }
+        finally
+        {
+            connectionPool.releaseConnection( conn );
+        }
         indexedEntityTypes = new HashSet<EntityType>();
     }
 
@@ -123,4 +147,75 @@ public class SqlEntityIndexerMixin
     )
     {
     }
+
+
+    private void checkAndCreateAssociationsTable( IndexingConfiguration configuration, Statement st )
+        throws SQLException
+    {
+        try
+        {
+            String checkStatement = configuration.checkAssociationsTable().get();
+            if( checkStatement == null )
+            {
+                checkStatement = "SELECT * FROM QI_ASSOCIATIONS";
+            }
+            st.execute( checkStatement );
+        }
+        catch( SQLException e )
+        {
+            String createStatement = configuration.createAssociationsTable().get();
+            if( createStatement == null )
+            {
+                createStatement = "CREATE TABLE QI_ASSOCIATIONS ENTITY_ID varchar(130), ASSOC_NAME varchar(250), REF_ID varchar(250)";
+            }
+            st.execute( createStatement );
+        }
+    }
+
+    private void checkAndCreatePropertiesTable( IndexingConfiguration configuration, Statement st )
+        throws SQLException
+    {
+        try
+        {
+            String checkStatement = configuration.checkPropertiesTable().get();
+            if( checkStatement == null )
+            {
+                checkStatement = "SELECT * FROM QI_PROPERTIES";
+            }
+            st.execute( checkStatement );
+        }
+        catch( SQLException e )
+        {
+            String createStatement = configuration.createPropertiesTable().get();
+            if( createStatement == null )
+            {
+                createStatement = "CREATE TABLE QI_PROPERTIES PROPERTY_ID varchar(130), PROPERTY_NAME varchar(250), PROPERTY_TYPE varchar(250), PROPERTY_DATA TEXT";
+            }
+            st.execute( createStatement );
+        }
+    }
+
+    private void checkAndCreateValuesTable( IndexingConfiguration configuration, Statement st )
+        throws SQLException
+    {
+        try
+        {
+            String checkStatement = configuration.checkValuesTable().get();
+            if( checkStatement == null )
+            {
+                checkStatement = "SELECT * FROM QI_VALUES";
+            }
+            st.execute( checkStatement );
+        }
+        catch( SQLException e )
+        {
+            String createStatement = configuration.createValuesTable().get();
+            if( createStatement == null )
+            {
+                createStatement = "CREATE TABLE QI_VALUES VALUE_ID varchar(130), VALUE_TYPE varchar(250), VALUE_DATA TEXT";
+            }
+            st.execute( createStatement );
+        }
+    }
+
 }

@@ -19,7 +19,6 @@ package org.qi4j.index.sql.model;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 public interface Alive
 {

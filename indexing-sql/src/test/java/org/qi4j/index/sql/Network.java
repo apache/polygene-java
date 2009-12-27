@@ -17,6 +17,8 @@
  */
 package org.qi4j.index.sql;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
@@ -38,12 +40,8 @@ import org.qi4j.index.sql.model.entities.CatEntity;
 import org.qi4j.index.sql.model.entities.FemaleEntity;
 import org.qi4j.index.sql.model.entities.MaleEntity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * JAVADOC Add JavaDoc
- *
  */
 class Network
 {

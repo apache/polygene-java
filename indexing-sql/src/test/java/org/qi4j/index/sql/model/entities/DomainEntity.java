@@ -22,7 +22,6 @@ import org.qi4j.index.sql.model.Domain;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 public interface DomainEntity
     extends Domain, EntityComposite

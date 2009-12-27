@@ -22,9 +22,9 @@ import org.qi4j.api.value.ValueComposite;
 
 /**
  * JAVADOC Add JavaDoc.
- *
  */
-public interface QueryParam extends ValueComposite
+public interface QueryParam
+    extends ValueComposite
 {
     Property<String> name();
 

@@ -17,17 +17,15 @@
  */
 package org.qi4j.index.sql.model;
 
+import java.util.Map;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
 
-import java.util.Map;
-
 /**
  * JAVADOC Add JavaDoc
- *
  */
 public interface Person
     extends Nameable, Alive
@@ -39,27 +37,38 @@ public interface Person
 
     Property<Title> title();
 
-    @Optional Association<City> placeOfBirth();
+    @Optional
+    Association<City> placeOfBirth();
 
     Property<Integer> yearOfBirth();
 
-    @Optional Property<Address> address();
+    @Optional
+    Property<Address> address();
 
-    @Optional Association<Female> mother();
+    @Optional
+    Association<Female> mother();
 
-    @Optional Association<Male> father();
+    @Optional
+    Association<Male> father();
 
     ManyAssociation<Domain> interests();
 
-    @Optional Property<String> email();
+    @Optional
+    Property<String> email();
 
-    @Optional Property<URL> personalWebsite();
+    @Optional
+    Property<URL> personalWebsite();
 
-    @Queryable( false ) Property<String> password();
+    @Queryable( false )
+    Property<String> password();
 
-    @Queryable( false ) @Optional Association<Account> mainAccount();
+    @Queryable( false )
+    @Optional
+    Association<Account> mainAccount();
 
-    @Queryable( false ) ManyAssociation<Account> accounts();
+    @Queryable( false )
+    ManyAssociation<Account> accounts();
 
-    @Optional Property<Map<String, String>> additionalInfo();
+    @Optional
+    Property<Map<String, String>> additionalInfo();
 }

@@ -18,19 +18,20 @@
  */
 package org.qi4j.index.sql;
 
-import static org.hamcrest.CoreMatchers.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openrdf.rio.RDFFormat;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
-import static org.qi4j.api.query.QueryExpressions.*;
-import static org.qi4j.api.query.QueryExpressions.not;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -39,7 +40,6 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.index.sql.assembly.SqlFactoryService;
 import org.qi4j.index.sql.model.Address;
 import org.qi4j.index.sql.model.City;
 import org.qi4j.index.sql.model.Domain;
@@ -59,21 +59,14 @@ import org.qi4j.index.sql.model.entities.CityEntity;
 import org.qi4j.index.sql.model.entities.DomainEntity;
 import org.qi4j.index.sql.model.entities.FemaleEntity;
 import org.qi4j.index.sql.model.entities.MaleEntity;
-import org.qi4j.library.rdf.entity.EntityStateSerializer;
-import org.qi4j.library.rdf.entity.EntityTypeSerializer;
-import org.qi4j.library.rdf.repository.NativeConfiguration;
-import org.qi4j.library.rdf.repository.NativeRepositoryService;
 import org.qi4j.runtime.query.NotQueryableException;
 import org.qi4j.spi.query.EntityFinderException;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.test.EntityTestAssembler;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import static org.qi4j.api.query.QueryExpressions.*;
+import static org.qi4j.api.query.QueryExpressions.not;
 
 public class SqlQueryTest
 {
@@ -83,7 +76,8 @@ public class SqlQueryTest
     private UnitOfWork unitOfWork;
 
     @Before
-    public void setUp() throws UnitOfWorkCompletionException
+    public void setUp()
+        throws UnitOfWorkCompletionException
     {
         assembler = new SingletonAssembler()
         {
@@ -109,14 +103,11 @@ public class SqlQueryTest
                 );
                 new EntityTestAssembler().assemble( module );
                 module.addServices(
-                    NativeRepositoryService.class,
                     SqlFactoryService.class,
                     SqlIndexerExporterComposite.class
                 );
-                module.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
-
                 ModuleAssembly config = module.layerAssembly().moduleAssembly( "Config" );
-                config.addEntities( NativeConfiguration.class ).visibleIn( Visibility.layer );
+                config.addEntities( IndexingConfiguration.class ).visibleIn( Visibility.layer );
                 config.addServices( MemoryEntityStoreService.class );
             }
         };
@@ -127,26 +118,9 @@ public class SqlQueryTest
     }
 
     @After
-    public void tearDown() throws Exception
+    public void tearDown()
+        throws Exception
     {
-
-        java.io.File data = null;
-        if( unitOfWork != null )
-        {
-            NativeConfiguration conf = unitOfWork.get( NativeConfiguration.class, "NativeRepositoryService" );
-            data = new java.io.File( conf.dataDirectory().get() );
-            unitOfWork.discard();
-        }
-        if( assembler != null )
-        {
-            ApplicationSPI app = assembler.application();
-            app.passivate();
-        }
-        if( data != null )
-        {
-            remove( data );
-        }
-
     }
 
     private void remove( java.io.File data )
@@ -167,16 +141,18 @@ public class SqlQueryTest
     }
 
     @Test
-    public void showNetwork() throws IOException
+    public void showNetwork()
+        throws IOException
     {
         ServiceFinder serviceFinder = assembler.serviceFinder();
         SqlIndexerExporterComposite sqlIndexerExporter =
             serviceFinder.<SqlIndexerExporterComposite>findService( SqlIndexerExporterComposite.class ).get();
-        sqlIndexerExporter.toSQL( System.out, RDFFormat.RDFXML );
+        sqlIndexerExporter.toSQL( System.out );
     }
 
     private static void verifyUnorderedResults( final Iterable<? extends Nameable> results,
-                                                final String... names )
+                                                final String... names
+    )
     {
         final List<String> expected = new ArrayList<String>( Arrays.asList( names ) );
 
@@ -190,11 +166,11 @@ public class SqlQueryTest
         {
             fail( notReturned + " was expected but not returned" );
         }
-
     }
 
     private static void verifyOrderedResults( final Iterable<? extends Nameable> results,
-                                              final String... names )
+                                              final String... names
+    )
     {
         final List<String> expected = new ArrayList<String>( Arrays.asList( names ) );
         final List<String> actual = new ArrayList<String>();
@@ -207,7 +183,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script01() throws EntityFinderException
+    public void script01()
+        throws EntityFinderException
     {
         final QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         final Query<Person> query = qb.newQuery( unitOfWork );
@@ -216,7 +193,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script02() throws EntityFinderException
+    public void script02()
+        throws EntityFinderException
     {
         final QueryBuilder<Domain> qb = qbf.newQueryBuilder( Domain.class );
         final Nameable nameable = templateFor( Nameable.class );
@@ -228,7 +206,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script03() throws EntityFinderException
+    public void script03()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         Query<Nameable> query = qb.newQuery( unitOfWork );
@@ -242,7 +221,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script04() throws EntityFinderException
+    public void script04()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person personTemplate = templateFor( Person.class );
@@ -255,7 +235,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script05() throws EntityFinderException
+    public void script05()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -267,7 +248,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script06() throws EntityFinderException
+    public void script06()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -279,7 +261,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script07() throws EntityFinderException
+    public void script07()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         Person person = templateFor( Person.class );
@@ -294,7 +277,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script08() throws EntityFinderException
+    public void script08()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -309,7 +293,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script09() throws EntityFinderException
+    public void script09()
+        throws EntityFinderException
     {
         QueryBuilder<Female> qb = qbf.newQueryBuilder( Female.class );
         Person person = templateFor( Person.class );
@@ -324,7 +309,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script10() throws EntityFinderException
+    public void script10()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -338,7 +324,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script11() throws EntityFinderException
+    public void script11()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -350,7 +337,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script12() throws EntityFinderException
+    public void script12()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -362,7 +350,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script13() throws EntityFinderException
+    public void script13()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Male person = templateFor( Male.class );
@@ -374,7 +363,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script14() throws EntityFinderException
+    public void script14()
+        throws EntityFinderException
     {
         QueryBuilder<Male> qb = qbf.newQueryBuilder( Male.class );
         Male person = templateFor( Male.class );
@@ -386,7 +376,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script15() throws EntityFinderException
+    public void script15()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Male person = templateFor( Male.class );
@@ -398,7 +389,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script16() throws EntityFinderException
+    public void script16()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return only 2 entities
@@ -414,7 +406,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script17() throws EntityFinderException
+    public void script17()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return only 3 entities starting with forth one
@@ -431,7 +424,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script18() throws EntityFinderException
+    public void script18()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return all Nameable entities sorted by name
@@ -446,7 +440,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script19() throws EntityFinderException
+    public void script19()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return all Nameable entities with a name > "D" sorted by name
@@ -463,7 +458,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script20() throws EntityFinderException
+    public void script20()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         // should return all Persons born after 1973 (Ann and Joe Doe) sorted descending by name
@@ -480,7 +476,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script21() throws EntityFinderException
+    public void script21()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         // should return all Persons sorted by name of the city they were born, and then by year they were born
@@ -526,7 +523,8 @@ public class SqlQueryTest
     }
 
     @Test
-    public void script24() throws EntityFinderException
+    public void script24()
+        throws EntityFinderException
     {
         final QueryBuilder<Domain> qb = qbf.newQueryBuilder( Domain.class );
         final Nameable nameable = templateFor( Nameable.class );
@@ -638,7 +636,7 @@ public class SqlQueryTest
         Person person = templateFor( Person.class );
         Domain gaming = unitOfWork.get( Domain.class, "Gaming" );
         Query<Person> query = qb.where(
-            contains( person.interests(), gaming)
+            contains( person.interests(), gaming )
         ).newQuery( unitOfWork );
         System.out.println( "*** script33: " + query );
 

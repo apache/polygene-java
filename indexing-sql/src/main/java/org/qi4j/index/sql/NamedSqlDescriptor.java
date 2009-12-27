@@ -15,10 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.index.sql.assembly;
+package org.qi4j.index.sql;
 
-import java.util.Map;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.spi.query.NamedQueryDescriptor;
 
@@ -26,9 +28,15 @@ public class NamedSqlDescriptor
     implements NamedQueryDescriptor, Serializable
 {
     private String query;
+    private String name;
+    private List<String> variableNames;
 
-    public NamedSqlDescriptor( String query )
+    public NamedSqlDescriptor( String name, String query, List<String> variableNames )
     {
+        if( name == null || name.length() == 0 )
+        {
+            throw new NullPointerException( "Queries must have a name." );
+        }
         if( query == null )
         {
             throw new NullPointerException( "Null queries are not allowed" );
@@ -37,13 +45,28 @@ public class NamedSqlDescriptor
         {
             throw new IllegalArgumentException( "Empty query strings are not allowed." );
         }
+        if( variableNames != null )
+        {
+            this.variableNames = variableNames;
+        }
+        else
+        {
+            this.variableNames = new ArrayList<String>();
+        }
+        this.name = name;
         this.query = query;
+    }
+
+    public String name()
+    {
+        return name;
     }
 
     public String compose( Map<String, Object> variables,
                            OrderBy[] orderBySegments,
                            Integer firstResult,
-                           Integer maxResults )
+                           Integer maxResults
+    )
     {
 
         processOrderBy( orderBySegments );
@@ -57,6 +80,11 @@ public class NamedSqlDescriptor
     public String language()
     {
         return "SQL";
+    }
+
+    public List<String> variableNames()
+    {
+        return variableNames;
     }
 
     private String range( Integer firstResult, Integer maxResults )
@@ -95,13 +123,13 @@ public class NamedSqlDescriptor
             if( existing.startsWith( "ASC" ) && order.order().equals( OrderBy.Order.DESCENDING ) )
             {
                 String pre = query.substring( 0, pos );
-                String post = query.substring( pos+3 );
+                String post = query.substring( pos + 3 );
                 query = pre + "DESC" + post;
             }
             else if( existing.startsWith( "DESC" ) && order.order().equals( OrderBy.Order.ASCENDING ) )
             {
                 String pre = query.substring( 0, pos );
-                String post = query.substring( pos+4 );
+                String post = query.substring( pos + 4 );
                 query = pre + "ASC" + post;
             }
             while( query.charAt( pos ) != ')' )

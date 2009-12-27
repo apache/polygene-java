@@ -22,7 +22,6 @@ import org.qi4j.index.sql.model.Female;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 public interface FemaleEntity
     extends Female, EntityComposite

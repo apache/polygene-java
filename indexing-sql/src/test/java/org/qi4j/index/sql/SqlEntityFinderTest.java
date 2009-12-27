@@ -17,26 +17,14 @@
  */
 package org.qi4j.index.sql;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.io.IOException;
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.entity.EntityReference;
-import static org.qi4j.api.query.QueryExpressions.and;
-import static org.qi4j.api.query.QueryExpressions.eq;
-import static org.qi4j.api.query.QueryExpressions.ge;
-import static org.qi4j.api.query.QueryExpressions.gt;
-import static org.qi4j.api.query.QueryExpressions.isNotNull;
-import static org.qi4j.api.query.QueryExpressions.isNull;
-import static org.qi4j.api.query.QueryExpressions.matches;
-import static org.qi4j.api.query.QueryExpressions.not;
-import static org.qi4j.api.query.QueryExpressions.or;
-import static org.qi4j.api.query.QueryExpressions.orderBy;
-import static org.qi4j.api.query.QueryExpressions.templateFor;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.ServiceReference;
@@ -44,10 +32,7 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import static org.qi4j.index.sql.NameableAssert.assertNames;
-import static org.qi4j.index.sql.NameableAssert.toList;
-import org.qi4j.index.sql.assembly.SqlFactoryService;
-import org.qi4j.index.sql.assembly.SqlQueryService;
+import org.qi4j.index.sql.model.Address;
 import org.qi4j.index.sql.model.Domain;
 import org.qi4j.index.sql.model.Female;
 import org.qi4j.index.sql.model.File;
@@ -59,20 +44,20 @@ import org.qi4j.index.sql.model.Port;
 import org.qi4j.index.sql.model.Protocol;
 import org.qi4j.index.sql.model.QueryParam;
 import org.qi4j.index.sql.model.URL;
-import org.qi4j.index.sql.model.Address;
 import org.qi4j.index.sql.model.entities.AccountEntity;
 import org.qi4j.index.sql.model.entities.CatEntity;
 import org.qi4j.index.sql.model.entities.CityEntity;
 import org.qi4j.index.sql.model.entities.DomainEntity;
 import org.qi4j.index.sql.model.entities.FemaleEntity;
 import org.qi4j.index.sql.model.entities.MaleEntity;
-import org.qi4j.library.rdf.entity.EntityStateSerializer;
-import org.qi4j.library.rdf.entity.EntityTypeSerializer;
-import org.qi4j.library.rdf.repository.MemoryRepositoryService;
+import org.qi4j.library.jdbc.ConnectionPoolService;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.test.EntityTestAssembler;
-import org.openrdf.rio.RDFFormat;
+
+import static org.junit.Assert.*;
+import static org.qi4j.api.query.QueryExpressions.*;
+import static org.qi4j.index.sql.NameableAssert.*;
 
 public class SqlEntityFinderTest
 {
@@ -88,13 +73,14 @@ public class SqlEntityFinderTest
     private static final String ANN = "Ann Doe";
 
     @Before
-    public void setUp() throws UnitOfWorkCompletionException
+    public void setUp()
+        throws UnitOfWorkCompletionException
     {
         assembler = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
-                module.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
                 module.addEntities(
                     MaleEntity.class,
                     FemaleEntity.class,
@@ -117,9 +103,7 @@ public class SqlEntityFinderTest
                     SqlFactoryService.class,
                     SqlIndexerExporterComposite.class
                 );
-                module.addServices( MemoryRepositoryService.class ).identifiedBy( "sql-indexing" );
-//                module.addServices( NativeRdfRepositoryService.class ).identifiedBy( "sql-indexing" );
-//                module.addComposites( NativeRdfConfiguration.class );
+                module.addServices( ConnectionPoolService.class );
             }
         };
         Network.populate( assembler );
@@ -127,16 +111,19 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void showNetwork() throws IOException
+    public void showNetwork()
+        throws IOException
     {
-        final ServiceReference<SqlIndexerExporterComposite> indexerService = assembler.serviceFinder().findService( SqlIndexerExporterComposite.class );
+        final ServiceReference<SqlIndexerExporterComposite> indexerService = assembler.serviceFinder()
+            .findService( SqlIndexerExporterComposite.class );
         final SqlIndexerExporterComposite exporter = indexerService.get();
-        exporter.toSQL( System.out, RDFFormat.RDFXML );
+        exporter.toSQL( System.out );
         // todo asserts
     }
 
     @Test
-    public void script01() throws EntityFinderException
+    public void script01()
+        throws EntityFinderException
     {
         // should return all persons (Joe, Ann, Jack Doe)
         Iterable<EntityReference> entities = entityFinder.findEntities(
@@ -148,7 +135,8 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void script02() throws EntityFinderException
+    public void script02()
+        throws EntityFinderException
     {
         Nameable nameable = templateFor( Nameable.class );
         // should return Gaming domain
@@ -161,7 +149,8 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void script03() throws EntityFinderException
+    public void script03()
+        throws EntityFinderException
     {
         // should return all entities
         Iterable<EntityReference> entities = entityFinder.findEntities(
@@ -173,7 +162,8 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void script04() throws EntityFinderException
+    public void script04()
+        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Joe and Ann Doe
@@ -186,7 +176,8 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void script05() throws EntityFinderException
+    public void script05()
+        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Joe Doe
@@ -199,7 +190,8 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void script06() throws EntityFinderException
+    public void script06()
+        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Joe and Ann Doe
@@ -212,7 +204,8 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void script07() throws EntityFinderException
+    public void script07()
+        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Jack Doe
@@ -228,7 +221,8 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void script08() throws EntityFinderException
+    public void script08()
+        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Jack and Ann Doe
@@ -244,7 +238,8 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void script09() throws EntityFinderException
+    public void script09()
+        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Ann Doe
@@ -260,7 +255,8 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void script10() throws EntityFinderException
+    public void script10()
+        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Joe and Jack Doe
@@ -275,7 +271,8 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void script11() throws EntityFinderException
+    public void script11()
+        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Joe Doe
@@ -288,7 +285,8 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void script12() throws EntityFinderException
+    public void script12()
+        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Ann and Jack Doe
@@ -301,7 +299,8 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void script13() throws EntityFinderException
+    public void script13()
+        throws EntityFinderException
     {
         Male person = templateFor( Male.class );
         // should return Jack Doe
@@ -314,7 +313,8 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void script14() throws EntityFinderException
+    public void script14()
+        throws EntityFinderException
     {
         Male person = templateFor( Male.class );
         // should return Joe Doe
@@ -327,7 +327,8 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void script15() throws EntityFinderException
+    public void script15()
+        throws EntityFinderException
     {
         Male person = templateFor( Male.class );
         // should return Ann and Joe Doe
@@ -353,7 +354,8 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void script17() throws EntityFinderException
+    public void script17()
+        throws EntityFinderException
     {
         // should return only 2 entities starting with third one
         final List<EntityReference> references = toList( entityFinder.findEntities(
@@ -365,7 +367,8 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void script18() throws EntityFinderException
+    public void script18()
+        throws EntityFinderException
     {
         // should return all Nameable entities sorted by name
         Nameable nameable = templateFor( Nameable.class );
@@ -382,7 +385,8 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void script19() throws EntityFinderException
+    public void script19()
+        throws EntityFinderException
     {
         // should return all Nameable entities with a name > "B" sorted by name
         Nameable nameable = templateFor( Nameable.class );
@@ -405,7 +409,8 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void script20() throws EntityFinderException
+    public void script20()
+        throws EntityFinderException
     {
         // should return all Persons born after 1973 (Ann and Joe Doe) sorted descending by name
         Person person = templateFor( Person.class );
@@ -419,22 +424,26 @@ public class SqlEntityFinderTest
     }
 
     @Test
-    public void script21() throws EntityFinderException
+    public void script21()
+        throws EntityFinderException
     {
         // should return all Persons sorted name of the city they were born
         Person person = templateFor( Person.class );
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Person.class.getName(),
             ALL,
-            new OrderBy[]{ orderBy( person.placeOfBirth().get().name() ),
-                           orderBy( person.name() ) },
+            new OrderBy[]{
+                orderBy( person.placeOfBirth().get().name() ),
+                orderBy( person.name() )
+            },
             NO_FIRST_RESULT, NO_MAX_RESULTS
         );
         assertNames( false, entities, ANN, JOE, JACK );
     }
 
     @Test
-    public void script22() throws EntityFinderException
+    public void script22()
+        throws EntityFinderException
     {
         Nameable nameable = templateFor( Nameable.class );
         // should return Jack and Joe Doe
@@ -445,5 +454,4 @@ public class SqlEntityFinderTest
         );
         assertNames( entities, JACK, JOE );
     }
-
 }

@@ -17,6 +17,8 @@
  */
 package org.qi4j.index.sql;
 
+import org.qi4j.index.sql.SqlQueryParser;
+
 public interface SqlFactory
 {
     SqlQueryParser newQueryParser();

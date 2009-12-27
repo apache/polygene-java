@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2009, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,8 +11,9 @@
  * limitations under the License.
  *
  */
-package org.qi4j.index.sql.jdbc;
+package org.qi4j.library.jdbc;
 
+import java.util.Map;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.common.Optional;
@@ -20,9 +21,17 @@ import org.qi4j.api.common.Optional;
 /**
  * JAVADOC Add JavaDoc
  */
-public interface HttpRepositoryConfiguration extends ConfigurationComposite
+public interface ConnectionPoolConfiguration
+    extends ConfigurationComposite
 {
-    @Optional Property<String> repositoryUrl();
+    Property<String> maxConnections();
 
-    @Optional Property<String> repositoryId();
+    Property<String> driverUrl();
+
+    Property<String> driverUsername();
+
+    Property<String> driverPassword();
+
+    @Optional
+    Property<Map<String,String>> driverProperties();
 }

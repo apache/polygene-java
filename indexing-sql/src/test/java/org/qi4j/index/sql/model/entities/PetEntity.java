@@ -22,7 +22,6 @@ import org.qi4j.index.sql.model.Pet;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 public interface PetEntity
     extends Pet, EntityComposite

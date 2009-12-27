@@ -22,11 +22,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.index.sql.model.Nameable;
+
+import static org.junit.Assert.*;
 
 public class NameableAssert
 {
@@ -43,10 +43,13 @@ public class NameableAssert
         assertNames( true, identitiesIterable, expectedNames );
     }
 
-    public static void assertNames( boolean sort, Iterable<EntityReference> identitiesIterable, String... expectedNames )
+    public static void assertNames( boolean sort,
+                                    Iterable<EntityReference> identitiesIterable,
+                                    String... expectedNames
+    )
     {
         final List<EntityReference> references = toList( identitiesIterable );
-        assertEquals( expectedNames.length + " entries("+expectedNames.length+", got "+getNames(references)+")", expectedNames.length, references.size() );
+        assertEquals( expectedNames.length + " entries(" + expectedNames.length + ", got " + getNames( references ) + ")", expectedNames.length, references.size() );
         List<String> sortedNames = getNames( references );
         final List<String> expectedSorted = java.util.Arrays.asList( expectedNames );
         if( sort )

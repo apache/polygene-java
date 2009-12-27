@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 /**
  * JAVADOC Add JavaDoc
  */
-public class SparqlSqlQueryParser
+public class SqlQueryParserImpl
     implements SqlQueryParser
 {
     private static ThreadLocal<DateFormat> ISO8601_UTC = new ThreadLocal<DateFormat>()
@@ -62,7 +62,7 @@ public class SparqlSqlQueryParser
     private Namespaces namespaces = new Namespaces();
     private Triples triples = new Triples( namespaces );
 
-    public SparqlSqlQueryParser()
+    public SqlQueryParserImpl()
     {
     }
 

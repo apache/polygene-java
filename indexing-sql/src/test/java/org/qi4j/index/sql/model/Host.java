@@ -22,9 +22,9 @@ import org.qi4j.api.value.ValueComposite;
 
 /**
  * JAVADOC Add JavaDoc.
- *
  */
-public interface Host extends ValueComposite
+public interface Host
+    extends ValueComposite
 {
     Property<String> value();
 }

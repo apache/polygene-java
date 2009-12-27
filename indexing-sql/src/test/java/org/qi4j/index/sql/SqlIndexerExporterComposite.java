@@ -19,15 +19,14 @@ package org.qi4j.index.sql;
 
 import java.io.OutputStream;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.index.sql.assembly.SqlQueryService;
+import org.qi4j.api.service.ServiceComposite;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 @Mixins( SqlIndexerExporterMixin.class )
 public interface SqlIndexerExporterComposite
-    extends SqlQueryService
+    extends SqlQueryService, ServiceComposite
 {
     void toSQL( OutputStream outputStream );
 }

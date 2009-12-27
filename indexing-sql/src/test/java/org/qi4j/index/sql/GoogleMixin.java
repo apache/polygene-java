@@ -23,13 +23,13 @@ import org.qi4j.index.sql.model.Person;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 public class GoogleMixin
     implements Google
 {
 
-    @Structure UnitOfWorkFactory unitOfWorkFactory;
+    @Structure
+    UnitOfWorkFactory unitOfWorkFactory;
 
     public Iterable<Person> bornIn( String city )
     {

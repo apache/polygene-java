@@ -24,8 +24,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.library.jdbc.ConnectionPool;
 import org.qi4j.index.sql.callback.QualifiedIdentityResultCallback;
-import org.qi4j.index.sql.jdbc.ConnectionPool;
 import org.qi4j.spi.query.EntityFinderException;
 
 public class QueryExecutorMixin

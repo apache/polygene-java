@@ -16,13 +16,18 @@
  * limitations under the License.
  */
 
-package org.qi4j.index.sql.jdbc;
+package org.qi4j.library.jdbc;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public interface ConnectionPool
 {
-    Connection obtainConnection();
+    Connection obtainConnection()
+        throws SQLException;
 
-    void releaseConnection( Connection connection );
+    void releaseConnection( Connection connection )
+        throws SQLException;
+
+
 }

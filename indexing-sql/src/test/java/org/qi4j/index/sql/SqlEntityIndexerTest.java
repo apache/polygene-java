@@ -17,44 +17,43 @@
  */
 package org.qi4j.index.sql;
 
+import java.io.IOException;
 import org.junit.Test;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import static org.qi4j.index.sql.Network.populate;
-import org.qi4j.index.sql.assembly.SqlFactoryService;
+import org.qi4j.index.sql.internal.EntityStateSqlSerializer;
+import org.qi4j.index.sql.model.Address;
 import org.qi4j.index.sql.model.File;
 import org.qi4j.index.sql.model.Host;
 import org.qi4j.index.sql.model.Port;
 import org.qi4j.index.sql.model.Protocol;
 import org.qi4j.index.sql.model.QueryParam;
 import org.qi4j.index.sql.model.URL;
-import org.qi4j.index.sql.model.Address;
 import org.qi4j.index.sql.model.entities.AccountEntity;
 import org.qi4j.index.sql.model.entities.CatEntity;
 import org.qi4j.index.sql.model.entities.CityEntity;
 import org.qi4j.index.sql.model.entities.DomainEntity;
 import org.qi4j.index.sql.model.entities.FemaleEntity;
 import org.qi4j.index.sql.model.entities.MaleEntity;
-import org.qi4j.library.rdf.entity.EntityStateSerializer;
-import org.qi4j.library.rdf.entity.EntityTypeSerializer;
-import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
-import org.openrdf.rio.RDFFormat;
-import java.io.IOException;
+
+import static org.qi4j.index.sql.Network.*;
 
 public class SqlEntityIndexerTest
 {
     @Test
-    public void script01() throws UnitOfWorkCompletionException, IOException
+    public void script01()
+        throws UnitOfWorkCompletionException, IOException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
-                module.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
+                module.addObjects( EntityStateSqlSerializer.class );
                 module.addEntities(
                     MaleEntity.class,
                     FemaleEntity.class,
@@ -72,16 +71,16 @@ public class SqlEntityIndexerTest
                     File.class,
                     QueryParam.class
                 );
-                module.addServices(
-                    MemoryEntityStoreService.class,
-                    UuidIdentityGeneratorService.class,
-                    SqlIndexerExporterComposite.class,
-                    SqlFactoryService.class,
-                    MemoryRepositoryService.class
-                );
+                module.addServices( MemoryEntityStoreService.class );
+                module.addServices( UuidIdentityGeneratorService.class );
+                module.addServices( SqlIndexerExporterComposite.class );
+                module.addServices( SqlFactoryService.class );
             }
         };
         populate( assembler );
-        assembler.serviceFinder().<SqlIndexerExporterComposite>findService( SqlIndexerExporterComposite.class ).get().toSQL( System.out, RDFFormat.RDFXML );
+        assembler.serviceFinder()
+            .<SqlIndexerExporterComposite>findService( SqlIndexerExporterComposite.class )
+            .get()
+            .toSQL( System.out );
     }
 }

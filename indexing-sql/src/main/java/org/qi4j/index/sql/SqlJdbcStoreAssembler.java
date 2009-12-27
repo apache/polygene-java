@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2009, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,11 +11,14 @@
  * limitations under the License.
  *
  */
-package org.qi4j.index.sql.assembly;
+package org.qi4j.index.sql;
 
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.index.sql.SqlFactoryService;
+import org.qi4j.index.sql.SqlQueryService;
+import org.qi4j.library.jdbc.ConnectionPoolService;
 
 public class SqlJdbcStoreAssembler
     implements Assembler
@@ -26,5 +29,6 @@ public class SqlJdbcStoreAssembler
     {
         module.addServices( SqlQueryService.class ).instantiateOnStartup();
         module.addServices( SqlFactoryService.class );
+        module.addServices( ConnectionPoolService.class );
     }
 }

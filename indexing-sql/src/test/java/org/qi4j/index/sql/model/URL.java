@@ -25,17 +25,22 @@ import org.qi4j.api.value.ValueComposite;
 
 /**
  * JAVADOC Add JavaDoc.
- *
  */
-public interface URL extends ValueComposite
+public interface URL
+    extends ValueComposite
 {
     Property<Protocol> protocol();
 
-    @Optional @Queryable( false ) Property<Host> host();
+    @Optional
+    @Queryable( false )
+    Property<Host> host();
 
-    @Optional Property<Port> port();
+    @Optional
+    Property<Port> port();
 
-    @Optional Property<File> file();
+    @Optional
+    Property<File> file();
 
-    @Optional Property<Collection<QueryParam>> queryParams();
+    @Optional
+    Property<Collection<QueryParam>> queryParams();
 }

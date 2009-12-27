@@ -22,7 +22,6 @@ import org.qi4j.index.sql.model.City;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 public interface CityEntity
     extends City, EntityComposite

@@ -23,7 +23,6 @@ import org.qi4j.index.sql.model.Cat;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 @Queryable( false )
 public interface CatEntity

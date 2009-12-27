@@ -18,53 +18,24 @@
 package org.qi4j.index.sql;
 
 import java.io.OutputStream;
-import org.openrdf.repository.Repository;
-import org.openrdf.repository.RepositoryConnection;
-import org.openrdf.repository.RepositoryException;
-import org.openrdf.rio.RDFWriter;
-import org.openrdf.rio.rdfxml.util.RDFXMLPrettyWriter;
-import org.qi4j.api.injection.scope.Service;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 public abstract class SqlIndexerExporterMixin
     implements SqlIndexerExporterComposite
 {
-    @Service Repository repository;
-
-    public void activate() throws Exception
+    public void activate()
+        throws Exception
     {
     }
 
-    public void passivate() throws Exception
+    public void passivate()
+        throws Exception
     {
     }
 
     public void toSQL( final OutputStream outputStream )
     {
-        RDFWriter rdfWriter = new RDFXMLPrettyWriter( outputStream );
-        try
-        {
-            final RepositoryConnection connection = repository.getConnection();
-            try
-            {
-                connection.export( rdfWriter );
-            }
-            catch( Exception e )
-            {
-                e.printStackTrace();
-            }
-            finally
-            {
-                connection.close();
-            }
-        }
-        catch( RepositoryException e )
-        {
-            e.printStackTrace();
-        }
-
     }
 }

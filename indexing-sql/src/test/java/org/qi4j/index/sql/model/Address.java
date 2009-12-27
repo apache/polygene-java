@@ -18,12 +18,15 @@
 
 package org.qi4j.index.sql.model;
 
-import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.value.ValueComposite;
 
-public interface Address extends ValueComposite
+public interface Address
+    extends ValueComposite
 {
     Property<String> line1();
+
     Property<String> line2();
+
     Property<String> zipcode();
 }
