@@ -67,7 +67,12 @@ public class JdbmEntityStoreMixin
     public void activate()
         throws Exception
     {
-        File dataFile = new File( config.configuration().file().get() );
+        String pathname = config.configuration().file().get();
+        if( pathname == null )
+        {
+            pathname = System.getProperty( "user.dir" ) + "/qi4j/jdbmstore.data";
+        }
+        File dataFile = new File( pathname );
         File directory = dataFile.getAbsoluteFile().getParentFile();
         directory.mkdirs();
         String name = dataFile.getAbsolutePath();

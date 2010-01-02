@@ -15,23 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.index.rdf;
 
-import org.openrdf.query.QueryLanguage;
+package org.qi4j.index.rdf.query;
 
-public class UnsupportedLanguageException
-    extends RuntimeException
+import org.qi4j.api.query.grammar.BooleanExpression;
+import org.qi4j.api.query.grammar.OrderBy;
+
+public interface RdfQueryParser
 {
-    private QueryLanguage language;
-
-    public UnsupportedLanguageException( QueryLanguage language )
-    {
-        super( "Unsupported RDF Query Language: " + language );
-        this.language = language;
-    }
-
-    public QueryLanguage getLanguage()
-    {
-        return language;
-    }
+    String getQuery( String resultType,
+                            BooleanExpression whereClause,
+                            OrderBy[] orderBySegments,
+                            Integer firstResult,
+                            Integer maxResults
+    );
 }

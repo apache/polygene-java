@@ -13,24 +13,57 @@
  */
 package org.qi4j.index.rdf.assembly;
 
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.index.rdf.assembly.RdfFactoryService;
-import org.qi4j.index.rdf.assembly.RdfQueryService;
+import org.qi4j.index.rdf.RdfIndexingEngineService;
+import org.qi4j.index.rdf.query.RdfQueryParserFactory;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
+import org.qi4j.spi.query.NamedQueries;
 
 public class RdfMemoryStoreAssembler
     implements Assembler
 {
+    private NamedQueries namedQueries;
+    private Visibility indexingVisibility;
+    private Visibility repositoryVisibility;
+
+    public RdfMemoryStoreAssembler()
+    {
+        this( null, Visibility.application, Visibility.module );
+    }
+
+    public RdfMemoryStoreAssembler(NamedQueries namedQueries )
+    {
+        this( namedQueries, Visibility.application, Visibility.module );
+    }
+
+    public RdfMemoryStoreAssembler( NamedQueries namedQueries, Visibility indexingVisibility, Visibility repositoryVisibility )
+    {
+        if( namedQueries == null )
+        {
+            namedQueries = new NamedQueries();
+        }
+        this.namedQueries = namedQueries;
+        this.indexingVisibility = indexingVisibility;
+        this.repositoryVisibility = repositoryVisibility;
+    }
+
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( MemoryRepositoryService.class ).instantiateOnStartup().identifiedBy( "rdf-repository" );
-        module.addServices( RdfQueryService.class ).instantiateOnStartup();
-        module.addServices( RdfFactoryService.class );
+        module.addServices( MemoryRepositoryService.class )
+            .visibleIn( repositoryVisibility )
+            .instantiateOnStartup()
+            .identifiedBy( "rdf-repository" );
+        module.addServices( RdfIndexingEngineService.class )
+            .visibleIn( indexingVisibility )
+            .setMetaInfo( namedQueries )
+            .instantiateOnStartup();
+        module.addServices( RdfQueryParserFactory.class ).visibleIn( indexingVisibility );
         module.addObjects( EntityStateSerializer.class, EntityTypeSerializer.class );
     }
 }

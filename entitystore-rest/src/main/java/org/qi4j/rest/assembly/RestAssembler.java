@@ -28,15 +28,27 @@ import org.qi4j.rest.query.SPARQLResource;
 public class RestAssembler
     implements Assembler
 {
+    private Visibility visibility;
+
+    public RestAssembler( )
+    {
+        this( Visibility.application );
+    }
+    
+    public RestAssembler( Visibility visibility )
+    {
+        this.visibility = visibility;
+    }
+
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addObjects(RestApplication.class).visibleIn(Visibility.application);
-        module.addObjects(Qi4jFinder.class,
-                Qi4jServiceResource.class,
-                EntitiesResource.class,
-                EntityResource.class,
-                IndexResource.class,
-                SPARQLResource.class);
+        module.addObjects( RestApplication.class ).visibleIn( visibility );
+        module.addObjects( Qi4jFinder.class,
+                           Qi4jServiceResource.class,
+                           EntitiesResource.class,
+                           EntityResource.class,
+                           IndexResource.class,
+                           SPARQLResource.class );
     }
 }

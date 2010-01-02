@@ -1,7 +1,10 @@
 
+Export-Package: org.qi4j.index.rdf,
+                org.qi4j.index.rdf.assembly,
+                org.qi4j.index.rdf.http,
+                org.qi4j.index.rdf.indexing,
+                org.qi4j.index.rdf.query
 
-
-Export-Package: org.qi4j.index.rdf.*;version="1"
 
 Import-Package: org.apache.commons.logging, \
                 javax.crypto, \

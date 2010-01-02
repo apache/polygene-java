@@ -15,23 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.qi4j.index.rdf;
 
-import org.openrdf.query.QueryLanguage;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.index.rdf.indexing.RdfExporter;
+import org.qi4j.index.rdf.indexing.RdfIndexingService;
+import org.qi4j.index.rdf.query.RdfQueryService;
 
-public class UnsupportedLanguageException
-    extends RuntimeException
+public interface RdfIndexingEngineService
+    extends RdfQueryService, RdfIndexingService, RdfExporter, ServiceComposite
 {
-    private QueryLanguage language;
-
-    public UnsupportedLanguageException( QueryLanguage language )
-    {
-        super( "Unsupported RDF Query Language: " + language );
-        this.language = language;
-    }
-
-    public QueryLanguage getLanguage()
-    {
-        return language;
-    }
 }

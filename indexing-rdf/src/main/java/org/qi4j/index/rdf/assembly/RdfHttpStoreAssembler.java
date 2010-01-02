@@ -21,30 +21,29 @@ import org.qi4j.index.rdf.RdfIndexingEngineService;
 import org.qi4j.index.rdf.query.RdfQueryParserFactory;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
-import org.qi4j.library.rdf.repository.NativeConfiguration;
-import org.qi4j.library.rdf.repository.NativeRepositoryService;
+import org.qi4j.library.rdf.repository.HttpRepositoryService;
 import org.qi4j.spi.query.NamedQueries;
 
-public class RdfNativeSesameStoreAssembler
+public class RdfHttpStoreAssembler
     implements Assembler
 {
     private NamedQueries namedQueries;
     private Visibility indexingVisibility;
     private Visibility repositoryVisibility;
 
-    public RdfNativeSesameStoreAssembler( NamedQueries namedQueries )
+    public RdfHttpStoreAssembler( NamedQueries namedQueries )
     {
         this( namedQueries, Visibility.application, Visibility.module );
     }
 
-    public RdfNativeSesameStoreAssembler()
+    public RdfHttpStoreAssembler()
     {
         this( null, Visibility.application, Visibility.module );
     }
 
-    public RdfNativeSesameStoreAssembler( NamedQueries namedQueries,
-                                          Visibility indexingVisibility,
-                                          Visibility repositoryVisibility
+    public RdfHttpStoreAssembler( NamedQueries namedQueries,
+                                  Visibility indexingVisibility,
+                                  Visibility repositoryVisibility
     )
     {
         if( namedQueries == null )
@@ -59,7 +58,7 @@ public class RdfNativeSesameStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( NativeRepositoryService.class )
+        module.addServices( HttpRepositoryService.class )
             .visibleIn( repositoryVisibility )
             .instantiateOnStartup()
             .identifiedBy( "rdf-indexing" );

@@ -25,11 +25,12 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.index.rdf.RdfFactory;
-import org.qi4j.index.rdf.RdfQueryParser;
-import org.qi4j.index.rdf.callback.CollectingQualifiedIdentityResultCallback;
-import org.qi4j.index.rdf.callback.QualifiedIdentityResultCallback;
-import org.qi4j.index.rdf.callback.SingleQualifiedIdentityResultCallback;
+import org.qi4j.index.rdf.query.CollectingQualifiedIdentityResultCallback;
+import org.qi4j.index.rdf.query.RdfQueryParser;
+import org.qi4j.index.rdf.query.RdfQueryParserFactory;
+import org.qi4j.index.rdf.query.QualifiedIdentityResultCallback;
+import org.qi4j.index.rdf.query.SingleQualifiedIdentityResultCallback;
+import org.qi4j.index.rdf.query.internal.RdfQueryParserImpl;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.restlet.Uniform;
@@ -49,12 +50,14 @@ public class SPARQLEntityFinderMixin
     implements EntityFinder, Activatable
 {
     @This
-    Configuration<SPARQLEntityFinderConfiguration> config;
+    private Configuration<SPARQLEntityFinderConfiguration> config;
 
     @Service
-    Uniform client;
+    private Uniform client;
+
     @Service
-    RdfFactory rdfFactory;
+    private RdfQueryParserFactory rdfQueryParserFactory;
+    
     private Reference sparqlQueryRef;
 
     public void activate() throws Exception
@@ -87,6 +90,40 @@ public class SPARQLEntityFinderMixin
         throws EntityFinderException
     {
         return performQuery( resultType, whereClause, null, null, null, null );
+    }
+
+    public int performQuery( String resultType, BooleanExpression whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, QualifiedIdentityResultCallback callback )
+        throws EntityFinderException
+    {
+        try
+        {
+            // TODO shall we support different implementation as SERQL?
+            RdfQueryParser parser = rdfQueryParserFactory.newQueryParser( QueryLanguage.SPARQL );
+            String query = parser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults );
+
+            Reference queryReference = sparqlQueryRef.clone();
+            queryReference.addQueryParameter( "query", query );
+            Request request = new Request( Method.GET, queryReference);
+            Response response = new Response(request);
+            client.handle( request, response );
+            if( !response.getStatus().isSuccess() )
+            {
+                throw new SPARQLEntityFinderException( response.getRequest().getResourceRef(), response.getStatus() );
+            }
+
+            SaxRepresentation sax = new SaxRepresentation( response.getEntity() );
+            final EntityResultXMLReaderAdapter xmlReaderAdapter = new EntityResultXMLReaderAdapter( callback );
+            sax.parse( xmlReaderAdapter );
+            return xmlReaderAdapter.getRows();
+        }
+        catch( SPARQLEntityFinderException e )
+        {
+            throw e;
+        }
+        catch( Exception e )
+        {
+            throw new EntityFinderException( e );
+        }
     }
 
     private static class EntityResultXMLReaderAdapter extends XMLReaderAdapter
@@ -141,39 +178,4 @@ public class SPARQLEntityFinderMixin
             return row;
         }
     }
-
-    public int performQuery( String resultType, BooleanExpression whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, QualifiedIdentityResultCallback callback )
-        throws EntityFinderException
-    {
-        try
-        {
-            // TODO shall we support different implementation as SERQL?
-            final RdfQueryParser parser = rdfFactory.newQueryParser( QueryLanguage.SPARQL );
-            String query = parser.getQuery( resultType, whereClause, orderBySegments, firstResult, maxResults );
-
-            Reference queryReference = sparqlQueryRef.clone();
-            queryReference.addQueryParameter( "query", query );
-            Request request = new Request( Method.GET, queryReference);
-            Response response = new Response(request);
-            client.handle( request, response );
-            if( !response.getStatus().isSuccess() )
-            {
-                throw new SPARQLEntityFinderException( response.getRequest().getResourceRef(), response.getStatus() );
-            }
-
-            SaxRepresentation sax = new SaxRepresentation( response.getEntity() );
-            final EntityResultXMLReaderAdapter xmlReaderAdapter = new EntityResultXMLReaderAdapter( callback );
-            sax.parse( xmlReaderAdapter );
-            return xmlReaderAdapter.getRows();
-        }
-        catch( SPARQLEntityFinderException e )
-        {
-            throw e;
-        }
-        catch( Exception e )
-        {
-            throw new EntityFinderException( e );
-        }
-    }
-
 }

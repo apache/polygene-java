@@ -11,24 +11,19 @@ import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
  * @author Paul Merlin <paul@nosphere.org>
  */
 public class HazelcastEntityStoreAssembler
-        implements Assembler
+    implements Assembler
 {
+    private Visibility visibility;
 
-    private final String configModuleName;
-
-    public HazelcastEntityStoreAssembler(String configModuleName)
+    public HazelcastEntityStoreAssembler( Visibility visibility )
     {
-        this.configModuleName = configModuleName;
-
+        this.visibility = visibility;
     }
 
-    public void assemble(ModuleAssembly module)
-            throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
-        module.addServices(HazelcastEntityStoreService.class, UuidIdentityGeneratorService.class).visibleIn(Visibility.layer);
-        ModuleAssembly config = module.layerAssembly().moduleAssembly(configModuleName);
-        config.addEntities(HazelcastConfiguration.class).visibleIn(Visibility.layer);
-        config.addServices(MemoryEntityStoreService.class);
+        module.addServices( HazelcastEntityStoreService.class ).visibleIn( visibility );
+        module.addServices( UuidIdentityGeneratorService.class ).visibleIn( visibility );
     }
-
 }

@@ -16,17 +16,18 @@ package org.qi4j.rest.query;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.index.rdf.RdfExport;
+import org.qi4j.index.rdf.indexing.RdfExporter;
 import org.restlet.data.MediaType;
-import org.restlet.data.Method;
 import org.restlet.representation.OutputRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
-import org.openrdf.rio.RDFFormat;
 
 /**
  * Show RDF index
@@ -34,50 +35,92 @@ import org.openrdf.rio.RDFFormat;
 public class IndexResource
     extends ServerResource
 {
-    @Service private RdfExport export;
+    @Service
+    private RdfExporter exporter;
 
     public IndexResource()
     {
-        getVariants().addAll(Arrays.asList(
-            new Variant(MediaType.TEXT_PLAIN),
-            new Variant(MediaType.APPLICATION_RDF_TRIG),
-            new Variant(MediaType.APPLICATION_RDF_XML)));
+        getVariants().addAll( Arrays.asList(
+            new Variant( MediaType.TEXT_PLAIN ),
+            new Variant( MediaType.APPLICATION_RDF_TRIG ),
+            new Variant( MediaType.APPLICATION_RDF_XML ) ) );
 
         setNegotiated( true );
     }
 
     @Override
-    public Representation get( Variant variant ) throws ResourceException
+    public Representation get( Variant variant )
+        throws ResourceException
     {
-        if (variant.getMediaType().equals(MediaType.APPLICATION_RDF_XML))
+        if( variant.getMediaType().equals( MediaType.APPLICATION_RDF_XML ) )
         {
-            return new OutputRepresentation( MediaType.APPLICATION_RDF_XML )
-            {
-                public void write( OutputStream outputStream ) throws IOException
-                {
-                    export.toRDF( outputStream, RDFFormat.RDFXML );
-                }
-            };
-        } else if (variant.getMediaType().equals(MediaType.APPLICATION_RDF_TRIG))
-        {
-            return new OutputRepresentation( MediaType.APPLICATION_RDF_TRIG )
-            {
-                public void write( OutputStream outputStream ) throws IOException
-                {
-                    export.toRDF( outputStream, RDFFormat.TRIG );
-                }
-            };
-        } else if (variant.getMediaType().equals(MediaType.TEXT_PLAIN))
-        {
-            return new OutputRepresentation( MediaType.TEXT_PLAIN )
-            {
-                public void write( OutputStream outputStream ) throws IOException
-                {
-                    export.toRDF( outputStream, RDFFormat.TRIG );
-                }
-            };
+            return new RdfXmlOutputRepresentation();
         }
-        
+        else if( variant.getMediaType().equals( MediaType.APPLICATION_RDF_TRIG ) )
+        {
+            return new RdfTrigOutputRepresentation( MediaType.APPLICATION_RDF_TRIG );
+        }
+        else if( variant.getMediaType().equals( MediaType.TEXT_PLAIN ) )
+        {
+            return new RdfTrigOutputRepresentation( MediaType.TEXT_PLAIN );
+        }
+
         return null;
+    }
+
+    private class RdfTrigOutputRepresentation
+        extends OutputRepresentation
+    {
+        public RdfTrigOutputRepresentation( MediaType mediaType )
+        {
+            super( mediaType );
+        }
+
+        public void write( OutputStream outputStream )
+            throws IOException
+        {
+            PrintStream ps = null;
+            try
+            {
+                ps = new PrintStream( outputStream );
+                exporter.exportReadableToStream( ps );
+            }
+            finally
+            {
+                if( ps != null )
+                {
+                    ps.close();
+                }
+            }
+        }
+    }
+
+    private class RdfXmlOutputRepresentation
+        extends OutputRepresentation
+    {
+        public RdfXmlOutputRepresentation()
+        {
+            super( MediaType.APPLICATION_RDF_XML );
+        }
+
+        public void write( OutputStream outputStream )
+            throws IOException
+        {
+            PrintWriter pw = null;
+            try
+            {
+                OutputStreamWriter osw = new OutputStreamWriter( outputStream, "UTF-8" );
+                pw = new PrintWriter( osw );
+                exporter.exportFormalToWriter( pw );
+                pw.flush();
+            }
+            finally
+            {
+                if( pw != null )
+                {
+                    pw.close();
+                }
+            }
+        }
     }
 }

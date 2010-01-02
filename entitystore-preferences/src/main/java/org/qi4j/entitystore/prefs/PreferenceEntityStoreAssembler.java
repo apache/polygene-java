@@ -17,21 +17,35 @@
  */
 package org.qi4j.entitystore.prefs;
 
+import java.util.prefs.Preferences;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
-import java.util.prefs.Preferences;
 
 public class PreferenceEntityStoreAssembler
     implements Assembler
 {
+    private Visibility visibility;
+
+    public PreferenceEntityStoreAssembler( Visibility visibility )
+    {
+        this.visibility = visibility;
+    }
+
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+        String applicationName = module.layerAssembly().applicationAssembly().name();
+
+        Preferences root = Preferences.userRoot();
+        Preferences node = root.node( applicationName );
+        PreferencesEntityStoreInfo info = new PreferencesEntityStoreInfo( node );
         module.addServices( PreferencesEntityStoreService.class )
-            .setMetaInfo( new PreferencesEntityStoreInfo( Preferences.userRoot().node(module.layerAssembly().applicationAssembly().name() )) )
+            .setMetaInfo( info )
+            .visibleIn( visibility )
             .instantiateOnStartup();
-        module.addServices( UuidIdentityGeneratorService.class );
+        module.addServices( UuidIdentityGeneratorService.class ).visibleIn( visibility );
     }
 }

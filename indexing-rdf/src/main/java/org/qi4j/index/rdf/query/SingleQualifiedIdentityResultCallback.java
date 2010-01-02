@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Niclas Hedhman.
+ * Copyright 2008 Michael Hunger.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -15,23 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.index.rdf;
+package org.qi4j.index.rdf.query;
 
-import org.openrdf.query.QueryLanguage;
+import org.qi4j.api.entity.EntityReference;
 
-public class UnsupportedLanguageException
-    extends RuntimeException
+public class SingleQualifiedIdentityResultCallback
+    implements QualifiedIdentityResultCallback
 {
-    private QueryLanguage language;
+    private EntityReference entityReference;
 
-    public UnsupportedLanguageException( QueryLanguage language )
+    public boolean processRow( long row, EntityReference entityReference )
     {
-        super( "Unsupported RDF Query Language: " + language );
-        this.language = language;
+        this.entityReference = entityReference;
+        return false;
     }
 
-    public QueryLanguage getLanguage()
+    public EntityReference getQualifiedIdentity()
     {
-        return language;
+        return entityReference;
     }
 }

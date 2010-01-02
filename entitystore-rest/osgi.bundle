@@ -43,6 +43,8 @@ Import-Package: javax.servlet, \
                 org.qi4j.bootstrap, \
                 org.qi4j.entitystore.map, \
                 org.qi4j.index.rdf, \
+                org.qi4j.index.rdf.query, \
+                org.qi4j.index.rdf.indexing, \
                 org.qi4j.index.rdf.assembly, \
                 org.qi4j.index.rdf.callback, \
                 org.qi4j.library.rdf, \

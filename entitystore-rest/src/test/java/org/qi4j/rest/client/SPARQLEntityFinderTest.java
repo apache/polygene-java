@@ -22,12 +22,11 @@ import org.junit.Test;
 import org.junit.Ignore;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.query.Query;
-import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.index.rdf.assembly.RdfFactoryService;
+import org.qi4j.index.rdf.query.RdfQueryParserFactory;
 import org.qi4j.library.rdf.entity.EntityStateParser;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeParser;
@@ -58,7 +57,7 @@ public class SPARQLEntityFinderTest
         store.addObjects( EntityStateSerializer.class, EntityStateParser.class, EntityTypeSerializer.class, EntityTypeParser.class );
         store.addEntities( RESTEntityStoreConfiguration.class, SPARQLEntityFinderConfiguration.class);
         store.addServices( MemoryEntityStoreService.class );
-        store.addServices( RESTEntityStoreService.class, SPARQLEntityFinderService.class, RdfFactoryService.class ).visibleIn( Visibility.layer );
+        store.addServices( RESTEntityStoreService.class, SPARQLEntityFinderService.class, RdfQueryParserFactory.class ).visibleIn( Visibility.layer );
         store.importServices( Uniform.class );
         try
         {
