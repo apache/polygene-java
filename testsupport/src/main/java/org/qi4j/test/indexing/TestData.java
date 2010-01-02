@@ -45,7 +45,7 @@ import org.qi4j.test.indexing.model.entities.MaleEntity;
  * JAVADOC Add JavaDoc
  *
  */
-class Network
+class TestData
 {
     static void populate( SingletonAssembler assembler )
         throws UnitOfWorkCompletionException

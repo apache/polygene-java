@@ -1,5 +1,5 @@
 /*
- * Copyright 2007 Niclas Hedhman.
+ * Copyright 2007-2009 Niclas Hedhman.
  * Copyright 2008 Alin Dreghiciu.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
@@ -23,8 +23,8 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryExecutionException;
 import org.qi4j.api.query.grammar.BooleanExpression;
-import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 
@@ -56,7 +56,8 @@ final class EntityQuery<T>
     EntityQuery( final UnitOfWork unitOfWorkInstance,
                  final EntityFinder entityFinder,
                  final Class<T> resultType,
-                 final BooleanExpression whereClause )
+                 final BooleanExpression whereClause
+    )
     {
         super( resultType, whereClause );
         this.unitOfWorkInstance = unitOfWorkInstance;
@@ -75,7 +76,7 @@ final class EntityQuery<T>
             {
                 try
                 {
-                    return loadEntity( foundEntity );
+                    return unitOfWorkInstance.get( resultType, foundEntity.identity() );
                 }
                 catch( NoSuchEntityException e )
                 {
@@ -95,39 +96,35 @@ final class EntityQuery<T>
      * @see Query#iterator()
      */
     public Iterator<T> iterator()
+        throws QueryExecutionException
     {
         try
         {
-            final Iterator<EntityReference> foundEntities = entityFinder.findEntities(
-                resultType.getName(), whereClause, orderBySegments, firstResult, maxResults
-            ).iterator();
+            final Iterator<EntityReference> foundEntities = entityFinder.findEntities( resultType.getName(),
+                                                                                       whereClause,
+                                                                                       orderBySegments,
+                                                                                       firstResult,
+                                                                                       maxResults ).iterator();
 
             return new Iterator<T>()
             {
-                T next;
-
                 public boolean hasNext()
                 {
-                    while( foundEntities.hasNext() )
-                    {
-                        final EntityReference foundEntity = foundEntities.next();
-                        try
-                        {
-                            next = loadEntity( foundEntity );
-                            return true;
-                        }
-                        catch( NoSuchEntityException e )
-                        {
-                            // Index is out of sync - entity has been removed
-                        }
-                    }
-
-                    return false;
+                    return foundEntities.hasNext();
                 }
 
                 public T next()
                 {
-                    return next;
+                    final EntityReference foundEntity = foundEntities.next();
+                    try
+                    {
+                        return unitOfWorkInstance.get( resultType, foundEntity.identity() );
+                    }
+                    catch( NoSuchEntityException e )
+                    {
+                        // Index is out of sync - entity has been removed
+                        return null;
+                    }
                 }
 
                 public void remove()
@@ -138,7 +135,7 @@ final class EntityQuery<T>
         }
         catch( EntityFinderException e )
         {
-            throw (QueryExecutionException) new QueryExecutionException( "Query '" + toString() + "' could not be executed" ).initCause( e );
+            throw new QueryExecutionException( "Query '" + toString() + "' could not be executed", e );
         }
     }
 
@@ -164,17 +161,4 @@ final class EntityQuery<T>
         return "Find all " + resultType.getName() +
                ( whereClause != null ? " where " + whereClause.toString() : "" );
     }
-
-    /**
-     * Loads an entity (reference) based on qualified identity of that entity.
-     *
-     * @param entityReference to be loaded
-     * @return corresponding entity
-     */
-    private T loadEntity( final EntityReference entityReference )
-        throws NoSuchEntityException
-    {
-        return unitOfWorkInstance.get( resultType, entityReference.identity() );
-    }
-
 }

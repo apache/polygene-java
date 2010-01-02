@@ -24,7 +24,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.api.query.NotQueryableException;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
@@ -38,8 +37,8 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.query.EntityFinderException;
+import org.qi4j.spi.query.IndexExporter;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.test.EntityTestAssembler;
 
@@ -71,10 +70,9 @@ import org.qi4j.test.indexing.model.entities.MaleEntity;
 
 public abstract class AbstractQueryTest
 {
-
     private SingletonAssembler assembler;
     private QueryBuilderFactory qbf;
-    private UnitOfWork unitOfWork;
+    protected UnitOfWork unitOfWork;
 
     @Before
     public void setUp() throws UnitOfWorkCompletionException
@@ -105,7 +103,7 @@ public abstract class AbstractQueryTest
                 setupTest( module );
             }
         };
-        Network.populate( assembler );
+        TestData.populate( assembler );
         unitOfWork = assembler.unitOfWorkFactory().newUnitOfWork();
 
         qbf = assembler.queryBuilderFactory();
@@ -127,30 +125,13 @@ public abstract class AbstractQueryTest
         }
     }
 
-    private void remove( java.io.File data )
-    {
-        if( data.isDirectory() )
-        {
-            for( java.io.File file : data.listFiles() )
-            {
-                remove( file );
-            }
-
-            data.delete();
-        }
-        else
-        {
-            data.delete();
-        }
-    }
-
     @Test
     public void showNetwork() throws IOException
     {
         ServiceFinder serviceFinder = assembler.serviceFinder();
-        IndexerExporterComposite indexerExporter =
-            serviceFinder.<IndexerExporterComposite>findService( IndexerExporterComposite.class ).get();
-        indexerExporter.toStream( System.out );
+        IndexExporter indexerExporter =
+            serviceFinder.<IndexExporter>findService( IndexExporter.class ).get();
+        indexerExporter.exportReadableToStream( System.out );
     }
 
     private static void verifyUnorderedResults( final Iterable<? extends Nameable> results,
@@ -565,7 +546,7 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    @Ignore( "Wait till 0.7.0?" )
+    @Ignore( "Wait till 1.1?" )
     public void script30()
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
@@ -582,7 +563,7 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    @Ignore( "Wait till 0.7.0?" )
+    @Ignore( "Wait till 1.1?" )
     public void script31()
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );

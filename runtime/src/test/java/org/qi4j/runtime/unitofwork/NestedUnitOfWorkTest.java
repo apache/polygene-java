@@ -60,10 +60,10 @@ public class NestedUnitOfWorkTest
         try
         {
             // Create product
-            EntityBuilder<ProductEntity> cb = unitOfWork.newEntityBuilder( ProductEntity.class );
-            cb.instance().name().set( "Chair" );
-            cb.instance().price().set( 57 );
-            Product chair = cb.newInstance();
+            EntityBuilder<ProductEntity> builder = unitOfWork.newEntityBuilder( ProductEntity.class );
+            builder.instance().name().set( "Chair" );
+            builder.instance().price().set( 57 );
+            Product chair = builder.newInstance();
 
             assertThat( "Initial property is not correct", chair.price().get(), equalTo( 57 ) );
 

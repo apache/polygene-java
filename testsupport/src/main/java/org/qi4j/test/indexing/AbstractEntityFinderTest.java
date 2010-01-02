@@ -35,6 +35,7 @@ import org.qi4j.bootstrap.SingletonAssembler;
 import static org.qi4j.test.indexing.NameableAssert.*;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
+import org.qi4j.spi.query.IndexExporter;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.test.EntityTestAssembler;
 
@@ -103,7 +104,7 @@ public abstract class AbstractEntityFinderTest
                 setupTest( module );
             }
         };
-        Network.populate( assembler );
+        TestData.populate( assembler );
         entityFinder = (EntityFinder) assembler.serviceFinder().findService( EntityFinder.class ).get();
     }
 
@@ -125,9 +126,9 @@ public abstract class AbstractEntityFinderTest
     @Test
     public void showNetwork() throws IOException
     {
-        final ServiceReference<IndexerExporterComposite> indexerService = assembler.serviceFinder().findService( IndexerExporterComposite.class );
-        final IndexerExporterComposite exporter = indexerService.get();
-        exporter.toStream( System.out );
+        final ServiceReference<IndexExporter> indexerService = assembler.serviceFinder().findService( IndexExporter.class );
+        final IndexExporter exporter = indexerService.get();
+        exporter.exportReadableToStream( System.out );
         // todo asserts
     }
 
