@@ -13,12 +13,83 @@
  */
 package org.qi4j.library.rdf.repository;
 
+import java.io.File;
+import org.openrdf.model.ValueFactory;
 import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryConnection;
+import org.openrdf.repository.RepositoryException;
+import org.openrdf.repository.sail.SailRepository;
+import org.openrdf.sail.memory.MemoryStore;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 
-@Mixins( MemoryRepositoryMixin.class )
+@Mixins( MemoryRepositoryService.MemoryRepositoryMixin.class )
 public interface MemoryRepositoryService extends Repository, ServiceComposite, Activatable
 {
+    public static class MemoryRepositoryMixin
+        implements Repository, ResetableRepository, Activatable
+    {
+        SailRepository repo;
+
+        public MemoryRepositoryMixin()
+        {
+            repo = new SailRepository( new MemoryStore() );
+        }
+
+        public void activate()
+            throws Exception
+        {
+            repo.initialize();
+        }
+
+        public void passivate()
+            throws Exception
+        {
+            repo.shutDown();
+        }
+
+        public void setDataDir( File dataDir )
+        {
+            repo.setDataDir( dataDir );
+        }
+
+        public File getDataDir()
+        {
+            return repo.getDataDir();
+        }
+
+        public void initialize()
+            throws RepositoryException
+        {
+        }
+
+        public void shutDown()
+            throws RepositoryException
+        {
+        }
+
+        public boolean isWritable()
+            throws RepositoryException
+        {
+            return repo.isWritable();
+        }
+
+        public RepositoryConnection getConnection()
+            throws RepositoryException
+        {
+            return repo.getConnection();
+        }
+
+        public ValueFactory getValueFactory()
+        {
+            return repo.getValueFactory();
+        }
+
+        public void discardEntireRepository()
+            throws RepositoryException
+        {
+            repo = new SailRepository( new MemoryStore() );
+        }
+    }
 }

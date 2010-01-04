@@ -28,7 +28,7 @@ public interface NativeConfiguration extends ConfigurationComposite
 {
     @Optional @Matches( "([spoc][spoc][spoc][spoc],?)*" ) Property<String> tripleIndexes();
 
-    @Optional Property<String> dataDirectory();
+    Property<String> dataDirectory();
 
     @UseDefaults Property<Boolean> forceSync();
 }

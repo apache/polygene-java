@@ -38,6 +38,7 @@ import org.qi4j.logging.debug.service.DebugServiceConfiguration;
 import org.qi4j.logging.debug.service.DebuggingServiceComposite;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
@@ -76,7 +77,7 @@ public class DebuggingTest
             final String[] result = new String[1];
             es.visitEntityStates( new EntityStore.EntityStateVisitor()
             {
-                public void visitEntityState( EntityState entityState )
+                public void visitEntityState( EntityState entityState, EntityStoreUnitOfWork esuow )
                 {
                     if( ServiceDebugRecordEntity.class.getName()
                         .equals( entityState.entityDescriptor().entityType().type().name() ) )

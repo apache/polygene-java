@@ -1,4 +1,8 @@
-Export-Package: org.qi4j.library.rdf.*;version="${pom.version}"
+
+Export-Package: org.qi4j.library.rdf;version="${pom.version}", \
+                org.qi4j.library.rdf.entity;version="${pom.version}"
+                org.qi4j.library.rdf.model;version="${pom.version}"
+                org.qi4j.library.rdf.repository;version="${pom.version}"
 
 Import-Package: org.qi4j.*, \
                 org.json, \
@@ -18,7 +22,8 @@ Import-Package: org.qi4j.*, \
                 org.openrdf.rio.turtle, \
                 org.openrdf.sail, \
                 org.openrdf.sail.memory, \
-                org.openrdf.sail.nativerdf \
+                org.openrdf.sail.nativerdf, \
+                org.openrdf.sail.rdbms
 
 Ignore-Package: clover.com.lowagie.text.xml, \
                 clover.it.unimi.dsi.fastutil.booleans, \
