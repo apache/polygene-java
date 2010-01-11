@@ -12,7 +12,7 @@
   <packaging>bundle</packaging>
 
   <properties>
-    <version.openrdf>2.3-pr1</version.openrdf>
+    <version.openrdf>2.3.0</version.openrdf>
   </properties>
 
   <dependencies>
@@ -64,6 +64,11 @@
     <dependency>
       <groupId>org.openrdf.sesame</groupId>
       <artifactId>sesame-sail-nativerdf</artifactId>
+      <version>${version.openrdf}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openrdf.sesame</groupId>
+      <artifactId>sesame-sail-rdbms</artifactId>
       <version>${version.openrdf}</version>
     </dependency>
     <dependency>

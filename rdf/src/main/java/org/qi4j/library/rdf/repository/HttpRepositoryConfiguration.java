@@ -14,21 +14,32 @@
 package org.qi4j.library.rdf.repository;
 
 import org.qi4j.api.common.Optional;
-import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.configuration.ConfigurationComposite;
-import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Property;
-import org.qi4j.library.constraints.annotation.Matches;
 
 /**
  * JAVADOC Add JavaDoc
  */
-@Queryable( false )
-public interface NativeConfiguration extends ConfigurationComposite
+public interface HttpRepositoryConfiguration
+    extends ConfigurationComposite
 {
-    @Optional @Matches( "([spoc][spoc][spoc][spoc],?)*" ) Property<String> tripleIndexes();
+    /**
+     * The URL of the remote Sesame HTTP Repository.
+     *
+     * Default: http://localhost:8183/
+     *
+     * @return The configured URL for the remote Sesame HTTP Repository.
+     */
+    @Optional
+    Property<String> repositoryUrl();
 
-    Property<String> dataDirectory();
-
-    @UseDefaults Property<Boolean> forceSync();
+    /**
+     * The ID of the Repository at the remote Sesame HTTP host.
+     *
+     * Default: qi4j
+     *
+     * @return The configured ID at the remote Sesame HTTP host.
+     */
+    @Optional
+    Property<String> repositoryId();
 }

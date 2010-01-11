@@ -1,5 +1,5 @@
 /*
- * Copyright 2008 Niclas Hedhman.
+ * Copyright 2009 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -15,13 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.spaces.simple;
 
-import org.qi4j.library.spaces.Space;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.ServiceComposite;
+package org.qi4j.library.rdf.repository;
 
-@Mixins( { MemorySpaceMixin.class } )
-public interface MemorySpaceService extends Space, ServiceComposite
+import org.qi4j.api.property.Property;
+
+public interface RdbmsRepositoryConfiguration
 {
+    Property<String> jdbcDriver();
+    Property<String> jdbcUrl();
+    Property<String> user();
+    Property<String> password();
 }
