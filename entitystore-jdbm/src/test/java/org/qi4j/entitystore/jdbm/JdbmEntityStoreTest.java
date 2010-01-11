@@ -24,15 +24,17 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.test.entity.AbstractEntityStoreTest;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 /**
  * JAVADOC
  */
-public class JdbmEntityStoreTest extends AbstractEntityStoreTest
+public class JdbmEntityStoreTest
+    extends AbstractEntityStoreTest
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         super.assemble( module );
         module.addServices( JdbmEntityStoreService.class, UuidIdentityGeneratorService.class );
@@ -43,12 +45,17 @@ public class JdbmEntityStoreTest extends AbstractEntityStoreTest
     }
 
     @Test
-    @Override public void givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification() throws UnitOfWorkCompletionException
+    @Override
+    public void givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification()
+        throws UnitOfWorkCompletionException
     {
         super.givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification();
     }
 
-    @Override @After public void tearDown() throws Exception
+    @Override
+    @After
+    public void tearDown()
+        throws Exception
     {
         super.tearDown();
         File dbFile = new File( "qi4j.data.db" );
