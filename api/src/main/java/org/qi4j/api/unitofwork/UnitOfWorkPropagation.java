@@ -14,13 +14,14 @@
  */
 package org.qi4j.api.unitofwork;
 
+import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.*;
+
 import java.lang.annotation.Documented;
 import static java.lang.annotation.ElementType.*;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.*;
 import java.lang.annotation.Target;
-import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.*;
 
 /**
  * Annotation to denote the unit of work propagation.
@@ -47,8 +48,8 @@ import static org.qi4j.api.unitofwork.UnitOfWorkPropagation.Propagation.*;
  * </code>
  * </pre>
  */
-@Retention( RUNTIME )
-@Target( METHOD )
+@Retention(RUNTIME)
+@Target(METHOD)
 @Inherited
 @Documented
 public @interface UnitOfWorkPropagation
@@ -77,13 +78,6 @@ public @interface UnitOfWorkPropagation
          * If no current UnitOfWork: creates a new UnitOfWork <br>
          * If there is a current UnitOfWork: suspend the current UnitOfWork and create a new UnitOfWork.
          */
-        REQUIRES_NEW,
-
-        /**
-         * Behavior: <br>
-         * If no current UnitOfWork: creates a new UnitOfWork <br>
-         * If there is a current UnitOfWork: create a nested UnitOfWork on top of the current one.
-         */
-        REQUIRES_NESTED
+        REQUIRES_NEW
     }
 }

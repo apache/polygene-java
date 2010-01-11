@@ -17,11 +17,12 @@
  */
 package org.qi4j.api.unitofwork;
 
-import java.lang.reflect.Method;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.concern.GenericConcern;
 import org.qi4j.api.injection.scope.Invocation;
 import org.qi4j.api.injection.scope.Structure;
+
+import java.lang.reflect.Method;
 
 /**
  * {@code UnitOfWorkConcern} manages the unit of work complete and discard policy.
@@ -29,13 +30,15 @@ import org.qi4j.api.injection.scope.Structure;
  * @see UnitOfWorkPropagation
  * @see UnitOfWorkDiscardOn
  */
-@AppliesTo( UnitOfWorkPropagation.class )
+@AppliesTo(UnitOfWorkPropagation.class)
 public class UnitOfWorkConcern extends GenericConcern
 {
-    private static final Class<?>[] DEFAULT_DISCARD_CLASSES = new Class[]{ Throwable.class };
+    private static final Class<?>[] DEFAULT_DISCARD_CLASSES = new Class[]{Throwable.class};
 
-    @Structure UnitOfWorkFactory uowf;
-    @Invocation UnitOfWorkPropagation propagation;
+    @Structure
+    UnitOfWorkFactory uowf;
+    @Invocation
+    UnitOfWorkPropagation propagation;
 
     /**
      * Handles method with {@code UnitOfWorkPropagation} annotation.
@@ -47,45 +50,37 @@ public class UnitOfWorkConcern extends GenericConcern
      * @throws Throwable Thrown if the method invocation throw exception.
      */
     public Object invoke( Object proxy, Method method, Object[] args )
-        throws Throwable
+            throws Throwable
     {
         UnitOfWork currentUnitOfWork = uowf.currentUnitOfWork();
 
         UnitOfWorkPropagation.Propagation propagationPolicy = propagation.value();
-        if( propagationPolicy == UnitOfWorkPropagation.Propagation.REQUIRED )
+        if (propagationPolicy == UnitOfWorkPropagation.Propagation.REQUIRED)
         {
-            if( currentUnitOfWork == null )
+            if (currentUnitOfWork == null)
             {
                 currentUnitOfWork = uowf.newUnitOfWork();
                 return invokeWithCommit( proxy, method, args, currentUnitOfWork );
-            }
-            else
+            } else
             {
                 return next.invoke( proxy, method, args );
             }
-        }
-        else if( propagationPolicy == UnitOfWorkPropagation.Propagation.MANDATORY )
+        } else if (propagationPolicy == UnitOfWorkPropagation.Propagation.MANDATORY)
         {
-            if( currentUnitOfWork == null )
+            if (currentUnitOfWork == null)
             {
                 throw new IllegalStateException( "[UnitOfWork] was required but there is no available unit of work." );
             }
-        }
-        else if( propagationPolicy == UnitOfWorkPropagation.Propagation.REQUIRES_NEW )
+        } else if (propagationPolicy == UnitOfWorkPropagation.Propagation.REQUIRES_NEW)
         {
             currentUnitOfWork = uowf.newUnitOfWork();
-            return invokeWithCommit( proxy, method, args, currentUnitOfWork );
-        }
-        else if( propagationPolicy == UnitOfWorkPropagation.Propagation.REQUIRES_NESTED )
-        {
-            currentUnitOfWork = uowf.nestedUnitOfWork();
             return invokeWithCommit( proxy, method, args, currentUnitOfWork );
         }
         return next.invoke( proxy, method, args );
     }
 
     protected Object invokeWithCommit( Object proxy, Method method, Object[] args, UnitOfWork currentUnitOfWork )
-        throws Throwable
+            throws Throwable
     {
         try
         {
@@ -93,7 +88,7 @@ public class UnitOfWorkConcern extends GenericConcern
             currentUnitOfWork.complete();
             return result;
         }
-        catch( Throwable throwable )
+        catch (Throwable throwable)
         {
             // Discard only if this concern create a unit of work
             discardIfRequired( method, currentUnitOfWork, throwable );
@@ -112,19 +107,18 @@ public class UnitOfWorkConcern extends GenericConcern
     {
         UnitOfWorkDiscardOn discardPolicy = aMethod.getAnnotation( UnitOfWorkDiscardOn.class );
         Class<?>[] discardClasses;
-        if( discardPolicy != null )
+        if (discardPolicy != null)
         {
             discardClasses = discardPolicy.value();
-        }
-        else
+        } else
         {
             discardClasses = DEFAULT_DISCARD_CLASSES;
         }
 
         Class<? extends Throwable> aThrowableClass = aThrowable.getClass();
-        for( Class<?> discardClass : discardClasses )
+        for (Class<?> discardClass : discardClasses)
         {
-            if( discardClass.isAssignableFrom( aThrowableClass ) )
+            if (discardClass.isAssignableFrom( aThrowableClass ))
             {
                 aUnitOfWork.discard();
             }

@@ -14,33 +14,28 @@
 
 package org.qi4j.runtime.concerns;
 
+import org.junit.Test;
+import org.qi4j.api.composite.TransientComposite;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.test.AbstractQi4jTest;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.reflect.Method;
-import org.junit.Test;
-import org.qi4j.api.common.AppliesTo;
-import org.qi4j.api.composite.TransientComposite;
-import org.qi4j.api.concern.Concerns;
-import org.qi4j.api.concern.GenericConcern;
-import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * Tests for GenericConcern
  */
 public class GenericConcernTest
-    extends AbstractQi4jTest
+        extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+            throws AssemblyException
     {
         module.addTransients( SomeComposite.class );
     }
@@ -54,10 +49,9 @@ public class GenericConcernTest
         uow.discard();
     }
 
-    @Concerns( NestedUnitOfWorkConcern.class )
-    @Mixins( SomeMixin.class )
+    @Mixins(SomeMixin.class)
     public interface SomeComposite
-        extends Some, TransientComposite
+            extends Some, TransientComposite
     {
     }
 
@@ -68,7 +62,7 @@ public class GenericConcernTest
     }
 
     public static abstract class SomeMixin
-        implements Some
+            implements Some
     {
         public String doStuff()
         {
@@ -76,34 +70,8 @@ public class GenericConcernTest
         }
     }
 
-    @AppliesTo( NestedUnitOfWork.class )
-    public static class NestedUnitOfWorkConcern
-        extends GenericConcern
-    {
-        @Structure
-        UnitOfWorkFactory uowf;
-
-        public Object invoke( Object o, Method method, Object[] objects )
-            throws Throwable
-        {
-            UnitOfWork nested = uowf.nestedUnitOfWork();
-
-            try
-            {
-                Object value = next.invoke( o, method, objects );
-                nested.complete();
-                return value;
-            }
-            catch( Throwable throwable )
-            {
-                nested.discard();
-                throw throwable;
-            }
-        }
-    }
-
-    @Retention( RetentionPolicy.RUNTIME )
-    @Target( { ElementType.METHOD } )
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.METHOD})
     public @interface NestedUnitOfWork
     {
     }
