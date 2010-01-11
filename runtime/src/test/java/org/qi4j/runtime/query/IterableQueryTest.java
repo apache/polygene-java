@@ -44,6 +44,8 @@ import org.qi4j.runtime.query.model.entities.DomainEntity;
 import org.qi4j.runtime.query.model.entities.FemaleEntity;
 import org.qi4j.runtime.query.model.entities.MaleEntity;
 import org.qi4j.runtime.query.model.entities.PetEntity;
+import org.qi4j.runtime.query.model.values.ContactValue;
+import org.qi4j.runtime.query.model.values.ContactsValue;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.test.EntityTestAssembler;
 
@@ -71,11 +73,12 @@ public class IterableQueryTest
                         DomainEntity.class,
                         PetEntity.class
                 );
+                module.addValues( ContactsValue.class, ContactValue.class );
                 new EntityTestAssembler().assemble( module );
             }
         };
         uow = assembler.unitOfWorkFactory().newUnitOfWork();
-        Network.populate( uow );
+        Network.populate( uow, assembler.valueBuilderFactory() );
         uow.apply();
         qbf = assembler.queryBuilderFactory();
     }

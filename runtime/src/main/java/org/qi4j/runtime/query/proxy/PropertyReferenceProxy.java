@@ -20,8 +20,7 @@ package org.qi4j.runtime.query.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import static java.lang.reflect.Proxy.*;
-
+import java.lang.reflect.Proxy;
 import org.qi4j.api.query.QueryExpressionException;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
@@ -30,9 +29,10 @@ import org.qi4j.runtime.query.grammar.impl.PropertyReferenceImpl;
 /**
  * JAVADOC Add JavaDoc
  */
-final class PropertyReferenceProxy
+public class PropertyReferenceProxy
     implements InvocationHandler
 {
+    private Object anyproxy;
 
     private final PropertyReference propertyReference;
 
@@ -45,14 +45,16 @@ final class PropertyReferenceProxy
      */
     PropertyReferenceProxy( final Method accessor,
                             final AssociationReference traversedAssociation,
-                            final PropertyReference traversedProperty )
+                            final PropertyReference traversedProperty
+    )
     {
         propertyReference = new PropertyReferenceImpl( accessor, traversedAssociation, traversedProperty );
     }
 
     public Object invoke( final Object proxy,
                           final Method method,
-                          final Object[] args )
+                          final Object[] args
+    )
         throws Throwable
     {
         if( method.getDeclaringClass().equals( PropertyReference.class ) )
@@ -67,7 +69,7 @@ final class PropertyReferenceProxy
         if( args == null && "get".equals( method.getName() ) )
         {
             Class<?> propertyClass = propertyReference.propertyType();
-            return newProxyInstance(
+            return Proxy.newProxyInstance(
                 getClass().getClassLoader(),
                 new Class[]{ propertyClass, PropertyReference.class },
                 new MixinTypeProxy( propertyClass, propertyReference )
@@ -82,5 +84,4 @@ final class PropertyReferenceProxy
     {
         return propertyReference.toString();
     }
-
 }

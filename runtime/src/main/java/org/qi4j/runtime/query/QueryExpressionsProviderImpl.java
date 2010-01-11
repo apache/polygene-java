@@ -19,6 +19,7 @@ package org.qi4j.runtime.query;
 
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.property.Property;
 import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.query.QueryExpressionsProvider;
 import org.qi4j.api.query.grammar.AssociationIsNotNullPredicate;
@@ -69,6 +70,7 @@ import org.qi4j.runtime.query.grammar.impl.SingleValueExpressionImpl;
 import org.qi4j.runtime.query.grammar.impl.VariableValueExpressionImpl;
 import org.qi4j.runtime.query.proxy.ManyAssociationReferenceProxy;
 import org.qi4j.runtime.query.proxy.MixinTypeProxy;
+import org.qi4j.runtime.query.proxy.PropertyReferenceProxy;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;

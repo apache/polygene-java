@@ -68,6 +68,14 @@ public final class QueryExpressions
         QueryExpressions.provider = provider;
     }
 
+    /**
+     * When querying for a member of an association, use this to get
+     * a template for a single element, which can then be used in expressions.
+     *
+     * @param association
+     * @param <T>
+     * @return
+     */
     public static <T> T oneOf( final ManyAssociation<T> association )
     {
         return provider.oneOf( association );
