@@ -50,7 +50,8 @@ public class MigrationTest
 
         module.addEntities( TestEntity1_0.class,
                             TestEntity1_1.class,
-                            TestEntity2_0.class);
+                            TestEntity2_0.class,
+                            org.qi4j.migration.moved.TestEntity2_0.class);
 
         MigrationBuilder migration = new MigrationBuilder("1.0");
         migration.
@@ -61,7 +62,7 @@ public class MigrationTest
                     renameProperty( "foo", "newFoo").
                     renameManyAssociation( "fooManyAssoc", "newFooManyAssoc" ).
                     renameAssociation( "fooAssoc", "newFooAssoc" ).
-
+                end().
             toVersion( "2.0" ).
                 renameEntity(TestEntity1_1.class.getName(), TestEntity2_0.class.getName()).
                 atStartup( new CustomFixOperation("Fix for 2.0, 1") ).
@@ -69,7 +70,12 @@ public class MigrationTest
                 forEntities( TestEntity2_0.class.getName() ).
                     addProperty("bar", "Some value").
                     removeProperty( "newFoo", "Some value" ).
-                    custom( new CustomBarOperation() );
+                    custom( new CustomBarOperation() ).
+                end().
+            toVersion( "3.0" ).
+                renamePackage( "org.qi4j.migration", "org.qi4j.migration.moved" ).
+                    withEntities("TestEntity2_0").
+                end();
 
         module.addServices( MigrationService.class ).setMetaInfo( migration );
         module.addEntities( MigrationConfiguration.class );
@@ -141,7 +147,6 @@ public class MigrationTest
                     };
 
             TestData testData = (TestData) v2_0.serviceFinder().findService( TestData.class ).get();
-            testData.importData( data_v1_1 );
 
             // Test migration from 1.0 -> 2.0
             {
@@ -152,6 +157,29 @@ public class MigrationTest
                 assertThat( "Custom Property has been created", entity.customBar().get(), CoreMatchers.equalTo("Hello Some value" ));
                 assertThat( "ManyAssociation has been renamed", entity.newFooManyAssoc().count(), CoreMatchers.equalTo(1 ));
                 assertThat( "Association has been renamed", entity.newFooAssoc().get(), CoreMatchers.equalTo(entity ));
+                uow.complete();
+            }
+        }
+
+        // Set up version 3.0
+        {
+            SingletonAssembler v3_0 = new SingletonAssembler()
+                    {
+                        public void assemble( ModuleAssembly module ) throws AssemblyException
+                        {
+                            MigrationTest.this.assemble( module );
+                            module.layerAssembly().applicationAssembly().setVersion( "3.0" );
+                        }
+                    };
+
+            TestData testData = (TestData) v3_0.serviceFinder().findService( TestData.class ).get();
+            testData.importData( data_v1_1 );
+
+            // Test migration from 1.0 -> 3.0
+            {
+                testData.importData( data_v1 );
+                UnitOfWork uow = v3_0.unitOfWorkFactory().newUnitOfWork();
+                org.qi4j.migration.moved.TestEntity2_0 entity = uow.get( org.qi4j.migration.moved.TestEntity2_0.class, id );
                 uow.complete();
             }
         }

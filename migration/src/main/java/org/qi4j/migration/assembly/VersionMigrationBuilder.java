@@ -21,40 +21,45 @@ import org.qi4j.migration.operation.RenameEntity;
  */
 public class VersionMigrationBuilder
 {
-    MigrationBuilder builder;
+   MigrationBuilder builder;
 
-    String fromVersion;
-    String toVersion;
+   String fromVersion;
+   String toVersion;
 
-    public VersionMigrationBuilder( MigrationBuilder builder, String fromVersion, String toVersion )
-    {
-        this.builder = builder;
-        this.fromVersion = fromVersion;
-        this.toVersion = toVersion;
-    }
+   public VersionMigrationBuilder( MigrationBuilder builder, String fromVersion, String toVersion )
+   {
+      this.builder = builder;
+      this.fromVersion = fromVersion;
+      this.toVersion = toVersion;
+   }
 
-    public VersionMigrationBuilder toVersion( String toVersion )
-    {
-        return new VersionMigrationBuilder( builder, toVersion, toVersion);
-    }
+   public VersionMigrationBuilder toVersion( String toVersion )
+   {
+      return new VersionMigrationBuilder( builder, this.toVersion, toVersion );
+   }
 
-    public VersionMigrationBuilder renameEntity( String fromName, String toName )
-    {
-        builder.getEntityRules().addRule( new EntityMigrationRule(fromVersion, toVersion, new String[] {fromName}, new RenameEntity(fromName, toName) ));
+   public VersionMigrationBuilder renameEntity( String fromName, String toName )
+   {
+      builder.getEntityRules().addRule( new EntityMigrationRule( fromVersion, toVersion, new String[]{fromName}, new RenameEntity( fromName, toName ) ) );
 
-        return this;
-    }
+      return this;
+   }
 
-    public VersionMigrationBuilder atStartup(MigrationOperation operation)
-    {
-        builder.getRules().addRule( new MigrationRule(fromVersion, toVersion,  operation) );
+   public PackageMigrationBuilder renamePackage(String fromName, String toName)
+   {
+      return new PackageMigrationBuilder(builder, this, fromVersion, toVersion, fromName, toName);
+   }
 
-        return this;
-    }
+   public VersionMigrationBuilder atStartup( MigrationOperation operation )
+   {
+      builder.getRules().addRule( new MigrationRule( fromVersion, toVersion, operation ) );
 
-    public EntityMigrationBuilder forEntities(String... entityTypes)
-    {
-        return new EntityMigrationBuilder(this, entityTypes);
-    }
+      return this;
+   }
+
+   public EntityMigrationBuilder forEntities( String... entityTypes )
+   {
+      return new EntityMigrationBuilder( this, entityTypes );
+   }
 
 }

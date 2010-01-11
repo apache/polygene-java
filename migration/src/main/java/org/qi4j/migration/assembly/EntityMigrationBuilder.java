@@ -39,15 +39,12 @@ public class EntityMigrationBuilder
     }
 
     /**
-     * Create a new migration builder to continue with specifying rules
-     * for another version of the application.
-     *
-     * @param toVersion of the application
-     * @return new builder
+     * Return the version builder
+     * @return current version builder
      */
-    public VersionMigrationBuilder toVersion(String toVersion)
+    public VersionMigrationBuilder end()
     {
-        return new VersionMigrationBuilder(migrationBuilder.builder, migrationBuilder.toVersion, toVersion);
+        return migrationBuilder;
     }
 
     // Operations on entities
