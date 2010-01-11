@@ -79,16 +79,18 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
 
         public void setDataDir( File dataDir )
         {
+            repo.setDataDir( dataDir );
         }
 
         public File getDataDir()
         {
-            return null;
+            return repo.getDataDir();
         }
 
         public void initialize()
             throws RepositoryException
         {
+            repo.initialize();
         }
 
         public void shutDown()
@@ -137,6 +139,7 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
                 }
                 else
                 {
+                    //noinspection ResultOfMethodCallIgnored
                     child.delete();
                 }
             }

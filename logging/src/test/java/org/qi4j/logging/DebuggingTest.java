@@ -77,7 +77,7 @@ public class DebuggingTest
             final String[] result = new String[1];
             es.visitEntityStates( new EntityStore.EntityStateVisitor()
             {
-                public void visitEntityState( EntityState entityState, EntityStoreUnitOfWork esuow )
+                public void visitEntityState( EntityState entityState )
                 {
                     if( ServiceDebugRecordEntity.class.getName()
                         .equals( entityState.entityDescriptor().entityType().type().name() ) )

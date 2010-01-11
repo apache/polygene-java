@@ -28,10 +28,13 @@ import org.openrdf.sail.rdbms.RdbmsStore;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
-public interface RdbmsRepositoryService
+@Mixins( RdbmsRepositoryService.RdbmsRepositoryMixin.class )
+public interface RdbmsRepositoryService extends Repository, ServiceComposite, Activatable
 {
     public static class RdbmsRepositoryMixin
         implements Repository, Activatable
