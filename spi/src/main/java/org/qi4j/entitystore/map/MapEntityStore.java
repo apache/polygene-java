@@ -28,16 +28,17 @@ import org.qi4j.spi.entitystore.EntityStoreException;
 public interface MapEntityStore
 {
     // JSON keys for values in the stored data
+
     enum JSONKeys
     {
-        identity, // Identity of the entity
-        application_version, // Version of the application which last updated the entity
-        type, // Type of the entity
-        version, // Version of the entity
-        modified, // When entity was last modified according to System.currentTimeMillis()
-        properties, // Map of properties
-        associations, // Map of associations
-        manyassociations // Map of manyassociations
+        identity,           // Identity of the entity
+        application_version,// Version of the application which last updated the entity
+        type,               // Type of the entity
+        version,            // Version of the entity
+        modified,           // When entity was last modified according to System.currentTimeMillis()
+        properties,         // Map of properties
+        associations,       // Map of associations
+        manyassociations    // Map of manyassociations
     }
 
     Reader get( EntityReference entityReference )

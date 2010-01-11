@@ -102,7 +102,9 @@ public class MemoryMapEntityStoreMixin
         {
             return new StringWriter( 1000 )
             {
-                @Override public void close() throws IOException
+                @Override
+                public void close()
+                    throws IOException
                 {
                     super.close();
                     String old = store.put( ref, toString() );
@@ -120,7 +122,9 @@ public class MemoryMapEntityStoreMixin
         {
             return new StringWriter( 1000 )
             {
-                @Override public void close() throws IOException
+                @Override
+                public void close()
+                    throws IOException
                 {
                     super.close();
                     String old = store.put( ref, toString() );

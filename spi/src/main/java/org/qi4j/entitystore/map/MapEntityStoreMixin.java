@@ -165,7 +165,6 @@ public class MapEntityStoreMixin
                 }
             }
         } );
-
         return uow;
     }
 

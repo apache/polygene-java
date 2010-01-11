@@ -4,9 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static org.hamcrest.CoreMatchers.*;
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
@@ -16,7 +14,9 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -25,11 +25,12 @@ import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStore;
-import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /**
  * Abstract test with tests for the EntityStore interface.
@@ -38,7 +39,10 @@ public abstract class AbstractEntityStoreTest
     extends AbstractQi4jTest
 {
     @Service
-    EntityStore store;
+    private EntityStore store;
+
+    @Structure
+    private Module module;
 
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -60,25 +64,7 @@ public abstract class AbstractEntityStoreTest
     public void tearDown()
         throws Exception
     {
-        try
-        {
-            EntityStoreUnitOfWork uow = store.visitEntityStates( new EntityStore.EntityStateVisitor()
-            {
-                public void visitEntityState( EntityState entityState )
-                {
-                    entityState.remove();
-                }
-            }, moduleInstance );
-            uow.apply().commit();
-        }
-        catch( Exception e )
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            super.tearDown();
-        }
+        super.tearDown();
     }
 
     protected TestEntity createEntity( UnitOfWork unitOfWork )
@@ -141,16 +127,36 @@ public abstract class AbstractEntityStoreTest
             assertThat( "property 'name' has correct value", instance.name().get(), equalTo( "Test" ) );
             assertThat( "property 'unsetName' has correct value", instance.unsetName().get(), equalTo( null ) );
 
-            assertThat( "property has correct value", instance.valueProperty().get().valueProperty().get().stringValue().get(), equalTo( "Bar" ) );
-            assertThat( "property has correct value", instance.valueProperty().get().listProperty().get().get( 0 ), equalTo( "Foo" ) );
-            assertThat( "property has correct value", instance.valueProperty().get().valueProperty().get().anotherValue().get().bling().get(), equalTo( "BlinkLjus" ) );
-            assertThat( "property has correct value", instance.valueProperty().get().tjabbaProperty().get().bling().get(), equalTo( "Brakfis" ) );
+            assertThat( "property has correct value", instance.valueProperty()
+                .get()
+                .valueProperty()
+                .get()
+                .stringValue().get(), equalTo( "Bar" ) );
+            assertThat( "property has correct value", instance.valueProperty()
+                .get()
+                .listProperty()
+                .get().get( 0 ), equalTo( "Foo" ) );
+            assertThat( "property has correct value", instance.valueProperty()
+                .get()
+                .valueProperty()
+                .get()
+                .anotherValue()
+                .get()
+                .bling().get(), equalTo( "BlinkLjus" ) );
+            assertThat( "property has correct value", instance.valueProperty()
+                .get()
+                .tjabbaProperty()
+                .get()
+                .bling().get(), equalTo( "Brakfis" ) );
             Map<String, String> mapValue = new HashMap<String, String>();
             mapValue.put( "foo", "bar" );
-            assertThat( "property has correct value", instance.valueProperty().get().serializableProperty().get(), equalTo( mapValue ) );
+            assertThat( "property has correct value", instance.valueProperty()
+                .get()
+                .serializableProperty().get(), equalTo( mapValue ) );
 
             assertThat( "association has correct value", instance.association().get(), equalTo( instance ) );
-            assertThat( "manyAssociation has correct value", instance.manyAssociation().iterator().next(), equalTo( instance ) );
+            assertThat( "manyAssociation has correct value", instance.manyAssociation()
+                .iterator().next(), equalTo( instance ) );
             unitOfWork.discard();
         }
         catch( Exception e )
