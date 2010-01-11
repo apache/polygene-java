@@ -16,13 +16,13 @@
  */
 package org.qi4j.entitystore.jdbm;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.io.BufferedReader;
 import java.util.Properties;
 import java.util.concurrent.locks.ReadWriteLock;
 import jdbm.RecordManager;
@@ -43,10 +43,11 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.entitystore.map.MapEntityStore;
-import org.qi4j.spi.service.ServiceDescriptor;
-import org.qi4j.spi.entitystore.EntityStoreException;
-import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityType;
+import org.qi4j.spi.entitystore.EntityNotFoundException;
+import org.qi4j.spi.entitystore.EntityStoreException;
+import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.service.ServiceDescriptor;
 
 /**
  * JDBM implementation of SerializationStore
@@ -54,15 +55,21 @@ import org.qi4j.spi.entity.EntityType;
 public class JdbmEntityStoreMixin
     implements Activatable, MapEntityStore, DatabaseExport, DatabaseImport
 {
-    @This private ReadWriteLock lock;
-    @This private Configuration<JdbmConfiguration> config;
-    @Uses private ServiceDescriptor descriptor;
+    @This
+    private ReadWriteLock lock;
+
+    @This
+    private Configuration<JdbmConfiguration> config;
+
+    @Uses
+    private ServiceDescriptor descriptor;
 
     private RecordManager recordManager;
     private BTree index;
     private Serializer serializer;
 
     // Activatable implementation
+
     @SuppressWarnings( { "ResultOfMethodCallIgnored" } )
     public void activate()
         throws Exception
@@ -86,7 +93,8 @@ public class JdbmEntityStoreMixin
         recordManager.close();
     }
 
-    public Reader get( EntityReference entityReference ) throws EntityStoreException
+    public Reader get( EntityReference entityReference )
+        throws EntityStoreException
     {
         try
         {
@@ -119,11 +127,14 @@ public class JdbmEntityStoreMixin
         {
             changes.visitMap( new MapChanger()
             {
-                public Writer newEntity( final EntityReference ref, EntityType entityType ) throws IOException
+                public Writer newEntity( final EntityReference ref, EntityType entityType )
+                    throws IOException
                 {
                     return new StringWriter( 1000 )
                     {
-                        @Override public void close() throws IOException
+                        @Override
+                        public void close()
+                            throws IOException
                         {
                             super.close();
 
@@ -135,11 +146,14 @@ public class JdbmEntityStoreMixin
                     };
                 }
 
-                public Writer updateEntity( final EntityReference ref, EntityType entityType ) throws IOException
+                public Writer updateEntity( final EntityReference ref, EntityType entityType )
+                    throws IOException
                 {
                     return new StringWriter( 1000 )
                     {
-                        @Override public void close() throws IOException
+                        @Override
+                        public void close()
+                            throws IOException
                         {
                             super.close();
 
@@ -150,7 +164,8 @@ public class JdbmEntityStoreMixin
                     };
                 }
 
-                public void removeEntity( EntityReference ref, EntityType entityType ) throws EntityNotFoundException
+                public void removeEntity( EntityReference ref, EntityType entityType )
+                    throws EntityNotFoundException
                 {
                     try
                     {
@@ -185,11 +200,9 @@ public class JdbmEntityStoreMixin
                 throw exception;
             }
         }
-
     }
 
-
-    public void visitMap( MapEntityStoreVisitor visitor )
+    public void visitMap( MapEntityStoreVisitor visitor, EntityStoreUnitOfWork esuow )
     {
         try
         {
@@ -209,7 +222,7 @@ public class JdbmEntityStoreMixin
 
                 byte[] serializedState = (byte[]) recordManager.fetch( stateIndex, serializer );
 
-                visitor.visitEntity( new StringReader( new String( serializedState, "UTF-8" ) ) );
+                visitor.visitEntity( new StringReader( new String( serializedState, "UTF-8" ) ), esuow );
             }
         }
         catch( IOException e )
@@ -233,24 +246,26 @@ public class JdbmEntityStoreMixin
         }
     }
 
-    public void importFrom( Reader in ) throws IOException
+    public void importFrom( Reader in )
+        throws IOException
     {
-        BufferedReader reader = new BufferedReader(in);
+        BufferedReader reader = new BufferedReader( in );
         String object;
         try
         {
-            while ((object = reader.readLine()) != null)
+            while( ( object = reader.readLine() ) != null )
             {
                 String id = object.substring( "{\"identity\":\"".length() );
-                id = id.substring( 0, id.indexOf('"'));
+                id = id.substring( 0, id.indexOf( '"' ) );
                 Long stateIndex = getStateIndex( id );
-                if (stateIndex == null)
+                if( stateIndex == null )
                 {
                     // Insert
                     byte[] stateArray = object.getBytes( "UTF-8" );
                     stateIndex = recordManager.insert( stateArray, serializer );
                     index.insert( id.getBytes( "UTF-8" ), stateIndex, false );
-                } else
+                }
+                else
                 {
                     byte[] stateArray = object.getBytes( "UTF-8" );
                     recordManager.update( stateIndex, stateArray, serializer );
@@ -258,15 +273,15 @@ public class JdbmEntityStoreMixin
             }
             recordManager.commit();
         }
-        catch (IOException ex)
+        catch( IOException ex )
         {
             recordManager.rollback();
             throw ex;
         }
-        catch (Exception ex)
+        catch( Exception ex )
         {
             recordManager.rollback();
-            throw (IOException) new IOException("Could not import data").initCause( ex );
+            throw (IOException) new IOException( "Could not import data" ).initCause( ex );
         }
     }
 

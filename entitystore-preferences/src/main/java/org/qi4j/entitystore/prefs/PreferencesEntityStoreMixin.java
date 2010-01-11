@@ -126,7 +126,7 @@ public class PreferencesEntityStoreMixin
             for( String identity : identities )
             {
                 EntityState entityState = uow.getEntityState( EntityReference.parseEntityReference( identity ) );
-                visitor.visitEntityState( entityState );
+                visitor.visitEntityState( entityState, uow );
             }
         }
         catch( BackingStoreException e )

@@ -15,13 +15,14 @@ import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
+import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 
 /**
  * @author Paul Merlin <paul@nosphere.org>
  */
 public class HazelcastEntityStoreMixin
-        implements Activatable,
-                   MapEntityStore
+    implements Activatable,
+               MapEntityStore
 {
 
     @This
@@ -29,70 +30,69 @@ public class HazelcastEntityStoreMixin
     private Map<String, String> stringMap;
 
     public void activate()
-            throws Exception
+        throws Exception
     {
-        stringMap = Hazelcast.getMap(config.configuration().mapName().get());
+        stringMap = Hazelcast.getMap( config.configuration().mapName().get() );
     }
 
     public void passivate()
-            throws Exception
+        throws Exception
     {
         stringMap = null;
     }
 
-    public Reader get(EntityReference ref)
-            throws EntityStoreException
+    public Reader get( EntityReference ref )
+        throws EntityStoreException
     {
-        final String serializedState = stringMap.get(ref.identity());
-        if (serializedState == null) {
-            throw new EntityNotFoundException(ref);
+        final String serializedState = stringMap.get( ref.identity() );
+        if( serializedState == null )
+        {
+            throw new EntityNotFoundException( ref );
         }
-        return new StringReader(serializedState);
+        return new StringReader( serializedState );
     }
 
-    public void applyChanges(MapChanges changes)
-            throws IOException
+    public void applyChanges( MapChanges changes )
+        throws IOException
     {
-        changes.visitMap(new MapChanger()
+        changes.visitMap( new MapChanger()
         {
 
-            public Writer newEntity(final EntityReference ref, EntityType entityType)
-                    throws IOException
+            public Writer newEntity( final EntityReference ref, EntityType entityType )
+                throws IOException
             {
-                return new StringWriter(1000)
+                return new StringWriter( 1000 )
                 {
 
                     @Override
                     public void close()
-                            throws IOException
+                        throws IOException
                     {
                         super.close();
-                        stringMap.put(ref.identity(), toString());
+                        stringMap.put( ref.identity(), toString() );
                     }
-
                 };
             }
 
-            public Writer updateEntity(EntityReference ref, EntityType entityType)
-                    throws IOException
+            public Writer updateEntity( EntityReference ref, EntityType entityType )
+                throws IOException
             {
-                return newEntity(ref, entityType);
+                return newEntity( ref, entityType );
             }
 
-            public void removeEntity(EntityReference ref, EntityType entityType)
-                    throws EntityNotFoundException
+            public void removeEntity( EntityReference ref, EntityType entityType )
+                throws EntityNotFoundException
             {
-                stringMap.remove(ref.identity());
+                stringMap.remove( ref.identity() );
             }
-
-        });
+        } );
     }
 
-    public void visitMap(MapEntityStoreVisitor visitor)
+    public void visitMap( MapEntityStoreVisitor visitor, EntityStoreUnitOfWork esuow )
     {
-        for (Map.Entry<String, String> eachEntry : stringMap.entrySet()) {
-            visitor.visitEntity(new StringReader(eachEntry.getValue()));
+        for( Map.Entry<String, String> eachEntry : stringMap.entrySet() )
+        {
+            visitor.visitEntity( new StringReader( eachEntry.getValue() ), esuow );
         }
     }
-
 }

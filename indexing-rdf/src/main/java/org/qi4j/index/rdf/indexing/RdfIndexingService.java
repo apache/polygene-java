@@ -18,6 +18,7 @@
 
 package org.qi4j.index.rdf.indexing;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 import org.openrdf.model.Graph;
@@ -44,11 +45,13 @@ import org.qi4j.spi.entitystore.StateChangeListener;
 public interface RdfIndexingService
     extends StateChangeListener
 {
+    File dataDir();
+    
     /**
      * JAVADOC Add JavaDoc
      */
     class RdfEntityIndexerMixin
-        implements StateChangeListener, Activatable
+        implements RdfIndexingService, Activatable
     {
         @Service
         private Repository repository;
@@ -71,12 +74,18 @@ public interface RdfIndexingService
         public void passivate()
             throws Exception
         {
+            ((Activatable) repository).passivate();
+            repository = null;
         }
 
         public void notifyChanges( Iterable<EntityState> entityStates )
         {
             try
             {
+                if( repository == null ) // has been shut down...
+                {
+                    return;
+                }
                 final RepositoryConnection connection = repository.getConnection();
                 // The Repository is being initialized and not ready yet.
                 // This happens when the Repository is being initialized and it is accessing its own configuration.
@@ -173,6 +182,11 @@ public interface RdfIndexingService
                 valueFactory = repository.getValueFactory();
             }
             return valueFactory;
+        }
+
+        public File dataDir()
+        {
+            return repository.getDataDir();
         }
     }
 }
