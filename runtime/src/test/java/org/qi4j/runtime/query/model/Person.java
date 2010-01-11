@@ -21,6 +21,7 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
+import org.qi4j.runtime.query.model.values.ContactsValue;
 
 import java.util.Date;
 import java.util.List;
@@ -52,4 +53,7 @@ public interface Person
 
     @Optional
     Property<List<String>> tags();
+
+    @Optional
+    Property<ContactsValue> contacts();
 }
