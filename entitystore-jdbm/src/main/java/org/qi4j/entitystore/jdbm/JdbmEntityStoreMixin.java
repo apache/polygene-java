@@ -202,7 +202,7 @@ public class JdbmEntityStoreMixin
         }
     }
 
-    public void visitMap( MapEntityStoreVisitor visitor, EntityStoreUnitOfWork esuow )
+    public void visitMap( MapEntityStoreVisitor visitor )
     {
         try
         {
@@ -222,7 +222,7 @@ public class JdbmEntityStoreMixin
 
                 byte[] serializedState = (byte[]) recordManager.fetch( stateIndex, serializer );
 
-                visitor.visitEntity( new StringReader( new String( serializedState, "UTF-8" ) ), esuow );
+                visitor.visitEntity( new StringReader( new String( serializedState, "UTF-8" ) ) );
             }
         }
         catch( IOException e )

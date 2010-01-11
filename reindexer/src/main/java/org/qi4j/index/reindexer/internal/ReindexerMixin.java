@@ -87,7 +87,7 @@ public class ReindexerMixin
             reindexState();
         }
 
-        public void visitEntityState( EntityState entityState, EntityStoreUnitOfWork esuow )
+        public void visitEntityState( EntityState entityState )
         {
             // Mark dirty
             entityState.setProperty(identityQN, entityState.identity().identity() );

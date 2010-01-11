@@ -88,11 +88,11 @@ public class HazelcastEntityStoreMixin
         } );
     }
 
-    public void visitMap( MapEntityStoreVisitor visitor, EntityStoreUnitOfWork esuow )
+    public void visitMap( MapEntityStoreVisitor visitor )
     {
         for( Map.Entry<String, String> eachEntry : stringMap.entrySet() )
         {
-            visitor.visitEntity( new StringReader( eachEntry.getValue() ), esuow );
+            visitor.visitEntity( new StringReader( eachEntry.getValue() ) );
         }
     }
 }

@@ -73,7 +73,7 @@ public class NeoEntityStoreMixin
             {
                 Node entityNode = entityRel.getStartNode();
                 NeoEntityState entityState = new NeoEntityState( uow, entityNode, EntityStatus.LOADED );
-                visitor.visitEntityState( entityState, uow );
+                visitor.visitEntityState( entityState );
             }
         }
         return uow;
