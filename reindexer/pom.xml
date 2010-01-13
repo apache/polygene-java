@@ -34,5 +34,9 @@
       <artifactId>qi4j-indexing-rdf</artifactId>
       <version>1.0-RC3-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+    </dependency>
   </dependencies>
 </project>
