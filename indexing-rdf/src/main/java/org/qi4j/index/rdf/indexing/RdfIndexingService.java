@@ -43,7 +43,7 @@ import org.qi4j.spi.entitystore.StateChangeListener;
 
 @Mixins( RdfIndexingService.RdfEntityIndexerMixin.class )
 public interface RdfIndexingService
-    extends StateChangeListener
+    extends StateChangeListener, Activatable
 {
     File dataDir();
     
