@@ -74,8 +74,6 @@ public interface RdfIndexingService
         public void passivate()
             throws Exception
         {
-            ((Activatable) repository).passivate();
-            repository = null;
         }
 
         public void notifyChanges( Iterable<EntityState> entityStates )
