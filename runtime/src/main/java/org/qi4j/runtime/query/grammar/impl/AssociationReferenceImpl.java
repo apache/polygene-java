@@ -21,6 +21,7 @@ package org.qi4j.runtime.query.grammar.impl;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
+import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.query.QueryExpressionException;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.util.Classes;
@@ -73,7 +74,8 @@ public class AssociationReferenceImpl
         name = accessor.getName();
         declaringType = accessor.getDeclaringClass();
         Type returnType = accessor.getGenericReturnType();
-        if (!Association.class.isAssignableFrom( Classes.getRawClass( returnType ) ))
+        if (!Association.class.isAssignableFrom( Classes.getRawClass( returnType ) ) &&
+                !ManyAssociation.class.isAssignableFrom( Classes.getRawClass( returnType ) ))
         {
             throw new QueryExpressionException( "Unsupported association type:" + returnType );
         }
