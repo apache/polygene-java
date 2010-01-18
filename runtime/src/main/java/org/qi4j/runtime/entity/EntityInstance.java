@@ -169,7 +169,7 @@ public final class EntityInstance
             mixin = entityModel.newMixin( mixins, state, this, methodInstance.method() );
         }
 
-        return methodInstance.invoke( composite, params, mixin );
+        return methodInstance.invoke( proxy, params, mixin );
     }
 
     public Object invokeObject( Object proxy, Object[] args, Method method )
