@@ -14,19 +14,15 @@
 
 package org.qi4j.runtime.structure;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-import java.util.concurrent.ConcurrentHashMap;
-
+import org.json.JSONException;
+import org.json.JSONTokener;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.composite.NoSuchCompositeException;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.composite.TransientBuilderFactory;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectBuilder;
 import org.qi4j.api.object.ObjectBuilderFactory;
@@ -42,12 +38,12 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.runtime.composite.CompositesInstance;
 import org.qi4j.runtime.composite.CompositesModel;
 import org.qi4j.runtime.composite.TransientBuilderInstance;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.composite.UsesInstance;
+import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.object.ObjectBuilderInstance;
 import org.qi4j.runtime.object.ObjectModel;
@@ -63,13 +59,18 @@ import org.qi4j.runtime.value.ValueBuilderInstance;
 import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.runtime.value.ValuesInstance;
 import org.qi4j.runtime.value.ValuesModel;
-import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityDescriptor;
+import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
-import org.json.JSONException;
-import org.json.JSONTokener;
 import org.qi4j.spi.value.ValueDescriptor;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * JAVADOC
@@ -369,7 +370,7 @@ public class ModuleInstance
         return finder;
     }
 
-    private abstract class TypeFinder<T>
+    private abstract class TypeFinder<T extends ObjectDescriptor>
             implements ModuleVisitor
     {
         public Class type;
@@ -393,7 +394,29 @@ public class ModuleInstance
                     // If same visibility -> ambiguous types
                     if (this.visibility == visibility)
                     {
-                        throw new AmbiguousTypeException( type );
+                        // Check if they are the same type
+                        if (model.type().equals( foundModel.type() ))
+                        {
+                            // Same type, same scope -> ambiguous
+                            throw new AmbiguousTypeException( type );
+                        } else
+                        {
+                            // If any type is an exact match, use it
+                            if (model.type().equals( type ))
+                            {
+                                // Do nothing
+                            } else if (foundModel.type().equals( type ))
+                            {
+                                // Use this model instead
+                                model = foundModel;
+                                module = moduleInstance;
+                                this.visibility = visibility;
+                            } else
+                            {
+                                // Both types match, none are exact, same scope -> ambiguous
+                                throw new AmbiguousTypeException( type );
+                            }
+                        }
                     }
                 }
             } else
