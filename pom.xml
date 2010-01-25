@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.qi4j</groupId>
   <artifactId>qi4j-core</artifactId>
@@ -8,6 +10,7 @@
 
   <!-- This POM is ONLY to initiate the modules to be built. -->
   <modules>
+    <module>build-tools</module>
     <module>api</module>
     <module>bootstrap</module>
     <module>runtime</module>
@@ -68,7 +71,7 @@
     <developer>
       <id>mesirii</id>
       <name>Michael Hunger</name>
-      <organization />
+      <organization/>
       <email>qi4j@jexp.de</email>
       <timezone>CET</timezone>
     </developer>
@@ -82,7 +85,9 @@
         <version>1.0-alpha-6</version>
       </extension>
     </extensions>
+
     <plugins>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -124,6 +129,7 @@
           </execution>
         </executions>
       </plugin>
+      
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
@@ -132,21 +138,19 @@
         </configuration>
       </plugin>
 
-<!--
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-         Note: dependency needed to locate the configuration
+        <version>2.4</version>
         <dependencies>
           <dependency>
-            <groupId>org.ops4j</groupId>
-            <artifactId>checkstyle-configuration</artifactId>
-            <version>1.0</version>
+            <groupId>org.qi4j</groupId>
+            <artifactId>qi4j-buildtools</artifactId>
+            <version>1.1-SNAPSHOT</version>
           </dependency>
         </dependencies>
       </plugin>
--->
-      
+
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -207,10 +211,21 @@
           </includes>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>com.atlassian.maven.plugins</groupId>
         <artifactId>maven-clover2-plugin</artifactId>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.4.1</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
     </plugins>
     <pluginManagement>
       <plugins>
@@ -260,13 +275,11 @@
           <version>2.0-beta-7</version>
         </plugin>
 
-<!--
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>2.3</version>
+          <version>2.4</version>
         </plugin>
--->        
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -318,7 +331,7 @@
     </snapshotRepository>
     <site>
       <id>ops4j.website.deploy</id>
-      <url>scpexe://www.ops4j.org/var/http/www.ops4j.org/projects/qi4j/core</url>
+      <url>scpexe://dist.qi4j.org/home/www/web.ops4j.org/projects/qi4j/core</url>
     </site>
   </distributionManagement>
 
@@ -353,16 +366,14 @@
         <artifactId>maven-project-info-reports-plugin</artifactId>
       </plugin>
 
-<!--
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.4</version>
         <configuration>
-           Note: configuration comes from the classpath -
-          <configLocation>org/ops4j/checkstyle/ops4j-checkstyle-format.xml</configLocation>
+          <configLocation>qi4j-checkstyle.xml</configLocation>
         </configuration>
       </plugin>
--->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
