@@ -19,7 +19,7 @@
   <properties>
     <version.cglib>2.2</version.cglib>
   </properties>
-  
+
   <inceptionYear>2007</inceptionYear>
   <url>http://www.qi4j.org/</url>
 
@@ -309,7 +309,7 @@
         <snapshotRepository>
           <id>ops4j.snapshots.deploy</id>
           <url>scpexe://repository.ops4j.org/var/http/repository.ops4j.org/mvn-snapshots</url>
-        </snapshotRepository>        
+        </snapshotRepository>
       </distributionManagement>
     </profile>
     <profile>
