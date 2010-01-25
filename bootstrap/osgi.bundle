@@ -1,9 +1,6 @@
-Bundle-Activator: org.qi4j.bootstrap.osgi.Activator
-
 Ignore-Package: com_cenqua_clover
 
-Private-Package: org.qi4j.bootstrap.osgi, \
-                 org.qi4j.bootstrap.internal
+Private-Package: org.qi4j.bootstrap.internal
 
 Import-Package: org.ops4j.pax.swissbox.core, \
                 org.ops4j.pax.swissbox.extender, \

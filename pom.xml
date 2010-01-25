@@ -4,7 +4,7 @@
   <groupId>org.qi4j</groupId>
   <artifactId>qi4j-core</artifactId>
   <name>Qi4j Core (Build POM)</name>
-  <version>1.0-RC3-SNAPSHOT</version>
+  <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <!-- This POM is ONLY to initiate the modules to be built. -->
@@ -14,20 +14,12 @@
     <module>runtime</module>
     <module>spi</module>
     <module>testsupport</module>
-    <!--module>osgi</module-->
   </modules>
 
-  <repositories>
-    <repository>
-      <id>ops4j-repository</id>
-      <url>http://repository.ops4j.org/maven2</url>
-    </repository>
-    <repository>
-      <id>ops4j-snapshot</id>
-      <url>http://repository.ops4j.org/mvn-snapshots</url>
-    </repository>
-  </repositories>
-
+  <properties>
+    <version.cglib>2.2</version.cglib>
+  </properties>
+  
   <inceptionYear>2007</inceptionYear>
   <url>http://www.qi4j.org/</url>
 
@@ -35,7 +27,6 @@
     <connection>scm:git:git://dscm.ops4j.org/qi4j-core.git</connection>
     <developerConnection>scm:git:git@dscm.ops4j.org:qi4j-core.git</developerConnection>
   </scm>
-
 
   <developers>
     <developer>
@@ -249,6 +240,11 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>cglib</groupId>
+        <artifactId>cglib-nodep</artifactId>
+        <version>${version.cglib}</version>
+      </dependency>
       <dependency>
         <groupId>org.jmock</groupId>
         <artifactId>jmock</artifactId>
