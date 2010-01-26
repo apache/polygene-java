@@ -9,7 +9,6 @@ import com.opensymphony.xwork2.config.entities.ResultConfig;
 import com.opensymphony.xwork2.config.entities.ResultTypeConfig;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.ClassLoaderUtil;
-import com.opensymphony.xwork2.util.TextUtils;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import java.lang.annotation.Annotation;
@@ -34,7 +33,8 @@ import org.qi4j.library.struts2.ActionConfiguration;
  * is directly copied from the 2.1.1 version of the plugin but modified to only look for the @Action annotation
  * and to accept interfaces as well as classes.
  */
-public class Qi4jCodebehindPackageProvider implements PackageProvider
+public class Qi4jCodebehindPackageProvider
+    implements PackageProvider
 {
 
     private ActionConfiguration actionConfiguration;
@@ -132,7 +132,8 @@ public class Qi4jCodebehindPackageProvider implements PackageProvider
     /**
      * ClasspathPathLocator searches the classpath for server pages.
      */
-    public static class ClasspathPageLocator implements PageLocator
+    public static class ClasspathPageLocator
+        implements PageLocator
     {
         public URL locate( String path )
         {
@@ -213,7 +214,8 @@ public class Qi4jCodebehindPackageProvider implements PackageProvider
         this.pageLocator = locator;
     }
 
-    public void init( Configuration configuration ) throws ConfigurationException
+    public void init( Configuration configuration )
+        throws ConfigurationException
     {
         this.configuration = configuration;
     }
@@ -228,7 +230,8 @@ public class Qi4jCodebehindPackageProvider implements PackageProvider
      *
      * @throws ConfigurationException
      */
-    public void loadPackages() throws ConfigurationException
+    public void loadPackages()
+        throws ConfigurationException
     {
         packageLoader = new PackageLoader();
         String[] names = actionPackages.split( "\\s*[,]\\s*" );
@@ -241,7 +244,8 @@ public class Qi4jCodebehindPackageProvider implements PackageProvider
         initialized = true;
     }
 
-    protected void loadPackages( String[] pkgs ) throws ConfigurationException
+    protected void loadPackages( String[] pkgs )
+        throws ConfigurationException
     {
         for( Class cls : actionConfiguration.getClasses() )
         {
@@ -337,7 +341,7 @@ public class Qi4jCodebehindPackageProvider implements PackageProvider
         Annotation annotation = cls.getAnnotation( ParentPackage.class );
         if( annotation != null )
         {
-            String parent = ( (ParentPackage) annotation ).value();
+            String parent = ( (ParentPackage) annotation ).value()[0];
             PackageConfig parentPkg = configuration.getPackageConfig( parent );
             if( parentPkg == null )
             {
@@ -345,7 +349,7 @@ public class Qi4jCodebehindPackageProvider implements PackageProvider
             }
             pkgConfig.addParent( parentPkg );
 
-            if( !TextUtils.stringSet( pkgConfig.getNamespace() ) && TextUtils.stringSet( parentPkg.getNamespace() ) )
+            if( !isNotEmpty( pkgConfig.getNamespace() ) && isNotEmpty( parentPkg.getNamespace() ) )
             {
                 pkgConfig.namespace( parentPkg.getNamespace() );
             }
@@ -372,6 +376,7 @@ public class Qi4jCodebehindPackageProvider implements PackageProvider
      * @param actionNamespace The configuration namespace
      * @param actionPackage   The Java package containing our Action classes
      * @param actionClass     The Action class instance
+     *
      * @return PackageConfig object for the Action class
      */
     protected PackageConfig.Builder loadPackageConfig( String actionNamespace, String actionPackage, Class actionClass )
@@ -447,7 +452,8 @@ public class Qi4jCodebehindPackageProvider implements PackageProvider
      * Creates ResultConfig objects from result annotations,
      * and if a result isn't found, creates it on the fly.
      */
-    class ResultMap<K, V> extends HashMap<K, V>
+    class ResultMap<K, V>
+        extends HashMap<K, V>
     {
         private Class actionClass;
         private String actionName;
@@ -513,6 +519,7 @@ public class Qi4jCodebehindPackageProvider implements PackageProvider
          * Extracts result name and value and calls {@link #createResultConfig}.
          *
          * @param result Result annotation reference representing result type to create
+         *
          * @return New or cached ResultConfig object for result
          */
         protected ResultConfig createResultConfig( Result result )
@@ -554,11 +561,13 @@ public class Qi4jCodebehindPackageProvider implements PackageProvider
          * @param key         The result type name
          * @param resultClass The class for the result type
          * @param location    Path to the resource represented by this type
+         *
          * @return A ResultConfig for key mapped to location
          */
         private ResultConfig createResultConfig( Object key, Class<? extends Object> resultClass,
                                                  String location,
-                                                 Map<? extends Object, ? extends Object> configParams )
+                                                 Map<? extends Object, ? extends Object> configParams
+        )
         {
             if( resultClass == null )
             {
@@ -599,7 +608,8 @@ public class Qi4jCodebehindPackageProvider implements PackageProvider
     /**
      * Search classpath for a page.
      */
-    private final class ServletContextPageLocator implements PageLocator
+    private final class ServletContextPageLocator
+        implements PageLocator
     {
         private final ServletContext context;
         private ClasspathPageLocator classpathPageLocator = new ClasspathPageLocator();
@@ -669,7 +679,8 @@ public class Qi4jCodebehindPackageProvider implements PackageProvider
                     configs.put( config.getName(), config );
                     packageConfigBuilders.remove( config.getName() );
 
-                    for( Iterator<Map.Entry<PackageConfig.Builder, PackageConfig.Builder>> i = childToParent.entrySet().iterator(); i.hasNext(); )
+                    for( Iterator<Map.Entry<PackageConfig.Builder, PackageConfig.Builder>> i = childToParent.entrySet()
+                        .iterator(); i.hasNext(); )
                     {
                         Map.Entry<PackageConfig.Builder, PackageConfig.Builder> entry = i.next();
                         if( entry.getValue() == parent )
@@ -707,5 +718,10 @@ public class Qi4jCodebehindPackageProvider implements PackageProvider
             }
             return current.getResultType( current.getFullDefaultResultType() );
         }
+    }
+
+    public final static boolean isNotEmpty( String text )
+    {
+        return ( text != null ) && !"".equals( text );
     }
 }
