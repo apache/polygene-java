@@ -369,7 +369,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.4</version>
         <configuration>
           <configLocation>qi4j-checkstyle.xml</configLocation>
         </configuration>
