@@ -3,12 +3,12 @@
   <parent>
     <groupId>org.qi4j</groupId>
     <artifactId>qi4j-library</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
   </parent>
   <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-lib-cache</artifactId>
   <name>Qi4j Library - Cache</name>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <packaging>bundle</packaging>
   
   <dependencies>
