@@ -430,6 +430,17 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
+    <repository>
+      <id>java.net</id>
+      <url>http://download.java.net/maven/2</url>
+    </repository>
+    <repository>
+      <id>aduna</id>
+      <url>http://repo.aduna-software.org/maven2/releases/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
   </repositories>
 
   <distributionManagement>
