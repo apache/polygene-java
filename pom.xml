@@ -3,7 +3,7 @@
   <groupId>org.qi4j</groupId>
   <artifactId>qi4j-core</artifactId>
   <name>Qi4j Core (Build POM)</name>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.0</version>
   <packaging>pom</packaging>
   <description>
     Qi4j Core is the core modules needed for developing Qi4j applications.
