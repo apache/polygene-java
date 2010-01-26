@@ -46,7 +46,7 @@ public interface RdfIndexingService
     extends StateChangeListener, Activatable
 {
     File dataDir();
-    
+
     /**
      * JAVADOC Add JavaDoc
      */

@@ -25,9 +25,11 @@ import org.qi4j.entitystore.qrm.dbInitializer.DBInitializerConfiguration;
 /**
  * {@code IBatisEntityStoreServiceInfo} provides service information for {@link QrmSqlEntityStore}.
  */
-public interface QrmSqlConfiguration extends DBInitializerConfiguration, ConfigurationComposite
+public interface QrmSqlConfiguration
+    extends DBInitializerConfiguration, ConfigurationComposite
 {
     Property<String> sqlMapConfigURL();
 
-    @Optional Property<Properties> configProperties();
+    @Optional
+    Property<Properties> configProperties();
 }

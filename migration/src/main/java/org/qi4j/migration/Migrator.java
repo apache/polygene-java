@@ -14,8 +14,8 @@
 
 package org.qi4j.migration;
 
-import org.json.JSONObject;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * The Migrator implements this interface, which is invoked by MigrationOperation implementations
@@ -23,17 +23,33 @@ import org.json.JSONException;
  */
 public interface Migrator
 {
-    boolean addProperty( JSONObject state, String name, String defaultValue) throws JSONException;
-    boolean removeProperty(JSONObject state, String name) throws JSONException;
-    boolean renameProperty(JSONObject state, String from, String to) throws JSONException;
+    boolean addProperty( JSONObject state, String name, String defaultValue )
+        throws JSONException;
 
-    boolean addAssociation( JSONObject state, String name, String defaultReference) throws JSONException;
-    boolean removeAssociation( JSONObject state, String name) throws JSONException;
-    boolean renameAssociation( JSONObject state, String from, String to ) throws JSONException;
+    boolean removeProperty( JSONObject state, String name )
+        throws JSONException;
 
-    boolean addManyAssociation( JSONObject state, String name, String... defaultReference) throws JSONException;
-    boolean removeManyAssociation( JSONObject state, String name) throws JSONException;
-    boolean renameManyAssociation( JSONObject state, String from, String to ) throws JSONException;
+    boolean renameProperty( JSONObject state, String from, String to )
+        throws JSONException;
 
-    void changeEntityType( JSONObject state, String newEntityType ) throws JSONException;
+    boolean addAssociation( JSONObject state, String name, String defaultReference )
+        throws JSONException;
+
+    boolean removeAssociation( JSONObject state, String name )
+        throws JSONException;
+
+    boolean renameAssociation( JSONObject state, String from, String to )
+        throws JSONException;
+
+    boolean addManyAssociation( JSONObject state, String name, String... defaultReference )
+        throws JSONException;
+
+    boolean removeManyAssociation( JSONObject state, String name )
+        throws JSONException;
+
+    boolean renameManyAssociation( JSONObject state, String from, String to )
+        throws JSONException;
+
+    void changeEntityType( JSONObject state, String newEntityType )
+        throws JSONException;
 }

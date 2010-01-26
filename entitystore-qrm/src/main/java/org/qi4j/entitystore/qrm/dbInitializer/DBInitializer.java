@@ -43,6 +43,7 @@ public final class DBInitializer
      * @param dataUrl              The URL to where the Data to be initialized into the DB resides.
      * @param dbUrl                The URL to connect to the DB.
      * @param connectionProperties Properties to be used in the SQL Connection.
+     *
      * @throws java.sql.SQLException Thrown if db initialization failed.
      * @throws java.io.IOException   Thrown if reading schema or data sql resources failed.
      * @since 0.1.0
@@ -101,6 +102,7 @@ public final class DBInitializer
      * Get the sql connection.
      *
      * @return The sql connection.
+     *
      * @throws SQLException Thrown if sql connection failed.
      * @since 0.1.0
      */

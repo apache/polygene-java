@@ -33,17 +33,21 @@ import org.qi4j.spi.structure.DescriptorVisitor;
  * User: alex
  */
 @Mixins( { QrmMapperService.QrmMapperServiceMixin.class } )
-public interface QrmMapperService extends QrmMapper, ServiceComposite
+public interface QrmMapperService
+    extends QrmMapper, ServiceComposite
 {
 
-    class QrmMapperServiceMixin implements QrmMapper
+    class QrmMapperServiceMixin
+        implements QrmMapper
     {
 
         private final static Log LOG = LogFactory.getLog( QrmMapperService.class );
 
         private SessionFactory sessoinFactory;
 
-        private @Structure ApplicationSPI app;
+        private
+        @Structure
+        ApplicationSPI app;
 
         private Map<Class, QrmMapping> mappings = new HashMap<Class, QrmMapping>();
 
@@ -78,7 +82,6 @@ public interface QrmMapperService extends QrmMapper, ServiceComposite
                 {
                     return clazz;
                 }
-
             }
 
             return null;
@@ -252,6 +255,7 @@ public interface QrmMapperService extends QrmMapper, ServiceComposite
         }
 
         // HELPERS.
+
         private void gatherMetaInfo( QrmEntityStoreDescriptor cfg )
         {
             final List<Class> types = cfg.types();
@@ -297,7 +301,6 @@ public interface QrmMapperService extends QrmMapper, ServiceComposite
                 {
                     result.addProperty( name, hibType, true );
                 }
-
             }
 
             return result;
@@ -398,7 +401,6 @@ public interface QrmMapperService extends QrmMapper, ServiceComposite
             sb.append( "    </session-factory>\n" )
                 .append( "</hibernate-configuration>" );
 
-
             String result = sb.toString();
 
             if( LOG.isDebugEnabled() )
@@ -413,5 +415,4 @@ public interface QrmMapperService extends QrmMapper, ServiceComposite
             return result;
         }
     }
-
 }

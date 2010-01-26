@@ -2,15 +2,17 @@ package org.qi4j.entitystore.qrm.internal;
 
 import java.util.HashMap;
 import java.util.Map;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.qi4j.api.common.QualifiedName;
+
+import static org.junit.Assert.*;
 
 public class CapitalizingIdentifierConverterTest
 {
     private final CapitalizingIdentifierConverter converter = new CapitalizingIdentifierConverter();
 
-    @Test public void convertToUpperCase()
+    @Test
+    public void convertToUpperCase()
     {
         assertEquals( "identity -> ID", "ID", converter.convertIdentifier( QualifiedName.fromQN( "abc:identity" ) ) );
         assertEquals( "uppercase ABC", "ABC", converter.convertIdentifier( QualifiedName.fromQN( "abc:abc" ) ) );
@@ -18,7 +20,8 @@ public class CapitalizingIdentifierConverterTest
         assertEquals( "removed qualified prefixes", "ABC", converter.convertIdentifier( QualifiedName.fromQN( "aaa:bbb:abc" ) ) );
     }
 
-    @Test public void removeFromMap()
+    @Test
+    public void removeFromMap()
     {
         Map<String, Object> rawData = new HashMap<String, Object>();
         rawData.put( "ABC", "test" );
@@ -26,13 +29,15 @@ public class CapitalizingIdentifierConverterTest
         assertEquals( "entry removed", 0, rawData.size() );
     }
 
-    @Test public void nullIfNotFound()
+    @Test
+    public void nullIfNotFound()
     {
         Map<String, Object> rawData = new HashMap<String, Object>();
         assertEquals( "converted key and found value", null, converter.getValueFromData( rawData, QualifiedName.fromQN( "aaa:abc" ) ) );
     }
 
-    @Test public void convertMapKeys()
+    @Test
+    public void convertMapKeys()
     {
         Map<QualifiedName, Object> rawData = new HashMap<QualifiedName, Object>();
         rawData.put( QualifiedName.fromQN( "abc:abc" ), "test1" );

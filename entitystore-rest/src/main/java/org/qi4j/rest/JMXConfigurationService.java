@@ -57,7 +57,8 @@ public interface JMXConfigurationService
         @Structure
         Qi4jSPI spi;
 
-        public void activate() throws Exception
+        public void activate()
+            throws Exception
         {
             final UnitOfWork uow = uowf.newUnitOfWork();
 
@@ -75,7 +76,8 @@ public interface JMXConfigurationService
                         {
                             ConfigurationComposite configuration = (ConfigurationComposite) uow.get( config, identity );
                             MBeanInfo mbeanInfo = new MBeanInfo( serviceDescriptor.type().toString(), "", attributes( configuration ), new MBeanConstructorInfo[0], new MBeanOperationInfo[0], new MBeanNotificationInfo[0] );
-                            mbeanServer.registerMBean( new EntityMBean( configuration, mbeanInfo ), new ObjectName( "Configuration:service=" + configuration.identity() ) );
+                            mbeanServer.registerMBean( new EntityMBean( configuration, mbeanInfo ), new ObjectName( "Configuration:service=" + configuration
+                                .identity() ) );
                         }
                         catch( Exception e )
                         {
@@ -88,7 +90,8 @@ public interface JMXConfigurationService
             uow.pause();
         }
 
-        public void passivate() throws Exception
+        public void passivate()
+            throws Exception
         {
         }
 
@@ -98,12 +101,12 @@ public interface JMXConfigurationService
             List<MBeanAttributeInfo> infoList = new ArrayList<MBeanAttributeInfo>();
             for( PropertyDescriptor propertyType : descriptor.state().properties() )
             {
-                MBeanAttributeInfo info = new MBeanAttributeInfo( propertyType.qualifiedName().name(), propertyType.type().toString(), null, true, !propertyType.isImmutable(), false );
+                MBeanAttributeInfo info = new MBeanAttributeInfo( propertyType.qualifiedName().name(), propertyType.type().toString(), null, true, !propertyType
+                    .isImmutable(), false );
                 infoList.add( info );
             }
 
             return infoList.toArray( new MBeanAttributeInfo[infoList.size()] );
         }
-
     }
 }

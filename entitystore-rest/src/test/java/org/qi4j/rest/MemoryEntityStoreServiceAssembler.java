@@ -26,8 +26,9 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 class MemoryEntityStoreServiceAssembler
     implements Assembler
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class).visibleIn( Visibility.application );
+        module.addServices( MemoryEntityStoreService.class ).visibleIn( Visibility.application );
     }
 }

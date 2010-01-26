@@ -14,35 +14,34 @@
 
 package org.qi4j.migration;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONArray;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.structure.Application;
-import org.qi4j.api.configuration.Configuration;
-import org.qi4j.api.usecase.Usecase;
-import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.map.Migration;
 import org.qi4j.entitystore.map.StateStore;
-import org.qi4j.migration.assembly.MigrationBuilder;
 import org.qi4j.migration.assembly.EntityMigrationRule;
-import org.qi4j.migration.assembly.MigrationRules;
+import org.qi4j.migration.assembly.MigrationBuilder;
 import org.qi4j.migration.assembly.MigrationRule;
-import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entity.EntityState;
-import java.util.logging.Logger;
-import java.util.logging.Level;
-import java.util.List;
-import java.util.ArrayList;
+import org.qi4j.spi.entitystore.EntityStore;
 
 /**
  * Migration service. This is used by MapEntityStore EntityStore implementations to
@@ -71,8 +70,10 @@ public interface MigrationService
         @This
         Composite composite;
 
-        @Service StateStore store;
-        @Service EntityStore entityStore;
+        @Service
+        StateStore store;
+        @Service
+        EntityStore entityStore;
         @Structure
         UnitOfWorkFactory uowf;
 
@@ -82,15 +83,16 @@ public interface MigrationService
         @Service
         Iterable<MigrationEvents> migrationEvents;
 
-        public boolean migrate( JSONObject state, String toVersion, StateStore stateStore ) throws JSONException
+        public boolean migrate( JSONObject state, String toVersion, StateStore stateStore )
+            throws JSONException
         {
             // Get current version
-            String fromVersion = state.optString( MapEntityStore.JSONKeys.application_version.name() , "0.0");
+            String fromVersion = state.optString( MapEntityStore.JSONKeys.application_version.name(), "0.0" );
 
             Iterable<EntityMigrationRule> matchedRules = builder.getEntityRules().getRules( fromVersion, toVersion );
 
             boolean changed = false;
-            if (matchedRules != null)
+            if( matchedRules != null )
             {
                 for( EntityMigrationRule matchedRule : matchedRules )
                 {
@@ -100,15 +102,16 @@ public interface MigrationService
 
             state.put( MapEntityStore.JSONKeys.application_version.name(), toVersion );
 
-            if (changed)
+            if( changed )
             {
-                log.info( "Migrated "+state.getString(MapEntityStore.JSONKeys.identity.name() )+" from "+fromVersion+" to "+toVersion);
+                log.info( "Migrated " + state.getString( MapEntityStore.JSONKeys.identity.name() ) + " from " + fromVersion + " to " + toVersion );
             }
 
             return changed;
         }
 
-        public void activate() throws Exception
+        public void activate()
+            throws Exception
         {
             builder = composite.metaInfo( MigrationBuilder.class );
 
@@ -118,13 +121,13 @@ public interface MigrationService
             String lastVersion = config.configuration().lastStartupVersion().get();
 
             // Run general rules if version has changed
-            if (!app.version().equals( lastVersion ))
+            if( !app.version().equals( lastVersion ) )
             {
                 Iterable<MigrationRule> rules = builder.getRules().getRules( lastVersion, version );
-                List<MigrationRule> executedRules = new ArrayList<MigrationRule>( );
+                List<MigrationRule> executedRules = new ArrayList<MigrationRule>();
                 try
                 {
-                    if (rules != null)
+                    if( rules != null )
                     {
                         for( MigrationRule rule : rules )
                         {
@@ -132,7 +135,7 @@ public interface MigrationService
                             executedRules.add( rule );
                         }
 
-                        log.info( "Migrated to " +version);
+                        log.info( "Migrated to " + version );
                     }
 
                     config.configuration().lastStartupVersion().set( version );
@@ -140,7 +143,7 @@ public interface MigrationService
                 }
                 catch( Exception e )
                 {
-                    log.log( Level.SEVERE, "Upgrade failed", e);
+                    log.log( Level.SEVERE, "Upgrade failed", e );
 
                     // Downgrade the migrated rules
                     for( MigrationRule executedRule : executedRules )
@@ -151,122 +154,157 @@ public interface MigrationService
             }
         }
 
-        public void passivate() throws Exception
+        public void passivate()
+            throws Exception
         {
         }
 
         // Migrator implementation
-        public boolean addProperty( JSONObject state, String name, String defaultValue ) throws JSONException
+
+        public boolean addProperty( JSONObject state, String name, String defaultValue )
+            throws JSONException
         {
             JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );
-            if (!properties.has( name ))
+            if( !properties.has( name ) )
             {
-                if (defaultValue == null)
+                if( defaultValue == null )
+                {
                     properties.put( name, JSONObject.NULL );
+                }
                 else
+                {
                     properties.put( name, defaultValue );
+                }
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.propertyAdded( state.getString(MapEntityStore.JSONKeys.identity.name() ), name, defaultValue);
+                    migrationEvent.propertyAdded( state.getString( MapEntityStore.JSONKeys.identity.name() ), name, defaultValue );
                 }
 
                 return true;
-            } else
+            }
+            else
+            {
                 return false;
+            }
         }
 
-        public boolean removeProperty( JSONObject state, String name ) throws JSONException
+        public boolean removeProperty( JSONObject state, String name )
+            throws JSONException
         {
             JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );
-            if (properties.has( name ))
+            if( properties.has( name ) )
             {
                 properties.remove( name );
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.propertyRemoved( state.getString(MapEntityStore.JSONKeys.identity.name() ), name);
+                    migrationEvent.propertyRemoved( state.getString( MapEntityStore.JSONKeys.identity.name() ), name );
                 }
 
                 return true;
-            } else
+            }
+            else
+            {
                 return false;
+            }
         }
 
-        public boolean renameProperty( JSONObject state, String from, String to ) throws JSONException
+        public boolean renameProperty( JSONObject state, String from, String to )
+            throws JSONException
         {
             JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );
-            if (properties.has( from ))
+            if( properties.has( from ) )
             {
                 Object value = properties.remove( from );
                 properties.put( to, value );
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.propertyRenamed( state.getString(MapEntityStore.JSONKeys.identity.name() ), from, to);
+                    migrationEvent.propertyRenamed( state.getString( MapEntityStore.JSONKeys.identity.name() ), from, to );
                 }
 
                 return true;
-            } else
+            }
+            else
+            {
                 return false;
+            }
         }
 
-        public boolean addAssociation( JSONObject state, String name, String defaultReference ) throws JSONException
+        public boolean addAssociation( JSONObject state, String name, String defaultReference )
+            throws JSONException
         {
             JSONObject associations = (JSONObject) state.get( MapEntityStore.JSONKeys.associations.name() );
-            if (!associations.has( name ))
+            if( !associations.has( name ) )
             {
-                if (defaultReference == null)
+                if( defaultReference == null )
+                {
                     associations.put( name, JSONObject.NULL );
+                }
                 else
+                {
                     associations.put( name, defaultReference );
+                }
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.associationAdded( state.getString(MapEntityStore.JSONKeys.identity.name() ), name, defaultReference);
+                    migrationEvent.associationAdded( state.getString( MapEntityStore.JSONKeys.identity.name() ), name, defaultReference );
                 }
 
                 return true;
-            } else
+            }
+            else
+            {
                 return false;
+            }
         }
 
-        public boolean removeAssociation( JSONObject state, String name ) throws JSONException
+        public boolean removeAssociation( JSONObject state, String name )
+            throws JSONException
         {
             JSONObject associations = (JSONObject) state.get( MapEntityStore.JSONKeys.associations.name() );
-            if (associations.has( name ))
+            if( associations.has( name ) )
             {
                 associations.remove( name );
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.associationRemoved( state.getString(MapEntityStore.JSONKeys.identity.name() ), name);
+                    migrationEvent.associationRemoved( state.getString( MapEntityStore.JSONKeys.identity.name() ), name );
                 }
 
                 return true;
-            } else
+            }
+            else
+            {
                 return false;
+            }
         }
 
-        public boolean renameAssociation( JSONObject state, String from, String to ) throws JSONException
+        public boolean renameAssociation( JSONObject state, String from, String to )
+            throws JSONException
         {
             JSONObject associations = (JSONObject) state.get( MapEntityStore.JSONKeys.associations.name() );
-            if (associations.has( from ))
+            if( associations.has( from ) )
             {
                 Object value = associations.remove( from );
                 associations.put( to, value );
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.associationRenamed( state.getString(MapEntityStore.JSONKeys.identity.name() ), from, to);
+                    migrationEvent.associationRenamed( state.getString( MapEntityStore.JSONKeys.identity.name() ), from, to );
                 }
 
                 return true;
-            } else
+            }
+            else
+            {
                 return false;
+            }
         }
 
-        public boolean addManyAssociation( JSONObject state, String name, String... defaultReferences ) throws JSONException
+        public boolean addManyAssociation( JSONObject state, String name, String... defaultReferences )
+            throws JSONException
         {
             JSONObject manyAssociations = (JSONObject) state.get( MapEntityStore.JSONKeys.manyassociations.name() );
-            if (!manyAssociations.has( name ))
+            if( !manyAssociations.has( name ) )
             {
                 JSONArray references = new JSONArray();
                 for( String reference : defaultReferences )
@@ -277,55 +315,67 @@ public interface MigrationService
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.manyAssociationAdded( state.getString(MapEntityStore.JSONKeys.identity.name() ), name, defaultReferences);
+                    migrationEvent.manyAssociationAdded( state.getString( MapEntityStore.JSONKeys.identity.name() ), name, defaultReferences );
                 }
 
                 return true;
-            } else
+            }
+            else
+            {
                 return false;
+            }
         }
 
-        public boolean removeManyAssociation( JSONObject state, String name ) throws JSONException
+        public boolean removeManyAssociation( JSONObject state, String name )
+            throws JSONException
         {
             JSONObject manyAssociations = (JSONObject) state.get( MapEntityStore.JSONKeys.manyassociations.name() );
-            if (manyAssociations.has( name ))
+            if( manyAssociations.has( name ) )
             {
                 manyAssociations.remove( name );
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.manyAssociationRemoved( state.getString(MapEntityStore.JSONKeys.identity.name() ), name);
+                    migrationEvent.manyAssociationRemoved( state.getString( MapEntityStore.JSONKeys.identity.name() ), name );
                 }
 
                 return true;
-            } else
+            }
+            else
+            {
                 return false;
+            }
         }
 
-        public boolean renameManyAssociation( JSONObject state, String from, String to ) throws JSONException
+        public boolean renameManyAssociation( JSONObject state, String from, String to )
+            throws JSONException
         {
             JSONObject manyAssociations = (JSONObject) state.get( MapEntityStore.JSONKeys.manyassociations.name() );
-            if (manyAssociations.has( from ))
+            if( manyAssociations.has( from ) )
             {
                 Object value = manyAssociations.remove( from );
                 manyAssociations.put( to, value );
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.manyAssociationRenamed( state.getString(MapEntityStore.JSONKeys.identity.name() ), from, to);
+                    migrationEvent.manyAssociationRenamed( state.getString( MapEntityStore.JSONKeys.identity.name() ), from, to );
                 }
 
                 return true;
-            } else
+            }
+            else
+            {
                 return false;
+            }
         }
 
-        public void changeEntityType( JSONObject state, String newEntityType ) throws JSONException
+        public void changeEntityType( JSONObject state, String newEntityType )
+            throws JSONException
         {
             state.put( MapEntityStore.JSONKeys.type.name(), newEntityType );
 
             for( MigrationEvents migrationEvent : migrationEvents )
             {
-                migrationEvent.entityTypeChanged(state.getString(MapEntityStore.JSONKeys.identity.name() ), newEntityType);
+                migrationEvent.entityTypeChanged( state.getString( MapEntityStore.JSONKeys.identity.name() ), newEntityType );
             }
         }
     }

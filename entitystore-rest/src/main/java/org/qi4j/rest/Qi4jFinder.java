@@ -15,12 +15,13 @@ package org.qi4j.rest;
 
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.object.ObjectBuilderFactory;
-import org.restlet.resource.Finder;
-import org.restlet.resource.ServerResource;
 import org.restlet.Request;
 import org.restlet.Response;
+import org.restlet.resource.Finder;
+import org.restlet.resource.ServerResource;
 
-public class Qi4jFinder extends Finder
+public class Qi4jFinder
+    extends Finder
 {
     @Structure
     private ObjectBuilderFactory factory;

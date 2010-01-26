@@ -17,15 +17,17 @@ package org.qi4j.rest;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import static org.qi4j.library.http.Servlets.addServlets;
-import static org.qi4j.library.http.Servlets.serve;
+
+import static org.qi4j.library.http.Servlets.*;
 
 /**
  * JAVADOC
  */
-public class RestletServletAssembler implements Assembler
+public class RestletServletAssembler
+    implements Assembler
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         addServlets( serve( "/qi4j/*" ).with( Qi4jServerServletService.class ) ).to( module );
         // addFilters( filter( "/*" ).through( UnitOfWorkFilterService.class ).on( REQUEST ) ).to( module );

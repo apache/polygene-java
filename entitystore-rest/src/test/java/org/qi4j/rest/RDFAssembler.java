@@ -27,7 +27,8 @@ import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 class RDFAssembler
     implements Assembler
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addObjects( EntityStateSerializer.class ).visibleIn( Visibility.layer );
         module.addObjects( EntityTypeSerializer.class ).visibleIn( Visibility.layer );

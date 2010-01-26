@@ -18,23 +18,25 @@
 
 package org.qi4j.index.reindexer.internal;
 
-import org.qi4j.index.reindexer.Reindexer;
-import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.index.reindexer.Reindexer;
 import org.qi4j.spi.service.ServiceDescriptor;
 
 public class ReindexAllMixin
     implements Reindexer
 {
-    @Service private Iterable<ServiceReference<Reindexer>> reindexers;
-    @Uses private ServiceDescriptor descriptor;
+    @Service
+    private Iterable<ServiceReference<Reindexer>> reindexers;
+    @Uses
+    private ServiceDescriptor descriptor;
 
     public void reindex()
     {
         for( ServiceReference<Reindexer> ref : reindexers )
         {
-            if( ! ref.identity().equals( descriptor.identity() ) )
+            if( !ref.identity().equals( descriptor.identity() ) )
             {
                 ref.get().reindex();
             }

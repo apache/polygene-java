@@ -28,7 +28,13 @@ public class PackageMigrationBuilder
     private String fromName;
     private String toName;
 
-    public PackageMigrationBuilder( MigrationBuilder builder, VersionMigrationBuilder version, String fromVersion, String toVersion, String fromName, String toName )
+    public PackageMigrationBuilder( MigrationBuilder builder,
+                                    VersionMigrationBuilder version,
+                                    String fromVersion,
+                                    String toVersion,
+                                    String fromName,
+                                    String toName
+    )
     {
         this.builder = builder;
         this.version = version;
@@ -43,15 +49,15 @@ public class PackageMigrationBuilder
         return version;
     }
 
-    public PackageMigrationBuilder withEntities(String... entitySimpleNames)
+    public PackageMigrationBuilder withEntities( String... entitySimpleNames )
     {
-        for (String entitySimpleName : entitySimpleNames)
+        for( String entitySimpleName : entitySimpleNames )
         {
             builder.getEntityRules().addRule( new EntityMigrationRule(
-                    fromVersion,
-                    toVersion,
-                    new String[]{fromName+"."+entitySimpleName},
-                    new RenameEntity( fromName+"."+entitySimpleName, toName+"."+entitySimpleName ) ) );
+                fromVersion,
+                toVersion,
+                new String[]{ fromName + "." + entitySimpleName },
+                new RenameEntity( fromName + "." + entitySimpleName, toName + "." + entitySimpleName ) ) );
         }
 
         return this;

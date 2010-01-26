@@ -19,16 +19,22 @@ package org.qi4j.migration;
  */
 public interface MigrationEvents
 {
-    void propertyAdded(String entity, String name, String value);
-    void propertyRemoved(String entity, String name);
+    void propertyAdded( String entity, String name, String value );
+
+    void propertyRemoved( String entity, String name );
+
     void propertyRenamed( String entity, String from, String to );
 
     void associationAdded( String entity, String name, String defaultReference );
+
     void associationRemoved( String entity, String name );
+
     void associationRenamed( String entity, String from, String to );
 
     void manyAssociationAdded( String entity, String name, String... defaultReferences );
+
     void manyAssociationRemoved( String entity, String name );
+
     void manyAssociationRenamed( String entity, String from, String to );
 
     void entityTypeChanged( String entity, String newEntityType );

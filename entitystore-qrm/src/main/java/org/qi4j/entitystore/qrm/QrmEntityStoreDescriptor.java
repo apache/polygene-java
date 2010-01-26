@@ -13,5 +13,4 @@ public interface QrmEntityStoreDescriptor
     List<Class> types();
 
     Properties props();
-
 }

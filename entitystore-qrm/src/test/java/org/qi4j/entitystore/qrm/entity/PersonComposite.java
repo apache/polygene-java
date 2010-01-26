@@ -18,6 +18,7 @@ package org.qi4j.entitystore.qrm.entity;
 
 import org.qi4j.api.entity.EntityComposite;
 
-public interface PersonComposite extends EntityComposite, Person
+public interface PersonComposite
+    extends EntityComposite, Person
 {
 }

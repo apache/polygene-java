@@ -17,8 +17,8 @@ package org.qi4j.migration.operation;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.entitystore.map.StateStore;
-import org.qi4j.migration.assembly.EntityMigrationOperation;
 import org.qi4j.migration.Migrator;
+import org.qi4j.migration.assembly.EntityMigrationOperation;
 
 /**
  * Rename a ManyAssociation
@@ -44,10 +44,11 @@ public class RenameManyAssociation
     public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
-        return migrator.renameManyAssociation( state, to, from);
+        return migrator.renameManyAssociation( state, to, from );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return "Rename many-association " + from + " to " + to;
     }

@@ -16,8 +16,8 @@ package org.qi4j.rest.client;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -51,9 +51,9 @@ public class RESTEntityStoreTest
 
         ModuleAssembly store = module.layerAssembly().moduleAssembly( "REST Store" );
         store.addObjects( EntityStateParser.class, EntityTypeParser.class, EntityTypeSerializer.class );
-        store.addEntities( RESTEntityStoreConfiguration.class);
+        store.addEntities( RESTEntityStoreConfiguration.class );
         store.addServices( MemoryEntityStoreService.class );
-        store.addServices( RESTEntityStoreService.class).visibleIn( Visibility.layer );
+        store.addServices( RESTEntityStoreService.class ).visibleIn( Visibility.layer );
         store.importServices( Uniform.class );
         try
         {
@@ -90,7 +90,7 @@ public class RESTEntityStoreTest
 
     @Test
     @Ignore( "I can't get this test to run reliably on the SRV03 release machine. Broken Pipe as a SocketException." )
-public void testEntityStore()
+    public void testEntityStore()
         throws UnitOfWorkCompletionException
     {
         // Create state
@@ -150,6 +150,5 @@ public void testEntityStore()
                 unitOfWork.discard();
             }
         }
-
     }
 }

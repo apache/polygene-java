@@ -30,7 +30,8 @@ public class Qi4jServerServlet
     @Structure
     ObjectBuilderFactory obf;
 
-    @Override @SuppressWarnings( "unchecked" )
+    @Override
+    @SuppressWarnings( "unchecked" )
     protected Application createApplication( Context context )
     {
         ObjectBuilder<Application> app = obf.newObjectBuilder( Application.class );

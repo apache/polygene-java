@@ -50,7 +50,6 @@ public class ListPreferencesNodes
                 if( !first )
                 {
                     System.out.print( ", " );
-
                 }
                 first = false;
                 System.out.print( key );

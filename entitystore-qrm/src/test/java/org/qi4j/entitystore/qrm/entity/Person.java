@@ -18,9 +18,9 @@ package org.qi4j.entitystore.qrm.entity;
 
 import org.qi4j.api.entity.association.ManyAssociation;
 
-public interface Person extends HasFirstName, HasLastName
+public interface Person
+    extends HasFirstName, HasLastName
 {
-
 
     ManyAssociation<Account> accounts();
 }

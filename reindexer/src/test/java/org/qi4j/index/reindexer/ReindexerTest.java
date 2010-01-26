@@ -18,14 +18,15 @@
 
 package org.qi4j.index.reindexer;
 
-import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.junit.Test;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
+import org.qi4j.test.AbstractQi4jTest;
 
-public class ReindexerTest extends AbstractQi4jTest
+public class ReindexerTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

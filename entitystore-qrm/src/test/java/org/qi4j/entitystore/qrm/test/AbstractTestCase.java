@@ -21,25 +21,27 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.qi4j.entitystore.qrm.DerbyDatabaseHandler;
 import org.qi4j.entitystore.qrm.entity.PersonComposite;
+import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.property.PropertyDescriptor;
-import org.qi4j.spi.composite.TransientDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
 
-public abstract class AbstractTestCase extends AbstractQi4jTest
+import static org.junit.Assert.*;
+
+public abstract class AbstractTestCase
+    extends AbstractQi4jTest
 {
     protected DerbyDatabaseHandler derbyDatabaseHandler;
-
 
     /**
      * Returns the jdbc connection to test db. Must not return {@code null}.
      *
      * @return The jdbc connection to test db.
+     *
      * @throws SQLException Thrown if initializing connection failed.
      */
     final Connection getJDBCConnection()
@@ -48,7 +50,9 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
         return derbyDatabaseHandler.getJDBCConnection();
     }
 
-    @Override public void tearDown() throws Exception
+    @Override
+    public void tearDown()
+        throws Exception
     {
         if( derbyDatabaseHandler != null )
         {
@@ -63,8 +67,9 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
         super.tearDown();
     }
 
-
-    @Before public void setUp() throws Exception
+    @Before
+    public void setUp()
+        throws Exception
     {
         derbyDatabaseHandler = new DerbyDatabaseHandler();
         super.setUp();
@@ -82,7 +87,8 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
     {
         final int count = derbyDatabaseHandler.executeStatement( "select * from person where id = '" + identity + "'", new DerbyDatabaseHandler.ResultSetCallback()
         {
-            public void row( final ResultSet rs ) throws SQLException
+            public void row( final ResultSet rs )
+                throws SQLException
             {
                 org.junit.Assert.assertEquals( "id", identity, rs.getString( "id" ) );
                 assertContainsValues( rs, values );
@@ -106,7 +112,10 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
         }
     }
 
-    protected static void checkEntityStateProperties( final TransientDescriptor compositeBinding, final EntityState state, final boolean checkAll )
+    protected static void checkEntityStateProperties( final TransientDescriptor compositeBinding,
+                                                      final EntityState state,
+                                                      final boolean checkAll
+    )
     {
 /*
         assertNotNull( "identity", state.qualifiedIdentity() );
@@ -132,7 +141,11 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
         }
     }
 
-    protected void assertPersonEntityStateEquals( final String id, final String firstName, final String lastName, final EntityState state )
+    protected void assertPersonEntityStateEquals( final String id,
+                                                  final String firstName,
+                                                  final String lastName,
+                                                  final EntityState state
+    )
     {
         assertNotNull( state );
         final QualifiedIdentity qualifiedIdentity = null; //state.qualifiedIdentity();
@@ -147,7 +160,11 @@ public abstract class AbstractTestCase extends AbstractQi4jTest
 */
     }
 
-    protected void assertPersonEquals( final String id, final String firstName, final String lastName, final PersonComposite person )
+    protected void assertPersonEquals( final String id,
+                                       final String firstName,
+                                       final String lastName,
+                                       final PersonComposite person
+    )
     {
         org.junit.Assert.assertEquals( "identity", id, person.identity().get() );
         org.junit.Assert.assertEquals( "firstName", firstName, person.firstName().get() );

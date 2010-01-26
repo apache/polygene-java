@@ -23,18 +23,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
-import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 import org.qi4j.entitystore.qrm.IdentifierConverter;
 import org.qi4j.spi.entity.EntityStatus;
-import static org.qi4j.spi.entity.EntityStatus.REMOVED;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
+import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyType;
-import org.qi4j.spi.entitystore.EntityNotFoundException;
+
+import static org.qi4j.api.util.NullArgumentException.*;
+import static org.qi4j.spi.entity.EntityStatus.*;
 
 /**
  * {@code IBatisEntityState} represents {@code IBatis} version of {@link org.qi4j.spi.entity.EntityState}.
@@ -64,13 +65,15 @@ public final class QrmEntityState
      * @param version      The version of the state.
      * @param status       The current status of the state. This argument must not be {@code null}.
      * @param lastModified The last modification date.
+     *
      * @throws IllegalArgumentException if any of the following arguments are null; entityType, identity, rawData, status
      */
     public QrmEntityState(
         final EntityType entityType, final QualifiedIdentity identity,
         final Map<QualifiedName, Object> rawData,
         final long version, final long lastModified,
-        final EntityStatus status )
+        final EntityStatus status
+    )
         throws IllegalArgumentException
     {
         validateNotNull( "aDescriptor", entityType );
@@ -121,7 +124,10 @@ public final class QrmEntityState
         }
     }
 
-    private Collection<QualifiedIdentity> createQualifiedIdentities( final Collection<String> identifiers, final String typeName, ManyAssociationType associationType )
+    private Collection<QualifiedIdentity> createQualifiedIdentities( final Collection<String> identifiers,
+                                                                     final String typeName,
+                                                                     ManyAssociationType associationType
+    )
     {
         final int size = identifiers.size();
         final Collection<QualifiedIdentity> qualifiedIdentities = createManyAssociationCollection( size, associationType );
@@ -132,7 +138,9 @@ public final class QrmEntityState
         return qualifiedIdentities;
     }
 
-    private Collection<QualifiedIdentity> createManyAssociationCollection( int size, ManyAssociationType associationType )
+    private Collection<QualifiedIdentity> createManyAssociationCollection( int size,
+                                                                           ManyAssociationType associationType
+    )
     {
         return new ArrayList<QualifiedIdentity>( size );
     }
@@ -157,7 +165,6 @@ public final class QrmEntityState
         if( propertyModel.type() instanceof Class )
         {
             return (Class) propertyModel.type();
-
         }
         return null;
     }
@@ -217,6 +224,7 @@ public final class QrmEntityState
      * Returns the property value given the property qualified name.
      *
      * @param qualifiedName The property qualified name. This argument must not be {@code null}.
+     *
      * @return The property value given qualified name.
      */
     public final Object getProperty( final QualifiedName qualifiedName )
@@ -264,7 +272,8 @@ public final class QrmEntityState
     }
 
     public Collection<QualifiedIdentity> setManyAssociation(
-        final QualifiedName qualifiedName, final Collection<QualifiedIdentity> newManyAssociations )
+        final QualifiedName qualifiedName, final Collection<QualifiedIdentity> newManyAssociations
+    )
     {
         validateNotNull( "qualifiedName", qualifiedName );
         if( status == REMOVED )

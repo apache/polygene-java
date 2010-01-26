@@ -17,8 +17,8 @@ package org.qi4j.migration.operation;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.entitystore.map.StateStore;
-import org.qi4j.migration.assembly.EntityMigrationOperation;
 import org.qi4j.migration.Migrator;
+import org.qi4j.migration.assembly.EntityMigrationOperation;
 
 /**
  * Add an association
@@ -47,7 +47,8 @@ public class AddAssociation
         return migrator.removeAssociation( state, association );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return "Add association " + association + ", default:" + defaultValue;
     }

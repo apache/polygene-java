@@ -39,12 +39,14 @@ public class QrmSqlEntityStore
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void activate() throws Exception
+    public void activate()
+        throws Exception
     {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void passivate() throws Exception
+    public void passivate()
+        throws Exception
     {
         //To change body of implemented methods use File | Settings | File Templates.
     }

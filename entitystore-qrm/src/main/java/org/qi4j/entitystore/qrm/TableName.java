@@ -20,6 +20,7 @@ package org.qi4j.entitystore.qrm;
 
 import org.qi4j.api.property.Property;
 
-public interface TableName extends Property<String>
+public interface TableName
+    extends Property<String>
 {
 }

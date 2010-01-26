@@ -17,12 +17,9 @@
 package org.qi4j.entitystore.qrm;
 
 import java.io.PrintWriter;
-import static java.lang.System.out;
-import static java.lang.Thread.sleep;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import static java.sql.DriverManager.getConnection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -30,15 +27,16 @@ import java.util.Properties;
 import org.apache.derby.drda.NetworkServerControl;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.property.Property;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.qrm.dbInitializer.DBInitializerConfiguration;
 import org.qi4j.entitystore.qrm.test.TestProperty;
+
+import static java.lang.System.*;
+import static java.lang.Thread.*;
+import static java.sql.DriverManager.*;
+import static org.junit.Assert.*;
 
 /**
  * @author edward.yakop@gmail.com
@@ -73,7 +71,6 @@ public class DerbyDatabaseHandler
             throw new RuntimeException( "Error initializing Derby", e );
         }
     }
-
 
     private Properties createConnectionProperties()
     {
@@ -130,7 +127,8 @@ public class DerbyDatabaseHandler
         }
     }
 
-    private void removeTables( final Statement statement ) throws SQLException
+    private void removeTables( final Statement statement )
+        throws SQLException
     {
         // Ensure that the all test tables are removed.
         final DatabaseMetaData data = statement.getConnection().getMetaData();
@@ -139,7 +137,6 @@ public class DerbyDatabaseHandler
         {
             executeIgnore( statement, "DROP TABLE " + tables.getString( "TABLE_NAME" ) );
         }
-
     }
 
     private void executeIgnore( final Statement statement, final String sql )
@@ -209,6 +206,7 @@ public class DerbyDatabaseHandler
      * Returns the jdbc connection to test db. Must not return {@code null}.
      *
      * @return The jdbc connection to test db.
+     *
      * @throws java.sql.SQLException Thrown if initializing connection failed.
      * @since 0.1.0
      */
@@ -217,7 +215,6 @@ public class DerbyDatabaseHandler
     {
         return getConnection( JDBC_URL, DERBY_USER, DERBY_PASSWORD );
     }
-
 
     /**
      * Wait until derby started.
@@ -338,7 +335,6 @@ public class DerbyDatabaseHandler
         }
     }
 
-
     private void closeIt( final Object jdbcHandle )
     {
         if( jdbcHandle == null )
@@ -374,6 +370,7 @@ public class DerbyDatabaseHandler
      */
     public static interface ResultSetCallback
     {
-        void row( ResultSet rs ) throws SQLException;
+        void row( ResultSet rs )
+            throws SQLException;
     }
 }

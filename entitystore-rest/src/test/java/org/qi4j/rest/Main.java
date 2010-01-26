@@ -30,7 +30,8 @@ public class Main
         new Main();
     }
 
-    public Main() throws Exception
+    public Main()
+        throws Exception
     {
         Energy4Java qi4j = new Energy4Java();
         qi4j.newApplication( new MainAssembler() );

@@ -36,9 +36,9 @@ import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreSPI;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
-import org.restlet.Uniform;
 import org.restlet.Request;
 import org.restlet.Response;
+import org.restlet.Uniform;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Preference;
@@ -52,25 +52,31 @@ import org.restlet.representation.Representation;
 public class RESTEntityStoreServiceMixin
     implements EntityStore, EntityStoreSPI, Activatable
 {
-    @Uses private EntityStateParser parser;
+    @Uses
+    private EntityStateParser parser;
 
-    @This private Configuration<RESTEntityStoreConfiguration> config;
+    @This
+    private Configuration<RESTEntityStoreConfiguration> config;
 
-    @This EntityStoreSPI entityStoreSpi;
+    @This
+    EntityStoreSPI entityStoreSpi;
 
-    @Service private Uniform client;
+    @Service
+    private Uniform client;
     private Reference entityStoreUrl;
 
     protected String uuid;
     private int count;
 
-    public void activate() throws Exception
+    public void activate()
+        throws Exception
     {
         uuid = UUID.randomUUID().toString() + "-";
         entityStoreUrl = new Reference( config.configuration().storeUrl().get() );
     }
 
-    public void passivate() throws Exception
+    public void passivate()
+        throws Exception
     {
     }
 
@@ -84,7 +90,10 @@ public class RESTEntityStoreServiceMixin
         return null;
     }
 
-    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity, EntityDescriptor entityType )
+    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
+                                       EntityReference identity,
+                                       EntityDescriptor entityType
+    )
     {
         return null;
     }
@@ -95,8 +104,10 @@ public class RESTEntityStoreServiceMixin
         {
             Reference ref = entityStoreUrl.clone().addSegment( identity.identity() );
             Request request = new Request( Method.GET, ref );
-            request.getClientInfo().getAcceptedMediaTypes().add( new Preference<MediaType>( MediaType.APPLICATION_JAVA_OBJECT ) );
-            Response response = new Response(request);
+            request.getClientInfo()
+                .getAcceptedMediaTypes()
+                .add( new Preference<MediaType>( MediaType.APPLICATION_JAVA_OBJECT ) );
+            Response response = new Response( request );
             client.handle( request, response );
             if( response.getStatus().isSuccess() )
             {
@@ -122,7 +133,12 @@ public class RESTEntityStoreServiceMixin
         throw new EntityStoreException();
     }
 
-    private EntityState parseEntityState( EntityStoreUnitOfWork uow, EntityReference anReference, Reference ref, Response response, Representation entity )
+    private EntityState parseEntityState( EntityStoreUnitOfWork uow,
+                                          EntityReference anReference,
+                                          Reference ref,
+                                          Response response,
+                                          Representation entity
+    )
         throws IOException, RDFParseException, RDFHandlerException, ClassNotFoundException
     {
 /*
@@ -189,7 +205,6 @@ public class RESTEntityStoreServiceMixin
         };
     }
 
-
     public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor )
     {
         // TODO Iterate over all EntityStates
@@ -200,5 +215,4 @@ public class RESTEntityStoreServiceMixin
     {
         return uuid + Integer.toHexString( count++ );
     }
-
 }

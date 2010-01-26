@@ -22,9 +22,11 @@ import org.qi4j.bootstrap.ModuleAssembly;
 /**
  * JAVADOC
  */
-public class RestletApplicationAssembler implements Assembler
+public class RestletApplicationAssembler
+    implements Assembler
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addObjects( RestApplication.class ).visibleIn( Visibility.application );
         module.addObjects( Qi4jFinder.class );

@@ -26,18 +26,17 @@ import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.index.rdf.query.CollectingQualifiedIdentityResultCallback;
+import org.qi4j.index.rdf.query.QualifiedIdentityResultCallback;
 import org.qi4j.index.rdf.query.RdfQueryParser;
 import org.qi4j.index.rdf.query.RdfQueryParserFactory;
-import org.qi4j.index.rdf.query.QualifiedIdentityResultCallback;
 import org.qi4j.index.rdf.query.SingleQualifiedIdentityResultCallback;
-import org.qi4j.index.rdf.query.internal.RdfQueryParserImpl;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
-import org.restlet.Uniform;
-import org.restlet.Response;
 import org.restlet.Request;
-import org.restlet.data.Reference;
+import org.restlet.Response;
+import org.restlet.Uniform;
 import org.restlet.data.Method;
+import org.restlet.data.Reference;
 import org.restlet.ext.xml.SaxRepresentation;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -57,20 +56,23 @@ public class SPARQLEntityFinderMixin
 
     @Service
     private RdfQueryParserFactory rdfQueryParserFactory;
-    
+
     private Reference sparqlQueryRef;
 
-    public void activate() throws Exception
+    public void activate()
+        throws Exception
     {
         sparqlQueryRef = new Reference( config.configuration().sparqlUrl().get() );
     }
 
-    public void passivate() throws Exception
+    public void passivate()
+        throws Exception
     {
     }
 
     public Iterable<EntityReference> findEntities( String resultType, BooleanExpression whereClause,
-                                                   OrderBy[] orderBySegments, Integer firstResult, Integer maxResults )
+                                                   OrderBy[] orderBySegments, Integer firstResult, Integer maxResults
+    )
         throws EntityFinderException
     {
         CollectingQualifiedIdentityResultCallback callback = new CollectingQualifiedIdentityResultCallback();
@@ -92,7 +94,13 @@ public class SPARQLEntityFinderMixin
         return performQuery( resultType, whereClause, null, null, null, null );
     }
 
-    public int performQuery( String resultType, BooleanExpression whereClause, OrderBy[] orderBySegments, Integer firstResult, Integer maxResults, QualifiedIdentityResultCallback callback )
+    public int performQuery( String resultType,
+                             BooleanExpression whereClause,
+                             OrderBy[] orderBySegments,
+                             Integer firstResult,
+                             Integer maxResults,
+                             QualifiedIdentityResultCallback callback
+    )
         throws EntityFinderException
     {
         try
@@ -103,8 +111,8 @@ public class SPARQLEntityFinderMixin
 
             Reference queryReference = sparqlQueryRef.clone();
             queryReference.addQueryParameter( "query", query );
-            Request request = new Request( Method.GET, queryReference);
-            Response response = new Response(request);
+            Request request = new Request( Method.GET, queryReference );
+            Response response = new Response( request );
             client.handle( request, response );
             if( !response.getStatus().isSuccess() )
             {
@@ -126,7 +134,8 @@ public class SPARQLEntityFinderMixin
         }
     }
 
-    private static class EntityResultXMLReaderAdapter extends XMLReaderAdapter
+    private static class EntityResultXMLReaderAdapter
+        extends XMLReaderAdapter
     {
         private String element;
         private String id;
@@ -141,13 +150,15 @@ public class SPARQLEntityFinderMixin
         }
 
         @Override
-        public void startElement( String uri, String localName, String qName, Attributes atts ) throws SAXException
+        public void startElement( String uri, String localName, String qName, Attributes atts )
+            throws SAXException
         {
             element = localName;
         }
 
         @Override
-        public void characters( char ch[], int start, int length ) throws SAXException
+        public void characters( char ch[], int start, int length )
+            throws SAXException
         {
             if( "literal".equals( element ) )
             {
@@ -156,7 +167,8 @@ public class SPARQLEntityFinderMixin
         }
 
         @Override
-        public void endElement( String uri, String localName, String qName ) throws SAXException
+        public void endElement( String uri, String localName, String qName )
+            throws SAXException
         {
             element = null;
 

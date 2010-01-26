@@ -22,6 +22,7 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 
 @Mixins( { RestServerMixin.class } )
-public interface RestServerComposite extends ServiceComposite, RestServer, Activatable
+public interface RestServerComposite
+    extends ServiceComposite, RestServer, Activatable
 {
 }

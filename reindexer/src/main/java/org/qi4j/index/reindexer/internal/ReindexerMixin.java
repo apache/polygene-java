@@ -19,20 +19,20 @@
 package org.qi4j.index.reindexer.internal;
 
 import java.util.ArrayList;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.Identity;
 import org.qi4j.index.reindexer.Reindexer;
 import org.qi4j.index.reindexer.ReindexerConfiguration;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
-import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateChangeListener;
+import org.qi4j.spi.structure.ModuleSPI;
 
 public class ReindexerMixin
     implements Reindexer
@@ -43,7 +43,7 @@ public class ReindexerMixin
     {
         try
         {
-            identityQN = QualifiedName.fromMethod( Identity.class.getMethod("identity" ));
+            identityQN = QualifiedName.fromMethod( Identity.class.getMethod( "identity" ) );
         }
         catch( NoSuchMethodException e )
         {
@@ -51,11 +51,15 @@ public class ReindexerMixin
         }
     }
 
-    @This private Configuration<ReindexerConfiguration> configuration;
+    @This
+    private Configuration<ReindexerConfiguration> configuration;
 
-    @Service private EntityStore store;
-    @Service private Iterable<ServiceReference<StateChangeListener>> listeners;
-    @Structure private ModuleSPI module;
+    @Service
+    private EntityStore store;
+    @Service
+    private Iterable<ServiceReference<StateChangeListener>> listeners;
+    @Structure
+    private ModuleSPI module;
 
     public void reindex()
     {
@@ -81,7 +85,7 @@ public class ReindexerMixin
             states = new ArrayList<EntityState>();
         }
 
-        public void reindex(EntityStore store)
+        public void reindex( EntityStore store )
         {
             store.visitEntityStates( this, module );
             reindexState();
@@ -90,7 +94,7 @@ public class ReindexerMixin
         public void visitEntityState( EntityState entityState )
         {
             // Mark dirty
-            entityState.setProperty(identityQN, entityState.identity().identity() );
+            entityState.setProperty( identityQN, entityState.identity().identity() );
             states.add( entityState );
             if( states.size() > loadValue )
             {

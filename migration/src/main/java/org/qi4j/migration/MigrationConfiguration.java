@@ -14,9 +14,9 @@
 
 package org.qi4j.migration;
 
+import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.common.UseDefaults;
 
 /**
  * JAVADOC

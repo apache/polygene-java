@@ -21,6 +21,7 @@ import org.qi4j.api.configuration.ConfigurationComposite;
 /**
  * {@code DBInitializerInfo} represents information on the sql resources to initialize the database.
  */
-public interface DBInitializerConfigurationComposite extends DBInitializerConfiguration, ConfigurationComposite
+public interface DBInitializerConfigurationComposite
+    extends DBInitializerConfiguration, ConfigurationComposite
 {
 }

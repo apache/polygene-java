@@ -19,8 +19,6 @@ package org.qi4j.entitystore.qrm;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.common.QualifiedName;
@@ -41,11 +39,14 @@ import org.qi4j.spi.entity.QualifiedIdentity;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
+import static org.junit.Assert.*;
+
 /**
  * {@code IBatisEntityStoreTest} tests {@code IBatisEntityStore}.
  */
 @Ignore( "Needs attention" )
-public final class IBatisEntityStoreTest extends AbstractTestCase
+public final class IBatisEntityStoreTest
+    extends AbstractTestCase
 {
 
     private static final String NEW_TEST_ID = "111";
@@ -53,14 +54,16 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
     private QrmSqlEntityStoreService entityStore;
     private static final String JOHNS_ACCOUNT = "Johns Account";
 
-    @Test public void isThereDataInTheDatabaseAfterInitialization()
+    @Test
+    public void isThereDataInTheDatabaseAfterInitialization()
         throws Exception
     {
 //        entityStore.iterator();
         derbyDatabaseHandler.checkDataInitialization();
     }
 
-    @Test public final void newEntityStateIsPersistedToDatabase()
+    @Test
+    public final void newEntityStateIsPersistedToDatabase()
         throws SQLException, UnitOfWorkCompletionException
     {
         final Map<String, String> data = createTestData( "Edward", "Yakop" );
@@ -78,7 +81,8 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         assertPersonEqualsInDatabase( newId, data );
     }
 
-    @Test public final void existingEntityIsDeletedFromPersistentStore()
+    @Test
+    public final void existingEntityIsDeletedFromPersistentStore()
         throws SQLException, UnitOfWorkCompletionException
     {
         final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
@@ -87,21 +91,25 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         uow.complete();
         derbyDatabaseHandler.executeStatement( "select count(*) CNT from person where ID= '" + TestConfig.JOHN_SMITH_ID + "'", new DerbyDatabaseHandler.ResultSetCallback()
         {
-            public void row( final ResultSet rs ) throws SQLException
+            public void row( final ResultSet rs )
+                throws SQLException
             {
                 assertEquals( 0, rs.getInt( "CNT" ) );
             }
         } );
     }
 
-    @Test public final void completeThrowsNPE() throws UnitOfWorkCompletionException
+    @Test
+    public final void completeThrowsNPE()
+        throws UnitOfWorkCompletionException
     {
         final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         uow.get( PersonComposite.class, TestConfig.JOHN_SMITH_ID );
         uow.complete();
     }
 
-    @Test public final void existingEntityIsUpdatedInPersistentStore()
+    @Test
+    public final void existingEntityIsUpdatedInPersistentStore()
         throws SQLException, UnitOfWorkCompletionException
     {
         final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
@@ -110,14 +118,16 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         uow.complete();
         derbyDatabaseHandler.executeStatement( "select LAST_NAME from person where ID= '" + TestConfig.JOHN_SMITH_ID + "'", new DerbyDatabaseHandler.ResultSetCallback()
         {
-            public void row( final ResultSet rs ) throws SQLException
+            public void row( final ResultSet rs )
+                throws SQLException
             {
                 assertEquals( "Doe", rs.getString( "LAST_NAME" ) );
             }
         } );
     }
 
-    @Test public final void associationIsPersistedToDatabase()
+    @Test
+    public final void associationIsPersistedToDatabase()
         throws SQLException, UnitOfWorkCompletionException
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
@@ -143,13 +153,15 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         loadEntity( "1123123" );
     }
 
-    @Test public void loadExistingEntity()
+    @Test
+    public void loadExistingEntity()
     {
         final EntityState state = loadEntity( TestConfig.JOHN_SMITH_ID );
         assertPersonEntityStateEquals( TestConfig.JOHN_SMITH_ID, "John", "Smith", state );
     }
 
-    @Test public void loadExistingEntityWithAccounts()
+    @Test
+    public void loadExistingEntityWithAccounts()
     {
         final EntityState state = loadEntity( TestConfig.JANE_SMITH_ID );
         assertPersonEntityStateEquals( TestConfig.JANE_SMITH_ID, "Jane", "Smith", state );
@@ -166,7 +178,9 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         return new QualifiedIdentity( id, compositeClass );
     }
 
-    @Test public void findExistingPersonComposite() throws UnitOfWorkCompletionException
+    @Test
+    public void findExistingPersonComposite()
+        throws UnitOfWorkCompletionException
     {
         final UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         final PersonComposite person = uow.get( PersonComposite.class, TestConfig.JOHN_SMITH_ID );
@@ -184,7 +198,10 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         final ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
         config.addEntities( QrmSqlConfiguration.class ).visibleIn( Visibility.layer );
         config.addServices( MemoryEntityStoreService.class );
-        config.forMixin( QrmSqlConfiguration.class ).declareDefaults().sqlMapConfigURL().set( derbyDatabaseHandler.getUrlString( TestConfig.SQL_MAP_CONFIG_XML ) );
+        config.forMixin( QrmSqlConfiguration.class )
+            .declareDefaults()
+            .sqlMapConfigURL()
+            .set( derbyDatabaseHandler.getUrlString( TestConfig.SQL_MAP_CONFIG_XML ) );
         derbyDatabaseHandler.initDbInitializerInfo( config, TestConfig.SCHEMA_FILE, TestConfig.DATA_FILE );
     }
 
@@ -197,9 +214,9 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
         return null;
     }
 
-
     @Override
-    public void setUp() throws Exception
+    public void setUp()
+        throws Exception
     {
         super.setUp();
         entityStore = getEntityStore();
@@ -209,9 +226,12 @@ public final class IBatisEntityStoreTest extends AbstractTestCase
 */
     }
 
-    private QrmSqlEntityStoreService getEntityStore() throws Exception
+    private QrmSqlEntityStoreService getEntityStore()
+        throws Exception
     {
         assertNotNull( moduleInstance );
-        return moduleInstance.serviceFinder().<QrmSqlEntityStoreService>findService( QrmSqlEntityStoreService.class ).get();
+        return moduleInstance.serviceFinder()
+            .<QrmSqlEntityStoreService>findService( QrmSqlEntityStoreService.class )
+            .get();
     }
 }

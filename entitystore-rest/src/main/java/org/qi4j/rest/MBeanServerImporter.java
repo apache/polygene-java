@@ -27,7 +27,8 @@ import org.qi4j.api.service.ServiceImporterException;
 public class MBeanServerImporter
     implements ServiceImporter
 {
-    public Object importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
+    public Object importService( ImportedServiceDescriptor serviceDescriptor )
+        throws ServiceImporterException
     {
         List<MBeanServer> mbeanServers = MBeanServerFactory.findMBeanServer( null );
         if( mbeanServers.size() > 0 )
@@ -36,7 +37,7 @@ public class MBeanServerImporter
         }
         else
         {
-            return MBeanServerFactory.createMBeanServer("StreamFlow");
+            return MBeanServerFactory.createMBeanServer( "StreamFlow" );
         }
     }
 

@@ -14,12 +14,12 @@
 
 package org.qi4j.migration.assembly;
 
+import java.util.Arrays;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.migration.Migrator;
-import java.util.Arrays;
 
 /**
  * Migration rule for a specific set of entity types
@@ -30,7 +30,11 @@ public class EntityMigrationRule
     private String[] entityTypes;
     private EntityMigrationOperation operationEntity;
 
-    public EntityMigrationRule( String fromVersion, String toVersion, String[] entityTypes, EntityMigrationOperation operationEntity )
+    public EntityMigrationRule( String fromVersion,
+                                String toVersion,
+                                String[] entityTypes,
+                                EntityMigrationOperation operationEntity
+    )
     {
         super( fromVersion, toVersion );
         this.entityTypes = entityTypes;
@@ -42,7 +46,8 @@ public class EntityMigrationRule
         return entityTypes;
     }
 
-    public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator ) throws JSONException
+    public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
+        throws JSONException
     {
         if( appliesTo( state.getString( MapEntityStore.JSONKeys.type.name() ) ) )
         {
@@ -54,7 +59,8 @@ public class EntityMigrationRule
         }
     }
 
-    public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator ) throws JSONException
+    public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
+        throws JSONException
     {
         if( appliesTo( state.getString( MapEntityStore.JSONKeys.type.name() ) ) )
         {
@@ -78,8 +84,9 @@ public class EntityMigrationRule
         return false;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
-        return fromVersion+"->"+toVersion+": on "+ Arrays.asList( entityTypes )+" do "+operationEntity;
+        return fromVersion + "->" + toVersion + ": on " + Arrays.asList( entityTypes ) + " do " + operationEntity;
     }
 }

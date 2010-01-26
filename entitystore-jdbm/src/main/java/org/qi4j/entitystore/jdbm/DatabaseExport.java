@@ -14,8 +14,8 @@
 
 package org.qi4j.entitystore.jdbm;
 
-import java.io.Writer;
 import java.io.IOException;
+import java.io.Writer;
 
 /**
  * Export database, using the JSON format.
@@ -27,5 +27,6 @@ public interface DatabaseExport
      *
      * @param out
      */
-    void exportTo( Writer out) throws IOException;
+    void exportTo( Writer out )
+        throws IOException;
 }

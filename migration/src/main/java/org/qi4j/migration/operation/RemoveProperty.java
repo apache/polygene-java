@@ -17,8 +17,8 @@ package org.qi4j.migration.operation;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.entitystore.map.StateStore;
-import org.qi4j.migration.assembly.EntityMigrationOperation;
 import org.qi4j.migration.Migrator;
+import org.qi4j.migration.assembly.EntityMigrationOperation;
 
 /**
  * Remove a property. Downgrading this operation will reset
@@ -48,9 +48,9 @@ public class RemoveProperty
         return migrator.addProperty( state, property, defaultValue );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return "Remove property " + property + ", default:" + defaultValue;
     }
-
 }

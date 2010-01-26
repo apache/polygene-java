@@ -21,5 +21,6 @@ import org.qi4j.api.entity.association.Association;
 
 public interface HasPrimaryContactPerson
 {
-    @Optional Association<Person> primaryContactPerson();
+    @Optional
+    Association<Person> primaryContactPerson();
 }

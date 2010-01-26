@@ -14,11 +14,11 @@
 
 package org.qi4j.migration.assembly;
 
+import java.io.IOException;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.qi4j.entitystore.map.StateStore;
 import org.qi4j.migration.Migrator;
-import org.json.JSONObject;
-import org.json.JSONException;
-import java.io.IOException;
 
 /**
  * Migration rule that does not apply to a specific entity type
@@ -30,24 +30,25 @@ public class MigrationRule
 
     public MigrationRule( String fromVersion, String toVersion, MigrationOperation operation )
     {
-        super(fromVersion,  toVersion);
+        super( fromVersion, toVersion );
         this.operation = operation;
     }
 
-    public void upgrade( StateStore stateStore, Migrator migrator)
+    public void upgrade( StateStore stateStore, Migrator migrator )
         throws IOException
     {
         operation.upgrade( stateStore, migrator );
     }
 
-    public void downgrade( StateStore stateStore, Migrator migrator)
+    public void downgrade( StateStore stateStore, Migrator migrator )
         throws IOException
     {
         operation.downgrade( stateStore, migrator );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
-        return fromVersion+"->"+toVersion+":"+ operation;
+        return fromVersion + "->" + toVersion + ":" + operation;
     }
 }

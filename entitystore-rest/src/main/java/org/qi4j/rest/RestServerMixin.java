@@ -28,8 +28,10 @@ import org.restlet.data.Protocol;
 public class RestServerMixin
     implements Activatable
 {
-    @Structure private TransientBuilderFactory cbf;
-    @Structure private ObjectBuilderFactory obf;
+    @Structure
+    private TransientBuilderFactory cbf;
+    @Structure
+    private ObjectBuilderFactory obf;
 
     private Component component;
 
@@ -45,7 +47,8 @@ public class RestServerMixin
         component.start();
     }
 
-    public void passivate() throws Exception
+    public void passivate()
+        throws Exception
     {
         component.stop();
     }

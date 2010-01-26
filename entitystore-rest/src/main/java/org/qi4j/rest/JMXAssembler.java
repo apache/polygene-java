@@ -22,12 +22,13 @@ import org.qi4j.bootstrap.ModuleAssembly;
 /**
  * JAVADOC
  */
-public class JMXAssembler implements Assembler
+public class JMXAssembler
+    implements Assembler
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.importServices( MBeanServer.class ).importedBy( MBeanServerImporter.class );
         module.addServices( JMXConfigurationService.class ).instantiateOnStartup();
     }
-
 }

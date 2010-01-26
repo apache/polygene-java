@@ -10,6 +10,7 @@ import org.qi4j.spi.entitystore.EntityStoreSPI;
  * User: alex
  */
 @Mixins( { QrmEntityStoreServiceMixin.class } )
-public interface QrmEntityStoreService extends ServiceComposite, Activatable, EntityStore, EntityStoreSPI
+public interface QrmEntityStoreService
+    extends ServiceComposite, Activatable, EntityStore, EntityStoreSPI
 {
 }

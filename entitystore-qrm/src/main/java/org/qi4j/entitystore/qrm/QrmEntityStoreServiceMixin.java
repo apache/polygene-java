@@ -27,7 +27,8 @@ import org.qi4j.spi.structure.ModuleSPI;
 /**
  * User: alex
  */
-public class QrmEntityStoreServiceMixin implements Activatable, EntityStore, EntityStoreSPI, IdentityGenerator
+public class QrmEntityStoreServiceMixin
+    implements Activatable, EntityStore, EntityStoreSPI, IdentityGenerator
 {
 
     @Uses
@@ -46,7 +47,8 @@ public class QrmEntityStoreServiceMixin implements Activatable, EntityStore, Ent
 
     private int uowCount;
 
-    public void activate() throws Exception
+    public void activate()
+        throws Exception
     {
         QrmEntityStoreDescriptor cfg = descriptor.metaInfo( QrmEntityStoreDescriptor.class );
 
@@ -62,11 +64,15 @@ public class QrmEntityStoreServiceMixin implements Activatable, EntityStore, Ent
         uowCount = 1;
     }
 
-    public void passivate() throws Exception
+    public void passivate()
+        throws Exception
     {
     }
 
-    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity, EntityDescriptor entityDescriptor )
+    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
+                                       EntityReference identity,
+                                       EntityDescriptor entityDescriptor
+    )
     {
         System.err.println( "EntityState newEntityState ... was called." );
 
@@ -164,10 +170,8 @@ public class QrmEntityStoreServiceMixin implements Activatable, EntityStore, Ent
         return mappedClass.getName() + ":" + mapperNextId;
     }
 
-
     protected String newUnitOfWorkId()
     {
         return uowUUID + Integer.toHexString( uowCount++ );
     }
-
 }

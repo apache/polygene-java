@@ -21,7 +21,6 @@ import org.qi4j.index.rdf.RdfIndexingEngineService;
 import org.qi4j.index.rdf.query.RdfQueryParserFactory;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
-import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.library.rdf.repository.NativeRepositoryService;
 import org.qi4j.spi.query.NamedQueries;
 

@@ -18,11 +18,12 @@
 
 package org.qi4j.index.reindexer;
 
-import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.index.reindexer.internal.ReindexerMixin;
 
 @Mixins( ReindexerMixin.class )
-public interface ReindexerService extends Reindexer, ServiceComposite
+public interface ReindexerService
+    extends Reindexer, ServiceComposite
 {
 }

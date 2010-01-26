@@ -2,7 +2,6 @@ package org.qi4j.entitystore.neo4j;
 
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
-
 import org.neo4j.api.core.EmbeddedNeo;
 import org.neo4j.api.core.Node;
 import org.neo4j.util.index.IndexService;
@@ -18,22 +17,24 @@ import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
 import org.qi4j.spi.structure.ModuleSPI;
 
-public class NeoEntityStoreUnitOfWork implements EntityStoreUnitOfWork, 
-    StateCommitter
+public class NeoEntityStoreUnitOfWork
+    implements EntityStoreUnitOfWork,
+               StateCommitter
 {
     static final String ENTITY_STATE_ID = "entity_state_id";
     static final String ENTITY_TYPE = "entity_type";
-    
+
     private final EmbeddedNeo neo;
     private final IndexService indexService;
     private final TransactionManager tm;
-    
+
     private final Transaction transaction;
     private final String identity;
     private final Module module;
-    
-    NeoEntityStoreUnitOfWork( EmbeddedNeo neo, IndexService indexService, 
-        String identity, Module module )
+
+    NeoEntityStoreUnitOfWork( EmbeddedNeo neo, IndexService indexService,
+                              String identity, Module module
+    )
     {
         this.neo = neo;
         this.indexService = indexService;
@@ -42,8 +43,9 @@ public class NeoEntityStoreUnitOfWork implements EntityStoreUnitOfWork,
         this.identity = identity;
         this.module = module;
     }
-    
-    public StateCommitter apply() throws EntityStoreException
+
+    public StateCommitter apply()
+        throws EntityStoreException
     {
         return this;
     }
@@ -55,34 +57,36 @@ public class NeoEntityStoreUnitOfWork implements EntityStoreUnitOfWork,
 
     Node getEntityStateNode( EntityReference anIdentity )
     {
-        Node node = indexService.getSingleNode( ENTITY_STATE_ID, 
-            anIdentity.identity() );
-        if ( node == null )
+        Node node = indexService.getSingleNode( ENTITY_STATE_ID,
+                                                anIdentity.identity() );
+        if( node == null )
         {
             throw new EntityNotFoundException( anIdentity );
         }
         return node;
     }
-    
-    public EntityState getEntityState( EntityReference anIdentity ) 
+
+    public EntityState getEntityState( EntityReference anIdentity )
         throws EntityStoreException, EntityNotFoundException
     {
-        return new NeoEntityState( this, getEntityStateNode( anIdentity ), 
-            EntityStatus.LOADED );
+        return new NeoEntityState( this, getEntityStateNode( anIdentity ),
+                                   EntityStatus.LOADED );
     }
 
-    public EntityState newEntityState( EntityReference anIdentity, 
-        EntityDescriptor entityDescriptor ) throws EntityStoreException
+    public EntityState newEntityState( EntityReference anIdentity,
+                                       EntityDescriptor entityDescriptor
+    )
+        throws EntityStoreException
     {
         String type = entityDescriptor.entityType().type().name();
         Node typeNode = indexService.getSingleNode( ENTITY_TYPE, type );
-        if ( typeNode == null )
+        if( typeNode == null )
         {
             typeNode = createEntityType( type );
         }
-        Node node = indexService.getSingleNode( ENTITY_STATE_ID, 
-            anIdentity.identity() );
-        if ( node != null )
+        Node node = indexService.getSingleNode( ENTITY_STATE_ID,
+                                                anIdentity.identity() );
+        if( node != null )
         {
             throw new EntityAlreadyExistsException( anIdentity );
         }
@@ -100,9 +104,9 @@ public class NeoEntityStoreUnitOfWork implements EntityStoreUnitOfWork,
         {
             tm.rollback();
         }
-        catch ( Exception e )
+        catch( Exception e )
         {
-            throw new EntityStoreException( 
+            throw new EntityStoreException(
                 "Failed to rollback transaction.", e );
         }
     }
@@ -113,9 +117,9 @@ public class NeoEntityStoreUnitOfWork implements EntityStoreUnitOfWork,
         {
             tm.commit();
         }
-        catch ( Exception e )
+        catch( Exception e )
         {
-            throw new EntityStoreException( 
+            throw new EntityStoreException(
                 "Failed to commit transaction.", e );
         }
     }
@@ -127,42 +131,42 @@ public class NeoEntityStoreUnitOfWork implements EntityStoreUnitOfWork,
             tm.begin();
             return tm.getTransaction();
         }
-        catch ( Exception e )
+        catch( Exception e )
         {
             throw new EntityStoreException( "Failed to begin transaction.", e );
         }
     }
-    
+
     void suspend()
     {
         try
         {
             Transaction txRunning = tm.getTransaction();
-            if ( txRunning != null && txRunning == transaction )
+            if( txRunning != null && txRunning == transaction )
             {
                 tm.suspend();
             }
         }
-        catch ( Exception e )
+        catch( Exception e )
         {
-            throw new EntityStoreException( "Failed to suspend " + 
-                transaction, e );
+            throw new EntityStoreException( "Failed to suspend " +
+                                            transaction, e );
         }
     }
-    
+
     void resume()
     {
         try
         {
             tm.resume( transaction );
         }
-        catch ( Exception e )
+        catch( Exception e )
         {
-            throw new EntityStoreException( "Failed to resume " + 
-                transaction, e );
+            throw new EntityStoreException( "Failed to resume " +
+                                            transaction, e );
         }
     }
-    
+
     EmbeddedNeo getNeo()
     {
         return neo;
@@ -177,22 +181,22 @@ public class NeoEntityStoreUnitOfWork implements EntityStoreUnitOfWork,
     {
         return identity;
     }
-    
+
     private Node createEntityType( String type )
     {
         Node typeNode = neo.createNode();
-        neo.getReferenceNode().createRelationshipTo( typeNode, 
-            RelTypes.ENTITY_TYPE_REF );
+        neo.getReferenceNode().createRelationshipTo( typeNode,
+                                                     RelTypes.ENTITY_TYPE_REF );
         typeNode.setProperty( ENTITY_TYPE, type );
         indexService.index( typeNode, ENTITY_TYPE, type );
         return typeNode;
     }
-    
+
     EntityDescriptor getEntityDescriptor( String type )
     {
-        return ((ModuleSPI) module).entityDescriptor( type );
+        return ( (ModuleSPI) module ).entityDescriptor( type );
     }
-    
+
     Module getModule()
     {
         return module;

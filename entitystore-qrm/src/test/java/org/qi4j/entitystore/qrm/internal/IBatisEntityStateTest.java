@@ -19,8 +19,6 @@ package org.qi4j.entitystore.qrm.internal;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.common.QualifiedName;
@@ -32,14 +30,17 @@ import org.qi4j.entitystore.qrm.entity.PersonComposite;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.test.AbstractQi4jTest;
 
+import static junit.framework.Assert.*;
+
 @Ignore( "Until store is upgraded" )
-public final class IBatisEntityStateTest extends AbstractQi4jTest
+public final class IBatisEntityStateTest
+    extends AbstractQi4jTest
 {
     private static final String DEFAULT_FIRST_NAME = "Edward";
     private static final String DEFAULT_LAST_NAME = "Yakop";
 
-
-    @Test public void usesGivenFirstNameProperty()
+    @Test
+    public void usesGivenFirstNameProperty()
         throws NoSuchMethodException
     {
         final Map<QualifiedName, Object> janeValues = Collections.<QualifiedName, Object>singletonMap( QualifiedName.fromQN( "person:firstName" ), "Jane" );
@@ -57,11 +58,12 @@ public final class IBatisEntityStateTest extends AbstractQi4jTest
         return (String) person.getProperty( QualifiedName.fromQN( method.getName() ) );
     }
 
-    public final void assemble( final ModuleAssembly module ) throws AssemblyException
+    public final void assemble( final ModuleAssembly module )
+        throws AssemblyException
     {
         module.addEntities( PersonComposite.class );
 
-        module.forMixin(  HasFirstName.class ).declareDefaults().firstName().set( DEFAULT_FIRST_NAME );
+        module.forMixin( HasFirstName.class ).declareDefaults().firstName().set( DEFAULT_FIRST_NAME );
         module.forMixin( HasLastName.class ).declareDefaults().lastName().set( DEFAULT_LAST_NAME );
     }
 

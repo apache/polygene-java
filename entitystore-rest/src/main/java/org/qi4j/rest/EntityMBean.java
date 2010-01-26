@@ -40,7 +40,8 @@ public class EntityMBean
         this.mbeanInfo = mbeanInfo;
     }
 
-    public Object getAttribute( String s ) throws AttributeNotFoundException, MBeanException, ReflectionException
+    public Object getAttribute( String s )
+        throws AttributeNotFoundException, MBeanException, ReflectionException
     {
         try
         {
@@ -53,11 +54,14 @@ public class EntityMBean
         }
     }
 
-    public void setAttribute( Attribute attribute ) throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException
+    public void setAttribute( Attribute attribute )
+        throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException
     {
         try
         {
-            Property property = (Property) entity.getClass().getMethod( attribute.getName(), new Class[0] ).invoke( entity );
+            Property property = (Property) entity.getClass()
+                .getMethod( attribute.getName(), new Class[0] )
+                .invoke( entity );
             property.set( attribute.getValue() );
         }
         catch( Exception e )
@@ -100,7 +104,8 @@ public class EntityMBean
         return attributeList;
     }
 
-    public Object invoke( String s, Object[] objects, String[] strings ) throws MBeanException, ReflectionException
+    public Object invoke( String s, Object[] objects, String[] strings )
+        throws MBeanException, ReflectionException
     {
         return null;
     }

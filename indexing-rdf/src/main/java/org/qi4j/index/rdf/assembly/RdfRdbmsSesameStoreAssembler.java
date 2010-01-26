@@ -42,8 +42,8 @@ public class RdfRdbmsSesameStoreAssembler
     }
 
     public RdfRdbmsSesameStoreAssembler( NamedQueries namedQueries,
-                                          Visibility indexingVisibility,
-                                          Visibility repositoryVisibility
+                                         Visibility indexingVisibility,
+                                         Visibility repositoryVisibility
     )
     {
         if( namedQueries == null )

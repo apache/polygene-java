@@ -6,17 +6,17 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import static java.util.Arrays.asList;
 import java.util.Collection;
 import java.util.Map;
 import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.qi4j.entitystore.qrm.entity.PersonComposite;
 import org.qi4j.spi.entity.QualifiedIdentity;
+
+import static java.util.Arrays.*;
+import static org.junit.Assert.*;
 
 public class IBatisClientTest
 {
@@ -25,8 +25,9 @@ public class IBatisClientTest
     private static final String TEST_ID = TestConfig.JANE_SMITH_ID;
 
     @Test
-    @Ignore( "The entire QRM is buggered.")
-    public void loadExistingPerson() throws Exception
+    @Ignore( "The entire QRM is buggered." )
+    public void loadExistingPerson()
+        throws Exception
     {
         final QualifiedIdentity id = new QualifiedIdentity( TEST_ID, PersonComposite.class );
         assertEquals( "id", TEST_ID, id.identity() );
@@ -42,7 +43,8 @@ public class IBatisClientTest
     }
 
     @Before
-    public void setUp() throws Exception
+    public void setUp()
+        throws Exception
     {
         databaseHandler = new DerbyDatabaseHandler();
         setupDatabase( databaseHandler.getJDBCConnection() );
@@ -64,7 +66,8 @@ public class IBatisClientTest
         runner.runScript( new InputStreamReader( new URL( databaseHandler.getUrlString( file ) ).openStream() ) );
     }
 
-    @After public void shutdown()
+    @After
+    public void shutdown()
     {
         if( databaseHandler != null )
         {

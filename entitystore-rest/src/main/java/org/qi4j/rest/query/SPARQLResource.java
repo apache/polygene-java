@@ -22,9 +22,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import org.openrdf.http.protocol.Protocol;
-import static org.openrdf.http.protocol.Protocol.BINDING_PREFIX;
-import static org.openrdf.http.protocol.Protocol.DEFAULT_GRAPH_PARAM_NAME;
-import static org.openrdf.http.protocol.Protocol.NAMED_GRAPH_PARAM_NAME;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.query.BooleanQuery;
@@ -57,31 +54,36 @@ import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
+import static org.openrdf.http.protocol.Protocol.*;
+
 /**
  * JAVADOC
  */
 public class SPARQLResource
     extends ServerResource
 {
-    @Service Repository repository;
+    @Service
+    Repository repository;
 
     public SPARQLResource()
     {
         getVariants().addAll( Arrays.asList(
-            new Variant(MediaType.TEXT_HTML),
-            new Variant(MediaType.APPLICATION_RDF_XML),
-            new Variant(RestApplication.APPLICATION_SPARQL_JSON )) );
+            new Variant( MediaType.TEXT_HTML ),
+            new Variant( MediaType.APPLICATION_RDF_XML ),
+            new Variant( RestApplication.APPLICATION_SPARQL_JSON ) ) );
         setNegotiated( true );
     }
 
     @Override
-    protected void doInit() throws ResourceException
+    protected void doInit()
+        throws ResourceException
     {
         super.doInit();
     }
 
     @Override
-    public Representation get( final Variant variant ) throws ResourceException
+    public Representation get( final Variant variant )
+        throws ResourceException
     {
         try
         {
@@ -122,7 +124,8 @@ public class SPARQLResource
                 {
                     return new OutputRepresentation( MediaType.TEXT_XML )
                     {
-                        public void write( OutputStream outputStream ) throws IOException
+                        public void write( OutputStream outputStream )
+                            throws IOException
                         {
                             try
                             {
@@ -132,7 +135,9 @@ public class SPARQLResource
                                 out.flush();
                                 TupleQueryResultWriter qrWriter = new SPARQLResultsXMLWriter( new XMLWriter( outputStream )
                                 {
-                                    @Override public void startDocument() throws IOException
+                                    @Override
+                                    public void startDocument()
+                                        throws IOException
                                     {
                                         // Ignore
                                     }
@@ -142,7 +147,8 @@ public class SPARQLResource
                             catch( Exception e )
                             {
                                 throw (IOException) new IOException().initCause( e );
-                            } finally
+                            }
+                            finally
                             {
                                 try
                                 {
@@ -160,7 +166,8 @@ public class SPARQLResource
                 {
                     return new OutputRepresentation( MediaType.APPLICATION_XML )
                     {
-                        public void write( OutputStream outputStream ) throws IOException
+                        public void write( OutputStream outputStream )
+                            throws IOException
                         {
                             try
                             {
@@ -189,7 +196,8 @@ public class SPARQLResource
                 {
                     return new OutputRepresentation( RestApplication.APPLICATION_SPARQL_JSON )
                     {
-                        public void write( OutputStream outputStream ) throws IOException
+                        public void write( OutputStream outputStream )
+                            throws IOException
                         {
                             try
                             {
@@ -370,5 +378,4 @@ public class SPARQLResource
                                                                           + paramValue );
         }
     }
-
 }

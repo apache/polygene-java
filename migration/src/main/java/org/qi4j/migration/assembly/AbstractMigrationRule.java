@@ -14,10 +14,9 @@
 
 package org.qi4j.migration.assembly;
 
-import org.qi4j.entitystore.map.StateStore;
-import org.qi4j.migration.Migrator;
-import org.json.JSONObject;
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.qi4j.entitystore.map.StateStore;
 
 /**
  * Base class for migration rules.
@@ -27,7 +26,7 @@ public class AbstractMigrationRule
     protected String fromVersion;
     protected String toVersion;
 
-    public AbstractMigrationRule( String fromVersion, String toVersion)
+    public AbstractMigrationRule( String fromVersion, String toVersion )
     {
         this.fromVersion = fromVersion;
         this.toVersion = toVersion;

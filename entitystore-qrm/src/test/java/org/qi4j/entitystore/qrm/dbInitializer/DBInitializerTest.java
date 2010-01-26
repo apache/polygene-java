@@ -18,8 +18,8 @@ package org.qi4j.entitystore.qrm.dbInitializer;
 
 import java.util.Properties;
 import org.junit.After;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.qi4j.entitystore.qrm.DerbyDatabaseHandler;
 
 /**
@@ -34,14 +34,13 @@ public final class DBInitializerTest
         derbyDatabaseHandler = new DerbyDatabaseHandler();
     }
 
-
     /**
      * Tests the initializer.
      *
      * @throws Exception Thrown if initialization failed.
      */
     @Test
-    @Ignore( "The entire QRM is buggered.")
+    @Ignore( "The entire QRM is buggered." )
     public void testInitializer()
         throws Exception
     {
@@ -55,7 +54,8 @@ public final class DBInitializerTest
         derbyDatabaseHandler.checkDataInitialization();
     }
 
-    @After public void tearDown()
+    @After
+    public void tearDown()
     {
         if( derbyDatabaseHandler != null )
         {

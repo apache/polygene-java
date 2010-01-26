@@ -18,8 +18,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.entitystore.map.StateStore;
-import org.qi4j.migration.assembly.EntityMigrationOperation;
 import org.qi4j.migration.Migrator;
+import org.qi4j.migration.assembly.EntityMigrationOperation;
 
 /**
  * Rename an Entity type
@@ -36,13 +36,14 @@ public class RenameEntity
         this.toName = toName;
     }
 
-    public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator ) throws JSONException
+    public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
+        throws JSONException
     {
         String type = state.getString( MapEntityStore.JSONKeys.type.name() );
 
         if( type.equals( fromName ) )
         {
-            migrator.changeEntityType(state, toName);
+            migrator.changeEntityType( state, toName );
             return true;
         }
         else
@@ -51,13 +52,14 @@ public class RenameEntity
         }
     }
 
-    public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator ) throws JSONException
+    public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
+        throws JSONException
     {
         String type = state.getString( MapEntityStore.JSONKeys.type.name() );
 
         if( type.equals( toName ) )
         {
-            migrator.changeEntityType(state, fromName);
+            migrator.changeEntityType( state, fromName );
             return true;
         }
         else
@@ -66,9 +68,9 @@ public class RenameEntity
         }
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return "Rename entity " + fromName + " to " + toName;
     }
-
 }

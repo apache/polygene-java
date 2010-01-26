@@ -18,18 +18,19 @@
 
 package org.qi4j.index.reindexer;
 
-import org.qi4j.api.property.Property;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.ConfigurationComposite;
+import org.qi4j.api.property.Property;
 
 public interface ReindexerConfiguration
     extends ConfigurationComposite
 {
-    /** How many EntityStates should be sent to the indexer at a time.
+    /**
+     * How many EntityStates should be sent to the indexer at a time.
      * High value improves performance, but risks of running out of memory.
      *
      * If not specified, the value of 50 will be used.
-     * 
+     *
      * @return the property containing the loadValue.
      */
     @Optional

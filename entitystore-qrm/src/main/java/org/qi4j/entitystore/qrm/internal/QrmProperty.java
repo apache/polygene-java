@@ -16,7 +16,8 @@ public interface QrmProperty
 
     String column();
 
-    public class Default implements QrmProperty
+    public class Default
+        implements QrmProperty
     {
 
         private String _name;
@@ -59,7 +60,6 @@ public interface QrmProperty
             _isIdentity = isIdentity;
         }
 
-
         public String name()
         {
             return _name;
@@ -77,13 +77,12 @@ public interface QrmProperty
 
         public boolean isIdentity()
         {
-            return _isIdentity;            
+            return _isIdentity;
         }
 
         public String column()
         {
             return _column;
         }
-
     }
 }

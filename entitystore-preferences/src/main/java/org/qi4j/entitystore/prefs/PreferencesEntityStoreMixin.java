@@ -14,6 +14,14 @@
 
 package org.qi4j.entitystore.prefs;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,15 +60,6 @@ import org.qi4j.spi.property.ValueType;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.logging.Logger;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
-
 /**
  * Implementation of EntityStore that is backed by the Preferences API.
  *
@@ -69,10 +68,15 @@ import java.util.prefs.Preferences;
 public class PreferencesEntityStoreMixin
     implements Activatable, EntityStore, EntityStoreSPI
 {
-    @This EntityStoreSPI entityStoreSpi;
+    @This
+    EntityStoreSPI entityStoreSpi;
 
-    private @Uses ServiceDescriptor descriptor;
-    private @Structure Application application;
+    private
+    @Uses
+    ServiceDescriptor descriptor;
+    private
+    @Structure
+    Application application;
 
     private Preferences root;
     protected String uuid;
@@ -82,7 +86,8 @@ public class PreferencesEntityStoreMixin
         throws Exception
     {
         root = getApplicationRoot();
-        Logger.getLogger( PreferencesEntityStoreService.class.getName() ).info( "Preferences store:" + root.absolutePath() );
+        Logger.getLogger( PreferencesEntityStoreService.class.getName() )
+            .info( "Preferences store:" + root.absolutePath() );
         uuid = UUID.randomUUID().toString() + "-";
     }
 
@@ -137,7 +142,10 @@ public class PreferencesEntityStoreMixin
         return uow;
     }
 
-    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity, EntityDescriptor entityDescriptor )
+    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
+                                       EntityReference identity,
+                                       EntityDescriptor entityDescriptor
+    )
     {
         return new DefaultEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, identity, entityDescriptor );
     }
@@ -170,7 +178,8 @@ public class PreferencesEntityStoreMixin
             if( !entityDescriptor.state().properties().isEmpty() )
             {
                 Preferences propsPrefs = entityPrefs.node( "properties" );
-                for( PropertyTypeDescriptor propertyDescriptor : entityDescriptor.state().<PropertyTypeDescriptor>properties() )
+                for( PropertyTypeDescriptor propertyDescriptor : entityDescriptor.state()
+                    .<PropertyTypeDescriptor>properties() )
                 {
                     if( propertyDescriptor.qualifiedName().name().equals( "identity" ) )
                     {
@@ -184,19 +193,23 @@ public class PreferencesEntityStoreMixin
                     {
                         if( propertyType.type().name().equals( "java.lang.Long" ) )
                         {
-                            properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getLong( propertyDescriptor.qualifiedName().name(), (Long) propertyDescriptor.initialValue() ) );
+                            properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getLong( propertyDescriptor.qualifiedName().name(), (Long) propertyDescriptor
+                                .initialValue() ) );
                         }
                         else if( propertyType.type().name().equals( "java.lang.Integer" ) )
                         {
-                            properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getInt( propertyDescriptor.qualifiedName().name(), (Integer) propertyDescriptor.initialValue() ) );
+                            properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getInt( propertyDescriptor.qualifiedName().name(), (Integer) propertyDescriptor
+                                .initialValue() ) );
                         }
                         else if( propertyType.type().name().equals( "java.lang.Double" ) )
                         {
-                            properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getDouble( propertyDescriptor.qualifiedName().name(), (Double) propertyDescriptor.initialValue() ) );
+                            properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getDouble( propertyDescriptor
+                                .qualifiedName().name(), (Double) propertyDescriptor.initialValue() ) );
                         }
                         else if( propertyType.type().name().equals( "java.lang.Float" ) )
                         {
-                            properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getFloat( propertyDescriptor.qualifiedName().name(), (Float) propertyDescriptor.initialValue() ) );
+                            properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getFloat( propertyDescriptor.qualifiedName().name(), (Float) propertyDescriptor
+                                .initialValue() ) );
                         }
                         else
                         {
@@ -220,16 +233,19 @@ public class PreferencesEntityStoreMixin
                     }
                     else if( propertyType.isBoolean() )
                     {
-                        properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getBoolean( propertyDescriptor.qualifiedName().name(), (Boolean) propertyDescriptor.initialValue() ) );
-                    } else if (propertyType.isValue())
+                        properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getBoolean( propertyDescriptor.qualifiedName().name(), (Boolean) propertyDescriptor
+                            .initialValue() ) );
+                    }
+                    else if( propertyType.isValue() )
                     {
                         String json = propsPrefs.get( propertyDescriptor.qualifiedName().name(), "null" );
                         JSONTokener tokener = new JSONTokener( json );
                         Object composite = tokener.nextValue();
-                        if (composite.equals(JSONObject.NULL))
+                        if( composite.equals( JSONObject.NULL ) )
                         {
                             properties.put( propertyDescriptor.qualifiedName(), null );
-                        } else
+                        }
+                        else
                         {
                             Object value = propertyType.fromJSON( composite, module );
                             properties.put( propertyDescriptor.qualifiedName(), value );
@@ -237,9 +253,12 @@ public class PreferencesEntityStoreMixin
                     }
                     else if( propertyType.isString() )
                     {
-                        String json = propsPrefs.get( propertyDescriptor.qualifiedName().name(), (String) propertyDescriptor.initialValue() );
-                        if (json == null)
+                        String json = propsPrefs.get( propertyDescriptor.qualifiedName().name(), (String) propertyDescriptor
+                            .initialValue() );
+                        if( json == null )
+                        {
                             properties.put( propertyDescriptor.qualifiedName(), null );
+                        }
                         else
                         {
                             Object value = propertyType.fromJSON( json, module );
@@ -430,7 +449,7 @@ public class PreferencesEntityStoreMixin
                     {
                         propsPrefs.putBoolean( propertyType.qualifiedName().name(), (Boolean) value );
                     }
-                    else if( propertyType.type().isValue())
+                    else if( propertyType.type().isValue() )
                     {
                         JSONStringer json = new JSONStringer();
                         propertyType.type().toJSON( value, json );

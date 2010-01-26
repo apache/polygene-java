@@ -25,5 +25,6 @@ import org.qi4j.api.property.Property;
  */
 public interface HasName
 {
-    @Optional Property<String> name();
+    @Optional
+    Property<String> name();
 }

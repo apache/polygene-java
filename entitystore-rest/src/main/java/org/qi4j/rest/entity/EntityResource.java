@@ -19,7 +19,8 @@ package org.qi4j.rest.entity;
 
 import org.restlet.resource.ServerResource;
 
-public class EntityResource extends ServerResource
+public class EntityResource
+    extends ServerResource
 {
 /*    public static Object toValue( String stringValue, QualifiedName propertyName, TypeName propertyType )
         throws IllegalArgumentException

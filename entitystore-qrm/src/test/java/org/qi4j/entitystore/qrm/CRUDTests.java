@@ -8,9 +8,9 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.qrm.entity.Account;
@@ -22,12 +22,14 @@ import org.qi4j.test.AbstractQi4jTest;
 /**
  * User: alex
  */
-public class CRUDTests extends AbstractQi4jTest
+public class CRUDTests
+    extends AbstractQi4jTest
 {
 
     private DerbyDatabaseHandler dbHandler = null;
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         dbHandler = new DerbyDatabaseHandler();
 
@@ -72,13 +74,14 @@ public class CRUDTests extends AbstractQi4jTest
     }
 
     @Test
-    public void retrieve() throws Exception
+    public void retrieve()
+        throws Exception
     {
         dbHandler.executeUpdate( "insert into account (account_id, version, name, balance) " +
                                  "values ('org.qi4j.entitystore.qrm.entity.Account:23', 0, 'Test account 23', 3909.54)" );
 
-
-        System.err.println( "====================================== retrieve test ======================================" );
+        System.err
+            .println( "====================================== retrieve test ======================================" );
 
         UnitOfWork uow = null;
 
@@ -98,15 +101,16 @@ public class CRUDTests extends AbstractQi4jTest
         {
             uow.discard();
         }
-
     }
 
     @Test
-    public void create() throws Exception
+    public void create()
+        throws Exception
     {
         dbHandler.executeUpdate( "delete from account" );
 
-        System.err.println( "====================================== create test ======================================" );
+        System.err
+            .println( "====================================== create test ======================================" );
 
         UnitOfWork uow = null;
 
@@ -157,15 +161,16 @@ public class CRUDTests extends AbstractQi4jTest
         {
             uow.discard();
         }
-
     }
 
     @Test
-    public void delete() throws Exception
+    public void delete()
+        throws Exception
     {
         dbHandler.executeUpdate( "delete from account" );
 
-        System.err.println( "====================================== delete test ======================================" );
+        System.err
+            .println( "====================================== delete test ======================================" );
 
         UnitOfWork uow = null;
 
@@ -256,15 +261,16 @@ public class CRUDTests extends AbstractQi4jTest
         {
             uow.discard();
         }
-
     }
 
     @Test
-    public void update() throws Exception
+    public void update()
+        throws Exception
     {
         dbHandler.executeUpdate( "delete from account" );
 
-        System.err.println( "====================================== update test ======================================" );
+        System.err
+            .println( "====================================== update test ======================================" );
 
         UnitOfWork uow = null;
 
@@ -346,7 +352,5 @@ public class CRUDTests extends AbstractQi4jTest
         {
             uow.discard();
         }
-
     }
-
 }

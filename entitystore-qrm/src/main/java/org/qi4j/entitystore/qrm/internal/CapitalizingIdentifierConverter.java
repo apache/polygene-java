@@ -20,7 +20,8 @@ import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.entitystore.qrm.IdentifierConverter;
 
-public class CapitalizingIdentifierConverter implements IdentifierConverter
+public class CapitalizingIdentifierConverter
+    implements IdentifierConverter
 {
     public String convertIdentifier( final QualifiedName qualifiedIdentifier )
     {

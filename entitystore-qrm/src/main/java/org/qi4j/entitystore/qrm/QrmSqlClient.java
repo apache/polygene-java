@@ -15,7 +15,6 @@
 package org.qi4j.entitystore.qrm;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
-import static com.ibatis.sqlmap.client.SqlMapClientBuilder.buildSqlMapClient;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
@@ -23,8 +22,10 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
 import org.qi4j.spi.entity.QualifiedIdentity;
-import org.qi4j.spi.entitystore.StateCommitter;
 import org.qi4j.spi.entitystore.EntityStoreException;
+import org.qi4j.spi.entitystore.StateCommitter;
+
+import static com.ibatis.sqlmap.client.SqlMapClientBuilder.*;
 
 public class QrmSqlClient
     implements Serializable, StateCommitter
@@ -127,11 +128,11 @@ public class QrmSqlClient
         client = null;
     }
 
-    public void activate() throws Exception
+    public void activate()
+        throws Exception
     {
         final InputStream configInputStream = new URL( sqlMapConfigUrl ).openStream();
         client = buildSqlMapClient( configInputStream, configProperties );
     }
-
 }
 

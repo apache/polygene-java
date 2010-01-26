@@ -15,14 +15,14 @@ import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
 /**
  * @author Paul Merlin <paul@nosphere.org>
  */
-@Concerns({StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class})
-@Mixins({MapEntityStoreMixin.class, HazelcastEntityStoreMixin.class})
+@Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
+@Mixins( { MapEntityStoreMixin.class, HazelcastEntityStoreMixin.class } )
 public interface HazelcastEntityStoreService
-        extends EntityStore,
-                EntityStateVersions,
-                ServiceComposite,
-                Activatable,
-                LockingAbstractComposite,
-                Configuration
+    extends EntityStore,
+            EntityStateVersions,
+            ServiceComposite,
+            Activatable,
+            LockingAbstractComposite,
+            Configuration
 {
 }

@@ -18,8 +18,8 @@ public class QrmMapping
     {
         this.entityDescriptor = entityDescriptor;
 
-        properties.add( new QrmProperty.Default("updatedOn","timestamp",false) );
-        properties.add( new QrmProperty.Default("createdOn","timestamp",false) );
+        properties.add( new QrmProperty.Default( "updatedOn", "timestamp", false ) );
+        properties.add( new QrmProperty.Default( "createdOn", "timestamp", false ) );
     }
 
     public Iterable<QrmProperty> properties()
@@ -41,7 +41,7 @@ public class QrmMapping
     {
         for( QrmProperty property : properties )
         {
-            if(property.isIdentity())
+            if( property.isIdentity() )
             {
                 return property;
             }
@@ -54,7 +54,7 @@ public class QrmMapping
     {
         for( QrmProperty property : properties )
         {
-            if(property.name().equals( "updatedOn" ))
+            if( property.name().equals( "updatedOn" ) )
             {
                 return property;
             }
@@ -67,7 +67,7 @@ public class QrmMapping
     {
         for( QrmProperty property : properties )
         {
-            if(property.name().equals( "createdOn" ))
+            if( property.name().equals( "createdOn" ) )
             {
                 return property;
             }

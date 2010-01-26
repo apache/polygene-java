@@ -14,8 +14,6 @@
 
 package org.qi4j.rest;
 
-import static org.qi4j.api.common.Visibility.application;
-import static org.qi4j.api.common.Visibility.layer;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -25,13 +23,16 @@ import org.qi4j.index.rdf.query.RdfQueryService;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
+import static org.qi4j.api.common.Visibility.*;
+
 /**
  * JAVADOC
  */
 public class DomainAssembler
     implements Assembler
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addServices(
             MemoryEntityStoreService.class,

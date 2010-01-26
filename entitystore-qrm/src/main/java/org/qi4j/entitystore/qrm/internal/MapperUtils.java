@@ -1,7 +1,7 @@
 package org.qi4j.entitystore.qrm.internal;
 
-import org.qi4j.entitystore.qrm.QrmEntityStoreDescriptor;
 import java.util.Map;
+import org.qi4j.entitystore.qrm.QrmEntityStoreDescriptor;
 
 /**
  * User: alex
@@ -30,5 +30,4 @@ public class MapperUtils
         // TODO: implement;
         return propName;
     }
-
 }

@@ -16,14 +16,14 @@ package org.qi4j.rest;
 
 import java.util.Collections;
 import org.restlet.Context;
-import org.restlet.Restlet;
 import org.restlet.Request;
 import org.restlet.Response;
-import org.restlet.service.MetadataService;
+import org.restlet.Restlet;
 import org.restlet.data.MediaType;
 import org.restlet.data.Metadata;
 import org.restlet.data.Preference;
 import org.restlet.routing.Filter;
+import org.restlet.service.MetadataService;
 
 /**
  * Check the extension used and set the corresponding media type
@@ -63,7 +63,8 @@ public class ExtensionMediaTypeFilter
             Metadata metadata = metadataService.getMetadata( extensions );
             if( metadata != null && metadata instanceof MediaType )
             {
-                request.getClientInfo().setAcceptedMediaTypes( Collections.singletonList( new Preference<MediaType>( (MediaType) metadata ) ) );
+                request.getClientInfo()
+                    .setAcceptedMediaTypes( Collections.singletonList( new Preference<MediaType>( (MediaType) metadata ) ) );
                 String path = request.getResourceRef().getPath();
                 path = path.substring( 0, path.length() - extensions.length() - 1 );
                 request.getResourceRef().setPath( path );

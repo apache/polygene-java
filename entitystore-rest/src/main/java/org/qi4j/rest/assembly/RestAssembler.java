@@ -30,11 +30,11 @@ public class RestAssembler
 {
     private Visibility visibility;
 
-    public RestAssembler( )
+    public RestAssembler()
     {
         this( Visibility.application );
     }
-    
+
     public RestAssembler( Visibility visibility )
     {
         this.visibility = visibility;

@@ -14,12 +14,12 @@
 
 package org.qi4j.migration.moved;
 
-import org.qi4j.api.property.Property;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.ManyAssociation;
-import org.qi4j.api.entity.association.Association;
-import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.association.Association;
+import org.qi4j.api.entity.association.ManyAssociation;
+import org.qi4j.api.property.Property;
 
 /**
  * Moved from base package to here

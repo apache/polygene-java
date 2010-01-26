@@ -27,15 +27,20 @@ import org.qi4j.api.property.Property;
 public interface TestEntity
     extends Named, EntityComposite
 {
-    @UseDefaults Property<Integer> age();
+    @UseDefaults
+    Property<Integer> age();
 
-    @Optional Property<TestValue> value();
+    @Optional
+    Property<TestValue> value();
 
-    @Optional Property<String> unsetName();
+    @Optional
+    Property<String> unsetName();
 
-    @Optional Association<TestEntity> association();
+    @Optional
+    Association<TestEntity> association();
 
-    @Optional Association<TestEntity> unsetAssociation();
+    @Optional
+    Association<TestEntity> unsetAssociation();
 
     ManyAssociation<TestEntity> manyAssociation();
 

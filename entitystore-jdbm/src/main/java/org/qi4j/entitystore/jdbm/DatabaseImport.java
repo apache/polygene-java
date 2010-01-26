@@ -14,7 +14,6 @@
 
 package org.qi4j.entitystore.jdbm;
 
-import java.io.Writer;
 import java.io.IOException;
 import java.io.Reader;
 
@@ -27,7 +26,9 @@ public interface DatabaseImport
      * Import data from the Reader, with one line per object, in JSON format.
      *
      * @param in reader
+     *
      * @throws java.io.IOException
      */
-    void importFrom( Reader in) throws IOException;
+    void importFrom( Reader in )
+        throws IOException;
 }

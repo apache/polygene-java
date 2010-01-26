@@ -29,7 +29,8 @@ import org.qi4j.rest.assembly.RestAssembler;
 public class MainAssembler
     implements ApplicationAssembler
 {
-    public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
+    public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
+        throws AssemblyException
     {
         return applicationFactory.newApplicationAssembly( new Assembler[][][]
             {

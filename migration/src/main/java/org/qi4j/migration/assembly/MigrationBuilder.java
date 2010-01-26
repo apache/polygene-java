@@ -33,7 +33,7 @@ public class MigrationBuilder
 
     public VersionMigrationBuilder toVersion( String toVersion )
     {
-        return new VersionMigrationBuilder( this, fromVersion, toVersion);
+        return new VersionMigrationBuilder( this, fromVersion, toVersion );
     }
 
     public MigrationRules<EntityMigrationRule> getEntityRules()

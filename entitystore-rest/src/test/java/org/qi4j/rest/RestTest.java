@@ -28,11 +28,6 @@ import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
-import static org.hamcrest.CoreMatchers.anyOf;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -55,8 +50,12 @@ import org.qi4j.spi.structure.ApplicationModelSPI;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
 @Ignore( "Need to rebuild tests after larger changes to implementation." )
-public class RestTest extends AbstractQi4jTest
+public class RestTest
+    extends AbstractQi4jTest
 {
 
     protected ApplicationModelSPI newApplication()
@@ -88,7 +87,8 @@ public class RestTest extends AbstractQi4jTest
 
     @Override
     @Before
-    public void setUp() throws Exception
+    public void setUp()
+        throws Exception
     {
         super.setUp();
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
@@ -253,7 +253,8 @@ public class RestTest extends AbstractQi4jTest
         }
     }
 
-    public interface PersonEntity extends EntityComposite, Person
+    public interface PersonEntity
+        extends EntityComposite, Person
     {
     }
 
@@ -263,6 +264,7 @@ public class RestTest extends AbstractQi4jTest
 
         Property<String> lastname();
 
-        @Optional Association<Person> mother();
+        @Optional
+        Association<Person> mother();
     }
 }

@@ -86,6 +86,7 @@ public class MigrationRules<T extends AbstractMigrationRule>
      * Find highest version below the given to-version for which there are rules registered.
      *
      * @param toVersion The ending toVersion in the search.
+     *
      * @return The highest version below the given version for which there are rules registered.
      */
     private String findHighestToVersion( String toVersion )

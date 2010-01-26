@@ -7,9 +7,8 @@ import org.qi4j.api.property.Property;
  * @author Paul Merlin <paul@nosphere.org>
  */
 public interface HazelcastConfiguration
-        extends ConfigurationComposite
+    extends ConfigurationComposite
 {
 
     Property<String> mapName();
-
 }

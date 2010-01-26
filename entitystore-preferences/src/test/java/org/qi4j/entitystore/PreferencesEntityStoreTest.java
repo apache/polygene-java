@@ -27,7 +27,8 @@ import org.qi4j.test.entity.AbstractEntityStoreTest;
 public class PreferencesEntityStoreTest
     extends AbstractEntityStoreTest
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.layerAssembly().applicationAssembly().setName( "PreferencesTest" );
 

@@ -36,12 +36,15 @@ public class RdfMemoryStoreAssembler
         this( null, Visibility.application, Visibility.module );
     }
 
-    public RdfMemoryStoreAssembler(NamedQueries namedQueries )
+    public RdfMemoryStoreAssembler( NamedQueries namedQueries )
     {
         this( namedQueries, Visibility.application, Visibility.module );
     }
 
-    public RdfMemoryStoreAssembler( NamedQueries namedQueries, Visibility indexingVisibility, Visibility repositoryVisibility )
+    public RdfMemoryStoreAssembler( NamedQueries namedQueries,
+                                    Visibility indexingVisibility,
+                                    Visibility repositoryVisibility
+    )
     {
         if( namedQueries == null )
         {

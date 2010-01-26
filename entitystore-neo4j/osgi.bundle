@@ -3,12 +3,14 @@ Ignore-Package: com_cenqua_clover, sun.misc
 Import-Package: javax.transaction,\
                 javax.transaction.xa, \
                 javax.xml.parsers, \
+                org.neo4j.commons.iterator, \
                 org.apache.lucene.analysis, \
                 org.apache.lucene.document, \
                 org.apache.lucene.index, \
                 org.apache.lucene.queryParser, \
                 org.apache.lucene.search, \
                 org.apache.lucene.store, \
+                org.apache.lucene.util, \
                 org.json, \
                 org.qi4j.api.composite, \
                 org.qi4j.api.common, \
@@ -38,6 +40,6 @@ Import-Package: javax.transaction,\
                 org.w3c.dom, \
                 org.xml.sax
 
-Export-Package: org.qi4j.entitystore.neo4j, org.qi4j.entitystore.neo4j.state
+Export-Package: org.qi4j.entitystore.neo4j
 
 Embed-Dependency: *;groupId=org.neo4j

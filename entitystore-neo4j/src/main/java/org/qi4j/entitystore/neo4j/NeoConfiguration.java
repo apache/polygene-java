@@ -19,10 +19,11 @@
 package org.qi4j.entitystore.neo4j;
 
 import org.qi4j.api.common.Optional;
-import org.qi4j.api.property.Property;
 import org.qi4j.api.configuration.ConfigurationComposite;
+import org.qi4j.api.property.Property;
 
-public interface NeoConfiguration extends ConfigurationComposite
+public interface NeoConfiguration
+    extends ConfigurationComposite
 {
     @Optional
     Property<String> path();

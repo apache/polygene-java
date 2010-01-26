@@ -14,12 +14,11 @@
 
 package org.qi4j.rest.client;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -41,6 +40,8 @@ import org.restlet.Client;
 import org.restlet.Uniform;
 import org.restlet.data.Protocol;
 
+import static org.hamcrest.CoreMatchers.*;
+
 /**
  * JAVADOC
  */
@@ -55,9 +56,10 @@ public class SPARQLEntityFinderTest
         module.addEntities( TestEntity.class, TestEntity2.class );
         ModuleAssembly store = module.layerAssembly().moduleAssembly( "REST Store/Finder/Registry" );
         store.addObjects( EntityStateSerializer.class, EntityStateParser.class, EntityTypeSerializer.class, EntityTypeParser.class );
-        store.addEntities( RESTEntityStoreConfiguration.class, SPARQLEntityFinderConfiguration.class);
+        store.addEntities( RESTEntityStoreConfiguration.class, SPARQLEntityFinderConfiguration.class );
         store.addServices( MemoryEntityStoreService.class );
-        store.addServices( RESTEntityStoreService.class, SPARQLEntityFinderService.class, RdfQueryParserFactory.class ).visibleIn( Visibility.layer );
+        store.addServices( RESTEntityStoreService.class, SPARQLEntityFinderService.class, RdfQueryParserFactory.class )
+            .visibleIn( Visibility.layer );
         store.importServices( Uniform.class );
         try
         {
@@ -73,7 +75,8 @@ public class SPARQLEntityFinderTest
 
     @Override
     @Before
-    public void setUp() throws Exception
+    public void setUp()
+        throws Exception
     {
         server = new Main().application();
 
@@ -82,7 +85,8 @@ public class SPARQLEntityFinderTest
 
     @Override
     @After
-    public void tearDown() throws Exception
+    public void tearDown()
+        throws Exception
     {
         super.tearDown();
 

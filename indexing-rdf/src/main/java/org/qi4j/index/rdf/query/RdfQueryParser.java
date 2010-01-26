@@ -24,9 +24,9 @@ import org.qi4j.api.query.grammar.OrderBy;
 public interface RdfQueryParser
 {
     String getQuery( String resultType,
-                            BooleanExpression whereClause,
-                            OrderBy[] orderBySegments,
-                            Integer firstResult,
-                            Integer maxResults
+                     BooleanExpression whereClause,
+                     OrderBy[] orderBySegments,
+                     Integer firstResult,
+                     Integer maxResults
     );
 }

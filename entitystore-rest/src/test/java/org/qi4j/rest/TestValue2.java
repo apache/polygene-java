@@ -24,5 +24,6 @@ import org.qi4j.api.value.ValueComposite;
 public interface TestValue2
     extends ValueComposite
 {
-    @UseDefaults Property<String> string();
+    @UseDefaults
+    Property<String> string();
 }

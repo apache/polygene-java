@@ -31,7 +31,8 @@ import org.restlet.resource.ResourceException;
 /**
  * JAVADOC
  */
-public class Qi4jServiceResource extends Resource
+public class Qi4jServiceResource
+    extends Resource
 {
     public Qi4jServiceResource( @Uses Context context, @Uses Request request, @Uses Response response )
     {
@@ -39,10 +40,11 @@ public class Qi4jServiceResource extends Resource
 
         getVariants().add( new Variant( MediaType.TEXT_HTML ) );
         getVariants().add( new Variant( MediaType.APPLICATION_ATOMPUB_SERVICE ) );
-
     }
 
-    @Override public Representation represent( Variant variant ) throws ResourceException
+    @Override
+    public Representation represent( Variant variant )
+        throws ResourceException
     {
         Service service = new Service( getContext().getServerDispatcher() );
         Workspace workspace = new Workspace( service, "Qi4j" );
@@ -53,7 +55,8 @@ public class Qi4jServiceResource extends Resource
         Collection entities = new Collection( workspace, "Entities", root.clone().addSegment( "entity" ).toString() );
         workspace.getCollections().add( entities );
 
-        Collection entityTypes = new Collection( workspace, "Entity types", root.clone().addSegment( "entitytypes" ).toString() );
+        Collection entityTypes = new Collection( workspace, "Entity types", root.clone()
+            .addSegment( "entitytypes" ).toString() );
         workspace.getCollections().add( entityTypes );
 
         service.setMediaType( MediaType.APPLICATION_ATOMPUB_SERVICE );

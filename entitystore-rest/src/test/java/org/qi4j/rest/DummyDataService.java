@@ -36,7 +36,8 @@ public interface DummyDataService
         @Structure
         UnitOfWorkFactory uowf;
 
-        public void activate() throws Exception
+        public void activate()
+            throws Exception
         {
             UnitOfWork unitOfWork = uowf.newUnitOfWork();
             try
@@ -74,10 +75,10 @@ public interface DummyDataService
                 unitOfWork.discard();
                 throw e;
             }
-
         }
 
-        public void passivate() throws Exception
+        public void passivate()
+            throws Exception
         {
         }
     }

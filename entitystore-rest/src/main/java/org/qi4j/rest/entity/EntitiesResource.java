@@ -26,7 +26,6 @@ import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.MediaType;
-import org.restlet.data.Method;
 import org.restlet.data.Status;
 import org.restlet.ext.atom.Entry;
 import org.restlet.ext.atom.Feed;
@@ -47,10 +46,13 @@ import org.w3c.dom.Element;
  * <p/>
  * Mapped to /entity
  */
-public class EntitiesResource extends ServerResource
+public class EntitiesResource
+    extends ServerResource
 {
-    @Service private EntityFinder entityFinder;
-    @Service private EntityStore entityStore;
+    @Service
+    private EntityFinder entityFinder;
+    @Service
+    private EntityStore entityStore;
 
     public EntitiesResource()
     {
@@ -58,16 +60,17 @@ public class EntitiesResource extends ServerResource
 
         // Define the supported variants.
         getVariants().addAll( Arrays.asList(
-            new Variant(MediaType.TEXT_HTML),
-            new Variant(MediaType.APPLICATION_RDF_XML),
-            new Variant(MediaType.APPLICATION_JAVA_OBJECT),
-            new Variant(MediaType.APPLICATION_ATOM )) );
+            new Variant( MediaType.TEXT_HTML ),
+            new Variant( MediaType.APPLICATION_RDF_XML ),
+            new Variant( MediaType.APPLICATION_JAVA_OBJECT ),
+            new Variant( MediaType.APPLICATION_ATOM ) ) );
 
         setNegotiated( true );
     }
 
     @Override
-    protected Representation get( Variant variant ) throws ResourceException
+    protected Representation get( Variant variant )
+        throws ResourceException
     {
         // Generate the right representation according to its media type.
         if( MediaType.TEXT_XML.equals( variant.getMediaType() ) )
@@ -130,7 +133,8 @@ public class EntitiesResource extends ServerResource
 
             WriterRepresentation representation = new WriterRepresentation( MediaType.APPLICATION_RDF_XML )
             {
-                public void write( Writer writer ) throws IOException
+                public void write( Writer writer )
+                    throws IOException
                 {
                     PrintWriter out = new PrintWriter( writer );
                     out.println( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -141,7 +145,8 @@ public class EntitiesResource extends ServerResource
                                  "\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">" );
                     for( EntityReference qualifiedIdentity : query )
                     {
-                        out.println( "<qi4j:entity rdf:about=\"" + getRequest().getResourceRef().getPath() + "/" + qualifiedIdentity.identity() + ".rdf\"/>" );
+                        out.println( "<qi4j:entity rdf:about=\"" + getRequest().getResourceRef()
+                            .getPath() + "/" + qualifiedIdentity.identity() + ".rdf\"/>" );
                     }
 
                     out.println( "</rdf:RDF>" );
@@ -166,14 +171,17 @@ public class EntitiesResource extends ServerResource
             final Iterable<EntityReference> query = entityFinder.findEntities( Entity.class.getName(), null, null, null, null );
             Representation representation = new WriterRepresentation( MediaType.TEXT_HTML )
             {
-                public void write( Writer buf ) throws IOException
+                public void write( Writer buf )
+                    throws IOException
                 {
                     PrintWriter out = new PrintWriter( buf );
                     out.println( "<html><head><title>All entities</title</head><body><h1>All entities</h1><ul>" );
 
                     for( EntityReference entity : query )
                     {
-                        out.println( "<li><a href=\"" + getRequest().getResourceRef().clone().addSegment( "/" + entity.identity() + ".html" ) + "\">" + entity.identity() + "</a></li>" );
+                        out.println( "<li><a href=\"" + getRequest().getResourceRef()
+                            .clone()
+                            .addSegment( "/" + entity.identity() + ".html" ) + "\">" + entity.identity() + "</a></li>" );
                     }
                     out.println( "</ul></body></html>" );
                 }
@@ -187,7 +195,8 @@ public class EntitiesResource extends ServerResource
         }
     }
 
-    private Representation representAtom() throws ResourceException
+    private Representation representAtom()
+        throws ResourceException
     {
         try
         {
@@ -214,7 +223,8 @@ public class EntitiesResource extends ServerResource
     }
 
     @Override
-    protected Representation post( Representation entity, Variant variant ) throws ResourceException
+    protected Representation post( Representation entity, Variant variant )
+        throws ResourceException
     {
         try
         {

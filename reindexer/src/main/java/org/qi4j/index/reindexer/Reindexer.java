@@ -18,8 +18,8 @@
 
 package org.qi4j.index.reindexer;
 
-/** Service to re-index all visible EntityStores against all visible StateChangeListeners (i.e. Indexers).
- *
+/**
+ * Service to re-index all visible EntityStores against all visible StateChangeListeners (i.e. Indexers).
  */
 public interface Reindexer
 {

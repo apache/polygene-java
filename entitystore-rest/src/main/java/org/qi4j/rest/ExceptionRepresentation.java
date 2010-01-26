@@ -18,7 +18,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import org.restlet.representation.StringRepresentation;
 
-public class ExceptionRepresentation extends StringRepresentation
+public class ExceptionRepresentation
+    extends StringRepresentation
 {
     public ExceptionRepresentation( Throwable e )
     {

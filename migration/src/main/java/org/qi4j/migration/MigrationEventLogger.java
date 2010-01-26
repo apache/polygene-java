@@ -14,8 +14,8 @@
 
 package org.qi4j.migration;
 
-import java.util.logging.Logger;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 /**
  * MigrationEvents implementation that logs the events.
@@ -25,54 +25,53 @@ public class MigrationEventLogger
 {
     protected Logger logger = Logger.getLogger( getClass().getName() );
 
-
     public void propertyAdded( String entity, String name, String value )
     {
-        logger.info( "Added property "+name+" with value "+value+" in "+entity );
+        logger.info( "Added property " + name + " with value " + value + " in " + entity );
     }
 
     public void propertyRemoved( String entity, String name )
     {
-        logger.info( "Removed property "+name+" in "+entity );
+        logger.info( "Removed property " + name + " in " + entity );
     }
 
     public void propertyRenamed( String entity, String from, String to )
     {
-        logger.info( "Renamed property from "+from+" to "+to+" in "+entity );
+        logger.info( "Renamed property from " + from + " to " + to + " in " + entity );
     }
 
     public void associationAdded( String entity, String name, String value )
     {
-        logger.info( "Added association "+name+" with value "+value+" in "+entity );
+        logger.info( "Added association " + name + " with value " + value + " in " + entity );
     }
 
     public void associationRemoved( String entity, String name )
     {
-        logger.info( "Removed association "+name+" in "+entity );
+        logger.info( "Removed association " + name + " in " + entity );
     }
 
     public void associationRenamed( String entity, String from, String to )
     {
-        logger.info( "Renamed association from "+from+" to "+to+" in "+entity );
+        logger.info( "Renamed association from " + from + " to " + to + " in " + entity );
     }
 
     public void manyAssociationAdded( String entity, String name, String... value )
     {
-        logger.info( "Added many-association "+name+" with values "+ Arrays.asList( value )+" in "+entity );
+        logger.info( "Added many-association " + name + " with values " + Arrays.asList( value ) + " in " + entity );
     }
 
     public void manyAssociationRemoved( String entity, String name )
     {
-        logger.info( "Removed many-association "+name+" in "+entity );
+        logger.info( "Removed many-association " + name + " in " + entity );
     }
 
     public void manyAssociationRenamed( String entity, String from, String to )
     {
-        logger.info( "Renamed many-association from "+from+" to "+to+" in "+entity );
+        logger.info( "Renamed many-association from " + from + " to " + to + " in " + entity );
     }
 
     public void entityTypeChanged( String entity, String newEntityType )
     {
-        logger.info( "Changed entitytype to "+newEntityType+" in "+entity );
+        logger.info( "Changed entitytype to " + newEntityType + " in " + entity );
     }
 }

@@ -16,6 +16,7 @@ package org.qi4j.entitystore.qrm.entity;
 
 import org.qi4j.api.entity.EntityComposite;
 
-public interface AccountComposite extends EntityComposite, Account
+public interface AccountComposite
+    extends EntityComposite, Account
 {
 }
