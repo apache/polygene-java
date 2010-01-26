@@ -91,7 +91,8 @@ public final class LayerAssemblyImpl
         return this;
     }
 
-    public void visit( AssemblyVisitor visitor ) throws AssemblyException
+    public void visit( AssemblyVisitor visitor )
+        throws AssemblyException
     {
         visitor.visitLayer( this );
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )

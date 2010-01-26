@@ -18,12 +18,12 @@
 
 package org.qi4j.api.util;
 
+import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-import java.text.ParseException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.lang.reflect.Type;
 
 public final class DateFunctions
 {
@@ -57,7 +57,6 @@ public final class DateFunctions
         }
         return false;
     }
-
 
     public static Date fromString( String stringDate )
     {

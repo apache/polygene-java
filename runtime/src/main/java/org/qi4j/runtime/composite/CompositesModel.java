@@ -37,7 +37,6 @@ public class CompositesModel
         this.compositeModels = compositeModels;
     }
 
-
     public void visitModel( ModelVisitor modelVisitor )
     {
         for( TransientModel transientModel : compositeModels )
@@ -88,7 +87,6 @@ public class CompositesModel
                     }
                 }
             }
-
         }
 
         return foundModel;

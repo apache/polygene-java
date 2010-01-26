@@ -17,7 +17,8 @@ package org.qi4j.bootstrap;
 /**
  * JAVADOC
  */
-public class InjectionException extends RuntimeException
+public class InjectionException
+    extends RuntimeException
 {
     public InjectionException( String s )
     {

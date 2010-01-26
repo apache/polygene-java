@@ -14,22 +14,21 @@
 
 package org.qi4j.runtime.composite;
 
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.Set;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.bootstrap.BindingException;
+import org.qi4j.runtime.model.Binder;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.property.AbstractPropertiesModel;
 import org.qi4j.runtime.property.AbstractPropertyModel;
 import org.qi4j.runtime.property.PropertiesInstance;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.property.PropertyDescriptor;
-
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.Set;
 
 /**
  * Base model for Composite state
@@ -87,7 +86,8 @@ public abstract class AbstractStateModel<T extends AbstractPropertiesModel>
         return propertiesModel.properties();
     }
 
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         propertiesModel.bind( resolution );
     }

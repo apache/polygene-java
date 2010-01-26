@@ -36,17 +36,18 @@ public class CompositeModelResolverTest
     {
         TransientBuilderFactory cbf = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
                 module.addTransients( TestComposite1.class );
             }
         }.transientBuilderFactory();
 
-
         Assert.assertEquals( "ok", cbf.newTransientBuilder( TestComposite1.class ).newInstance().testB() );
     }
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
     }
 
@@ -81,7 +82,6 @@ public class CompositeModelResolverTest
                 testA.test();
             }
 
-
             public String testB()
             {
                 return testA.test();
@@ -104,7 +104,6 @@ public class CompositeModelResolverTest
                 this.testD = testD;
                 testD.testD();
             }
-
 
             public String testC()
             {
@@ -129,7 +128,6 @@ public class CompositeModelResolverTest
                 testC.testC();
             }
 
-
             public String testD()
             {
                 return testC.testC();
@@ -137,7 +135,8 @@ public class CompositeModelResolverTest
         }
     }
 
-    private static interface TestComposite1 extends TransientComposite, TestA, TestB
+    private static interface TestComposite1
+        extends TransientComposite, TestA, TestB
     {
     }
 

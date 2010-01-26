@@ -55,12 +55,16 @@ public final class MetaInfoDeclaration
             if( metaInfo != null )
             {
                 Class<?> mixinType = entry.getKey();
-                return metaInfo.withAnnotations( mixinType ).withAnnotations( accessor ).withAnnotations( accessor.getReturnType() );
+                return metaInfo.withAnnotations( mixinType )
+                    .withAnnotations( accessor )
+                    .withAnnotations( accessor.getReturnType() );
             }
         }
         // TODO is this code reached at all??
         Class<?> declaringType = accessor.getDeclaringClass();
-        return new MetaInfo().withAnnotations( declaringType ).withAnnotations( accessor ).withAnnotations( accessor.getReturnType() );
+        return new MetaInfo().withAnnotations( declaringType )
+            .withAnnotations( accessor )
+            .withAnnotations( accessor.getReturnType() );
     }
 
     public Object getInitialValue( Method accessor )
@@ -101,7 +105,8 @@ public final class MetaInfoDeclaration
             this.mixinType = mixinType;
         }
 
-        public Object invoke( Object o, Method method, Object[] objects ) throws Throwable
+        public Object invoke( Object o, Method method, Object[] objects )
+            throws Throwable
         {
             final MethodInfo methodInfo = new MethodInfo( metaInfo );
             methodInfos.put( method, methodInfo );
@@ -147,6 +152,7 @@ public final class MetaInfoDeclaration
         }
 
         // DSL Interface
+
         public T declareDefaults()
         {
             return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, this ) );

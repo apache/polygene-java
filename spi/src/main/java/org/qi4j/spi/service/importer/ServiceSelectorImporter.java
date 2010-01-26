@@ -24,7 +24,6 @@ import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.ServiceSelector;
 
-
 /**
  * If several services are available with a given type, and you want to constrain
  * the current module to use a specific one, then use this importer. Specify a
@@ -37,9 +36,11 @@ import org.qi4j.api.service.ServiceSelector;
 public final class ServiceSelectorImporter
     implements ServiceImporter
 {
-    @Structure private ServiceFinder locator;
+    @Structure
+    private ServiceFinder locator;
 
-    public Object importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
+    public Object importService( ImportedServiceDescriptor serviceDescriptor )
+        throws ServiceImporterException
     {
         ServiceSelector.Selector selector = serviceDescriptor.metaInfo( ServiceSelector.Selector.class );
         Class serviceType = serviceDescriptor.type();

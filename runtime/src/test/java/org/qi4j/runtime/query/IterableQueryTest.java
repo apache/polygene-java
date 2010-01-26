@@ -17,15 +17,16 @@
  */
 package org.qi4j.runtime.query;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.query.QueryExpressions;
-import static org.qi4j.api.query.QueryExpressions.*;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
@@ -49,9 +50,8 @@ import org.qi4j.runtime.query.model.values.ContactsValue;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.test.EntityTestAssembler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import static org.junit.Assert.*;
+import static org.qi4j.api.query.QueryExpressions.*;
 
 public class IterableQueryTest
 {
@@ -60,18 +60,20 @@ public class IterableQueryTest
     private QueryBuilderFactory qbf;
 
     @Before
-    public void setUp() throws UnitOfWorkCompletionException
+    public void setUp()
+        throws UnitOfWorkCompletionException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
                 module.addEntities(
-                        MaleEntity.class,
-                        FemaleEntity.class,
-                        CityEntity.class,
-                        DomainEntity.class,
-                        PetEntity.class
+                    MaleEntity.class,
+                    FemaleEntity.class,
+                    CityEntity.class,
+                    DomainEntity.class,
+                    PetEntity.class
                 );
                 module.addValues( ContactsValue.class, ContactValue.class );
                 new EntityTestAssembler().assemble( module );
@@ -86,60 +88,62 @@ public class IterableQueryTest
     @After
     public void tearDown()
     {
-        if (uow != null)
+        if( uow != null )
         {
             uow.discard();
         }
     }
 
     private static void verifyUnorderedResults( final Iterable<? extends Nameable> results,
-                                                final String... names )
+                                                final String... names
+    )
     {
         final List<String> expected = new ArrayList<String>( Arrays.asList( names ) );
 
-        for (Nameable entity : results)
+        for( Nameable entity : results )
         {
             String name = entity.name().get();
             assertTrue( name + " returned but not expected", expected.remove( name ) );
         }
 
-        for (String notReturned : expected)
+        for( String notReturned : expected )
         {
             fail( notReturned + " was expected but not returned" );
         }
-
     }
 
     private static void verifyOrderedResults( final Iterable<? extends Nameable> results,
-                                              final String... names )
+                                              final String... names
+    )
     {
         final List<String> expected = new ArrayList<String>( Arrays.asList( names ) );
 
-        for (Nameable entity : results)
+        for( Nameable entity : results )
         {
             String firstExpected = null;
-            if (expected.size() > 0)
+            if( expected.size() > 0 )
             {
                 firstExpected = expected.get( 0 );
             }
-            if (firstExpected == null)
+            if( firstExpected == null )
             {
                 fail( entity.name().get() + " returned but not expected" );
-            } else if (!firstExpected.equals( entity.name().get() ))
+            }
+            else if( !firstExpected.equals( entity.name().get() ) )
             {
                 fail( entity.name().get() + " is not in the expected order" );
             }
             expected.remove( 0 );
         }
-        for (String notReturned : expected)
+        for( String notReturned : expected )
         {
             fail( notReturned + " was expected but not returned" );
         }
-
     }
 
     @Test
-    public void givenQueryWhenExecutedReturnAll() throws EntityFinderException
+    public void givenQueryWhenExecutedReturnAll()
+        throws EntityFinderException
     {
         final QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         final Query<Person> query = qb.newQuery( Network.persons() );
@@ -148,217 +152,235 @@ public class IterableQueryTest
     }
 
     @Test
-    public void givenEqQueryWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenEqQueryWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Domain> qb = qbf.newQueryBuilder( Domain.class );
         final Nameable nameable = templateFor( Nameable.class );
         final Query<Domain> query = qb.where(
-                eq( nameable.name(), "Gaming" )
+            eq( nameable.name(), "Gaming" )
         ).newQuery( Network.domains() );
         verifyUnorderedResults( query, "Gaming" );
     }
 
     @Test
-    public void givenMixinTypeQueryWhenExecutedReturnAll() throws EntityFinderException
+    public void givenMixinTypeQueryWhenExecutedReturnAll()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         Query<Nameable> query = qb.newQuery( Network.nameables() );
         verifyUnorderedResults(
-                query,
-                "Joe Doe", "Ann Doe", "Jack Doe", "Vivian Smith",
-                "Penang", "Kuala Lumpur",
-                "Cooking", "Gaming", "Programming", "Cars"
+            query,
+            "Joe Doe", "Ann Doe", "Jack Doe", "Vivian Smith",
+            "Penang", "Kuala Lumpur",
+            "Cooking", "Gaming", "Programming", "Cars"
         );
     }
 
     @Test
-    public void givenEqQueryOnValueWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenEqQueryOnValueWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person personTemplate = templateFor( Person.class );
         City placeOfBirth = personTemplate.placeOfBirth().get();
         Query<Person> query = qb.where(
-                eq( placeOfBirth.name(), "Kuala Lumpur" )
+            eq( placeOfBirth.name(), "Kuala Lumpur" )
         ).newQuery( Network.persons() );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Vivian Smith" );
     }
 
     @Test
-    public void givenEqQueryOnAssociationAndPropertyWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenEqQueryOnAssociationAndPropertyWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = qb.where(
-                eq( person.mother().get().placeOfBirth().get().name(), "Kuala Lumpur" )
+            eq( person.mother().get().placeOfBirth().get().name(), "Kuala Lumpur" )
         ).newQuery( Network.persons() );
         verifyUnorderedResults( query, "Joe Doe" );
     }
 
     @Test
-    public void givenEqQueryOnAssociationWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenEqQueryOnAssociationWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         City kl = uow.get( City.class, "kualalumpur" );
         Query<Person> query = qb.where(
-                eq( person.mother().get().placeOfBirth(), kl )
+            eq( person.mother().get().placeOfBirth(), kl )
         ).newQuery( Network.persons() );
         verifyUnorderedResults( query, "Joe Doe" );
     }
 
     @Test
-    public void givenGeQueryWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenGeQueryWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = qb.where(
-                ge( person.yearOfBirth(), 1973 )
+            ge( person.yearOfBirth(), 1973 )
         ).newQuery( Network.persons() );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Vivian Smith" );
     }
 
     @Test
-    public void givenAndQueryWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenAndQueryWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         Person person = templateFor( Person.class );
         Query<Nameable> query = qb.where(
-                and(
-                        ge( person.yearOfBirth(), 1900 ),
-                        eq( person.placeOfBirth().get().name(), "Penang" )
-                )
+            and(
+                ge( person.yearOfBirth(), 1900 ),
+                eq( person.placeOfBirth().get().name(), "Penang" )
+            )
         ).newQuery( Network.nameables() );
         verifyUnorderedResults( query, "Jack Doe" );
     }
 
     @Test
-    public void givenMultipleAndQueryWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenMultipleAndQueryWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         Person person = templateFor( Person.class );
         Query<Nameable> query = qb.where(
-                and(
-                        ge( person.yearOfBirth(), 1900 ),
-                        lt( person.yearOfBirth(), 2000 ),
-                        eq( person.placeOfBirth().get().name(), "Penang" )
-                )
+            and(
+                ge( person.yearOfBirth(), 1900 ),
+                lt( person.yearOfBirth(), 2000 ),
+                eq( person.placeOfBirth().get().name(), "Penang" )
+            )
         ).newQuery( Network.nameables() );
         verifyUnorderedResults( query, "Jack Doe" );
     }
 
     @Test
-    public void givenOrQueryWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenOrQueryWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = qb.where(
-                or(
-                        eq( person.yearOfBirth(), 1970 ),
-                        eq( person.yearOfBirth(), 1975 )
-                )
+            or(
+                eq( person.yearOfBirth(), 1970 ),
+                eq( person.yearOfBirth(), 1975 )
+            )
         ).newQuery( Network.persons() );
         verifyUnorderedResults( query, "Jack Doe", "Ann Doe" );
     }
 
     @Test
-    public void givenMultipleOrQueryWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenMultipleOrQueryWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = qb.where(
-                or(
-                        eq( person.yearOfBirth(), 1970 ),
-                        eq( person.yearOfBirth(), 1975 ),
-                        eq( person.yearOfBirth(), 1990 )
-                )
+            or(
+                eq( person.yearOfBirth(), 1970 ),
+                eq( person.yearOfBirth(), 1975 ),
+                eq( person.yearOfBirth(), 1990 )
+            )
         ).newQuery( Network.persons() );
         verifyUnorderedResults( query, "Jack Doe", "Ann Doe", "Joe Doe" );
     }
 
     @Test
-    public void givenOrQueryOnFemalesWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenOrQueryOnFemalesWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Female> qb = qbf.newQueryBuilder( Female.class );
         Person person = templateFor( Person.class );
         Query<Female> query = qb.where(
-                or(
-                        eq( person.yearOfBirth(), 1970 ),
-                        eq( person.yearOfBirth(), 1975 )
-                )
+            or(
+                eq( person.yearOfBirth(), 1970 ),
+                eq( person.yearOfBirth(), 1975 )
+            )
         ).newQuery( Network.females() );
         verifyUnorderedResults( query, "Ann Doe" );
     }
 
     @Test
-    public void givenNotQueryWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenNotQueryWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = qb.where(
-                not(
-                        eq( person.yearOfBirth(), 1975 )
-                )
+            not(
+                eq( person.yearOfBirth(), 1975 )
+            )
         ).newQuery( Network.persons() );
         verifyUnorderedResults( query, "Jack Doe", "Joe Doe", "Vivian Smith" );
     }
 
     @Test
-    public void givenIsNotNullQueryWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenIsNotNullQueryWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = qb.where(
-                isNotNull( person.email() )
+            isNotNull( person.email() )
         ).newQuery( Network.persons() );
         verifyUnorderedResults( query, "Joe Doe", "Vivian Smith" );
     }
 
     @Test
-    public void givenIsNullQueryWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenIsNullQueryWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = qb.where(
-                isNull( person.email() )
+            isNull( person.email() )
         ).newQuery( Network.persons() );
         verifyUnorderedResults( query, "Ann Doe", "Jack Doe" );
     }
 
     @Test
-    public void givenIsNotNullOnMixinTypeWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenIsNotNullOnMixinTypeWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Male person = templateFor( Male.class );
         Query<Person> query = qb.where(
-                isNotNull( person.wife() )
+            isNotNull( person.wife() )
         ).newQuery( Network.persons() );
         verifyUnorderedResults( query, "Jack Doe" );
     }
 
     @Test
-    public void givenIsNullOnMixinTypeWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenIsNullOnMixinTypeWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Male> qb = qbf.newQueryBuilder( Male.class );
         Male person = templateFor( Male.class );
         Query<Male> query = qb.where(
-                isNull( person.wife() )
+            isNull( person.wife() )
         ).newQuery( Network.males() );
         verifyUnorderedResults( query, "Joe Doe" );
     }
 
     @Test
-    public void givenIsNullOnAssociationWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenIsNullOnAssociationWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Male person = templateFor( Male.class );
         Query<Person> query = qb.where(
-                isNull( person.wife() )
+            isNull( person.wife() )
         ).newQuery( Network.persons() );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Vivian Smith" );
     }
 
     @Test
-    public void givenOrderAndMaxResultsQueryWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenOrderAndMaxResultsQueryWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return only 2 entities
@@ -367,13 +389,14 @@ public class IterableQueryTest
         query.orderBy( orderBy( nameable.name() ) );
         query.maxResults( 2 );
         verifyOrderedResults(
-                query,
-                "Ann Doe", "Cars"
+            query,
+            "Ann Doe", "Cars"
         );
     }
 
     @Test
-    public void givenOrderAndFirstAndMaxResultsQueryWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenOrderAndFirstAndMaxResultsQueryWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return only 3 entities starting with forth one
@@ -383,13 +406,14 @@ public class IterableQueryTest
         query.firstResult( 3 );
         query.maxResults( 3 );
         verifyOrderedResults(
-                query,
-                "Gaming", "Jack Doe", "Joe Doe"
+            query,
+            "Gaming", "Jack Doe", "Joe Doe"
         );
     }
 
     @Test
-    public void givenOrderByOnMixinTypeQueryWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenOrderByOnMixinTypeQueryWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return all Nameable entities sorted by name
@@ -397,72 +421,75 @@ public class IterableQueryTest
         Query<Nameable> query = qb.newQuery( Network.nameables() );
         query.orderBy( orderBy( nameable.name() ) );
         verifyOrderedResults(
-                query,
-                "Ann Doe", "Cars", "Cooking", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming", "Vivian Smith"
+            query,
+            "Ann Doe", "Cars", "Cooking", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming", "Vivian Smith"
         );
     }
 
     @Test
-    public void givenGtAndOrderByQueryWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenGtAndOrderByQueryWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return all Nameable entities with a name > "D" sorted by name
         Nameable nameable = templateFor( Nameable.class );
         Query<Nameable> query = qb.where(
-                gt( nameable.name(), "D" )
+            gt( nameable.name(), "D" )
         ).newQuery( Network.nameables() );
         query.orderBy( orderBy( nameable.name() ) );
         verifyOrderedResults(
-                query,
-                "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming", "Vivian Smith"
+            query,
+            "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming", "Vivian Smith"
         );
     }
 
     @Test
-    public void givenGtAndOrderByDescendingQueryWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenGtAndOrderByDescendingQueryWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         // should return all Persons born after 1973 (Ann and Joe Doe) sorted descending by name
         Person person = templateFor( Person.class );
         Query<Person> query = qb.where(
-                gt( person.yearOfBirth(), 1973 )
+            gt( person.yearOfBirth(), 1973 )
         ).newQuery( Network.persons() );
         query.orderBy( orderBy( person.name(), OrderBy.Order.DESCENDING ) );
         verifyOrderedResults( query, "Vivian Smith", "Joe Doe", "Ann Doe" );
     }
 
     @Test
-    public void givenOrderByMultipleQueryWhenExecutedThenReturnCorrect() throws EntityFinderException
+    public void givenOrderByMultipleQueryWhenExecutedThenReturnCorrect()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         // should return all Persons sorted by name of the city they were born, and then by year they were born
         Person person = templateFor( Person.class );
         Query<Person> query = qb.newQuery( Network.persons() );
         query.orderBy( orderBy( person.placeOfBirth().get().name() ),
-                orderBy( person.yearOfBirth() ) );
+                       orderBy( person.yearOfBirth() ) );
         verifyOrderedResults( query, "Ann Doe", "Joe Doe", "Vivian Smith", "Jack Doe" );
     }
 
     @Test
     public void givenMatchesQueryWhenExecutedThenReturnCorrect()
-            throws EntityFinderException
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         Nameable nameable = templateFor( Nameable.class );
         // should return Jack and Joe Doe
         Query<Nameable> query = qb.where(
-                matches( nameable.name(), "J.*Doe" )
+            matches( nameable.name(), "J.*Doe" )
         ).newQuery( Network.nameables() );
         verifyUnorderedResults(
-                query,
-                "Jack Doe", "Joe Doe"
+            query,
+            "Jack Doe", "Joe Doe"
         );
     }
 
     // TODO solve ManyAssociation filtering for iterables
     // @Test
     public void givenOneOfQueryWhenExecutedThenReturnCorrect()
-            throws EntityFinderException
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -473,13 +500,14 @@ public class IterableQueryTest
 
     @Test
     public void givenManyAssociationContainsQueryWhenExecutedThenReturnCorrect()
-            throws EntityFinderException
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Domain value = Network.domains().iterator().next();
-        Query<Person> query = qb.where( QueryExpressions.contains( person.interests(), value ) ).newQuery( Network.persons() );
-        for (Person person1 : query)
+        Query<Person> query = qb.where( QueryExpressions.contains( person.interests(), value ) )
+            .newQuery( Network.persons() );
+        for( Person person1 : query )
         {
             System.out.println( person1.name() );
         }

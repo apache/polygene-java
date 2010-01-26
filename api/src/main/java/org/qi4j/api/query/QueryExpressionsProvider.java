@@ -18,6 +18,7 @@
  */
 package org.qi4j.api.query;
 
+import java.util.Collection;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.query.grammar.AssociationIsNotNullPredicate;
 import org.qi4j.api.query.grammar.AssociationIsNullPredicate;
@@ -44,8 +45,6 @@ import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.query.grammar.SingleValueExpression;
 import org.qi4j.api.query.grammar.VariableValueExpression;
 
-import java.util.Collection;
-
 /**
  * SPI interface for QueryExpressionsProviders
  */
@@ -65,35 +64,65 @@ public interface QueryExpressionsProvider
 
     AssociationIsNotNullPredicate newAssociationIsNotNullPredicate( AssociationReference associationRef );
 
-    <T> EqualsPredicate<T> newEqualsPredicate( PropertyReference<T> propertyRef, SingleValueExpression<T> staticValueExpr );
+    <T> EqualsPredicate<T> newEqualsPredicate( PropertyReference<T> propertyRef,
+                                               SingleValueExpression<T> staticValueExpr
+    );
 
-    <T> EqualsPredicate<T> newEqualsPredicate( PropertyReference<T> propertyRef, VariableValueExpression<T> variableValueExpr );
+    <T> EqualsPredicate<T> newEqualsPredicate( PropertyReference<T> propertyRef,
+                                               VariableValueExpression<T> variableValueExpr
+    );
 
-    <T> EqualsPredicate<String> newEqualsPredicate( AssociationReference associationRef, SingleValueExpression<T> staticValueExpr );
+    <T> EqualsPredicate<String> newEqualsPredicate( AssociationReference associationRef,
+                                                    SingleValueExpression<T> staticValueExpr
+    );
 
-    <T> EqualsPredicate<T> newEqualsPredicate( AssociationReference associationRef, VariableValueExpression<T> variableValueExpr );
+    <T> EqualsPredicate<T> newEqualsPredicate( AssociationReference associationRef,
+                                               VariableValueExpression<T> variableValueExpr
+    );
 
-    <T> NotEqualsPredicate<T> newNotEqualsPredicate( PropertyReference<T> propertyRef, SingleValueExpression<T> staticValueExpr );
+    <T> NotEqualsPredicate<T> newNotEqualsPredicate( PropertyReference<T> propertyRef,
+                                                     SingleValueExpression<T> staticValueExpr
+    );
 
-    <T> NotEqualsPredicate<T> newNotEqualsPredicate( PropertyReference<T> propertyRef, VariableValueExpression<T> variableValueExpr );
+    <T> NotEqualsPredicate<T> newNotEqualsPredicate( PropertyReference<T> propertyRef,
+                                                     VariableValueExpression<T> variableValueExpr
+    );
 
-    <T> LessThanPredicate<T> newLessThanPredicate( PropertyReference<T> propertyRef, SingleValueExpression<T> staticValueExpr );
+    <T> LessThanPredicate<T> newLessThanPredicate( PropertyReference<T> propertyRef,
+                                                   SingleValueExpression<T> staticValueExpr
+    );
 
-    <T> LessThanPredicate<T> newLessThanPredicate( PropertyReference<T> propertyRef, VariableValueExpression<T> variableValueExpr );
+    <T> LessThanPredicate<T> newLessThanPredicate( PropertyReference<T> propertyRef,
+                                                   VariableValueExpression<T> variableValueExpr
+    );
 
-    <T> LessOrEqualPredicate<T> newLessOrEqualPredicate( PropertyReference<T> propertyRef, SingleValueExpression<T> staticValueExpr );
+    <T> LessOrEqualPredicate<T> newLessOrEqualPredicate( PropertyReference<T> propertyRef,
+                                                         SingleValueExpression<T> staticValueExpr
+    );
 
-    <T> LessOrEqualPredicate<T> newLessOrEqualPredicate( PropertyReference<T> propertyRef, VariableValueExpression<T> variableValueExpr );
+    <T> LessOrEqualPredicate<T> newLessOrEqualPredicate( PropertyReference<T> propertyRef,
+                                                         VariableValueExpression<T> variableValueExpr
+    );
 
-    <T> GreaterThanPredicate<T> newGreaterThanPredicate( PropertyReference<T> propertyRef, SingleValueExpression<T> staticValueExpr );
+    <T> GreaterThanPredicate<T> newGreaterThanPredicate( PropertyReference<T> propertyRef,
+                                                         SingleValueExpression<T> staticValueExpr
+    );
 
-    <T> GreaterThanPredicate<T> newGreaterThanPredicate( PropertyReference<T> propertyRef, VariableValueExpression<T> variableValueExpr );
+    <T> GreaterThanPredicate<T> newGreaterThanPredicate( PropertyReference<T> propertyRef,
+                                                         VariableValueExpression<T> variableValueExpr
+    );
 
-    <T> GreaterOrEqualPredicate<T> newGreaterOrEqualPredicate( PropertyReference<T> propertyRef, SingleValueExpression<T> staticValueExpr );
+    <T> GreaterOrEqualPredicate<T> newGreaterOrEqualPredicate( PropertyReference<T> propertyRef,
+                                                               SingleValueExpression<T> staticValueExpr
+    );
 
-    <T> GreaterOrEqualPredicate<T> newGreaterOrEqualPredicate( PropertyReference<T> propertyRef, VariableValueExpression<T> variableValueExpr );
+    <T> GreaterOrEqualPredicate<T> newGreaterOrEqualPredicate( PropertyReference<T> propertyRef,
+                                                               VariableValueExpression<T> variableValueExpr
+    );
 
-    MatchesPredicate newMatchesPredicate( PropertyReference<String> stringPropertyReference, SingleValueExpression<String> stringSingleValueExpression );
+    MatchesPredicate newMatchesPredicate( PropertyReference<String> stringPropertyReference,
+                                          SingleValueExpression<String> stringSingleValueExpression
+    );
 
     Conjunction newConjunction( BooleanExpression left, BooleanExpression right );
 
@@ -107,10 +136,16 @@ public interface QueryExpressionsProvider
 
     <T> T oneOf( ManyAssociation<T> association );
 
-    <T> ContainsAllPredicate<T> newContainsAllPredicate( PropertyReference<Collection<T>> propertyRef, SingleValueExpression<Collection<T>> collectionValues );
+    <T> ContainsAllPredicate<T> newContainsAllPredicate( PropertyReference<Collection<T>> propertyRef,
+                                                         SingleValueExpression<Collection<T>> collectionValues
+    );
 
-    <T> ContainsPredicate<T> newContainsPredicate( PropertyReference<Collection<T>> propertyRef, SingleValueExpression<T> singleValueExpression );
+    <T> ContainsPredicate<T> newContainsPredicate( PropertyReference<Collection<T>> propertyRef,
+                                                   SingleValueExpression<T> singleValueExpression
+    );
 
-    <T> ManyAssociationContainsPredicate<T> newManyAssociationContainsPredicate( ManyAssociationReference associationRef, SingleValueExpression<T> singleValueExpression );
+    <T> ManyAssociationContainsPredicate<T> newManyAssociationContainsPredicate( ManyAssociationReference associationRef,
+                                                                                 SingleValueExpression<T> singleValueExpression
+    );
 }
 

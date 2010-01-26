@@ -14,21 +14,20 @@
 
 package org.qi4j.spi.entitystore.helpers;
 
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entitystore.EntityStoreException;
 
-import java.io.Serializable;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
 /**
  * JSON implementation of ManyAssociationState. Backed by JSONArray.
  */
 public final class JSONManyAssociationState
-        implements ManyAssociationState, Serializable
+    implements ManyAssociationState, Serializable
 {
     private JSONEntityState entityState;
     private JSONArray references;
@@ -48,13 +47,16 @@ public final class JSONManyAssociationState
     {
         try
         {
-            for (int i = 0; i < references.length(); i++)
+            for( int i = 0; i < references.length(); i++ )
             {
-                if (references.get( i ).equals( entityReference.identity() ))
+                if( references.get( i ).equals( entityReference.identity() ) )
+                {
                     return true;
+                }
             }
             return false;
-        } catch (JSONException e)
+        }
+        catch( JSONException e )
         {
             throw new EntityStoreException( e );
         }
@@ -64,7 +66,7 @@ public final class JSONManyAssociationState
     {
         try
         {
-            if (contains( entityReference ))
+            if( contains( entityReference ) )
             {
                 return false;
             }
@@ -72,7 +74,8 @@ public final class JSONManyAssociationState
             references.insert( idx, entityReference.identity() );
             entityState.markUpdated();
             return true;
-        } catch (JSONException e)
+        }
+        catch( JSONException e )
         {
             throw new EntityStoreException( e );
         }
@@ -82,9 +85,9 @@ public final class JSONManyAssociationState
     {
         try
         {
-            for (int i = 0; i < references.length(); i++)
+            for( int i = 0; i < references.length(); i++ )
             {
-                if (references.get( i ).equals( entityReference.identity() ))
+                if( references.get( i ).equals( entityReference.identity() ) )
                 {
                     references.remove( i );
                     entityState.markUpdated();
@@ -92,7 +95,8 @@ public final class JSONManyAssociationState
                 }
             }
             return false;
-        } catch (JSONException e)
+        }
+        catch( JSONException e )
         {
             throw new EntityStoreException( e );
         }
@@ -103,7 +107,8 @@ public final class JSONManyAssociationState
         try
         {
             return new EntityReference( references.getString( i ) );
-        } catch (JSONException e)
+        }
+        catch( JSONException e )
         {
             throw new EntityStoreException( e );
         }
@@ -127,7 +132,8 @@ public final class JSONManyAssociationState
                     EntityReference ref = new EntityReference( references.getString( idx ) );
                     idx++;
                     return ref;
-                } catch (JSONException e)
+                }
+                catch( JSONException e )
                 {
                     throw new NoSuchElementException();
                 }

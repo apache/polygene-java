@@ -57,7 +57,12 @@ public final class EntityBuilderInstance<T>
     }
 
     public EntityBuilderInstance(
-        ModuleInstance moduleInstance, EntityModel entityModel, ModuleUnitOfWork uow, EntityStoreUnitOfWork store, String identity )
+        ModuleInstance moduleInstance,
+        EntityModel entityModel,
+        ModuleUnitOfWork uow,
+        EntityStoreUnitOfWork store,
+        String identity
+    )
     {
         this.moduleInstance = moduleInstance;
         this.entityModel = entityModel;
@@ -115,7 +120,8 @@ public final class EntityBuilderInstance<T>
         return (T) proxy;
     }
 
-    private void checkValid() throws IllegalStateException
+    private void checkValid()
+        throws IllegalStateException
     {
         if( identity == null )
         {

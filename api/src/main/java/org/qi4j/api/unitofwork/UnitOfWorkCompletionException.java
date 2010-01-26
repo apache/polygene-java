@@ -18,7 +18,8 @@ package org.qi4j.api.unitofwork;
  * When an attempt to {@link UnitOfWork#complete()} an UnitOfWork
  * fails, this exception will be thrown.
  */
-public class UnitOfWorkCompletionException extends Exception
+public class UnitOfWorkCompletionException
+    extends Exception
 {
     private static final long serialVersionUID = 6531642131384516904L;
 

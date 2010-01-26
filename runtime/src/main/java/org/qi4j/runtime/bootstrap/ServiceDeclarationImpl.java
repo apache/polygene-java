@@ -41,7 +41,9 @@ public final class ServiceDeclarationImpl
     private MetaInfo metaInfo = new MetaInfo();
     private Visibility visibility = Visibility.module;
 
-    public ServiceDeclarationImpl( Iterable<Class<? extends ServiceComposite>> serviceTypes, ModuleAssemblyImpl moduleAssembly )
+    public ServiceDeclarationImpl( Iterable<Class<? extends ServiceComposite>> serviceTypes,
+                                   ModuleAssemblyImpl moduleAssembly
+    )
     {
         this.serviceTypes = serviceTypes;
         this.moduleAssembly = moduleAssembly;

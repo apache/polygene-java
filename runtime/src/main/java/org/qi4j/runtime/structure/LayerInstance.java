@@ -34,7 +34,11 @@ public class LayerInstance
     private final Activator moduleActivator;
     private final UsedLayersInstance usedLayersInstance;
 
-    public LayerInstance( LayerModel model, ApplicationInstance applicationInstance, List<ModuleInstance> moduleInstances, UsedLayersInstance usedLayersInstance )
+    public LayerInstance( LayerModel model,
+                          ApplicationInstance applicationInstance,
+                          List<ModuleInstance> moduleInstances,
+                          UsedLayersInstance usedLayersInstance
+    )
     {
         this.model = model;
         this.applicationInstance = applicationInstance;
@@ -91,7 +95,8 @@ public class LayerInstance
         return null;
     }
 
-    public void activate() throws Exception
+    public void activate()
+        throws Exception
     {
         moduleActivator.activate( moduleInstances );
     }
@@ -122,12 +127,14 @@ public class LayerInstance
         return true;
     }
 
-    public void passivate() throws Exception
+    public void passivate()
+        throws Exception
     {
         moduleActivator.passivate();
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return model.toString();
     }

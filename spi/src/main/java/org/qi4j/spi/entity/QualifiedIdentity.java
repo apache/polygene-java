@@ -112,7 +112,6 @@ public final class QualifiedIdentity
         }
         QualifiedIdentity that = (QualifiedIdentity) o;
         return compositeType.equals( that.compositeType ) && identity.equals( that.identity );
-
     }
 
     @Override
@@ -124,7 +123,8 @@ public final class QualifiedIdentity
         return result;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return compositeType + ":" + identity;
     }

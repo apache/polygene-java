@@ -39,7 +39,8 @@ public final class ImportedServiceDeclarationImpl
     private Visibility visibility = Visibility.module;
 
     public ImportedServiceDeclarationImpl( Iterable<Class> serviceTypes,
-                                           ModuleAssemblyImpl moduleAssembly )
+                                           ModuleAssemblyImpl moduleAssembly
+    )
     {
         this.serviceTypes = serviceTypes;
         this.moduleAssembly = moduleAssembly;

@@ -18,7 +18,8 @@ package org.qi4j.spi.composite;
 
 import org.qi4j.api.composite.Composite;
 
-public class InvalidCompositeException extends RuntimeException
+public class InvalidCompositeException
+    extends RuntimeException
 {
     private Class<? extends Composite> composite;
     private String message;
@@ -40,7 +41,8 @@ public class InvalidCompositeException extends RuntimeException
         return composite;
     }
 
-    @Override public String getMessage()
+    @Override
+    public String getMessage()
     {
         return message;
     }

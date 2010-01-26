@@ -24,7 +24,9 @@ import org.qi4j.api.entity.association.ManyAssociation;
 public interface Female
     extends Person
 {
-    @Optional Association<Male> husband();
+    @Optional
+    Association<Male> husband();
 
-    @Optional ManyAssociation<Male> pastBoyFriends();
+    @Optional
+    ManyAssociation<Male> pastBoyFriends();
 }

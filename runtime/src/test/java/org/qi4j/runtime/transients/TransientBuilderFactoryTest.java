@@ -37,7 +37,8 @@ public class TransientBuilderFactoryTest
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
             }
         };
@@ -52,7 +53,8 @@ public class TransientBuilderFactoryTest
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
                 module.addTransients( AnyComposite.class );
             }
@@ -68,7 +70,8 @@ public class TransientBuilderFactoryTest
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
                 module.addTransients( AnyComposite.class );
             }
@@ -76,8 +79,8 @@ public class TransientBuilderFactoryTest
         assembler.transientBuilderFactory().newTransientBuilder( AnyComposite.class );
     }
 
-    public static interface AnyComposite extends TransientComposite
+    public static interface AnyComposite
+        extends TransientComposite
     {
     }
-
 }

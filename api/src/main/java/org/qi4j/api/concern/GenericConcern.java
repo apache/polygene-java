@@ -25,7 +25,8 @@ import java.lang.reflect.InvocationHandler;
  * "next" field in {@link ConcernOf} to continue the invocation
  * chain.
  */
-public abstract class GenericConcern extends ConcernOf<InvocationHandler>
+public abstract class GenericConcern
+    extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
 }

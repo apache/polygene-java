@@ -26,10 +26,12 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-public class ValueInstantiationTests extends AbstractQi4jTest
+public class ValueInstantiationTests
+    extends AbstractQi4jTest
 {
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addValues( MyValue.class );
     }
@@ -44,7 +46,8 @@ public class ValueInstantiationTests extends AbstractQi4jTest
     }
 
     @Mixins( MyMixin.class )
-    public interface MyValue extends ValueComposite, My
+    public interface MyValue
+        extends ValueComposite, My
     {
     }
 

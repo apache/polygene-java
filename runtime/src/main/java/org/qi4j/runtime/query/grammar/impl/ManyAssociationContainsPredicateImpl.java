@@ -27,7 +27,7 @@ import org.qi4j.api.query.grammar.ValueExpression;
  * Default {@link org.qi4j.api.query.grammar.ManyAssociationReference} implementation.
  */
 public final class ManyAssociationContainsPredicateImpl<T>
-        implements ManyAssociationContainsPredicate<T>
+    implements ManyAssociationContainsPredicate<T>
 {
 
     /**
@@ -44,11 +44,13 @@ public final class ManyAssociationContainsPredicateImpl<T>
      *
      * @param associationReference manyassociation reference; cannot be null
      * @param valueExpression      value expression; cannot be null
+     *
      * @throws IllegalArgumentException - If property reference is null
      *                                  - If value expression is null
      */
     public ManyAssociationContainsPredicateImpl( final ManyAssociationReference associationReference,
-                                                 final SingleValueExpression<T> valueExpression )
+                                                 final SingleValueExpression<T> valueExpression
+    )
     {
         this.associationReference = associationReference;
         this.valueExpression = valueExpression;
@@ -68,7 +70,7 @@ public final class ManyAssociationContainsPredicateImpl<T>
     {
         final T value = valueExpression.value();
         final ManyAssociation<Object> manyAssoc = (ManyAssociation<Object>) associationReference().eval( target );
-        if (manyAssoc == null)
+        if( manyAssoc == null )
         {
             return value == null;
         }
@@ -79,13 +81,13 @@ public final class ManyAssociationContainsPredicateImpl<T>
     public String toString()
     {
         return new StringBuilder()
-                .append( "( " )
-                .append( associationReference() )
-                .append( ".contains( " )
-                .append( valueExpression() )
-                .append( " )^^" )
-                .append( associationReference().associationType().toString() )
-                .append( " )" )
-                .toString();
+            .append( "( " )
+            .append( associationReference() )
+            .append( ".contains( " )
+            .append( valueExpression() )
+            .append( " )^^" )
+            .append( associationReference().associationType().toString() )
+            .append( " )" )
+            .toString();
     }
 }

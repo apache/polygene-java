@@ -24,7 +24,8 @@ import org.qi4j.spi.composite.CompositeInstance;
 /**
  * Model for Composite mixins
  */
-public final class MixinsModel extends AbstractMixinsModel
+public final class MixinsModel
+    extends AbstractMixinsModel
     implements Serializable
 {
     public MixinsModel( Class<? extends Composite> compositeType, List<Class<?>> assemblyMixins )
@@ -33,6 +34,7 @@ public final class MixinsModel extends AbstractMixinsModel
     }
 
     // Context
+
     public void newMixins( CompositeInstance compositeInstance, UsesInstance uses, StateHolder state, Object[] mixins )
     {
         int i = 0;

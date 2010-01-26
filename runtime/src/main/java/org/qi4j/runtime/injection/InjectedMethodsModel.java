@@ -21,10 +21,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.util.Classes;
-import org.qi4j.spi.util.Annotations;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
+import org.qi4j.spi.util.Annotations;
 
 /**
  * JAVADOC
@@ -67,7 +67,9 @@ public final class InjectedMethodsModel
     }
 
     // Binding
-    public void bind( Resolution context ) throws BindingException
+
+    public void bind( Resolution context )
+        throws BindingException
     {
         for( InjectedMethodModel methodModel : methodModels )
         {
@@ -76,6 +78,7 @@ public final class InjectedMethodsModel
     }
 
     // Context
+
     public void inject( InjectionContext context, Object instance )
     {
         for( InjectedMethodModel methodModel : methodModels )
@@ -83,7 +86,6 @@ public final class InjectedMethodsModel
             methodModel.inject( context, instance );
         }
     }
-
 
     public void visitModel( ModelVisitor modelVisitor )
     {

@@ -18,7 +18,6 @@
 
 package org.qi4j.runtime.instantiation;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Mixins;
@@ -29,11 +28,15 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.service.ServiceDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
 
-public class EagerServiceInstantiationTest extends AbstractQi4jTest 
+import static org.junit.Assert.*;
+
+public class EagerServiceInstantiationTest
+    extends AbstractQi4jTest
 {
     private TestInfo testInfo;
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         testInfo = new TestInfo();
         module.addServices( MyService.class ).setMetaInfo( testInfo ).instantiateOnStartup();
@@ -46,8 +49,10 @@ public class EagerServiceInstantiationTest extends AbstractQi4jTest
     }
 
     @Mixins( MyMixin.class )
-    public interface MyService extends My, ServiceComposite
-    {}
+    public interface MyService
+        extends My, ServiceComposite
+    {
+    }
 
     public interface My
     {
@@ -57,19 +62,22 @@ public class EagerServiceInstantiationTest extends AbstractQi4jTest
     public static class MyMixin
         implements My, Activatable
     {
-        @Uses ServiceDescriptor descriptor;
+        @Uses
+        ServiceDescriptor descriptor;
 
         public MyMixin()
         {
             System.out.println( "Constructor" );
         }
 
-        public void activate() throws Exception
+        public void activate()
+            throws Exception
         {
             descriptor.metaInfo( TestInfo.class ).test = "123";
         }
 
-        public void passivate() throws Exception
+        public void passivate()
+            throws Exception
         {
         }
 

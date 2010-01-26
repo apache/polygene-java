@@ -19,7 +19,6 @@ package org.qi4j.test.indexing.model;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 public interface Cat
     extends Pet

@@ -14,6 +14,12 @@
 
 package org.qi4j.runtime.structure;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
 import org.json.JSONException;
 import org.json.JSONTokener;
 import org.qi4j.api.common.ConstructionException;
@@ -65,18 +71,11 @@ import org.qi4j.spi.object.ObjectDescriptor;
 import org.qi4j.spi.structure.ModuleSPI;
 import org.qi4j.spi.value.ValueDescriptor;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * JAVADOC
  */
 public class ModuleInstance
-        implements Module, ModuleSPI, Activatable
+    implements Module, ModuleSPI, Activatable
 {
     private final ModuleModel moduleModel;
     private final LayerInstance layerInstance;
@@ -102,7 +101,8 @@ public class ModuleInstance
 
     public ModuleInstance( ModuleModel moduleModel, LayerInstance layerInstance, CompositesModel compositesModel,
                            EntitiesModel entitiesModel, ObjectsModel objectsModel, ValuesModel valuesModel,
-                           ServicesModel servicesModel, ImportedServicesModel importedServicesModel )
+                           ServicesModel servicesModel, ImportedServicesModel importedServicesModel
+    )
     {
         this.moduleModel = moduleModel;
         this.layerInstance = layerInstance;
@@ -125,7 +125,6 @@ public class ModuleInstance
         objectFinders = new ConcurrentHashMap<Class, ObjectFinder>();
         valueFinders = new ConcurrentHashMap<Class, ValueFinder>();
     }
-
 
     public String name()
     {
@@ -184,11 +183,11 @@ public class ModuleInstance
         {
             finder = findEntityModel( classLoader().loadClass( name ) );
         }
-        catch (ClassNotFoundException e)
+        catch( ClassNotFoundException e )
         {
             return null;
         }
-        if (finder.noModelExist())
+        if( finder.noModelExist() )
         {
             return null;
         }
@@ -202,7 +201,7 @@ public class ModuleInstance
         {
             finder = findTransientModel( classLoader().loadClass( name ) );
         }
-        catch (ClassNotFoundException e)
+        catch( ClassNotFoundException e )
         {
             return null;
         }
@@ -216,7 +215,7 @@ public class ModuleInstance
         {
             finder = findValueModel( classLoader().loadClass( name ) );
         }
-        catch (ClassNotFoundException e)
+        catch( ClassNotFoundException e )
         {
             return null;
         }
@@ -261,7 +260,7 @@ public class ModuleInstance
     public void visitModules( ModuleVisitor visitor )
     {
         // Visit this module
-        if (!visitor.visitModule( this, moduleModel, Visibility.module ))
+        if( !visitor.visitModule( this, moduleModel, Visibility.module ) )
         {
             return;
         }
@@ -271,14 +270,14 @@ public class ModuleInstance
     }
 
     public void activate()
-            throws Exception
+        throws Exception
     {
         entities.activate();
         services.activate();
     }
 
     public void passivate()
-            throws Exception
+        throws Exception
     {
         services.passivate();
     }
@@ -293,7 +292,7 @@ public class ModuleInstance
     {
         ServiceReference<T> service;
         service = services.getServiceFor( type, visibility );
-        if (service == null)
+        if( service == null )
         {
             service = importedServices.getServiceFor( type, visibility );
         }
@@ -310,7 +309,7 @@ public class ModuleInstance
     public EntityFinder findEntityModel( Class type )
     {
         EntityFinder finder = entityFinders.get( type );
-        if (finder == null)
+        if( finder == null )
         {
             finder = new EntityFinder( type );
             visitModules( finder );
@@ -322,12 +321,12 @@ public class ModuleInstance
     public CompositeFinder findTransientModel( Class mixinType )
     {
         CompositeFinder finder = compositeFinders.get( mixinType );
-        if (finder == null)
+        if( finder == null )
         {
             finder = new CompositeFinder();
             finder.type = mixinType;
             visitModules( finder );
-            if (finder.model != null)
+            if( finder.model != null )
             {
                 compositeFinders.put( mixinType, finder );
             }
@@ -339,12 +338,12 @@ public class ModuleInstance
     public ObjectFinder findObjectModel( Class type )
     {
         ObjectFinder finder = objectFinders.get( type );
-        if (finder == null)
+        if( finder == null )
         {
             finder = new ObjectFinder();
             finder.type = type;
             visitModules( finder );
-            if (finder.model != null)
+            if( finder.model != null )
             {
                 objectFinders.put( type, finder );
             }
@@ -356,12 +355,12 @@ public class ModuleInstance
     private ValueFinder findValueModel( Class type )
     {
         ValueFinder finder = valueFinders.get( type );
-        if (finder == null)
+        if( finder == null )
         {
             finder = new ValueFinder();
             finder.type = type;
             visitModules( finder );
-            if (finder.model != null)
+            if( finder.model != null )
             {
                 valueFinders.put( type, finder );
             }
@@ -371,7 +370,7 @@ public class ModuleInstance
     }
 
     private abstract class TypeFinder<T extends ObjectDescriptor>
-            implements ModuleVisitor
+        implements ModuleVisitor
     {
         public Class type;
 
@@ -382,36 +381,40 @@ public class ModuleInstance
         public boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility )
         {
             T foundModel = findModel( moduleModel, visibility );
-            if (foundModel != null)
+            if( foundModel != null )
             {
-                if (model == null)
+                if( model == null )
                 {
                     model = foundModel;
                     module = moduleInstance;
                     this.visibility = visibility;
-                } else
+                }
+                else
                 {
                     // If same visibility -> ambiguous types
-                    if (this.visibility == visibility)
+                    if( this.visibility == visibility )
                     {
                         // Check if they are the same type
-                        if (model.type().equals( foundModel.type() ))
+                        if( model.type().equals( foundModel.type() ) )
                         {
                             // Same type, same scope -> ambiguous
                             throw new AmbiguousTypeException( type );
-                        } else
+                        }
+                        else
                         {
                             // If any type is an exact match, use it
-                            if (model.type().equals( type ))
+                            if( model.type().equals( type ) )
                             {
                                 // Do nothing
-                            } else if (foundModel.type().equals( type ))
+                            }
+                            else if( foundModel.type().equals( type ) )
                             {
                                 // Use this model instead
                                 model = foundModel;
                                 module = moduleInstance;
                                 this.visibility = visibility;
-                            } else
+                            }
+                            else
                             {
                                 // Both types match, none are exact, same scope -> ambiguous
                                 throw new AmbiguousTypeException( type );
@@ -419,26 +422,27 @@ public class ModuleInstance
                         }
                     }
                 }
-            } else
+            }
+            else
             {
             }
 
             // Break if we have found a model and visibility has changed since the find
-            return !(model != null && this.visibility != visibility);
+            return !( model != null && this.visibility != visibility );
         }
 
         protected abstract T findModel( ModuleModel model, Visibility visibility );
     }
 
     private class TransientBuilderFactoryInstance
-            implements TransientBuilderFactory
+        implements TransientBuilderFactory
     {
         public <T> TransientBuilder<T> newTransientBuilder( Class<T> mixinType )
-                throws NoSuchCompositeException
+            throws NoSuchCompositeException
         {
             CompositeFinder finder = findTransientModel( mixinType );
 
-            if (finder.model == null)
+            if( finder.model == null )
             {
                 throw new NoSuchCompositeException( mixinType.getName(), name() );
             }
@@ -447,11 +451,11 @@ public class ModuleInstance
         }
 
         public <T> T newTransient( final Class<T> mixinType )
-                throws NoSuchCompositeException, ConstructionException
+            throws NoSuchCompositeException, ConstructionException
         {
             CompositeFinder finder = findTransientModel( mixinType );
 
-            if (finder.model == null)
+            if( finder.model == null )
             {
                 throw new NoSuchCompositeException( mixinType.getName(), name() );
             }
@@ -463,7 +467,7 @@ public class ModuleInstance
     }
 
     public class CompositeFinder
-            extends TypeFinder<TransientModel>
+        extends TypeFinder<TransientModel>
     {
         protected TransientModel findModel( ModuleModel model, Visibility visibility )
         {
@@ -472,14 +476,14 @@ public class ModuleInstance
     }
 
     private class ObjectBuilderFactoryInstance
-            implements ObjectBuilderFactory
+        implements ObjectBuilderFactory
     {
         public <T> ObjectBuilder<T> newObjectBuilder( Class<T> type )
-                throws NoSuchObjectException
+            throws NoSuchObjectException
         {
             ObjectFinder finder = findObjectModel( type );
 
-            if (finder.model == null)
+            if( finder.model == null )
             {
                 throw new NoSuchObjectException( type.getName(), name() );
             }
@@ -488,11 +492,11 @@ public class ModuleInstance
         }
 
         public <T> T newObject( Class<T> type )
-                throws NoSuchObjectException
+            throws NoSuchObjectException
         {
             ObjectFinder finder = findObjectModel( type );
 
-            if (finder.model == null)
+            if( finder.model == null )
             {
                 throw new NoSuchObjectException( type.getName(), name() );
             }
@@ -500,11 +504,10 @@ public class ModuleInstance
             InjectionContext injectionContext = new InjectionContext( finder.module, UsesInstance.EMPTY_USES );
             return type.cast( finder.model.newInstance( injectionContext ) );
         }
-
     }
 
     public class ObjectFinder
-            extends TypeFinder<ObjectModel>
+        extends TypeFinder<ObjectModel>
     {
         protected ObjectModel findModel( ModuleModel model, Visibility visibility )
         {
@@ -513,13 +516,14 @@ public class ModuleInstance
     }
 
     private class ValueBuilderFactoryInstance
-            implements ValueBuilderFactory
+        implements ValueBuilderFactory
     {
-        public <T> ValueBuilder<T> newValueBuilder( Class<T> valueType ) throws NoSuchValueException
+        public <T> ValueBuilder<T> newValueBuilder( Class<T> valueType )
+            throws NoSuchValueException
         {
             ValueFinder finder = findValueModel( valueType );
 
-            if (finder.model == null)
+            if( finder.model == null )
             {
                 throw new NoSuchValueException( valueType.getName(), name() );
             }
@@ -527,11 +531,12 @@ public class ModuleInstance
             return new ValueBuilderInstance<T>( finder.module, finder.model );
         }
 
-        public <T> T newValue( Class<T> valueType ) throws NoSuchValueException, ConstructionException
+        public <T> T newValue( Class<T> valueType )
+            throws NoSuchValueException, ConstructionException
         {
             ValueFinder finder = findValueModel( valueType );
 
-            if (finder.model == null)
+            if( finder.model == null )
             {
                 throw new NoSuchValueException( valueType.getName(), name() );
             }
@@ -539,15 +544,14 @@ public class ModuleInstance
             StateHolder initialState = finder.model.newInitialState();
             finder.model.checkConstraints( initialState );
             return valueType.cast( finder.model.newValueInstance( finder.module, initialState ).proxy() );
-
         }
 
         public <T> T newValueFromJSON( Class<T> valueType, String jsonValue )
-                throws NoSuchValueException, ConstructionException
+            throws NoSuchValueException, ConstructionException
         {
             ValueFinder finder = findValueModel( valueType );
 
-            if (finder.model == null)
+            if( finder.model == null )
             {
                 throw new NoSuchValueException( valueType.getName(), name() );
             }
@@ -556,7 +560,7 @@ public class ModuleInstance
             {
                 return (T) finder.model.valueType().fromJSON( new JSONTokener( jsonValue ).nextValue(), finder.module );
             }
-            catch (JSONException e)
+            catch( JSONException e )
             {
                 throw new ConstructionException( "Could not create value from JSON", e );
             }
@@ -564,7 +568,7 @@ public class ModuleInstance
     }
 
     private class ValueFinder
-            extends TypeFinder<ValueModel>
+        extends TypeFinder<ValueModel>
     {
         protected ValueModel findModel( ModuleModel model, Visibility visibility )
         {
@@ -573,7 +577,7 @@ public class ModuleInstance
     }
 
     private class UnitOfWorkFactoryInstance
-            implements UnitOfWorkFactory
+        implements UnitOfWorkFactory
     {
         public UnitOfWorkFactoryInstance()
         {
@@ -592,7 +596,7 @@ public class ModuleInstance
         public UnitOfWork currentUnitOfWork()
         {
             Stack<UnitOfWorkInstance> stack = UnitOfWorkInstance.current.get();
-            if (stack.size() == 0)
+            if( stack.size() == 0 )
             {
                 return null;
             }
@@ -606,9 +610,8 @@ public class ModuleInstance
         }
     }
 
-
     private class ServiceFinderInstance
-            implements ServiceFinder
+        implements ServiceFinder
     {
         Map<Type, ServiceReference> service = new ConcurrentHashMap<Type, ServiceReference>();
         Map<Type, Iterable<ServiceReference>> services = new ConcurrentHashMap<Type, Iterable<ServiceReference>>();
@@ -616,14 +619,14 @@ public class ModuleInstance
         public <T> ServiceReference<T> findService( Type serviceType )
         {
             ServiceReference serviceReference = service.get( serviceType );
-            if (serviceReference == null)
+            if( serviceReference == null )
             {
                 ServiceReferenceFinder<T> finder = new ServiceReferenceFinder<T>();
                 finder.type = serviceType;
 
                 visitModules( finder );
                 serviceReference = finder.service;
-                if (serviceReference != null)
+                if( serviceReference != null )
                 {
                     service.put( serviceType, serviceReference );
                 }
@@ -635,7 +638,7 @@ public class ModuleInstance
         public <T> Iterable<ServiceReference<T>> findServices( Type serviceType )
         {
             Iterable iterable = services.get( serviceType );
-            if (iterable == null)
+            if( iterable == null )
             {
                 ServiceReferencesFinder<T> finder = new ServiceReferencesFinder<T>();
                 finder.type = serviceType;
@@ -650,7 +653,7 @@ public class ModuleInstance
     }
 
     class ServiceReferenceFinder<T>
-            implements ModuleVisitor
+        implements ModuleVisitor
     {
         public Type type;
         public ServiceReference<T> service;
@@ -664,7 +667,7 @@ public class ModuleInstance
     }
 
     class ServiceReferencesFinder<T>
-            implements ModuleVisitor
+        implements ModuleVisitor
     {
         public Type type;
         public List<ServiceReference<T>> services = new ArrayList<ServiceReference<T>>();

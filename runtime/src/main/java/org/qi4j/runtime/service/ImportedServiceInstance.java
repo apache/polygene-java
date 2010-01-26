@@ -24,9 +24,9 @@ public final class ImportedServiceInstance<T>
     private final T instance;
     private final ServiceImporter importer;
 
-
     public ImportedServiceInstance( T instance,
-                                    ServiceImporter importer )
+                                    ServiceImporter importer
+    )
     {
         this.importer = importer;
         this.instance = instance;

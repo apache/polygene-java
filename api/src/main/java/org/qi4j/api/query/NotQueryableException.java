@@ -19,13 +19,13 @@ package org.qi4j.api.query;
 
 import java.lang.reflect.Method;
 import org.qi4j.api.entity.Queryable;
-import org.qi4j.api.query.QueryException;
 
 /**
  * Thrown in case that a non queryable type or accessor (marked with @Queriable(false)) is used during query building,
- * or when non-Property, non-Associations are trying to be queried (possibly can not happen). 
+ * or when non-Property, non-Associations are trying to be queried (possibly can not happen).
  */
-public class NotQueryableException extends QueryException
+public class NotQueryableException
+    extends QueryException
 {
 
     /**
@@ -42,6 +42,7 @@ public class NotQueryableException extends QueryException
      * Verify that the provided accessor method has not been marked with a Queryable(false).
      *
      * @param accessor accessor method
+     *
      * @throws NotQueryableException - If accessor method has been marked as not queryable
      */
     public static void throwIfNotQueryable( final Method accessor )
@@ -64,6 +65,7 @@ public class NotQueryableException extends QueryException
      * Verify that the provided type has not been marked with a Queryable(false).
      *
      * @param type a type
+     *
      * @throws NotQueryableException - If type has been marked as not queryable
      */
     public static void throwIfNotQueryable( final Class<?> type )
@@ -79,5 +81,4 @@ public class NotQueryableException extends QueryException
             );
         }
     }
-
 }

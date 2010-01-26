@@ -15,11 +15,9 @@
 package org.qi4j.runtime.injection;
 
 import java.io.Serializable;
-import static junit.framework.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
-import static org.qi4j.api.common.Visibility.*;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.object.ObjectBuilderFactory;
@@ -33,6 +31,9 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.bootstrap.SingletonAssembler;
 
+import static junit.framework.Assert.*;
+import static org.qi4j.api.common.Visibility.*;
+
 /**
  * Test the @Service injection annotation
  */
@@ -44,7 +45,8 @@ public class ServiceInjectionTest
     {
         SingletonAssembler assembly = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
                 module.addServices( MyServiceComposite.class ).setMetaInfo( new ServiceName( "Foo" ) );
                 module.addServices( MyServiceComposite.class ).setMetaInfo( new ServiceName( "Bar" ) );
@@ -72,7 +74,8 @@ public class ServiceInjectionTest
     {
         SingletonAssembler assembly = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
                 module.addServices( MyServiceComposite.class ).setMetaInfo( new ServiceName( "Foo" ) );
                 module.addObjects( ServiceUser.class );
@@ -94,7 +97,8 @@ public class ServiceInjectionTest
     {
         SingletonAssembler assembly = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
                 module.addServices( MyServiceComposite.class ).setMetaInfo( new ServiceName( "Foo" ) );
                 LayerAssembly layerAssembly = module.layerAssembly();
@@ -120,7 +124,8 @@ public class ServiceInjectionTest
         // No service fulfils the dependency injection -> fail to create application
         new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
                 module.addObjects( ServiceUser.class );
             }
@@ -152,12 +157,18 @@ public class ServiceInjectionTest
     {
         @Service
         MyService service;
-        @Service MyServiceComposite serviceComposite;
-        @Service Iterable<MyService> services;
-        @Service ServiceReference<MyService> serviceRef;
-        @Service Iterable<ServiceReference<MyService>> serviceRefs;
+        @Service
+        MyServiceComposite serviceComposite;
+        @Service
+        Iterable<MyService> services;
+        @Service
+        ServiceReference<MyService> serviceRef;
+        @Service
+        Iterable<ServiceReference<MyService>> serviceRefs;
 
-        @Optional @Service MyServiceMixin optionalService12;
+        @Optional
+        @Service
+        MyServiceMixin optionalService12;
 
         public String testSingle()
         {

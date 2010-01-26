@@ -19,7 +19,8 @@ import org.qi4j.api.entity.EntityReference;
  * This exception indicates that the requested Entity with the given
  * identity does not exist.
  */
-public class NoSuchEntityException extends UnitOfWorkException
+public class NoSuchEntityException
+    extends UnitOfWorkException
 {
     private final EntityReference identity;
 
@@ -33,7 +34,8 @@ public class NoSuchEntityException extends UnitOfWorkException
         return identity;
     }
 
-    @Override public String getMessage()
+    @Override
+    public String getMessage()
     {
         return "Could not find entity (" + identity() + ")";
     }

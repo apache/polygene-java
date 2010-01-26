@@ -41,6 +41,7 @@ public interface Query<T>
      * then they will be applied in order.
      *
      * @param segments the segments to order by
+     *
      * @return the Query
      */
     Query<T> orderBy( OrderBy... segments );
@@ -49,6 +50,7 @@ public interface Query<T>
      * Set the index of the first result. Default is 0 (zero).
      *
      * @param firstResult which index to use as the first one
+     *
      * @return the Query
      */
     Query<T> firstResult( int firstResult );
@@ -58,6 +60,7 @@ public interface Query<T>
      * there is no limit set.
      *
      * @param maxResults that shouldbe returned
+     *
      * @return the query
      */
     Query<T> maxResults( int maxResults );
@@ -67,6 +70,7 @@ public interface Query<T>
      * executes the Query.
      *
      * @return the first found Entity
+     *
      * @throws QueryExecutionException if the query fails
      */
     T find()
@@ -77,6 +81,7 @@ public interface Query<T>
      *
      * @param name  of the variable
      * @param value of the variable
+     *
      * @return the query
      */
     Query<T> setVariable( String name, Object value );
@@ -85,6 +90,7 @@ public interface Query<T>
      * Get the value of a named variable.
      *
      * @param name of the variable
+     *
      * @return value of the variable
      */
     <V> V getVariable( String name );
@@ -101,6 +107,7 @@ public interface Query<T>
      * This executes the Query.
      *
      * @return result count
+     *
      * @throws QueryExecutionException if the query fails
      */
     long count()

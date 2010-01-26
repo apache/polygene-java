@@ -34,7 +34,8 @@ public class ApplicationAssemblerAdapter
         this.assemblers = assemblers;
     }
 
-    public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
+    public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
+        throws AssemblyException
     {
         return applicationFactory.newApplicationAssembly( assemblers );
     }

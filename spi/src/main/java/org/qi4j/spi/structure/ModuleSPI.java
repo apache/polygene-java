@@ -22,7 +22,8 @@ import org.qi4j.spi.value.ValueDescriptor;
 /**
  * JAVADOC
  */
-public interface ModuleSPI extends Module
+public interface ModuleSPI
+    extends Module
 {
     TransientDescriptor transientDescriptor( String typeName );
 

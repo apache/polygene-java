@@ -18,7 +18,6 @@
 
 package org.qi4j.runtime.unitofwork;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
@@ -30,9 +29,13 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.AbstractQi4jTest;
 
-public class RemovalTest extends AbstractQi4jTest
+import static org.junit.Assert.*;
+
+public class RemovalTest
+    extends AbstractQi4jTest
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addServices( MemoryEntityStoreService.class );
         module.addEntities( Abc.class );
@@ -60,7 +63,6 @@ public class RemovalTest extends AbstractQi4jTest
                 uow.discard();
             }
         }
-
     }
 
     @Test
@@ -91,7 +93,6 @@ public class RemovalTest extends AbstractQi4jTest
         {
             uow.discard();
         }
-
     }
 
     @Test
@@ -123,7 +124,6 @@ public class RemovalTest extends AbstractQi4jTest
         }
     }
 
-
     @Test
     public void givenEntityCreatedWhenRemovingEntityBeforeCompletingUowThenFindNewEntityShouldNotExist()
         throws Exception
@@ -148,10 +148,10 @@ public class RemovalTest extends AbstractQi4jTest
         {
             uow.discard();
         }
-
     }
 
-    public interface Abc extends EntityComposite
+    public interface Abc
+        extends EntityComposite
     {
         Property<String> name();
     }

@@ -21,6 +21,7 @@ import org.qi4j.api.entity.Identity;
  * All Composites being used to implement Services
  * must extend this interface.
  */
-public interface ServiceComposite extends Identity, Composite
+public interface ServiceComposite
+    extends Identity, Composite
 {
 }

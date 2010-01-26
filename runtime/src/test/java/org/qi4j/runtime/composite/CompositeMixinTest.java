@@ -17,13 +17,14 @@
  */
 package org.qi4j.runtime.composite;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+
+import static org.junit.Assert.*;
 
 /**
  * Test CompositeMixin implementation
@@ -32,7 +33,8 @@ public class CompositeMixinTest
     extends AbstractQi4jTest
 {
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addTransients( TestComposite.class );
     }
@@ -46,7 +48,8 @@ public class CompositeMixinTest
         assertEquals( TestComposite.class, compositeType );
     }
 
-    public interface TestComposite extends TransientComposite
+    public interface TestComposite
+        extends TransientComposite
     {
     }
 }

@@ -21,8 +21,8 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
 /**
  * Provide Configurations for Services. A Service that wants to be configurable
@@ -57,14 +57,21 @@ public interface Configuration<T>
     void save();
 
     // Implementation of Configuration
+
     public class ConfigurationMixin<T>
         implements Configuration<T>, Activatable
     {
         private T configuration;
         private UnitOfWork uow;
-        private @Structure Qi4j api;
-        private @This ServiceComposite me;
-        private @Structure UnitOfWorkFactory uowf;
+        private
+        @Structure
+        Qi4j api;
+        private
+        @This
+        ServiceComposite me;
+        private
+        @Structure
+        UnitOfWorkFactory uowf;
 
         public ConfigurationMixin()
             throws Exception
@@ -115,12 +122,14 @@ public interface Configuration<T>
             }
         }
 
-        public void activate() throws Exception
+        public void activate()
+            throws Exception
         {
             refresh();
         }
 
-        public void passivate() throws Exception
+        public void passivate()
+            throws Exception
         {
         }
     }

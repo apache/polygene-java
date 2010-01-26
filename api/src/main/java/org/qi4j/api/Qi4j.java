@@ -31,6 +31,7 @@ public interface Qi4j
      * before handing it out for others to use.
      *
      * @param composite instance reference injected in Modified using @This
+     *
      * @return the dereferenced Composite
      */
     <T> T dereference( T composite );
@@ -45,13 +46,15 @@ public interface Qi4j
      *
      * <p>If there are multiple super composites, this method will only return the first
      * one found.</p>
-     * 
+     *
      * @param compositeClass the Composite type whose super Composite should be returned
+     *
      * @return the super Composite of the given Composite, or null if it does not have one
      */
     <S extends Composite, T extends S> Class<S> getSuperComposite( Class<T> compositeClass );
 
-    /** Finds the Configuration instance of a service.
+    /**
+     * Finds the Configuration instance of a service.
      * <p>This is used by ConfigurationMixin to figure out the configuration instance used by
      * a Service using {@link org.qi4j.api.configuration.Configuration}, and should not be
      * used directly by client code.</p>
@@ -59,11 +62,13 @@ public interface Qi4j
      * <p>If the Configuration entity doesn't exist in the visible EntityStore, then a properties
      * file with the name of the service identifier will be located on the classpath, and the
      * values used to create the Configuration instance, which will then be saved to the EntityStore
-     * for future use. That means that the properties file is <b>only</b> used 
+     * for future use. That means that the properties file is <b>only</b> used
      *
      * @param serviceComposite the service instance
      * @param uow              the UnitOfWork from which the configuration will be loaded
+     *
      * @return configuration instance
+     *
      * @throws InstantiationException thrown if the configuration cannot be instantiated
      */
     <T> T getConfigurationInstance( ServiceComposite serviceComposite, UnitOfWork uow )
@@ -75,6 +80,7 @@ public interface Qi4j
      * Returns the Module where the UnitOfWork belongs.
      *
      * @param uow The UnitOfWork to be checked.
+     *
      * @return The Module instance where the UnitOfWork belongs.
      */
     Module getModule( UnitOfWork uow );
@@ -83,6 +89,7 @@ public interface Qi4j
      * Returns the Module where the Composite belongs.
      *
      * @param composite The Composite to be checked.
+     *
      * @return The Module instance where the Composite belongs.
      */
     Module getModule( Composite composite );
@@ -91,8 +98,8 @@ public interface Qi4j
      * Returns the Module where the service is located.
      *
      * @param service The service to be checked.
+     *
      * @return The Module instance where the Composite belongs.
      */
     Module getModule( ServiceReference service );
-
 }

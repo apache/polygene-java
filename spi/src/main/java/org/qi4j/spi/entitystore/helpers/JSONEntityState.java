@@ -16,6 +16,7 @@
  */
 package org.qi4j.spi.entitystore.helpers;
 
+import java.io.Serializable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,13 +32,11 @@ import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 
-import java.io.Serializable;
-
 /**
  * Standard implementation of EntityState.
  */
 public final class JSONEntityState
-        implements EntityState, Serializable
+    implements EntityState, Serializable
 {
     protected DefaultEntityStoreUnitOfWork unitOfWork;
 
@@ -50,14 +49,18 @@ public final class JSONEntityState
 
     protected final JSONObject state;
 
-    public JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork, EntityReference identity, EntityDescriptor entityDescriptor, JSONObject initialState )
+    public JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
+                            EntityReference identity,
+                            EntityDescriptor entityDescriptor,
+                            JSONObject initialState
+    )
     {
         this( unitOfWork, "",
-                System.currentTimeMillis(),
-                identity,
-                EntityStatus.NEW,
-                entityDescriptor,
-                initialState );
+              System.currentTimeMillis(),
+              identity,
+              EntityStatus.NEW,
+              entityDescriptor,
+              initialState );
     }
 
     public JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
@@ -66,7 +69,8 @@ public final class JSONEntityState
                             EntityReference identity,
                             EntityStatus status,
                             EntityDescriptor entityDescriptor,
-                            JSONObject state )
+                            JSONObject state
+    )
     {
         this.unitOfWork = unitOfWork;
         this.version = version;
@@ -78,6 +82,7 @@ public final class JSONEntityState
     }
 
     // EntityState implementation
+
     public final String version()
     {
         return version;
@@ -98,16 +103,21 @@ public final class JSONEntityState
         try
         {
             Object jsonValue = state.getJSONObject( "properties" ).opt( stateName.name() );
-            if (jsonValue == null || jsonValue == JSONObject.NULL)
+            if( jsonValue == null || jsonValue == JSONObject.NULL )
             {
                 return null;
-            } else
+            }
+            else
             {
-                PropertyDescriptor propertyDescriptor = entityDescriptor.state().getPropertyByQualifiedName( stateName );
-                Object value = ((PropertyTypeDescriptor) propertyDescriptor).propertyType().type().fromJSON( jsonValue, unitOfWork.module() );
+                PropertyDescriptor propertyDescriptor = entityDescriptor.state()
+                    .getPropertyByQualifiedName( stateName );
+                Object value = ( (PropertyTypeDescriptor) propertyDescriptor ).propertyType()
+                    .type()
+                    .fromJSON( jsonValue, unitOfWork.module() );
                 return value;
             }
-        } catch (JSONException e)
+        }
+        catch( JSONException e )
         {
             throw new EntityStoreException( e );
         }
@@ -118,17 +128,20 @@ public final class JSONEntityState
         try
         {
             Object jsonValue;
-            if (newValue == null)
+            if( newValue == null )
             {
                 jsonValue = JSONObject.NULL;
-            } else
+            }
+            else
             {
-                PropertyTypeDescriptor propertyDescriptor = entityDescriptor.state().getPropertyByQualifiedName( stateName );
+                PropertyTypeDescriptor propertyDescriptor = entityDescriptor.state()
+                    .getPropertyByQualifiedName( stateName );
                 jsonValue = propertyDescriptor.propertyType().type().toJSON( newValue );
             }
             state.getJSONObject( "properties" ).put( stateName.name(), jsonValue );
             markUpdated();
-        } catch (JSONException e)
+        }
+        catch( JSONException e )
         {
             throw new EntityStoreException( e );
         }
@@ -139,12 +152,15 @@ public final class JSONEntityState
         try
         {
             Object jsonValue = state.getJSONObject( "associations" ).opt( stateName.name() );
-            if (jsonValue == null)
+            if( jsonValue == null )
+            {
                 return null;
+            }
 
             EntityReference value = jsonValue == JSONObject.NULL ? null : EntityReference.parseEntityReference( (String) jsonValue );
             return value;
-        } catch (JSONException e)
+        }
+        catch( JSONException e )
         {
             throw new EntityStoreException( e );
         }
@@ -154,9 +170,11 @@ public final class JSONEntityState
     {
         try
         {
-            state.getJSONObject( "associations" ).put( stateName.name(), newEntity == null ? null : newEntity.identity() );
+            state.getJSONObject( "associations" )
+                .put( stateName.name(), newEntity == null ? null : newEntity.identity() );
             markUpdated();
-        } catch (JSONException e)
+        }
+        catch( JSONException e )
         {
             throw new EntityStoreException( e );
         }
@@ -168,13 +186,14 @@ public final class JSONEntityState
         {
             JSONObject manyAssociations = state.getJSONObject( "manyassociations" );
             JSONArray jsonValues = manyAssociations.optJSONArray( stateName.name() );
-            if (jsonValues == null)
+            if( jsonValues == null )
             {
                 jsonValues = new JSONArray();
                 manyAssociations.put( stateName.name(), jsonValues );
             }
             return new JSONManyAssociationState( this, jsonValues );
-        } catch (JSONException e)
+        }
+        catch( JSONException e )
         {
             throw new EntityStoreException( e );
         }
@@ -219,7 +238,7 @@ public final class JSONEntityState
 
     public void markUpdated()
     {
-        if (status == EntityStatus.LOADED)
+        if( status == EntityStatus.LOADED )
         {
             status = EntityStatus.UPDATED;
         }

@@ -18,7 +18,6 @@
 
 package org.qi4j.runtime.bootstrap;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
@@ -33,6 +32,8 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+
+import static org.junit.Assert.*;
 
 public class DereferenceForBootstrappedConcernsTest
     extends AbstractQi4jTest

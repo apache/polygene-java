@@ -28,6 +28,7 @@ package org.qi4j.api.composite;
  * <li>equals/hashCode is delegated to a single Mixin implementing the methods, like any other method</li>
  * </ul>
  */
-public interface TransientComposite extends Composite
+public interface TransientComposite
+    extends Composite
 {
 }

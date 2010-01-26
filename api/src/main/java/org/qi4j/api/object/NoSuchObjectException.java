@@ -15,7 +15,8 @@ package org.qi4j.api.object;
 
 import org.qi4j.api.common.InvalidApplicationException;
 
-public class NoSuchObjectException extends InvalidApplicationException
+public class NoSuchObjectException
+    extends InvalidApplicationException
 {
     private static final long serialVersionUID = -1121690536365682511L;
 

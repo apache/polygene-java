@@ -23,7 +23,8 @@ import java.lang.reflect.Method;
 /**
  * Base class for generic SideEffects.
  */
-public abstract class GenericSideEffect extends SideEffectOf<InvocationHandler>
+public abstract class GenericSideEffect
+    extends SideEffectOf<InvocationHandler>
     implements InvocationHandler
 {
 
@@ -43,6 +44,7 @@ public abstract class GenericSideEffect extends SideEffectOf<InvocationHandler>
      *
      * @param method the method that was invoked
      * @param args   the arguments of the method invocation
+     *
      * @throws Throwable - the exception to throw from the method invocation on the proxy instance. The exception's type
      *                   must be assignable either to any of the exception types declared in the throws clause of the
      *                   interface method or to the unchecked exception types {code}java.lang.RuntimeException{code}
@@ -55,5 +57,4 @@ public abstract class GenericSideEffect extends SideEffectOf<InvocationHandler>
         throws Throwable
     {
     }
-
 }

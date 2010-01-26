@@ -39,15 +39,17 @@ import org.qi4j.test.AbstractQi4jTest;
 public class AssociationDecoratorTest
     extends AbstractQi4jTest
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addTransients( Employees.class, Boss.class );
         module.addEntities( CompanyEntity.class, Person.class );
-        module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class);
+        module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
     }
 
     @Test
-    public void testAssociationDecorator() throws Exception
+    public void testAssociationDecorator()
+        throws Exception
     {
 
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
@@ -80,7 +82,6 @@ public class AssociationDecoratorTest
             unitOfWork.discard();
             throw e;
         }
-
     }
 
     public interface CompanyEntity
@@ -88,7 +89,8 @@ public class AssociationDecoratorTest
     {
         Employees employees();
 
-        @Optional Boss boss();
+        @Optional
+        Boss boss();
     }
 
     public interface Person
@@ -99,13 +101,15 @@ public class AssociationDecoratorTest
 
     @Mixins( DecoratorMixin.class )
     @Concerns( EmployeesAuditConcern.class )
-    public interface Employees extends ManyAssociation<Person>, TransientComposite
+    public interface Employees
+        extends ManyAssociation<Person>, TransientComposite
     {
     }
 
     @Mixins( DecoratorMixin.class )
     @Concerns( BossAuditSideEffect.class )
-    public interface Boss extends Association<Person>, TransientComposite
+    public interface Boss
+        extends Association<Person>, TransientComposite
     {
     }
 
@@ -130,7 +134,8 @@ public class AssociationDecoratorTest
         extends SideEffectOf<Employees>
         implements Boss
     {
-        public void set( Person boss ) throws IllegalArgumentException
+        public void set( Person boss )
+            throws IllegalArgumentException
         {
             System.out.println( boss.name() + " is the new boss" );
         }

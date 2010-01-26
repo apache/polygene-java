@@ -36,6 +36,7 @@ abstract class AssociationNullPredicateImpl
      * Constructor.
      *
      * @param associationReference association reference; cannot be null
+     *
      * @throws IllegalArgumentException - If association reference is null
      */
     AssociationNullPredicateImpl( final AssociationReference associationReference )
@@ -54,5 +55,4 @@ abstract class AssociationNullPredicateImpl
     {
         return associationReference;
     }
-
 }

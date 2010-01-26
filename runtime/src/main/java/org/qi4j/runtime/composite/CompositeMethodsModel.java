@@ -21,12 +21,12 @@ import java.util.HashSet;
 import java.util.Set;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.MissingMethodException;
-import org.qi4j.spi.util.MethodKeyMap;
-import org.qi4j.runtime.model.Binder;
 import org.qi4j.bootstrap.BindingException;
+import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.util.MethodKeyMap;
 
 /**
  * Model for Composite methods. This includes both private and public methods.
@@ -45,7 +45,8 @@ public final class CompositeMethodsModel
                                   ConstraintsModel constraintsModel,
                                   ConcernsDeclaration concernsModel,
                                   SideEffectsDeclaration sideEffectsModel,
-                                  AbstractMixinsModel mixinsModel )
+                                  AbstractMixinsModel mixinsModel
+    )
     {
         methods = new MethodKeyMap<CompositeMethodModel>();
         this.type = type;
@@ -57,7 +58,9 @@ public final class CompositeMethodsModel
     }
 
     // Binding
-    public void bind( Resolution resolution ) throws BindingException
+
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         for( CompositeMethodModel compositeMethodComposite : methods.values() )
         {
@@ -66,7 +69,13 @@ public final class CompositeMethodsModel
     }
 
     // Context
-    public Object invoke( MixinsInstance mixins, Object proxy, Method method, Object[] args, ModuleInstance moduleInstance )
+
+    public Object invoke( MixinsInstance mixins,
+                          Object proxy,
+                          Method method,
+                          Object[] args,
+                          ModuleInstance moduleInstance
+    )
         throws Throwable
     {
         CompositeMethodModel compositeMethod = methods.get( method );

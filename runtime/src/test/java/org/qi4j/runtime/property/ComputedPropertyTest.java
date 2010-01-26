@@ -14,8 +14,6 @@
 
 package org.qi4j.runtime.property;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.injection.scope.State;
@@ -27,6 +25,9 @@ import org.qi4j.api.property.Property;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /**
  * Tests for computed properties
@@ -61,7 +62,8 @@ public class ComputedPropertyTest
     }
 
     @Mixins( StorableVolumeMixin.class )
-    public interface StorableComposite extends Storable, TransientComposite
+    public interface StorableComposite
+        extends Storable, TransientComposite
     {
     }
 
@@ -80,14 +82,17 @@ public class ComputedPropertyTest
     public static abstract class StorableVolumeMixin
         implements Storable
     {
-        @This Storable s;
-        @State Property<Double> volume;
+        @This
+        Storable s;
+        @State
+        Property<Double> volume;
 
         public Property<Double> volume()
         {
             return new ComputedPropertyInstance<Double>( volume )
             {
-                @Override public Double get()
+                @Override
+                public Double get()
                 {
                     return s.width().get() * s.height().get() * s.depth().get();
                 }

@@ -18,7 +18,8 @@
 
 package org.qi4j.api.service;
 
-public class UnknownServiceReferenceType extends RuntimeException
+public class UnknownServiceReferenceType
+    extends RuntimeException
 {
     private ServiceReference ref;
 

@@ -19,7 +19,8 @@ import java.io.Serializable;
 /**
  * JAVADOC
  */
-public final class SideEffectDeclaration extends AbstractModifierDeclaration
+public final class SideEffectDeclaration
+    extends AbstractModifierDeclaration
     implements Serializable
 {
     public SideEffectDeclaration( Class sideEffectClass, Class declaredIn )
@@ -27,7 +28,8 @@ public final class SideEffectDeclaration extends AbstractModifierDeclaration
         super( sideEffectClass, declaredIn );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return "Side-effect " + super.toString();
     }

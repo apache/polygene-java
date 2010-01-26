@@ -14,9 +14,7 @@
 
 package org.qi4j.runtime.unitofwork;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
-import static org.qi4j.api.common.Visibility.*;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Identity;
@@ -41,6 +39,9 @@ import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.test.EntityTestAssembler;
+
+import static org.junit.Assert.*;
+import static org.qi4j.api.common.Visibility.*;
 
 /**
  * JAVADOC

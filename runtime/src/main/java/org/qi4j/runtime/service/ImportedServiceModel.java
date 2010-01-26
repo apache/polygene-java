@@ -47,7 +47,8 @@ public final class ImportedServiceModel
                                  Visibility visibility,
                                  Class<? extends ServiceImporter> serviceImporter,
                                  String identity,
-                                 MetaInfo metaInfo, String moduleName )
+                                 MetaInfo metaInfo, String moduleName
+    )
     {
         type = serviceType;
         this.visibility = visibility;
@@ -91,7 +92,6 @@ public final class ImportedServiceModel
     {
         modelVisitor.visit( this );
     }
-
 
     public boolean isServiceFor( Type serviceType, Visibility visibility )
     {
@@ -176,7 +176,6 @@ public final class ImportedServiceModel
                                            interfaces,
                                            serviceInvocationHandler );
         }
-
     }
 
     @Override

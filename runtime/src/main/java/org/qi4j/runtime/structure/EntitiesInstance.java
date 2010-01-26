@@ -39,14 +39,15 @@ public class EntitiesInstance
         this.moduleInstance = moduleInstance;
     }
 
-    public void activate() throws Exception
+    public void activate()
+        throws Exception
     {
     }
 
-    public void passivate() throws Exception
+    public void passivate()
+        throws Exception
     {
     }
-
 
     public EntitiesModel model()
     {
@@ -54,6 +55,7 @@ public class EntitiesInstance
     }
 
     // todo DCL??
+
     public EntityStore entityStore()
     {
         synchronized( this )
@@ -72,13 +74,15 @@ public class EntitiesInstance
     }
 
     // todo DCL??
+
     public IdentityGenerator identityGenerator()
     {
         synchronized( this )
         {
             if( generator == null )
             {
-                ServiceReference<IdentityGenerator> service = moduleInstance.serviceFinder().findService( IdentityGenerator.class );
+                ServiceReference<IdentityGenerator> service = moduleInstance.serviceFinder()
+                    .findService( IdentityGenerator.class );
                 if( service == null )
                 {
                     return null;

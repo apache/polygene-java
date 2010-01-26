@@ -23,9 +23,9 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.HashSet;
-import org.qi4j.spi.util.SerializationUtil;
 
-public final class MethodSet extends HashSet<Method>
+public final class MethodSet
+    extends HashSet<Method>
     implements Externalizable
 {
     static final long serialVersionUID = 1L;
@@ -50,5 +50,4 @@ public final class MethodSet extends HashSet<Method>
             add( method );
         }
     }
-
 }

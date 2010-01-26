@@ -17,7 +17,8 @@ package org.qi4j.runtime.injection.provider;
 /**
  * JAVADOC
  */
-public class InjectionProviderException extends RuntimeException
+public class InjectionProviderException
+    extends RuntimeException
 {
     public InjectionProviderException( String string )
     {

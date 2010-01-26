@@ -13,10 +13,10 @@
 package org.qi4j.api.injection.scope;
 
 import java.lang.annotation.Annotation;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests public api exposed by This annotation.
@@ -26,7 +26,8 @@ public class ThisTest
 {
 
     @Test
-    public void retention() throws NoSuchFieldException
+    public void retention()
+        throws NoSuchFieldException
     {
         Annotation[] annotations = Annotated.class.getDeclaredField( "uses" ).getDeclaredAnnotations();
         assertNotNull( "annotations should not be null", annotations );
@@ -36,8 +37,10 @@ public class ThisTest
 
     private static class Annotated
     {
-        @This String uses;
-        @Optional @This String usesOptional;
+        @This
+        String uses;
+        @Optional
+        @This
+        String usesOptional;
     }
-
 }

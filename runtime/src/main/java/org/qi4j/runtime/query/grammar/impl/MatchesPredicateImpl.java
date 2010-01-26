@@ -34,11 +34,13 @@ public final class MatchesPredicateImpl
      *
      * @param propertyReference property reference; cannot be null
      * @param valueExpression   value expression; cannot be null
+     *
      * @throws IllegalArgumentException - If property reference is null
      *                                  - If value expression is null
      */
     public MatchesPredicateImpl( final PropertyReference<String> propertyReference,
-                                 final ValueExpression<String> valueExpression )
+                                 final ValueExpression<String> valueExpression
+    )
     {
         super( propertyReference, valueExpression );
     }
@@ -69,5 +71,4 @@ public final class MatchesPredicateImpl
             .append( " )" )
             .toString();
     }
-
 }

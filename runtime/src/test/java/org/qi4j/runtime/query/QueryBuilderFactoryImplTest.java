@@ -17,8 +17,6 @@ package org.qi4j.runtime.query;
 
 import java.util.ArrayList;
 import java.util.List;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.composite.TransientBuilder;
@@ -26,10 +24,13 @@ import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
-import static org.qi4j.api.query.QueryExpressions.*;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import static org.qi4j.api.query.QueryExpressions.*;
 
 /**
  * JAVADOC
@@ -39,7 +40,8 @@ public class QueryBuilderFactoryImplTest
 {
     private List<TestComposite> composites;
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addTransients( TestComposite.class );
     }
@@ -56,7 +58,6 @@ public class QueryBuilderFactoryImplTest
         composites.add( newInstance( "C", 4 ) );
         composites.add( newInstance( "E", 5 ) );
         composites.add( newInstance( "A", 1 ) );
-
     }
 
     @Test
@@ -146,7 +147,8 @@ public class QueryBuilderFactoryImplTest
         return builder.newInstance();
     }
 
-    public interface TestComposite extends TransientComposite
+    public interface TestComposite
+        extends TransientComposite
     {
         Property<String> a();
 

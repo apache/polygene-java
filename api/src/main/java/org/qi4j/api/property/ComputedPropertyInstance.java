@@ -31,6 +31,7 @@ public abstract class ComputedPropertyInstance<T>
      * Construct an instance of {@code ComputedPropertyInstance}.
      *
      * @param aPropertyInfo The property info. This argument must not be {@code null}.
+     *
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} argument is {@code null}.
      */
     protected ComputedPropertyInstance( PropertyInfo aPropertyInfo )
@@ -55,6 +56,7 @@ public abstract class ComputedPropertyInstance<T>
      * Throws {@link IllegalArgumentException} exception.
      *
      * @param anIgnoredValue This value is ignored.
+     *
      * @throws IllegalArgumentException Thrown by default.
      */
     public void set( T anIgnoredValue )

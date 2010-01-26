@@ -70,6 +70,7 @@ public interface AssociationReference
      * Evaluates the association reference against a target object.
      *
      * @param target target object
+     *
      * @return associated instance from the target
      */
     Object eval( Object target );

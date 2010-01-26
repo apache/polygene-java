@@ -16,10 +16,10 @@ package org.qi4j.runtime.model;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import org.qi4j.runtime.composite.CompositeMethodModel;
 import org.qi4j.runtime.structure.ApplicationModel;
 import org.qi4j.runtime.structure.LayerModel;
 import org.qi4j.runtime.structure.ModuleModel;
-import org.qi4j.runtime.composite.CompositeMethodModel;
 import org.qi4j.spi.object.ObjectDescriptor;
 
 /**
@@ -40,7 +40,8 @@ public final class Resolution
                        ModuleModel module,
                        ObjectDescriptor objectDescriptor,
                        CompositeMethodModel method,
-                       Field field )
+                       Field field
+    )
     {
         this.application = application;
         this.layer = layer;

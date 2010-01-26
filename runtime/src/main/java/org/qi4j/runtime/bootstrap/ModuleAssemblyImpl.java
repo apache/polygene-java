@@ -109,7 +109,6 @@ public final class ModuleAssemblyImpl
         ValueDeclarationImpl valueDeclaration = new ValueDeclarationImpl( compositeTypes );
         valueDeclarations.add( valueDeclaration );
         return valueDeclaration;
-
     }
 
     public TransientDeclaration addTransients( Class<? extends TransientComposite>... compositeTypes )
@@ -201,7 +200,8 @@ public final class ModuleAssemblyImpl
         return metaInfoDeclaration.on( mixinType );
     }
 
-    public void visit( AssemblyVisitor visitor ) throws AssemblyException
+    public void visit( AssemblyVisitor visitor )
+        throws AssemblyException
     {
         visitor.visitModule( this );
 

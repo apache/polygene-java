@@ -18,8 +18,8 @@ import java.util.List;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
-import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.runtime.service.Activator;
+import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.spi.structure.DescriptorVisitor;
 

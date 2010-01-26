@@ -36,6 +36,7 @@ public interface Assembler
      * more Modules.
      *
      * @param module the Module to assemble
+     *
      * @throws AssemblyException thrown if the assembler tries to do something illegal
      */
     void assemble( ModuleAssembly module )

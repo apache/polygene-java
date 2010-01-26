@@ -15,10 +15,8 @@
 package org.qi4j.spi.entitystore;
 
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.entitystore.EntityNotFoundException;
-import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.spi.entity.EntityState;
 
 /**
  * JAVADOC
@@ -35,7 +33,9 @@ public interface EntityStoreUnitOfWork
      *
      * @param anIdentity       the identity of the entity
      * @param entityDescriptor entity descriptor
+     *
      * @return The new entity state.
+     *
      * @throws EntityStoreException Thrown if creational fails.
      */
     EntityState newEntityState( EntityReference anIdentity, EntityDescriptor entityDescriptor )
@@ -46,7 +46,9 @@ public interface EntityStoreUnitOfWork
      * if the entity with given {@code anIdentity} is not found.
      *
      * @param anIdentity The entity identity. This argument must not be {@code null}.
+     *
      * @return Entity state given the composite descriptor and identity.
+     *
      * @throws EntityStoreException    thrown if retrieval failed.
      * @throws EntityNotFoundException if requested entity does not exist
      */

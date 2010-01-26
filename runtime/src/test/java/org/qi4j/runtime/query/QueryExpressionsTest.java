@@ -19,9 +19,6 @@
 package org.qi4j.runtime.query;
 
 import org.easymock.EasyMock;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.property.Property;
@@ -35,6 +32,9 @@ import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.query.grammar.SingleValueExpression;
 import org.qi4j.api.query.grammar.VariableValueExpression;
 import org.qi4j.runtime.query.grammar.impl.VariableValueExpressionImpl;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /**
  * Unit tests for {@link org.qi4j.api.query.QueryExpressions}.
@@ -116,5 +116,4 @@ public class QueryExpressionsTest
     {
 
     }
-
 }

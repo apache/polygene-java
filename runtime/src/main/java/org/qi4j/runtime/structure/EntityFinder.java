@@ -19,7 +19,6 @@ import java.util.List;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.runtime.entity.EntityModel;
-import org.qi4j.spi.entity.EntityDescriptor;
 
 /**
  * JAVADOC
@@ -72,7 +71,7 @@ class EntityFinder
 
     EntityModel getFoundModel()
     {
-        return models.get(0);
+        return models.get( 0 );
     }
 
     boolean noModelExist()

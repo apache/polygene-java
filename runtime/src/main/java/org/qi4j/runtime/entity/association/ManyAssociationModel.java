@@ -33,7 +33,6 @@ import org.qi4j.api.entity.association.AssociationInfo;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Immutable;
-import static org.qi4j.api.util.Classes.*;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
@@ -42,6 +41,8 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.util.SerializationUtil;
+
+import static org.qi4j.api.util.Classes.*;
 
 /**
  * JAVADOC

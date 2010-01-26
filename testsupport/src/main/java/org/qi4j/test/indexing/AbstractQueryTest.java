@@ -18,9 +18,13 @@
  */
 package org.qi4j.test.indexing;
 
-import static org.hamcrest.CoreMatchers.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -28,8 +32,6 @@ import org.qi4j.api.query.NotQueryableException;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
-import static org.qi4j.api.query.QueryExpressions.*;
-import static org.qi4j.api.query.QueryExpressions.not;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -41,13 +43,6 @@ import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.IndexExporter;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.test.EntityTestAssembler;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.qi4j.test.indexing.model.Address;
 import org.qi4j.test.indexing.model.City;
 import org.qi4j.test.indexing.model.Domain;
@@ -68,6 +63,11 @@ import org.qi4j.test.indexing.model.entities.DomainEntity;
 import org.qi4j.test.indexing.model.entities.FemaleEntity;
 import org.qi4j.test.indexing.model.entities.MaleEntity;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import static org.qi4j.api.query.QueryExpressions.*;
+import static org.qi4j.api.query.QueryExpressions.not;
+
 public abstract class AbstractQueryTest
 {
     private SingletonAssembler assembler;
@@ -75,7 +75,8 @@ public abstract class AbstractQueryTest
     protected UnitOfWork unitOfWork;
 
     @Before
-    public void setUp() throws UnitOfWorkCompletionException
+    public void setUp()
+        throws UnitOfWorkCompletionException
     {
         assembler = new SingletonAssembler()
         {
@@ -115,7 +116,8 @@ public abstract class AbstractQueryTest
     protected abstract void tearDownTest();
 
     @After
-    public void tearDown() throws Exception
+    public void tearDown()
+        throws Exception
     {
         tearDownTest();
         if( assembler != null )
@@ -126,7 +128,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void showNetwork() throws IOException
+    public void showNetwork()
+        throws IOException
     {
         ServiceFinder serviceFinder = assembler.serviceFinder();
         IndexExporter indexerExporter =
@@ -135,7 +138,8 @@ public abstract class AbstractQueryTest
     }
 
     private static void verifyUnorderedResults( final Iterable<? extends Nameable> results,
-                                                final String... names )
+                                                final String... names
+    )
     {
         final List<String> expected = new ArrayList<String>( Arrays.asList( names ) );
 
@@ -149,11 +153,11 @@ public abstract class AbstractQueryTest
         {
             fail( notReturned + " was expected but not returned" );
         }
-
     }
 
     private static void verifyOrderedResults( final Iterable<? extends Nameable> results,
-                                              final String... names )
+                                              final String... names
+    )
     {
         final List<String> expected = new ArrayList<String>( Arrays.asList( names ) );
         final List<String> actual = new ArrayList<String>();
@@ -166,7 +170,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script01() throws EntityFinderException
+    public void script01()
+        throws EntityFinderException
     {
         final QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         final Query<Person> query = qb.newQuery( unitOfWork );
@@ -175,7 +180,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script02() throws EntityFinderException
+    public void script02()
+        throws EntityFinderException
     {
         final QueryBuilder<Domain> qb = qbf.newQueryBuilder( Domain.class );
         final Nameable nameable = templateFor( Nameable.class );
@@ -187,7 +193,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script03() throws EntityFinderException
+    public void script03()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         Query<Nameable> query = qb.newQuery( unitOfWork );
@@ -201,7 +208,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script04() throws EntityFinderException
+    public void script04()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person personTemplate = templateFor( Person.class );
@@ -214,7 +222,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script05() throws EntityFinderException
+    public void script05()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -226,7 +235,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script06() throws EntityFinderException
+    public void script06()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -238,7 +248,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script07() throws EntityFinderException
+    public void script07()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         Person person = templateFor( Person.class );
@@ -253,7 +264,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script08() throws EntityFinderException
+    public void script08()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -268,7 +280,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script09() throws EntityFinderException
+    public void script09()
+        throws EntityFinderException
     {
         QueryBuilder<Female> qb = qbf.newQueryBuilder( Female.class );
         Person person = templateFor( Person.class );
@@ -283,7 +296,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script10() throws EntityFinderException
+    public void script10()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -297,7 +311,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script11() throws EntityFinderException
+    public void script11()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -309,7 +324,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script12() throws EntityFinderException
+    public void script12()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -321,7 +337,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script13() throws EntityFinderException
+    public void script13()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Male person = templateFor( Male.class );
@@ -333,7 +350,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script14() throws EntityFinderException
+    public void script14()
+        throws EntityFinderException
     {
         QueryBuilder<Male> qb = qbf.newQueryBuilder( Male.class );
         Male person = templateFor( Male.class );
@@ -345,7 +363,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script15() throws EntityFinderException
+    public void script15()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Male person = templateFor( Male.class );
@@ -357,7 +376,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script16() throws EntityFinderException
+    public void script16()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return only 2 entities
@@ -373,7 +393,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script17() throws EntityFinderException
+    public void script17()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return only 3 entities starting with forth one
@@ -390,7 +411,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script18() throws EntityFinderException
+    public void script18()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return all Nameable entities sorted by name
@@ -405,7 +427,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script19() throws EntityFinderException
+    public void script19()
+        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = qbf.newQueryBuilder( Nameable.class );
         // should return all Nameable entities with a name > "D" sorted by name
@@ -422,7 +445,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script20() throws EntityFinderException
+    public void script20()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         // should return all Persons born after 1973 (Ann and Joe Doe) sorted descending by name
@@ -439,7 +463,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script21() throws EntityFinderException
+    public void script21()
+        throws EntityFinderException
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         // should return all Persons sorted by name of the city they were born, and then by year they were born
@@ -485,7 +510,8 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script24() throws EntityFinderException
+    public void script24()
+        throws EntityFinderException
     {
         final QueryBuilder<Domain> qb = qbf.newQueryBuilder( Domain.class );
         final Nameable nameable = templateFor( Nameable.class );
@@ -597,7 +623,7 @@ public abstract class AbstractQueryTest
         Person person = templateFor( Person.class );
         Domain gaming = unitOfWork.get( Domain.class, "Gaming" );
         Query<Person> query = qb.where(
-            contains( person.interests(), gaming)
+            contains( person.interests(), gaming )
         ).newQuery( unitOfWork );
         System.out.println( "*** script33: " + query );
 
@@ -608,10 +634,10 @@ public abstract class AbstractQueryTest
     public void script34()
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
-        Person person = templateFor(Person.class);
+        Person person = templateFor( Person.class );
         Female annDoe = unitOfWork.get( Female.class, "anndoe" );
-        Query<Person> query = qb.where( eq(person.mother(), annDoe) ).
-                newQuery( unitOfWork );
+        Query<Person> query = qb.where( eq( person.mother(), annDoe ) ).
+            newQuery( unitOfWork );
 
         verifyUnorderedResults( query, "Joe Doe" );
     }

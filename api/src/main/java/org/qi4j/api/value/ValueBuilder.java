@@ -27,6 +27,7 @@ public interface ValueBuilder<T>
      * Use given value as prototype for this value builder.
      *
      * @param value whose state should be copied to this builder
+     *
      * @return the builder itself
      */
     ValueBuilder<T> withPrototype( T value );
@@ -47,6 +48,7 @@ public interface ValueBuilder<T>
      * This is primarily used if you want to provide state for a private mixin type.
      *
      * @param mixinType the mixin which you want to provide state for
+     *
      * @return a proxy implementing the given mixin type
      */
     <K> K prototypeFor( Class<K> mixinType );
@@ -55,6 +57,7 @@ public interface ValueBuilder<T>
      * Create a new Composite instance.
      *
      * @return a new Composite instance
+     *
      * @throws org.qi4j.api.common.ConstructionException
      *          thrown if it was not possible to instantiate the Composite
      */

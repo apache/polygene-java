@@ -38,7 +38,8 @@ import org.qi4j.spi.structure.DescriptorVisitor;
 /**
  * Adapter of modelvisitor for the SPI descriptors
  */
-public class DescriptorModelVisitor extends ModelVisitor
+public class DescriptorModelVisitor
+    extends ModelVisitor
 {
     private DescriptorVisitor visitor;
 

@@ -25,7 +25,9 @@ public interface ObjectBuilderFactory
      * Create a builder for creating new objects of the given type.
      *
      * @param type an object class which will be instantiated.
+     *
      * @return an {@code ObjectBuilder} for creation of objects of the given type.
+     *
      * @throws org.qi4j.api.common.ConstructionException
      *                               Thrown if instantiation fails.
      * @throws NoSuchObjectException Thrown if {@code type} class is not an object.
@@ -37,7 +39,9 @@ public interface ObjectBuilderFactory
      * Create new objects of the given type.
      *
      * @param type an object class which will be instantiated.
+     *
      * @return new objects.
+     *
      * @throws ConstructionException Thrown if instantiation fails.
      * @throws NoSuchObjectException Thrown if {@code type} class is not an object.
      */

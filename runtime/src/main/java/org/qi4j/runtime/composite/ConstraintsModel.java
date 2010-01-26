@@ -24,6 +24,7 @@ import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.constraint.ConstraintImplementationNotFoundException;
 import org.qi4j.api.constraint.Constraints;
+
 import static org.qi4j.api.util.Classes.*;
 import static org.qi4j.spi.util.Annotations.*;
 
@@ -46,10 +47,13 @@ public final class ConstraintsModel
         {
             addConstraintDeclarations( anInterface );
         }
-
     }
 
-    public ValueConstraintsModel constraintsFor( Annotation[] constraintAnnotations, Type valueType, String name, boolean optional )
+    public ValueConstraintsModel constraintsFor( Annotation[] constraintAnnotations,
+                                                 Type valueType,
+                                                 String name,
+                                                 boolean optional
+    )
     {
         List<AbstractConstraintModel> constraintModels = new ArrayList<AbstractConstraintModel>();
         nextConstraint:

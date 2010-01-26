@@ -33,6 +33,7 @@ public final class InjectionContext
     private final ProxyReferenceInvocationHandler proxyHandler;
 
     // For mixins
+
     public InjectionContext( CompositeInstance compositeInstance, UsesInstance uses, StateHolder state )
     {
         this.compositeInstance = compositeInstance;
@@ -44,6 +45,7 @@ public final class InjectionContext
     }
 
     // For concerns and side-effects
+
     public InjectionContext( ModuleInstance moduleInstance, Object next, ProxyReferenceInvocationHandler proxyHandler )
     {
         this.compositeInstance = null;

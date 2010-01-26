@@ -17,15 +17,14 @@
  */
 package org.qi4j.test.indexing;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.bootstrap.SingletonAssembler;
-
-import java.util.ArrayList;
-import java.util.List;
 import org.qi4j.test.indexing.model.Account;
 import org.qi4j.test.indexing.model.Address;
 import org.qi4j.test.indexing.model.Cat;
@@ -43,7 +42,6 @@ import org.qi4j.test.indexing.model.entities.MaleEntity;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 class TestData
 {

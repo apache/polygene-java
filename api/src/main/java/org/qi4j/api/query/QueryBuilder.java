@@ -40,6 +40,7 @@ public interface QueryBuilder<T>
      * to create the expression.
      *
      * @param expressions the where clause
+     *
      * @return a new builder with the added where-clause
      */
     QueryBuilder<T> where( BooleanExpression expressions );
@@ -48,6 +49,7 @@ public interface QueryBuilder<T>
      * Create a new query with the declared where-clauses.
      *
      * @param unitOfWork the UoW in which the query is to be executed
+     *
      * @return a new Query instance
      */
     Query<T> newQuery( UnitOfWork unitOfWork );
@@ -56,8 +58,8 @@ public interface QueryBuilder<T>
      * Create a new query with the declared where-clauses that will be evaluated against the iterable entries.
      *
      * @param iterable collection of objects (composites?)
+     *
      * @return a new Query instance
      */
     Query<T> newQuery( Iterable<T> iterable );
-
 }

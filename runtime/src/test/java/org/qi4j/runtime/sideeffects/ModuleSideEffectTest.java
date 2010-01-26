@@ -34,7 +34,8 @@ public class ModuleSideEffectTest
 {
     public static boolean ok = false;
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addTransients( FooComposite.class ).withSideEffects( TraceSideEffect.class );
     }
@@ -47,7 +48,8 @@ public class ModuleSideEffectTest
     }
 
     @Mixins( FooMixin.class )
-    public interface FooComposite extends TransientComposite, Foo
+    public interface FooComposite
+        extends TransientComposite, Foo
     {
     }
 
@@ -68,7 +70,8 @@ public class ModuleSideEffectTest
     public static class TraceSideEffect
         extends GenericSideEffect
     {
-        public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+        public Object invoke( Object proxy, Method method, Object[] args )
+            throws Throwable
         {
             ok = true;
             Object result = this.result.invoke( proxy, method, args );

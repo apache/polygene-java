@@ -21,7 +21,8 @@ package org.qi4j.api.mixin;
  * This Exception is thrown when no visible Composite implements the MixinType that is
  * requested to be built in the builder.
  */
-public class MixinTypeNotAvailableException extends MixinMappingException
+public class MixinTypeNotAvailableException
+    extends MixinMappingException
 {
     private static final long serialVersionUID = 6664141678759594339L;
 

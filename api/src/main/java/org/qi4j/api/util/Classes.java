@@ -24,12 +24,13 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
-import static java.util.Arrays.*;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static java.util.Arrays.*;
 
 /**
  * Class-related utility methods
@@ -42,6 +43,7 @@ public final class Classes
      * is included twice in the list.
      *
      * @param type to extract interfaces from
+     *
      * @return set of interfaces of given type
      */
     public static Set<Class> interfacesOf( Type type )
@@ -68,6 +70,7 @@ public final class Classes
      * is included twice in the list.
      *
      * @param type to extract interfaces from
+     *
      * @return set of interfaces of given type
      */
     public static Set<Type> genericInterfacesOf( Type type )
@@ -138,7 +141,6 @@ public final class Classes
 
         return types;
     }
-
 
     public static Class[] toClassArray( Set<Class> types )
     {
@@ -355,6 +357,7 @@ public final class Classes
      * @param name
      * @param declaringClass
      * @param topClass
+     *
      * @return
      */
     public static Type resolveTypeVariable( TypeVariable name, Class declaringClass, Class topClass )
@@ -362,7 +365,11 @@ public final class Classes
         return resolveTypeVariable( name, declaringClass, new HashMap<TypeVariable, Type>(), topClass );
     }
 
-    private static Type resolveTypeVariable( TypeVariable name, Class declaringClass, Map<TypeVariable, Type> mappings, Class current )
+    private static Type resolveTypeVariable( TypeVariable name,
+                                             Class declaringClass,
+                                             Map<TypeVariable, Type> mappings,
+                                             Class current
+    )
     {
         if( current.equals( declaringClass ) )
         {
@@ -410,7 +417,9 @@ public final class Classes
      * Get URI for a class.
      *
      * @param clazz class
+     *
      * @return URI
+     *
      * @throws NullPointerException if clazz is null
      */
     public static String toURI( final Class clazz )
@@ -428,7 +437,9 @@ public final class Classes
      * URI urn:qi4j:com.example.Foo-Bar
      *
      * @param className class name
+     *
      * @return URI
+     *
      * @throws NullPointerException if className is null
      */
     public static String toURI( String className )
@@ -442,7 +453,9 @@ public final class Classes
      * Get class name from a URI
      *
      * @param uri URI
+     *
      * @return class name
+     *
      * @throws NullPointerException if uri is null
      */
     public static String toClassName( String uri )
@@ -462,5 +475,4 @@ public final class Classes
     {
         return uriPart.replace( '-', '$' );
     }
-
 }

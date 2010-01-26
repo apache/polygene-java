@@ -26,9 +26,11 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-public class TransientInstantiationTests extends AbstractQi4jTest
+public class TransientInstantiationTests
+    extends AbstractQi4jTest
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addTransients( MyTransient.class );
     }
@@ -43,8 +45,10 @@ public class TransientInstantiationTests extends AbstractQi4jTest
     }
 
     @Mixins( MyMixin.class )
-    public interface MyTransient extends TransientComposite, My
-    {}
+    public interface MyTransient
+        extends TransientComposite, My
+    {
+    }
 
     public interface My
     {
@@ -52,7 +56,7 @@ public class TransientInstantiationTests extends AbstractQi4jTest
     }
 
     public static class MyMixin
-    implements My
+        implements My
     {
 
         public String doSomething()

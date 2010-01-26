@@ -100,7 +100,8 @@ public final class SerializationUtil
 //        return null;
 //    }
 
-    public static Field readField( ObjectInputStream in ) throws IOException, ClassNotFoundException
+    public static Field readField( ObjectInputStream in )
+        throws IOException, ClassNotFoundException
     {
         Class declaringClass = (Class) in.readObject();
         String name = (String) in.readObject();

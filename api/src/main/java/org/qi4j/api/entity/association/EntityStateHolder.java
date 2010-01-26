@@ -24,12 +24,14 @@ import org.qi4j.api.property.StateHolder;
 /**
  * This represents the state of a entity (properties+associations).
  */
-public interface EntityStateHolder extends StateHolder
+public interface EntityStateHolder
+    extends StateHolder
 {
     /**
      * Get an association for a specific accessor method
      *
      * @param associationMethod for the association
+     *
      * @return the association
      */
     <T> Association<T> getAssociation( Method associationMethod );
@@ -38,6 +40,7 @@ public interface EntityStateHolder extends StateHolder
      * Get a many-association for a specific accessor method
      *
      * @param manyassociationMethod for the many-association
+     *
      * @return the association
      */
     <T> ManyAssociation<T> getManyAssociation( Method manyassociationMethod );

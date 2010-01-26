@@ -90,7 +90,8 @@ public final class QualifiedName
         return typeName.toURI() + "#";
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return typeName + ":" + name;
     }
@@ -110,7 +111,6 @@ public final class QualifiedName
         QualifiedName that = (QualifiedName) o;
 
         return name.equals( that.name ) && typeName.equals( that.typeName );
-
     }
 
     @Override

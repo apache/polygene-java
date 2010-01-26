@@ -22,5 +22,4 @@ public interface ApplicationDescriptor
     String name();
 
     String toURI();
-
 }

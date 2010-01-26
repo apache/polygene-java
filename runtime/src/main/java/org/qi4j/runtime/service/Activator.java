@@ -15,9 +15,9 @@
 package org.qi4j.runtime.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Arrays;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.PassivationException;
 

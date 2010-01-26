@@ -104,7 +104,6 @@ public abstract class AbstractModifierDeclaration
                     appliesToFilter = new AndAppliesToFilter( appliesToFilter, filter );
                 }
             }
-
         }
 
         if( appliesToFilter == null )
@@ -118,5 +117,4 @@ public abstract class AbstractModifierDeclaration
     {
         return modifierClass.getName() + ( declaredIn == null ? "" : " declared in " + declaredIn );
     }
-
 }

@@ -22,14 +22,12 @@ import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.composite.ConstructorsModel;
-import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
 import org.qi4j.runtime.injection.InjectedMethodsModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.model.Binder;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.object.ObjectDescriptor;
 
 /**
@@ -47,7 +45,8 @@ public final class ObjectModel
 
     public ObjectModel( Class<?> objectType,
                         Visibility visibility,
-                        MetaInfo metaInfo )
+                        MetaInfo metaInfo
+    )
     {
         this.objectType = objectType;
         this.visibility = visibility;
@@ -82,7 +81,8 @@ public final class ObjectModel
         injectedMethodsModel.visitModel( modelVisitor );
     }
 
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
 
@@ -123,5 +123,4 @@ public final class ObjectModel
     {
         return objectType.getName();
     }
-
 }

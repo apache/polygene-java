@@ -97,6 +97,7 @@ public final class Qi4jRuntimeImpl
     }
 
     // API
+
     public <T> T dereference( T composite )
     {
         InvocationHandler handler = getInvocationHandler( composite );
@@ -252,6 +253,7 @@ public final class Qi4jRuntimeImpl
     }
 
     // SPI
+
     public TransientDescriptor getTransientDescriptor( TransientComposite composite )
     {
         TransientInstance transientInstance = getCompositeInstance( composite );

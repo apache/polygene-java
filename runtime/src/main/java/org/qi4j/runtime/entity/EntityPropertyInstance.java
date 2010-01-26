@@ -16,9 +16,10 @@ package org.qi4j.runtime.entity;
 
 import org.qi4j.api.property.AbstractPropertyInstance;
 import org.qi4j.api.property.PropertyInfo;
-import static org.qi4j.api.util.NullArgumentException.*;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.spi.entity.EntityState;
+
+import static org.qi4j.api.util.NullArgumentException.*;
 
 /**
  * {@code EntityPropertyInstance} represents a property whose value must be backed by an EntityState.

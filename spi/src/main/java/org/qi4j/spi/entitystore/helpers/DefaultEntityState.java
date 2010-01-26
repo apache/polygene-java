@@ -49,7 +49,10 @@ public final class DefaultEntityState
     protected final Map<QualifiedName, EntityReference> associations;
     protected final Map<QualifiedName, List<EntityReference>> manyAssociations;
 
-    public DefaultEntityState( DefaultEntityStoreUnitOfWork unitOfWork, EntityReference identity, EntityDescriptor entityDescriptor )
+    public DefaultEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
+                               EntityReference identity,
+                               EntityDescriptor entityDescriptor
+    )
     {
         this( unitOfWork, "",
               System.currentTimeMillis(),
@@ -69,7 +72,8 @@ public final class DefaultEntityState
                                EntityDescriptor entityDescriptor,
                                Map<QualifiedName, Object> properties,
                                Map<QualifiedName, EntityReference> associations,
-                               Map<QualifiedName, List<EntityReference>> manyAssociations )
+                               Map<QualifiedName, List<EntityReference>> manyAssociations
+    )
     {
         this.unitOfWork = unitOfWork;
         this.version = version;
@@ -83,6 +87,7 @@ public final class DefaultEntityState
     }
 
     // EntityState implementation
+
     public final String version()
     {
         return version;

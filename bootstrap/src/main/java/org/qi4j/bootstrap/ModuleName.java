@@ -29,7 +29,8 @@ public final class ModuleName
         this.name = name;
     }
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.setName( name );
     }

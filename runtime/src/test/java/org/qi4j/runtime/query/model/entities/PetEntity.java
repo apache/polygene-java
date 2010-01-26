@@ -22,6 +22,6 @@ import org.qi4j.runtime.query.model.Pet;
  * JAVADOC
  */
 public interface PetEntity
-        extends Pet, Nameable, EntityComposite
+    extends Pet, Nameable, EntityComposite
 {
 }

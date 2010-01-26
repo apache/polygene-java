@@ -15,7 +15,6 @@
 package org.qi4j.runtime.model;
 
 import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.model.Resolution;
 
 /**
  * JAVADOC
@@ -24,5 +23,4 @@ public interface Binder
 {
     void bind( Resolution resolution )
         throws BindingException;
-
 }

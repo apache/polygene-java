@@ -28,8 +28,9 @@ import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
  * In-memory EntityStore service. Useful for testing
  * and non-persistent entities.
  */
-@Concerns({StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class})
-@Mixins({JSONMapEntityStoreMixin.class, MemoryMapEntityStoreMixin.class})
-public interface MemoryEntityStoreService extends EntityStore, EntityStateVersions, TestData, StateStore, ServiceComposite
+@Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
+@Mixins( { JSONMapEntityStoreMixin.class, MemoryMapEntityStoreMixin.class } )
+public interface MemoryEntityStoreService
+    extends EntityStore, EntityStateVersions, TestData, StateStore, ServiceComposite
 {
 }

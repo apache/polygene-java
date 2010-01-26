@@ -30,14 +30,17 @@ import org.qi4j.spi.value.ValueDescriptor;
 /**
  * Encapsulation of the Qi4j SPI. This is implemented by the runtime.
  */
-public interface Qi4jSPI extends Qi4j
+public interface Qi4jSPI
+    extends Qi4j
 {
     // Composites
+
     TransientDescriptor getTransientDescriptor( TransientComposite composite );
 
     StateHolder getState( TransientComposite composite );
 
     // Entities
+
     EntityDescriptor getEntityDescriptor( EntityComposite composite );
 
     EntityStateHolder getState( EntityComposite composite );
@@ -45,10 +48,12 @@ public interface Qi4jSPI extends Qi4j
     EntityState getEntityState( EntityComposite composite );
 
     // Values
+
     ValueDescriptor getValueDescriptor( ValueComposite value );
 
     StateHolder getState( ValueComposite composite );
 
     // Services
+
     ServiceDescriptor getServiceDescriptor( ServiceReference service );
 }

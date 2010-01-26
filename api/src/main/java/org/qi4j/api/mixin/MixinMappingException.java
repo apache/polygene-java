@@ -21,7 +21,8 @@ package org.qi4j.api.mixin;
  * This Exception is thrown when it is not possible to map the MixinType to a valid
  * CompositeType.
  */
-public class MixinMappingException extends RuntimeException
+public class MixinMappingException
+    extends RuntimeException
 {
     private static final long serialVersionUID = 6843167709252705294L;
 

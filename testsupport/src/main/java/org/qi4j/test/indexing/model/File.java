@@ -23,10 +23,10 @@ import org.qi4j.api.value.ValueComposite;
 
 /**
  * JAVADOC Add JavaDoc.
- *
  */
 @Queryable( false )
-public interface File extends ValueComposite
+public interface File
+    extends ValueComposite
 {
     Property<String> value();
 }

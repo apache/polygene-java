@@ -23,7 +23,8 @@ import java.util.List;
  * one ArrayList for each key that is added. The list does not allow
  * duplicates.
  */
-public final class ListMap<K, V> extends HashMap<K, List<V>>
+public final class ListMap<K, V>
+    extends HashMap<K, List<V>>
 {
     public void add( K key, V value )
     {

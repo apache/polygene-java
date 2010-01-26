@@ -21,6 +21,7 @@ import org.qi4j.api.entity.Queryable;
  * All Configuration composites should
  */
 @Queryable( false )
-public interface ConfigurationComposite extends EntityComposite
+public interface ConfigurationComposite
+    extends EntityComposite
 {
 }

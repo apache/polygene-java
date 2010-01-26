@@ -24,7 +24,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.bootstrap.BindingException;
-import org.qi4j.spi.util.SerializationUtil;
 import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.model.Binder;
@@ -32,6 +31,7 @@ import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.ConstructorDescriptor;
 import org.qi4j.spi.composite.InvalidCompositeException;
+import org.qi4j.spi.util.SerializationUtil;
 
 /**
  * JAVADOC
@@ -58,7 +58,8 @@ public final class ConstructorModel
         }
     }
 
-    private void readObject( ObjectInputStream in ) throws IOException, ClassNotFoundException
+    private void readObject( ObjectInputStream in )
+        throws IOException, ClassNotFoundException
     {
         constructor = SerializationUtil.readConstructor( in );
         parameters = (InjectedParametersModel) in.readObject();
@@ -84,12 +85,15 @@ public final class ConstructorModel
     }
 
     // Binding
-    public void bind( Resolution resolution ) throws BindingException
+
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         parameters.bind( resolution );
     }
 
     // Context
+
     public Object newInstance( InjectionContext context )
         throws ConstructionException
     {

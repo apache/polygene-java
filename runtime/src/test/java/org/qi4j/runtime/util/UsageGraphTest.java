@@ -20,12 +20,12 @@ package org.qi4j.runtime.util;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.spi.util.CyclicUsageException;
 import org.qi4j.spi.util.UsageGraph;
 
+import static org.junit.Assert.*;
 
 public class UsageGraphTest
 {
@@ -344,7 +344,6 @@ public class UsageGraphTest
 
         // The cyclic nodes can not be determine which one is before the other
     }
-
 
     public class Userator
         implements UsageGraph.Use<Thing>

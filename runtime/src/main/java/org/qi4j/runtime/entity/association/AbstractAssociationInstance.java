@@ -35,6 +35,7 @@ public abstract class AbstractAssociationInstance<T>
     }
 
     // AssociationInfo implementation
+
     public <T> T metaInfo( Class<T> infoType )
     {
         return associationInfo.metaInfo( infoType );

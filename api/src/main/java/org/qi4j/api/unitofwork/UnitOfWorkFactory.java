@@ -14,8 +14,8 @@
  */
 package org.qi4j.api.unitofwork;
 
-import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.usecase.Usecase;
 
 /**
  * Factory for UnitOfWork.
@@ -37,6 +37,7 @@ public interface UnitOfWorkFactory
      * associate it with the current thread.
      *
      * @param usecase the Usecase for this UnitOfWork
+     *
      * @return a new UnitOfWork
      */
     UnitOfWork newUnitOfWork( Usecase usecase );
@@ -52,6 +53,7 @@ public interface UnitOfWorkFactory
      * Returns the UnitOfWork that the EntityComposite is bound to.
      *
      * @param entity the entity to be checked.
+     *
      * @return The UnitOfWork instance that the Entity is bound to, or null if the entity is not associated with
      *         any UnitOfWork.
      */

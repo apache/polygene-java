@@ -22,7 +22,6 @@ import org.qi4j.api.mixin.Mixins;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 @Mixins( GoogleMixin.class )
 public interface GoogleComposite

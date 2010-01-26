@@ -36,6 +36,7 @@ abstract class PropertyNullPredicateImpl<T>
      * Constructor.
      *
      * @param propertyReference property reference; cannot be null
+     *
      * @throws IllegalArgumentException - If property reference is null
      */
     PropertyNullPredicateImpl( final PropertyReference<T> propertyReference )
@@ -54,5 +55,4 @@ abstract class PropertyNullPredicateImpl<T>
     {
         return propertyReference;
     }
-
 }

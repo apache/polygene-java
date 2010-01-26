@@ -35,7 +35,8 @@ import org.qi4j.test.AbstractQi4jTest;
 public class UsesGenericListTest
     extends AbstractQi4jTest
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addTransients( TestCase.class );
     }
@@ -52,16 +53,17 @@ public class UsesGenericListTest
 
         TestCase TestCase = builder.newInstance();
         TestCase.sayHello();
-
     }
 
     @Mixins( TestMixin.class )
-    public interface TestCase extends TransientComposite
+    public interface TestCase
+        extends TransientComposite
     {
         void sayHello();
     }
 
-    public abstract static class TestMixin implements TestCase
+    public abstract static class TestMixin
+        implements TestCase
     {
         @Uses
         ArrayList<String> messages;

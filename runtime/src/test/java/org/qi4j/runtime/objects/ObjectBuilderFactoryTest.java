@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.objects;
 
-import static org.hamcrest.CoreMatchers.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.Structure;
@@ -25,6 +24,8 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
+
+import static org.hamcrest.CoreMatchers.*;
 
 /**
  * Unit tests for ObjectBuilderFactory.

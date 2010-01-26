@@ -79,7 +79,6 @@ public final class EntityReference
         }
         EntityReference that = (EntityReference) o;
         return identity.equals( that.identity );
-
     }
 
     @Override
@@ -90,7 +89,8 @@ public final class EntityReference
         return result;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return identity;
     }

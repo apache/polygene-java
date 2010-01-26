@@ -25,13 +25,14 @@ import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.composite.ValueConstraintsModel;
 import org.qi4j.runtime.property.AbstractPropertiesModel;
-import org.qi4j.spi.util.Annotations;
 import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.util.Annotations;
 
 /**
  * Properties model for values
  */
-public final class ValuePropertiesModel extends AbstractPropertiesModel<ValuePropertyModel>
+public final class ValuePropertiesModel
+    extends AbstractPropertiesModel<ValuePropertyModel>
 {
     public ValuePropertiesModel( ConstraintsModel constraints, PropertyDeclarations propertyDeclarations )
     {

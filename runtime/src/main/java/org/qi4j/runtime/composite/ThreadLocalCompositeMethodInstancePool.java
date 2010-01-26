@@ -28,7 +28,6 @@ public final class ThreadLocalCompositeMethodInstancePool
         if( instance != null )
         {
             first.set( instance.getNext() );
-
         }
         return instance;
     }

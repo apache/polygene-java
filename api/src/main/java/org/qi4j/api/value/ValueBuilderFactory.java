@@ -25,7 +25,9 @@ public interface ValueBuilderFactory
      * Create a builder for creating new Values that implements the given Value type.
      *
      * @param valueType an interface that describes the Composite to be instantiated
+     *
      * @return a ValueBuilder for creation of ValueComposites implementing the interface
+     *
      * @throws NoSuchValueException if no value extending the mixinType has been registered
      */
     <T> ValueBuilder<T> newValueBuilder( Class<T> valueType )
@@ -35,7 +37,9 @@ public interface ValueBuilderFactory
      * Instantiate a Value of the given type.
      *
      * @param valueType the Value type to instantiate
+     *
      * @return a new Value instance
+     *
      * @throws NoSuchValueException if no value extending the mixinType has been registered
      * @throws org.qi4j.api.common.ConstructionException
      *                              if the value could not be instantiated

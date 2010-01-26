@@ -34,6 +34,7 @@ public interface PropertyInfo
      * assembly of the application.
      *
      * @param infoType the type of the metadata to return
+     *
      * @return a metadata object that implements the requested type or null if none is registered
      */
     <T> T metaInfo( Class<T> infoType );

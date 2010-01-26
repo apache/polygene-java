@@ -17,9 +17,9 @@
 package org.qi4j.spi.entitystore;
 
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entitystore.EntityStoreException;
 
-public class EntityAlreadyExistsException extends EntityStoreException
+public class EntityAlreadyExistsException
+    extends EntityStoreException
 {
     private EntityReference identity;
 
@@ -32,7 +32,6 @@ public class EntityAlreadyExistsException extends EntityStoreException
     {
         return identity;
     }
-
 
     public String getMessage()
     {

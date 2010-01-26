@@ -17,7 +17,6 @@
  */
 package org.qi4j.runtime.threaded;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.composite.CompositeContext;
@@ -27,6 +26,8 @@ import org.qi4j.api.property.Property;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+
+import static org.junit.Assert.*;
 
 public class ContextCompositeTest
     extends AbstractQi4jTest

@@ -17,6 +17,8 @@
  */
 package org.qi4j.runtime.query;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.value.ValueBuilder;
@@ -33,10 +35,6 @@ import org.qi4j.runtime.query.model.entities.PetEntity;
 import org.qi4j.runtime.query.model.values.ContactValue;
 import org.qi4j.runtime.query.model.values.ContactsValue;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 /**
  * JAVADOC Add JavaDoc
  */
@@ -49,7 +47,8 @@ class Network
     private static List<PetEntity> pets;
     private static List<Nameable> nameables;
 
-    static void populate( final UnitOfWork uow, ValueBuilderFactory vbf ) throws UnitOfWorkCompletionException
+    static void populate( final UnitOfWork uow, ValueBuilderFactory vbf )
+        throws UnitOfWorkCompletionException
     {
         domains = new ArrayList<Domain>();
         persons = new ArrayList<Person>();
@@ -215,5 +214,4 @@ class Network
     {
         nameable.name().set( name );
     }
-
 }

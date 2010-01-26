@@ -17,7 +17,8 @@
  */
 package org.qi4j.spi.util;
 
-public class CyclicUsageException extends RuntimeException
+public class CyclicUsageException
+    extends RuntimeException
 {
     public CyclicUsageException( String message )
     {

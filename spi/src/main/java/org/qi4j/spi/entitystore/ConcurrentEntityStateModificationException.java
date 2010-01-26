@@ -18,13 +18,13 @@ package org.qi4j.spi.entitystore;
 
 import java.util.Collection;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entitystore.EntityStoreException;
 
 /**
  * This exception should be thrown if the EntityStore detects that the entities being saved have been changed
  * since they were created.
  */
-public class ConcurrentEntityStateModificationException extends EntityStoreException
+public class ConcurrentEntityStateModificationException
+    extends EntityStoreException
 {
     private Collection<EntityReference> modifiedEntities;
 

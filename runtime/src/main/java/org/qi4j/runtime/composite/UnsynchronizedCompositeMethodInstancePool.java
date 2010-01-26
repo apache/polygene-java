@@ -30,7 +30,6 @@ public final class UnsynchronizedCompositeMethodInstancePool
         if( instance != null )
         {
             first = instance.getNext();
-
         }
         return instance;
     }

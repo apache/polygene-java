@@ -68,7 +68,8 @@ import java.io.StringWriter;
  * <p/>
  * This can sometimes be easier than using a JSONObject to build a string.
  */
-public final class JSONStringer extends JSONWriter
+public final class JSONStringer
+    extends JSONWriter
 {
     /**
      * Make a fresh JSONStringer. It can be used to build one JSON text.

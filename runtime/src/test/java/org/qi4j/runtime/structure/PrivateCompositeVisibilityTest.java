@@ -53,14 +53,18 @@ public class PrivateCompositeVisibilityTest
         {
         } );
         app.activate();
-        ObjectA object = app.findModule( "Layer 1", "Module A" ).objectBuilderFactory().newObjectBuilder( ObjectA.class ).newInstance();
+        ObjectA object = app.findModule( "Layer 1", "Module A" )
+            .objectBuilderFactory()
+            .newObjectBuilder( ObjectA.class )
+            .newInstance();
         object.test();
     }
 
     class AssemblerA
         implements Assembler
     {
-        public void assemble( ModuleAssembly module ) throws AssemblyException
+        public void assemble( ModuleAssembly module )
+            throws AssemblyException
         {
             module.setName( "Module A" );
             module.addObjects( ObjectA.class );
@@ -70,7 +74,8 @@ public class PrivateCompositeVisibilityTest
     class AssemblerB
         implements Assembler
     {
-        public void assemble( ModuleAssembly module ) throws AssemblyException
+        public void assemble( ModuleAssembly module )
+            throws AssemblyException
         {
             module.setName( "Module B" );
             module.addTransients( CompositeB.class ).visibleIn( Visibility.module );
@@ -79,7 +84,8 @@ public class PrivateCompositeVisibilityTest
 
     public static class ObjectA
     {
-        @Structure TransientBuilderFactory cbf;
+        @Structure
+        TransientBuilderFactory cbf;
 
         String test()
         {
@@ -89,7 +95,8 @@ public class PrivateCompositeVisibilityTest
     }
 
     @Mixins( MixinB.class )
-    public interface CompositeB extends TransientComposite
+    public interface CompositeB
+        extends TransientComposite
     {
         String test();
     }
@@ -103,5 +110,4 @@ public class PrivateCompositeVisibilityTest
             return "ok";
         }
     }
-
 }

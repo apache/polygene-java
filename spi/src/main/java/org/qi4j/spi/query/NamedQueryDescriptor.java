@@ -54,7 +54,8 @@ import org.qi4j.api.query.grammar.OrderBy;
  */
 public interface NamedQueryDescriptor
 {
-    /** Returns the name of the query.
+    /**
+     * Returns the name of the query.
      *
      * @return the name of the query as it is declared.
      */
@@ -67,12 +68,14 @@ public interface NamedQueryDescriptor
      * @param orderBySegments The list of OrderBy instrctions.
      * @param firstResult     The offset into the resultset.
      * @param maxResults      The maximum number of results to be returned.
+     *
      * @return A valid query in the language given.
      */
     String compose( Map<String, Object> variables,
                     OrderBy[] orderBySegments,
                     Integer firstResult,
-                    Integer maxResults );
+                    Integer maxResults
+    );
 
     /**
      * Returns the name of the query language.
@@ -81,7 +84,8 @@ public interface NamedQueryDescriptor
      */
     String language();
 
-    /** Returns a list of variable names allowed in the query.
+    /**
+     * Returns a list of variable names allowed in the query.
      *
      * @return a list of variable names allowed in the query.
      */

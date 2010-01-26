@@ -56,7 +56,8 @@ public abstract class SingletonAssembler
         {
             applicationInstance = qi4j.newApplication( new ApplicationAssembler()
             {
-                public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
+                public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
+                    throws AssemblyException
                 {
                     return applicationFactory.newApplicationAssembly( SingletonAssembler.this );
                 }

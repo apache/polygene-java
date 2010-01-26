@@ -16,7 +16,8 @@ package org.qi4j.api.query;
 /**
  * Throw this exception if a query could not be executed
  */
-public final class QueryExecutionException extends QueryException
+public final class QueryExecutionException
+    extends QueryException
 {
     private static final long serialVersionUID = 5147421865890379209L;
 

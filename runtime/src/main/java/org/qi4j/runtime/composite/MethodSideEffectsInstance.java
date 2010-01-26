@@ -29,7 +29,11 @@ public final class MethodSideEffectsInstance
     private final ProxyReferenceInvocationHandler proxyHandler;
     private InvocationHandler invoker;
 
-    public MethodSideEffectsInstance( List<InvocationHandler> sideEffects, SideEffectInvocationHandlerResult resultInvocationHandler, ProxyReferenceInvocationHandler proxyHandler, InvocationHandler invoker )
+    public MethodSideEffectsInstance( List<InvocationHandler> sideEffects,
+                                      SideEffectInvocationHandlerResult resultInvocationHandler,
+                                      ProxyReferenceInvocationHandler proxyHandler,
+                                      InvocationHandler invoker
+    )
     {
         this.sideEffects = sideEffects;
         this.resultInvocationHandler = resultInvocationHandler;
@@ -37,7 +41,8 @@ public final class MethodSideEffectsInstance
         this.invoker = invoker;
     }
 
-    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+    public Object invoke( Object proxy, Method method, Object[] args )
+        throws Throwable
     {
         try
         {
@@ -72,7 +77,12 @@ public final class MethodSideEffectsInstance
         }
     }
 
-    private void invokeSideEffect( Object proxy, Method method, Object[] params, Throwable originalThrowable, InvocationHandler sideEffect )
+    private void invokeSideEffect( Object proxy,
+                                   Method method,
+                                   Object[] params,
+                                   Throwable originalThrowable,
+                                   InvocationHandler sideEffect
+    )
     {
         try
         {

@@ -26,9 +26,11 @@ import org.qi4j.api.service.ServiceImporterException;
 public final class NewObjectImporter
     implements ServiceImporter
 {
-    @Structure private ObjectBuilderFactory obf;
+    @Structure
+    private ObjectBuilderFactory obf;
 
-    public Object importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException
+    public Object importService( ImportedServiceDescriptor serviceDescriptor )
+        throws ServiceImporterException
     {
         return obf.newObject( serviceDescriptor.type() );
     }

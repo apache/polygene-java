@@ -17,14 +17,16 @@
  */
 package org.qi4j.test.indexing;
 
-import static org.junit.Assert.*;
-
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityReference;
-import static org.qi4j.api.query.QueryExpressions.*;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.ServiceReference;
@@ -32,18 +34,11 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import static org.qi4j.test.indexing.NameableAssert.*;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.IndexExporter;
 import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.test.EntityTestAssembler;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import org.qi4j.test.indexing.model.Address;
 import org.qi4j.test.indexing.model.Domain;
 import org.qi4j.test.indexing.model.Female;
@@ -63,6 +58,10 @@ import org.qi4j.test.indexing.model.entities.DomainEntity;
 import org.qi4j.test.indexing.model.entities.FemaleEntity;
 import org.qi4j.test.indexing.model.entities.MaleEntity;
 
+import static org.junit.Assert.*;
+import static org.qi4j.api.query.QueryExpressions.*;
+import static org.qi4j.test.indexing.NameableAssert.*;
+
 public abstract class AbstractEntityFinderTest
 {
     private static final BooleanExpression ALL = null;
@@ -77,11 +76,13 @@ public abstract class AbstractEntityFinderTest
     private static final String ANN = "Ann Doe";
 
     @Before
-    public void setUp() throws UnitOfWorkCompletionException
+    public void setUp()
+        throws UnitOfWorkCompletionException
     {
         assembler = new SingletonAssembler()
         {
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
                 module.addEntities(
                     MaleEntity.class,
@@ -111,9 +112,9 @@ public abstract class AbstractEntityFinderTest
     protected abstract void setupTest( ModuleAssembly mainModule )
         throws AssemblyException;
 
-    
     @After
-    public void tearDown() throws Exception
+    public void tearDown()
+        throws Exception
     {
         if( assembler != null )
         {
@@ -122,18 +123,20 @@ public abstract class AbstractEntityFinderTest
         }
     }
 
-
     @Test
-    public void showNetwork() throws IOException
+    public void showNetwork()
+        throws IOException
     {
-        final ServiceReference<IndexExporter> indexerService = assembler.serviceFinder().findService( IndexExporter.class );
+        final ServiceReference<IndexExporter> indexerService = assembler.serviceFinder()
+            .findService( IndexExporter.class );
         final IndexExporter exporter = indexerService.get();
         exporter.exportReadableToStream( System.out );
         // todo asserts
     }
 
     @Test
-    public void script01() throws EntityFinderException
+    public void script01()
+        throws EntityFinderException
     {
         // should return all persons (Joe, Ann, Jack Doe)
         Iterable<EntityReference> entities = entityFinder.findEntities(
@@ -145,7 +148,8 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
-    public void script02() throws EntityFinderException
+    public void script02()
+        throws EntityFinderException
     {
         Nameable nameable = templateFor( Nameable.class );
         // should return Gaming domain
@@ -158,7 +162,8 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
-    public void script03() throws EntityFinderException
+    public void script03()
+        throws EntityFinderException
     {
         // should return all entities
         Iterable<EntityReference> entities = entityFinder.findEntities(
@@ -170,7 +175,8 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
-    public void script04() throws EntityFinderException
+    public void script04()
+        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Joe and Ann Doe
@@ -183,7 +189,8 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
-    public void script05() throws EntityFinderException
+    public void script05()
+        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Joe Doe
@@ -196,7 +203,8 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
-    public void script06() throws EntityFinderException
+    public void script06()
+        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Joe and Ann Doe
@@ -209,7 +217,8 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
-    public void script07() throws EntityFinderException
+    public void script07()
+        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Jack Doe
@@ -225,7 +234,8 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
-    public void script08() throws EntityFinderException
+    public void script08()
+        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Jack and Ann Doe
@@ -241,7 +251,8 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
-    public void script09() throws EntityFinderException
+    public void script09()
+        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Ann Doe
@@ -257,7 +268,8 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
-    public void script10() throws EntityFinderException
+    public void script10()
+        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Joe and Jack Doe
@@ -272,7 +284,8 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
-    public void script11() throws EntityFinderException
+    public void script11()
+        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Joe Doe
@@ -285,7 +298,8 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
-    public void script12() throws EntityFinderException
+    public void script12()
+        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Ann and Jack Doe
@@ -298,7 +312,8 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
-    public void script13() throws EntityFinderException
+    public void script13()
+        throws EntityFinderException
     {
         Male person = templateFor( Male.class );
         // should return Jack Doe
@@ -311,7 +326,8 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
-    public void script14() throws EntityFinderException
+    public void script14()
+        throws EntityFinderException
     {
         Male person = templateFor( Male.class );
         // should return Joe Doe
@@ -324,7 +340,8 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
-    public void script15() throws EntityFinderException
+    public void script15()
+        throws EntityFinderException
     {
         Male person = templateFor( Male.class );
         // should return Ann and Joe Doe
@@ -350,7 +367,8 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
-    public void script17() throws EntityFinderException
+    public void script17()
+        throws EntityFinderException
     {
         // should return only 2 entities starting with third one
         final List<EntityReference> references = toList( entityFinder.findEntities(
@@ -362,7 +380,8 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
-    public void script18() throws EntityFinderException
+    public void script18()
+        throws EntityFinderException
     {
         // should return all Nameable entities sorted by name
         Nameable nameable = templateFor( Nameable.class );
@@ -379,7 +398,8 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
-    public void script19() throws EntityFinderException
+    public void script19()
+        throws EntityFinderException
     {
         // should return all Nameable entities with a name > "B" sorted by name
         Nameable nameable = templateFor( Nameable.class );
@@ -402,7 +422,8 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
-    public void script20() throws EntityFinderException
+    public void script20()
+        throws EntityFinderException
     {
         // should return all Persons born after 1973 (Ann and Joe Doe) sorted descending by name
         Person person = templateFor( Person.class );
@@ -416,22 +437,26 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
-    public void script21() throws EntityFinderException
+    public void script21()
+        throws EntityFinderException
     {
         // should return all Persons sorted name of the city they were born
         Person person = templateFor( Person.class );
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Person.class.getName(),
             ALL,
-            new OrderBy[]{ orderBy( person.placeOfBirth().get().name() ),
-                           orderBy( person.name() ) },
+            new OrderBy[]{
+                orderBy( person.placeOfBirth().get().name() ),
+                orderBy( person.name() )
+            },
             NO_FIRST_RESULT, NO_MAX_RESULTS
         );
         assertNames( false, entities, ANN, JOE, JACK );
     }
 
     @Test
-    public void script22() throws EntityFinderException
+    public void script22()
+        throws EntityFinderException
     {
         Nameable nameable = templateFor( Nameable.class );
         // should return Jack and Joe Doe
@@ -442,5 +467,4 @@ public abstract class AbstractEntityFinderTest
         );
         assertNames( entities, JACK, JOE );
     }
-
 }

@@ -21,7 +21,6 @@ import org.qi4j.test.indexing.model.Person;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 public interface Google
 {

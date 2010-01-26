@@ -30,7 +30,8 @@ public final class AssociationType
 
     public AssociationType( final QualifiedName qualifiedName,
                             final TypeName type,
-                            final boolean queryable )
+                            final boolean queryable
+    )
     {
         this.qualifiedName = qualifiedName;
         this.type = type;

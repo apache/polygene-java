@@ -26,6 +26,7 @@ public interface StateHolder
      * Get a property for a specific accessor method
      *
      * @param propertyMethod of the property
+     *
      * @return the property
      */
     <T> Property<T> getProperty( Method propertyMethod );
@@ -34,6 +35,7 @@ public interface StateHolder
      * Get a property for a specific accessor method
      *
      * @param name The qualified name of the property
+     *
      * @return the property
      */
     <T> Property<T> getProperty( QualifiedName name );

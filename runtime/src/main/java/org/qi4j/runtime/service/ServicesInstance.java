@@ -82,7 +82,6 @@ public class ServicesInstance
         return serviceRef;
     }
 
-
     public <T> void getServicesFor( Type type, Visibility visibility, List<ServiceReference<T>> serviceReferences )
     {
         List<ServiceModel> serviceModels = new ArrayList<ServiceModel>();
@@ -105,5 +104,4 @@ public class ServicesInstance
         }
         return str += "}";
     }
-
 }

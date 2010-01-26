@@ -56,7 +56,8 @@ final class QueryBuilderImpl<T>
      */
     public QueryBuilderImpl( final EntityFinder entityFinder,
                              final Class<T> resultType,
-                             final BooleanExpression whereClause )
+                             final BooleanExpression whereClause
+    )
     {
         this.entityFinder = entityFinder;
         this.resultType = resultType;
@@ -103,5 +104,4 @@ final class QueryBuilderImpl<T>
     {
         return new IterableQuery<T>( iterable, resultType, whereClause );
     }
-
 }

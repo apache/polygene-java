@@ -9,14 +9,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import org.qi4j.bootstrap.InvalidInjectionException;
-import org.qi4j.spi.util.SerializationUtil;
-import org.qi4j.runtime.injection.provider.InjectionProviderException;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
+import org.qi4j.spi.util.SerializationUtil;
 
 /**
  * JAVADOC
@@ -51,7 +50,11 @@ public final class ThisInjectionProviderFactory
 
                 if( !ok )
                 {
-                    throw new InvalidInjectionException( "Composite " + bindingContext.object().type().getName() + " does not implement @This type " + thisType.getName() + " in fragment " + dependencyModel.injectedClass().getName() );
+                    throw new InvalidInjectionException( "Composite " + bindingContext.object()
+                        .type()
+                        .getName() + " does not implement @This type " + thisType.getName() + " in fragment " + dependencyModel
+                        .injectedClass()
+                        .getName() );
                 }
             }
 
@@ -72,7 +75,8 @@ public final class ThisInjectionProviderFactory
         {
             try
             {
-                proxyConstructor = Proxy.getProxyClass( type.getClassLoader(), new Class[]{ type } ).getConstructor( InvocationHandler.class );
+                proxyConstructor = Proxy.getProxyClass( type.getClassLoader(), new Class[]{ type } )
+                    .getConstructor( InvocationHandler.class );
             }
             catch( Exception e )
             {
@@ -112,7 +116,8 @@ public final class ThisInjectionProviderFactory
             }
         }
 
-        private void readObject( ObjectInputStream in ) throws IOException, ClassNotFoundException
+        private void readObject( ObjectInputStream in )
+            throws IOException, ClassNotFoundException
         {
             proxyConstructor = SerializationUtil.readConstructor( in );
         }

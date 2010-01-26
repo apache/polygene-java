@@ -33,6 +33,7 @@ public final class PropertyIsNullPredicateImpl<T>
      * Constructor.
      *
      * @param propertyReference property reference; cannot be null
+     *
      * @throws IllegalArgumentException - If property reference is null
      */
     public PropertyIsNullPredicateImpl( final PropertyReference<T> propertyReference )
@@ -58,5 +59,4 @@ public final class PropertyIsNullPredicateImpl<T>
             .append( " IS NULL )" )
             .toString();
     }
-
 }

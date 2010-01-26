@@ -46,11 +46,13 @@ public final class ContainsPredicateImpl<T>
      *
      * @param propertyReference property reference; cannot be null
      * @param valueExpression   value expression; cannot be null
+     *
      * @throws IllegalArgumentException - If property reference is null
      *                                  - If value expression is null
      */
     public ContainsPredicateImpl( final PropertyReference<Collection<T>> propertyReference,
-                                  final SingleValueExpression<T> valueExpression )
+                                  final SingleValueExpression<T> valueExpression
+    )
     {
         this.propertyReference = propertyReference;
         this.valueExpression = valueExpression;

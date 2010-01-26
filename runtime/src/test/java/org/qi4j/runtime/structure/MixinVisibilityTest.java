@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.structure;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.Visibility;
@@ -34,6 +33,8 @@ import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.structure.ApplicationSPI;
 
+import static org.junit.Assert.*;
+
 /**
  * JAVADOC
  */
@@ -45,21 +46,22 @@ public class MixinVisibilityTest
     {
         Energy4Java boot = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
-            { { // Layer
-                {  // Module 1
-                   new Assembler()
-                   {
-                       public void assemble( ModuleAssembly module )
-                           throws AssemblyException
-                       {
-                           module.setName( "Module A" );
-                           module.addTransients( B1Composite.class );
-                           module.addObjects( ObjectA.class );
-                       }
-                   }
+            {
+                { // Layer
+                  {  // Module 1
+                     new Assembler()
+                     {
+                         public void assemble( ModuleAssembly module )
+                             throws AssemblyException
+                         {
+                             module.setName( "Module A" );
+                             module.addTransients( B1Composite.class );
+                             module.addObjects( ObjectA.class );
+                         }
+                     }
+                  }
                 }
-            } };
-
+            };
 
         ApplicationSPI app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
@@ -77,21 +79,22 @@ public class MixinVisibilityTest
     {
         Energy4Java boot = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
-            { { // Layer
-                {  // Module 1
-                   new Assembler()
-                   {
-                       public void assemble( ModuleAssembly module )
-                           throws AssemblyException
-                       {
-                           module.setName( "Module A" );
-                           module.addTransients( B1Composite.class, B2Composite.class );
-                           module.addObjects( ObjectA.class );
-                       }
-                   }
+            {
+                { // Layer
+                  {  // Module 1
+                     new Assembler()
+                     {
+                         public void assemble( ModuleAssembly module )
+                             throws AssemblyException
+                         {
+                             module.setName( "Module A" );
+                             module.addTransients( B1Composite.class, B2Composite.class );
+                             module.addObjects( ObjectA.class );
+                         }
+                     }
+                  }
                 }
-            } };
-
+            };
 
         ApplicationSPI app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
@@ -136,7 +139,6 @@ public class MixinVisibilityTest
                 }
             };
 
-
         ApplicationSPI app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
@@ -180,7 +182,6 @@ public class MixinVisibilityTest
                 }
             };
 
-
         ApplicationSPI app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
@@ -190,7 +191,6 @@ public class MixinVisibilityTest
         assertEquals( "ok", object.test1() );
         assertEquals( "abc", object.test2() );
     }
-
 
     @Test( expected = AmbiguousTypeException.class )
     public void testMultipleMixinsInLayerWillFailSameModule()
@@ -218,13 +218,13 @@ public class MixinVisibilityTest
                               throws AssemblyException
                           {
                               module.setName( "Module B" );
-                              module.addTransients( B1Composite.class, B2Composite.class ).visibleIn( Visibility.layer );
+                              module.addTransients( B1Composite.class, B2Composite.class )
+                                  .visibleIn( Visibility.layer );
                           }
                       }
                   }
                 }
             };
-
 
         ApplicationSPI app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
@@ -280,7 +280,6 @@ public class MixinVisibilityTest
                 }
             };
 
-
         ApplicationSPI app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
@@ -292,6 +291,7 @@ public class MixinVisibilityTest
     }
 
     // @Test( expected= MixinTypeNotAvailableException.class )
+
     public void testMixinInLowerLayerIsNotVisible()
         throws Exception
     {
@@ -327,7 +327,6 @@ public class MixinVisibilityTest
                 }
             };
 
-
         ApplicationSPI app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
@@ -337,7 +336,6 @@ public class MixinVisibilityTest
         assertEquals( "ok", object.test1() );
         assertEquals( "abc", object.test2() );
     }
-
 
     @Test
     public void testMixinInLowerLayerIsVisible()
@@ -374,7 +372,6 @@ public class MixinVisibilityTest
                 }
             };
 
-
         ApplicationSPI app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
@@ -388,7 +385,8 @@ public class MixinVisibilityTest
     class AssemblerB
         implements Assembler
     {
-        public void assemble( ModuleAssembly module ) throws AssemblyException
+        public void assemble( ModuleAssembly module )
+            throws AssemblyException
         {
             module.setName( "Module B" );
             module.addTransients( B1Composite.class ).visibleIn( Visibility.module );
@@ -397,7 +395,8 @@ public class MixinVisibilityTest
 
     public static class ObjectA
     {
-        @Structure TransientBuilderFactory cbf;
+        @Structure
+        TransientBuilderFactory cbf;
 
         String test1()
         {
@@ -415,20 +414,24 @@ public class MixinVisibilityTest
     }
 
     @Mixins( { MixinB.class } )
-    public interface B1Composite extends TransientComposite, B1
+    public interface B1Composite
+        extends TransientComposite, B1
     {
     }
 
-    public interface B2Composite extends TransientComposite, B2
+    public interface B2Composite
+        extends TransientComposite, B2
     {
     }
 
     public interface B2
     {
-        @Optional Property<String> b2();
+        @Optional
+        Property<String> b2();
     }
 
-    public interface B1 extends B2
+    public interface B1
+        extends B2
     {
         String test();
     }
@@ -441,5 +444,4 @@ public class MixinVisibilityTest
             return "ok";
         }
     }
-
 }

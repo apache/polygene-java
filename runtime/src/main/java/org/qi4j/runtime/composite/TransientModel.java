@@ -14,6 +14,9 @@
 
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.InvocationHandler;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -22,17 +25,13 @@ import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.composite.TransientDescriptor;
-
-import java.lang.reflect.InvocationHandler;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Model for Transient Composites
@@ -46,7 +45,8 @@ public class TransientModel
                                            final MetaInfo metaInfo,
                                            final PropertyDeclarations propertyDeclarations,
                                            final Iterable<Class<?>> assemblyConcerns,
-                                           final Iterable<Class<?>> sideEffects, List<Class<?>> mixins )
+                                           final Iterable<Class<?>> sideEffects, List<Class<?>> mixins
+    )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
         boolean immutable = metaInfo.get( Immutable.class ) != null;
@@ -88,7 +88,9 @@ public class TransientModel
     }
 
     // Binding
-    public void bind( Resolution resolution ) throws BindingException
+
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
         compositeMethodsModel.bind( resolution );
@@ -111,7 +113,8 @@ public class TransientModel
 
     public CompositeInstance newCompositeInstance( ModuleInstance moduleInstance,
                                                    UsesInstance uses,
-                                                   StateHolder state )
+                                                   StateHolder state
+    )
     {
         Object[] mixins = mixinsModel.newMixinHolder();
         CompositeInstance compositeInstance = new TransientInstance( this, moduleInstance, mixins, state );
@@ -123,7 +126,6 @@ public class TransientModel
                                                      uses,
                                                      state,
                                                      mixins );
-
         }
         catch( InvalidCompositeException e )
         {
@@ -153,5 +155,4 @@ public class TransientModel
     {
         return type().getName();
     }
-
 }

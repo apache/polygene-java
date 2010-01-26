@@ -14,12 +14,11 @@
 
 package org.qi4j.spi.property;
 
+import java.util.List;
 import org.json.JSONException;
 import org.json.JSONWriter;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
-
-import java.util.List;
 
 /**
  * Base class for types of values in ValueComposites.
@@ -43,17 +42,17 @@ public interface ValueType
     List<PropertyType> types();
 
     void toJSON( Object value, JSONWriter json )
-            throws JSONException;
+        throws JSONException;
 
     Object toJSON( Object value )
-            throws JSONException;
+        throws JSONException;
 
     Object fromJSON( Object object, Module module )
-            throws JSONException;
+        throws JSONException;
 
     String toQueryParameter( Object value )
-            throws IllegalArgumentException;
+        throws IllegalArgumentException;
 
     Object fromQueryParameter( String parameter, Module module )
-            throws IllegalArgumentException, JSONException;
+        throws IllegalArgumentException, JSONException;
 }

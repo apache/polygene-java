@@ -17,7 +17,8 @@ package org.json;
 /**
  * The JSONException is thrown by the JSON.org classes then things are amiss.
  */
-public class JSONException extends Exception
+public class JSONException
+    extends Exception
 {
     private Throwable cause;
 

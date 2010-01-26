@@ -395,6 +395,7 @@ public final class PropertyMapper
             return new BigDecimal( value.trim() );
         }
     }
+
     private static class BigIntegerMapper
         implements MappingStrategy
     {
@@ -403,6 +404,7 @@ public final class PropertyMapper
             return new BigInteger( value.trim() );
         }
     }
+
     private static class DateMapper
         implements MappingStrategy
     {
@@ -411,12 +413,13 @@ public final class PropertyMapper
             return DateFunctions.fromString( value.trim() );
         }
     }
+
     private static class ArrayMapper
         implements MappingStrategy
     {
         public Object map( Type type, String value )
         {
-            final Class arrayType = ((Class) type).getComponentType();
+            final Class arrayType = ( (Class) type ).getComponentType();
             final ArrayList result = new ArrayList();
             tokenize( value, false, new TokenizerCallback()
             {
@@ -428,6 +431,7 @@ public final class PropertyMapper
             return result.toArray( (Object[]) Array.newInstance( arrayType, result.size() ) );
         }
     }
+
     private static class BooleanMapper
         implements MappingStrategy
     {
@@ -436,12 +440,13 @@ public final class PropertyMapper
             return Boolean.valueOf( value.trim() );
         }
     }
+
     private static class ListMapper
         implements MappingStrategy
     {
         public Object map( Type type, String value )
         {
-            final Type dataType = ((ParameterizedType) type).getActualTypeArguments()[ 0 ];
+            final Type dataType = ( (ParameterizedType) type ).getActualTypeArguments()[ 0 ];
             final Collection result = new ArrayList();
             tokenize( value, false, new TokenizerCallback()
             {
@@ -453,12 +458,13 @@ public final class PropertyMapper
             return result;
         }
     }
+
     private static class SetMapper
         implements MappingStrategy
     {
         public Object map( Type type, String value )
         {
-            final Type dataType = ((ParameterizedType) type).getActualTypeArguments()[ 0 ];
+            final Type dataType = ( (ParameterizedType) type ).getActualTypeArguments()[ 0 ];
             final Collection result = new HashSet();
             tokenize( value, false, new TokenizerCallback()
             {
@@ -470,6 +476,7 @@ public final class PropertyMapper
             return result;
         }
     }
+
     private static class MapMapper
         implements MappingStrategy
     {
@@ -501,5 +508,4 @@ public final class PropertyMapper
             return result;
         }
     }
-
 }

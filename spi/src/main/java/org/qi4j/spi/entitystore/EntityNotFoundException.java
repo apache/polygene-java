@@ -17,9 +17,9 @@
 package org.qi4j.spi.entitystore;
 
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entitystore.EntityStoreException;
 
-public class EntityNotFoundException extends EntityStoreException
+public class EntityNotFoundException
+    extends EntityStoreException
 {
     private EntityReference identity;
 

@@ -70,7 +70,6 @@ public final class ServiceInjectionProviderFactory
 
                 return new IterableServiceProvider( servicesFinder );
             }
-
         }
         else if( dependencyModel.rawInjectionType().equals( ServiceReference.class ) )
         {
@@ -119,7 +118,8 @@ public final class ServiceInjectionProviderFactory
             this.servicesFinder = servicesFinder;
         }
 
-        public synchronized Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        public synchronized Object provideInjection( InjectionContext context )
+            throws InjectionProviderException
         {
             List<ServiceReference<Object>> serviceReferences;
 
@@ -169,13 +169,13 @@ public final class ServiceInjectionProviderFactory
     {
         private final ServicesFinder servicesFinder;
 
-
         private IterableServiceProvider( ServicesFinder servicesFinder )
         {
             this.servicesFinder = servicesFinder;
         }
 
-        public synchronized Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        public synchronized Object provideInjection( InjectionContext context )
+            throws InjectionProviderException
         {
             List<Object> serviceInstances;
             ModuleMapper mapper = new ModuleMapper();
@@ -248,11 +248,17 @@ public final class ServiceInjectionProviderFactory
                 context.moduleInstance().visitModules( mapper );
                 if( serviceFinder.imported )
                 {
-                    reference = mapper.modules.get( serviceFinder.module ).importedServices().getServiceWithIdentity( serviceFinder.identity );
+                    reference = mapper.modules
+                        .get( serviceFinder.module )
+                        .importedServices()
+                        .getServiceWithIdentity( serviceFinder.identity );
                 }
                 else
                 {
-                    reference = mapper.modules.get( serviceFinder.module ).services().getServiceWithIdentity( serviceFinder.identity );
+                    reference = mapper.modules
+                        .get( serviceFinder.module )
+                        .services()
+                        .getServiceWithIdentity( serviceFinder.identity );
                 }
             }
 
@@ -280,7 +286,8 @@ public final class ServiceInjectionProviderFactory
             this.serviceFinder = serviceFinder;
         }
 
-        public synchronized Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        public synchronized Object provideInjection( InjectionContext context )
+            throws InjectionProviderException
         {
             Object instance = null;
             if( serviceFinder.identity != null )
@@ -290,17 +297,24 @@ public final class ServiceInjectionProviderFactory
 
                 if( serviceFinder.imported )
                 {
-                    instance = mapper.modules.get( serviceFinder.module ).importedServices().getServiceWithIdentity( serviceFinder.identity ).get();
+                    instance = mapper.modules
+                        .get( serviceFinder.module )
+                        .importedServices()
+                        .getServiceWithIdentity( serviceFinder.identity )
+                        .get();
                 }
                 else
                 {
-                    instance = mapper.modules.get( serviceFinder.module ).services().getServiceWithIdentity( serviceFinder.identity ).get();
+                    instance = mapper.modules
+                        .get( serviceFinder.module )
+                        .services()
+                        .getServiceWithIdentity( serviceFinder.identity )
+                        .get();
                 }
             }
 
             return instance;
         }
-
 
         public List<String> injectedServices()
         {
@@ -331,7 +345,8 @@ public final class ServiceInjectionProviderFactory
                 module = moduleModel;
             }
 
-            ImportedServiceModel importedServiceModel = moduleModel.importedServicesModel().getServiceFor( serviceType, visibility );
+            ImportedServiceModel importedServiceModel = moduleModel.importedServicesModel()
+                .getServiceFor( serviceType, visibility );
             if( importedServiceModel != null )
             {
                 identity = importedServiceModel.identity();

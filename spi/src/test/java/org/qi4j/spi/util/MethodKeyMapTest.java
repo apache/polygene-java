@@ -17,13 +17,16 @@
  */
 package org.qi4j.spi.util;
 
-import org.junit.Assert;
-import org.junit.Test;
-
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class MethodKeyMapTest
 {
@@ -48,7 +51,6 @@ public class MethodKeyMapTest
         Assert.assertTrue( resultMap.containsKey( method3 ) );
         Assert.assertTrue( resultMap.containsKey( method4 ) );
         Assert.assertTrue( resultMap.containsKey( method5 ) );
-
     }
 
     @Test

@@ -21,7 +21,8 @@ import org.qi4j.spi.concern.MethodConcernDescriptor;
 /**
  * JAVADOC
  */
-public final class MethodConcernModel extends AbstractModifierModel
+public final class MethodConcernModel
+    extends AbstractModifierModel
     implements MethodConcernDescriptor, Serializable
 {
     public MethodConcernModel( Class concernClass )

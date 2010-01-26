@@ -78,7 +78,11 @@ public final class EntityDeclarationImpl
         return this;
     }
 
-    void addEntities( List<EntityModel> entities, PropertyDeclarations propertyDecs, AssociationDeclarations associationDecs, ManyAssociationDeclarations manyAssociationDecs )
+    void addEntities( List<EntityModel> entities,
+                      PropertyDeclarations propertyDecs,
+                      AssociationDeclarations associationDecs,
+                      ManyAssociationDeclarations manyAssociationDecs
+    )
     {
         for( Class<? extends EntityComposite> compositeType : compositeTypes )
         {

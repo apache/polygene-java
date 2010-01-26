@@ -17,12 +17,11 @@
  */
 package org.qi4j.spi.entitystore;
 
-import org.qi4j.spi.entitystore.EntityStoreException;
-
 /**
  * This exception is thrown for methods that creates or updates entities in read-only EntityStores.
  */
-public class ReadOnlyEntityStoreException extends EntityStoreException
+public class ReadOnlyEntityStoreException
+    extends EntityStoreException
 {
     public ReadOnlyEntityStoreException( String message )
     {

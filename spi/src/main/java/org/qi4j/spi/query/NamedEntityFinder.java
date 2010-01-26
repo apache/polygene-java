@@ -29,7 +29,8 @@ public interface NamedEntityFinder
                                             @Optional Map<String, Object> variables,
                                             @Optional OrderBy[] orderBySegments,
                                             @Optional Integer firstResult,
-                                            @Optional Integer maxResults )
+                                            @Optional Integer maxResults
+    )
         throws EntityFinderException;
 
     EntityReference findEntity( NamedQueryDescriptor descriptor, String resultType, Map<String, Object> variables )

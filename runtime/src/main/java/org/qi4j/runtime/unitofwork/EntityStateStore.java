@@ -25,7 +25,8 @@ final class EntityStateStore
     EntityStateHolder stateHolder;
     EntityState state;
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return state.identity().toString();
     }

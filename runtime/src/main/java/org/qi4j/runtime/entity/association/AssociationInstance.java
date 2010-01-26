@@ -46,6 +46,7 @@ public final class AssociationInstance<T>
     }
 
     // Association implementation
+
     public T get()
     {
         if( !isSet() )
@@ -78,6 +79,7 @@ public final class AssociationInstance<T>
     }
 
     // AssociationInfo implementation
+
     public <T> T metaInfo( Class<T> infoType )
     {
         return associationInfo.metaInfo( infoType );

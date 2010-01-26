@@ -38,7 +38,8 @@ public final class CachingInjectionProviderDecorator
         return decoratedProvider;
     }
 
-    public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+    public Object provideInjection( InjectionContext context )
+        throws InjectionProviderException
     {
         if( singletonInstance == null )
         {

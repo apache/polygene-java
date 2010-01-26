@@ -106,7 +106,8 @@ public final class ValueConstraintsInstance
         return violations;
     }
 
-    private static class OptionalDummy implements Optional, Serializable
+    private static class OptionalDummy
+        implements Optional, Serializable
     {
         public Class<? extends Annotation> annotationType()
         {

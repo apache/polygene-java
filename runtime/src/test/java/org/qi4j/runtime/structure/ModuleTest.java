@@ -14,8 +14,6 @@
 
 package org.qi4j.runtime.structure;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.TransientBuilderFactory;
@@ -31,6 +29,9 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.ModuleAssembly;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /**
  * Test of the Module interface. This should test both the general interface and all possible visibility

@@ -62,7 +62,12 @@ public final class GenericAssociationInfo
     private boolean immutable;
     private boolean aggregated;
 
-    public GenericAssociationInfo( MetaInfo infos, boolean immutable, boolean aggregated, QualifiedName qualifiedName, Type type )
+    public GenericAssociationInfo( MetaInfo infos,
+                                   boolean immutable,
+                                   boolean aggregated,
+                                   QualifiedName qualifiedName,
+                                   Type type
+    )
     {
         this.metainfo = infos;
         this.immutable = immutable;

@@ -3,7 +3,8 @@ package org.qi4j.bootstrap;
 /**
  * JAVADOC
  */
-public class InvalidInjectionException extends Exception
+public class InvalidInjectionException
+    extends Exception
 {
     public InvalidInjectionException( String s )
     {

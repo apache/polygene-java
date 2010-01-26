@@ -21,7 +21,8 @@ import org.qi4j.spi.sideeffect.MethodSideEffectDescriptor;
 /**
  * JAVADOC
  */
-public final class MethodSideEffectModel extends AbstractModifierModel
+public final class MethodSideEffectModel
+    extends AbstractModifierModel
     implements MethodSideEffectDescriptor, Serializable
 {
     public MethodSideEffectModel( Class sideEffectClass )

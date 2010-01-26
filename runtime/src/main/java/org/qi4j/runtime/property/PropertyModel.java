@@ -30,7 +30,8 @@ public class PropertyModel
     private PropertyInfo propertyInfo;
 
     public PropertyModel( Method anAccessor, boolean immutable, ValueConstraintsInstance constraints,
-                          MetaInfo metaInfo, Object anInitialValue )
+                          MetaInfo metaInfo, Object anInitialValue
+    )
     {
         super( anAccessor, immutable, constraints, metaInfo, anInitialValue );
         propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), qualifiedName(), type() );

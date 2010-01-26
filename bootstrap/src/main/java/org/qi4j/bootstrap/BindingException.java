@@ -14,8 +14,6 @@
 
 package org.qi4j.bootstrap;
 
-import org.qi4j.bootstrap.InvalidInjectionException;
-
 /**
  * JAVADOC
  */

@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import org.qi4j.api.constraint.Constraint;
+
 import static org.qi4j.api.util.Classes.*;
 
 /**
@@ -37,7 +38,8 @@ public final class ConstraintDeclaration
         this.constraintClass = constraintClass;
         declaredIn = type;
 
-        constraintAnnotationType = (Class<? extends Annotation>) ( (ParameterizedType) constraintClass.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 0 ];
+        constraintAnnotationType = (Class<? extends Annotation>) ( (ParameterizedType) constraintClass.getGenericInterfaces()[ 0 ] )
+            .getActualTypeArguments()[ 0 ];
         constraintValueType = ( (ParameterizedType) constraintClass.getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[ 1 ];
     }
 

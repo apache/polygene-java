@@ -16,22 +16,22 @@
 
 package org.qi4j.runtime.value;
 
+import java.lang.reflect.Proxy;
+import org.json.JSONException;
+import org.json.JSONStringer;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeInstance;
-import org.json.JSONStringer;
-import org.json.JSONException;
 import org.qi4j.spi.value.ValueDescriptor;
-
-import java.lang.reflect.Proxy;
 
 /**
  * ValueComposite instance
  */
-public final class ValueInstance extends TransientInstance
+public final class ValueInstance
+    extends TransientInstance
     implements CompositeInstance, MixinsInstance
 {
     public static ValueInstance getValueInstance( ValueComposite composite )

@@ -31,7 +31,8 @@ public final class ManyAssociationType
 
     public ManyAssociationType( final QualifiedName qualifiedName,
                                 final String type,
-                                final boolean queryable )
+                                final boolean queryable
+    )
     {
         this.qualifiedName = qualifiedName;
         this.type = type;

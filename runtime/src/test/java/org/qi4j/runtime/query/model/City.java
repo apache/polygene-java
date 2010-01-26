@@ -23,7 +23,9 @@ import org.qi4j.api.property.Property;
 public interface City
     extends Nameable
 {
-    @Optional Property<String> country();
+    @Optional
+    Property<String> country();
 
-    @Optional Property<String> county();
+    @Optional
+    Property<String> county();
 }

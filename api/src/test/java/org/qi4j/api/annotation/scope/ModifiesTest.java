@@ -13,10 +13,10 @@
 package org.qi4j.api.annotation.scope;
 
 import java.lang.annotation.Annotation;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.qi4j.api.concern.internal.ConcernFor;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests public api exposed by Modified annotation.
@@ -26,7 +26,8 @@ public class ModifiesTest
 {
 
     @Test
-    public void retention() throws NoSuchFieldException
+    public void retention()
+        throws NoSuchFieldException
     {
         Annotation[] annotations = Annotated.class.getDeclaredField( "modified" ).getDeclaredAnnotations();
         assertNotNull( "annotations should not be null", annotations );
@@ -36,6 +37,7 @@ public class ModifiesTest
 
     private static class Annotated
     {
-        @ConcernFor String modified;
+        @ConcernFor
+        String modified;
     }
 }

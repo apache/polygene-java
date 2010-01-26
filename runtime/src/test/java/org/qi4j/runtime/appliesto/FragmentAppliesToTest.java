@@ -24,7 +24,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.composite.TransientBuilderFactory;
@@ -37,6 +36,8 @@ import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+
+import static org.junit.Assert.*;
 
 public class FragmentAppliesToTest
     extends AbstractQi4jTest
@@ -136,7 +137,7 @@ public class FragmentAppliesToTest
 
         int getValue();
     }
-    
+
     @AppliesTo( CountCalls.class )
     public static class CountCallsSideEffect
         extends GenericSideEffect

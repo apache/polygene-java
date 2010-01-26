@@ -46,11 +46,13 @@ abstract class ComparisonPredicateImpl<T>
      *
      * @param propertyReference property reference; cannot be null
      * @param valueExpression   value expression; cannot be null
+     *
      * @throws IllegalArgumentException - If property reference is null
      *                                  - If value expression is null
      */
     ComparisonPredicateImpl( final PropertyReference<T> propertyReference,
-                             final ValueExpression<T> valueExpression )
+                             final ValueExpression<T> valueExpression
+    )
     {
         if( propertyReference == null )
         {
@@ -114,8 +116,8 @@ abstract class ComparisonPredicateImpl<T>
      *
      * @param propertyValue   property value
      * @param expressionValue expression value
+     *
      * @return true if the comparison is TRUE
      */
     abstract protected boolean eval( final Comparable<T> propertyValue, final T expressionValue );
-
 }

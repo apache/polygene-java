@@ -31,7 +31,9 @@ public final class GenericFragmentInvocationHandler
     }
 
     // InvocationHandler implementation ------------------------------
-    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+
+    public Object invoke( Object proxy, Method method, Object[] args )
+        throws Throwable
     {
         try
         {

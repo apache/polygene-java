@@ -42,6 +42,7 @@ public interface ObjectBuilder<T>
      * </p>
      *
      * @param objects the objects to be used
+     *
      * @return builder for objects
      */
     ObjectBuilder<T> use( Object... objects );
@@ -50,6 +51,7 @@ public interface ObjectBuilder<T>
      * Creates a new instance from this ObjectBuilder.
      *
      * @return An object of type <code><i>T</i></code>.
+     *
      * @throws org.qi4j.api.common.ConstructionException
      *          If the object class is not compatible with the
      */
@@ -60,6 +62,7 @@ public interface ObjectBuilder<T>
      * Inject an existing instance. Only fields and methods will be called.
      *
      * @param instance
+     *
      * @throws ConstructionException
      */
     void injectTo( T instance )

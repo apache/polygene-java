@@ -34,7 +34,8 @@ public class CachingInjectionProviderFactoryDecorator
         this.decoratedFactory = decoratedFactory;
     }
 
-    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
+        throws InvalidInjectionException
     {
         InjectionProvider injectionProvider = decoratedFactory.newInjectionProvider( resolution, dependencyModel );
         if( injectionProvider != null )

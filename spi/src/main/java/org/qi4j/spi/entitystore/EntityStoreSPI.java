@@ -17,8 +17,6 @@ package org.qi4j.spi.entitystore;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entitystore.StateCommitter;
-import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 
 /**
  * JAVADOC
@@ -26,7 +24,8 @@ import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 public interface EntityStoreSPI
 {
     EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
-                                EntityReference identity, EntityDescriptor entityDescriptor );
+                                EntityReference identity, EntityDescriptor entityDescriptor
+    );
 
     EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity );
 

@@ -44,7 +44,8 @@ public final class EntityType
                        final Set<String> mixinTypes,
                        final Set<PropertyType> properties,
                        final Set<AssociationType> associations,
-                       final Set<ManyAssociationType> manyAssociations )
+                       final Set<ManyAssociationType> manyAssociations
+    )
     {
         this.type = entityType;
         this.queryable = queryable;
@@ -99,7 +100,6 @@ public final class EntityType
     public int hashCode()
     {
         return type.hashCode();
-
     }
 
     public boolean equals( Object o )

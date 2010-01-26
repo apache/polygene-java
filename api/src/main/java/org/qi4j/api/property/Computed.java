@@ -25,8 +25,8 @@ import java.lang.annotation.Target;
  * the Property must have an implementation of the Property method and return
  * an instance of ComputedPropertyInstance.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention( RetentionPolicy.RUNTIME )
+@Target( { ElementType.TYPE, ElementType.METHOD } )
 @Documented
 public @interface Computed
 {

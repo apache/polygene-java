@@ -23,18 +23,19 @@ import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
-import static org.qi4j.api.query.QueryExpressions.eq;
-import static org.qi4j.api.query.QueryExpressions.templateFor;
-
 import org.qi4j.api.query.QueryException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-public class NonQueryableTest extends AbstractQi4jTest
+import static org.qi4j.api.query.QueryExpressions.*;
+
+public class NonQueryableTest
+    extends AbstractQi4jTest
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
     }
 
@@ -82,9 +83,9 @@ public class NonQueryableTest extends AbstractQi4jTest
 
     static interface Abc
     {
-        @Queryable( false ) Property<Boolean> isValid();
+        @Queryable( false )
+        Property<Boolean> isValid();
     }
-
 
     @Queryable( false )
     public interface Abc2

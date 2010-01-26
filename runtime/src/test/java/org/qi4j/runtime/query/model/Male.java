@@ -24,13 +24,13 @@ import org.qi4j.api.entity.association.ManyAssociation;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 public interface Male
     extends Person
 {
-    @Optional Association<Female> wife();
+    @Optional
+    Association<Female> wife();
 
-    @Optional ManyAssociation<Female> pastGirlFriends();
-
+    @Optional
+    ManyAssociation<Female> pastGirlFriends();
 }

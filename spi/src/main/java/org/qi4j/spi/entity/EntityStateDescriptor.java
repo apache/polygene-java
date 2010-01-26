@@ -22,7 +22,8 @@ import org.qi4j.spi.composite.StateDescriptor;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 
-public interface EntityStateDescriptor extends StateDescriptor
+public interface EntityStateDescriptor
+    extends StateDescriptor
 {
     AssociationDescriptor getAssociationByName( String name );
 

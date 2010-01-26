@@ -14,8 +14,6 @@
 
 package org.qi4j.runtime.service;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.injection.scope.Service;
@@ -26,6 +24,9 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.spi.service.importer.ServiceSelectorImporter;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /**
  * Test of service selector importer

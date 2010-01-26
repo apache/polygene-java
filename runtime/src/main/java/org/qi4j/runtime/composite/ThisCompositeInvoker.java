@@ -32,7 +32,8 @@ public class ThisCompositeInvoker
         this.compositeInstance = compositeInstance;
     }
 
-    public Object intercept( Object obj, Method method, Object[] args, MethodProxy proxy ) throws Throwable
+    public Object intercept( Object obj, Method method, Object[] args, MethodProxy proxy )
+        throws Throwable
     {
         return compositeInstance.invokeProxy( method, args );
     }

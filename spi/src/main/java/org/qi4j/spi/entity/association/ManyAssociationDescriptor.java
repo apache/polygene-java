@@ -20,7 +20,8 @@ import org.qi4j.api.entity.association.AssociationInfo;
 /**
  * JAVADOC
  */
-public interface ManyAssociationDescriptor extends AssociationInfo
+public interface ManyAssociationDescriptor
+    extends AssociationInfo
 {
     Method accessor();
 

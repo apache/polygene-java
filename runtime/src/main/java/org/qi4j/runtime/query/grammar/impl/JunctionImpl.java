@@ -39,11 +39,13 @@ abstract class JunctionImpl
      *
      * @param leftSideExpression  left side boolean expression; cannot be null
      * @param rightSideExpression right side boolean expression; cannot be null
+     *
      * @throws IllegalArgumentException - If left side expression is null
      *                                  - If right side expression is null
      */
     JunctionImpl( final BooleanExpression leftSideExpression,
-                  final BooleanExpression rightSideExpression )
+                  final BooleanExpression rightSideExpression
+    )
     {
         if( leftSideExpression == null )
         {
@@ -76,5 +78,4 @@ abstract class JunctionImpl
     {
         return rightSideExpression;
     }
-
 }

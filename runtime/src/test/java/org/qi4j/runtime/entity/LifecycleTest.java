@@ -16,7 +16,6 @@
 package org.qi4j.runtime.entity;
 
 import org.hamcrest.CoreMatchers;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
@@ -29,6 +28,8 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
+import static org.junit.Assert.*;
+
 /**
  * Test for the Lifecycle interface
  */
@@ -38,7 +39,8 @@ public class LifecycleTest
     public static boolean create;
     public static boolean remove;
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
         module.addEntities( TestEntity.class );
@@ -81,26 +83,28 @@ public class LifecycleTest
         assertThat( "Lifecycle.remove() was invoked", remove, CoreMatchers.equalTo( true ) );
     }
 
-
     public interface Testing
     {
         void doSomething();
     }
 
     @Mixins( TestMixin.class )
-    public interface TestEntity extends Testing, EntityComposite
+    public interface TestEntity
+        extends Testing, EntityComposite
     {
     }
 
     public static class TestMixin
         implements Lifecycle, Testing
     {
-        public void create() throws LifecycleException
+        public void create()
+            throws LifecycleException
         {
             create = true;
         }
 
-        public void remove() throws LifecycleException
+        public void remove()
+            throws LifecycleException
         {
             remove = true;
         }

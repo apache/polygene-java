@@ -29,8 +29,8 @@ import org.qi4j.runtime.composite.CompositeMethodsModel;
 import org.qi4j.runtime.composite.ConcernDeclaration;
 import org.qi4j.runtime.composite.ConcernsDeclaration;
 import org.qi4j.runtime.composite.ConstraintsModel;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.composite.SideEffectsDeclaration;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.types.ValueCompositeType;
@@ -41,7 +41,8 @@ import org.qi4j.spi.value.ValueDescriptor;
 /**
  * Model for ValueComposites
  */
-public final class ValueModel extends AbstractCompositeModel
+public final class ValueModel
+    extends AbstractCompositeModel
     implements ValueDescriptor, Serializable
 {
     private ValueCompositeType valueType;
@@ -52,7 +53,8 @@ public final class ValueModel extends AbstractCompositeModel
                                        final PropertyDeclarations propertyDeclarations,
                                        final List<Class<?>> assemblyConcerns,
                                        final List<Class<?>> sideEffects,
-                                       final List<Class<?>> mixins )
+                                       final List<Class<?>> mixins
+    )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
         ValuePropertiesModel propertiesModel = new ValuePropertiesModel( constraintsModel, propertyDeclarations );
@@ -70,12 +72,20 @@ public final class ValueModel extends AbstractCompositeModel
             new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
         stateModel.addStateFor( compositeMethodsModel.methods(), compositeType );
 
-        ValueCompositeType valueType = (ValueCompositeType) ValueTypeFactory.instance().newValueType( compositeType, compositeType, compositeType );
+        ValueCompositeType valueType = (ValueCompositeType) ValueTypeFactory.instance()
+            .newValueType( compositeType, compositeType, compositeType );
 
         return new ValueModel( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, valueType );
     }
 
-    private ValueModel( final Class<? extends ValueComposite> compositeType, final Visibility visibility, final MetaInfo metaInfo, final ValueMixinsModel mixinsModel, final ValueStateModel stateModel, final CompositeMethodsModel compositeMethodsModel, ValueCompositeType valueType )
+    private ValueModel( final Class<? extends ValueComposite> compositeType,
+                        final Visibility visibility,
+                        final MetaInfo metaInfo,
+                        final ValueMixinsModel mixinsModel,
+                        final ValueStateModel stateModel,
+                        final CompositeMethodsModel compositeMethodsModel,
+                        ValueCompositeType valueType
+    )
     {
         super( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
 
@@ -110,7 +120,8 @@ public final class ValueModel extends AbstractCompositeModel
     }
 
     public ValueInstance newValueInstance( ModuleInstance moduleInstance,
-                                           StateHolder state )
+                                           StateHolder state
+    )
     {
         Object[] mixins = mixinsModel.newMixinHolder();
 
@@ -122,7 +133,6 @@ public final class ValueModel extends AbstractCompositeModel
             ( (ValueMixinsModel) mixinsModel ).newMixins( instance,
                                                           state,
                                                           mixins );
-
         }
         catch( InvalidCompositeException e )
         {

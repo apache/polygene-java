@@ -25,6 +25,7 @@ public interface IdentityGenerator
      * Generate a new id for the given Composite type
      *
      * @param compositeType the type of composite
+     *
      * @return a new identity
      */
     String generate( Class<? extends Identity> compositeType );

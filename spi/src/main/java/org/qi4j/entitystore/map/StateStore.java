@@ -22,5 +22,6 @@ import org.json.JSONObject;
  */
 public interface StateStore
 {
-    JSONObject getState( String id ) throws IOException;
+    JSONObject getState( String id )
+        throws IOException;
 }

@@ -72,7 +72,6 @@ public class PropertiesInstance
 
         PropertiesInstance that = (PropertiesInstance) o;
         return properties.equals( that.properties );
-
     }
 
     @Override

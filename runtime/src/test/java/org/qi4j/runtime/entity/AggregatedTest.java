@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.entity;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.entity.Aggregated;
 import org.qi4j.api.entity.EntityBuilder;
@@ -29,6 +28,8 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
+
+import static org.junit.Assert.*;
 
 /**
  * JAVADOC

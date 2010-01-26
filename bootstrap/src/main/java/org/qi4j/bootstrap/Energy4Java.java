@@ -62,7 +62,8 @@ public final class Energy4Java
         this.runtime = runtime;
     }
 
-    public ApplicationModelSPI newApplicationModel( ApplicationAssembler assembler ) throws AssemblyException
+    public ApplicationModelSPI newApplicationModel( ApplicationAssembler assembler )
+        throws AssemblyException
     {
         ApplicationAssembly assembly = assembler.assemble( runtime.applicationAssemblyFactory() );
         ApplicationModelFactory modelFactory = runtime.applicationModelFactory();

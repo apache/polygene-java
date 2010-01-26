@@ -35,13 +35,16 @@ public interface Identity
      *
      * @return The Identity of 'this' composite.
      */
-    @Immutable Property<String> identity();
+    @Immutable
+    Property<String> identity();
 
     // Default implementation
+
     public class IdentityMixin
         implements Identity
     {
-        @State private Property<String> identity;
+        @State
+        private Property<String> identity;
 
         public Property<String> identity()
         {

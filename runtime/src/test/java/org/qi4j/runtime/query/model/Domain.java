@@ -23,5 +23,6 @@ import org.qi4j.api.property.Property;
 public interface Domain
     extends Nameable
 {
-    @Optional Property<String> description();
+    @Optional
+    Property<String> description();
 }

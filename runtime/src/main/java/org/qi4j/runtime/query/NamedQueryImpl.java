@@ -43,7 +43,8 @@ public class NamedQueryImpl<T>
     private NamedEntityFinder namedFinder;
 
     public NamedQueryImpl( NamedEntityFinder namedFinder, UnitOfWork unitOfWork,
-                           NamedQueryDescriptor query, Class<T> resultType )
+                           NamedQueryDescriptor query, Class<T> resultType
+    )
     {
         this.namedFinder = namedFinder;
         this.unitOfWork = unitOfWork;
@@ -166,7 +167,8 @@ public class NamedQueryImpl<T>
         }
         catch( EntityFinderException e )
         {
-            throw (QueryExecutionException) new QueryExecutionException( "Query '" + toString() + "' could not be executed" ).initCause( e );
+            throw (QueryExecutionException) new QueryExecutionException( "Query '" + toString() + "' could not be executed" )
+                .initCause( e );
         }
     }
 

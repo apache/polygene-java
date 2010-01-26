@@ -18,7 +18,6 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
-import static java.util.Arrays.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -28,6 +27,8 @@ import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.api.util.Classes;
+
+import static java.util.Arrays.*;
 
 /**
  * Used to declare and access meta-info.
@@ -99,7 +100,8 @@ public final class MetaInfo
         return this;
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return metaInfoMap.toString();
     }

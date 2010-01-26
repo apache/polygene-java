@@ -91,7 +91,12 @@ public final class GenericPropertyInfo
         }
     }
 
-    public GenericPropertyInfo( MetaInfo infos, boolean immutable, boolean computed, QualifiedName qualifiedName, Type type )
+    public GenericPropertyInfo( MetaInfo infos,
+                                boolean immutable,
+                                boolean computed,
+                                QualifiedName qualifiedName,
+                                Type type
+    )
     {
         this.infos = infos;
         this.immutable = immutable;

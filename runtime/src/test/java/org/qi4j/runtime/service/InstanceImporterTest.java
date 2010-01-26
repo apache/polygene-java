@@ -14,17 +14,18 @@
 
 package org.qi4j.runtime.service;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
-import static org.qi4j.api.common.Visibility.*;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.service.ServiceSelector;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.service.importer.ServiceSelectorImporter;
 import org.qi4j.test.AbstractQi4jTest;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import static org.qi4j.api.common.Visibility.*;
 
 /**
  * Test import of singleton services

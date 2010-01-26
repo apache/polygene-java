@@ -31,12 +31,12 @@ public class Main
     {
         Energy4Java energy4Java = new Energy4Java();
 
-        Iterable<ApplicationAssembler> assemblers = Energy4Java.getServiceLoader().providers( ApplicationAssembler.class );
+        Iterable<ApplicationAssembler> assemblers = Energy4Java.getServiceLoader()
+            .providers( ApplicationAssembler.class );
         for( ApplicationAssembler assembler : assemblers )
         {
             ApplicationSPI application = energy4Java.newApplication( assembler );
             application.activate();
         }
     }
-
 }

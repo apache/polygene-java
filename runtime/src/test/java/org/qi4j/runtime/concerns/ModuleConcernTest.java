@@ -16,8 +16,6 @@ package org.qi4j.runtime.concerns;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.concern.GenericConcern;
@@ -27,6 +25,9 @@ import org.qi4j.bootstrap.AssemblyVisitorAdapter;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.TransientDeclaration;
 import org.qi4j.test.AbstractQi4jTest;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /**
  * Test of declaring concern in assembly

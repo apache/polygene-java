@@ -21,7 +21,6 @@ package org.qi4j.runtime.mixin;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.concern.Concerns;
@@ -32,7 +31,10 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-public class MethodInterceptionMixinTest extends AbstractQi4jTest
+import static org.junit.Assert.*;
+
+public class MethodInterceptionMixinTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -51,13 +53,15 @@ public class MethodInterceptionMixinTest extends AbstractQi4jTest
 
     @Concerns( { SomeConcern1.class } )
     @Mixins( { SomeMixin.class } )
-    public interface SomeService extends Some, ServiceComposite
+    public interface SomeService
+        extends Some, ServiceComposite
     {
     }
 
     public interface Some
     {
         Collection<String> doSome();
+
         Collection<String> result();
     }
 
@@ -76,7 +80,8 @@ public class MethodInterceptionMixinTest extends AbstractQi4jTest
         }
     }
 
-    public static abstract class SomeConcern1 extends ConcernOf<Some>
+    public static abstract class SomeConcern1
+        extends ConcernOf<Some>
         implements Some
     {
 

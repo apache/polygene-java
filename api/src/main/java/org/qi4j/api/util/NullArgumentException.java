@@ -20,7 +20,8 @@ package org.qi4j.api.util;
  * Thrown if an argument to a method was null, and the method required
  * it to be non-null.
  */
-public class NullArgumentException extends IllegalArgumentException
+public class NullArgumentException
+    extends IllegalArgumentException
 {
     private static final long serialVersionUID = 4815431779868729780L;
 

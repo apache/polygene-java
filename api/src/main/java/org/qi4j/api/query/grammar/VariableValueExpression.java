@@ -17,10 +17,10 @@
  */
 package org.qi4j.api.query.grammar;
 
-public interface VariableValueExpression<T> extends SingleValueExpression<T>
+public interface VariableValueExpression<T>
+    extends SingleValueExpression<T>
 {
     String name();
 
     void setValue( T value );
-
 }

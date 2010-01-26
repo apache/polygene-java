@@ -33,11 +33,13 @@ public final class ConjunctionImpl
      *
      * @param leftSideExpression  left side boolean expression; cannot be null
      * @param rightSideExpression right side boolean expression; cannot be null
+     *
      * @throws IllegalArgumentException - If left side expression is null
      *                                  - If right side expression is null
      */
     public ConjunctionImpl( final BooleanExpression leftSideExpression,
-                            final BooleanExpression rightSideExpression )
+                            final BooleanExpression rightSideExpression
+    )
     {
         super( leftSideExpression, rightSideExpression );
     }
@@ -61,5 +63,4 @@ public final class ConjunctionImpl
             .append( " )" )
             .toString();
     }
-
 }

@@ -29,7 +29,6 @@ import java.util.Set;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.bootstrap.BindingException;
-import org.qi4j.spi.util.SerializationUtil;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
@@ -37,6 +36,7 @@ import org.qi4j.runtime.structure.DependencyVisitor;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.composite.CompositeMethodDescriptor;
+import org.qi4j.spi.util.SerializationUtil;
 
 /**
  * JAVADOC
@@ -91,7 +91,8 @@ public final class CompositeMethodModel
                                  MethodConstraintsModel methodConstraintsModel,
                                  MethodConcernsModel methodConcernsModel,
                                  MethodSideEffectsModel methodSideEffectsModel,
-                                 AbstractMixinsModel mixinsModel )
+                                 AbstractMixinsModel mixinsModel
+    )
     {
         this.method = method;
         mixins = mixinsModel;
@@ -109,6 +110,7 @@ public final class CompositeMethodModel
     }
 
     // Model
+
     public Method method()
     {
         return method;
@@ -120,7 +122,9 @@ public final class CompositeMethodModel
     }
 
     // Binding
-    public void bind( Resolution resolution ) throws BindingException
+
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         resolution = new Resolution( resolution.application(),
                                      resolution.layer(),
@@ -137,6 +141,7 @@ public final class CompositeMethodModel
     }
 
     // Context
+
     public Object invoke( Object composite, Object[] params, MixinsInstance mixins, ModuleInstance moduleInstance )
         throws Throwable
     {
@@ -235,7 +240,8 @@ public final class CompositeMethodModel
                 {
                     return false;
                 }
-                return ( model.mixinClass().getMethod( method.getName(), method.getParameterTypes() ).isAnnotationPresent( annotationClass ) );
+                return ( model.mixinClass()
+                    .getMethod( method.getName(), method.getParameterTypes() ).isAnnotationPresent( annotationClass ) );
             }
             catch( NoSuchMethodException e )
             {
@@ -251,7 +257,8 @@ public final class CompositeMethodModel
                 MixinModel model = mixins.mixinFor( method );
                 if( !model.isGeneric() )
                 {
-                    T annotation = annotationClass.cast( model.mixinClass().getMethod( method.getName(), method.getParameterTypes() ).getAnnotation( annotationClass ) );
+                    T annotation = annotationClass.cast( model.mixinClass()
+                        .getMethod( method.getName(), method.getParameterTypes() ).getAnnotation( annotationClass ) );
                     if( annotation != null )
                     {
                         return annotation;

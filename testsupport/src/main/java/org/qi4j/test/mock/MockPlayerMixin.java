@@ -19,7 +19,6 @@ package org.qi4j.test.mock;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.test.mock.internal.MockRepository;
 import org.qi4j.test.mock.internal.MockResolver;
@@ -33,7 +32,7 @@ import org.qi4j.test.mock.internal.MockResolver;
  * IllegalStateException.
  */
 public class MockPlayerMixin
-        implements InvocationHandler
+    implements InvocationHandler
 {
 
     /**
@@ -48,19 +47,18 @@ public class MockPlayerMixin
      *
      * @see java.lang.reflect.InvocationHandler#invoke(Object,java.lang.reflect.Method,Object[])
      */
-    public Object invoke(final Object proxy, final Method method, final Object[] args)
-            throws Throwable
+    public Object invoke( final Object proxy, final Method method, final Object[] args )
+        throws Throwable
     {
-        System.out.println("Play mock for " + method);
-        for (MockResolver mockResolver : mockRepository.getAll())
+        System.out.println( "Play mock for " + method );
+        for( MockResolver mockResolver : mockRepository.getAll() )
         {
-            InvocationHandler handler = mockResolver.getInvocationHandler(proxy, method, args);
-            if (handler != null)
+            InvocationHandler handler = mockResolver.getInvocationHandler( proxy, method, args );
+            if( handler != null )
             {
-                return handler.invoke(mockResolver, method, args);
+                return handler.invoke( mockResolver, method, args );
             }
         }
-        throw new IllegalStateException("There is no mock registered that can handle " + method);
+        throw new IllegalStateException( "There is no mock registered that can handle " + method );
     }
-
 }

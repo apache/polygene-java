@@ -36,6 +36,7 @@ public final class NegationImpl
      * Constructor.
      *
      * @param expression boolean expression; canot be null
+     *
      * @throws IllegalArgumentException - If expression is null
      */
     public NegationImpl( final BooleanExpression expression )
@@ -68,5 +69,4 @@ public final class NegationImpl
             .append( " )" )
             .toString();
     }
-
 }

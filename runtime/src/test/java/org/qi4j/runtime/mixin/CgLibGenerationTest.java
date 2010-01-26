@@ -19,7 +19,6 @@
 package org.qi4j.runtime.mixin;
 
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.concern.Concerns;
@@ -28,7 +27,10 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-public class CgLibGenerationTest extends AbstractQi4jTest
+import static org.junit.Assert.*;
+
+public class CgLibGenerationTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -42,25 +44,28 @@ public class CgLibGenerationTest extends AbstractQi4jTest
         Some some1 = transientBuilderFactory.newTransient( Some.class );
         Some some2 = transientBuilderFactory.newTransient( Some.class );
 
-        assertEquals( "Result: Count:0",  some1.result() );
-        assertEquals( "doSome: Result: Count:0",  some1.doSome() );
-        assertEquals( "Result: Count:1",  some2.result() );
-        assertEquals( "doSome: Result: Count:1",  some2.doSome() );
+        assertEquals( "Result: Count:0", some1.result() );
+        assertEquals( "doSome: Result: Count:0", some1.doSome() );
+        assertEquals( "Result: Count:1", some2.result() );
+        assertEquals( "doSome: Result: Count:1", some2.doSome() );
     }
 
     @Concerns( SomeConcern.class )
     @Mixins( SomeMixin.class )
-    public interface SomeTransient extends Some, TransientComposite
+    public interface SomeTransient
+        extends Some, TransientComposite
     {
     }
 
     public interface Some
     {
         String doSome();
+
         String result();
     }
 
-    public static class SomeConcern extends ConcernOf<Some>
+    public static class SomeConcern
+        extends ConcernOf<Some>
         implements Some
     {
 
@@ -97,7 +102,6 @@ public class CgLibGenerationTest extends AbstractQi4jTest
         public String result()
         {
             return "Count:" + counter;
-
         }
     }
 }

@@ -16,7 +16,8 @@ package org.qi4j.api.query;
 /**
  * Base class for Query exceptions.
  */
-public abstract class QueryException extends RuntimeException
+public abstract class QueryException
+    extends RuntimeException
 {
     private static final long serialVersionUID = -3602596752342902060L;
 

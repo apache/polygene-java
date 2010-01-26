@@ -22,7 +22,6 @@ import org.qi4j.test.indexing.model.Male;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 public interface MaleEntity
     extends Male, EntityComposite

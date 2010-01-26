@@ -18,6 +18,8 @@
  */
 package org.qi4j.runtime.query.grammar.impl;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
@@ -27,14 +29,11 @@ import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.util.Classes;
 import org.qi4j.runtime.entity.EntityInstance;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-
 /**
  * Default {@link AssociationReference}.
  */
 public class AssociationReferenceImpl
-        implements AssociationReference
+    implements AssociationReference
 {
 
     /**
@@ -74,13 +73,13 @@ public class AssociationReferenceImpl
         name = accessor.getName();
         declaringType = accessor.getDeclaringClass();
         Type returnType = accessor.getGenericReturnType();
-        if (!Association.class.isAssignableFrom( Classes.getRawClass( returnType ) ) &&
-                !ManyAssociation.class.isAssignableFrom( Classes.getRawClass( returnType ) ))
+        if( !Association.class.isAssignableFrom( Classes.getRawClass( returnType ) ) &&
+            !ManyAssociation.class.isAssignableFrom( Classes.getRawClass( returnType ) ) )
         {
             throw new QueryExpressionException( "Unsupported association type:" + returnType );
         }
         Type associationTypeAsType = GenericAssociationInfo.getAssociationType( returnType );
-        if (!(associationTypeAsType instanceof Class))
+        if( !( associationTypeAsType instanceof Class ) )
         {
             throw new QueryExpressionException( "Unsupported association type:" + associationTypeAsType );
         }
@@ -134,18 +133,19 @@ public class AssociationReferenceImpl
     public Object eval( final Object target )
     {
         Object actual = target;
-        if (traversedAssociation() != null)
+        if( traversedAssociation() != null )
         {
             actual = traversedAssociation().eval( target );
         }
-        if (actual != null)
+        if( actual != null )
         {
             try
             {
-                Association assoc = (Association) EntityInstance.getEntityInstance( (EntityComposite) actual ).invokeProxy( associationAccessor(), new Object[0] );
+                Association assoc = (Association) EntityInstance.getEntityInstance( (EntityComposite) actual )
+                    .invokeProxy( associationAccessor(), new Object[0] );
                 return assoc.get();
             }
-            catch (Throwable e)
+            catch( Throwable e )
             {
                 return null;
             }
@@ -157,7 +157,7 @@ public class AssociationReferenceImpl
     public String toString()
     {
         StringBuilder fragment = new StringBuilder();
-        if (traversed != null)
+        if( traversed != null )
         {
             fragment.append( traversed.toString() ).append( "." );
         }
@@ -166,5 +166,4 @@ public class AssociationReferenceImpl
         fragment.append( name );
         return fragment.toString();
     }
-
 }

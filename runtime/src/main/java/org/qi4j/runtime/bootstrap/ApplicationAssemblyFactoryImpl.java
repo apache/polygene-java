@@ -67,5 +67,4 @@ public final class ApplicationAssemblyFactoryImpl
     {
         return new ApplicationAssemblyImpl();
     }
-
 }

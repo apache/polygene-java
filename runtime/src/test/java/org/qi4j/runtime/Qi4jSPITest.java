@@ -15,7 +15,6 @@
 package org.qi4j.runtime;
 
 import org.hamcrest.CoreMatchers;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityBuilder;
@@ -35,15 +34,18 @@ import org.qi4j.spi.property.PropertyDescriptor;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
+import static org.junit.Assert.*;
+
 /**
  * JAVADOC
  */
 public class Qi4jSPITest
     extends AbstractQi4jTest
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
-        new EntityTestAssembler().assemble(module);
+        new EntityTestAssembler().assemble( module );
         module.addEntities( TestEntity.class );
     }
 
@@ -61,7 +63,7 @@ public class Qi4jSPITest
 
             EntityStateHolder state = spi.getState( testEntity );
 
-            validateState( state, spi.getEntityDescriptor( testEntity ));
+            validateState( state, spi.getEntityDescriptor( testEntity ) );
 
             unitOfWork.complete();
         }
@@ -74,15 +76,15 @@ public class Qi4jSPITest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-           testEntity = uow.get( testEntity );
+            testEntity = uow.get( testEntity );
             validateState( spi.getState( testEntity ), spi.getEntityDescriptor( testEntity ) );
-           uow.complete();
-        } catch (Exception e)
-        {
-           uow.discard();
-          throw e;
+            uow.complete();
         }
-
+        catch( Exception e )
+        {
+            uow.discard();
+            throw e;
+        }
     }
 
     private void validateState( EntityStateHolder state, EntityDescriptor entityDescriptor )
@@ -90,23 +92,25 @@ public class Qi4jSPITest
         for( PropertyDescriptor propertyDescriptor : entityDescriptor.state().properties() )
         {
             Property<?> prop = state.getProperty( propertyDescriptor.accessor() );
-            assertThat("Properties could be listed", prop, CoreMatchers.notNullValue());
+            assertThat( "Properties could be listed", prop, CoreMatchers.notNullValue() );
         }
 
         EntityStateDescriptor descriptor = (EntityStateDescriptor) entityDescriptor.state();
         for( AssociationDescriptor associationDescriptor : descriptor.associations() )
         {
             AbstractAssociation assoc = state.getAssociation( associationDescriptor.accessor() );
-            assertThat("Assocs could be listed", assoc, CoreMatchers.notNullValue());
+            assertThat( "Assocs could be listed", assoc, CoreMatchers.notNullValue() );
         }
     }
 
     public interface TestEntity
         extends EntityComposite
     {
-        @Optional Property<String> property();
+        @Optional
+        Property<String> property();
 
-        @Optional Association<TestEntity> association();
+        @Optional
+        Association<TestEntity> association();
 
         ManyAssociation<TestEntity> manyAssociation();
     }

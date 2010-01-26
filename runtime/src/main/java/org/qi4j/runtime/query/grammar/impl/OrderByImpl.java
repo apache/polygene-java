@@ -40,6 +40,7 @@ public final class OrderByImpl
      * Constructor. Ascending order.
      *
      * @param propertyReference property that determines the order; cannot be null
+     *
      * @throws IllegalArgumentException - If property is null
      */
     public OrderByImpl( final PropertyReference<?> propertyReference )
@@ -52,10 +53,12 @@ public final class OrderByImpl
      *
      * @param propertyReference property that determines the order; cannot be null
      * @param order             direction
+     *
      * @throws IllegalArgumentException - If property is null
      */
     public OrderByImpl( final PropertyReference<?> propertyReference,
-                        final Order order )
+                        final Order order
+    )
     {
         if( propertyReference == null )
         {
@@ -94,5 +97,4 @@ public final class OrderByImpl
             .append( order )
             .toString();
     }
-
 }

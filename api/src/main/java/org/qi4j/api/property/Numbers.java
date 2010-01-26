@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 public final class Numbers
 {
     // Integer operations
+
     public static Property<Integer> add( Property<Integer> property, int amount )
     {
         property.set( property.get() + amount );
@@ -50,6 +51,7 @@ public final class Numbers
     }
 
     // Long operations
+
     public static Property<Long> add( Property<Long> property, long amount )
     {
         property.set( property.get() + amount );
@@ -75,6 +77,7 @@ public final class Numbers
     }
 
     // Double operations
+
     public static Property<Double> add( Property<Double> property, double amount )
     {
         property.set( property.get() + amount );
@@ -100,6 +103,7 @@ public final class Numbers
     }
 
     // Float operations
+
     public static Property<Float> add( Property<Float> property, float amount )
     {
         property.set( property.get() + amount );
@@ -125,6 +129,7 @@ public final class Numbers
     }
 
     // BigDecimal operations
+
     public static Property<BigDecimal> add( Property<BigDecimal> property, BigDecimal amount )
     {
         property.set( property.get().add( amount ) );

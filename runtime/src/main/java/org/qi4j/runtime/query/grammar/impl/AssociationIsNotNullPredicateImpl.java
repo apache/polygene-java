@@ -32,6 +32,7 @@ public final class AssociationIsNotNullPredicateImpl
      * Constructor.
      *
      * @param associationReference association reference; cannot be null
+     *
      * @throws IllegalArgumentException - If association reference is null
      */
     public AssociationIsNotNullPredicateImpl( final AssociationReference associationReference )
@@ -56,5 +57,4 @@ public final class AssociationIsNotNullPredicateImpl
             .append( " IS NOT NULL )" )
             .toString();
     }
-
 }

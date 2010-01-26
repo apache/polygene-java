@@ -22,7 +22,6 @@ import org.qi4j.test.indexing.model.Person;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 public interface PersonEntity
     extends Person, EntityComposite

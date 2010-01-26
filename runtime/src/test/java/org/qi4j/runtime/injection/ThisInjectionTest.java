@@ -14,8 +14,6 @@
 
 package org.qi4j.runtime.injection;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.concern.ConcernOf;
@@ -28,6 +26,9 @@ import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /**
  * Test the @This annotation

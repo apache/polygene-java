@@ -50,6 +50,7 @@ public final class Usecase
      * and read during the execution of the usecase.
      *
      * @param infoType the MetaInfo type to retrieve.
+     *
      * @return the previously stored metaInfo of the given type for the usecase.
      */
     public <T> T metaInfo( Class<T> infoType )
@@ -57,7 +58,8 @@ public final class Usecase
         return metaInfo.get( infoType );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return name + ", meta info:" + metaInfo;
     }

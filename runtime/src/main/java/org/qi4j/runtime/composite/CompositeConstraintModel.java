@@ -22,7 +22,8 @@ import org.qi4j.api.constraint.Constraint;
 /**
  * JAVADOC
  */
-public final class CompositeConstraintModel extends AbstractConstraintModel
+public final class CompositeConstraintModel
+    extends AbstractConstraintModel
     implements Serializable
 {
     private ValueConstraintsModel constraintsModel;
@@ -57,7 +58,8 @@ public final class CompositeConstraintModel extends AbstractConstraintModel
             this.valueConstraintsInstance = valueConstraintsInstance;
         }
 
-        public boolean isValid( Annotation annotation, Object value ) throws NullPointerException
+        public boolean isValid( Annotation annotation, Object value )
+            throws NullPointerException
         {
             return valueConstraintsInstance.checkConstraints( value ).size() == 0;
         }

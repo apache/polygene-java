@@ -30,12 +30,13 @@ public interface QueryBuilderFactory
      * Create a new QueryBuilder.
      *
      * @param resultType the type of the result that you want
+     *
      * @return a QueryBuilder
+     *
      * @throws MissingIndexingSystemException if there is no EntityFinder service available
      */
     <T> QueryBuilder<T> newQueryBuilder( Class<T> resultType )
         throws MissingIndexingSystemException;
-
 
     <T> Query<T> newNamedQuery( Class<T> resultType, UnitOfWork unitOfWork, String name );
 }

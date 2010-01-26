@@ -18,7 +18,6 @@
 
 package org.qi4j.runtime.injection;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.injection.scope.State;
@@ -31,9 +30,13 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.AbstractQi4jTest;
 
-public class UnitOfWorkInjectionTest extends AbstractQi4jTest
+import static org.junit.Assert.*;
+
+public class UnitOfWorkInjectionTest
+    extends AbstractQi4jTest
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addEntities( TrialEntity.class );
         module.addServices( MemoryEntityStoreService.class );
@@ -52,7 +55,7 @@ public class UnitOfWorkInjectionTest extends AbstractQi4jTest
             uow.apply();
             usecase = UsecaseBuilder.newUsecase( "usecase2" );
             uow = unitOfWorkFactory.newUnitOfWork( usecase );
-            assertEquals( "123", ((EntityComposite) trial).identity().get() );
+            assertEquals( "123", ( (EntityComposite) trial ).identity().get() );
             assertEquals( "usecase1", trial.usecaseName() );
         }
         finally
@@ -63,24 +66,26 @@ public class UnitOfWorkInjectionTest extends AbstractQi4jTest
                 uow = unitOfWorkFactory.currentUnitOfWork();
             }
         }
-
     }
 
     interface Trial
     {
         void doSomething();
+
         String usecaseName();
     }
 
     @Mixins( TrialMixin.class )
-    interface TrialEntity extends Trial, EntityComposite
+    interface TrialEntity
+        extends Trial, EntityComposite
     {
     }
 
     public static class TrialMixin
         implements Trial
     {
-        @State private UnitOfWork uow;
+        @State
+        private UnitOfWork uow;
 
         private String uowIdentity;
 
@@ -94,6 +99,5 @@ public class UnitOfWorkInjectionTest extends AbstractQi4jTest
             return uowIdentity;
         }
     }
-
 }
 

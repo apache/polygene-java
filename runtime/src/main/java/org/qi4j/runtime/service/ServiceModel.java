@@ -46,11 +46,11 @@ import org.qi4j.runtime.composite.ConcernDeclaration;
 import org.qi4j.runtime.composite.ConcernsDeclaration;
 import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.MixinsModel;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.composite.SideEffectsDeclaration;
 import org.qi4j.runtime.composite.StateModel;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.DependencyModel;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.structure.DependencyVisitor;
@@ -74,7 +74,8 @@ public final class ServiceModel
                                          final List<Class<?>> mixins,
                                          final String moduleName,
                                          final String identity,
-                                         final boolean instantiateOnStartup )
+                                         final boolean instantiateOnStartup
+    )
     {
         PropertyDeclarations propertyDeclarations = new MetaInfoDeclaration();
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
@@ -96,7 +97,6 @@ public final class ServiceModel
             compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, moduleName, identity, instantiateOnStartup );
     }
 
-
     private final String identity;
     private final boolean instantiateOnStartup;
     private String moduleName;
@@ -110,7 +110,8 @@ public final class ServiceModel
                          CompositeMethodsModel compositeMethodsModel,
                          String moduleName,
                          String identity,
-                         boolean instantiateOnStartup )
+                         boolean instantiateOnStartup
+    )
     {
         super( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
 
@@ -151,7 +152,9 @@ public final class ServiceModel
     }
 
     // Binding
-    public void bind( Resolution resolution ) throws BindingException
+
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
         compositeMethodsModel.bind( resolution );
@@ -217,7 +220,8 @@ public final class ServiceModel
         {
             public <T> Property<T> getProperty( final Method propertyMethod )
             {
-                if( QualifiedName.fromMethod( propertyMethod ).equals( QualifiedName.fromClass( Identity.class, "identity" ) ) )
+                if( QualifiedName.fromMethod( propertyMethod )
+                    .equals( QualifiedName.fromClass( Identity.class, "identity" ) ) )
                 {
                     PropertyModel propertyDescriptor = (PropertyModel) stateModel.getPropertyByQualifiedName( QualifiedName.fromMethod( propertyMethod ) );
                     return propertyDescriptor.newInstance( identity );
@@ -232,7 +236,6 @@ public final class ServiceModel
                             return null;
                         }
                     };
-
                 }
             }
 
@@ -262,7 +265,6 @@ public final class ServiceModel
                                                      UsesInstance.EMPTY_USES.use( this ),
                                                      stateHolder,
                                                      mixins );
-
         }
         catch( InvalidCompositeException e )
         {
@@ -289,10 +291,10 @@ public final class ServiceModel
                                                                  interfaces,
                                                                  serviceInvocationHandler ) );
         }
-
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return type().getName() + ":" + identity;
     }
@@ -330,12 +332,14 @@ public final class ServiceModel
         return injectionClass;
     }
 
-    public void activate( Object[] mixins ) throws Exception
+    public void activate( Object[] mixins )
+        throws Exception
     {
         mixinsModel.activate( mixins );
     }
 
-    public void passivate( Object[] mixins ) throws Exception
+    public void passivate( Object[] mixins )
+        throws Exception
     {
         mixinsModel.passivate( mixins );
     }

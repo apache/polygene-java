@@ -14,6 +14,10 @@
 
 package org.qi4j.runtime.concerns;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import org.junit.Test;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.mixin.Mixins;
@@ -22,20 +26,15 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
  * Tests for GenericConcern
  */
 public class GenericConcernTest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.addTransients( SomeComposite.class );
     }
@@ -49,9 +48,9 @@ public class GenericConcernTest
         uow.discard();
     }
 
-    @Mixins(SomeMixin.class)
+    @Mixins( SomeMixin.class )
     public interface SomeComposite
-            extends Some, TransientComposite
+        extends Some, TransientComposite
     {
     }
 
@@ -62,7 +61,7 @@ public class GenericConcernTest
     }
 
     public static abstract class SomeMixin
-            implements Some
+        implements Some
     {
         public String doStuff()
         {
@@ -70,8 +69,8 @@ public class GenericConcernTest
         }
     }
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.METHOD})
+    @Retention( RetentionPolicy.RUNTIME )
+    @Target( { ElementType.METHOD } )
     public @interface NestedUnitOfWork
     {
     }

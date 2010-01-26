@@ -33,5 +33,4 @@ public class MockResolverTypeImpl
     {
         proxy.setMock( new MethodClassMatcherMockResolver( proxy.getRegisteredMock(), clazz ) );
     }
-
 }

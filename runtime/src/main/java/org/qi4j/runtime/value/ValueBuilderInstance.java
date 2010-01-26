@@ -89,7 +89,8 @@ public final class ValueBuilderInstance<T>
         return prototypeInstance.newProxy( mixinType );
     }
 
-    public T newInstance() throws ConstructionException
+    public T newInstance()
+        throws ConstructionException
     {
         StateHolder instanceState;
         if( state == null )

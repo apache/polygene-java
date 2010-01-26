@@ -34,11 +34,13 @@ public final class NotEqualsPredicateImpl<T>
      *
      * @param propertyReference property reference; cannot be null
      * @param valueExpression   value expression; cannot be null
+     *
      * @throws IllegalArgumentException - If property reference is null
      *                                  - If value expression is null
      */
     public NotEqualsPredicateImpl( final PropertyReference<T> propertyReference,
-                                   final ValueExpression<T> valueExpression )
+                                   final ValueExpression<T> valueExpression
+    )
     {
         super( propertyReference, valueExpression );
     }
@@ -62,5 +64,4 @@ public final class NotEqualsPredicateImpl<T>
             .append( " )" )
             .toString();
     }
-
 }

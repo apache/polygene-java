@@ -100,5 +100,4 @@ public class ApplicationModeTest
 
         Assert.assertThat( "mode set to given value", mode, CoreMatchers.equalTo( Application.Mode.production ) );
     }
-
 }

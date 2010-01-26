@@ -22,7 +22,6 @@ import org.qi4j.test.indexing.model.Dog;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 public interface DogEntity
     extends Dog, EntityComposite

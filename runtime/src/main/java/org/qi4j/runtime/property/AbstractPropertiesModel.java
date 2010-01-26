@@ -14,21 +14,6 @@
 
 package org.qi4j.runtime.property;
 
-import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.property.StateHolder;
-import org.qi4j.bootstrap.BindingException;
-import org.qi4j.spi.util.MethodKeyMap;
-import org.qi4j.api.value.ValueComposite;
-import org.qi4j.bootstrap.PropertyDeclarations;
-import org.qi4j.runtime.composite.ConstraintsModel;
-import org.qi4j.runtime.model.Resolution;
-import org.qi4j.runtime.model.Binder;
-import org.qi4j.runtime.value.ValueInstance;
-import org.qi4j.runtime.value.ValueModel;
-import org.qi4j.spi.composite.CompositeInstance;
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -40,6 +25,20 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.qi4j.api.common.QualifiedName;
+import org.qi4j.api.constraint.ConstraintViolationException;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.value.ValueComposite;
+import org.qi4j.bootstrap.BindingException;
+import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.runtime.composite.ConstraintsModel;
+import org.qi4j.runtime.model.Binder;
+import org.qi4j.runtime.model.Resolution;
+import org.qi4j.runtime.value.ValueInstance;
+import org.qi4j.runtime.value.ValueModel;
+import org.qi4j.spi.composite.CompositeInstance;
+import org.qi4j.spi.util.MethodKeyMap;
 
 /**
  * Base class for properties model
@@ -55,7 +54,10 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
     protected PropertyDeclarations propertyDeclarations;
     protected boolean immutable;
 
-    public AbstractPropertiesModel( ConstraintsModel constraints, PropertyDeclarations propertyDeclarations, boolean immutable )
+    public AbstractPropertiesModel( ConstraintsModel constraints,
+                                    PropertyDeclarations propertyDeclarations,
+                                    boolean immutable
+    )
     {
         this.constraints = constraints;
         this.propertyDeclarations = propertyDeclarations;
@@ -79,7 +81,8 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
         }
     }
 
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         for( T propertyModel : propertyModels )
         {
@@ -184,7 +187,6 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
                 if( value instanceof ValueComposite )
                 {
                     value = cloneValue( value, isPrototype );
-
                 }
 
                 newCollection.add( value );

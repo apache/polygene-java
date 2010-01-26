@@ -19,7 +19,8 @@ import java.io.Serializable;
 /**
  * JAVADOC
  */
-public final class SideEffectModel extends AbstractModifierModel
+public final class SideEffectModel
+    extends AbstractModifierModel
     implements Serializable
 {
     public SideEffectModel( Class sideEffectClass )

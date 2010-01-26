@@ -17,7 +17,8 @@ package org.qi4j.bootstrap;
 /**
  * Thrown by ModuleAssembly if the Assembler tries to make an invalid assembly.
  */
-public class AssemblyException extends Exception
+public class AssemblyException
+    extends Exception
 {
     public AssemblyException()
     {

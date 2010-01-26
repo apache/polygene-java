@@ -31,6 +31,7 @@ import org.qi4j.api.property.Immutable;
  * <li>Can not have @Uses</li>
  */
 @Immutable
-public interface ValueComposite extends Value, Composite
+public interface ValueComposite
+    extends Value, Composite
 {
 }

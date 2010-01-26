@@ -28,6 +28,7 @@ public interface ModuleVisitor
      * @param moduleInstance either the current module instance or null if visiting model only
      * @param moduleModel    current model for the module
      * @param visibility     visibility level for current module visitation
+     *
      * @return true if traversal should continue, false if traversal should stop
      */
     boolean visitModule( ModuleInstance moduleInstance, ModuleModel moduleModel, Visibility visibility );

@@ -28,7 +28,10 @@ public final class MethodConcernsInstance
     private final FragmentInvocationHandler mixinInvocationHandler;
     private final ProxyReferenceInvocationHandler proxyHandler;
 
-    public MethodConcernsInstance( InvocationHandler firstConcern, FragmentInvocationHandler mixinInvocationHandler, ProxyReferenceInvocationHandler proxyHandler )
+    public MethodConcernsInstance( InvocationHandler firstConcern,
+                                   FragmentInvocationHandler mixinInvocationHandler,
+                                   ProxyReferenceInvocationHandler proxyHandler
+    )
     {
         this.firstConcern = firstConcern;
         this.mixinInvocationHandler = mixinInvocationHandler;
@@ -40,7 +43,8 @@ public final class MethodConcernsInstance
         return firstConcern == mixinInvocationHandler;
     }
 
-    public Object invoke( Object proxy, Method method, Object[] params ) throws Throwable
+    public Object invoke( Object proxy, Method method, Object[] params )
+        throws Throwable
     {
         proxyHandler.setProxy( proxy );
         try

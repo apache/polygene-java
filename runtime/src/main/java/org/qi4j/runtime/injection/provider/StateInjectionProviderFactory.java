@@ -152,7 +152,8 @@ public final class StateInjectionProviderFactory
             this.propertyDescriptor = propertyDescriptor;
         }
 
-        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        public Object provideInjection( InjectionContext context )
+            throws InjectionProviderException
         {
             Property value = context.state().getProperty( propertyDescriptor.accessor() );
             if( value != null )
@@ -176,7 +177,8 @@ public final class StateInjectionProviderFactory
             this.associationDescriptor = associationDescriptor;
         }
 
-        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        public Object provideInjection( InjectionContext context )
+            throws InjectionProviderException
         {
             AbstractAssociation abstractAssociation = ( (EntityStateHolder) context.state() ).getAssociation( associationDescriptor.accessor() );
             if( abstractAssociation != null )
@@ -200,7 +202,8 @@ public final class StateInjectionProviderFactory
             this.manyAssociationDescriptor = manyAssociationDescriptor;
         }
 
-        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        public Object provideInjection( InjectionContext context )
+            throws InjectionProviderException
         {
             ManyAssociation abstractAssociation = ( (EntityStateHolder) context.state() ).getManyAssociation( manyAssociationDescriptor.accessor() );
             if( abstractAssociation != null )
@@ -228,7 +231,8 @@ public final class StateInjectionProviderFactory
         implements InjectionProvider, Serializable
     {
 
-        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        public Object provideInjection( InjectionContext context )
+            throws InjectionProviderException
         {
             return ( (EntityInstance) context.compositeInstance() ).unitOfWork();
         }

@@ -24,13 +24,13 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.qi4j.spi.util.SerializationUtil;
-import org.qi4j.runtime.model.Binder;
 import org.qi4j.bootstrap.BindingException;
+import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.spi.sideeffect.MethodSideEffectsDescriptor;
+import org.qi4j.spi.util.SerializationUtil;
 
 /**
  * JAVADOC
@@ -56,7 +56,8 @@ public final class MethodSideEffectsModel
         }
     }
 
-    private void readObject( ObjectInputStream in ) throws IOException, ClassNotFoundException
+    private void readObject( ObjectInputStream in )
+        throws IOException, ClassNotFoundException
     {
         method = SerializationUtil.readMethod( in );
         sideEffectModels = (List<MethodSideEffectModel>) in.readObject();
@@ -79,6 +80,7 @@ public final class MethodSideEffectsModel
     }
 
     // Binding
+
     public void bind( Resolution resolution )
         throws BindingException
     {
@@ -89,6 +91,7 @@ public final class MethodSideEffectsModel
     }
 
     // Context
+
     public MethodSideEffectsInstance newInstance( ModuleInstance moduleInstance, InvocationHandler invoker )
     {
         ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
@@ -109,7 +112,6 @@ public final class MethodSideEffectsModel
         return new MethodSideEffectsInstance( sideEffects, result, proxyHandler, invoker );
     }
 
-
     public void visitModel( ModelVisitor modelVisitor )
     {
         modelVisitor.visit( this );
@@ -123,7 +125,9 @@ public final class MethodSideEffectsModel
     {
         if( mixinMethodSideEffectsModel.sideEffectModels.size() > 0 )
         {
-            List<MethodSideEffectModel> combinedModels = new ArrayList<MethodSideEffectModel>( sideEffectModels.size() + mixinMethodSideEffectsModel.sideEffectModels.size() );
+            List<MethodSideEffectModel> combinedModels = new ArrayList<MethodSideEffectModel>( sideEffectModels.size() + mixinMethodSideEffectsModel
+                .sideEffectModels
+                .size() );
             combinedModels.addAll( sideEffectModels );
             combinedModels.removeAll( mixinMethodSideEffectsModel.sideEffectModels );
             combinedModels.addAll( mixinMethodSideEffectsModel.sideEffectModels );

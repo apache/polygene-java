@@ -20,7 +20,8 @@ package org.qi4j.spi.property;
 
 import org.qi4j.api.common.QualifiedName;
 
-public interface PropertyType extends Comparable<PropertyType>
+public interface PropertyType
+    extends Comparable<PropertyType>
 {
     QualifiedName qualifiedName();
 

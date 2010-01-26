@@ -30,7 +30,9 @@ public interface TransientBuilderFactory
      * Create a builder for creating new TransientComposites that implements the given TransientComposite type.
      *
      * @param mixinType an interface that describes the TransientComposite to be instantiated
+     *
      * @return a TransientBuilder for creation of TransientComposites implementing the interface
+     *
      * @throws NoSuchCompositeException if no composite extending the mixinType has been registered
      */
     <T> TransientBuilder<T> newTransientBuilder( Class<T> mixinType )
@@ -40,7 +42,9 @@ public interface TransientBuilderFactory
      * Instantiate a TransientComposite of the given type.
      *
      * @param mixinType the TransientComposite type to instantiate
+     *
      * @return a new TransientComposite instance
+     *
      * @throws NoSuchCompositeException if no composite extending the mixinType has been registered
      * @throws org.qi4j.api.common.ConstructionException
      *                                  if the composite could not be instantiated

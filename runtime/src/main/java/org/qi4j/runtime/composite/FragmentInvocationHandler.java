@@ -77,7 +77,8 @@ abstract class FragmentInvocationHandler
                 {
                     // Stop removing if the originating method call has been located in the stack.
                     // For 'semi' and 'extensive' compaction, we don't and do the entire stack instead.
-                    trace[ i ] = new StackTraceElement( proxy.getClass().getInterfaces()[ 0 ].getName(), method.getName(), null, -1 );
+                    trace[ i ] = new StackTraceElement( proxy.getClass()
+                        .getInterfaces()[ 0 ].getName(), method.getName(), null, -1 );
                     break; // Stop compacting this trace
                 }
             }
@@ -121,5 +122,4 @@ abstract class FragmentInvocationHandler
         return className.startsWith( "java.lang.reflect" ) ||
                className.startsWith( "sun.reflect" );
     }
-
 }

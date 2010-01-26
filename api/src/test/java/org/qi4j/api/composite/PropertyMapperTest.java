@@ -26,8 +26,9 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import static org.junit.Assert.*;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class PropertyMapperTest
 {
@@ -195,7 +196,7 @@ public class PropertyMapperTest
         throws Exception
     {
         Type type = Testing.class.getDeclaredMethod( "map" ).getGenericReturnType();
-        Map<String,String> value = (Map<String,String>) mapToType( type, "first:5,second:4 , third:\" 3,   \", fourth:  \" 2\" ,fifth : 1" );
+        Map<String, String> value = (Map<String, String>) mapToType( type, "first:5,second:4 , third:\" 3,   \", fourth:  \" 2\" ,fifth : 1" );
         assertEquals( "5", value.get( "first" ) );
         assertEquals( "4 ", value.get( "second" ) );
         assertEquals( " 3,   ", value.get( " third" ) );
@@ -216,6 +217,6 @@ public class PropertyMapperTest
 
         Set<String> set();
 
-        Map<String,String> map();
+        Map<String, String> map();
     }
 }

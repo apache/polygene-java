@@ -21,7 +21,8 @@ import org.qi4j.runtime.composite.ConstraintsCheck;
 /**
  * {@code PropertyInstance} represents a property.
  */
-public class PropertyInstance<T> extends AbstractPropertyInstance<T>
+public class PropertyInstance<T>
+    extends AbstractPropertyInstance<T>
 {
     private volatile T value;
     private ConstraintsCheck constraints;
@@ -32,6 +33,7 @@ public class PropertyInstance<T> extends AbstractPropertyInstance<T>
      * @param aPropertyInfo The property info. This argument must not be {@code null}.
      * @param aValue        The property value.
      * @param constraints   constraint checker for this property
+     *
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} is {@code null}.
      */
     public PropertyInstance( PropertyInfo aPropertyInfo, T aValue, ConstraintsCheck constraints )
@@ -71,7 +73,6 @@ public class PropertyInstance<T> extends AbstractPropertyInstance<T>
 
         value = aNewValue;
     }
-
 
     /**
      * Returns the value as string.

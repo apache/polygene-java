@@ -17,7 +17,8 @@
  */
 package org.qi4j.api.query.grammar;
 
-public interface NamedQueryExpression extends BooleanExpression
+public interface NamedQueryExpression
+    extends BooleanExpression
 {
     String name();
 }

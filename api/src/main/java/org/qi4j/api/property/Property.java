@@ -42,6 +42,7 @@ public interface Property<T>
      * Set the value of the property
      *
      * @param newValue the new value
+     *
      * @throws IllegalArgumentException if the value has an invalid value
      * @throws IllegalStateException    if the property is immutable or computed
      */

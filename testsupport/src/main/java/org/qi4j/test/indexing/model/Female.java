@@ -22,10 +22,10 @@ import org.qi4j.api.entity.association.Association;
 
 /**
  * JAVADOC Add JavaDoc
- *
  */
 public interface Female
     extends Person
 {
-    @Optional Association<Male> husband();
+    @Optional
+    Association<Male> husband();
 }

@@ -34,7 +34,8 @@ public class CompositeContext<T extends TransientComposite>
         this.builder = builder;
     }
 
-    @Override protected T initialValue()
+    @Override
+    protected T initialValue()
     {
         return builder.newInstance();
     }

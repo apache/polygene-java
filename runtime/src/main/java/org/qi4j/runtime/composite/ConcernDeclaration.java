@@ -19,7 +19,8 @@ import java.io.Serializable;
 /**
  * JAVADOC
  */
-public final class ConcernDeclaration extends AbstractModifierDeclaration
+public final class ConcernDeclaration
+    extends AbstractModifierDeclaration
     implements Serializable
 {
     public ConcernDeclaration( Class concernClass, Class declaredIn )
@@ -27,7 +28,8 @@ public final class ConcernDeclaration extends AbstractModifierDeclaration
         super( concernClass, declaredIn );
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return "Concern " + super.toString();
     }

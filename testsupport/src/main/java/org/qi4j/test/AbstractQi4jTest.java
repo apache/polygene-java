@@ -58,7 +58,9 @@ public abstract class AbstractQi4jTest
 
     protected ModuleSPI moduleInstance;
 
-    @Before public void setUp() throws Exception
+    @Before
+    public void setUp()
+        throws Exception
     {
         qi4j = new Energy4Java();
         applicationModel = newApplication();
@@ -109,6 +111,7 @@ public abstract class AbstractQi4jTest
      * <p>Override this method to catch valid failures to place into test suites.
      *
      * @param exception the exception thrown.
+     *
      * @throws AssemblyException The default implementation of this method will simply re-throw the exception.
      */
     protected void assemblyException( AssemblyException exception )
@@ -117,11 +120,14 @@ public abstract class AbstractQi4jTest
         throw exception;
     }
 
-    protected void initApplication( Application app ) throws Exception
+    protected void initApplication( Application app )
+        throws Exception
     {
     }
 
-    @After public void tearDown() throws Exception
+    @After
+    public void tearDown()
+        throws Exception
     {
         if( unitOfWorkFactory != null && unitOfWorkFactory.currentUnitOfWork() != null )
         {
@@ -146,5 +152,4 @@ public abstract class AbstractQi4jTest
             application.passivate();
         }
     }
-
 }

@@ -20,7 +20,6 @@ import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
-import static org.qi4j.api.entity.EntityReference.*;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.entity.LifecycleException;
@@ -39,6 +38,8 @@ import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.EntityStore;
+
+import static org.qi4j.api.entity.EntityReference.*;
 
 /**
  * JAVADOC

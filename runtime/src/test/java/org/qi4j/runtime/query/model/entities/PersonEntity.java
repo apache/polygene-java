@@ -20,7 +20,6 @@ package org.qi4j.runtime.query.model.entities;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.runtime.query.model.Person;
 
-
 public interface PersonEntity
     extends Person, EntityComposite
 {

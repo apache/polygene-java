@@ -17,7 +17,8 @@
  */
 package org.qi4j.api.service;
 
-public class ServiceException extends RuntimeException
+public class ServiceException
+    extends RuntimeException
 {
     public ServiceException( String message, Throwable cause )
     {

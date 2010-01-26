@@ -18,7 +18,6 @@
 
 package org.qi4j.runtime.injection;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.injection.scope.State;
@@ -29,18 +28,23 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.AbstractQi4jTest;
 
-public class IllegalUnitOfWorkInjectionTest extends AbstractQi4jTest
+import static org.junit.Assert.*;
+
+public class IllegalUnitOfWorkInjectionTest
+    extends AbstractQi4jTest
 {
     private boolean failed = false;
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
-            module.addTransients( TrialTransient.class );
-            module.addServices( MemoryEntityStoreService.class );
+        module.addTransients( TrialTransient.class );
+        module.addServices( MemoryEntityStoreService.class );
     }
 
     @Override
-    protected void assemblyException( AssemblyException exception ) throws AssemblyException
+    protected void assemblyException( AssemblyException exception )
+        throws AssemblyException
     {
         failed = true;
     }
@@ -63,14 +67,16 @@ public class IllegalUnitOfWorkInjectionTest extends AbstractQi4jTest
     }
 
     @Mixins( TrialMixin.class )
-    interface TrialTransient extends Trial, TransientComposite
+    interface TrialTransient
+        extends Trial, TransientComposite
     {
     }
 
     public static class TrialMixin
         implements Trial
     {
-        @State private UnitOfWork uow;
+        @State
+        private UnitOfWork uow;
 
         private String uowIdentity;
 
@@ -84,6 +90,5 @@ public class IllegalUnitOfWorkInjectionTest extends AbstractQi4jTest
             return uowIdentity;
         }
     }
-
 }
 

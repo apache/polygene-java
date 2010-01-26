@@ -34,7 +34,9 @@ public interface TransientBuilder<T>
      * dependency injection annotation.
      *
      * @param usedObjects The objects that can be injected into mixins.
+     *
      * @return the transient builder instance
+     *
      * @see org.qi4j.api.injection.scope.Uses
      */
     TransientBuilder<T> use( Object... usedObjects );
@@ -53,6 +55,7 @@ public interface TransientBuilder<T>
      * This is primarily used if you want to provide state for a private mixin type.
      *
      * @param mixinType the mixin which you want to provide state for
+     *
      * @return a proxy implementing the given mixin type
      */
     <K> K prototypeFor( Class<K> mixinType );
@@ -61,6 +64,7 @@ public interface TransientBuilder<T>
      * Create a new Composite instance.
      *
      * @return a new Composite instance
+     *
      * @throws ConstructionException thrown if it was not possible to instantiate the Composite
      */
     T newInstance()

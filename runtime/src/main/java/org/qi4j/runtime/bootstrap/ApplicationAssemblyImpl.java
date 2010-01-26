@@ -83,7 +83,8 @@ public final class ApplicationAssemblyImpl
         return this;
     }
 
-    public void visit( AssemblyVisitor visitor ) throws AssemblyException
+    public void visit( AssemblyVisitor visitor )
+        throws AssemblyException
     {
         visitor.visitApplication( this );
         for( LayerAssemblyImpl layerAssembly : layerAssemblies.values() )

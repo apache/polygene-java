@@ -24,14 +24,14 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import org.qi4j.spi.util.SerializationUtil;
 
 /**
  * This is a HashMap subtype where the Value is a Method, for the pure purpose of being Serializable.
  *
  * @param <K> The Key in the HashMap.
  */
-public final class MethodValueMap<K> extends HashMap<K, Method>
+public final class MethodValueMap<K>
+    extends HashMap<K, Method>
     implements Externalizable
 {
     static final long serialVersionUID = 1L;

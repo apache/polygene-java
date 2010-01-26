@@ -34,7 +34,9 @@ public class ImportedServicesInstance
     private final Activator activator;
     private final Map<String, ServiceReference<?>> mapIdentityServiceReference = new HashMap<String, ServiceReference<?>>();
 
-    public ImportedServicesInstance( ImportedServicesModel servicesModel, List<? extends ServiceReference> serviceReferences )
+    public ImportedServicesInstance( ImportedServicesModel servicesModel,
+                                     List<? extends ServiceReference> serviceReferences
+    )
     {
         this.servicesModel = servicesModel;
         this.serviceReferences = serviceReferences;

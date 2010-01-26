@@ -15,6 +15,9 @@
 package org.qi4j.runtime.property;
 
 import java.lang.reflect.Method;
+import org.json.JSONException;
+import org.json.JSONStringer;
+import org.json.JSONTokener;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.Queryable;
@@ -24,14 +27,11 @@ import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleModel;
 import org.qi4j.runtime.structure.ModuleVisitor;
-import org.qi4j.runtime.value.ValueModel;
-import org.qi4j.runtime.types.ValueTypeFactory;
 import org.qi4j.runtime.types.PropertyTypeImpl;
+import org.qi4j.runtime.types.ValueTypeFactory;
+import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.property.ValueType;
-import org.json.JSONException;
-import org.json.JSONStringer;
-import org.json.JSONTokener;
 
 /**
  * JAVADOC
@@ -45,7 +45,8 @@ public abstract class PersistentPropertyModel
     protected final PropertyInfo propertyInfo;
 
     public PersistentPropertyModel( PropertyTypeImpl propertyType, Method accessor, boolean immutable,
-                                    ValueConstraintsInstance constraints, MetaInfo metaInfo, Object initialValue )
+                                    ValueConstraintsInstance constraints, MetaInfo metaInfo, Object initialValue
+    )
     {
         super( accessor, immutable, constraints, metaInfo, initialValue );
         this.propertyType = propertyType;
@@ -54,7 +55,8 @@ public abstract class PersistentPropertyModel
     }
 
     public PersistentPropertyModel( Method accessor, Class compositeType, boolean immutable,
-                                    ValueConstraintsInstance constraints, MetaInfo metaInfo, Object initialValue )
+                                    ValueConstraintsInstance constraints, MetaInfo metaInfo, Object initialValue
+    )
     {
         super( accessor, immutable, constraints, metaInfo, initialValue );
 
@@ -75,11 +77,11 @@ public abstract class PersistentPropertyModel
             type = PropertyTypeImpl.PropertyTypeEnum.MUTABLE;
         }
 
-        ValueType valueType = ValueTypeFactory.instance().newValueType( type(), accessor.getDeclaringClass(), compositeType );
+        ValueType valueType = ValueTypeFactory.instance()
+            .newValueType( type(), accessor.getDeclaringClass(), compositeType );
         propertyType = new PropertyTypeImpl( qualifiedName(), valueType, this.queryable, type );
 
         propertyInfo = new GenericPropertyInfo( metaInfo, isImmutable(), isComputed(), qualifiedName(), type() );
-
     }
 
     public PropertyTypeImpl propertyType()

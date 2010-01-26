@@ -40,6 +40,7 @@ public final class VariableValueExpressionImpl<T>
      * Constructor.
      *
      * @param name variable name; cannot be null or empty
+     *
      * @throws IllegalArgumentException - If name is null or empty
      */
     public VariableValueExpressionImpl( final String name )
@@ -65,6 +66,7 @@ public final class VariableValueExpressionImpl<T>
      * Getter.
      *
      * @return value
+     *
      * @throws IllegalStateException - If value of this variable was not set prior
      */
     public T value()
@@ -80,6 +82,7 @@ public final class VariableValueExpressionImpl<T>
      * Setter.
      *
      * @param value variable value; cannot be null
+     *
      * @throws IllegalArgumentException - If value is null
      */
     public void setValue( T value )

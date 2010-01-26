@@ -21,9 +21,9 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.model.Binder;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.structure.LayerDescriptor;
 
 /**
@@ -41,7 +41,8 @@ public final class LayerModel
     public LayerModel( String name,
                        MetaInfo metaInfo,
                        UsedLayersModel usedLayersModel,
-                       List<ModuleModel> modules )
+                       List<ModuleModel> modules
+    )
     {
         this.name = name;
         this.metaInfo = metaInfo;
@@ -75,7 +76,9 @@ public final class LayerModel
     }
 
     // Binding
-    public void bind( Resolution resolution ) throws BindingException
+
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         resolution = new Resolution( resolution.application(), this, null, null, null, null );
         for( ModuleModel module : modules )
@@ -85,6 +88,7 @@ public final class LayerModel
     }
 
     // Context
+
     public TransientModel findCompositeFor( Class mixinType, Visibility visibility )
     {
         // Check this layer

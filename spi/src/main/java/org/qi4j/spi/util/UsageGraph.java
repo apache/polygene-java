@@ -34,7 +34,6 @@ public final class UsageGraph<K>
     private List<K> resolved;
     private HashMap<K, List<K>> transitive;
 
-
     public UsageGraph( Collection<K> data, Use<K> use, boolean allowCyclic )
     {
         this.data = data;
@@ -120,6 +119,7 @@ public final class UsageGraph<K>
 
         /**
          * @param source The item to be queried.
+         *
          * @return A list of items it uses.
          */
         Collection<K> uses( K source );

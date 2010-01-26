@@ -16,7 +16,8 @@
  */
 package org.qi4j.spi.entitystore;
 
-public class EntityStoreException extends RuntimeException
+public class EntityStoreException
+    extends RuntimeException
 {
     public EntityStoreException()
     {

@@ -25,7 +25,6 @@ import java.util.List;
 import net.sf.cglib.proxy.Factory;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.bootstrap.BindingException;
-import org.qi4j.spi.util.Annotations;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedParametersModel;
 import org.qi4j.runtime.injection.InjectionContext;
@@ -33,6 +32,7 @@ import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.composite.AbstractCompositeDescriptor;
+import org.qi4j.spi.util.Annotations;
 
 /**
  * JAVADOC
@@ -75,7 +75,10 @@ public final class ConstructorsModel
         return fragmentClass;
     }
 
-    private ConstructorModel newConstructorModel( Class fragmentClass, Constructor realConstructor, Constructor injectedConstructor )
+    private ConstructorModel newConstructorModel( Class fragmentClass,
+                                                  Constructor realConstructor,
+                                                  Constructor injectedConstructor
+    )
     {
         int idx = 0;
         InjectedParametersModel parameters = new InjectedParametersModel();
@@ -116,7 +119,9 @@ public final class ConstructorsModel
     }
 
     // Binding
-    public void bind( Resolution resolution ) throws BindingException
+
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         boundConstructors = new ArrayList<ConstructorModel>();
         for( ConstructorModel constructorModel : constructorModels )

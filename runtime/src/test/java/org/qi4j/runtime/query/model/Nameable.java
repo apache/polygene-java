@@ -22,5 +22,6 @@ import org.qi4j.api.property.Property;
 
 public interface Nameable
 {
-    @Optional Property<String> name();
+    @Optional
+    Property<String> name();
 }

@@ -16,13 +16,14 @@ package org.qi4j.test.composite;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+
+import static org.junit.Assert.*;
 
 /**
  * Test if the stacktrace is cleaned up properly.

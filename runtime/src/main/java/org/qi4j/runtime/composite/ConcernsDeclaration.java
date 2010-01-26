@@ -24,8 +24,9 @@ import java.util.Map;
 import java.util.Set;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.concern.Concerns;
-import static org.qi4j.api.util.Classes.*;
 import org.qi4j.spi.util.MethodKeyMap;
+
+import static org.qi4j.api.util.Classes.*;
 
 /**
  * JAVADOC
@@ -42,7 +43,6 @@ public final class ConcernsDeclaration
         {
             addConcernDeclarations( aType, concerns );
         }
-
     }
 
     public static void concernDeclarations( Iterable<Class<?>> concernclasses, List<ConcernDeclaration> concerns )
@@ -80,6 +80,7 @@ public final class ConcernsDeclaration
     }
 
     // Model
+
     public MethodConcernsModel concernsFor( Method method, Class<? extends Composite> type )
     {
         if( !methodConcernsModels.containsKey( method ) )
@@ -103,5 +104,4 @@ public final class ConcernsDeclaration
             return methodConcernsModels.get( method );
         }
     }
-
 }

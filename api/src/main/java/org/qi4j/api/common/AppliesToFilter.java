@@ -22,7 +22,8 @@ import java.lang.reflect.Method;
  * An instance of the provided class will be used to test if the modifier or mixin
  * should be applied to the method or not.
  */
-public interface AppliesToFilter extends Serializable
+public interface AppliesToFilter
+    extends Serializable
 {
     AppliesToFilter ALWAYS = new AppliesToFilter()
     {
@@ -40,6 +41,7 @@ public interface AppliesToFilter extends Serializable
      * @param mixin         mixin implementation for the method
      * @param compositeType composite type
      * @param fragmentClass fragment that is being applies
+     *
      * @return true if the filter passes, otherwise false
      */
     boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass );

@@ -17,7 +17,10 @@
  */
 package org.qi4j.runtime.constraints;
 
-import static org.junit.Assert.*;
+import java.lang.annotation.Retention;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.TransientComposite;
@@ -32,16 +35,14 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import static org.junit.Assert.*;
 
-
-public class ConstraintsTest extends AbstractQi4jTest
+public class ConstraintsTest
+    extends AbstractQi4jTest
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.addTransients( MyOneComposite.class );
         module.addTransients( MyOneComposite2.class );
@@ -49,7 +50,7 @@ public class ConstraintsTest extends AbstractQi4jTest
 
     @Test
     public void givenCompositeWithConstraintsWhenInstantiatedThenUseDeclarationOnComposite()
-            throws Throwable
+        throws Throwable
     {
         MyOne my = transientBuilderFactory.newTransient( MyOneComposite.class );
         ArrayList<String> list = new ArrayList<String>();
@@ -60,7 +61,7 @@ public class ConstraintsTest extends AbstractQi4jTest
             my.doSomething( "niclas", new ArrayList<String>() );
             fail( "Should have thrown a ConstraintViolationException." );
         }
-        catch (ConstraintViolationException e)
+        catch( ConstraintViolationException e )
         {
             Collection<ConstraintViolation> violations = e.constraintViolations();
             assertEquals( 2, violations.size() );
@@ -70,7 +71,7 @@ public class ConstraintsTest extends AbstractQi4jTest
 
     @Test
     public void givenCompositeWithoutConstraintsWhenInstantiatedThenUseDeclarationOnConstraint()
-            throws Throwable
+        throws Throwable
     {
         MyOne my = transientBuilderFactory.newTransient( MyOneComposite2.class );
         ArrayList<String> list = new ArrayList<String>();
@@ -81,7 +82,7 @@ public class ConstraintsTest extends AbstractQi4jTest
             my.doSomething( "niclas", new ArrayList<String>() );
             fail( "Should have thrown a ConstraintViolationException." );
         }
-        catch (ConstraintViolationException e)
+        catch( ConstraintViolationException e )
         {
             Collection<ConstraintViolation> violations = e.constraintViolations();
             assertEquals( 2, violations.size() );
@@ -107,14 +108,16 @@ public class ConstraintsTest extends AbstractQi4jTest
         myOne.doSomething3( list );
     }
 
-    @Constraints(TestConstraintImpl.class)
-    @Mixins(MyOneMixin.class)
-    public interface MyOneComposite extends MyOne, TransientComposite
+    @Constraints( TestConstraintImpl.class )
+    @Mixins( MyOneMixin.class )
+    public interface MyOneComposite
+        extends MyOne, TransientComposite
     {
     }
 
-    @Mixins(MyOneMixin.class)
-    public interface MyOneComposite2 extends MyOne, TransientComposite
+    @Mixins( MyOneMixin.class )
+    public interface MyOneComposite2
+        extends MyOne, TransientComposite
     {
     }
 
@@ -124,15 +127,15 @@ public class ConstraintsTest extends AbstractQi4jTest
 
         void doSomething2( @TestConstraint @NonEmptyCollection List<?> collection );
 
-        void doSomething3( @CompositeConstraint @Name("somecollection") List<?> collection );
+        void doSomething3( @CompositeConstraint @Name( "somecollection" ) List<?> collection );
     }
 
     public abstract static class MyOneMixin
-            implements MyOne
+        implements MyOne
     {
         public void doSomething( String abc, List<String> collection )
         {
-            if (abc == null || collection == null)
+            if( abc == null || collection == null )
             {
                 throw new NullPointerException();
             }
@@ -140,7 +143,7 @@ public class ConstraintsTest extends AbstractQi4jTest
 
         public void doSomething2( List<?> collection )
         {
-            if (collection == null)
+            if( collection == null )
             {
                 throw new NullPointerException();
             }
@@ -148,7 +151,7 @@ public class ConstraintsTest extends AbstractQi4jTest
 
         public void doSomething3( List<?> collection )
         {
-            if (collection == null)
+            if( collection == null )
             {
                 throw new NullPointerException();
             }
@@ -156,43 +159,45 @@ public class ConstraintsTest extends AbstractQi4jTest
     }
 
     @ConstraintDeclaration
-    @Retention(RUNTIME)
-    @Constraints(TestConstraintImpl.class)
+    @Retention( RUNTIME )
+    @Constraints( TestConstraintImpl.class )
     public @interface TestConstraint
     {
     }
 
     public static class TestConstraintImpl
-            implements Constraint<TestConstraint, Object>
+        implements Constraint<TestConstraint, Object>
     {
-        public boolean isValid( TestConstraint annotation, Object value ) throws NullPointerException
+        public boolean isValid( TestConstraint annotation, Object value )
+            throws NullPointerException
         {
-            if (value instanceof String)
+            if( value instanceof String )
             {
-                return ((String) value).startsWith( "habba" );
+                return ( (String) value ).startsWith( "habba" );
             }
             return value instanceof Collection && ( (Collection) value ).size() > 0;
         }
     }
 
     @ConstraintDeclaration
-    @Retention(RUNTIME)
-    @Constraints({NonEmptyCollectionConstraint.class})
+    @Retention( RUNTIME )
+    @Constraints( { NonEmptyCollectionConstraint.class } )
     public @interface NonEmptyCollection
     {
     }
 
     public static class NonEmptyCollectionConstraint
-            implements Constraint<NonEmptyCollection, Collection<?>>
+        implements Constraint<NonEmptyCollection, Collection<?>>
     {
-        public boolean isValid( NonEmptyCollection annotation, Collection<?> value ) throws NullPointerException
+        public boolean isValid( NonEmptyCollection annotation, Collection<?> value )
+            throws NullPointerException
         {
             return value.size() > 0;
         }
     }
 
     @ConstraintDeclaration
-    @Retention(RUNTIME)
+    @Retention( RUNTIME )
     @TestConstraint
     @NonEmptyCollection
     public @interface CompositeConstraint

@@ -20,7 +20,8 @@ import org.qi4j.api.entity.EntityComposite;
  * This exception is thrown by UnitOfWork.complete() if any entities that are being committed
  * had been changed while the UnitOfWork was being executed.
  */
-public class ConcurrentEntityModificationException extends UnitOfWorkCompletionException
+public class ConcurrentEntityModificationException
+    extends UnitOfWorkCompletionException
 {
     private static final long serialVersionUID = 3872723845064767689L;
 

@@ -31,7 +31,8 @@ public final class CompositeMethodInstance
 
     public CompositeMethodInstance( InvocationHandler invoker,
                                     FragmentInvocationHandler mixinInvoker,
-                                    Method method, int methodIdx )
+                                    Method method, int methodIdx
+    )
     {
         this.invoker = invoker;
         this.method = method;
@@ -73,5 +74,4 @@ public final class CompositeMethodInstance
     {
         this.next = next;
     }
-
 }

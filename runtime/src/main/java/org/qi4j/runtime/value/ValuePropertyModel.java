@@ -22,21 +22,23 @@ import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
 import org.qi4j.runtime.property.PersistentPropertyModel;
-import org.qi4j.runtime.types.ValueTypeFactory;
 import org.qi4j.runtime.types.PropertyTypeImpl;
+import org.qi4j.runtime.types.ValueTypeFactory;
 import org.qi4j.spi.property.PropertyTypeDescriptor;
 import org.qi4j.spi.property.ValueType;
 
 /**
  * Property model for values
  */
-public final class ValuePropertyModel extends PersistentPropertyModel
+public final class ValuePropertyModel
+    extends PersistentPropertyModel
     implements PropertyTypeDescriptor
 {
     public ValuePropertyModel( Method anAccessor,
                                Class compositeType, ValueConstraintsInstance constraints,
                                MetaInfo metaInfo,
-                               Object defaultValue )
+                               Object defaultValue
+    )
     {
         super( createPropertyType( anAccessor, compositeType ), anAccessor, true, constraints, metaInfo, defaultValue );
     }
@@ -45,9 +47,10 @@ public final class ValuePropertyModel extends PersistentPropertyModel
     {
         final Queryable queryable = anAccessor.getAnnotation( Queryable.class );
         boolean isQueryable = queryable == null || queryable.value();
-        ValueType valueType = ValueTypeFactory.instance().newValueType( GenericPropertyInfo.getPropertyType( anAccessor ),
-                                                                        anAccessor.getDeclaringClass(),
-                                                                        compositeType );
+        ValueType valueType = ValueTypeFactory.instance()
+            .newValueType( GenericPropertyInfo.getPropertyType( anAccessor ),
+                           anAccessor.getDeclaringClass(),
+                           compositeType );
         return new PropertyTypeImpl( QualifiedName.fromMethod( anAccessor ),
                                      valueType,
                                      isQueryable,

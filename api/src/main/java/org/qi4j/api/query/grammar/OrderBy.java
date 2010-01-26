@@ -44,5 +44,4 @@ public interface OrderBy
     {
         ASCENDING, DESCENDING
     }
-
 }

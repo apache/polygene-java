@@ -14,6 +14,8 @@
 
 package org.qi4j.runtime.value;
 
+import org.json.JSONException;
+import org.json.JSONStringer;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.injection.scope.This;
@@ -21,8 +23,6 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.Value;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
-import org.json.JSONException;
-import org.json.JSONStringer;
 import org.qi4j.spi.property.ValueType;
 
 /**
@@ -32,9 +32,11 @@ import org.qi4j.spi.property.ValueType;
 public class ValueMixin
     implements Value
 {
-    @This private Value thisValue;
+    @This
+    private Value thisValue;
 
-    @State private StateHolder state;
+    @State
+    private StateHolder state;
 
     public StateHolder state()
     {
@@ -45,7 +47,10 @@ public class ValueMixin
     {
         ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) thisValue );
         Class<Composite> valueType = (Class<Composite>) valueInstance.type();
-        return (ValueBuilder<T>) valueInstance.module().valueBuilderFactory().newValueBuilder( valueType ).withPrototype( (Composite) thisValue );
+        return (ValueBuilder<T>) valueInstance.module()
+            .valueBuilderFactory()
+            .newValueBuilder( valueType )
+            .withPrototype( (Composite) thisValue );
     }
 
     public String toJSON()

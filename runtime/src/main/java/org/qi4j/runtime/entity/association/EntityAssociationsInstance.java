@@ -14,15 +14,14 @@
 
 package org.qi4j.runtime.entity.association;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.EntityStateHolder;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
-
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Collection of Property instances.
@@ -43,14 +42,14 @@ public final class EntityAssociationsInstance
 
     public <T> Association<T> associationFor( Method accessor )
     {
-        if (associations == null)
+        if( associations == null )
         {
             associations = new HashMap<Method, Association<?>>();
         }
 
         Association<T> association = (Association<T>) associations.get( accessor );
 
-        if (association == null)
+        if( association == null )
         {
             association = model.newInstance( accessor, entityState, uow );
             associations.put( accessor, association );
@@ -66,7 +65,7 @@ public final class EntityAssociationsInstance
 
     public void visitAssociations( EntityStateHolder.EntityStateVisitor visitor )
     {
-        for (AssociationDescriptor associationDescriptor : model.associations())
+        for( AssociationDescriptor associationDescriptor : model.associations() )
         {
             visitor.visitAssociation( associationDescriptor.qualifiedName(), associationFor( associationDescriptor.accessor() ) );
         }

@@ -6,12 +6,11 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.composite.CompositeMethodModel;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
-import org.qi4j.runtime.injection.provider.InjectionProviderException;
+import org.qi4j.runtime.model.Resolution;
 
 /**
  * JAVADOC
@@ -19,7 +18,8 @@ import org.qi4j.runtime.injection.provider.InjectionProviderException;
 public final class InvocationInjectionProviderFactory
     implements InjectionProviderFactory, Serializable
 {
-    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel ) throws InvalidInjectionException
+    public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
+        throws InvalidInjectionException
     {
         Class injectionClass = dependencyModel.injectionClass();
         if( injectionClass.equals( Method.class ) ||
@@ -30,7 +30,8 @@ public final class InvocationInjectionProviderFactory
         }
         else
         {
-            throw new InvalidInjectionException( "Invalid injection type " + injectionClass + " in " + dependencyModel.injectedClass().getName() );
+            throw new InvalidInjectionException( "Invalid injection type " + injectionClass + " in " + dependencyModel.injectedClass()
+                .getName() );
         }
     }
 
@@ -46,7 +47,8 @@ public final class InvocationInjectionProviderFactory
             this.dependencyModel = dependencyModel;
         }
 
-        public Object provideInjection( InjectionContext context ) throws InjectionProviderException
+        public Object provideInjection( InjectionContext context )
+            throws InjectionProviderException
         {
             Class injectionClass = dependencyModel.injectionClass();
             final CompositeMethodModel methodModel = resolution.method();

@@ -21,15 +21,15 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Collection;
-import static java.util.Collections.*;
-
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.InjectionException;
-import org.qi4j.spi.util.SerializationUtil;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.Specification;
 import org.qi4j.spi.composite.InjectedFieldDescriptor;
+import org.qi4j.spi.util.SerializationUtil;
+
+import static java.util.Collections.*;
 
 /**
  * JAVADOC
@@ -39,7 +39,6 @@ public final class InjectedFieldModel
 {
     private DependencyModel dependencyModel;
     private Field injectedField;
-
 
     private void writeObject( ObjectOutputStream out )
         throws IOException
@@ -56,7 +55,8 @@ public final class InjectedFieldModel
         }
     }
 
-    private void readObject( ObjectInputStream in ) throws IOException, ClassNotFoundException
+    private void readObject( ObjectInputStream in )
+        throws IOException, ClassNotFoundException
     {
         dependencyModel = (DependencyModel) in.readObject();
         injectedField = SerializationUtil.readField( in );
@@ -79,7 +79,8 @@ public final class InjectedFieldModel
         return injectedField;
     }
 
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         dependencyModel.bind( resolution.forField( injectedField ) );
     }

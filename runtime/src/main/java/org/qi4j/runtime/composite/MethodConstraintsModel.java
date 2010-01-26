@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.Name;
-import org.qi4j.spi.util.SerializationUtil;
-import org.qi4j.spi.util.Annotations;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.spi.constraint.MethodConstraintsDescriptor;
+import org.qi4j.spi.util.Annotations;
+import org.qi4j.spi.util.SerializationUtil;
 
 /**
  * JAVADOC
@@ -55,7 +55,8 @@ public final class MethodConstraintsModel
         }
     }
 
-    private void readObject( ObjectInputStream in ) throws IOException, ClassNotFoundException
+    private void readObject( ObjectInputStream in )
+        throws IOException, ClassNotFoundException
     {
         method = SerializationUtil.readMethod( in );
         parameterConstraintModels = (List<ValueConstraintsModel>) in.readObject();

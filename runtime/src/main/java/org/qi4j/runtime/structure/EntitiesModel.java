@@ -19,9 +19,9 @@ import java.util.List;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.model.Binder;
+import org.qi4j.runtime.model.Resolution;
 
 /**
  * JAVADOC
@@ -36,7 +36,6 @@ public class EntitiesModel
         this.entityModels = entityModels;
     }
 
-
     public void visitModel( ModelVisitor modelVisitor )
     {
         for( EntityModel entityModel : entityModels )
@@ -45,7 +44,8 @@ public class EntitiesModel
         }
     }
 
-    public void bind( Resolution resolution ) throws BindingException
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         for( EntityModel entityModel : entityModels )
         {
@@ -53,7 +53,8 @@ public class EntitiesModel
         }
     }
 
-    public EntityModel getEntityModelFor( Class mixinType, Visibility visibility ) throws AmbiguousTypeException
+    public EntityModel getEntityModelFor( Class mixinType, Visibility visibility )
+        throws AmbiguousTypeException
     {
         EntityModel foundModel = null;
         for( EntityModel entityModel : entityModels )

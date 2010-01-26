@@ -74,8 +74,8 @@ public interface PropertyReference<T>
      * Evaluates the property reference against a target object.
      *
      * @param target target object
+     *
      * @return property instance from the target
      */
     Property<T> eval( Object target );
-
 }

@@ -43,7 +43,6 @@ import org.qi4j.runtime.composite.ConstraintsModel;
 import org.qi4j.runtime.composite.SideEffectsDeclaration;
 import org.qi4j.runtime.entity.association.EntityAssociationsModel;
 import org.qi4j.runtime.entity.association.EntityManyAssociationsModel;
-import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.property.PersistentPropertyModel;
 import org.qi4j.runtime.structure.ModelVisitor;

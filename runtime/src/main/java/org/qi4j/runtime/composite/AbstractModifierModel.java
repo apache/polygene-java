@@ -27,8 +27,6 @@ import net.sf.cglib.proxy.CallbackFilter;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.Factory;
 import net.sf.cglib.proxy.NoOp;
-import static org.qi4j.api.util.Classes.*;
-
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
 import org.qi4j.runtime.injection.InjectedMethodsModel;
@@ -37,6 +35,8 @@ import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
+
+import static org.qi4j.api.util.Classes.*;
 
 /**
  * JAVADOC
@@ -73,7 +73,6 @@ public abstract class AbstractModifierModel
         return InvocationHandler.class.isAssignableFrom( modifierClass );
     }
 
-
     public void visitModel( ModelVisitor modelVisitor )
     {
         constructorsModel.visitModel( modelVisitor );
@@ -82,7 +81,9 @@ public abstract class AbstractModifierModel
     }
 
     // Binding
-    public void bind( Resolution context ) throws BindingException
+
+    public void bind( Resolution context )
+        throws BindingException
     {
         constructorsModel.bind( context );
         injectedFieldsModel.bind( context );
@@ -90,7 +91,11 @@ public abstract class AbstractModifierModel
     }
 
     // Context
-    public Object newInstance( ModuleInstance moduleInstance, Object next, ProxyReferenceInvocationHandler proxyHandler )
+
+    public Object newInstance( ModuleInstance moduleInstance,
+                               Object next,
+                               ProxyReferenceInvocationHandler proxyHandler
+    )
     {
         InjectionContext injectionContext = new InjectionContext( moduleInstance, wrapNext( next ), proxyHandler );
         if( Factory.class.isAssignableFrom( modifierClass ) )
@@ -192,5 +197,4 @@ public abstract class AbstractModifierModel
         } );
         return enhancer;
     }
-
 }

@@ -23,5 +23,6 @@ public interface TestData
 {
     String exportData();
 
-    void importData( String data ) throws IOException;
+    void importData( String data )
+        throws IOException;
 }

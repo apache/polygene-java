@@ -23,7 +23,9 @@ public interface ServiceImporter
      * Imports an instance of the service type described in the service descriptor.
      *
      * @param serviceDescriptor The service descriptor.
+     *
      * @return The imported service instance.
+     *
      * @throws ServiceImporterException if import failed.
      */
     Object importService( ImportedServiceDescriptor serviceDescriptor )

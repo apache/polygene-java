@@ -14,8 +14,6 @@
 
 package org.qi4j.runtime.injection;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.TransientBuilder;
@@ -27,6 +25,9 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /**
  * Test the @State annotation
@@ -81,7 +82,7 @@ public class StateInjectionTest
 
         @State( "testField" )
         Property<String> namedField;
-        
+
         @State
         StateHolder state;
 

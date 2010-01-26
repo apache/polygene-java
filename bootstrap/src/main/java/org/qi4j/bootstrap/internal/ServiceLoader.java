@@ -65,7 +65,8 @@ public final class ServiceLoader
         return result;
     }
 
-    public <T> T firstProvider( Class<T> neededType ) throws IOException
+    public <T> T firstProvider( Class<T> neededType )
+        throws IOException
     {
         final Iterator<T> allProviders = providers( neededType ).iterator();
         if( allProviders.hasNext() )
@@ -78,7 +79,8 @@ public final class ServiceLoader
 
     private <T> void processResource(
         ClassLoader classLoader, LinkedList<T> result,
-        URL rc, Class<T> neededType )
+        URL rc, Class<T> neededType
+    )
         throws IOException
     {
         InputStream in = null;
@@ -124,7 +126,8 @@ public final class ServiceLoader
     }
 
     private <T> void processProvider( LinkedList<T> result,
-                                      ClassLoader classLoader, String providerClassName, Class<T> neededType )
+                                      ClassLoader classLoader, String providerClassName, Class<T> neededType
+    )
     {
         Class<T> provider = loadProvider( classLoader, providerClassName, neededType );
         if( provider == null )
@@ -140,7 +143,6 @@ public final class ServiceLoader
         {
             result.add( instance );
         }
-
     }
 
     private <T> Class<T> loadProvider( ClassLoader ldr, String providerClassName, Class<T> neededType )
@@ -173,9 +175,9 @@ public final class ServiceLoader
         }
         catch( IllegalAccessException ex )
         {
-            System.err.println( "Class " + provider.getName() + " is not accessible. Make sure it is public and have a public no-args constructor." );
+            System.err
+                .println( "Class " + provider.getName() + " is not accessible. Make sure it is public and have a public no-args constructor." );
         }
         return null;
     }
-
 }

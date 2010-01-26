@@ -17,7 +17,8 @@ package org.qi4j.api.entity;
 /**
  * Thrown by methods of Lifecycle if invocation fails
  */
-public class LifecycleException extends RuntimeException
+public class LifecycleException
+    extends RuntimeException
 {
     public LifecycleException( String s )
     {

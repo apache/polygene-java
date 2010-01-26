@@ -22,7 +22,8 @@ import org.qi4j.spi.composite.CompositeInstance;
 public class CompositeMixin
     implements Composite
 {
-    @This private Composite meAsComposite;
+    @This
+    private Composite meAsComposite;
 
     public <T> T metaInfo( Class<T> infoType )
     {

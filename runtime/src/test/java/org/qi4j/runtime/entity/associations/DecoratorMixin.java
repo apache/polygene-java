@@ -39,7 +39,9 @@ public class DecoratorMixin
     public DecoratorMixin( @Uses Object delegate )
     {
         if( delegate instanceof Class )
+        {
             Thread.dumpStack();
+        }
         this.delegate = delegate;
     }
 

@@ -22,7 +22,8 @@ import org.qi4j.api.structure.Module;
 /**
  * JAVADOC
  */
-public interface CompositeInstance extends InvocationHandler
+public interface CompositeInstance
+    extends InvocationHandler
 {
     <T> T proxy();
 
@@ -34,7 +35,8 @@ public interface CompositeInstance extends InvocationHandler
 
     Class<? extends Composite> type();
 
-    Object invokeProxy( Method method, Object[] args ) throws Throwable;
+    Object invokeProxy( Method method, Object[] args )
+        throws Throwable;
 
     AbstractCompositeDescriptor descriptor();
 }

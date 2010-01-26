@@ -48,7 +48,8 @@ import org.qi4j.api.mixin.MixinMappingException;
  * one is intended.
  * </p>
  */
-public class AmbiguousTypeException extends MixinMappingException
+public class AmbiguousTypeException
+    extends MixinMappingException
 {
     private static final long serialVersionUID = 1L;
 

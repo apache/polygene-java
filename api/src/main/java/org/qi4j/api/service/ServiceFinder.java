@@ -31,6 +31,7 @@ public interface ServiceFinder
      * Find a ServiceReference that implements the given type.
      *
      * @param serviceType the type that the Service must implement
+     *
      * @return a ServiceReference if one is found, or null if none exists
      */
     <T> ServiceReference<T> findService( Type serviceType );
@@ -42,6 +43,7 @@ public interface ServiceFinder
      * Module is earlier in the list.
      *
      * @param serviceType the type that the Services must implement
+     *
      * @return an iterable of ServiceReferences for the given type. It is empty if none exist
      */
     <T> Iterable<ServiceReference<T>> findServices( Type serviceType );

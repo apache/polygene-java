@@ -15,7 +15,6 @@ package org.qi4j.runtime.composite;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Properties;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
@@ -26,6 +25,8 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+
+import static org.junit.Assert.*;
 
 public class CompositeFactoryImplTest
     extends AbstractQi4jTest

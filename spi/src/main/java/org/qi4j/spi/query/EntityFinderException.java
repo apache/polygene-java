@@ -26,7 +26,8 @@ public class EntityFinderException
     }
 
     public EntityFinderException( final String message,
-                                  final Throwable throwable )
+                                  final Throwable throwable
+    )
     {
         super( message, throwable );
     }

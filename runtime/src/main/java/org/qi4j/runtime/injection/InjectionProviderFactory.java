@@ -14,8 +14,8 @@
 
 package org.qi4j.runtime.injection;
 
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.bootstrap.InvalidInjectionException;
+import org.qi4j.runtime.model.Resolution;
 
 /**
  * JAVADOC

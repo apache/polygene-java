@@ -26,7 +26,8 @@ import org.qi4j.api.property.PropertyMixin;
  * Properties and associations are handled by default.
  */
 @Mixins( { PropertyMixin.class } )
-public interface Composite extends Serializable
+public interface Composite
+    extends Serializable
 {
     <T> T metaInfo( Class<T> infoType );
 

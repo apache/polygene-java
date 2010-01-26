@@ -72,7 +72,6 @@ public final class TypeName
         final TypeName other = (TypeName) o;
 
         return name.equals( other.name );
-
     }
 
     public int hashCode()

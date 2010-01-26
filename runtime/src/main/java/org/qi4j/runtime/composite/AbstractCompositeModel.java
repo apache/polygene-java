@@ -63,6 +63,7 @@ public abstract class AbstractCompositeModel
     }
 
     // Model
+
     public Class<? extends Composite> type()
     {
         return compositeType;
@@ -95,7 +96,7 @@ public abstract class AbstractCompositeModel
 
     public CompositeMethodsModel compositeMethodsModel()
     {
-        return compositeMethodsModel;    
+        return compositeMethodsModel;
     }
 
     @SuppressWarnings( "unchecked" )
@@ -109,7 +110,13 @@ public abstract class AbstractCompositeModel
     public abstract void visitModel( ModelVisitor modelVisitor );
 
     // Context
-    public final Object invoke( MixinsInstance mixins, Object proxy, Method method, Object[] args, ModuleInstance moduleInstance )
+
+    public final Object invoke( MixinsInstance mixins,
+                                Object proxy,
+                                Method method,
+                                Object[] args,
+                                ModuleInstance moduleInstance
+    )
         throws Throwable
     {
         return compositeMethodsModel.invoke( mixins, proxy, method, args, moduleInstance );
@@ -165,5 +172,4 @@ public abstract class AbstractCompositeModel
     {
         return compositeType.getName();
     }
-
 }

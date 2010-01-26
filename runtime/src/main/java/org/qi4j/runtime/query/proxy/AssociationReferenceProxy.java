@@ -20,11 +20,12 @@ package org.qi4j.runtime.query.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import static java.lang.reflect.Proxy.*;
 import java.lang.reflect.Type;
 import org.qi4j.api.query.QueryExpressionException;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.runtime.query.grammar.impl.AssociationReferenceImpl;
+
+import static java.lang.reflect.Proxy.*;
 
 /**
  * JAVADOC Add JavaDoc
@@ -55,14 +56,16 @@ public final class AssociationReferenceProxy
      * @param traversedAssociation traversed association
      */
     AssociationReferenceProxy( final Method accessor,
-                               final AssociationReference traversedAssociation )
+                               final AssociationReference traversedAssociation
+    )
     {
         associationReference = new AssociationReferenceImpl( accessor, traversedAssociation );
     }
 
     public Object invoke( final Object proxy,
                           final Method method,
-                          final Object[] args )
+                          final Object[] args
+    )
         throws Throwable
     {
         if( method.getDeclaringClass().equals( AssociationReference.class ) )
@@ -93,5 +96,4 @@ public final class AssociationReferenceProxy
     {
         return associationReference.toString();
     }
-
 }

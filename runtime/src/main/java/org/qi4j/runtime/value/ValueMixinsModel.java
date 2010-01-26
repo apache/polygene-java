@@ -27,7 +27,8 @@ import org.qi4j.runtime.injection.InjectionContext;
 /**
  * Model for mixins in ValueComposites
  */
-public final class ValueMixinsModel extends AbstractMixinsModel
+public final class ValueMixinsModel
+    extends AbstractMixinsModel
 {
     public ValueMixinsModel( Class<? extends ValueComposite> compositeType, List<Class<?>> assemblyMixins )
     {

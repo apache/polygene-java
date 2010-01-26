@@ -22,7 +22,8 @@ import org.qi4j.api.constraint.Constraint;
 /**
  * JAVADOC
  */
-public final class ConstraintModel extends AbstractConstraintModel
+public final class ConstraintModel
+    extends AbstractConstraintModel
     implements Serializable
 
 {

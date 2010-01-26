@@ -14,17 +14,16 @@
 
 package org.qi4j.runtime.query.model.values;
 
+import java.util.List;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
-
-import java.util.List;
 
 /**
  * JAVADOC
  */
 public interface ContactsValue
-        extends ValueComposite
+    extends ValueComposite
 {
     @UseDefaults
     Property<List<ContactValue>> contacts();

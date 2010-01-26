@@ -21,6 +21,7 @@ package org.qi4j.api.property;
 
 import java.lang.reflect.Type;
 import org.qi4j.api.common.QualifiedName;
+
 import static org.qi4j.api.util.NullArgumentException.*;
 
 /**
@@ -35,6 +36,7 @@ public abstract class AbstractPropertyInstance<T>
      * Construct an instance of {@code ComputedPropertyInstance}.
      *
      * @param aPropertyInfo The property info. This argument must not be {@code null}.
+     *
      * @throws IllegalArgumentException Thrown if the specified {@code aPropertyInfo} argument is {@code null}.
      */
     protected AbstractPropertyInstance( PropertyInfo aPropertyInfo )
@@ -48,6 +50,7 @@ public abstract class AbstractPropertyInstance<T>
      * Returns the property info given {@code anInfoType} argument.
      *
      * @param anInfoType The info type.
+     *
      * @return Property info given {@code anInfoType} argument.
      */
     // Was it a mistake to have another T here? (I think so...)
@@ -88,6 +91,7 @@ public abstract class AbstractPropertyInstance<T>
      * equal, then th
      *
      * @param o The other object to compare.
+     *
      * @return Returns a {@code boolean} indicator whether this object is equals the other.
      */
     public boolean equals( Object o )
@@ -135,5 +139,4 @@ public abstract class AbstractPropertyInstance<T>
         }
         return hash;
     }
-
 }

@@ -121,6 +121,7 @@ public final class MixinModel
     }
 
     // Binding
+
     public void bind( Resolution context )
         throws BindingException
     {
@@ -250,8 +251,6 @@ public final class MixinModel
             }
         }
     }
-
-
 
     public MethodConcernsModel concernsFor( Method method, Class<? extends Composite> type )
     {

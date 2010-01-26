@@ -1,8 +1,9 @@
 package org.qi4j.api.common;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.qi4j.api.util.NullArgumentException;
+
+import static org.junit.Assert.*;
 
 public class QualifiedNameTest
 {

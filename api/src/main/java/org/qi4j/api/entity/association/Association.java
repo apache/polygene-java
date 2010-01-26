@@ -31,6 +31,7 @@ public interface Association<T>
      * Set the associated entity.
      *
      * @param associated the entity
+     *
      * @throws IllegalArgumentException thrown if the entity is not a valid reference for this association
      */
     void set( T associated )

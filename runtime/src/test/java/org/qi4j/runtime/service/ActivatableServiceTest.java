@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.service;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
@@ -24,6 +23,8 @@ import org.qi4j.api.service.ServiceReference;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
+
+import static org.junit.Assert.*;
 
 /**
  * Test of activatable services

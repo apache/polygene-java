@@ -14,8 +14,10 @@
 
 package org.qi4j.runtime.value;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Logger;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
@@ -27,20 +29,18 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Logger;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /**
  * Tests for ValueComposites
  */
 public class ValueTypeSerializationTest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.addValues( SomeValue.class, AnotherValue.class, FooValue.class, CustomFooValue.class );
         //, SpecificCollection.class, SpecificValue.class, GenericValue.class);
@@ -118,12 +118,12 @@ public class ValueTypeSerializationTest
     }
 
     public interface ExplicitPropertyType
-            extends Property<String>
+        extends Property<String>
     {
     }
 
     public interface SomeValue
-            extends ValueComposite
+        extends ValueComposite
     {
         Property<String> string();
 
@@ -198,7 +198,7 @@ public class ValueTypeSerializationTest
 */
 
     public interface AnotherValue
-            extends ValueComposite
+        extends ValueComposite
     {
         @UseDefaults
         Property<String> val1();
@@ -211,19 +211,19 @@ public class ValueTypeSerializationTest
     }
 
     public interface FooValue
-            extends Foo, ValueComposite
+        extends Foo, ValueComposite
     {
     }
 
     public interface CustomFooValue
-            extends FooValue
+        extends FooValue
     {
         @UseDefaults
         Property<String> custom();
     }
 
     public static class SerializableObject
-            implements Serializable
+        implements Serializable
     {
         String foo = "Foo";
         int val = 35;
@@ -231,11 +231,11 @@ public class ValueTypeSerializationTest
         @Override
         public boolean equals( Object o )
         {
-            if (this == o)
+            if( this == o )
             {
                 return true;
             }
-            if (o == null || getClass() != o.getClass())
+            if( o == null || getClass() != o.getClass() )
             {
                 return false;
             }

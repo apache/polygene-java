@@ -17,7 +17,6 @@
 package org.qi4j.runtime.property;
 
 import org.junit.Assert;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.composite.TransientComposite;
@@ -30,6 +29,8 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
+
+import static org.junit.Assert.*;
 
 public final class ImmutablePropertyTest
     extends AbstractQi4jTest

@@ -19,7 +19,7 @@
 package org.qi4j.api.query.grammar;
 
 public interface ManyAssociationContainsPredicate<T>
-        extends Predicate
+    extends Predicate
 {
     ManyAssociationReference associationReference();
 

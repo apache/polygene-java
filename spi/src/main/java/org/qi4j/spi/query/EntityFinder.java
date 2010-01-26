@@ -32,7 +32,8 @@ public interface EntityFinder
                                             @Optional BooleanExpression whereClause,
                                             @Optional OrderBy[] orderBySegments,
                                             @Optional Integer firstResult,
-                                            @Optional Integer maxResults )
+                                            @Optional Integer maxResults
+    )
         throws EntityFinderException;
 
     EntityReference findEntity( String resultType, @Optional BooleanExpression whereClause )

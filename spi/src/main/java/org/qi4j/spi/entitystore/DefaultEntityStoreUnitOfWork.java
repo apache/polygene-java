@@ -18,12 +18,7 @@ import java.util.LinkedList;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entitystore.EntityStoreException;
-import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
-import org.qi4j.spi.entitystore.StateCommitter;
-import org.qi4j.spi.entitystore.EntityStoreSPI;
 
 /**
  * JAVADOC
@@ -54,21 +49,25 @@ public final class DefaultEntityStoreUnitOfWork
     }
 
     // EntityStore
-    public EntityState newEntityState( EntityReference anIdentity, EntityDescriptor descriptor ) throws EntityStoreException
+
+    public EntityState newEntityState( EntityReference anIdentity, EntityDescriptor descriptor )
+        throws EntityStoreException
     {
         EntityState state = entityStoreSPI.newEntityState( this, anIdentity, descriptor );
         states.add( state );
         return state;
     }
 
-    public EntityState getEntityState( EntityReference anIdentity ) throws EntityStoreException, EntityNotFoundException
+    public EntityState getEntityState( EntityReference anIdentity )
+        throws EntityStoreException, EntityNotFoundException
     {
         EntityState entityState = entityStoreSPI.getEntityState( this, anIdentity );
         states.add( entityState );
         return entityState;
     }
 
-    public StateCommitter apply() throws EntityStoreException
+    public StateCommitter apply()
+        throws EntityStoreException
     {
         return entityStoreSPI.apply( states, identity );
     }

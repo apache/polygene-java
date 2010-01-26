@@ -41,6 +41,7 @@ public interface EntityBuilder<T>
      * This is primarily used if you want to provide state for a private mixin type.
      *
      * @param mixinType the mixin which you want to provide state for
+     *
      * @return a proxy implementing the given mixin type
      */
     <K> K instanceFor( Class<K> mixinType );
@@ -49,6 +50,7 @@ public interface EntityBuilder<T>
      * Create a new Entity instance.
      *
      * @return a new Entity instance
+     *
      * @throws org.qi4j.api.common.ConstructionException
      *                            thrown if it was not possible to instantiate the Composite
      * @throws LifecycleException if the entity could not be created

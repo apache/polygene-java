@@ -14,14 +14,14 @@
 
 package org.qi4j.runtime.query.model.values;
 
-import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.value.ValueComposite;
 
 /**
  * JAVADOC
  */
 public interface ContactValue
-        extends ValueComposite
+    extends ValueComposite
 {
     Property<String> email();
 

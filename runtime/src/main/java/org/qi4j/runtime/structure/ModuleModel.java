@@ -22,12 +22,12 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.composite.CompositesModel;
+import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.object.ObjectsModel;
 import org.qi4j.runtime.service.ImportedServicesModel;
 import org.qi4j.runtime.service.ServicesModel;
 import org.qi4j.runtime.value.ValuesModel;
-import org.qi4j.runtime.model.Binder;
 import org.qi4j.spi.structure.ModuleDescriptor;
 
 /**
@@ -54,7 +54,8 @@ public class ModuleModel
                         ObjectsModel objectsModel,
                         ValuesModel valuesModel,
                         ServicesModel servicesModel,
-                        ImportedServicesModel importedServicesModel )
+                        ImportedServicesModel importedServicesModel
+    )
     {
         this.name = name;
         this.metaInfo = metaInfo;
@@ -138,7 +139,9 @@ public class ModuleModel
     }
 
     // Binding
-    public void bind( Resolution resolution ) throws BindingException
+
+    public void bind( Resolution resolution )
+        throws BindingException
     {
         layerModel = resolution.layer();
 
@@ -152,6 +155,7 @@ public class ModuleModel
     }
 
     // Context
+
     public ModuleInstance newInstance( LayerInstance layerInstance )
     {
         return new ModuleInstance( this, layerInstance, compositesModel, entitiesModel, objectsModel, valuesModel, servicesModel, importedServicesModel );
@@ -182,7 +186,8 @@ public class ModuleModel
         }
 
         @Override
-        protected Class<?> findClass( String name ) throws ClassNotFoundException
+        protected Class<?> findClass( String name )
+            throws ClassNotFoundException
         {
             Class clazz = classes.get( name );
             if( clazz == null )
@@ -202,7 +207,6 @@ public class ModuleModel
             return clazz;
         }
     }
-
 
     static class ClassFinder
         implements ModuleVisitor
@@ -229,5 +233,4 @@ public class ModuleModel
             return clazz == null;
         }
     }
-
 }

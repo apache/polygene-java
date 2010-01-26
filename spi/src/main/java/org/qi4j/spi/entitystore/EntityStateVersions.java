@@ -42,7 +42,8 @@ public interface EntityStateVersions
     class EntityStateVersionsMixin
         implements EntityStateVersions
     {
-        @This private EntityStore store;
+        @This
+        private EntityStore store;
 
         private final Map<EntityReference, String> versions = new WeakHashMap<EntityReference, String>();
 

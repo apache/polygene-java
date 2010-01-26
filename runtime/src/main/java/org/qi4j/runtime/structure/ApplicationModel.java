@@ -23,9 +23,9 @@ import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.BindingException;
-import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.injection.provider.InjectionProviderFactoryStrategy;
+import org.qi4j.runtime.model.Resolution;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.structure.ApplicationDescriptor;
 import org.qi4j.spi.structure.ApplicationModelSPI;
@@ -44,7 +44,12 @@ public final class ApplicationModel
     private final List<LayerModel> layers;
     private final InjectionProviderFactory ipf;
 
-    public ApplicationModel( String name, String version, Application.Mode mode, MetaInfo metaInfo, List<LayerModel> layers )
+    public ApplicationModel( String name,
+                             String version,
+                             Application.Mode mode,
+                             MetaInfo metaInfo,
+                             List<LayerModel> layers
+    )
     {
         this.name = name;
         this.version = version;
@@ -90,7 +95,9 @@ public final class ApplicationModel
     }
 
     // Binding
-    public void bind() throws BindingException
+
+    public void bind()
+        throws BindingException
     {
         Resolution resolution = new Resolution( this, null, null, null, null, null );
         for( LayerModel layer : layers )
@@ -100,6 +107,7 @@ public final class ApplicationModel
     }
 
     // SPI
+
     public void visitDescriptor( DescriptorVisitor visitor )
     {
         visitModel( new DescriptorModelVisitor( visitor ) );
@@ -138,7 +146,6 @@ public final class ApplicationModel
                 usedLayerInstances.add( layerInstance );
             }
         }
-
 
         return applicationInstance;
     }

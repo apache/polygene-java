@@ -28,7 +28,8 @@ import org.qi4j.api.injection.scope.State;
 public final class PropertyMixin
     implements InvocationHandler
 {
-    @State private StateHolder state;
+    @State
+    private StateHolder state;
 
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable

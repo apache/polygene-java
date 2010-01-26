@@ -29,9 +29,12 @@ import org.qi4j.api.structure.Module;
 public final class InstanceImporter
     implements ServiceImporter
 {
-    @Structure Application application;
-    @Structure Layer layer;
-    @Structure Module module;
+    @Structure
+    Application application;
+    @Structure
+    Layer layer;
+    @Structure
+    Module module;
 
     public Object importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException

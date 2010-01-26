@@ -20,7 +20,8 @@ package org.qi4j.api.mixin;
 
 import java.lang.reflect.Method;
 
-public class InvalidMixinException extends RuntimeException
+public class InvalidMixinException
+    extends RuntimeException
 {
     public InvalidMixinException( Class mixinClass, Method method )
     {

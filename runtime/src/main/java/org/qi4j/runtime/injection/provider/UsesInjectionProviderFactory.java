@@ -72,7 +72,8 @@ public final class UsesInjectionProviderFactory
                     {
                         StateHolder stateHolder = context.state();
                         compositeFinder.model.state().checkConstraints( stateHolder );
-                        usesObject = compositeFinder.model.newCompositeInstance( compositeFinder.module, uses, stateHolder );
+                        usesObject = compositeFinder.model
+                            .newCompositeInstance( compositeFinder.module, uses, stateHolder );
                     }
                 }
                 else
