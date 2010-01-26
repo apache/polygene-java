@@ -8,5 +8,48 @@
   <name>Qi4j Build tools</name>
 
   <description>This module contains the resources needed to build Qi4j itself.</description>
-  
+
+  <inceptionYear>2007</inceptionYear>
+  <url>http://www.qi4j.org/</url>
+
+  <scm>
+    <url>http://dscm.ops4j.org/git/gitweb.cgi?p=qi4j-core.git;a=summary</url>
+    <connection>scm:git:git://dscm.ops4j.org/qi4j-core.git</connection>
+    <developerConnection>scm:git:git@dscm.ops4j.org:qi4j-core.git</developerConnection>
+  </scm>
+
+  <licenses>
+    <license>
+      <name>Apache License v2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+      <comments>Copyrights retained by each developer.</comments>
+    </license>
+  </licenses>
+
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-external</artifactId>
+        <version>1.0-alpha-6</version>
+      </extension>
+    </extensions>
+  </build>
+
+  <distributionManagement>
+    <repository>
+      <id>ops4j.releases.deploy</id>
+      <url>scpexe://repository.ops4j.org/var/http/repository.ops4j.org/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <id>ops4j.snapshots.deploy</id>
+      <url>scpexe://repository.ops4j.org/var/http/repository.ops4j.org/mvn-snapshots</url>
+    </snapshotRepository>
+    <site>
+      <id>ops4j.website.deploy</id>
+      <url>scpexe://dist.qi4j.org/home/www/web.ops4j.org/projects/qi4j/core</url>
+    </site>
+  </distributionManagement>
+
 </project>

@@ -466,19 +466,6 @@
         </build>
       </profile>
       <profile>
-        <id>repos.ops4j</id>
-        <distributionManagement>
-          <repository>
-            <id>ops4j.releases.deploy</id>
-            <url>scpexe://repository.ops4j.org/var/http/repository.ops4j.org/mvn-releases</url>
-          </repository>
-          <snapshotRepository>
-            <id>ops4j.snapshots.deploy</id>
-            <url>scpexe://repository.ops4j.org/var/http/repository.ops4j.org/mvn-snapshots</url>
-          </snapshotRepository>
-        </distributionManagement>
-      </profile>
-      <profile>
         <id>repos.sonatype</id>
         <distributionManagement>
           <repository>
