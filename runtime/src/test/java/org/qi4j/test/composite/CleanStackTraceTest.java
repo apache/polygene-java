@@ -66,9 +66,9 @@ public class CleanStackTraceTest
 
             String separator = System.getProperty( "line.separator" );
             String correctTrace = "java.lang.RuntimeException" + separator +
-                                  "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:97)" + separator +
+                                  "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:98)" + separator +
                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$TestComposite.doStuff(Unknown Source)" + separator +
-                                  "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:59)";
+                                  "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:60)";
             String actual = actualTrace.toString();
             boolean isStartWith = actual.startsWith( correctTrace );
 //            for( int i = 0; i < correctTrace.length(); i++ )
