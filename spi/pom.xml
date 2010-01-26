@@ -12,6 +12,12 @@
   <name>Qi4j Core - SPI</name>
   <version>1.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
+
+  <description>
+    The Qi4j SPI contains the classes and interfaces to create Qi4j Extensions. With it, it is possible to query
+    the application model and obtain the runtime instances. It also contains the in-memory entity store.
+  </description>
+  
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>

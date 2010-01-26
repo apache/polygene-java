@@ -15,7 +15,10 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <name>Qi4j Core - Bootstrap</name>
-
+  <description>
+    The Qi4j Bootstrap module is needed to get the Qi4j application up and running. In a truly modular fashion,
+    the classes in here are not needed once the application has been activated.
+  </description>
   <contributors>
     <contributor>
       <name>Georg Rallager</name>

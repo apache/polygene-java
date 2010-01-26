@@ -15,6 +15,11 @@
   <packaging>bundle</packaging>
   <name>Qi4j Core - Runtime</name>
 
+  <description>
+    The Qi4j Runtime implementation is needed to run Qi4j, but your Qi4j application should not have any dependency
+    on this module.
+  </description>
+
   <dependencies>
     <dependency>
       <groupId>org.qi4j.core</groupId>

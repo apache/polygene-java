@@ -12,6 +12,9 @@
   <packaging>bundle</packaging>
   <name>Qi4j Core - API</name>
   <version>1.0-SNAPSHOT</version>
+  <description>
+    The Qi4j Core API is the classes and interfaces that your regular Qi4j application will depend on.
+  </description>
 
   <dependencies>
     <dependency>
