@@ -141,7 +141,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        Note: dependency needed to locate the configuration
         <dependencies>
           <dependency>
             <groupId>org.qi4j</groupId>
