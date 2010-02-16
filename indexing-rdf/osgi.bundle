@@ -23,6 +23,7 @@ Import-Package: org.apache.commons.logging, \
                 javax.xml.validation, \
                 net.sf.cglib.asm.util, \
                 org.codehaus.aspectwerkz.hook, \
+                org.json, \
                 org.qi4j.api.common, \
                 org.qi4j.api.composite, \
                 org.qi4j.api.configuration, \
@@ -37,7 +38,9 @@ Import-Package: org.apache.commons.logging, \
                 org.qi4j.api.structure, \
                 org.qi4j.api.usecase, \
                 org.qi4j.api.util, \
+                org.qi4j.api.value, \
                 org.qi4j.bootstrap, \
+                org.qi4j.runtime.types, \
                 org.qi4j.spi.composite, \
                 org.qi4j.spi.entity, \
                 org.qi4j.spi.entity.association, \

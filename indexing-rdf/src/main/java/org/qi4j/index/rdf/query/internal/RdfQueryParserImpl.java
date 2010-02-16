@@ -19,17 +19,28 @@ package org.qi4j.index.rdf.query.internal;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.logging.Logger;
+import org.json.JSONException;
+import org.json.JSONStringer;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.Entity;
+import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.query.grammar.AssociationIsNullPredicate;
 import org.qi4j.api.query.grammar.AssociationNullPredicate;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.ComparisonPredicate;
 import org.qi4j.api.query.grammar.Conjunction;
+import org.qi4j.api.query.grammar.ContainsAllPredicate;
+import org.qi4j.api.query.grammar.ContainsPredicate;
 import org.qi4j.api.query.grammar.Disjunction;
 import org.qi4j.api.query.grammar.EqualsPredicate;
 import org.qi4j.api.query.grammar.GreaterOrEqualPredicate;
@@ -44,9 +55,15 @@ import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.query.grammar.Predicate;
 import org.qi4j.api.query.grammar.PropertyIsNullPredicate;
 import org.qi4j.api.query.grammar.PropertyNullPredicate;
+import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.query.grammar.SingleValueExpression;
 import org.qi4j.api.query.grammar.ValueExpression;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.index.rdf.query.RdfQueryParser;
+import org.qi4j.runtime.types.SerializableType;
+import org.qi4j.runtime.types.ValueTypeFactory;
+import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.property.ValueType;
 
 import static java.lang.String.*;
 
@@ -66,7 +83,9 @@ public class RdfQueryParserImpl
             return dateFormat;
         }
     };
+
     private static final Map<Class<? extends Predicate>, String> m_operators;
+    private static final Set<Character> reservedChars;
 
     private Namespaces namespaces = new Namespaces();
     private Triples triples = new Triples( namespaces );
@@ -81,6 +100,10 @@ public class RdfQueryParserImpl
         m_operators.put( LessThanPredicate.class, "<" );
         m_operators.put( NotEqualsPredicate.class, "!=" );
         m_operators.put( ManyAssociationContainsPredicate.class, "=" );
+
+        reservedChars = new HashSet<Character>( Arrays.asList(
+            '\"', '^', '.', '\\', '?', '*', '+', '{', '}', '(', ')', '|', '$', '[', ']'
+        ) );
     }
 
     public String getQuery( final String resultType,
@@ -168,9 +191,7 @@ public class RdfQueryParserImpl
             }
             else
             {
-                return format( "(%s && %s)",
-                               left,
-                               right );
+                return format( "(%s && %s)", left, right );
             }
         }
         if( expression instanceof Disjunction )
@@ -188,9 +209,7 @@ public class RdfQueryParserImpl
             }
             else
             {
-                return format( "(%s || %s)",
-                               left,
-                               right );
+                return format( "(%s || %s)", left, right );
             }
         }
         if( expression instanceof Negation )
@@ -217,7 +236,197 @@ public class RdfQueryParserImpl
         {
             return processNullPredicate( (AssociationNullPredicate) expression );
         }
+        if( expression instanceof ContainsPredicate<?, ?> )
+        {
+            return processContainsPredicate( (ContainsPredicate<?, ?>) expression );
+        }
+        if( expression instanceof ContainsAllPredicate<?, ?> )
+        {
+            return processContainsAllPredicate( (ContainsAllPredicate<?, ?>) expression );
+        }
         throw new UnsupportedOperationException( "Expression " + expression + " is not supported" );
+    }
+
+    private static String join( String[] strings, String delimiter )
+    {
+        StringBuilder builder = new StringBuilder();
+        for( Integer x = 0; x < strings.length; ++x )
+        {
+            builder.append( strings[ x ] );
+            if( x + 1 < strings.length )
+            {
+                builder.append( delimiter );
+            }
+        }
+
+        return builder.toString();
+    }
+
+    private String createAndEscapeJSONString( Object value, PropertyReference<?> propertyRef )
+        throws JSONException
+    {
+        ValueType type = ValueTypeFactory.instance().newValueType(
+            value.getClass(),
+            propertyRef.propertyType(),
+            propertyRef.propertyDeclaringType()
+        );
+
+        JSONStringer json = new JSONStringer();
+        json.array();
+        this.createJSONString( value, type, json );
+        json.endArray();
+        String result = json.toString();
+        result = result.substring( 1, result.length() - 1 );
+
+        result = this.escapeJSONString( result );
+
+        return result;
+    }
+
+    private String createRegexStringForContaining( String valueVariable, String containedString )
+    {
+        // The matching value must start with [, then contain something (possibly nothing),
+        // then our value, then again something (possibly nothing), and end with ]
+        return format( "regex(str(%s), \"^\\\\u005B.*%s.*\\\\u005D$\", \"s\")", valueVariable, containedString );
+    }
+
+    private void createJSONString( Object value, ValueType type, JSONStringer stringer )
+        throws JSONException
+    {
+        // TODO the sole purpose of this method is to get rid of "_type" information, which ValueType.toJSON
+        // produces for value composites
+        // So, change toJSON(...) to be configurable so that the caller can decide whether he wants type
+        // information into json string or not
+        if( type.isValue() || ( type instanceof SerializableType && value instanceof ValueComposite ) )
+        {
+            stringer.object();
+
+            // Rest is partial copypasta from ValueCompositeType.toJSON(Object, JSONStringer)
+
+            ValueComposite valueComposite = (ValueComposite) value;
+            StateHolder state = valueComposite.state();
+            final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
+            state.visitProperties( new StateHolder.StateVisitor()
+            {
+                public void visitProperty( QualifiedName name, Object value )
+                {
+                    values.put( name, value );
+                }
+            } );
+
+            List<PropertyType> actualTypes = type.types();
+            for( PropertyType propertyType : actualTypes )
+            {
+                stringer.key( propertyType.qualifiedName().name() );
+
+                Object propertyValue = values.get( propertyType.qualifiedName() );
+                if( propertyValue == null )
+                {
+                    stringer.value( null );
+                }
+                else
+                {
+                    this.createJSONString( propertyValue, propertyType.type(), stringer );
+                }
+            }
+            stringer.endObject();
+        }
+        else
+        {
+            type.toJSON( value, stringer );
+        }
+    }
+
+    private String escapeJSONString( String jsonStr )
+    {
+        StringBuilder builder = new StringBuilder();
+        for( Character c : jsonStr.toCharArray() )
+        {
+            if( reservedChars.contains( c ) )
+            {
+                builder.append( "\\\\u" ).append( format( "%04X", (int) c ) );
+            }
+            else
+            {
+                builder.append( c );
+            }
+        }
+
+        return builder.toString();
+    }
+
+    private String processContainsAllPredicate( final ContainsAllPredicate<?, ?> predicate )
+    {
+        ValueExpression<?> valueExpression = predicate.valueExpression();
+        if( valueExpression instanceof SingleValueExpression<?> )
+        {
+            String valueVariable = triples.addTriple( predicate.propertyReference(), false ).getValue();
+            final SingleValueExpression<?> singleValueExpression = (SingleValueExpression<?>) valueExpression;
+            String[] strings = new String[( (Collection<?>) singleValueExpression.value() ).size()];
+            Integer x = 0;
+            for( Object o : (Collection<?>) singleValueExpression.value() )
+            {
+                String jsonStr = "";
+                if( o != null )
+                {
+                    try
+                    {
+                        jsonStr = this.createAndEscapeJSONString( o, predicate.propertyReference() );
+                    }
+                    catch( JSONException jsone )
+                    {
+                        throw new UnsupportedOperationException( "Error when JSONing value", jsone );
+                    }
+                }
+                strings[ x ] = this.createRegexStringForContaining( valueVariable, jsonStr );
+                x++;
+            }
+            StringBuilder regex = new StringBuilder();
+            if( strings.length > 0 )
+            {
+                // For some reason, just "FILTER ()" causes error in SPARQL query
+                regex.append( "(" );
+                regex.append( join( strings, " && " ) );
+                regex.append( ")" );
+            }
+            else
+            {
+                regex.append( this.createRegexStringForContaining( valueVariable, "" ) );
+            }
+            return regex.toString();
+        }
+        else
+        {
+            throw new UnsupportedOperationException( "Value " + valueExpression + " is not supported." );
+        }
+    }
+
+    private String processContainsPredicate( final ContainsPredicate<?, ?> predicate )
+    {
+        ValueExpression<?> valueExpression = predicate.valueExpression();
+        if( valueExpression instanceof SingleValueExpression<?> )
+        {
+            String valueVariable = triples.addTriple( predicate.propertyReference(), false ).getValue();
+            SingleValueExpression<?> singleValueExpression = (SingleValueExpression<?>) valueExpression;
+            try
+            {
+                return this.createRegexStringForContaining(
+                    valueVariable,
+                    this.createAndEscapeJSONString(
+                        singleValueExpression.value(),
+                        predicate.propertyReference()
+                    )
+                );
+            }
+            catch( JSONException jsone )
+            {
+                throw new UnsupportedOperationException( "Error when JSONing value", jsone );
+            }
+        }
+        else
+        {
+            throw new UnsupportedOperationException( "Value " + valueExpression + " is not supported." );
+        }
     }
 
     private String processMatchesPredicate( final MatchesPredicate predicate )
@@ -253,8 +462,7 @@ public class RdfQueryParserImpl
             {
                 String valueVariable = triple.getValue();
                 final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
-                return String.format( "(%s %s \"%s\")", valueVariable, getOperator( predicate.getClass() ),
-                                      toString( singleValueExpression.value() ) );
+                return String.format( "(%s %s \"%s\")", valueVariable, getOperator( predicate.getClass() ), toString( singleValueExpression.value() ) );
             }
         }
         else
@@ -282,8 +490,7 @@ public class RdfQueryParserImpl
             {
                 String valueVariable = triple.getValue();
                 final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
-                return String.format( "(%s %s <%s>)", valueVariable, getOperator( predicate.getClass() ),
-                                      toString( singleValueExpression.value() ) );
+                return String.format( "(%s %s <%s>)", valueVariable, getOperator( predicate.getClass() ), toString( singleValueExpression.value() ) );
             }
         }
         else
