@@ -17,7 +17,6 @@
  */
 package org.qi4j.runtime.unitofwork;
 
-import java.util.concurrent.Callable;
 import org.junit.Test;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityBuilder;
@@ -27,116 +26,129 @@ import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
+import java.util.concurrent.Callable;
+
 public class UnitOfWorkFactoryTest
-    extends AbstractQi4jTest
-{
+        extends AbstractQi4jTest {
 
-    public void assemble( ModuleAssembly module )
-        throws AssemblyException
-    {
-        module.addEntities( AccountComposite.class,
-                            OrderComposite.class,
-                            ProductEntity.class,
-                            CustomerComposite.class );
+    public void assemble(ModuleAssembly module)
+            throws AssemblyException {
+        module.addEntities(AccountComposite.class,
+                OrderComposite.class,
+                ProductEntity.class,
+                CustomerComposite.class);
 
-        new EntityTestAssembler().assemble( module );
+        new EntityTestAssembler().assemble(module);
     }
 
     @Test
     public void testUnitOfWork()
-        throws Exception
-    {
+            throws Exception {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
 
         // Create product
-        EntityBuilder<ProductEntity> cb = unitOfWork.newEntityBuilder( ProductEntity.class );
-        cb.instance().name().set( "Chair" );
-        cb.instance().price().set( 57 );
+        EntityBuilder<ProductEntity> cb = unitOfWork.newEntityBuilder(ProductEntity.class);
+        cb.instance().name().set("Chair");
+        cb.instance().price().set(57);
         Product chair = cb.newInstance();
 
         String actual = chair.name().get();
-        org.junit.Assert.assertThat( "Chair.name()", actual, org.hamcrest.CoreMatchers.equalTo( "Chair" ) );
-        org.junit.Assert.assertThat( "Chair.price()", chair.price().get(), org.hamcrest.CoreMatchers.equalTo( 57 ) );
+        org.junit.Assert.assertThat("Chair.name()", actual, org.hamcrest.CoreMatchers.equalTo("Chair"));
+        org.junit.Assert.assertThat("Chair.price()", chair.price().get(), org.hamcrest.CoreMatchers.equalTo(57));
 
         unitOfWork.complete();
     }
 
-    @Mixins( { AccountMixin.class } )
-    public interface AccountComposite
-        extends Account, EntityComposite
-    {
+    @Test
+    public void testApply() throws UnitOfWorkCompletionException {
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+
+        // Create product
+        EntityBuilder<ProductEntity> cb = unitOfWork.newEntityBuilder(ProductEntity.class);
+        cb.instance().name().set("Chair");
+        cb.instance().price().set(57);
+        Product chair = cb.newInstance();
+
+        String actual = chair.name().get();
+        org.junit.Assert.assertThat("Chair.name()", actual, org.hamcrest.CoreMatchers.equalTo("Chair"));
+        org.junit.Assert.assertThat("Chair.price()", chair.price().get(), org.hamcrest.CoreMatchers.equalTo(57));
+
+        unitOfWork.apply();
+
+        chair.name().set("New chair");
+
+        unitOfWork.apply();
+
+        chair.name().set("Newer chair");
+
+        unitOfWork.complete();
     }
 
-    public interface Account
-    {
+
+    @Mixins({AccountMixin.class})
+    public interface AccountComposite
+            extends Account, EntityComposite {
+    }
+
+    public interface Account {
         Property<Integer> balance();
 
-        void add( int amount );
+        void add(int amount);
 
-        void remove( int amount );
+        void remove(int amount);
     }
 
     public static abstract class AccountMixin
-        implements Account
-    {
-        public void add( int amount )
-        {
-            balance().set( balance().get() + amount );
+            implements Account {
+        public void add(int amount) {
+            balance().set(balance().get() + amount);
         }
 
-        public void remove( int amount )
-        {
-            balance().set( balance().get() - amount );
+        public void remove(int amount) {
+            balance().set(balance().get() - amount);
         }
     }
 
-    public interface Customer
-    {
+    public interface Customer {
         Association<Account> account();
 
         Property<String> name();
     }
 
     public interface CustomerComposite
-        extends Customer, EntityComposite
-    {
+            extends Customer, EntityComposite {
     }
 
-    public interface LineItem
-    {
+    public interface LineItem {
         Association<Product> product();
     }
 
     public interface LineItemComposite
-        extends LineItem, EntityComposite
-    {
+            extends LineItem, EntityComposite {
     }
 
     public interface Name
-        extends Property<String>
-    {
+            extends Property<String> {
     }
 
-    public interface Order
-    {
+    public interface Order {
         Association<Customer> customer();
 
         ManyAssociation<LineItem> lineItems();
     }
 
     public interface OrderComposite
-        extends Order, EntityComposite
-    {
+            extends Order, EntityComposite {
     }
 
-    public interface Product
-    {
+    public interface Product {
         @UseDefaults
         Property<String> name();
 
@@ -145,32 +157,26 @@ public class UnitOfWorkFactoryTest
     }
 
     public interface ProductEntity
-        extends Product, EntityComposite
-    {
+            extends Product, EntityComposite {
     }
 }
 
 class UnitOfWorkTemplate
-    implements Callable, Runnable
-{
+        implements Callable, Runnable {
     private UnitOfWorkFactory factory;
     private Callable callable;
 
-    UnitOfWorkTemplate( UnitOfWorkFactory factory, Callable callable )
-    {
+    UnitOfWorkTemplate(UnitOfWorkFactory factory, Callable callable) {
         this.factory = factory;
         this.callable = callable;
     }
 
-    UnitOfWorkTemplate( UnitOfWorkFactory factory, final Runnable runnable )
-    {
+    UnitOfWorkTemplate(UnitOfWorkFactory factory, final Runnable runnable) {
 
         this.factory = factory;
-        callable = new Callable()
-        {
+        callable = new Callable() {
             public Object call()
-                throws Exception
-            {
+                    throws Exception {
                 runnable.run();
                 return null;
             }
@@ -178,30 +184,24 @@ class UnitOfWorkTemplate
     }
 
     public Object call()
-        throws Exception
-    {
+            throws Exception {
         UnitOfWork unitOfWork = factory.newUnitOfWork();
-        try
-        {
+        try {
             Object result = callable.call();
             unitOfWork.complete();
             return result;
         }
-        catch( Exception e )
-        {
+        catch (Exception e) {
             unitOfWork.discard();
             throw e;
         }
     }
 
-    public void run()
-    {
-        try
-        {
+    public void run() {
+        try {
             call();
         }
-        catch( Exception e )
-        {
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
