@@ -15,7 +15,6 @@ import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
-import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 
 /**
  * @author Paul Merlin <paul@nosphere.org>
