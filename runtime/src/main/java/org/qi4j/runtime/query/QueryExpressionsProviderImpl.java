@@ -294,18 +294,18 @@ public class QueryExpressionsProviderImpl
         return (T) manyAssociationReferenceProxy.getAnyProxy();
     }
 
-    public <T> ContainsAllPredicate<T> newContainsAllPredicate( PropertyReference<Collection<T>> propertyRef,
-                                                                SingleValueExpression<Collection<T>> collectionValues
+    public <T, C extends Collection<T>> ContainsAllPredicate<T, C> newContainsAllPredicate( PropertyReference<C> propertyRef,
+                                                                SingleValueExpression<C> collectionValues
     )
     {
-        return new ContainsAllPredicateImpl<T>( propertyRef, collectionValues );
+        return new ContainsAllPredicateImpl<T, C>( propertyRef, collectionValues );
     }
 
-    public <T> ContainsPredicate<T> newContainsPredicate( PropertyReference<Collection<T>> propertyRef,
+    public <T, C extends Collection<T>> ContainsPredicate<T, C> newContainsPredicate( PropertyReference<C> propertyRef,
                                                           SingleValueExpression<T> singleValueExpression
     )
     {
-        return new ContainsPredicateImpl<T>( propertyRef, singleValueExpression );
+        return new ContainsPredicateImpl<T, C>( propertyRef, singleValueExpression );
     }
 
     public <T> ManyAssociationContainsPredicate<T> newManyAssociationContainsPredicate( ManyAssociationReference associationReference,

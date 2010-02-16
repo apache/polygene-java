@@ -28,14 +28,14 @@ import org.qi4j.api.query.grammar.ValueExpression;
 /**
  * Default {@link org.qi4j.api.query.grammar.EqualsPredicate} implementation.
  */
-public final class ContainsPredicateImpl<T>
-    implements ContainsPredicate<T>
+public final class ContainsPredicateImpl<T, C extends Collection<T>>
+    implements ContainsPredicate<T, C>
 {
 
     /**
      * Property reference (left side of the predicate).
      */
-    private final PropertyReference<Collection<T>> propertyReference;
+    private final PropertyReference<C> propertyReference;
     /**
      * Value expression (right side of the predicate).
      */
@@ -50,7 +50,7 @@ public final class ContainsPredicateImpl<T>
      * @throws IllegalArgumentException - If property reference is null
      *                                  - If value expression is null
      */
-    public ContainsPredicateImpl( final PropertyReference<Collection<T>> propertyReference,
+    public ContainsPredicateImpl( final PropertyReference<C> propertyReference,
                                   final SingleValueExpression<T> valueExpression
     )
     {
@@ -58,7 +58,7 @@ public final class ContainsPredicateImpl<T>
         this.valueExpression = valueExpression;
     }
 
-    public PropertyReference<Collection<T>> propertyReference()
+    public PropertyReference<C> propertyReference()
     {
         return propertyReference;
     }
@@ -71,7 +71,7 @@ public final class ContainsPredicateImpl<T>
     public boolean eval( Object target )
     {
         final T value = valueExpression.value();
-        final Property<Collection<T>> prop = propertyReference().eval( target );
+        final Property<C> prop = propertyReference().eval( target );
         if( prop == null )
         {
             return value == null;

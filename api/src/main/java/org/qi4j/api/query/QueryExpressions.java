@@ -496,7 +496,7 @@ public final class QueryExpressions
         return provider.newNegation( expression );
     }
 
-    public static <T> ContainsPredicate<T> contains( Property<Collection<T>> property, T value )
+    public static <T, C extends Collection<T>> ContainsPredicate<T, C> contains( Property<C> property, T value )
     {
         return provider.newContainsPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
     }
@@ -506,7 +506,7 @@ public final class QueryExpressions
         return provider.newManyAssociationContainsPredicate( asManyAssociationExpression( manyAssoc ), asTypedValueExpression( value ) );
     }
 
-    public static <T> ContainsAllPredicate<T> containsAll( Property<Collection<T>> property, Collection<T> value )
+    public static <T, C extends Collection<T>> ContainsAllPredicate<T, C> containsAll( Property<C> property, C value )
     {
         return provider.newContainsAllPredicate( asPropertyExpression( property ), asTypedValueExpression( value ) );
     }
