@@ -24,6 +24,8 @@ public class HazelcastEntityStoreMixin
                MapEntityStore
 {
 
+    private static final String DEFAULT_MAPNAME = "qi4j-data";
+
     @This
     private Configuration<HazelcastConfiguration> config;
     private Map<String, String> stringMap;
@@ -31,7 +33,13 @@ public class HazelcastEntityStoreMixin
     public void activate()
         throws Exception
     {
-        stringMap = Hazelcast.getMap( config.configuration().mapName().get() );
+        HazelcastConfiguration configuration = config.configuration();
+        String mapName = DEFAULT_MAPNAME;
+        if (configuration != null && configuration.mapName() != null )
+        {
+            mapName = configuration.mapName().get();
+        }
+        stringMap = Hazelcast.getMap( mapName );
     }
 
     public void passivate()
