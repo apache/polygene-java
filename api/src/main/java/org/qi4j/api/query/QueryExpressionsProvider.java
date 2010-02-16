@@ -136,11 +136,11 @@ public interface QueryExpressionsProvider
 
     <T> T oneOf( ManyAssociation<T> association );
 
-    <T> ContainsAllPredicate<T> newContainsAllPredicate( PropertyReference<Collection<T>> propertyRef,
-                                                         SingleValueExpression<Collection<T>> collectionValues
+    <T, C extends Collection<T>> ContainsAllPredicate<T, C> newContainsAllPredicate( PropertyReference<C> propertyRef,
+                                                         SingleValueExpression<C> collectionValues
     );
 
-    <T> ContainsPredicate<T> newContainsPredicate( PropertyReference<Collection<T>> propertyRef,
+    <T, C extends Collection<T>> ContainsPredicate<T, C> newContainsPredicate( PropertyReference<C> propertyRef,
                                                    SingleValueExpression<T> singleValueExpression
     );
 

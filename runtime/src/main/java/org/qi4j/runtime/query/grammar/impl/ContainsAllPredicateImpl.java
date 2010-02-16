@@ -25,18 +25,18 @@ import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.query.grammar.SingleValueExpression;
 import org.qi4j.api.query.grammar.ValueExpression;
 
-public final class ContainsAllPredicateImpl<T>
-    implements ContainsAllPredicate<T>
+public final class ContainsAllPredicateImpl<T, C extends Collection<T>>
+    implements ContainsAllPredicate<T, C>
 {
 
     /**
      * Property reference (left side of the predicate).
      */
-    private final PropertyReference<Collection<T>> propertyReference;
+    private final PropertyReference<C> propertyReference;
     /**
      * Value expression (right side of the predicate).
      */
-    private final SingleValueExpression<Collection<T>> valueExpression;
+    private final SingleValueExpression<C> valueExpression;
 
     /**
      * Constructor.
@@ -47,33 +47,33 @@ public final class ContainsAllPredicateImpl<T>
      * @throws IllegalArgumentException - If property reference is null
      *                                  - If value expression is null
      */
-    public ContainsAllPredicateImpl( final PropertyReference<Collection<T>> propertyReference,
-                                     final SingleValueExpression<Collection<T>> valueExpression
+    public ContainsAllPredicateImpl( final PropertyReference<C> propertyReference,
+                                     final SingleValueExpression<C> valueExpression
     )
     {
         this.propertyReference = propertyReference;
         this.valueExpression = valueExpression;
     }
 
-    public PropertyReference<Collection<T>> propertyReference()
+    public PropertyReference<C> propertyReference()
     {
         return propertyReference;
     }
 
-    public ValueExpression<Collection<T>> valueExpression()
+    public ValueExpression<C> valueExpression()
     {
         return valueExpression;
     }
 
     public boolean eval( Object target )
     {
-        final Collection<T> value = valueExpression.value();
-        final Property<Collection<T>> prop = propertyReference().eval( target );
+        final C value = valueExpression.value();
+        final Property<C> prop = propertyReference().eval( target );
         if( prop == null )
         {
             return value == null;
         }
-        final Collection<T> propValue = prop.get();
+        final C propValue = prop.get();
         if( propValue == null )
         {
             return value == null;

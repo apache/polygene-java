@@ -20,10 +20,10 @@ package org.qi4j.api.query.grammar;
 
 import java.util.Collection;
 
-public interface ContainsPredicate<T>
+public interface ContainsPredicate<T, C extends Collection<T>>
     extends Predicate
 {
-    PropertyReference<Collection<T>> propertyReference();
+    PropertyReference<C> propertyReference();
 
     ValueExpression<T> valueExpression();
 }
