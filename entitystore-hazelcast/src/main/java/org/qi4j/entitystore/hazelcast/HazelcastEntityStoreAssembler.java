@@ -23,7 +23,12 @@ public class HazelcastEntityStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( HazelcastEntityStoreService.class ).visibleIn( visibility );
+        module.addServices( HazelcastEntityStoreService.class ).visibleIn( visibility ).instantiateOnStartup();
         module.addServices( UuidIdentityGeneratorService.class ).visibleIn( visibility );
+        // FIXME Remove from here and update documentation accordingly
+        ModuleAssembly config = module.layerAssembly().moduleAssembly( "config" );
+        config.addEntities( HazelcastConfiguration.class ).visibleIn( Visibility.layer );
+        config.addServices( MemoryEntityStoreService.class );
+
     }
 }

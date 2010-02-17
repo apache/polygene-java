@@ -15,7 +15,6 @@ import org.qi4j.entitystore.map.MapEntityStore;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
-import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 
 /**
  * @author Paul Merlin <paul@nosphere.org>
@@ -25,6 +24,8 @@ public class HazelcastEntityStoreMixin
                MapEntityStore
 {
 
+    private static final String DEFAULT_MAPNAME = "qi4j-data";
+
     @This
     private Configuration<HazelcastConfiguration> config;
     private Map<String, String> stringMap;
@@ -32,7 +33,13 @@ public class HazelcastEntityStoreMixin
     public void activate()
         throws Exception
     {
-        stringMap = Hazelcast.getMap( config.configuration().mapName().get() );
+        HazelcastConfiguration configuration = config.configuration();
+        String mapName = DEFAULT_MAPNAME;
+        if (configuration != null && configuration.mapName() != null )
+        {
+            mapName = configuration.mapName().get();
+        }
+        stringMap = Hazelcast.getMap( mapName );
     }
 
     public void passivate()
