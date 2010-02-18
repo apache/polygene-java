@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.entitystore.qrm;
 
 import com.ibatis.sqlmap.client.SqlMapClient;

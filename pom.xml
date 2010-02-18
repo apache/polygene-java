@@ -25,6 +25,7 @@
   <modules>
     <module>reindexer</module>
     <module>indexing-rdf</module>
+    <module>entitystore-gae</module>
     <module>entitystore-jdbm</module>
     <module>entitystore-neo4j</module>
     <module>entitystore-preferences</module>
