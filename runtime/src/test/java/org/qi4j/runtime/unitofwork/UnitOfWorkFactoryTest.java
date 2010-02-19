@@ -89,6 +89,15 @@ public class UnitOfWorkFactoryTest
         chair.name().set("Newer chair");
 
         unitOfWork.complete();
+
+        unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        chair = unitOfWork.get(chair);
+
+        unitOfWork.apply();
+
+        unitOfWork.apply();
+
+        unitOfWork.complete();
     }
 
 
