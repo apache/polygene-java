@@ -19,12 +19,12 @@
 package org.qi4j.index.rdf.indexing;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import org.openrdf.model.Graph;
-import org.openrdf.model.Statement;
-import org.openrdf.model.URI;
-import org.openrdf.model.ValueFactory;
+
+import org.openrdf.model.*;
 import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
@@ -94,17 +94,15 @@ public interface RdfIndexingService
                 connection.setAutoCommit( false );
                 try
                 {
+                    removeEntityStates(entityStates, connection);
+                    connection.commit();
+
                     // Figure out what to update
                     final Set<EntityType> entityTypes = new HashSet<EntityType>();
                     for( EntityState entityState : entityStates )
                     {
-                        if( entityState.status().equals( EntityStatus.REMOVED ) )
+                        if( entityState.status().equals( EntityStatus.UPDATED ) )
                         {
-                            removeEntityState( entityState.identity(), connection );
-                        }
-                        else if( entityState.status().equals( EntityStatus.UPDATED ) )
-                        {
-                            removeEntityState( entityState.identity(), connection );
                             indexEntityState( entityState, connection );
                             entityTypes.add( entityState.entityDescriptor().entityType() );
                         }
@@ -141,6 +139,26 @@ public interface RdfIndexingService
             }
         }
 
+        private void removeEntityStates( Iterable<EntityState> entityStates, RepositoryConnection connection ) throws RepositoryException
+        {
+            List<URI> removedStates = new ArrayList<URI>();
+            for (EntityState entityState : entityStates)
+            {
+                if( entityState.status().equals( EntityStatus.REMOVED ) )
+                {
+                    removedStates.add(stateSerializer.createEntityURI( getValueFactory(), entityState.identity() ));
+                }
+                else if( entityState.status().equals( EntityStatus.UPDATED ) )
+                    removedStates.add(stateSerializer.createEntityURI( getValueFactory(), entityState.identity() ));
+            }
+
+            if (!removedStates.isEmpty())
+            {
+                Resource[] resources = removedStates.toArray( new Resource[removedStates.size()] );
+                connection.remove(null, null, null,  resources );
+            }
+        }
+
         private void indexEntityState( final EntityState entityState,
                                        final RepositoryConnection connection
         )
@@ -150,14 +168,6 @@ public interface RdfIndexingService
             Graph graph = new GraphImpl();
             stateSerializer.serialize( entityState, false, graph );
             connection.add( graph, entityURI );
-        }
-
-        private void removeEntityState( final EntityReference identity,
-                                        final RepositoryConnection connection
-        )
-            throws RepositoryException
-        {
-            connection.clear( stateSerializer.createEntityURI( getValueFactory(), identity ) );
         }
 
         private void indexEntityType( final EntityType entityType,
