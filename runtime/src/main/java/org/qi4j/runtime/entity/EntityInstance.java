@@ -42,7 +42,7 @@ import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 
 /**
- * JAVADOC
+ * Entity instance
  */
 public final class EntityInstance
         implements CompositeInstance, MixinsInstance {
