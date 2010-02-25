@@ -14,17 +14,18 @@
 
 package org.qi4j.spi.entitystore.helpers;
 
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.spi.entity.ManyAssociationState;
+
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.spi.entity.ManyAssociationState;
 
 /**
  * Default implementation of ManyAssociationState. Backed by ArrayList.
  */
 public final class DefaultManyAssociationState
-    implements ManyAssociationState, Serializable
+        implements ManyAssociationState, Serializable
 {
     private DefaultEntityState entityState;
     private List<EntityReference> references;
@@ -71,6 +72,28 @@ public final class DefaultManyAssociationState
 
     public Iterator<EntityReference> iterator()
     {
-        return references.iterator();
+        final Iterator<EntityReference> iter = references.iterator();
+
+        return new Iterator<EntityReference>()
+        {
+            EntityReference current;
+
+            public boolean hasNext()
+            {
+                return iter.hasNext();
+            }
+
+            public EntityReference next()
+            {
+                current = iter.next();
+                return current;
+            }
+
+            public void remove()
+            {
+                iter.remove();
+                entityState.markUpdated();
+            }
+        };
     }
 }
