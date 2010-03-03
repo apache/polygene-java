@@ -19,6 +19,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONWriter;
@@ -35,12 +36,13 @@ import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.spi.property.DefaultValues;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.structure.ModuleSPI;
+import org.qi4j.spi.value.ValueDescriptor;
 
 /**
  * ValueComposite type
  */
 public final class ValueCompositeType
-    extends AbstractStringType
+        extends AbstractStringType
 {
     public static boolean isValueComposite( Type type )
     {
@@ -67,7 +69,7 @@ public final class ValueCompositeType
     }
 
     public void toJSON( Object value, JSONWriter json )
-        throws JSONException
+            throws JSONException
     {
         if( value == null )
         {
@@ -88,17 +90,17 @@ public final class ValueCompositeType
         } );
 
         List<PropertyType> actualTypes = types;
-        if( !value.getClass().getInterfaces()[ 0 ].getName().equals( type.name() ) )
+        if( !value.getClass().getInterfaces()[0].getName().equals( type.name() ) )
         {
             // Actual value is a subtype - use it instead
             ValueModel valueModel = (ValueModel) ValueInstance.getValueInstance( (ValueComposite) value )
-                .compositeModel();
+                    .compositeModel();
 
             actualTypes = valueModel.valueType().types();
             json.key( "_type" ).value( valueModel.valueType().type().name() );
         }
 
-        for( PropertyType propertyType : actualTypes )
+        for (PropertyType propertyType : actualTypes)
         {
             json.key( propertyType.qualifiedName().name() );
 
@@ -106,8 +108,7 @@ public final class ValueCompositeType
             if( propertyValue == null )
             {
                 json.value( null );
-            }
-            else
+            } else
             {
                 propertyType.type().toJSON( propertyValue, json );
             }
@@ -116,7 +117,7 @@ public final class ValueCompositeType
     }
 
     public Object toJSON( Object value )
-        throws JSONException
+            throws JSONException
     {
         if( value == null )
         {
@@ -136,25 +137,24 @@ public final class ValueCompositeType
         } );
 
         List<PropertyType> actualTypes = types;
-        if( !value.getClass().getInterfaces()[ 0 ].getName().equals( type.name() ) )
+        if( !value.getClass().getInterfaces()[0].getName().equals( type.name() ) )
         {
             // Actual value is a subtype - use it instead
             ValueModel valueModel = (ValueModel) ValueInstance.getValueInstance( (ValueComposite) value )
-                .compositeModel();
+                    .compositeModel();
 
             actualTypes = valueModel.valueType().types();
             object.put( "_type", valueModel.valueType().type().name() );
         }
 
-        for( PropertyType propertyType : actualTypes )
+        for (PropertyType propertyType : actualTypes)
         {
 
             Object propertyValue = values.get( propertyType.qualifiedName() );
             if( propertyValue == null )
             {
                 object.put( propertyType.qualifiedName().name(), JSONObject.NULL );
-            }
-            else
+            } else
             {
                 object.put( propertyType.qualifiedName().name(), propertyType.type().toJSON( propertyValue ) );
             }
@@ -163,7 +163,7 @@ public final class ValueCompositeType
     }
 
     public Object fromJSON( Object json, Module module )
-        throws JSONException
+            throws JSONException
     {
         JSONObject jsonObject = (JSONObject) json;
 
@@ -172,12 +172,17 @@ public final class ValueCompositeType
         String actualType = jsonObject.optString( "_type" );
         if( !actualType.equals( "" ) )
         {
-            actualValueType = (ValueCompositeType) ( (ModuleSPI) module ).valueDescriptor( actualType ).valueType();
+            ValueDescriptor descriptor = ( (ModuleSPI) module ).valueDescriptor( actualType );
+
+            if( descriptor == null )
+                throw new IllegalArgumentException( "Could not find any value of type '" + actualType + "' in module" + module );
+
+            actualValueType = (ValueCompositeType) descriptor.valueType();
             actualTypes = actualValueType.types();
         }
 
         final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
-        for( PropertyType propertyType : actualTypes )
+        for (PropertyType propertyType : actualTypes)
         {
             Object valueJson = null;
             try
@@ -192,16 +197,16 @@ public final class ValueCompositeType
 
                 values.put( propertyType.qualifiedName(), value );
             }
-            catch( JSONException e )
+            catch (JSONException e)
             {
                 // Not found in JSON or wrong format - try defaulting it
                 try
                 {
                     Object defaultValue = DefaultValues.getDefaultValue( module.classLoader().loadClass( propertyType.type()
-                        .type().name() ) );
+                            .type().name() ) );
                     values.put( propertyType.qualifiedName(), defaultValue );
                 }
-                catch( ClassNotFoundException e1 )
+                catch (ClassNotFoundException e1)
                 {
                     // Didn't work, throw exception
                     throw e;
@@ -212,7 +217,7 @@ public final class ValueCompositeType
         try
         {
             ValueBuilder valueBuilder = module.valueBuilderFactory()
-                .newValueBuilder( module.classLoader().loadClass( actualValueType.type().name() ) );
+                    .newValueBuilder( module.classLoader().loadClass( actualValueType.type().name() ) );
             valueBuilder.withState( new StateHolder()
             {
                 public <T> Property<T> getProperty( Method propertyMethod )
@@ -227,7 +232,7 @@ public final class ValueCompositeType
 
                 public void visitProperties( StateVisitor visitor )
                 {
-                    for( Map.Entry<QualifiedName, Object> qualifiedNameObjectEntry : values.entrySet() )
+                    for (Map.Entry<QualifiedName, Object> qualifiedNameObjectEntry : values.entrySet())
                     {
                         visitor.visitProperty( qualifiedNameObjectEntry.getKey(), qualifiedNameObjectEntry.getValue() );
                     }
@@ -236,7 +241,7 @@ public final class ValueCompositeType
 
             return valueBuilder.newInstance();
         }
-        catch( ClassNotFoundException e )
+        catch (ClassNotFoundException e)
         {
             throw new IllegalStateException( "Could not deserialize value", e );
         }
