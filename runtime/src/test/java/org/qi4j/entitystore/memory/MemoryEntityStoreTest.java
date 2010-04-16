@@ -15,6 +15,7 @@
 package org.qi4j.entitystore.memory;
 
 import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ImportedServiceDeclaration;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.StateChangeListener;
@@ -22,29 +23,31 @@ import org.qi4j.spi.service.importer.NewObjectImporter;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
+import static org.qi4j.bootstrap.ImportedServiceDeclaration.NEW_OBJECT;
+
 /**
  * Test of MemoryEntityStoreService
  */
 public class MemoryEntityStoreTest
-    extends AbstractEntityStoreTest
+        extends AbstractEntityStoreTest
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+            throws AssemblyException
     {
         super.assemble( module );
 
         module.addServices( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
-        module.importServices( StatePrinter.class ).importedBy( NewObjectImporter.class );
+        module.importServices( StatePrinter.class ).importedBy( NEW_OBJECT );
         module.addObjects( StatePrinter.class );
     }
 
     static public class StatePrinter
-        implements StateChangeListener
+            implements StateChangeListener
     {
         public void notifyChanges( Iterable<EntityState> changedStates )
         {
-            for( EntityState changedState : changedStates )
+            for (EntityState changedState : changedStates)
             {
                 System.out.println( changedState.status().name() + ":" + changedState.identity() );
             }

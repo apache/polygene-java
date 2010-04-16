@@ -20,6 +20,9 @@ package org.qi4j.bootstrap;
 
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceImporter;
+import org.qi4j.spi.service.importer.InstanceImporter;
+import org.qi4j.spi.service.importer.NewObjectImporter;
+import org.qi4j.spi.service.importer.ServiceSelectorImporter;
 
 /**
  * Fluent API for declaring imported services. Instances
@@ -27,6 +30,10 @@ import org.qi4j.api.service.ServiceImporter;
  */
 public interface ImportedServiceDeclaration
 {
+    public static final Class<? extends ServiceImporter> INSTANCE = InstanceImporter.class;
+    public static final Class<? extends ServiceImporter> NEW_OBJECT = NewObjectImporter.class;
+    public static final Class<? extends ServiceImporter> SERVICE = ServiceSelectorImporter.class;
+
     ImportedServiceDeclaration visibleIn( Visibility visibility );
 
     ImportedServiceDeclaration importedBy( Class<? extends ServiceImporter> serviceImporterClass );
