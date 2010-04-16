@@ -17,6 +17,7 @@ Import-Package: org.ops4j.pax.swissbox.core, \
                 org.qi4j.api.value, \
                 org.qi4j.spi, \
                 org.qi4j.spi.entity, \
+                org.qi4j.spi.service.importer, \
                 org.qi4j.spi.structure, \
                 org.qi4j.spi.util
 
