@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.openrdf.sesame:sesame-repository-manager:2.3.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openrdf/sesame/sesame-repository-manager/2.3.0/sesame-repository-manager-2.3.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openrdf/sesame/sesame-repository-manager/2.3.0/sesame-repository-manager-2.3.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openrdf/sesame/sesame-repository-manager/2.3.0/sesame-repository-manager-2.3.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

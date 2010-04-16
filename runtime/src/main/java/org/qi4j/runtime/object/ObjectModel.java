@@ -15,6 +15,7 @@
 package org.qi4j.runtime.object;
 
 import java.io.Serializable;
+
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -34,7 +35,7 @@ import org.qi4j.spi.object.ObjectDescriptor;
  * JAVADOC
  */
 public final class ObjectModel
-    implements Binder, ObjectDescriptor, Serializable
+        implements Binder, ObjectDescriptor, Serializable
 {
     private final Class<?> objectType;
     private final Visibility visibility;
@@ -82,7 +83,7 @@ public final class ObjectModel
     }
 
     public void bind( Resolution resolution )
-        throws BindingException
+            throws BindingException
     {
         resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
 
@@ -93,9 +94,16 @@ public final class ObjectModel
 
     public Object newInstance( InjectionContext injectionContext )
     {
-        Object instance = constructorsModel.newInstance( injectionContext );
-        injectedFieldsModel.inject( injectionContext, instance );
-        injectedMethodsModel.inject( injectionContext, instance );
+        Object instance = null;
+        try
+        {
+            instance = constructorsModel.newInstance( injectionContext );
+            injectedFieldsModel.inject( injectionContext, instance );
+            injectedMethodsModel.inject( injectionContext, instance );
+        } catch (Exception e)
+        {
+            throw new ConstructionException( "Could not instantiate " + objectType.getName(), e );
+        }
 
         if( instance instanceof Initializable )
         {
@@ -103,7 +111,7 @@ public final class ObjectModel
             {
                 ( (Initializable) instance ).initialize();
             }
-            catch( InitializationException e )
+            catch (InitializationException e)
             {
                 throw new ConstructionException( "Unable to initialize " + objectType, e );
             }
