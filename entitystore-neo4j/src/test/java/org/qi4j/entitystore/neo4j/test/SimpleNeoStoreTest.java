@@ -31,10 +31,4 @@ public class SimpleNeoStoreTest
     public void givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification()
     {
     }
-
-    @Override
-    public void whenApplyIsCalledRepeatedlyThenNoException() throws UnitOfWorkCompletionException
-    {
-        // Doesn't work for now
-    }
 }

@@ -347,7 +347,7 @@ public class PreferencesEntityStoreMixin
         }
     }
 
-    public StateCommitter apply( final Iterable<EntityState> state, final String version )
+    public StateCommitter applyChanges( final Iterable<EntityState> state, final String version )
     {
         return new StateCommitter()
         {

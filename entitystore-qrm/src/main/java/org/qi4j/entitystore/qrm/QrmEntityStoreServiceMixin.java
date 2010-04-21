@@ -114,7 +114,7 @@ public class QrmEntityStoreServiceMixin
         return result;
     }
 
-    public StateCommitter apply( final Iterable<EntityState> entityStates, final String version )
+    public StateCommitter applyChanges( final Iterable<EntityState> entityStates, final String version )
     {
         return new StateCommitter()
         {

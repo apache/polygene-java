@@ -163,7 +163,7 @@ public class RESTEntityStoreServiceMixin
         return null;
     }
 
-    public StateCommitter apply( Iterable<EntityState> state, String identity )
+    public StateCommitter applyChanges( Iterable<EntityState> state, String identity )
     {
 /*
         Reference ref = entityStoreUrl.clone();

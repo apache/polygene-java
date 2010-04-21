@@ -132,12 +132,9 @@ public class CRUDTests
 
             account = eBuilder.newInstance();
 
-            uow.apply();
+            uow.complete();
         }
         catch( EntityNotFoundException enfe )
-        {
-        }
-        finally
         {
             uow.discard();
         }
@@ -178,7 +175,6 @@ public class CRUDTests
 
         String newId = Account.class.getName() + ":" + UUID.randomUUID();
 
-        try
         {
             uow = moduleInstance.unitOfWorkFactory().newUnitOfWork();
 
@@ -192,18 +188,10 @@ public class CRUDTests
 
             account = eBuilder.newInstance();
 
-            uow.apply();
-        }
-        catch( Throwable enfe )
-        {
-        }
-        finally
-        {
-            uow.discard();
+            uow.complete();
         }
 
         // make sure we can find it.
-        try
         {
             uow = moduleInstance.unitOfWorkFactory().newUnitOfWork();
 
@@ -214,16 +202,9 @@ public class CRUDTests
             Assert.assertEquals( "Big account.", acc_after.name().get() );
 
             Assert.assertEquals( new BigDecimal( "323423.87" ), acc_after.balance().get() );
-        }
-        catch( EntityNotFoundException enfe )
-        {
-        }
-        finally
-        {
             uow.discard();
         }
 
-        try
         {
             uow = moduleInstance.unitOfWorkFactory().newUnitOfWork();
 
@@ -231,14 +212,7 @@ public class CRUDTests
 
             uow.remove( acc_after );
 
-            uow.apply();
-        }
-        catch( Throwable enfe )
-        {
-        }
-        finally
-        {
-            uow.discard();
+            uow.complete();
         }
 
         // make sure we can not find it.
@@ -292,19 +266,15 @@ public class CRUDTests
 
             account = eBuilder.newInstance();
 
-            uow.apply();
+            uow.complete();
         }
         catch( Throwable enfe )
-        {
-        }
-        finally
         {
             uow.discard();
         }
 
         // find and update it.
         Account acc_after = null;
-        try
         {
             uow = moduleInstance.unitOfWorkFactory().newUnitOfWork();
 
@@ -320,14 +290,7 @@ public class CRUDTests
 
             acc_after.name().set( "Small Account" );
 
-            uow.apply();
-        }
-        catch( EntityNotFoundException enfe )
-        {
-        }
-        finally
-        {
-            uow.discard();
+            uow.complete();
         }
 
         // make sure we can not find it and changes are persisted.

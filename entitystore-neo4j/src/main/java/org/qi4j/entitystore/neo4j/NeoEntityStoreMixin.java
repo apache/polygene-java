@@ -79,13 +79,13 @@ public class NeoEntityStoreMixin
         return uow;
     }
 
-    public StateCommitter apply( Iterable<EntityState> state, String version )
+    public StateCommitter applyChanges( Iterable<EntityState> state, String version )
     {
         for( EntityState firstState : state )
         {
             if( firstState instanceof NeoEntityState )
             {
-                return ( (NeoEntityState) firstState ).getUnitOfWork().apply();
+                return ( (NeoEntityState) firstState ).getUnitOfWork().applyChanges();
             }
         }
         return null;
