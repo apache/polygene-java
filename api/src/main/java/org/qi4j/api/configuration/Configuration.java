@@ -47,7 +47,7 @@ import org.qi4j.api.unitofwork.UnitOfWorkFactory;
  * method by the Qi4j runtime. Any refreshes at other points will have to be done manually or triggered through some other
  * mechanism.
  */
-@Mixins( Configuration.ConfigurationMixin.class )
+@Mixins(Configuration.ConfigurationMixin.class)
 public interface Configuration<T>
 {
     T configuration();
@@ -59,7 +59,7 @@ public interface Configuration<T>
     // Implementation of Configuration
 
     public class ConfigurationMixin<T>
-        implements Configuration<T>, Activatable
+            implements Configuration<T>, Activatable
     {
         private T configuration;
         private UnitOfWork uow;
@@ -74,7 +74,7 @@ public interface Configuration<T>
         UnitOfWorkFactory uowf;
 
         public ConfigurationMixin()
-            throws Exception
+                throws Exception
         {
         }
 
@@ -87,7 +87,7 @@ public interface Configuration<T>
                 {
                     configuration = api.<T>getConfigurationInstance( me, uow );
                 }
-                catch( InstantiationException e )
+                catch (InstantiationException e)
                 {
                     throw new IllegalStateException( e );
                 }
@@ -112,9 +112,10 @@ public interface Configuration<T>
             {
                 try
                 {
-                    uow.apply();
+                    uow.complete();
+                    uow = null;
                 }
-                catch( UnitOfWorkCompletionException e )
+                catch (UnitOfWorkCompletionException e)
                 {
                     // Should be impossible
                     e.printStackTrace();
@@ -123,13 +124,13 @@ public interface Configuration<T>
         }
 
         public void activate()
-            throws Exception
+                throws Exception
         {
             refresh();
         }
 
         public void passivate()
-            throws Exception
+                throws Exception
         {
         }
     }

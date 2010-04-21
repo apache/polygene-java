@@ -252,18 +252,6 @@ public final class UnitOfWorkInstance
     public void complete()
             throws UnitOfWorkCompletionException
     {
-        complete( false );
-    }
-
-    public void apply()
-            throws UnitOfWorkCompletionException, ConcurrentEntityModificationException
-    {
-        complete( true );
-    }
-
-    private void complete( boolean completeAndContinue )
-            throws UnitOfWorkCompletionException
-    {
         checkOpen();
 
         // Copy list so that it cannot be modified during completion
@@ -281,13 +269,7 @@ public final class UnitOfWorkInstance
             committer.commit();
         }
 
-        if( completeAndContinue )
-        {
-            continueWithState();
-        } else
-        {
-            close();
-        }
+        close();
 
         // Call callbacks
         notifyAfterCompletion( currentCallbacks, COMPLETED );
@@ -373,7 +355,7 @@ public final class UnitOfWorkInstance
         {
             try
             {
-                StateCommitter committer = entityStoreUnitOfWork.apply();
+                StateCommitter committer = entityStoreUnitOfWork.applyChanges();
                 committers.add( committer );
             }
             catch (Exception e)
@@ -409,32 +391,6 @@ public final class UnitOfWorkInstance
             }
         }
         return committers;
-    }
-
-    private void continueWithState()
-    {
-        Iterator<EntityInstance> entityInstances = instanceCache.values().iterator();
-        while (entityInstances.hasNext())
-        {
-            EntityInstance entityInstance = entityInstances.next();
-            if( entityInstance.status() == EntityStatus.REMOVED )
-            {
-                entityInstances.remove();
-            }
-        }
-
-        Iterator<EntityState> stateStores = stateCache.values().iterator();
-        while (stateStores.hasNext())
-        {
-            EntityState entityState = stateStores.next();
-            if( entityState.status() != EntityStatus.REMOVED )
-            {
-                entityState.hasBeenApplied();
-            } else
-            {
-                stateStores.remove();
-            }
-        }
     }
 
     private void notifyBeforeCompletion( List<UnitOfWorkCallback> callbacks )

@@ -6,6 +6,7 @@ import java.io.Writer;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -37,7 +38,7 @@ import org.qi4j.spi.structure.ModuleSPI;
  * See {@link org.qi4j.entitystore.memory.MemoryMapEntityStoreMixin} for reference.
  */
 public class JSONMapEntityStoreMixin
-    implements EntityStore, EntityStoreSPI, StateStore, Activatable
+        implements EntityStore, EntityStoreSPI, StateStore, Activatable
 {
     @This
     private MapEntityStore mapEntityStore;
@@ -55,13 +56,13 @@ public class JSONMapEntityStoreMixin
     private int count;
 
     public void activate()
-        throws Exception
+            throws Exception
     {
         uuid = UUID.randomUUID().toString() + "-";
     }
 
     public void passivate()
-        throws Exception
+            throws Exception
     {
     }
 
@@ -93,7 +94,7 @@ public class JSONMapEntityStoreMixin
 
             return new JSONEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, identity, entityDescriptor, state );
         }
-        catch( JSONException e )
+        catch (JSONException e)
         {
             throw new EntityStoreException( e );
         }
@@ -107,8 +108,8 @@ public class JSONMapEntityStoreMixin
         return readEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, in );
     }
 
-    public StateCommitter apply( final Iterable<EntityState> state, final String version )
-        throws EntityStoreException
+    public StateCommitter applyChanges( final Iterable<EntityState> state, final String version )
+            throws EntityStoreException
     {
         return new StateCommitter()
         {
@@ -119,9 +120,9 @@ public class JSONMapEntityStoreMixin
                     mapEntityStore.applyChanges( new MapEntityStore.MapChanges()
                     {
                         public void visitMap( MapEntityStore.MapChanger changer )
-                            throws IOException
+                                throws IOException
                         {
-                            for( EntityState entityState : state )
+                            for (EntityState entityState : state)
                             {
                                 JSONEntityState state = (JSONEntityState) entityState;
                                 if( state.status().equals( EntityStatus.NEW ) )
@@ -129,14 +130,12 @@ public class JSONMapEntityStoreMixin
                                     Writer writer = changer.newEntity( state.identity(), state.entityDescriptor().entityType() );
                                     writeEntityState( state, writer, version );
                                     writer.close();
-                                }
-                                else if( state.status().equals( EntityStatus.UPDATED ) )
+                                } else if( state.status().equals( EntityStatus.UPDATED ) )
                                 {
                                     Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor().entityType() );
                                     writeEntityState( state, writer, version );
                                     writer.close();
-                                }
-                                else if( state.status().equals( EntityStatus.REMOVED ) )
+                                } else if( state.status().equals( EntityStatus.REMOVED ) )
                                 {
                                     changer.removeEntity( state.identity(), state.entityDescriptor().entityType() );
                                 }
@@ -144,7 +143,7 @@ public class JSONMapEntityStoreMixin
                         }
                     } );
                 }
-                catch( IOException e )
+                catch (IOException e)
                 {
                     throw new EntityStoreException( e );
                 }
@@ -160,7 +159,7 @@ public class JSONMapEntityStoreMixin
     {
         // TODO This can be used for reading state, but not for modifying (e.g. removing all entities)
         final DefaultEntityStoreUnitOfWork uow =
-            new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), moduleInstance );
+                new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), moduleInstance );
 
         mapEntityStore.visitMap( new MapEntityStore.MapEntityStoreVisitor()
         {
@@ -172,7 +171,7 @@ public class JSONMapEntityStoreMixin
                     visitor.visitEntityState( entity );
                     uow.registerEntityState( entity );
                 }
-                catch( Exception e )
+                catch (Exception e)
                 {
                     Logger.getLogger( getClass().getName() ).log( Level.SEVERE, "visitEntityStates", e );
                 }
@@ -188,7 +187,7 @@ public class JSONMapEntityStoreMixin
     }
 
     protected void writeEntityState( JSONEntityState state, Writer writer, String identity )
-        throws EntityStoreException
+            throws EntityStoreException
     {
         try
         {
@@ -196,14 +195,14 @@ public class JSONMapEntityStoreMixin
             jsonState.put( "version", identity );
             writer.append( jsonState.toString() );
         }
-        catch( Exception e )
+        catch (Exception e)
         {
             throw new EntityStoreException( "Could not store EntityState", e );
         }
     }
 
     protected EntityState readEntityState( DefaultEntityStoreUnitOfWork unitOfWork, Reader entityState )
-        throws EntityStoreException
+            throws EntityStoreException
     {
         try
         {
@@ -222,15 +221,14 @@ public class JSONMapEntityStoreMixin
                 if( migration != null )
                 {
                     migration.migrate( jsonObject, application.version(), this );
-                }
-                else
+                } else
                 {
                     // Do nothing - set version to be correct
                     jsonObject.put( MapEntityStore.JSONKeys.application_version.name(), application.version() );
                 }
 
                 Logger.getLogger( getClass().getName() )
-                    .info( "Updated version nr on " + identity + " from " + currentAppVersion + " to " + application.version() );
+                        .info( "Updated version nr on " + identity + " from " + currentAppVersion + " to " + application.version() );
 
                 // State changed
                 status = EntityStatus.UPDATED;
@@ -245,22 +243,22 @@ public class JSONMapEntityStoreMixin
             }
 
             return new JSONEntityState( unitOfWork,
-                                        version,
-                                        modified,
-                                        EntityReference.parseEntityReference( identity ),
-                                        status,
-                                        entityDescriptor,
-                                        jsonObject
+                    version,
+                    modified,
+                    EntityReference.parseEntityReference( identity ),
+                    status,
+                    entityDescriptor,
+                    jsonObject
             );
         }
-        catch( JSONException e )
+        catch (JSONException e)
         {
             throw new EntityStoreException( e );
         }
     }
 
     public JSONObject getState( String id )
-        throws IOException
+            throws IOException
     {
         Reader reader = mapEntityStore.get( EntityReference.parseEntityReference( id ) );
         JSONObject jsonObject = null;
@@ -268,7 +266,7 @@ public class JSONMapEntityStoreMixin
         {
             jsonObject = new JSONObject( new JSONTokener( reader ) );
         }
-        catch( JSONException e )
+        catch (JSONException e)
         {
             throw (IOException) new IOException().initCause( e );
         }

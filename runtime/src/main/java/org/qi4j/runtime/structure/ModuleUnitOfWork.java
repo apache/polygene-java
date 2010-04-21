@@ -255,12 +255,6 @@ public class ModuleUnitOfWork
         uow.complete();
     }
 
-    public void apply()
-            throws UnitOfWorkCompletionException, ConcurrentEntityModificationException
-    {
-        uow.apply();
-    }
-
     public void discard()
     {
         uow.discard();

@@ -29,34 +29,30 @@ public interface EntityStoreUnitOfWork
      * Create new EntityState for a given identity.
      * <p/>
      * This should only create the EntityState and not insert it into any database, since that should occur during
-     * the {@link EntityStoreUnitOfWork#apply()} call.
+     * the {@link EntityStoreUnitOfWork#applyChanges()} call.
      *
      * @param anIdentity       the identity of the entity
      * @param entityDescriptor entity descriptor
-     *
      * @return The new entity state.
-     *
      * @throws EntityStoreException Thrown if creational fails.
      */
     EntityState newEntityState( EntityReference anIdentity, EntityDescriptor entityDescriptor )
-        throws EntityStoreException;
+            throws EntityStoreException;
 
     /**
      * Get the EntityState for a given identity. Throws {@link EntityNotFoundException}
      * if the entity with given {@code anIdentity} is not found.
      *
      * @param anIdentity The entity identity. This argument must not be {@code null}.
-     *
      * @return Entity state given the composite descriptor and identity.
-     *
      * @throws EntityStoreException    thrown if retrieval failed.
      * @throws EntityNotFoundException if requested entity does not exist
      */
     EntityState getEntityState( EntityReference anIdentity )
-        throws EntityStoreException, EntityNotFoundException;
+            throws EntityStoreException, EntityNotFoundException;
 
-    StateCommitter apply()
-        throws EntityStoreException;
+    StateCommitter applyChanges()
+            throws EntityStoreException;
 
     void discard();
 }

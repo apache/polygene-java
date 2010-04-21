@@ -16,6 +16,7 @@ package org.qi4j.spi.entitystore;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.entity.EntityReference;
@@ -36,8 +37,8 @@ import org.qi4j.spi.entity.EntityState;
  * have to check with the underlying store what the current version is.
  */
 public abstract class ConcurrentModificationCheckConcern
-    extends ConcernOf<EntityStore>
-    implements EntityStore
+        extends ConcernOf<EntityStore>
+        implements EntityStore
 {
     @This
     private EntityStateVersions versions;
@@ -51,7 +52,7 @@ public abstract class ConcurrentModificationCheckConcern
     }
 
     private class ConcurrentCheckingEntityStoreUnitOfWork
-        implements EntityStoreUnitOfWork
+            implements EntityStoreUnitOfWork
     {
         private final EntityStoreUnitOfWork uow;
         private EntityStateVersions versions;
@@ -75,17 +76,17 @@ public abstract class ConcurrentModificationCheckConcern
         }
 
         public EntityState newEntityState( EntityReference anIdentity, EntityDescriptor entityDescriptor )
-            throws EntityStoreException
+                throws EntityStoreException
         {
             return uow.newEntityState( anIdentity, entityDescriptor );
         }
 
-        public StateCommitter apply()
-            throws EntityStoreException
+        public StateCommitter applyChanges()
+                throws EntityStoreException
         {
             versions.checkForConcurrentModification( loaded, module );
 
-            final StateCommitter committer = uow.apply();
+            final StateCommitter committer = uow.applyChanges();
 
             return new StateCommitter()
             {
@@ -116,7 +117,7 @@ public abstract class ConcurrentModificationCheckConcern
         }
 
         public EntityState getEntityState( EntityReference anIdentity )
-            throws EntityStoreException, EntityNotFoundException
+                throws EntityStoreException, EntityNotFoundException
         {
             EntityState entityState = uow.getEntityState( anIdentity );
             versions.rememberVersion( entityState.identity(), entityState.version() );

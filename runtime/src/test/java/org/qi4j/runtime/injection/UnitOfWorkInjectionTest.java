@@ -33,10 +33,10 @@ import org.qi4j.test.AbstractQi4jTest;
 import static org.junit.Assert.*;
 
 public class UnitOfWorkInjectionTest
-    extends AbstractQi4jTest
+        extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+            throws AssemblyException
     {
         module.addEntities( TrialEntity.class );
         module.addServices( MemoryEntityStoreService.class );
@@ -44,7 +44,7 @@ public class UnitOfWorkInjectionTest
 
     @Test
     public void givenEntityInOneUnitOfWorkWhenCurrentUnitOfWorkHasChangedThenUnitOfWorkInjectionInEntityPointsToCorrectUow()
-        throws Exception
+            throws Exception
     {
         Usecase usecase = UsecaseBuilder.newUsecase( "usecase1" );
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( usecase );
@@ -52,15 +52,22 @@ public class UnitOfWorkInjectionTest
         {
             Trial trial = uow.newEntity( Trial.class, "123" );
             trial.doSomething();
-            uow.apply();
-            usecase = UsecaseBuilder.newUsecase( "usecase2" );
+            uow.complete();
             uow = unitOfWorkFactory.newUnitOfWork( usecase );
+            usecase = UsecaseBuilder.newUsecase( "usecase2" );
+            UnitOfWork uow2 = unitOfWorkFactory.newUnitOfWork( usecase );
+            trial = uow.get( trial );
+            trial.doSomething();
             assertEquals( "123", ( (EntityComposite) trial ).identity().get() );
             assertEquals( "usecase1", trial.usecaseName() );
+            uow2.discard();
+        } catch (Throwable ex)
+        {
+            ex.printStackTrace();
         }
         finally
         {
-            while( uow != null )
+            while (uow != null)
             {
                 uow.discard();
                 uow = unitOfWorkFactory.currentUnitOfWork();
@@ -75,14 +82,14 @@ public class UnitOfWorkInjectionTest
         String usecaseName();
     }
 
-    @Mixins( TrialMixin.class )
+    @Mixins(TrialMixin.class)
     interface TrialEntity
-        extends Trial, EntityComposite
+            extends Trial, EntityComposite
     {
     }
 
     public static class TrialMixin
-        implements Trial
+            implements Trial
     {
         @State
         private UnitOfWork uow;

@@ -37,7 +37,8 @@ import org.qi4j.spi.property.PropertyTypeDescriptor;
  * Standard implementation of EntityState.
  */
 public final class JSONEntityState
-        implements EntityState, Serializable {
+        implements EntityState, Serializable
+{
     protected DefaultEntityStoreUnitOfWork unitOfWork;
 
     protected EntityStatus status;
@@ -49,27 +50,29 @@ public final class JSONEntityState
 
     protected final JSONObject state;
 
-    public JSONEntityState(DefaultEntityStoreUnitOfWork unitOfWork,
-                           EntityReference identity,
-                           EntityDescriptor entityDescriptor,
-                           JSONObject initialState
-    ) {
-        this(unitOfWork, "",
+    public JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
+                            EntityReference identity,
+                            EntityDescriptor entityDescriptor,
+                            JSONObject initialState
+    )
+    {
+        this( unitOfWork, "",
                 System.currentTimeMillis(),
                 identity,
                 EntityStatus.NEW,
                 entityDescriptor,
-                initialState);
+                initialState );
     }
 
-    public JSONEntityState(DefaultEntityStoreUnitOfWork unitOfWork,
-                           String version,
-                           long lastModified,
-                           EntityReference identity,
-                           EntityStatus status,
-                           EntityDescriptor entityDescriptor,
-                           JSONObject state
-    ) {
+    public JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
+                            String version,
+                            long lastModified,
+                            EntityReference identity,
+                            EntityStatus status,
+                            EntityDescriptor entityDescriptor,
+                            JSONObject state
+    )
+    {
         this.unitOfWork = unitOfWork;
         this.version = version;
         this.lastModified = lastModified;
@@ -81,132 +84,155 @@ public final class JSONEntityState
 
     // EntityState implementation
 
-    public final String version() {
+    public final String version()
+    {
         return version;
     }
 
-    public long lastModified() {
+    public long lastModified()
+    {
         return lastModified;
     }
 
-    public EntityReference identity() {
+    public EntityReference identity()
+    {
         return identity;
     }
 
-    public Object getProperty(QualifiedName stateName) {
-        try {
-            Object jsonValue = state.getJSONObject("properties").opt(stateName.name());
-            if (jsonValue == null || jsonValue == JSONObject.NULL) {
+    public Object getProperty( QualifiedName stateName )
+    {
+        try
+        {
+            Object jsonValue = state.getJSONObject( "properties" ).opt( stateName.name() );
+            if( jsonValue == null || jsonValue == JSONObject.NULL )
+            {
                 return null;
-            } else {
+            } else
+            {
                 PropertyDescriptor propertyDescriptor = entityDescriptor.state()
-                        .getPropertyByQualifiedName(stateName);
-                Object value = ((PropertyTypeDescriptor) propertyDescriptor).propertyType()
+                        .getPropertyByQualifiedName( stateName );
+                Object value = ( (PropertyTypeDescriptor) propertyDescriptor ).propertyType()
                         .type()
-                        .fromJSON(jsonValue, unitOfWork.module());
+                        .fromJSON( jsonValue, unitOfWork.module() );
                 return value;
             }
         }
-        catch (JSONException e) {
-            throw new EntityStoreException(e);
+        catch (JSONException e)
+        {
+            throw new EntityStoreException( e );
         }
     }
 
-    public void setProperty(QualifiedName stateName, Object newValue) {
-        try {
+    public void setProperty( QualifiedName stateName, Object newValue )
+    {
+        try
+        {
             Object jsonValue;
-            if (newValue == null) {
+            if( newValue == null )
+            {
                 jsonValue = JSONObject.NULL;
-            } else {
+            } else
+            {
                 PropertyTypeDescriptor propertyDescriptor = entityDescriptor.state()
-                        .getPropertyByQualifiedName(stateName);
-                jsonValue = propertyDescriptor.propertyType().type().toJSON(newValue);
+                        .getPropertyByQualifiedName( stateName );
+                jsonValue = propertyDescriptor.propertyType().type().toJSON( newValue );
             }
-            state.getJSONObject("properties").put(stateName.name(), jsonValue);
+            state.getJSONObject( "properties" ).put( stateName.name(), jsonValue );
             markUpdated();
         }
-        catch (JSONException e) {
-            throw new EntityStoreException(e);
+        catch (JSONException e)
+        {
+            throw new EntityStoreException( e );
         }
     }
 
-    public EntityReference getAssociation(QualifiedName stateName) {
-        try {
-            Object jsonValue = state.getJSONObject("associations").opt(stateName.name());
-            if (jsonValue == null) {
+    public EntityReference getAssociation( QualifiedName stateName )
+    {
+        try
+        {
+            Object jsonValue = state.getJSONObject( "associations" ).opt( stateName.name() );
+            if( jsonValue == null )
+            {
                 return null;
             }
 
-            EntityReference value = jsonValue == JSONObject.NULL ? null : EntityReference.parseEntityReference((String) jsonValue);
+            EntityReference value = jsonValue == JSONObject.NULL ? null : EntityReference.parseEntityReference( (String) jsonValue );
             return value;
         }
-        catch (JSONException e) {
-            throw new EntityStoreException(e);
+        catch (JSONException e)
+        {
+            throw new EntityStoreException( e );
         }
     }
 
-    public void setAssociation(QualifiedName stateName, EntityReference newEntity) {
-        try {
-            state.getJSONObject("associations")
-                    .put(stateName.name(), newEntity == null ? null : newEntity.identity());
+    public void setAssociation( QualifiedName stateName, EntityReference newEntity )
+    {
+        try
+        {
+            state.getJSONObject( "associations" )
+                    .put( stateName.name(), newEntity == null ? null : newEntity.identity() );
             markUpdated();
         }
-        catch (JSONException e) {
-            throw new EntityStoreException(e);
+        catch (JSONException e)
+        {
+            throw new EntityStoreException( e );
         }
     }
 
-    public ManyAssociationState getManyAssociation(QualifiedName stateName) {
-        try {
-            JSONObject manyAssociations = state.getJSONObject("manyassociations");
-            JSONArray jsonValues = manyAssociations.optJSONArray(stateName.name());
-            if (jsonValues == null) {
+    public ManyAssociationState getManyAssociation( QualifiedName stateName )
+    {
+        try
+        {
+            JSONObject manyAssociations = state.getJSONObject( "manyassociations" );
+            JSONArray jsonValues = manyAssociations.optJSONArray( stateName.name() );
+            if( jsonValues == null )
+            {
                 jsonValues = new JSONArray();
-                manyAssociations.put(stateName.name(), jsonValues);
+                manyAssociations.put( stateName.name(), jsonValues );
             }
-            return new JSONManyAssociationState(this, jsonValues);
+            return new JSONManyAssociationState( this, jsonValues );
         }
-        catch (JSONException e) {
-            throw new EntityStoreException(e);
+        catch (JSONException e)
+        {
+            throw new EntityStoreException( e );
         }
     }
 
-    public void remove() {
+    public void remove()
+    {
         status = EntityStatus.REMOVED;
     }
 
-    public EntityStatus status() {
+    public EntityStatus status()
+    {
         return status;
     }
 
-    public boolean isOfType(TypeName type) {
-        return entityDescriptor.entityType().type().equals(type);
+    public boolean isOfType( TypeName type )
+    {
+        return entityDescriptor.entityType().type().equals( type );
     }
 
-    public EntityDescriptor entityDescriptor() {
+    public EntityDescriptor entityDescriptor()
+    {
         return entityDescriptor;
     }
 
-    public JSONObject state() {
+    public JSONObject state()
+    {
         return state;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return identity + "(" + state + ")";
     }
 
-    public void hasBeenApplied() {
-        if (status == EntityStatus.UPDATED) {
-            status = EntityStatus.LOADED;
-            version = unitOfWork.identity();
-        } else if (status == EntityStatus.NEW) {
-            status = EntityStatus.LOADED;
-        }
-    }
-
-    public void markUpdated() {
-        if (status == EntityStatus.LOADED) {
+    public void markUpdated()
+    {
+        if( status == EntityStatus.LOADED )
+        {
             status = EntityStatus.UPDATED;
         }
     }

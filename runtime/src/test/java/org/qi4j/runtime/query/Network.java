@@ -19,6 +19,7 @@ package org.qi4j.runtime.query;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.value.ValueBuilder;
@@ -48,7 +49,7 @@ class Network
     private static List<Nameable> nameables;
 
     static void populate( final UnitOfWork uow, ValueBuilderFactory vbf )
-        throws UnitOfWorkCompletionException
+            throws UnitOfWorkCompletionException
     {
         domains = new ArrayList<Domain>();
         persons = new ArrayList<Person>();
@@ -178,6 +179,25 @@ class Network
         nameables.add( joeDoe );
         nameables.add( jackDoe );
         nameables.add( vivianSmith );
+    }
+
+    static void refresh( UnitOfWork uow )
+    {
+        refresh( uow, domains );
+        refresh( uow, persons );
+        refresh( uow, males );
+        refresh( uow, females );
+        refresh( uow, pets );
+        refresh( uow, nameables );
+    }
+
+    private static <T> void refresh( UnitOfWork uow, List<T> list )
+    {
+        for (int i = 0; i < list.size(); i++)
+        {
+            T entity = list.get( i );
+            list.set( i, uow.get( entity ) );
+        }
     }
 
     static Iterable<Domain> domains()

@@ -22,20 +22,20 @@ import org.qi4j.spi.entity.EntityState;
  * JAVADOC
  */
 public abstract class StateChangeNotificationConcern
-    extends ConcernOf<EntityStoreSPI>
-    implements EntityStoreSPI
+        extends ConcernOf<EntityStoreSPI>
+        implements EntityStoreSPI
 {
     @Service
     Iterable<StateChangeListener> listeners;
 
-    public StateCommitter apply( final Iterable<EntityState> state, String version )
+    public StateCommitter applyChanges( final Iterable<EntityState> state, String version )
     {
-        final StateCommitter committer = next.apply( state, version );
+        final StateCommitter committer = next.applyChanges( state, version );
         return new StateCommitter()
         {
             public void commit()
             {
-                for( StateChangeListener listener : listeners )
+                for (StateChangeListener listener : listeners)
                 {
                     listener.notifyChanges( state );
                 }

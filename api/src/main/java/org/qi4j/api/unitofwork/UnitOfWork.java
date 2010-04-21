@@ -34,8 +34,7 @@ import org.qi4j.api.usecase.Usecase;
  * commit fails, then the whole transaction has to be done from the beginning again.
  * <p>
  * A UoW can be associated with a Usecase. A Usecase describes the metainformation about the process
- * to be performed by the UoW. It contains settings such as CAP-guarantees and what state is going to be used
- * by the Usecase, which helps eager loading.
+ * to be performed by the UoW.
  * </p>
  */
 public interface UnitOfWork
@@ -171,17 +170,6 @@ public interface UnitOfWork
      *                                       if entities have been modified by others
      */
     void complete()
-            throws UnitOfWorkCompletionException, ConcurrentEntityModificationException;
-
-    /**
-     * Apply the changes in this UnitOfWork. This will send all the changes down to the underlying
-     * EntityStores, without making this UnitOfWork invalid.
-     *
-     * @throws UnitOfWorkCompletionException if the changes could not be applied
-     * @throws ConcurrentEntityModificationException
-     *                                       if entities have been modified by others
-     */
-    void apply()
             throws UnitOfWorkCompletionException, ConcurrentEntityModificationException;
 
     /**

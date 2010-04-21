@@ -15,6 +15,7 @@
 package org.qi4j.spi.entitystore;
 
 import java.util.LinkedList;
+
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -24,7 +25,7 @@ import org.qi4j.spi.entity.EntityState;
  * JAVADOC
  */
 public final class DefaultEntityStoreUnitOfWork
-    implements EntityStoreUnitOfWork
+        implements EntityStoreUnitOfWork
 {
     private EntityStoreSPI entityStoreSPI;
     private String identity;
@@ -51,7 +52,7 @@ public final class DefaultEntityStoreUnitOfWork
     // EntityStore
 
     public EntityState newEntityState( EntityReference anIdentity, EntityDescriptor descriptor )
-        throws EntityStoreException
+            throws EntityStoreException
     {
         EntityState state = entityStoreSPI.newEntityState( this, anIdentity, descriptor );
         states.add( state );
@@ -59,17 +60,17 @@ public final class DefaultEntityStoreUnitOfWork
     }
 
     public EntityState getEntityState( EntityReference anIdentity )
-        throws EntityStoreException, EntityNotFoundException
+            throws EntityStoreException, EntityNotFoundException
     {
         EntityState entityState = entityStoreSPI.getEntityState( this, anIdentity );
         states.add( entityState );
         return entityState;
     }
 
-    public StateCommitter apply()
-        throws EntityStoreException
+    public StateCommitter applyChanges()
+            throws EntityStoreException
     {
-        return entityStoreSPI.apply( states, identity );
+        return entityStoreSPI.applyChanges( states, identity );
     }
 
     public void discard()
