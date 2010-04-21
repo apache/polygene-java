@@ -66,7 +66,7 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
                     dataDir = "./rdf/repositories/" + id;
                 }
                 configuration.configuration().dataDirectory().set( dataDir );
-                uowf.getUnitOfWork( configuration.configuration() ).apply();
+                configuration.save();
             }
             initializeRepository( new File( dataDir ) );
         }

@@ -14,13 +14,10 @@
 
 package org.qi4j.library.rdf.entity;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
-import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
@@ -38,6 +35,9 @@ import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /**
  * JAVADOC
@@ -78,7 +78,7 @@ public class EntityParserTest
 
         parser.parse( graph, entityState );
 
-        work.apply().commit();
+        work.applyChanges().commit();
 
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
