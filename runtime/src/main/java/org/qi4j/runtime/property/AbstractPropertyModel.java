@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.List;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.UseDefaults;
@@ -48,7 +49,7 @@ import org.qi4j.spi.util.SerializationUtil;
  * JAVADOC
  */
 public abstract class AbstractPropertyModel
-    implements Serializable, PropertyDescriptor, ConstraintsCheck, Binder
+        implements Serializable, PropertyDescriptor, ConstraintsCheck, Binder
 {
     private static final long serialVersionUID = 1L;
 
@@ -146,7 +147,7 @@ public abstract class AbstractPropertyModel
     }
 
     public void bind( Resolution resolution )
-        throws BindingException
+            throws BindingException
     {
         // TODO Select ValueComposite type
     }
@@ -159,8 +160,7 @@ public abstract class AbstractPropertyModel
         if( computed )
         {
             property = new ComputedPropertyInfo<Object>( builderInfo );
-        }
-        else
+        } else
         {
             property = new PropertyInstance<Object>( builderInfo, initialValue(), this );
         }
@@ -176,8 +176,7 @@ public abstract class AbstractPropertyModel
         if( computed )
         {
             property = new ComputedPropertyInfo<Object>( builderInfo );
-        }
-        else
+        } else
         {
             property = new PropertyInstance<Object>( builderInfo, initialValue, this );
         }
@@ -195,20 +194,20 @@ public abstract class AbstractPropertyModel
     public abstract <T> Property<T> newInstance( Object value );
 
     public void checkConstraints( Object value )
-        throws ConstraintViolationException
+            throws ConstraintViolationException
     {
         if( constraints != null )
         {
             List<ConstraintViolation> violations = constraints.checkConstraints( value );
             if( !violations.isEmpty() )
             {
-                throw new ConstraintViolationException( "", "<unknown>", accessor, violations );
+                throw new ConstraintViolationException( "<new instance>", "<unknown>", accessor, violations );
             }
         }
     }
 
     public void checkConstraints( PropertiesInstance properties )
-        throws ConstraintViolationException
+            throws ConstraintViolationException
     {
         if( constraints != null )
         {
@@ -252,21 +251,21 @@ public abstract class AbstractPropertyModel
         {
             // Create proxy
             final ClassLoader loader = accessor.getReturnType().getClassLoader();
-            final Class[] type = { accessor.getReturnType() };
+            final Class[] type = {accessor.getReturnType()};
             property = (Property<T>) Proxy.newProxyInstance( loader, type, new PropertyHandler( property ) );
         }
         return property;
     }
 
     private void writeObject( ObjectOutputStream out )
-        throws IOException
+            throws IOException
     {
         out.defaultWriteObject();
         try
         {
             SerializationUtil.writeMethod( out, accessor );
         }
-        catch( NotSerializableException e )
+        catch (NotSerializableException e)
         {
             System.err.println( "NotSerializable in " + getClass() );
             throw e;
@@ -274,17 +273,17 @@ public abstract class AbstractPropertyModel
     }
 
     private void readObject( ObjectInputStream in )
-        throws IOException, ClassNotFoundException
+            throws IOException, ClassNotFoundException
     {
         in.defaultReadObject();
         accessor = SerializationUtil.readMethod( in );
     }
 
     protected static class ComputedPropertyInfo<T>
-        extends ComputedPropertyInstance<T>
+            extends ComputedPropertyInstance<T>
     {
         public ComputedPropertyInfo( PropertyInfo aPropertyInfo )
-            throws IllegalArgumentException
+                throws IllegalArgumentException
         {
             super( aPropertyInfo );
         }
@@ -296,7 +295,7 @@ public abstract class AbstractPropertyModel
     }
 
     static class PropertyHandler
-        implements InvocationHandler
+            implements InvocationHandler
     {
         Property p;
 
@@ -306,7 +305,7 @@ public abstract class AbstractPropertyModel
         }
 
         public Object invoke( Object proxy, Method method, Object[] args )
-            throws Throwable
+                throws Throwable
         {
             try
             {
@@ -316,19 +315,19 @@ public abstract class AbstractPropertyModel
                 }
                 return method.invoke( p, args );
             }
-            catch( InvocationTargetException e )
+            catch (InvocationTargetException e)
             {
                 throw e.getCause();
             }
         }
 
         private Object invokeObject( Method method, Object[] args )
-            throws Throwable
+                throws Throwable
         {
             String methodName = method.getName();
             if( "equals".equals( methodName ) )
             {
-                Object arg = args[ 0 ];
+                Object arg = args[0];
                 if( Proxy.isProxyClass( arg.getClass() ) )
                 {
                     arg = Proxy.getInvocationHandler( arg );
@@ -338,43 +337,34 @@ public abstract class AbstractPropertyModel
                     }
                 }
                 return p.equals( arg );
-            }
-            else if( "hashCode".equals( methodName ) )
+            } else if( "hashCode".equals( methodName ) )
             {
                 return p.hashCode();
-            }
-            else if( "toString".equals( methodName ) )
+            } else if( "toString".equals( methodName ) )
             {
                 return p.toString();
-            }
-            else if( "wait".equals( methodName ) )
+            } else if( "wait".equals( methodName ) )
             {
                 if( args.length == 0 )
                 {
                     p.wait();
-                }
-                else if( args.length == 1 )
+                } else if( args.length == 1 )
                 {
-                    p.wait( (Long) args[ 0 ] );
-                }
-                else
+                    p.wait( (Long) args[0] );
+                } else
                 {
-                    p.wait( (Long) args[ 0 ], (Integer) args[ 1 ] );
+                    p.wait( (Long) args[0], (Integer) args[1] );
                 }
-            }
-            else if( "getClass".equals( methodName ) )
+            } else if( "getClass".equals( methodName ) )
             {
                 return p.getClass();
-            }
-            else if( "clone".equals( methodName ) )
+            } else if( "clone".equals( methodName ) )
             {
                 throw new CloneNotSupportedException();
-            }
-            else if( "notifyAll".equals( methodName ) )
+            } else if( "notifyAll".equals( methodName ) )
             {
                 p.notifyAll();
-            }
-            else if( "notify".equals( methodName ) )
+            } else if( "notify".equals( methodName ) )
             {
                 p.notify();
             }

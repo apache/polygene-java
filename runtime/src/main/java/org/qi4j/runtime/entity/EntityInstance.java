@@ -15,11 +15,7 @@
 
 package org.qi4j.runtime.entity;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.HashSet;
-import java.util.Set;
-
+import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
@@ -41,13 +37,20 @@ import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.association.AssociationDescriptor;
 import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Entity instance
  */
 public final class EntityInstance
-        implements CompositeInstance, MixinsInstance {
-    public static EntityInstance getEntityInstance(EntityComposite composite) {
-        return (EntityInstance) Proxy.getInvocationHandler(composite);
+        implements CompositeInstance, MixinsInstance
+{
+    public static EntityInstance getEntityInstance( EntityComposite composite )
+    {
+        return (EntityInstance) Proxy.getInvocationHandler( composite );
     }
 
     private final EntityComposite proxy;
@@ -60,197 +63,246 @@ public final class EntityInstance
     private Object[] mixins;
     private EntityStateModel.EntityStateInstance state;
 
-    public EntityInstance(ModuleUnitOfWork uow,
-                          ModuleInstance moduleInstance,
-                          EntityModel entityModel,
-                          EntityState entityState
-    ) {
+    public EntityInstance( ModuleUnitOfWork uow,
+                           ModuleInstance moduleInstance,
+                           EntityModel entityModel,
+                           EntityState entityState
+    )
+    {
         this.uow = uow;
         this.moduleInstance = moduleInstance;
         this.entityModel = entityModel;
         this.identity = entityState.identity();
         this.entityState = entityState;
 
-        proxy = entityModel.newProxy(this);
+        proxy = entityModel.newProxy( this );
     }
 
-    public Object invoke(Object proxy, Method method, Object[] args)
-            throws Throwable {
-        return entityModel.invoke(this, this.proxy, method, args, moduleInstance);
+    public Object invoke( Object proxy, Method method, Object[] args )
+            throws Throwable
+    {
+        return entityModel.invoke( this, this.proxy, method, args, moduleInstance );
     }
 
-    public EntityReference identity() {
+    public EntityReference identity()
+    {
         return identity;
     }
 
-    public <T> T proxy() {
+    public <T> T proxy()
+    {
         return (T) proxy;
     }
 
-    public AbstractCompositeDescriptor descriptor() {
+    public AbstractCompositeDescriptor descriptor()
+    {
         return entityModel;
     }
 
-    public <T> T newProxy(Class<T> mixinType) {
-        return entityModel.newProxy(this, mixinType);
+    public <T> T newProxy( Class<T> mixinType )
+    {
+        return entityModel.newProxy( this, mixinType );
     }
 
-    public Object invokeProxy(Method method, Object[] args)
-            throws Throwable {
-        return entityModel.invoke(this, proxy, method, args, moduleInstance);
+    public Object invokeProxy( Method method, Object[] args )
+            throws Throwable
+    {
+        return entityModel.invoke( this, proxy, method, args, moduleInstance );
     }
 
-    public <T> T metaInfo(Class<T> infoType) {
-        return entityModel.metaInfo(infoType);
+    public <T> T metaInfo( Class<T> infoType )
+    {
+        return entityModel.metaInfo( infoType );
     }
 
-    public EntityModel entityModel() {
+    public EntityModel entityModel()
+    {
         return entityModel;
     }
 
-    public Class<? extends EntityComposite> type() {
+    public Class<? extends EntityComposite> type()
+    {
         return entityModel.type();
     }
 
-    public ModuleInstance module() {
+    public ModuleInstance module()
+    {
         return moduleInstance;
     }
 
-    public UnitOfWork unitOfWork() {
+    public UnitOfWork unitOfWork()
+    {
         return uow;
     }
 
-    public EntityState entityState() {
+    public EntityState entityState()
+    {
         return entityState;
     }
 
-    public EntityStateModel.EntityStateInstance state() {
-        if (state == null) {
+    public EntityStateModel.EntityStateInstance state()
+    {
+        if( state == null )
+        {
             initState();
         }
 
         return state;
     }
 
-    public EntityStatus status() {
+    public EntityStatus status()
+    {
         return entityState.status();
     }
 
-    public Object invoke(Object composite, Object[] params, CompositeMethodInstance methodInstance)
-            throws Throwable {
-        if (mixins == null) {
+    public Object invoke( Object composite, Object[] params, CompositeMethodInstance methodInstance )
+            throws Throwable
+    {
+        if( mixins == null )
+        {
             initState();
         }
 
-        Object mixin = methodInstance.getMixin(mixins);
+        Object mixin = methodInstance.getMixin( mixins );
 
-        if (mixin == null) {
-            mixin = entityModel.newMixin(mixins, state, this, methodInstance.method());
+        if( mixin == null )
+        {
+            mixin = entityModel.newMixin( mixins, state, this, methodInstance.method() );
         }
 
-        return methodInstance.invoke(proxy, params, mixin);
+        return methodInstance.invoke( proxy, params, mixin );
     }
 
-    public Object invokeObject(Object proxy, Object[] args, Method method)
-            throws Throwable {
-        return method.invoke(this, args);
+    public Object invokeObject( Object proxy, Object[] args, Method method )
+            throws Throwable
+    {
+        return method.invoke( this, args );
     }
 
-    private void initState() {
-        if (!uow.isOpen()) {
-            throw new UnitOfWorkException("Unit of work has been closed");
+    private void initState()
+    {
+        if( !uow.isOpen() )
+        {
+            throw new UnitOfWorkException( "Unit of work has been closed" );
         }
 
-        if (status() == EntityStatus.REMOVED) {
-            throw new NoSuchEntityException(identity);
+        if( status() == EntityStatus.REMOVED )
+        {
+            throw new NoSuchEntityException( identity );
         }
 
         mixins = entityModel.newMixinHolder();
-        state = entityModel.newStateHolder(uow, entityState);
+        state = entityModel.newStateHolder( uow, entityState );
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return identity.hashCode();
     }
 
     @Override
-    public boolean equals(Object o) {
-        try {
-            Identity other = ((Identity) o);
-            return other != null && other.identity().get().equals(identity.identity());
+    public boolean equals( Object o )
+    {
+        try
+        {
+            Identity other = ( (Identity) o );
+            return other != null && other.identity().get().equals( identity.identity() );
         }
-        catch (ClassCastException e) {
+        catch (ClassCastException e)
+        {
             return false;
         }
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return identity.toString();
     }
 
-    public void remove(UnitOfWork unitOfWork)
-            throws LifecycleException {
+    public void remove( UnitOfWork unitOfWork )
+            throws LifecycleException
+    {
         invokeRemove();
 
-        removeAggregatedEntities(unitOfWork);
+        removeAggregatedEntities( unitOfWork );
 
         entityState.remove();
         mixins = null;
     }
 
-    public void invokeCreate() {
-        lifecyleInvoke(true);
+    public void invokeCreate()
+    {
+        lifecyleInvoke( true );
     }
 
-    private void invokeRemove() {
-        lifecyleInvoke(false);
+    private void invokeRemove()
+    {
+        lifecyleInvoke( false );
     }
 
-    private void lifecyleInvoke(boolean create) {
-        if (mixins == null) {
+    private void lifecyleInvoke( boolean create )
+    {
+        if( mixins == null )
+        {
             initState();
         }
 
-        entityModel.invokeLifecycle(create, mixins, this, state);
+        entityModel.invokeLifecycle( create, mixins, this, state );
     }
 
-    private void removeAggregatedEntities(UnitOfWork unitOfWork) {
+    private void removeAggregatedEntities( UnitOfWork unitOfWork )
+    {
         // Calculate aggregated Entities
         EntityStateDescriptor stateDescriptor = entityModel.state();
         Set<Object> aggregatedEntities = new HashSet<Object>();
         Set<AssociationDescriptor> associations = stateDescriptor.associations();
-        for (AssociationDescriptor association : associations) {
-            if (association.isAggregated()) {
-                Association assoc = state.getAssociation(association.accessor());
+        for (AssociationDescriptor association : associations)
+        {
+            if( association.isAggregated() )
+            {
+                Association assoc = state.getAssociation( association.accessor() );
                 Object aggregatedEntity = assoc.get();
-                if (aggregatedEntity != null) {
-                    aggregatedEntities.add(aggregatedEntity);
+                if( aggregatedEntity != null )
+                {
+                    aggregatedEntities.add( aggregatedEntity );
                 }
             }
         }
         Set<ManyAssociationDescriptor> manyAssociations = stateDescriptor.manyAssociations();
-        for (ManyAssociationDescriptor association : manyAssociations) {
-            if (association.isAggregated()) {
-                ManyAssociation manyAssoc = state.getManyAssociation(association.accessor());
-                for (Object entity : manyAssoc) {
-                    aggregatedEntities.add(entity);
+        for (ManyAssociationDescriptor association : manyAssociations)
+        {
+            if( association.isAggregated() )
+            {
+                ManyAssociation manyAssoc = state.getManyAssociation( association.accessor() );
+                for (Object entity : manyAssoc)
+                {
+                    aggregatedEntities.add( entity );
                 }
             }
         }
 
         // Remove aggregated Entities
-        for (Object aggregatedEntity : aggregatedEntities) {
-            unitOfWork.remove(aggregatedEntity);
+        for (Object aggregatedEntity : aggregatedEntities)
+        {
+            unitOfWork.remove( aggregatedEntity );
         }
     }
 
-    public void checkConstraints() {
-        state.checkConstraints();
+    public void checkConstraints()
+    {
+        try
+        {
+            state.checkConstraints();
+        } catch (ConstraintViolationException e)
+        {
+            throw new ConstraintViolationException( identity.identity(), entityModel.entityType().type().name(), e.mixinTypeName(), e.methodName(), e.constraintViolations() );
+        }
     }
 
-    public void discard() {
+    public void discard()
+    {
         mixins = null;
     }
 }
