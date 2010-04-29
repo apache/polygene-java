@@ -120,6 +120,8 @@ public interface Configuration<T>
                     // Should be impossible
                     e.printStackTrace();
                 }
+
+                configuration = null; // Force refresh
             }
         }
 
