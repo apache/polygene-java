@@ -24,7 +24,9 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Transaction;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.structure.Module;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
@@ -32,17 +34,20 @@ import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.spi.structure.ModuleSPI;
 
 public class GaeEntityStoreUnitOfWork
     implements EntityStoreUnitOfWork
 {
     private DatastoreService datastore;
     private String identity;
-    private ArrayList<GaeEntityState> states;
+    private LinkedList<GaeEntityState> states;
+    private ModuleSPI module;
 
-    public GaeEntityStoreUnitOfWork( DatastoreService datastore, String identity )
+    public GaeEntityStoreUnitOfWork( DatastoreService datastore, String identity, ModuleSPI module )
     {
-        states = new ArrayList<GaeEntityState>();
+        this.module = module;
+        states = new LinkedList<GaeEntityState>();
         this.datastore = datastore;
         this.identity = identity;
     }
@@ -56,30 +61,29 @@ public class GaeEntityStoreUnitOfWork
         throws EntityStoreException
     {
         Key key = KeyFactory.createKey( "qi4j-entity", anIdentity.identity() );
-        GaeEntityState state = new GaeEntityState( this, key, entityDescriptor );
+        GaeEntityState state = new GaeEntityState( this, key, entityDescriptor, module );
         states.add( state );
         return state;
     }
 
-    public EntityState getEntityState( EntityReference anIdentity )
+    public EntityState getEntityState( EntityReference reference )
         throws EntityStoreException, EntityNotFoundException
     {
-        Key key = KeyFactory.stringToKey( anIdentity.identity() );
-
+        Key key = KeyFactory.createKey( "qi4j-entity", reference.identity() );
         try
         {
             Entity entity = datastore.get( key );
-            GaeEntityState state = new GaeEntityState( this, entity );
+            GaeEntityState state = new GaeEntityState( this, entity, module );
             states.add( state );
+            return state;
         }
         catch( com.google.appengine.api.datastore.EntityNotFoundException e )
         {
-            throw new EntityNotFoundException( anIdentity );
+            throw new EntityNotFoundException( reference );
         }
-        return null;
     }
 
-    public StateCommitter apply()
+    public StateCommitter applyChanges()
         throws EntityStoreException
     {
         Transaction transaction = datastore.beginTransaction();

@@ -26,11 +26,11 @@ import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.structure.ModuleSPI;
 
 /**
  * GAE implementation of SerializationStore
@@ -44,7 +44,8 @@ public class GaeEntityStoreMixin
 
     public GaeEntityStoreMixin( @Service IdentityGenerator uuid )
     {
-        this.uuid = uuid.generate( Identity.class );
+        System.out.println( "Initializing GAE EntityStore." );
+        this.uuid = uuid.generate( Identity.class ) + ":";
         counter = 0L;
     }
 
@@ -59,20 +60,20 @@ public class GaeEntityStoreMixin
     {
     }
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
     {
-        return new GaeEntityStoreUnitOfWork( datastoreService, generateId() );
+        return new GaeEntityStoreUnitOfWork( datastoreService, generateId(), module );
     }
 
-    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, Module module )
+    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI module )
     {
-        GaeEntityStoreUnitOfWork euow = new GaeEntityStoreUnitOfWork( datastoreService, generateId() );
+        GaeEntityStoreUnitOfWork euow = new GaeEntityStoreUnitOfWork( datastoreService, generateId(), module );
         Query query = new Query();
         PreparedQuery q = datastoreService.prepare( query );
         QueryResultIterable<Entity> iterable = q.asQueryResultIterable();
         for( Entity entity : iterable )
         {
-            EntityState entityState = new GaeEntityState( euow, entity );
+            EntityState entityState = new GaeEntityState( euow, entity, module );
             visitor.visitEntityState( entityState );
         }
         return euow;

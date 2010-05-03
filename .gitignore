@@ -12,6 +12,7 @@ entitystore-neo4j/qi4j-entitystore-neo4j.iml
 entitystore-preferences/qi4j-entitystore-preferences.iml
 entitystore-qrm/qi4j-entitystore-qrm.iml
 entitystore-rest/qi4j-entitystore-rest.iml
+entitystore-gae/qi4j-entitystore-gae.iml
 indexing-rdf/qi4j-indexing-rdf.iml
 indexing-sql/qi4j-indexing-sql.iml
 migration/qi4j-migration.iml

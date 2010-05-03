@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entitystore.gae;
+package org.qi4j.entitystore.gae2;
 
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.configuration.Configuration;
@@ -34,12 +34,14 @@ import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
  */
 
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
-@Mixins( { GaeEntityStoreMixin.class } )
+@Mixins( { MapEntityStoreMixin.class, GaeEntityStoreMixin.class } )
 public interface GaeEntityStoreService
     extends EntityStore,
             EntityStateVersions,
+            StateStore,
             ServiceComposite,
             Activatable,
-            LockingAbstractComposite
+            LockingAbstractComposite,
+            Configuration
 {
 }

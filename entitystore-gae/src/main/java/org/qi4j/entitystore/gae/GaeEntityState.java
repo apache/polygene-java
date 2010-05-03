@@ -20,102 +20,228 @@ package org.qi4j.entitystore.gae;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.Text;
+import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.structure.Module;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.property.PropertyType;
+import org.qi4j.spi.property.ValueType;
+import org.qi4j.spi.structure.ModuleSPI;
 
 public class GaeEntityState
     implements EntityState
 {
-    private Entity entity;
+    static final String PROPERTY_TYPE = "$type";
+
+    private final Entity entity;
     private EntityStatus status;
-    private String version;
+    private final GaeEntityStoreUnitOfWork unitOfWork;
+    private final EntityDescriptor descriptor;
+    private final HashMap<QualifiedName, PropertyType> valueTypes;
+    private final ModuleSPI module;
 
-    private GaeEntityStoreUnitOfWork unitOfWork;
-
-    private EntityDescriptor descriptor;
-
-    public GaeEntityState( GaeEntityStoreUnitOfWork unitOfWork, Key key, EntityDescriptor descriptor )
+    public GaeEntityState( GaeEntityStoreUnitOfWork unitOfWork, Key key, EntityDescriptor descriptor, ModuleSPI module )
     {
+        System.out.println( "GaeEntityState( " + unitOfWork + ", " + key + ", " + descriptor + " )" );
+        this.module = module;
         this.unitOfWork = unitOfWork;
         this.descriptor = descriptor;
-        entity = new Entity(key);
+        entity = new Entity( key );
+        entity.setProperty( "$version", unitOfWork.identity() );
+        EntityType entityType = descriptor.entityType();
+        TypeName typeName = entityType.type();
+        String name = typeName.name();
+        System.out.println( "New Entity\n" +
+                            "    descriptor:" + descriptor + "\n  " +
+                            "    entityType:" + entityType + "\n  " +
+                            "    typeName:" + typeName + "\n  " +
+                            "    name:" + name + "\n  " 
+        );
+        entity.setUnindexedProperty( PROPERTY_TYPE, name );
         status = EntityStatus.NEW;
+        valueTypes = initializeValueTypes( descriptor );
     }
 
-    public GaeEntityState( GaeEntityStoreUnitOfWork unitOfWork, Entity entity )
+    public GaeEntityState( GaeEntityStoreUnitOfWork unitOfWork, Entity entity, ModuleSPI module )
     {
+        System.out.println( "GaeEntityState( " + unitOfWork + ", " + entity + " )" );
+        if( entity == null )
+        {
+            throw new NullPointerException();
+        }
+        if( unitOfWork == null )
+        {
+            throw new NullPointerException();
+        }
+        this.module = module;
         this.unitOfWork = unitOfWork;
         this.entity = entity;
+        String typeName = (String) entity.getProperty( GaeEntityState.PROPERTY_TYPE );
+        System.out.println( "LOADING [" + typeName + "]" );
+        descriptor = module.entityDescriptor( typeName );
         status = EntityStatus.LOADED;
+        valueTypes = initializeValueTypes( descriptor );
+    }
+
+    private HashMap<QualifiedName, PropertyType> initializeValueTypes( EntityDescriptor descriptor )
+    {
+        HashMap<QualifiedName, PropertyType> result = new HashMap<QualifiedName, PropertyType>();
+        for( PropertyType type : descriptor.entityType().properties() )
+        {
+            if( type.type().isValue() )
+            {
+                QualifiedName name = type.qualifiedName();
+                result.put( name, type );
+            }
+        }
+        return result;
     }
 
     Entity entity()
     {
+        System.out.println( "entity()  -->  " + entity );
         return entity;
     }
 
     public EntityReference identity()
     {
-        return new EntityReference( entity.getKey().getName() );
+        EntityReference ref = new EntityReference( entity.getKey().getName() );
+        System.out.println( "identity()  -->  " + ref );
+        return ref;
     }
 
     public String version()
     {
-        return (String) entity.getProperty( "$version" );
+        String version = (String) entity.getProperty( "$version" );
+        System.out.println( "version()  -->  " + version );
+        return version;
     }
 
     public long lastModified()
     {
-        return (Long) entity.getProperty( "$lastModified" );
+        Long lastModified = (Long) entity.getProperty( "$lastModified" );
+        System.out.println( "lastModified()  -->  " + lastModified );
+        return lastModified;
     }
 
     public void remove()
     {
-         status = EntityStatus.REMOVED;
+        System.out.println( "remove()" );
+        status = EntityStatus.REMOVED;
     }
 
     public EntityStatus status()
     {
+        System.out.println( "status()  -->  " + status );
         return status;
     }
 
     public boolean isOfType( TypeName type )
     {
+        System.out.println( "isOfType( " + type + " )  -->  false" );
         return false;
     }
 
     public EntityDescriptor entityDescriptor()
     {
-        return (EntityDescriptor) entity.getProperty( "$entityDescriptor" );
+        System.out.println( "entityDescriptor()  -->  " + descriptor );
+        return descriptor;
     }
 
     public Object getProperty( QualifiedName stateName )
     {
-        return entity.getProperty( stateName.toURI() );
+        String uri = stateName.toURI();
+        Object value = entity.getProperty( uri );
+        if( value instanceof Text )
+        {
+            value = ( (Text) value ).getValue();
+        }
+        PropertyType type = valueTypes.get( stateName );
+
+        if( type != null )
+        {
+            try
+            {
+                JSONObject json = new JSONObject( value );
+                ValueType valueType = type.type();
+                value = valueType.fromJSON( json, module );
+            }
+            catch( JSONException e )
+            {
+                String message = "\nqualifiedName: " + stateName +
+                                 "\n    stateName: " + stateName.name() +
+                                 "\n          uri: " + uri +
+                                 "\n         type: " + type +
+                                 "\n        value: " + value +
+                                 "\n"
+                    ;
+                InternalError error = new InternalError( message );
+                error.initCause( e );
+                throw error;
+            }
+        }
+        System.out.println( "getProperty( " + stateName + " )  -->  " + uri + "=" + value );
+        return value;
     }
 
-    public void setProperty( QualifiedName stateName, Object json )
+    public void setProperty( QualifiedName stateName, Object value )
     {
-        entity.setUnindexedProperty( stateName.toURI(), json );
+        System.out.println( "setProperty( " + stateName + ", " + value + " )" );
+        if( value != null && Proxy.isProxyClass( value.getClass() ) )
+        {
+            System.out.println( "handler: " + Proxy.getInvocationHandler( value ) );
+            PropertyType type = valueTypes.get( stateName );
+            try
+            {
+                ValueType valueType = type.type();
+                value = valueType.toJSON( value ).toString();
+            }
+            catch( JSONException e )
+            {
+                InternalError error = new InternalError();
+                error.initCause( e );
+                throw error;
+            }
+        }
+        if( value instanceof String )
+        {
+            value = new Text( (String) value );
+        }
+        entity.setUnindexedProperty( stateName.toURI(), value );
     }
 
     public EntityReference getAssociation( QualifiedName stateName )
     {
-        String identity = (String) entity.getProperty( stateName.toURI() );
+        String uri = stateName.toURI();
+        String identity = (String) entity.getProperty( uri );
+        System.out.println( "getAssociation( " + stateName + " )  -->  " + uri + " = " + identity );
         EntityReference ref = new EntityReference( identity );
         return ref;
     }
 
     public void setAssociation( QualifiedName stateName, EntityReference newEntity )
     {
-        entity.setUnindexedProperty( stateName.toURI(), newEntity.identity() );
+        System.out.println( "setAssociation( " + stateName + ", " + newEntity + " )" );
+        String uri = stateName.toURI();
+        String id = null;
+        if( newEntity != null )
+        {
+            id = newEntity.identity();
+        }
+        entity.setUnindexedProperty( uri, id );
     }
 
     public ManyAssociationState getManyAssociation( QualifiedName stateName )
@@ -127,20 +253,27 @@ public class GaeEntityState
 
     public void hasBeenApplied()
     {
+        System.out.println( "hasBeenApplied()" );
         status = EntityStatus.LOADED;
-        version = unitOfWork.identity();
     }
 
     private static class GaeManyAssociationState
         implements ManyAssociationState
     {
-        private final List<String> assocs;
-        private GaeEntityState entityState;
+        private List<String> assocs;
+        private final GaeEntityState entityState;
 
-        public GaeManyAssociationState( GaeEntityState entityState, List<String> assocs )
+        public GaeManyAssociationState( GaeEntityState entityState, List<String> listOfAssociations )
         {
             this.entityState = entityState;
-            this.assocs = assocs;
+            if( listOfAssociations == null )
+            {
+                this.assocs = new ArrayList<String>();
+            }
+            else
+            {
+                this.assocs = listOfAssociations;
+            }
         }
 
         public int count()
@@ -155,10 +288,14 @@ public class GaeEntityState
 
         public boolean add( int index, EntityReference entityReference )
         {
-            if( assocs.contains( entityReference ) )
-                    {
-                        return false;
-                    }
+            System.out.println( "NICLAS::" + entityReference );
+            String identity = entityReference.identity();
+            System.out.println( "NICLAS::" + identity );
+            System.out.println( "NICLAS::" + assocs );
+            if( assocs.contains( identity ) )
+            {
+                return false;
+            }
             assocs.add( index, entityReference.identity() );
             entityState.markUpdated();
             return true;
@@ -166,17 +303,23 @@ public class GaeEntityState
 
         public boolean remove( EntityReference entityReference )
         {
-            return false;  //To change body of implemented methods use File | Settings | File Templates.
+            return assocs.remove( entityReference.identity() );
         }
 
         public EntityReference get( int index )
         {
-            return null;  //To change body of implemented methods use File | Settings | File Templates.
+            String id = assocs.get( index );
+            return new EntityReference( id );
         }
 
         public Iterator<EntityReference> iterator()
         {
-            return null;  //To change body of implemented methods use File | Settings | File Templates.
+            ArrayList<EntityReference> result = new ArrayList<EntityReference>();
+            for( String id : assocs )
+            {
+                result.add( new EntityReference( id ) );
+            }
+            return result.iterator();
         }
     }
 
