@@ -24,7 +24,6 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.library.rdf.entity.EntityStateParser;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -36,6 +35,7 @@ import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreSPI;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.spi.structure.ModuleSPI;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.Uniform;
@@ -80,12 +80,12 @@ public class RESTEntityStoreServiceMixin
     {
     }
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
     {
         return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module );
     }
 
-    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, Module moduleInstance )
+    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI moduleInstance )
     {
         return null;
     }
@@ -163,7 +163,7 @@ public class RESTEntityStoreServiceMixin
         return null;
     }
 
-    public StateCommitter apply( Iterable<EntityState> state, String identity )
+    public StateCommitter applyChanges( Iterable<EntityState> state, String identity )
     {
 /*
         Reference ref = entityStoreUrl.clone();

@@ -44,7 +44,7 @@ public class NeoEntityStoreUnitOfWork
         this.module = module;
     }
 
-    public StateCommitter apply()
+    public StateCommitter applyChanges()
         throws EntityStoreException
     {
         return this;

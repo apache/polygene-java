@@ -25,7 +25,6 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -92,14 +91,14 @@ public class QrmEntityStoreServiceMixin
         return new DefaultEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, identity, entityDescriptor );
     }
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
     {
         System.err.println( "EntityStoreUnitOfWork newUnitOfWork ... was called." );
 
         return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module );
     }
 
-    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, Module module )
+    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI module )
     {
         System.err.println( "visit entity states called." );
 
@@ -127,7 +126,7 @@ public class QrmEntityStoreServiceMixin
         return result;
     }
 
-    public StateCommitter apply( final Iterable<EntityState> entityStates, final String version )
+    public StateCommitter applyChanges( final Iterable<EntityState> entityStates, final String version )
     {
         return new StateCommitter()
         {

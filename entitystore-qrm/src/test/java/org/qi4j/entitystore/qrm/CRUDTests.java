@@ -132,7 +132,7 @@ public class CRUDTests
 
             account = eBuilder.newInstance();
 
-            uow.apply();
+            uow.complete();
         }
         catch( EntityNotFoundException enfe )
         {
@@ -192,7 +192,7 @@ public class CRUDTests
 
             account = eBuilder.newInstance();
 
-            uow.apply();
+            uow.complete();
         }
         catch( Throwable enfe )
         {
@@ -231,7 +231,7 @@ public class CRUDTests
 
             uow.remove( acc_after );
 
-            uow.apply();
+            uow.complete();
         }
         catch( Throwable enfe )
         {
@@ -292,7 +292,7 @@ public class CRUDTests
 
             account = eBuilder.newInstance();
 
-            uow.apply();
+            uow.complete();
         }
         catch( Throwable enfe )
         {
@@ -320,7 +320,7 @@ public class CRUDTests
 
             acc_after.name().set( "Small Account" );
 
-            uow.apply();
+            uow.complete();
         }
         catch( EntityNotFoundException enfe )
         {

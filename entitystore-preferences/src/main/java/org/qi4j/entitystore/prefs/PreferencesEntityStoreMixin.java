@@ -34,7 +34,6 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.structure.Application;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.usecase.Usecase;
@@ -69,14 +68,13 @@ public class PreferencesEntityStoreMixin
     implements Activatable, EntityStore, EntityStoreSPI
 {
     @This
-    EntityStoreSPI entityStoreSpi;
+    private EntityStoreSPI entityStoreSpi;
 
-    private
     @Uses
-    ServiceDescriptor descriptor;
-    private
+    private ServiceDescriptor descriptor;
+
     @Structure
-    Application application;
+    private Application application;
 
     private Preferences root;
     protected String uuid;
@@ -116,12 +114,12 @@ public class PreferencesEntityStoreMixin
     {
     }
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
     {
         return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module );
     }
 
-    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, Module moduleInstance )
+    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI moduleInstance )
     {
         final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), moduleInstance );
 
@@ -156,7 +154,7 @@ public class PreferencesEntityStoreMixin
         {
             DefaultEntityStoreUnitOfWork desuw = (DefaultEntityStoreUnitOfWork) unitOfWork;
 
-            ModuleSPI module = (ModuleSPI) desuw.module();
+            ModuleSPI module = desuw.module();
 
             if( !root.nodeExists( identity.identity() ) )
             {
@@ -347,7 +345,7 @@ public class PreferencesEntityStoreMixin
         }
     }
 
-    public StateCommitter apply( final Iterable<EntityState> state, final String version )
+    public StateCommitter applyChanges( final Iterable<EntityState> state, final String version )
     {
         return new StateCommitter()
         {
