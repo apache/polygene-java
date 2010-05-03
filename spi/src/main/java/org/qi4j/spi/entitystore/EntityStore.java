@@ -19,15 +19,16 @@ package org.qi4j.spi.entitystore;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.structure.ModuleSPI;
 
 /**
  * Interface that must be implemented by store for persistent state of EntityComposites.
  */
 public interface EntityStore
 {
-    EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module );
+    EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module );
 
-    EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, Module module );
+    EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI module );
 
     interface EntityStateVisitor
     {

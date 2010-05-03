@@ -20,6 +20,7 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.structure.ModuleSPI;
 
 /**
  * JAVADOC
@@ -29,10 +30,10 @@ public final class DefaultEntityStoreUnitOfWork
 {
     private EntityStoreSPI entityStoreSPI;
     private String identity;
-    private Module module;
+    private ModuleSPI module;
     private LinkedList<EntityState> states = new LinkedList<EntityState>();
 
-    public DefaultEntityStoreUnitOfWork( EntityStoreSPI entityStoreSPI, String identity, Module module )
+    public DefaultEntityStoreUnitOfWork( EntityStoreSPI entityStoreSPI, String identity, ModuleSPI module )
     {
         this.entityStoreSPI = entityStoreSPI;
         this.identity = identity;
@@ -44,7 +45,7 @@ public final class DefaultEntityStoreUnitOfWork
         return identity;
     }
 
-    public Module module()
+    public ModuleSPI module()
     {
         return module;
     }

@@ -16,16 +16,15 @@ package org.qi4j.spi.entitystore;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.structure.ModuleSPI;
 
 /**
  * Concern that helps EntityStores do concurrent modification checks.
@@ -37,32 +36,32 @@ import org.qi4j.spi.entity.EntityState;
  * have to check with the underlying store what the current version is.
  */
 public abstract class ConcurrentModificationCheckConcern
-        extends ConcernOf<EntityStore>
-        implements EntityStore
+    extends ConcernOf<EntityStore>
+    implements EntityStore
 {
     @This
     private EntityStateVersions versions;
     @Structure
     private Qi4j api;
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
     {
         final EntityStoreUnitOfWork uow = next.newUnitOfWork( usecase, module );
         return new ConcurrentCheckingEntityStoreUnitOfWork( uow, api.dereference( versions ), module );
     }
 
     private class ConcurrentCheckingEntityStoreUnitOfWork
-            implements EntityStoreUnitOfWork
+        implements EntityStoreUnitOfWork
     {
         private final EntityStoreUnitOfWork uow;
         private EntityStateVersions versions;
-        private Module module;
+        private ModuleSPI module;
 
         private List<EntityState> loaded = new ArrayList<EntityState>();
 
         public ConcurrentCheckingEntityStoreUnitOfWork( EntityStoreUnitOfWork uow,
                                                         EntityStateVersions versions,
-                                                        Module module
+                                                        ModuleSPI module
         )
         {
             this.uow = uow;
@@ -76,13 +75,13 @@ public abstract class ConcurrentModificationCheckConcern
         }
 
         public EntityState newEntityState( EntityReference anIdentity, EntityDescriptor entityDescriptor )
-                throws EntityStoreException
+            throws EntityStoreException
         {
             return uow.newEntityState( anIdentity, entityDescriptor );
         }
 
         public StateCommitter applyChanges()
-                throws EntityStoreException
+            throws EntityStoreException
         {
             versions.checkForConcurrentModification( loaded, module );
 
@@ -117,7 +116,7 @@ public abstract class ConcurrentModificationCheckConcern
         }
 
         public EntityState getEntityState( EntityReference anIdentity )
-                throws EntityStoreException, EntityNotFoundException
+            throws EntityStoreException, EntityNotFoundException
         {
             EntityState entityState = uow.getEntityState( anIdentity );
             versions.rememberVersion( entityState.identity(), entityState.version() );

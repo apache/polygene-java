@@ -21,10 +21,10 @@ import java.util.WeakHashMap;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.structure.ModuleSPI;
 
 /**
  * JAVADOC
@@ -36,7 +36,7 @@ public interface EntityStateVersions
 
     void rememberVersion( EntityReference identity, String version );
 
-    void checkForConcurrentModification( Iterable<EntityState> loaded, Module module )
+    void checkForConcurrentModification( Iterable<EntityState> loaded, ModuleSPI module )
         throws ConcurrentEntityStateModificationException;
 
     class EntityStateVersionsMixin
@@ -60,7 +60,7 @@ public interface EntityStateVersions
             versions.put( identity, version );
         }
 
-        public synchronized void checkForConcurrentModification( Iterable<EntityState> loaded, Module module )
+        public synchronized void checkForConcurrentModification( Iterable<EntityState> loaded, ModuleSPI module )
             throws ConcurrentEntityStateModificationException
         {
             List<EntityReference> changed = null;
