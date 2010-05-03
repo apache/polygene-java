@@ -211,6 +211,11 @@ public final class ValueCompositeType
                     // Didn't work, throw exception
                     throw e;
                 }
+                catch( RuntimeException e1 )
+                {
+                    // Didn't work, throw the exception
+                    throw e;
+                }
             }
         }
 
