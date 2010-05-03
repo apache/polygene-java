@@ -12,7 +12,6 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.Activatable;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityDescriptor;
 import org.qi4j.spi.entity.EntityState;
@@ -21,6 +20,7 @@ import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreSPI;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.spi.structure.ModuleSPI;
 
 public class NeoEntityStoreMixin
     implements Activatable, EntityStore, EntityStoreSPI
@@ -54,12 +54,12 @@ public class NeoEntityStoreMixin
         neo.shutdown();
     }
 
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
     {
         return new NeoEntityStoreUnitOfWork( neo, indexService, newUnitOfWorkId(), module );
     }
 
-    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, Module module )
+    public EntityStoreUnitOfWork visitEntityStates( EntityStateVisitor visitor, ModuleSPI module )
     {
         NeoEntityStoreUnitOfWork uow = new NeoEntityStoreUnitOfWork( neo, indexService, newUnitOfWorkId(), module );
 
