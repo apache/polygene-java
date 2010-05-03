@@ -145,7 +145,7 @@ public class ConstraintViolationException
      */
     public String[] getLocalizedMessages( ResourceBundle bundle )
     {
-        String pattern = "Constraint violation in {0}.{1} for method {3} with constraint {4}, for value ''{5}''";
+        String pattern = "Constraint violation in {0}.{1} for method {3} with constraint \"{4}({6})\", for value ''{5}''";
 
         ArrayList<String> list = new ArrayList<String>();
         for (ConstraintViolation violation : constraintViolations)
@@ -176,6 +176,7 @@ public class ConstraintViolationException
             MessageFormat format = new MessageFormat( pattern, locale );
 
             Annotation annotation = violation.constraint();
+            String name = violation.name();
             Object value = violation.value();
             Object[] args = new String[]
                     {
@@ -184,7 +185,8 @@ public class ConstraintViolationException
                             mixinTypeName,
                             methodName,
                             annotation.toString(),
-                            "" + value
+                            "" + value,
+                            name
                     };
             StringBuffer text = new StringBuffer();
             format.format( args, text, null );
