@@ -289,6 +289,32 @@ public class CollectionTypeTest
         assertEquals( bigDecimalCollection(), result );
     }
 
+    @Test
+    public void givenJsonOfBigIntegerCollectionWithQuotesWhenDeserializingExpectCorrectValueOutput()
+        throws Exception
+    {
+        TypeName numberTypeName = TypeName.nameOf( BigInteger.class );
+        ValueType collectedType = new NumberType( numberTypeName );
+        TypeName typeName = TypeName.nameOf( Collection.class );
+        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        Object json = new JSONArray( bigIntegerJsonWithQuotes() );
+        ArrayList<BigDecimal> result = (ArrayList<BigDecimal>) collectionType.fromJSON( json, null );
+        assertEquals( bigIntegerCollection(), result );
+    }
+
+    @Test
+    public void givenJsonOfBigDecimalCollectionWithQuotesWhenDeserializingExpectCorrectValueOutput()
+        throws Exception
+    {
+        TypeName numberTypeName = TypeName.nameOf( BigDecimal.class );
+        ValueType collectedType = new NumberType( numberTypeName );
+        TypeName typeName = TypeName.nameOf( Collection.class );
+        CollectionType collectionType = new CollectionType( typeName, collectedType );
+        Object json = new JSONArray( bigDecimalJsonWithQuotes() );
+        ArrayList<BigDecimal> result = (ArrayList<BigDecimal>) collectionType.fromJSON( json, null );
+        assertEquals( bigDecimalCollection(), result );
+    }
+
     private String byteJson()
     {
         return "[9,null,-12,-12,127,-128,73]";
@@ -401,6 +427,11 @@ public class CollectionTypeTest
         return "[-1,0,1,null,10,-1827368263823729372397239829332,2398723982982379827373972398723]";
     }
 
+    private String bigIntegerJsonWithQuotes()
+    {
+        return "[\"-1\",\"0\",\"1\",null,\"10\",\"-1827368263823729372397239829332\",\"2398723982982379827373972398723\"]";
+    }
+
     private Collection<BigInteger> bigIntegerCollection()
     {
         Collection<BigInteger> value = new ArrayList<BigInteger>();
@@ -417,6 +448,11 @@ public class CollectionTypeTest
     private String bigDecimalJson()
     {
         return "[1.2,3.4,null,5.6]";
+    }
+
+    private String bigDecimalJsonWithQuotes()
+    {
+        return "[\"1.2\",\"3.4\",null,\"5.6\"]";
     }
 
     private Collection<BigDecimal> bigDecimalCollection()
