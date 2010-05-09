@@ -63,6 +63,6 @@ public final class BooleanType
     public Object fromJSON( Object json, Module module )
         throws JSONException
     {
-        return (Boolean) json;
+        return json;
     }
 }

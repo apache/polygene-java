@@ -18,6 +18,7 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.json.JSONWriter;
 import org.qi4j.api.common.TypeName;
 import org.qi4j.api.structure.Module;
@@ -58,52 +59,23 @@ public final class NumberType
     public Object toJSON( Object value )
         throws JSONException
     {
-        Number number = (Number) value;
-        if( type.isClass( Integer.class ) )
-        {
-            return number.longValue();
-        }
-        else if( type.isClass( Long.class ) )
-        {
-            return number.longValue();
-        }
-        else if( type.isClass( Double.class ) )
-        {
-            return number.doubleValue();
-        }
-        else if( type.isClass( Float.class ) )
-        {
-            return number.doubleValue();
-        }
-        else if( type.isClass( Short.class ) )
-        {
-            return number.longValue();
-        }
-        else if( type.isClass( BigDecimal.class ) )
-        {
-            return ( (BigDecimal) number ).toPlainString();
-        }
-        else if( type.isClass( BigInteger.class ) )
-        {
-            return number.toString();
-        }
-        else
-        {
-            throw new IllegalArgumentException( "Value is not a number:" + value );
-        }
+        return value;
     }
 
     public Object fromJSON( Object json, Module module )
     {
+        if( json == JSONObject.NULL )
+        {
+            return null;
+        }
         if( type.isClass( BigDecimal.class ) )
         {
-            return new BigDecimal( ( (String) json ) );
+            return new BigDecimal( "" + json );
         }
         else if( type.isClass( BigInteger.class ) )
         {
-            return new BigInteger( (String) json );
+            return new BigInteger( "" + json );
         }
-
         Number number = (Number) json;
 
         if( type.isClass( Integer.class ) )
@@ -125,6 +97,10 @@ public final class NumberType
         else if( type.isClass( Short.class ) )
         {
             return number.shortValue();
+        }
+        else if( type.isClass( Byte.class ) )
+        {
+            return number.byteValue();
         }
 
         throw new IllegalStateException( "Unknown number type:" + type );

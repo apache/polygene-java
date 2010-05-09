@@ -94,13 +94,13 @@ public final class CollectionType
         JSONArray array = (JSONArray) json;
 
         Collection<Object> coll;
-        if( type().isClass( List.class ) )
+        if( type().isClass( Set.class ) )
         {
-            coll = new ArrayList<Object>();
+            coll = new LinkedHashSet<Object>();
         }
         else
         {
-            coll = new LinkedHashSet<Object>();
+            coll = new ArrayList<Object>();
         }
 
         for( int i = 0; i < array.length(); i++ )
