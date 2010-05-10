@@ -17,7 +17,6 @@ package org.qi4j.runtime.structure;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.runtime.entity.EntityModel;
 
 /**
@@ -47,9 +46,9 @@ class EntityFinder
             @Override
             public void visit( EntityModel entityModel )
             {
-                if( EntityComposite.class.isAssignableFrom( mixinType ) )
+                if( mixinType.equals( entityModel.type() ) )
                 {
-                    if( mixinType.equals( entityModel.type() ) && entityModel.visibility() == visibility )
+                    if( entityModel.visibility() == visibility )
                     {
                         modules.add( moduleInstance );
                         models.add( entityModel );
