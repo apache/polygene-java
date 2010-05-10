@@ -1,6 +1,10 @@
 target/
 .idea/
 .idea/*
+.idea/copyright/*
+.idea/dictionaries/*
+.idea/inspectionProfiles/*
+.idea/libraries/*
 derby.log
 qi4j.data.db
 qi4j.data.lg

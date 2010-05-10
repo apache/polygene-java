@@ -19,6 +19,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -79,14 +83,35 @@ public class PreferencesEntityStoreMixin
     private Preferences root;
     protected String uuid;
     private int count;
+    public Logger logger;
+    public ScheduledExecutorService reloadExecutor;
 
     public void activate()
         throws Exception
     {
         root = getApplicationRoot();
-        Logger.getLogger( PreferencesEntityStoreService.class.getName() )
-            .info( "Preferences store:" + root.absolutePath() );
+        logger = Logger.getLogger( PreferencesEntityStoreService.class.getName() );
+        logger.info( "Preferences store:" + root.absolutePath() );
         uuid = UUID.randomUUID().toString() + "-";
+
+        // Reload underlying store every 60 seconds
+        reloadExecutor = Executors.newScheduledThreadPool( 1 );
+        reloadExecutor.scheduleAtFixedRate( new Runnable()
+        {
+            public void run()
+            {
+                try
+                {
+                    synchronized (root)
+                    {
+                        root.sync();
+                    }
+                } catch (BackingStoreException e)
+                {
+                    logger.log( Level.WARNING, "Could not reload preferences", e );
+                }
+            }
+        }, 0, 60, TimeUnit.SECONDS);
     }
 
     private Preferences getApplicationRoot()
@@ -112,6 +137,7 @@ public class PreferencesEntityStoreMixin
     public void passivate()
         throws Exception
     {
+        reloadExecutor.shutdown();
     }
 
     public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
@@ -353,25 +379,28 @@ public class PreferencesEntityStoreMixin
             {
                 try
                 {
-                    for( EntityState entityState : state )
+                    synchronized(root)
                     {
-                        DefaultEntityState state = (DefaultEntityState) entityState;
-                        if( state.status().equals( EntityStatus.NEW ) )
+                        for( EntityState entityState : state )
                         {
-                            Preferences entityPrefs = root.node( state.identity().identity() );
-                            writeEntityState( state, entityPrefs, version );
+                            DefaultEntityState state = (DefaultEntityState) entityState;
+                            if( state.status().equals( EntityStatus.NEW ) )
+                            {
+                                Preferences entityPrefs = root.node( state.identity().identity() );
+                                writeEntityState( state, entityPrefs, version );
+                            }
+                            else if( state.status().equals( EntityStatus.UPDATED ) )
+                            {
+                                Preferences entityPrefs = root.node( state.identity().identity() );
+                                writeEntityState( state, entityPrefs, version );
+                            }
+                            else if( state.status().equals( EntityStatus.REMOVED ) )
+                            {
+                                root.node( state.identity().identity() ).removeNode();
+                            }
                         }
-                        else if( state.status().equals( EntityStatus.UPDATED ) )
-                        {
-                            Preferences entityPrefs = root.node( state.identity().identity() );
-                            writeEntityState( state, entityPrefs, version );
-                        }
-                        else if( state.status().equals( EntityStatus.REMOVED ) )
-                        {
-                            root.node( state.identity().identity() ).removeNode();
-                        }
+                        root.flush();
                     }
-                    root.flush();
                 }
                 catch( BackingStoreException e )
                 {
@@ -525,4 +554,5 @@ public class PreferencesEntityStoreMixin
     {
         return uuid + Integer.toHexString( count++ );
     }
+
 }

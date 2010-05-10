@@ -28,6 +28,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.QueryResultIterable;
 import com.google.appengine.api.datastore.ReadPolicy;
+import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.datastore.Transaction;
 import java.io.IOException;
 import java.io.Reader;
@@ -66,10 +67,22 @@ public class GaeEntityStoreMixin
     public void activate()
         throws Exception
     {
+        GaeEntityStoreConfiguration conf = config.configuration();
         // eventually consistent reads with a 5 second deadline
-        DatastoreServiceConfig configuration = withReadPolicy( new ReadPolicy( ReadPolicy.Consistency.EVENTUAL ) ).deadline( 5.0 );
+        DatastoreServiceConfig configuration =
+            withReadPolicy( new ReadPolicy( ReadPolicy.Consistency.valueOf( conf.readPolicy().get().toUpperCase() ) ) )
+                .deadline( conf.deadline().get() );
         datastore = DatastoreServiceFactory.getDatastoreService( configuration );
-        entityKind = config.configuration().entityKind().get();
+        entityKind = conf.entityKind().get();
+        System.out.println( "\nActivating Google App Engine Store" +
+                            "\n----------------------------------" +
+                            "\n      Read Policy: " + conf.readPolicy().get() +
+                            "\n         Deadline: " + conf.deadline().get() +
+                            "\n      Entity Kind: " + entityKind +
+                            "\n        Datastore: " + datastore +
+                            "\n    Configuration: " + configuration +
+                            "\n"
+        );
     }
 
     public void passivate()
@@ -82,21 +95,16 @@ public class GaeEntityStoreMixin
         throws EntityStoreException
     {
 
-        final Transaction transaction = datastore.beginTransaction();
         try
         {
             Key key = KeyFactory.createKey( entityKind, ref.toURI() );
-            Entity entity = datastore.get( transaction, key );
-            byte[] serializedState = (byte[]) entity.getProperty( "value" );
+            Entity entity = datastore.get( key );
+            Text serializedState = (Text) entity.getProperty( "value" );
             if( serializedState == null )
             {
                 throw new EntityNotFoundException( ref );
             }
-            return new StringReader( new String( serializedState, "UTF-8" ) );
-        }
-        catch( IOException e )
-        {
-            throw new EntityStoreException( e );
+            return new StringReader( serializedState.getValue() );
         }
         catch( com.google.appengine.api.datastore.EntityNotFoundException e )
         {
@@ -107,72 +115,21 @@ public class GaeEntityStoreMixin
 
     public void applyChanges( MapChanges changes )
         throws IOException
+
     {
         final Transaction transaction = datastore.beginTransaction();
         try
         {
-            changes.visitMap( new MapChanger()
-            {
-                public Writer newEntity( final EntityReference ref, final EntityType entityType )
-                    throws IOException
-                {
-                    return new StringWriter( 1000 )
-                    {
-                        @Override
-                        public void close()
-                            throws IOException
-                        {
-                            super.close();
-                            byte[] stateArray = toString().getBytes( "UTF-8" );
-                            Key key = KeyFactory.createKey( entityType.uri(), ref.toURI() );
-                            Entity entity = new Entity( key );
-                            entity.setUnindexedProperty( "value", stateArray );
-                            entity.setProperty( "ref", ref.identity() );
-                            entity.setProperty( "type", entityType.uri() );
-                            datastore.put( transaction, entity );
-                        }
-                    };
-                }
-
-                public Writer updateEntity( final EntityReference ref, final EntityType entityType )
-                    throws IOException
-                {
-                    return new StringWriter( 1000 )
-                    {
-                        @Override
-                        public void close()
-                            throws IOException
-                        {
-                            super.close();
-                            byte[] stateArray = toString().getBytes( "UTF-8" );
-                            Key key = KeyFactory.createKey( entityType.uri(), ref.toURI() );
-                            Entity entity = new Entity( key );
-                            entity.setUnindexedProperty( "value", stateArray );
-                            entity.setProperty( "ref", ref.identity() );
-                            entity.setProperty( "type", entityType.uri() );
-                            datastore.put( transaction, entity );
-                        }
-                    };
-                }
-
-                public void removeEntity( EntityReference ref, EntityType entityType )
-                    throws EntityNotFoundException
-                {
-                    Key key = KeyFactory.createKey( entityType.uri(), ref.toURI() );
-                    datastore.delete( transaction, key );
-                }
-            } );
-
+            changes.visitMap( new GaeMapChanger( transaction ) );
             transaction.commit();
         }
-        catch( Exception e )
+        catch( RuntimeException e )
         {
-            transaction.rollback();
-            if( e instanceof IOException )
+            if( transaction.isActive() )
             {
-                throw (IOException) e;
+                transaction.rollback();
             }
-            else if( e instanceof EntityStoreException )
+            if( e instanceof EntityStoreException )
             {
                 throw (EntityStoreException) e;
             }
@@ -187,20 +144,71 @@ public class GaeEntityStoreMixin
 
     public void visitMap( MapEntityStoreVisitor visitor )
     {
-        try
+        Query query = new Query();
+        PreparedQuery preparedQuery = datastore.prepare( query );
+        QueryResultIterable<Entity> iterable = preparedQuery.asQueryResultIterable();
+        for( Entity entity : iterable )
         {
-            Query query = new Query();
-            PreparedQuery preparedQuery = datastore.prepare( query );
-            QueryResultIterable<Entity> iterable = preparedQuery.asQueryResultIterable();
-            for( Entity entity : iterable )
-            {
-                byte[] serializedState = (byte[]) entity.getProperty( "value" );
-                visitor.visitEntity( new StringReader( new String( serializedState, "UTF-8" ) ) );
-            }
+            Text serializedState = (Text) entity.getProperty( "value" );
+            visitor.visitEntity( new StringReader( serializedState.getValue() ) );
         }
-        catch( IOException e )
+    }
+
+    private class GaeMapChanger
+        implements MapChanger
+    {
+        private final Transaction transaction;
+
+        public GaeMapChanger( Transaction transaction )
         {
-            throw new EntityStoreException( e );
+            this.transaction = transaction;
+        }
+
+        public Writer newEntity( final EntityReference ref, final EntityType entityType )
+        {
+            return new StringWriter( 1000 )
+            {
+                @Override
+                public void close()
+                    throws IOException
+                {
+                    super.close();
+                    Key key = KeyFactory.createKey( entityKind, ref.toURI() );
+                    Entity entity = new Entity( key );
+                    Text value = new Text( toString() );
+                    entity.setUnindexedProperty( "value", value );
+                    entity.setProperty( "ref", ref.identity() );
+                    entity.setProperty( "type", entityType.uri() );
+                    datastore.put( transaction, entity );
+                }
+            };
+        }
+
+        public Writer updateEntity( final EntityReference ref, final EntityType entityType )
+        {
+            return new StringWriter( 1000 )
+            {
+                @Override
+                public void close()
+                    throws IOException
+                {
+                    super.close();
+                    Key key = KeyFactory.createKey( entityKind, ref.toURI() );
+                    Entity entity = new Entity( key );
+                    Text value = new Text( toString() );
+                    entity.setUnindexedProperty( "value", value );
+                    entity.setProperty( "ref", ref.identity() );
+                    entity.setProperty( "type", entityType.uri() );
+                    datastore.put( transaction, entity );
+                }
+            };
+        }
+
+        public void removeEntity( EntityReference ref, EntityType entityType )
+            throws EntityNotFoundException
+        {
+            Key key = KeyFactory.createKey( entityKind, ref.toURI() );
+            datastore.delete( transaction, key );
         }
     }
 }
