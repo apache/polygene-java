@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module xmlns="http://www.qi4j.org/schemas/2008/dev-status/1">
   <status>
-    <codebase>early</codebase>
+    <codebase>beta</codebase>
     <!--none,early,beta,stable,mature-->
     <documentation>none</documentation>
     <!-- none, brief, good, complete -->
