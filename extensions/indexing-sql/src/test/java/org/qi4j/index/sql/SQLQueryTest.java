@@ -28,6 +28,7 @@ import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.bootstrap.TransientDeclaration;
 import org.qi4j.bootstrap.ValueDeclaration;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.prefs.PreferenceEntityStoreAssembler;
 import org.qi4j.index.sql.RDBConfiguration;
 import org.qi4j.index.sql.assembly.SQLIndexingAssembler;
 import org.qi4j.spi.structure.ApplicationSPI;
@@ -44,11 +45,15 @@ public class SQLQueryTest extends AbstractQueryTest
    @Override
    protected void setupTest(ModuleAssembly mainModule) throws AssemblyException
    {
+      PreferenceEntityStoreAssembler pAss = new PreferenceEntityStoreAssembler(Visibility.module);
+      ModuleAssembly prefModule = mainModule.layerAssembly().moduleAssembly("pref_module");
+      prefModule.addEntities(RDBConfiguration.class).visibleIn(Visibility.application);
+      pAss.assemble(prefModule);
+
       SQLIndexingAssembler ass = new SQLIndexingAssembler();
       ass.assemble(mainModule);
       
       mainModule.addServices(MemoryEntityStoreService.class, UuidIdentityGeneratorService.class).visibleIn(Visibility.application);
-      mainModule.addEntities(RDBConfiguration.class).visibleIn(Visibility.application);
    }
    
    @Override

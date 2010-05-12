@@ -19,6 +19,7 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.prefs.PreferenceEntityStoreAssembler;
 import org.qi4j.index.sql.RDBConfiguration;
 import org.qi4j.index.sql.assembly.SQLIndexingAssembler;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
@@ -35,6 +36,11 @@ public class SQLEntityFinderTest extends AbstractEntityFinderTest
    @Override
    protected void setupTest(ModuleAssembly mainModule) throws AssemblyException
    {
+      PreferenceEntityStoreAssembler pAss = new PreferenceEntityStoreAssembler(Visibility.module);
+      ModuleAssembly prefModule = mainModule.layerAssembly().moduleAssembly("pref_module");
+      prefModule.addEntities(RDBConfiguration.class).visibleIn(Visibility.application);
+      pAss.assemble(prefModule);
+      
       SQLIndexingAssembler ass = new SQLIndexingAssembler();
       ass.assemble(mainModule);
       
