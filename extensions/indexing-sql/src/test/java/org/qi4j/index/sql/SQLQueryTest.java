@@ -38,7 +38,7 @@ import org.qi4j.test.indexing.AbstractQueryTest;
  *
  * @author Stanislav Muhametsin
  */
-public class SqlQueryTest extends AbstractQueryTest
+public class SQLQueryTest extends AbstractQueryTest
 {
 
    @Override

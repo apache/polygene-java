@@ -29,7 +29,7 @@ import org.qi4j.test.indexing.AbstractEntityFinderTest;
  * @author Stanislav Muhametsin
  *
  */
-public class SqlEntityFinderTest extends AbstractEntityFinderTest
+public class SQLEntityFinderTest extends AbstractEntityFinderTest
 {
  
    @Override
