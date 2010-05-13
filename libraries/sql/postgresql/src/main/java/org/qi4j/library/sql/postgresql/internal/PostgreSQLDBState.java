@@ -57,7 +57,9 @@ public interface PostgreSQLDBState
    Property<Map<String, Set<QualifiedName>>> entityUsedQNames();
    
    /**
-    * Information about next primary keys for all used tables. Table name is the key.
+    * Information about next primary keys for all used tables. Table name is the key. Each primary key needs to be specifically kept cached like this,
+    * because it is quite damn hard, if not impossible, to use auto-generated keys with batch-updates (and batch-updates are very efficient when committing
+    * changed entity states to DB).
     * @return Information about next primary keys for all used tables.
     */
    @Optional
@@ -90,4 +92,7 @@ public interface PostgreSQLDBState
     */
    @Optional
    Property<Map<Class<?>, Integer>> javaTypes2SQLTypes();
+   
+   @Optional
+   Property<Map<String, Integer>> enumPKs();
 }

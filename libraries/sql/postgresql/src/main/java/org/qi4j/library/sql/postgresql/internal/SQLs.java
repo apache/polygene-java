@@ -99,7 +99,17 @@ public class SQLs
    public static final String APP_VERSION_PK_COLUMN_NAME = "app_version";
    
    public static final String APP_VERSION_PK_COLUMN_DATA_TYPE = "VARCHAR(1024)";
-     
+   
+   public static final String ENUM_LOOKUP_TABLE_NAME = "enum_lookup";
+   
+   public static final String ENUM_LOOKUP_TABLE_PK_COLUMN_NAME = "enum_id";
+   
+   public static final String ENUM_LOOKUP_TABLE_PK_COLUMN_DATA_TYPE = "INTEGER";
+   
+   public static final String ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME = "enum_value";
+   
+   public static final String ENUM_LOOKUP_TABLE_ENUM_VALUE_DATA_TYPE = "VARCHAR(1024)";
+       
    public static final String UPDATE_ENTITY_TABLE = //
       "UPDATE " + "%s" + "." + ENTITY_TABLE_NAME + "\n" + //
       "SET " + ENTITY_TABLE_IDENTITY_COLUMN_NAME + " = ?, " + //

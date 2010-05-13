@@ -529,7 +529,19 @@ public class PostgreSQLIndexing implements SQLIndexing
          primitiveType = ((ParameterizedType)primitiveType).getRawType();
       }
 
-      this._sqlTypeHelper.addPrimitiveToPS(ps, nextFreeIndex, primitive, primitiveType);
+      if (primitiveType instanceof Class<?> && Enum.class.isAssignableFrom((Class<?>)primitiveType))
+      {
+         if (primitive == null)
+         {
+            ps.setNull(nextFreeIndex, Types.INTEGER);
+         } else
+         {
+            ps.setInt(nextFreeIndex, this._state.enumPKs().get().get(QualifiedName.fromClass((Class<?>)primitiveType, primitive.toString()).toString()));
+         }
+      } else
+      {
+         this._sqlTypeHelper.addPrimitiveToPS(ps, nextFreeIndex, primitive, primitiveType);
+      }
    }
    
    private void storeVCClassIDUsingPS(PreparedStatement ps, Integer nextFreeIndex, Object vc) throws SQLException
