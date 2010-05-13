@@ -35,8 +35,9 @@ public class SQLActivatable implements Activatable
    @Override
    public void activate() throws Exception
    {
-      Connection connection = this._startup.createAndInitConnection();
+      Connection connection = this._startup.createConnection();
       this._state.connection().set(connection);
+      this._startup.initConnection(connection);
    }
    
    @Override
