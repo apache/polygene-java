@@ -217,23 +217,47 @@ public class PreferencesEntityStoreMixin
                     {
                         if( propertyType.type().name().equals( "java.lang.Long" ) )
                         {
-                            properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getLong( propertyDescriptor.qualifiedName().name(), (Long) propertyDescriptor
-                                .initialValue() ) );
+                           properties.put( propertyDescriptor.qualifiedName(),
+                                this.getNumber(propsPrefs, propertyDescriptor, new NumberParser<Long>()
+                                {
+                                    public Long parse(String str)
+                                    {
+                                        return Long.parseLong(str);
+                                    }
+                                }));
                         }
                         else if( propertyType.type().name().equals( "java.lang.Integer" ) )
                         {
-                            properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getInt( propertyDescriptor.qualifiedName().name(), (Integer) propertyDescriptor
-                                .initialValue() ) );
+                           properties.put( propertyDescriptor.qualifiedName(),
+                                 this.getNumber(propsPrefs, propertyDescriptor, new NumberParser<Integer>()
+                                 {
+                                     public Integer parse(String str)
+                                     {
+                                         return Integer.parseInt(str);
+                                     }
+                                 }));
                         }
                         else if( propertyType.type().name().equals( "java.lang.Double" ) )
                         {
-                            properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getDouble( propertyDescriptor
-                                .qualifiedName().name(), (Double) propertyDescriptor.initialValue() ) );
+                           properties.put( propertyDescriptor.qualifiedName(),
+                                 this.getNumber(propsPrefs, propertyDescriptor, new NumberParser<Double>()
+                                 {
+                                     public Double parse(String str)
+                                     {
+                                         return Double.parseDouble(str);
+                                     }
+                                 }));
                         }
                         else if( propertyType.type().name().equals( "java.lang.Float" ) )
                         {
-                            properties.put( propertyDescriptor.qualifiedName(), propsPrefs.getFloat( propertyDescriptor.qualifiedName().name(), (Float) propertyDescriptor
-                                .initialValue() ) );
+                           properties.put( propertyDescriptor.qualifiedName(),
+                                 this.getNumber(propsPrefs, propertyDescriptor, new NumberParser<Float>()
+                                 {
+                                     public Float parse(String str)
+                                     {
+                                         return Float.parseFloat(str);
+                                     }
+                                 }));
                         }
                         else
                         {
@@ -553,6 +577,23 @@ public class PreferencesEntityStoreMixin
     protected String newUnitOfWorkId()
     {
         return uuid + Integer.toHexString( count++ );
+    }
+    
+    private interface NumberParser<T>
+    {
+       T parse(String str);
+    }
+    
+    private <T> T getNumber(Preferences prefs, PropertyTypeDescriptor pDesc, NumberParser<T> parser)
+    {
+       Object initialValue = pDesc.initialValue();
+       String str = prefs.get(pDesc.qualifiedName().name(), initialValue == null ? null : initialValue.toString());
+       T result = null;
+       if (str != null)
+       {
+          result = parser.parse(str);
+       }
+       return result;
     }
 
 }
