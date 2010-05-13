@@ -19,7 +19,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.EntityStatus;
 
 /**
  * This is the interface used by SQL-Indexing whenever

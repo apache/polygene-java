@@ -44,6 +44,8 @@ public class PostgreSQLIndexExporter implements IndexExporter
    
    private static Map<Integer, String> _typeStrings;
    
+   private static final String SEPARATOR = "-----------------------------------------------";
+   
    static
    {
       _typeStrings = new HashMap<Integer, String>();
@@ -64,16 +66,48 @@ public class PostgreSQLIndexExporter implements IndexExporter
       _typeStrings.put(Types.VARCHAR, "VARCHAR");
    }
    
+   private static class ColumnInfo
+   {
+      private final String _name;
+      
+      private final Integer _sqlType;
+      
+      private final Integer _size;
+      
+      private final Integer _scale;
+      
+      private final String _nullable;
+      
+      private final String _defaultValue;
+      
+      public ColumnInfo(String name, Integer sqlType, Integer size, Integer scale, String nullable, String defaultValue)
+      {
+         this._name = name;
+         this._sqlType = sqlType;
+         this._size = size;
+         this._scale = scale;
+         this._nullable = nullable;
+         this._defaultValue = defaultValue;
+      }
+   }
+   
    private interface WriteProcessor
    {
       public void beginProcessSchemaInfo(String schemaName);
       public void endProcessSchemaInfo(String schemaName);
       
-      public void beginProcessTableInfo(String schemaName, String tableName, List<String> colNames, List<Integer> rowSQLTypes);
-      public void endProcessTableInfo(String schemaName, String tableName, List<String> colNames, List<Integer> rowSQLTypes);
+      public void beginProcessTableInfo(String schemaName, String tableName);
+      public void endProcessTableInfo(String schemaName, String tableName);
       
+      public void beginProcessColumns(String schemaName, String tableName);
+      public void beginProcessColumnInfo(String schemaName, String tableName, ColumnInfo colInfo);
+      public void endProcessColumnInfo(String schemaName, String tableName, ColumnInfo colInfo);
+      public void endProcessColumns(String schemaName, String tableName);
+      
+      public void beginProcessRows(String schemaName, String tableName);
       public void beginProcessRowInfo(String schemaName, String tableName, Object[] rowContents);
       public void endProcessRowInfo(String schemaName, String tableName, Object[] rowContents);
+      public void endProcessRows(String schemaName, String tableName);
    }
    
    @Override
@@ -83,13 +117,22 @@ public class PostgreSQLIndexExporter implements IndexExporter
       {
          this.export(new WriteProcessor()
          {
+            @Override
+            public void endProcessColumns(String schemaName, String tableName)
+            {
+               out.write("</columns>" + "\n");
+            }
             
             @Override
-            public void endProcessTableInfo(String schemaName, String tableName, List<String> colNames, List<Integer> rowSQLTypes)
+            public void endProcessRows(String schemaName, String tableName)
             {
-               out.write( //
-                     "</rows>" + "\n" + //
-                           "</table" + "\n");
+               out.write("</rows>" + "\n");
+            }
+            
+            @Override
+            public void endProcessTableInfo(String schemaName, String tableName)
+            {
+               out.write("</table>" + "\n");
             }
             
             @Override
@@ -105,28 +148,38 @@ public class PostgreSQLIndexExporter implements IndexExporter
             }
             
             @Override
-            public void beginProcessTableInfo(String schemaName, String tableName, List<String> colNames, List<Integer> rowSQLTypes)
+            public void endProcessColumnInfo(String schemaName, String tableName, ColumnInfo colInfo)
             {
-               out.write( //
-                     "<table name=\"" + tableName + "\">" + "\n" + //
-                           "<columns>" + "\n" //
-                     );
-               for (Integer x = 0; x < colNames.size(); ++x)
-               {
-                  out.write( //
-                        "<column name=\"" + colNames.get(x) + "\" colType=\"" + rowSQLTypes.get(x) + "\" colTypeName=\"" + _typeStrings.get(rowSQLTypes.get(x)) + "\" />" + "\n" //
-                        );
-               }
-               out.write( //
-                     "</columns>" + "\n" + //
-                           "<rows>" + "\n" //
-                     );
+            }
+            
+            @Override
+            public void beginProcessTableInfo(String schemaName, String tableName)
+            {
+               out.write("<table name=\"" + tableName + "\">" + "\n");
+            }
+            
+            @Override
+            public void beginProcessColumns(String schemaName, String tableName)
+            {
+               out.write("<columns>" + "\n");
+            }
+            
+            @Override
+            public void beginProcessColumnInfo(String schemaName, String tableName, ColumnInfo colInfo)
+            {
+               out.write("<column name=\"" + colInfo._name + "\" colType=\"" + colInfo._sqlType + "\" colSize=\"" + colInfo._size + "\" colScale=\"" + colInfo._scale + "\" nullable=\"" + colInfo._nullable + "\" default=\"" + colInfo._defaultValue + "\" />" + "\n");
             }
             
             @Override
             public void beginProcessSchemaInfo(String schemaName)
             {
-               out.write("<schema name=\"" + schemaName + "\">\n");
+               out.write("<schema name=\"" + schemaName + "\">" + "\n");
+            }
+            
+            @Override
+            public void beginProcessRows(String schemaName, String tableName)
+            {
+               out.write("<rows>" + "\n");
             }
             
             @Override
@@ -156,9 +209,9 @@ public class PostgreSQLIndexExporter implements IndexExporter
          {
             
             @Override
-            public void endProcessTableInfo(String schemaName, String tableName, List<String> colNames, List<Integer> rowSQLTypes)
+            public void endProcessTableInfo(String schemaName, String tableName)
             {
-               out.print("-----------------------------------------------" + "\n\n\n");
+               out.print("\n\n\n");
             }
             
             @Override
@@ -174,28 +227,57 @@ public class PostgreSQLIndexExporter implements IndexExporter
             }
             
             @Override
-            public void beginProcessTableInfo(String schemaName, String tableName, List<String> colNames, List<Integer> rowSQLTypes)
+            public void endProcessColumnInfo(String schemaName, String tableName, ColumnInfo colInfo)
             {
-               out.print("Table: " + tableName + "; Columns: ");
-               for (Integer x = 0; x < colNames.size(); ++x)
+               // TODO Auto-generated method stub
+               
+            }
+            
+            @Override
+            public void endProcessColumns(String schemaName, String tableName)
+            {
+               out.print(SEPARATOR + "\n" + SEPARATOR + "\n");
+            }
+            
+            @Override
+            public void endProcessRows(String schemaName, String tableName)
+            {
+               out.print(SEPARATOR + "\n" + SEPARATOR + "\n");
+            }
+            
+            private String parseSQLType(ColumnInfo colInfo)
+            {
+               Integer sqlType = colInfo._sqlType;
+               String basicType = _typeStrings.get(sqlType);
+               if (sqlType == Types.DECIMAL || sqlType == Types.NUMERIC)
                {
-                  out.print(colNames.get(x) + ":" + _typeStrings.get(rowSQLTypes.get(x)));
-                  if (x + 1 < colNames.size())
-                  {
-                     out.print(", ");
-                  }
-                  
+                  basicType = basicType + "(" + colInfo._size + ", " + colInfo._scale + ")";
+               } else if (sqlType == Types.VARCHAR || sqlType == Types.VARBINARY)
+               {
+                  basicType = basicType + "(" + colInfo._size + ")";
                }
-               out.print("\n" + "-----------------------------------------------" + "\n");
-               out.print("Contents:" + "\n" + "-----------------------------------------------" + "\n");
+               return basicType;
+            }
+            
+            @Override
+            public void beginProcessColumnInfo(String schemaName, String tableName, ColumnInfo colInfo)
+            {
+               
+               out.print(colInfo._name + ":" + this.parseSQLType(colInfo) + "[nullable:" + colInfo._nullable + "; default: " + colInfo._defaultValue + "]" + "\n");
+            }
+            
+            @Override
+            public void beginProcessTableInfo(String schemaName, String tableName)
+            {
+               out.print("Table: " + tableName + "\n");
             }
             
             @Override
             public void beginProcessSchemaInfo(String schemaName)
             {
                out.print( //
-                     "Schema: " + schemaName + "\n" + //
-                     "-----------------------------------------------" + "\n\n\n" //
+                     "\n\n" + "Schema: " + schemaName + "\n" + //
+                     SEPARATOR + "\n\n\n" //
                      );
             }
             
@@ -212,6 +294,18 @@ public class PostgreSQLIndexExporter implements IndexExporter
                   }
                }
                out.print("\n");
+            }
+            
+            @Override
+            public void beginProcessColumns(String schemaName, String tableName)
+            {
+               out.print(SEPARATOR + "\n" + SEPARATOR + "\n");
+            }
+            
+            @Override
+            public void beginProcessRows(String schemaName, String tableName)
+            {
+               
             }
          });
       } catch (SQLException sqle)
@@ -234,37 +328,60 @@ public class PostgreSQLIndexExporter implements IndexExporter
          while (rs.next())
          {
             String tableName = rs.getString(3);
-            List<String> colNames = new ArrayList<String>();
-            List<Integer> colTypes = new ArrayList<Integer>();
-            ResultSet rsCols = metaData.getColumns(null, schemaName, tableName, null);
+
+            
             try
             {
-               while (rsCols.next())
+               processor.beginProcessTableInfo(schemaName, tableName);
+               List<ColumnInfo> colInfos = new ArrayList<ColumnInfo>();
+               ResultSet rsCols = metaData.getColumns(null, schemaName, tableName, null);
+               try
                {
-                  colNames.add(rsCols.getString(4));
-                  colTypes.add(rsCols.getInt(5));
+                  while (rsCols.next())
+                  {
+                     String nullable = rsCols.getString(18);
+                     colInfos.add(new ColumnInfo(
+                           rsCols.getString(4),
+                           rsCols.getInt(5),
+                           rsCols.getInt(7),
+                           rsCols.getInt(9),
+                           nullable.length() > 0 ? Boolean.toString(nullable.equals("YES")) : "unknown",
+                           rsCols.getString(13)
+                           ));
+                  }
                }
-            }
-            finally
-            {
-               rsCols.close();
-            }
-            
-            colNames = Collections.unmodifiableList(colNames);
-            colTypes = Collections.unmodifiableList(colTypes);
-            
-            try
-            {
-               processor.beginProcessTableInfo(schemaName, tableName, colNames, colTypes);
+               finally
+               {
+                  rsCols.close();
+               }
+               try
+               {
+                  processor.beginProcessColumns(schemaName, tableName);
+                  for (ColumnInfo colInfo : colInfos)
+                  {
+                     try
+                     {
+                        processor.beginProcessColumnInfo(schemaName, tableName, colInfo);
+                     } finally
+                     {
+                        processor.endProcessColumnInfo(schemaName, tableName, colInfo);
+                     }
+                  }
+               } finally
+               {
+                  processor.endProcessColumns(schemaName, tableName);
+               }
+               
                String sql = "SELECT * FROM " + schemaName + "." + tableName;
                Statement stmt = connection.createStatement();
                ResultSet rowsRs = null;
                try
                {
                   rowsRs = stmt.executeQuery(sql);
+                  processor.beginProcessRows(schemaName, tableName);
                   while (rowsRs.next())
                   {
-                     Object[] rowContents = new Object[colNames.size()];
+                     Object[] rowContents = new Object[colInfos.size()];
                      for (Integer x = 0; x < rowContents.length; ++x)
                      {
                         rowContents[x] = rowsRs.getObject(x + 1);
@@ -280,6 +397,7 @@ public class PostgreSQLIndexExporter implements IndexExporter
                   }
                } finally
                {
+                  processor.endProcessRows(schemaName, tableName);
                   if (rowsRs != null)
                   {
                      rowsRs.close();
@@ -289,7 +407,7 @@ public class PostgreSQLIndexExporter implements IndexExporter
             }
             finally
             {
-               processor.endProcessTableInfo(schemaName, tableName, colNames, colTypes);
+               processor.endProcessTableInfo(schemaName, tableName);
             }
          }
       }

@@ -15,12 +15,17 @@
 
 package org.qi4j.library.sql.common;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import org.qi4j.api.common.QualifiedName;
+import org.qi4j.spi.entity.association.AssociationDescriptor;
+import org.qi4j.spi.entity.association.ManyAssociationDescriptor;
+import org.qi4j.spi.property.PropertyDescriptor;
 
 /**
  * A helper interface to encapsulate information about qualified name and how it appears in database.
@@ -53,14 +58,35 @@ public final class QNameInfo
    
    private final Boolean _isFinalTypePrimitive;
    
+   private final PropertyDescriptor _propertyDescriptor;
+   
+   private final AssociationDescriptor _associationDescriptor;
+   
+   private final ManyAssociationDescriptor _manyAssociationDescriptor;
+   
    private QNameInfo(
          QualifiedName qName, //
          QNameType qNameType, //
          List<Class<?>> collectionClasses, //
          String tableName, //
-         Type finalType //
+         Type finalType, //
+         PropertyDescriptor propertyDescriptor, //
+         AssociationDescriptor associationDescriptor, //
+         ManyAssociationDescriptor manyAssociationDescriptor //
          )
    {
+      if ((propertyDescriptor != null && associationDescriptor == null && manyAssociationDescriptor == null)
+           || (propertyDescriptor == null && associationDescriptor != null && manyAssociationDescriptor == null)
+           || (propertyDescriptor == null && associationDescriptor == null && manyAssociationDescriptor != null)
+            )
+      {
+         this._propertyDescriptor = propertyDescriptor;
+         this._associationDescriptor = associationDescriptor;
+         this._manyAssociationDescriptor = manyAssociationDescriptor;
+      } else
+      {
+         throw new IllegalArgumentException("Exactly one of property, association, or many-association descriptors must be non-null.");
+      }
       this._qName = qName;
       this._qNameType = qNameType;
       this._collectionClasses = (collectionClasses == null  || collectionClasses.size() == 0 ? EMPTY_COLL_CLASSES : collectionClasses);
@@ -153,6 +179,33 @@ public final class QNameInfo
    }
    
    /**
+    * Returns {@link PropertyDescriptor} associated with this property, if this qualified name info represents a property. Returns {@code null} otherwise.
+    * @return {@link PropertyDescriptor} if this qualified name info is associated with property, {@code null} otherwise.
+    */
+   public PropertyDescriptor getPropertyDescriptor()
+   {
+      return this._propertyDescriptor;
+   }
+   
+   /**
+    * Returns {@link AssociationDescriptor} associated with this association, if this qualified name info represents an association. Returns {@code null} otherwise.
+    * @return {@link AssociationDescriptor} if this qualified name info is associated with association, {@code null} otherwise.
+    */
+   public AssociationDescriptor getAssociationDescriptor()
+   {
+      return this._associationDescriptor;
+   }
+   
+   /**
+    * Returns {@link ManyAssociationDescriptor} associated with this many-association, if this qualified name info represents a many-association. Returns {@code null} otherwise.
+    * @return {@link ManyAssociationDescriptor} if this qualified name info is associated with many-association, {@code null} otherwise.
+    */
+   public ManyAssociationDescriptor getManyAssociationDescriptor()
+   {
+      return this._manyAssociationDescriptor;
+   }
+   
+   /**
     * Gets the type of represented qualified name: either {@link QNameType#PROPERTY} for properties, {@link QNameType#ASSOCIATION} for associations, or {@link QNameType#MANY_ASSOCIATION} for many-associations.
     * @return The type of represented qualified name: either {@link QNameType#PROPERTY}, {@link QNameType#ASSOCIATION}, or {@link QNameType#MANY_ASSOCIATION}.
     */
@@ -164,24 +217,33 @@ public final class QNameInfo
    /**
     * Creates information about specified qualified name which represents a property.
     * @param qName The qualified name of property.
-    * @param collectionClasses Possible collection classes, with outermost collection type being first in list, and innermost collection type last in list. May be {@code null} or empty list.
     * @param tableName The table name where the values of all instances of propertiy with this qualified name will be stored. May be {@code null} if it is to be decided later.
-    * @param finalType The non-collection type of this property.
+    * @param propertyDescriptor {@link PropertyDescriptor} of this property.
     * @return An object representing information about property with this qualified name, and how instances of this property are stored in database.
     */
    public static QNameInfo fromProperty( //
          QualifiedName qName, //
-         List<Class<?>> collectionClasses, //
          String tableName, //
-         Type finalType
+         PropertyDescriptor propertyDescriptor //
          )
    {
+      Type vType = propertyDescriptor.type();
+      List<Class<?>> collectionClasses = new ArrayList<Class<?>>();
+      while (vType instanceof ParameterizedType && Collection.class.isAssignableFrom((Class<?>) ((ParameterizedType) vType).getRawType()))
+      {
+         collectionClasses.add((Class<?>) ((ParameterizedType) vType).getRawType());
+         vType = ((ParameterizedType) vType).getActualTypeArguments()[0];
+      }
+      
       return new QNameInfo(
             qName,
             QNameType.PROPERTY,
             collectionClasses,
             tableName,
-            finalType
+            vType,
+            propertyDescriptor,
+            null,
+            null
             );
    }
    
@@ -189,13 +251,13 @@ public final class QNameInfo
     * Creates information about specified qualified name which represents an association.
     * @param qName The qualified name of the association.
     * @param tableName The table name where the values of all instances of association with this qualified name will be stored. May be {@code null} if it is to be decided later.
-    * @param assoTargetType The target type of the association.
+    * @param assoDescriptor {@link AssociationDescriptor} of this association.
     * @return An object representing information about association with this qualified name, and how instances of this association are stored in database.
     */
    public static QNameInfo fromAssociation( //
          QualifiedName qName, //
          String tableName, //
-         Type assoTargetType //
+         AssociationDescriptor assoDescriptor //
          )
    {
       return new QNameInfo(
@@ -203,7 +265,10 @@ public final class QNameInfo
             QNameType.ASSOCIATION,
             null,
             tableName,
-            assoTargetType
+            assoDescriptor.type(),
+            null,
+            assoDescriptor,
+            null
             );
    }
    
@@ -211,13 +276,13 @@ public final class QNameInfo
     * Creates information about specified qualified name which represents a many-association.
     * @param qName The qualified name of the many-association.
     * @param tableName The table name where the values of all instances of many-association with this qualified name will be stored. May be {@code null} if it is to be decided later.
-    * @param assoTargetType The target type of the many-association.
+    * @param manyAssoDescriptor {@link ManyAssociationDescriptor} of this many-association.
     * @return An object representing information about many-association with this qualified name, and how instances of this many-association are stored in database.
     */
    public static QNameInfo fromManyAssociation( //
          QualifiedName qName, //
          String tableName, //
-         Type assoTargetType
+         ManyAssociationDescriptor manyAssoDescriptor //
          )
    {
       return new QNameInfo(
@@ -225,7 +290,10 @@ public final class QNameInfo
             QNameType.MANY_ASSOCIATION,
             null,
             tableName,
-            assoTargetType
+            manyAssoDescriptor.type(),
+            null,
+            null,
+            manyAssoDescriptor
             );
    }
    

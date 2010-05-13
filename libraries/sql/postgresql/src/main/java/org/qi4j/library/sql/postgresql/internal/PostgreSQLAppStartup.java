@@ -54,8 +54,11 @@ import static org.qi4j.library.sql.postgresql.internal.SQLs.USED_QNAMES_TABLE_QN
 import static org.qi4j.library.sql.postgresql.internal.SQLs.USED_QNAMES_TABLE_TABLE_NAME_COLUMN_DATA_TYPE;
 import static org.qi4j.library.sql.postgresql.internal.SQLs.USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -64,6 +67,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -82,6 +86,7 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.structure.Application;
 import org.qi4j.index.reindexer.Reindexer;
 import org.qi4j.library.sql.api.SQLAppStartup;
+import org.qi4j.library.sql.api.SQLTypeInfo;
 import org.qi4j.library.sql.common.EntityTypeInfo;
 import org.qi4j.library.sql.common.QNameInfo;
 import org.qi4j.library.sql.common.ReindexingStrategy;
@@ -101,6 +106,12 @@ import org.qi4j.spi.value.ValueDescriptor;
  */
 public class PostgreSQLAppStartup implements SQLAppStartup
 {
+   
+   private interface SQLTypeCustomizer
+   {
+      String customizeType(Type propertyType, SQLTypeInfo sqlTypeInfo);
+   }
+   
    @Structure
    private Application _app;
    
@@ -116,6 +127,8 @@ public class PostgreSQLAppStartup implements SQLAppStartup
    
    private Map<Class<?>, String> _creationTypeStrings;
    
+   private Map<Class<?>, SQLTypeCustomizer> _customizableTypes;
+   
    public static final String DEFAULT_SCHEMA_NAME = "qi4j";
    
    private static final Logger _log = Logger.getLogger(PostgreSQLAppStartup.class.getName());
@@ -125,7 +138,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       Map<Class<?>, Integer> primitiveTypes = new HashMap<Class<?>, Integer>();
       primitiveTypes.put(Boolean.class, Types.BOOLEAN);
       primitiveTypes.put(Byte.class, Types.SMALLINT);
-      primitiveTypes.put(Short.class, Types.INTEGER);
+      primitiveTypes.put(Short.class, Types.SMALLINT);
       primitiveTypes.put(Integer.class, Types.INTEGER);
       primitiveTypes.put(Long.class, Types.BIGINT);
       primitiveTypes.put(Float.class, Types.REAL);
@@ -134,10 +147,16 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       primitiveTypes.put(Character.class, Types.INTEGER);
       primitiveTypes.put(String.class, Types.VARCHAR);
       primitiveTypes.put(Enum.class, Types.VARCHAR);
+      primitiveTypes.put(BigInteger.class, Types.NUMERIC);
+      primitiveTypes.put(BigDecimal.class, Types.NUMERIC);
       
       this._state.javaTypes2SQLTypes().set(primitiveTypes);
       
       // TODO make use of Qi4j's MinLength/MaxLength -styled constraints
+      // TODO some of the sizes of the values are quite improvised. Maybe allow user
+      // some control over it, for example via annotations?
+      // Like to lib-sql-api add annotation @SQLType(String) which would specify custom
+      // sql type
       this._creationTypeStrings = new HashMap<Class<?>, String>();
       this._creationTypeStrings.put(Boolean.class, "BOOLEAN");
       this._creationTypeStrings.put(Byte.class, "SMALLINT");
@@ -146,10 +165,47 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       this._creationTypeStrings.put(Long.class, "BIGINT");
       this._creationTypeStrings.put(Float.class, "REAL");
       this._creationTypeStrings.put(Double.class, "DOUBLE PRECISION");
-      this._creationTypeStrings.put(Date.class, "TIMESTAMP");
+      this._creationTypeStrings.put(Date.class, "TIMESTAMP WITH TIME ZONE");
       this._creationTypeStrings.put(Character.class, "INTEGER");
-      this._creationTypeStrings.put(String.class, "VARCHAR(10240)");
+      this._creationTypeStrings.put(String.class, "VARCHAR(1024)");
       this._creationTypeStrings.put(Enum.class, "VARCHAR(1024)");
+      this._creationTypeStrings.put(BigInteger.class, "NUMERIC(50, 0)");
+      this._creationTypeStrings.put(BigDecimal.class, "NUMERIC(50, 50)");
+      
+      this._customizableTypes = new HashMap<Class<?>, SQLTypeCustomizer>();
+      this._customizableTypes.put( //
+            String.class, //
+            new SQLTypeCustomizer()
+            {
+               @Override
+               public String customizeType(Type propertyType, SQLTypeInfo sqlTypeInfo)
+               {
+                  return "VARCHAR(" + sqlTypeInfo.maxLength() + ")";
+               }
+            } //
+            );
+      this._customizableTypes.put( //
+            BigInteger.class, //
+            new SQLTypeCustomizer()
+            {
+               @Override
+               public String customizeType(Type propertyType, SQLTypeInfo sqlTypeInfo)
+               {
+                  return "NUMERIC(" + sqlTypeInfo.maxLength() + ", 0)";
+               }
+            } //
+            );
+      this._customizableTypes.put( //
+            BigDecimal.class, //
+            new SQLTypeCustomizer()
+            {
+               @Override
+               public String customizeType(Type propertyType, SQLTypeInfo sqlTypeInfo)
+               {
+                  return "NUMERIC(" + sqlTypeInfo.maxLength() + ", " + sqlTypeInfo.scale() + ")";
+               }
+            } //
+            );
    }
    
    @Override
@@ -240,19 +296,17 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       {
          newQNames.add(qName);
 //         System.out.println("QName: " + qName + ", hc: " + qName.hashCode());
-         Type vType = pType.type();
-         List<Class<?>> collectionClasses = new ArrayList<Class<?>>();
-         while (vType instanceof ParameterizedType && Collection.class.isAssignableFrom((Class<?>) ((ParameterizedType) vType).getRawType()))
+         QNameInfo info = qNameInfos.get(qName);
+         if (info == null)
          {
-            collectionClasses.add((Class<?>) ((ParameterizedType) vType).getRawType());
-            vType = ((ParameterizedType) vType).getActualTypeArguments()[0];
-         }
-         
-         if (!qNameInfos.containsKey(qName))
-         {
-            QNameInfo info = QNameInfo.fromProperty(qName, collectionClasses, setQNameTableNameToNull ? null : (QNAME_TABLE_NAME_PREFIX + qNameInfos.size()), vType);
+            info = QNameInfo.fromProperty( //
+                  qName, //
+                  setQNameTableNameToNull ? null : (QNAME_TABLE_NAME_PREFIX + qNameInfos.size()), //
+                  pType//
+                  );
             qNameInfos.put(qName, info);
          }
+         Type vType = info.getFinalType();
          
          while(vType instanceof ParameterizedType)
          {
@@ -312,7 +366,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                   QNameInfo.fromAssociation( //
                         qName, //
                         setQNameTableNameToNull ? null : (QNAME_TABLE_NAME_PREFIX + extractedQNames.size()), //
-                        assoDesc.type()//
+                        assoDesc //
                         ) //
                   );
             newQNames.add(qName);
@@ -332,7 +386,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                   QNameInfo.fromManyAssociation( //
                         qName, //
                         setQNameTableNameToNull ? null : (QNAME_TABLE_NAME_PREFIX + extractedQNames.size()), //
-                        mAssoDesc.type() //
+                        mAssoDesc //
                         ) //
                   );
             newQNames.add(qName);
@@ -391,18 +445,27 @@ public class PostgreSQLAppStartup implements SQLAppStartup
          Statement stmt = connection.createStatement();
          try
          {
-            ResultSet rs = stmt.executeQuery("SELECT " + APP_VERSION_TABLE_NAME + "." + APP_VERSION_PK_COLUMN_NAME + " FROM " + schemaName + "." + APP_VERSION_TABLE_NAME);
-            
+            ResultSet rs = connection.getMetaData().getTables(null, schemaName, APP_VERSION_TABLE_NAME, new String[] { "TABLE" });
             if (rs.next())
             {
-               String dbAppVersion = rs.getString(1);
-               if (this._reindexingStrategy != null)
+               rs.close();
+               rs = stmt.executeQuery("SELECT " + APP_VERSION_TABLE_NAME + "." + APP_VERSION_PK_COLUMN_NAME + " FROM " + schemaName + "." + APP_VERSION_TABLE_NAME);
+               
+               result = !rs.next();
+               
+               if (!result)
                {
-                  result = this._reindexingStrategy.reindexingNeeded(dbAppVersion, this._app.version());
+                  // nothing present in app version table
+                  
+                  String dbAppVersion = rs.getString(1);
+                  if (this._reindexingStrategy != null)
+                  {
+                     result = this._reindexingStrategy.reindexingNeeded(dbAppVersion, this._app.version());
+                  }
                }
             } else
             {
-               // If nothing present in that table - something is broken, and
+               // If table is missing - something is broken, and
                // so we should re-index.
                result = true;
             }
@@ -708,13 +771,27 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       String sqlType = null;
       if (qNameInfo.isFinalTypePrimitive())
       {
-         // Primitive type
-         for (Map.Entry<Class<?>, String> entry : this._creationTypeStrings.entrySet())
+         Type propertyType = qNameInfo.getPropertyDescriptor().type();
+//         System.out.println("QName: " + qNameInfo.getQName());
+//         System.out.println("Property type: " + propertyType);
+//         System.out.println("Instance of class: " + (propertyType instanceof Class<?>));
+//         System.out.println("Contains: " + this._customizableTypes.keySet().contains(propertyType));
+//         Method accessor = qNameInfo.getPropertyDescriptor().accessor();
+//         System.out.println("Has annotation: " + qNameInfo.getPropertyDescriptor().accessor().isAnnotationPresent(SQLTypeInfo.class));
+//         System.out.println("");
+         if (propertyType instanceof Class<?> && this._customizableTypes.keySet().contains(propertyType) && qNameInfo.getPropertyDescriptor().accessor().isAnnotationPresent(SQLTypeInfo.class))
          {
-            if (entry.getKey().isAssignableFrom(finalClass))
+            sqlType = this._customizableTypes.get(propertyType).customizeType(propertyType, qNameInfo.getPropertyDescriptor().accessor().getAnnotation(SQLTypeInfo.class));
+         } else
+         {
+            // Primitive type
+            for (Map.Entry<Class<?>, String> entry : this._creationTypeStrings.entrySet())
             {
-               sqlType = entry.getValue();
-               break;
+               if (entry.getKey().isAssignableFrom(finalClass))
+               {
+                  sqlType = entry.getValue();
+                  break;
+               }
             }
          }
          if (sqlType == null)
