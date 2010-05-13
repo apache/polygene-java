@@ -42,44 +42,17 @@
     </plugins>
   </reporting>
   <dependencies>
-    <!-- Qi4j dependencies -->
     <dependency>
-      <groupId>org.qi4j.core</groupId>
-      <artifactId>qi4j-core-api</artifactId>
+    	<groupId>org.qi4j.library</groupId>
+    	<artifactId>qi4j-lib-sql-api</artifactId>
+    	<version>1.1-SNAPSHOT</version>
+    	<scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>org.qi4j.core</groupId>
-      <artifactId>qi4j-core-spi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.qi4j.core</groupId>
-      <artifactId>qi4j-core-bootstrap</artifactId>
-    </dependency>
-
-    <!-- Test dependencies -->
-    <dependency>
-      <groupId>org.qi4j.core</groupId>
-      <artifactId>qi4j-core-testsupport</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.qi4j.core</groupId>
-      <artifactId>qi4j-core-runtime</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.qi4j.extension</groupId>
-      <artifactId>qi4j-entitystore-preferences</artifactId>
-      <version>1.1-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-    </dependency>
-    <dependency>
-    	<groupId>postgresql</groupId>
-    	<artifactId>postgresql</artifactId>
-    	<version>8.4-701.jdbc4</version>
-    	<type>jar</type>
+    	<groupId>org.qi4j.core</groupId>
+    	<artifactId>qi4j-core-bootstrap</artifactId>
+    	<version>1.1-SNAPSHOT</version>
+    	<type>bundle</type>
     	<scope>compile</scope>
     </dependency>
   </dependencies>

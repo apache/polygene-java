@@ -19,7 +19,6 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.index.sql.RDBConfiguration;
 import org.qi4j.index.sql.SQLIndexingEngineService;
 
 /**
