@@ -19,12 +19,27 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- *
+ * This is the interface which is called by SQL-Indexing when it is activated. This allows implementation specific initializations for RDBMS (for example,
+ * possibly re-building database structure).
+ * 
  * @author Stanislav Muhametsin
  */
 public interface SQLAppStartup
 {
    
-   Connection createAndInitConnection() throws SQLException;
+   /**
+    * This method is called when connection needs to be done. Make sure not to make much initializations here, as this is only to get
+    * connection reference to SQL-indexing.
+    * @return Connection to database.
+    * @throws SQLException If SQL.
+    */
+   Connection createConnection() throws SQLException;
+   
+   /**
+    * This method is called when connection may be safely initialized - for example, possibly (re-)building database structure.
+    * @param connection Connection to initialize.
+    * @throws SQLException If SQL.
+    */
+   void initConnection(Connection connection) throws SQLException;
    
 }

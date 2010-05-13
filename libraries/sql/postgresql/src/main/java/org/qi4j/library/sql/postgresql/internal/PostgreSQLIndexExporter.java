@@ -20,7 +20,6 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -159,7 +158,7 @@ public class PostgreSQLIndexExporter implements IndexExporter
             @Override
             public void endProcessTableInfo(String schemaName, String tableName, List<String> colNames, List<Integer> rowSQLTypes)
             {
-               out.print("\n" + "-----------------------------------------------" + "\n\n");
+               out.print("-----------------------------------------------" + "\n\n\n");
             }
             
             @Override
@@ -196,7 +195,7 @@ public class PostgreSQLIndexExporter implements IndexExporter
             {
                out.print( //
                      "Schema: " + schemaName + "\n" + //
-                     "-----------------------------------------------" + "\n" //
+                     "-----------------------------------------------" + "\n\n\n" //
                      );
             }
             
@@ -229,18 +228,6 @@ public class PostgreSQLIndexExporter implements IndexExporter
       DatabaseMetaData metaData = connection.getMetaData();
       String schemaName = this._state.schemaName().get();
       ResultSet rs = metaData.getTables(null, schemaName, null, new String[] { "TABLE" });
-//      ResultSet rsCols = metaData.getColumns(null, schemaName, "entities", null);
-//      connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-//      String sql = "SELECT entity_pk FROM " + schemaName + "." + "entities;";
-//      System.out.println("sql: " + sql);
-//      PreparedStatement stmt = connection.prepareStatement(sql);
-//      ResultSet rowsRs = stmt.executeQuery();
-//      rsCols.close();
-//      rowsRs.close();
-//      stmt.close();
-//      connection.rollback();
-//      rs.close();
-//      throw new UnsupportedOperationException("Perkele");
       try
       {
          processor.beginProcessSchemaInfo(schemaName);

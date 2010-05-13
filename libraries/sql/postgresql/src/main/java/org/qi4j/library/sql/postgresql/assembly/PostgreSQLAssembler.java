@@ -19,10 +19,11 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.index.reindexer.ReindexerService;
 import org.qi4j.library.sql.postgresql.PostgreSQLService;
 
 /**
- * This is the assembler class in order to use SQL indexing in your application.
+ * This is the assembler class to use when PostgreSQL is database for SQL Indexing in your application.
  *
  * @author Stanislav Muhametsin
  */
@@ -64,6 +65,8 @@ public class PostgreSQLAssembler implements Assembler
    public void assemble(ModuleAssembly module) throws AssemblyException
    {
       module.addServices(PostgreSQLService.class).identifiedBy(this._serviceName).visibleIn(this._esVisiblity).instantiateOnStartup();
+      
+      module.addServices(ReindexerService.class);
    }
    
 }

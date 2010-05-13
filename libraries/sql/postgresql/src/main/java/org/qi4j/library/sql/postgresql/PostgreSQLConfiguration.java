@@ -28,7 +28,7 @@ import org.qi4j.library.sql.postgresql.internal.PostgreSQLAppStartup;
 public interface PostgreSQLConfiguration extends ConfigurationComposite
 {
    /**
-    * The connection string to use when creating JDBC connection to RDBMS.
+    * The connection string to use when creating JDBC connection to PostgreSQL.
     */
    Property<String> connectionString();
    

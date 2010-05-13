@@ -101,7 +101,7 @@ public class PostgreSQLIndexing implements SQLIndexing
             }
             else if (status.equals(EntityStatus.UPDATED))
             {
-               pk = this.updateEntityInfoAndProperties(connection, qNameClearPSs, qNameInsertPSs, queryEntityPKPS, updateEntityTablePS, eState);
+               pk = this.updateEntityInfoAndProperties(connection, qNameClearPSs, qNameInsertPSs, queryEntityPKPS, updateEntityTablePS, insertToEntityTablePS, eState);
             }
             else if (status.equals(EntityStatus.REMOVED))
             {
@@ -546,7 +546,7 @@ public class PostgreSQLIndexing implements SQLIndexing
       }
    }
    
-   private Long updateEntityInfoAndProperties(Connection connection, Map<QualifiedName, PreparedStatement> qNameClearPSs, Map<QualifiedName, PreparedStatement> qNameInsertPSs, PreparedStatement queryPKPS, PreparedStatement ps, EntityState state) throws SQLException
+   private Long updateEntityInfoAndProperties(Connection connection, Map<QualifiedName, PreparedStatement> qNameClearPSs, Map<QualifiedName, PreparedStatement> qNameInsertPSs, PreparedStatement queryPKPS, PreparedStatement ps, PreparedStatement insertEntityInfoPS, EntityState state) throws SQLException
    {
       queryPKPS.setString(1, state.identity().identity());
       ResultSet rs = queryPKPS.executeQuery();
@@ -565,6 +565,10 @@ public class PostgreSQLIndexing implements SQLIndexing
          ps.addBatch();
          
          this.insertPropertyQNames(connection, qNameInsertPSs, state, entityPK);
+      } else
+      {
+         // Most likely re-indexing
+         this.insertEntityInfoAndProperties(connection, qNameInsertPSs, insertEntityInfoPS, state);
       }
       return entityPK;
    }

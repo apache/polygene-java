@@ -18,9 +18,7 @@ package org.qi4j.library.sql.common;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.qi4j.api.common.QualifiedName;
 
@@ -40,7 +38,7 @@ public final class QNameInfo
    
    private static final List<Class<?>> EMPTY_COLL_CLASSES = new ArrayList<Class<?>>();
    
-   private final String _tableName;
+   private String _tableName;
    
    /**
     * Store also information about collection types - in case it is required in future.
@@ -54,8 +52,6 @@ public final class QNameInfo
    private final Type _finalType;
    
    private final Boolean _isFinalTypePrimitive;
-   
-   private final Set<String> _entityTypesUsingThisQName;
    
    private QNameInfo(
          QualifiedName qName, //
@@ -84,8 +80,6 @@ public final class QNameInfo
             ;
       }
       this._isFinalTypePrimitive = isFinalTypePrimitive;
-      //System.out.println("QName: " + qName + ", type: " + qNameType + ", table name: " + tableName + ", finalType: " + finalType + ", isPrimitive: " + this._isFinalTypePrimitive + ", collectionClasses: " + collectionClasses);
-      this._entityTypesUsingThisQName = new HashSet<String>();
    }
    
    /**
@@ -121,11 +115,32 @@ public final class QNameInfo
    
    /**
     * Gets the table name in database, used to store values of the qualified name this interface represents.
-    * @return The table name in database, used to store values of the qualified name this interface represents.
+    * @return The table name in database, used to store values of the qualified name this interface represents. May be {@code null} if it is not yet decided.
     */
    public String getTableName()
    {
       return this._tableName;
+   }
+   
+   /**
+    * Sets the previously undecided table name to some specific one. This method only works when argument is {@code non-null} and current table name is {@code null}.
+    * @param tableName The new table name. Must be {@code non-null}.
+    * @throws IllegalArgumentException If {@code tableName} is {@code null}.
+    * @throws IllegalStateException If current table name is {@code non-null}.
+    */
+   public void setTableName(String tableName)
+   {
+      if (tableName == null)
+      {
+         throw new IllegalArgumentException("Table name must not be null.");
+      }
+      if (this._tableName == null)
+      {
+         this._tableName = tableName;
+      } else
+      {
+         throw new IllegalStateException("Can only set table name when it is null.");
+      }
    }
 
    /**
@@ -150,7 +165,7 @@ public final class QNameInfo
     * Creates information about specified qualified name which represents a property.
     * @param qName The qualified name of property.
     * @param collectionClasses Possible collection classes, with outermost collection type being first in list, and innermost collection type last in list. May be {@code null} or empty list.
-    * @param tableName The table name where the values of all instances of propertiy with this qualified name will be stored.
+    * @param tableName The table name where the values of all instances of propertiy with this qualified name will be stored. May be {@code null} if it is to be decided later.
     * @param finalType The non-collection type of this property.
     * @return An object representing information about property with this qualified name, and how instances of this property are stored in database.
     */
@@ -173,7 +188,7 @@ public final class QNameInfo
    /**
     * Creates information about specified qualified name which represents an association.
     * @param qName The qualified name of the association.
-    * @param tableName The table name where the values of all instances of association with this qualified name will be stored.
+    * @param tableName The table name where the values of all instances of association with this qualified name will be stored. May be {@code null} if it is to be decided later.
     * @param assoTargetType The target type of the association.
     * @return An object representing information about association with this qualified name, and how instances of this association are stored in database.
     */
@@ -195,7 +210,7 @@ public final class QNameInfo
    /**
     * Creates information about specified qualified name which represents a many-association.
     * @param qName The qualified name of the many-association.
-    * @param tableName The table name where the values of all instances of many-association with this qualified name will be stored.
+    * @param tableName The table name where the values of all instances of many-association with this qualified name will be stored. May be {@code null} if it is to be decided later.
     * @param assoTargetType The target type of the many-association.
     * @return An object representing information about many-association with this qualified name, and how instances of this many-association are stored in database.
     */

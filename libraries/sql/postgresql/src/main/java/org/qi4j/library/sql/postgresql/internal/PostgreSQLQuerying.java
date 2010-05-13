@@ -100,6 +100,7 @@ public class PostgreSQLQuerying implements SQLQuerying
       _sqlOperators.put(AssociationIsNullPredicate.class, "IS");
       _sqlOperators.put(AssociationIsNotNullPredicate.class, "IS NOT");
       _sqlOperators.put(ManyAssociationContainsPredicate.class, "=");
+      _sqlOperators.put(MatchesPredicate.class, "~");
       
       _negatedSqlOperators = new HashMap<Class<? extends Predicate>, String>();
       _negatedSqlOperators.put(EqualsPredicate.class, "<>");
@@ -113,6 +114,7 @@ public class PostgreSQLQuerying implements SQLQuerying
       _negatedSqlOperators.put(AssociationIsNullPredicate.class, "IS NOT");
       _negatedSqlOperators.put(AssociationIsNotNullPredicate.class, "IS");
       _negatedSqlOperators.put(ManyAssociationContainsPredicate.class, "<>");
+      _negatedSqlOperators.put(MatchesPredicate.class, "!~");
       
       _joinStyles = new HashMap<Class<? extends Predicate>, String>();
       _joinStyles.put(EqualsPredicate.class, "JOIN");
@@ -126,19 +128,26 @@ public class PostgreSQLQuerying implements SQLQuerying
       _joinStyles.put(AssociationIsNullPredicate.class, "LEFT JOIN");
       _joinStyles.put(AssociationIsNotNullPredicate.class, "JOIN");
       _joinStyles.put(ManyAssociationContainsPredicate.class, "JOIN");
+      _joinStyles.put(MatchesPredicate.class, "JOIN");
       
       _negatedJoinStyles = new HashMap<Class<? extends Predicate>, String>();
-      _negatedJoinStyles.put(EqualsPredicate.class, "JOIN");
-      _negatedJoinStyles.put(GreaterOrEqualPredicate.class, "JOIN");
-      _negatedJoinStyles.put(GreaterThanPredicate.class, "JOIN");
-      _negatedJoinStyles.put(LessOrEqualPredicate.class, "JOIN");
-      _negatedJoinStyles.put(LessThanPredicate.class, "JOIN");
+      _negatedJoinStyles.put(EqualsPredicate.class, "LEFT JOIN");
+      _negatedJoinStyles.put(GreaterOrEqualPredicate.class, "LEFT JOIN");
+      _negatedJoinStyles.put(GreaterThanPredicate.class, "LEFT JOIN");
+      _negatedJoinStyles.put(LessOrEqualPredicate.class, "LEFT JOIN");
+      _negatedJoinStyles.put(LessThanPredicate.class, "LEFT JOIN");
       _negatedJoinStyles.put(NotEqualsPredicate.class, "JOIN");
       _negatedJoinStyles.put(PropertyIsNullPredicate.class, "JOIN");
       _negatedJoinStyles.put(PropertyIsNotNullPredicate.class, "LEFT JOIN");
       _negatedJoinStyles.put(AssociationIsNullPredicate.class, "JOIN");
       _negatedJoinStyles.put(AssociationIsNotNullPredicate.class, "LEFT JOIN");
       _negatedJoinStyles.put(ManyAssociationContainsPredicate.class, "JOIN");
+      _negatedJoinStyles.put(MatchesPredicate.class, "LEFT JOIN");
+   }
+   
+   private interface WhereClauseProcessor
+   {
+      public String processWhereClause(Integer firstTableIndex, Integer lastTableIndex);
    }
    
    @Override
@@ -155,13 +164,10 @@ public class PostgreSQLQuerying implements SQLQuerying
    {
       String select = countOnly ? "COUNT(%s)" : "%s"; 
 
-      String entityTypeIDs = this.getConcreteEntityTypesList(resultType);
-      String processedWhere = this.processWhereClause(whereClause, false, values, valueSQLTypes, entityTypeIDs);
-      Boolean acceptAll = false;
+      String processedWhere = this.processBooleanExpression(whereClause, false, values, valueSQLTypes);
       if (processedWhere == null || processedWhere.trim().length() == 0)
       {
          processedWhere = this._state.schemaName().get() + "." + SQLs.ENTITY_TABLE_NAME;
-         acceptAll = true;
       } else
       {
          processedWhere = "(" + processedWhere + ")";
@@ -177,7 +183,7 @@ public class PostgreSQLQuerying implements SQLQuerying
       "SELECT " + String.format(select, TABLE_NAME_PREFIX + "0." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME) + "\n" + //
       "FROM " + processedWhere + " AS " + TABLE_NAME_PREFIX + "0" + "\n" + //
       fromClause.toString() + "\n" + //
-      (acceptAll ? "WHERE " + this.createTypeCondition(TABLE_NAME_PREFIX + "0", entityTypeIDs) + "\n" : "") + //
+      "WHERE " + this.createTypeCondition(TABLE_NAME_PREFIX + "0", this.getConcreteEntityTypesList(resultType)) + "\n" + 
       orderByClause.toString() + //
       ";" //
       ;
@@ -186,7 +192,7 @@ public class PostgreSQLQuerying implements SQLQuerying
       return result;
    }
    
-   private String processWhereClause(BooleanExpression expression, Boolean negationActive, List<Object> values, List<Integer> valueSQLTypes, String entityTypeIDs)
+   private String processBooleanExpression(BooleanExpression expression, Boolean negationActive, List<Object> values, List<Integer> valueSQLTypes)
    {
       String result = "";
       if (expression != null)
@@ -194,8 +200,8 @@ public class PostgreSQLQuerying implements SQLQuerying
          if (expression instanceof Conjunction)
          {
             Conjunction conjunction = (Conjunction)expression;
-            String left = this.processWhereClause(conjunction.leftSideExpression(), negationActive, values, valueSQLTypes, entityTypeIDs);
-            String right = this.processWhereClause(conjunction.rightSideExpression(), negationActive, values, valueSQLTypes, entityTypeIDs);
+            String left = this.processBooleanExpression(conjunction.leftSideExpression(), negationActive, values, valueSQLTypes);
+            String right = this.processBooleanExpression(conjunction.rightSideExpression(), negationActive, values, valueSQLTypes);
             if (left == "")
             {
                result = right;
@@ -209,8 +215,8 @@ public class PostgreSQLQuerying implements SQLQuerying
          } else if (expression instanceof Disjunction)
          {
             Disjunction disjunction = (Disjunction)expression;
-            String left = this.processWhereClause(disjunction.leftSideExpression(), negationActive, values, valueSQLTypes, entityTypeIDs);
-            String right = this.processWhereClause(disjunction.rightSideExpression(), negationActive, values, valueSQLTypes, entityTypeIDs);
+            String left = this.processBooleanExpression(disjunction.leftSideExpression(), negationActive, values, valueSQLTypes);
+            String right = this.processBooleanExpression(disjunction.rightSideExpression(), negationActive, values, valueSQLTypes);
             if (left == "")
             {
                result = right;
@@ -223,28 +229,28 @@ public class PostgreSQLQuerying implements SQLQuerying
             }
          } else if (expression instanceof Negation)
          {
-            result = this.processWhereClause(((Negation)expression).expression(), !negationActive, values, valueSQLTypes, entityTypeIDs);
+            result = this.processBooleanExpression(((Negation)expression).expression(), !negationActive, values, valueSQLTypes);
          } else if (expression instanceof MatchesPredicate)
          {
-            result = this.processMatchesPredicate((MatchesPredicate)expression, negationActive, values, valueSQLTypes, entityTypeIDs);
+            result = this.processMatchesPredicate((MatchesPredicate)expression, negationActive, values, valueSQLTypes);
          } else if (expression instanceof ComparisonPredicate<?>)
          {
-            result = this.processComparisonPredicate((ComparisonPredicate<?>)expression, negationActive, values, valueSQLTypes, entityTypeIDs);
+            result = this.processComparisonPredicate((ComparisonPredicate<?>)expression, negationActive, values, valueSQLTypes);
          } else if (expression instanceof ManyAssociationContainsPredicate<?>)
          {
-            result = this.processManyAssociationContainsPredicate((ManyAssociationContainsPredicate<?>)expression, negationActive, values, valueSQLTypes, entityTypeIDs);
+            result = this.processManyAssociationContainsPredicate((ManyAssociationContainsPredicate<?>)expression, negationActive, values, valueSQLTypes);
          } else if (expression instanceof PropertyNullPredicate<?>)
          {
-            result = this.processPropertyNullPredicate((PropertyNullPredicate<?>)expression, negationActive, entityTypeIDs);
+            result = this.processPropertyNullPredicate((PropertyNullPredicate<?>)expression, negationActive);
          } else if (expression instanceof AssociationNullPredicate)
          {
-            result = this.processAssociationNullPredicate((AssociationNullPredicate)expression, negationActive, entityTypeIDs);
+            result = this.processAssociationNullPredicate((AssociationNullPredicate)expression, negationActive);
          } else if (expression instanceof ContainsPredicate<?, ?>)
          {
-            result = this.processContainsPredicate((ContainsPredicate<?, ?>)expression, negationActive, values, valueSQLTypes, entityTypeIDs);
+            result = this.processContainsPredicate((ContainsPredicate<?, ?>)expression, negationActive, values, valueSQLTypes);
          } else if (expression instanceof ContainsAllPredicate<?, ?>)
          {
-            result = this.processContainsAllPredicate((ContainsAllPredicate<?, ?>)expression, negationActive, values, valueSQLTypes, entityTypeIDs);
+            result = this.processContainsAllPredicate((ContainsAllPredicate<?, ?>)expression, negationActive, values, valueSQLTypes);
          } else
          {
             throw new UnsupportedOperationException("Expression " + expression + " is not supported");
@@ -254,87 +260,187 @@ public class PostgreSQLQuerying implements SQLQuerying
       return result;
    }
    
-   private String processMatchesPredicate(MatchesPredicate predicate, Boolean negationActive, List<Object> values, List<Integer> valueSQLTypes, String entityTypeIDs)
+   private String processMatchesPredicate(final MatchesPredicate predicate, final Boolean negationActive, final List<Object> values, final List<Integer> valueSQLTypes)
    {
-      // Not sure how this is supported by SQL yet
-      throw new UnsupportedOperationException("Regexp matching is not yet (?) supported by SQL query parser.");
-   }
-   
-   private String processComparisonPredicate(ComparisonPredicate<?> predicate, Boolean negationActive, List<Object> values, List<Integer> valueSQLTypes, String entityTypeIDs)
-   {
-      StringBuilder builder = new StringBuilder();
-      Integer startingIndex = 0;
-      this.getSelectClauseForPredicate(predicate, TABLE_NAME_PREFIX + startingIndex, builder);
-      builder.append("FROM " + this._state.schemaName().get() + "." + SQLs.ENTITY_TABLE_NAME + " " + TABLE_NAME_PREFIX + startingIndex + "\n");
-      Integer lastTableIndex = this.traversePropertyPath(predicate.propertyReference(), builder, startingIndex, this.getJoinStyle(predicate, negationActive));
-      this.processWhereClauseForPropertyComparisonPredicate(predicate, predicate.propertyReference(), negationActive, lastTableIndex, builder);
-      builder.append("AND " + this.createTypeCondition(TABLE_NAME_PREFIX + startingIndex, entityTypeIDs));
-      // TODO comparison of collection properties??
-      Object value = ((SingleValueExpression<?>)predicate.valueExpression()).value();
-      values.add(value);
-      valueSQLTypes.add(this._typeHelper.getSQLType(value));
-      return builder.toString();
-   }
-   
-   private String processManyAssociationContainsPredicate(ManyAssociationContainsPredicate<?> predicate, Boolean negationActive, List<Object> values, List<Integer> valueSQLTypes, String entityTypeIDs)
-   {
-      StringBuilder builder = new StringBuilder();
-      Integer startingIndex = 0;
-      this.getSelectClauseForPredicate(predicate, TABLE_NAME_PREFIX + startingIndex, builder);
-      builder.append("FROM " + this._state.schemaName().get() + "." + SQLs.ENTITY_TABLE_NAME + " " + TABLE_NAME_PREFIX + startingIndex + "\n");
-      Integer lastTableIndex = this.traverseAssociationPath(predicate.associationReference(), builder, startingIndex, this.getJoinStyle(predicate, negationActive), true);
-      builder.append("WHERE " + this.createTypeCondition(TABLE_NAME_PREFIX + startingIndex, entityTypeIDs) + "\n" + //
-            "AND " + TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME + " " + this.getOperator(predicate, negationActive) + " ? " + "\n" //
+      return this.constructQueryForPredicate( //
+            predicate, //
+            predicate.propertyReference(), //
+            null, //
+            null, //
+            negationActive, //
+            new WhereClauseProcessor()
+            {
+               @Override
+               public String processWhereClause(Integer firstTableIndex, Integer lastTableIndex)
+               {
+                  String result = String.format(TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.QNAME_TABLE_VALUE_COLUMN_NAME + " %s ?", getOperator(predicate, negationActive));
+                  values.add(translateJavaRegexpToPGSQLRegexp(((SingleValueExpression<String>)predicate.valueExpression()).value()));
+                  valueSQLTypes.add(Types.VARCHAR);
+                  return result;
+               }
+            } //
             );
-      Object value = ((SingleValueExpression<?>)predicate.valueExpression()).value();
-      // TODO can I be certain that this value is always instance of EntityComposite?
-      if (value instanceof EntityComposite)
+   }
+   
+   private String processComparisonPredicate(final ComparisonPredicate<?> predicate, final Boolean negationActive, final List<Object> values, final List<Integer> valueSQLTypes)
+   {
+      return this.constructQueryForPredicate( //
+            predicate, //
+            predicate.propertyReference(), //
+            null, //
+            null, //
+            negationActive, //
+            new WhereClauseProcessor()
+            {
+               @Override
+               public String processWhereClause(Integer firstTableIndex, Integer lastTableIndex)
+               {
+                  QualifiedName qName = QualifiedName.fromClass(predicate.propertyReference().propertyDeclaringType(), predicate.propertyReference().propertyName());
+                  String str = null;
+                  if (qName.type().equals(Identity.class.getName()))
+                  {
+                     str = TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME + " %s ?" + "\n";
+                  } else
+                  {
+                     str = TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.QNAME_TABLE_VALUE_COLUMN_NAME + " %s ?" + "\n";
+                  }
+                  // TODO comparison of collection properties?? and value composites.
+                  Object value = ((SingleValueExpression<?>)predicate.valueExpression()).value();
+                  values.add(value);
+                  valueSQLTypes.add(_typeHelper.getSQLType(value));
+                  return String.format(str, getOperator(predicate, negationActive));
+               }
+            } //
+            );
+   }
+   
+   private String processManyAssociationContainsPredicate(final ManyAssociationContainsPredicate<?> predicate, final Boolean negationActive, final List<Object> values, final List<Integer> valueSQLTypes)
+   {
+      return this.constructQueryForPredicate( //
+            predicate, //
+            null, //
+            predicate.associationReference(), //
+            true, //
+            negationActive, //
+            new WhereClauseProcessor()
+            {
+               @Override
+               public String processWhereClause(Integer firstTableIndex, Integer lastTableIndex)
+               {
+                  String result = TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME + " " + getOperator(predicate, negationActive) + " ? " + "\n"; //
+                  Object value = ((SingleValueExpression<?>)predicate.valueExpression()).value();
+                  // TODO Is it really certain that this value is always instance of EntityComposite?
+                  if (value instanceof EntityComposite)
+                  {
+                     value = _uowf.currentUnitOfWork().get((EntityComposite)value).identity().get();
+                  } else
+                  {
+                     value = value.toString();
+                  }
+                  values.add(value);
+                  valueSQLTypes.add(Types.VARCHAR);
+                  return result;
+               }
+            } //
+            );
+   }
+   
+   private String processPropertyNullPredicate(final PropertyNullPredicate<?> predicate, final Boolean negationActive)
+   {
+      return this.constructQueryForPredicate( //
+            predicate, //
+            predicate.propertyReference(), //
+            null, //
+            null, //
+            negationActive, //
+            new WhereClauseProcessor()
+            {
+               @Override
+               public String processWhereClause(Integer firstTableIndex, Integer lastTableIndex)
+               {
+                  StringBuilder builder = new StringBuilder(TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.QNAME_TABLE_VALUE_COLUMN_NAME + " " + getOperator(predicate, negationActive) + " NULL" + "\n"); //
+                  QualifiedName qName = QualifiedName.fromClass(predicate.propertyReference().propertyDeclaringType(), predicate.propertyReference().propertyName());
+                  Integer collectionDepth = _state.qNameInfos().get().get(qName).getCollectionDepth();
+                  for (Integer x = 0; x < collectionDepth; ++x)
+                  {
+                     builder.append("AND " + TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.QNAME_TABLE_COLLECTION_INDEX_COLUMN_NAME_PREFIX + x + " " + getOperator(predicate, negationActive) + " NULL" + "\n");
+                  }
+                  return builder.toString();
+               }
+            } //
+            );
+   }
+   
+   private String processAssociationNullPredicate(final AssociationNullPredicate predicate, final Boolean negationActive)
+   {
+      return this.constructQueryForPredicate( //
+            predicate, //
+            null, //
+            predicate.associationReference(), //
+            false, //
+            negationActive, //
+            new WhereClauseProcessor()
+            {
+               @Override
+               public String processWhereClause(Integer firstTableIndex, Integer lastTableIndex)
+               {
+                  return TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.QNAME_TABLE_VALUE_COLUMN_NAME + " " + getOperator(predicate, negationActive) + " NULL" + "\n"; //
+               }
+            } //
+            );
+   }
+   
+   private String processContainsPredicate(ContainsPredicate<?, ? extends Collection<?>> predicate, Boolean negationActive, List<Object> values, List<Integer> valueSQLTypes)
+   {
+      // 1. If empty collection -> check that index == -1 (see TODO-commented hack in PostgreSQLIndexing)
+      // 2. If collection item type is primitive -> check that collection depths match and qname_value = value
+      // 3. If collection item type is collection -> check that collection depths match or predicate's collection depth is smaller,
+      //    then perform union with
+      //    (SELECT (CAST 0 AS INTEGER) AS index_0, CAST(predicate's collection's item 0 AS something) AS qname_value)
+      //    UNION
+      //    (SELECT (CAST 1 AS INTEGER) AS index_0, CAST(predicate's collection's item 1 AS something) AS qname_value)
+      //    UNION ...
+      // 4. If collection item type is value composite -> check that collection depths match, construct left joins for all value composite's primitive values (possibly large amount of joins)
+      //    and match them.
+      throw new UnsupportedOperationException("Predicate " + predicate + " is not supported");
+   }
+   
+   private String processContainsAllPredicate(ContainsAllPredicate<?, ? extends Collection<?>> predicate, Boolean negationActive, List<Object> values, List<Integer> valueSQLTypes)
+   {
+      // 1. If empty collection -> check that index == -1 (see TODO-commented hack in PostgreSQLIndexing)
+      // 2. If collection item type is primitive
+      // 2.1. If collection is not set -> ordering matters
+      // 2.2. If collection is set -> ordering doesn't matter
+      // 3. If collection item type is collection
+      // 4. If collection item type is value composite
+      // POSSIBLE but damn is a lot of work
+      throw new UnsupportedOperationException("Predicate " + predicate + " is not supported");
+   }
+   
+   private String constructQueryForPredicate(Predicate predicate, PropertyReference<?> propRef, AssociationReference assoRef, Boolean includeLastAssoPathTable, Boolean negationActive, WhereClauseProcessor whereClauseGenerator)
+   {
+      StringBuilder builder = new StringBuilder();
+      Integer startingIndex = 0;
+      this.getSelectClauseForPredicate(predicate, TABLE_NAME_PREFIX + startingIndex, builder);
+      builder.append("FROM " + this._state.schemaName().get() + "." + SQLs.ENTITY_TABLE_NAME + " " + TABLE_NAME_PREFIX + startingIndex + "\n");
+      Integer lastTableIndex = null;
+      if (propRef == null)
       {
-         value = this._uowf.currentUnitOfWork().get((EntityComposite)value).identity().get();
+         lastTableIndex = this.traverseAssociationPath(assoRef, builder, startingIndex, this.getJoinStyle(predicate, negationActive), includeLastAssoPathTable);
+      } else if (assoRef == null)
+      {
+         lastTableIndex = this.traversePropertyPath(propRef, builder, startingIndex, this.getJoinStyle(predicate, negationActive));
       } else
       {
-         value = value.toString();
+         throw new InternalError("Can not have both property reference and association reference (non-)nulls [propRef=" + propRef + ", assoRef=" + assoRef + ", predicate=" + predicate + "].");
       }
-      values.add(value);
-      valueSQLTypes.add(Types.VARCHAR);
+      
+      String whereClause = whereClauseGenerator.processWhereClause(startingIndex, lastTableIndex);
+      if (whereClause != null && whereClause.trim().length() > 0)
+      {
+         builder.append("WHERE ").append(whereClause).append("\n");
+      }
       return builder.toString();
-   }
-   
-   private String processPropertyNullPredicate(PropertyNullPredicate<?> predicate, Boolean negationActive, String entityTypeIDs)
-   {
-      StringBuilder builder = new StringBuilder();
-      Integer startingIndex = 0;
-      this.getSelectClauseForPredicate(predicate, TABLE_NAME_PREFIX + startingIndex, builder);
-      builder.append("FROM " + this._state.schemaName().get() + "." + SQLs.ENTITY_TABLE_NAME + " " + TABLE_NAME_PREFIX + startingIndex + "\n");
-      Integer lastTableIndex = this.traversePropertyPath(predicate.propertyReference(), builder, startingIndex, this.getJoinStyle(predicate, negationActive));
-      builder.append("WHERE " + this.createTypeCondition(TABLE_NAME_PREFIX + startingIndex, entityTypeIDs) + "\n" + //
-            "AND " + TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.QNAME_TABLE_VALUE_COLUMN_NAME + " " + this.getOperator(predicate, negationActive) + " NULL" + "\n" //
-            );
-      this.processWhereclauseForPropertyNullPredicate(predicate, negationActive, predicate.propertyReference(), builder, TABLE_NAME_PREFIX + lastTableIndex);
-      return builder.toString();
-   }
-   
-   private String processAssociationNullPredicate(AssociationNullPredicate predicate, Boolean negationActive, String entityTypeIDs)
-   {
-      StringBuilder builder = new StringBuilder();
-      Integer startingIndex = 0;
-      this.getSelectClauseForPredicate(predicate, TABLE_NAME_PREFIX + startingIndex, builder);
-      builder.append("FROM " + this._state.schemaName().get() + "." + SQLs.ENTITY_TABLE_NAME + " " + TABLE_NAME_PREFIX + startingIndex + "\n");
-      Integer lastTableIndex = this.traverseAssociationPath(predicate.associationReference(), builder, startingIndex, this.getJoinStyle(predicate, negationActive), false);
-      builder.append("WHERE " + this.createTypeCondition(TABLE_NAME_PREFIX + startingIndex, entityTypeIDs) + "\n" + //
-            "AND " + TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.QNAME_TABLE_VALUE_COLUMN_NAME + " " + this.getOperator(predicate, negationActive) + " NULL" + "\n" //
-            );
-      return builder.toString();
-   }
-   
-   private String processContainsPredicate(ContainsPredicate<?, ? extends Collection<?>> predicate, Boolean negationActive, List<Object> values, List<Integer> valueSQLTypes, String entityTypeIDs)
-   {
-      throw new UnsupportedOperationException("Predicate " + predicate + " is not supported");
-   }
-   
-   private String processContainsAllPredicate(ContainsAllPredicate<?, ? extends Collection<?>> predicate, Boolean negationActive, List<Object> values, List<Integer> valueSQLTypes, String entityTypeIDs)
-   {
-      throw new UnsupportedOperationException("Predicate " + predicate + " is not supported");
    }
    
    private String getOperator(Predicate predicate, Boolean negationActive )
@@ -371,38 +477,20 @@ public class PostgreSQLQuerying implements SQLQuerying
    
    private void getSelectClauseForPredicate(Predicate predicate, String tableAlias, StringBuilder builder)
    {
-      builder.append("SELECT " + tableAlias + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + ", " + tableAlias + "." + SQLs.ENTITY_TYPES_TABLE_PK_COLUMN_NAME + ", " + tableAlias + "." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME + "\n");
-   }
-   
-   private void processWhereClauseForPropertyComparisonPredicate(Predicate predicate, PropertyReference<?> reference, Boolean negationActive, Integer tableIndex, StringBuilder builder)
-   {
-      QualifiedName qName = QualifiedName.fromClass(reference.propertyDeclaringType(), reference.propertyName());
-      String str = null;
-      if (!qName.type().equals(Identity.class.getName()))
-      {
-         str = "WHERE " + TABLE_NAME_PREFIX + tableIndex + "." + SQLs.QNAME_TABLE_VALUE_COLUMN_NAME + " %s ?" + "\n";
-      } else
-      {
-         str = "WHERE " + TABLE_NAME_PREFIX + tableIndex + "." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME + " %s ?" + "\n";
-      }
-      builder.append(
-            String.format(str, this.getOperator(predicate, negationActive))
-           );
-   }
-   
-   private void processWhereclauseForPropertyNullPredicate(Predicate predicate, Boolean negationActive, PropertyReference<?> reference, StringBuilder builder, String tableName)
-   {
-      QualifiedName qName = QualifiedName.fromClass(reference.propertyDeclaringType(), reference.propertyName());
-      Integer collectionDepth = this._state.qNameInfos().get().get(qName).getCollectionDepth();
-      for (Integer x = 0; x < collectionDepth; ++x)
-      {
-         builder.append("AND " + tableName + "." + SQLs.QNAME_TABLE_COLLECTION_INDEX_COLUMN_NAME_PREFIX + x + " " + this.getOperator(predicate, negationActive) + " NULL" + "\n");
-      }
+      builder.append("SELECT DISTINCT " + tableAlias + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + ", " + tableAlias + "." + SQLs.ENTITY_TYPES_TABLE_PK_COLUMN_NAME + ", " + tableAlias + "." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME + "\n");
    }
   
    private String createTypeCondition(String tableAlias, String entityTypeIDs)
    {
       return tableAlias + "." + SQLs.ENTITY_TYPES_TABLE_PK_COLUMN_NAME + " IN (" + entityTypeIDs + ")";
+   }
+   
+   private String translateJavaRegexpToPGSQLRegexp(String javaRegexp)
+   {
+      // TODO
+      // Yo dawg, I heard you like regular expressions, so we made a regexp about your regexp so you can match while you match!
+      // Meaning, probably best way to translate java regexp into pg-sql regexp is by... regexp.
+      return javaRegexp;
    }
    
    private void processOrderBySegments(OrderBy[] orderBy, StringBuilder fromClause, StringBuilder orderByClause)
@@ -533,7 +621,7 @@ public class PostgreSQLQuerying implements SQLQuerying
          }
          builder.append( //
                joinStyle + " " + this._state.schemaName().get() + "." + info.getTableName() + " " + TABLE_NAME_PREFIX + (index + 1) + "\n" + //
-               "ON " + TABLE_NAME_PREFIX + index + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + " = " + TABLE_NAME_PREFIX + (index + 1) + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + "\n" //
+               "ON " + TABLE_NAME_PREFIX + index + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + " = " + TABLE_NAME_PREFIX + (index + 1) + "." + SQLs.QNAME_TABLE_PK_COLUMN_NAME + "\n" //
                );
          ++index;
          if (!qNameStack.isEmpty() || includeLastTable)

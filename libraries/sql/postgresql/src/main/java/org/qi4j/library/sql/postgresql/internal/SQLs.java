@@ -52,6 +52,16 @@ public class SQLs
    
    public static final String USED_CLASSES_TABLE_CLASS_NAME_COLUMN_DATA_TYPE = "VARCHAR(1024)";
    
+   public static final String USED_QNAMES_TABLE_NAME = "used_qnames";
+   
+   public static final String USED_QNAMES_TABLE_QNAME_COLUMN_NAME = "qname";
+   
+   public static final String USED_QNAMES_TABLE_QNAME_COLUMN_DATA_TYPE = "VARCHAR(10240)";
+   
+   public static final String USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME = "table_name";
+   
+   public static final String USED_QNAMES_TABLE_TABLE_NAME_COLUMN_DATA_TYPE = "VARCHAR(512)";
+   
    public static final String ENTITY_TYPES_TABLE_PK_COLUMN_NAME = "entity_type_id";
    
    public static final String ENTITY_TYPES_TABLE_PK_COLUMN_DATA_TYPE = "INTEGER";
@@ -83,6 +93,12 @@ public class SQLs
    public static final String ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME = "application_version";
    
    public static final String ENTITY_TABLE_APPLICATION_VERSION_COLUMN_DATATYPE = "VARCHAR(256)";
+   
+   public static final String APP_VERSION_TABLE_NAME = "app_version";
+   
+   public static final String APP_VERSION_PK_COLUMN_NAME = "app_version";
+   
+   public static final String APP_VERSION_PK_COLUMN_DATA_TYPE = "VARCHAR(1024)";
      
    public static final String UPDATE_ENTITY_TABLE = //
       "UPDATE " + "%s" + "." + ENTITY_TABLE_NAME + "\n" + //
@@ -111,6 +127,16 @@ public class SQLs
       "DELETE FROM " + "%s" + "." + "%s" + "\n" + //
       "WHERE " + ENTITY_TABLE_PK_COLUMN_NAME + " = ?" + "\n" + //
       ";" //
+      ;
+   
+   public static final String ONE_VALUE_SELECT = //
+      "SELECT %s" + "\n" + //
+      "FROM  %s.%s" + "\n" //
+      ;
+   
+   public static final String TWO_VALUE_SELECT = //
+      "SELECT %s, %s" + "\n" + //
+      "FROM  %s.%s" + "\n" //
       ;
    
    public static final String TWO_VALUE_INSERT = //
