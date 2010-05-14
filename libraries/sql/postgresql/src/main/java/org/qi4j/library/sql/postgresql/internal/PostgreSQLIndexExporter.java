@@ -43,6 +43,10 @@ public class PostgreSQLIndexExporter implements IndexExporter
    
    private static Map<Integer, String> _typeStrings;
    
+   private static Map<Integer, String> _onUpdateDeleteStrings;
+     
+   private static Map<Integer, String> _deferrabilityStrings;
+   
    private static final String SEPARATOR = "-----------------------------------------------";
    
    static
@@ -63,9 +67,21 @@ public class PostgreSQLIndexExporter implements IndexExporter
       _typeStrings.put(Types.TIME, "TIME");
       _typeStrings.put(Types.TIMESTAMP, "TIMESTAMP");
       _typeStrings.put(Types.VARCHAR, "VARCHAR");
+      
+      _deferrabilityStrings = new HashMap<Integer, String>();
+      _deferrabilityStrings.put(DatabaseMetaData.importedKeyInitiallyDeferred, "INITIALLY DEFERRED");
+      _deferrabilityStrings.put(DatabaseMetaData.importedKeyInitiallyImmediate, "INITIALLY IMMEDIATE");
+      _deferrabilityStrings.put(DatabaseMetaData.importedKeyNotDeferrable, "NOT DEFERRABLE");
+      
+      _onUpdateDeleteStrings = new HashMap<Integer, String>();
+      _onUpdateDeleteStrings.put(DatabaseMetaData.importedKeyCascade, "CASCADE");
+      _onUpdateDeleteStrings.put(DatabaseMetaData.importedKeyNoAction, "NO ACTION");
+      _onUpdateDeleteStrings.put(DatabaseMetaData.importedKeyRestrict, "RESTRICT");
+      _onUpdateDeleteStrings.put(DatabaseMetaData.importedKeySetDefault, "SET DEFAULT");
+      _onUpdateDeleteStrings.put(DatabaseMetaData.importedKeySetNull, "SET NULL");
    }
    
-   private static class ColumnInfo
+   public static class ColumnInfo
    {
       private final String _name;
       
@@ -90,6 +106,32 @@ public class PostgreSQLIndexExporter implements IndexExporter
       }
    }
    
+   public static class ForeignKeyInfo
+   {
+      
+      private final String _pkSchemaName;
+      
+      private final String _pkTableName;
+      
+      private final String _pkTablePKColumnName;
+      
+      private final String _onUpdateAction;
+      
+      private final String _onDeleteAction;
+      
+      private final String _deferrability;
+      
+      public ForeignKeyInfo(String pkSchemaName, String pkTableName, String pkTablePKColumnName, short onUpdate, short onDelete, short deferrability)
+      {
+         this._pkSchemaName = pkSchemaName;
+         this._pkTableName = pkTableName;
+         this._pkTablePKColumnName = pkTablePKColumnName;
+         this._onUpdateAction = _onUpdateDeleteStrings.get((int)onUpdate);
+         this._onDeleteAction = _onUpdateDeleteStrings.get((int)onDelete);
+         this._deferrability = _deferrabilityStrings.get((int)deferrability);
+      }
+   }
+   
    private interface WriteProcessor
    {
       public void beginProcessSchemaInfo(String schemaName);
@@ -99,8 +141,8 @@ public class PostgreSQLIndexExporter implements IndexExporter
       public void endProcessTableInfo(String schemaName, String tableName);
       
       public void beginProcessColumns(String schemaName, String tableName);
-      public void beginProcessColumnInfo(String schemaName, String tableName, ColumnInfo colInfo);
-      public void endProcessColumnInfo(String schemaName, String tableName, ColumnInfo colInfo);
+      public void beginProcessColumnInfo(String schemaName, String tableName, ColumnInfo colInfo, ForeignKeyInfo fkInfo);
+      public void endProcessColumnInfo(String schemaName, String tableName, ColumnInfo colInfo, ForeignKeyInfo fkInfo);
       public void endProcessColumns(String schemaName, String tableName);
       
       public void beginProcessRows(String schemaName, String tableName);
@@ -147,7 +189,7 @@ public class PostgreSQLIndexExporter implements IndexExporter
             }
             
             @Override
-            public void endProcessColumnInfo(String schemaName, String tableName, ColumnInfo colInfo)
+            public void endProcessColumnInfo(String schemaName, String tableName, ColumnInfo colInfo, ForeignKeyInfo fkInfo)
             {
             }
             
@@ -164,9 +206,19 @@ public class PostgreSQLIndexExporter implements IndexExporter
             }
             
             @Override
-            public void beginProcessColumnInfo(String schemaName, String tableName, ColumnInfo colInfo)
+            public void beginProcessColumnInfo(String schemaName, String tableName, ColumnInfo colInfo, ForeignKeyInfo fkInfo)
             {
-               out.write("<column name=\"" + colInfo._name + "\" colType=\"" + colInfo._sqlType + "\" colSize=\"" + colInfo._size + "\" colScale=\"" + colInfo._scale + "\" nullable=\"" + colInfo._nullable + "\" default=\"" + colInfo._defaultValue + "\" />" + "\n");
+               out.write("<column name=\"" + colInfo._name + "\" colType=\"" + colInfo._sqlType + "\" colSize=\"" + colInfo._size + "\" colScale=\"" + //
+                     colInfo._scale + "\" nullable=\"" + colInfo._nullable + "\" default=\"" + colInfo._defaultValue + "\" " //
+                     );
+               if (fkInfo != null)
+               {
+                  out.write("refSchemaName=\"" + fkInfo._pkSchemaName + "\" refTableName=\"" + fkInfo._pkTableName + "\" refPKColumnName=\"" + fkInfo._pkTablePKColumnName + //
+                        "\" onUpdate=\"" + fkInfo._onUpdateAction + "\" onDelete=\"" + fkInfo._onDeleteAction + "\" deferrability=\"" + fkInfo._deferrability + "\" " //
+                        );
+               }
+               
+               out.write("/>" + "\n");
             }
             
             @Override
@@ -226,9 +278,8 @@ public class PostgreSQLIndexExporter implements IndexExporter
             }
             
             @Override
-            public void endProcessColumnInfo(String schemaName, String tableName, ColumnInfo colInfo)
+            public void endProcessColumnInfo(String schemaName, String tableName, ColumnInfo colInfo, ForeignKeyInfo fkInfo)
             {
-               // TODO Auto-generated method stub
                
             }
             
@@ -259,16 +310,20 @@ public class PostgreSQLIndexExporter implements IndexExporter
             }
             
             @Override
-            public void beginProcessColumnInfo(String schemaName, String tableName, ColumnInfo colInfo)
+            public void beginProcessColumnInfo(String schemaName, String tableName, ColumnInfo colInfo, ForeignKeyInfo fkInfo)
             {
-               
-               out.print(colInfo._name + ":" + this.parseSQLType(colInfo) + "[nullable:" + colInfo._nullable + "; default: " + colInfo._defaultValue + "]" + "\n");
+               out.print(colInfo._name + ":" + this.parseSQLType(colInfo) + "[nullable:" + colInfo._nullable + "; default: " + colInfo._defaultValue + "]");
+               if (fkInfo != null)
+               {
+                  out.print(" -> " + fkInfo._pkSchemaName + "." + fkInfo._pkTableName + "(" + fkInfo._pkTablePKColumnName + ")[ON UPDATE " + fkInfo._onUpdateAction + ", ON DELETE " + fkInfo._onDeleteAction + ", " + fkInfo._deferrability + "]");
+               }
+               out.print("\n");
             }
             
             @Override
             public void beginProcessTableInfo(String schemaName, String tableName)
             {
-               out.print("Table: " + tableName + "\n");
+               out.print("Table: " + schemaName + "." + tableName + "\n");
             }
             
             @Override
@@ -353,6 +408,23 @@ public class PostgreSQLIndexExporter implements IndexExporter
                {
                   rsCols.close();
                }
+               
+               rsCols = metaData.getImportedKeys(null, schemaName, tableName);
+               Map<String, ForeignKeyInfo> fkInfos = new HashMap<String, ForeignKeyInfo>();
+               try
+               {
+                  while (rsCols.next())
+                  {
+                     fkInfos.put( //
+                           rsCols.getString(8), //
+                           new ForeignKeyInfo(rsCols.getString(2), rsCols.getString(3), rsCols.getString(4), rsCols.getShort(10), rsCols.getShort(11), rsCols.getShort(14))
+                           );
+                  }
+               } finally
+               {
+                  rsCols.close();
+               }
+               
                try
                {
                   processor.beginProcessColumns(schemaName, tableName);
@@ -360,10 +432,10 @@ public class PostgreSQLIndexExporter implements IndexExporter
                   {
                      try
                      {
-                        processor.beginProcessColumnInfo(schemaName, tableName, colInfo);
+                        processor.beginProcessColumnInfo(schemaName, tableName, colInfo, fkInfos.get(colInfo._name));
                      } finally
                      {
-                        processor.endProcessColumnInfo(schemaName, tableName, colInfo);
+                        processor.endProcessColumnInfo(schemaName, tableName, colInfo, fkInfos.get(colInfo._name));
                      }
                   }
                } finally

@@ -774,7 +774,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       String valueRefTablePKColumnName = null;
       if (qNameInfo.isFinalTypePrimitive())
       {
-         Type propertyType = qNameInfo.getPropertyDescriptor().type();
+         
 //         System.out.println("QName: " + qNameInfo.getQName());
 //         System.out.println("Property type: " + propertyType);
 //         System.out.println("Instance of class: " + (propertyType instanceof Class<?>));
@@ -782,10 +782,11 @@ public class PostgreSQLAppStartup implements SQLAppStartup
 //         Method accessor = qNameInfo.getPropertyDescriptor().accessor();
 //         System.out.println("Has annotation: " + qNameInfo.getPropertyDescriptor().accessor().isAnnotationPresent(SQLTypeInfo.class));
 //         System.out.println("");
-         if (propertyType instanceof Class<?> && this._customizableTypes.keySet().contains(propertyType) && qNameInfo.getPropertyDescriptor().accessor().isAnnotationPresent(SQLTypeInfo.class))
+         if (this._customizableTypes.keySet().contains(finalClass) && qNameInfo.getPropertyDescriptor().accessor().isAnnotationPresent(SQLTypeInfo.class))
          {
-            sqlType = this._customizableTypes.get(propertyType).customizeType(propertyType, qNameInfo.getPropertyDescriptor().accessor().getAnnotation(SQLTypeInfo.class));
-         } else if(Enum.class.isAssignableFrom(finalClass))
+            sqlType = this._customizableTypes.get(finalClass).customizeType(finalClass, qNameInfo.getPropertyDescriptor().accessor().getAnnotation(SQLTypeInfo.class));
+            
+         } else if (Enum.class.isAssignableFrom(finalClass))
          {
             // Enum - reference the lookup table
             sqlType = ENUM_LOOKUP_TABLE_PK_COLUMN_DATA_TYPE;
@@ -793,7 +794,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
             valueRefTablePKColumnName = ENUM_LOOKUP_TABLE_PK_COLUMN_NAME;
          } else 
          {
-            // Primitive type
+            // Primitive type, default sqlType
             for (Map.Entry<Class<?>, String> entry : this._creationTypeStrings.entrySet())
             {
                if (entry.getKey().isAssignableFrom(finalClass))
@@ -803,6 +804,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                }
             }
          }
+         
          if (sqlType == null)
          {
             throw new InternalError("Could not find sql type for java type [" + finalType + "]");
