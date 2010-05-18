@@ -21,6 +21,7 @@ package org.qi4j.runtime.query.proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+
 import org.qi4j.api.query.QueryExpressionException;
 import org.qi4j.api.query.grammar.AssociationReference;
 import org.qi4j.api.query.grammar.PropertyReference;
@@ -30,7 +31,7 @@ import org.qi4j.runtime.query.grammar.impl.PropertyReferenceImpl;
  * JAVADOC Add JavaDoc
  */
 public class PropertyReferenceProxy
-    implements InvocationHandler
+        implements InvocationHandler
 {
     private Object anyproxy;
 
@@ -55,7 +56,7 @@ public class PropertyReferenceProxy
                           final Method method,
                           final Object[] args
     )
-        throws Throwable
+            throws Throwable
     {
         if( method.getDeclaringClass().equals( PropertyReference.class ) )
         {
@@ -70,9 +71,9 @@ public class PropertyReferenceProxy
         {
             Class<?> propertyClass = propertyReference.propertyType();
             return Proxy.newProxyInstance(
-                getClass().getClassLoader(),
-                new Class[]{ propertyClass, PropertyReference.class },
-                new MixinTypeProxy( propertyClass, propertyReference )
+                    propertyClass.getClassLoader(),
+                    new Class[]{propertyClass, PropertyReference.class},
+                    new MixinTypeProxy( propertyClass, propertyReference )
             );
         }
         // TODO handle equals/hashcode?

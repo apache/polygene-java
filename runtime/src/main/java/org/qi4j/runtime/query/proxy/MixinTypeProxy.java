@@ -20,6 +20,7 @@ package org.qi4j.runtime.query.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.property.Property;
@@ -34,7 +35,7 @@ import static java.lang.reflect.Proxy.*;
  * JAVADOC Add JavaDoc
  */
 public final class MixinTypeProxy
-    implements InvocationHandler
+        implements InvocationHandler
 {
 
     /**
@@ -124,31 +125,29 @@ public final class MixinTypeProxy
             if( Property.class.isAssignableFrom( methodReturnType ) )
             {
                 return newProxyInstance(
-                    getClass().getClassLoader(),
-                    new Class[]{ methodReturnType, PropertyReference.class },
-                    new PropertyReferenceProxy( method, traversedAssociation, traversedProperty )
+                        methodReturnType.getClassLoader(),
+                        new Class[]{methodReturnType, PropertyReference.class},
+                        new PropertyReferenceProxy( method, traversedAssociation, traversedProperty )
                 );
-            }
-            else if( Association.class.isAssignableFrom( methodReturnType ) )
+            } else if( Association.class.isAssignableFrom( methodReturnType ) )
             {
                 return newProxyInstance(
-                    getClass().getClassLoader(),
-                    new Class[]{ methodReturnType, AssociationReference.class },
-                    new AssociationReferenceProxy( method, traversedAssociation )
+                        methodReturnType.getClassLoader(),
+                        new Class[]{methodReturnType, AssociationReference.class},
+                        new AssociationReferenceProxy( method, traversedAssociation )
                 );
-            }
-            else if( ManyAssociation.class.isAssignableFrom( methodReturnType ) )
+            } else if( ManyAssociation.class.isAssignableFrom( methodReturnType ) )
             {
                 return newProxyInstance(
-                    getClass().getClassLoader(),
-                    new Class[]{ methodReturnType, ManyAssociationReference.class },
-                    new ManyAssociationReferenceProxy( method, traversedAssociation )
+                        methodReturnType.getClassLoader(),
+                        new Class[]{methodReturnType, ManyAssociationReference.class},
+                        new ManyAssociationReferenceProxy( method, traversedAssociation )
                 );
             }
         }
 
         throw new NotQueryableException(
-            "Only property, association and many manyAssociations methods can be used" );
+                "Only property, association and many manyAssociations methods can be used" );
     }
 
     @Override

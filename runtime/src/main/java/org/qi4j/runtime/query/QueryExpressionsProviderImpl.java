@@ -20,6 +20,7 @@ package org.qi4j.runtime.query;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
+
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.query.QueryExpressions;
@@ -76,7 +77,7 @@ import static java.lang.reflect.Proxy.*;
 import static org.qi4j.api.util.NullArgumentException.*;
 
 public class QueryExpressionsProviderImpl
-    implements QueryExpressionsProvider
+        implements QueryExpressionsProvider
 {
     private static Method identity;
 
@@ -86,7 +87,7 @@ public class QueryExpressionsProviderImpl
         {
             identity = Identity.class.getMethod( "identity" );
         }
-        catch( NoSuchMethodException e )
+        catch (NoSuchMethodException e)
         {
             e.printStackTrace();
         }
@@ -96,28 +97,27 @@ public class QueryExpressionsProviderImpl
      * Creates a template for the a mixin type to be used to access properties in type safe fashion.
      *
      * @param mixinType mixin type
-     *
      * @return template instance
      */
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public <T> T templateFor( final Class<T> mixinType )
     {
         return (T) newProxyInstance(
-            QueryExpressions.class.getClassLoader(),
-            new Class[]{ mixinType },
-            new MixinTypeProxy( mixinType )
+                mixinType.getClassLoader(),
+                new Class[]{mixinType},
+                new MixinTypeProxy( mixinType )
         );
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public <T> T templateFor( Class<T> mixinType, Object associatedEntity )
     {
         MixinTypeProxy proxy = (MixinTypeProxy) Proxy.getInvocationHandler( associatedEntity );
 
         return (T) newProxyInstance(
-            QueryExpressions.class.getClassLoader(),
-            new Class[]{ mixinType },
-            new MixinTypeProxy( mixinType, proxy.traversedAssociation() ) );
+                mixinType.getClassLoader(),
+                new Class[]{mixinType},
+                new MixinTypeProxy( mixinType, proxy.traversedAssociation() ) );
     }
 
     public <T> VariableValueExpression<T> newVariableValueExpression( String name )
@@ -277,7 +277,7 @@ public class QueryExpressionsProviderImpl
         return new SingleValueExpressionImpl<T>( value );
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public <T> T oneOf( ManyAssociation<T> association )
     {
         validateNotNull( "association", association );
@@ -289,20 +289,20 @@ public class QueryExpressionsProviderImpl
         }
 
         ManyAssociationReferenceProxy manyAssociationReferenceProxy =
-            (ManyAssociationReferenceProxy) getInvocationHandler( association );
+                (ManyAssociationReferenceProxy) getInvocationHandler( association );
 
         return (T) manyAssociationReferenceProxy.getAnyProxy();
     }
 
     public <T, C extends Collection<T>> ContainsAllPredicate<T, C> newContainsAllPredicate( PropertyReference<C> propertyRef,
-                                                                SingleValueExpression<C> collectionValues
+                                                                                            SingleValueExpression<C> collectionValues
     )
     {
         return new ContainsAllPredicateImpl<T, C>( propertyRef, collectionValues );
     }
 
     public <T, C extends Collection<T>> ContainsPredicate<T, C> newContainsPredicate( PropertyReference<C> propertyRef,
-                                                          SingleValueExpression<T> singleValueExpression
+                                                                                      SingleValueExpression<T> singleValueExpression
     )
     {
         return new ContainsPredicateImpl<T, C>( propertyRef, singleValueExpression );
