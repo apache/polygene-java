@@ -25,19 +25,5 @@
       <groupId>org.qi4j.core</groupId>
       <artifactId>qi4j-core-spi</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.qi4j.core</groupId>
-      <artifactId>qi4j-core-testsupport</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.qi4j.extension</groupId>
-      <artifactId>qi4j-indexing-rdf</artifactId>
-      <version>1.1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 </project>
