@@ -16,6 +16,7 @@
 package org.qi4j.index.sql.internal;
 
 import java.sql.SQLException;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import org.qi4j.api.injection.scope.Service;
@@ -32,11 +33,11 @@ import org.qi4j.spi.entitystore.StateChangeListener;
  */
 public abstract class SQLStateChangeListener implements StateChangeListener
 {
-   
+
    @This private SQLJDBCState _jdbcState;
-   
+
    @Service private SQLIndexing _indexing;
-   
+
    @Override
    public void notifyChanges(Iterable<EntityState> changedStates)
    {
@@ -46,6 +47,13 @@ public abstract class SQLStateChangeListener implements StateChangeListener
       } catch (SQLException sqle)
       {
          Logger.getLogger(this.getClass().getName()).severe("Error when indexing entities:\n" + sqle);
+         SQLException e = sqle;
+         while (e != null)
+         {
+             e.printStackTrace( );
+             e = e.getNextException( );
+         }
+
          // TODO is UoWException right one for this?
          throw new UnitOfWorkException(sqle);
       }
