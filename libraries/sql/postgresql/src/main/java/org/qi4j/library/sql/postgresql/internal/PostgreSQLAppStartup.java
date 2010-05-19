@@ -22,6 +22,7 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -66,33 +67,33 @@ import org.qi4j.spi.value.ValueDescriptor;
  */
 public class PostgreSQLAppStartup implements SQLAppStartup
 {
-   
+
    private interface SQLTypeCustomizer
    {
       String customizeType(Type propertyType, SQLTypeInfo sqlTypeInfo);
    }
-   
+
    @Structure
    private Application _app;
-   
+
    @This
    private PostgreSQLDBState _state;
-   
+
    @This
    private Configuration<PostgreSQLConfiguration> _configuration;
-   
+
    @Service private ReindexingStrategy _reindexingStrategy;
-   
+
    @Service private Reindexer _reindexer;
-   
+
    private Map<Class<?>, String> _creationTypeStrings;
-   
+
    private Map<Class<?>, SQLTypeCustomizer> _customizableTypes;
-   
+
    public static final String DEFAULT_SCHEMA_NAME = "qi4j";
-   
+
    private static final Logger _log = Logger.getLogger(PostgreSQLAppStartup.class.getName());
-   
+
    private void initTypes()
    {
       Map<Class<?>, Integer> primitiveTypes = new HashMap<Class<?>, Integer>();
@@ -108,9 +109,9 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       primitiveTypes.put(String.class, Types.VARCHAR);
       primitiveTypes.put(BigInteger.class, Types.NUMERIC);
       primitiveTypes.put(BigDecimal.class, Types.NUMERIC);
-      
+
       this._state.javaTypes2SQLTypes().set(primitiveTypes);
-      
+
       // TODO make use of Qi4j's MinLength/MaxLength -styled constraints
       // TODO some of the sizes of the values are quite improvised. Maybe allow user
       // some control over it, for example via annotations?
@@ -129,7 +130,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       this._creationTypeStrings.put(String.class, "VARCHAR(1024)");
       this._creationTypeStrings.put(BigInteger.class, "NUMERIC(50, 0)");
       this._creationTypeStrings.put(BigDecimal.class, "NUMERIC(50, 50)");
-      
+
       this._customizableTypes = new HashMap<Class<?>, SQLTypeCustomizer>();
       this._customizableTypes.put( //
             String.class, //
@@ -165,20 +166,20 @@ public class PostgreSQLAppStartup implements SQLAppStartup
             } //
             );
    }
-   
+
    @Override
    public Connection createConnection() throws SQLException
    {
       this.initTypes();
-      
+
       Connection connection = DriverManager.getConnection(this._configuration.configuration().connectionString().get());
-      connection.setAutoCommit(false);
-      
       this._state.connection().set(connection);
-      
+
+      connection.setAutoCommit(false);
+
       return connection;
    }
-   
+
    @Override
    public void initConnection(Connection connection) throws SQLException
    {
@@ -198,7 +199,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       this._state.entityUsedQNames().set(new HashMap<String, Set<QualifiedName>>());
       this._state.qNameInfos().set(new HashMap<QualifiedName, QNameInfo>());
       this._state.enumPKs().set(new HashMap<String, Integer>());
-      
+
       Boolean wasAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(true);
       try
@@ -209,9 +210,9 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       {
          connection.setAutoCommit(wasAutoCommit);
       }
-      
+
    }
-   
+
    private void constructApplicationInfo(final Map<String, EntityDescriptor> entityDescriptors, Set<String> usedClassNames, Set<String> enumValues, Boolean setQNameTableNameToNull) throws SQLException
    {
       final List<ValueDescriptor> valueDescriptors = new ArrayList<ValueDescriptor>();
@@ -226,15 +227,15 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                entityDescriptors.put(entityDescriptor.type().getName(), entityDescriptor);
 //            }
          }
-         
+
          @Override
          public void visit(ValueDescriptor valueDescriptor)
          {
             valueDescriptors.add(valueDescriptor);
          }
-         
+
       });
-      
+
       Set<String> usedVCClassNames = new HashSet<String>();
       for (EntityDescriptor descriptor : entityDescriptors.values())
       {
@@ -244,10 +245,10 @@ public class PostgreSQLAppStartup implements SQLAppStartup
          this.extractManyAssociationQNames(descriptor, this._state.qNameInfos().get(), newQNames, setQNameTableNameToNull);
          this._state.entityUsedQNames().get().put(descriptor.type().getName(), newQNames);
       }
-      
+
       usedClassNames.addAll(usedVCClassNames);
    }
-   
+
    private void processPropertyTypeForQNames(PropertyDescriptor pType, Map<QualifiedName, QNameInfo> qNameInfos, Set<QualifiedName> newQNames, List<ValueDescriptor> vDescriptors, Set<String> usedVCClassNames, Set<String> enumValues, Boolean setQNameTableNameToNull)
    {
       QualifiedName qName = pType.qualifiedName();
@@ -266,7 +267,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
             qNameInfos.put(qName, info);
          }
          Type vType = info.getFinalType();
-         
+
          while(vType instanceof ParameterizedType)
          {
             vType = ((ParameterizedType)vType).getRawType();
@@ -304,10 +305,10 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                }
             }
          }
-         
+
       }
    }
-   
+
    private void extractPropertyQNames(EntityDescriptor entityDesc, Map<QualifiedName, QNameInfo> qNameInfos, Set<QualifiedName> newQNames, List<ValueDescriptor> vDescriptors, Set<String> usedVCClassNames, Set<String> enumValues, Boolean setQNameTableNameToNull)
    {
       for (PropertyDescriptor pDesc : entityDesc.state().properties())
@@ -322,9 +323,9 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                setQNameTableNameToNull //
                );
       }
-      
+
    }
-   
+
    private void extractAssociationQNames(EntityDescriptor entityDesc, Map<QualifiedName, QNameInfo> extractedQNames, Set<QualifiedName> newQNames, Boolean setQNameTableNameToNull)
    {
       for (AssociationDescriptor assoDesc : entityDesc.state().associations())
@@ -343,7 +344,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
          }
       }
    }
-   
+
    private void extractManyAssociationQNames(EntityDescriptor entityDesc, Map<QualifiedName, QNameInfo> extractedQNames, Set<QualifiedName> newQNames, Boolean setQNameTableNameToNull)
    {
       for (ManyAssociationDescriptor mAssoDesc : entityDesc.state().manyAssociations())
@@ -363,13 +364,13 @@ public class PostgreSQLAppStartup implements SQLAppStartup
          }
       }
    }
-   
+
    private Boolean syncDB() throws SQLException
    {
       Connection connection = this._state.connection().get();
       String schemaName = this._state.schemaName().get();
       ResultSet rs = connection.getMetaData().getSchemas();
-      
+
       Boolean schemaFound = false;
       try
       {
@@ -382,30 +383,31 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       {
          rs.close();
       }
-      
+
       Boolean reindexingRequired = this.isReindexingNeeded(schemaFound);
       Map<String, EntityDescriptor> entityDescriptors = new HashMap<String, EntityDescriptor>();
       Set<String> usedClassNames = new HashSet<String>();
       Set<String> enumValues = new HashSet<String>();
       if (schemaFound && !reindexingRequired)
       {
+          this.testRequiredCapabilities( );
          this.constructApplicationInfo(entityDescriptors, usedClassNames, enumValues, true);
          this.readAppMetadataFromDB(entityDescriptors);
-      } else 
+      } else
       {
          this.constructApplicationInfo(entityDescriptors, usedClassNames, enumValues, false);
-         this.createSchema();
+         this.createSchema(schemaFound);
          this.writeAppMetadataToDB(entityDescriptors, usedClassNames, enumValues);
-         
+
          if (reindexingRequired)
          {
             this.performReindex();
          }
       }
-      
+
       return reindexingRequired;
    }
-   
+
    private Boolean isReindexingNeeded(Boolean schemaExists) throws SQLException
    {
       Boolean result = false;
@@ -421,13 +423,13 @@ public class PostgreSQLAppStartup implements SQLAppStartup
             {
                rs.close();
                rs = stmt.executeQuery("SELECT " + APP_VERSION_TABLE_NAME + "." + APP_VERSION_PK_COLUMN_NAME + " FROM " + schemaName + "." + APP_VERSION_TABLE_NAME);
-               
+
                result = !rs.next();
-               
+
                if (!result)
                {
                   // nothing present in app version table
-                  
+
                   String dbAppVersion = rs.getString(1);
                   if (this._reindexingStrategy != null)
                   {
@@ -440,10 +442,11 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                // so we should re-index.
                result = true;
             }
-            
+
             if (schemaExists && result)
             {
-               stmt.execute("DROP SCHEMA " + schemaName + " CASCADE");
+//               stmt.execute("DROP SCHEMA " + schemaName + " CASCADE");
+                this.clearSchema( );
             }
          }
          finally
@@ -451,20 +454,64 @@ public class PostgreSQLAppStartup implements SQLAppStartup
             stmt.close();
          }
       }
-      
+
       return result;
    }
-   
-   private void createSchema() throws SQLException
+
+   private void clearSchema() throws SQLException
+   {
+       Connection connection = this._state.connection( ).get( );
+       String schemaName = this._state.schemaName( ).get( );
+       DatabaseMetaData metaData = connection.getMetaData( );
+
+       Statement stmt = connection.createStatement( );
+       try
+       {
+           // First all qnames
+           this.dropTablesIfExist( metaData, schemaName, SQLs.QNAME_TABLE_NAME_PREFIX, stmt );
+           // Then property qnames
+           this.dropTablesIfExist( metaData, schemaName, SQLs.PROPERTY_QNAMES_TABLE_NAME, stmt );
+           // Then entities
+           this.dropTablesIfExist( metaData, schemaName, SQLs.ENTITY_TABLE_NAME, stmt );
+           // Then the rest
+           this.dropTablesIfExist( metaData, schemaName, null, stmt );
+
+
+       } finally
+       {
+           stmt.close( );
+       }
+
+   }
+
+   private void dropTablesIfExist(DatabaseMetaData metaData, String schemaName, String tableName, Statement stmt) throws SQLException
+   {
+       ResultSet rs = metaData.getTables( null, schemaName, tableName, new String[] { "TABLE" } );
+       try
+       {
+           while (rs.next( ))
+           {
+               stmt.execute( "DROP TABLE " + schemaName + "." + rs.getString( 3 ) + " CASCADE");
+           }
+       } finally
+       {
+           rs.close( );
+       }
+   }
+
+   private void createSchema(Boolean schemaFound) throws SQLException
    {
       Connection connection = this._state.connection().get();
       String schemaName = this._state.schemaName().get();
-      
+
       Statement stmt = connection.createStatement();
       try
       {
-         stmt.execute("CREATE SCHEMA " + schemaName + ";");
-         
+          if (!schemaFound)
+          {
+              stmt.execute("CREATE SCHEMA " + schemaName + ";");
+          }
+          this.testRequiredCapabilities( );
          stmt.execute( //
                "CREATE TABLE " + schemaName + "." + USED_CLASSES_TABLE_NAME + "(" + "\n" + //
                      USED_CLASSES_TABLE_PK_COLUMN_NAME + " " + USED_CLASSES_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
@@ -473,9 +520,9 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                      "UNIQUE(" + USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME + ")" + "\n" + //
                      ");" //
                );
-         
+
          this._state.tablePKs().get().put(USED_CLASSES_TABLE_NAME, 0L);
-         
+
          stmt.execute( //
                "CREATE TABLE " + schemaName + "." + ENTITY_TYPES_TABLE_NAME + "(" + "\n" + //
                      ENTITY_TYPES_TABLE_PK_COLUMN_NAME + " " + ENTITY_TYPES_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
@@ -484,7 +531,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                      "UNIQUE(" + ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME + ")" + "\n" + //
                      ");");
          this._state.tablePKs().get().put(ENTITY_TYPES_TABLE_NAME, 0L);
-         
+
          stmt.execute( //
                "CREATE TABLE " + schemaName + "." + ENTITY_TABLE_NAME + "(" + "\n" + //
                      ENTITY_TABLE_PK_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
@@ -494,11 +541,11 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                      ENTITY_TABLE_VERSION_COLUMN_NAME + " " + ENTITY_TABLE_VERSION_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
                      ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME + " " + ENTITY_TABLE_APPLICATION_VERSION_COLUMN_DATATYPE + "," + "\n" + //
                      "PRIMARY KEY(" + ENTITY_TABLE_PK_COLUMN_NAME + ")," + "\n" + //
-                     "FOREIGN KEY(" + ENTITY_TYPES_TABLE_PK_COLUMN_NAME + ") REFERENCES " + this._state.schemaName().get() + "." + ENTITY_TYPES_TABLE_NAME + "(" + ENTITY_TYPES_TABLE_PK_COLUMN_NAME + ") ON DELETE RESTRICT ON UPDATE CASCADE" + "\n" + //  
+                     "FOREIGN KEY(" + ENTITY_TYPES_TABLE_PK_COLUMN_NAME + ") REFERENCES " + this._state.schemaName().get() + "." + ENTITY_TYPES_TABLE_NAME + "(" + ENTITY_TYPES_TABLE_PK_COLUMN_NAME + ") ON DELETE RESTRICT ON UPDATE CASCADE" + "\n" + //
                      ");" //
                );
          this._state.tablePKs().get().put(ENTITY_TABLE_NAME, 0L);
-         
+
          stmt.execute(
                "CREATE TABLE " + schemaName + "." + ENUM_LOOKUP_TABLE_NAME + "(" + "\n" + //
                ENUM_LOOKUP_TABLE_PK_COLUMN_NAME + " " + ENUM_LOOKUP_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
@@ -507,7 +554,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                ");" //
                );
          this._state.tablePKs().get().put(ENUM_LOOKUP_TABLE_NAME, 0L);
-         
+
          stmt.execute( //
                "CREATE TABLE " + schemaName + "." + USED_QNAMES_TABLE_NAME + "(" + "\n" + //
                USED_QNAMES_TABLE_QNAME_COLUMN_NAME + " " + USED_QNAMES_TABLE_QNAME_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
@@ -515,7 +562,17 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                "PRIMARY KEY(" + USED_QNAMES_TABLE_QNAME_COLUMN_NAME + ", " + USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME + ")" + "\n" + //
                ");" //
                );
-         
+
+         stmt.execute(
+             "CREATE TABLE " + schemaName + "." + PROPERTY_QNAMES_TABLE_NAME + "(" + "\n" + //
+             ALL_QNAMES_TABLE_PK_COLUMN_NAME + " " + PROPERTY_QNAMES_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
+             ENTITY_TABLE_PK_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
+             "PRIMARY KEY(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ", " + ENTITY_TABLE_PK_COLUMN_NAME + ")," + "\n" + //
+             "FOREIGN KEY(" + ENTITY_TABLE_PK_COLUMN_NAME + ") REFERENCES " + schemaName + "." + ENTITY_TABLE_NAME + "(" + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED" + "\n" + //
+             ");" //
+             );
+         this._state.tablePKs( ).get( ).put( PROPERTY_QNAMES_TABLE_NAME, 0L );
+
          stmt.execute(
                "CREATE TABLE " + schemaName + "." + APP_VERSION_TABLE_NAME + "(" + "\n" + //
                APP_VERSION_PK_COLUMN_NAME + " " + APP_VERSION_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
@@ -526,7 +583,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
          PreparedStatement ps = connection.prepareStatement("INSERT INTO " + schemaName + "." + APP_VERSION_TABLE_NAME + " VALUES ( ? );");
          ps.setString(1, this._app.version());
          ps.execute();
-         
+
          // TODO INDICES!!!!
       }
       finally
@@ -534,14 +591,14 @@ public class PostgreSQLAppStartup implements SQLAppStartup
          stmt.close();
       }
    }
-   
+
    private void performReindex() throws SQLException
    {
       _log.info("Performing reindexing...");
       this._reindexer.reindex();
       _log.info("Reindexing complete.");
    }
-   
+
    private void readAppMetadataFromDB(Map<String, EntityDescriptor> entityDescriptors) throws SQLException
    {
 
@@ -557,17 +614,17 @@ public class PostgreSQLAppStartup implements SQLAppStartup
             pk = rs.getLong(1) + 1;
          }
          this._state.tablePKs().get().put(ENTITY_TABLE_NAME, pk);
-         
+
          rs = stmt.executeQuery(String.format(SQLs.TWO_VALUE_SELECT, SQLs.ENTITY_TYPES_TABLE_PK_COLUMN_NAME, SQLs.ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME, schemaName, SQLs.ENTITY_TYPES_TABLE_NAME));
          while (rs.next())
          {
             pk = rs.getInt(1);
             String entityTypeName = rs.getString(2);
             this._state.entityTypeInfos().get().put(entityTypeName, new EntityTypeInfo(entityDescriptors.get(entityTypeName), (int)pk));
-            
+
             if (!this._state.tablePKs().get().containsKey(ENTITY_TYPES_TABLE_NAME) || this._state.tablePKs().get().get(ENTITY_TYPES_TABLE_NAME) <= pk)
             {
-               this._state.tablePKs().get().put(ENTITY_TYPES_TABLE_NAME, (long)pk + 1);
+               this._state.tablePKs().get().put(ENTITY_TYPES_TABLE_NAME, pk + 1);
             }
          }
 
@@ -582,7 +639,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
             }
             this._state.usedClassesPKs().get().put(className, (int)pk);
          }
-         
+
          rs = stmt.executeQuery(String.format(SQLs.TWO_VALUE_SELECT, SQLs.ENUM_LOOKUP_TABLE_PK_COLUMN_NAME, SQLs.ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME, schemaName, SQLs.ENUM_LOOKUP_TABLE_NAME));
          while (rs.next())
          {
@@ -594,36 +651,52 @@ public class PostgreSQLAppStartup implements SQLAppStartup
             }
             this._state.enumPKs().get().put(enumName, (int)pk);
          }
-         
-         rs = stmt.executeQuery(String.format(SQLs.TWO_VALUE_SELECT, SQLs.USED_QNAMES_TABLE_QNAME_COLUMN_NAME, SQLs.USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME, schemaName, SQLs.USED_QNAMES_TABLE_NAME));
-         Statement stmt2 = connection.createStatement();
-         try
-         {
-            while (rs.next())
-            {
-               String qNameName = rs.getString(1);
-               String qNameTableName = rs.getString(2);
-               this._state.qNameInfos().get().get(QualifiedName.fromQN(qNameName)).setTableName(qNameTableName);
-               pk = 0;
-               ResultSet rs2 = stmt2.executeQuery(String.format(SQLs.ONE_VALUE_SELECT, "MAX(" + SQLs.QNAME_TABLE_PK_COLUMN_NAME + ")", schemaName, qNameTableName));
-               if (rs2.next())
-               {
-                  pk = rs2.getLong(1);
-               }
-               this._state.tablePKs().get().put(qNameTableName, pk + 1);
-            }
-         }
-         finally
-         {
-            stmt2.close();
-         }
+
+//         rs = stmt.executeQuery(String.format(SQLs.ONE_VALUE_SELECT, "MAX(" + SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME + ")", schemaName, SQLs.PROPERTY_QNAMES_TABLE_NAME));
+//         pk = 0;
+//         if (rs.next( ))
+//         {
+//             Object max = rs.getObject( 1 );
+//             if (max != null)
+//             {
+//                 pk = rs.getLong( 1 ) + 1;
+//             }
+//         }
+//         this._state.tablePKs( ).get( ).put( SQLs.PROPERTY_QNAMES_TABLE_NAME, pk );
+//
+//         rs = stmt.executeQuery(String.format(SQLs.TWO_VALUE_SELECT, SQLs.USED_QNAMES_TABLE_QNAME_COLUMN_NAME, SQLs.USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME, schemaName, SQLs.USED_QNAMES_TABLE_NAME));
+//         Statement stmt2 = connection.createStatement();
+//         try
+//         {
+//            while (rs.next())
+//            {
+//               String qNameName = rs.getString(1);
+//               String qNameTableName = rs.getString(2);
+//               QNameInfo info = this._state.qNameInfos().get().get(QualifiedName.fromQN(qNameName));
+//               info.setTableName(qNameTableName);
+//               if (!info.getQNameType( ).equals( QNameType.PROPERTY ))
+//               {
+//                   pk = 0;
+//                   ResultSet rs2 = stmt2.executeQuery(String.format(SQLs.ONE_VALUE_SELECT, "MAX(" + SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME + ")", schemaName, qNameTableName));
+//                   if (rs2.next())
+//                   {
+//                       pk = rs2.getLong(1);
+//                   }
+//                   this._state.tablePKs().get().put(qNameTableName, pk + 1);
+//               }
+//            }
+//         }
+//         finally
+//         {
+//            stmt2.close();
+//         }
       } finally
       {
          stmt.close();
       }
-      
+
    }
-   
+
    private void writeAppMetadataToDB(Map<String, EntityDescriptor> entityDescriptors, Set<String> usedClassNames, Set<String> allEnums) throws SQLException
    {
       Connection connection = this._state.connection().get();
@@ -647,7 +720,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       {
          ps.close();
       }
-      
+
       ps = connection.prepareStatement(String.format(SQLs.TWO_VALUE_INSERT, this._state.schemaName().get(), USED_CLASSES_TABLE_NAME));
       try
       {
@@ -665,7 +738,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       {
          ps.close();
       }
-      
+
       ps = connection.prepareStatement(String.format(SQLs.TWO_VALUE_INSERT, this._state.schemaName().get(), ENUM_LOOKUP_TABLE_NAME));
       try
       {
@@ -683,7 +756,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       {
          ps.close();
       }
-      
+
       Statement stmt = connection.createStatement();
       ps = connection.prepareStatement(String.format(SQLs.TWO_VALUE_INSERT, schemaName, USED_QNAMES_TABLE_NAME));
       try
@@ -692,65 +765,69 @@ public class PostgreSQLAppStartup implements SQLAppStartup
          {
             StringBuilder builder = new StringBuilder();
             QNameType type = qNameInfo.getQNameType();
-            
+
             builder.append( //
                   "CREATE TABLE " + schemaName + "." + qNameInfo.getTableName() + "(" + "\n" //
                   );
-            String entityRefColumnName = SQLs.ENTITY_TABLE_PK_COLUMN_NAME;
-            
+
             if (type.equals(QNameType.PROPERTY))
             {
-               builder.append(QNAME_TABLE_PK_COLUMN_NAME + " " + QNAME_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
-                     ENTITY_TABLE_PK_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
-                     QNAME_TABLE_PARENT_QNAME_COLUMN_NAME + " " + QNAME_TABLE_PK_COLUMN_DATA_TYPE + "," + "\n" //
+               builder.append(ALL_QNAMES_TABLE_PK_COLUMN_NAME + " " + PROPERTY_QNAMES_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
+                   SQLs.ENTITY_TABLE_PK_COLUMN_NAME + " " + SQLs.ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
+                   QNAME_TABLE_PARENT_QNAME_COLUMN_NAME + " " + PROPERTY_QNAMES_TABLE_PK_COLUMN_DATA_TYPE + "," + "\n" //
                );
-               
+
                if (qNameInfo.getCollectionDepth() > 0)
                {
-                  for (Integer x = 0; x < qNameInfo.getCollectionDepth(); ++x)
-                  {
-                     builder.append(QNAME_TABLE_COLLECTION_INDEX_COLUMN_NAME_PREFIX + x + " " + QNAME_TABLE_COLLECTION_INDEX_COLUMN_DATA_TYPE + "," + "\n");
-                  }
+                  builder.append(QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME + " " + QNAME_TABLE_COLLECTION_PATH_COLUMN_DATA_TYPE + " NOT NULL," + "\n");
                }
                this.appendColumnDefinitionsForProperty(builder, qNameInfo);
-//               this.appendFKsForProperty(builder, QNAME_TABLE_PK_COLUMN_NAME, usedClassFK);
-            }
-            else if (type.equals(QNameType.ASSOCIATION))
-            {
-               builder.append( //
-                     QNAME_TABLE_PK_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
-                           QNAME_TABLE_VALUE_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + "," + "\n" + //
-                           "PRIMARY KEY(" + QNAME_TABLE_PK_COLUMN_NAME + ")," + "\n" + //
-                           "FOREIGN KEY(" + QNAME_TABLE_VALUE_COLUMN_NAME + ") REFERENCES " + schemaName + "." + ENTITY_TABLE_NAME + "(" + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED," + "\n" //
-                     );
-               entityRefColumnName = QNAME_TABLE_PK_COLUMN_NAME;
-            }
-            else if (type.equals(QNameType.MANY_ASSOCIATION))
-            {
-               builder.append( //
-                     QNAME_TABLE_PK_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
-                           QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME + " " + QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
-                           QNAME_TABLE_VALUE_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + "," + "\n" + //
-                           "PRIMARY KEY(" + QNAME_TABLE_PK_COLUMN_NAME + ", " + QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME + ")," + "\n" + //
-                           "FOREIGN KEY(" + QNAME_TABLE_VALUE_COLUMN_NAME + ") REFERENCES " + schemaName + "." + ENTITY_TABLE_NAME + "(" + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED," + "\n" //
-                     );
-               entityRefColumnName = QNAME_TABLE_PK_COLUMN_NAME;
+               builder.append(
+                   "FOREIGN KEY(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ", " + ENTITY_TABLE_PK_COLUMN_NAME + ") REFERENCES " + schemaName + "." + PROPERTY_QNAMES_TABLE_NAME + "(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ", " + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED," + "\n" + //
+                   "FOREIGN KEY(" + QNAME_TABLE_PARENT_QNAME_COLUMN_NAME + ", " + ENTITY_TABLE_PK_COLUMN_NAME + ") REFERENCES " + schemaName + "." + PROPERTY_QNAMES_TABLE_NAME + "(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ", " + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED" + "\n" + //
+//                   "FOREIGN KEY(" + ENTITY_TABLE_PK_COLUMN_NAME + ") REFERENCES " + schemaName + "." + ENTITY_TABLE_NAME + "(" + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED" + "\n" + //
+                   ");"
+                   );
             }
             else
             {
-               throw new IllegalArgumentException("Did not how to create table for qName type: " + type + ".");
+                if (type.equals(QNameType.ASSOCIATION))
+                {
+                    builder.append( //
+                        ALL_QNAMES_TABLE_PK_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
+                        QNAME_TABLE_VALUE_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
+                        "PRIMARY KEY(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ")," + "\n" + //
+                        "FOREIGN KEY(" + QNAME_TABLE_VALUE_COLUMN_NAME + ") REFERENCES " + schemaName + "." + ENTITY_TABLE_NAME + "(" + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED," + "\n" //
+                         );
+                }
+                else if (type.equals(QNameType.MANY_ASSOCIATION))
+                {
+                    builder.append( //
+                        ALL_QNAMES_TABLE_PK_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
+                        QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME + " " + QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
+                        QNAME_TABLE_VALUE_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
+                        "PRIMARY KEY(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ", " + QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME + ")," + "\n" + //
+                        "FOREIGN KEY(" + QNAME_TABLE_VALUE_COLUMN_NAME + ") REFERENCES " + schemaName + "." + ENTITY_TABLE_NAME + "(" + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED," + "\n" //
+                         );
+                }
+                else
+                {
+                    throw new IllegalArgumentException("Did not how to create table for qName type: " + type + ".");
+                }
+
+                builder.append( //
+                    "FOREIGN KEY(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ") REFERENCES " + schemaName + "." + ENTITY_TABLE_NAME + "(" + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED" + "\n" + //
+                    ");" //
+                    );
+                this._state.tablePKs().get().put(qNameInfo.getTableName(), 0L);
+
             }
-            builder.append( //
-                  "FOREIGN KEY(" + entityRefColumnName + ") REFERENCES " + schemaName + "." + ENTITY_TABLE_NAME + "(" + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED" + "\n" + //
-                        ");" //
-                  );
+
             stmt.execute(builder.toString());
-            
+
             ps.setString(1, qNameInfo.getQName().toString());
             ps.setString(2, qNameInfo.getTableName());
             ps.execute();
-            
-            this._state.tablePKs().get().put(qNameInfo.getTableName(), 0L);
 
          }
       }
@@ -760,7 +837,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
          ps.close();
       }
    }
-   
+
    private void appendColumnDefinitionsForProperty(StringBuilder builder, QNameInfo qNameInfo)
    {
       Type finalType = qNameInfo.getFinalType();
@@ -774,7 +851,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       String valueRefTablePKColumnName = null;
       if (qNameInfo.isFinalTypePrimitive())
       {
-         
+
 //         System.out.println("QName: " + qNameInfo.getQName());
 //         System.out.println("Property type: " + propertyType);
 //         System.out.println("Instance of class: " + (propertyType instanceof Class<?>));
@@ -785,14 +862,14 @@ public class PostgreSQLAppStartup implements SQLAppStartup
          if (this._customizableTypes.keySet().contains(finalClass) && qNameInfo.getPropertyDescriptor().accessor().isAnnotationPresent(SQLTypeInfo.class))
          {
             sqlType = this._customizableTypes.get(finalClass).customizeType(finalClass, qNameInfo.getPropertyDescriptor().accessor().getAnnotation(SQLTypeInfo.class));
-            
+
          } else if (Enum.class.isAssignableFrom(finalClass))
          {
             // Enum - reference the lookup table
             sqlType = ENUM_LOOKUP_TABLE_PK_COLUMN_DATA_TYPE;
             valueRefTableName = ENUM_LOOKUP_TABLE_NAME;
             valueRefTablePKColumnName = ENUM_LOOKUP_TABLE_PK_COLUMN_NAME;
-         } else 
+         } else
          {
             // Primitive type, default sqlType
             for (Map.Entry<Class<?>, String> entry : this._creationTypeStrings.entrySet())
@@ -804,7 +881,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                }
             }
          }
-         
+
          if (sqlType == null)
          {
             throw new InternalError("Could not find sql type for java type [" + finalType + "]");
@@ -817,19 +894,36 @@ public class PostgreSQLAppStartup implements SQLAppStartup
          valueRefTableName = USED_CLASSES_TABLE_NAME;
          valueRefTablePKColumnName = USED_CLASSES_TABLE_PK_COLUMN_NAME;
       }
-      
+
       builder.append(//
-            QNAME_TABLE_VALUE_COLUMN_NAME + " " + sqlType + "," + "\n" + //
-            "PRIMARY KEY(" + QNAME_TABLE_PK_COLUMN_NAME + ")," + "\n"
+            QNAME_TABLE_VALUE_COLUMN_NAME + " " + sqlType + (qNameInfo.getCollectionDepth( ) > 0 ? "" : " NOT NULL") + "," + "\n" + //
+            "PRIMARY KEY(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ", " + ENTITY_TABLE_PK_COLUMN_NAME + ")," + "\n"
             );
-      
+
       if (valueRefTableName != null && valueRefTablePKColumnName != null)
       {
          builder.append( //
                "FOREIGN KEY(" + QNAME_TABLE_VALUE_COLUMN_NAME + ") REFERENCES " + this._state.schemaName().get() + "." + valueRefTableName + "(" + valueRefTablePKColumnName + ") ON UPDATE CASCADE ON DELETE RESTRICT NOT DEFERRABLE," + "\n" //
                );
       }
-      
+
    }
+
+    private void testRequiredCapabilities( ) throws SQLException
+    {
+        // If collection structure matching will ever be needed, using ltree as path to each leaf item in collection-generated tree will be very useful
+        // ltree module provides specific datatype for such path, which may be indexed in order to greatly improve performance
+
+        Connection connection = this._state.connection( ).get( );
+        Statement stmt = connection.createStatement( );
+        try
+        {
+            stmt.execute( "CREATE TABLE " + this._state.schemaName( ).get() + ".ltree_test ( test_column ltree )");
+            stmt.execute( "DROP TABLE " + this._state.schemaName( ).get( ) + ".ltree_test" );
+        } catch (SQLException sqle)
+        {
+            throw new InternalError("It seems that your database doesn't have ltree as type. It is needed to store collections. Please refer to hopefully supplied instructions on how to add ltree type (hint: run <pg_install_dir>/share/contrib/ltree.sql script).");
+        }
+    }
 
 }

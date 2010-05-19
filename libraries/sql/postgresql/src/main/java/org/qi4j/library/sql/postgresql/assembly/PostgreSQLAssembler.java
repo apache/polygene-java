@@ -12,7 +12,6 @@
  *
  */
 
-
 package org.qi4j.library.sql.postgresql.assembly;
 
 import org.qi4j.api.common.Visibility;
@@ -29,44 +28,46 @@ import org.qi4j.library.sql.postgresql.PostgreSQLService;
  */
 public class PostgreSQLAssembler implements Assembler
 {
-   
-   /**
-    * The default name for the service.
-    */
-   public static final String DEFAULT_SERVICE_NAME = "pgsql_lib";
-   
-   /**
-    * The default visibility for the service.
-    */
-   public static final Visibility DEFAULT_VISIBILTY = Visibility.application;
 
-   
-   private Visibility _esVisiblity;
-   
-   private String _serviceName;
-   
-   public PostgreSQLAssembler()
-   {
-      this(DEFAULT_VISIBILTY);
-   }
-   
-   public PostgreSQLAssembler(Visibility entityStoreVisibility)
-   {
-      this(entityStoreVisibility, DEFAULT_SERVICE_NAME);
-   }
-   
-   public PostgreSQLAssembler(Visibility entityStoreVisibility, String serviceName)
-   {
-      this._esVisiblity = entityStoreVisibility;
-      this._serviceName = serviceName;
-   }
-   
-   @Override
-   public void assemble(ModuleAssembly module) throws AssemblyException
-   {
-      module.addServices(PostgreSQLService.class).identifiedBy(this._serviceName).visibleIn(this._esVisiblity).instantiateOnStartup();
-      
-      module.addServices(ReindexerService.class);
-   }
-   
+    /**
+     * The default name for the service.
+     */
+    public static final String DEFAULT_SERVICE_NAME = "pgsql_lib";
+
+    /**
+     * The default visibility for the service.
+     */
+    public static final Visibility DEFAULT_VISIBILTY = Visibility.application;
+
+    private Visibility _esVisiblity;
+
+    private String _serviceName;
+
+    public PostgreSQLAssembler( )
+    {
+        this(
+            DEFAULT_VISIBILTY );
+    }
+
+    public PostgreSQLAssembler( Visibility entityStoreVisibility )
+    {
+        this(
+            entityStoreVisibility,
+            DEFAULT_SERVICE_NAME );
+    }
+
+    public PostgreSQLAssembler( Visibility entityStoreVisibility, String serviceName )
+    {
+        this._esVisiblity = entityStoreVisibility;
+        this._serviceName = serviceName;
+    }
+
+    @Override
+    public void assemble( ModuleAssembly module ) throws AssemblyException
+    {
+        module.addServices( PostgreSQLService.class ).identifiedBy( this._serviceName ).visibleIn( this._esVisiblity ).instantiateOnStartup( );
+
+        module.addServices( ReindexerService.class );
+    }
+
 }

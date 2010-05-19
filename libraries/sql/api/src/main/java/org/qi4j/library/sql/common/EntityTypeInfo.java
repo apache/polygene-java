@@ -25,15 +25,15 @@ import org.qi4j.spi.entity.EntityDescriptor;
 public final class EntityTypeInfo
 {
    private Integer _entityTypeID;
-   
+
    private EntityDescriptor _entityDescriptor;
-   
+
    public EntityTypeInfo(EntityDescriptor entityDescriptor, Integer entityTypeID)
    {
       this._entityTypeID = entityTypeID;
       this._entityDescriptor = entityDescriptor;
    }
-   
+
    /**
     * Gets the primary key of this entity type, as it is stored in database in entity type lookup table.
     * @return The primary key of this entity type, as it is stored in database in entity type lookup table.
@@ -42,10 +42,10 @@ public final class EntityTypeInfo
    {
       return this._entityTypeID;
    }
-   
+
    /**
     * Gets the entity descriptor of this entity type.
-    * @return The entity descripotor of this entity type.
+    * @return The entity descriptor of this entity type.
     */
    public EntityDescriptor getEntityDescriptor()
    {
