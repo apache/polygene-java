@@ -78,19 +78,19 @@ public class PostgreSQLIndexing implements SQLIndexing
       PreparedStatement removeEntityPS = null;
       PreparedStatement queryEntityPKPS = null;
       PreparedStatement insertToPropertyQNamesPS = null;
-      PreparedStatement clearPropertiesPS = null;
-      Map<QualifiedName, PreparedStatement> qNameClearPSs = new HashMap<QualifiedName, PreparedStatement>();
+      PreparedStatement clearQNamesPS = null;
       Map<QualifiedName, PreparedStatement> qNameInsertPSs = new HashMap<QualifiedName, PreparedStatement>();
+
       try
       {
-
          insertToEntityTablePS = connection.prepareStatement(String.format(SQLs.SIX_VALUE_INSERT, this._state.schemaName().get(), ENTITY_TABLE_NAME));
          updateEntityTablePS = connection.prepareStatement(String.format(SQLs.UPDATE_ENTITY_TABLE, this._state.schemaName().get()));
          removeEntityPS = connection.prepareStatement(String.format(SQLs.DELETE_FROM_ENTITY_TABLE, this._state.schemaName().get()));
          queryEntityPKPS = connection.prepareStatement(String.format(SQLs.QUERY_ENTITY_PK_BY_IDENTITY, this._state.schemaName().get()));
-         insertToPropertyQNamesPS = connection.prepareStatement( String.format( SQLs.TWO_VALUE_INSERT, this._state.schemaName( ).get( ), SQLs.PROPERTY_QNAMES_TABLE_NAME ) );
-         clearPropertiesPS = connection.prepareStatement( String.format( SQLs.CLEAR_ENTITY_DATA, this._state.schemaName( ).get( ), SQLs.PROPERTY_QNAMES_TABLE_NAME ) );
+         insertToPropertyQNamesPS = connection.prepareStatement( String.format( SQLs.TWO_VALUE_INSERT, this._state.schemaName( ).get( ), SQLs.ALL_QNAMES_TABLE_NAME ) );
+         clearQNamesPS = connection.prepareStatement( String.format( SQLs.CLEAR_ENTITY_DATA, this._state.schemaName( ).get( ), SQLs.ALL_QNAMES_TABLE_NAME ) );
          Map<Long, EntityState> statesByPK = new HashMap<Long, EntityState>();
+         Map<Long, Integer> qNamePKs = new HashMap<Long, Integer>( );
 
          for (EntityState eState : changedStates)
          {
@@ -98,11 +98,11 @@ public class PostgreSQLIndexing implements SQLIndexing
             Long pk = null;
             if (status.equals(EntityStatus.NEW))
             {
-               pk = this.insertEntityInfoAndProperties(connection, qNameInsertPSs, insertToPropertyQNamesPS, insertToEntityTablePS, eState);
+               pk = this.insertEntityInfoAndProperties(connection, qNameInsertPSs, insertToPropertyQNamesPS, insertToEntityTablePS, eState, qNamePKs);
             }
             else if (status.equals(EntityStatus.UPDATED))
             {
-               pk = this.updateEntityInfoAndProperties(connection, qNameClearPSs, qNameInsertPSs, insertToPropertyQNamesPS, clearPropertiesPS, queryEntityPKPS, updateEntityTablePS, insertToEntityTablePS, eState);
+               pk = this.updateEntityInfoAndProperties(connection, qNameInsertPSs, insertToPropertyQNamesPS, clearQNamesPS, queryEntityPKPS, updateEntityTablePS, insertToEntityTablePS, eState, qNamePKs);
             }
             else if (status.equals(EntityStatus.REMOVED))
             {
@@ -130,17 +130,13 @@ public class PostgreSQLIndexing implements SQLIndexing
             EntityStatus status = eState.status();
             if (status.equals(EntityStatus.NEW) || status.equals(EntityStatus.UPDATED))
             {
-               this.insertAssoAndManyAssoQNames(qNameInsertPSs, queryEntityPKPS, eState, pk);
+               this.insertAssoAndManyAssoQNames(qNameInsertPSs, queryEntityPKPS, insertToPropertyQNamesPS, eState, qNamePKs.get( pk ), pk);
             }
          }
 
          insertToPropertyQNamesPS.executeBatch( );
-         clearPropertiesPS.executeBatch( );
+         clearQNamesPS.executeBatch( );
 
-         for (PreparedStatement ps : qNameClearPSs.values())
-         {
-               ps.executeBatch();
-         }
          for (PreparedStatement ps : qNameInsertPSs.values())
          {
             ps.executeBatch();
@@ -166,10 +162,6 @@ public class PostgreSQLIndexing implements SQLIndexing
             this.closePSIfNotNull(ps);
          }
 
-         for (PreparedStatement ps : qNameClearPSs.values())
-         {
-            this.closePSIfNotNull(ps);
-         }
       }
    }
 
@@ -181,25 +173,6 @@ public class PostgreSQLIndexing implements SQLIndexing
       }
    }
 
-   private void syncQNamesClearPSs(Connection connection, Map<QualifiedName, PreparedStatement> qNameClearPSs, Set<QualifiedName> qNames) throws SQLException
-   {
-      Set<QualifiedName> copy = new HashSet<QualifiedName>(qNames);
-      copy.removeAll(qNameClearPSs.keySet());
-      for (QualifiedName qName : copy)
-      {
-         QNameInfo info = this._state.qNameInfos().get().get(qName);
-         if (!info.getQNameType( ).equals( QNameType.PROPERTY ))
-         {
-             qNameClearPSs.put(qName, this.createClearPS(connection, info));
-         }
-      }
-   }
-
-   private PreparedStatement createClearPS(Connection connection, QNameInfo qNameInfo) throws SQLException
-   {
-      String tableName = qNameInfo.getTableName();
-      return connection.prepareStatement(String.format(SQLs.CLEAR_ENTITY_DATA, this._state.schemaName().get(), tableName));
-   }
 
    private void syncQNamesInsertPSs(Connection connection, Map<QualifiedName, PreparedStatement> qNameInsertPSs, Set<QualifiedName> qNames) throws SQLException
    {
@@ -252,34 +225,25 @@ public class PostgreSQLIndexing implements SQLIndexing
 
    private PreparedStatement createInsertAssociationPS(Connection connection, QNameInfo qNameInfo) throws SQLException
    {
-      return connection.prepareStatement(String.format(SQLs.TWO_VALUE_INSERT, this._state.schemaName().get(), qNameInfo.getTableName()));
+      return connection.prepareStatement(String.format(SQLs.THREE_VALUE_INSERT, this._state.schemaName().get(), qNameInfo.getTableName()));
    }
 
    private PreparedStatement createInsertManyAssociationPS(Connection connection, QNameInfo qNameInfo) throws SQLException
    {
-      return connection.prepareStatement(String.format(SQLs.THREE_VALUE_INSERT, this._state.schemaName().get(), qNameInfo.getTableName()));
+      return connection.prepareStatement(String.format(SQLs.FOUR_VALUE_INSERT, this._state.schemaName().get(), qNameInfo.getTableName()));
    }
 
-   private void clearAllEntitysQNames(Connection connection, Map<QualifiedName, PreparedStatement> qNameClearPSs, PreparedStatement clearPropertiesPS, EntityState state, Long pk) throws SQLException
+   private void clearAllEntitysQNames(PreparedStatement clearPropertiesPS, Long pk) throws SQLException
    {
        clearPropertiesPS.setLong( 1, pk );
        clearPropertiesPS.addBatch( );
-
-      Set<QualifiedName> qNames = this._state.entityUsedQNames().get().get(state.entityDescriptor().type().getName());
-      this.syncQNamesClearPSs(connection, qNameClearPSs, qNames);
-      for (QualifiedName qName : qNames)
-      {
-         PreparedStatement ps = qNameClearPSs.get(qName);
-         ps.setLong(1, pk);
-         ps.addBatch();
-      }
    }
 
-   private void insertPropertyQNames(Connection connection, Map<QualifiedName, PreparedStatement> qNameInsertPSs, PreparedStatement insertAllQNamesPS, EntityState state, Long entityPK) throws SQLException
+   private Integer insertPropertyQNames(Connection connection, Map<QualifiedName, PreparedStatement> qNameInsertPSs, PreparedStatement insertAllQNamesPS, EntityState state, Long entityPK) throws SQLException
    {
       Set<QualifiedName> qNames = this._state.entityUsedQNames().get().get(state.entityDescriptor().type().getName());
       this.syncQNamesInsertPSs(connection, qNameInsertPSs, qNames);
-      Long propertyPK = 0L;
+      Integer propertyPK = 0;
       for (PropertyDescriptor pDesc : state.entityDescriptor().state().properties())
       {
          propertyPK = this.insertProperty( //
@@ -292,9 +256,11 @@ public class PostgreSQLIndexing implements SQLIndexing
                null //
                );
       }
+
+      return propertyPK;
    }
 
-   private void insertAssoAndManyAssoQNames(Map<QualifiedName, PreparedStatement> qNameInsertPSs, PreparedStatement queryPKPS, EntityState state, Long entityPK) throws SQLException
+   private void insertAssoAndManyAssoQNames(Map<QualifiedName, PreparedStatement> qNameInsertPSs, PreparedStatement queryPKPS, PreparedStatement insertToAllQNamesPS, EntityState state, Integer qNamePK, Long entityPK) throws SQLException
    {
       for (AssociationDescriptor aDesc : state.entityDescriptor().state().associations())
       {
@@ -307,14 +273,22 @@ public class PostgreSQLIndexing implements SQLIndexing
             ResultSet rs = queryPKPS.executeQuery();
             if (rs.next())
             {
-               ps.setLong(2, rs.getLong(1));
+               ps.setLong(3, rs.getLong(1));
             }
             else
             {
                throw new EntityNotFoundException(ref);
             }
-            ps.setLong(1, entityPK);
+
+            insertToAllQNamesPS.setInt( 1, qNamePK );
+            insertToAllQNamesPS.setLong( 2, entityPK );
+            insertToAllQNamesPS.addBatch( );
+
+            ps.setInt( 1, qNamePK );
+            ps.setLong(2, entityPK);
             ps.addBatch();
+
+            ++qNamePK;
          }
       }
 
@@ -331,32 +305,40 @@ public class PostgreSQLIndexing implements SQLIndexing
                ResultSet rs = queryPKPS.executeQuery();
                if (rs.next())
                {
-                  ps.setLong(3, rs.getLong(1));
+                  ps.setLong(4, rs.getLong(1));
                }
                else
                {
                   throw new EntityNotFoundException(ref);
                }
-               ps.setLong(1, entityPK);
-               ps.setInt(2, index);
+
+               insertToAllQNamesPS.setInt( 1, qNamePK );
+               insertToAllQNamesPS.setLong( 2, entityPK );
+               insertToAllQNamesPS.addBatch( );
+
+               ps.setInt( 1, qNamePK );
+               ps.setLong(2, entityPK);
+               ps.setInt(3, index);
                ps.addBatch();
+               ++qNamePK;
+
             }
             ++index;
          }
       }
    }
 
-   private Long insertProperty( //
+   private Integer insertProperty( //
          Map<QualifiedName, PreparedStatement> qNameInsertPSs, //
          PreparedStatement insertAllQNamesPS, //
-         Long propertyPK, //
+         Integer propertyPK, //
          Long entityPK, //
          QualifiedName qName, //
          Object property, //
-         Long parentQNameID //
+         Integer parentQNameID //
          ) throws SQLException
     {
-       Long result = propertyPK;
+       Integer result = propertyPK;
         if ( property != null )
         {
             if ( !qName.type( ).equals( Identity.class.getName( ) ) )
@@ -379,14 +361,14 @@ public class PostgreSQLIndexing implements SQLIndexing
         return result;
     }
 
-   private Long storeCollectionProperty( //
+   private Integer storeCollectionProperty( //
          Map<QualifiedName, PreparedStatement> qNameInsertPSs, //
          PreparedStatement insertAllQNamesPS, //
-         Long propertyPK, //
+         Integer propertyPK, //
          Long entityPK, //
          QualifiedName qName, //
          Collection<?> property, //
-         Long parentQNameID //
+         Integer parentQNameID //
          ) throws SQLException
    {
       QNameInfo info = this._state.qNameInfos().get().get(qName);
@@ -398,13 +380,13 @@ public class PostgreSQLIndexing implements SQLIndexing
       return propertyPK;
    }
 
-   private Long storeCollectionInfo(PreparedStatement insertAllQNamesPS, Long propertyPK, Long entityPK, Long parentQNameID, PreparedStatement ps, QNameInfo info) throws SQLException
+   private Integer storeCollectionInfo(PreparedStatement insertAllQNamesPS, Integer propertyPK, Long entityPK, Integer parentQNameID, PreparedStatement ps, QNameInfo info) throws SQLException
    {
-       insertAllQNamesPS.setLong( 1, propertyPK );
+       insertAllQNamesPS.setInt( 1, propertyPK );
        insertAllQNamesPS.setLong( 2, entityPK );
        insertAllQNamesPS.addBatch( );
 
-       ps.setLong(1, propertyPK);
+       ps.setInt(1, propertyPK);
        ps.setLong( 2, entityPK );
        ps.setObject(3, parentQNameID, Types.BIGINT);
        ps.setString( 4, SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME );
@@ -420,7 +402,7 @@ public class PostgreSQLIndexing implements SQLIndexing
        return propertyPK + 1;
    }
 
-   private Long storeCollectionItems(Collection<?> collection, PreparedStatement insertAllQNamesPS, String path, PreparedStatement ps, String tableName, Long propertyPK, Long entityPK, Long parentPK, Type finalType, Boolean isFinalTypePrimitive) throws SQLException
+   private Integer storeCollectionItems(Collection<?> collection, PreparedStatement insertAllQNamesPS, String path, PreparedStatement ps, String tableName, Integer propertyPK, Long entityPK, Integer parentPK, Type finalType, Boolean isFinalTypePrimitive) throws SQLException
    {
       Integer index = 0;
       for (Object o : collection)
@@ -440,25 +422,25 @@ public class PostgreSQLIndexing implements SQLIndexing
       return propertyPK;
    }
 
-   private Long storeCollectionItem( //
+   private Integer storeCollectionItem( //
          PreparedStatement ps, //
          PreparedStatement insertAllQNamesPS, //
-         Long propertyPK, //
+         Integer propertyPK, //
          Long entityPK, //
-         Long parentPK, //
+         Integer parentPK, //
          String path, //
          Object item, //
          Boolean isFinalTypePrimitive, //
          Type finalType //
          ) throws SQLException
    {
-       insertAllQNamesPS.setLong( 1, propertyPK );
+       insertAllQNamesPS.setInt( 1, propertyPK );
        insertAllQNamesPS.setLong( 2, entityPK );
        insertAllQNamesPS.addBatch( );
 
-      ps.setLong(1, propertyPK);
+      ps.setInt(1, propertyPK);
       ps.setLong( 2, entityPK );
-      ps.setObject(3, parentPK, Types.BIGINT);
+      ps.setObject(3, parentPK, Types.INTEGER);
       ps.setString(4, path);
       if (isFinalTypePrimitive)
       {
@@ -471,26 +453,25 @@ public class PostgreSQLIndexing implements SQLIndexing
       return propertyPK + 1;
    }
 
-   private Long storePrimitiveProperty( //
+   private Integer storePrimitiveProperty( //
          Map<QualifiedName, PreparedStatement> qNameInsertPSs, //
          PreparedStatement insertAllQNamesPS, //
-         Long propertyPK, //
+         Integer propertyPK, //
          Long entityPK, //
          QualifiedName qName, //
          Object property, //
-         Long parentQNameID //
+         Integer parentQNameID //
          ) throws SQLException
    {
       QNameInfo info = this._state.qNameInfos().get().get(qName);
-//      Long propertyPK = this.newPK(SQLs.PROPERTY_QNAMES_TABLE_NAME);
-      insertAllQNamesPS.setLong( 1, propertyPK );
+      insertAllQNamesPS.setInt( 1, propertyPK );
       insertAllQNamesPS.setLong( 2, entityPK );
       insertAllQNamesPS.addBatch( );
 
       PreparedStatement ps = qNameInsertPSs.get(qName);
-      ps.setLong(1, propertyPK);
+      ps.setInt(1, propertyPK);
       ps.setLong( 2, entityPK );
-      ps.setObject(3, parentQNameID, Types.BIGINT);
+      ps.setObject(3, parentQNameID, Types.INTEGER);
       Type type = info.getFinalType();
       this.storePrimitiveUsingPS(ps, 4, property, type);
       ps.addBatch();
@@ -498,28 +479,28 @@ public class PostgreSQLIndexing implements SQLIndexing
       return propertyPK + 1;
    }
 
-   private Long storeValueCompositeProperty( //
+   private Integer storeValueCompositeProperty( //
          Map<QualifiedName, PreparedStatement> qNameInsertPSs, //
          PreparedStatement insertAllQNamesPS, //
-         Long propertyPK, //
+         Integer propertyPK, //
          Long entityPK, //
          QualifiedName qName, //
          Object property, //
-         Long parentQNameID //
+         Integer parentQNameID //
          ) throws SQLException
    {
 
       PreparedStatement ps = qNameInsertPSs.get(qName);
-      insertAllQNamesPS.setLong( 1, propertyPK );
+      insertAllQNamesPS.setInt( 1, propertyPK );
       insertAllQNamesPS.setLong( 2, entityPK );
       insertAllQNamesPS.addBatch( );
 
-      ps.setLong(1, propertyPK);
+      ps.setInt(1, propertyPK);
       ps.setLong( 2, entityPK );
-      ps.setObject(3, parentQNameID, Types.BIGINT);
+      ps.setObject(3, parentQNameID, Types.INTEGER);
       this.storeVCClassIDUsingPS(ps, 4, property);
       ps.addBatch();
-      Long originalPropertyPK = propertyPK;
+      Integer originalPropertyPK = propertyPK;
       ++propertyPK;
 
       ValueDescriptor vDesc = this._qi4SPI.getValueDescriptor((ValueComposite) property);
@@ -576,7 +557,7 @@ public class PostgreSQLIndexing implements SQLIndexing
       }
    }
 
-   private Long updateEntityInfoAndProperties(Connection connection, Map<QualifiedName, PreparedStatement> qNameClearPSs, Map<QualifiedName, PreparedStatement> qNameInsertPSs, PreparedStatement insertAllQNamesPS, PreparedStatement clearPropertiesPS, PreparedStatement queryPKPS, PreparedStatement ps, PreparedStatement insertEntityInfoPS, EntityState state) throws SQLException
+   private Long updateEntityInfoAndProperties(Connection connection, Map<QualifiedName, PreparedStatement> qNameInsertPSs, PreparedStatement insertAllQNamesPS, PreparedStatement clearPropertiesPS, PreparedStatement queryPKPS, PreparedStatement ps, PreparedStatement insertEntityInfoPS, EntityState state, Map<Long, Integer> qNamePKs) throws SQLException
    {
       queryPKPS.setString(1, state.identity().identity());
       ResultSet rs = queryPKPS.executeQuery();
@@ -584,7 +565,7 @@ public class PostgreSQLIndexing implements SQLIndexing
       if (rs.next())
       {
          entityPK = rs.getLong(1);
-         this.clearAllEntitysQNames(connection, qNameClearPSs, clearPropertiesPS, state, entityPK);
+         this.clearAllEntitysQNames(clearPropertiesPS, entityPK);
 
          // Update state
          ps.setString(1, state.identity().identity());
@@ -594,16 +575,18 @@ public class PostgreSQLIndexing implements SQLIndexing
          ps.setLong(5, entityPK);
          ps.addBatch();
 
-         this.insertPropertyQNames(connection, qNameInsertPSs, insertAllQNamesPS, state, entityPK);
+         Integer nextUsableQNamePK = this.insertPropertyQNames(connection, qNameInsertPSs, insertAllQNamesPS, state, entityPK);
+         qNamePKs.put( entityPK, nextUsableQNamePK );
+
       } else
       {
          // Most likely re-indexing
-         this.insertEntityInfoAndProperties(connection, qNameInsertPSs, insertAllQNamesPS, insertEntityInfoPS, state);
+         this.insertEntityInfoAndProperties(connection, qNameInsertPSs, insertAllQNamesPS, insertEntityInfoPS, state, qNamePKs);
       }
       return entityPK;
    }
 
-   private Long insertEntityInfoAndProperties(Connection connection, Map<QualifiedName, PreparedStatement> qNameInsertPSs, PreparedStatement insertAllQNamesPS, PreparedStatement ps, EntityState state) throws SQLException
+   private Long insertEntityInfoAndProperties(Connection connection, Map<QualifiedName, PreparedStatement> qNameInsertPSs, PreparedStatement insertAllQNamesPS, PreparedStatement ps, EntityState state, Map<Long, Integer> qNamePKs) throws SQLException
    {
       Long entityPK = this.newPK(ENTITY_TABLE_NAME);
 
@@ -615,7 +598,8 @@ public class PostgreSQLIndexing implements SQLIndexing
       ps.setString(6, this._app.version());
       ps.addBatch();
 
-      this.insertPropertyQNames(connection, qNameInsertPSs, insertAllQNamesPS, state, entityPK);
+      Integer nextQnamePK = this.insertPropertyQNames(connection, qNameInsertPSs, insertAllQNamesPS, state, entityPK);
+      qNamePKs.put( entityPK, nextQnamePK );
 
       return entityPK;
    }

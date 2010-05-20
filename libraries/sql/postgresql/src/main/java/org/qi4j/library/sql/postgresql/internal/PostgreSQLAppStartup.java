@@ -428,7 +428,6 @@ public class PostgreSQLAppStartup implements SQLAppStartup
 
                if (!result)
                {
-                  // nothing present in app version table
 
                   String dbAppVersion = rs.getString(1);
                   if (this._reindexingStrategy != null)
@@ -467,13 +466,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
        Statement stmt = connection.createStatement( );
        try
        {
-           // First all qnames
-           this.dropTablesIfExist( metaData, schemaName, SQLs.QNAME_TABLE_NAME_PREFIX, stmt );
-           // Then property qnames
-           this.dropTablesIfExist( metaData, schemaName, SQLs.PROPERTY_QNAMES_TABLE_NAME, stmt );
-           // Then entities
-           this.dropTablesIfExist( metaData, schemaName, SQLs.ENTITY_TABLE_NAME, stmt );
-           // Then the rest
+           // Drop all tables // TODO maybe drop only used tables?
            this.dropTablesIfExist( metaData, schemaName, null, stmt );
 
 
@@ -518,7 +511,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                      USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME + " " + USED_CLASSES_TABLE_CLASS_NAME_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
                      "PRIMARY KEY(" + USED_CLASSES_TABLE_PK_COLUMN_NAME + ")," + "\n" + //
                      "UNIQUE(" + USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME + ")" + "\n" + //
-                     ");" //
+                     ")" //
                );
 
          this._state.tablePKs().get().put(USED_CLASSES_TABLE_NAME, 0L);
@@ -529,7 +522,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                      ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME + " " + ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
                      "PRIMARY KEY(" + ENTITY_TYPES_TABLE_PK_COLUMN_NAME + ")," + "\n" + //
                      "UNIQUE(" + ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME + ")" + "\n" + //
-                     ");");
+                     ")");
          this._state.tablePKs().get().put(ENTITY_TYPES_TABLE_NAME, 0L);
 
          stmt.execute( //
@@ -542,7 +535,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                      ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME + " " + ENTITY_TABLE_APPLICATION_VERSION_COLUMN_DATATYPE + "," + "\n" + //
                      "PRIMARY KEY(" + ENTITY_TABLE_PK_COLUMN_NAME + ")," + "\n" + //
                      "FOREIGN KEY(" + ENTITY_TYPES_TABLE_PK_COLUMN_NAME + ") REFERENCES " + this._state.schemaName().get() + "." + ENTITY_TYPES_TABLE_NAME + "(" + ENTITY_TYPES_TABLE_PK_COLUMN_NAME + ") ON DELETE RESTRICT ON UPDATE CASCADE" + "\n" + //
-                     ");" //
+                     ")" //
                );
          this._state.tablePKs().get().put(ENTITY_TABLE_NAME, 0L);
 
@@ -551,7 +544,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                ENUM_LOOKUP_TABLE_PK_COLUMN_NAME + " " + ENUM_LOOKUP_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
                ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME + " " + ENUM_LOOKUP_TABLE_ENUM_VALUE_DATA_TYPE + " NOT NULL," + "\n" + //
                "PRIMARY KEY(" + ENUM_LOOKUP_TABLE_PK_COLUMN_NAME + ")" + "\n" + //
-               ");" //
+               ")" //
                );
          this._state.tablePKs().get().put(ENUM_LOOKUP_TABLE_NAME, 0L);
 
@@ -560,24 +553,24 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                USED_QNAMES_TABLE_QNAME_COLUMN_NAME + " " + USED_QNAMES_TABLE_QNAME_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
                USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME + " " + USED_QNAMES_TABLE_TABLE_NAME_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
                "PRIMARY KEY(" + USED_QNAMES_TABLE_QNAME_COLUMN_NAME + ", " + USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME + ")" + "\n" + //
-               ");" //
+               ")" //
                );
 
          stmt.execute(
-             "CREATE TABLE " + schemaName + "." + PROPERTY_QNAMES_TABLE_NAME + "(" + "\n" + //
-             ALL_QNAMES_TABLE_PK_COLUMN_NAME + " " + PROPERTY_QNAMES_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
+             "CREATE TABLE " + schemaName + "." + ALL_QNAMES_TABLE_NAME + "(" + "\n" + //
+             ALL_QNAMES_TABLE_PK_COLUMN_NAME + " " + ALL_QNAMES_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
              ENTITY_TABLE_PK_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
              "PRIMARY KEY(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ", " + ENTITY_TABLE_PK_COLUMN_NAME + ")," + "\n" + //
              "FOREIGN KEY(" + ENTITY_TABLE_PK_COLUMN_NAME + ") REFERENCES " + schemaName + "." + ENTITY_TABLE_NAME + "(" + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED" + "\n" + //
-             ");" //
+             ")" //
              );
-         this._state.tablePKs( ).get( ).put( PROPERTY_QNAMES_TABLE_NAME, 0L );
+         this._state.tablePKs( ).get( ).put( ALL_QNAMES_TABLE_NAME, 0L );
 
          stmt.execute(
                "CREATE TABLE " + schemaName + "." + APP_VERSION_TABLE_NAME + "(" + "\n" + //
                APP_VERSION_PK_COLUMN_NAME + " " + APP_VERSION_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
                "PRIMARY KEY(" + APP_VERSION_PK_COLUMN_NAME + ")" + "\n" + //
-               ");" //
+               ")" //
                );
 
          PreparedStatement ps = connection.prepareStatement("INSERT INTO " + schemaName + "." + APP_VERSION_TABLE_NAME + " VALUES ( ? );");
@@ -767,14 +760,15 @@ public class PostgreSQLAppStartup implements SQLAppStartup
             QNameType type = qNameInfo.getQNameType();
 
             builder.append( //
-                  "CREATE TABLE " + schemaName + "." + qNameInfo.getTableName() + "(" + "\n" //
+                  "CREATE TABLE " + schemaName + "." + qNameInfo.getTableName() + "(" + "\n" + //
+                  ALL_QNAMES_TABLE_PK_COLUMN_NAME + " " + ALL_QNAMES_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
+                  SQLs.ENTITY_TABLE_PK_COLUMN_NAME + " " + SQLs.ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" //
                   );
 
             if (type.equals(QNameType.PROPERTY))
             {
-               builder.append(ALL_QNAMES_TABLE_PK_COLUMN_NAME + " " + PROPERTY_QNAMES_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
-                   SQLs.ENTITY_TABLE_PK_COLUMN_NAME + " " + SQLs.ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
-                   QNAME_TABLE_PARENT_QNAME_COLUMN_NAME + " " + PROPERTY_QNAMES_TABLE_PK_COLUMN_DATA_TYPE + "," + "\n" //
+               builder.append(
+                   QNAME_TABLE_PARENT_QNAME_COLUMN_NAME + " " + ALL_QNAMES_TABLE_PK_COLUMN_DATA_TYPE + "," + "\n" //
                );
 
                if (qNameInfo.getCollectionDepth() > 0)
@@ -783,10 +777,8 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                }
                this.appendColumnDefinitionsForProperty(builder, qNameInfo);
                builder.append(
-                   "FOREIGN KEY(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ", " + ENTITY_TABLE_PK_COLUMN_NAME + ") REFERENCES " + schemaName + "." + PROPERTY_QNAMES_TABLE_NAME + "(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ", " + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED," + "\n" + //
-                   "FOREIGN KEY(" + QNAME_TABLE_PARENT_QNAME_COLUMN_NAME + ", " + ENTITY_TABLE_PK_COLUMN_NAME + ") REFERENCES " + schemaName + "." + PROPERTY_QNAMES_TABLE_NAME + "(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ", " + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED" + "\n" + //
-//                   "FOREIGN KEY(" + ENTITY_TABLE_PK_COLUMN_NAME + ") REFERENCES " + schemaName + "." + ENTITY_TABLE_NAME + "(" + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED" + "\n" + //
-                   ");"
+                   "FOREIGN KEY(" + QNAME_TABLE_PARENT_QNAME_COLUMN_NAME + ", " + ENTITY_TABLE_PK_COLUMN_NAME + ") REFERENCES " + schemaName + "." + ALL_QNAMES_TABLE_NAME + "(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ", " + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED," + "\n" //
+//                   ");"
                    );
             }
             else
@@ -794,7 +786,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                 if (type.equals(QNameType.ASSOCIATION))
                 {
                     builder.append( //
-                        ALL_QNAMES_TABLE_PK_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
+//                        ALL_QNAMES_TABLE_PK_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
                         QNAME_TABLE_VALUE_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
                         "PRIMARY KEY(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ")," + "\n" + //
                         "FOREIGN KEY(" + QNAME_TABLE_VALUE_COLUMN_NAME + ") REFERENCES " + schemaName + "." + ENTITY_TABLE_NAME + "(" + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED," + "\n" //
@@ -803,7 +795,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                 else if (type.equals(QNameType.MANY_ASSOCIATION))
                 {
                     builder.append( //
-                        ALL_QNAMES_TABLE_PK_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
+//                        ALL_QNAMES_TABLE_PK_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
                         QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME + " " + QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
                         QNAME_TABLE_VALUE_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
                         "PRIMARY KEY(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ", " + QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME + ")," + "\n" + //
@@ -815,14 +807,18 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                     throw new IllegalArgumentException("Did not how to create table for qName type: " + type + ".");
                 }
 
-                builder.append( //
-                    "FOREIGN KEY(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ") REFERENCES " + schemaName + "." + ENTITY_TABLE_NAME + "(" + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED" + "\n" + //
-                    ");" //
-                    );
+//                builder.append( //
+//                    "FOREIGN KEY(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ") REFERENCES " + schemaName + "." + ENTITY_TABLE_NAME + "(" + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED" + "\n" + //
+//                    ");" //
+//                    );
                 this._state.tablePKs().get().put(qNameInfo.getTableName(), 0L);
 
             }
 
+            builder.append( //
+                "FOREIGN KEY(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ", " + ENTITY_TABLE_PK_COLUMN_NAME + ") REFERENCES " + schemaName + "." + ALL_QNAMES_TABLE_NAME + "(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ", " + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED" + "\n" + //
+                ")"
+                );
             stmt.execute(builder.toString());
 
             ps.setString(1, qNameInfo.getQName().toString());
@@ -852,13 +848,6 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       if (qNameInfo.isFinalTypePrimitive())
       {
 
-//         System.out.println("QName: " + qNameInfo.getQName());
-//         System.out.println("Property type: " + propertyType);
-//         System.out.println("Instance of class: " + (propertyType instanceof Class<?>));
-//         System.out.println("Contains: " + this._customizableTypes.keySet().contains(propertyType));
-//         Method accessor = qNameInfo.getPropertyDescriptor().accessor();
-//         System.out.println("Has annotation: " + qNameInfo.getPropertyDescriptor().accessor().isAnnotationPresent(SQLTypeInfo.class));
-//         System.out.println("");
          if (this._customizableTypes.keySet().contains(finalClass) && qNameInfo.getPropertyDescriptor().accessor().isAnnotationPresent(SQLTypeInfo.class))
          {
             sqlType = this._customizableTypes.get(finalClass).customizeType(finalClass, qNameInfo.getPropertyDescriptor().accessor().getAnnotation(SQLTypeInfo.class));

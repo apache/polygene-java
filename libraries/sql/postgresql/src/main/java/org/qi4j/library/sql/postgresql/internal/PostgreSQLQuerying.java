@@ -165,9 +165,10 @@ public class PostgreSQLQuerying implements SQLQuerying
     ) throws EntityFinderException
     {
         String select = countOnly ? "COUNT(%s)" : "%s";
-
-        String processedWhere = this.processBooleanExpression( whereClause, false, values, valueSQLTypes );
-        if ( processedWhere == null || processedWhere.trim( ).length( ) == 0 )
+        String entityTypeCondition = this.createTypeCondition( TABLE_NAME_PREFIX + "0", this.getConcreteEntityTypesList( resultType ) );
+        String processedWhere = this.processBooleanExpression( whereClause, false, entityTypeCondition, values, valueSQLTypes );
+        Boolean addTypeCondition = processedWhere == null || processedWhere.trim( ).length( ) == 0;
+        if ( addTypeCondition )
         {
             processedWhere = this._state.schemaName( ).get( ) + "." + SQLs.ENTITY_TABLE_NAME;
         }
@@ -183,13 +184,10 @@ public class PostgreSQLQuerying implements SQLQuerying
             this.processOrderBySegments( orderBySegments, fromClause, orderByClause );
         }
         String result = //
-        "SELECT " + String.format( select, TABLE_NAME_PREFIX + "0." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME ) + "\n" +
-            //
-            "FROM " + processedWhere + " AS " + TABLE_NAME_PREFIX + "0" + "\n" +
-            //
-            fromClause.toString( ) + "\n" +
-            //
-            "WHERE " + this.createTypeCondition( TABLE_NAME_PREFIX + "0", this.getConcreteEntityTypesList( resultType ) ) + "\n" +
+            "SELECT " + String.format( select, TABLE_NAME_PREFIX + "0." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME ) + "\n" + /**/
+            "FROM " + processedWhere + " AS " + TABLE_NAME_PREFIX + "0" + "\n" + /**/
+            fromClause.toString( ) + "\n" + /**/
+            (addTypeCondition ? "WHERE " + entityTypeCondition + "\n": "") +
             orderByClause.toString( ) + //
             ";" //
         ;
@@ -198,7 +196,7 @@ public class PostgreSQLQuerying implements SQLQuerying
         return result;
     }
 
-    private String processBooleanExpression( BooleanExpression expression, Boolean negationActive, List<Object> values, List<Integer> valueSQLTypes )
+    private String processBooleanExpression( BooleanExpression expression, Boolean negationActive, String entityTypeCondition, List<Object> values, List<Integer> valueSQLTypes )
     {
         String result = "";
         if ( expression != null )
@@ -206,8 +204,8 @@ public class PostgreSQLQuerying implements SQLQuerying
             if ( expression instanceof Conjunction )
             {
                 Conjunction conjunction = ( Conjunction ) expression;
-                String left = this.processBooleanExpression( conjunction.leftSideExpression( ), negationActive, values, valueSQLTypes );
-                String right = this.processBooleanExpression( conjunction.rightSideExpression( ), negationActive, values, valueSQLTypes );
+                String left = this.processBooleanExpression( conjunction.leftSideExpression( ), negationActive, entityTypeCondition, values, valueSQLTypes );
+                String right = this.processBooleanExpression( conjunction.rightSideExpression( ), negationActive, entityTypeCondition, values, valueSQLTypes );
                 if ( left == "" )
                 {
                     result = right;
@@ -224,8 +222,8 @@ public class PostgreSQLQuerying implements SQLQuerying
             else if ( expression instanceof Disjunction )
             {
                 Disjunction disjunction = ( Disjunction ) expression;
-                String left = this.processBooleanExpression( disjunction.leftSideExpression( ), negationActive, values, valueSQLTypes );
-                String right = this.processBooleanExpression( disjunction.rightSideExpression( ), negationActive, values, valueSQLTypes );
+                String left = this.processBooleanExpression( disjunction.leftSideExpression( ), negationActive, entityTypeCondition, values, valueSQLTypes );
+                String right = this.processBooleanExpression( disjunction.rightSideExpression( ), negationActive, entityTypeCondition, values, valueSQLTypes );
                 if ( left == "" )
                 {
                     result = right;
@@ -241,39 +239,40 @@ public class PostgreSQLQuerying implements SQLQuerying
             }
             else if ( expression instanceof Negation )
             {
-                result = this.processBooleanExpression( ( ( Negation ) expression ).expression( ), !negationActive, values, valueSQLTypes );
+                result = this.processBooleanExpression( ( ( Negation ) expression ).expression( ), !negationActive, entityTypeCondition, values, valueSQLTypes );
             }
             else if ( expression instanceof MatchesPredicate )
             {
-                result = this.processMatchesPredicate( ( MatchesPredicate ) expression, negationActive, values, valueSQLTypes );
+                result = this.processMatchesPredicate( ( MatchesPredicate ) expression, negationActive, entityTypeCondition, values, valueSQLTypes );
             }
             else if ( expression instanceof ComparisonPredicate<?> )
             {
-                result = this.processComparisonPredicate( ( ComparisonPredicate<?> ) expression, negationActive, values, valueSQLTypes );
+                result = this.processComparisonPredicate( ( ComparisonPredicate<?> ) expression, negationActive, entityTypeCondition, values, valueSQLTypes );
             }
             else if ( expression instanceof ManyAssociationContainsPredicate<?> )
             {
                 result = this.processManyAssociationContainsPredicate(
                     ( ManyAssociationContainsPredicate<?> ) expression,
                     negationActive,
+                    entityTypeCondition,
                     values,
                     valueSQLTypes );
             }
             else if ( expression instanceof PropertyNullPredicate<?> )
             {
-                result = this.processPropertyNullPredicate( ( PropertyNullPredicate<?> ) expression, negationActive );
+                result = this.processPropertyNullPredicate( ( PropertyNullPredicate<?> ) expression, negationActive, entityTypeCondition );
             }
             else if ( expression instanceof AssociationNullPredicate )
             {
-                result = this.processAssociationNullPredicate( ( AssociationNullPredicate ) expression, negationActive );
+                result = this.processAssociationNullPredicate( ( AssociationNullPredicate ) expression, negationActive, entityTypeCondition );
             }
             else if ( expression instanceof ContainsPredicate<?, ?> )
             {
-                result = this.processContainsPredicate( ( ContainsPredicate<?, ?> ) expression, negationActive, values, valueSQLTypes );
+                result = this.processContainsPredicate( ( ContainsPredicate<?, ?> ) expression, negationActive, entityTypeCondition, values, valueSQLTypes );
             }
             else if ( expression instanceof ContainsAllPredicate<?, ?> )
             {
-                result = this.processContainsAllPredicate( ( ContainsAllPredicate<?, ?> ) expression, negationActive, values, valueSQLTypes );
+                result = this.processContainsAllPredicate( ( ContainsAllPredicate<?, ?> ) expression, negationActive, entityTypeCondition, values, valueSQLTypes );
             }
             else
             {
@@ -287,6 +286,7 @@ public class PostgreSQLQuerying implements SQLQuerying
     private String processMatchesPredicate(
         final MatchesPredicate predicate,
         final Boolean negationActive,
+        String entityTypeCondition,
         final List<Object> values,
         final List<Integer> valueSQLTypes )
     {
@@ -296,6 +296,7 @@ public class PostgreSQLQuerying implements SQLQuerying
             null, //
             null, //
             negationActive, //
+            entityTypeCondition, //
             new WhereClauseProcessor( )
             {
 
@@ -316,6 +317,7 @@ public class PostgreSQLQuerying implements SQLQuerying
     private String processComparisonPredicate(
         final ComparisonPredicate<?> predicate,
         final Boolean negationActive,
+        String entityTypeCondition,
         final List<Object> values,
         final List<Integer> valueSQLTypes )
     {
@@ -325,6 +327,7 @@ public class PostgreSQLQuerying implements SQLQuerying
             null, //
             null, //
             negationActive, //
+            entityTypeCondition, //
             new WhereClauseProcessor( )
             {
 
@@ -363,6 +366,7 @@ public class PostgreSQLQuerying implements SQLQuerying
     private String processManyAssociationContainsPredicate(
         final ManyAssociationContainsPredicate<?> predicate,
         final Boolean negationActive,
+        String entityTypeCondition,
         final List<Object> values,
         final List<Integer> valueSQLTypes )
     {
@@ -372,6 +376,7 @@ public class PostgreSQLQuerying implements SQLQuerying
             predicate.associationReference( ), //
             true, //
             negationActive, //
+            entityTypeCondition, //
             new WhereClauseProcessor( )
             {
 
@@ -398,7 +403,7 @@ public class PostgreSQLQuerying implements SQLQuerying
             );
     }
 
-    private String processPropertyNullPredicate( final PropertyNullPredicate<?> predicate, final Boolean negationActive )
+    private String processPropertyNullPredicate( final PropertyNullPredicate<?> predicate, final Boolean negationActive, String entityTypeCondition)
     {
         return this.constructQueryForPredicate( //
             predicate, //
@@ -406,6 +411,7 @@ public class PostgreSQLQuerying implements SQLQuerying
             null, //
             null, //
             negationActive, //
+            entityTypeCondition, //
             new WhereClauseProcessor( )
             {
 
@@ -438,7 +444,7 @@ public class PostgreSQLQuerying implements SQLQuerying
             );
     }
 
-    private String processAssociationNullPredicate( final AssociationNullPredicate predicate, final Boolean negationActive )
+    private String processAssociationNullPredicate( final AssociationNullPredicate predicate, final Boolean negationActive, String entityTypeCondition )
     {
         return this.constructQueryForPredicate( //
             predicate, //
@@ -446,6 +452,7 @@ public class PostgreSQLQuerying implements SQLQuerying
             predicate.associationReference( ), //
             false, //
             negationActive, //
+            entityTypeCondition, //
             new WhereClauseProcessor( )
             {
 
@@ -468,6 +475,7 @@ public class PostgreSQLQuerying implements SQLQuerying
     private String processContainsPredicate(
         final ContainsPredicate<?, ? extends Collection<?>> predicate,
         final Boolean negationActive,
+        String entityTypeCondition,
         final List<Object> values,
         final List<Integer> valueSQLTypes )
     {
@@ -479,6 +487,7 @@ public class PostgreSQLQuerying implements SQLQuerying
             null, //
             null, //
             negationActive, //
+            entityTypeCondition, //
             new WhereClauseProcessor( )
             {
 
@@ -512,6 +521,7 @@ public class PostgreSQLQuerying implements SQLQuerying
     private String processContainsAllPredicate(
         final ContainsAllPredicate<?, ? extends Collection<?>> predicate,
         final Boolean negationActive,
+        String entityTypeCondition,
         final List<Object> values,
         final List<Integer> valueSQLTypes )
     {
@@ -523,6 +533,7 @@ public class PostgreSQLQuerying implements SQLQuerying
             null, //
             null, //
             negationActive, //
+            entityTypeCondition, //
             new WhereClauseProcessor( )
             {
 
@@ -568,6 +579,7 @@ public class PostgreSQLQuerying implements SQLQuerying
         AssociationReference assoRef,
         Boolean includeLastAssoPathTable,
         Boolean negationActive,
+        String entityTypeCondition,
         WhereClauseProcessor whereClauseGenerator )
     {
         StringBuilder builder = new StringBuilder( );
@@ -595,9 +607,10 @@ public class PostgreSQLQuerying implements SQLQuerying
         }
 
         String whereClause = whereClauseGenerator.processWhereClause( startingIndex, lastTableIndex );
+        builder.append("WHERE ").append(entityTypeCondition + "\n");
         if ( whereClause != null && whereClause.trim( ).length( ) > 0 )
         {
-            builder.append( "WHERE " ).append( whereClause ).append( "\n" );
+            builder.append( "AND " ).append( whereClause ).append( "\n" );
         }
         return builder.toString( );
     }
@@ -764,8 +777,9 @@ public class PostgreSQLQuerying implements SQLQuerying
                     builder.append( //
                         joinStyle + " " + this._state.schemaName( ).get( ) + "." + info.getTableName( ) + " " + TABLE_NAME_PREFIX + ( index + 1 ) +
                             "\n" + /**/
-                            "ON " + TABLE_NAME_PREFIX + index + "." + SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME + " = " + TABLE_NAME_PREFIX + ( index + 1 ) +
-                            "." + SQLs.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME + "\n" /**/
+                            "ON (" + TABLE_NAME_PREFIX + index + "." + SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME + " = " + TABLE_NAME_PREFIX + ( index + 1 ) +
+                            "." + SQLs.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME + " AND " + TABLE_NAME_PREFIX + index + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME +
+                            " = " + TABLE_NAME_PREFIX + (index + 1) + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + ")\n" /**/
                         );
                 }
                 ++index;
@@ -800,7 +814,7 @@ public class PostgreSQLQuerying implements SQLQuerying
             builder.append( //
                 joinStyle + " " + this._state.schemaName( ).get( ) + "." + info.getTableName( ) + " " + TABLE_NAME_PREFIX + ( index + 1 ) + "\n" + /**/
                 "ON " + TABLE_NAME_PREFIX + index + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + " = " + TABLE_NAME_PREFIX + ( index + 1 ) + "." +
-                    SQLs.ALL_QNAMES_TABLE_PK_COLUMN_NAME + "\n" /**/
+                    SQLs.ENTITY_TABLE_PK_COLUMN_NAME + "\n" /**/
                 );
             ++index;
             if ( !qNameStack.isEmpty( ) || includeLastTable )

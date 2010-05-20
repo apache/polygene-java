@@ -26,10 +26,6 @@ public class SQLs
 
    public static final String QNAME_TABLE_NAME_PREFIX = "qname_";
 
-//   public static final String QNAME_TABLE_PK_COLUMN_NAME = "qname_id";
-
-//   public static final String QNAME_TABLE_PK_COLUMN_DATA_TYPE = "BIGINT";
-
    public static final String QNAME_TABLE_VALUE_COLUMN_NAME = "qname_value";
 
    public static final String QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME = "asso_index";
@@ -46,11 +42,11 @@ public class SQLs
 
    public static final String QNAME_TABLE_COLLECTION_PATH_SEPARATOR = ".";
 
-   public static final String PROPERTY_QNAMES_TABLE_NAME = "property_qnames";
+   public static final String ALL_QNAMES_TABLE_NAME = "all_qnames";
 
    public static final String ALL_QNAMES_TABLE_PK_COLUMN_NAME = "qname_id";
 
-   public static final String PROPERTY_QNAMES_TABLE_PK_COLUMN_DATA_TYPE = "BIGINT";
+   public static final String ALL_QNAMES_TABLE_PK_COLUMN_DATA_TYPE = "INTEGER";
 
 //   public static final String QNAME_TABLE_COLLECTION_INDEX_COLUMN_NAME_PREFIX = "index_";
 //
