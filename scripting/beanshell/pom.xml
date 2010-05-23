@@ -3,12 +3,12 @@
   <parent>
     <groupId>org.qi4j.library</groupId>
     <artifactId>qi4j-scripting</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
   </parent>
   <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-script-beanshell</artifactId>
   <name>Qi4j Script Library - Beanshell</name>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.1</version>
   <packaging>bundle</packaging>
 
   <dependencies>
@@ -23,7 +23,7 @@
     <dependency>
       <groupId>org.qi4j.library</groupId>
       <artifactId>qi4j-script-common</artifactId>
-      <version>1.1-SNAPSHOT</version>
+      <version>1.1</version>
     </dependency>
     <dependency>
       <groupId>org.qi4j.core</groupId>
