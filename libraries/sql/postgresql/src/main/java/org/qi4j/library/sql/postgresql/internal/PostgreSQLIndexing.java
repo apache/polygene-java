@@ -375,7 +375,7 @@ public class PostgreSQLIndexing implements SQLIndexing
       PreparedStatement ps = qNameInsertPSs.get(qName);
       propertyPK = this.storeCollectionInfo( insertAllQNamesPS, propertyPK, entityPK, parentQNameID, ps, info );
 
-      propertyPK = this.storeCollectionItems(property, insertAllQNamesPS, SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME, ps, info.getTableName(), propertyPK, entityPK, parentQNameID, info.getFinalType(), info.isFinalTypePrimitive());
+      propertyPK = this.storeCollectionItems(qNameInsertPSs, property, insertAllQNamesPS, SQLs.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME, ps, info.getTableName(), propertyPK, entityPK, parentQNameID, info.getFinalType(), info.isFinalTypePrimitive());
 
       return propertyPK;
    }
@@ -402,7 +402,7 @@ public class PostgreSQLIndexing implements SQLIndexing
        return propertyPK + 1;
    }
 
-   private Integer storeCollectionItems(Collection<?> collection, PreparedStatement insertAllQNamesPS, String path, PreparedStatement ps, String tableName, Integer propertyPK, Long entityPK, Integer parentPK, Type finalType, Boolean isFinalTypePrimitive) throws SQLException
+   private Integer storeCollectionItems(Map<QualifiedName, PreparedStatement> qNameInsertPSs, Collection<?> collection, PreparedStatement insertAllQNamesPS, String path, PreparedStatement ps, String tableName, Integer propertyPK, Long entityPK, Integer parentPK, Type finalType, Boolean isFinalTypePrimitive) throws SQLException
    {
       Integer index = 0;
       for (Object o : collection)
@@ -410,10 +410,10 @@ public class PostgreSQLIndexing implements SQLIndexing
           String itemPath = path + SQLs.QNAME_TABLE_COLLECTION_PATH_SEPARATOR + index;
          if (o instanceof Collection<?>)
          {
-            propertyPK = this.storeCollectionItems((Collection<?>)o, insertAllQNamesPS, itemPath, ps, tableName, propertyPK, entityPK, parentPK, finalType, isFinalTypePrimitive);
+            propertyPK = this.storeCollectionItems(qNameInsertPSs, (Collection<?>)o, insertAllQNamesPS, itemPath, ps, tableName, propertyPK, entityPK, parentPK, finalType, isFinalTypePrimitive);
          } else
          {
-            propertyPK = this.storeCollectionItem(ps, insertAllQNamesPS, propertyPK, entityPK, parentPK, itemPath, o, isFinalTypePrimitive, finalType);
+            propertyPK = this.storeCollectionItem(qNameInsertPSs, ps, insertAllQNamesPS, propertyPK, entityPK, parentPK, itemPath, o, isFinalTypePrimitive, finalType);
 
             ps.addBatch();
          }
@@ -423,6 +423,7 @@ public class PostgreSQLIndexing implements SQLIndexing
    }
 
    private Integer storeCollectionItem( //
+         Map<QualifiedName, PreparedStatement> qNameInsertPSs,
          PreparedStatement ps, //
          PreparedStatement insertAllQNamesPS, //
          Integer propertyPK, //
@@ -445,12 +446,14 @@ public class PostgreSQLIndexing implements SQLIndexing
       if (isFinalTypePrimitive)
       {
          this.storePrimitiveUsingPS(ps, 5, item, finalType);
+         ++propertyPK;
       } else
       {
          this.storeVCClassIDUsingPS(ps, 5, item);
+         propertyPK = this.storePropertiesOfVC( qNameInsertPSs, insertAllQNamesPS, propertyPK, entityPK, item );
       }
 
-      return propertyPK + 1;
+      return propertyPK;
    }
 
    private Integer storePrimitiveProperty( //
@@ -500,25 +503,37 @@ public class PostgreSQLIndexing implements SQLIndexing
       ps.setObject(3, parentQNameID, Types.INTEGER);
       this.storeVCClassIDUsingPS(ps, 4, property);
       ps.addBatch();
-      Integer originalPropertyPK = propertyPK;
-      ++propertyPK;
 
-      ValueDescriptor vDesc = this._qi4SPI.getValueDescriptor((ValueComposite) property);
-      StateHolder state = ((ValueComposite) property).state();
-      for (PropertyDescriptor pDesc : vDesc.state().properties())
-      {
+      return this.storePropertiesOfVC( qNameInsertPSs, insertAllQNamesPS, propertyPK, entityPK, property );
+   }
 
-         propertyPK = this.insertProperty( //
-              qNameInsertPSs, //
-              insertAllQNamesPS, //
-              propertyPK, //
-              entityPK, //
-              pDesc.qualifiedName(), //
-              state.getProperty(pDesc.qualifiedName()).get(), //
-              originalPropertyPK //
-              );
-      }
-      return propertyPK;
+   private Integer storePropertiesOfVC(
+       Map<QualifiedName, PreparedStatement> qNameInsertPSs, //
+       PreparedStatement insertAllQNamesPS, //
+       Integer propertyPK, //
+       Long entityPK, //
+       Object property //
+       ) throws SQLException
+   {
+       ValueDescriptor vDesc = this._qi4SPI.getValueDescriptor((ValueComposite) property);
+       StateHolder state = ((ValueComposite) property).state();
+       Integer originalPropertyPK = propertyPK;
+       ++propertyPK;
+       for (PropertyDescriptor pDesc : vDesc.state().properties())
+       {
+
+          propertyPK = this.insertProperty( //
+               qNameInsertPSs, //
+               insertAllQNamesPS, //
+               propertyPK, //
+               entityPK, //
+               pDesc.qualifiedName(), //
+               state.getProperty(pDesc.qualifiedName()).get(), //
+               originalPropertyPK //
+               );
+       }
+
+       return propertyPK;
    }
 
    private void storePrimitiveUsingPS(PreparedStatement ps, Integer nextFreeIndex, Object primitive, Type primitiveType) throws SQLException

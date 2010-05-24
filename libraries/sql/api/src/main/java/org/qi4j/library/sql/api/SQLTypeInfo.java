@@ -15,35 +15,38 @@
 
 package org.qi4j.library.sql.api;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
  * The annotation, which tells the parameters for SQL type. Only applyable to certain typed properties, like for now, {@link String}, {@link BigInteger}, and {@link BigDecimal}.
- * 
- * Example of usage, where we want to limit the datatype of column storing this value in RDBMS to be 100 characters of max length: 
+ *
+ * Example of usage, where we want to limit the datatype of column storing this value in RDBMS to be 100 characters of max length:
  * <pre>@SQLTypeInfo(maxLength=100)
  * public Property&lt;String&gt; myStringProperty();</pre>
- * 
+ *
  * The purpose of this class is to optimize performance for people who know for certain that they will be using SQL-Indexing in their application.
- * 
+ *
  * @author Stanislav Muhametsin
  */
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
 public @interface SQLTypeInfo
 {
    /**
     * For {@link String}s, this is the max character length as specified by {@code VARCHAR(length)}. For {@link BigInteger}s and {@link BigDecimal}s,
     * this is the precision of a {@code NUMERIC}.
-    * @return Maximum length for SQL data type representing some property type. 
+    * @return Maximum length for SQL data type representing some property type.
     */
    int maxLength();
-   
+
    /**
     * For {@link String}s and {@link BigInteger}s, this value is ignored. For {@link BigDecimal}s, this is the scale of {@code NUMERIC}, default being {@code 50}.
-    * 
+    *
     * @return The scale of SQL data type representing some property type.
     */
    int scale() default 50;
