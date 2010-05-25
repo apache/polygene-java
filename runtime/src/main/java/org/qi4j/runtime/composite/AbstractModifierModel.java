@@ -22,6 +22,8 @@ import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
+
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.CallbackFilter;
 import net.sf.cglib.proxy.Enhancer;
@@ -42,9 +44,9 @@ import static org.qi4j.api.util.Classes.*;
  * JAVADOC
  */
 public abstract class AbstractModifierModel
-    implements Binder, Serializable
+        implements Binder, Serializable
 {
-    private final static Map<Class, Class> enhancedClasses = Collections.synchronizedMap( new HashMap<Class, Class>() );
+    private final static Map<Class, Class> enhancedClasses = Collections.synchronizedMap( new WeakHashMap<Class, Class>() );
 
     private final Class modifierClass;
 
@@ -83,7 +85,7 @@ public abstract class AbstractModifierModel
     // Binding
 
     public void bind( Resolution context )
-        throws BindingException
+            throws BindingException
     {
         constructorsModel.bind( context );
         injectedFieldsModel.bind( context );
@@ -98,16 +100,15 @@ public abstract class AbstractModifierModel
     )
     {
         InjectionContext injectionContext = new InjectionContext( moduleInstance, wrapNext( next ), proxyHandler );
-        if( Factory.class.isAssignableFrom( modifierClass ) )
-        {
-            Enhancer.registerCallbacks( modifierClass,
-                                        new Callback[]{ NoOp.INSTANCE, proxyHandler } );
-        }
 
-        Object mixin = constructorsModel.newInstance( injectionContext );
-        injectedFieldsModel.inject( injectionContext, mixin );
-        injectedMethodsModel.inject( injectionContext, mixin );
-        return mixin;
+        Object modifier = constructorsModel.newInstance( injectionContext );
+
+        if( modifier instanceof Factory )
+            ( (Factory) modifier ).setCallbacks( new Callback[]{NoOp.INSTANCE, proxyHandler} );
+
+        injectedFieldsModel.inject( injectionContext, modifier );
+        injectedMethodsModel.inject( injectionContext, modifier );
+        return modifier;
     }
 
     private Object wrapNext( Object next )
@@ -117,20 +118,17 @@ public abstract class AbstractModifierModel
             if( next instanceof InvocationHandler )
             {
                 return next;
-            }
-            else
+            } else
             {
                 return new TypedModifierInvocationHandler( next );
             }
-        }
-        else
+        } else
         {
             if( next instanceof InvocationHandler )
             {
                 Object proxy = Proxy.newProxyInstance( modifierClass.getClassLoader(), nextInterfaces, (InvocationHandler) next );
                 return proxy;
-            }
-            else
+            } else
             {
                 return next;
             }
@@ -184,10 +182,13 @@ public abstract class AbstractModifierModel
     private Enhancer createEnhancer( Class fragmentClass )
     {
         Enhancer enhancer = new Enhancer();
+        enhancer.setUseCache( false );
         enhancer.setSuperclass( fragmentClass );
         // TODO: make this configurable?
-        enhancer.setClassLoader( new BridgeClassLoader( fragmentClass.getClassLoader() ) );
-        enhancer.setCallbackTypes( new Class[]{ NoOp.class, net.sf.cglib.proxy.InvocationHandler.class } );
+        ClassLoader loader = new BridgeClassLoader( fragmentClass.getClassLoader() );
+//        ClassLoader loader = fragmentClass.getClassLoader();
+        enhancer.setClassLoader( loader );
+        enhancer.setCallbackTypes( new Class[]{NoOp.class, net.sf.cglib.proxy.InvocationHandler.class} );
         enhancer.setCallbackFilter( new CallbackFilter()
         {
             public int accept( Method method )
