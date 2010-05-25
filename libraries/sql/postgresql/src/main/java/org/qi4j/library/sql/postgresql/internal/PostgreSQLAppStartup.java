@@ -820,6 +820,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                 ")"
                 );
             stmt.execute(builder.toString());
+            stmt.execute( "COMMENT ON TABLE " + schemaName + "." + qNameInfo.getTableName( ) + " IS '" + qNameInfo.getQName( ) + "'" );
 
             ps.setString(1, qNameInfo.getQName().toString());
             ps.setString(2, qNameInfo.getTableName());
