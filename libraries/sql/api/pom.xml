@@ -3,12 +3,12 @@
   <parent>
     <groupId>org.qi4j.library</groupId>
     <artifactId>qi4j-lib-sql</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
   </parent>
   <groupId>org.qi4j.library</groupId>
   <artifactId>qi4j-lib-sql-api</artifactId>
   <name>Qi4j Library - SQL - API</name>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.2-SNAPSHOT</version>
   <packaging>bundle</packaging>
   
   <description>API to use for SQL indexing, hiding away vendor-specific SQL code and optimizations.</description>
