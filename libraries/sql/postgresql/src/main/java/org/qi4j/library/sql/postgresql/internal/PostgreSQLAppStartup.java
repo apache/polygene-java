@@ -410,7 +410,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
 
    private Boolean isReindexingNeeded(Boolean schemaExists) throws SQLException
    {
-      Boolean result = false;
+      Boolean result = true;
       if (schemaExists)
       {
          Connection connection = this._state.connection().get();
@@ -435,16 +435,10 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                      result = this._reindexingStrategy.reindexingNeeded(dbAppVersion, this._app.version());
                   }
                }
-            } else
-            {
-               // If table is missing - something is broken, and
-               // so we should re-index.
-               result = true;
             }
 
-            if (schemaExists && result)
+            if (result)
             {
-//               stmt.execute("DROP SCHEMA " + schemaName + " CASCADE");
                 this.clearSchema( );
             }
          }
