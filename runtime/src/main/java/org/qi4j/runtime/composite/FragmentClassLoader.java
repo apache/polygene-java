@@ -72,7 +72,9 @@ public class FragmentClassLoader
             byte[] b = generateClass( name, baseClass );
             return defineClass( name, b, 0, b.length );
         }
-        return super.findClass( name );
+
+        // Try the classloader of this classloader -> get classes in Qi4j such as CompositeInvoker
+        return getClass().getClassLoader().loadClass( name );
     }
 
     public static byte[] generateClass( String name, Class baseClass ) throws ClassNotFoundException
