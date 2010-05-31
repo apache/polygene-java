@@ -19,9 +19,11 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.MissingMethodException;
 import org.qi4j.bootstrap.BindingException;
+import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -32,7 +34,7 @@ import org.qi4j.spi.util.MethodKeyMap;
  * Model for Composite methods. This includes both private and public methods.
  */
 public final class CompositeMethodsModel
-    implements Binder, Serializable
+        implements Binder, Serializable
 {
     private HashMap<Method, CompositeMethodModel> methods;
     private final Class<? extends Composite> type;
@@ -45,8 +47,8 @@ public final class CompositeMethodsModel
                                   ConstraintsModel constraintsModel,
                                   ConcernsDeclaration concernsModel,
                                   SideEffectsDeclaration sideEffectsModel,
-                                  AbstractMixinsModel mixinsModel
-    )
+                                  AbstractMixinsModel mixinsModel,
+                                  AssemblyHelper helper )
     {
         methods = new MethodKeyMap<CompositeMethodModel>();
         this.type = type;
@@ -54,15 +56,15 @@ public final class CompositeMethodsModel
         this.concernsModel = concernsModel;
         this.sideEffectsModel = sideEffectsModel;
         this.mixinsModel = mixinsModel;
-        implementMixinType( type );
+        implementMixinType( type, helper );
     }
 
     // Binding
 
     public void bind( Resolution resolution )
-        throws BindingException
+            throws BindingException
     {
-        for( CompositeMethodModel compositeMethodComposite : methods.values() )
+        for (CompositeMethodModel compositeMethodComposite : methods.values())
         {
             compositeMethodComposite.bind( resolution );
         }
@@ -76,7 +78,7 @@ public final class CompositeMethodsModel
                           Object[] args,
                           ModuleInstance moduleInstance
     )
-        throws Throwable
+            throws Throwable
     {
         CompositeMethodModel compositeMethod = methods.get( method );
 
@@ -90,7 +92,7 @@ public final class CompositeMethodsModel
             if( !method.getDeclaringClass().isInterface() )
             {
                 Iterable<Class> types = mixinsModel.mixinTypes();
-                for( Class aClass : types )
+                for (Class aClass : types)
                 {
                     try
                     {
@@ -102,10 +104,10 @@ public final class CompositeMethodsModel
                         methods = newMethods; // Replace old map
                         break;
                     }
-                    catch( NoSuchMethodException e )
+                    catch (NoSuchMethodException e)
                     {
                     }
-                    catch( SecurityException e )
+                    catch (SecurityException e)
                     {
                     }
                 }
@@ -116,54 +118,59 @@ public final class CompositeMethodsModel
             }
 //            return mixins.invokeObject( proxy, args, method );
             throw new MissingMethodException( "Method '" + method + "' is not present in composite " + type.getName(), method );
-        }
-        else
+        } else
         {
             return compositeMethod.invoke( proxy, args, mixins, moduleInstance );
         }
     }
 
-    public void implementMixinType( Class mixinType )
+    public void implementMixinType( Class mixinType, AssemblyHelper helper )
     {
         final Set<Class> thisDependencies = new HashSet<Class>();
-        for( Method method : mixinType.getMethods() )
+        for (Method method : mixinType.getMethods())
         {
             if( methods.get( method ) == null )
             {
-                MixinModel mixinModel = mixinsModel.implementMethod( method );
-                MethodConcernsModel methodConcernsModel1 = concernsModel.concernsFor( method, type );
-                MethodSideEffectsModel methodSideEffectsModel1 = sideEffectsModel.sideEffectsFor( method, type );
+                MixinModel mixinModel = mixinsModel.implementMethod( method, helper );
+                MethodConcernsModel methodConcernsModel1 = concernsModel.concernsFor( method, type, helper );
+                MethodSideEffectsModel methodSideEffectsModel1 = sideEffectsModel.sideEffectsFor( method, type, helper );
                 Method mixinMethod = null;
                 try
                 {
                     mixinMethod = mixinModel.mixinClass().getMethod( method.getName(), method.getParameterTypes() );
-                    MethodConcernsModel methodConcernsModel2 = concernsModel.concernsFor( mixinMethod, type );
+                    MethodConcernsModel methodConcernsModel2 = concernsModel.concernsFor( mixinMethod, type, helper );
                     methodConcernsModel1 = methodConcernsModel1.combineWith( methodConcernsModel2 );
-                    MethodSideEffectsModel methodSideEffectsModel2 = sideEffectsModel.sideEffectsFor( mixinMethod, type );
+                    MethodSideEffectsModel methodSideEffectsModel2 = sideEffectsModel.sideEffectsFor( mixinMethod, type, helper );
                     methodSideEffectsModel1 = methodSideEffectsModel1.combineWith( methodSideEffectsModel2 );
                 }
-                catch( NoSuchMethodException e )
+                catch (NoSuchMethodException e)
                 {
                     // Ignore...
                 }
 
-                MethodConcernsModel mixinMethodConcernsModel1 = mixinModel.concernsFor( method, type );
+                MethodConcernsModel mixinMethodConcernsModel1 = mixinModel.concernsFor( method, type, helper );
                 methodConcernsModel1 = methodConcernsModel1.combineWith( mixinMethodConcernsModel1 );
-                MethodSideEffectsModel mixinMethodSideEffectsModel1 = mixinModel.sideEffectsFor( method, type );
+                MethodSideEffectsModel mixinMethodSideEffectsModel1 = mixinModel.sideEffectsFor( method, type, helper );
                 methodSideEffectsModel1 = methodSideEffectsModel1.combineWith( mixinMethodSideEffectsModel1 );
                 if( mixinMethod != null )
                 {
-                    MethodConcernsModel mixinMethodConcernsModel2 = mixinModel.concernsFor( mixinMethod, type );
+                    MethodConcernsModel mixinMethodConcernsModel2 = mixinModel.concernsFor( mixinMethod, type, helper );
                     methodConcernsModel1 = methodConcernsModel1.combineWith( mixinMethodConcernsModel2 );
-                    MethodSideEffectsModel mixinMethodSideEffectsModel2 = mixinModel.sideEffectsFor( mixinMethod, type );
+                    MethodSideEffectsModel mixinMethodSideEffectsModel2 = mixinModel.sideEffectsFor( mixinMethod, type, helper );
                     methodSideEffectsModel1 = methodSideEffectsModel1.combineWith( mixinMethodSideEffectsModel2 );
                 }
                 method.setAccessible( true );
+
+                if( !methodConcernsModel1.hasConcerns() )
+                    methodConcernsModel1 = null; // Don't store reference to something meaningless
+                if( !methodSideEffectsModel1.hasSideEffects() )
+                    methodSideEffectsModel1 = null; // Same here
+
                 CompositeMethodModel methodComposite = new CompositeMethodModel( method,
-                                                                                 new MethodConstraintsModel( method, constraintsModel ),
-                                                                                 methodConcernsModel1,
-                                                                                 methodSideEffectsModel1,
-                                                                                 mixinsModel );
+                        new MethodConstraintsModel( method, constraintsModel ),
+                        methodConcernsModel1,
+                        methodSideEffectsModel1,
+                        mixinsModel );
 
                 // Implement @This references
                 methodComposite.addThisInjections( thisDependencies );
@@ -176,9 +183,9 @@ public final class CompositeMethodsModel
         mixinsModel.addMixinType( mixinType );
 
         // Implement all @This dependencies that were found
-        for( Class thisDependency : thisDependencies )
+        for (Class thisDependency : thisDependencies)
         {
-            implementMixinType( thisDependency );
+            implementMixinType( thisDependency, helper );
         }
     }
 
@@ -189,7 +196,7 @@ public final class CompositeMethodsModel
 
     public void visitModel( ModelVisitor modelVisitor )
     {
-        for( CompositeMethodModel compositeMethodModel : methods.values() )
+        for (CompositeMethodModel compositeMethodModel : methods.values())
         {
             compositeMethodModel.visitModel( modelVisitor );
         }

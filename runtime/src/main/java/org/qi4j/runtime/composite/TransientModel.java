@@ -17,6 +17,7 @@ package org.qi4j.runtime.composite;
 import java.lang.reflect.InvocationHandler;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -25,6 +26,7 @@ import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.property.PropertiesModel;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -37,16 +39,16 @@ import org.qi4j.spi.composite.TransientDescriptor;
  * Model for Transient Composites
  */
 public class TransientModel
-    extends AbstractCompositeModel
-    implements TransientDescriptor
+        extends AbstractCompositeModel
+        implements TransientDescriptor
 {
     public static TransientModel newModel( final Class<? extends Composite> compositeType,
                                            final Visibility visibility,
                                            final MetaInfo metaInfo,
                                            final PropertyDeclarations propertyDeclarations,
                                            final Iterable<Class<?>> assemblyConcerns,
-                                           final Iterable<Class<?>> sideEffects, List<Class<?>> mixins
-    )
+                                           final Iterable<Class<?>> sideEffects, List<Class<?>> mixins,
+                                           AssemblyHelper helper )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
         boolean immutable = metaInfo.get( Immutable.class ) != null;
@@ -61,11 +63,11 @@ public class TransientModel
 
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
         CompositeMethodsModel compositeMethodsModel =
-            new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
+                new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel, helper );
         stateModel.addStateFor( compositeMethodsModel.methods(), compositeType );
 
         return new TransientModel(
-            compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
+                compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
     }
 
     protected TransientModel( final Class<? extends Composite> compositeType,
@@ -90,7 +92,7 @@ public class TransientModel
     // Binding
 
     public void bind( Resolution resolution )
-        throws BindingException
+            throws BindingException
     {
         resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
         compositeMethodsModel.bind( resolution );
@@ -98,14 +100,14 @@ public class TransientModel
     }
 
     public Composite newProxy( InvocationHandler invocationHandler )
-        throws ConstructionException
+            throws ConstructionException
     {
         // Instantiate proxy for given composite interface
         try
         {
             return Composite.class.cast( proxyClass.getConstructor( InvocationHandler.class ).newInstance( invocationHandler ) );
         }
-        catch( Exception e )
+        catch (Exception e)
         {
             throw new ConstructionException( e );
         }
@@ -123,11 +125,11 @@ public class TransientModel
         {
             // Instantiate all mixins
             ( (MixinsModel) mixinsModel ).newMixins( compositeInstance,
-                                                     uses,
-                                                     state,
-                                                     mixins );
+                    uses,
+                    state,
+                    mixins );
         }
-        catch( InvalidCompositeException e )
+        catch (InvalidCompositeException e)
         {
             e.setFailingCompositeType( type() );
             e.setMessage( "Invalid Cyclic Mixin usage dependency" );

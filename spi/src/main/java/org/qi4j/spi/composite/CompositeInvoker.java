@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2010, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,19 +12,16 @@
  *
  */
 
-package org.qi4j.runtime.composite;
+package org.qi4j.spi.composite;
 
-import java.io.Serializable;
+import java.lang.reflect.Method;
 
 /**
- * JAVADOC
+ * All composites must implement this interface. Methods that are invoked
+ * may reside either in the public Composite interface or in any internal mixins.
  */
-public final class SideEffectModel
-    extends AbstractModifierModel
-    implements Serializable
+public interface CompositeInvoker
 {
-    public SideEffectModel( Class sideEffectClass )
-    {
-        super( sideEffectClass );
-    }
+    Object invokeComposite( Method method, Object[] args )
+            throws Throwable;
 }

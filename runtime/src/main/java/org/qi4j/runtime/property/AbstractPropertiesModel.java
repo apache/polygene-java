@@ -25,6 +25,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.property.Property;
@@ -44,7 +45,7 @@ import org.qi4j.spi.util.MethodKeyMap;
  * Base class for properties model
  */
 public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
-    implements Serializable, Binder
+        implements Serializable, Binder
 {
     protected final Set<T> propertyModels = new LinkedHashSet<T>();
     protected final Set<T> computedPropertyModels = new LinkedHashSet<T>();
@@ -82,9 +83,9 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
     }
 
     public void bind( Resolution resolution )
-        throws BindingException
+            throws BindingException
     {
-        for( T propertyModel : propertyModels )
+        for (T propertyModel : propertyModels)
         {
             propertyModel.bind( resolution );
         }
@@ -98,7 +99,7 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
     public PropertiesInstance newBuilderInstance()
     {
         Map<Method, Property<?>> properties = new MethodKeyMap<Property<?>>();
-        for( T propertyModel : propertyModels )
+        for (T propertyModel : propertyModels)
         {
             Property property = propertyModel.newBuilderInstance();
             properties.put( propertyModel.accessor(), property );
@@ -110,7 +111,7 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
     public PropertiesInstance newBuilderInstance( StateHolder state )
     {
         Map<Method, Property<?>> properties = new HashMap<Method, Property<?>>();
-        for( T propertyModel : propertyModels )
+        for (T propertyModel : propertyModels)
         {
             Property property;
             if( !propertyModel.isComputed() )
@@ -120,8 +121,7 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
                 initialValue = cloneInitialValue( initialValue, true );
 
                 property = propertyModel.newBuilderInstance( initialValue );
-            }
-            else
+            } else
             {
                 property = propertyModel.newBuilderInstance();
             }
@@ -134,7 +134,7 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
     public PropertiesInstance newInitialInstance()
     {
         Map<Method, Property<?>> properties = new MethodKeyMap<Property<?>>();
-        for( T propertyModel : propertyModels )
+        for (T propertyModel : propertyModels)
         {
             Property property = propertyModel.newInitialInstance();
             properties.put( propertyModel.accessor(), property );
@@ -146,7 +146,7 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
     public PropertiesInstance newInstance( StateHolder state )
     {
         Map<Method, Property<?>> properties = new MethodKeyMap<Property<?>>();
-        for( AbstractPropertyModel propertyModel : propertyModels )
+        for (AbstractPropertyModel propertyModel : propertyModels)
         {
             Property<Object> prop = state.getProperty( propertyModel.accessor() );
             if( !prop.isComputed() )
@@ -174,15 +174,14 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
             {
                 newCollection = new ArrayList<Object>();
                 initialValue = isPrototype ? newCollection : Collections.unmodifiableList( (List<Object>) newCollection );
-            }
-            else
+            } else
             {
                 newCollection = new HashSet<Object>();
                 initialValue = isPrototype ? newCollection : Collections.unmodifiableSet( (Set<Object>) newCollection );
             }
 
             // Copy values, ensuring that values are cloned correctly
-            for( Object value : initialCollection )
+            for (Object value : initialCollection)
             {
                 if( value instanceof ValueComposite )
                 {
@@ -191,8 +190,7 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
 
                 newCollection.add( value );
             }
-        }
-        else if( initialValue instanceof ValueComposite )
+        } else if( initialValue instanceof ValueComposite )
         {
             initialValue = cloneValue( initialValue, isPrototype );
         }
@@ -209,8 +207,7 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
         if( isPrototype )
         {
             state = model.state().newBuilderInstance( instance.state() );
-        }
-        else
+        } else
         {
             state = model.state().newInstance( instance.state() );
         }
@@ -220,7 +217,7 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
 
     public T getPropertyByName( String name )
     {
-        for( T propertyModel : propertyModels )
+        for (T propertyModel : propertyModels)
         {
             if( propertyModel.qualifiedName().name().equals( name ) )
             {
@@ -232,7 +229,7 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
 
     public T getPropertyByQualifiedName( QualifiedName name )
     {
-        for( T propertyModel : propertyModels )
+        for (T propertyModel : propertyModels)
         {
             if( propertyModel.qualifiedName().equals( name ) )
             {
@@ -248,9 +245,9 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
     }
 
     public void checkConstraints( PropertiesInstance properties )
-        throws ConstraintViolationException
+            throws ConstraintViolationException
     {
-        for( AbstractPropertyModel propertyModel : propertyModels )
+        for (AbstractPropertyModel propertyModel : propertyModels)
         {
             if( !propertyModel.isComputed() )
             {
@@ -263,14 +260,14 @@ public abstract class AbstractPropertiesModel<T extends AbstractPropertyModel>
 
     public void setComputedProperties( StateHolder state, CompositeInstance compositeInstance )
     {
-        for( T propertyModel : computedPropertyModels )
+        for (T propertyModel : computedPropertyModels)
         {
             try
             {
-                Property property = (Property) compositeInstance.invokeProxy( propertyModel.accessor(), new Object[0] );
+                Property property = (Property) compositeInstance.invokeComposite( propertyModel.accessor(), new Object[0] );
                 ( (PropertiesInstance) state ).properties.put( propertyModel.accessor(), property );
             }
-            catch( Throwable throwable )
+            catch (Throwable throwable)
             {
                 throwable.printStackTrace();
             }

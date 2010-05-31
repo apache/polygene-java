@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.bootstrap.BindingException;
@@ -42,7 +43,7 @@ import org.qi4j.spi.util.SerializationUtil;
  * JAVADOC
  */
 public final class CompositeMethodModel
-    implements Binder, CompositeMethodDescriptor, Serializable
+        implements Binder, CompositeMethodDescriptor, Serializable
 {
     // Model
     private Method method;
@@ -59,7 +60,7 @@ public final class CompositeMethodModel
     private MethodConstraintsInstance methodConstraintsInstance;
 
     private void writeObject( ObjectOutputStream out )
-        throws IOException
+            throws IOException
     {
         try
         {
@@ -69,7 +70,7 @@ public final class CompositeMethodModel
             out.writeObject( methodSideEffects );
             out.writeObject( methodConstraints );
         }
-        catch( NotSerializableException e )
+        catch (NotSerializableException e)
         {
             System.err.println( "NotSerializable in " + getClass() );
             throw e;
@@ -77,7 +78,7 @@ public final class CompositeMethodModel
     }
 
     private void readObject( ObjectInputStream in )
-        throws IOException, ClassNotFoundException
+            throws IOException, ClassNotFoundException
     {
         this.method = SerializationUtil.readMethod( in );
         mixins = (AbstractMixinsModel) in.readObject();
@@ -124,18 +125,21 @@ public final class CompositeMethodModel
     // Binding
 
     public void bind( Resolution resolution )
-        throws BindingException
+            throws BindingException
     {
         resolution = new Resolution( resolution.application(),
-                                     resolution.layer(),
-                                     resolution.module(),
-                                     resolution.object(),
-                                     this,
-                                     null //no field
+                resolution.layer(),
+                resolution.module(),
+                resolution.object(),
+                this,
+                null //no field
         );
 
-        methodConcerns.bind( resolution );
-        methodSideEffects.bind( resolution );
+        if( methodConcerns != null )
+            methodConcerns.bind( resolution );
+
+        if( methodSideEffects != null )
+            methodSideEffects.bind( resolution );
 
         methodConstraintsInstance = methodConstraints.newInstance();
     }
@@ -143,7 +147,7 @@ public final class CompositeMethodModel
     // Context
 
     public Object invoke( Object composite, Object[] params, MixinsInstance mixins, ModuleInstance moduleInstance )
-        throws Throwable
+            throws Throwable
     {
         methodConstraintsInstance.checkValid( composite, params );
 
@@ -170,16 +174,16 @@ public final class CompositeMethodModel
     }
 
     private CompositeMethodInstance newCompositeMethodInstance( ModuleInstance moduleInstance )
-        throws ConstructionException
+            throws ConstructionException
     {
         FragmentInvocationHandler mixinInvocationHandler = mixins.newInvocationHandler( method );
         InvocationHandler invoker = mixinInvocationHandler;
-        if( methodConcerns.hasConcerns() )
+        if( methodConcerns != null )
         {
             MethodConcernsInstance concernsInstance = methodConcerns.newInstance( moduleInstance, mixinInvocationHandler );
             invoker = concernsInstance;
         }
-        if( methodSideEffects.hasSideEffects() )
+        if( methodSideEffects != null )
         {
             MethodSideEffectsInstance sideEffectsInstance = methodSideEffects.newInstance( moduleInstance, invoker );
             invoker = sideEffectsInstance;
@@ -198,20 +202,24 @@ public final class CompositeMethodModel
         modelVisitor.visit( this );
 
         methodConstraints.visitModel( modelVisitor );
-        methodConcerns.visitModel( modelVisitor );
-        methodSideEffects.visitModel( modelVisitor );
+
+        if( methodConcerns != null )
+            methodConcerns.visitModel( modelVisitor );
+
+        if( methodSideEffects != null )
+            methodSideEffects.visitModel( modelVisitor );
     }
 
     public void addThisInjections( final Set<Class> thisDependencies )
     {
         visitModel(
-            new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
-            {
-                public void visitDependency( DependencyModel dependencyModel )
+                new DependencyVisitor( new DependencyModel.ScopeSpecification( This.class ) )
                 {
-                    thisDependencies.add( dependencyModel.rawInjectionType() );
+                    public void visitDependency( DependencyModel dependencyModel )
+                    {
+                        thisDependencies.add( dependencyModel.rawInjectionType() );
+                    }
                 }
-            }
         );
     }
 
@@ -222,7 +230,7 @@ public final class CompositeMethodModel
     }
 
     public class CompositeMethodAnnotatedElement
-        implements AnnotatedElement, Serializable
+            implements AnnotatedElement, Serializable
     {
         public boolean isAnnotationPresent( Class<? extends Annotation> annotationClass )
         {
@@ -241,9 +249,9 @@ public final class CompositeMethodModel
                     return false;
                 }
                 return ( model.mixinClass()
-                    .getMethod( method.getName(), method.getParameterTypes() ).isAnnotationPresent( annotationClass ) );
+                        .getMethod( method.getName(), method.getParameterTypes() ).isAnnotationPresent( annotationClass ) );
             }
-            catch( NoSuchMethodException e )
+            catch (NoSuchMethodException e)
             {
                 return false;
             }
@@ -258,14 +266,14 @@ public final class CompositeMethodModel
                 if( !model.isGeneric() )
                 {
                     T annotation = annotationClass.cast( model.mixinClass()
-                        .getMethod( method.getName(), method.getParameterTypes() ).getAnnotation( annotationClass ) );
+                            .getMethod( method.getName(), method.getParameterTypes() ).getAnnotation( annotationClass ) );
                     if( annotation != null )
                     {
                         return annotation;
                     }
                 }
             }
-            catch( NoSuchMethodException e )
+            catch (NoSuchMethodException e)
             {
                 // Ignore
             }
@@ -283,18 +291,18 @@ public final class CompositeMethodModel
             if( !model.isGeneric() )
             {
                 mixinAnnotations = model.mixinClass().getAnnotations();
-                for( int i = 0; i < mixinAnnotations.length; i++ )
+                for (int i = 0; i < mixinAnnotations.length; i++)
                 {
-                    annotations.add( mixinAnnotations[ i ] );
+                    annotations.add( mixinAnnotations[i] );
                 }
             }
 
             // Add method annotations, but don't include duplicates
             Annotation[] methodAnnotations = method.getAnnotations();
             next:
-            for( Annotation methodAnnotation : methodAnnotations )
+            for (Annotation methodAnnotation : methodAnnotations)
             {
-                for( int i = 0; i < mixinAnnotations.length; i++ )
+                for (int i = 0; i < mixinAnnotations.length; i++)
                 {
                     if( annotations.get( i ).annotationType().equals( methodAnnotation.annotationType() ) )
                     {

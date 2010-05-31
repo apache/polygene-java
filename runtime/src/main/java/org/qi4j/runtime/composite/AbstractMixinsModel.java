@@ -26,11 +26,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.BindingException;
+import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
@@ -43,7 +45,7 @@ import org.qi4j.spi.util.UsageGraph;
  * and mixin implementations.
  */
 public abstract class AbstractMixinsModel
-    implements Serializable, Binder
+        implements Serializable, Binder
 {
     protected final Set<MixinDeclaration> mixins = new LinkedHashSet<MixinDeclaration>();
 
@@ -60,7 +62,7 @@ public abstract class AbstractMixinsModel
         this.compositeType = compositeType;
 
         // Add assembly mixins
-        for( Class<?> assemblyMixin : assemblyMixins )
+        for (Class<?> assemblyMixin : assemblyMixins)
         {
             this.mixins.add( new MixinDeclaration( assemblyMixin, Assembler.class ) );
         }
@@ -69,7 +71,7 @@ public abstract class AbstractMixinsModel
         this.mixins.add( new MixinDeclaration( CompositeMixin.class, Composite.class ) );
         Set<Class> interfaces = Classes.interfacesOf( compositeType );
 
-        for( Class anInterface : interfaces )
+        for (Class anInterface : interfaces)
         {
             addMixinDeclarations( anInterface, this.mixins );
             mixinTypes.add( anInterface );
@@ -90,7 +92,7 @@ public abstract class AbstractMixinsModel
 
     public boolean hasMixinType( Class<?> mixinType )
     {
-        for( Class type : mixinTypes )
+        for (Class type : mixinTypes)
         {
             if( mixinType.isAssignableFrom( type ) )
             {
@@ -107,7 +109,7 @@ public abstract class AbstractMixinsModel
         return mixinModels.get( integer );
     }
 
-    public MixinModel implementMethod( Method method )
+    public MixinModel implementMethod( Method method, AssemblyHelper helper )
     {
         MixinModel implementationModel = methodImplementation.get( method );
         if( implementationModel != null )
@@ -117,7 +119,7 @@ public abstract class AbstractMixinsModel
         Class mixinClass = findTypedImplementation( method, mixins );
         if( mixinClass != null )
         {
-            return implementMethodWithClass( method, mixinClass );
+            return implementMethodWithClass( method, mixinClass, helper );
         }
 
         // Check declaring interface of method
@@ -126,21 +128,21 @@ public abstract class AbstractMixinsModel
         mixinClass = findTypedImplementation( method, interfaceDeclarations );
         if( mixinClass != null )
         {
-            return implementMethodWithClass( method, mixinClass );
+            return implementMethodWithClass( method, mixinClass, helper );
         }
 
         // Check generic implementations
         mixinClass = findGenericImplementation( method, mixins );
         if( mixinClass != null )
         {
-            return implementMethodWithClass( method, mixinClass );
+            return implementMethodWithClass( method, mixinClass, helper );
         }
 
         // Check declaring interface of method
         mixinClass = findGenericImplementation( method, interfaceDeclarations );
         if( mixinClass != null )
         {
-            return implementMethodWithClass( method, mixinClass );
+            return implementMethodWithClass( method, mixinClass, helper );
         }
 
         throw new InvalidCompositeException( "No implementation found for method " + method.toGenericString(), compositeType );
@@ -153,7 +155,7 @@ public abstract class AbstractMixinsModel
 
     private Class findTypedImplementation( Method method, Set<MixinDeclaration> mixins )
     {
-        for( MixinDeclaration mixin : mixins )
+        for (MixinDeclaration mixin : mixins)
         {
             if( !mixin.isGeneric() && mixin.appliesTo( method, compositeType ) )
             {
@@ -166,7 +168,7 @@ public abstract class AbstractMixinsModel
 
     private Class findGenericImplementation( Method method, Set<MixinDeclaration> mixins )
     {
-        for( MixinDeclaration mixin : mixins )
+        for (MixinDeclaration mixin : mixins)
         {
             if( mixin.isGeneric() && mixin.appliesTo( method, compositeType ) )
             {
@@ -177,11 +179,11 @@ public abstract class AbstractMixinsModel
         return null;
     }
 
-    private MixinModel implementMethodWithClass( Method method, Class mixinClass )
+    private MixinModel implementMethodWithClass( Method method, Class mixinClass, AssemblyHelper helper )
     {
         MixinModel foundMixinModel = null;
 
-        for( MixinModel mixinModel : mixinModels )
+        for (MixinModel mixinModel : mixinModels)
         {
             if( mixinModel.mixinClass().equals( mixinClass ) )
             {
@@ -192,7 +194,7 @@ public abstract class AbstractMixinsModel
 
         if( foundMixinModel == null )
         {
-            foundMixinModel = new MixinModel( mixinClass );
+            foundMixinModel = helper.getMixinModel( mixinClass );
             mixinModels.add( foundMixinModel );
         }
 
@@ -210,7 +212,7 @@ public abstract class AbstractMixinsModel
             if( annotation != null )
             {
                 Class[] mixinClasses = annotation.value();
-                for( Class mixinClass : mixinClasses )
+                for (Class mixinClass : mixinClasses)
                 {
                     declarations.add( new MixinDeclaration( mixinClass, clazz ) );
                 }
@@ -220,7 +222,7 @@ public abstract class AbstractMixinsModel
 
     public void visitModel( ModelVisitor modelVisitor )
     {
-        for( MixinModel mixinModel : mixinModels )
+        for (MixinModel mixinModel : mixinModels)
         {
             mixinModel.visitModel( modelVisitor );
         }
@@ -229,25 +231,25 @@ public abstract class AbstractMixinsModel
     // Binding
 
     public void bind( Resolution resolution )
-        throws BindingException
+            throws BindingException
     {
         // Order mixins based on @This usages
         UsageGraph<MixinModel> deps = new UsageGraph<MixinModel>( mixinModels, new Uses(), true );
         mixinModels = deps.resolveOrder();
 
         // Populate mappings
-        for( int i = 0; i < mixinModels.size(); i++ )
+        for (int i = 0; i < mixinModels.size(); i++)
         {
             MixinModel mixinModel = mixinModels.get( i );
             mixinIndex.put( mixinModel.mixinClass(), i );
         }
 
-        for( Map.Entry<Method, MixinModel> methodClassEntry : methodImplementation.entrySet() )
+        for (Map.Entry<Method, MixinModel> methodClassEntry : methodImplementation.entrySet())
         {
             methodIndex.put( methodClassEntry.getKey(), mixinIndex.get( methodClassEntry.getValue().mixinClass() ) );
         }
 
-        for( MixinModel mixinComposite : mixinModels )
+        for (MixinModel mixinComposite : mixinModels)
         {
             mixinComposite.bind( resolution );
         }
@@ -262,7 +264,7 @@ public abstract class AbstractMixinsModel
 
     public Object getMixin( Object[] mixins, Method method )
     {
-        return mixins[ methodIndex.get( method ) ];
+        return mixins[methodIndex.get( method )];
     }
 
     public FragmentInvocationHandler newInvocationHandler( final Method method )
@@ -271,27 +273,27 @@ public abstract class AbstractMixinsModel
     }
 
     public void activate( Object[] mixins )
-        throws Exception
+            throws Exception
     {
         int idx = 0;
         try
         {
-            for( MixinModel mixinModel : mixinModels )
+            for (MixinModel mixinModel : mixinModels)
             {
-                mixinModel.activate( mixins[ idx ] );
+                mixinModel.activate( mixins[idx] );
                 idx++;
             }
         }
-        catch( Exception e )
+        catch (Exception e)
         {
             // Passivate activated mixins
-            for( int i = idx - 1; i >= 0; i-- )
+            for (int i = idx - 1; i >= 0; i--)
             {
                 try
                 {
                     mixinModels.get( i ).passivate( i );
                 }
-                catch( Exception e1 )
+                catch (Exception e1)
                 {
                     // Ignore
                 }
@@ -302,17 +304,17 @@ public abstract class AbstractMixinsModel
     }
 
     public void passivate( Object[] mixins )
-        throws Exception
+            throws Exception
     {
         int idx = 0;
         Exception ex = null;
-        for( MixinModel mixinModel : mixinModels )
+        for (MixinModel mixinModel : mixinModels)
         {
             try
             {
-                mixinModel.passivate( mixins[ idx++ ] );
+                mixinModel.passivate( mixins[idx++] );
             }
-            catch( Exception e )
+            catch (Exception e)
             {
                 ex = e;
             }
@@ -324,15 +326,15 @@ public abstract class AbstractMixinsModel
     }
 
     private class Uses
-        implements UsageGraph.Use<MixinModel>
+            implements UsageGraph.Use<MixinModel>
     {
         public Collection<MixinModel> uses( MixinModel source )
         {
             Set<Class> thisMixinTypes = source.thisMixinTypes();
             List<MixinModel> usedMixinClasses = new ArrayList<MixinModel>();
-            for( Class thisMixinType : thisMixinTypes )
+            for (Class thisMixinType : thisMixinTypes)
             {
-                for( Method method : thisMixinType.getMethods() )
+                for (Method method : thisMixinType.getMethods())
                 {
                     usedMixinClasses.add( methodImplementation.get( method ) );
                 }

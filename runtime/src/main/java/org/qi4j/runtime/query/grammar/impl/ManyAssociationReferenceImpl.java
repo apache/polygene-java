@@ -17,6 +17,7 @@
 package org.qi4j.runtime.query.grammar.impl;
 
 import java.lang.reflect.Method;
+
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.query.grammar.AssociationReference;
@@ -24,8 +25,8 @@ import org.qi4j.api.query.grammar.ManyAssociationReference;
 import org.qi4j.runtime.entity.EntityInstance;
 
 public class ManyAssociationReferenceImpl
-    extends AssociationReferenceImpl
-    implements ManyAssociationReference
+        extends AssociationReferenceImpl
+        implements ManyAssociationReference
 {
     public ManyAssociationReferenceImpl( final Method accessor,
                                          final AssociationReference traversed
@@ -46,10 +47,10 @@ public class ManyAssociationReferenceImpl
             try
             {
                 ManyAssociation assoc = (ManyAssociation) EntityInstance.getEntityInstance( (EntityComposite) actual )
-                    .invokeProxy( associationAccessor(), new Object[0] );
+                        .invokeComposite( associationAccessor(), new Object[0] );
                 return assoc;
             }
-            catch( Throwable e )
+            catch (Throwable e)
             {
                 return null;
             }

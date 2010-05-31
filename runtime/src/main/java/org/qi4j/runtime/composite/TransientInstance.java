@@ -18,6 +18,7 @@ package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.structure.ModuleInstance;
@@ -28,7 +29,7 @@ import org.qi4j.spi.composite.CompositeInstance;
  * InvocationHandler for proxy objects.
  */
 public class TransientInstance
-    implements CompositeInstance, MixinsInstance
+        implements CompositeInstance, MixinsInstance
 {
     public static TransientInstance getCompositeInstance( Composite composite )
     {
@@ -56,7 +57,7 @@ public class TransientInstance
     }
 
     public Object invoke( Object proxy, Method method, Object[] args )
-        throws Throwable
+            throws Throwable
     {
         return compositeModel.invoke( this, proxy, method, args, moduleInstance );
     }
@@ -71,8 +72,8 @@ public class TransientInstance
         return compositeModel.newProxy( this, mixinType );
     }
 
-    public Object invokeProxy( Method method, Object[] args )
-        throws Throwable
+    public Object invokeComposite( Method method, Object[] args )
+            throws Throwable
     {
         return compositeModel.invoke( this, proxy, method, args, moduleInstance );
     }
@@ -108,14 +109,14 @@ public class TransientInstance
     }
 
     public Object invoke( Object composite, Object[] params, CompositeMethodInstance methodInstance )
-        throws Throwable
+            throws Throwable
     {
         Object mixin = methodInstance.getMixin( mixins );
         return methodInstance.invoke( proxy, params, mixin );
     }
 
     public Object invokeObject( Object proxy, Object[] args, Method method )
-        throws Throwable
+            throws Throwable
     {
         return method.invoke( this, args );
     }

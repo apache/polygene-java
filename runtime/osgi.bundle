@@ -18,16 +18,8 @@ Private-Package: org.qi4j.runtime, \
                  org.qi4j.runtime.unitofwork, \
                  org.qi4j.runtime.value
 
-Import-Package: net.sf.cglib.asm;version=2.2, \
-                net.sf.cglib.asm.attrs;version=2.2, \
-                net.sf.cglib.beans;version=2.2, \
-                net.sf.cglib.core;version=2.2, \
-                net.sf.cglib.proxy;version=2.2, \
-                net.sf.cglib.reflect;version=2.2, \
-                net.sf.cglib.transform;version=2.2, \
-                net.sf.cglib.transform.hook;version=2.2, \
-                net.sf.cglib.transform.impl;version=2.2, \
-                net.sf.cglib.util;version=2.2, \
+Import-Package: org.objectweb.asm, \
+                org.objectweb.asm.commons, \
                 org.json, \
                 org.qi4j.api, \
                 org.qi4j.api.common, \
@@ -77,8 +69,7 @@ Import-Package: net.sf.cglib.asm;version=2.2, \
                 org.xml.sax, \
                 org.xml.sax.helpers
 
-Ignore-Package: net.sf.cglib.asm.util, \
-                org.apache.tools.ant, \
+Ignore-Package: org.apache.tools.ant, \
                 org.apache.tools.ant.types, \
                 org.codehaus.aspectwerkz.hook, \
                 com_cenqua_clover

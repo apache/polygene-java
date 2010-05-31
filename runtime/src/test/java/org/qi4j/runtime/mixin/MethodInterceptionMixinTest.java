@@ -21,9 +21,11 @@ package org.qi4j.runtime.mixin;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.junit.Test;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
@@ -34,10 +36,10 @@ import org.qi4j.test.AbstractQi4jTest;
 import static org.junit.Assert.*;
 
 public class MethodInterceptionMixinTest
-    extends AbstractQi4jTest
+        extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+            throws AssemblyException
     {
         module.addServices( SomeService.class );
     }
@@ -51,10 +53,10 @@ public class MethodInterceptionMixinTest
         assertEquals( "Concern should have been called.", "Concern1", result1.iterator().next() );
     }
 
-    @Concerns( { SomeConcern1.class } )
-    @Mixins( { SomeMixin.class } )
+    @Concerns({SomeConcern1.class})
+    @Mixins({SomeMixin.class})
     public interface SomeService
-        extends Some, ServiceComposite
+            extends Some, ServiceComposite
     {
     }
 
@@ -66,8 +68,11 @@ public class MethodInterceptionMixinTest
     }
 
     public static abstract class SomeMixin
-        implements Some
+            implements Some
     {
+
+        @This
+        Some some;
 
         public Collection<String> doSome()
         {
@@ -76,13 +81,13 @@ public class MethodInterceptionMixinTest
 
         public List<String> result()
         {
-            return (List<String>) doSome();
+            return (List<String>) some.doSome();
         }
     }
 
     public static abstract class SomeConcern1
-        extends ConcernOf<Some>
-        implements Some
+            extends ConcernOf<Some>
+            implements Some
     {
 
         public Collection<String> doSome()

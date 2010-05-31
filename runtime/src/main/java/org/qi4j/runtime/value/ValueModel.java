@@ -17,6 +17,7 @@ package org.qi4j.runtime.value;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.constraint.ConstraintViolationException;
@@ -24,6 +25,7 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.PropertyDeclarations;
+import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.composite.AbstractCompositeModel;
 import org.qi4j.runtime.composite.CompositeMethodsModel;
 import org.qi4j.runtime.composite.ConcernDeclaration;
@@ -42,8 +44,8 @@ import org.qi4j.spi.value.ValueDescriptor;
  * Model for ValueComposites
  */
 public final class ValueModel
-    extends AbstractCompositeModel
-    implements ValueDescriptor, Serializable
+        extends AbstractCompositeModel
+        implements ValueDescriptor, Serializable
 {
     private ValueCompositeType valueType;
 
@@ -53,8 +55,8 @@ public final class ValueModel
                                        final PropertyDeclarations propertyDeclarations,
                                        final List<Class<?>> assemblyConcerns,
                                        final List<Class<?>> sideEffects,
-                                       final List<Class<?>> mixins
-    )
+                                       final List<Class<?>> mixins,
+                                       AssemblyHelper helper )
     {
         ConstraintsModel constraintsModel = new ConstraintsModel( compositeType );
         ValuePropertiesModel propertiesModel = new ValuePropertiesModel( constraintsModel, propertyDeclarations );
@@ -69,11 +71,11 @@ public final class ValueModel
         SideEffectsDeclaration sideEffectsModel = new SideEffectsDeclaration( compositeType, sideEffects );
         // TODO: Disable constraints, concerns and sideeffects??
         CompositeMethodsModel compositeMethodsModel =
-            new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel );
+                new CompositeMethodsModel( compositeType, constraintsModel, concernsModel, sideEffectsModel, mixinsModel, helper );
         stateModel.addStateFor( compositeMethodsModel.methods(), compositeType );
 
         ValueCompositeType valueType = (ValueCompositeType) ValueTypeFactory.instance()
-            .newValueType( compositeType, compositeType, compositeType );
+                .newValueType( compositeType, compositeType, compositeType );
 
         return new ValueModel( compositeType, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel, valueType );
     }
@@ -106,7 +108,7 @@ public final class ValueModel
     }
 
     public void bind( Resolution resolution )
-        throws BindingException
+            throws BindingException
     {
         resolution = new Resolution( resolution.application(), resolution.layer(), resolution.module(), this, null, null );
         compositeMethodsModel.bind( resolution );
@@ -114,7 +116,7 @@ public final class ValueModel
     }
 
     public void checkConstraints( StateHolder state )
-        throws ConstraintViolationException
+            throws ConstraintViolationException
     {
         stateModel.checkConstraints( state );
     }
@@ -131,10 +133,10 @@ public final class ValueModel
         {
             // Instantiate all mixins
             ( (ValueMixinsModel) mixinsModel ).newMixins( instance,
-                                                          state,
-                                                          mixins );
+                    state,
+                    mixins );
         }
-        catch( InvalidCompositeException e )
+        catch (InvalidCompositeException e)
         {
             e.setFailingCompositeType( type() );
             e.setMessage( "Invalid Cyclic Mixin usage dependency" );

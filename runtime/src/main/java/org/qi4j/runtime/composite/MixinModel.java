@@ -14,32 +14,17 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.*;
-
-import net.sf.cglib.core.ReflectUtils;
-import net.sf.cglib.core.Signature;
-import net.sf.cglib.proxy.Callback;
-import net.sf.cglib.proxy.CallbackFilter;
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.Factory;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
-import net.sf.cglib.proxy.NoOp;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
-import org.qi4j.api.mixin.InvalidMixinException;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.BindingException;
+import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
 import org.qi4j.runtime.injection.InjectedMethodsModel;
@@ -52,13 +37,19 @@ import org.qi4j.spi.composite.CompositeInstance;
 import org.qi4j.spi.composite.InvalidCompositeException;
 import org.qi4j.spi.mixin.MixinDescriptor;
 
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.*;
+
 /**
  * JAVADOC
  */
 public final class MixinModel
         implements Binder, MixinDescriptor, Serializable
 {
-    private final static Map<Class, Class> enhancedClasses = Collections.synchronizedMap( new WeakHashMap<Class, Class>() );
+//    private final static Map<Class, Class> enhancedClasses = Collections.synchronizedMap( new WeakHashMap<Class, Class>() );
 
     private final Class mixinClass;
     private final Class instantiationClass;
@@ -68,15 +59,15 @@ public final class MixinModel
     private final ConcernsDeclaration concernsDeclaration;
     private final SideEffectsDeclaration sideEffectsDeclaration;
     private final Set<Class> thisMixinTypes;
-    public MethodInterceptor mixinInvoker;
+//    public MethodInterceptor mixinInvoker;
 
-    public MixinModel( Class declaredMixinClass )
+    public MixinModel( Class declaredMixinClass, Class instantiationClass )
     {
         injectedFieldsModel = new InjectedFieldsModel( declaredMixinClass );
         injectedMethodsModel = new InjectedMethodsModel( declaredMixinClass );
 
         this.mixinClass = declaredMixinClass;
-        this.instantiationClass = instantiationClass( declaredMixinClass );
+        this.instantiationClass = instantiationClass;
         constructorsModel = new ConstructorsModel( instantiationClass );
 
         List<ConcernDeclaration> concerns = new ArrayList<ConcernDeclaration>();
@@ -86,6 +77,7 @@ public final class MixinModel
 
         thisMixinTypes = buildThisMixinTypes();
 
+/*
         mixinInvoker = new MethodInterceptor()
         {
             public Object intercept( Object obj, Method method, Object[] args, MethodProxy proxy )
@@ -94,6 +86,7 @@ public final class MixinModel
                 return proxy.invokeSuper( obj, args );
             }
         };
+*/
     }
 
     public Class mixinClass()
@@ -140,12 +133,28 @@ public final class MixinModel
         try
         {
             mixin = constructorsModel.newInstance( injectionContext );
+
+            if( instantiationClass.getName().endsWith( "_Stub" ) )
+            {
+                try
+                {
+                    instantiationClass.getDeclaredField( "_instance" ).set( mixin, injectionContext.compositeInstance() );
+                } catch (IllegalAccessException e)
+                {
+                    e.printStackTrace();
+                } catch (NoSuchFieldException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+/*
             if( mixin instanceof Factory )
             {
                 ( (Factory) mixin ).setCallbacks( new Callback[]{
                         new ThisCompositeInvoker( compositeInstance ),
                         NoOp.INSTANCE} );
             }
+*/
         }
         catch (InvalidCompositeException e)
         {
@@ -158,6 +167,7 @@ public final class MixinModel
         {
             try
             {
+/*
                 if( mixin instanceof Factory )
                 {
                     Callback callback = ( (Factory) mixin ).getCallback( 0 );
@@ -171,6 +181,7 @@ public final class MixinModel
                         ( (Factory) mixin ).setCallback( 0, callback );
                     }
                 } else
+*/
                 {
                     ( (Initializable) mixin ).initialize();
                 }
@@ -219,7 +230,7 @@ public final class MixinModel
             return new GenericFragmentInvocationHandler();
         } else
         {
-            if( Factory.class.isAssignableFrom( constructorsModel.getFragmentClass() ) )
+            /*if( Factory.class.isAssignableFrom( constructorsModel.getFragmentClass() ) )
             {
                 Signature sig = ReflectUtils.getSignature( method );
                 MethodProxy methodProxy = MethodProxy.find( constructorsModel.getFragmentClass(), sig );
@@ -241,21 +252,21 @@ public final class MixinModel
                     }
                 }
                 return new TypedMixinInvocationHandler( methodProxy );
-            } else
+            } else */
             {
                 return new TypedModifierInvocationHandler( null );
             }
         }
     }
 
-    public MethodConcernsModel concernsFor( Method method, Class<? extends Composite> type )
+    public MethodConcernsModel concernsFor( Method method, Class<? extends Composite> type, AssemblyHelper helper )
     {
-        return concernsDeclaration.concernsFor( method, type );
+        return concernsDeclaration.concernsFor( method, type, helper );
     }
 
-    public MethodSideEffectsModel sideEffectsFor( Method method, Class<? extends Composite> type )
+    public MethodSideEffectsModel sideEffectsFor( Method method, Class<? extends Composite> type, AssemblyHelper helper )
     {
-        return sideEffectsDeclaration.sideEffectsFor( method, type );
+        return sideEffectsDeclaration.sideEffectsFor( method, type, helper );
     }
 
     @Override
@@ -278,7 +289,7 @@ public final class MixinModel
         );
 
         // Add all implemented interfaces
-        if( Factory.class.isAssignableFrom( instantiationClass ) )
+        if( Modifier.isAbstract( mixinClass.getModifiers() ) )
         {
             Set<Class> classes = Classes.interfacesOf( mixinClass );
             classes.remove( Activatable.class );
@@ -293,15 +304,17 @@ public final class MixinModel
     {
         if( mixin instanceof Activatable )
         {
+/*
             Callback callback = ( (Factory) mixin ).getCallback( 0 );
             ( (Factory) mixin ).setCallback( 0, mixinInvoker );
+*/
             try
             {
                 ( (Activatable) mixin ).activate();
             }
             finally
             {
-                ( (Factory) mixin ).setCallback( 0, callback );
+//                ( (Factory) mixin ).setCallback( 0, callback );
             }
         }
     }
@@ -311,15 +324,17 @@ public final class MixinModel
     {
         if( mixin instanceof Activatable )
         {
+/*
             Callback callback = ( (Factory) mixin ).getCallback( 0 );
             ( (Factory) mixin ).setCallback( 0, mixinInvoker );
+*/
             try
             {
                 ( (Activatable) mixin ).passivate();
             }
             finally
             {
-                ( (Factory) mixin ).setCallback( 0, callback );
+//                ( (Factory) mixin ).setCallback( 0, callback );
             }
         }
     }
@@ -329,6 +344,19 @@ public final class MixinModel
         Class instantiationClass = fragmentClass;
         if( !InvocationHandler.class.isAssignableFrom( fragmentClass ) )
         {
+            if( Modifier.isAbstract( fragmentClass.getModifiers() ) )
+            {
+                try
+                {
+                    FragmentClassLoader jClassLoader = new FragmentClassLoader( fragmentClass.getClassLoader() );
+                    instantiationClass = jClassLoader.loadClass( fragmentClass.getName() + "_Stub" );
+                } catch (ClassNotFoundException e)
+                {
+                    throw new ConstructionException( "Could not generate mixin subclass", e );
+                }
+            }
+/*
+            }
             instantiationClass = enhancedClasses.get( fragmentClass );
             if( instantiationClass == null )
             {
@@ -336,10 +364,11 @@ public final class MixinModel
                 instantiationClass = enhancer.createClass();
                 enhancedClasses.put( fragmentClass, instantiationClass );
             }
+*/
         }
         return instantiationClass;
     }
-
+/*
     private Enhancer createEnhancer( final Class fragmentClass )
     {
         Enhancer enhancer = new Enhancer();
@@ -396,5 +425,5 @@ public final class MixinModel
             }
         } );
         return enhancer;
-    }
+    }*/
 }

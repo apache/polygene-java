@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2010, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,29 +12,12 @@
  *
  */
 
-package org.qi4j.spi.composite;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.structure.Module;
+package org.qi4j.test;
 
 /**
  * JAVADOC
  */
-public interface CompositeInstance
-        extends InvocationHandler, CompositeInvoker
+public class Exception1
+        extends Exception
 {
-    <T> T proxy();
-
-    <T> T newProxy( Class<T> mixinType );
-
-    Module module();
-
-    <T> T metaInfo( Class<T> infoType );
-
-    Class<? extends Composite> type();
-
-    AbstractCompositeDescriptor descriptor();
 }

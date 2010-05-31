@@ -20,6 +20,7 @@ package org.qi4j.runtime.query.grammar.impl;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.entity.association.GenericAssociationInfo;
@@ -33,7 +34,7 @@ import org.qi4j.runtime.entity.EntityInstance;
  * Default {@link AssociationReference}.
  */
 public class AssociationReferenceImpl
-    implements AssociationReference
+        implements AssociationReference
 {
 
     /**
@@ -74,7 +75,7 @@ public class AssociationReferenceImpl
         declaringType = accessor.getDeclaringClass();
         Type returnType = accessor.getGenericReturnType();
         if( !Association.class.isAssignableFrom( Classes.getRawClass( returnType ) ) &&
-            !ManyAssociation.class.isAssignableFrom( Classes.getRawClass( returnType ) ) )
+                !ManyAssociation.class.isAssignableFrom( Classes.getRawClass( returnType ) ) )
         {
             throw new QueryExpressionException( "Unsupported association type:" + returnType );
         }
@@ -142,10 +143,10 @@ public class AssociationReferenceImpl
             try
             {
                 Association assoc = (Association) EntityInstance.getEntityInstance( (EntityComposite) actual )
-                    .invokeProxy( associationAccessor(), new Object[0] );
+                        .invokeComposite( associationAccessor(), new Object[0] );
                 return assoc.get();
             }
-            catch( Throwable e )
+            catch (Throwable e)
             {
                 return null;
             }

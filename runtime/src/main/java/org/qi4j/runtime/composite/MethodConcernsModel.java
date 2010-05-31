@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.model.Binder;
 import org.qi4j.runtime.model.Resolution;
@@ -35,20 +36,20 @@ import org.qi4j.spi.util.SerializationUtil;
  * JAVADOC
  */
 public final class MethodConcernsModel
-    implements Binder, MethodConcernsDescriptor, Serializable
+        implements Binder, MethodConcernsDescriptor, Serializable
 {
     private List<MethodConcernModel> concernsForMethod;
     private Method method;
 
     private void writeObject( ObjectOutputStream out )
-        throws IOException
+            throws IOException
     {
         try
         {
             SerializationUtil.writeMethod( out, method );
             out.writeObject( concernsForMethod );
         }
-        catch( NotSerializableException e )
+        catch (NotSerializableException e)
         {
             System.err.println( "NotSerializable in " + getClass() );
             throw e;
@@ -56,7 +57,7 @@ public final class MethodConcernsModel
     }
 
     private void readObject( ObjectInputStream in )
-        throws IOException, ClassNotFoundException
+            throws IOException, ClassNotFoundException
     {
         method = SerializationUtil.readMethod( in );
         concernsForMethod = (List<MethodConcernModel>) in.readObject();
@@ -68,11 +69,6 @@ public final class MethodConcernsModel
         this.concernsForMethod = concernsForMethod;
     }
 
-    public Method method()
-    {
-        return method;
-    }
-
     public boolean hasConcerns()
     {
         return !concernsForMethod.isEmpty();
@@ -81,9 +77,9 @@ public final class MethodConcernsModel
     // Binding
 
     public void bind( Resolution resolution )
-        throws BindingException
+            throws BindingException
     {
-        for( MethodConcernModel concernModel : concernsForMethod )
+        for (MethodConcernModel concernModel : concernsForMethod)
         {
             concernModel.bind( resolution );
         }
@@ -97,7 +93,7 @@ public final class MethodConcernsModel
     {
         ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
         Object nextConcern = mixinInvocationHandler;
-        for( int i = concernsForMethod.size() - 1; i >= 0; i-- )
+        for (int i = concernsForMethod.size() - 1; i >= 0; i--)
         {
             MethodConcernModel concernModel = concernsForMethod.get( i );
 
@@ -108,8 +104,7 @@ public final class MethodConcernsModel
         if( nextConcern instanceof InvocationHandler )
         {
             firstConcern = (InvocationHandler) nextConcern;
-        }
-        else
+        } else
         {
             firstConcern = new TypedModifierInvocationHandler( nextConcern );
         }
@@ -120,7 +115,7 @@ public final class MethodConcernsModel
     public void visitModel( ModelVisitor modelVisitor )
     {
         modelVisitor.visit( this );
-        for( MethodConcernModel methodConcernModel : concernsForMethod )
+        for (MethodConcernModel methodConcernModel : concernsForMethod)
         {
             methodConcernModel.visitModel( modelVisitor );
         }
@@ -131,18 +126,16 @@ public final class MethodConcernsModel
         if( mixinMethodConcernsModel == null )
         {
             return this;
-        }
-        else if( mixinMethodConcernsModel.concernsForMethod.size() > 0 )
+        } else if( mixinMethodConcernsModel.concernsForMethod.size() > 0 )
         {
             List<MethodConcernModel> combinedModels = new ArrayList<MethodConcernModel>( concernsForMethod.size() + mixinMethodConcernsModel
-                .concernsForMethod
-                .size() );
+                    .concernsForMethod
+                    .size() );
             combinedModels.addAll( concernsForMethod );
             combinedModels.removeAll( mixinMethodConcernsModel.concernsForMethod ); // Remove duplicates
             combinedModels.addAll( mixinMethodConcernsModel.concernsForMethod );
             return new MethodConcernsModel( method, combinedModels );
-        }
-        else
+        } else
         {
             return this;
         }

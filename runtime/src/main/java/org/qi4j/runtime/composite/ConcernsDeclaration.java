@@ -22,8 +22,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.concern.Concerns;
+import org.qi4j.runtime.bootstrap.AssemblyHelper;
 import org.qi4j.spi.util.MethodKeyMap;
 
 import static org.qi4j.api.util.Classes.*;
@@ -32,14 +34,14 @@ import static org.qi4j.api.util.Classes.*;
  * JAVADOC
  */
 public final class ConcernsDeclaration
-    implements Serializable
+        implements Serializable
 {
     public static void concernDeclarations( Class type, List<ConcernDeclaration> concerns )
     {
         // Find concern declarations
         Set<Type> types = ( type.isInterface() ? genericInterfacesOf( type ) : Collections.singleton( (Type) type ) );
 
-        for( Type aType : types )
+        for (Type aType : types)
         {
             addConcernDeclarations( aType, concerns );
         }
@@ -48,7 +50,7 @@ public final class ConcernsDeclaration
     public static void concernDeclarations( Iterable<Class<?>> concernclasses, List<ConcernDeclaration> concerns )
     {
         // Add concerns from assembly
-        for( Class<?> concern : concernclasses )
+        for (Class<?> concern : concernclasses)
         {
             concerns.add( new ConcernDeclaration( concern, null ) );
         }
@@ -63,7 +65,7 @@ public final class ConcernsDeclaration
             if( annotation != null )
             {
                 Class[] concernClasses = annotation.value();
-                for( Class concernClass : concernClasses )
+                for (Class concernClass : concernClasses)
                 {
                     concerns.add( new ConcernDeclaration( concernClass, clazz ) );
                 }
@@ -81,25 +83,24 @@ public final class ConcernsDeclaration
 
     // Model
 
-    public MethodConcernsModel concernsFor( Method method, Class<? extends Composite> type )
+    public MethodConcernsModel concernsFor( Method method, Class<? extends Composite> type, AssemblyHelper helper )
     {
         if( !methodConcernsModels.containsKey( method ) )
         {
             List<MethodConcernModel> concernsForMethod = new ArrayList<MethodConcernModel>();
-            for( ConcernDeclaration concern : concerns )
+            for (ConcernDeclaration concern : concerns)
             {
                 if( concern.appliesTo( method, type ) )
                 {
                     Class concernClass = concern.type();
-                    concernsForMethod.add( new MethodConcernModel( concernClass ) );
+                    concernsForMethod.add( helper.getConcernModel( concernClass ) );
                 }
             }
 
             MethodConcernsModel methodConcerns = new MethodConcernsModel( method, concernsForMethod );
             methodConcernsModels.put( method, methodConcerns );
             return methodConcerns;
-        }
-        else
+        } else
         {
             return methodConcernsModels.get( method );
         }

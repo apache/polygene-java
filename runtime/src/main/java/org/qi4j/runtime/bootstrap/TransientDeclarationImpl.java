@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -32,7 +33,7 @@ import org.qi4j.runtime.composite.TransientModel;
  * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addTransients(Class[])}.
  */
 public final class TransientDeclarationImpl
-    implements TransientDeclaration, Serializable
+        implements TransientDeclaration, Serializable
 {
     private Class<? extends TransientComposite>[] compositeTypes;
     private List<Class<?>> concerns = new ArrayList<Class<?>>();
@@ -42,7 +43,7 @@ public final class TransientDeclarationImpl
     private Visibility visibility = Visibility.module;
 
     public TransientDeclarationImpl( Class<? extends TransientComposite>... compositeTypes )
-        throws AssemblyException
+            throws AssemblyException
     {
         this.compositeTypes = compositeTypes;
     }
@@ -77,21 +78,21 @@ public final class TransientDeclarationImpl
         return this;
     }
 
-    void addComposites( List<TransientModel> aTransients, PropertyDeclarations propertyDeclarations )
+    void addComposites( List<TransientModel> aTransients, PropertyDeclarations propertyDeclarations, AssemblyHelper helper )
     {
-        for( Class<? extends TransientComposite> compositeType : compositeTypes )
+        for (Class<? extends TransientComposite> compositeType : compositeTypes)
         {
             try
             {
                 MetaInfo compositeMetaInfo = new MetaInfo( metaInfo ).withAnnotations( compositeType );
                 addAnnotationsMetaInfo( compositeType, compositeMetaInfo );
                 TransientModel transientModel = TransientModel.newModel( compositeType,
-                                                                         visibility,
-                                                                         compositeMetaInfo,
-                                                                         propertyDeclarations, concerns, sideEffects, mixins );
+                        visibility,
+                        compositeMetaInfo,
+                        propertyDeclarations, concerns, sideEffects, mixins, helper );
                 aTransients.add( transientModel );
             }
-            catch( Exception e )
+            catch (Exception e)
             {
                 throw new InvalidApplicationException( "Could not register " + compositeType.getName(), e );
             }
@@ -101,9 +102,9 @@ public final class TransientDeclarationImpl
     private void addAnnotationsMetaInfo( Class<? extends Composite> type, MetaInfo compositeMetaInfo )
     {
         Class[] declaredInterfaces = type.getInterfaces();
-        for( int i = declaredInterfaces.length - 1; i >= 0; i-- )
+        for (int i = declaredInterfaces.length - 1; i >= 0; i--)
         {
-            addAnnotationsMetaInfo( declaredInterfaces[ i ], compositeMetaInfo );
+            addAnnotationsMetaInfo( declaredInterfaces[i], compositeMetaInfo );
         }
         compositeMetaInfo.withAnnotations( type );
     }

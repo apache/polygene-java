@@ -14,21 +14,7 @@
 
 package org.qi4j.runtime.composite;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Proxy;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.WeakHashMap;
-
-import net.sf.cglib.proxy.Callback;
-import net.sf.cglib.proxy.CallbackFilter;
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.Factory;
-import net.sf.cglib.proxy.NoOp;
+import org.qi4j.api.common.ConstructionException;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
 import org.qi4j.runtime.injection.InjectedMethodsModel;
@@ -38,7 +24,16 @@ import org.qi4j.runtime.model.Resolution;
 import org.qi4j.runtime.structure.ModelVisitor;
 import org.qi4j.runtime.structure.ModuleInstance;
 
-import static org.qi4j.api.util.Classes.*;
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Proxy;
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
+
+import static org.qi4j.api.util.Classes.interfacesOf;
+import static org.qi4j.api.util.Classes.toClassArray;
 
 /**
  * JAVADOC
@@ -56,9 +51,9 @@ public abstract class AbstractModifierModel
 
     private Class[] nextInterfaces;
 
-    public AbstractModifierModel( Class declaredModifierClass )
+    public AbstractModifierModel( Class declaredModifierClass, Class instantiationClass )
     {
-        this.modifierClass = instantiationClass( declaredModifierClass );
+        this.modifierClass = instantiationClass;
         constructorsModel = new ConstructorsModel( modifierClass );
         injectedFieldsModel = new InjectedFieldsModel( declaredModifierClass );
         injectedMethodsModel = new InjectedMethodsModel( declaredModifierClass );
@@ -103,8 +98,21 @@ public abstract class AbstractModifierModel
 
         Object modifier = constructorsModel.newInstance( injectionContext );
 
+        try
+        {
+            if( modifier.getClass().getName().endsWith( "_Stub" ) )
+                modifier.getClass().getField( "_instance" ).set( modifier, proxyHandler );
+        } catch (IllegalAccessException e)
+        {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e)
+        {
+            e.printStackTrace();
+        }
+/*
         if( modifier instanceof Factory )
             ( (Factory) modifier ).setCallbacks( new Callback[]{NoOp.INSTANCE, proxyHandler} );
+*/
 
         injectedFieldsModel.inject( injectionContext, modifier );
         injectedMethodsModel.inject( injectionContext, modifier );
@@ -161,41 +169,5 @@ public abstract class AbstractModifierModel
     public int hashCode()
     {
         return modifierClass.hashCode();
-    }
-
-    private Class instantiationClass( Class fragmentClass )
-    {
-        Class instantiationClass = fragmentClass;
-        if( Modifier.isAbstract( fragmentClass.getModifiers() ) )
-        {
-            instantiationClass = enhancedClasses.get( fragmentClass );
-            if( instantiationClass == null )
-            {
-                Enhancer enhancer = createEnhancer( fragmentClass );
-                instantiationClass = enhancer.createClass();
-                enhancedClasses.put( fragmentClass, instantiationClass );
-            }
-        }
-        return instantiationClass;
-    }
-
-    private Enhancer createEnhancer( Class fragmentClass )
-    {
-        Enhancer enhancer = new Enhancer();
-        enhancer.setUseCache( false );
-        enhancer.setSuperclass( fragmentClass );
-        // TODO: make this configurable?
-        ClassLoader loader = new BridgeClassLoader( fragmentClass.getClassLoader() );
-//        ClassLoader loader = fragmentClass.getClassLoader();
-        enhancer.setClassLoader( loader );
-        enhancer.setCallbackTypes( new Class[]{NoOp.class, net.sf.cglib.proxy.InvocationHandler.class} );
-        enhancer.setCallbackFilter( new CallbackFilter()
-        {
-            public int accept( Method method )
-            {
-                return Modifier.isAbstract( method.getModifiers() ) ? 1 : 0;
-            }
-        } );
-        return enhancer;
     }
 }

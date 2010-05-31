@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -29,7 +30,7 @@ import org.qi4j.runtime.service.ServiceModel;
  * Declaration of a Service. Created by {@link org.qi4j.runtime.bootstrap.ModuleAssemblyImpl#addServices(Class[])}.
  */
 public final class ServiceDeclarationImpl
-    implements ServiceDeclaration, Serializable
+        implements ServiceDeclaration, Serializable
 {
     private Iterable<Class<? extends ServiceComposite>> serviceTypes;
     private List<Class<?>> concerns = new ArrayList<Class<?>>();
@@ -91,9 +92,9 @@ public final class ServiceDeclarationImpl
         return this;
     }
 
-    void addServices( List<ServiceModel> serviceModels )
+    void addServices( List<ServiceModel> serviceModels, AssemblyHelper helper )
     {
-        for( Class<? extends ServiceComposite> serviceType : serviceTypes )
+        for (Class<? extends ServiceComposite> serviceType : serviceTypes)
         {
             try
             {
@@ -104,17 +105,17 @@ public final class ServiceDeclarationImpl
                 }
 
                 ServiceModel serviceModel = ServiceModel.newModel( serviceType,
-                                                                   visibility,
-                                                                   metaInfo,
-                                                                   concerns,
-                                                                   sideEffects,
-                                                                   mixins,
-                                                                   moduleAssembly.name(),
-                                                                   id,
-                                                                   instantiateOnStartup );
+                        visibility,
+                        metaInfo,
+                        concerns,
+                        sideEffects,
+                        mixins,
+                        moduleAssembly.name(),
+                        id,
+                        instantiateOnStartup, helper );
                 serviceModels.add( serviceModel );
             }
-            catch( Exception e )
+            catch (Exception e)
             {
                 throw new InvalidApplicationException( "Could not register " + serviceType.getName(), e );
             }
@@ -130,7 +131,7 @@ public final class ServiceDeclarationImpl
         do
         {
             invalid = false;
-            for( ServiceModel serviceModel : serviceModels )
+            for (ServiceModel serviceModel : serviceModels)
             {
                 if( serviceModel.identity().equals( id ) )
                 {
@@ -141,7 +142,7 @@ public final class ServiceDeclarationImpl
                 }
             }
         }
-        while( invalid );
+        while (invalid);
         return id;
     }
 }

@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -34,7 +35,7 @@ import org.qi4j.runtime.entity.EntityModel;
  * Declaration of a Composite. Created by {@link org.qi4j.bootstrap.ModuleAssembly#addTransients(Class[])}.
  */
 public final class EntityDeclarationImpl
-    implements EntityDeclaration, Serializable
+        implements EntityDeclaration, Serializable
 {
     private Class<? extends EntityComposite>[] compositeTypes;
     private MetaInfo metaInfo = new MetaInfo();
@@ -81,10 +82,10 @@ public final class EntityDeclarationImpl
     void addEntities( List<EntityModel> entities,
                       PropertyDeclarations propertyDecs,
                       AssociationDeclarations associationDecs,
-                      ManyAssociationDeclarations manyAssociationDecs
-    )
+                      ManyAssociationDeclarations manyAssociationDecs,
+                      AssemblyHelper helper )
     {
-        for( Class<? extends EntityComposite> compositeType : compositeTypes )
+        for (Class<? extends EntityComposite> compositeType : compositeTypes)
         {
             try
             {
@@ -94,17 +95,17 @@ public final class EntityDeclarationImpl
                 ConcernsDeclaration concernsDeclaration = new ConcernsDeclaration( concernDeclarations );
 
                 EntityModel compositeModel = EntityModel.newModel( compositeType,
-                                                                   visibility,
-                                                                   new MetaInfo( metaInfo ).withAnnotations( compositeType ),
-                                                                   propertyDecs,
-                                                                   associationDecs,
-                                                                   manyAssociationDecs,
-                                                                   concernsDeclaration,
-                                                                   sideEffects,
-                                                                   mixins );
+                        visibility,
+                        new MetaInfo( metaInfo ).withAnnotations( compositeType ),
+                        propertyDecs,
+                        associationDecs,
+                        manyAssociationDecs,
+                        concernsDeclaration,
+                        sideEffects,
+                        mixins, helper );
                 entities.add( compositeModel );
             }
-            catch( Exception e )
+            catch (Exception e)
             {
                 throw new InvalidApplicationException( "Could not register " + compositeType.getName(), e );
             }

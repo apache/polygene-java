@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2010, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,29 +12,28 @@
  *
  */
 
-package org.qi4j.spi.composite;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.structure.Module;
+package org.qi4j.test;
 
 /**
  * JAVADOC
  */
-public interface CompositeInstance
-        extends InvocationHandler, CompositeInvoker
+public abstract class SomeMixin
+        implements Some, Other
 {
-    <T> T proxy();
+    protected SomeMixin()
+    {
+    }
 
-    <T> T newProxy( Class<T> mixinType );
+    protected SomeMixin( String foo )
+    {
 
-    Module module();
+    }
 
-    <T> T metaInfo( Class<T> infoType );
-
-    Class<? extends Composite> type();
-
-    AbstractCompositeDescriptor descriptor();
+    public String some() throws Exception2, Exception1
+    {
+        multiEx( "foo" );
+        unwrapResult();
+        bar( 1.0, true, 1.0F, 'x', 0, 0L, (short) 0, (byte) 3, new Double( 4F ), new Object[0], new int[0] );
+        return "Hello " + other() + foo( "Test", 0 );
+    }
 }
