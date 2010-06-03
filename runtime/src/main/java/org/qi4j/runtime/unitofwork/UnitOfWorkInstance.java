@@ -52,7 +52,19 @@ import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.*;
 
 public final class UnitOfWorkInstance
 {
-    public static final ThreadLocal<Stack<UnitOfWorkInstance>> current;
+    private static final ThreadLocal<Stack<UnitOfWorkInstance>> current = new ThreadLocal<Stack<UnitOfWorkInstance>>();
+
+    public static Stack<UnitOfWorkInstance> getCurrent()
+    {
+        Stack<UnitOfWorkInstance> stack = current.get();
+        if( stack == null )
+        {
+            stack = new Stack<UnitOfWorkInstance>();
+            current.set( stack );
+        }
+
+        return stack;
+    }
 
     final HashMap<EntityReference, EntityState> stateCache;
     final HashMap<InstanceKey, EntityInstance> instanceCache;
@@ -71,24 +83,13 @@ public final class UnitOfWorkInstance
 
     private List<UnitOfWorkCallback> callbacks;
 
-    static
-    {
-        current = new ThreadLocal<Stack<UnitOfWorkInstance>>()
-        {
-            protected Stack<UnitOfWorkInstance> initialValue()
-            {
-                return new Stack<UnitOfWorkInstance>();
-            }
-        };
-    }
-
     public UnitOfWorkInstance( Usecase usecase )
     {
         this.open = true;
         stateCache = new HashMap<EntityReference, EntityState>();
         instanceCache = new HashMap<InstanceKey, EntityInstance>();
         storeUnitOfWork = new HashMap<EntityStore, EntityStoreUnitOfWork>();
-        current.get().push( this );
+        getCurrent().push( this );
         paused = false;
         this.usecase = usecase;
     }
@@ -230,7 +231,7 @@ public final class UnitOfWorkInstance
         if( !paused )
         {
             paused = true;
-            current.get().pop();
+            getCurrent().pop();
         } else
         {
             throw new UnitOfWorkException( "Unit of work is not active" );
@@ -242,7 +243,7 @@ public final class UnitOfWorkInstance
         if( paused )
         {
             paused = false;
-            current.get().push( this );
+            getCurrent().push( this );
         } else
         {
             throw new UnitOfWorkException( "Unit of work has not been paused" );
@@ -305,7 +306,7 @@ public final class UnitOfWorkInstance
 
         if( !isPaused() )
         {
-            current.get().pop();
+            getCurrent().pop();
         }
         open = false;
 
