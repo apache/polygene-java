@@ -15,12 +15,17 @@
 package org.qi4j.runtime.composite;
 
 import org.objectweb.asm.*;
+import org.qi4j.api.entity.Lifecycle;
+import org.qi4j.api.mixin.Initializable;
+import org.qi4j.api.service.Activatable;
+import org.qi4j.api.util.Classes;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static org.objectweb.asm.Opcodes.*;
 import static org.objectweb.asm.Type.getInternalName;
@@ -102,7 +107,7 @@ public class FragmentClassLoader
             int idx = 1;
             for (Method method : baseClass.getMethods())
             {
-                if( Modifier.isAbstract( method.getModifiers() ) )
+                if( isOverloaded( method, baseClass ) )
                 {
                     fv = cw.visitField( ACC_PRIVATE + ACC_STATIC, "m" + idx++, "Ljava/lang/reflect/Method;", null, null );
                     fv.visitEnd();
@@ -143,7 +148,7 @@ public class FragmentClassLoader
             List<Label> exceptionLabels = new ArrayList<Label>();
             for (Method method : methods)
             {
-                if( Modifier.isAbstract( method.getModifiers() ) )
+                if( isOverloaded( method, baseClass ) )
                 {
                     idx++;
                     String methodName = method.getName();
@@ -254,6 +259,37 @@ public class FragmentClassLoader
                         mv.visitMaxs( 0, 0 );
                         mv.visitEnd();
                     }
+
+                    if( !Modifier.isAbstract( method.getModifiers() ) )
+                    {
+                        // Add method with _ as prefix
+                        mv = cw.visitMethod( ACC_PUBLIC, "_" + method.getName(), desc, null, null );
+                        Label l1 = new Label();
+                        mv.visitCode();
+                        mv.visitVarInsn( ALOAD, 0 );
+
+                        // Parameters
+                        int stackIdx = 1;
+                        for (Class<?> aClass : method.getParameterTypes())
+                        {
+                            stackIdx = loadParameter( mv, aClass, stackIdx ) + 1;
+                        }
+
+                        // Call method
+                        mv.visitMethodInsn( INVOKESPECIAL, baseClassSlash, method.getName(), desc );
+
+                        // Return value
+                        if( !method.getReturnType().equals( Void.TYPE ) )
+                        {
+                            returnResult( mv, method.getReturnType(), l1 );
+                        } else
+                        {
+                            mv.visitInsn( RETURN );
+                        }
+
+                        mv.visitMaxs( 1, 1 );
+                        mv.visitEnd();
+                    }
                 }
             }
 
@@ -271,11 +307,25 @@ public class FragmentClassLoader
                 int midx = 0;
                 for (Method method : methods)
                 {
-                    if( Modifier.isAbstract( method.getModifiers() ) )
+                    if( isOverloaded( method, baseClass ) )
                     {
+                        Class methodClass;
+                        if( Modifier.isAbstract( method.getModifiers() ) )
+                            methodClass = method.getDeclaringClass();
+                        else
+                        {
+                            try
+                            {
+                                methodClass = getInterfaceMethodDeclaration( method, baseClass ); // Overridden method lookup
+                            } catch (NoSuchMethodException e)
+                            {
+                                throw new ClassNotFoundException( name, e );
+                            }
+                        }
+
                         midx++;
 
-                        mv.visitLdcInsn( Type.getType( method.getDeclaringClass() ) );
+                        mv.visitLdcInsn( Type.getType( methodClass ) );
                         mv.visitLdcInsn( method.getName() );
                         insn( mv, method.getParameterTypes().length );
                         mv.visitTypeInsn( ANEWARRAY, "java/lang/Class" );
@@ -313,6 +363,69 @@ public class FragmentClassLoader
         cw.visitEnd();
 
         return cw.toByteArray();
+    }
+
+    private static boolean isOverloaded( Method method, Class baseClass )
+    {
+        if( Modifier.isAbstract( method.getModifiers() ) )
+            return true; // Implement all abstract methods
+
+        if( isInterfaceMethod( method, baseClass ) )
+        {
+            if( isDeclaredIn( method, Activatable.class ) || isDeclaredIn( method, Initializable.class ) || isDeclaredIn( method, Lifecycle.class ) )
+                return false; // Skip methods in Qi4j-internal interfaces
+            else
+                return true;
+        } else
+        {
+            return false;
+        }
+    }
+
+    private static boolean isDeclaredIn( Method method, Class clazz )
+    {
+        try
+        {
+            clazz.getMethod( method.getName(), method.getParameterTypes() );
+            return true;
+        } catch (NoSuchMethodException e)
+        {
+            return false;
+        }
+    }
+
+    private static Class getInterfaceMethodDeclaration( Method method, Class clazz ) throws NoSuchMethodException
+    {
+        Set<Class> interfaces = Classes.interfacesOf( clazz );
+        for (Class anInterface : interfaces)
+        {
+            try
+            {
+                anInterface.getMethod( method.getName(), method.getParameterTypes() );
+                return anInterface;
+            } catch (NoSuchMethodException e)
+            {
+                // Try next
+            }
+        }
+
+        throw new NoSuchMethodException( method.getName() );
+    }
+
+    private static boolean isInterfaceMethod( Method method, Class baseClass )
+    {
+        for (Class aClass : baseClass.getInterfaces())
+        {
+            try
+            {
+                aClass.getMethod( method.getName(), method.getParameterTypes() );
+                return true;
+            } catch (NoSuchMethodException e)
+            {
+                // Ignore
+            }
+        }
+        return false;
     }
 
     private static void type( MethodVisitor mv, Class<?> aClass )
@@ -445,6 +558,75 @@ public class FragmentClassLoader
         {
             mv.visitTypeInsn( CHECKCAST, getInternalName( aClass ) );
             mv.visitLabel( label );
+            mv.visitInsn( ARETURN );
+        }
+    }
+
+    private static int loadParameter( MethodVisitor mv, Class<?> aClass, int idx )
+    {
+        if( aClass.equals( Integer.TYPE ) )
+        {
+            mv.visitVarInsn( ILOAD, idx );
+        } else if( aClass.equals( Long.TYPE ) )
+        {
+            mv.visitVarInsn( LLOAD, idx );
+            idx++; // Extra jump
+        } else if( aClass.equals( Short.TYPE ) )
+        {
+            mv.visitVarInsn( ILOAD, idx );
+        } else if( aClass.equals( Byte.TYPE ) )
+        {
+            mv.visitVarInsn( ILOAD, idx );
+        } else if( aClass.equals( Double.TYPE ) )
+        {
+            mv.visitVarInsn( DLOAD, idx );
+            idx++; // Extra jump
+        } else if( aClass.equals( Float.TYPE ) )
+        {
+            mv.visitVarInsn( FLOAD, idx );
+        } else if( aClass.equals( Boolean.TYPE ) )
+        {
+            mv.visitVarInsn( ILOAD, idx );
+        } else if( aClass.equals( Character.TYPE ) )
+        {
+            mv.visitVarInsn( ILOAD, idx );
+        } else
+        {
+            mv.visitVarInsn( ALOAD, idx );
+        }
+
+        return idx;
+    }
+
+    private static void returnResult( MethodVisitor mv, Class<?> aClass, Label label )
+    {
+        if( aClass.equals( Integer.TYPE ) )
+        {
+            mv.visitInsn( IRETURN );
+        } else if( aClass.equals( Long.TYPE ) )
+        {
+            mv.visitInsn( LRETURN );
+        } else if( aClass.equals( Short.TYPE ) )
+        {
+            mv.visitInsn( IRETURN );
+        } else if( aClass.equals( Byte.TYPE ) )
+        {
+            mv.visitInsn( IRETURN );
+        } else if( aClass.equals( Double.TYPE ) )
+        {
+            mv.visitInsn( DRETURN );
+        } else if( aClass.equals( Float.TYPE ) )
+        {
+            mv.visitInsn( FRETURN );
+        } else if( aClass.equals( Boolean.TYPE ) )
+        {
+            mv.visitInsn( IRETURN );
+        } else if( aClass.equals( Character.TYPE ) )
+        {
+            mv.visitInsn( IRETURN );
+        } else
+        {
+            mv.visitTypeInsn( CHECKCAST, getInternalName( aClass ) );
             mv.visitInsn( ARETURN );
         }
     }

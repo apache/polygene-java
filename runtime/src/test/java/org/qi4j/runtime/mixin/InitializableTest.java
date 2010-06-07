@@ -31,10 +31,10 @@ import static org.junit.Assert.*;
  * Test of Initializable interface
  */
 public class InitializableTest
-    extends AbstractQi4jTest
+        extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+            throws AssemblyException
     {
         module.addObjects( TestObject.class );
         module.addTransients( TestComposite.class );
@@ -54,20 +54,20 @@ public class InitializableTest
         assertThat( "object has been initialized", instance.ok(), equalTo( true ) );
     }
 
-    @Mixins( TestMixin.class )
-    interface TestComposite
-        extends TransientComposite
+    @Mixins(TestMixin.class)
+    public interface TestComposite
+            extends TransientComposite
     {
         boolean ok();
     }
 
     public abstract static class TestMixin
-        implements TestComposite, Initializable
+            implements TestComposite, Initializable
     {
         boolean ok = false;
 
         public void initialize()
-            throws InitializationException
+                throws InitializationException
         {
             ok = true;
         }
@@ -79,12 +79,12 @@ public class InitializableTest
     }
 
     public static class TestObject
-        implements Initializable
+            implements Initializable
     {
         boolean ok = false;
 
         public void initialize()
-            throws InitializationException
+                throws InitializationException
         {
             ok = true;
         }

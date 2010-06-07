@@ -18,8 +18,9 @@ package org.qi4j.test;
  * JAVADOC
  */
 public abstract class SomeMixin
-        implements Some, Other
+        implements Some, Other, World
 {
+
     protected SomeMixin()
     {
     }
@@ -34,6 +35,17 @@ public abstract class SomeMixin
         multiEx( "foo" );
         unwrapResult();
         bar( 1.0, true, 1.0F, 'x', 0, 0L, (short) 0, (byte) 3, new Double( 4F ), new Object[0], new int[0] );
+
         return "Hello " + other() + foo( "Test", 0 );
+    }
+
+    public String testConcern()
+    {
+        return someMethod( "Hello", 0, 0 );
+    }
+
+    public String someMethod( String foo, double x, int y )
+    {
+        return foo;
     }
 }

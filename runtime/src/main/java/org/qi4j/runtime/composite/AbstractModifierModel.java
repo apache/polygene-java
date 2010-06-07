@@ -26,6 +26,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.util.Collections;
@@ -41,8 +42,6 @@ import static org.qi4j.api.util.Classes.toClassArray;
 public abstract class AbstractModifierModel
         implements Binder, Serializable
 {
-    private final static Map<Class, Class> enhancedClasses = Collections.synchronizedMap( new WeakHashMap<Class, Class>() );
-
     private final Class modifierClass;
 
     private ConstructorsModel constructorsModel;
@@ -89,10 +88,10 @@ public abstract class AbstractModifierModel
 
     // Context
 
-    public Object newInstance( ModuleInstance moduleInstance,
-                               Object next,
-                               ProxyReferenceInvocationHandler proxyHandler
-    )
+    public InvocationHandler newInstance( ModuleInstance moduleInstance,
+                                          InvocationHandler next,
+                                          ProxyReferenceInvocationHandler proxyHandler,
+                                          Method method )
     {
         InjectionContext injectionContext = new InjectionContext( moduleInstance, wrapNext( next ), proxyHandler );
 
@@ -109,37 +108,37 @@ public abstract class AbstractModifierModel
         {
             e.printStackTrace();
         }
-/*
-        if( modifier instanceof Factory )
-            ( (Factory) modifier ).setCallbacks( new Callback[]{NoOp.INSTANCE, proxyHandler} );
-*/
 
         injectedFieldsModel.inject( injectionContext, modifier );
         injectedMethodsModel.inject( injectionContext, modifier );
-        return modifier;
+
+        if( isGeneric() )
+        {
+            return (InvocationHandler) modifier;
+        } else
+        {
+            try
+            {
+                Method invocationMethod = modifierClass.getMethod( "_" + method.getName(), method.getParameterTypes() );
+                TypedModifierInvocationHandler handler = new TypedModifierInvocationHandler();
+                handler.setFragment( modifier );
+                handler.setMethod( invocationMethod );
+                return handler;
+            } catch (NoSuchMethodException e)
+            {
+                throw new ConstructionException( "Could not find modifier method", e );
+            }
+        }
     }
 
-    private Object wrapNext( Object next )
+    private Object wrapNext( InvocationHandler next )
     {
         if( isGeneric() )
         {
-            if( next instanceof InvocationHandler )
-            {
-                return next;
-            } else
-            {
-                return new TypedModifierInvocationHandler( next );
-            }
+            return next;
         } else
         {
-            if( next instanceof InvocationHandler )
-            {
-                Object proxy = Proxy.newProxyInstance( modifierClass.getClassLoader(), nextInterfaces, (InvocationHandler) next );
-                return proxy;
-            } else
-            {
-                return next;
-            }
+            return Proxy.newProxyInstance( modifierClass.getClassLoader(), nextInterfaces, next );
         }
     }
 

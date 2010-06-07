@@ -92,24 +92,15 @@ public final class MethodConcernsModel
     )
     {
         ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
-        Object nextConcern = mixinInvocationHandler;
+        InvocationHandler nextConcern = mixinInvocationHandler;
         for (int i = concernsForMethod.size() - 1; i >= 0; i--)
         {
             MethodConcernModel concernModel = concernsForMethod.get( i );
 
-            nextConcern = concernModel.newInstance( moduleInstance, nextConcern, proxyHandler );
+            nextConcern = concernModel.newInstance( moduleInstance, nextConcern, proxyHandler, method );
         }
 
-        InvocationHandler firstConcern;
-        if( nextConcern instanceof InvocationHandler )
-        {
-            firstConcern = (InvocationHandler) nextConcern;
-        } else
-        {
-            firstConcern = new TypedModifierInvocationHandler( nextConcern );
-        }
-
-        return new MethodConcernsInstance( firstConcern, mixinInvocationHandler, proxyHandler );
+        return new MethodConcernsInstance( nextConcern, mixinInvocationHandler, proxyHandler );
     }
 
     public void visitModel( ModelVisitor modelVisitor )

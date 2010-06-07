@@ -38,8 +38,8 @@ public class ASMTest
     }
 
     @Test
-    @Ignore
-    public void createClass()
+//    @Ignore
+public void createClass()
             throws Exception
     {
         byte[] asm = FragmentClassLoader.generateClass();
@@ -52,11 +52,13 @@ public class ASMTest
                 0 );
 
 
-        Assert.assertArrayEquals( asm, cl );
+        //       Assert.assertArrayEquals( asm, cl );
 
         FragmentClassLoader classLoader = new FragmentClassLoader( SomeMixin.class.getClassLoader() );
 
         Class clazz = classLoader.loadClass( SomeMixin.class.getName() + "_Stub" );
+
+//        Class clazz = SomeMixin_Stubx.class;
 
         final Other other = new Other()
         {
@@ -84,19 +86,29 @@ public class ASMTest
             }
         };
 
-        Some instance = (Some) clazz.getConstructor().newInstance();
+        final Some instance = (Some) clazz.getConstructor().newInstance();
 
         CompositeInvoker invoker = new CompositeInvoker()
         {
             public Object invokeComposite( Method method, Object[] args ) throws Throwable
             {
-                return method.invoke( other, args );
+                if( method.getDeclaringClass().isInstance( instance ) )
+                {
+                    Method fakeMethod = instance.getClass().getMethod( "_" + method.getName(), method.getParameterTypes() );
+
+                    return fakeMethod.invoke( instance, args );
+                } else
+                {
+                    return method.invoke( other, args );
+                }
             }
         };
 
         clazz.getField( "_instance" ).set( instance, invoker );
 
-        System.out.println( instance.some() );
+//        System.out.println( instance.some() );
+
+        System.out.println( instance.testConcern() );
     }
 
 

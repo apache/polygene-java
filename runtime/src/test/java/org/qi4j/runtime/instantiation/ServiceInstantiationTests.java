@@ -32,11 +32,11 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.AbstractQi4jTest;
 
 public class ServiceInstantiationTests
-    extends AbstractQi4jTest
+        extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+            throws AssemblyException
     {
         module.addEntities( MyConfigurationEntity.class );
         module.addServices( MyService.class );
@@ -45,35 +45,35 @@ public class ServiceInstantiationTests
 
     @Test
     public void whenCreatingServiceCompositeGivenAServiceCompositeThenSucceed()
-        throws Exception
+            throws Exception
     {
         ServiceReference<My> service = moduleInstance.serviceFinder().findService( My.class );
         Assert.assertEquals( "HabbaZout", service.get().doSomething() );
     }
 
-    @Mixins( MyMixin.class )
+    @Mixins(MyMixin.class)
     private interface MyService
-        extends My, ServiceComposite
+            extends My, ServiceComposite
     {
     }
 
-    private interface My
+    public interface My
     {
         String doSomething();
     }
 
-    private interface MyConfigurationEntity
-        extends MyConfiguration, ConfigurationComposite
+    public interface MyConfigurationEntity
+            extends MyConfiguration, ConfigurationComposite
     {
     }
 
-    private interface MyConfiguration
+    public interface MyConfiguration
     {
         Property<String> data();
     }
 
     public static class MyMixin
-        implements My
+            implements My
     {
         @This
         Configuration<MyConfiguration> config;

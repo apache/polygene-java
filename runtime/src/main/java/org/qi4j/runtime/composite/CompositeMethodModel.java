@@ -47,6 +47,7 @@ public final class CompositeMethodModel
 {
     // Model
     private Method method;
+    private Method invocationMethod; // This will be the _ prefixed method on typed mixins
     private MethodConstraintsModel methodConstraints;
     private MethodConcernsModel methodConcerns;
     private MethodSideEffectsModel methodSideEffects;
@@ -188,6 +189,26 @@ public final class CompositeMethodModel
             MethodSideEffectsInstance sideEffectsInstance = methodSideEffects.newInstance( moduleInstance, invoker );
             invoker = sideEffectsInstance;
         }
+
+        if( invocationMethod == null )
+        {
+            MixinModel model = mixins.mixinFor( method );
+            if( !InvocationHandler.class.isAssignableFrom( model.mixinClass() ) )
+            {
+                try
+                {
+                    invocationMethod = model.instantiationClass().getMethod( "_" + method.getName(), method.getParameterTypes() );
+                } catch (NoSuchMethodException e)
+                {
+                    throw new ConstructionException( "Could not find the subclass method", e );
+                }
+            } else
+            {
+                invocationMethod = method;
+            }
+        }
+
+        mixinInvocationHandler.setMethod( invocationMethod );
 
         return new CompositeMethodInstance( invoker, mixinInvocationHandler, method, mixins.methodIndex.get( method ) );
     }

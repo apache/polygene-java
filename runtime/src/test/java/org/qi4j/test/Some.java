@@ -20,4 +20,8 @@ package org.qi4j.test;
 public interface Some
 {
     String some() throws Exception2, Exception1;
+
+    String testConcern();
+
+
 }

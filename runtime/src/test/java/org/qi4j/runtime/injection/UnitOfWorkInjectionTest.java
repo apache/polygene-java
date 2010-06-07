@@ -75,7 +75,7 @@ public class UnitOfWorkInjectionTest
         }
     }
 
-    interface Trial
+    public interface Trial
     {
         void doSomething();
 
@@ -83,7 +83,7 @@ public class UnitOfWorkInjectionTest
     }
 
     @Mixins(TrialMixin.class)
-    interface TrialEntity
+    public interface TrialEntity
             extends Trial, EntityComposite
     {
     }

@@ -96,14 +96,8 @@ public final class MethodSideEffectsModel
         List<InvocationHandler> sideEffects = new ArrayList<InvocationHandler>( sideEffectModels.size() );
         for (MethodSideEffectModel sideEffectModel : sideEffectModels)
         {
-            Object sideEffect = sideEffectModel.newInstance( moduleInstance, result, proxyHandler );
-            if( sideEffectModel.isGeneric() )
-            {
-                sideEffects.add( (InvocationHandler) sideEffect );
-            } else
-            {
-                sideEffects.add( new TypedModifierInvocationHandler( sideEffect ) );
-            }
+            InvocationHandler sideEffect = sideEffectModel.newInstance( moduleInstance, result, proxyHandler, method );
+            sideEffects.add( sideEffect );
         }
         return new MethodSideEffectsInstance( sideEffects, result, proxyHandler, invoker );
     }

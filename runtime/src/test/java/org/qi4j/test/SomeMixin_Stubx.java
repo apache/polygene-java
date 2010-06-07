@@ -35,6 +35,9 @@ public class SomeMixin_Stubx
     private static Method m4;
     private static Method m5;
 
+    private static Method m6;
+    private static Method m7;
+
     static
     {
         try
@@ -56,7 +59,10 @@ public class SomeMixin_Stubx
             m4 = Other.class.getMethod( "multiEx", String.class );
             m5 = Other.class.getMethod( "unwrapResult" );
 
-        } catch (NoSuchMethodException e)
+            m6 = Some.class.getMethod( "testConcern" );
+            m7 = World.class.getMethod( "someMethod", String.class, Double.TYPE, Integer.TYPE );
+
+        } catch (Throwable e)
         {
             e.printStackTrace();
         }
@@ -135,5 +141,38 @@ public class SomeMixin_Stubx
         {
             throw new UndeclaredThrowableException( throwable );
         }
+    }
+
+    public String testConcern()
+    {
+        try
+        {
+            return (String) _instance.invokeComposite( m6, null );
+        } catch (Throwable throwable)
+        {
+            throw new UndeclaredThrowableException( throwable );
+        }
+    }
+
+    public String _testConcern()
+    {
+        return super.testConcern();
+    }
+
+    @Override
+    public String someMethod( String foo, double x, int y )
+    {
+        try
+        {
+            return (String) _instance.invokeComposite( m7, new Object[]{foo, x, y} );
+        } catch (Throwable throwable)
+        {
+            throw new UndeclaredThrowableException( throwable );
+        }
+    }
+
+    public String _someMethod( String foo, double x, int y )
+    {
+        return super.someMethod( foo, x, y );
     }
 }

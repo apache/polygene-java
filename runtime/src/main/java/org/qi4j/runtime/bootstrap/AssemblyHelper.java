@@ -94,23 +94,25 @@ public class AssemblyHelper
         Class instantiationClass = fragmentClass;
         if( !InvocationHandler.class.isAssignableFrom( fragmentClass ) )
         {
+/*
             if( Modifier.isAbstract( fragmentClass.getModifiers() ) )
             {
-                instantiationClass = instantiationClasses.get( fragmentClass );
+*/
+            instantiationClass = instantiationClasses.get( fragmentClass );
 
-                if( instantiationClass == null )
+            if( instantiationClass == null )
+            {
+                try
                 {
-                    try
-                    {
-                        ClassLoader jClassLoader = getModifierClassLoader( fragmentClass.getClassLoader() );
-                        instantiationClass = jClassLoader.loadClass( fragmentClass.getName().replace( '$', '_' ) + "_Stub" );
-                        instantiationClasses.put( fragmentClass, instantiationClass );
-                    } catch (ClassNotFoundException e)
-                    {
-                        throw new ConstructionException( "Could not generate mixin subclass", e );
-                    }
+                    ClassLoader jClassLoader = getModifierClassLoader( fragmentClass.getClassLoader() );
+                    instantiationClass = jClassLoader.loadClass( fragmentClass.getName().replace( '$', '_' ) + "_Stub" );
+                    instantiationClasses.put( fragmentClass, instantiationClass );
+                } catch (ClassNotFoundException e)
+                {
+                    throw new ConstructionException( "Could not generate mixin subclass", e );
                 }
             }
+//            }
         }
         return instantiationClass;
     }

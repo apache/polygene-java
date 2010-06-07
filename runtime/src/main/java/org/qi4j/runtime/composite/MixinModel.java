@@ -94,6 +94,11 @@ public final class MixinModel
         return mixinClass;
     }
 
+    public Class instantiationClass()
+    {
+        return instantiationClass;
+    }
+
     public boolean isGeneric()
     {
         return InvocationHandler.class.isAssignableFrom( mixinClass );
@@ -254,7 +259,7 @@ public final class MixinModel
                 return new TypedMixinInvocationHandler( methodProxy );
             } else */
             {
-                return new TypedModifierInvocationHandler( null );
+                return new TypedModifierInvocationHandler();
             }
         }
     }

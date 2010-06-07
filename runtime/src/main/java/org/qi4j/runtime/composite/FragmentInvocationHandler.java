@@ -30,19 +30,16 @@ abstract class FragmentInvocationHandler
     }
 
     protected Object fragment;
-
-    FragmentInvocationHandler()
-    {
-    }
-
-    FragmentInvocationHandler( Object fragment )
-    {
-        this.fragment = fragment;
-    }
+    protected Method method;
 
     void setFragment( Object fragment )
     {
         this.fragment = fragment;
+    }
+
+    public void setMethod( Method method )
+    {
+        this.method = method;
     }
 
     protected Throwable cleanStackTrace( Throwable throwable, Object proxy, Method method )
@@ -110,7 +107,8 @@ abstract class FragmentInvocationHandler
         {
             return !isJdkInternals( className );
         }
-        return !( className.startsWith( "org.qi4j.runtime" ) ||
+        return !( className.endsWith( "_Stub" ) ||
+                className.startsWith( "org.qi4j.runtime" ) ||
                 isJdkInternals( className ) );
     }
 
