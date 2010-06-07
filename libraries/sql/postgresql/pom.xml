@@ -27,7 +27,7 @@
   	<dependency>
   		<groupId>org.qi4j.library</groupId>
   		<artifactId>qi4j-lib-sql-api</artifactId>
-  		<version>1.1-SNAPSHOT</version>
+  		<version>1.2-SNAPSHOT</version>
   		<scope>compile</scope>
   	</dependency>
   	<dependency>
