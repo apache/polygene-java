@@ -519,7 +519,7 @@ public class FragmentClassLoader
             mv.visitTypeInsn( CHECKCAST, "java/lang/Long" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Long", "longValue", "()J" );
             mv.visitLabel( label );
-            mv.visitInsn( IRETURN );
+            mv.visitInsn( LRETURN );
         } else if( aClass.equals( Short.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Short" );
@@ -537,13 +537,13 @@ public class FragmentClassLoader
             mv.visitTypeInsn( CHECKCAST, "java/lang/Double" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Double", "doubleValue", "()D" );
             mv.visitLabel( label );
-            mv.visitInsn( IRETURN );
+            mv.visitInsn( DRETURN );
         } else if( aClass.equals( Float.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Float" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Float", "floatValue", "()F" );
             mv.visitLabel( label );
-            mv.visitInsn( IRETURN );
+            mv.visitInsn( FRETURN );
         } else if( aClass.equals( Boolean.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Boolean" );

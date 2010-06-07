@@ -82,7 +82,7 @@ public void createClass()
             {
             }
 
-            public int unwrapResult()
+            public long unwrapResult()
             {
                 return 0;
             }

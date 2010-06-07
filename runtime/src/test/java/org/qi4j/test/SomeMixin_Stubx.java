@@ -132,7 +132,7 @@ public class SomeMixin_Stubx
         }
     }
 
-    public int unwrapResult()
+    public long unwrapResult()
     {
         try
         {

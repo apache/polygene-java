@@ -29,5 +29,5 @@ public interface Other
     public void multiEx( String bar )
             throws Exception1, Exception2;
 
-    public int unwrapResult();
+    public long unwrapResult();
 }
