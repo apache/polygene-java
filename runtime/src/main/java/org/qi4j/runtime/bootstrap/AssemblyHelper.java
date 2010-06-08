@@ -32,61 +32,21 @@ import java.util.Map;
 public class AssemblyHelper
 {
     Map<Class, Class> instantiationClasses = new HashMap<Class, Class>();
-    Map<Class, MixinModel> mixinModels = new HashMap<Class, MixinModel>();
-    Map<Class, MethodConcernModel> concernModels = new HashMap<Class, MethodConcernModel>();
-    Map<Class, MethodSideEffectModel> sideEffectModels = new HashMap<Class, MethodSideEffectModel>();
     Map<ClassLoader, ClassLoader> modifierClassLoaders = new HashMap<ClassLoader, ClassLoader>();
-
-    InvocationCheck check = new InvocationCheck();
 
     public MixinModel getMixinModel( Class mixinClass )
     {
-        MixinModel model = mixinModels.get( mixinClass );
-        if( model == null )
-        {
-            model = new MixinModel( mixinClass, instantiationClass( mixinClass ) );
-            mixinModels.put( mixinClass, model );
-        } else
-        {
-            // Reused
-//            System.out.println( "Reused " + mixinClass );
-        }
-
-        return model;
+        return new MixinModel( mixinClass, instantiationClass( mixinClass ) );
     }
 
     public MethodConcernModel getConcernModel( Class concernClass )
     {
-        MethodConcernModel model = concernModels.get( concernClass );
-        if( model == null )
-        {
-            model = new MethodConcernModel( concernClass, instantiationClass( concernClass ) );
-            if( !check.hasInvocationInjections( model ) )
-                concernModels.put( concernClass, model );
-        } else
-        {
-            // Reused
-//            System.out.println( "Reused " + concernClass );
-        }
-
-        return model;
+        return new MethodConcernModel( concernClass, instantiationClass( concernClass ) );
     }
 
     public MethodSideEffectModel getSideEffectModel( Class sideEffectClass )
     {
-        MethodSideEffectModel model = sideEffectModels.get( sideEffectClass );
-        if( model == null )
-        {
-            model = new MethodSideEffectModel( sideEffectClass, instantiationClass( sideEffectClass ) );
-            if( !check.hasInvocationInjections( model ) )
-                sideEffectModels.put( sideEffectClass, model );
-        } else
-        {
-            // Reused
-//            System.out.println( "Reused " + sideEffectClass );
-        }
-
-        return model;
+        return new MethodSideEffectModel( sideEffectClass, instantiationClass( sideEffectClass ) );
     }
 
     private Class instantiationClass( Class fragmentClass )
@@ -94,10 +54,6 @@ public class AssemblyHelper
         Class instantiationClass = fragmentClass;
         if( !InvocationHandler.class.isAssignableFrom( fragmentClass ) )
         {
-/*
-            if( Modifier.isAbstract( fragmentClass.getModifiers() ) )
-            {
-*/
             instantiationClass = instantiationClasses.get( fragmentClass );
 
             if( instantiationClass == null )
@@ -112,7 +68,6 @@ public class AssemblyHelper
                     throw new ConstructionException( "Could not generate mixin subclass", e );
                 }
             }
-//            }
         }
         return instantiationClass;
     }
@@ -130,36 +85,5 @@ public class AssemblyHelper
 //            System.out.println( "Reused classloader for " + classLoader );
         }
         return cl;
-    }
-
-    class InvocationCheck
-            extends DependencyVisitor
-    {
-        InvocationCheck()
-        {
-            super( new DependencyModel.ScopeSpecification( Invocation.class ) );
-        }
-
-        boolean hasInvocationInjections;
-
-        @Override
-        public void visitDependency( DependencyModel dependencyModel )
-        {
-            hasInvocationInjections = true;
-        }
-
-        public boolean hasInvocationInjections( MethodConcernModel model )
-        {
-            hasInvocationInjections = false;
-            model.visitModel( this );
-            return hasInvocationInjections;
-        }
-
-        public boolean hasInvocationInjections( MethodSideEffectModel model )
-        {
-            hasInvocationInjections = false;
-            model.visitModel( this );
-            return hasInvocationInjections;
-        }
     }
 }

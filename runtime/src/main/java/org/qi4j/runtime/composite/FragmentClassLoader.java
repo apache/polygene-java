@@ -372,6 +372,9 @@ public class FragmentClassLoader
         if( Modifier.isAbstract( method.getModifiers() ) )
             return true; // Implement all abstract methods
 
+        if( Modifier.isFinal( method.getModifiers() ) )
+            return false; // Cannot override final methods
+
         if( isInterfaceMethod( method, baseClass ) )
         {
             if( isDeclaredIn( method, Activatable.class ) || isDeclaredIn( method, Initializable.class ) || isDeclaredIn( method, Lifecycle.class ) )
