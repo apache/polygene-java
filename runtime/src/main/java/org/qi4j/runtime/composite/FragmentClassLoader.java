@@ -377,7 +377,7 @@ public class FragmentClassLoader
 
         if( isInterfaceMethod( method, baseClass ) )
         {
-            if( isDeclaredIn( method, Activatable.class ) || isDeclaredIn( method, Initializable.class ) || isDeclaredIn( method, Lifecycle.class ) )
+            if( isDeclaredIn( method, Activatable.class, baseClass ) || isDeclaredIn( method, Initializable.class, baseClass ) || isDeclaredIn( method, Lifecycle.class, baseClass ) )
                 return false; // Skip methods in Qi4j-internal interfaces
             else
                 return true;
@@ -387,8 +387,11 @@ public class FragmentClassLoader
         }
     }
 
-    private static boolean isDeclaredIn( Method method, Class clazz )
+    private static boolean isDeclaredIn( Method method, Class clazz, Class baseClass )
     {
+        if( !clazz.isAssignableFrom( baseClass ) )
+            return false;
+
         try
         {
             clazz.getMethod( method.getName(), method.getParameterTypes() );
