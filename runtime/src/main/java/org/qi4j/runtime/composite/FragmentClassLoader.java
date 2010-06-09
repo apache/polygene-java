@@ -77,7 +77,7 @@ public class FragmentClassLoader
             }
 
             byte[] b = generateClass( name, baseClass );
-            return defineClass( name, b, 0, b.length );
+            return defineClass( name, b, 0, b.length, baseClass.getProtectionDomain() );
         }
 
         // Try the classloader of this classloader -> get classes in Qi4j such as CompositeInvoker

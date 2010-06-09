@@ -59,6 +59,7 @@ public void createClass()
         FragmentClassLoader classLoader = new FragmentClassLoader( SomeMixin.class.getClassLoader() );
 
         Class clazz = classLoader.loadClass( SomeMixin.class.getName() + "_Stub" );
+        clazz = classLoader.loadClass( SomeMixin.class.getName() + "_Stub" );
 
 //        Class clazz = SomeMixin_Stubx.class;
 
