@@ -73,6 +73,7 @@ public class PostgreSQLIndexing implements SQLIndexing
    {
       Boolean wasAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
+      connection.setReadOnly( false );
       PreparedStatement insertToEntityTablePS = null;
       PreparedStatement updateEntityTablePS = null;
       PreparedStatement removeEntityPS = null;
@@ -110,7 +111,8 @@ public class PostgreSQLIndexing implements SQLIndexing
             }
             else
             {
-               throw new UnsupportedOperationException("Did not understand what to do with state [id = " + eState.identity().identity() + ", status = " + status + "].");
+                // TODO possibly handle LOADED state somehow
+               //throw new UnsupportedOperationException("Did not understand what to do with state [id = " + eState.identity().identity() + ", status = " + status + "].");
             }
 
             if (pk != null)
@@ -122,6 +124,7 @@ public class PostgreSQLIndexing implements SQLIndexing
          removeEntityPS.executeBatch();
          insertToEntityTablePS.executeBatch();
          updateEntityTablePS.executeBatch();
+         clearQNamesPS.executeBatch();
 
          for (Map.Entry<Long, EntityState> entry : statesByPK.entrySet())
          {
@@ -135,7 +138,6 @@ public class PostgreSQLIndexing implements SQLIndexing
          }
 
          insertToPropertyQNamesPS.executeBatch( );
-         clearQNamesPS.executeBatch( );
 
          for (PreparedStatement ps : qNameInsertPSs.values())
          {

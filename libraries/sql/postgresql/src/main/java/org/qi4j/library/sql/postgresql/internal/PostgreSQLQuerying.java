@@ -661,15 +661,15 @@ public class PostgreSQLQuerying implements SQLQuerying
                         where.append( " ))" + "\n");
                     }
 
-                    if (groupBy.length( ) > 0)
-                    {
-                        groupBy.append( ", " );
-                    }
+//                    if (groupBy.length( ) > 0)
+//                    {
+//                        groupBy.append( ", " );
+//                    }
                     if (having.length( ) > 0)
                     {
                         having.append( " AND " );
                     }
-                    groupBy.append( TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.QNAME_TABLE_VALUE_COLUMN_NAME);
+//                    groupBy.append( TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.QNAME_TABLE_VALUE_COLUMN_NAME);
                     having.append("COUNT(" + TABLE_NAME_PREFIX + lastTableIndex + "." + SQLs.QNAME_TABLE_VALUE_COLUMN_NAME + ") >= " + collection.size( ));
 
                 }
@@ -737,9 +737,9 @@ public class PostgreSQLQuerying implements SQLQuerying
             builder.append("(").append( where ).append( ")" + "\n" );
             builder.append(afterWhere);
         }
-        if (groupBy.length( ) > 0)
+        if (having.length( ) > 0)
         {
-            builder.append("GROUP BY " + groupBy + ", " + TABLE_NAME_PREFIX + startingIndex + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + ", " + TABLE_NAME_PREFIX + startingIndex + "." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME + "\n");
+            builder.append("GROUP BY " + (groupBy.length() > 0 ? (groupBy + ", ") : "") + TABLE_NAME_PREFIX + startingIndex + "." + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + ", " + TABLE_NAME_PREFIX + startingIndex + "." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME + "\n");
         }
         if (having.length( ) > 0)
         {
