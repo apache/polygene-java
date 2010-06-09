@@ -159,6 +159,8 @@ public class PostgreSQLIndexing implements SQLIndexing
          this.closePSIfNotNull(updateEntityTablePS);
          this.closePSIfNotNull(removeEntityPS);
          this.closePSIfNotNull(queryEntityPKPS);
+         this.closePSIfNotNull( insertToPropertyQNamesPS );
+         this.closePSIfNotNull( clearQNamesPS );
          for (PreparedStatement ps : qNameInsertPSs.values())
          {
             this.closePSIfNotNull(ps);
