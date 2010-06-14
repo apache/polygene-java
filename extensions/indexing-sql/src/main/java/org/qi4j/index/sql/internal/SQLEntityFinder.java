@@ -37,9 +37,9 @@ import org.qi4j.spi.query.EntityFinderException;
 public class SQLEntityFinder implements EntityFinder
 {
    @Service private SQLQuerying _parser;
-   
+
    @This private SQLJDBCState _state;
-   
+
    /**
     * Helper interface to perform some SQL query. Using this simplifies the structure of some of the methods.
     *
@@ -49,7 +49,7 @@ public class SQLEntityFinder implements EntityFinder
    {
       ReturnType doIt() throws SQLException;
    }
-   
+
    @Override
    public long countEntities(String resultType, BooleanExpression whereClause) throws EntityFinderException
    {
@@ -57,10 +57,10 @@ public class SQLEntityFinder implements EntityFinder
       final List<Object> values = new ArrayList<Object>();
       final List<Integer> valueSQLTypes = new ArrayList<Integer>();
       final String query = this._parser.constructQuery(resultType, whereClause, null, null, null, values, valueSQLTypes, true);
-      
+
       return this.performQuery(new DoQuery<Long>()
       {
-         
+
          @Override
          public Long doIt() throws SQLException
          {
@@ -81,7 +81,7 @@ public class SQLEntityFinder implements EntityFinder
          }
       });
    }
-   
+
    @Override
    public Iterable<EntityReference> findEntities(String resultType, BooleanExpression whereClause, OrderBy[] orderBySegments, final Integer firstResult, final Integer maxResults) throws EntityFinderException
    {
@@ -92,27 +92,28 @@ public class SQLEntityFinder implements EntityFinder
          final List<Object> values = new ArrayList<Object>();
          final List<Integer> valueSQLTypes = new ArrayList<Integer>();
          final String query = this._parser.constructQuery(resultType, whereClause, orderBySegments, firstResult, maxResults, values, valueSQLTypes, false);
-      
+
          result = this.performQuery(new DoQuery<Iterable<EntityReference>>()
          {
             @Override
             public Iterable<EntityReference> doIt() throws SQLException
             {
                PreparedStatement ps = null;
-               List<EntityReference> result = new ArrayList<EntityReference>(maxResults == null ? 100 : maxResults);
+               List<EntityReference> resultList = new ArrayList<EntityReference>(maxResults == null ? 100 : maxResults);
                try
                {
                   // TODO possibility to further optimize by setting fetch size (not too small not too little).
-                  ps = createPS(query, values, valueSQLTypes, firstResult == null ? ResultSet.TYPE_FORWARD_ONLY : ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CLOSE_CURSORS_AT_COMMIT);
+                  Integer rsType = _parser.getResultSetType( firstResult, maxResults );
+                  ps = createPS(query, values, valueSQLTypes, rsType, ResultSet.CLOSE_CURSORS_AT_COMMIT);
                   ResultSet rs = ps.executeQuery();
-                  if (firstResult != null)
+                  if (firstResult != null && !_parser.isFirstResultSettingSupported() && rsType != ResultSet.TYPE_FORWARD_ONLY)
                   {
-                     rs.absolute(firstResult);
+                      rs.absolute( firstResult );
                   }
                   Integer i = 0;
                   while (rs.next() && (maxResults == null || i < maxResults))
                   {
-                     result.add(new EntityReference(rs.getString(1)));
+                     resultList.add(new EntityReference(rs.getString(1)));
                      ++i;
                   }
                } finally
@@ -122,27 +123,27 @@ public class SQLEntityFinder implements EntityFinder
                      ps.close();
                   }
                }
-               
-               return result;
+
+               return resultList;
             }
-         
+
          });
-         
+
       } else
       {
          result = new ArrayList<EntityReference>(0);
       }
-      
+
       return result;
    }
-   
+
    @Override
    public EntityReference findEntity(String resultType, BooleanExpression whereClause) throws EntityFinderException
    {
       final List<Object> values = new ArrayList<Object>();
       final List<Integer> valueSQLTypes = new ArrayList<Integer>();
       final String query = this._parser.constructQuery(resultType, whereClause, null, null, null, values, valueSQLTypes, false);
-      
+
       return this.performQuery(new DoQuery<EntityReference>()
       {
          @Override
@@ -167,17 +168,17 @@ public class SQLEntityFinder implements EntityFinder
                   ps.close();
                }
             }
-            
+
             return result;
          }
       });
    }
-   
+
    private PreparedStatement createPS(String query, List<Object> values, List<Integer> valueSQLTypes) throws SQLException
    {
       return this.createPS(query, values, valueSQLTypes, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CLOSE_CURSORS_AT_COMMIT);
    }
-   
+
    private PreparedStatement createPS(String query, List<Object> values, List<Integer> valueSQLTypes, Integer resultSetType, Integer resultSetHoldability) throws SQLException
    {
       PreparedStatement ps = this._state.connection().get().prepareStatement(query, resultSetType, ResultSet.CONCUR_READ_ONLY, resultSetHoldability);
@@ -190,10 +191,10 @@ public class SQLEntityFinder implements EntityFinder
       {
          ps.setObject(x + 1, values.get(x), valueSQLTypes.get(x));
       }
-      
+
       return ps;
    }
-   
+
    // Helper method to perform SQL queries and handle things if/when something happens
    private <ReturnType> ReturnType performQuery(DoQuery<ReturnType> doQuery) throws EntityFinderException
    {
@@ -203,7 +204,7 @@ public class SQLEntityFinder implements EntityFinder
          this._state.connection().get().setReadOnly(true);
 
          result = doQuery.doIt();
-         
+
       } catch (SQLException sqle)
       {
          throw new EntityFinderException(sqle);
@@ -220,7 +221,7 @@ public class SQLEntityFinder implements EntityFinder
             throw new EntityFinderException(sqle);
          }
       }
-      
+
       return result;
    }
 
