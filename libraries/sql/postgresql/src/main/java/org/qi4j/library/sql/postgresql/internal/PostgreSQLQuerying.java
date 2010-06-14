@@ -14,6 +14,7 @@
 
 package org.qi4j.library.sql.postgresql.internal;
 
+import java.sql.ResultSet;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -220,6 +221,18 @@ public class PostgreSQLQuerying implements SQLQuerying
     }
 
     @Override
+    public Integer getResultSetType( Integer firstResult, Integer maxResults )
+    {
+        return ResultSet.TYPE_FORWARD_ONLY;
+    }
+
+    @Override
+    public Boolean isFirstResultSettingSupported()
+    {
+        return true;
+    }
+
+    @Override
     public String constructQuery( String resultType, //
         BooleanExpression whereClause, //
         OrderBy[] orderBySegments, //
@@ -240,12 +253,29 @@ public class PostgreSQLQuerying implements SQLQuerying
         {
             this.processOrderBySegments( orderBySegments, fromClause, orderByClause );
         }
+
+        StringBuilder offset = new StringBuilder();
+        if (firstResult != null && firstResult > 0)
+        {
+            offset.append( "OFFSET " + firstResult );
+        }
+        StringBuilder limit = new StringBuilder();
+        if (maxResults != null && maxResults > 0)
+        {
+            limit.append( "LIMIT " + maxResults );
+            if (orderByClause.length() == 0)
+            {
+                orderByClause.append( "ORDER BY " + TABLE_NAME_PREFIX + "0." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME );
+            }
+        }
+
         String result = //
             "SELECT " + String.format( select, TABLE_NAME_PREFIX + "0." + SQLs.ENTITY_TABLE_IDENTITY_COLUMN_NAME ) + "\n" + /**/
             "FROM (" + processedWhere + ") AS " + TABLE_NAME_PREFIX + "0" + "\n" + /**/
             fromClause.toString( ) + "\n" + /**/
-            orderByClause.toString( ) + //
-            ";" //
+            orderByClause.toString( ) + "\n" + //
+            limit.toString() + "\n" + //
+            offset.toString() + "\n" //
         ;
 
         _log.info( "SQL query:\n" + result );
