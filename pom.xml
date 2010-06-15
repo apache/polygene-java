@@ -10,8 +10,8 @@
   <url>http://www.qi4j.org/</url>
 
   <properties>
-    <version.qi4j-core>1.1</version.qi4j-core>
-    <version.qi4j-libraries>1.1</version.qi4j-libraries>
+    <version.qi4j-core>1.2-SNAPSHOT</version.qi4j-core>
+    <version.qi4j-libraries>1.2-SNAPSHOT</version.qi4j-libraries>
     <scmVersion>1.2</scmVersion>
   </properties>
 

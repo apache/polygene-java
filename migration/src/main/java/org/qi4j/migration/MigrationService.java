@@ -58,7 +58,7 @@ import org.qi4j.spi.entitystore.EntityStore;
 public interface MigrationService
     extends Migration, Activatable, ServiceComposite
 {
-    class MigrationMixin
+    public class MigrationMixin
         implements Migration, Migrator, Activatable
     {
         @Structure
@@ -76,6 +76,9 @@ public interface MigrationService
         EntityStore entityStore;
         @Structure
         UnitOfWorkFactory uowf;
+
+        @This
+        Migrator migrator;
 
         public MigrationBuilder builder;
         public Logger log;
@@ -96,7 +99,7 @@ public interface MigrationService
             {
                 for( EntityMigrationRule matchedRule : matchedRules )
                 {
-                    changed = matchedRule.upgrade( state, stateStore, this ) || changed;
+                    changed = matchedRule.upgrade( state, stateStore, migrator ) || changed;
                 }
             }
 

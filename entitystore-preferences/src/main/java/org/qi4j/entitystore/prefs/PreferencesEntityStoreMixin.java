@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -84,7 +85,7 @@ public class PreferencesEntityStoreMixin
     protected String uuid;
     private int count;
     public Logger logger;
-    public ScheduledExecutorService reloadExecutor;
+    public ScheduledThreadPoolExecutor reloadExecutor;
 
     public void activate()
         throws Exception
@@ -95,7 +96,8 @@ public class PreferencesEntityStoreMixin
         uuid = UUID.randomUUID().toString() + "-";
 
         // Reload underlying store every 60 seconds
-        reloadExecutor = Executors.newScheduledThreadPool( 1 );
+        reloadExecutor = new ScheduledThreadPoolExecutor(1);
+		reloadExecutor.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
         reloadExecutor.scheduleAtFixedRate( new Runnable()
         {
             public void run()
@@ -138,6 +140,7 @@ public class PreferencesEntityStoreMixin
         throws Exception
     {
         reloadExecutor.shutdown();
+        reloadExecutor.awaitTermination(10, TimeUnit.SECONDS);
     }
 
     public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSPI module )
