@@ -24,6 +24,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -226,9 +227,13 @@ public final class CompositeMethodModel
 
         if( methodConcerns != null )
             methodConcerns.visitModel( modelVisitor );
+        else
+            new MethodConcernsModel( method, Collections.<MethodConcernModel>emptyList() ).visitModel( modelVisitor );
 
         if( methodSideEffects != null )
             methodSideEffects.visitModel( modelVisitor );
+        else
+            new MethodSideEffectsModel( method, Collections.<MethodSideEffectModel>emptyList() ).visitModel( modelVisitor );
     }
 
     public void addThisInjections( final Set<Class> thisDependencies )
