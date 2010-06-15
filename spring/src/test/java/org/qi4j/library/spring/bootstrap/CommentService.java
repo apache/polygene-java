@@ -16,7 +16,7 @@
 */
 package org.qi4j.library.spring.bootstrap;
 
-interface CommentService
+public interface CommentService
 {
     String comment( String sentence );
 }

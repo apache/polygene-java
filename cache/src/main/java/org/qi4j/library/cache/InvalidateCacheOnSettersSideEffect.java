@@ -17,12 +17,9 @@ public class InvalidateCacheOnSettersSideEffect extends GenericSideEffect
     {
         public boolean appliesTo( Method method, Class mixin, Class compositeType, Class modifierClass )
         {
-            if( method.getDeclaringClass().equals( InvocationCache.class ) )
-            {
-                return false;
-            }
+            return !( method.getDeclaringClass().equals( InvocationCache.class ) ||
+                      method.getDeclaringClass().equals( InvocationCacheMixin.class ) );
 
-            return true;
         }
     }
 

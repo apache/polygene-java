@@ -21,7 +21,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 
 @Mixins(CommentServiceComposite.CommentServiceMixin.class)
-interface CommentServiceComposite
+public interface CommentServiceComposite
         extends CommentService, ServiceComposite
 {
 
