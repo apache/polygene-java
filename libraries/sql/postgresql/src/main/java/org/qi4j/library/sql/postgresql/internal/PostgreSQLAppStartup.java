@@ -782,7 +782,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                     builder.append( //
 //                        ALL_QNAMES_TABLE_PK_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
                         QNAME_TABLE_VALUE_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
-                        "PRIMARY KEY(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ")," + "\n" + //
+                        "PRIMARY KEY(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ", " + ENTITY_TABLE_PK_COLUMN_NAME + ")," + "\n" + //
                         "FOREIGN KEY(" + QNAME_TABLE_VALUE_COLUMN_NAME + ") REFERENCES " + schemaName + "." + ENTITY_TABLE_NAME + "(" + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED," + "\n" //
                          );
                 }
@@ -792,7 +792,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
 //                        ALL_QNAMES_TABLE_PK_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
                         QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME + " " + QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
                         QNAME_TABLE_VALUE_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
-                        "PRIMARY KEY(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ", " + QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME + ")," + "\n" + //
+                        "PRIMARY KEY(" + ALL_QNAMES_TABLE_PK_COLUMN_NAME + ", " + ENTITY_TABLE_PK_COLUMN_NAME + ", " + QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME + ")," + "\n" + //
                         "FOREIGN KEY(" + QNAME_TABLE_VALUE_COLUMN_NAME + ") REFERENCES " + schemaName + "." + ENTITY_TABLE_NAME + "(" + ENTITY_TABLE_PK_COLUMN_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE INITIALLY DEFERRED," + "\n" //
                          );
                 }
