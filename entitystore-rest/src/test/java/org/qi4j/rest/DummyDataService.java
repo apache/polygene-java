@@ -21,6 +21,10 @@ import org.qi4j.api.service.Activatable;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.api.value.ValueBuilderFactory;
+
+import java.util.HashMap;
 
 /**
  * JAVADOC
@@ -36,6 +40,9 @@ public interface DummyDataService
         @Structure
         UnitOfWorkFactory uowf;
 
+        @Structure
+        ValueBuilderFactory vbf;
+
         public void activate()
             throws Exception
         {
@@ -43,9 +50,15 @@ public interface DummyDataService
             try
             {
                 {
+                    ValueBuilder<TestValue> valueBuilder = vbf.newValueBuilder( TestValue.class );
+                    valueBuilder.prototype().longList().get().add( 42L );
+                    valueBuilder.prototype().string().set( "Foo bar value" );
+                    valueBuilder.prototype().map().set( new HashMap() );
+
                     EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class, "test1" );
                     builder.instance().name().set( "Foo bar" );
                     builder.instance().age().set( 42 );
+                    builder.instance().value().set( valueBuilder.newInstance() );
                     TestEntity testEntity = builder.newInstance();
 
                     EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( TestEntity.class, "test2" );

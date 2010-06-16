@@ -14,6 +14,7 @@
 
 package org.qi4j.rest;
 
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -43,6 +44,7 @@ public class DomainAssembler
         module.addServices( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" ).visibleIn( layer );
 
         module.addEntities( TestEntity.class, TestRole.class, TestEntity2.class ).visibleIn( application );
+        module.addValues( TestValue.class ).visibleIn( application );
         module.addServices( DummyDataService.class ).instantiateOnStartup();
     }
 }

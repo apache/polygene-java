@@ -39,6 +39,7 @@ import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.association.AssociationType;
 import org.qi4j.spi.entity.association.ManyAssociationType;
 import org.qi4j.spi.entitystore.*;
+import org.qi4j.spi.entitystore.helpers.JSONEntityState;
 import org.qi4j.spi.property.PropertyType;
 import org.qi4j.spi.property.ValueType;
 import org.qi4j.spi.structure.ModuleSPI;
@@ -77,7 +78,7 @@ public class EntityResource
         return newValue;
     }
 
-    public static Object toString( Object newValue, ValueType valueType )
+    public static String toString( Object newValue, ValueType valueType )
             throws IllegalArgumentException, JSONException
     {
         if (newValue == null)
@@ -85,7 +86,7 @@ public class EntityResource
             return "";
         } else
         {
-            return valueType.toJSON( newValue );
+            return valueType.toJSON( newValue ).toString().replace( "\"", "&quot;" );
         }
     }
 
@@ -108,7 +109,8 @@ public class EntityResource
         // Define the supported variant.
         getVariants().addAll( Arrays.asList(
                 new Variant(MediaType.TEXT_HTML),
-                new Variant(MediaType.APPLICATION_RDF_XML)));
+                new Variant(MediaType.APPLICATION_RDF_XML),
+                new Variant(MediaType.APPLICATION_JSON)));
         setNegotiated( true );
     }
 
@@ -167,6 +169,9 @@ public class EntityResource
             } else if (MediaType.TEXT_HTML.equals( variant.getMediaType() ))
             {
                 return entityHeaders( representHtml( entityState ), entityState );
+            }else if (MediaType.APPLICATION_JSON.equals( variant.getMediaType() ))
+            {
+                return entityHeaders( representJson( entityState ), entityState );
             }
         } catch (ResourceException ex)
         {
@@ -228,6 +233,7 @@ public class EntityResource
                                 propertyType.qualifiedName().name() +
                                 "</label></td>\n" +
                                 "<td><input " +
+                                "size=\"80\" " +
                                 "type=\"text\" " +
                                 (propertyType.propertyType() != PropertyType.PropertyTypeEnum.MUTABLE ? "readonly=\"true\" " : "") +
                                 "name=\"" + propertyType.qualifiedName() + "\" " +
@@ -286,6 +292,18 @@ public class EntityResource
                 out.println( "</body></html>\n" );
             }
         };
+    }
+
+    private Representation representJson( EntityState entityState )
+    {
+        if (entityState instanceof JSONEntityState)
+        {
+            JSONEntityState jsonState = (JSONEntityState) entityState;
+            return new StringRepresentation(jsonState.state().toString(), MediaType.APPLICATION_JSON);
+        } else
+        {
+            throw new ResourceException(Status.CLIENT_ERROR_NOT_ACCEPTABLE);
+        }
     }
 
     private Representation representRdfXml( final EntityState entity ) throws ResourceException
@@ -355,7 +373,10 @@ public class EntityResource
                         str.append("null");
                     } else
                     {
-                        if (propertyType.type().isString())
+                        if (propertyType.type().isValue())
+                        {
+                            str.append(newStringValue);
+                        } else if (propertyType.type().isString())
                         {
                             str.append( '"' ).append( newStringValue ).append( '"' );
                         } else
@@ -375,10 +396,12 @@ public class EntityResource
             {
                 if (propertyType.propertyType() == PropertyType.PropertyTypeEnum.MUTABLE)
                 {
-                    Object value = properties.get( propertyType.qualifiedName().name() );
+                    Object jsonValue = properties.get( propertyType.qualifiedName().name() );
 
-                    if (value == JSONObject.NULL)
-                        value = null;
+                    if (jsonValue == JSONObject.NULL)
+                        jsonValue = null;
+
+                    Object value = propertyType.type().fromJSON( jsonValue, module );
 
                     entity.setProperty( propertyType.qualifiedName(), value );
                 }
@@ -451,11 +474,11 @@ public class EntityResource
         }
         catch (JSONException e)
         {
-            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, e.getMessage() );
+            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, e );
         }
         catch (IllegalArgumentException e)
         {
-            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, e.getMessage() );
+            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, e );
         }
 
         try
