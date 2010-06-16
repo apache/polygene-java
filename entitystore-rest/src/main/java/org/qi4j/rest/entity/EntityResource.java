@@ -32,7 +32,6 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
-import org.qi4j.runtime.types.AbstractStringType;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityType;
@@ -356,7 +355,7 @@ public class EntityResource
                         str.append("null");
                     } else
                     {
-                        if (propertyType.type() instanceof AbstractStringType)
+                        if (propertyType.type().isString())
                         {
                             str.append( '"' ).append( newStringValue ).append( '"' );
                         } else

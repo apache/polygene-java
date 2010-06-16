@@ -86,7 +86,9 @@ Import-Package: \
                 org.xml.sax, \
                 org.xml.sax.helpers, \
                 org.w3c.dom, \
-                org.w3c.dom.ls
+                org.w3c.dom.ls, \
+                org.json 
+
 
 Embed-Dependency: \
     *;scope=compile|runtime;groupId=!org.qi4j.*|org.restlet|com.noelios.*
