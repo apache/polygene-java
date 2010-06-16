@@ -102,6 +102,7 @@ public class RestApplication
         router.attach( "/entity/{identity}", createFinder( EntityResource.class ) );
 
         router.attach( "/query", createFinder( SPARQLResource.class ) );
+        router.attach( "/query/sparqlhtml", createFinder( SPARQLResource.class ) );
         router.attach( "/query/index", createFinder( IndexResource.class ) );
 
         // Add filters

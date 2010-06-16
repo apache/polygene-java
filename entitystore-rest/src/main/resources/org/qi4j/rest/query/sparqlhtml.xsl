@@ -80,7 +80,7 @@ $Id: result-to-html.xsl,v 1.1 2008/01/15 02:25:58 eric Exp $
       </xsl:text>
       <xsl:for-each select="res:results/res:result">
         <tr>
-          <xsl:apply-templates select="."/>
+            <xsl:apply-templates select="."/>
         </tr>
       </xsl:for-each>
     </table>
@@ -97,7 +97,15 @@ $Id: result-to-html.xsl,v 1.1 2008/01/15 02:25:58 eric Exp $
           <xsl:when test="$current/res:binding[@name=$name]">
             <!-- apply template for the correct value type (bnode, uri,
            literal) -->
-            <xsl:apply-templates select="$current/res:binding[@name=$name]"/>
+
+              <xsl:choose>
+                  <xsl:when test="$name = 'identity'">
+                    <a href="entity/{$current/res:binding[@name=$name]}"><xsl:apply-templates select="$current/res:binding[@name=$name]"/></a>
+                  </xsl:when>
+                  <xsl:otherwise>
+                      <xsl:apply-templates select="$current/res:binding[@name=$name]"/>
+                  </xsl:otherwise>
+              </xsl:choose>
           </xsl:when>
           <xsl:otherwise>
             <!-- no binding available for this variable in this solution -->
