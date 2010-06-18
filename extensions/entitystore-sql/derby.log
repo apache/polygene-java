@@ -1,0 +1,6 @@
+----------------------------------------------------------------
+2010-06-18 16:06:19.671 GMT:
+ Booting Derby version The Apache Software Foundation - Apache Derby - 10.6.1.0 - (938214): instance a816c00e-0129-4bcf-8a7d-0000036549c8 
+on database directory /home/paul/src/externals/java/qi4j/qi4j-sandbox/extensions/entitystore-sql/target/qi4jdata   with class loader sun.misc.Launcher$AppClassLoader@17182c1
+
+Database Class Loader started - derby.database.classpath=''
