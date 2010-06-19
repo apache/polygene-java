@@ -72,5 +72,22 @@
             <artifactId>qi4j-core-testsupport</artifactId>
             <scope>test</scope>
         </dependency>
+
+
+        <dependency>
+            <groupId>org.glassfish.extras</groupId>
+            <artifactId>glassfish-embedded-all</artifactId>
+            <version>3.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        
     </dependencies>
+    <repositories>
+        <repository>
+            <id>glassfish</id>
+            <name>glassfish</name>
+            <url>http://download.java.net/maven/glassfish/</url>
+        </repository>
+    </repositories>
 </project>
