@@ -86,8 +86,8 @@ public class PostgreSQLIndexing implements SQLIndexing
       {
          insertToEntityTablePS = connection.prepareStatement(String.format(SQLs.SIX_VALUE_INSERT, this._state.schemaName().get(), ENTITY_TABLE_NAME));
          updateEntityTablePS = connection.prepareStatement(String.format(SQLs.UPDATE_ENTITY_TABLE, this._state.schemaName().get()));
+         queryEntityPKPS = connection.prepareStatement( String.format( SQLs.QUERY_ENTITY_PK_BY_IDENTITY, this._state.schemaName().get() ) );
          removeEntityPS = connection.prepareStatement(String.format(SQLs.DELETE_FROM_ENTITY_TABLE, this._state.schemaName().get()));
-         queryEntityPKPS = connection.prepareStatement(String.format(SQLs.QUERY_ENTITY_PK_BY_IDENTITY, this._state.schemaName().get()));
          insertToPropertyQNamesPS = connection.prepareStatement( String.format( SQLs.TWO_VALUE_INSERT, this._state.schemaName( ).get( ), SQLs.ALL_QNAMES_TABLE_NAME ) );
          clearQNamesPS = connection.prepareStatement( String.format( SQLs.CLEAR_ENTITY_DATA, this._state.schemaName( ).get( ), SQLs.ALL_QNAMES_TABLE_NAME ) );
          Map<Long, EntityState> statesByPK = new HashMap<Long, EntityState>();
@@ -133,7 +133,7 @@ public class PostgreSQLIndexing implements SQLIndexing
             EntityStatus status = eState.status();
             if (status.equals(EntityStatus.NEW) || status.equals(EntityStatus.UPDATED))
             {
-               this.insertAssoAndManyAssoQNames(qNameInsertPSs, queryEntityPKPS, insertToPropertyQNamesPS, eState, qNamePKs.get( pk ), pk);
+               this.insertAssoAndManyAssoQNames(qNameInsertPSs, insertToPropertyQNamesPS, eState, qNamePKs.get( pk ), pk);
             }
          }
 
@@ -158,7 +158,6 @@ public class PostgreSQLIndexing implements SQLIndexing
          this.closePSIfNotNull(insertToEntityTablePS);
          this.closePSIfNotNull(updateEntityTablePS);
          this.closePSIfNotNull(removeEntityPS);
-         this.closePSIfNotNull(queryEntityPKPS);
          this.closePSIfNotNull( insertToPropertyQNamesPS );
          this.closePSIfNotNull( clearQNamesPS );
          for (PreparedStatement ps : qNameInsertPSs.values())
@@ -229,12 +228,12 @@ public class PostgreSQLIndexing implements SQLIndexing
 
    private PreparedStatement createInsertAssociationPS(Connection connection, QNameInfo qNameInfo) throws SQLException
    {
-      return connection.prepareStatement(String.format(SQLs.THREE_VALUE_INSERT, this._state.schemaName().get(), qNameInfo.getTableName()));
+      return connection.prepareStatement(String.format(SQLs.ASSO_INSERT, this._state.schemaName().get(), qNameInfo.getTableName(), this._state.schemaName().get()));
    }
 
    private PreparedStatement createInsertManyAssociationPS(Connection connection, QNameInfo qNameInfo) throws SQLException
    {
-      return connection.prepareStatement(String.format(SQLs.FOUR_VALUE_INSERT, this._state.schemaName().get(), qNameInfo.getTableName()));
+      return connection.prepareStatement(String.format(SQLs.MANY_ASSO_INSERT, this._state.schemaName().get(), qNameInfo.getTableName(), this._state.schemaName().get()));
    }
 
    private void clearAllEntitysQNames(PreparedStatement clearPropertiesPS, Long pk) throws SQLException
@@ -264,7 +263,7 @@ public class PostgreSQLIndexing implements SQLIndexing
       return propertyPK;
    }
 
-   private void insertAssoAndManyAssoQNames(Map<QualifiedName, PreparedStatement> qNameInsertPSs, PreparedStatement queryPKPS, PreparedStatement insertToAllQNamesPS, EntityState state, Integer qNamePK, Long entityPK) throws SQLException
+   private void insertAssoAndManyAssoQNames(Map<QualifiedName, PreparedStatement> qNameInsertPSs, PreparedStatement insertToAllQNamesPS, EntityState state, Integer qNamePK, Long entityPK) throws SQLException
    {
       for (AssociationDescriptor aDesc : state.entityDescriptor().state().associations())
       {
@@ -273,16 +272,6 @@ public class PostgreSQLIndexing implements SQLIndexing
          EntityReference ref = state.getAssociation(qName);
          if (ref != null)
          {
-            queryPKPS.setString(1, ref.identity());
-            ResultSet rs = queryPKPS.executeQuery();
-            if (rs.next())
-            {
-               ps.setLong(3, rs.getLong(1));
-            }
-            else
-            {
-               throw new EntityNotFoundException(ref);
-            }
 
             insertToAllQNamesPS.setInt( 1, qNamePK );
             insertToAllQNamesPS.setLong( 2, entityPK );
@@ -290,6 +279,7 @@ public class PostgreSQLIndexing implements SQLIndexing
 
             ps.setInt( 1, qNamePK );
             ps.setLong(2, entityPK);
+            ps.setString(3, ref.identity() );
             ps.addBatch();
 
             ++qNamePK;
@@ -305,16 +295,6 @@ public class PostgreSQLIndexing implements SQLIndexing
          {
             if (ref != null)
             {
-               queryPKPS.setString(1, ref.identity());
-               ResultSet rs = queryPKPS.executeQuery();
-               if (rs.next())
-               {
-                  ps.setLong(4, rs.getLong(1));
-               }
-               else
-               {
-                  throw new EntityNotFoundException(ref);
-               }
 
                insertToAllQNamesPS.setInt( 1, qNamePK );
                insertToAllQNamesPS.setLong( 2, entityPK );
@@ -323,6 +303,7 @@ public class PostgreSQLIndexing implements SQLIndexing
                ps.setInt( 1, qNamePK );
                ps.setLong(2, entityPK);
                ps.setInt(3, index);
+               ps.setString( 4, ref.identity() );
                ps.addBatch();
                ++qNamePK;
 

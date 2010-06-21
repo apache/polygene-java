@@ -187,4 +187,17 @@ public class SQLs
       "?, ?, ?, ?, ?, ?" + "\n" + //
       ");" //
       ;
+
+   public static final String ASSO_INSERT = //
+       "INSERT INTO " + "%s" + "." + "%s" + "\n" + //
+       "SELECT " + "?, " + "?, " + ENTITY_TABLE_PK_COLUMN_NAME + "\n" + //
+       "FROM " + "%s" + "." + ENTITY_TABLE_NAME + "\n" + //
+       "WHERE " + ENTITY_TABLE_IDENTITY_COLUMN_NAME + " = " + "?";
+
+   public static final String MANY_ASSO_INSERT = //
+       "INSERT INTO " + "%s" + "." + "%s" + "\n" + //
+       "SELECT " + "?, " + "?, " + "?, " + ENTITY_TABLE_PK_COLUMN_NAME + "\n" + //
+       "FROM " + "%s" + "." + ENTITY_TABLE_NAME + "\n" + //
+       "WHERE " + ENTITY_TABLE_IDENTITY_COLUMN_NAME + " = " + "?";
+
 }
