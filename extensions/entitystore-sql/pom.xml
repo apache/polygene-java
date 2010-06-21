@@ -18,18 +18,22 @@
         <dependency>
             <groupId>org.qi4j.core</groupId>
             <artifactId>qi4j-core-api</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.qi4j.core</groupId>
             <artifactId>qi4j-core-spi</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.qi4j.library</groupId>
             <artifactId>qi4j-lib-locking</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.qi4j.core</groupId>
             <artifactId>qi4j-core-bootstrap</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -60,27 +64,28 @@
             <groupId>org.qi4j.core</groupId>
             <artifactId>qi4j-core-runtime</artifactId>
             <scope>test</scope>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.qi4j.tests</groupId>
             <artifactId>qi4j-tests-performance</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.qi4j.core</groupId>
             <artifactId>qi4j-core-testsupport</artifactId>
             <scope>test</scope>
+            <version>${project.version}</version>
         </dependency>
 
 
         <dependency>
             <groupId>org.glassfish.extras</groupId>
             <artifactId>glassfish-embedded-all</artifactId>
-            <version>3.0</version>
+            <version>3.0.1</version>
             <scope>test</scope>
         </dependency>
-
         
     </dependencies>
     <repositories>

@@ -25,13 +25,13 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.entitystore.map.MapEntityStore;
-import org.qi4j.entitystore.sql.database.DatabaseService;
-import org.qi4j.entitystore.sql.util.SQLUtil;
+import org.qi4j.entitystore.sql.map.database.DatabaseService;
+import org.qi4j.entitystore.sql.map.util.SQLUtil;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 
-public class SQLEntityStoreMixin
+public class SQLMapEntityStoreMixin
         implements Activatable,
                    MapEntityStore
 {

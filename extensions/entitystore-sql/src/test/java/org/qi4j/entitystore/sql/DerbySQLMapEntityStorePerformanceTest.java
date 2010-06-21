@@ -13,10 +13,9 @@
  */
 package org.qi4j.entitystore.sql;
 
-import org.qi4j.entitystore.sql.bootstrap.MySQLEntityStoreAssembler;
-import org.qi4j.entitystore.sql.database.DatabaseConfiguration;
+import org.qi4j.entitystore.sql.bootstrap.DerbySQLMapEntityStoreAssembler;
+import org.qi4j.entitystore.sql.map.database.DatabaseConfiguration;
 import java.io.File;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
@@ -26,16 +25,15 @@ import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.performance.AbstractEntityStorePerformanceTest;
 
 /**
- * Performance test for MySQLEntityStoreComposite
+ * Performance test for SQLEntityStoreComposite
  */
-@Ignore // Too long and needs external setup
-public class MySQLEntityStorePerformanceTest
+public class DerbySQLMapEntityStorePerformanceTest
         extends AbstractEntityStorePerformanceTest
 {
 
-    public MySQLEntityStorePerformanceTest()
+    public DerbySQLMapEntityStorePerformanceTest()
     {
-        super( "MySQLEntityStore", createAssembler() );
+        super( "DerbySQLEntityStore", createAssembler() );
     }
 
     private static Assembler createAssembler()
@@ -46,7 +44,7 @@ public class MySQLEntityStorePerformanceTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                new MySQLEntityStoreAssembler( Visibility.application ).assemble( module );
+                new DerbySQLMapEntityStoreAssembler( Visibility.application ).assemble( module );
                 ModuleAssembly configModule = module.layerAssembly().moduleAssembly( "Config" );
                 configModule.addEntities( DatabaseConfiguration.class ).visibleIn( Visibility.layer );
                 new EntityTestAssembler( Visibility.module ).assemble( configModule );

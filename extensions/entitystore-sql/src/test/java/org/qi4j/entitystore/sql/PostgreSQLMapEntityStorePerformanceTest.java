@@ -20,8 +20,8 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.sql.bootstrap.PostgreSQLEntityStoreAssembler;
-import org.qi4j.entitystore.sql.database.DatabaseConfiguration;
+import org.qi4j.entitystore.sql.bootstrap.PostgreSQLMapEntityStoreAssembler;
+import org.qi4j.entitystore.sql.map.database.DatabaseConfiguration;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.performance.AbstractEntityStorePerformanceTest;
 
@@ -29,11 +29,11 @@ import org.qi4j.test.entity.performance.AbstractEntityStorePerformanceTest;
  * Performance test for PostgreSQLEntityStoreComposite
  */
 @Ignore // Too long and needs external setup
-public class PostgreSQLEntityStorePerformanceTest
+public class PostgreSQLMapEntityStorePerformanceTest
         extends AbstractEntityStorePerformanceTest
 {
 
-    public PostgreSQLEntityStorePerformanceTest()
+    public PostgreSQLMapEntityStorePerformanceTest()
     {
         super( "PostgreSQLEntityStore", createAssembler() );
     }
@@ -46,7 +46,7 @@ public class PostgreSQLEntityStorePerformanceTest
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                new PostgreSQLEntityStoreAssembler( Visibility.application ).assemble( module );
+                new PostgreSQLMapEntityStoreAssembler( Visibility.application ).assemble( module );
                 ModuleAssembly configModule = module.layerAssembly().moduleAssembly( "Config" );
                 configModule.addEntities( DatabaseConfiguration.class ).visibleIn( Visibility.layer );
                 new EntityTestAssembler( Visibility.module ).assemble( configModule );

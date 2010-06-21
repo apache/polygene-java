@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.database;
+package org.qi4j.entitystore.sql.map.database;
 
 import java.io.Reader;
 import java.sql.Connection;

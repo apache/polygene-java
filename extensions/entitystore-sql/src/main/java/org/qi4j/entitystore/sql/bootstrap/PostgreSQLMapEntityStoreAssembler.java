@@ -17,23 +17,23 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.sql.SQLEntityStoreService;
-import org.qi4j.entitystore.sql.database.DatabasePostgreSQLMixin;
-import org.qi4j.entitystore.sql.database.DatabaseService;
+import org.qi4j.entitystore.sql.SQLMapEntityStoreService;
+import org.qi4j.entitystore.sql.map.database.DatabasePostgreSQLMixin;
+import org.qi4j.entitystore.sql.map.database.DatabaseService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
-public class PostgreSQLEntityStoreAssembler
+public class PostgreSQLMapEntityStoreAssembler
         implements Assembler
 {
 
     private final Visibility visibility;
 
-    public PostgreSQLEntityStoreAssembler()
+    public PostgreSQLMapEntityStoreAssembler()
     {
         this( Visibility.module );
     }
 
-    public PostgreSQLEntityStoreAssembler( Visibility visibility )
+    public PostgreSQLMapEntityStoreAssembler( Visibility visibility )
     {
         this.visibility = visibility;
     }
@@ -46,7 +46,7 @@ public class PostgreSQLEntityStoreAssembler
                 withMixins( DatabasePostgreSQLMixin.class ).
                 identifiedBy( "entitystore-sql-postgre" ).
                 visibleIn( Visibility.module );
-        ma.addServices( SQLEntityStoreService.class ).
+        ma.addServices( SQLMapEntityStoreService.class ).
                 visibleIn( visibility ).
                 instantiateOnStartup();
         ma.addServices( UuidIdentityGeneratorService.class ).

@@ -11,14 +11,14 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.util;
+package org.qi4j.entitystore.sql.map.util;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import org.qi4j.api.configuration.Configuration;
-import org.qi4j.entitystore.sql.database.DatabaseConfiguration;
+import org.qi4j.entitystore.sql.map.database.DatabaseConfiguration;
 
 public class SQLUtil
 {

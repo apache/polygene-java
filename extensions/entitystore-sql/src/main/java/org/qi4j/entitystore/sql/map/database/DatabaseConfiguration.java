@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.database;
+package org.qi4j.entitystore.sql.map.database;
 
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.ConfigurationComposite;
