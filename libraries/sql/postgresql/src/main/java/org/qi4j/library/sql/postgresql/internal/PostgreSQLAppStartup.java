@@ -51,6 +51,7 @@ import org.qi4j.library.sql.api.SQLTypeInfo;
 import org.qi4j.library.sql.common.EntityTypeInfo;
 import org.qi4j.library.sql.common.QNameInfo;
 import org.qi4j.library.sql.common.ReindexingStrategy;
+import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.library.sql.common.QNameInfo.QNameType;
 import org.qi4j.library.sql.postgresql.PostgreSQLConfiguration;
 import org.qi4j.spi.entity.EntityDescriptor;
@@ -222,10 +223,10 @@ public class PostgreSQLAppStartup implements SQLAppStartup
          @Override
          public void visit(EntityDescriptor entityDescriptor)
          {
-//            if (!ConfigurationComposite.class.isAssignableFrom(entityDescriptor.type()))
-//            {
+             if (entityDescriptor.entityType().queryable())
+             {
                entityDescriptors.put(entityDescriptor.type().getName(), entityDescriptor);
-//            }
+             }
          }
 
          @Override
@@ -384,18 +385,19 @@ public class PostgreSQLAppStartup implements SQLAppStartup
          rs.close();
       }
 
-      Boolean reindexingRequired = this.isReindexingNeeded(schemaFound);
       Map<String, EntityDescriptor> entityDescriptors = new HashMap<String, EntityDescriptor>();
       Set<String> usedClassNames = new HashSet<String>();
       Set<String> enumValues = new HashSet<String>();
+      Boolean reindexingRequired = this.isReindexingNeeded(schemaFound, entityDescriptors, usedClassNames, enumValues);
+
       if (schemaFound && !reindexingRequired)
       {
           this.testRequiredCapabilities( );
-         this.constructApplicationInfo(entityDescriptors, usedClassNames, enumValues, true);
+//         this.constructApplicationInfo(entityDescriptors, usedClassNames, enumValues, true);
          this.readAppMetadataFromDB(entityDescriptors);
       } else
       {
-         this.constructApplicationInfo(entityDescriptors, usedClassNames, enumValues, false);
+//         this.constructApplicationInfo(entityDescriptors, usedClassNames, enumValues, false);
          this.createSchema(schemaFound);
          this.writeAppMetadataToDB(entityDescriptors, usedClassNames, enumValues);
 
@@ -408,7 +410,12 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       return reindexingRequired;
    }
 
-   private Boolean isReindexingNeeded(Boolean schemaExists) throws SQLException
+   private Boolean isReindexingNeeded(
+       Boolean schemaExists,
+       Map<String, EntityDescriptor> entityDescriptors,
+       Set<String> usedClassNames,
+       Set<String> enumValues
+       ) throws SQLException
    {
       Boolean result = true;
       if (schemaExists)
@@ -421,7 +428,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
             ResultSet rs = connection.getMetaData().getTables(null, schemaName, APP_VERSION_TABLE_NAME, new String[] { "TABLE" });
             if (rs.next())
             {
-               rs.close();
+               SQLUtil.closeQuietly( rs );
                rs = stmt.executeQuery("SELECT " + APP_VERSION_TABLE_NAME + "." + APP_VERSION_PK_COLUMN_NAME + " FROM " + schemaName + "." + APP_VERSION_TABLE_NAME);
 
                result = !rs.next();
@@ -437,15 +444,18 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                }
             }
 
-            if (result)
-            {
-                this.clearSchema( );
-            }
          }
          finally
          {
-            stmt.close();
+            SQLUtil.closeQuietly( stmt );
          }
+      }
+
+      this.constructApplicationInfo( entityDescriptors, usedClassNames, enumValues, !result );
+
+      if (schemaExists && result)
+      {
+          this.clearSchema( );
       }
 
       return result;
@@ -460,9 +470,19 @@ public class PostgreSQLAppStartup implements SQLAppStartup
        Statement stmt = connection.createStatement( );
        try
        {
-           // Drop all tables // TODO maybe drop only used tables?
-           this.dropTablesIfExist( metaData, schemaName, null, stmt );
 
+           // Don't drop all entities table.
+           this.dropTablesIfExist( metaData, schemaName, ALL_QNAMES_TABLE_NAME, stmt );
+           this.dropTablesIfExist( metaData, schemaName, APP_VERSION_TABLE_NAME, stmt );
+           this.dropTablesIfExist( metaData, schemaName, ENTITY_TYPES_TABLE_NAME, stmt );
+           this.dropTablesIfExist( metaData, schemaName, ENUM_LOOKUP_TABLE_NAME, stmt );
+           this.dropTablesIfExist( metaData, schemaName, USED_CLASSES_TABLE_NAME, stmt );
+           this.dropTablesIfExist( metaData, schemaName, USED_QNAMES_TABLE_NAME, stmt );
+
+           for (Integer x = 0; x < this._state.qNameInfos().get().size(); ++x)
+           {
+               this.dropTablesIfExist( metaData, schemaName, SQLs.QNAME_TABLE_NAME_PREFIX + x , stmt );
+           }
 
        } finally
        {
@@ -478,7 +498,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
        {
            while (rs.next( ))
            {
-               stmt.execute( "DROP TABLE " + schemaName + "." + rs.getString( 3 ) + " CASCADE");
+               stmt.execute( "DROP TABLE IF EXISTS " + schemaName + "." + rs.getString( 3 ) + " CASCADE");
            }
        } finally
        {
@@ -519,19 +539,34 @@ public class PostgreSQLAppStartup implements SQLAppStartup
                      ")");
          this._state.tablePKs().get().put(ENTITY_TYPES_TABLE_NAME, 0L);
 
-         stmt.execute( //
-               "CREATE TABLE " + schemaName + "." + ENTITY_TABLE_NAME + "(" + "\n" + //
-                     ENTITY_TABLE_PK_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
-                     ENTITY_TYPES_TABLE_PK_COLUMN_NAME + " " + ENTITY_TYPES_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL, " + "\n" + //
-                     ENTITY_TABLE_IDENTITY_COLUMN_NAME + " " + ENTITY_TABLE_IDENTITY_COLUMN_DATA_TYPE + " UNIQUE NOT NULL, " + "\n" + //
-                     ENTITY_TABLE_MODIFIED_COLUMN_NAME + " " + ENTITY_TABLE_MODIFIED_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
-                     ENTITY_TABLE_VERSION_COLUMN_NAME + " " + ENTITY_TABLE_VERSION_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
-                     ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME + " " + ENTITY_TABLE_APPLICATION_VERSION_COLUMN_DATATYPE + "," + "\n" + //
-                     "PRIMARY KEY(" + ENTITY_TABLE_PK_COLUMN_NAME + ")," + "\n" + //
-                     "FOREIGN KEY(" + ENTITY_TYPES_TABLE_PK_COLUMN_NAME + ") REFERENCES " + this._state.schemaName().get() + "." + ENTITY_TYPES_TABLE_NAME + "(" + ENTITY_TYPES_TABLE_PK_COLUMN_NAME + ") ON DELETE RESTRICT ON UPDATE CASCADE" + "\n" + //
-                     ")" //
-               );
-         this._state.tablePKs().get().put(ENTITY_TABLE_NAME, 0L);
+         ResultSet rs = null;
+         try
+         {
+             rs = connection.getMetaData().getTables( null, schemaName, ENTITY_TABLE_NAME, new String[] { "TABLE" } );
+             if (!rs.next())
+             {
+                 stmt.execute( //
+                     "CREATE TABLE " + schemaName + "." + ENTITY_TABLE_NAME + "(" + "\n" + //
+                           ENTITY_TABLE_PK_COLUMN_NAME + " " + ENTITY_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
+                           ENTITY_TYPES_TABLE_PK_COLUMN_NAME + " " + ENTITY_TYPES_TABLE_PK_COLUMN_DATA_TYPE + " NOT NULL, " + "\n" + //
+                           ENTITY_TABLE_IDENTITY_COLUMN_NAME + " " + ENTITY_TABLE_IDENTITY_COLUMN_DATA_TYPE + " UNIQUE NOT NULL, " + "\n" + //
+                           ENTITY_TABLE_MODIFIED_COLUMN_NAME + " " + ENTITY_TABLE_MODIFIED_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
+                           ENTITY_TABLE_VERSION_COLUMN_NAME + " " + ENTITY_TABLE_VERSION_COLUMN_DATA_TYPE + " NOT NULL," + "\n" + //
+                           ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME + " " + ENTITY_TABLE_APPLICATION_VERSION_COLUMN_DATATYPE + "," + "\n" + //
+                           "PRIMARY KEY(" + ENTITY_TABLE_PK_COLUMN_NAME + ")," + "\n" + //
+                           "FOREIGN KEY(" + ENTITY_TYPES_TABLE_PK_COLUMN_NAME + ") REFERENCES " + this._state.schemaName().get() + "." + ENTITY_TYPES_TABLE_NAME + "(" + ENTITY_TYPES_TABLE_PK_COLUMN_NAME + ") ON DELETE RESTRICT ON UPDATE CASCADE" + "\n" + //
+                           ")" //
+                     );
+               this._state.tablePKs().get().put(ENTITY_TABLE_NAME, 0L);
+             } else
+             {
+                 this._state.tablePKs().get().put( ENTITY_TABLE_NAME, this.getNextPK( Long.class, stmt, schemaName, ENTITY_TABLE_PK_COLUMN_NAME, ENTITY_TABLE_NAME, 0L ) );
+             }
+         } finally
+         {
+             SQLUtil.closeQuietly( rs );
+         }
+
 
          stmt.execute(
                "CREATE TABLE " + schemaName + "." + ENUM_LOOKUP_TABLE_NAME + "(" + "\n" + //
@@ -586,6 +621,31 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       _log.info("Reindexing complete.");
    }
 
+    protected <PKType> PKType getNextPK( Class<PKType> pkClass, Statement stmt, String schemaName, String columnName, String tableName, PKType defaultPK )
+        throws SQLException
+    {
+        ResultSet rs = null;
+        PKType result = defaultPK;
+        try
+        {
+            rs = stmt.executeQuery( String.format(SQLs.TWO_VALUE_SELECT, "COUNT(" + columnName +  ")", "MAX(" + columnName + ") + 1", schemaName, tableName) );
+            if( rs.next() )
+            {
+                Long count = rs.getLong( 1 );
+                if( count > 0 )
+                {
+                    result = pkClass.cast( rs.getObject( 2 ) );
+                }
+            }
+        }
+        finally
+        {
+            SQLUtil.closeQuietly( rs );
+        }
+
+        return result;
+    }
+
    private void readAppMetadataFromDB(Map<String, EntityDescriptor> entityDescriptors) throws SQLException
    {
 
@@ -594,15 +654,11 @@ public class PostgreSQLAppStartup implements SQLAppStartup
       Statement stmt = connection.createStatement();
       try
       {
-         ResultSet rs = stmt.executeQuery(String.format(SQLs.ONE_VALUE_SELECT, "MAX(" + SQLs.ENTITY_TABLE_PK_COLUMN_NAME + ")", schemaName, SQLs.ENTITY_TABLE_NAME));
-         long pk = 0L;
-         if (rs.next())
-         {
-            pk = rs.getLong(1) + 1;
-         }
-         this._state.tablePKs().get().put(ENTITY_TABLE_NAME, pk);
+          Map<String, Long> pks = this._state.tablePKs().get();
+          pks.put(ENTITY_TABLE_NAME, this.getNextPK( Long.class, stmt, schemaName, SQLs.ENTITY_TABLE_PK_COLUMN_NAME, SQLs.ENTITY_TABLE_NAME, 0L ));
+         ResultSet rs = stmt.executeQuery(String.format(SQLs.TWO_VALUE_SELECT, SQLs.ENTITY_TYPES_TABLE_PK_COLUMN_NAME, SQLs.ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME, schemaName, SQLs.ENTITY_TYPES_TABLE_NAME));
 
-         rs = stmt.executeQuery(String.format(SQLs.TWO_VALUE_SELECT, SQLs.ENTITY_TYPES_TABLE_PK_COLUMN_NAME, SQLs.ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME, schemaName, SQLs.ENTITY_TYPES_TABLE_NAME));
+         long pk = 0L;
          while (rs.next())
          {
             pk = rs.getInt(1);
@@ -611,6 +667,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
 
             if (!this._state.tablePKs().get().containsKey(ENTITY_TYPES_TABLE_NAME) || this._state.tablePKs().get().get(ENTITY_TYPES_TABLE_NAME) <= pk)
             {
+
                this._state.tablePKs().get().put(ENTITY_TYPES_TABLE_NAME, pk + 1);
             }
          }
@@ -679,7 +736,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
 //         }
       } finally
       {
-         stmt.close();
+         SQLUtil.closeQuietly( stmt );
       }
 
    }

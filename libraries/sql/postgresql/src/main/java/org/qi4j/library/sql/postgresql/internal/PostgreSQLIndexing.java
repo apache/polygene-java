@@ -39,8 +39,10 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.library.sql.api.SQLEntityState;
 import org.qi4j.library.sql.api.SQLIndexing;
 import org.qi4j.library.sql.common.QNameInfo;
+import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.library.sql.common.QNameInfo.QNameType;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
@@ -147,35 +149,21 @@ public class PostgreSQLIndexing implements SQLIndexing
          connection.commit();
 
       }
-      catch (SQLException sqle)
-      {
-         connection.rollback();
-         throw sqle;
-      }
       finally
       {
-         connection.setAutoCommit(wasAutoCommit);
-         this.closePSIfNotNull(insertToEntityTablePS);
-         this.closePSIfNotNull(updateEntityTablePS);
-         this.closePSIfNotNull(removeEntityPS);
-         this.closePSIfNotNull( insertToPropertyQNamesPS );
-         this.closePSIfNotNull( clearQNamesPS );
-         for (PreparedStatement ps : qNameInsertPSs.values())
+         connection.setAutoCommit( wasAutoCommit );
+         SQLUtil.closeQuietly( insertToEntityTablePS );
+         SQLUtil.closeQuietly( updateEntityTablePS );
+         SQLUtil.closeQuietly( removeEntityPS );
+         SQLUtil.closeQuietly( insertToPropertyQNamesPS );
+         SQLUtil.closeQuietly( clearQNamesPS );
+         for (PreparedStatement ps : qNameInsertPSs.values() )
          {
-            this.closePSIfNotNull(ps);
+             SQLUtil.closeQuietly( ps );
          }
 
       }
    }
-
-   private void closePSIfNotNull(PreparedStatement ps) throws SQLException
-   {
-      if (ps != null)
-      {
-         ps.close();
-      }
-   }
-
 
    private void syncQNamesInsertPSs(Connection connection, Map<QualifiedName, PreparedStatement> qNameInsertPSs, Set<QualifiedName> qNames) throws SQLException
    {
@@ -559,38 +547,68 @@ public class PostgreSQLIndexing implements SQLIndexing
 
    private Long updateEntityInfoAndProperties(Connection connection, Map<QualifiedName, PreparedStatement> qNameInsertPSs, PreparedStatement insertAllQNamesPS, PreparedStatement clearPropertiesPS, PreparedStatement queryPKPS, PreparedStatement ps, PreparedStatement insertEntityInfoPS, EntityState state, Map<Long, Integer> qNamePKs) throws SQLException
    {
-      queryPKPS.setString(1, state.identity().identity());
-      ResultSet rs = queryPKPS.executeQuery();
-      Long entityPK = null;
-      if (rs.next())
-      {
-         entityPK = rs.getLong(1);
-         this.clearAllEntitysQNames(clearPropertiesPS, entityPK);
+       Long entityPK = null;
+       if (state instanceof SQLEntityState)
+       {
+           entityPK = ((SQLEntityState)state).getEntityPK();
+       } else
+       {
+           queryPKPS.setString(1, state.identity().identity());
+           ResultSet rs = null;
+           try
+           {
+               rs = queryPKPS.executeQuery();
 
-         // Update state
-         ps.setString(1, state.identity().identity());
-         ps.setTimestamp(2, new Timestamp(state.lastModified()));
-         ps.setString(3, state.version());
-         ps.setString(4, this._app.version());
-         ps.setLong(5, entityPK);
-         ps.addBatch();
+               if (rs.next())
+               {
+                   entityPK = rs.getLong(1);
+               }
+           } finally
+           {
+               SQLUtil.closeQuietly( rs );
+           }
+       }
 
-         Integer nextUsableQNamePK = this.insertPropertyQNames(connection, qNameInsertPSs, insertAllQNamesPS, state, entityPK);
-         qNamePKs.put( entityPK, nextUsableQNamePK );
+       if (entityPK != null)
+       {
+           this.clearAllEntitysQNames(clearPropertiesPS, entityPK);
 
-      } else
-      {
-         // Most likely re-indexing
-         this.insertEntityInfoAndProperties(connection, qNameInsertPSs, insertAllQNamesPS, insertEntityInfoPS, state, qNamePKs);
-      }
-      return entityPK;
+           // Update state
+           ps.setString(1, state.identity().identity());
+           ps.setTimestamp(2, new Timestamp(state.lastModified()));
+           ps.setString(3, state.version());
+           ps.setString(4, this._app.version());
+           ps.setLong(5, entityPK);
+           ps.addBatch();
+
+           Integer nextUsableQNamePK = this.insertPropertyQNames(connection, qNameInsertPSs, insertAllQNamesPS, state, entityPK);
+           qNamePKs.put( entityPK, nextUsableQNamePK );
+
+       } else
+       {
+           // Most likely re-indexing
+           entityPK = this.insertEntityInfoAndProperties(connection, qNameInsertPSs, insertAllQNamesPS, insertEntityInfoPS, state, qNamePKs);
+       }
+
+       return entityPK;
    }
 
    private Long insertEntityInfoAndProperties(Connection connection, Map<QualifiedName, PreparedStatement> qNameInsertPSs, PreparedStatement insertAllQNamesPS, PreparedStatement ps, EntityState state, Map<Long, Integer> qNamePKs) throws SQLException
    {
-      Long entityPK = this.newPK(ENTITY_TABLE_NAME);
+      Long entityPK = null;
+      if (state instanceof SQLEntityState)
+      {
+          entityPK = ((SQLEntityState)state).getEntityPK();
+      } else
+      {
+          entityPK = this.newPK(ENTITY_TABLE_NAME);
+      }
 
       ps.setLong(1, entityPK);
+      if (this._state.entityTypeInfos().get().get(state.entityDescriptor().type().getName()) == null)
+      {
+          throw new RuntimeException( "Perkele: " + this._state.entityTypeInfos().get() + ", " + state.entityDescriptor().type().getName() + "." );
+      }
       ps.setInt(2, this._state.entityTypeInfos().get().get(state.entityDescriptor().type().getName()).getEntityTypePK());
       ps.setString(3, state.identity().identity());
       ps.setTimestamp(4, new Timestamp(state.lastModified()));
