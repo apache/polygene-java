@@ -17,6 +17,7 @@ package org.qi4j.library.sql.postgresql.internal;
 
 import static org.qi4j.library.sql.postgresql.internal.SQLs.*;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -41,6 +42,7 @@ import java.util.logging.Logger;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.Identity;
+import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
@@ -314,7 +316,7 @@ public class PostgreSQLAppStartup implements SQLAppStartup
    {
       for (PropertyDescriptor pDesc : entityDesc.state().properties())
       {
-          if (!pDesc.isComputed() /* TODO or is queryable */)
+          if (SQLUtil.isQueryable( pDesc.accessor()))
           {
               this.processPropertyTypeForQNames( //
                   pDesc, //
@@ -330,44 +332,52 @@ public class PostgreSQLAppStartup implements SQLAppStartup
 
    }
 
-   private void extractAssociationQNames(EntityDescriptor entityDesc, Map<QualifiedName, QNameInfo> extractedQNames, Set<QualifiedName> newQNames, Boolean setQNameTableNameToNull)
-   {
-      for (AssociationDescriptor assoDesc : entityDesc.state().associations())
-      {
-         QualifiedName qName = assoDesc.qualifiedName();
-         if (!extractedQNames.containsKey(qName))
-         {
-            extractedQNames.put(qName,//
-                  QNameInfo.fromAssociation( //
-                        qName, //
-                        setQNameTableNameToNull ? null : (QNAME_TABLE_NAME_PREFIX + extractedQNames.size()), //
-                        assoDesc //
-                        ) //
-                  );
-            newQNames.add(qName);
-         }
-      }
-   }
+    private void extractAssociationQNames( EntityDescriptor entityDesc, Map<QualifiedName, QNameInfo> extractedQNames,
+        Set<QualifiedName> newQNames, Boolean setQNameTableNameToNull )
+    {
+        for( AssociationDescriptor assoDesc : entityDesc.state().associations() )
+        {
+            if( SQLUtil.isQueryable( assoDesc.accessor() ) )
+            {
+                QualifiedName qName = assoDesc.qualifiedName();
+                if( !extractedQNames.containsKey( qName ) )
+                {
+                    extractedQNames.put( qName,//
+                        QNameInfo.fromAssociation( //
+                            qName, //
+                            setQNameTableNameToNull ? null : (QNAME_TABLE_NAME_PREFIX + extractedQNames.size()), //
+                            assoDesc //
+                            ) //
+                        );
+                    newQNames.add( qName );
+                }
+            }
+        }
+    }
 
-   private void extractManyAssociationQNames(EntityDescriptor entityDesc, Map<QualifiedName, QNameInfo> extractedQNames, Set<QualifiedName> newQNames, Boolean setQNameTableNameToNull)
-   {
-      for (ManyAssociationDescriptor mAssoDesc : entityDesc.state().manyAssociations())
-      {
-         QualifiedName qName = mAssoDesc.qualifiedName();
-         if (!extractedQNames.containsKey(qName))
-         {
-            extractedQNames.put( //
-                  qName, //
-                  QNameInfo.fromManyAssociation( //
+    private void extractManyAssociationQNames( EntityDescriptor entityDesc,
+        Map<QualifiedName, QNameInfo> extractedQNames, Set<QualifiedName> newQNames, Boolean setQNameTableNameToNull )
+    {
+        for( ManyAssociationDescriptor mAssoDesc : entityDesc.state().manyAssociations() )
+        {
+            QualifiedName qName = mAssoDesc.qualifiedName();
+            if( SQLUtil.isQueryable( mAssoDesc.accessor() ) )
+            {
+                if( !extractedQNames.containsKey( qName ) )
+                {
+                    extractedQNames.put( //
                         qName, //
-                        setQNameTableNameToNull ? null : (QNAME_TABLE_NAME_PREFIX + extractedQNames.size()), //
-                        mAssoDesc //
-                        ) //
-                  );
-            newQNames.add(qName);
-         }
-      }
-   }
+                        QNameInfo.fromManyAssociation( //
+                            qName, //
+                            setQNameTableNameToNull ? null : (QNAME_TABLE_NAME_PREFIX + extractedQNames.size()), //
+                            mAssoDesc //
+                            ) //
+                        );
+                    newQNames.add( qName );
+                }
+            }
+        }
+    }
 
    private Boolean syncDB() throws SQLException
    {

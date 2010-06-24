@@ -13,10 +13,13 @@
  */
 package org.qi4j.library.sql.common;
 
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import org.qi4j.api.entity.Queryable;
 
 public class SQLUtil
 {
@@ -68,4 +71,9 @@ public class SQLUtil
     {
     }
 
+    public static boolean isQueryable(Method accessor)
+    {
+        Queryable q = accessor.getAnnotation( Queryable.class );
+        return q == null || q.value();
+    }
 }

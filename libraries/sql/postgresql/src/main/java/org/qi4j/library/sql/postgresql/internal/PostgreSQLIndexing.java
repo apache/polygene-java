@@ -253,70 +253,79 @@ public class PostgreSQLIndexing implements SQLIndexing
       Set<QualifiedName> qNames = this._state.entityUsedQNames().get().get(state.entityDescriptor().type().getName());
       this.syncQNamesInsertPSs(connection, qNameInsertPSs, qNames);
       Integer propertyPK = 0;
-      for (PropertyDescriptor pDesc : state.entityDescriptor().state().properties())
-      {
-         propertyPK = this.insertProperty( //
-               qNameInsertPSs, //
-               insertAllQNamesPS, //
-               propertyPK, //
-               entityPK, //
-               pDesc.qualifiedName(), //
-               state.getProperty(pDesc.qualifiedName()), //
-               null //
-               );
-      }
+        for( PropertyDescriptor pDesc : state.entityDescriptor().state().properties() )
+        {
+            if( SQLUtil.isQueryable( pDesc.accessor() ) )
+            {
+                propertyPK = this.insertProperty( //
+                    qNameInsertPSs, //
+                    insertAllQNamesPS, //
+                    propertyPK, //
+                    entityPK, //
+                    pDesc.qualifiedName(), //
+                    state.getProperty( pDesc.qualifiedName() ), //
+                    null //
+                    );
+            }
+        }
 
       return propertyPK;
    }
 
    private void insertAssoAndManyAssoQNames(Map<QualifiedName, PreparedStatement> qNameInsertPSs, PreparedStatement insertToAllQNamesPS, EntityState state, Integer qNamePK, Long entityPK) throws SQLException
    {
-      for (AssociationDescriptor aDesc : state.entityDescriptor().state().associations())
-      {
-         QualifiedName qName = aDesc.qualifiedName();
-         PreparedStatement ps = qNameInsertPSs.get(qName);
-         EntityReference ref = state.getAssociation(qName);
-         if (ref != null)
-         {
-
-            insertToAllQNamesPS.setInt( 1, qNamePK );
-            insertToAllQNamesPS.setLong( 2, entityPK );
-            insertToAllQNamesPS.addBatch( );
-
-            ps.setInt( 1, qNamePK );
-            ps.setLong(2, entityPK);
-            ps.setString(3, ref.identity() );
-            ps.addBatch();
-
-            ++qNamePK;
-         }
-      }
-
-      for (ManyAssociationDescriptor mDesc : state.entityDescriptor().state().manyAssociations())
-      {
-         QualifiedName qName = mDesc.qualifiedName();
-         PreparedStatement ps = qNameInsertPSs.get(qName);
-         Integer index = 0;
-         for (EntityReference ref : state.getManyAssociation(qName))
-         {
-            if (ref != null)
+        for( AssociationDescriptor aDesc : state.entityDescriptor().state().associations() )
+        {
+            if( SQLUtil.isQueryable( aDesc.accessor() ) )
             {
+                QualifiedName qName = aDesc.qualifiedName();
+                PreparedStatement ps = qNameInsertPSs.get( qName );
+                EntityReference ref = state.getAssociation( qName );
+                if( ref != null )
+                {
 
-               insertToAllQNamesPS.setInt( 1, qNamePK );
-               insertToAllQNamesPS.setLong( 2, entityPK );
-               insertToAllQNamesPS.addBatch( );
+                    insertToAllQNamesPS.setInt( 1, qNamePK );
+                    insertToAllQNamesPS.setLong( 2, entityPK );
+                    insertToAllQNamesPS.addBatch();
 
-               ps.setInt( 1, qNamePK );
-               ps.setLong(2, entityPK);
-               ps.setInt(3, index);
-               ps.setString( 4, ref.identity() );
-               ps.addBatch();
-               ++qNamePK;
+                    ps.setInt( 1, qNamePK );
+                    ps.setLong( 2, entityPK );
+                    ps.setString( 3, ref.identity() );
+                    ps.addBatch();
 
+                    ++qNamePK;
+                }
             }
-            ++index;
-         }
-      }
+        }
+
+        for( ManyAssociationDescriptor mDesc : state.entityDescriptor().state().manyAssociations() )
+        {
+            if( SQLUtil.isQueryable( mDesc.accessor() ) )
+            {
+                QualifiedName qName = mDesc.qualifiedName();
+                PreparedStatement ps = qNameInsertPSs.get( qName );
+                Integer index = 0;
+                for( EntityReference ref : state.getManyAssociation( qName ) )
+                {
+                    if( ref != null )
+                    {
+
+                        insertToAllQNamesPS.setInt( 1, qNamePK );
+                        insertToAllQNamesPS.setLong( 2, entityPK );
+                        insertToAllQNamesPS.addBatch();
+
+                        ps.setInt( 1, qNamePK );
+                        ps.setLong( 2, entityPK );
+                        ps.setInt( 3, index );
+                        ps.setString( 4, ref.identity() );
+                        ps.addBatch();
+                        ++qNamePK;
+
+                    }
+                    ++index;
+                }
+            }
+        }
    }
 
    private Integer insertProperty( //
