@@ -16,16 +16,20 @@ package org.qi4j.entitystore.sql.map.database;
 import java.io.StringReader;
 import java.sql.ResultSet;
 import java.io.Reader;
-import org.qi4j.entitystore.sql.map.util.SQLUtil;
+
+import org.qi4j.entitystore.sql.util.SQLESUtil;
+
 import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
-import static org.qi4j.entitystore.sql.map.util.SQLUtil.*;
+
+import static org.qi4j.entitystore.sql.util.SQLESUtil.*;
+import static org.qi4j.library.sql.common.SQLUtil.*;
 
 public abstract class DatabaseMySQLMixin
-        extends AbstractDatabaseService
+        extends AbstractDatabaseMapService
 {
 
     private static final long serialVersionUID = 1L;
@@ -63,7 +67,7 @@ public abstract class DatabaseMySQLMixin
     public Reader getEntityValue( ResultSet resultSet )
             throws SQLException
     {
-        return new StringReader( resultSet.getString( SQLUtil.STATE_COLUMN ) );
+        return new StringReader( resultSet.getString( SQLESUtil.STATE_COLUMN ) );
     }
 
 }

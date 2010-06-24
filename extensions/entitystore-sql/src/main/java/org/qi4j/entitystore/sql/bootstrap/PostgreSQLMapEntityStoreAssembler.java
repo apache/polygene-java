@@ -19,7 +19,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.sql.SQLMapEntityStoreService;
 import org.qi4j.entitystore.sql.map.database.DatabasePostgreSQLMixin;
-import org.qi4j.entitystore.sql.map.database.DatabaseService;
+import org.qi4j.entitystore.sql.map.database.DatabaseMapService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 public class PostgreSQLMapEntityStoreAssembler
@@ -42,7 +42,7 @@ public class PostgreSQLMapEntityStoreAssembler
     public void assemble( ModuleAssembly ma )
             throws AssemblyException
     {
-        ma.addServices( DatabaseService.class ).
+        ma.addServices( DatabaseMapService.class ).
                 withMixins( DatabasePostgreSQLMixin.class ).
                 identifiedBy( "entitystore-sql-postgre" ).
                 visibleIn( Visibility.module );

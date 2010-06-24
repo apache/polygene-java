@@ -9,6 +9,8 @@ import org.glassfish.api.embedded.LifecycleException;
 import org.glassfish.api.embedded.ScatteredArchive;
 import org.glassfish.api.embedded.Server;
 import static org.junit.Assert.*;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 @SuppressWarnings( { "UseOfSystemOutOrSystemErr", "CallToThreadDumpStack" } )

@@ -13,21 +13,23 @@
  */
 package org.qi4j.entitystore.sql.map.database;
 
-import org.qi4j.entitystore.sql.map.util.SQLUtil;
+import org.qi4j.entitystore.sql.util.SQLESUtil;
+
 import java.sql.PreparedStatement;
 import org.qi4j.api.configuration.Configuration;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.DriverManager;
-import static org.qi4j.entitystore.sql.map.util.SQLUtil.*;
 
-public abstract class AbstractDatabaseService
-        implements DatabaseService
+import static org.qi4j.entitystore.sql.util.SQLESUtil.*;
+
+public abstract class AbstractDatabaseMapService
+        implements DatabaseMapService
 {
 
     protected final Configuration<DatabaseConfiguration> cfg;
 
-    public AbstractDatabaseService( Configuration<DatabaseConfiguration> cfg )
+    public AbstractDatabaseMapService( Configuration<DatabaseConfiguration> cfg )
     {
         this.cfg = cfg;
     }
@@ -66,7 +68,7 @@ public abstract class AbstractDatabaseService
     public PreparedStatement prepareGetEntityStatement( Connection connection, String identity )
             throws SQLException
     {
-        PreparedStatement select = connection.prepareStatement( SQLUtil.SELECT_STATE_SQL );
+        PreparedStatement select = connection.prepareStatement( SQLESUtil.SELECT_STATE_SQL );
         select.setString( 1, identity );
         return select;
     }
@@ -74,13 +76,13 @@ public abstract class AbstractDatabaseService
     public PreparedStatement prepareGetAllEntitiesStatement( Connection connection )
             throws SQLException
     {
-        return connection.prepareStatement( SQLUtil.SELECT_ALL_STATES_SQL );
+        return connection.prepareStatement( SQLESUtil.SELECT_ALL_STATES_SQL );
     }
 
     public PreparedStatement prepareInsertEntityStatement( Connection connection, String identity, String value )
             throws SQLException
     {
-        PreparedStatement insertNewEntity = connection.prepareStatement( SQLUtil.INSERT_STATE_SQL );
+        PreparedStatement insertNewEntity = connection.prepareStatement( SQLESUtil.INSERT_STATE_SQL );
         insertNewEntity.setString( 1, identity );
         insertNewEntity.setString( 2, value );
         return insertNewEntity;
@@ -89,7 +91,7 @@ public abstract class AbstractDatabaseService
     public PreparedStatement prepareUpdateEntityStatement( Connection connection, String identity, String value )
             throws SQLException
     {
-        PreparedStatement updateEntity = connection.prepareStatement( SQLUtil.UPDATE_STATE_SQL );
+        PreparedStatement updateEntity = connection.prepareStatement( SQLESUtil.UPDATE_STATE_SQL );
         updateEntity.setString( 1, value );
         updateEntity.setString( 2, identity );
         return updateEntity;
@@ -98,7 +100,7 @@ public abstract class AbstractDatabaseService
     public PreparedStatement prepareRemoveEntityStatement( Connection connection, String identity )
             throws SQLException
     {
-        PreparedStatement removeEntity = connection.prepareStatement( SQLUtil.REMOVE_STATE_SQL );
+        PreparedStatement removeEntity = connection.prepareStatement( SQLESUtil.REMOVE_STATE_SQL );
         removeEntity.setString( 1, identity );
         return removeEntity;
     }

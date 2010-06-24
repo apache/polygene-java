@@ -18,37 +18,38 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import org.qi4j.api.service.ServiceComposite;
 
-public interface DatabaseService
-        extends ServiceComposite
+public interface DatabaseMapService
+    extends ServiceComposite
 {
 
     void startDatabase()
-            throws Exception;
+        throws Exception;
 
     void stopDatabase()
-            throws Exception;
+        throws Exception;
 
     Connection openConnection()
-            throws SQLException;
+        throws SQLException;
 
     PreparedStatement prepareGetEntityStatement( Connection connection, String identity )
-            throws SQLException;
+        throws SQLException;
 
     PreparedStatement prepareGetAllEntitiesStatement( Connection connection )
-            throws SQLException;
-
-    Reader getEntityValue( ResultSet resultSet )
-            throws SQLException;
+        throws SQLException;
 
     PreparedStatement prepareInsertEntityStatement( Connection connection, String identity, String value )
-            throws SQLException;
+        throws SQLException;
 
     PreparedStatement prepareUpdateEntityStatement( Connection connection, String identity, String value )
-            throws SQLException;
+        throws SQLException;
 
     PreparedStatement prepareRemoveEntityStatement( Connection connection, String identity )
-            throws SQLException;
+        throws SQLException;
+
+    Reader getEntityValue( ResultSet resultSet )
+        throws SQLException;
 
 }

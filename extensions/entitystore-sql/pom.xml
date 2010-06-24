@@ -87,6 +87,11 @@
             <scope>test</scope>
         </dependency>
         
+        <dependency>
+        	<groupId>org.qi4j.library</groupId>
+        	<artifactId>qi4j-lib-sql-api</artifactId>
+        	<version>${project.version}</version>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>

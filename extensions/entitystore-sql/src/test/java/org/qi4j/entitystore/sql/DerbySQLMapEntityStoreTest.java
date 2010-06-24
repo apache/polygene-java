@@ -16,6 +16,7 @@ package org.qi4j.entitystore.sql;
 import org.qi4j.entitystore.sql.bootstrap.DerbySQLMapEntityStoreAssembler;
 import org.qi4j.entitystore.sql.map.database.DatabaseConfiguration;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;

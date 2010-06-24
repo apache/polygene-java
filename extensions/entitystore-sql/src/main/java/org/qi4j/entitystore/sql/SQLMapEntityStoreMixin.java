@@ -21,12 +21,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.service.Activatable;
 import org.qi4j.entitystore.map.MapEntityStore;
-import org.qi4j.entitystore.sql.map.database.DatabaseService;
-import org.qi4j.entitystore.sql.map.util.SQLUtil;
+import org.qi4j.entitystore.sql.map.database.DatabaseMapService;
+import org.qi4j.entitystore.sql.util.SQLESUtil;
+import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.spi.entity.EntityType;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
@@ -37,7 +39,7 @@ public class SQLMapEntityStoreMixin
 {
 
     @Service
-    private DatabaseService dbService;
+    private DatabaseMapService dbService;
 
     public void activate()
             throws Exception

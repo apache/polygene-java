@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.map.util;
+package org.qi4j.entitystore.sql.util;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -20,7 +20,7 @@ import java.sql.Statement;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.entitystore.sql.map.database.DatabaseConfiguration;
 
-public class SQLUtil
+public class SQLESUtil
 {
 
     public static final String TABLE_NAME = "QI4J_DATA";
@@ -61,47 +61,7 @@ public class SQLUtil
                 && !connection.getMetaData().getTables( null, null, TABLE_NAME.toLowerCase(), null ).next();
     }
 
-    public static void closeQuietly( ResultSet resultSet )
-    {
-        if ( resultSet != null ) {
-            try {
-                resultSet.close();
-            } catch ( SQLException ignored ) {
-            }
-        }
-    }
-
-    public static void closeQuietly( Statement select )
-    {
-        if ( select != null ) {
-            try {
-                select.close();
-            } catch ( SQLException ignored ) {
-            }
-        }
-    }
-
-    public static void closeQuietly( Connection connection )
-    {
-        if ( connection != null ) {
-            try {
-                connection.close();
-            } catch ( SQLException ignored ) {
-            }
-        }
-    }
-
-    public static void rollbackQuietly( Connection connection )
-    {
-        if ( connection != null ) {
-            try {
-                connection.rollback();
-            } catch ( SQLException ignored ) {
-            }
-        }
-    }
-
-    private SQLUtil()
+    private SQLESUtil()
     {
     }
 

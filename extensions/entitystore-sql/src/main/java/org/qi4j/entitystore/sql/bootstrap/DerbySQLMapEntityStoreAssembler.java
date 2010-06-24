@@ -14,7 +14,7 @@
 package org.qi4j.entitystore.sql.bootstrap;
 
 import org.qi4j.entitystore.sql.map.database.DatabaseDerbyMixin;
-import org.qi4j.entitystore.sql.map.database.DatabaseService;
+import org.qi4j.entitystore.sql.map.database.DatabaseMapService;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
@@ -42,7 +42,7 @@ public class DerbySQLMapEntityStoreAssembler
     public void assemble( ModuleAssembly ma )
             throws AssemblyException
     {
-        ma.addServices( DatabaseService.class ).
+        ma.addServices( DatabaseMapService.class ).
                 withMixins( DatabaseDerbyMixin.class ).
                 identifiedBy( "entitystore-sql-derby" ).
                 visibleIn( Visibility.module );
