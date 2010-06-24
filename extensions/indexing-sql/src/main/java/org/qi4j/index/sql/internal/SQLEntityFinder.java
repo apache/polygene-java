@@ -15,6 +15,7 @@
 
 package org.qi4j.index.sql.internal;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,6 +28,7 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.query.grammar.BooleanExpression;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.library.sql.api.SQLQuerying;
+import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 
@@ -199,27 +201,19 @@ public class SQLEntityFinder implements EntityFinder
    private <ReturnType> ReturnType performQuery(DoQuery<ReturnType> doQuery) throws EntityFinderException
    {
       ReturnType result = null;
+      Connection connection = this._state.connection().get();
       try
       {
-         this._state.connection().get().setReadOnly(true);
+          connection.setReadOnly(true);
 
-         result = doQuery.doIt();
+          result = doQuery.doIt();
 
       } catch (SQLException sqle)
       {
          throw new EntityFinderException(sqle);
       } finally
       {
-         try
-         {
-            if (!this._state.connection().get().getAutoCommit())
-            {
-               this._state.connection().get().rollback();
-            }
-         } catch (SQLException sqle)
-         {
-            throw new EntityFinderException(sqle);
-         }
+         SQLUtil.rollbackQuietly( connection );
       }
 
       return result;
